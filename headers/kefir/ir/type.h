@@ -52,8 +52,7 @@ kefir_result_t kefir_ir_type_free(struct kefir_mem *, struct kefir_ir_type *);
 
 typedef kefir_result_t (*kefir_ir_type_visitor_callback_t)(const struct kefir_ir_type *,
                                                        kefir_size_t,
-                                                       kefir_ir_typecode_t,
-                                                       kefir_int64_t,
+                                                       const struct kefir_ir_typeentry *,
                                                        void *);
 
 typedef struct kefir_ir_type_visitor {
@@ -61,7 +60,8 @@ typedef struct kefir_ir_type_visitor {
 } kefir_ir_type_visitor_t;
 
 kefir_result_t kefir_ir_type_visitor_init(struct kefir_ir_type_visitor *, kefir_ir_type_visitor_callback_t);
-kefir_result_t kefir_ir_type_visitor_traverse(const struct kefir_ir_type *,
+kefir_size_t kefir_ir_type_subtree_length(const struct kefir_ir_type *, kefir_size_t);
+kefir_result_t kefir_ir_type_visitor_traverse_subtrees(const struct kefir_ir_type *,
                                           const struct kefir_ir_type_visitor *,
                                           void *,
                                           kefir_size_t,

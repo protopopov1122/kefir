@@ -1,6 +1,7 @@
 #include <string.h>
 #include "kefir/ir/type.h"
 #include "kefir/core/util.h"
+#include "kefir/core/error.h"
 
 kefir_result_t kefir_ir_type_init(struct kefir_ir_type *type, void *area, kefir_size_t capacity) {
     REQUIRE(type != NULL, KEFIR_MALFORMED_ARG);
@@ -26,6 +27,8 @@ struct kefir_ir_typeentry *kefir_ir_type_at(const struct kefir_ir_type *type, ke
 kefir_result_t kefir_ir_type_append(struct kefir_ir_type *type, const struct kefir_ir_typeentry *value) {
     REQUIRE(type != NULL, KEFIR_MALFORMED_ARG);
     REQUIRE(value != NULL, KEFIR_MALFORMED_ARG);
+    REQUIRE(value->typecode != KEFIR_IR_TYPE_COUNT,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot append auxilary typecodes"));
     return kefir_vector_append(&type->vector, value);
 }
 
@@ -70,7 +73,7 @@ kefir_result_t kefir_ir_type_visitor_init(struct kefir_ir_type_visitor *visitor,
     return KEFIR_OK;
 }
 
-static kefir_size_t length_of(const struct kefir_ir_type *type, kefir_size_t index) {
+kefir_size_t kefir_ir_type_subtree_length(const struct kefir_ir_type *type, kefir_size_t index) {
     struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(type, index);   
     REQUIRE(typeentry != NULL, 0);
     switch (typeentry->typecode) {
@@ -79,36 +82,39 @@ static kefir_size_t length_of(const struct kefir_ir_type *type, kefir_size_t ind
             kefir_size_t length = 1;
             kefir_size_t counter = typeentry->param;
             while (counter--) {
-                length += length_of(type, index + length);
+                length += kefir_ir_type_subtree_length(type, index + length);
             }
             return length;
         };
 
         case KEFIR_IR_TYPE_ARRAY:
-            return length_of(type, index + 1) + 1;
+            return kefir_ir_type_subtree_length(type, index + 1) + 1;
         
         default:
             return 1;
     }
 }
 
-kefir_result_t kefir_ir_type_visitor_traverse(const struct kefir_ir_type *type,
+kefir_result_t kefir_ir_type_visitor_traverse_subtrees(const struct kefir_ir_type *type,
                                           const struct kefir_ir_type_visitor *visitor,
                                           void *payload,
                                           kefir_size_t begin,
-                                          kefir_size_t length) {
+                                          kefir_size_t count) {
 
     REQUIRE(type != NULL, KEFIR_MALFORMED_ARG);
     REQUIRE(visitor != NULL, KEFIR_MALFORMED_ARG);
     REQUIRE(begin < kefir_ir_type_length(type), KEFIR_OUT_OF_BOUNDS);
-    REQUIRE(length > 0, KEFIR_MALFORMED_ARG);
-    for (kefir_size_t index = begin; index < kefir_ir_type_length(type) && length-- > 0; index += length_of(type, index)) {
+    REQUIRE(count > 0, KEFIR_MALFORMED_ARG);
+    for (kefir_size_t index = begin;
+        index < kefir_ir_type_length(type) && count-- > 0;
+        index += kefir_ir_type_subtree_length(type, index)) {
+
         struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(type, index);
         REQUIRE(typeentry !=NULL, KEFIR_MALFORMED_ARG);
 #define INVOKE(method) \
     do { \
         if (method) { \
-            REQUIRE_OK((method)((type), (index), (typeentry->typecode), (typeentry->param), (payload))); \
+            REQUIRE_OK((method)((type), (index), (typeentry), (payload))); \
         } \
     } while (0)
         switch (typeentry->typecode) {
