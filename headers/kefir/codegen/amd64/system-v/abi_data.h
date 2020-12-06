@@ -40,4 +40,6 @@ kefir_result_t kefir_amd64_sysv_data_allocate(const struct kefir_ir_type *,
                                           struct kefir_mem *,
                                           struct kefir_vector *);
 
+#define KEFIR_AMD64_SYSV_ABI_ERROR_PREFIX "AMD64 System-V ABI: "
+
 #endif

@@ -1,6 +1,7 @@
 #include <string.h>
 #include "kefir/core/vector.h"
 #include "kefir/core/util.h"
+#include "kefir/core/error.h"
 
 kefir_result_t kefir_vector_init(struct kefir_vector *vector, kefir_size_t elem_size, void *area, kefir_size_t capacity) {
     REQUIRE(vector != NULL, KEFIR_MALFORMED_ARG);
@@ -77,7 +78,8 @@ kefir_result_t kefir_vector_realloc(struct kefir_mem *mem,
         vector->length = 0;
         vector->capacity = 0;
         vector->element_size = 0;
-        return KEFIR_MEMALLOC_FAILURE;
+        return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE,
+            "Failed to reallocate vector");
     }
     vector->capacity = new_capacity;
     return KEFIR_OK;

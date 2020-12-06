@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include "kefir/core/error.h"
 #include "kefir/codegen/amd64/system-v/abi_data.h"
 #include "kefir/codegen/amd64/asmgen.h"
 
@@ -38,7 +39,7 @@ static kefir_result_t visitor_not_supported(const struct kefir_ir_type *type,
     UNUSED(typecode);
     UNUSED(param);
     UNUSED(payload);
-    return KEFIR_NOT_SUPPORTED;
+    return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, KEFIR_AMD64_SYSV_ABI_ERROR_PREFIX "Encountered not supported type code while traversing type");
 }
 
 struct layout_info {
@@ -103,7 +104,8 @@ static kefir_result_t assign_class_integer(const struct kefir_ir_type *type,
             break;
 
         default:
-            return KEFIR_INTERNAL_ERROR;
+            return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR,
+                KEFIR_AMD64_SYSV_ABI_ERROR_PREFIX "Unexpectedly encountered non-integral type");
     }
     return update_layout_info(layout_info, palloc);
 }
@@ -132,7 +134,8 @@ static kefir_result_t assign_class_sse(const struct kefir_ir_type *type,
             break;
 
         default:
-            return KEFIR_INTERNAL_ERROR;
+            return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR,
+                KEFIR_AMD64_SYSV_ABI_ERROR_PREFIX "Unexpectedly encountered non-floating point type");
     }
     return update_layout_info(layout_info, palloc);
 }
@@ -162,7 +165,8 @@ static kefir_result_t assign_class_amorphous(const struct kefir_ir_type *type,
             break;
 
         default:
-            return KEFIR_INTERNAL_ERROR;
+            return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR,
+                KEFIR_AMD64_SYSV_ABI_ERROR_PREFIX "Unexpectedly encountered structured type");
     }
     return update_layout_info(layout_info, palloc);
 }
@@ -247,7 +251,8 @@ static kefir_result_t allocate_integer(const struct kefir_ir_type *type,
     struct kefir_amd64_sysv_data_allocation *palloc =
         (struct kefir_amd64_sysv_data_allocation *) kefir_vector_at(info->vector, index);
     if (info->integer_register == KEFIR_AMD64_SYSV_INTEGER_REGISTER_COUNT) {
-        return KEFIR_NOT_SUPPORTED;
+        return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED,
+            KEFIR_AMD64_SYSV_ABI_ERROR_PREFIX "Available number of integral registers exceeded");
     }
     palloc->location.registers[0] = info->integer_register++;
     return KEFIR_OK;
@@ -265,29 +270,12 @@ static kefir_result_t allocate_sse(const struct kefir_ir_type *type,
     struct kefir_amd64_sysv_data_allocation *palloc =
         (struct kefir_amd64_sysv_data_allocation *) kefir_vector_at(info->vector, index);
     if (info->sse_register == KEFIR_AMD64_SYSV_SSE_REGISTER_COUNT) {
-        return KEFIR_NOT_SUPPORTED;
+        return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED,
+            KEFIR_AMD64_SYSV_ABI_ERROR_PREFIX "Available number of SSE register exceeded");
     }
     palloc->location.registers[0] = info->sse_register++;
     return KEFIR_OK;
 }
-
-// static kefir_result_t allocate_amorphous(const struct kefir_ir_type *type,
-//                                        kefir_size_t index,
-//                                        kefir_ir_typecode_t typecode,
-//                                        kefir_int64_t param,
-//                                        void *payload) {
-//     UNUSED(type);
-//     UNUSED(typecode);
-//     UNUSED(param);
-//     struct parameter_allocation_info *info = (struct parameter_allocation_info *) payload;
-//     struct kefir_amd64_sysv_data_allocation *palloc =
-//         (struct kefir_amd64_sysv_data_allocation *) kefir_vector_at(info->vector, index);
-//     if (info->sse_register == KEFIR_AMD64_SYSV_SSE_REGISTER_COUNT) {
-//         return KEFIR_NOT_SUPPORTED;
-//     }
-//     palloc->location.registers[0] = info->sse_register++;
-//     return KEFIR_OK;
-// }
 
 static kefir_result_t allocate_data(const struct kefir_ir_type *type,
                                         struct kefir_vector *vector) {

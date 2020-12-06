@@ -2,6 +2,7 @@
 #include "kefir/ir/instr.h"
 #include "kefir/core/util.h"
 #include "kefir/core/vector_util.h"
+#include "kefir/core/error.h"
 
 kefir_result_t kefir_irblock_init(struct kefir_irblock *bcblock, void *area, kefir_size_t capacity) {
     REQUIRE(bcblock != NULL, KEFIR_MALFORMED_ARG);
@@ -74,7 +75,8 @@ kefir_result_t kefir_irblock_realloc(struct kefir_mem *mem, kefir_size_t capacit
     if (block->code == NULL) {
         block->length = 0;
         block->capacity = 0;
-        return KEFIR_MEMALLOC_FAILURE;
+        return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE,
+            "Failed to reallocste IR block");
     }
     block->capacity = capacity;
     return KEFIR_OK;

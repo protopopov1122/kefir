@@ -1,7 +1,7 @@
 CC=gcc
 OPT=-O0
 DBG=-g3 -ggdb -DKFT_NOFORK
-CFLAGS=-std=c18 -Wall -Wextra -pedantic $(OPT) $(DBG)
+CFLAGS=-std=c11 -Wall -Wextra -pedantic $(OPT) $(DBG)
 INCLUDES=-Iheaders
 
 VALGRIND=valgrind --trace-children=yes

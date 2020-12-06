@@ -1,5 +1,6 @@
 #include "kefir/codegen/amd64/system-v/abi.h"
 #include "kefir/core/util.h"
+#include "kefir/core/error.h"
 #include "kefir/codegen/amd64/shortcuts.h"
 #include "kefir/codegen/amd64/system-v/runtime.h"
 #include "kefir/codegen/amd64/system-v/abi_data.h"
@@ -32,7 +33,8 @@ static kefir_result_t load_argument(struct kefir_codegen_amd64 *codegen,
             break;
 
         default:
-            return KEFIR_NOT_SUPPORTED;
+            return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED,
+                KEFIR_AMD64_SYSV_ABI_ERROR_PREFIX "Non-scalar function parameter is not supported");
     }
     return KEFIR_OK;
 }
