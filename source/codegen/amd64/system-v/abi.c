@@ -24,11 +24,11 @@ static kefir_result_t load_argument(struct kefir_codegen_amd64 *codegen,
     UNUSED(index);
     switch (param->dataclass) {
         case KEFIR_AMD64_SYSV_PARAM_INTEGER:
-            ASMGEN_INSTR1(&codegen->asmgen, KEFIR_AMD64_PUSH, KEFIR_AMD64_SYSV_INTEGER_REGISTERS[param->registers[0]]);
+            ASMGEN_INSTR1(&codegen->asmgen, KEFIR_AMD64_PUSH, KEFIR_AMD64_SYSV_INTEGER_REGISTERS[param->location]);
             break;
 
         case KEFIR_AMD64_SYSV_PARAM_SSE:
-            ASMGEN_INSTR3(&codegen->asmgen, KEFIR_AMD64_PEXTRQ, KEFIR_AMD64_R12, KEFIR_AMD64_SYSV_SSE_REGISTERS[param->registers[0]], "0");
+            ASMGEN_INSTR3(&codegen->asmgen, KEFIR_AMD64_PEXTRQ, KEFIR_AMD64_R12, KEFIR_AMD64_SYSV_SSE_REGISTERS[param->location], "0");
             ASMGEN_INSTR1(&codegen->asmgen, KEFIR_AMD64_PUSH, KEFIR_AMD64_R12);
             break;
 
