@@ -3,6 +3,7 @@
 #include "kefir/test/unit_test.h"
 #include "kefir/ir/type.h"
 #include "kefir/codegen/amd64/system-v/abi_data.h"
+#include "kefir/codegen/amd64/system-v/abi_allocation.h"
 
 #define ASSERT_DATA_ALLOC(vector, index, _size, _alignment, offset) \
     do { \
@@ -155,6 +156,50 @@ DEFINE_CASE(amd64_sysv_abi_data_test7, "AMD64 System V ABI - array #2")
     ASSERT_DATA_ALLOC(&vector, 5, 8, 8, 0);
     ASSERT_DATA_ALLOC(&vector, 6, 2, 2, 8);
     ASSERT_DATA_ALLOC(&vector, 7, 2, 2, 10);
+    ASSERT_OK(kefir_vector_free(&kft_mem, &vector));
+    ASSERT_OK(kefir_ir_type_free(&kft_mem, &type));
+END_CASE
+
+DEFINE_CASE(amd64_sysv_abi_data_test8, "AMD64 System V ABI - eightbyte allocation")
+    struct kefir_ir_type type;
+    struct kefir_vector vector;
+    struct kefir_amd64_sysv_abi_qwords qwords;
+    struct kefir_amd64_sysv_abi_qword_ref ref;
+    ASSERT_OK(kefir_ir_type_alloc(&kft_mem, 11, &type));
+    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_STRUCT, 0, 10));
+    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT8, 0, 0));
+    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT8, 0, 0));
+    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT32, 0, 0));
+    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT16, 0, 0));
+    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT64, 0, 0));
+    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT32, 0, 0));
+    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT8, 0, 0));
+    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT32, 0, 0));
+    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_MEMORY, 0, 10));
+    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT8, 0, 0));
+    ASSERT_OK(kefir_amd64_sysv_type_layout(&type, &kft_mem, &vector));
+    ASSERT_OK(kefir_amd64_sysv_abi_qwords_alloc(&qwords, &kft_mem, &type, &vector));
+    ASSERT_OK(kefir_amd64_sysv_abi_qwords_next(&qwords, KEFIR_AMD64_SYSV_PARAM_INTEGER, 1, 1, &ref));
+    ASSERT(ref.index == 0 && ref.offset == 0);
+    ASSERT_OK(kefir_amd64_sysv_abi_qwords_next(&qwords, KEFIR_AMD64_SYSV_PARAM_INTEGER, 1, 1, &ref));
+    ASSERT(ref.index == 0 && ref.offset == 1);
+    ASSERT_OK(kefir_amd64_sysv_abi_qwords_next(&qwords, KEFIR_AMD64_SYSV_PARAM_INTEGER, 4, 4, &ref));
+    ASSERT(ref.index == 0 && ref.offset == 4);
+    ASSERT_OK(kefir_amd64_sysv_abi_qwords_next(&qwords, KEFIR_AMD64_SYSV_PARAM_INTEGER, 2, 2, &ref));
+    ASSERT(ref.index == 1 && ref.offset == 0);
+    ASSERT_OK(kefir_amd64_sysv_abi_qwords_next(&qwords, KEFIR_AMD64_SYSV_PARAM_INTEGER, 8, 8, &ref));
+    ASSERT(ref.index == 2 && ref.offset == 0);
+    ASSERT_OK(kefir_amd64_sysv_abi_qwords_next(&qwords, KEFIR_AMD64_SYSV_PARAM_INTEGER, 4, 4, &ref));
+    ASSERT(ref.index == 3 && ref.offset == 0);
+    ASSERT_OK(kefir_amd64_sysv_abi_qwords_next(&qwords, KEFIR_AMD64_SYSV_PARAM_INTEGER, 1, 1, &ref));
+    ASSERT(ref.index == 3 && ref.offset == 4);
+    ASSERT_OK(kefir_amd64_sysv_abi_qwords_next(&qwords, KEFIR_AMD64_SYSV_PARAM_INTEGER, 4, 4, &ref));
+    ASSERT(ref.index == 4 && ref.offset == 0);
+    ASSERT_OK(kefir_amd64_sysv_abi_qwords_next(&qwords, KEFIR_AMD64_SYSV_PARAM_INTEGER, 10, 1, &ref));
+    ASSERT(ref.index == 4 && ref.offset == 4);
+    ASSERT_OK(kefir_amd64_sysv_abi_qwords_next(&qwords, KEFIR_AMD64_SYSV_PARAM_INTEGER, 1, 1, &ref));
+    ASSERT(ref.index == 5 && ref.offset == 6);
+    ASSERT_OK(kefir_amd64_sysv_abi_qwords_free(&qwords, &kft_mem));
     ASSERT_OK(kefir_vector_free(&kft_mem, &vector));
     ASSERT_OK(kefir_ir_type_free(&kft_mem, &type));
 END_CASE
