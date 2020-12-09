@@ -1,4 +1,5 @@
 #include "kefir/codegen/amd64/system-v/abi_allocation.h"
+#include "kefir/core/error.h"
 
 #define QWORD 8
 
@@ -24,9 +25,9 @@ static kefir_result_t count_qwords_visitor(const struct kefir_ir_type *type,
     return KEFIR_OK;
 }
 
-static kefir_result_t count_qwords(const struct kefir_ir_type *type,
-                                 const struct kefir_vector *layout,
-                                 kefir_size_t *count) {
+kefir_result_t kefir_amd64_sysv_abi_qwords_count(const struct kefir_ir_type *type,
+                                             const struct kefir_vector *layout,
+                                             kefir_size_t *count) {
     struct kefir_ir_type_visitor visitor;
     kefir_ir_type_visitor_init(&visitor, count_qwords_visitor);
     struct qword_counter counter = {
@@ -40,14 +41,10 @@ static kefir_result_t count_qwords(const struct kefir_ir_type *type,
 
 kefir_result_t kefir_amd64_sysv_abi_qwords_alloc(struct kefir_amd64_sysv_abi_qwords *qwords,
                                              struct kefir_mem *mem,
-                                             const struct kefir_ir_type *type,
-                                             const struct kefir_vector *layout) {
+                                             kefir_size_t qword_count) {
     REQUIRE(qwords != NULL, KEFIR_MALFORMED_ARG);
     REQUIRE(mem != NULL, KEFIR_MALFORMED_ARG);
-    REQUIRE(type != NULL, KEFIR_MALFORMED_ARG);
-    REQUIRE(layout != NULL, KEFIR_MALFORMED_ARG);
-    kefir_size_t qword_count;
-    REQUIRE_OK(count_qwords(type, layout, &qword_count));
+    REQUIRE(qword_count > 0, KEFIR_MALFORMED_ARG);
     REQUIRE_OK(kefir_vector_alloc(mem, sizeof(struct kefir_amd64_sysv_abi_qword), qword_count, &qwords->qwords));
     kefir_vector_extend(&qwords->qwords, qword_count);
     for (kefir_size_t i = 0; i < qword_count; i++) {
@@ -57,8 +54,6 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_alloc(struct kefir_amd64_sysv_abi_qwo
         qword->offset = 0;
     }
     qwords->current = 0;
-    qwords->type = type;
-    qwords->layout = layout;
     return KEFIR_OK;
 }
 
@@ -137,4 +132,291 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_next(struct kefir_amd64_sysv_abi_qwor
         available = 1;
     }
     return KEFIR_OK;
+}
+
+static kefir_result_t visitor_not_supported(const struct kefir_ir_type *type,
+                                            kefir_size_t index,
+                                            const struct kefir_ir_typeentry *typeentry,
+                                            void *payload) {
+    UNUSED(type);
+    UNUSED(index);
+    UNUSED(typeentry);
+    UNUSED(payload);
+    return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, KEFIR_AMD64_SYSV_ABI_ERROR_PREFIX "Encountered not supported type code while traversing type");
+}
+
+struct input_allocation {
+    struct kefir_mem *mem;
+    const struct kefir_vector *layout;
+    struct kefir_vector *allocation;
+};
+
+static kefir_result_t assign_integer(const struct kefir_ir_type *type,
+                                    kefir_size_t index,
+                                    const struct kefir_ir_typeentry *typeentry,
+                                    void *payload) {
+    UNUSED(type);
+    UNUSED(typeentry);
+    struct input_allocation *info =
+        (struct input_allocation *) payload;
+    struct kefir_amd64_sysv_input_parameter_allocation *allocation =
+        (struct kefir_amd64_sysv_input_parameter_allocation *) kefir_vector_at(info->allocation, index);
+    allocation->alloc = false;
+    allocation->klass = KEFIR_AMD64_SYSV_PARAM_INTEGER;
+    allocation->scalar = true;
+    allocation->skip = false;
+    return KEFIR_OK;
+}
+
+static kefir_result_t assign_sse(const struct kefir_ir_type *type,
+                                    kefir_size_t index,
+                                    const struct kefir_ir_typeentry *typeentry,
+                                    void *payload) {
+    UNUSED(type);
+    UNUSED(typeentry);
+    struct input_allocation *info =
+        (struct input_allocation *) payload;
+    struct kefir_amd64_sysv_input_parameter_allocation *allocation =
+        (struct kefir_amd64_sysv_input_parameter_allocation *) kefir_vector_at(info->allocation, index);
+    allocation->alloc = false;
+    allocation->klass = KEFIR_AMD64_SYSV_PARAM_SSE;
+    allocation->scalar = true;
+    allocation->skip = false;
+    return KEFIR_OK;
+}
+
+static kefir_result_t assign_memory(const struct kefir_ir_type *type,
+                                    kefir_size_t index,
+                                    const struct kefir_ir_typeentry *typeentry,
+                                    void *payload) {
+    UNUSED(type);
+    UNUSED(typeentry);
+    struct input_allocation *info =
+        (struct input_allocation *) payload;
+    struct kefir_amd64_sysv_input_parameter_allocation *allocation =
+        (struct kefir_amd64_sysv_input_parameter_allocation *) kefir_vector_at(info->allocation, index);
+    allocation->alloc = false;
+    allocation->klass = KEFIR_AMD64_SYSV_PARAM_MEMORY;
+    allocation->scalar = false;
+    allocation->skip = false;
+    return KEFIR_OK;
+}
+
+static kefir_result_t assign_no_class(const struct kefir_ir_type *type,
+                                    kefir_size_t index,
+                                    const struct kefir_ir_typeentry *typeentry,
+                                    void *payload) {
+    UNUSED(type);
+    UNUSED(typeentry);
+    struct input_allocation *info =
+        (struct input_allocation *) payload;
+    struct kefir_amd64_sysv_input_parameter_allocation *allocation =
+        (struct kefir_amd64_sysv_input_parameter_allocation *) kefir_vector_at(info->allocation, index);
+    allocation->alloc = false;
+    allocation->klass = KEFIR_AMD64_SYSV_PARAM_NO_CLASS;
+    allocation->scalar = false;
+    allocation->skip = true;
+    return KEFIR_OK;
+}
+
+struct recursive_struct_allocation {
+    const struct kefir_ir_type *type;
+    const struct kefir_vector *layout;
+    struct kefir_vector *allocation;
+    struct kefir_amd64_sysv_input_parameter_allocation *top_allocation;
+    struct kefir_ir_type_visitor *visitor;
+};
+
+static kefir_result_t recursive_assign_scalar(const struct kefir_ir_type *type,
+                                            kefir_size_t index,
+                                            const struct kefir_ir_typeentry *typeentry,
+                                            void *payload) {
+    UNUSED(type);
+    UNUSED(index);
+    struct recursive_struct_allocation *info = 
+        (struct recursive_struct_allocation *) payload;
+    struct kefir_amd64_sysv_data_layout *layout =
+        (struct kefir_amd64_sysv_data_layout *) kefir_vector_at(info->layout, index);
+    struct kefir_amd64_sysv_input_parameter_allocation *allocation =
+        (struct kefir_amd64_sysv_input_parameter_allocation *) kefir_vector_at(info->allocation, index);
+    allocation->alloc = false;
+    kefir_amd64_sysv_data_class_t dataclass =
+        (typeentry->typecode == KEFIR_IR_TYPE_FLOAT32 || typeentry->typecode == KEFIR_IR_TYPE_FLOAT32)
+            ? KEFIR_AMD64_SYSV_PARAM_SSE
+            : KEFIR_AMD64_SYSV_PARAM_INTEGER;
+    REQUIRE_OK(kefir_amd64_sysv_abi_qwords_next(&info->top_allocation->qwords,
+                                                dataclass,
+                                                layout->size,
+                                                layout->alignment,
+                                                &allocation->nested_ref));
+    return KEFIR_OK;
+}
+
+static kefir_result_t recursive_assign_memory(const struct kefir_ir_type *type,
+                                            kefir_size_t index,
+                                            const struct kefir_ir_typeentry *typeentry,
+                                            void *payload) {
+    UNUSED(type);
+    UNUSED(index);
+    UNUSED(typeentry);
+    struct recursive_struct_allocation *info = 
+        (struct recursive_struct_allocation *) payload;
+    struct kefir_amd64_sysv_data_layout *layout =
+        (struct kefir_amd64_sysv_data_layout *) kefir_vector_at(info->layout, index);
+    struct kefir_amd64_sysv_input_parameter_allocation *allocation =
+        (struct kefir_amd64_sysv_input_parameter_allocation *) kefir_vector_at(info->allocation, index);
+    allocation->alloc = false;
+    REQUIRE_OK(kefir_amd64_sysv_abi_qwords_next(&info->top_allocation->qwords,
+                                                KEFIR_AMD64_SYSV_PARAM_MEMORY,
+                                                layout->size,
+                                                layout->alignment,
+                                                &allocation->nested_ref));
+    return KEFIR_OK;
+}
+
+static kefir_result_t recursive_assign_struct(const struct kefir_ir_type *type,
+                                            kefir_size_t index,
+                                            const struct kefir_ir_typeentry *typeentry,
+                                            void *payload) {
+    UNUSED(typeentry);
+    struct recursive_struct_allocation *info = 
+        (struct recursive_struct_allocation *) payload;
+    return kefir_ir_type_visitor_traverse_subtrees(type, info->visitor, (void *) info, index + 1, typeentry->param);
+}
+
+static kefir_result_t assign_struct_recursive(struct kefir_mem *mem,
+                                            const struct kefir_ir_type *type,
+                                            kefir_size_t index,
+                                            const struct kefir_ir_typeentry *typeentry,
+                                            const struct kefir_amd64_sysv_data_layout *top_layout,
+                                            const struct kefir_vector *layout,
+                                            struct kefir_vector *allocation,
+                                            struct kefir_amd64_sysv_input_parameter_allocation *top_allocation) {
+    kefir_size_t qword_count = top_layout->size / QWORD;
+    if (top_layout->size % QWORD != 0) {
+        qword_count++;
+    }
+    top_allocation->alloc = true;
+    top_allocation->klass = KEFIR_AMD64_SYSV_PARAM_NO_CLASS;
+    REQUIRE_OK(kefir_amd64_sysv_abi_qwords_alloc(&top_allocation->qwords, mem, qword_count));
+    struct kefir_ir_type_visitor visitor;
+    struct recursive_struct_allocation info = {
+        .type = type,
+        .layout = layout,
+        .allocation = allocation,
+        .top_allocation = top_allocation,
+        .visitor = &visitor
+    };
+    kefir_ir_type_visitor_init(&visitor, visitor_not_supported);
+    visitor.visit[KEFIR_IR_TYPE_INT8] = recursive_assign_scalar;
+    visitor.visit[KEFIR_IR_TYPE_INT16] = recursive_assign_scalar;
+    visitor.visit[KEFIR_IR_TYPE_INT32] = recursive_assign_scalar;
+    visitor.visit[KEFIR_IR_TYPE_INT64] = recursive_assign_scalar;
+    visitor.visit[KEFIR_IR_TYPE_CHAR] = recursive_assign_scalar;
+    visitor.visit[KEFIR_IR_TYPE_SHORT] = recursive_assign_scalar;
+    visitor.visit[KEFIR_IR_TYPE_INT] = recursive_assign_scalar;
+    visitor.visit[KEFIR_IR_TYPE_LONG] = recursive_assign_scalar;
+    visitor.visit[KEFIR_IR_TYPE_WORD] = recursive_assign_scalar;
+    visitor.visit[KEFIR_IR_TYPE_FLOAT32] = recursive_assign_scalar;
+    visitor.visit[KEFIR_IR_TYPE_FLOAT64] = recursive_assign_scalar;
+    visitor.visit[KEFIR_IR_TYPE_MEMORY] = recursive_assign_memory;
+    visitor.visit[KEFIR_IR_TYPE_PAD] = recursive_assign_memory;
+    visitor.visit[KEFIR_IR_TYPE_STRUCT] = recursive_assign_struct;
+    kefir_result_t res = kefir_ir_type_visitor_traverse_subtrees(type, &visitor, (void *) &info, index + 1, typeentry->param);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_amd64_sysv_abi_qwords_free(&top_allocation->qwords, mem);
+        return res;
+    });
+    for (kefir_size_t i = 0; i < qword_count; i++) {
+        struct kefir_amd64_sysv_abi_qword *qword =
+            (struct kefir_amd64_sysv_abi_qword *) kefir_vector_at(&top_allocation->qwords.qwords, i);
+        if (qword->klass == KEFIR_AMD64_SYSV_PARAM_MEMORY) {
+            top_allocation->klass = KEFIR_AMD64_SYSV_PARAM_MEMORY;
+            REQUIRE_OK(kefir_amd64_sysv_abi_qwords_free(&top_allocation->qwords, mem));
+            break;
+        }
+    }
+    // TODO: Post-merger clean-up
+    return KEFIR_OK;
+}
+
+static kefir_result_t assign_struct(const struct kefir_ir_type *type,
+                                    kefir_size_t index,
+                                    const struct kefir_ir_typeentry *typeentry,
+                                    void *payload) {
+    struct input_allocation *info =
+        (struct input_allocation *) payload;
+    struct kefir_amd64_sysv_data_layout *layout =
+        (struct kefir_amd64_sysv_data_layout *) kefir_vector_at(info->layout, index);
+    struct kefir_amd64_sysv_input_parameter_allocation *allocation =
+        (struct kefir_amd64_sysv_input_parameter_allocation *) kefir_vector_at(info->allocation, index);
+    allocation->scalar = false;
+    allocation->skip = false;
+    allocation->alloc = false;
+
+    if (layout->size > 8 * QWORD || !layout->aligned) {
+        allocation->klass = KEFIR_AMD64_SYSV_PARAM_MEMORY;
+    } else {
+        assign_struct_recursive(info->mem, type, index, typeentry, layout, info->layout, info->allocation, allocation);
+    }
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_amd64_sysv_input_parameter_allocate(struct kefir_mem *mem,
+                                                     const struct kefir_ir_type *type,
+                                                     const struct kefir_vector *layout,
+                                                     struct kefir_vector *allocation) {
+    REQUIRE(mem != NULL, KEFIR_MALFORMED_ARG);
+    REQUIRE(type != NULL, KEFIR_MALFORMED_ARG);
+    REQUIRE(layout != NULL, KEFIR_MALFORMED_ARG);
+    REQUIRE(allocation != NULL, KEFIR_MALFORMED_ARG);
+    kefir_size_t length = kefir_ir_type_length(type);
+    REQUIRE_OK(kefir_vector_alloc(mem, sizeof(struct kefir_amd64_sysv_input_parameter_allocation),
+        length, allocation));
+    kefir_result_t res = kefir_vector_extend(allocation, length);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_vector_free(mem, allocation);
+        return res;
+    });
+    struct kefir_ir_type_visitor visitor;
+    kefir_ir_type_visitor_init(&visitor, visitor_not_supported);
+    visitor.visit[KEFIR_IR_TYPE_INT8] = assign_integer;
+    visitor.visit[KEFIR_IR_TYPE_INT16] = assign_integer;
+    visitor.visit[KEFIR_IR_TYPE_INT32] = assign_integer;
+    visitor.visit[KEFIR_IR_TYPE_INT64] = assign_integer;
+    visitor.visit[KEFIR_IR_TYPE_CHAR] = assign_integer;
+    visitor.visit[KEFIR_IR_TYPE_SHORT] = assign_integer;
+    visitor.visit[KEFIR_IR_TYPE_INT] = assign_integer;
+    visitor.visit[KEFIR_IR_TYPE_LONG] = assign_integer;
+    visitor.visit[KEFIR_IR_TYPE_WORD] = assign_integer;
+    visitor.visit[KEFIR_IR_TYPE_FLOAT32] = assign_sse;
+    visitor.visit[KEFIR_IR_TYPE_FLOAT64] = assign_sse;
+    visitor.visit[KEFIR_IR_TYPE_MEMORY] = assign_memory;
+    visitor.visit[KEFIR_IR_TYPE_PAD] = assign_no_class;
+    visitor.visit[KEFIR_IR_TYPE_STRUCT] = assign_struct;
+    struct input_allocation info = {
+        .mem = mem,
+        .layout = layout,
+        .allocation = allocation
+    };
+    res = kefir_ir_type_visitor_traverse_subtrees(type, &visitor, (void *) &info, 0, length);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_vector_free(mem, allocation);
+        return res;
+    });
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_amd64_sysv_input_parameter_free(struct kefir_mem *mem,
+                                                 struct kefir_vector *allocation) {
+    REQUIRE(mem != NULL, KEFIR_MALFORMED_ARG);
+    REQUIRE(allocation != NULL, KEFIR_MALFORMED_ARG);
+    for (kefir_size_t i = 0; i < kefir_vector_length(allocation); i++) {
+        struct kefir_amd64_sysv_input_parameter_allocation *alloc =
+            (struct kefir_amd64_sysv_input_parameter_allocation *) kefir_vector_at(allocation, i);
+        if (alloc->alloc) {
+            REQUIRE_OK(kefir_amd64_sysv_abi_qwords_free(&alloc->qwords, mem));
+        }
+    }
+    return kefir_vector_free(mem, allocation);
 }
