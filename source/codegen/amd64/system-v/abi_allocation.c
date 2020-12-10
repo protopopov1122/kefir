@@ -299,7 +299,16 @@ static kefir_result_t recursive_assign_struct(const struct kefir_ir_type *type,
     return kefir_ir_type_visitor_traverse_subtrees(type, info->visitor, (void *) info, index + 1, typeentry->param);
 }
 
-static kefir_result_t struct_postmerger(struct kefir_amd64_sysv_input_parameter_allocation *alloc) {
+static kefir_result_t struct_disown(struct kefir_mem *mem,
+                                  struct kefir_amd64_sysv_input_parameter_allocation *alloc) {
+    REQUIRE_OK(kefir_amd64_sysv_abi_qwords_free(&alloc->container, mem));
+    alloc->type = KEFIR_AMD64_SYSV_INPUT_PARAM_CONTAINER;
+    alloc->klass = KEFIR_AMD64_SYSV_PARAM_MEMORY;
+    return KEFIR_OK;
+}
+
+static kefir_result_t struct_postmerger(struct kefir_mem *mem,
+                                      struct kefir_amd64_sysv_input_parameter_allocation *alloc) {
     const kefir_size_t length = kefir_vector_length(&alloc->container.qwords);
     kefir_size_t x87count = 0;
     kefir_size_t ssecount = 0;
@@ -308,14 +317,12 @@ static kefir_result_t struct_postmerger(struct kefir_amd64_sysv_input_parameter_
         struct kefir_amd64_sysv_abi_qword *qword =
             (struct kefir_amd64_sysv_abi_qword *) kefir_vector_at(&alloc->container.qwords, i);
         if (qword->klass == KEFIR_AMD64_SYSV_PARAM_MEMORY) {
-            return kefir_amd64_sysv_abi_qwords_reset_class(&alloc->container,
-                KEFIR_AMD64_SYSV_PARAM_MEMORY, 0, length);
+            return struct_disown(mem, alloc);
         } else if (qword->klass == KEFIR_AMD64_SYSV_PARAM_X87) {
             x87count++;
         } else if (qword->klass == KEFIR_AMD64_SYSV_PARAM_X87UP) {
             if (x87count == 0) {
-                return kefir_amd64_sysv_abi_qwords_reset_class(&alloc->container,
-                    KEFIR_AMD64_SYSV_PARAM_MEMORY, 0, length);
+                return struct_disown(mem, alloc);
             } else {
                 x87count--;
             }
@@ -333,8 +340,7 @@ static kefir_result_t struct_postmerger(struct kefir_amd64_sysv_input_parameter_
     if (length > 2 &&
         ((struct kefir_amd64_sysv_abi_qword *) kefir_vector_at(&alloc->container.qwords, 0))->klass != KEFIR_AMD64_SYSV_PARAM_SSE &&
         !had_sseup) {
-        return kefir_amd64_sysv_abi_qwords_reset_class(&alloc->container,
-            KEFIR_AMD64_SYSV_PARAM_MEMORY, 0, length);
+        return struct_disown(mem, alloc);
     }
     return KEFIR_OK;
 }
@@ -382,7 +388,7 @@ static kefir_result_t assign_struct_recursive(struct kefir_mem *mem,
         kefir_amd64_sysv_abi_qwords_free(&top_allocation->container, mem);
         return res;
     });
-    return struct_postmerger(top_allocation);
+    return struct_postmerger(mem, top_allocation);
 }
 
 static kefir_result_t assign_struct(const struct kefir_ir_type *type,
@@ -421,6 +427,12 @@ kefir_result_t kefir_amd64_sysv_input_parameter_allocate(struct kefir_mem *mem,
         kefir_vector_free(mem, allocation);
         return res;
     });
+    for (kefir_size_t i = 0; i < length; i++) {
+        struct kefir_amd64_sysv_input_parameter_allocation *entry =
+            (struct kefir_amd64_sysv_input_parameter_allocation *) kefir_vector_at(allocation, i);
+        entry->type = KEFIR_AMD64_SYSV_INPUT_PARAM_SKIP;
+        entry->klass = KEFIR_AMD64_SYSV_PARAM_NO_CLASS;
+    }
     struct kefir_ir_type_visitor visitor;
     kefir_ir_type_visitor_init(&visitor, visitor_not_supported);
     visitor.visit[KEFIR_IR_TYPE_INT8] = assign_integer;
