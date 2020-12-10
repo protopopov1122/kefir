@@ -53,3 +53,4 @@ dkms.conf
 
 # Project-specific
 bin
+vgcore.*
