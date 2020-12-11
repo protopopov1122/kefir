@@ -7,6 +7,8 @@
 #include "kefir/core/mem.h"
 #include "kefir/codegen/amd64/system-v/abi_data.h"
 
+#define KEFIR_AMD64_SYSV_ABI_QWORD 8
+
 typedef struct kefir_amd64_sysv_abi_qword {
     kefir_amd64_sysv_data_class_t klass;
     kefir_size_t index;
@@ -46,8 +48,8 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_reset_class(struct kefir_amd64_sysv_a
                                                     kefir_size_t);
 
 typedef enum kefir_amd64_sysv_input_parameter_type {
-    KEFIR_AMD64_SYSV_INPUT_PARAM_DIRECT,
-    KEFIR_AMD64_SYSV_INPUT_PARAM_NESTED_DIRECT,
+    KEFIR_AMD64_SYSV_INPUT_PARAM_IMMEDIATE,
+    KEFIR_AMD64_SYSV_INPUT_PARAM_NESTED,
     KEFIR_AMD64_SYSV_INPUT_PARAM_OWNING_CONTAINER,
     KEFIR_AMD64_SYSV_INPUT_PARAM_CONTAINER,
     KEFIR_AMD64_SYSV_INPUT_PARAM_SKIP
@@ -56,10 +58,9 @@ typedef enum kefir_amd64_sysv_input_parameter_type {
 typedef struct kefir_amd64_sysv_input_parameter_allocation {
     kefir_amd64_sysv_input_parameter_type_t type;
     kefir_amd64_sysv_data_class_t klass;
-    union {
-        struct kefir_amd64_sysv_abi_qwords container;
-        struct kefir_amd64_sysv_abi_qword_ref container_reference;
-    };
+    kefir_size_t index;
+    struct kefir_amd64_sysv_abi_qwords container;
+    struct kefir_amd64_sysv_abi_qword_ref container_reference;
 } kefir_amd64_sysv_input_parameter_allocation_t;
 
 kefir_result_t kefir_amd64_sysv_input_parameter_allocate(struct kefir_mem *,

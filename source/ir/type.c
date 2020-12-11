@@ -95,6 +95,49 @@ kefir_size_t kefir_ir_type_subtree_length(const struct kefir_ir_type *type, kefi
     }
 }
 
+kefir_size_t kefir_ir_type_subtree_slots(const struct kefir_ir_type *type, kefir_size_t index) {
+    REQUIRE(type != NULL, 0);
+    struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(type, index);   
+    REQUIRE(typeentry != NULL, 0);
+    switch (typeentry->typecode) {
+        case KEFIR_IR_TYPE_STRUCT:
+        case KEFIR_IR_TYPE_UNION: {
+            kefir_size_t length = 1;
+            kefir_size_t counter = typeentry->param;
+            while (counter--) {
+                length += kefir_ir_type_subtree_slots(type, index + length);
+            }
+            return length;
+        };
+
+        case KEFIR_IR_TYPE_ARRAY:
+            return typeentry->param * kefir_ir_type_subtree_slots(type, index + 1) + 1;
+        
+        default:
+            return 1;
+    }
+}
+
+static kefir_result_t slot_counter(const struct kefir_ir_type *type,
+                                 kefir_size_t index,
+                                 const struct kefir_ir_typeentry *typeentry,
+                                 void *payload) {
+    UNUSED(typeentry);
+    kefir_size_t *count = (kefir_size_t *) payload;
+    *count += kefir_ir_type_subtree_slots(type, index);
+    return KEFIR_OK;
+}
+
+kefir_size_t kefir_ir_type_total_slots(const struct kefir_ir_type *type) {
+    REQUIRE(type != NULL, 0);
+    struct kefir_ir_type_visitor visitor;
+    kefir_ir_type_visitor_init(&visitor, slot_counter);
+    kefir_size_t slots = 0;
+    REQUIRE(kefir_ir_type_visitor_traverse_subtrees(type, &visitor, (void *) &slots, 0, kefir_ir_type_length(type)) == KEFIR_OK,
+        0);
+    return slots;
+}
+
 kefir_result_t kefir_ir_type_visitor_traverse_subtrees(const struct kefir_ir_type *type,
                                           const struct kefir_ir_type_visitor *visitor,
                                           void *payload,

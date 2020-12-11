@@ -61,6 +61,8 @@ typedef struct kefir_ir_type_visitor {
 
 kefir_result_t kefir_ir_type_visitor_init(struct kefir_ir_type_visitor *, kefir_ir_type_visitor_callback_t);
 kefir_size_t kefir_ir_type_subtree_length(const struct kefir_ir_type *, kefir_size_t);
+kefir_size_t kefir_ir_type_subtree_slots(const struct kefir_ir_type *, kefir_size_t);
+kefir_size_t kefir_ir_type_total_slots(const struct kefir_ir_type *);
 kefir_result_t kefir_ir_type_visitor_traverse_subtrees(const struct kefir_ir_type *,
                                           const struct kefir_ir_type_visitor *,
                                           void *,

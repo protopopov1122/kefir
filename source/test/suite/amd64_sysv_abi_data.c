@@ -25,7 +25,7 @@
 #define ASSERT_NESTED_PARAM_ALLOC(allocation, _qword_index, _klass, _index, _offset) \
     do { \
         ASSERT_PARAM_ALLOC((allocation), (_qword_index), \
-            KEFIR_AMD64_SYSV_INPUT_PARAM_NESTED_DIRECT, KEFIR_AMD64_SYSV_PARAM_NO_CLASS); \
+            KEFIR_AMD64_SYSV_INPUT_PARAM_NESTED, KEFIR_AMD64_SYSV_PARAM_NO_CLASS); \
         struct kefir_amd64_sysv_input_parameter_allocation *alloc = \
             (struct kefir_amd64_sysv_input_parameter_allocation *) kefir_vector_at((allocation), (_qword_index)); \
         ASSERT(alloc->container_reference.qword->klass == (_klass)); \
@@ -237,11 +237,11 @@ DEFINE_CASE(amd64_sysv_abi_data_test9, "AMD64 System V ABI - parameter classific
     ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_FLOAT64, 0, 0));
     ASSERT_OK(kefir_amd64_sysv_type_layout(&type, &kft_mem, &layout));
     ASSERT_OK(kefir_amd64_sysv_input_parameter_allocate(&kft_mem, &type, &layout, &allocation));
-    ASSERT_PARAM_ALLOC(&allocation, 0, KEFIR_AMD64_SYSV_INPUT_PARAM_DIRECT, KEFIR_AMD64_SYSV_PARAM_INTEGER);
+    ASSERT_PARAM_ALLOC(&allocation, 0, KEFIR_AMD64_SYSV_INPUT_PARAM_IMMEDIATE, KEFIR_AMD64_SYSV_PARAM_INTEGER);
     ASSERT_PARAM_ALLOC(&allocation, 1, KEFIR_AMD64_SYSV_INPUT_PARAM_OWNING_CONTAINER, KEFIR_AMD64_SYSV_PARAM_NO_CLASS);
     ASSERT_NESTED_PARAM_ALLOC(&allocation, 2, KEFIR_AMD64_SYSV_PARAM_INTEGER, 0, 0);
     ASSERT_NESTED_PARAM_ALLOC(&allocation, 3, KEFIR_AMD64_SYSV_PARAM_INTEGER, 0, 4);
-    ASSERT_PARAM_ALLOC(&allocation, 4, KEFIR_AMD64_SYSV_INPUT_PARAM_DIRECT, KEFIR_AMD64_SYSV_PARAM_SSE);
+    ASSERT_PARAM_ALLOC(&allocation, 4, KEFIR_AMD64_SYSV_INPUT_PARAM_IMMEDIATE, KEFIR_AMD64_SYSV_PARAM_SSE);
     ASSERT_OK(kefir_amd64_sysv_input_parameter_free(&kft_mem, &allocation));
     ASSERT_OK(kefir_vector_free(&kft_mem, &layout));
     ASSERT_OK(kefir_ir_type_free(&kft_mem, &type));
@@ -259,8 +259,8 @@ DEFINE_CASE(amd64_sysv_abi_data_test10, "AMD64 System V ABI - parameter classifi
     ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_FLOAT32, 0, 0));
     ASSERT_OK(kefir_amd64_sysv_type_layout(&type, &kft_mem, &layout));
     ASSERT_OK(kefir_amd64_sysv_input_parameter_allocate(&kft_mem, &type, &layout, &allocation));
-    ASSERT_PARAM_ALLOC(&allocation, 0, KEFIR_AMD64_SYSV_INPUT_PARAM_DIRECT, KEFIR_AMD64_SYSV_PARAM_SSE);
-    ASSERT_PARAM_ALLOC(&allocation, 1, KEFIR_AMD64_SYSV_INPUT_PARAM_DIRECT, KEFIR_AMD64_SYSV_PARAM_INTEGER);
+    ASSERT_PARAM_ALLOC(&allocation, 0, KEFIR_AMD64_SYSV_INPUT_PARAM_IMMEDIATE, KEFIR_AMD64_SYSV_PARAM_SSE);
+    ASSERT_PARAM_ALLOC(&allocation, 1, KEFIR_AMD64_SYSV_INPUT_PARAM_IMMEDIATE, KEFIR_AMD64_SYSV_PARAM_INTEGER);
     ASSERT_PARAM_ALLOC(&allocation, 2, KEFIR_AMD64_SYSV_INPUT_PARAM_OWNING_CONTAINER, KEFIR_AMD64_SYSV_PARAM_NO_CLASS);
     ASSERT_NESTED_PARAM_ALLOC(&allocation, 3, KEFIR_AMD64_SYSV_PARAM_SSE, 0, 0);
     ASSERT_NESTED_PARAM_ALLOC(&allocation, 4, KEFIR_AMD64_SYSV_PARAM_SSE, 0, 4);
@@ -361,7 +361,7 @@ DEFINE_CASE(amd64_sysv_abi_data_test14, "AMD64 System V ABI - parameter classifi
     ASSERT_NESTED_PARAM_ALLOC(&allocation, 7, KEFIR_AMD64_SYSV_PARAM_INTEGER, 1, 5);
     ASSERT_NESTED_PARAM_ALLOC(&allocation, 8, KEFIR_AMD64_SYSV_PARAM_INTEGER, 1, 6);
     ASSERT_NESTED_PARAM_ALLOC(&allocation, 9, KEFIR_AMD64_SYSV_PARAM_INTEGER, 1, 7);
-    ASSERT_PARAM_ALLOC(&allocation, 10, KEFIR_AMD64_SYSV_INPUT_PARAM_DIRECT, KEFIR_AMD64_SYSV_PARAM_INTEGER);
+    ASSERT_PARAM_ALLOC(&allocation, 10, KEFIR_AMD64_SYSV_INPUT_PARAM_IMMEDIATE, KEFIR_AMD64_SYSV_PARAM_INTEGER);
     ASSERT_OK(kefir_amd64_sysv_input_parameter_free(&kft_mem, &allocation));
     ASSERT_OK(kefir_vector_free(&kft_mem, &layout));
     ASSERT_OK(kefir_ir_type_free(&kft_mem, &type));
@@ -386,7 +386,31 @@ DEFINE_CASE(amd64_sysv_abi_data_test15, "AMD64 System V ABI - parameter classifi
     ASSERT_OK(kefir_amd64_sysv_type_layout(&type, &kft_mem, &layout));
     ASSERT_OK(kefir_amd64_sysv_input_parameter_allocate(&kft_mem, &type, &layout, &allocation));
     ASSERT_PARAM_ALLOC(&allocation, 0, KEFIR_AMD64_SYSV_INPUT_PARAM_CONTAINER, KEFIR_AMD64_SYSV_PARAM_MEMORY);
-    ASSERT_PARAM_ALLOC(&allocation, 10, KEFIR_AMD64_SYSV_INPUT_PARAM_DIRECT, KEFIR_AMD64_SYSV_PARAM_INTEGER);
+    ASSERT_PARAM_ALLOC(&allocation, 10, KEFIR_AMD64_SYSV_INPUT_PARAM_IMMEDIATE, KEFIR_AMD64_SYSV_PARAM_INTEGER);
+    ASSERT_OK(kefir_amd64_sysv_input_parameter_free(&kft_mem, &allocation));
+    ASSERT_OK(kefir_vector_free(&kft_mem, &layout));
+    ASSERT_OK(kefir_ir_type_free(&kft_mem, &type));
+END_CASE
+
+DEFINE_CASE(amd64_sysv_abi_data_test16, "AMD64 System V ABI - parameter classification #8")
+    struct kefir_ir_type type;
+    struct kefir_vector layout;
+    struct kefir_vector allocation;
+    ASSERT_OK(kefir_ir_type_alloc(&kft_mem, 4, &type));
+    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_ARRAY, 0, 4));
+    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT8, 0, 0));
+    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_ARRAY, 0, 2));
+    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_FLOAT32, 0, 0));
+    ASSERT_OK(kefir_amd64_sysv_type_layout(&type, &kft_mem, &layout));
+    ASSERT_OK(kefir_amd64_sysv_input_parameter_allocate(&kft_mem, &type, &layout, &allocation));
+    ASSERT_PARAM_ALLOC(&allocation, 0, KEFIR_AMD64_SYSV_INPUT_PARAM_OWNING_CONTAINER, KEFIR_AMD64_SYSV_PARAM_NO_CLASS);
+    ASSERT_NESTED_PARAM_ALLOC(&allocation, 1, KEFIR_AMD64_SYSV_PARAM_INTEGER, 0, 0);
+    ASSERT_NESTED_PARAM_ALLOC(&allocation, 2, KEFIR_AMD64_SYSV_PARAM_INTEGER, 0, 1);
+    ASSERT_NESTED_PARAM_ALLOC(&allocation, 3, KEFIR_AMD64_SYSV_PARAM_INTEGER, 0, 2);
+    ASSERT_NESTED_PARAM_ALLOC(&allocation, 4, KEFIR_AMD64_SYSV_PARAM_INTEGER, 0, 3);
+    ASSERT_PARAM_ALLOC(&allocation, 5, KEFIR_AMD64_SYSV_INPUT_PARAM_OWNING_CONTAINER, KEFIR_AMD64_SYSV_PARAM_NO_CLASS);
+    ASSERT_NESTED_PARAM_ALLOC(&allocation, 6, KEFIR_AMD64_SYSV_PARAM_SSE, 0, 0);
+    ASSERT_NESTED_PARAM_ALLOC(&allocation, 7, KEFIR_AMD64_SYSV_PARAM_SSE, 0, 4);
     ASSERT_OK(kefir_amd64_sysv_input_parameter_free(&kft_mem, &allocation));
     ASSERT_OK(kefir_vector_free(&kft_mem, &layout));
     ASSERT_OK(kefir_ir_type_free(&kft_mem, &type));
