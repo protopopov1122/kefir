@@ -159,6 +159,24 @@ static kefir_result_t assign_nested_struct(const struct kefir_ir_type *type,
     return kefir_ir_type_visitor_traverse_subtrees(type, info->visitor, (void *) info, index + 1, typeentry->param);
 }
 
+static kefir_result_t assign_nested_array(const struct kefir_ir_type *type,
+                                        kefir_size_t index,
+                                        const struct kefir_ir_typeentry *typeentry,
+                                        void *payload) {
+    UNUSED(typeentry);
+    struct recursive_struct_allocation *info = 
+        (struct recursive_struct_allocation *) payload;
+    struct kefir_amd64_sysv_input_parameter_allocation *allocation =
+        (struct kefir_amd64_sysv_input_parameter_allocation *) kefir_vector_at(info->allocation, (*info->slot)++);
+    allocation->type = KEFIR_AMD64_SYSV_INPUT_PARAM_CONTAINER;
+    allocation->klass = KEFIR_AMD64_SYSV_PARAM_NO_CLASS;
+    allocation->index = index;
+    for (kefir_size_t i = 0; i < (kefir_size_t) typeentry->param; i++) {
+        REQUIRE_OK(kefir_ir_type_visitor_traverse_subtrees(type, info->visitor, (void *) info, index + 1, 1));
+    }
+    return KEFIR_OK;
+}
+
 static kefir_result_t struct_disown(struct kefir_mem *mem,
                                   struct kefir_amd64_sysv_input_parameter_allocation *alloc) {
     REQUIRE_OK(kefir_amd64_sysv_abi_qwords_free(&alloc->container, mem));
@@ -172,10 +190,11 @@ static kefir_result_t aggregate_postmerger(struct kefir_mem *mem,
     const kefir_size_t length = kefir_vector_length(&alloc->container.qwords);
     kefir_size_t x87count = 0;
     kefir_size_t ssecount = 0;
-    bool had_sseup = false;
+    bool had_nonsseup = false;
     for (kefir_size_t i = 0; i < length; i++) {
         struct kefir_amd64_sysv_abi_qword *qword =
             (struct kefir_amd64_sysv_abi_qword *) kefir_vector_at(&alloc->container.qwords, i);
+        had_nonsseup = had_nonsseup || (i > 0 && qword->klass != KEFIR_AMD64_SYSV_PARAM_SSEUP);
         if (qword->klass == KEFIR_AMD64_SYSV_PARAM_MEMORY) {
             return struct_disown(mem, alloc);
         } else if (qword->klass == KEFIR_AMD64_SYSV_PARAM_X87) {
@@ -189,7 +208,6 @@ static kefir_result_t aggregate_postmerger(struct kefir_mem *mem,
         } else if (qword->klass == KEFIR_AMD64_SYSV_PARAM_SSE) {
             ssecount++;
         } else if (qword->klass == KEFIR_AMD64_SYSV_PARAM_SSEUP) {
-            had_sseup = true;
             if (ssecount == 0) {
                 qword->klass = KEFIR_AMD64_SYSV_PARAM_SSE;
             } else {
@@ -198,8 +216,8 @@ static kefir_result_t aggregate_postmerger(struct kefir_mem *mem,
         }
     }
     if (length > 2 &&
-        ((struct kefir_amd64_sysv_abi_qword *) kefir_vector_at(&alloc->container.qwords, 0))->klass != KEFIR_AMD64_SYSV_PARAM_SSE &&
-        !had_sseup) {
+        (((struct kefir_amd64_sysv_abi_qword *) kefir_vector_at(&alloc->container.qwords, 0))->klass != KEFIR_AMD64_SYSV_PARAM_SSE ||
+        had_nonsseup)) {
         return struct_disown(mem, alloc);
     }
     return KEFIR_OK;
@@ -221,6 +239,7 @@ static kefir_result_t nested_visitor_init(struct kefir_ir_type_visitor *visitor)
     visitor->visit[KEFIR_IR_TYPE_MEMORY] = assign_nested_memory;
     visitor->visit[KEFIR_IR_TYPE_PAD] = assign_nested_memory;
     visitor->visit[KEFIR_IR_TYPE_STRUCT] = assign_nested_struct;
+    visitor->visit[KEFIR_IR_TYPE_ARRAY] = assign_nested_array;
     return KEFIR_OK;
 }
 

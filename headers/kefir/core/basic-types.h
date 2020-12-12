@@ -25,12 +25,14 @@ typedef size_t kefir_size_t;
 
 typedef enum kefir_result {
     KEFIR_OK = 0,
+    KEFIR_YIELD,
     KEFIR_UNKNOWN_ERROR,
     KEFIR_INTERNAL_ERROR,
     KEFIR_MALFORMED_ARG,
     KEFIR_OUT_OF_BOUNDS,
     KEFIR_MEMALLOC_FAILURE,
-    KEFIR_NOT_SUPPORTED
+    KEFIR_NOT_SUPPORTED,
+    KEFIR_NOT_FOUND
 } kefir_result_t;
 
 #endif

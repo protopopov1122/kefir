@@ -69,4 +69,15 @@ kefir_result_t kefir_ir_type_visitor_traverse_subtrees(const struct kefir_ir_typ
                                           kefir_size_t,
                                           kefir_size_t);
 
+typedef struct kefir_ir_type_iterator {
+    const struct kefir_ir_type *type;
+    kefir_size_t index;
+    kefir_size_t slot;
+} kefir_ir_type_iterator_t;
+
+kefir_result_t kefir_ir_type_iterator_init(const struct kefir_ir_type *, struct kefir_ir_type_iterator *);
+kefir_result_t kefir_ir_type_iterator_goto(struct kefir_ir_type_iterator *, kefir_size_t);
+kefir_result_t kefir_ir_type_iterator_goto_field(struct kefir_ir_type_iterator *, kefir_size_t);
+kefir_result_t kefir_ir_type_iterator_goto_index(struct kefir_ir_type_iterator *, kefir_size_t);
+
 #endif

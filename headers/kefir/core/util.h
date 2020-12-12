@@ -31,6 +31,15 @@
             return _expr_result; \
         } \
     } while (0)
+#define REQUIRE_YIELD(expr, defReturn) \
+    do { \
+        kefir_result_t _expr_result = (expr); \
+        if (_expr_result == KEFIR_OK) { \
+            return defReturn; \
+        } else if (_expr_result != KEFIR_YIELD) { \
+            return _expr_result; \
+        } \
+    } while (0)
 
 // Evaluates twice
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
