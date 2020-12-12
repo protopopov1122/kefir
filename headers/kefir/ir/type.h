@@ -54,9 +54,15 @@ typedef kefir_result_t (*kefir_ir_type_visitor_callback_t)(const struct kefir_ir
                                                        kefir_size_t,
                                                        const struct kefir_ir_typeentry *,
                                                        void *);
+typedef kefir_result_t (*kefir_ir_type_visitor_hook_t)(const struct kefir_ir_type *,
+                                                   kefir_size_t,
+                                                   const struct kefir_ir_typeentry *,
+                                                   void *);
 
 typedef struct kefir_ir_type_visitor {
     kefir_ir_type_visitor_callback_t visit[KEFIR_IR_TYPE_COUNT];
+    kefir_ir_type_visitor_hook_t prehook;
+    kefir_ir_type_visitor_hook_t posthook;
 } kefir_ir_type_visitor_t;
 
 kefir_result_t kefir_ir_type_visitor_init(struct kefir_ir_type_visitor *, kefir_ir_type_visitor_callback_t);

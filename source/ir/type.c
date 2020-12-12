@@ -71,6 +71,8 @@ kefir_result_t kefir_ir_type_visitor_init(struct kefir_ir_type_visitor *visitor,
     for (kefir_size_t i = 0; i < KEFIR_IR_TYPE_COUNT; i++) {
         visitor->visit[i] = defCallback;
     }
+    visitor->prehook = NULL;
+    visitor->posthook = NULL;
     return KEFIR_OK;
 }
 
@@ -192,6 +194,7 @@ kefir_result_t kefir_ir_type_visitor_traverse_subtrees(const struct kefir_ir_typ
             REQUIRE_OK((method)((type), (index), (typeentry), (payload))); \
         } \
     } while (0)
+        INVOKE(visitor->prehook);
         switch (typeentry->typecode) {
             case KEFIR_IR_TYPE_STRUCT:
                 REQUIRE(typeentry->param > 0, KEFIR_MALFORMED_ARG);
@@ -211,6 +214,7 @@ kefir_result_t kefir_ir_type_visitor_traverse_subtrees(const struct kefir_ir_typ
                 INVOKE(visitor->visit[typeentry->typecode]);
                 break;
         }
+        INVOKE(visitor->posthook);
 #undef INVOKE
     }
     return KEFIR_OK;

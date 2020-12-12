@@ -148,3 +148,48 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_reset_class(struct kefir_amd64_sysv_a
     }
     return KEFIR_OK;
 }
+
+kefir_result_t kefir_amd64_sysv_abi_qwords_save_position(const struct kefir_amd64_sysv_abi_qwords *qwords,
+                                                     struct kefir_amd64_sysv_abi_qword_position *position) {
+    REQUIRE(qwords != NULL, KEFIR_MALFORMED_ARG);
+    REQUIRE(position != NULL, KEFIR_MALFORMED_ARG);
+    position->index = qwords->current;
+    struct kefir_amd64_sysv_abi_qword *qword =
+        (struct kefir_amd64_sysv_abi_qword *) kefir_vector_at(&qwords->qwords, qwords->current);
+    position->offset = qword->current_offset;
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_amd64_sysv_abi_qwords_restore_position(struct kefir_amd64_sysv_abi_qwords *qwords,
+                                                        const struct kefir_amd64_sysv_abi_qword_position *position) {
+    REQUIRE(qwords != NULL, KEFIR_MALFORMED_ARG);
+    REQUIRE(position != NULL, KEFIR_MALFORMED_ARG);
+    const kefir_size_t length = kefir_vector_length(&qwords->qwords);
+    REQUIRE(position->index <= length, KEFIR_OUT_OF_BOUNDS);
+    REQUIRE((position->offset < 8 && position->index < length) ||
+        (position->offset == 0 && position->index == length), KEFIR_OUT_OF_BOUNDS);
+    for (kefir_size_t i = position->index; i < length; i++) {
+        struct kefir_amd64_sysv_abi_qword *qword =
+            (struct kefir_amd64_sysv_abi_qword *) kefir_vector_at(&qwords->qwords, i);
+        qword->current_offset = i == position->index
+            ? position->offset
+            : position->index;
+    }
+    qwords->current = position->index;
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_amd64_sysv_abi_qwords_max_position(const struct kefir_amd64_sysv_abi_qword_position *first,
+                                                    const struct kefir_amd64_sysv_abi_qword_position *second,
+                                                    struct kefir_amd64_sysv_abi_qword_position *result) {
+    REQUIRE(first != NULL, KEFIR_MALFORMED_ARG);
+    REQUIRE(second != NULL, KEFIR_MALFORMED_ARG);
+    REQUIRE(result != NULL, KEFIR_MALFORMED_ARG);
+    if (first->index > second->index ||
+        (first->index == second->index && first->offset >= second->offset)) {
+        *result = *first;
+    } else {
+        *result = *second;
+    }
+    return KEFIR_OK;
+}
