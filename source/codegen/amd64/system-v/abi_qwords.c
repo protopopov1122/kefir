@@ -166,7 +166,7 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_restore_position(struct kefir_amd64_s
     REQUIRE(position != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid QWord position"));
     const kefir_size_t length = kefir_vector_length(&qwords->qwords);
     REQUIRE(position->index <= length, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Position index exceeds QWord vector length"));
-    REQUIRE((position->offset < 8 && position->index < length) ||
+    REQUIRE((position->offset <= 8 && position->index < length) ||
         (position->offset == 0 && position->index == length),
         KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Position offset exceeds boundaries"));
     for (kefir_size_t i = position->index; i < length; i++) {
