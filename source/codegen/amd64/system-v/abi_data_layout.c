@@ -166,7 +166,7 @@ static kefir_result_t calculate_struct_union_layout(const struct kefir_ir_type *
         .aggregate = typeentry->typecode == KEFIR_IR_TYPE_STRUCT,
         .aligned = true
     };
-    REQUIRE_OK(kefir_ir_type_visitor_traverse_subtrees(type,
+    REQUIRE_OK(kefir_ir_type_visitor_list_subtrees(type,
         compound_type_layout->visitor, (void *) &nested_compound_type_layout, index + 1, typeentry->param));
     data->alignment = nested_compound_type_layout.max_alignment;
     data->aligned = nested_compound_type_layout.aligned;
@@ -195,7 +195,7 @@ static kefir_result_t calculate_array_layout(const struct kefir_ir_type *type,
         .aggregate = false,
         .aligned = true
     };
-    REQUIRE_OK(kefir_ir_type_visitor_traverse_subtrees(type,
+    REQUIRE_OK(kefir_ir_type_visitor_list_subtrees(type,
         compound_type_layout->visitor, (void *) &nested_compound_type_layout, index + 1, 1));
     data->alignment = nested_compound_type_layout.max_alignment;
     data->aligned = nested_compound_type_layout.aligned;
@@ -217,44 +217,35 @@ static kefir_result_t calculate_layout(const struct kefir_ir_type *type,
         .aligned = true
     };
     REQUIRE_OK(kefir_ir_type_visitor_init(&visitor, visitor_not_supported));
-    visitor.visit[KEFIR_IR_TYPE_INT8] = calculate_integer_layout;
-    visitor.visit[KEFIR_IR_TYPE_INT16] = calculate_integer_layout;
-    visitor.visit[KEFIR_IR_TYPE_INT32] = calculate_integer_layout;
-    visitor.visit[KEFIR_IR_TYPE_INT64] = calculate_integer_layout;
-    visitor.visit[KEFIR_IR_TYPE_CHAR] = calculate_integer_layout;
-    visitor.visit[KEFIR_IR_TYPE_SHORT] = calculate_integer_layout;
-    visitor.visit[KEFIR_IR_TYPE_INT] = calculate_integer_layout;
-    visitor.visit[KEFIR_IR_TYPE_LONG] = calculate_integer_layout;
-    visitor.visit[KEFIR_IR_TYPE_WORD] = calculate_integer_layout;
-    visitor.visit[KEFIR_IR_TYPE_FLOAT32] = calculate_sse_layout;
-    visitor.visit[KEFIR_IR_TYPE_FLOAT64] = calculate_sse_layout;
+    KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS(&visitor, calculate_integer_layout);
+    KEFIR_IR_TYPE_VISITOR_INIT_FIXED_FP(&visitor, calculate_sse_layout);
     visitor.visit[KEFIR_IR_TYPE_PAD] = calculate_amorphous_layout;
     visitor.visit[KEFIR_IR_TYPE_MEMORY] = calculate_amorphous_layout;
     visitor.visit[KEFIR_IR_TYPE_STRUCT] = calculate_struct_union_layout;
     visitor.visit[KEFIR_IR_TYPE_UNION] = calculate_struct_union_layout;
     visitor.visit[KEFIR_IR_TYPE_ARRAY] = calculate_array_layout;
-    return kefir_ir_type_visitor_traverse_subtrees(type, &visitor, (void *) &compound_type_layout, 0, length);
+    return kefir_ir_type_visitor_list_subtrees(type, &visitor, (void *) &compound_type_layout, 0, length);
 }
 
 kefir_result_t kefir_amd64_sysv_type_layout(const struct kefir_ir_type *type,
                                           struct kefir_mem *mem,
-                                          struct kefir_vector *vector) {
-    REQUIRE(type != NULL, KEFIR_MALFORMED_ARG);
-    REQUIRE(mem != NULL, KEFIR_MALFORMED_ARG);
-    REQUIRE(vector != NULL, KEFIR_MALFORMED_ARG);
+                                          struct kefir_vector *layout) {
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid layout vector"));
     const kefir_size_t length = kefir_ir_type_length(type);
     REQUIRE_OK(kefir_vector_alloc(mem,
                                 sizeof(struct kefir_amd64_sysv_data_layout),
                                 length,
-                                vector));
-    kefir_result_t res = kefir_vector_extend(vector, length);
+                                layout));
+    kefir_result_t res = kefir_vector_extend(layout, length);
     REQUIRE_ELSE(res == KEFIR_OK, {
-        kefir_vector_free(mem, vector);
+        kefir_vector_free(mem, layout);
         return res;
     });
-    res = calculate_layout(type, vector);
+    res = calculate_layout(type, layout);
     REQUIRE_ELSE(res == KEFIR_OK, {
-        kefir_vector_free(mem, vector);
+        kefir_vector_free(mem, layout);
         return res;
     });
     return KEFIR_OK;

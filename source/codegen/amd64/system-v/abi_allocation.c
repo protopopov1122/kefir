@@ -160,7 +160,7 @@ static kefir_result_t assign_nested_struct(const struct kefir_ir_type *type,
     allocation->klass = KEFIR_AMD64_SYSV_PARAM_NO_CLASS;
     allocation->index = index;
     info->nested++;
-    REQUIRE_OK(kefir_ir_type_visitor_traverse_subtrees(type, info->visitor, (void *) info, index + 1, typeentry->param));
+    REQUIRE_OK(kefir_ir_type_visitor_list_subtrees(type, info->visitor, (void *) info, index + 1, typeentry->param));
     info->nested--;
     return KEFIR_OK;
 }
@@ -179,7 +179,7 @@ static kefir_result_t assign_nested_array(const struct kefir_ir_type *type,
     allocation->index = index;
     info->nested++;
     for (kefir_size_t i = 0; i < (kefir_size_t) typeentry->param; i++) {
-        REQUIRE_OK(kefir_ir_type_visitor_traverse_subtrees(type, info->visitor, (void *) info, index + 1, 1));
+        REQUIRE_OK(kefir_ir_type_visitor_list_subtrees(type, info->visitor, (void *) info, index + 1, 1));
     }
     info->nested--;
     return KEFIR_OK;
@@ -300,7 +300,7 @@ static kefir_result_t immediate_struct_unwrap(struct kefir_mem *mem,
         .slot = slot,
         .nested = 0
     };
-    kefir_result_t res = kefir_ir_type_visitor_traverse_subtrees(type, &visitor, (void *) &info, index + 1, typeentry->param);
+    kefir_result_t res = kefir_ir_type_visitor_list_subtrees(type, &visitor, (void *) &info, index + 1, typeentry->param);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_amd64_sysv_abi_qwords_free(&top_allocation->container, mem);
         return res;
@@ -358,7 +358,7 @@ static kefir_result_t immediate_array_unwrap(struct kefir_mem *mem,
         .nested = 0
     };
     for (kefir_size_t i = 0; i < (kefir_size_t) typeentry->param; i++) {
-        kefir_result_t res = kefir_ir_type_visitor_traverse_subtrees(type, &visitor, (void *) &info, index + 1, 1);
+        kefir_result_t res = kefir_ir_type_visitor_list_subtrees(type, &visitor, (void *) &info, index + 1, 1);
         REQUIRE_ELSE(res == KEFIR_OK, {
             kefir_amd64_sysv_abi_qwords_free(&top_allocation->container, mem);
             return res;
@@ -419,7 +419,7 @@ static kefir_result_t immediate_union_unwrap(struct kefir_mem *mem,
     };
     REQUIRE_OK(kefir_amd64_sysv_abi_qwords_save_position(&top_allocation->container, &info.init_position));
     REQUIRE_OK(kefir_amd64_sysv_abi_qwords_save_position(&top_allocation->container, &info.max_position));
-    kefir_result_t res = kefir_ir_type_visitor_traverse_subtrees(type, &visitor, (void *) &info, index + 1, typeentry->param);
+    kefir_result_t res = kefir_ir_type_visitor_list_subtrees(type, &visitor, (void *) &info, index + 1, typeentry->param);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_amd64_sysv_abi_qwords_free(&top_allocation->container, mem);
         return res;
@@ -453,10 +453,10 @@ kefir_result_t kefir_amd64_sysv_input_parameter_allocate(struct kefir_mem *mem,
                                                      const struct kefir_ir_type *type,
                                                      const struct kefir_vector *layout,
                                                      struct kefir_vector *allocation) {
-    REQUIRE(mem != NULL, KEFIR_MALFORMED_ARG);
-    REQUIRE(type != NULL, KEFIR_MALFORMED_ARG);
-    REQUIRE(layout != NULL, KEFIR_MALFORMED_ARG);
-    REQUIRE(allocation != NULL, KEFIR_MALFORMED_ARG);
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type definition"));
+    REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid layout vector"));
+    REQUIRE(allocation != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid allocation vector"));
     kefir_size_t slots = kefir_ir_type_total_slots(type);
     REQUIRE_OK(kefir_vector_alloc(mem, sizeof(struct kefir_amd64_sysv_input_parameter_allocation),
         slots, allocation));
@@ -474,17 +474,8 @@ kefir_result_t kefir_amd64_sysv_input_parameter_allocate(struct kefir_mem *mem,
     }
     struct kefir_ir_type_visitor visitor;
     kefir_ir_type_visitor_init(&visitor, visitor_not_supported);
-    visitor.visit[KEFIR_IR_TYPE_INT8] = assign_immediate_integer;
-    visitor.visit[KEFIR_IR_TYPE_INT16] = assign_immediate_integer;
-    visitor.visit[KEFIR_IR_TYPE_INT32] = assign_immediate_integer;
-    visitor.visit[KEFIR_IR_TYPE_INT64] = assign_immediate_integer;
-    visitor.visit[KEFIR_IR_TYPE_CHAR] = assign_immediate_integer;
-    visitor.visit[KEFIR_IR_TYPE_SHORT] = assign_immediate_integer;
-    visitor.visit[KEFIR_IR_TYPE_INT] = assign_immediate_integer;
-    visitor.visit[KEFIR_IR_TYPE_LONG] = assign_immediate_integer;
-    visitor.visit[KEFIR_IR_TYPE_WORD] = assign_immediate_integer;
-    visitor.visit[KEFIR_IR_TYPE_FLOAT32] = assign_immediate_sse;
-    visitor.visit[KEFIR_IR_TYPE_FLOAT64] = assign_immediate_sse;
+    KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS(&visitor, assign_immediate_integer);
+    KEFIR_IR_TYPE_VISITOR_INIT_FIXED_FP(&visitor, assign_immediate_sse);
     visitor.visit[KEFIR_IR_TYPE_MEMORY] = assign_immediate_memory;
     visitor.visit[KEFIR_IR_TYPE_PAD] = assign_immediate_pad;
     visitor.visit[KEFIR_IR_TYPE_STRUCT] = assign_immediate_struct;
@@ -495,7 +486,7 @@ kefir_result_t kefir_amd64_sysv_input_parameter_allocate(struct kefir_mem *mem,
         .layout = layout,
         .allocation = allocation
     };
-    res = kefir_ir_type_visitor_traverse_subtrees(type, &visitor, (void *) &info, 0, kefir_ir_type_length(type));
+    res = kefir_ir_type_visitor_list_subtrees(type, &visitor, (void *) &info, 0, kefir_ir_type_length(type));
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_vector_free(mem, allocation);
         return res;
@@ -505,8 +496,8 @@ kefir_result_t kefir_amd64_sysv_input_parameter_allocate(struct kefir_mem *mem,
 
 kefir_result_t kefir_amd64_sysv_input_parameter_free(struct kefir_mem *mem,
                                                  struct kefir_vector *allocation) {
-    REQUIRE(mem != NULL, KEFIR_MALFORMED_ARG);
-    REQUIRE(allocation != NULL, KEFIR_MALFORMED_ARG);
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(allocation != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid allocation vector"));
     for (kefir_size_t i = 0; i < kefir_vector_length(allocation); i++) {
         struct kefir_amd64_sysv_input_parameter_allocation *alloc =
             (struct kefir_amd64_sysv_input_parameter_allocation *) kefir_vector_at(allocation, i);

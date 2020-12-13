@@ -66,14 +66,45 @@ typedef struct kefir_ir_type_visitor {
 } kefir_ir_type_visitor_t;
 
 kefir_result_t kefir_ir_type_visitor_init(struct kefir_ir_type_visitor *, kefir_ir_type_visitor_callback_t);
-kefir_size_t kefir_ir_type_subtree_length(const struct kefir_ir_type *, kefir_size_t);
+kefir_size_t kefir_ir_type_subtree_total_length(const struct kefir_ir_type *, kefir_size_t);
 kefir_size_t kefir_ir_type_subtree_slots(const struct kefir_ir_type *, kefir_size_t);
 kefir_size_t kefir_ir_type_total_slots(const struct kefir_ir_type *);
-kefir_result_t kefir_ir_type_visitor_traverse_subtrees(const struct kefir_ir_type *,
+kefir_result_t kefir_ir_type_visitor_list_subtrees(const struct kefir_ir_type *,
                                           const struct kefir_ir_type_visitor *,
                                           void *,
                                           kefir_size_t,
                                           kefir_size_t);
+
+#define KEFIR_IR_TYPE_VISITOR_INIT_FIXED_INTEGERS(visitor, callback) \
+    do { \
+        (visitor)->visit[KEFIR_IR_TYPE_INT8] = (callback); \
+        (visitor)->visit[KEFIR_IR_TYPE_INT16] = (callback); \
+        (visitor)->visit[KEFIR_IR_TYPE_INT32] = (callback); \
+        (visitor)->visit[KEFIR_IR_TYPE_INT64] = (callback); \
+    } while (0)
+#define KEFIR_IR_TYPE_VISITOR_INIT_ALIASED_INTEGERS(visitor, callback) \
+    do { \
+        (visitor)->visit[KEFIR_IR_TYPE_CHAR] = (callback); \
+        (visitor)->visit[KEFIR_IR_TYPE_SHORT] = (callback); \
+        (visitor)->visit[KEFIR_IR_TYPE_INT] = (callback); \
+        (visitor)->visit[KEFIR_IR_TYPE_LONG] = (callback); \
+        (visitor)->visit[KEFIR_IR_TYPE_WORD] = (callback); \
+    } while (0)
+#define KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS(visitor, callback) \
+    do { \
+        KEFIR_IR_TYPE_VISITOR_INIT_FIXED_INTEGERS((visitor), (callback)); \
+        KEFIR_IR_TYPE_VISITOR_INIT_ALIASED_INTEGERS((visitor), (callback)); \
+    } while (0)
+#define KEFIR_IR_TYPE_VISITOR_INIT_FIXED_FP(visitor, callback) \
+    do { \
+        (visitor)->visit[KEFIR_IR_TYPE_FLOAT32] = (callback); \
+        (visitor)->visit[KEFIR_IR_TYPE_FLOAT64] = (callback); \
+    } while (0)
+#define KEFIR_IR_TYPE_VISITOR_INIT_SCALARS(visitor, callback) \
+    do { \
+        KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS((visitor), (callback)); \
+        KEFIR_IR_TYPE_VISITOR_INIT_FIXED_FP((visitor), (callback)); \
+    } while (0)
 
 typedef struct kefir_ir_type_iterator {
     const struct kefir_ir_type *type;

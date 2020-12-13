@@ -66,8 +66,8 @@ static kefir_result_t load_arguments(struct kefir_codegen_amd64 *codegen,
 
 kefir_result_t kefir_amd64_sysv_function_prologue(struct kefir_codegen_amd64 *codegen,
                                               const struct kefir_irfunction_decl *func) {
-    REQUIRE(codegen != NULL, KEFIR_MALFORMED_ARG);
-    REQUIRE(func != NULL, KEFIR_MALFORMED_ARG);
+    REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 code generator"));
+    REQUIRE(func != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR function declaration"));
     ASMGEN_COMMENT(&codegen->asmgen, FORMAT(codegen->buf[0], "Begin prologue of %s", func->identifier));
     REQUIRE_OK(preserve_state(&codegen->asmgen));
     REQUIRE_OK(load_arguments(codegen, func));
@@ -76,8 +76,8 @@ kefir_result_t kefir_amd64_sysv_function_prologue(struct kefir_codegen_amd64 *co
 }
 
 kefir_result_t kefir_amd64_sysv_function_epilogue(struct kefir_codegen_amd64 *codegen, const struct kefir_irfunction_decl *func) {
-    REQUIRE(codegen != NULL, KEFIR_MALFORMED_ARG);
-    REQUIRE(func != NULL, KEFIR_MALFORMED_ARG);
+    REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 code generator"));
+    REQUIRE(func != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR function declaration"));
     ASMGEN_COMMENT(&codegen->asmgen, FORMAT(codegen->buf[0], "Begin epilogue of %s", func->identifier));
     REQUIRE_OK(restore_state(&codegen->asmgen));
     ASMGEN_COMMENT(&codegen->asmgen, FORMAT(codegen->buf[0], "End of %s", func->identifier));
