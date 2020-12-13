@@ -4,7 +4,7 @@ DBG=-g3 -ggdb -DKFT_NOFORK
 CFLAGS=-std=c11 -Wall -Wextra -pedantic $(OPT) $(DBG)
 INCLUDES=-Iheaders
 
-VALGRIND=valgrind --trace-children=yes
+VALGRIND=valgrind --trace-children=yes --leak-check=full --error-exitcode=127
 
 BIN_DIR=bin
 SOURCE_DIR=source
