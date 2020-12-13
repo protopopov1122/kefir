@@ -225,7 +225,6 @@ kefir_result_t kefir_ir_type_visitor_list_subtrees(const struct kefir_ir_type *t
 
 struct iter_params {
     struct kefir_ir_type_iterator *iter;
-    kefir_size_t counter;
     kefir_size_t slot;
     kefir_size_t target;
 };
@@ -237,9 +236,8 @@ static kefir_result_t iter_visitor(const struct kefir_ir_type *type,
     UNUSED(typeentry);
     struct iter_params *params =
         (struct iter_params *) payload;
-    if (params->counter < params->target) {
+    if (index < params->target) {
         params->slot += kefir_ir_type_subtree_slots(type, index);
-        params->counter++;
         return KEFIR_OK;
     } else if (index == params->target) {
         params->iter->index = index;
@@ -266,7 +264,6 @@ kefir_result_t kefir_ir_type_iterator_goto(struct kefir_ir_type_iterator *iter, 
     struct iter_params params = {
         .iter = iter,
         .slot = 0,
-        .counter = 0,
         .target = target
     };
     struct kefir_ir_type_visitor visitor;
@@ -286,7 +283,6 @@ kefir_result_t kefir_ir_type_iterator_goto_field(struct kefir_ir_type_iterator *
     struct iter_params params = {
         .iter = iter,
         .slot = 1 + iter->slot,
-        .counter = 0,
         .target = target
     };
     struct kefir_ir_type_visitor visitor;

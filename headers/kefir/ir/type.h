@@ -21,6 +21,7 @@ typedef enum kefir_ir_typecode {
     KEFIR_IR_TYPE_FLOAT32,
     KEFIR_IR_TYPE_FLOAT64,
     // Platform-dependent scalars
+    KEFIR_IR_TYPE_BOOL,
     KEFIR_IR_TYPE_CHAR,
     KEFIR_IR_TYPE_SHORT,
     KEFIR_IR_TYPE_INT,
@@ -84,6 +85,7 @@ kefir_result_t kefir_ir_type_visitor_list_subtrees(const struct kefir_ir_type *,
     } while (0)
 #define KEFIR_IR_TYPE_VISITOR_INIT_ALIASED_INTEGERS(visitor, callback) \
     do { \
+        (visitor)->visit[KEFIR_IR_TYPE_BOOL] = (callback); \
         (visitor)->visit[KEFIR_IR_TYPE_CHAR] = (callback); \
         (visitor)->visit[KEFIR_IR_TYPE_SHORT] = (callback); \
         (visitor)->visit[KEFIR_IR_TYPE_INT] = (callback); \

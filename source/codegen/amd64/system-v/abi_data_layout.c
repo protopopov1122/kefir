@@ -62,6 +62,7 @@ static kefir_result_t calculate_integer_layout(const struct kefir_ir_type *type,
     struct kefir_amd64_sysv_data_layout *data =
         (struct kefir_amd64_sysv_data_layout *) kefir_vector_at(compound_type_layout->vector, index);
     switch (typeentry->typecode) {
+        case KEFIR_IR_TYPE_BOOL:
         case KEFIR_IR_TYPE_CHAR:
         case KEFIR_IR_TYPE_INT8:
             data->size = 1;

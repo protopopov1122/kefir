@@ -4,6 +4,7 @@
 #include "kefir/codegen/amd64/shortcuts.h"
 #include "kefir/codegen/amd64/system-v/runtime.h"
 #include "kefir/codegen/amd64/system-v/abi_data.h"
+#include "kefir/codegen/amd64/system-v/abi_allocation.h"
 #include <stdio.h>
 
 static kefir_result_t preserve_state(struct kefir_amd64_asmgen *asmgen) {
@@ -16,26 +17,52 @@ static kefir_result_t restore_state(struct kefir_amd64_asmgen *asmgen) {
     return KEFIR_OK;
 }
 
-static kefir_result_t load_argument(struct kefir_codegen_amd64 *codegen,
-                                  const struct kefir_irfunction_decl *func,
-                                  kefir_size_t index,
-                                  struct kefir_amd64_sysv_parameter_allocation *param) {
-    UNUSED(func);
+struct argument_load {
+    struct kefir_vector *allocation;
+    struct kefir_codegen_amd64 *codegen;
+};
+
+static kefir_result_t visitor_not_supported(const struct kefir_ir_type *type,
+                                            kefir_size_t index,
+                                            const struct kefir_ir_typeentry *typeentry,
+                                            void *payload) {
+    UNUSED(type);
     UNUSED(index);
-    switch (param->dataclass) {
-        case KEFIR_AMD64_SYSV_PARAM_INTEGER:
-            ASMGEN_INSTR1(&codegen->asmgen, KEFIR_AMD64_PUSH, KEFIR_AMD64_SYSV_INTEGER_REGISTERS[param->location]);
-            break;
+    UNUSED(typeentry);
+    UNUSED(payload);
+    return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Unsupported function parameter type");
+}
 
-        case KEFIR_AMD64_SYSV_PARAM_SSE:
-            ASMGEN_INSTR3(&codegen->asmgen, KEFIR_AMD64_PEXTRQ, KEFIR_AMD64_R12, KEFIR_AMD64_SYSV_SSE_REGISTERS[param->location], "0");
-            ASMGEN_INSTR1(&codegen->asmgen, KEFIR_AMD64_PUSH, KEFIR_AMD64_R12);
-            break;
+static kefir_result_t load_integer_argument(const struct kefir_ir_type *type,
+                                          kefir_size_t index,
+                                          const struct kefir_ir_typeentry *typeentry,
+                                          void *payload) {
+    UNUSED(typeentry);
+    struct argument_load *param =
+        (struct argument_load *) payload;
+    struct kefir_ir_type_iterator iter;
+    REQUIRE_OK(kefir_ir_type_iterator_init(type, &iter));
+    REQUIRE_OK(kefir_ir_type_iterator_goto(&iter, index));
+    struct kefir_amd64_sysv_input_parameter_allocation *alloc = 
+        (struct kefir_amd64_sysv_input_parameter_allocation *) kefir_vector_at(param->allocation, iter.slot);
+    ASMGEN_INSTR1(&param->codegen->asmgen, KEFIR_AMD64_PUSH, KEFIR_AMD64_SYSV_INTEGER_REGISTERS[alloc->location.integer]);
+    return KEFIR_OK;
+}
 
-        default:
-            return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED,
-                KEFIR_AMD64_SYSV_ABI_ERROR_PREFIX "Non-scalar function parameter is not supported");
-    }
+static kefir_result_t load_sse_argument(const struct kefir_ir_type *type,
+                                      kefir_size_t index,
+                                      const struct kefir_ir_typeentry *typeentry,
+                                      void *payload) {
+    UNUSED(typeentry);
+    struct argument_load *param =
+        (struct argument_load *) payload;
+    struct kefir_ir_type_iterator iter;
+    REQUIRE_OK(kefir_ir_type_iterator_init(type, &iter));
+    REQUIRE_OK(kefir_ir_type_iterator_goto(&iter, index));
+    struct kefir_amd64_sysv_input_parameter_allocation *alloc = 
+        (struct kefir_amd64_sysv_input_parameter_allocation *) kefir_vector_at(param->allocation, iter.slot);
+    ASMGEN_INSTR3(&param->codegen->asmgen, KEFIR_AMD64_PEXTRQ, KEFIR_AMD64_R12, KEFIR_AMD64_SYSV_SSE_REGISTERS[alloc->location.sse], "0");
+    ASMGEN_INSTR1(&param->codegen->asmgen, KEFIR_AMD64_PUSH, KEFIR_AMD64_R12);
     return KEFIR_OK;
 }
 
@@ -44,22 +71,37 @@ static kefir_result_t load_arguments(struct kefir_codegen_amd64 *codegen,
     ASMGEN_COMMENT(&codegen->asmgen, FORMAT(codegen->buf[0], "Load parameters of %s", func->identifier));
     struct kefir_vector layout, allocation;
     REQUIRE_OK(kefir_amd64_sysv_type_layout(&func->params, codegen->mem, &layout));
-    kefir_result_t res = kefir_amd64_sysv_type_param_allocation(&func->params, codegen->mem, &layout, &allocation);
+    kefir_result_t res = kefir_amd64_sysv_input_parameter_classify(codegen->mem, &func->params, &layout, &allocation);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_vector_free(codegen->mem, &layout);
         return res;
     });
-    for (kefir_size_t i = 0; i < kefir_ir_type_length(&func->params); i++) {
-        struct kefir_amd64_sysv_parameter_allocation *param =
-            (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(&allocation, i);
-        kefir_result_t res = load_argument(codegen, func, i, param);
-        REQUIRE_ELSE(res == KEFIR_OK, {
-            kefir_vector_free(codegen->mem, &allocation);
-            kefir_vector_free(codegen->mem, &layout);
-            return res;
-        });
-    }
-    kefir_vector_free(codegen->mem, &allocation);
+    res = kefir_amd64_sysv_input_parameter_allocate(&func->params, &layout, &allocation);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_amd64_sysv_input_parameter_free(codegen->mem, &allocation);
+        kefir_vector_free(codegen->mem, &layout);
+        return res;
+    });
+    struct argument_load param = {
+        .allocation = &allocation,
+        .codegen = codegen
+    };
+    struct kefir_ir_type_visitor visitor;
+    res = kefir_ir_type_visitor_init(&visitor, visitor_not_supported);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_amd64_sysv_input_parameter_free(codegen->mem, &allocation);
+        kefir_vector_free(codegen->mem, &layout);
+        return res;
+    });
+    KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS(&visitor, load_integer_argument);
+    KEFIR_IR_TYPE_VISITOR_INIT_FIXED_FP(&visitor, load_sse_argument);
+    res = kefir_ir_type_visitor_list_subtrees(&func->params, &visitor, (void *) &param, 0, kefir_ir_type_length(&func->params));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_amd64_sysv_input_parameter_free(codegen->mem, &allocation);
+        kefir_vector_free(codegen->mem, &layout);
+        return res;
+    });
+    kefir_amd64_sysv_input_parameter_free(codegen->mem, &allocation);
     kefir_vector_free(codegen->mem, &layout);
     return KEFIR_OK;
 }

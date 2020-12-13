@@ -6,61 +6,7 @@
 #include "kefir/core/vector.h"
 #include "kefir/core/mem.h"
 #include "kefir/codegen/amd64/system-v/abi_data.h"
-
-#define KEFIR_AMD64_SYSV_ABI_QWORD 8
-
-typedef struct kefir_amd64_sysv_abi_qword {
-    kefir_amd64_sysv_data_class_t klass;
-    kefir_size_t index;
-    kefir_size_t current_offset;
-} kefir_amd64_sysv_abi_qword_t;
-
-typedef struct kefir_amd64_sysv_abi_qword_ref {
-    struct kefir_amd64_sysv_abi_qword *qword;
-    kefir_size_t offset;
-} kefir_amd64_sysv_abi_qword_ref_t;
-
-typedef struct kefir_amd64_sysv_abi_qwords {
-    struct kefir_vector qwords;
-    kefir_size_t current;
-} kefir_amd64_sysv_abi_qwords_t;
-
-typedef struct kefir_amd64_sysv_abi_qword_position {
-    kefir_size_t index;
-    kefir_size_t offset;
-} kefir_amd64_sysv_abi_qword_position_t;
-
-kefir_result_t kefir_amd64_sysv_abi_qwords_count(const struct kefir_ir_type *,
-                                             const struct kefir_vector *,
-                                             kefir_size_t *);
-
-kefir_result_t kefir_amd64_sysv_abi_qwords_alloc(struct kefir_amd64_sysv_abi_qwords *,
-                                             struct kefir_mem *, 
-                                             kefir_size_t);
-
-kefir_result_t kefir_amd64_sysv_abi_qwords_free(struct kefir_amd64_sysv_abi_qwords *,
-                                            struct kefir_mem *);
-
-kefir_result_t kefir_amd64_sysv_abi_qwords_next(struct kefir_amd64_sysv_abi_qwords *,
-                                            kefir_amd64_sysv_data_class_t,
-                                            kefir_size_t,
-                                            kefir_size_t,
-                                            struct kefir_amd64_sysv_abi_qword_ref *);
-
-kefir_result_t kefir_amd64_sysv_abi_qwords_reset_class(struct kefir_amd64_sysv_abi_qwords *,
-                                                    kefir_amd64_sysv_data_class_t,
-                                                    kefir_size_t,
-                                                    kefir_size_t);
-
-kefir_result_t kefir_amd64_sysv_abi_qwords_save_position(const struct kefir_amd64_sysv_abi_qwords *,
-                                                     struct kefir_amd64_sysv_abi_qword_position *);
-
-kefir_result_t kefir_amd64_sysv_abi_qwords_restore_position(struct kefir_amd64_sysv_abi_qwords *,
-                                                        const struct kefir_amd64_sysv_abi_qword_position *);
-
-kefir_result_t kefir_amd64_sysv_abi_qwords_max_position(const struct kefir_amd64_sysv_abi_qword_position *,
-                                                    const struct kefir_amd64_sysv_abi_qword_position *,
-                                                    struct kefir_amd64_sysv_abi_qword_position *);
+#include "kefir/codegen/amd64/system-v/abi_qwords.h"
 
 typedef enum kefir_amd64_sysv_input_parameter_type {
     KEFIR_AMD64_SYSV_INPUT_PARAM_IMMEDIATE,
@@ -70,20 +16,49 @@ typedef enum kefir_amd64_sysv_input_parameter_type {
     KEFIR_AMD64_SYSV_INPUT_PARAM_SKIP
 } kefir_amd64_sysv_input_parameter_type_t;
 
+#define KEFIR_AMD64_SYSV_INPUT_PARAMETER_NONE KEFIR_SIZE_MAX
+
+typedef struct kefir_amd64_sysv_input_parameter_location {
+    kefir_size_t integer;
+    kefir_size_t sse;
+    kefir_size_t sseup;
+    kefir_size_t memory;
+} kefir_amd64_sysv_input_parameter_location_t;
+
 typedef struct kefir_amd64_sysv_input_parameter_allocation {
     kefir_amd64_sysv_input_parameter_type_t type;
     kefir_amd64_sysv_data_class_t klass;
     kefir_size_t index;
-    struct kefir_amd64_sysv_abi_qwords container;
-    struct kefir_amd64_sysv_abi_qword_ref container_reference;
+    union {
+        struct kefir_amd64_sysv_abi_qwords container;
+        struct kefir_amd64_sysv_abi_qword_ref container_reference;
+    };
+    struct {
+        kefir_size_t integer;
+        struct {
+            kefir_size_t sse;
+            kefir_size_t sseup;
+        };
+        struct {
+            kefir_size_t size;
+            kefir_size_t alignment;
+        } memory;
+    } requirements;
+
+    struct kefir_amd64_sysv_input_parameter_location location;
 } kefir_amd64_sysv_input_parameter_allocation_t;
 
-kefir_result_t kefir_amd64_sysv_input_parameter_allocate(struct kefir_mem *,
+kefir_result_t kefir_amd64_sysv_input_parameter_classify(struct kefir_mem *,
                                                      const struct kefir_ir_type *,
                                                      const struct kefir_vector *,
                                                      struct kefir_vector *);
 
 kefir_result_t kefir_amd64_sysv_input_parameter_free(struct kefir_mem *,
                                                  struct kefir_vector *);
+
+
+kefir_result_t kefir_amd64_sysv_input_parameter_allocate(const struct kefir_ir_type *,
+                                                     const struct kefir_vector *,
+                                                     struct kefir_vector *);
 
 #endif
