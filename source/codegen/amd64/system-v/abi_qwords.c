@@ -128,7 +128,7 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_next(struct kefir_amd64_sysv_abi_qwor
         current->current_offset += chunk;
         size -= chunk;
         current->klass = derive_dataclass(current->klass, dataclass);
-        available = 1;
+        alignment = 1;
     }
     return KEFIR_OK;
 }
