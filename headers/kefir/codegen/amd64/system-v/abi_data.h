@@ -31,16 +31,6 @@ typedef struct kefir_amd64_sysv_data_layout {
     kefir_size_t relative_offset;
 } kefir_amd64_sysv_data_layout_t;
 
-typedef struct kefir_amd64_sysv_parameter_allocation {
-    kefir_amd64_sysv_data_class_t dataclass;
-    kefir_size_t eightbyte;
-    kefir_size_t eightbyte_offset;
-
-    kefir_uint32_t location;
-    kefir_uint32_t uplocation;
-    kefir_uint64_t offset;
-} kefir_amd64_sysv_parameter_allocation_t;
-
 kefir_result_t kefir_amd64_sysv_type_layout(const struct kefir_ir_type *,
                                           struct kefir_mem *,
                                           struct kefir_vector *);

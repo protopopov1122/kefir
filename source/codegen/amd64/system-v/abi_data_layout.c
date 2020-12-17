@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include "kefir/core/error.h"
+#include "kefir/codegen/util.h"
 #include "kefir/codegen/amd64/system-v/abi_data.h"
 
 static kefir_result_t visitor_not_supported(const struct kefir_ir_type *type,
@@ -23,14 +24,6 @@ struct compound_type_layout {
     bool aligned;
 };
 
-static kefir_result_t pad_size(kefir_size_t size, kefir_size_t alignment) {
-    const kefir_size_t padding = size % alignment;
-    if (padding != 0) {
-        size += alignment - padding;
-    }
-    return size;
-}
-
 static kefir_result_t update_compound_type_layout(struct compound_type_layout *compound_type_layout,
                                        struct kefir_amd64_sysv_data_layout *data,
                                        const struct kefir_ir_typeentry *typeentry) {
@@ -39,7 +32,7 @@ static kefir_result_t update_compound_type_layout(struct compound_type_layout *c
         data->alignment = typeentry->alignment;
     }
     if (compound_type_layout->aggregate) {
-        compound_type_layout->offset = pad_size(compound_type_layout->offset, data->alignment);
+        compound_type_layout->offset = kefir_codegen_pad_aligned(compound_type_layout->offset, data->alignment);
     }
     compound_type_layout->max_alignment = MAX(compound_type_layout->max_alignment, data->alignment);
     compound_type_layout->max_size = MAX(compound_type_layout->max_size, data->size);
@@ -171,7 +164,7 @@ static kefir_result_t calculate_struct_union_layout(const struct kefir_ir_type *
         compound_type_layout->visitor, (void *) &nested_compound_type_layout, index + 1, typeentry->param));
     data->alignment = nested_compound_type_layout.max_alignment;
     data->aligned = nested_compound_type_layout.aligned;
-    data->size = pad_size(
+    data->size = kefir_codegen_pad_aligned(
         typeentry->typecode == KEFIR_IR_TYPE_STRUCT
             ? nested_compound_type_layout.offset
             :  nested_compound_type_layout.max_size,
