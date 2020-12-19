@@ -49,6 +49,7 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_alloc(struct kefir_amd64_sysv_abi_qwo
         struct kefir_amd64_sysv_abi_qword *qword =
             (struct kefir_amd64_sysv_abi_qword *) kefir_vector_at(&qwords->qwords, i);
         qword->klass = KEFIR_AMD64_SYSV_PARAM_NO_CLASS;
+        qword->location = 0;
         qword->index = i;
         qword->current_offset = 0;
     }

@@ -9,8 +9,9 @@
 #define KEFIR_AMD64_SYSV_ABI_QWORD 8
 
 typedef struct kefir_amd64_sysv_abi_qword {
-    kefir_amd64_sysv_data_class_t klass;
     kefir_size_t index;
+    kefir_amd64_sysv_data_class_t klass;
+    kefir_size_t location;
     kefir_size_t current_offset;
 } kefir_amd64_sysv_abi_qword_t;
 

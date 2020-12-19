@@ -247,7 +247,7 @@ static kefir_result_t assign_nested_array(const struct kefir_ir_type *type,
     return KEFIR_OK;
 }
 
-static kefir_result_t struct_disown(struct kefir_mem *mem,
+static kefir_result_t aggregate_disown(struct kefir_mem *mem,
                                   struct kefir_amd64_sysv_parameter_allocation *alloc) {
     REQUIRE_OK(kefir_amd64_sysv_abi_qwords_free(&alloc->container, mem));
     alloc->type = KEFIR_AMD64_SYSV_INPUT_PARAM_CONTAINER;
@@ -266,12 +266,12 @@ static kefir_result_t aggregate_postmerger(struct kefir_mem *mem,
             (struct kefir_amd64_sysv_abi_qword *) kefir_vector_at(&alloc->container.qwords, i);
         had_nonsseup = had_nonsseup || (i > 0 && qword->klass != KEFIR_AMD64_SYSV_PARAM_SSEUP);
         if (qword->klass == KEFIR_AMD64_SYSV_PARAM_MEMORY) {
-            return struct_disown(mem, alloc);
+            return aggregate_disown(mem, alloc);
         } else if (qword->klass == KEFIR_AMD64_SYSV_PARAM_X87) {
             x87count++;
         } else if (qword->klass == KEFIR_AMD64_SYSV_PARAM_X87UP) {
             if (x87count == 0) {
-                return struct_disown(mem, alloc);
+                return aggregate_disown(mem, alloc);
             } else {
                 x87count--;
             }
@@ -288,7 +288,7 @@ static kefir_result_t aggregate_postmerger(struct kefir_mem *mem,
     if (length > 2 &&
         (((struct kefir_amd64_sysv_abi_qword *) kefir_vector_at(&alloc->container.qwords, 0))->klass != KEFIR_AMD64_SYSV_PARAM_SSE ||
         had_nonsseup)) {
-        return struct_disown(mem, alloc);
+        return aggregate_disown(mem, alloc);
     }
     return KEFIR_OK;
 }
@@ -388,6 +388,7 @@ static kefir_result_t assign_immediate_struct(const struct kefir_ir_type *type,
 
     if (layout->size > 8 * KEFIR_AMD64_SYSV_ABI_QWORD || !layout->aligned) {
         allocation->klass = KEFIR_AMD64_SYSV_PARAM_MEMORY;
+        info->slot += kefir_ir_type_subtree_slots(type, index) - 1;
     } else {
         REQUIRE_OK(immediate_struct_unwrap(
             info->mem, type, index, typeentry, layout, info->layout, info->allocation, &info->slot, allocation));
@@ -448,6 +449,7 @@ static kefir_result_t assign_immediate_array(const struct kefir_ir_type *type,
 
     if (layout->size > 8 * KEFIR_AMD64_SYSV_ABI_QWORD || !layout->aligned) {
         allocation->klass = KEFIR_AMD64_SYSV_PARAM_MEMORY;
+        info->slot += kefir_ir_type_subtree_slots(type, index) - 1;
     } else {
         immediate_array_unwrap(info->mem, type, index, typeentry, layout, info->layout, info->allocation, &info->slot, allocation);
     }
@@ -509,6 +511,7 @@ static kefir_result_t assign_immediate_union(const struct kefir_ir_type *type,
 
     if (layout->size > 8 * KEFIR_AMD64_SYSV_ABI_QWORD || !layout->aligned) {
         allocation->klass = KEFIR_AMD64_SYSV_PARAM_MEMORY;
+        info->slot += kefir_ir_type_subtree_slots(type, index) - 1;
     } else {
         immediate_union_unwrap(info->mem, type, index, typeentry, layout, info->layout, info->allocation, &info->slot, allocation);
     }
@@ -538,11 +541,9 @@ kefir_result_t kefir_amd64_sysv_parameter_classify(struct kefir_mem *mem,
         entry->klass = KEFIR_AMD64_SYSV_PARAM_NO_CLASS;
         entry->index = 0;
         entry->requirements = (const struct kefir_amd64_sysv_parameter_location_requirements){0};
-        entry->location.on_stack = false;
-        entry->location.integer_register = KEFIR_AMD64_SYSV_INPUT_PARAMETER_NONE;
-        entry->location.sse_register = KEFIR_AMD64_SYSV_INPUT_PARAMETER_NONE;
-        entry->location.sseup_register = KEFIR_AMD64_SYSV_INPUT_PARAMETER_NONE;
-        entry->location.stack_offset = KEFIR_AMD64_SYSV_INPUT_PARAMETER_NONE;
+        entry->location.integer_register = KEFIR_AMD64_SYSV_PARAMETER_LOCATION_NONE;
+        entry->location.sse_register = KEFIR_AMD64_SYSV_PARAMETER_LOCATION_NONE;
+        entry->location.stack_offset = KEFIR_AMD64_SYSV_PARAMETER_LOCATION_NONE;
     }
     struct kefir_ir_type_visitor visitor;
     kefir_ir_type_visitor_init(&visitor, visitor_not_supported);
@@ -581,6 +582,7 @@ kefir_result_t kefir_amd64_sysv_parameter_free(struct kefir_mem *mem,
 }
 
 struct allocation_state {
+    struct kefir_mem *mem;
     struct kefir_amd64_sysv_parameter_location *current;
     const struct kefir_vector *layout;
     struct kefir_vector *allocation;
@@ -608,7 +610,7 @@ static kefir_result_t integer_allocate(const struct kefir_ir_type *type,
     } else {
         const kefir_size_t alignment = MAX(alloc->requirements.memory.alignment, KEFIR_AMD64_SYSV_ABI_QWORD);
         state->current->stack_offset = kefir_codegen_pad_aligned(state->current->stack_offset, alignment);
-        alloc->location.on_stack = true;
+        alloc->klass = KEFIR_AMD64_SYSV_PARAM_MEMORY;
         alloc->location.stack_offset = state->current->stack_offset;
         state->current->stack_offset += KEFIR_AMD64_SYSV_ABI_QWORD;
     }
@@ -632,14 +634,12 @@ static kefir_result_t sse_allocate(const struct kefir_ir_type *type,
             alloc->requirements.sseup == 0 &&
             alloc->requirements.memory.size == 0,
         KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected SSE to require exactly 1 sse eightbyte"));
-    alloc->location = (const struct kefir_amd64_sysv_parameter_location){0};
     if (state->current->sse_register + 1 <= KEFIR_AMD64_SYSV_SSE_REGISTER_COUNT) {
         alloc->location.sse_register = state->current->sse_register++;
-        state->current->sseup_register = state->current->sseup_register;
     } else {
         const kefir_size_t alignment = MAX(alloc->requirements.memory.alignment, KEFIR_AMD64_SYSV_ABI_QWORD);
         state->current->stack_offset = kefir_codegen_pad_aligned(state->current->stack_offset, alignment);
-        alloc->location.on_stack = true;
+        alloc->klass = KEFIR_AMD64_SYSV_PARAM_MEMORY;
         alloc->location.stack_offset = state->current->stack_offset;
         state->current->stack_offset += KEFIR_AMD64_SYSV_ABI_QWORD;
     }
@@ -674,19 +674,85 @@ static kefir_result_t memory_allocate(const struct kefir_ir_type *type,
             alloc->requirements.sseup == 0 &&
             alloc->requirements.memory.size > 0,
         KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected memory type to require only memory eightbytes"));
-    alloc->location = (const struct kefir_amd64_sysv_parameter_location){0};
     const kefir_size_t alignment = MAX(alloc->requirements.memory.alignment, KEFIR_AMD64_SYSV_ABI_QWORD);
     state->current->stack_offset = kefir_codegen_pad_aligned(state->current->stack_offset, alignment);
-    alloc->location.on_stack = true;
     alloc->location.stack_offset = state->current->stack_offset;
     state->current->stack_offset += alloc->requirements.memory.size;
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_amd64_sysv_parameter_allocate(const struct kefir_ir_type *type,
-                                                     const struct kefir_vector *layout,
-                                                     struct kefir_vector *allocation,
-                                                     struct kefir_amd64_sysv_parameter_location *location) {
+static bool aggregate_register_allocate(const struct kefir_amd64_sysv_parameter_allocation *alloc,
+                                        const struct kefir_amd64_sysv_parameter_location *location) {
+    return alloc->type == KEFIR_AMD64_SYSV_INPUT_PARAM_OWNING_CONTAINER &&
+           alloc->klass == KEFIR_AMD64_SYSV_PARAM_NO_CLASS &&
+           location->integer_register + alloc->requirements.integer <= KEFIR_AMD64_SYSV_INTEGER_REGISTER_COUNT &&
+           location->sse_register + alloc->requirements.sse <= KEFIR_AMD64_SYSV_SSE_REGISTER_COUNT &&
+           alloc->requirements.memory.size == 0;
+}
+
+static kefir_result_t aggregate_allocate(const struct kefir_ir_type *type,
+                                       kefir_size_t index,
+                                       const struct kefir_ir_typeentry *typeentry,
+                                       void *payload) {
+    UNUSED(index);
+    UNUSED(typeentry);
+    struct allocation_state *state = (struct allocation_state *) payload;
+    struct kefir_ir_type_iterator iter;
+    REQUIRE_OK(kefir_ir_type_iterator_init(type, &iter));
+    REQUIRE_OK(kefir_ir_type_iterator_goto(&iter, index));
+    struct kefir_amd64_sysv_data_layout *layout =
+        (struct kefir_amd64_sysv_data_layout *) kefir_vector_at(state->layout, index);
+    struct kefir_amd64_sysv_parameter_allocation *alloc = 
+        (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(state->allocation, iter.slot);
+    if (aggregate_register_allocate(alloc, state->current)) {
+        if (alloc->requirements.integer > 0) {
+            alloc->location.integer_register = state->current->integer_register;
+            state->current->integer_register += alloc->requirements.integer;
+        }
+        if (alloc->requirements.sse > 0) {
+            alloc->location.sse_register = state->current->sse_register;
+            state->current->sse_register += alloc->requirements.sse;
+        }
+
+        kefir_size_t integer_location = alloc->location.integer_register;
+        kefir_size_t sse_location = alloc->location.sse_register;
+        for (kefir_size_t i = 0; i < kefir_vector_length(&alloc->container.qwords); i++) {
+            struct kefir_amd64_sysv_abi_qword *qword =
+                (struct kefir_amd64_sysv_abi_qword *) kefir_vector_at(&alloc->container.qwords, i);
+            switch (qword->klass) {
+                case KEFIR_AMD64_SYSV_PARAM_INTEGER:
+                    qword->location = integer_location++;
+                    break;
+
+                case KEFIR_AMD64_SYSV_PARAM_SSE:
+                    qword->location = sse_location++;
+                    break;
+
+                case KEFIR_AMD64_SYSV_PARAM_SSEUP:
+                    qword->location = sse_location;
+                    break;
+                
+                default:
+                    return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected QWord class");
+            }
+        }
+    } else {
+        if (alloc->type == KEFIR_AMD64_SYSV_INPUT_PARAM_OWNING_CONTAINER) {
+            REQUIRE_OK(aggregate_disown(state->mem, alloc));
+        }
+        const kefir_size_t alignment = MAX(layout->alignment, KEFIR_AMD64_SYSV_ABI_QWORD);
+        state->current->stack_offset = kefir_codegen_pad_aligned(state->current->stack_offset, alignment);
+        alloc->location.stack_offset = state->current->stack_offset;
+        state->current->stack_offset += layout->size;
+    }
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_amd64_sysv_parameter_allocate(struct kefir_mem *mem,
+                                               const struct kefir_ir_type *type,
+                                               const struct kefir_vector *layout,
+                                               struct kefir_vector *allocation,
+                                               struct kefir_amd64_sysv_parameter_location *location) {
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type"));
     REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type layout"));
     REQUIRE(allocation != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type allocation"));
@@ -698,7 +764,11 @@ kefir_result_t kefir_amd64_sysv_parameter_allocate(const struct kefir_ir_type *t
     KEFIR_IR_TYPE_VISITOR_INIT_FIXED_FP(&visitor, sse_allocate);
     visitor.visit[KEFIR_IR_TYPE_PAD] = pad_allocate;
     visitor.visit[KEFIR_IR_TYPE_MEMORY] = memory_allocate;
+    visitor.visit[KEFIR_IR_TYPE_STRUCT] = aggregate_allocate;
+    visitor.visit[KEFIR_IR_TYPE_ARRAY] = aggregate_allocate;
+    visitor.visit[KEFIR_IR_TYPE_UNION] = aggregate_allocate;
     struct allocation_state state = {
+        .mem = mem,
         .current = location,
         .layout = layout,
         .allocation = allocation

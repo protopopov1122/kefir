@@ -77,7 +77,7 @@ static kefir_result_t load_arguments(struct kefir_codegen_amd64 *codegen,
         return res;
     });
     struct kefir_amd64_sysv_parameter_location location = {0};
-    res = kefir_amd64_sysv_parameter_allocate(&func->params, &layout, &allocation, &location);
+    res = kefir_amd64_sysv_parameter_allocate(codegen->mem, &func->params, &layout, &allocation, &location);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_amd64_sysv_parameter_free(codegen->mem, &allocation);
         kefir_vector_free(codegen->mem, &layout);

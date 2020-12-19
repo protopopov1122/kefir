@@ -16,22 +16,18 @@ typedef enum kefir_amd64_sysv_parameter_type {
     KEFIR_AMD64_SYSV_INPUT_PARAM_SKIP
 } kefir_amd64_sysv_parameter_type_t;
 
-#define KEFIR_AMD64_SYSV_INPUT_PARAMETER_NONE KEFIR_SIZE_MAX
+#define KEFIR_AMD64_SYSV_PARAMETER_LOCATION_NONE KEFIR_SIZE_MAX
 
 typedef struct kefir_amd64_sysv_parameter_location {
-    bool on_stack;
     kefir_size_t integer_register;
     kefir_size_t sse_register;
-    kefir_size_t sseup_register;
     kefir_size_t stack_offset;
 } kefir_amd64_sysv_parameter_location_t;
 
 typedef struct kefir_amd64_sysv_parameter_location_requirements {
     kefir_size_t integer;
-    struct {
-        kefir_size_t sse;
-        kefir_size_t sseup;
-    };
+    kefir_size_t sse;
+    kefir_size_t sseup;
     struct {
         kefir_size_t size;
         kefir_size_t alignment;
@@ -59,9 +55,10 @@ kefir_result_t kefir_amd64_sysv_parameter_free(struct kefir_mem *,
                                                  struct kefir_vector *);
 
 
-kefir_result_t kefir_amd64_sysv_parameter_allocate(const struct kefir_ir_type *,
-                                                     const struct kefir_vector *,
-                                                     struct kefir_vector *,
-                                                     struct kefir_amd64_sysv_parameter_location *);
+kefir_result_t kefir_amd64_sysv_parameter_allocate(struct kefir_mem *,
+                                               const struct kefir_ir_type *,
+                                               const struct kefir_vector *,
+                                               struct kefir_vector *,
+                                               struct kefir_amd64_sysv_parameter_location *);
 
 #endif
