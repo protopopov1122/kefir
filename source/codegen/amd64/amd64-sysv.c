@@ -36,18 +36,19 @@ static kefir_result_t cg_module_prologue(struct kefir_codegen_amd64 *codegen) {
     return KEFIR_OK;
 }
 
-static kefir_result_t cg_function_prologue(struct kefir_codegen_amd64 *codegen, const struct kefir_irfunction *func) {
-    ASMGEN_GLOBAL(&codegen->asmgen, FORMAT(codegen->buf[0], KEFIR_AMD64_SYSV_PROCEDURE_LABEL, func->declaration.identifier));
+static kefir_result_t cg_function_prologue(struct kefir_codegen_amd64 *codegen,
+                                         const struct kefir_amd64_sysv_function *func) {
+    ASMGEN_GLOBAL(&codegen->asmgen, FORMAT(codegen->buf[0], KEFIR_AMD64_SYSV_PROCEDURE_LABEL, func->func->declaration.identifier));
     ASMGEN_NEWLINE(&codegen->asmgen, 1);
-    ASMGEN_LABEL(&codegen->asmgen, FORMAT(codegen->buf[0], KEFIR_AMD64_SYSV_PROCEDURE_LABEL, func->declaration.identifier));
-    REQUIRE_OK(kefir_amd64_sysv_function_prologue(codegen, &func->declaration));
+    ASMGEN_LABEL(&codegen->asmgen, FORMAT(codegen->buf[0], KEFIR_AMD64_SYSV_PROCEDURE_LABEL, func->func->declaration.identifier));
+    REQUIRE_OK(kefir_amd64_sysv_function_prologue(codegen, func));
     return KEFIR_OK;
 }
 
-static kefir_result_t cg_function_epilogue(struct kefir_codegen_amd64 *codegen, const struct kefir_irfunction *func) {
-    UNUSED(func);
-    ASMGEN_LABEL(&codegen->asmgen, FORMAT(codegen->buf[0], KEFIR_AMD64_SYSV_PROCEDURE_EPILOGUE_LABEL, func->declaration.identifier));
-    REQUIRE_OK(kefir_amd64_sysv_function_epilogue(codegen, &func->declaration));
+static kefir_result_t cg_function_epilogue(struct kefir_codegen_amd64 *codegen,
+                                         const struct kefir_amd64_sysv_function *func) {
+    ASMGEN_LABEL(&codegen->asmgen, FORMAT(codegen->buf[0], KEFIR_AMD64_SYSV_PROCEDURE_EPILOGUE_LABEL, func->func->declaration.identifier));
+    REQUIRE_OK(kefir_amd64_sysv_function_epilogue(codegen, func));
     return KEFIR_OK;
 }
 
@@ -75,10 +76,13 @@ static kefir_result_t cg_translate(struct kefir_codegen *cg_iface, const struct 
     REQUIRE(cg_iface->data != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 code generator"));
     struct kefir_codegen_amd64 *codegen = (struct kefir_codegen_amd64 *) cg_iface->data;
     REQUIRE_OK(cg_module_prologue(codegen));
-    REQUIRE_OK(cg_function_prologue(codegen, func));
-    REQUIRE_OK(cg_function_body(codegen, func));
-    REQUIRE_OK(cg_function_epilogue(codegen, func));
-    return KEFIR_OK;
+    struct kefir_amd64_sysv_function sysv_func;
+    REQUIRE_OK(kefir_amd64_sysv_function_alloc(codegen->mem, func, &sysv_func));
+    kefir_result_t res = cg_function_prologue(codegen, &sysv_func);
+    REQUIRE_CHAIN(&res, cg_function_body(codegen, func));
+    REQUIRE_CHAIN(&res, cg_function_epilogue(codegen, &sysv_func));
+    kefir_amd64_sysv_function_free(codegen->mem, &sysv_func);
+    return res;
 }
 
 static kefir_result_t cg_close(struct kefir_codegen *cg) {

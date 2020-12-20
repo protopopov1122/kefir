@@ -1,4 +1,4 @@
-#include "kefir/codegen/amd64/system-v/abi_qwords.h"
+#include "kefir/codegen/amd64/system-v/abi/qwords.h"
 #include "kefir/core/error.h"
 
 struct qword_counter {
@@ -32,7 +32,7 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_count(const struct kefir_ir_type *typ
         .layout = layout,
         .count = 0
     };
-    REQUIRE_OK(kefir_ir_type_visitor_list_subtrees(type, &visitor, (void *) &counter, 0, kefir_ir_type_length(type)));
+    REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type, &visitor, (void *) &counter, 0, kefir_ir_type_nodes(type)));
     *count = counter.count;
     return KEFIR_OK;
 }

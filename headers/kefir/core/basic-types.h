@@ -11,6 +11,7 @@ typedef uint32_t kefir_uint32_t;
 typedef int64_t kefir_int64_t;
 typedef uint64_t kefir_uint64_t;
 typedef size_t kefir_size_t;
+typedef uintptr_t kefir_uptr_t;
 
 #define KEFIR_INT32_MIN INT32_MIN
 #define KEFIR_INT32_MAX INT32_MAX

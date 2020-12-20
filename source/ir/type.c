@@ -11,17 +11,17 @@ kefir_result_t kefir_ir_type_init(struct kefir_ir_type *type, void *area, kefir_
     return kefir_vector_init(&type->vector, sizeof(struct kefir_ir_typeentry), area, capacity);
 }
 
-kefir_size_t kefir_ir_type_available(const struct kefir_ir_type *type) {
+kefir_size_t kefir_ir_type_raw_available(const struct kefir_ir_type *type) {
     REQUIRE(type != NULL, 0);
     return kefir_vector_available(&type->vector);
 }
 
-kefir_size_t kefir_ir_type_length(const struct kefir_ir_type *type) {
+kefir_size_t kefir_ir_type_raw_length(const struct kefir_ir_type *type) {
     REQUIRE(type != NULL, 0);
     return kefir_vector_length(&type->vector);
 }
 
-struct kefir_ir_typeentry *kefir_ir_type_at(const struct kefir_ir_type *type, kefir_size_t index) {
+struct kefir_ir_typeentry *kefir_ir_type_raw_at(const struct kefir_ir_type *type, kefir_size_t index) {
     REQUIRE(type != NULL, NULL);
     return (struct kefir_ir_typeentry *) kefir_vector_at(&type->vector, index);
 }
@@ -34,11 +34,26 @@ kefir_result_t kefir_ir_type_append(struct kefir_ir_type *type, const struct kef
     return kefir_vector_append(&type->vector, value);
 }
 
-kefir_result_t kefir_ir_type_append_v(struct kefir_ir_type *type, kefir_ir_typecode_t typecode, kefir_uint32_t alignment, kefir_int32_t param) {
+kefir_result_t kefir_ir_type_append_v(struct kefir_ir_type *type,
+                                  kefir_ir_typecode_t typecode,
+                                  kefir_uint32_t alignment,
+                                  kefir_int64_t param) {
     struct kefir_ir_typeentry typeentry = {
         .typecode = typecode,
         .alignment = alignment,
         .param = param
+    };
+    return kefir_ir_type_append(type, &typeentry);
+}
+
+kefir_result_t kefir_ir_type_append_e(struct kefir_ir_type *type, const struct kefir_ir_type *ext, kefir_size_t index) {
+    struct kefir_ir_typeentry typeentry = {
+        .typecode = KEFIR_IR_TYPE_EXTERNAL,
+        .alignment = 0,
+        .external = {
+            .type = ext,
+            .index = index
+        }
     };
     return kefir_ir_type_append(type, &typeentry);
 }
@@ -67,32 +82,109 @@ kefir_result_t kefir_ir_type_free(struct kefir_mem *mem, struct kefir_ir_type *t
     return kefir_vector_free(mem, &type->vector);
 }
 
-kefir_result_t kefir_ir_type_visitor_init(struct kefir_ir_type_visitor *visitor, kefir_ir_type_visitor_callback_t defCallback) {
-    REQUIRE(visitor != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL IR type visitor pointer"));
-    for (kefir_size_t i = 0; i < KEFIR_IR_TYPE_COUNT; i++) {
-        visitor->visit[i] = defCallback;
+struct kefir_ir_typeentry *kefir_ir_type_at_impl(const struct kefir_ir_type *type,
+                                             kefir_size_t begin,
+                                             kefir_size_t count,
+                                             kefir_size_t target,
+                                             kefir_size_t *counter) {
+    for (kefir_size_t i = begin; i < begin + count; i++, (*counter)++) {
+        struct kefir_ir_typeentry *typeentry = kefir_ir_type_raw_at(type, i);
+        REQUIRE(typeentry != NULL, NULL);
+        if (typeentry->typecode == KEFIR_IR_TYPE_EXTERNAL) {
+            struct kefir_ir_typeentry *result = kefir_ir_type_at_impl(
+                typeentry->external.type,
+                typeentry->external.index,
+                kefir_ir_type_node_total_length(typeentry->external.type, typeentry->external.index),
+                target,
+                counter);
+            if (result != NULL) {
+                return result;
+            }
+        } else if (*counter == target) {
+            return typeentry;
+        }
     }
-    visitor->prehook = NULL;
-    visitor->posthook = NULL;
+    return NULL;
+}
+
+struct kefir_ir_typeentry *kefir_ir_type_at(const struct kefir_ir_type *type, kefir_size_t index) {
+    kefir_size_t counter = 0;
+    return kefir_ir_type_at_impl(type, 0, kefir_ir_type_raw_length(type), index, &counter);
+}
+
+kefir_size_t kefir_ir_type_total_length(const struct kefir_ir_type *type) {
+    kefir_size_t length = 0;
+    for (kefir_size_t i = 0; i < kefir_ir_type_raw_length(type); i++) {
+        struct kefir_ir_typeentry *typeentry = kefir_ir_type_raw_at(type, i);
+        REQUIRE(typeentry != NULL, 0);
+        if (typeentry->typecode == KEFIR_IR_TYPE_EXTERNAL) {
+            length += kefir_ir_type_node_total_length(typeentry->external.type, typeentry->external.index);
+        } else {
+            length++;
+        }
+    }
+    return length;
+}
+
+static kefir_result_t subtree_counter(const struct kefir_ir_type *type,
+                                    kefir_size_t index,
+                                    const struct kefir_ir_typeentry *typeentry,
+                                    void *payload) {
+    UNUSED(type);
+    UNUSED(index);
+    UNUSED(typeentry);
+    kefir_size_t *counter = (kefir_size_t *) payload;
+    (*counter)++;
     return KEFIR_OK;
 }
 
-kefir_size_t kefir_ir_type_subtree_total_length(const struct kefir_ir_type *type, kefir_size_t index) {
+kefir_size_t kefir_ir_type_nodes(const struct kefir_ir_type *type) {
+    struct kefir_ir_type_visitor visitor;
+    kefir_ir_type_visitor_init(&visitor, subtree_counter);
+    kefir_size_t counter = 0;
+    REQUIRE(kefir_ir_type_visitor_list_nodes(
+        type, &visitor, (void *) &counter, 0, kefir_ir_type_total_length(type)) == KEFIR_OK, 0);
+    return counter;
+}
+
+kefir_size_t kefir_ir_type_subnodes(const struct kefir_ir_type *type, kefir_size_t index) {
     struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(type, index);   
     REQUIRE(typeentry != NULL, 0);
     switch (typeentry->typecode) {
+        case KEFIR_IR_TYPE_EXTERNAL:
+            return kefir_ir_type_subnodes(typeentry->external.type, typeentry->external.index);
+
+        case KEFIR_IR_TYPE_STRUCT:
+        case KEFIR_IR_TYPE_UNION:
+            return typeentry->param + 1;
+
+        case KEFIR_IR_TYPE_ARRAY:
+            return 2;
+        
+        default:
+            return 1;
+    }
+}
+
+kefir_size_t kefir_ir_type_node_total_length(const struct kefir_ir_type *type, kefir_size_t index) {
+    struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(type, index);   
+    REQUIRE(typeentry != NULL, 0);
+    switch (typeentry->typecode) {
+        case KEFIR_IR_TYPE_EXTERNAL:
+            return kefir_ir_type_node_total_length(typeentry->external.type, typeentry->external.index);
+
         case KEFIR_IR_TYPE_STRUCT:
         case KEFIR_IR_TYPE_UNION: {
             kefir_size_t length = 1;
             kefir_size_t counter = typeentry->param;
             while (counter--) {
-                length += kefir_ir_type_subtree_total_length(type, index + length);
+                length += kefir_ir_type_node_total_length(type, index + length);
             }
             return length;
         };
 
         case KEFIR_IR_TYPE_ARRAY:
-            return kefir_ir_type_subtree_total_length(type, index + 1) + 1;
+            return kefir_ir_type_node_total_length(type, index + 1) + 1;
         
         default:
             return 1;
@@ -122,7 +214,7 @@ static kefir_result_t struct_union_slots(const struct kefir_ir_type *type,
                                void *payload) {
     struct slot_count *count = (struct slot_count *) payload;
     count->count++;
-    return kefir_ir_type_visitor_list_subtrees(
+    return kefir_ir_type_visitor_list_nodes(
             type, count->visitor, payload, index + 1, typeentry->param);
 }
 
@@ -136,13 +228,13 @@ static kefir_result_t array_slots(const struct kefir_ir_type *type,
         .visitor = count->visitor,
         .count = 0
     };
-    REQUIRE_OK(kefir_ir_type_visitor_list_subtrees(
+    REQUIRE_OK(kefir_ir_type_visitor_list_nodes(
             type, count->visitor, (void *) &nested, index + 1, 1));
     count->count += nested.count * typeentry->param;
     return KEFIR_OK;
 }
 
-kefir_size_t kefir_ir_type_subtree_slots(const struct kefir_ir_type *type, kefir_size_t index) {
+kefir_size_t kefir_ir_type_node_slots(const struct kefir_ir_type *type, kefir_size_t index) {
     REQUIRE(type != NULL, 0);
     struct kefir_ir_type_visitor visitor;
     kefir_ir_type_visitor_init(&visitor, scalar_slots);
@@ -153,7 +245,7 @@ kefir_size_t kefir_ir_type_subtree_slots(const struct kefir_ir_type *type, kefir
         .visitor = &visitor,
         .count = 0
     };
-    REQUIRE(kefir_ir_type_visitor_list_subtrees(type, &visitor, (void *) &count, index, 1) == KEFIR_OK, 0);
+    REQUIRE(kefir_ir_type_visitor_list_nodes(type, &visitor, (void *) &count, index, 1) == KEFIR_OK, 0);
     return count.count;
 }
 
@@ -168,12 +260,22 @@ kefir_size_t kefir_ir_type_total_slots(const struct kefir_ir_type *type) {
         .visitor = &visitor,
         .count = 0
     };
-    REQUIRE(kefir_ir_type_visitor_list_subtrees(
-        type, &visitor, (void *) &count, 0, kefir_ir_type_length(type)) == KEFIR_OK, 0);
+    REQUIRE(kefir_ir_type_visitor_list_nodes(
+        type, &visitor, (void *) &count, 0, kefir_ir_type_nodes(type)) == KEFIR_OK, 0);
     return count.count;
 }
 
-kefir_result_t kefir_ir_type_visitor_list_subtrees(const struct kefir_ir_type *type,
+kefir_result_t kefir_ir_type_visitor_init(struct kefir_ir_type_visitor *visitor, kefir_ir_type_visitor_callback_t defCallback) {
+    REQUIRE(visitor != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL IR type visitor pointer"));
+    for (kefir_size_t i = 0; i < KEFIR_IR_TYPE_COUNT; i++) {
+        visitor->visit[i] = defCallback;
+    }
+    visitor->prehook = NULL;
+    visitor->posthook = NULL;
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_ir_type_visitor_list_nodes(const struct kefir_ir_type *type,
                                           const struct kefir_ir_type_visitor *visitor,
                                           void *payload,
                                           kefir_size_t begin,
@@ -181,11 +283,11 @@ kefir_result_t kefir_ir_type_visitor_list_subtrees(const struct kefir_ir_type *t
 
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type pointer"));
     REQUIRE(visitor != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type visitor pointer"));
-    REQUIRE(begin < kefir_ir_type_length(type), KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Index exceeds IR type length"));
+    REQUIRE(begin < kefir_ir_type_total_length(type), KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Index exceeds IR type length"));
     REQUIRE(count > 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-zero number of subtrees"));
     for (kefir_size_t index = begin;
-        index < kefir_ir_type_length(type) && count-- > 0;
-        index += kefir_ir_type_subtree_total_length(type, index)) {
+        index < kefir_ir_type_total_length(type) && count-- > 0;
+        index += kefir_ir_type_node_total_length(type, index)) {
 
         struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(type, index);
         REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Failed to retrieve type entry from IR type"));
@@ -197,6 +299,9 @@ kefir_result_t kefir_ir_type_visitor_list_subtrees(const struct kefir_ir_type *t
     } while (0)
         INVOKE(visitor->prehook);
         switch (typeentry->typecode) {
+            case KEFIR_IR_TYPE_EXTERNAL:
+                return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected external type entry");
+
             case KEFIR_IR_TYPE_STRUCT:
                 REQUIRE(typeentry->param > 0,
                     KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected IR type struct to have non-zero member count"));
@@ -237,7 +342,7 @@ static kefir_result_t iter_visitor(const struct kefir_ir_type *type,
     struct iter_params *params =
         (struct iter_params *) payload;
     if (index < params->target) {
-        params->slot += kefir_ir_type_subtree_slots(type, index);
+        params->slot += kefir_ir_type_node_slots(type, index);
         return KEFIR_OK;
     } else if (index == params->target) {
         params->iter->index = index;
@@ -268,8 +373,8 @@ kefir_result_t kefir_ir_type_iterator_goto(struct kefir_ir_type_iterator *iter, 
     };
     struct kefir_ir_type_visitor visitor;
     kefir_ir_type_visitor_init(&visitor, iter_visitor);
-    REQUIRE_YIELD(kefir_ir_type_visitor_list_subtrees(
-        iter->type, &visitor, (void *) &params, 0, kefir_ir_type_length(iter->type)), KEFIR_NOT_FOUND);
+    REQUIRE_YIELD(kefir_ir_type_visitor_list_nodes(
+        iter->type, &visitor, (void *) &params, 0, kefir_ir_type_total_length(iter->type)), KEFIR_NOT_FOUND);
     return KEFIR_OK;
 }
 
@@ -287,8 +392,8 @@ kefir_result_t kefir_ir_type_iterator_goto_field(struct kefir_ir_type_iterator *
     };
     struct kefir_ir_type_visitor visitor;
     kefir_ir_type_visitor_init(&visitor, iter_visitor);
-    REQUIRE_YIELD(kefir_ir_type_visitor_list_subtrees(
-        iter->type, &visitor, (void *) &params, iter->index + 1, kefir_ir_type_subtree_total_length(iter->type, iter->index)),
+    REQUIRE_YIELD(kefir_ir_type_visitor_list_nodes(
+        iter->type, &visitor, (void *) &params, iter->index + 1, kefir_ir_type_node_total_length(iter->type, iter->index)),
         KEFIR_SET_ERROR(KEFIR_NOT_FOUND, "Unable to find requested field"));
     return KEFIR_OK;
 }
@@ -300,6 +405,6 @@ kefir_result_t kefir_ir_type_iterator_goto_index(struct kefir_ir_type_iterator *
     REQUIRE(typeentry->typecode == KEFIR_IR_TYPE_ARRAY, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected type entry to be an array"));
     REQUIRE(target < (kefir_size_t) typeentry->param, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Requested index is out of array bounds"));
     iter->index += iter->index;
-    iter->slot += 1 + kefir_ir_type_subtree_slots(iter->type, iter->index + 1) * target;
+    iter->slot += 1 + kefir_ir_type_node_slots(iter->type, iter->index + 1) * target;
     return KEFIR_OK;
 }

@@ -1,7 +1,33 @@
-#include "kefir/codegen/amd64/system-v/abi_allocation.h"
+#include "kefir/codegen/amd64/system-v/abi/registers.h"
 #include "kefir/codegen/util.h"
 #include "kefir/core/error.h"
 #include "kefir/core/mem.h"
+
+const char *KEFIR_AMD64_SYSV_INTEGER_REGISTERS[] = {
+    KEFIR_AMD64_RDI,
+    KEFIR_AMD64_RSI,
+    KEFIR_AMD64_RDX,
+    KEFIR_AMD64_RCX,
+    KEFIR_AMD64_R8,
+    KEFIR_AMD64_R9
+};
+
+kefir_size_t KEFIR_AMD64_SYSV_INTEGER_REGISTER_COUNT =
+    sizeof(KEFIR_AMD64_SYSV_INTEGER_REGISTERS) / sizeof(KEFIR_AMD64_SYSV_INTEGER_REGISTERS[0]);
+
+const char *KEFIR_AMD64_SYSV_SSE_REGISTERS[] = {
+    KEFIR_AMD64_XMM0,
+    KEFIR_AMD64_XMM1,
+    KEFIR_AMD64_XMM2,
+    KEFIR_AMD64_XMM3,
+    KEFIR_AMD64_XMM4,
+    KEFIR_AMD64_XMM5,
+    KEFIR_AMD64_XMM6,
+    KEFIR_AMD64_XMM7
+};
+
+kefir_size_t KEFIR_AMD64_SYSV_SSE_REGISTER_COUNT =
+    sizeof(KEFIR_AMD64_SYSV_SSE_REGISTERS) / sizeof(KEFIR_AMD64_SYSV_SSE_REGISTERS[0]);
 
 static kefir_result_t visitor_not_supported(const struct kefir_ir_type *type,
                                             kefir_size_t index,
@@ -167,7 +193,7 @@ static kefir_result_t assign_nested_struct(const struct kefir_ir_type *type,
     allocation->klass = KEFIR_AMD64_SYSV_PARAM_NO_CLASS;
     allocation->index = index;
     info->nested++;
-    REQUIRE_OK(kefir_ir_type_visitor_list_subtrees(type, info->visitor, (void *) info, index + 1, typeentry->param));
+    REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type, info->visitor, (void *) info, index + 1, typeentry->param));
     info->nested--;
     return KEFIR_OK;
 }
@@ -222,7 +248,7 @@ static kefir_result_t assign_nested_union(const struct kefir_ir_type *type,
     };
     REQUIRE_OK(kefir_amd64_sysv_abi_qwords_save_position(&info->top_allocation->container, &nested_info.init_position));
     REQUIRE_OK(kefir_amd64_sysv_abi_qwords_save_position(&info->top_allocation->container, &nested_info.max_position));
-    REQUIRE_OK(kefir_ir_type_visitor_list_subtrees(type, &visitor, (void *) &nested_info, index + 1, typeentry->param));
+    REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type, &visitor, (void *) &nested_info, index + 1, typeentry->param));
     REQUIRE_OK(kefir_amd64_sysv_abi_qwords_restore_position(&info->top_allocation->container, &nested_info.max_position));
     return KEFIR_OK;
 }
@@ -241,7 +267,7 @@ static kefir_result_t assign_nested_array(const struct kefir_ir_type *type,
     allocation->index = index;
     info->nested++;
     for (kefir_size_t i = 0; i < (kefir_size_t) typeentry->param; i++) {
-        REQUIRE_OK(kefir_ir_type_visitor_list_subtrees(type, info->visitor, (void *) info, index + 1, 1));
+        REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type, info->visitor, (void *) info, index + 1, 1));
     }
     info->nested--;
     return KEFIR_OK;
@@ -331,7 +357,7 @@ static kefir_result_t immediate_struct_unwrap(struct kefir_mem *mem,
         .slot = slot,
         .nested = 0
     };
-    kefir_result_t res = kefir_ir_type_visitor_list_subtrees(type, &visitor, (void *) &info, index + 1, typeentry->param);
+    kefir_result_t res = kefir_ir_type_visitor_list_nodes(type, &visitor, (void *) &info, index + 1, typeentry->param);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_amd64_sysv_abi_qwords_free(&top_allocation->container, mem);
         return res;
@@ -388,7 +414,7 @@ static kefir_result_t assign_immediate_struct(const struct kefir_ir_type *type,
 
     if (layout->size > 8 * KEFIR_AMD64_SYSV_ABI_QWORD || !layout->aligned) {
         allocation->klass = KEFIR_AMD64_SYSV_PARAM_MEMORY;
-        info->slot += kefir_ir_type_subtree_slots(type, index) - 1;
+        info->slot += kefir_ir_type_node_slots(type, index) - 1;
     } else {
         REQUIRE_OK(immediate_struct_unwrap(
             info->mem, type, index, typeentry, layout, info->layout, info->allocation, &info->slot, allocation));
@@ -425,7 +451,7 @@ static kefir_result_t immediate_array_unwrap(struct kefir_mem *mem,
         .nested = 0
     };
     for (kefir_size_t i = 0; i < (kefir_size_t) typeentry->param; i++) {
-        kefir_result_t res = kefir_ir_type_visitor_list_subtrees(type, &visitor, (void *) &info, index + 1, 1);
+        kefir_result_t res = kefir_ir_type_visitor_list_nodes(type, &visitor, (void *) &info, index + 1, 1);
         REQUIRE_ELSE(res == KEFIR_OK, {
             kefir_amd64_sysv_abi_qwords_free(&top_allocation->container, mem);
             return res;
@@ -449,7 +475,7 @@ static kefir_result_t assign_immediate_array(const struct kefir_ir_type *type,
 
     if (layout->size > 8 * KEFIR_AMD64_SYSV_ABI_QWORD || !layout->aligned) {
         allocation->klass = KEFIR_AMD64_SYSV_PARAM_MEMORY;
-        info->slot += kefir_ir_type_subtree_slots(type, index) - 1;
+        info->slot += kefir_ir_type_node_slots(type, index) - 1;
     } else {
         immediate_array_unwrap(info->mem, type, index, typeentry, layout, info->layout, info->allocation, &info->slot, allocation);
     }
@@ -487,7 +513,7 @@ static kefir_result_t immediate_union_unwrap(struct kefir_mem *mem,
     };
     REQUIRE_OK(kefir_amd64_sysv_abi_qwords_save_position(&top_allocation->container, &info.init_position));
     REQUIRE_OK(kefir_amd64_sysv_abi_qwords_save_position(&top_allocation->container, &info.max_position));
-    kefir_result_t res = kefir_ir_type_visitor_list_subtrees(type, &visitor, (void *) &info, index + 1, typeentry->param);
+    kefir_result_t res = kefir_ir_type_visitor_list_nodes(type, &visitor, (void *) &info, index + 1, typeentry->param);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_amd64_sysv_abi_qwords_free(&top_allocation->container, mem);
         return res;
@@ -511,7 +537,7 @@ static kefir_result_t assign_immediate_union(const struct kefir_ir_type *type,
 
     if (layout->size > 8 * KEFIR_AMD64_SYSV_ABI_QWORD || !layout->aligned) {
         allocation->klass = KEFIR_AMD64_SYSV_PARAM_MEMORY;
-        info->slot += kefir_ir_type_subtree_slots(type, index) - 1;
+        info->slot += kefir_ir_type_node_slots(type, index) - 1;
     } else {
         immediate_union_unwrap(info->mem, type, index, typeentry, layout, info->layout, info->allocation, &info->slot, allocation);
     }
@@ -559,7 +585,7 @@ kefir_result_t kefir_amd64_sysv_parameter_classify(struct kefir_mem *mem,
         .layout = layout,
         .allocation = allocation
     };
-    res = kefir_ir_type_visitor_list_subtrees(type, &visitor, (void *) &info, 0, kefir_ir_type_length(type));
+    res = kefir_ir_type_visitor_list_nodes(type, &visitor, (void *) &info, 0, kefir_ir_type_nodes(type));
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_vector_free(mem, allocation);
         return res;
@@ -773,6 +799,6 @@ kefir_result_t kefir_amd64_sysv_parameter_allocate(struct kefir_mem *mem,
         .layout = layout,
         .allocation = allocation
     };
-    REQUIRE_OK(kefir_ir_type_visitor_list_subtrees(type, &visitor, (void *) &state, 0, kefir_ir_type_length(type)));
+    REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type, &visitor, (void *) &state, 0, kefir_ir_type_nodes(type)));
     return KEFIR_OK;
 }

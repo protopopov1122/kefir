@@ -2,8 +2,8 @@
 #include <inttypes.h>
 #include "kefir/test/unit_test.h"
 #include "kefir/ir/type.h"
-#include "kefir/codegen/amd64/system-v/abi_data.h"
-#include "kefir/codegen/amd64/system-v/abi_allocation.h"
+#include "kefir/codegen/amd64/system-v/abi/data_layout.h"
+#include "kefir/codegen/amd64/system-v/abi/registers.h"
 
 #define ASSERT_DATA_ALLOC(vector, index, _size, _alignment, offset) \
     do { \
@@ -204,4 +204,24 @@ DEFINE_CASE(amd64_sysv_abi_data_test8, "AMD64 System V ABI - eightbyte allocatio
     ASSERT_OK(kefir_amd64_sysv_abi_qwords_free(&qwords, &kft_mem));
     ASSERT_OK(kefir_vector_free(&kft_mem, &vector));
     ASSERT_OK(kefir_ir_type_free(&kft_mem, &type));
+END_CASE
+
+DEFINE_CASE(amd64_sysv_abi_data_test9, "AMD64 System V ABI - external structure definitions")
+    struct kefir_ir_type type1, type2;
+    struct kefir_vector vector;
+    ASSERT_OK(kefir_ir_type_alloc(&kft_mem, 3, &type1));
+    ASSERT_OK(kefir_ir_type_append_v(&type1, KEFIR_IR_TYPE_STRUCT, 0, 2));
+    ASSERT_OK(kefir_ir_type_append_v(&type1, KEFIR_IR_TYPE_INT8, 0, 0));
+    ASSERT_OK(kefir_ir_type_append_v(&type1, KEFIR_IR_TYPE_FLOAT32, 0, 0));
+    ASSERT_OK(kefir_ir_type_alloc(&kft_mem, 3, &type2));
+    ASSERT_OK(kefir_ir_type_append_v(&type2, KEFIR_IR_TYPE_ARRAY, 0, 2));
+    ASSERT_OK(kefir_ir_type_append_e(&type2, &type1, 0));
+    ASSERT_OK(kefir_amd64_sysv_type_layout(&type2, &kft_mem, &vector));
+    ASSERT_DATA_ALLOC(&vector, 0, 16, 4, 0);
+    ASSERT_DATA_ALLOC(&vector, 1, 8, 4, 0);
+    ASSERT_DATA_ALLOC(&vector, 2, 1, 1, 0);
+    ASSERT_DATA_ALLOC(&vector, 3, 4, 4, 4);
+    ASSERT_OK(kefir_vector_free(&kft_mem, &vector));
+    ASSERT_OK(kefir_ir_type_free(&kft_mem, &type2));
+    ASSERT_OK(kefir_ir_type_free(&kft_mem, &type1));
 END_CASE

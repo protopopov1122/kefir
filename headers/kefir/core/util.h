@@ -12,6 +12,7 @@
             *(ptr) = (value); \
         } \
     } while (0)
+
 #define REQUIRE(condition, value) \
     do { \
         if (!(condition)) { \
@@ -22,6 +23,12 @@
     do { \
         if (!(condition)) { \
             block; \
+        } \
+    } while (0)
+#define REQUIRE_CHAIN(result, expr) \
+    do { \
+        if (*(result) == KEFIR_OK) { \
+            *(result) = (expr); \
         } \
     } while (0)
 #define REQUIRE_OK(expr) \

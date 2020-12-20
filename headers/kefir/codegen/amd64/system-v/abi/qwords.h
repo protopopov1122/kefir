@@ -4,7 +4,8 @@
 #include "kefir/core/basic-types.h"
 #include "kefir/core/vector.h"
 #include "kefir/core/mem.h"
-#include "kefir/codegen/amd64/system-v/abi_data.h"
+#include "kefir/codegen/amd64/system-v/abi/data_layout.h"
+#include "kefir/codegen/amd64/system-v/abi/data.h"
 
 #define KEFIR_AMD64_SYSV_ABI_QWORD 8
 

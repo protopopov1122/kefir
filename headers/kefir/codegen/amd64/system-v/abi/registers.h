@@ -1,12 +1,18 @@
-#ifndef KEFIR_CODEGEN_AMD64_SYSTEM_V_ABI_ALLOCATION_H_
-#define KEFIR_CODEGEN_AMD64_SYSTEM_V_ABI_ALLOCATION_H_
+#ifndef KEFIR_CODEGEN_AMD64_SYSTEM_V_ABI_REGISTERS_H_
+#define KEFIR_CODEGEN_AMD64_SYSTEM_V_ABI_REGISTERS_H_
 
 #include <stdbool.h>
 #include "kefir/core/basic-types.h"
 #include "kefir/core/vector.h"
 #include "kefir/core/mem.h"
-#include "kefir/codegen/amd64/system-v/abi_data.h"
-#include "kefir/codegen/amd64/system-v/abi_qwords.h"
+#include "kefir/codegen/amd64/system-v/abi/data_layout.h"
+#include "kefir/codegen/amd64/system-v/abi/data.h"
+#include "kefir/codegen/amd64/system-v/abi/qwords.h"
+
+extern const char *KEFIR_AMD64_SYSV_INTEGER_REGISTERS[];
+extern kefir_size_t KEFIR_AMD64_SYSV_INTEGER_REGISTER_COUNT;
+extern const char *KEFIR_AMD64_SYSV_SSE_REGISTERS[];
+extern kefir_size_t KEFIR_AMD64_SYSV_SSE_REGISTER_COUNT;
 
 typedef enum kefir_amd64_sysv_parameter_type {
     KEFIR_AMD64_SYSV_INPUT_PARAM_IMMEDIATE,

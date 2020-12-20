@@ -28,13 +28,21 @@ typedef enum kefir_ir_typecode {
     KEFIR_IR_TYPE_LONG,
     KEFIR_IR_TYPE_WORD,
     // > 64-bit scalars are not supported yet
-    KEFIR_IR_TYPE_COUNT // Auxilary
+    KEFIR_IR_TYPE_COUNT, // Auxilary
+    // Implementation internals, DO NOT REORDER
+    KEFIR_IR_TYPE_EXTERNAL
 } kefir_ir_typecode_t;
 
 typedef struct kefir_ir_typeentry {
     kefir_ir_typecode_t typecode;
     kefir_uint32_t alignment : 8;
-    kefir_int32_t param;
+    union {
+        kefir_int64_t param;
+        struct {
+            const struct kefir_ir_type *type;
+            kefir_size_t index;
+        } external;
+    };
 } kefir_ir_typeentry_t;
 
 typedef struct kefir_ir_type {
@@ -42,23 +50,30 @@ typedef struct kefir_ir_type {
 } kefir_ir_type_t;
 
 kefir_result_t kefir_ir_type_init(struct kefir_ir_type *, void *, kefir_size_t);
-kefir_size_t kefir_ir_type_available(const struct kefir_ir_type *);
-kefir_size_t kefir_ir_type_length(const struct kefir_ir_type *);
-struct kefir_ir_typeentry *kefir_ir_type_at(const struct kefir_ir_type *, kefir_size_t);
+kefir_size_t kefir_ir_type_raw_available(const struct kefir_ir_type *);
+kefir_size_t kefir_ir_type_raw_length(const struct kefir_ir_type *);
+struct kefir_ir_typeentry *kefir_ir_type_raw_at(const struct kefir_ir_type *, kefir_size_t);
 kefir_result_t kefir_ir_type_append(struct kefir_ir_type *, const struct kefir_ir_typeentry *);
-kefir_result_t kefir_ir_type_append_v(struct kefir_ir_type *, kefir_ir_typecode_t, kefir_uint32_t, kefir_int32_t);
+kefir_result_t kefir_ir_type_append_v(struct kefir_ir_type *, kefir_ir_typecode_t, kefir_uint32_t, kefir_int64_t);
+kefir_result_t kefir_ir_type_append_e(struct kefir_ir_type *, const struct kefir_ir_type *, kefir_size_t);
 kefir_result_t kefir_ir_type_alloc(struct kefir_mem *, kefir_size_t, struct kefir_ir_type *);
 kefir_result_t kefir_ir_type_realloc(struct kefir_mem *, kefir_size_t, struct kefir_ir_type *);
 kefir_result_t kefir_ir_type_free(struct kefir_mem *, struct kefir_ir_type *);
+
+struct kefir_ir_typeentry *kefir_ir_type_at(const struct kefir_ir_type *, kefir_size_t);
+kefir_size_t kefir_ir_type_total_length(const struct kefir_ir_type *);
+kefir_size_t kefir_ir_type_nodes(const struct kefir_ir_type *);
+kefir_size_t kefir_ir_type_subnodes(const struct kefir_ir_type *, kefir_size_t);
+kefir_size_t kefir_ir_type_node_total_length(const struct kefir_ir_type *, kefir_size_t);
+kefir_size_t kefir_ir_type_node_slots(const struct kefir_ir_type *, kefir_size_t);
+kefir_size_t kefir_ir_type_total_slots(const struct kefir_ir_type *);
 
 typedef kefir_result_t (*kefir_ir_type_visitor_callback_t)(const struct kefir_ir_type *,
                                                        kefir_size_t,
                                                        const struct kefir_ir_typeentry *,
                                                        void *);
-typedef kefir_result_t (*kefir_ir_type_visitor_hook_t)(const struct kefir_ir_type *,
-                                                   kefir_size_t,
-                                                   const struct kefir_ir_typeentry *,
-                                                   void *);
+
+typedef kefir_ir_type_visitor_callback_t kefir_ir_type_visitor_hook_t;
 
 typedef struct kefir_ir_type_visitor {
     kefir_ir_type_visitor_callback_t visit[KEFIR_IR_TYPE_COUNT];
@@ -67,10 +82,7 @@ typedef struct kefir_ir_type_visitor {
 } kefir_ir_type_visitor_t;
 
 kefir_result_t kefir_ir_type_visitor_init(struct kefir_ir_type_visitor *, kefir_ir_type_visitor_callback_t);
-kefir_size_t kefir_ir_type_subtree_total_length(const struct kefir_ir_type *, kefir_size_t);
-kefir_size_t kefir_ir_type_subtree_slots(const struct kefir_ir_type *, kefir_size_t);
-kefir_size_t kefir_ir_type_total_slots(const struct kefir_ir_type *);
-kefir_result_t kefir_ir_type_visitor_list_subtrees(const struct kefir_ir_type *,
+kefir_result_t kefir_ir_type_visitor_list_nodes(const struct kefir_ir_type *,
                                           const struct kefir_ir_type_visitor *,
                                           void *,
                                           kefir_size_t,

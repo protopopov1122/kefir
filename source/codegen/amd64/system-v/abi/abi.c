@@ -3,8 +3,8 @@
 #include "kefir/core/error.h"
 #include "kefir/codegen/amd64/shortcuts.h"
 #include "kefir/codegen/amd64/system-v/runtime.h"
-#include "kefir/codegen/amd64/system-v/abi_data.h"
-#include "kefir/codegen/amd64/system-v/abi_allocation.h"
+#include "kefir/codegen/amd64/system-v/abi/data_layout.h"
+#include "kefir/codegen/amd64/system-v/abi/registers.h"
 #include <stdio.h>
 
 static kefir_result_t preserve_state(struct kefir_amd64_asmgen *asmgen) {
@@ -96,7 +96,8 @@ static kefir_result_t load_arguments(struct kefir_codegen_amd64 *codegen,
     });
     KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS(&visitor, load_integer_argument);
     KEFIR_IR_TYPE_VISITOR_INIT_FIXED_FP(&visitor, load_sse_argument);
-    res = kefir_ir_type_visitor_list_subtrees(&func->params, &visitor, (void *) &param, 0, kefir_ir_type_length(&func->params));
+    res = kefir_ir_type_visitor_list_nodes(&func->params, &visitor,
+        (void *) &param, 0, kefir_ir_type_nodes(&func->params));
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_amd64_sysv_parameter_free(codegen->mem, &allocation);
         kefir_vector_free(codegen->mem, &layout);
@@ -108,21 +109,55 @@ static kefir_result_t load_arguments(struct kefir_codegen_amd64 *codegen,
 }
 
 kefir_result_t kefir_amd64_sysv_function_prologue(struct kefir_codegen_amd64 *codegen,
-                                              const struct kefir_irfunction_decl *func) {
+                                              const struct kefir_amd64_sysv_function *func) {
     REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 code generator"));
     REQUIRE(func != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR function declaration"));
-    ASMGEN_COMMENT(&codegen->asmgen, FORMAT(codegen->buf[0], "Begin prologue of %s", func->identifier));
+    ASMGEN_COMMENT(&codegen->asmgen, FORMAT(codegen->buf[0], "Begin prologue of %s", func->func->declaration.identifier));
     REQUIRE_OK(preserve_state(&codegen->asmgen));
-    REQUIRE_OK(load_arguments(codegen, func));
-    ASMGEN_COMMENT(&codegen->asmgen, FORMAT(codegen->buf[0], "End prologue of %s", func->identifier));
+    REQUIRE_OK(load_arguments(codegen, &func->func->declaration));
+    ASMGEN_COMMENT(&codegen->asmgen, FORMAT(codegen->buf[0], "End prologue of %s", func->func->declaration.identifier));
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_amd64_sysv_function_epilogue(struct kefir_codegen_amd64 *codegen, const struct kefir_irfunction_decl *func) {
+kefir_result_t kefir_amd64_sysv_function_epilogue(struct kefir_codegen_amd64 *codegen,
+                                              const struct kefir_amd64_sysv_function *func) {
     REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 code generator"));
     REQUIRE(func != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR function declaration"));
-    ASMGEN_COMMENT(&codegen->asmgen, FORMAT(codegen->buf[0], "Begin epilogue of %s", func->identifier));
+    ASMGEN_COMMENT(&codegen->asmgen, FORMAT(codegen->buf[0], "Begin epilogue of %s", func->func->declaration.identifier));
     REQUIRE_OK(restore_state(&codegen->asmgen));
-    ASMGEN_COMMENT(&codegen->asmgen, FORMAT(codegen->buf[0], "End of %s", func->identifier));
+    ASMGEN_COMMENT(&codegen->asmgen, FORMAT(codegen->buf[0], "End of %s", func->func->declaration.identifier));
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_amd64_sysv_function_alloc(struct kefir_mem *mem,
+                                           const struct kefir_irfunction *func,
+                                           struct kefir_amd64_sysv_function *sysv_func) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(func != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR function"));
+    REQUIRE(sysv_func != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 System-V function"));
+    sysv_func->func = func;
+    REQUIRE_OK(kefir_amd64_sysv_type_layout(&func->declaration.params, mem, &sysv_func->parameter_layout));
+    kefir_result_t res = kefir_amd64_sysv_parameter_classify(mem,
+        &func->declaration.params, &sysv_func->parameter_layout, &sysv_func->parameter_allocation);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_vector_free(mem, &sysv_func->parameter_layout);
+        return res;
+    });
+    res = kefir_amd64_sysv_parameter_allocate(mem,
+        &func->declaration.params, &sysv_func->parameter_layout,
+        &sysv_func->parameter_allocation, &sysv_func->parameter_requirements);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_amd64_sysv_parameter_free(mem, &sysv_func->parameter_allocation);
+        kefir_vector_free(mem, &sysv_func->parameter_layout);
+        return res;
+    });
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_amd64_sysv_function_free(struct kefir_mem *mem, struct kefir_amd64_sysv_function *sysv_func) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(sysv_func != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 System-V function"));
+    REQUIRE_OK(kefir_amd64_sysv_parameter_free(mem, &sysv_func->parameter_allocation));
+    REQUIRE_OK(kefir_vector_free(mem, &sysv_func->parameter_layout));
     return KEFIR_OK;
 }
