@@ -81,12 +81,15 @@ kefir_result_t kefir_amd64_nasm_gen_init(struct kefir_amd64_asmgen *, FILE *);
 #define KEFIR_AMD64_PUSH  "push"
 #define KEFIR_AMD64_POP   "pop"
 #define KEFIR_AMD64_MOV   "mov"
+#define KEFIR_AMD64_LEA   "lea"
 #define KEFIR_AMD64_MOVQ  "movq"
 #define KEFIR_AMD64_JMP   "jmp"
 #define KEFIR_AMD64_RET   "ret"
 #define KEFIR_AMD64_FSTCW "fstcw"
 #define KEFIR_AMD64_CALL  "call"
 #define KEFIR_AMD64_PEXTRQ  "pextrq"
+#define KEFIR_AMD64_ADD  "add"
+#define KEFIR_AMD64_SUB  "sub"
 
 #define KEFIR_AMD64_INDIRECT(buf, len, content) \
     (kefir_format((buf), (len), "[%s]", (content)))

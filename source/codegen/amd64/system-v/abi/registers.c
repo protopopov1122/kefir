@@ -145,7 +145,7 @@ static kefir_result_t assign_nested_scalar(const struct kefir_ir_type *type,
     allocation->klass = KEFIR_AMD64_SYSV_PARAM_NO_CLASS;
     allocation->index = index;
     kefir_amd64_sysv_data_class_t dataclass =
-        (typeentry->typecode == KEFIR_IR_TYPE_FLOAT32 || typeentry->typecode == KEFIR_IR_TYPE_FLOAT32)
+        (typeentry->typecode == KEFIR_IR_TYPE_FLOAT32 || typeentry->typecode == KEFIR_IR_TYPE_FLOAT64)
             ? KEFIR_AMD64_SYSV_PARAM_SSE
             : KEFIR_AMD64_SYSV_PARAM_INTEGER;
     REQUIRE_OK(kefir_amd64_sysv_abi_qwords_next(&info->top_allocation->container,

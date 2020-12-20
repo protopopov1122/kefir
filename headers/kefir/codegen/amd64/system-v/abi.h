@@ -10,9 +10,16 @@
 
 typedef struct kefir_amd64_sysv_function {
     const struct kefir_irfunction *func;
-    struct kefir_vector parameter_layout;
-    struct kefir_vector parameter_allocation;
-    struct kefir_amd64_sysv_parameter_location parameter_requirements;
+    struct {
+        struct kefir_vector layout;
+        struct kefir_vector allocation;
+        struct kefir_amd64_sysv_parameter_location location;
+    } parameters;
+
+    struct {
+        kefir_size_t size;
+        kefir_size_t alignment;
+    } frame;
 } kefir_amd64_sysv_function_t;
 
 kefir_result_t kefir_amd64_sysv_function_alloc(struct kefir_mem *, const struct kefir_irfunction *, struct kefir_amd64_sysv_function *);
