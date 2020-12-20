@@ -29,20 +29,12 @@ typedef enum kefir_ir_typecode {
     KEFIR_IR_TYPE_WORD,
     // > 64-bit scalars are not supported yet
     KEFIR_IR_TYPE_COUNT, // Auxilary
-    // Implementation internals, DO NOT REORDER
-    KEFIR_IR_TYPE_EXTERNAL
 } kefir_ir_typecode_t;
 
 typedef struct kefir_ir_typeentry {
     kefir_ir_typecode_t typecode;
     kefir_uint32_t alignment : 8;
-    union {
-        kefir_int64_t param;
-        struct {
-            const struct kefir_ir_type *type;
-            kefir_size_t index;
-        } external;
-    };
+    kefir_int64_t param;
 } kefir_ir_typeentry_t;
 
 typedef struct kefir_ir_type {

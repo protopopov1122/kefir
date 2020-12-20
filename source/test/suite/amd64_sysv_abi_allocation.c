@@ -202,7 +202,7 @@ DEFINE_CASE(amd64_sysv_abi_allocation_test6, "AMD64 System V ABI - parameter all
     ASSERT_OK(kefir_ir_type_append_v(&type1, KEFIR_IR_TYPE_INT64, 1, 0));
     ASSERT_OK(kefir_ir_type_append_v(&type1, KEFIR_IR_TYPE_STRUCT, 0, 1));
     ASSERT_OK(kefir_ir_type_append_v(&type1, KEFIR_IR_TYPE_INT64, 0, 0));
-    ASSERT_OK(kefir_ir_type_alloc(&kft_mem, 1, &type2));
+    ASSERT_OK(kefir_ir_type_alloc(&kft_mem, 2, &type2));
     ASSERT_OK(kefir_ir_type_append_e(&type2, &type1, 2));
     ASSERT_OK(kefir_amd64_sysv_type_layout(&type2, &kft_mem, &layout));
     ASSERT_OK(kefir_amd64_sysv_parameter_classify(&kft_mem, &type2, &layout, &allocation));

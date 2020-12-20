@@ -419,7 +419,7 @@ DEFINE_CASE(amd64_sysv_abi_classification_test15, "AMD64 System V ABI - external
     ASSERT_OK(kefir_ir_type_append_v(&type1, KEFIR_IR_TYPE_FLOAT32, 0, 0));
     ASSERT_OK(kefir_ir_type_append_v(&type1, KEFIR_IR_TYPE_ARRAY, 0, 2));
     ASSERT_OK(kefir_ir_type_append_v(&type1, KEFIR_IR_TYPE_INT32, 0, 0));
-    ASSERT_OK(kefir_ir_type_alloc(&kft_mem, 2, &type2));
+    ASSERT_OK(kefir_ir_type_alloc(&kft_mem, 6, &type2));
     ASSERT_OK(kefir_ir_type_append_v(&type2, KEFIR_IR_TYPE_ARRAY, 0, 1));
     ASSERT_OK(kefir_ir_type_append_e(&type2, &type1, 1));
     ASSERT_OK(kefir_amd64_sysv_type_layout(&type2, &kft_mem, &layout));

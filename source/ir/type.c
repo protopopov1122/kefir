@@ -47,15 +47,17 @@ kefir_result_t kefir_ir_type_append_v(struct kefir_ir_type *type,
 }
 
 kefir_result_t kefir_ir_type_append_e(struct kefir_ir_type *type, const struct kefir_ir_type *ext, kefir_size_t index) {
-    struct kefir_ir_typeentry typeentry = {
-        .typecode = KEFIR_IR_TYPE_EXTERNAL,
-        .alignment = 0,
-        .external = {
-            .type = ext,
-            .index = index
-        }
-    };
-    return kefir_ir_type_append(type, &typeentry);
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type"));
+    REQUIRE(ext != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid external IR type"));
+    const kefir_size_t length = kefir_ir_type_node_total_length(ext, index);
+    REQUIRE(length > 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid external index"));
+    REQUIRE(kefir_ir_type_raw_available(type) >= length, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to extend IR type"));
+    for (kefir_size_t i = index; i < index + length; i++) {
+        struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(ext, i);
+        REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to retrieve external type node"));
+        REQUIRE_OK(kefir_ir_type_append(type, typeentry));
+    }
+    return KEFIR_OK;
 }
 
 kefir_result_t kefir_ir_type_alloc(struct kefir_mem *mem, kefir_size_t capacity, struct kefir_ir_type *type) {
@@ -82,48 +84,12 @@ kefir_result_t kefir_ir_type_free(struct kefir_mem *mem, struct kefir_ir_type *t
     return kefir_vector_free(mem, &type->vector);
 }
 
-struct kefir_ir_typeentry *kefir_ir_type_at_impl(const struct kefir_ir_type *type,
-                                             kefir_size_t begin,
-                                             kefir_size_t count,
-                                             kefir_size_t target,
-                                             kefir_size_t *counter) {
-    for (kefir_size_t i = begin; i < begin + count; i++, (*counter)++) {
-        struct kefir_ir_typeentry *typeentry = kefir_ir_type_raw_at(type, i);
-        REQUIRE(typeentry != NULL, NULL);
-        if (typeentry->typecode == KEFIR_IR_TYPE_EXTERNAL) {
-            struct kefir_ir_typeentry *result = kefir_ir_type_at_impl(
-                typeentry->external.type,
-                typeentry->external.index,
-                kefir_ir_type_node_total_length(typeentry->external.type, typeentry->external.index),
-                target,
-                counter);
-            if (result != NULL) {
-                return result;
-            }
-        } else if (*counter == target) {
-            return typeentry;
-        }
-    }
-    return NULL;
-}
-
 struct kefir_ir_typeentry *kefir_ir_type_at(const struct kefir_ir_type *type, kefir_size_t index) {
-    kefir_size_t counter = 0;
-    return kefir_ir_type_at_impl(type, 0, kefir_ir_type_raw_length(type), index, &counter);
+    return kefir_ir_type_raw_at(type, index);
 }
 
 kefir_size_t kefir_ir_type_total_length(const struct kefir_ir_type *type) {
-    kefir_size_t length = 0;
-    for (kefir_size_t i = 0; i < kefir_ir_type_raw_length(type); i++) {
-        struct kefir_ir_typeentry *typeentry = kefir_ir_type_raw_at(type, i);
-        REQUIRE(typeentry != NULL, 0);
-        if (typeentry->typecode == KEFIR_IR_TYPE_EXTERNAL) {
-            length += kefir_ir_type_node_total_length(typeentry->external.type, typeentry->external.index);
-        } else {
-            length++;
-        }
-    }
-    return length;
+    return kefir_ir_type_raw_length(type);
 }
 
 static kefir_result_t subtree_counter(const struct kefir_ir_type *type,
@@ -151,9 +117,6 @@ kefir_size_t kefir_ir_type_subnodes(const struct kefir_ir_type *type, kefir_size
     struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(type, index);   
     REQUIRE(typeentry != NULL, 0);
     switch (typeentry->typecode) {
-        case KEFIR_IR_TYPE_EXTERNAL:
-            return kefir_ir_type_subnodes(typeentry->external.type, typeentry->external.index);
-
         case KEFIR_IR_TYPE_STRUCT:
         case KEFIR_IR_TYPE_UNION:
             return typeentry->param + 1;
@@ -170,9 +133,6 @@ kefir_size_t kefir_ir_type_node_total_length(const struct kefir_ir_type *type, k
     struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(type, index);   
     REQUIRE(typeentry != NULL, 0);
     switch (typeentry->typecode) {
-        case KEFIR_IR_TYPE_EXTERNAL:
-            return kefir_ir_type_node_total_length(typeentry->external.type, typeentry->external.index);
-
         case KEFIR_IR_TYPE_STRUCT:
         case KEFIR_IR_TYPE_UNION: {
             kefir_size_t length = 1;
@@ -299,9 +259,6 @@ kefir_result_t kefir_ir_type_visitor_list_nodes(const struct kefir_ir_type *type
     } while (0)
         INVOKE(visitor->prehook);
         switch (typeentry->typecode) {
-            case KEFIR_IR_TYPE_EXTERNAL:
-                return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected external type entry");
-
             case KEFIR_IR_TYPE_STRUCT:
                 REQUIRE(typeentry->param > 0,
                     KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected IR type struct to have non-zero member count"));

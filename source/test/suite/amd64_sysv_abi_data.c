@@ -213,7 +213,7 @@ DEFINE_CASE(amd64_sysv_abi_data_test9, "AMD64 System V ABI - external structure 
     ASSERT_OK(kefir_ir_type_append_v(&type1, KEFIR_IR_TYPE_STRUCT, 0, 2));
     ASSERT_OK(kefir_ir_type_append_v(&type1, KEFIR_IR_TYPE_INT8, 0, 0));
     ASSERT_OK(kefir_ir_type_append_v(&type1, KEFIR_IR_TYPE_FLOAT32, 0, 0));
-    ASSERT_OK(kefir_ir_type_alloc(&kft_mem, 3, &type2));
+    ASSERT_OK(kefir_ir_type_alloc(&kft_mem, 4, &type2));
     ASSERT_OK(kefir_ir_type_append_v(&type2, KEFIR_IR_TYPE_ARRAY, 0, 2));
     ASSERT_OK(kefir_ir_type_append_e(&type2, &type1, 0));
     ASSERT_OK(kefir_amd64_sysv_type_layout(&type2, &kft_mem, &vector));
