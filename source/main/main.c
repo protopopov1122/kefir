@@ -35,7 +35,7 @@ int main(int argc, const char **argv) {
         .free = kefir_free,
         .data = NULL
     };
-    kefir_codegen_amd64_t codegen;
+    struct kefir_codegen_amd64 codegen;
     kefir_codegen_amd64_sysv_init(&codegen, stdout, &mem);
 
     kefir_irfunction_t func;
