@@ -4,7 +4,7 @@ DBG=-g3 -ggdb -DKFT_NOFORK
 CFLAGS=-std=c11 -Wall -Wextra -pedantic $(OPT) $(DBG)
 INCLUDES=-Iheaders
 
-ROOT=$(shell pwd)
+ROOT=.
 BIN_DIR=$(ROOT)/bin
 SOURCE_DIR=$(ROOT)/source
 
@@ -25,5 +25,5 @@ endif
 
 $(BIN_DIR)/%.o: $(SOURCE_DIR)/%.c $(BIN_DIR)/%.d
 	@mkdir -p $(shell dirname "$@")
-	@echo "Building $(shell realpath --relative-to='$(ROOT)' $@)"
+	@echo "Building $@"
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@

@@ -8,7 +8,7 @@ ALL += $(BIN_DIR)/kefir
 
 $(BIN_DIR)/kefir: $(DEPS) $(KEFIR_LIB_OBJS) $(KEFIR_MAIN_OBJS)
 	@mkdir -p $(shell dirname "$@")
-	@echo "Linking $(shell realpath --relative-to='$(ROOT)' $@)"
+	@echo "Linking $@"
 	@$(CC) -o $@ $(KEFIR_LIB_OBJS) $(KEFIR_MAIN_OBJS)
 
 
