@@ -1,6 +1,7 @@
 #ifndef KEFIR_CODEGEN_AMD64_NATIVEGEN_H_
 #define KEFIR_CODEGEN_AMD64_NATIVEGEN_H_
 
+#include <stdbool.h>
 #include <stdio.h>
 #include "kefir/core/basic-types.h"
 #include "kefir/core/util.h"
@@ -21,6 +22,10 @@ typedef struct kefir_amd64_asmgen {
     kefir_result_t (*close)(struct kefir_amd64_asmgen *);
 
     void *data;
+    struct {
+        bool enable_comments;
+        bool enable_identation;
+    } settings;
 } kefir_amd64_asmgen_t;
 
 kefir_result_t kefir_amd64_nasm_gen_init(struct kefir_amd64_asmgen *, FILE *);

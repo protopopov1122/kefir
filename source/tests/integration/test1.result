@@ -1,0 +1,10 @@
+call __pccrt_preserve_state
+add rsp, 16
+mov r13, rsp
+push rdi
+push rsi
+mov [r13 + 0], rdx
+pextrq r14, xmm0, 0
+mov [r13 + 8], r14
+lea r12, [r13 + 0]
+push r12

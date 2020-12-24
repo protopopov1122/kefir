@@ -10,14 +10,3 @@ $(BIN_DIR)/kefir: $(DEPS) $(KEFIR_LIB_OBJS) $(KEFIR_MAIN_OBJS)
 	@mkdir -p $(shell dirname "$@")
 	@echo "Linking $@"
 	@$(CC) -o $@ $(KEFIR_LIB_OBJS) $(KEFIR_MAIN_OBJS)
-
-
-all: $(ALL)
-
-deps: $(DEPS)
-
-clean:
-	@echo "Removing $(BIN_DIR)"
-	@rm -rf $(BIN_DIR)
-
-.PHONY: all deps clean

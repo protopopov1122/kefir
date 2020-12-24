@@ -12,8 +12,6 @@ DEPS :=
 OBJS :=
 ALL :=
 
-deps: $(DEPS)
-
 $(BIN_DIR)/%.d: $(SOURCE_DIR)/%.c
 	@mkdir -p $(shell dirname "$@")
 	@echo "Generating $@"

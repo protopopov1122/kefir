@@ -16,9 +16,11 @@ static kefir_result_t amd64_newline(struct kefir_amd64_asmgen *asmgen, unsigned 
 
 static kefir_result_t amd64_comment(struct kefir_amd64_asmgen *asmgen, const char *identifier) {
     REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 assembly generator"));
-    FILE *out = (FILE *) asmgen->data;
-    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid output file for AMD64 assembly"));
-    fprintf(out, "; %s\n", identifier);
+    if (asmgen->settings.enable_comments) {
+        FILE *out = (FILE *) asmgen->data;
+        REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid output file for AMD64 assembly"));
+        fprintf(out, "; %s\n", identifier);
+    }
     return KEFIR_OK;
 }
 
@@ -60,7 +62,9 @@ static kefir_result_t amd64_instr(struct kefir_amd64_asmgen *asmgen, const char 
     REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid output file for AMD64 assembly"));
     va_list(args);
     va_start(args, argc);
-    fprintf(out, "    %s", opcode);
+    fprintf(out, "%s%s",
+        asmgen->settings.enable_identation ? "    " : "",
+        opcode);
     while (argc--) {
         const char *param = va_arg(args, const char *);
         fprintf(out, " %s", param);
@@ -79,7 +83,9 @@ static kefir_result_t amd64_rawdata(struct kefir_amd64_asmgen *asmgen, kefir_amd
     REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid output file for AMD64 assembly"));
     va_list(args);
     va_start(args, argc);
-    fprintf(out, "    d%c", (char) width);
+    fprintf(out, "%sd%c",
+        asmgen->settings.enable_identation ? "    " : "",
+        (char) width);
     while (argc--) {
         const char *param = va_arg(args, const char *);
         fprintf(out, " %s", param);
@@ -113,5 +119,7 @@ kefir_result_t kefir_amd64_nasm_gen_init(struct kefir_amd64_asmgen *asmgen, FILE
     asmgen->close = amd64_close;
     asmgen->rawdata = amd64_rawdata;
     asmgen->data = (void *) out;
+    asmgen->settings.enable_comments = true;
+    asmgen->settings.enable_identation = true;
     return KEFIR_OK;
 }
