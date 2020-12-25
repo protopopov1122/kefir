@@ -1,4 +1,4 @@
-call __pccrt_preserve_state
+call __kefirrt_preserve_state
 add rsp, 16
 mov r13, rsp
 push rdi
