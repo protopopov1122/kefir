@@ -1,0 +1,2 @@
+mov rsp, r13
+jmp __kefirrt_restore_state

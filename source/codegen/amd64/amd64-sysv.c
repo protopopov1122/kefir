@@ -64,13 +64,16 @@ static kefir_result_t cg_function_body(struct kefir_codegen_amd64 *codegen, cons
     for (kefir_size_t pc = 0; pc < kefir_irblock_length(&func->body); pc++) {
         instr = kefir_irblock_at(&func->body, pc);
         REQUIRE(instr != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to fetch instruction from IR block"));
-        REQUIRE_OK(cg_symbolic_opcode(instr->opcode, &opcode_symbol));
-        ASMGEN_RAW2(&codegen->asmgen, KEFIR_AMD64_QUAD,
-            FORMAT(codegen->buf[0], "%s", opcode_symbol),
-            FORMAT(codegen->buf[1], "%li", instr->arg));
+        if (instr->opcode == KEFIR_IROPCODE_RET) {
+            ASMGEN_RAW2(&codegen->asmgen, KEFIR_AMD64_QUAD,
+                FORMAT(codegen->buf[0], KEFIR_AMD64_SYSV_PROCEDURE_EPILOGUE_LABEL, func->declaration.identifier), "0");
+        } else {
+            REQUIRE_OK(cg_symbolic_opcode(instr->opcode, &opcode_symbol));
+            ASMGEN_RAW2(&codegen->asmgen, KEFIR_AMD64_QUAD,
+                FORMAT(codegen->buf[0], "%s", opcode_symbol),
+                FORMAT(codegen->buf[1], "%li", instr->arg));
+        }
     }
-    ASMGEN_RAW2(&codegen->asmgen, KEFIR_AMD64_QUAD,
-        FORMAT(codegen->buf[0], KEFIR_AMD64_SYSV_PROCEDURE_EPILOGUE_LABEL, func->declaration.identifier), "0");
     return KEFIR_OK;
 }
 

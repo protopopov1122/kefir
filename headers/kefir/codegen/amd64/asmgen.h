@@ -93,6 +93,7 @@ kefir_result_t kefir_amd64_nasm_gen_init(struct kefir_amd64_asmgen *, FILE *);
 #define KEFIR_AMD64_FSTCW "fstcw"
 #define KEFIR_AMD64_CALL  "call"
 #define KEFIR_AMD64_PEXTRQ  "pextrq"
+#define KEFIR_AMD64_PINSRQ  "pinsrq"
 #define KEFIR_AMD64_ADD  "add"
 #define KEFIR_AMD64_SUB  "sub"
 

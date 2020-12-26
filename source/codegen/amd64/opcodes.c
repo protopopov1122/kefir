@@ -8,8 +8,7 @@ static struct {
     { KEFIR_IROPCODE_NOP, "__kefirrt_nop_impl" },
     { KEFIR_IROPCODE_PUSH, "__kefirrt_push_impl" },
     { KEFIR_IROPCODE_POP, "__kefirrt_pop_impl" },
-    { KEFIR_IROPCODE_IADD, "__kefirrt_iadd_impl" },
-    { KEFIR_IROPCODE_RET, "__kefirrt_ret_impl" }
+    { KEFIR_IROPCODE_IADD, "__kefirrt_iadd_impl" }
 };
 
 const char *kefir_amd64_iropcode_handler(kefir_iropcode_t opcode) {

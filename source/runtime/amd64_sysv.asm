@@ -15,7 +15,6 @@ global __kefirrt_nop_impl
 global __kefirrt_push_impl
 global __kefirrt_pop_impl
 global __kefirrt_iadd_impl
-global __kefirrt_ret_impl
 ; Runtime
 global __kefirrt_preserve_state
 global __kefirrt_restore_state
@@ -37,10 +36,6 @@ __kefirrt_iadd_impl:
     pop DATA_REG
     add DATA_REG, DATA2_REG
     push DATA_REG
-    next_instr
-
-__kefirrt_ret_impl:
-    pop rax
     next_instr
 
 ; Runtime helpers
