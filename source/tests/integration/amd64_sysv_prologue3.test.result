@@ -1,27 +1,28 @@
 call __kefirrt_preserve_state
-pextrq r12, xmm0, 0
-push r12
+mov r13, rsp
+pextrq r11, xmm0, 0
+push r11
 push rdi
-pextrq r12, xmm1, 0
-push r12
+pextrq r11, xmm1, 0
+push r11
 push rsi
 push rdx
-pextrq r12, xmm2, 0
-push r12
-pextrq r12, xmm3, 0
-push r12
-pextrq r12, xmm4, 0
-push r12
+pextrq r11, xmm2, 0
+push r11
+pextrq r11, xmm3, 0
+push r11
+pextrq r11, xmm4, 0
+push r11
 push rcx
 push r8
 push r9
-pextrq r12, xmm5, 0
-push r12
-pextrq r12, xmm6, 0
-push r12
-pextrq r12, xmm7, 0
-push r12
-mov r12, [rbp + 16]
-push r12
-mov r12, [rbp + 24]
-push r12
+pextrq r11, xmm5, 0
+push r11
+pextrq r11, xmm6, 0
+push r11
+pextrq r11, xmm7, 0
+push r11
+mov r11, [rbp + 16]
+push r11
+mov r11, [rbp + 24]
+push r11

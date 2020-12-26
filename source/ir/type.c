@@ -243,8 +243,7 @@ kefir_result_t kefir_ir_type_visitor_list_nodes(const struct kefir_ir_type *type
 
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type pointer"));
     REQUIRE(visitor != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type visitor pointer"));
-    REQUIRE(begin < kefir_ir_type_total_length(type), KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Index exceeds IR type length"));
-    REQUIRE(count > 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-zero number of subtrees"));
+    REQUIRE(begin <= kefir_ir_type_total_length(type), KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Index exceeds IR type length"));
     for (kefir_size_t index = begin;
         index < kefir_ir_type_total_length(type) && count-- > 0;
         index += kefir_ir_type_node_total_length(type, index)) {

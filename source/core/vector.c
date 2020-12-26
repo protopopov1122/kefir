@@ -58,10 +58,13 @@ kefir_result_t kefir_vector_alloc(struct kefir_mem *mem,
                               struct kefir_vector *vector) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(element_size > 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-zero element size"));
-    REQUIRE(capacity > 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-zero vector capacity"));
     REQUIRE(vector != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL vector pointer"));
-    vector->content = KEFIR_MALLOC(mem, element_size * capacity);
-    REQUIRE(vector->content != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate memory for vector content"));
+    if (capacity > 0) {
+        vector->content = KEFIR_MALLOC(mem, element_size * capacity);
+        REQUIRE(vector->content != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate memory for vector content"));
+    } else {
+        vector->content = NULL;
+    }
     vector->element_size = element_size;
     vector->length = 0;
     vector->capacity = capacity;

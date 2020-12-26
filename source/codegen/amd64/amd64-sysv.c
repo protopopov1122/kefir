@@ -53,8 +53,11 @@ static kefir_result_t cg_function_epilogue(struct kefir_codegen_amd64 *codegen,
 }
 
 static kefir_result_t cg_function_body(struct kefir_codegen_amd64 *codegen, const struct kefir_irfunction *func) {
-    ASMGEN_INSTR2(&codegen->asmgen, KEFIR_AMD64_MOV, KEFIR_AMD64_RBX, FORMAT(codegen->buf[0], KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL, func->declaration.identifier));
-    ASMGEN_INSTR1(&codegen->asmgen, KEFIR_AMD64_JMP, INDIRECT(codegen->buf[0], KEFIR_AMD64_RBX));
+    ASMGEN_INSTR2(&codegen->asmgen, KEFIR_AMD64_MOV,
+        KEFIR_AMD64_SYSV_ABI_PROGRAM_REG,
+        FORMAT(codegen->buf[0], KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL, func->declaration.identifier));
+    ASMGEN_INSTR1(&codegen->asmgen, KEFIR_AMD64_JMP,
+        INDIRECT(codegen->buf[0], KEFIR_AMD64_SYSV_ABI_PROGRAM_REG));
     ASMGEN_LABEL(&codegen->asmgen, FORMAT(codegen->buf[0], KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL, func->declaration.identifier));
     const struct kefir_irinstr *instr = NULL;
     const char *opcode_symbol = NULL;

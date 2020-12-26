@@ -1,8 +1,13 @@
 SECTION .text
 
+%define PROGRAM_REG rbx
+%define DATA_REG r11
+%define DATA2_REG r12
+%define STACK_BASE_REG r12
+
 %macro next_instr 0
-    add rbx, 16
-    jmp [rbx]
+    add PROGRAM_REG, 16
+    jmp [PROGRAM_REG]
 %endmacro
 
 ; Opcode definitions
@@ -19,8 +24,8 @@ __kefirrt_nop_impl:
     next_instr
 
 __kefirrt_push_impl:
-    mov rax, [rbx + 8]
-    push rax
+    mov DATA_REG, [rbx + 8]
+    push DATA_REG
     next_instr
 
 __kefirrt_pop_impl:
@@ -28,10 +33,10 @@ __kefirrt_pop_impl:
     next_instr
 
 __kefirrt_iadd_impl:
-    pop rcx
-    pop rax
-    add rax, rcx
-    push rax
+    pop DATA2_REG
+    pop DATA_REG
+    add DATA_REG, DATA2_REG
+    push DATA_REG
     next_instr
 
 __kefirrt_ret_impl:
@@ -40,7 +45,7 @@ __kefirrt_ret_impl:
 
 ; Runtime helpers
 __kefirrt_preserve_state:
-    pop r11
+    pop DATA_REG
     push rbp
     mov rbp, rsp
     push rbx
@@ -50,7 +55,7 @@ __kefirrt_preserve_state:
     push r15
     sub rsp, 8
     fstcw [rsp]
-    jmp r11
+    jmp DATA_REG
 
 __kefirrt_restore_state:
     fldcw [rsp]
