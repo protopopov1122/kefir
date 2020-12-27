@@ -1,0 +1,6 @@
+pop r11
+mov r12, [r11 + 0]
+pinsrq xmm0, r12, 0
+mov rax, [r11 + 8]
+mov rsp, r13
+jmp __kefirrt_restore_state

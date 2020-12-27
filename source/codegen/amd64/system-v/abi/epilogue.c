@@ -8,6 +8,22 @@
 #include "kefir/codegen/util.h"
 #include <stdio.h>
 
+static const char *KEFIR_AMD64_SYSV_INTEGER_RETURN_REGISTERS[] = {
+    KEFIR_AMD64_RAX,
+    KEFIR_AMD64_RDX
+};
+
+static kefir_size_t KEFIR_AMD64_SYSV_INTEGER_RETURN_REGISTER_COUNT =
+    sizeof(KEFIR_AMD64_SYSV_INTEGER_RETURN_REGISTERS) / sizeof(KEFIR_AMD64_SYSV_INTEGER_RETURN_REGISTERS[0]);
+
+static const char *KEFIR_AMD64_SYSV_SSE_RETURN_REGISTERS[] = {
+    KEFIR_AMD64_XMM0,
+    KEFIR_AMD64_XMM1
+};
+
+static kefir_size_t KEFIR_AMD64_SYSV_SSE_RETURN_REGISTER_COUNT =
+    sizeof(KEFIR_AMD64_SYSV_SSE_RETURN_REGISTERS) / sizeof(KEFIR_AMD64_SYSV_SSE_RETURN_REGISTERS[0]);
+
 struct result_return {
     struct kefir_codegen_amd64 *codegen;
     const struct kefir_amd64_sysv_function *func;
@@ -37,9 +53,9 @@ static kefir_result_t return_integer(const struct kefir_ir_type *type,
 }
 
 static kefir_result_t return_float(const struct kefir_ir_type *type,
-                                   kefir_size_t index,
-                                   const struct kefir_ir_typeentry *typeentry,
-                                   void *payload) {
+                                 kefir_size_t index,
+                                 const struct kefir_ir_typeentry *typeentry,
+                                 void *payload) {
     UNUSED(type);
     UNUSED(index);
     UNUSED(typeentry);
@@ -52,12 +68,101 @@ static kefir_result_t return_float(const struct kefir_ir_type *type,
     return KEFIR_OK;  
 }
 
+static kefir_result_t return_memory_aggregate(struct kefir_codegen_amd64 *codegen,
+                                            const struct kefir_amd64_sysv_function *func,
+                                            struct kefir_amd64_sysv_data_layout *layout) {
+    REQUIRE(func->internals[KEFIR_AMD64_SYSV_INTERNAL_RETURN_ADDRESS].enabled,
+        KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected to have return pointer"));
+    ASMGEN_INSTR2(&codegen->asmgen, KEFIR_AMD64_MOV,
+        KEFIR_AMD64_RDI,
+        FORMAT(codegen->buf[0], "[%s + %lu]",
+            KEFIR_AMD64_SYSV_ABI_STACK_BASE_REG,
+            func->internals[KEFIR_AMD64_SYSV_INTERNAL_RETURN_ADDRESS].offset));
+    ASMGEN_INSTR2(&codegen->asmgen, KEFIR_AMD64_MOV,
+        KEFIR_AMD64_RAX,
+        KEFIR_AMD64_RDI);
+    ASMGEN_INSTR1(&codegen->asmgen, KEFIR_AMD64_POP,
+        KEFIR_AMD64_RSI);
+    ASMGEN_INSTR2(&codegen->asmgen, KEFIR_AMD64_MOV,
+        KEFIR_AMD64_RCX,
+        FORMAT(codegen->buf[0], "%lu", layout->size));
+    ASMGEN_INSTR0(&codegen->asmgen,
+        REP(codegen->buf[0], KEFIR_AMD64_MOVSB));
+    return KEFIR_OK;
+}
+
+
+static kefir_result_t return_register_aggregate(struct kefir_codegen_amd64 *codegen,
+                                             struct kefir_amd64_sysv_parameter_allocation *alloc) {
+    kefir_size_t integer_register = 0;
+    kefir_size_t sse_register = 0;
+    ASMGEN_INSTR1(&codegen->asmgen, KEFIR_AMD64_POP, KEFIR_AMD64_SYSV_ABI_DATA_REG);
+    for (kefir_size_t i = 0; i < kefir_vector_length(&alloc->container.qwords); i++) {
+        struct kefir_amd64_sysv_abi_qword *qword = 
+            (struct kefir_amd64_sysv_abi_qword *) kefir_vector_at(&alloc->container.qwords, i);
+        switch (qword->klass) {
+            case KEFIR_AMD64_SYSV_PARAM_INTEGER:
+                if (integer_register >= KEFIR_AMD64_SYSV_INTEGER_RETURN_REGISTER_COUNT) {
+                    return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to return aggregate which exceeds available registers");
+                }
+                ASMGEN_INSTR2(&codegen->asmgen, KEFIR_AMD64_MOV,
+                    KEFIR_AMD64_SYSV_INTEGER_RETURN_REGISTERS[integer_register++],
+                    FORMAT(codegen->buf[0], "[%s + %lu]",
+                        KEFIR_AMD64_SYSV_ABI_DATA_REG, i * KEFIR_AMD64_SYSV_ABI_QWORD));
+                break;
+
+            case KEFIR_AMD64_SYSV_PARAM_SSE:
+                if (sse_register >= KEFIR_AMD64_SYSV_SSE_RETURN_REGISTER_COUNT) {
+                    return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to return aggregate which exceeds available registers");
+                }
+                ASMGEN_INSTR2(&codegen->asmgen, KEFIR_AMD64_MOV,
+                    KEFIR_AMD64_SYSV_ABI_DATA2_REG,
+                    FORMAT(codegen->buf[0], "[%s + %lu]",
+                        KEFIR_AMD64_SYSV_ABI_DATA_REG, i * KEFIR_AMD64_SYSV_ABI_QWORD));
+                ASMGEN_INSTR3(&codegen->asmgen, KEFIR_AMD64_PINSRQ,
+                    KEFIR_AMD64_SYSV_SSE_RETURN_REGISTERS[sse_register++],
+                    KEFIR_AMD64_SYSV_ABI_DATA2_REG,
+                    "0");
+                break;
+
+            default:
+                return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Return of non-integer,sse aggregate members is not supported");
+        }
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t return_aggregate(const struct kefir_ir_type *type,
+                                     kefir_size_t index,
+                                     const struct kefir_ir_typeentry *typeentry,
+                                     void *payload) {
+    UNUSED(typeentry);
+    struct result_return *param = (struct result_return *) payload;
+    struct kefir_ir_type_iterator iter;
+    REQUIRE_OK(kefir_ir_type_iterator_init(type, &iter));
+    REQUIRE_OK(kefir_ir_type_iterator_goto(&iter, index));
+    struct kefir_amd64_sysv_parameter_allocation *alloc = 
+        (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(&param->func->returns.allocation, iter.slot);
+    struct kefir_amd64_sysv_data_layout *layout = 
+        (struct kefir_amd64_sysv_data_layout *) kefir_vector_at(&param->func->returns.layout, index);
+    if (alloc->klass == KEFIR_AMD64_SYSV_PARAM_MEMORY) {
+        REQUIRE_OK(return_memory_aggregate(param->codegen, param->func,
+            layout));
+    } else {
+        REQUIRE_OK(return_register_aggregate(param->codegen, alloc));
+    }
+    return KEFIR_OK;
+}
+
 static kefir_result_t return_values(struct kefir_codegen_amd64 *codegen,
                                   const struct kefir_amd64_sysv_function *func) {
     struct kefir_ir_type_visitor visitor;
     REQUIRE_OK(kefir_ir_type_visitor_init(&visitor, visitor_not_supported));
     KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS(&visitor, return_integer);
     KEFIR_IR_TYPE_VISITOR_INIT_FIXED_FP(&visitor, return_float);
+    visitor.visit[KEFIR_IR_TYPE_STRUCT] = return_aggregate;
+    visitor.visit[KEFIR_IR_TYPE_UNION] = return_aggregate;
+    visitor.visit[KEFIR_IR_TYPE_ARRAY] = return_aggregate;
     struct result_return param = {
         .codegen = codegen,
         .func = func

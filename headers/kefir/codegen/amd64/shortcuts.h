@@ -6,6 +6,7 @@
 
 #define FORMAT(buf, format, ...) (kefir_format((buf), KEFIR_CODEGEN_AMD64_BUFLEN, (format), __VA_ARGS__))
 #define INDIRECT(buf, content) KEFIR_AMD64_INDIRECT((buf), KEFIR_CODEGEN_AMD64_BUFLEN, (content))
+#define REP(buf, content) KEFIR_AMD64_REP((buf), KEFIR_CODEGEN_AMD64_BUFLEN, (content))
 #define ASMGEN_NEWLINE(asmgen, count) \
     REQUIRE_OK(KEFIR_AMD64_ASMGEN_NEWLINE((asmgen), (count)))
 #define ASMGEN_COMMENT(asmgen, identifier) \

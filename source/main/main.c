@@ -39,20 +39,13 @@ int main(int argc, const char **argv) {
     kefir_codegen_amd64_sysv_init(&codegen, stdout, &mem);
 
     kefir_irfunction_t func;
-    kefir_irfunction_alloc(&mem, "func1", 8, 1, 1024, &func);
-    kefir_ir_type_append_v(&func.declaration.params, KEFIR_IR_TYPE_INT64, 0, 0);
-    kefir_ir_type_append_v(&func.declaration.params, KEFIR_IR_TYPE_INT64, 0, 0);
+    kefir_irfunction_alloc(&mem, "func1", 3, 3, 1024, &func);
     kefir_ir_type_append_v(&func.declaration.params, KEFIR_IR_TYPE_STRUCT, 0, 2);
     kefir_ir_type_append_v(&func.declaration.params, KEFIR_IR_TYPE_ARRAY, 0, 2);
     kefir_ir_type_append_v(&func.declaration.params, KEFIR_IR_TYPE_INT, 0, 0);
-    kefir_ir_type_append_v(&func.declaration.params, KEFIR_IR_TYPE_FLOAT64, 0, 0);
-    kefir_ir_type_append_v(&func.declaration.params, KEFIR_IR_TYPE_FLOAT64, 0, 0);
-    kefir_ir_type_append_v(&func.declaration.result, KEFIR_IR_TYPE_INT64, 0, 0);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_POP, 0);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_POP, 0);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_PUSH, 1);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_IADD, 0);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_IADD, 0);
+    kefir_ir_type_append_v(&func.declaration.result, KEFIR_IR_TYPE_STRUCT, 0, 2);
+    kefir_ir_type_append_v(&func.declaration.result, KEFIR_IR_TYPE_ARRAY, 0, 2);
+    kefir_ir_type_append_v(&func.declaration.result, KEFIR_IR_TYPE_INT, 0, 0);
     kefir_irblock_append(&func.body, KEFIR_IROPCODE_RET, 0);
 
     KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &func);
