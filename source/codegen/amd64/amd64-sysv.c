@@ -26,9 +26,9 @@ static kefir_result_t cg_declare_opcode_handler(kefir_iropcode_t opcode, const c
 static kefir_result_t cg_module_prologue(struct kefir_codegen_amd64 *codegen) {
     ASMGEN_SECTION(&codegen->asmgen, ".text");
     ASMGEN_NEWLINE(&codegen->asmgen, 1);
-    ASMGEN_COMMENT(&codegen->asmgen, "Opcode handlers");
+    ASMGEN_COMMENT0(&codegen->asmgen, "Opcode handlers");
     REQUIRE_OK(kefir_amd64_iropcode_handler_list(cg_declare_opcode_handler, &codegen->asmgen));
-    ASMGEN_COMMENT(&codegen->asmgen, "Runtime functions");
+    ASMGEN_COMMENT0(&codegen->asmgen, "Runtime functions");
     for (kefir_size_t i = 0; i < KEFIR_AMD64_SYSTEM_V_RUNTIME_SYMBOL_COUNT; i++) {
         ASMGEN_EXTERNAL(&codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_SYMBOLS[i]);
     }
@@ -38,40 +38,42 @@ static kefir_result_t cg_module_prologue(struct kefir_codegen_amd64 *codegen) {
 
 static kefir_result_t cg_function_prologue(struct kefir_codegen_amd64 *codegen,
                                          const struct kefir_amd64_sysv_function *func) {
-    ASMGEN_GLOBAL(&codegen->asmgen, FORMAT(codegen->buf[0], KEFIR_AMD64_SYSV_PROCEDURE_LABEL, func->func->declaration.identifier));
+    ASMGEN_GLOBAL(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_LABEL, func->func->declaration.identifier);
     ASMGEN_NEWLINE(&codegen->asmgen, 1);
-    ASMGEN_LABEL(&codegen->asmgen, FORMAT(codegen->buf[0], KEFIR_AMD64_SYSV_PROCEDURE_LABEL, func->func->declaration.identifier));
+    ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_LABEL, func->func->declaration.identifier);
     REQUIRE_OK(kefir_amd64_sysv_function_prologue(codegen, func));
     return KEFIR_OK;
 }
 
 static kefir_result_t cg_function_epilogue(struct kefir_codegen_amd64 *codegen,
                                          const struct kefir_amd64_sysv_function *func) {
-    ASMGEN_LABEL(&codegen->asmgen, FORMAT(codegen->buf[0], KEFIR_AMD64_SYSV_PROCEDURE_EPILOGUE_LABEL, func->func->declaration.identifier));
+    ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_EPILOGUE_LABEL, func->func->declaration.identifier);
     REQUIRE_OK(kefir_amd64_sysv_function_epilogue(codegen, func));
     return KEFIR_OK;
 }
 
 static kefir_result_t cg_function_body(struct kefir_codegen_amd64 *codegen, const struct kefir_irfunction *func) {
-    ASMGEN_INSTR2(&codegen->asmgen, KEFIR_AMD64_MOV,
-        KEFIR_AMD64_SYSV_ABI_PROGRAM_REG,
-        FORMAT(codegen->buf[0], KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL, func->declaration.identifier));
-    ASMGEN_INSTR1(&codegen->asmgen, KEFIR_AMD64_JMP,
-        INDIRECT(codegen->buf[0], KEFIR_AMD64_SYSV_ABI_PROGRAM_REG));
-    ASMGEN_LABEL(&codegen->asmgen, FORMAT(codegen->buf[0], KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL, func->declaration.identifier));
+    ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
+    ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_PROGRAM_REG);
+    ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL, func->declaration.identifier);
+    ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_JMP);
+    ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_INDIRECT, KEFIR_AMD64_SYSV_ABI_PROGRAM_REG);
+    ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL, func->declaration.identifier);
     const struct kefir_irinstr *instr = NULL;
     const char *opcode_symbol = NULL;
     for (kefir_size_t pc = 0; pc < kefir_irblock_length(&func->body); pc++) {
         instr = kefir_irblock_at(&func->body, pc);
         REQUIRE(instr != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to fetch instruction from IR block"));
         if (instr->opcode == KEFIR_IROPCODE_RET) {
-            ASMGEN_RAW2(&codegen->asmgen, KEFIR_AMD64_QUAD,
-                FORMAT(codegen->buf[0], KEFIR_AMD64_SYSV_PROCEDURE_EPILOGUE_LABEL, func->declaration.identifier), "0");
+            ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
+            ASMGEN_ARG(&codegen->asmgen,
+                KEFIR_AMD64_SYSV_PROCEDURE_EPILOGUE_LABEL, func->declaration.identifier);
+            ASMGEN_ARG0(&codegen->asmgen, "0");
         } else {
             REQUIRE_OK(cg_symbolic_opcode(instr->opcode, &opcode_symbol));
-            ASMGEN_RAW2(&codegen->asmgen, KEFIR_AMD64_QUAD,
-                FORMAT(codegen->buf[0], "%s", opcode_symbol),
-                FORMAT(codegen->buf[1], "%li", instr->arg));
+            ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
+            ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
+            ASMGEN_ARG(&codegen->asmgen, KEFIR_INT64_FMT, instr->arg);
         }
     }
     return KEFIR_OK;
