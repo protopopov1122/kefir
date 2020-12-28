@@ -1,42 +1,109 @@
 SECTION .text
 
+%macro declare_opcode 1
+global __kefirrt_%1_impl
+%endmacro
+
+%macro define_opcode 1
+__kefirrt_%1_impl:
+%endmacro
+
+%macro define_opcode_stub 1
+define_opcode %1
+    end_opcode
+%endmacro
+
 %define PROGRAM_REG rbx
 %define DATA_REG r11
 %define DATA2_REG r12
 %define STACK_BASE_REG r12
 
-%macro next_instr 0
+%macro end_opcode 0
     add PROGRAM_REG, 16
     jmp [PROGRAM_REG]
 %endmacro
 
 ; Opcode definitions
-global __kefirrt_nop_impl
-global __kefirrt_push_impl
-global __kefirrt_pop_impl
-global __kefirrt_iadd_impl
+declare_opcode nop
+declare_opcode jmp
+declare_opcode branch
+declare_opcode push
+declare_opcode pop
+declare_opcode pick
+declare_opcode drop
+declare_opcode iadd
+declare_opcode iadd1
+declare_opcode isub
+declare_opcode imul
+declare_opcode idiv
+declare_opcode imod
+declare_opcode ineg
+declare_opcode inot
+declare_opcode iand
+declare_opcode ior
+declare_opcode ixor
+declare_opcode ishr
+declare_opcode ishl
+declare_opcode cmp
+declare_opcode band
+declare_opcode bor
+declare_opcode bnot
+declare_opcode asbool
+declare_opcode trunc
 ; Runtime
 global __kefirrt_preserve_state
 global __kefirrt_restore_state
 
-__kefirrt_nop_impl:
-    next_instr
+define_opcode nop
+    end_opcode
 
-__kefirrt_push_impl:
-    mov DATA_REG, [rbx + 8]
+define_opcode jmp
+    mov PROGRAM_REG, [PROGRAM_REG + 8]
+    jmp [PROGRAM_REG]
+
+define_opcode branch
+    pop DATA_REG
+    cmp DATA_REG, 0
+    jne __kefirrt_jmp_impl
+    end_opcode
+
+define_opcode push
+    mov DATA_REG, [PROGRAM_REG + 8]
     push DATA_REG
-    next_instr
+    end_opcode
 
-__kefirrt_pop_impl:
+define_opcode pop
     add rsp, 8
-    next_instr
+    end_opcode
 
-__kefirrt_iadd_impl:
+define_opcode_stub pick
+define_opcode_stub drop
+
+define_opcode iadd
     pop DATA2_REG
     pop DATA_REG
     add DATA_REG, DATA2_REG
     push DATA_REG
-    next_instr
+    end_opcode
+
+define_opcode_stub iadd1
+define_opcode_stub isub
+define_opcode_stub imul
+define_opcode_stub idiv
+define_opcode_stub imod
+define_opcode_stub ineg
+define_opcode_stub inot
+define_opcode_stub iand
+define_opcode_stub ior
+define_opcode_stub ixor
+define_opcode_stub ishr
+define_opcode_stub ishl
+define_opcode_stub cmp
+define_opcode_stub band
+define_opcode_stub bor
+define_opcode_stub bnot
+define_opcode_stub asbool
+define_opcode_stub trunc
 
 ; Runtime helpers
 __kefirrt_preserve_state:

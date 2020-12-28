@@ -46,6 +46,8 @@ int main(int argc, const char **argv) {
     kefir_ir_type_append_v(&func.declaration.result, KEFIR_IR_TYPE_STRUCT, 0, 2);
     kefir_ir_type_append_v(&func.declaration.result, KEFIR_IR_TYPE_ARRAY, 0, 2);
     kefir_ir_type_append_v(&func.declaration.result, KEFIR_IR_TYPE_INT, 0, 0);
+    kefir_irblock_append(&func.body, KEFIR_IROPCODE_PUSH, 0);
+    kefir_irblock_append(&func.body, KEFIR_IROPCODE_JMP, 1);
     kefir_irblock_append(&func.body, KEFIR_IROPCODE_RET, 0);
 
     KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &func);

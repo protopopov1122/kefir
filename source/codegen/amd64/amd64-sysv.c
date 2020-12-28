@@ -7,14 +7,9 @@
 #include "kefir/codegen/amd64/labels.h"
 #include "kefir/codegen/amd64/system-v/abi.h"
 #include "kefir/codegen/amd64/system-v/runtime.h"
+#include "kefir/codegen/amd64/system-v/instr.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
-
-static kefir_result_t cg_symbolic_opcode(kefir_iropcode_t opcode, const char **symbolic) {
-    REQUIRE(symbolic != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected symbolic != NULL"));
-    *symbolic = kefir_amd64_iropcode_handler(opcode);
-    return *symbolic != NULL ? KEFIR_OK : KEFIR_MALFORMED_ARG;
-}
 
 static kefir_result_t cg_declare_opcode_handler(kefir_iropcode_t opcode, const char *handler, void *payload) {
     UNUSED(opcode);
@@ -52,29 +47,19 @@ static kefir_result_t cg_function_epilogue(struct kefir_codegen_amd64 *codegen,
     return KEFIR_OK;
 }
 
-static kefir_result_t cg_function_body(struct kefir_codegen_amd64 *codegen, const struct kefir_irfunction *func) {
+static kefir_result_t cg_function_body(struct kefir_codegen_amd64 *codegen,
+                                     const struct kefir_amd64_sysv_function *sysv_func) {
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_PROGRAM_REG);
-    ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL, func->declaration.identifier);
+    ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL, sysv_func->func->declaration.identifier);
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_JMP);
     ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_INDIRECT, KEFIR_AMD64_SYSV_ABI_PROGRAM_REG);
-    ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL, func->declaration.identifier);
+    ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL, sysv_func->func->declaration.identifier);
     const struct kefir_irinstr *instr = NULL;
-    const char *opcode_symbol = NULL;
-    for (kefir_size_t pc = 0; pc < kefir_irblock_length(&func->body); pc++) {
-        instr = kefir_irblock_at(&func->body, pc);
+    for (kefir_size_t pc = 0; pc < kefir_irblock_length(&sysv_func->func->body); pc++) {
+        instr = kefir_irblock_at(&sysv_func->func->body, pc);
         REQUIRE(instr != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to fetch instruction from IR block"));
-        if (instr->opcode == KEFIR_IROPCODE_RET) {
-            ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
-            ASMGEN_ARG(&codegen->asmgen,
-                KEFIR_AMD64_SYSV_PROCEDURE_EPILOGUE_LABEL, func->declaration.identifier);
-            ASMGEN_ARG0(&codegen->asmgen, "0");
-        } else {
-            REQUIRE_OK(cg_symbolic_opcode(instr->opcode, &opcode_symbol));
-            ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
-            ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
-            ASMGEN_ARG(&codegen->asmgen, KEFIR_INT64_FMT, instr->arg);
-        }
+        REQUIRE_OK(kefir_amd64_sysv_instruction(codegen, sysv_func, instr));
     }
     return KEFIR_OK;
 }
@@ -87,7 +72,7 @@ static kefir_result_t cg_translate(struct kefir_codegen *cg_iface, const struct 
     struct kefir_amd64_sysv_function sysv_func;
     REQUIRE_OK(kefir_amd64_sysv_function_alloc(codegen->mem, func, &sysv_func));
     kefir_result_t res = cg_function_prologue(codegen, &sysv_func);
-    REQUIRE_CHAIN(&res, cg_function_body(codegen, func));
+    REQUIRE_CHAIN(&res, cg_function_body(codegen, &sysv_func));
     REQUIRE_CHAIN(&res, cg_function_epilogue(codegen, &sysv_func));
     kefir_amd64_sysv_function_free(codegen->mem, &sysv_func);
     return res;
