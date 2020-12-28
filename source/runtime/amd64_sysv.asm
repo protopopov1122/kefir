@@ -86,12 +86,49 @@ define_opcode iadd
     push DATA_REG
     end_opcode
 
-define_opcode_stub iadd1
-define_opcode_stub isub
-define_opcode_stub imul
-define_opcode_stub idiv
-define_opcode_stub imod
-define_opcode_stub ineg
+define_opcode iadd1
+    pop DATA_REG
+    mov DATA2_REG, [PROGRAM_REG + 8]
+    add DATA_REG, DATA2_REG
+    push DATA_REG
+    end_opcode
+
+define_opcode isub
+    pop DATA2_REG
+    pop DATA_REG
+    sub DATA_REG, DATA2_REG
+    push DATA_REG
+    end_opcode
+
+define_opcode imul
+    pop DATA2_REG
+    pop DATA_REG
+    imul DATA_REG, DATA2_REG
+    push DATA_REG
+    end_opcode
+
+define_opcode idiv
+    pop DATA_REG
+    pop rax
+    cqo
+    idiv DATA_REG
+    push rax
+    end_opcode
+
+define_opcode imod
+    pop DATA_REG
+    pop rax
+    cqo
+    idiv DATA_REG
+    push rdx
+    end_opcode
+
+define_opcode ineg
+    pop DATA_REG
+    neg DATA_REG
+    push DATA_REG
+    end_opcode
+
 define_opcode_stub inot
 define_opcode_stub iand
 define_opcode_stub ior
