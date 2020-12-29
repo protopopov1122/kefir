@@ -17,6 +17,7 @@ define_opcode %1
 %define DATA_REG r11
 %define DATA2_REG r12
 %define STACK_BASE_REG r13
+%define INSTR_ARG_PTR PROGRAM_REG + 8
 
 %macro end_opcode 0
     add PROGRAM_REG, 16
@@ -66,7 +67,7 @@ define_opcode nop
     end_opcode
 
 define_opcode jmp
-    mov PROGRAM_REG, [PROGRAM_REG + 8]
+    mov PROGRAM_REG, [INSTR_ARG_PTR]
     jmp [PROGRAM_REG]
 
 define_opcode branch
@@ -76,7 +77,7 @@ define_opcode branch
     end_opcode
 
 define_opcode push
-    mov DATA_REG, [PROGRAM_REG + 8]
+    mov DATA_REG, [INSTR_ARG_PTR]
     push DATA_REG
     end_opcode
 
@@ -85,7 +86,7 @@ define_opcode pop
     end_opcode
 
 define_opcode pick
-    mov DATA2_REG, [PROGRAM_REG + 8]
+    mov DATA2_REG, [INSTR_ARG_PTR]
     shl DATA2_REG, 3
     add DATA2_REG, rsp
     mov DATA_REG, [DATA2_REG]
@@ -93,7 +94,7 @@ define_opcode pick
     end_opcode
 
 define_opcode put
-    mov DATA2_REG, [PROGRAM_REG + 8]
+    mov DATA2_REG, [INSTR_ARG_PTR]
     shl DATA2_REG, 3
     add DATA2_REG, rsp
     pop DATA_REG
@@ -111,7 +112,7 @@ define_opcode iadd
 
 define_opcode iadd1
     pop DATA_REG
-    mov DATA2_REG, [PROGRAM_REG + 8]
+    mov DATA2_REG, [INSTR_ARG_PTR]
     add DATA_REG, DATA2_REG
     push DATA_REG
     end_opcode
@@ -277,9 +278,34 @@ define_opcode ibelow
     push rax
     end_opcode
 
-define_opcode_stub band
-define_opcode_stub bor
-define_opcode_stub bnot
+define_opcode band
+    pop DATA2_REG
+    pop DATA_REG
+    xor rax, rax
+    mov rcx, 1
+    and DATA_REG, DATA2_REG
+    cmovnz rax, rcx
+    push rax
+    end_opcode
+
+define_opcode bor
+    pop DATA2_REG
+    pop DATA_REG
+    xor rax, rax
+    mov rcx, 1
+    or DATA_REG, DATA2_REG
+    cmovnz rax, rcx
+    push rax
+    end_opcode
+
+define_opcode bnot
+    pop DATA_REG
+    xor DATA2_REG, DATA2_REG
+    mov rax, 1
+    test DATA_REG, DATA_REG
+    cmovz DATA2_REG, rax
+    push DATA2_REG
+    end_opcode
 
 ; Runtime helpers
 __kefirrt_preserve_state:
