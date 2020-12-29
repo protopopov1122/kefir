@@ -68,7 +68,10 @@ static kefir_result_t cg_translate(struct kefir_codegen *cg_iface, const struct 
     REQUIRE(cg_iface != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid code generator interface"));
     REQUIRE(cg_iface->data != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 code generator"));
     struct kefir_codegen_amd64 *codegen = (struct kefir_codegen_amd64 *) cg_iface->data;
-    REQUIRE_OK(cg_module_prologue(codegen));
+    if (!codegen->has_prologue) {
+        REQUIRE_OK(cg_module_prologue(codegen));
+        codegen->has_prologue = true;
+    }
     struct kefir_amd64_sysv_function sysv_func;
     REQUIRE_OK(kefir_amd64_sysv_function_alloc(codegen->mem, func, &sysv_func));
     kefir_result_t res = cg_function_prologue(codegen, &sysv_func);
@@ -94,5 +97,6 @@ kefir_result_t kefir_codegen_amd64_sysv_init(struct kefir_codegen_amd64 *codegen
     codegen->iface.close = cg_close;
     codegen->iface.data = codegen;
     codegen->mem = mem;
+    codegen->has_prologue = false;
     return KEFIR_OK;
 }

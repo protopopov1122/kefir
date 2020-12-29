@@ -16,7 +16,7 @@ define_opcode %1
 %define PROGRAM_REG rbx
 %define DATA_REG r11
 %define DATA2_REG r12
-%define STACK_BASE_REG r12
+%define STACK_BASE_REG r13
 
 %macro end_opcode 0
     add PROGRAM_REG, 16
@@ -30,6 +30,7 @@ declare_opcode branch
 declare_opcode push
 declare_opcode pop
 declare_opcode pick
+declare_opcode put
 declare_opcode drop
 declare_opcode iadd
 declare_opcode iadd1
@@ -43,13 +44,20 @@ declare_opcode iand
 declare_opcode ior
 declare_opcode ixor
 declare_opcode ishr
+declare_opcode isar
 declare_opcode ishl
-declare_opcode cmp
+declare_opcode iequals
+declare_opcode igreater
+declare_opcode ilesser
+declare_opcode iabove
+declare_opcode ibelow
 declare_opcode band
 declare_opcode bor
 declare_opcode bnot
-declare_opcode asbool
-declare_opcode trunc
+declare_opcode trunc1
+declare_opcode extend8
+declare_opcode extend16
+declare_opcode extend32
 ; Runtime
 global __kefirrt_preserve_state
 global __kefirrt_restore_state
@@ -76,7 +84,22 @@ define_opcode pop
     add rsp, 8
     end_opcode
 
-define_opcode_stub pick
+define_opcode pick
+    mov DATA2_REG, [PROGRAM_REG + 8]
+    shl DATA2_REG, 3
+    add DATA2_REG, rsp
+    mov DATA_REG, [DATA2_REG]
+    push DATA_REG
+    end_opcode
+
+define_opcode put
+    mov DATA2_REG, [PROGRAM_REG + 8]
+    shl DATA2_REG, 3
+    add DATA2_REG, rsp
+    pop DATA_REG
+    mov [DATA2_REG], DATA_REG
+    end_opcode
+
 define_opcode_stub drop
 
 define_opcode iadd
@@ -129,18 +152,134 @@ define_opcode ineg
     push DATA_REG
     end_opcode
 
-define_opcode_stub inot
-define_opcode_stub iand
-define_opcode_stub ior
-define_opcode_stub ixor
-define_opcode_stub ishr
-define_opcode_stub ishl
-define_opcode_stub cmp
+define_opcode inot
+    pop DATA_REG
+    not DATA_REG
+    push DATA_REG
+    end_opcode
+
+define_opcode iand
+    pop DATA2_REG
+    pop DATA_REG
+    and DATA_REG, DATA2_REG
+    push DATA_REG
+    end_opcode
+
+define_opcode ior
+    pop DATA2_REG
+    pop DATA_REG
+    or DATA_REG, DATA2_REG
+    push DATA_REG
+    end_opcode
+
+define_opcode ixor
+    pop DATA2_REG
+    pop DATA_REG
+    or DATA_REG, DATA2_REG
+    push DATA_REG
+    end_opcode
+
+define_opcode ishr
+    pop DATA2_REG
+    pop DATA_REG
+    shrx DATA_REG, DATA_REG, DATA2_REG
+    push DATA_REG
+    end_opcode
+
+define_opcode isar
+    pop DATA2_REG
+    pop DATA_REG
+    sarx DATA_REG, DATA_REG, DATA2_REG
+    push DATA_REG
+    end_opcode
+
+define_opcode ishl
+    pop DATA2_REG
+    pop DATA_REG
+    shlx DATA_REG, DATA_REG, DATA2_REG
+    push DATA_REG
+    end_opcode
+
+define_opcode trunc1
+    pop DATA_REG
+    mov rax, 1
+    xor DATA2_REG, DATA2_REG
+    cmp DATA_REG, 0
+    cmovnz DATA2_REG, rax
+    push DATA2_REG
+    end_opcode
+
+define_opcode extend8
+    pop rax
+    movsx rax, al
+    push rax
+    end_opcode
+
+define_opcode extend16
+    pop rax
+    movsx rax, ax
+    push rax
+    end_opcode
+
+define_opcode extend32
+    pop rax
+    movsx rax, eax
+    push rax
+    end_opcode
+
+define_opcode iequals
+    pop DATA2_REG
+    pop DATA_REG
+    xor rax, rax
+    mov rcx, 1
+    cmp DATA_REG, DATA2_REG
+    cmove rax, rcx
+    push rax
+    end_opcode
+
+define_opcode igreater
+    pop DATA2_REG
+    pop DATA_REG
+    xor rax, rax
+    mov rcx, 1
+    cmp DATA_REG, DATA2_REG
+    cmovg rax, rcx
+    push rax
+    end_opcode
+
+define_opcode ilesser
+    pop DATA2_REG
+    pop DATA_REG
+    xor rax, rax
+    mov rcx, 1
+    cmp DATA_REG, DATA2_REG
+    cmovl rax, rcx
+    push rax
+    end_opcode
+
+define_opcode iabove
+    pop DATA2_REG
+    pop DATA_REG
+    xor rax, rax
+    mov rcx, 1
+    cmp DATA_REG, DATA2_REG
+    cmova rax, rcx
+    push rax
+    end_opcode
+
+define_opcode ibelow
+    pop DATA2_REG
+    pop DATA_REG
+    xor rax, rax
+    mov rcx, 1
+    cmp DATA_REG, DATA2_REG
+    cmovb rax, rcx
+    push rax
+    end_opcode
+
 define_opcode_stub band
 define_opcode_stub bor
 define_opcode_stub bnot
-define_opcode_stub asbool
-define_opcode_stub trunc
 
 ; Runtime helpers
 __kefirrt_preserve_state:

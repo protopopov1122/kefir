@@ -6,6 +6,7 @@ extern __kefirrt_branch_impl
 extern __kefirrt_push_impl
 extern __kefirrt_pop_impl
 extern __kefirrt_pick_impl
+extern __kefirrt_put_impl
 extern __kefirrt_drop_impl
 extern __kefirrt_iadd_impl
 extern __kefirrt_iadd1_impl
@@ -19,13 +20,20 @@ extern __kefirrt_iand_impl
 extern __kefirrt_ior_impl
 extern __kefirrt_ixor_impl
 extern __kefirrt_ishr_impl
+extern __kefirrt_isar_impl
 extern __kefirrt_ishl_impl
-extern __kefirrt_cmp_impl
+extern __kefirrt_iequals_impl
+extern __kefirrt_igreater_impl
+extern __kefirrt_ilesser_impl
+extern __kefirrt_iabove_impl
+extern __kefirrt_ibelow_impl
 extern __kefirrt_band_impl
 extern __kefirrt_bor_impl
 extern __kefirrt_bnot_impl
-extern __kefirrt_asbool_impl
-extern __kefirrt_trunc_impl
+extern __kefirrt_trunc1_impl
+extern __kefirrt_extend8_impl
+extern __kefirrt_extend16_impl
+extern __kefirrt_extend32_impl
 extern __kefirrt_preserve_state
 extern __kefirrt_restore_state
 
@@ -57,13 +65,18 @@ __func1_body:
     dq __kefirrt_ior_impl, 9
     dq __kefirrt_ixor_impl, 10
     dq __kefirrt_ishr_impl, 11
-    dq __kefirrt_ishl_impl, 12
-    dq __kefirrt_cmp_impl, 13
-    dq __kefirrt_band_impl, 14
-    dq __kefirrt_bor_impl, 15
-    dq __kefirrt_bnot_impl, 16
-    dq __kefirrt_asbool_impl, 17
-    dq __kefirrt_trunc_impl, 18
+    dq __kefirrt_isar_impl, 12
+    dq __kefirrt_ishl_impl, 13
+    dq __kefirrt_iequals_impl, 14
+    dq __kefirrt_igreater_impl, 15
+    dq __kefirrt_ilesser_impl, 16
+    dq __kefirrt_band_impl, 17
+    dq __kefirrt_bor_impl, 18
+    dq __kefirrt_bnot_impl, 19
+    dq __kefirrt_trunc1_impl, 20
+    dq __kefirrt_extend8_impl, 21
+    dq __kefirrt_extend16_impl, 22
+    dq __kefirrt_extend32_impl, 23
 __func1_epilogue:
     mov rsp, r13
     jmp __kefirrt_restore_state

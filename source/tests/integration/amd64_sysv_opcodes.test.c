@@ -33,13 +33,18 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irblock_append(&func.body, KEFIR_IROPCODE_IOR, 9);
     kefir_irblock_append(&func.body, KEFIR_IROPCODE_IXOR, 10);
     kefir_irblock_append(&func.body, KEFIR_IROPCODE_IRSHIFT, 11);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_ILSHIFT, 12);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_COMPARE, 13);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_BAND, 14);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_BOR, 15);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_BNOT, 16);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_ASBOOL, 17);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_TRUNCATE, 18);
+    kefir_irblock_append(&func.body, KEFIR_IROPCODE_IARSHIFT, 12);
+    kefir_irblock_append(&func.body, KEFIR_IROPCODE_ILSHIFT, 13);
+    kefir_irblock_append(&func.body, KEFIR_IROPCODE_IEQUALS, 14);
+    kefir_irblock_append(&func.body, KEFIR_IROPCODE_IGREATER, 15);
+    kefir_irblock_append(&func.body, KEFIR_IROPCODE_ILESSER, 16);
+    kefir_irblock_append(&func.body, KEFIR_IROPCODE_BAND, 17);
+    kefir_irblock_append(&func.body, KEFIR_IROPCODE_BOR, 18);
+    kefir_irblock_append(&func.body, KEFIR_IROPCODE_BNOT, 19);
+    kefir_irblock_append(&func.body, KEFIR_IROPCODE_TRUNCATE1, 20);
+    kefir_irblock_append(&func.body, KEFIR_IROPCODE_EXTEND8, 21);
+    kefir_irblock_append(&func.body, KEFIR_IROPCODE_EXTEND16, 22);
+    kefir_irblock_append(&func.body, KEFIR_IROPCODE_EXTEND32, 23);
     REQUIRE_OK(KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &func));
 
     REQUIRE_OK(KEFIR_CODEGEN_CLOSE(&codegen.iface));
