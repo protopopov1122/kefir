@@ -14,6 +14,8 @@ static struct {
     { KEFIR_IROPCODE_POP,        LABEL("pop") },
     { KEFIR_IROPCODE_PICK,       LABEL("pick") },
     { KEFIR_IROPCODE_PUT,        LABEL("put") },
+    { KEFIR_IROPCODE_INSERT,     LABEL("insert") },
+    { KEFIR_IROPCODE_XCHG,       LABEL("xchg") },
     { KEFIR_IROPCODE_DROP,       LABEL("drop") },
     { KEFIR_IROPCODE_IADD,       LABEL("iadd") },
     { KEFIR_IROPCODE_IADD1,      LABEL("iadd1") },

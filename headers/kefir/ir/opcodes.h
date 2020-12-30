@@ -16,6 +16,8 @@ typedef enum kefir_iropcode {
     KEFIR_IROPCODE_POP,
     KEFIR_IROPCODE_PICK,
     KEFIR_IROPCODE_PUT,
+    KEFIR_IROPCODE_INSERT,
+    KEFIR_IROPCODE_XCHG,
     KEFIR_IROPCODE_DROP,
 
     // Integer arithmetics

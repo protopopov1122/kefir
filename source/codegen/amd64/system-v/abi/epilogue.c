@@ -88,6 +88,7 @@ static kefir_result_t return_memory_aggregate(struct kefir_codegen_amd64 *codege
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RCX);
     ASMGEN_ARG(&codegen->asmgen, KEFIR_SIZE_FMT, layout->size);
+    ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_CLD);
     ASMGEN_INSTR(&codegen->asmgen,
         KEFIR_AMD64_REP KEFIR_AMD64_MOVSB);
     return KEFIR_OK;

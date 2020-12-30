@@ -7,6 +7,8 @@ extern __kefirrt_push_impl
 extern __kefirrt_pop_impl
 extern __kefirrt_pick_impl
 extern __kefirrt_put_impl
+extern __kefirrt_insert_impl
+extern __kefirrt_xchg_impl
 extern __kefirrt_drop_impl
 extern __kefirrt_iadd_impl
 extern __kefirrt_iadd1_impl

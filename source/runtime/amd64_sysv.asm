@@ -32,6 +32,8 @@ declare_opcode push
 declare_opcode pop
 declare_opcode pick
 declare_opcode put
+declare_opcode insert
+declare_opcode xchg
 declare_opcode drop
 declare_opcode iadd
 declare_opcode iadd1
@@ -101,7 +103,42 @@ define_opcode put
     mov [DATA2_REG], DATA_REG
     end_opcode
 
-define_opcode_stub drop
+define_opcode insert
+    mov rdx, [rsp]
+    mov rcx, [INSTR_ARG_PTR]
+    mov rax, rcx
+    inc rcx
+    shl rax, 3
+    add rax, rsp
+    mov rsi, rsp
+    mov rdi, rsp
+    sub rdi, 8 
+    cld
+    rep movsq
+    mov [rax], rdx
+    end_opcode
+
+define_opcode xchg
+    mov DATA2_REG, [INSTR_ARG_PTR]
+    shl DATA2_REG, 3
+    add DATA2_REG, rsp
+    mov DATA_REG, [DATA2_REG]
+    xchg DATA_REG, [rsp]
+    mov [DATA2_REG], DATA_REG
+    end_opcode
+
+define_opcode drop
+    mov rcx, [INSTR_ARG_PTR]
+    mov rdi, rcx
+    shl rdi, 3
+    add rdi, rsp
+    mov rsi, rdi
+    sub rsi, 8
+    std
+    rep movsq
+    cld
+    add rsp, 8
+    end_opcode
 
 define_opcode iadd
     pop DATA2_REG
