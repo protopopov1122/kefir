@@ -8,6 +8,7 @@
 
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_codegen_amd64 codegen;
+    struct kefir_ir_type decl_params, decl_result;
     struct kefir_ir_function_decl decl;
     struct kefir_ir_function func;
     struct kefir_amd64_sysv_function sysv_func;
@@ -15,13 +16,15 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     codegen.asmgen.settings.enable_comments = false;
     codegen.asmgen.settings.enable_identation = false;
 
-    REQUIRE_OK(kefir_ir_function_decl_alloc(mem, "func1", 0, 5, &decl));
+    REQUIRE_OK(kefir_ir_type_alloc(mem, 0, &decl_params));
+    REQUIRE_OK(kefir_ir_type_alloc(mem, 5, &decl_result));
+    REQUIRE_OK(kefir_ir_function_decl_alloc(mem, "func1", &decl_params, &decl_result, &decl));
     REQUIRE_OK(kefir_ir_function_alloc(mem, &decl, 0, &func));
-    REQUIRE_OK(kefir_ir_type_append_v(&func.declaration->result, KEFIR_IR_TYPE_STRUCT, 0, 2));
-    REQUIRE_OK(kefir_ir_type_append_v(&func.declaration->result, KEFIR_IR_TYPE_ARRAY, 0, 4));
-    REQUIRE_OK(kefir_ir_type_append_v(&func.declaration->result, KEFIR_IR_TYPE_FLOAT32, 0, 0));
-    REQUIRE_OK(kefir_ir_type_append_v(&func.declaration->result, KEFIR_IR_TYPE_ARRAY, 0, 10));
-    REQUIRE_OK(kefir_ir_type_append_v(&func.declaration->result, KEFIR_IR_TYPE_INT32, 0, 0));
+    REQUIRE_OK(kefir_ir_type_append_v(func.declaration->result, KEFIR_IR_TYPE_STRUCT, 0, 2));
+    REQUIRE_OK(kefir_ir_type_append_v(func.declaration->result, KEFIR_IR_TYPE_ARRAY, 0, 4));
+    REQUIRE_OK(kefir_ir_type_append_v(func.declaration->result, KEFIR_IR_TYPE_FLOAT32, 0, 0));
+    REQUIRE_OK(kefir_ir_type_append_v(func.declaration->result, KEFIR_IR_TYPE_ARRAY, 0, 10));
+    REQUIRE_OK(kefir_ir_type_append_v(func.declaration->result, KEFIR_IR_TYPE_INT32, 0, 0));
 
     REQUIRE_OK(kefir_amd64_sysv_function_alloc(mem, &func, &sysv_func));
     REQUIRE_OK(kefir_amd64_sysv_function_epilogue(&codegen, &sysv_func));
@@ -30,5 +33,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(KEFIR_CODEGEN_CLOSE(&codegen.iface));
     REQUIRE_OK(kefir_ir_function_free(mem, &func));
     REQUIRE_OK(kefir_ir_function_decl_free(mem, &decl));
+    REQUIRE_OK(kefir_ir_type_free(mem, &decl_result));
+    REQUIRE_OK(kefir_ir_type_free(mem, &decl_params));
     return KEFIR_OK;
 }

@@ -38,16 +38,19 @@ int main(int argc, const char **argv) {
     struct kefir_codegen_amd64 codegen;
     kefir_codegen_amd64_sysv_init(&codegen, stdout, &mem);
 
+    struct kefir_ir_type decl_params, decl_result;
     struct kefir_ir_function_decl decl;
-    kefir_ir_function_t func;
-    kefir_ir_function_decl_alloc(&mem, "func1", 3, 3, &decl);
+    struct kefir_ir_function func;
+    kefir_ir_type_alloc(&mem, 3, &decl_params);
+    kefir_ir_type_alloc(&mem, 3, &decl_result);
+    kefir_ir_function_decl_alloc(&mem, "func1", &decl_params, &decl_result, &decl);
     kefir_ir_function_alloc(&mem, &decl, 1024, &func);
-    kefir_ir_type_append_v(&func.declaration->params, KEFIR_IR_TYPE_STRUCT, 0, 2);
-    kefir_ir_type_append_v(&func.declaration->params, KEFIR_IR_TYPE_ARRAY, 0, 2);
-    kefir_ir_type_append_v(&func.declaration->params, KEFIR_IR_TYPE_INT, 0, 0);
-    kefir_ir_type_append_v(&func.declaration->result, KEFIR_IR_TYPE_STRUCT, 0, 2);
-    kefir_ir_type_append_v(&func.declaration->result, KEFIR_IR_TYPE_ARRAY, 0, 2);
-    kefir_ir_type_append_v(&func.declaration->result, KEFIR_IR_TYPE_INT, 0, 0);
+    kefir_ir_type_append_v(func.declaration->params, KEFIR_IR_TYPE_STRUCT, 0, 2);
+    kefir_ir_type_append_v(func.declaration->params, KEFIR_IR_TYPE_ARRAY, 0, 2);
+    kefir_ir_type_append_v(func.declaration->params, KEFIR_IR_TYPE_INT, 0, 0);
+    kefir_ir_type_append_v(func.declaration->result, KEFIR_IR_TYPE_STRUCT, 0, 2);
+    kefir_ir_type_append_v(func.declaration->result, KEFIR_IR_TYPE_ARRAY, 0, 2);
+    kefir_ir_type_append_v(func.declaration->result, KEFIR_IR_TYPE_INT, 0, 0);
     kefir_irblock_append(&func.body, KEFIR_IROPCODE_PUSH, 0);
     kefir_irblock_append(&func.body, KEFIR_IROPCODE_JMP, 1);
     kefir_irblock_append(&func.body, KEFIR_IROPCODE_RET, 0);
@@ -57,5 +60,7 @@ int main(int argc, const char **argv) {
     KEFIR_CODEGEN_CLOSE(&codegen.iface);
     kefir_ir_function_free(&mem, &func);
     kefir_ir_function_decl_free(&mem, &decl);
+    kefir_ir_type_free(&mem, &decl_result);
+    kefir_ir_type_free(&mem, &decl_params);
     return EXIT_SUCCESS;
 }

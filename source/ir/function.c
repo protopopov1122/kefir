@@ -6,8 +6,8 @@
 
 kefir_result_t kefir_ir_function_decl_alloc(struct kefir_mem *mem,
                                        const char *identifier,
-                                       kefir_size_t parameters,
-                                       kefir_size_t returns,
+                                       struct kefir_ir_type *parameters,
+                                       struct kefir_ir_type *returns,
                                        struct kefir_ir_function_decl *decl) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocation"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR function identifier"));
@@ -18,17 +18,8 @@ kefir_result_t kefir_ir_function_decl_alloc(struct kefir_mem *mem,
         KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate memory for IR function identifier"));
     strcpy(identifier_copy, identifier);
     decl->identifier = identifier_copy;
-    kefir_result_t result = kefir_ir_type_alloc(mem, parameters, &decl->params);
-    REQUIRE_ELSE(result == KEFIR_OK, {
-        KEFIR_FREE(mem, (char *) decl->identifier);
-        return result;
-    });
-    result = kefir_ir_type_alloc(mem, returns, &decl->result);
-    REQUIRE_ELSE(result == KEFIR_OK, {
-        KEFIR_FREE(mem, (char *) decl->identifier);
-        kefir_ir_type_free(mem, &decl->params);
-        return result;
-    });
+    decl->params = parameters;
+    decl->result = returns;
     return KEFIR_OK;
 }
 
@@ -36,8 +27,8 @@ kefir_result_t kefir_ir_function_decl_free(struct kefir_mem *mem,
                                       struct kefir_ir_function_decl *decl) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocation"));;
     REQUIRE(decl != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR function declaration pointer"));
-    REQUIRE_OK(kefir_ir_type_free(mem, &decl->result));
-    REQUIRE_OK(kefir_ir_type_free(mem, &decl->params));
+    decl->result = NULL;
+    decl->params = NULL;
     KEFIR_FREE(mem, (char *) decl->identifier);
     decl->identifier = NULL;
     return KEFIR_OK;

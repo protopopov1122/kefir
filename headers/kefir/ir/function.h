@@ -8,8 +8,8 @@
 
 typedef struct kefir_ir_function_decl {
     const char *identifier;
-    struct kefir_ir_type params;
-    struct kefir_ir_type result;
+    struct kefir_ir_type *params;
+    struct kefir_ir_type *result;
 } kefir_ir_function_decl_t;
 
 typedef struct kefir_ir_function {
@@ -19,8 +19,8 @@ typedef struct kefir_ir_function {
 
 kefir_result_t kefir_ir_function_decl_alloc(struct kefir_mem *,
                                        const char *,
-                                       kefir_size_t,
-                                       kefir_size_t,
+                                       struct kefir_ir_type *,
+                                       struct kefir_ir_type *,
                                        struct kefir_ir_function_decl *);
 kefir_result_t kefir_ir_function_decl_free(struct kefir_mem *,
                                       struct kefir_ir_function_decl *);

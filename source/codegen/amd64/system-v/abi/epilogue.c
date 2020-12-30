@@ -171,7 +171,7 @@ static kefir_result_t return_values(struct kefir_codegen_amd64 *codegen,
         .codegen = codegen,
         .func = func
     };
-    REQUIRE_OK(kefir_ir_type_visitor_list_nodes(&func->func->declaration->result, &visitor, (void *) &param, 0, 1));
+    REQUIRE_OK(kefir_ir_type_visitor_list_nodes(func->func->declaration->result, &visitor, (void *) &param, 0, 1));
     return KEFIR_OK;
 }
 

@@ -203,8 +203,8 @@ static kefir_result_t load_arguments(struct kefir_codegen_amd64 *codegen,
     visitor.visit[KEFIR_IR_TYPE_ARRAY] = load_aggregate_argument;
     visitor.visit[KEFIR_IR_TYPE_MEMORY] = load_aggregate_argument;
     visitor.visit[KEFIR_IR_TYPE_PAD] = load_pad_argument;
-    REQUIRE_OK(kefir_ir_type_visitor_list_nodes(&func->params, &visitor,
-        (void *) &param, 0, kefir_ir_type_nodes(&func->params)));
+    REQUIRE_OK(kefir_ir_type_visitor_list_nodes(func->params, &visitor,
+        (void *) &param, 0, kefir_ir_type_nodes(func->params)));
     return KEFIR_OK;
 }
 
