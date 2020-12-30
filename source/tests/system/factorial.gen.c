@@ -9,10 +9,12 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_codegen_amd64 codegen;
     kefir_codegen_amd64_sysv_init(&codegen, stdout, mem);
 
-    kefir_irfunction_t func;
-    kefir_irfunction_alloc(mem, "factorial", 3, 1, 1024, &func);
-    kefir_ir_type_append_v(&func.declaration.params, KEFIR_IR_TYPE_LONG, 0, 0);
-    kefir_ir_type_append_v(&func.declaration.result, KEFIR_IR_TYPE_LONG, 0, 0);
+    struct kefir_ir_function_decl decl;
+    struct kefir_ir_function func;
+    kefir_ir_function_decl_alloc(mem, "factorial", 3, 1, &decl);
+    kefir_ir_function_alloc(mem, &decl, 1024, &func);
+    kefir_ir_type_append_v(&func.declaration->params, KEFIR_IR_TYPE_LONG, 0, 0);
+    kefir_ir_type_append_v(&func.declaration->result, KEFIR_IR_TYPE_LONG, 0, 0);
     kefir_irblock_append(&func.body, KEFIR_IROPCODE_PICK, 0);       // 0:  [C; C]
     kefir_irblock_append(&func.body, KEFIR_IROPCODE_PUSH, 1);       // 1:  [C; C; 1]
     kefir_irblock_append(&func.body, KEFIR_IROPCODE_IGREATER, 0);   // 2:  [C; C > 1]
@@ -36,6 +38,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &func);
 
     KEFIR_CODEGEN_CLOSE(&codegen.iface);
-    kefir_irfunction_free(mem, &func);
+    kefir_ir_function_free(mem, &func);
+    kefir_ir_function_decl_free(mem, &decl);
     return EXIT_SUCCESS;
 }

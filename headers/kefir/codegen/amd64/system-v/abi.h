@@ -16,7 +16,7 @@ typedef enum kefir_amd64_sysv_internal_fields {
 } kefir_amd64_sysv_internal_fields_t;
 
 typedef struct kefir_amd64_sysv_function {
-    const struct kefir_irfunction *func;
+    const struct kefir_ir_function *func;
     struct {
         struct kefir_vector layout;
         struct kefir_vector allocation;
@@ -44,7 +44,7 @@ typedef struct kefir_amd64_sysv_function {
     } internals[KEFIR_AMD64_SYSV_INTERNAL_COUNT];
 } kefir_amd64_sysv_function_t;
 
-kefir_result_t kefir_amd64_sysv_function_alloc(struct kefir_mem *, const struct kefir_irfunction *, struct kefir_amd64_sysv_function *);
+kefir_result_t kefir_amd64_sysv_function_alloc(struct kefir_mem *, const struct kefir_ir_function *, struct kefir_amd64_sysv_function *);
 kefir_result_t kefir_amd64_sysv_function_free(struct kefir_mem *, struct kefir_amd64_sysv_function *);
 kefir_result_t kefir_amd64_sysv_function_prologue(struct kefir_codegen_amd64 *, const struct kefir_amd64_sysv_function *);
 kefir_result_t kefir_amd64_sysv_function_epilogue(struct kefir_codegen_amd64 *, const struct kefir_amd64_sysv_function *);

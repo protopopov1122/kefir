@@ -6,7 +6,7 @@
 #include "kefir/ir/function.h"
 
 typedef struct kefir_codegen {
-    kefir_result_t (*translate)(struct kefir_codegen *, const struct kefir_irfunction *);
+    kefir_result_t (*translate)(struct kefir_codegen *, const struct kefir_ir_function *);
     kefir_result_t (*close)(struct kefir_codegen *);
 
     void *data;

@@ -171,7 +171,7 @@ static kefir_result_t return_values(struct kefir_codegen_amd64 *codegen,
         .codegen = codegen,
         .func = func
     };
-    REQUIRE_OK(kefir_ir_type_visitor_list_nodes(&func->func->declaration.result, &visitor, (void *) &param, 0, 1));
+    REQUIRE_OK(kefir_ir_type_visitor_list_nodes(&func->func->declaration->result, &visitor, (void *) &param, 0, 1));
     return KEFIR_OK;
 }
 
@@ -194,9 +194,9 @@ kefir_result_t kefir_amd64_sysv_function_epilogue(struct kefir_codegen_amd64 *co
                                               const struct kefir_amd64_sysv_function *func) {
     REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 code generator"));
     REQUIRE(func != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR function declaration"));
-    ASMGEN_COMMENT(&codegen->asmgen, "Begin epilogue of %s", func->func->declaration.identifier);
+    ASMGEN_COMMENT(&codegen->asmgen, "Begin epilogue of %s", func->func->declaration->identifier);
     REQUIRE_OK(return_values(codegen, func));
     REQUIRE_OK(restore_state(codegen, func));
-    ASMGEN_COMMENT(&codegen->asmgen, "End of %s", func->func->declaration.identifier);
+    ASMGEN_COMMENT(&codegen->asmgen, "End of %s", func->func->declaration->identifier);
     return KEFIR_OK;
 }
