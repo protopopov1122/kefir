@@ -4,7 +4,7 @@
 
 kefir_result_t kefir_ir_module_init(struct kefir_ir_module *module) {
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module pointer"));
-    module->type_head = NULL;
+    kefir_list_init(&module->type_head, sizeof(struct kefir_ir_type));
     return KEFIR_OK;
 }
 
@@ -12,15 +12,11 @@ kefir_result_t kefir_ir_module_free(struct kefir_mem *mem,
                                 struct kefir_ir_module *module) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module pointer"));
-    struct kefir_ir_module_type *type_current = module->type_head,
-                              *type_next = NULL;
-    while (type_current != NULL) {
-        type_next = type_current->next;
-        kefir_ir_type_free(mem, &type_current->type);
-        KEFIR_FREE(mem, type_current);
-        type_current = type_next;
+    void *iter = kefir_list_iter(&module->type_head);
+    for (struct kefir_ir_type *type = kefir_list_next(&iter); type != NULL; type = kefir_list_next(&iter)) {
+        kefir_ir_type_free(mem, type);
     }
-    module->type_head = NULL;
+    kefir_list_free(mem, &module->type_head);
     return KEFIR_OK;
 }
 
@@ -29,14 +25,12 @@ struct kefir_ir_type *kefir_ir_module_new_type(struct kefir_mem *mem,
                                            kefir_size_t size) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(module != NULL, NULL);
-    struct kefir_ir_module_type *type = KEFIR_MALLOC(mem, sizeof(struct kefir_ir_module_type));
+    struct kefir_ir_type *type = kefir_list_append(mem, &module->type_head, NULL);
     REQUIRE(type != NULL, NULL);
-    kefir_result_t result = kefir_ir_type_alloc(mem, size, &type->type);
+    kefir_result_t result = kefir_ir_type_alloc(mem, size, type);
     REQUIRE_ELSE(result == KEFIR_OK, {
-        KEFIR_FREE(mem, type);
+        kefir_list_pop_back(mem, &module->type_head);
         return NULL;
     });
-    type->next = module->type_head;
-    module->type_head = type;
-    return &type->type;
+    return type;
 }
