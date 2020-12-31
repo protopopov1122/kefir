@@ -44,6 +44,19 @@ kefir_result_t kefir_vector_append(struct kefir_vector *vector, const void *valu
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_vector_copy(struct kefir_vector *vector, void *src, kefir_size_t length) {
+    REQUIRE(vector != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL vector pointer"));
+    REQUIRE((src != NULL && length > 0) || (src == NULL && length == 0),
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-zero length for non-NULL source pointer"));
+    REQUIRE(kefir_vector_available(vector) >= length,
+        KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to copy given number of elements"));
+    if (src != NULL) {
+        memcpy(vector->content, src, vector->element_size * length);
+    }
+    vector->length += length;
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_vector_extend(struct kefir_vector *vector, kefir_size_t count) {
     REQUIRE(vector != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL vector pointer"));
     REQUIRE(vector->length + count <= vector->capacity,

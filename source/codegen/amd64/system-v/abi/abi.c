@@ -20,11 +20,11 @@ static kefir_result_t frame_parameter_visitor(const struct kefir_ir_type *type,
     struct kefir_ir_type_iterator iter;
     REQUIRE_OK(kefir_ir_type_iterator_init(type, &iter));
     REQUIRE_OK(kefir_ir_type_iterator_goto(&iter, index));
-    struct kefir_amd64_sysv_parameter_allocation *alloc = 
-        (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(&sysv_func->parameters.allocation, iter.slot);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, alloc,
+        kefir_vector_at(&sysv_func->parameters.allocation, iter.slot));
     if (alloc->type == KEFIR_AMD64_SYSV_INPUT_PARAM_OWNING_CONTAINER) {
-        struct kefir_amd64_sysv_data_layout *layout = 
-            (struct kefir_amd64_sysv_data_layout *) kefir_vector_at(&sysv_func->parameters.layout, index);
+        ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
+            kefir_vector_at(&sysv_func->parameters.layout, index));
         sysv_func->frame.alignment = MAX(sysv_func->frame.alignment, layout->alignment);
         sysv_func->frame.size = kefir_codegen_pad_aligned(sysv_func->frame.size, sysv_func->frame.alignment);
         sysv_func->frame.size += layout->size;
@@ -67,8 +67,8 @@ static kefir_result_t function_alloc_return(struct kefir_mem *mem,
         return res;
     });
     if (kefir_ir_type_nodes(sysv_func->func->declaration->result) > 0) {
-        struct kefir_amd64_sysv_parameter_allocation *result =
-            (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(&sysv_func->returns.allocation, 0);
+        ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, result,
+            kefir_vector_at(&sysv_func->returns.allocation, 0));
         sysv_func->internals[KEFIR_AMD64_SYSV_INTERNAL_RETURN_ADDRESS].enabled = result->klass == KEFIR_AMD64_SYSV_PARAM_MEMORY;
     }
     return KEFIR_OK;

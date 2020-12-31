@@ -13,8 +13,8 @@ static kefir_result_t count_qwords_visitor(const struct kefir_ir_type *type,
     UNUSED(type);
     UNUSED(typeentry);
     struct qword_counter *counter = (struct qword_counter *) payload;
-    const struct kefir_amd64_sysv_data_layout *layout =
-        (const struct kefir_amd64_sysv_data_layout *) kefir_vector_at(counter->layout, index);
+    ASSIGN_DECL_CAST(const struct kefir_amd64_sysv_data_layout *, layout,
+        kefir_vector_at(counter->layout, index));
     kefir_size_t count = layout->size / KEFIR_AMD64_SYSV_ABI_QWORD;
     if (layout->size % KEFIR_AMD64_SYSV_ABI_QWORD != 0) {
         count++;
@@ -46,8 +46,8 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_alloc(struct kefir_amd64_sysv_abi_qwo
     REQUIRE_OK(kefir_vector_alloc(mem, sizeof(struct kefir_amd64_sysv_abi_qword), qword_count, &qwords->qwords));
     kefir_vector_extend(&qwords->qwords, qword_count);
     for (kefir_size_t i = 0; i < qword_count; i++) {
-        struct kefir_amd64_sysv_abi_qword *qword =
-            (struct kefir_amd64_sysv_abi_qword *) kefir_vector_at(&qwords->qwords, i);
+        ASSIGN_DECL_CAST(struct kefir_amd64_sysv_abi_qword *, qword,
+            kefir_vector_at(&qwords->qwords, i));
         qword->klass = KEFIR_AMD64_SYSV_PARAM_NO_CLASS;
         qword->location = 0;
         qword->index = i;
@@ -92,8 +92,8 @@ static kefir_amd64_sysv_data_class_t derive_dataclass(kefir_amd64_sysv_data_clas
 
 struct kefir_amd64_sysv_abi_qword *next_qword(struct kefir_amd64_sysv_abi_qwords *qwords,
                                             kefir_size_t alignment) {
-    struct kefir_amd64_sysv_abi_qword *qword =
-        (struct kefir_amd64_sysv_abi_qword *) kefir_vector_at(&qwords->qwords, qwords->current);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_abi_qword *, qword,
+        kefir_vector_at(&qwords->qwords, qwords->current));
     kefir_size_t unalign = qword->current_offset % alignment;
     kefir_size_t pad = unalign > 0
         ? alignment - unalign
@@ -143,8 +143,8 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_reset_class(struct kefir_amd64_sysv_a
     REQUIRE(begin < length, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Index exceeds QWord vector length"));
     REQUIRE(count > 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-zero number of QWords"));
     for (kefir_size_t i = begin; i < MIN(length, begin + count); i++) {
-        struct kefir_amd64_sysv_abi_qword *qword =
-            (struct kefir_amd64_sysv_abi_qword *) kefir_vector_at(&qwords->qwords, i);
+        ASSIGN_DECL_CAST(struct kefir_amd64_sysv_abi_qword *, qword,
+            kefir_vector_at(&qwords->qwords, i));
         qword->klass = dataclass;
     }
     return KEFIR_OK;
@@ -155,8 +155,8 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_save_position(const struct kefir_amd6
     REQUIRE(qwords != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid QWord vector"));
     REQUIRE(position != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid QWord position"));
     position->index = qwords->current;
-    struct kefir_amd64_sysv_abi_qword *qword =
-        (struct kefir_amd64_sysv_abi_qword *) kefir_vector_at(&qwords->qwords, qwords->current);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_abi_qword *, qword,
+        kefir_vector_at(&qwords->qwords, qwords->current));
     position->offset = qword->current_offset;
     return KEFIR_OK;
 }
@@ -171,8 +171,8 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_restore_position(struct kefir_amd64_s
         (position->offset == 0 && position->index == length),
         KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Position offset exceeds boundaries"));
     for (kefir_size_t i = position->index; i < length; i++) {
-        struct kefir_amd64_sysv_abi_qword *qword =
-            (struct kefir_amd64_sysv_abi_qword *) kefir_vector_at(&qwords->qwords, i);
+        ASSIGN_DECL_CAST(struct kefir_amd64_sysv_abi_qword *, qword,
+            kefir_vector_at(&qwords->qwords, i));
         qword->current_offset = i == position->index
             ? position->offset
             : position->index;

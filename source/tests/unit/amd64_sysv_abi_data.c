@@ -7,8 +7,8 @@
 
 #define ASSERT_DATA_ALLOC(vector, index, _size, _alignment, offset) \
     do { \
-        struct kefir_amd64_sysv_data_layout *param = \
-                (struct kefir_amd64_sysv_data_layout *) kefir_vector_at((vector), (index)); \
+        ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, param, \
+            kefir_vector_at((vector), (index))); \
         ASSERT(param->size == (_size)); \
         ASSERT(param->alignment == (_alignment)); \
         ASSERT(param->relative_offset == (offset)); \

@@ -55,8 +55,8 @@ static kefir_result_t assign_immediate_integer(const struct kefir_ir_type *type,
     UNUSED(typeentry);
     struct input_allocation *info =
         (struct input_allocation *) payload;
-    struct kefir_amd64_sysv_parameter_allocation *allocation =
-        (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(info->allocation, info->slot++);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, allocation,
+        kefir_vector_at(info->allocation, info->slot++));
     allocation->type = KEFIR_AMD64_SYSV_INPUT_PARAM_IMMEDIATE;
     allocation->klass = KEFIR_AMD64_SYSV_PARAM_INTEGER;
     allocation->index = index;
@@ -72,8 +72,8 @@ static kefir_result_t assign_immediate_sse(const struct kefir_ir_type *type,
     UNUSED(typeentry);
     struct input_allocation *info =
         (struct input_allocation *) payload;
-    struct kefir_amd64_sysv_parameter_allocation *allocation =
-        (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(info->allocation, info->slot++);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, allocation,
+        kefir_vector_at(info->allocation, info->slot++));
     allocation->type = KEFIR_AMD64_SYSV_INPUT_PARAM_IMMEDIATE;
     allocation->klass = KEFIR_AMD64_SYSV_PARAM_SSE;
     allocation->index = index;
@@ -89,10 +89,10 @@ static kefir_result_t assign_immediate_memory(const struct kefir_ir_type *type,
     UNUSED(typeentry);
     struct input_allocation *info =
         (struct input_allocation *) payload;
-    struct kefir_amd64_sysv_data_layout *layout =
-        (struct kefir_amd64_sysv_data_layout *) kefir_vector_at(info->layout, index);
-    struct kefir_amd64_sysv_parameter_allocation *allocation =
-        (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(info->allocation, info->slot++);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
+        kefir_vector_at(info->layout, index));
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, allocation,
+        kefir_vector_at(info->allocation, info->slot++));
     allocation->type = KEFIR_AMD64_SYSV_INPUT_PARAM_IMMEDIATE;
     allocation->klass = KEFIR_AMD64_SYSV_PARAM_MEMORY;
     allocation->index = index;
@@ -109,8 +109,8 @@ static kefir_result_t assign_immediate_pad(const struct kefir_ir_type *type,
     UNUSED(typeentry);
     struct input_allocation *info =
         (struct input_allocation *) payload;
-    struct kefir_amd64_sysv_parameter_allocation *allocation =
-        (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(info->allocation, info->slot++);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, allocation,
+        kefir_vector_at(info->allocation, info->slot++));
     allocation->type = KEFIR_AMD64_SYSV_INPUT_PARAM_SKIP;
     allocation->klass = KEFIR_AMD64_SYSV_PARAM_NO_CLASS;
     allocation->index = index;
@@ -137,10 +137,10 @@ static kefir_result_t assign_nested_scalar(const struct kefir_ir_type *type,
     UNUSED(index);
     struct recursive_aggregate_allocation *info = 
         (struct recursive_aggregate_allocation *) payload;
-    struct kefir_amd64_sysv_data_layout *layout =
-        (struct kefir_amd64_sysv_data_layout *) kefir_vector_at(info->layout, index);
-    struct kefir_amd64_sysv_parameter_allocation *allocation =
-        (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(info->allocation, (*info->slot)++);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
+        kefir_vector_at(info->layout, index));
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, allocation,
+        kefir_vector_at(info->allocation, (*info->slot)++));
     allocation->type = KEFIR_AMD64_SYSV_INPUT_PARAM_NESTED;
     allocation->klass = KEFIR_AMD64_SYSV_PARAM_NO_CLASS;
     allocation->index = index;
@@ -165,10 +165,10 @@ static kefir_result_t assign_nested_memory(const struct kefir_ir_type *type,
     UNUSED(typeentry);
     struct recursive_aggregate_allocation *info = 
         (struct recursive_aggregate_allocation *) payload;
-    struct kefir_amd64_sysv_data_layout *layout =
-        (struct kefir_amd64_sysv_data_layout *) kefir_vector_at(info->layout, index);
-    struct kefir_amd64_sysv_parameter_allocation *allocation =
-        (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(info->allocation, (*info->slot)++);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
+        kefir_vector_at(info->layout, index));
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, allocation,
+        kefir_vector_at(info->allocation, (*info->slot)++));
     allocation->type = KEFIR_AMD64_SYSV_INPUT_PARAM_NESTED;
     allocation->klass = KEFIR_AMD64_SYSV_PARAM_NO_CLASS;
     allocation->index = index;
@@ -187,8 +187,8 @@ static kefir_result_t assign_nested_struct(const struct kefir_ir_type *type,
     UNUSED(typeentry);
     struct recursive_aggregate_allocation *info = 
         (struct recursive_aggregate_allocation *) payload;
-    struct kefir_amd64_sysv_parameter_allocation *allocation =
-        (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(info->allocation, (*info->slot)++);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, allocation,
+        kefir_vector_at(info->allocation, (*info->slot)++));
     allocation->type = KEFIR_AMD64_SYSV_INPUT_PARAM_CONTAINER;
     allocation->klass = KEFIR_AMD64_SYSV_PARAM_NO_CLASS;
     allocation->index = index;
@@ -229,8 +229,8 @@ static kefir_result_t assign_nested_union(const struct kefir_ir_type *type,
     UNUSED(typeentry);
     struct recursive_aggregate_allocation *info = 
         (struct recursive_aggregate_allocation *) payload;
-    struct kefir_amd64_sysv_parameter_allocation *allocation =
-        (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(info->allocation, (*info->slot)++);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, allocation,
+        kefir_vector_at(info->allocation, (*info->slot)++));
     allocation->type = KEFIR_AMD64_SYSV_INPUT_PARAM_CONTAINER;
     allocation->klass = KEFIR_AMD64_SYSV_PARAM_NO_CLASS;
     allocation->index = index;
@@ -260,8 +260,8 @@ static kefir_result_t assign_nested_array(const struct kefir_ir_type *type,
     UNUSED(typeentry);
     struct recursive_aggregate_allocation *info = 
         (struct recursive_aggregate_allocation *) payload;
-    struct kefir_amd64_sysv_parameter_allocation *allocation =
-        (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(info->allocation, (*info->slot)++);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, allocation,
+        kefir_vector_at(info->allocation, (*info->slot)++));
     allocation->type = KEFIR_AMD64_SYSV_INPUT_PARAM_CONTAINER;
     allocation->klass = KEFIR_AMD64_SYSV_PARAM_NO_CLASS;
     allocation->index = index;
@@ -288,8 +288,8 @@ static kefir_result_t aggregate_postmerger(struct kefir_mem *mem,
     kefir_size_t ssecount = 0;
     bool had_nonsseup = false;
     for (kefir_size_t i = 0; i < length; i++) {
-        struct kefir_amd64_sysv_abi_qword *qword =
-            (struct kefir_amd64_sysv_abi_qword *) kefir_vector_at(&alloc->container.qwords, i);
+        ASSIGN_DECL_CAST(struct kefir_amd64_sysv_abi_qword *, qword,
+            kefir_vector_at(&alloc->container.qwords, i));
         had_nonsseup = had_nonsseup || (i > 0 && qword->klass != KEFIR_AMD64_SYSV_PARAM_SSEUP);
         if (qword->klass == KEFIR_AMD64_SYSV_PARAM_MEMORY) {
             return aggregate_disown(mem, alloc);
@@ -373,8 +373,8 @@ static kefir_result_t calculate_qword_requirements(struct kefir_amd64_sysv_param
         allocation->requirements.memory.alignment = layout->alignment;
     } else {
         for (kefir_size_t i = 0; i < kefir_vector_length(&allocation->container.qwords); i++) {
-            struct kefir_amd64_sysv_abi_qword *qword =
-                (struct kefir_amd64_sysv_abi_qword *) kefir_vector_at(&allocation->container.qwords, i);
+            ASSIGN_DECL_CAST(struct kefir_amd64_sysv_abi_qword *, qword,
+                kefir_vector_at(&allocation->container.qwords, i));
             switch (qword->klass) {
                 case KEFIR_AMD64_SYSV_PARAM_INTEGER:
                     allocation->requirements.integer++;
@@ -405,10 +405,10 @@ static kefir_result_t assign_immediate_struct(const struct kefir_ir_type *type,
                                     void *payload) {
     struct input_allocation *info =
         (struct input_allocation *) payload;
-    struct kefir_amd64_sysv_data_layout *layout =
-        (struct kefir_amd64_sysv_data_layout *) kefir_vector_at(info->layout, index);
-    struct kefir_amd64_sysv_parameter_allocation *allocation =
-        (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(info->allocation, info->slot++);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
+        kefir_vector_at(info->layout, index));
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, allocation,
+        kefir_vector_at(info->allocation, info->slot++));
     allocation->type = KEFIR_AMD64_SYSV_INPUT_PARAM_CONTAINER;
     allocation->index = index;
 
@@ -466,10 +466,10 @@ static kefir_result_t assign_immediate_array(const struct kefir_ir_type *type,
                                     void *payload) {
     struct input_allocation *info =
         (struct input_allocation *) payload;
-    struct kefir_amd64_sysv_data_layout *layout =
-        (struct kefir_amd64_sysv_data_layout *) kefir_vector_at(info->layout, index);
-    struct kefir_amd64_sysv_parameter_allocation *allocation =
-        (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(info->allocation, info->slot++);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
+        kefir_vector_at(info->layout, index));
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, allocation,
+        kefir_vector_at(info->allocation, info->slot++));
     allocation->type = KEFIR_AMD64_SYSV_INPUT_PARAM_CONTAINER;
     allocation->index = index;
 
@@ -528,10 +528,10 @@ static kefir_result_t assign_immediate_union(const struct kefir_ir_type *type,
                                     void *payload) {
     struct input_allocation *info =
         (struct input_allocation *) payload;
-    struct kefir_amd64_sysv_data_layout *layout =
-        (struct kefir_amd64_sysv_data_layout *) kefir_vector_at(info->layout, index);
-    struct kefir_amd64_sysv_parameter_allocation *allocation =
-        (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(info->allocation, info->slot++);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
+        kefir_vector_at(info->layout, index));
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, allocation,
+        kefir_vector_at(info->allocation, info->slot++));
     allocation->type = KEFIR_AMD64_SYSV_INPUT_PARAM_CONTAINER;
     allocation->index = index;
 
@@ -561,8 +561,8 @@ kefir_result_t kefir_amd64_sysv_parameter_classify(struct kefir_mem *mem,
         return res;
     });
     for (kefir_size_t i = 0; i < slots; i++) {
-        struct kefir_amd64_sysv_parameter_allocation *entry =
-            (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(allocation, i);
+        ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, entry,
+            kefir_vector_at(allocation, i));
         entry->type = KEFIR_AMD64_SYSV_INPUT_PARAM_SKIP;
         entry->klass = KEFIR_AMD64_SYSV_PARAM_NO_CLASS;
         entry->index = 0;
@@ -598,8 +598,8 @@ kefir_result_t kefir_amd64_sysv_parameter_free(struct kefir_mem *mem,
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(allocation != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid allocation vector"));
     for (kefir_size_t i = 0; i < kefir_vector_length(allocation); i++) {
-        struct kefir_amd64_sysv_parameter_allocation *alloc =
-            (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(allocation, i);
+        ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, alloc,
+            kefir_vector_at(allocation, i));
         if (alloc->type == KEFIR_AMD64_SYSV_INPUT_PARAM_OWNING_CONTAINER) {
             REQUIRE_OK(kefir_amd64_sysv_abi_qwords_free(&alloc->container, mem));
         }
@@ -624,8 +624,8 @@ static kefir_result_t integer_allocate(const struct kefir_ir_type *type,
     struct kefir_ir_type_iterator iter;
     REQUIRE_OK(kefir_ir_type_iterator_init(type, &iter));
     REQUIRE_OK(kefir_ir_type_iterator_goto(&iter, index));
-    struct kefir_amd64_sysv_parameter_allocation *alloc = 
-        (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(state->allocation, iter.slot);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, alloc,
+        kefir_vector_at(state->allocation, iter.slot));
     REQUIRE(alloc->requirements.integer == 1 &&
             alloc->requirements.sse == 0 &&
             alloc->requirements.sseup == 0 &&
@@ -653,8 +653,8 @@ static kefir_result_t sse_allocate(const struct kefir_ir_type *type,
     struct kefir_ir_type_iterator iter;
     REQUIRE_OK(kefir_ir_type_iterator_init(type, &iter));
     REQUIRE_OK(kefir_ir_type_iterator_goto(&iter, index));
-    struct kefir_amd64_sysv_parameter_allocation *alloc = 
-        (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(state->allocation, iter.slot);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, alloc,
+        kefir_vector_at(state->allocation, iter.slot));
     REQUIRE(alloc->requirements.integer == 0 &&
             alloc->requirements.sse == 1 &&
             alloc->requirements.sseup == 0 &&
@@ -693,8 +693,8 @@ static kefir_result_t memory_allocate(const struct kefir_ir_type *type,
     struct kefir_ir_type_iterator iter;
     REQUIRE_OK(kefir_ir_type_iterator_init(type, &iter));
     REQUIRE_OK(kefir_ir_type_iterator_goto(&iter, index));
-    struct kefir_amd64_sysv_parameter_allocation *alloc = 
-        (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(state->allocation, iter.slot);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, alloc,
+        kefir_vector_at(state->allocation, iter.slot));
     REQUIRE(alloc->requirements.integer == 0 &&
             alloc->requirements.sse == 0 &&
             alloc->requirements.sseup == 0 &&
@@ -726,10 +726,10 @@ static kefir_result_t aggregate_allocate(const struct kefir_ir_type *type,
     struct kefir_ir_type_iterator iter;
     REQUIRE_OK(kefir_ir_type_iterator_init(type, &iter));
     REQUIRE_OK(kefir_ir_type_iterator_goto(&iter, index));
-    struct kefir_amd64_sysv_data_layout *layout =
-        (struct kefir_amd64_sysv_data_layout *) kefir_vector_at(state->layout, index);
-    struct kefir_amd64_sysv_parameter_allocation *alloc = 
-        (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(state->allocation, iter.slot);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
+        kefir_vector_at(state->layout, index));
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, alloc,
+        kefir_vector_at(state->allocation, iter.slot));
     if (aggregate_register_allocate(alloc, state->current)) {
         if (alloc->requirements.integer > 0) {
             alloc->location.integer_register = state->current->integer_register;
@@ -743,8 +743,8 @@ static kefir_result_t aggregate_allocate(const struct kefir_ir_type *type,
         kefir_size_t integer_location = alloc->location.integer_register;
         kefir_size_t sse_location = alloc->location.sse_register;
         for (kefir_size_t i = 0; i < kefir_vector_length(&alloc->container.qwords); i++) {
-            struct kefir_amd64_sysv_abi_qword *qword =
-                (struct kefir_amd64_sysv_abi_qword *) kefir_vector_at(&alloc->container.qwords, i);
+            ASSIGN_DECL_CAST(struct kefir_amd64_sysv_abi_qword *, qword,
+                kefir_vector_at(&alloc->container.qwords, i));
             switch (qword->klass) {
                 case KEFIR_AMD64_SYSV_PARAM_INTEGER:
                     qword->location = integer_location++;

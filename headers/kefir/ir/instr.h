@@ -3,7 +3,7 @@
 
 #include "kefir/core/basic-types.h"
 #include "kefir/ir/opcodes.h"
-#include "kefir/core/vector_util.h"
+#include "kefir/core/vector.h"
 #include "kefir/core/mem.h"
 
 typedef struct kefir_irinstr {
@@ -11,7 +11,9 @@ typedef struct kefir_irinstr {
     kefir_int64_t arg;
 } kefir_irinstr_t;
 
-typedef KEFIR_VECTOR_STRUCT(kefir_irblock, struct kefir_irinstr, code) kefir_irblock_t;
+typedef struct kefir_irblock {
+    struct kefir_vector content;
+} kefir_irblock_t;
 
 kefir_result_t kefir_irblock_init(struct kefir_irblock *, void *, kefir_size_t);
 kefir_size_t kefir_irblock_available(const struct kefir_irblock *);

@@ -7,8 +7,8 @@
 
 #define ASSERT_PARAM_REGISTER_ALLOCATION(allocation, index, _klass, _integer, _sse) \
     do { \
-        struct kefir_amd64_sysv_parameter_allocation *alloc = \
-            (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at((allocation), (index)); \
+        ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, alloc, \
+            kefir_vector_at((allocation), (index))); \
         ASSERT(alloc->klass == (_klass)); \
         ASSERT(alloc->location.integer_register == (_integer)); \
         ASSERT(alloc->location.sse_register == (_sse)); \
@@ -16,16 +16,16 @@
 
 #define ASSERT_PARAM_STACK_ALLOCATION(allocation, index, _offset) \
     do { \
-        struct kefir_amd64_sysv_parameter_allocation *alloc = \
-            (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at((allocation), (index)); \
+        ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, alloc, \
+            kefir_vector_at((allocation), (index))); \
         ASSERT(alloc->klass == KEFIR_AMD64_SYSV_PARAM_MEMORY); \
         ASSERT(alloc->location.stack_offset == (_offset)); \
     } while (0)
 
 #define ASSERT_NESTED_ALLOCATION(allocation, index, _klass, _location, _offset) \
     do { \
-        struct kefir_amd64_sysv_parameter_allocation *alloc = \
-            (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at((allocation), (index)); \
+        ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, alloc, \
+            kefir_vector_at((allocation), (index))); \
         ASSERT(alloc->container_reference.qword->klass == (_klass)); \
         ASSERT(alloc->container_reference.qword->location == (_location)); \
         ASSERT(alloc->container_reference.offset == (_offset)); \

@@ -3,7 +3,6 @@
 
 #include "kefir/core/basic-types.h"
 #include "kefir/core/mem.h"
-#include "kefir/core/vector_util.h"
 
 typedef struct kefir_vector {
     kefir_size_t element_size;
@@ -17,6 +16,7 @@ kefir_size_t kefir_vector_length(const struct kefir_vector *);
 kefir_size_t kefir_vector_available(const struct kefir_vector *);
 void *kefir_vector_at(const struct kefir_vector *, kefir_size_t);
 kefir_result_t kefir_vector_append(struct kefir_vector *, const void *);
+kefir_result_t kefir_vector_copy(struct kefir_vector *, void *, kefir_size_t);
 kefir_result_t kefir_vector_extend(struct kefir_vector *, kefir_size_t);
 kefir_result_t kefir_vector_alloc(struct kefir_mem *, kefir_size_t, kefir_size_t, struct kefir_vector *);
 kefir_result_t kefir_vector_realloc(struct kefir_mem *, kefir_size_t, struct kefir_vector *);

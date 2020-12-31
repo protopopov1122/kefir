@@ -6,6 +6,12 @@
 
 #define UNUSED(x) (void)(x)
 #define BITSIZE_OF(x) (sizeof(x) * CHAR_BIT)
+#define ASSIGN_CAST(type, dest, expr) \
+    do { \
+        *(dest) = ((type) (expr)); \
+    } while (0)
+#define ASSIGN_DECL_CAST(type, ident, expr) \
+    type ident = ((type) (expr));
 #define ASSIGN_PTR(ptr, value) \
     do { \
         if ((ptr) != NULL) { \

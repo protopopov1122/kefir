@@ -102,8 +102,8 @@ static kefir_result_t return_register_aggregate(struct kefir_codegen_amd64 *code
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_POP);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
     for (kefir_size_t i = 0; i < kefir_vector_length(&alloc->container.qwords); i++) {
-        struct kefir_amd64_sysv_abi_qword *qword = 
-            (struct kefir_amd64_sysv_abi_qword *) kefir_vector_at(&alloc->container.qwords, i);
+        ASSIGN_DECL_CAST(struct kefir_amd64_sysv_abi_qword *, qword,
+            kefir_vector_at(&alloc->container.qwords, i));
         switch (qword->klass) {
             case KEFIR_AMD64_SYSV_PARAM_INTEGER:
                 if (integer_register >= KEFIR_AMD64_SYSV_INTEGER_RETURN_REGISTER_COUNT) {
@@ -145,10 +145,10 @@ static kefir_result_t return_aggregate(const struct kefir_ir_type *type,
     struct kefir_ir_type_iterator iter;
     REQUIRE_OK(kefir_ir_type_iterator_init(type, &iter));
     REQUIRE_OK(kefir_ir_type_iterator_goto(&iter, index));
-    struct kefir_amd64_sysv_parameter_allocation *alloc = 
-        (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at(&param->func->returns.allocation, iter.slot);
-    struct kefir_amd64_sysv_data_layout *layout = 
-        (struct kefir_amd64_sysv_data_layout *) kefir_vector_at(&param->func->returns.layout, index);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, alloc,
+        kefir_vector_at(&param->func->returns.allocation, iter.slot));
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
+        kefir_vector_at(&param->func->returns.layout, index));
     if (alloc->klass == KEFIR_AMD64_SYSV_PARAM_MEMORY) {
         REQUIRE_OK(return_memory_aggregate(param->codegen, param->func,
             layout));

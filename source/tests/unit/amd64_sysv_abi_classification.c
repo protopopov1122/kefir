@@ -7,8 +7,8 @@
 
 #define ASSERT_PARAM_ALLOC(allocation, index, _type, _klass) \
     do { \
-        struct kefir_amd64_sysv_parameter_allocation *alloc = \
-            (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at((allocation), (index)); \
+        ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, alloc, \
+            kefir_vector_at((allocation), (index))); \
         ASSERT(alloc->type == (_type)); \
         ASSERT(alloc->klass == (_klass)); \
     } while (0)
@@ -17,8 +17,8 @@
     do { \
         ASSERT_PARAM_ALLOC((allocation), (_qword_index), \
             KEFIR_AMD64_SYSV_INPUT_PARAM_NESTED, KEFIR_AMD64_SYSV_PARAM_NO_CLASS); \
-        struct kefir_amd64_sysv_parameter_allocation *alloc = \
-            (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at((allocation), (_qword_index)); \
+        ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, alloc, \
+            kefir_vector_at((allocation), (_qword_index))); \
         ASSERT(alloc->container_reference.qword->klass == (_klass)); \
         ASSERT(alloc->container_reference.qword->index == (_index)); \
         ASSERT(alloc->container_reference.offset == (_offset)); \
@@ -26,8 +26,8 @@
 
 #define ASSERT_PARAM_REQUIREMENTS(allocation, index, _integer, _sse, _sseup, _memsize, _memalign) \
     do { \
-        struct kefir_amd64_sysv_parameter_allocation *alloc = \
-            (struct kefir_amd64_sysv_parameter_allocation *) kefir_vector_at((allocation), (index)); \
+        ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, alloc, \
+            kefir_vector_at((allocation), (index))); \
         ASSERT(alloc->requirements.integer == (_integer)); \
         ASSERT(alloc->requirements.sse == (_sse)); \
         ASSERT(alloc->requirements.sseup == (_sseup)); \

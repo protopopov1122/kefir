@@ -54,8 +54,8 @@ static kefir_result_t calculate_integer_layout(const struct kefir_ir_type *type,
                                void *payload) {
     UNUSED(type);
     struct compound_type_layout *compound_type_layout = (struct compound_type_layout *) payload;
-    struct kefir_amd64_sysv_data_layout *data =
-        (struct kefir_amd64_sysv_data_layout *) kefir_vector_at(compound_type_layout->vector, index);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, data,
+        kefir_vector_at(compound_type_layout->vector, index));
     switch (typeentry->typecode) {
         case KEFIR_IR_TYPE_BOOL:
         case KEFIR_IR_TYPE_CHAR:
@@ -97,8 +97,8 @@ static kefir_result_t calculate_sse_layout(const struct kefir_ir_type *type,
                                void *payload) {
     UNUSED(type);
     struct compound_type_layout *compound_type_layout = (struct compound_type_layout *) payload;
-    struct kefir_amd64_sysv_data_layout *data =
-        (struct kefir_amd64_sysv_data_layout *) kefir_vector_at(compound_type_layout->vector, index);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, data,
+        kefir_vector_at(compound_type_layout->vector, index));
     switch (typeentry->typecode) {
         case KEFIR_IR_TYPE_FLOAT32:
             data->size = 4;
@@ -124,8 +124,8 @@ static kefir_result_t calculate_amorphous_layout(const struct kefir_ir_type *typ
                                void *payload) {
     UNUSED(type);
     struct compound_type_layout *compound_type_layout = (struct compound_type_layout *) payload;
-    struct kefir_amd64_sysv_data_layout *data =
-        (struct kefir_amd64_sysv_data_layout *) kefir_vector_at(compound_type_layout->vector, index);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, data,
+        kefir_vector_at(compound_type_layout->vector, index));
     
     switch (typeentry->typecode) {
         case KEFIR_IR_TYPE_PAD:
@@ -151,8 +151,8 @@ static kefir_result_t calculate_struct_union_layout(const struct kefir_ir_type *
                                const struct kefir_ir_typeentry *typeentry,
                                void *payload) {
     struct compound_type_layout *compound_type_layout = (struct compound_type_layout *) payload;
-    struct kefir_amd64_sysv_data_layout *data =
-        (struct kefir_amd64_sysv_data_layout *) kefir_vector_at(compound_type_layout->vector, index);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, data,
+        kefir_vector_at(compound_type_layout->vector, index));
     struct compound_type_layout nested_compound_type_layout = {
         .visitor = compound_type_layout->visitor,
         .vector = compound_type_layout->vector,
@@ -180,8 +180,8 @@ static kefir_result_t calculate_array_layout(const struct kefir_ir_type *type,
                                const struct kefir_ir_typeentry *typeentry,
                                void *payload) {
     struct compound_type_layout *compound_type_layout = (struct compound_type_layout *) payload;
-    struct kefir_amd64_sysv_data_layout *data =
-        (struct kefir_amd64_sysv_data_layout *) kefir_vector_at(compound_type_layout->vector, index);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, data,
+        kefir_vector_at(compound_type_layout->vector, index));
     struct compound_type_layout nested_compound_type_layout = {
         .visitor = compound_type_layout->visitor,
         .vector = compound_type_layout->vector,
