@@ -19,15 +19,14 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_function_decl *decl =
         kefir_ir_module_new_function_declaration(mem, &module, "bool_and", decl_params, decl_result);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
-    kefir_ir_function_t func;
-    kefir_ir_function_alloc(mem, decl, 1024, &func);
-    kefir_ir_type_append_v(func.declaration->params, KEFIR_IR_TYPE_BOOL, 0, 0);
-    kefir_ir_type_append_v(func.declaration->params, KEFIR_IR_TYPE_BOOL, 0, 0);
-    kefir_ir_type_append_v(func.declaration->result, KEFIR_IR_TYPE_BOOL, 0, 0);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_BAND, 0);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_RET, 0);
-    KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &func);
-    kefir_ir_function_free(mem, &func);
+    struct kefir_ir_function *func = kefir_ir_module_new_function(mem, &module, decl->identifier, 2);
+    REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
+    kefir_ir_type_append_v(func->declaration->params, KEFIR_IR_TYPE_BOOL, 0, 0);
+    kefir_ir_type_append_v(func->declaration->params, KEFIR_IR_TYPE_BOOL, 0, 0);
+    kefir_ir_type_append_v(func->declaration->result, KEFIR_IR_TYPE_BOOL, 0, 0);
+    kefir_irblock_append(&func->body, KEFIR_IROPCODE_BAND, 0);
+    kefir_irblock_append(&func->body, KEFIR_IROPCODE_RET, 0);
+    KEFIR_CODEGEN_TRANSLATE(&codegen.iface, func);
 
     decl_params = kefir_ir_module_new_type(mem, &module, 2),
     decl_result = kefir_ir_module_new_type(mem, &module, 1);
@@ -35,14 +34,14 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(decl_result != NULL, KEFIR_INTERNAL_ERROR);
     decl = kefir_ir_module_new_function_declaration(mem, &module, "bool_or", decl_params, decl_result);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
-    kefir_ir_function_alloc(mem, decl, 1024, &func);
-    kefir_ir_type_append_v(func.declaration->params, KEFIR_IR_TYPE_BOOL, 0, 0);
-    kefir_ir_type_append_v(func.declaration->params, KEFIR_IR_TYPE_BOOL, 0, 0);
-    kefir_ir_type_append_v(func.declaration->result, KEFIR_IR_TYPE_BOOL, 0, 0);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_BOR, 0);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_RET, 0);
-    KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &func);
-    kefir_ir_function_free(mem, &func);
+    func = kefir_ir_module_new_function(mem, &module, decl->identifier, 2);
+    REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
+    kefir_ir_type_append_v(func->declaration->params, KEFIR_IR_TYPE_BOOL, 0, 0);
+    kefir_ir_type_append_v(func->declaration->params, KEFIR_IR_TYPE_BOOL, 0, 0);
+    kefir_ir_type_append_v(func->declaration->result, KEFIR_IR_TYPE_BOOL, 0, 0);
+    kefir_irblock_append(&func->body, KEFIR_IROPCODE_BOR, 0);
+    kefir_irblock_append(&func->body, KEFIR_IROPCODE_RET, 0);
+    KEFIR_CODEGEN_TRANSLATE(&codegen.iface, func);
 
     decl_params = kefir_ir_module_new_type(mem, &module, 1),
     decl_result = kefir_ir_module_new_type(mem, &module, 1);
@@ -50,13 +49,13 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(decl_result != NULL, KEFIR_INTERNAL_ERROR);
     decl = kefir_ir_module_new_function_declaration(mem, &module, "bool_not", decl_params, decl_result);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
-    kefir_ir_function_alloc(mem, decl, 1024, &func);
-    kefir_ir_type_append_v(func.declaration->params, KEFIR_IR_TYPE_BOOL, 0, 0);
-    kefir_ir_type_append_v(func.declaration->result, KEFIR_IR_TYPE_BOOL, 0, 0);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_BNOT, 0);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_RET, 0);
-    KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &func);
-    kefir_ir_function_free(mem, &func);
+    func = kefir_ir_module_new_function(mem, &module, decl->identifier, 2);
+    REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
+    kefir_ir_type_append_v(func->declaration->params, KEFIR_IR_TYPE_BOOL, 0, 0);
+    kefir_ir_type_append_v(func->declaration->result, KEFIR_IR_TYPE_BOOL, 0, 0);
+    kefir_irblock_append(&func->body, KEFIR_IROPCODE_BNOT, 0);
+    kefir_irblock_append(&func->body, KEFIR_IROPCODE_RET, 0);
+    KEFIR_CODEGEN_TRANSLATE(&codegen.iface, func);
 
     REQUIRE_OK(kefir_ir_module_free(mem, &module));
     KEFIR_CODEGEN_CLOSE(&codegen.iface);

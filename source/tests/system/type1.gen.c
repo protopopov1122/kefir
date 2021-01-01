@@ -12,55 +12,54 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
-    struct kefir_ir_function func;
     struct kefir_ir_type *decl_params = kefir_ir_module_new_type(mem, &module, 1),
                        *decl_result = kefir_ir_module_new_type(mem, &module, 1);
     struct kefir_ir_function_decl *decl =
         kefir_ir_module_new_function_declaration(mem, &module, "trunc1", decl_params, decl_result);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
-    kefir_ir_function_alloc(mem, decl, 1024, &func);
-    kefir_ir_type_append_v(func.declaration->params, KEFIR_IR_TYPE_LONG, 0, 0);
-    kefir_ir_type_append_v(func.declaration->result, KEFIR_IR_TYPE_BOOL, 0, 0);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_TRUNCATE1, 0);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_RET, 0);
-    KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &func);
-    kefir_ir_function_free(mem, &func);
+    struct kefir_ir_function *func = kefir_ir_module_new_function(mem, &module, decl->identifier, 2);
+    REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
+    kefir_ir_type_append_v(func->declaration->params, KEFIR_IR_TYPE_LONG, 0, 0);
+    kefir_ir_type_append_v(func->declaration->result, KEFIR_IR_TYPE_BOOL, 0, 0);
+    kefir_irblock_append(&func->body, KEFIR_IROPCODE_TRUNCATE1, 0);
+    kefir_irblock_append(&func->body, KEFIR_IROPCODE_RET, 0);
+    KEFIR_CODEGEN_TRANSLATE(&codegen.iface, func);
 
     decl_params = kefir_ir_module_new_type(mem, &module, 1),
     decl_result = kefir_ir_module_new_type(mem, &module, 1);
     decl = kefir_ir_module_new_function_declaration(mem, &module, "extend8", decl_params, decl_result);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
-    kefir_ir_function_alloc(mem, decl, 1024, &func);
-    kefir_ir_type_append_v(func.declaration->params, KEFIR_IR_TYPE_LONG, 0, 0);
-    kefir_ir_type_append_v(func.declaration->result, KEFIR_IR_TYPE_CHAR, 0, 0);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_EXTEND8, 0);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_RET, 0);
-    KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &func);
-    kefir_ir_function_free(mem, &func);
+    func = kefir_ir_module_new_function(mem, &module, decl->identifier, 2);
+    REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
+    kefir_ir_type_append_v(func->declaration->params, KEFIR_IR_TYPE_LONG, 0, 0);
+    kefir_ir_type_append_v(func->declaration->result, KEFIR_IR_TYPE_CHAR, 0, 0);
+    kefir_irblock_append(&func->body, KEFIR_IROPCODE_EXTEND8, 0);
+    kefir_irblock_append(&func->body, KEFIR_IROPCODE_RET, 0);
+    KEFIR_CODEGEN_TRANSLATE(&codegen.iface, func);
 
     decl_params = kefir_ir_module_new_type(mem, &module, 1),
     decl_result = kefir_ir_module_new_type(mem, &module, 1);
     decl = kefir_ir_module_new_function_declaration(mem, &module, "extend16", decl_params, decl_result);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
-    kefir_ir_function_alloc(mem, decl, 1024, &func);
-    kefir_ir_type_append_v(func.declaration->params, KEFIR_IR_TYPE_LONG, 0, 0);
-    kefir_ir_type_append_v(func.declaration->result, KEFIR_IR_TYPE_SHORT, 0, 0);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_EXTEND16, 0);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_RET, 0);
-    KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &func);
-    kefir_ir_function_free(mem, &func);
+    func = kefir_ir_module_new_function(mem, &module, decl->identifier, 2);
+    REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
+    kefir_ir_type_append_v(func->declaration->params, KEFIR_IR_TYPE_LONG, 0, 0);
+    kefir_ir_type_append_v(func->declaration->result, KEFIR_IR_TYPE_SHORT, 0, 0);
+    kefir_irblock_append(&func->body, KEFIR_IROPCODE_EXTEND16, 0);
+    kefir_irblock_append(&func->body, KEFIR_IROPCODE_RET, 0);
+    KEFIR_CODEGEN_TRANSLATE(&codegen.iface, func);
 
     decl_params = kefir_ir_module_new_type(mem, &module, 1),
     decl_result = kefir_ir_module_new_type(mem, &module, 1);
     decl = kefir_ir_module_new_function_declaration(mem, &module, "extend32", decl_params, decl_result);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
-    kefir_ir_function_alloc(mem, decl, 1024, &func);
-    kefir_ir_type_append_v(func.declaration->params, KEFIR_IR_TYPE_LONG, 0, 0);
-    kefir_ir_type_append_v(func.declaration->result, KEFIR_IR_TYPE_INT, 0, 0);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_EXTEND32, 0);
-    kefir_irblock_append(&func.body, KEFIR_IROPCODE_RET, 0);
-    KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &func);
-    kefir_ir_function_free(mem, &func);
+    func = kefir_ir_module_new_function(mem, &module, decl->identifier, 2);
+    REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
+    kefir_ir_type_append_v(func->declaration->params, KEFIR_IR_TYPE_LONG, 0, 0);
+    kefir_ir_type_append_v(func->declaration->result, KEFIR_IR_TYPE_INT, 0, 0);
+    kefir_irblock_append(&func->body, KEFIR_IROPCODE_EXTEND32, 0);
+    kefir_irblock_append(&func->body, KEFIR_IROPCODE_RET, 0);
+    KEFIR_CODEGEN_TRANSLATE(&codegen.iface, func);
 
     REQUIRE_OK(kefir_ir_module_free(mem, &module));
     KEFIR_CODEGEN_CLOSE(&codegen.iface);

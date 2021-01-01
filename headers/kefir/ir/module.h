@@ -12,6 +12,7 @@ typedef struct kefir_ir_module {
     struct kefir_hashtree function_declarations;
     struct kefir_list global_symbols;
     struct kefir_list external_symbols;
+    struct kefir_hashtree functions;
 } kefir_ir_module_t;
 
 kefir_result_t kefir_ir_module_alloc(struct kefir_mem *, struct kefir_ir_module *);
@@ -38,5 +39,10 @@ kefir_result_t kefir_ir_module_declare_global(struct kefir_mem *,
 kefir_result_t kefir_ir_module_declare_external(struct kefir_mem *,
                                             struct kefir_ir_module *,
                                             const char *);
+
+struct kefir_ir_function * kefir_ir_module_new_function(struct kefir_mem *,
+                                                    struct kefir_ir_module *,
+                                                    const char *,
+                                                    kefir_size_t);
 
 #endif

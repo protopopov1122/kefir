@@ -40,6 +40,22 @@ static kefir_result_t destroy_function_decl(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+static kefir_result_t destroy_function(struct kefir_mem *mem,
+                                     struct kefir_hashtree *tree,
+                                     const char *key,
+                                     void *value,
+                                     void *data) {
+    UNUSED(tree);
+    UNUSED(key);
+    UNUSED(data);
+    ASSIGN_DECL_CAST(struct kefir_ir_function *, func, value);
+    if (value != NULL) {
+        REQUIRE_OK(kefir_ir_function_free(mem, func));
+        KEFIR_FREE(mem, func);
+    }
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ir_module_alloc(struct kefir_mem *mem, struct kefir_ir_module *module) {
     UNUSED(mem);
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module pointer"));
@@ -51,6 +67,8 @@ kefir_result_t kefir_ir_module_alloc(struct kefir_mem *mem, struct kefir_ir_modu
     REQUIRE_OK(kefir_hashtree_on_removal(&module->function_declarations, destroy_function_decl, NULL));
     REQUIRE_OK(kefir_list_init(&module->global_symbols));
     REQUIRE_OK(kefir_list_init(&module->external_symbols));
+    REQUIRE_OK(kefir_hashtree_init(&module->functions));
+    REQUIRE_OK(kefir_hashtree_on_removal(&module->functions, destroy_function, NULL));
     return KEFIR_OK;
 }
 
@@ -58,6 +76,7 @@ kefir_result_t kefir_ir_module_free(struct kefir_mem *mem,
                                 struct kefir_ir_module *module) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module pointer"));
+    REQUIRE_OK(kefir_hashtree_free(mem, &module->functions));
     REQUIRE_OK(kefir_list_free(mem, &module->external_symbols));
     REQUIRE_OK(kefir_list_free(mem, &module->global_symbols));
     REQUIRE_OK(kefir_hashtree_free(mem, &module->function_declarations));
@@ -153,4 +172,30 @@ kefir_result_t kefir_ir_module_declare_external(struct kefir_mem *mem,
     const char *symbol = kefir_ir_module_symbol(mem, module, original);
     REQUIRE(symbol != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate a symbol"));
     return kefir_list_insert_after(mem, &module->external_symbols, kefir_list_tail(&module->external_symbols), (void *) symbol);
+}
+
+struct kefir_ir_function * kefir_ir_module_new_function(struct kefir_mem *mem,
+                                                    struct kefir_ir_module *module,
+                                                    const char *identifier,
+                                                    kefir_size_t length) {
+    REQUIRE(mem != NULL, NULL);
+    REQUIRE(module != NULL, NULL);
+    struct kefir_hashtree_node *decl_node;
+    REQUIRE(kefir_hashtree_at(&module->function_declarations, identifier, &decl_node) == KEFIR_OK, NULL);
+    struct kefir_ir_function_decl *decl = decl_node->value;
+    REQUIRE(decl != NULL, NULL);
+    struct kefir_ir_function *func = KEFIR_MALLOC(mem, sizeof(struct kefir_ir_function));
+    REQUIRE(func != NULL, NULL);
+    kefir_result_t result = kefir_ir_function_alloc(mem, decl, length, func);
+    REQUIRE_ELSE(result == KEFIR_OK, {
+        KEFIR_FREE(mem, func);
+        return NULL;
+    });
+    result = kefir_hashtree_insert(mem, &module->functions, identifier, func);
+    REQUIRE_ELSE(result == KEFIR_OK, {
+        kefir_ir_function_free(mem, func);
+        KEFIR_FREE(mem, func);
+        return NULL;
+    });
+    return func;
 }
