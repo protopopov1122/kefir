@@ -2,6 +2,15 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
+static kefir_result_t destroy_type(struct kefir_mem *mem, struct kefir_list *list, struct kefir_list_entry *entry, void *data) {
+    UNUSED(list);
+    UNUSED(data);
+    struct kefir_ir_type *type = entry->value;
+    REQUIRE_OK(kefir_ir_type_free(mem, type));
+    KEFIR_FREE(mem, type);
+    return KEFIR_OK;
+}
+
 static kefir_result_t destroy_function_decl(struct kefir_mem *mem,
                                           struct kefir_hashtree *tree,
                                           const char *key,
@@ -21,7 +30,8 @@ static kefir_result_t destroy_function_decl(struct kefir_mem *mem,
 kefir_result_t kefir_ir_module_alloc(struct kefir_mem *mem, struct kefir_ir_module *module) {
     UNUSED(mem);
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module pointer"));
-    REQUIRE_OK(kefir_list_init(&module->types, sizeof(struct kefir_ir_type)));
+    REQUIRE_OK(kefir_list_init(&module->types));
+    REQUIRE_OK(kefir_list_on_remove(&module->types, destroy_type, NULL));
     REQUIRE_OK(kefir_hashtree_init(&module->function_declarations));
     REQUIRE_OK(kefir_hashtree_on_removal(&module->function_declarations, destroy_function_decl, NULL));
     return KEFIR_OK;
@@ -32,11 +42,7 @@ kefir_result_t kefir_ir_module_free(struct kefir_mem *mem,
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module pointer"));
     REQUIRE_OK(kefir_hashtree_free(mem, &module->function_declarations));
-    void *iter = kefir_list_iter(&module->types);
-    for (struct kefir_ir_type *type = kefir_list_next(&iter); type != NULL; type = kefir_list_next(&iter)) {
-        kefir_ir_type_free(mem, type);
-    }
-    kefir_list_free(mem, &module->types);
+    REQUIRE_OK(kefir_list_free(mem, &module->types));
     return KEFIR_OK;
 }
 
@@ -45,11 +51,16 @@ struct kefir_ir_type *kefir_ir_module_new_type(struct kefir_mem *mem,
                                            kefir_size_t size) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(module != NULL, NULL);
-    struct kefir_ir_type *type = kefir_list_append(mem, &module->types, NULL);
-    REQUIRE(type != NULL, NULL);
+    struct kefir_ir_type *type = KEFIR_MALLOC(mem, sizeof(struct kefir_ir_type));
     kefir_result_t result = kefir_ir_type_alloc(mem, size, type);
     REQUIRE_ELSE(result == KEFIR_OK, {
-        kefir_list_pop_back(mem, &module->types);
+        KEFIR_FREE(mem, type);
+        return NULL;
+    });
+    result = kefir_list_insert_after(mem, &module->types, kefir_list_tail(&module->types), type);
+    REQUIRE_ELSE(result == KEFIR_OK, {
+        kefir_ir_type_free(mem, type);
+        KEFIR_FREE(mem, type);
         return NULL;
     });
     return type;
