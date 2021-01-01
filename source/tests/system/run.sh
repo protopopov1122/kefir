@@ -31,7 +31,6 @@ do
         echo "Terminated"
         cat "$ASM_FILE"
         cat "$VALGRIND_FILE"
-        gdb "$SYS_TEST"
         exit 127
     fi
     $NASM "$ASM_FILE"

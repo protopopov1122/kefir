@@ -13,11 +13,7 @@ kefir_result_t kefir_ir_function_decl_alloc(struct kefir_mem *mem,
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR function identifier"));
     REQUIRE(strlen(identifier) > 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR function identifier"));
     REQUIRE(decl != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR function declaration pointer"));
-    char *identifier_copy = KEFIR_MALLOC(mem, strlen(identifier) + 1);
-    REQUIRE(identifier_copy != NULL,
-        KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate memory for IR function identifier"));
-    strcpy(identifier_copy, identifier);
-    decl->identifier = identifier_copy;
+    decl->identifier = identifier;
     decl->params = parameters;
     decl->result = returns;
     return KEFIR_OK;
@@ -29,7 +25,6 @@ kefir_result_t kefir_ir_function_decl_free(struct kefir_mem *mem,
     REQUIRE(decl != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR function declaration pointer"));
     decl->result = NULL;
     decl->params = NULL;
-    KEFIR_FREE(mem, (char *) decl->identifier);
     decl->identifier = NULL;
     return KEFIR_OK;
 }

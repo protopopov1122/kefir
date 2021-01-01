@@ -34,7 +34,7 @@ kefir_result_t kefir_hashtree_on_removal(struct kefir_hashtree *,
 kefir_result_t kefir_hashtree_free(struct kefir_mem *, struct kefir_hashtree *);
 kefir_result_t kefir_hashtree_insert(struct kefir_mem *, struct kefir_hashtree *, const char *, void *);
 kefir_result_t kefir_hashtree_emplace(struct kefir_mem *, struct kefir_hashtree *, const char *, void *, void **);
-kefir_result_t kefir_hashtree_at(const struct kefir_hashtree *, const char *, void **);
+kefir_result_t kefir_hashtree_at(const struct kefir_hashtree *, const char *, struct kefir_hashtree_node **);
 kefir_result_t kefir_hashtree_traverse(const struct kefir_hashtree *, kefir_hashtree_traversal_t, void *);
 
 #endif

@@ -77,7 +77,7 @@ static kefir_result_t node_find(struct kefir_hashtree_node *root,
                               const struct kefir_hashtree *tree,
                               kefir_hashtree_hash_t hash,
                               const char *key,
-                              void **result) {
+                              struct kefir_hashtree_node **result) {
     if (root == NULL) {
         return KEFIR_NOT_FOUND;
     }
@@ -87,7 +87,7 @@ static kefir_result_t node_find(struct kefir_hashtree_node *root,
         strcmp(root->key, key) != 0) {
         return node_find(root->right_child, tree, hash, key, result);
     } else {
-        *result = root->value;
+        *result = root;
         return KEFIR_OK;
     }
 }
@@ -167,7 +167,7 @@ kefir_result_t kefir_hashtree_emplace(struct kefir_mem *mem, struct kefir_hashtr
     }
 }
 
-kefir_result_t kefir_hashtree_at(const struct kefir_hashtree *tree, const char *key, void **result) {
+kefir_result_t kefir_hashtree_at(const struct kefir_hashtree *tree, const char *key, struct kefir_hashtree_node **result) {
     REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid hash tree pointer"));
     REQUIRE(result != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid result pointer"));
     *result = NULL;
