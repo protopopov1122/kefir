@@ -39,7 +39,8 @@ typedef enum kefir_result {
     KEFIR_MEMALLOC_FAILURE,
     KEFIR_NOT_SUPPORTED,
     KEFIR_NOT_IMPLEMENTED,
-    KEFIR_NOT_FOUND
+    KEFIR_NOT_FOUND,
+    KEFIR_ALREADY_EXISTS
 } kefir_result_t;
 
 #endif

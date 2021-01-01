@@ -10,18 +10,19 @@
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_codegen_amd64 codegen;
     struct kefir_ir_module module;
-    REQUIRE_OK(kefir_ir_module_init(&module));
+    REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
     struct kefir_ir_type *decl_params = kefir_ir_module_new_type(mem, &module, 0),
                        *decl_result = kefir_ir_module_new_type(mem, &module, 0);
     REQUIRE(decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(decl_result != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function_decl decl;
+    struct kefir_ir_function_decl *decl =
+        kefir_ir_module_new_function_declaration(mem, &module, "func1", decl_params, decl_result);
+    REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function func;
     kefir_codegen_amd64_sysv_init(&codegen, stdout, mem);
     codegen.asmgen.settings.enable_comments = false;
 
-    REQUIRE_OK(kefir_ir_function_decl_alloc(mem, "func1", decl_params, decl_result, &decl));
-    REQUIRE_OK(kefir_ir_function_alloc(mem, &decl, 1024, &func));
+    REQUIRE_OK(kefir_ir_function_alloc(mem, decl, 1024, &func));
     kefir_irblock_append(&func.body, KEFIR_IROPCODE_NOP, 0);
     kefir_irblock_append(&func.body, KEFIR_IROPCODE_JMP, 1);
     kefir_irblock_append(&func.body, KEFIR_IROPCODE_BRANCH, 2);
@@ -58,7 +59,6 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     REQUIRE_OK(KEFIR_CODEGEN_CLOSE(&codegen.iface));
     REQUIRE_OK(kefir_ir_function_free(mem, &func));
-    REQUIRE_OK(kefir_ir_function_decl_free(mem, &decl));
     REQUIRE_OK(kefir_ir_module_free(mem, &module));
     return KEFIR_OK;
 }
