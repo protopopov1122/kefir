@@ -15,6 +15,7 @@ typedef struct kefir_hashtree_node {
     kefir_hashtree_value_t value;
 
     kefir_size_t height;
+    struct kefir_hashtree_node *parent;
     struct kefir_hashtree_node *left_child;
     struct kefir_hashtree_node *right_child;
 } kefir_hashtree_node_t;
@@ -27,6 +28,11 @@ typedef struct kefir_hashtree {
         void *data;
     } node_remove;
 } kefir_hashtree_t;
+
+typedef struct kefir_hashtree_node_iterator {
+    const struct kefir_hashtree_node *node;
+    kefir_hashtree_hash_t last_hash;
+} kefir_hashtree_node_iterator_t;
 
 typedef struct kefir_hashtree_ops {
     kefir_hashtree_hash_t (*hash)(kefir_hashtree_key_t, void *);
@@ -43,7 +49,8 @@ kefir_result_t kefir_hashtree_on_removal(struct kefir_hashtree *,
 kefir_result_t kefir_hashtree_free(struct kefir_mem *, struct kefir_hashtree *);
 kefir_result_t kefir_hashtree_insert(struct kefir_mem *, struct kefir_hashtree *, kefir_hashtree_key_t, kefir_hashtree_value_t);
 kefir_result_t kefir_hashtree_at(const struct kefir_hashtree *, kefir_hashtree_key_t, struct kefir_hashtree_node **);
-kefir_result_t kefir_hashtree_traverse(const struct kefir_hashtree *, kefir_hashtree_traversal_t, void *);
+const struct kefir_hashtree_node *kefir_hashtree_iter(const struct kefir_hashtree *, struct kefir_hashtree_node_iterator *);
+const struct kefir_hashtree_node *kefir_hashtree_next(struct kefir_hashtree_node_iterator *);
 
 extern const struct kefir_hashtree_ops kefir_hashtree_str_ops;
 extern const struct kefir_hashtree_ops kefir_hashtree_uint_ops;

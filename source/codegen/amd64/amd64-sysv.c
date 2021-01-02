@@ -68,12 +68,8 @@ struct function_translator {
     struct kefir_codegen_amd64 *codegen;
 };
 
-static kefir_result_t cg_translate_function(const struct kefir_ir_module *module,
-                                          const struct kefir_ir_function *func,
-                                          void *data) {
-    UNUSED(module);
-    struct function_translator *translator = (struct function_translator *) data;
-    struct kefir_codegen_amd64 *codegen = translator->codegen;
+static kefir_result_t cg_translate_function(const struct kefir_ir_function *func,
+                                          struct kefir_codegen_amd64 *codegen) {
     struct kefir_amd64_sysv_function sysv_func;
     REQUIRE_OK(kefir_amd64_sysv_function_alloc(codegen->mem, func, &sysv_func));
     kefir_result_t res = cg_function_prologue(codegen, &sysv_func);
@@ -88,10 +84,13 @@ static kefir_result_t cg_translate(struct kefir_codegen *cg_iface, const struct 
     REQUIRE(cg_iface->data != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 code generator"));
     struct kefir_codegen_amd64 *codegen = (struct kefir_codegen_amd64 *) cg_iface->data;
     REQUIRE_OK(cg_module_prologue(codegen));
-    struct function_translator translator = {
-        .codegen = codegen
-    };
-    return kefir_ir_module_list_functions(module, cg_translate_function, &translator);
+    struct kefir_hashtree_node_iterator iter;
+    for (const struct kefir_ir_function *func = kefir_ir_module_function_iter(module, &iter);
+        func != NULL;
+        func = kefir_ir_module_function_next(&iter)) {
+        REQUIRE_OK(cg_translate_function(func, codegen));
+    }
+    return KEFIR_OK;
 }
 
 static kefir_result_t cg_close(struct kefir_codegen *cg) {

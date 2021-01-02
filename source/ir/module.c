@@ -254,31 +254,23 @@ struct kefir_ir_function * kefir_ir_module_new_function(struct kefir_mem *mem,
     return func;
 }
 
-struct function_traversal {
-    const struct kefir_ir_module *module;
-    kefir_result_t (*callback)(const struct kefir_ir_module *, const struct kefir_ir_function *, void *);
-    void *data;
-};
-
-kefir_result_t traverse_functions(const struct kefir_hashtree *tree,
-                                kefir_hashtree_key_t key,
-                                kefir_hashtree_value_t value,
-                                void *data) {
-    UNUSED(tree);
-    UNUSED(key);
-    struct function_traversal *traversal = (struct function_traversal *) data;
-    return traversal->callback(traversal->module, (struct kefir_ir_function *) value, traversal->data);
+const struct kefir_ir_function *kefir_ir_module_function_iter(const struct kefir_ir_module *module,
+                                                          struct kefir_hashtree_node_iterator *iter) {
+    REQUIRE(module != NULL, NULL); 
+    REQUIRE(iter != NULL, NULL);
+    const struct kefir_hashtree_node *node = kefir_hashtree_iter(&module->functions, iter);
+    if (node != NULL) {
+        return (const struct kefir_ir_function *) node->value;
+    } else {
+        return NULL;
+    }
 }
-
-kefir_result_t kefir_ir_module_list_functions(const struct kefir_ir_module *module,
-                                          kefir_result_t (*callback)(const struct kefir_ir_module *, const struct kefir_ir_function *, void *),
-                                          void *data) {
-    REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module pointer"));  
-    REQUIRE(callback != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module traversal callback"));                
-    struct function_traversal traversal = {
-        .module = module,
-        .callback = callback,
-        .data = data
-    };
-    return kefir_hashtree_traverse(&module->functions, traverse_functions, &traversal);
+const struct kefir_ir_function *kefir_ir_module_function_next(struct kefir_hashtree_node_iterator *iter) {
+    REQUIRE(iter != NULL, NULL);
+    const struct kefir_hashtree_node *node = kefir_hashtree_next(iter);
+    if (node != NULL) {
+        return (const struct kefir_ir_function *) node->value;
+    } else {
+        return NULL;
+    }
 }
