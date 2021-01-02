@@ -58,4 +58,8 @@ struct kefir_ir_function * kefir_ir_module_new_function(struct kefir_mem *,
                                                     const char *,
                                                     kefir_size_t);
 
+kefir_result_t kefir_ir_module_list_functions(const struct kefir_ir_module *,
+                                          kefir_result_t (*)(const struct kefir_ir_module *, const struct kefir_ir_function *, void *),
+                                          void *);
+
 #endif

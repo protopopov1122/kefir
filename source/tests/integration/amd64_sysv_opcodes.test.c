@@ -55,7 +55,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irblock_append(&func->body, KEFIR_IROPCODE_EXTEND8, 21);
     kefir_irblock_append(&func->body, KEFIR_IROPCODE_EXTEND16, 22);
     kefir_irblock_append(&func->body, KEFIR_IROPCODE_EXTEND32, 23);
-    REQUIRE_OK(KEFIR_CODEGEN_TRANSLATE(&codegen.iface, func));
+    REQUIRE_OK(KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &module));
 
     REQUIRE_OK(KEFIR_CODEGEN_CLOSE(&codegen.iface));
     REQUIRE_OK(kefir_ir_module_free(mem, &module));

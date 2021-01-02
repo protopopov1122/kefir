@@ -43,7 +43,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irblock_append(&func->body, KEFIR_IROPCODE_IMUL, 0);       // 17: [C - 1; S * (C - 1)]
     kefir_irblock_append(&func->body, KEFIR_IROPCODE_JMP, 7);        // 18: [C - 1; S * (C - 1)]
 
-    KEFIR_CODEGEN_TRANSLATE(&codegen.iface, func);
+    KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &module);
 
     KEFIR_CODEGEN_CLOSE(&codegen.iface);
     REQUIRE_OK(kefir_ir_module_free(mem, &module));

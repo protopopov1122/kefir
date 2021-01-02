@@ -11,8 +11,6 @@ typedef struct kefir_codegen_amd64 {
     struct kefir_codegen iface;
     struct kefir_amd64_asmgen asmgen;
     struct kefir_mem *mem;
-
-    bool has_prologue;
 } kefir_codegen_amd64_t;
 
 kefir_result_t kefir_codegen_amd64_sysv_init(struct kefir_codegen_amd64 *, FILE *, struct kefir_mem *);

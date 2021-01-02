@@ -56,8 +56,7 @@ int main(int argc, const char **argv) {
     kefir_irblock_append(&func->body, KEFIR_IROPCODE_JMP, 1);
     kefir_irblock_append(&func->body, KEFIR_IROPCODE_RET, 0);
 
-    KEFIR_CODEGEN_TRANSLATE(&codegen.iface, func);
-
+    KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &module);
     KEFIR_CODEGEN_CLOSE(&codegen.iface);
     kefir_ir_module_free(&mem, &module);
     return EXIT_SUCCESS;
