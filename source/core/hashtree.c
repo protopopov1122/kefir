@@ -20,8 +20,8 @@ static kefir_result_t node_free(struct kefir_mem *mem,
 
 static struct kefir_hashtree_node *node_alloc(struct kefir_mem *mem,
                                             kefir_hashtree_hash_t hash,
-                                            const char *key,
-                                            void *value) {
+                                            kefir_hashtree_key_t key,
+                                            kefir_hashtree_value_t value) {
     struct kefir_hashtree_node *node = KEFIR_MALLOC(mem, sizeof(struct kefir_hashtree_node));
     REQUIRE_ELSE(node != NULL, {
         return NULL;
@@ -39,9 +39,9 @@ static kefir_result_t node_insert(struct kefir_mem *mem,
                         struct kefir_hashtree *tree,
                         struct kefir_hashtree_node *root,
                         kefir_hashtree_hash_t hash,
-                        const char *key,
-                        void *value,
-                        void **oldvalue,
+                        kefir_hashtree_key_t key,
+                        kefir_hashtree_value_t value,
+                        kefir_hashtree_value_t *oldvalue,
                         bool replace) {
     if (root->hash < hash) {
         if (root->left_child == NULL) {
@@ -53,7 +53,7 @@ static kefir_result_t node_insert(struct kefir_mem *mem,
             return node_insert(mem, tree, root->left_child, hash, key, value, oldvalue, replace);
         }
     } else if (root->hash > hash ||
-        strcmp(root->key, key) != 0) {
+        !tree->ops->compare_keys(root->key, key, tree->ops->data)) {
         if (root->right_child == NULL) {
             struct kefir_hashtree_node *node = node_alloc(mem, hash, key, value);
             REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate hash tree node"));
@@ -76,7 +76,7 @@ static kefir_result_t node_insert(struct kefir_mem *mem,
 static kefir_result_t node_find(struct kefir_hashtree_node *root,
                               const struct kefir_hashtree *tree,
                               kefir_hashtree_hash_t hash,
-                              const char *key,
+                              kefir_hashtree_key_t key,
                               struct kefir_hashtree_node **result) {
     if (root == NULL) {
         return KEFIR_NOT_FOUND;
@@ -84,22 +84,12 @@ static kefir_result_t node_find(struct kefir_hashtree_node *root,
     if (root->hash < hash) {
         return node_find(root->left_child, tree, hash, key, result);
     } else if (root->hash > hash ||
-        strcmp(root->key, key) != 0) {
+        !tree->ops->compare_keys(root->key, key, tree->ops->data)) {
         return node_find(root->right_child, tree, hash, key, result);
     } else {
         *result = root;
         return KEFIR_OK;
     }
-}
-
-static kefir_hashtree_hash_t str_hash(const char *str) {
-    REQUIRE(str != NULL, 0);
-    kefir_hashtree_hash_t hash = 7;
-    const kefir_size_t length = strlen(str);
-    for (kefir_size_t i = 0; i < length; i++) {
-        hash = (hash * 31) + str[i];
-    }
-    return hash;
 }
 
 static kefir_result_t node_traverse(const struct kefir_hashtree *tree,
@@ -115,8 +105,10 @@ static kefir_result_t node_traverse(const struct kefir_hashtree *tree,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_hashtree_init(struct kefir_hashtree *tree) {
+kefir_result_t kefir_hashtree_init(struct kefir_hashtree *tree, const struct kefir_hashtree_ops *ops) {
     REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid hash tree pointer"));
+    REQUIRE(ops != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid hash tree operation pointer"));
+    tree->ops = ops;
     tree->root = NULL;
     tree->node_remove.callback = NULL;
     tree->node_remove.data = NULL;
@@ -124,7 +116,7 @@ kefir_result_t kefir_hashtree_init(struct kefir_hashtree *tree) {
 }
 
 kefir_result_t kefir_hashtree_on_removal(struct kefir_hashtree *tree,
-                                     kefir_result_t (*callback)(struct kefir_mem *, struct kefir_hashtree *, const char *, void *, void *),
+                                     kefir_result_t (*callback)(struct kefir_mem *, struct kefir_hashtree *, kefir_hashtree_key_t, kefir_hashtree_value_t, void *),
                                      void *data) {
     REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid hash tree pointer"));
     tree->node_remove.callback = callback;
@@ -140,10 +132,10 @@ kefir_result_t kefir_hashtree_free(struct kefir_mem *mem, struct kefir_hashtree 
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_hashtree_insert(struct kefir_mem *mem, struct kefir_hashtree *tree, const char *key, void *value) {
+kefir_result_t kefir_hashtree_insert(struct kefir_mem *mem, struct kefir_hashtree *tree, kefir_hashtree_key_t key, kefir_hashtree_value_t value) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid hash tree pointer"));
-    kefir_hashtree_hash_t hash = str_hash(key);
+    kefir_hashtree_hash_t hash = tree->ops->hash(key, tree->ops->data);
     if (tree->root == NULL) {
         tree->root = node_alloc(mem, hash, key, value);
         return KEFIR_OK;
@@ -152,26 +144,11 @@ kefir_result_t kefir_hashtree_insert(struct kefir_mem *mem, struct kefir_hashtre
     }
 }
 
-kefir_result_t kefir_hashtree_emplace(struct kefir_mem *mem, struct kefir_hashtree *tree, const char *key, void *value, void **oldvalue) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid hash tree pointer"));
-    kefir_hashtree_hash_t hash = str_hash(key);
-    if (tree->root == NULL) {
-        tree->root = node_alloc(mem, hash, key, value);
-        return KEFIR_OK;
-    } else {
-        if (oldvalue != NULL) {
-            *oldvalue = NULL;
-        }
-        return node_insert(mem, tree, tree->root, hash, key, value, oldvalue, true);
-    }
-}
-
-kefir_result_t kefir_hashtree_at(const struct kefir_hashtree *tree, const char *key, struct kefir_hashtree_node **result) {
+kefir_result_t kefir_hashtree_at(const struct kefir_hashtree *tree, kefir_hashtree_key_t key, struct kefir_hashtree_node **result) {
     REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid hash tree pointer"));
     REQUIRE(result != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid result pointer"));
     *result = NULL;
-    kefir_hashtree_hash_t hash = str_hash(key);
+    kefir_hashtree_hash_t hash = tree->ops->hash(key, tree->ops->data);
     if (node_find(tree->root, tree, hash, key, result) != KEFIR_OK) {
         return KEFIR_SET_ERROR(KEFIR_NOT_FOUND, "Could not find tree node with specified key");
     }
@@ -182,3 +159,29 @@ kefir_result_t kefir_hashtree_traverse(const struct kefir_hashtree *tree, kefir_
     REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid hash tree pointer"));
     return node_traverse(tree, tree->root, traverse, data);
 }
+
+static kefir_hashtree_hash_t str_hash(kefir_hashtree_key_t key, void *data) {
+    UNUSED(data);
+    const char *str = (const char *) key;
+    REQUIRE(str != NULL, 0);
+    kefir_hashtree_hash_t hash = 7;
+    const kefir_size_t length = strlen(str);
+    for (kefir_size_t i = 0; i < length; i++) {
+        hash = (hash * 31) + str[i];
+    }
+    return hash;
+}
+
+static bool str_compare(kefir_hashtree_key_t key1, kefir_hashtree_key_t key2, void *data) {
+    UNUSED(data);
+    const char *str1 = (const char *) key1;
+    const char *str2 = (const char *) key2;
+    return (str1 == NULL && str2 == NULL) ||
+        strcmp(str1, str2) == 0;
+}
+
+const struct kefir_hashtree_ops kefir_hashtree_str_ops = {
+    .hash = str_hash,
+    .compare_keys = str_compare,
+    .data = NULL
+};
