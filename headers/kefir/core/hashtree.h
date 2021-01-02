@@ -46,5 +46,6 @@ kefir_result_t kefir_hashtree_at(const struct kefir_hashtree *, kefir_hashtree_k
 kefir_result_t kefir_hashtree_traverse(const struct kefir_hashtree *, kefir_hashtree_traversal_t, void *);
 
 extern const struct kefir_hashtree_ops kefir_hashtree_str_ops;
+extern const struct kefir_hashtree_ops kefir_hashtree_uint_ops;
 
 #endif

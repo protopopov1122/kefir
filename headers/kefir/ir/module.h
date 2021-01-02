@@ -6,6 +6,8 @@
 #include "kefir/core/hashtree.h"
 #include "kefir/ir/function.h"
 
+typedef kefir_uptr_t kefir_ir_module_id_t;
+
 typedef struct kefir_ir_module {
     struct kefir_hashtree symbols;
     struct kefir_list types;
@@ -13,6 +15,11 @@ typedef struct kefir_ir_module {
     struct kefir_list global_symbols;
     struct kefir_list external_symbols;
     struct kefir_hashtree functions;
+    struct kefir_hashtree named_types;
+    struct kefir_hashtree named_strings;
+
+    kefir_ir_module_id_t next_type_id;
+    kefir_ir_module_id_t next_string_id;
 } kefir_ir_module_t;
 
 kefir_result_t kefir_ir_module_alloc(struct kefir_mem *, struct kefir_ir_module *);
@@ -24,7 +31,13 @@ const char *kefir_ir_module_symbol(struct kefir_mem *,
                                  const char *);
 struct kefir_ir_type *kefir_ir_module_new_type(struct kefir_mem *,
                                            struct kefir_ir_module *,
-                                           kefir_size_t);
+                                           kefir_size_t,
+                                           kefir_ir_module_id_t *);
+
+kefir_result_t kefir_ir_module_string(struct kefir_mem *,
+                                  struct kefir_ir_module *,
+                                  const char *,
+                                  kefir_ir_module_id_t *);
 
 struct kefir_ir_function_decl * kefir_ir_module_new_function_declaration(struct kefir_mem *,
                                                                      struct kefir_ir_module *,

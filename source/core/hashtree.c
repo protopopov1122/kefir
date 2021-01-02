@@ -185,3 +185,19 @@ const struct kefir_hashtree_ops kefir_hashtree_str_ops = {
     .compare_keys = str_compare,
     .data = NULL
 };
+
+static kefir_hashtree_hash_t uint_hash(kefir_hashtree_key_t key, void *data) {
+    UNUSED(data);
+    return (kefir_hashtree_hash_t) key;
+}
+
+static bool uint_compare(kefir_hashtree_key_t key1, kefir_hashtree_key_t key2, void *data) {
+    UNUSED(data);
+    return key1 == key2;
+}
+
+const struct kefir_hashtree_ops kefir_hashtree_uint_ops = {
+    .hash = uint_hash,
+    .compare_keys = uint_compare,
+    .data = NULL
+};

@@ -12,8 +12,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
-    struct kefir_ir_type *decl_params = kefir_ir_module_new_type(mem, &module, 2),
-                       *decl_result = kefir_ir_module_new_type(mem, &module, 1);
+    struct kefir_ir_type *decl_params = kefir_ir_module_new_type(mem, &module, 2, NULL),
+                       *decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
     REQUIRE(decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *decl =
@@ -28,8 +28,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irblock_append(&func->body, KEFIR_IROPCODE_RET, 0);
     KEFIR_CODEGEN_TRANSLATE(&codegen.iface, func);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 2),
-    decl_result = kefir_ir_module_new_type(mem, &module, 1);
+    decl_params = kefir_ir_module_new_type(mem, &module, 2, NULL),
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
     REQUIRE(decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(decl_result != NULL, KEFIR_INTERNAL_ERROR);
     decl = kefir_ir_module_new_function_declaration(mem, &module, "bool_or", decl_params, decl_result);
@@ -43,8 +43,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irblock_append(&func->body, KEFIR_IROPCODE_RET, 0);
     KEFIR_CODEGEN_TRANSLATE(&codegen.iface, func);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 1),
-    decl_result = kefir_ir_module_new_type(mem, &module, 1);
+    decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL),
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
     REQUIRE(decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(decl_result != NULL, KEFIR_INTERNAL_ERROR);
     decl = kefir_ir_module_new_function_declaration(mem, &module, "bool_not", decl_params, decl_result);
