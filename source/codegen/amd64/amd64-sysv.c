@@ -94,6 +94,23 @@ static kefir_result_t cg_translate_function(const struct kefir_ir_function *func
     return KEFIR_OK;
 }
 
+static kefir_result_t cg_translate_data(struct kefir_codegen_amd64 *codegen,
+                                      const struct kefir_ir_module *module) {
+    bool first = true;
+    struct kefir_hashtree_node_iterator iter;
+    for (const struct kefir_ir_data *data = kefir_ir_module_named_data_iter(module, &iter);
+        data != NULL;
+        data = kefir_ir_module_named_data_next(&iter)) {
+        if (first) {
+            ASMGEN_SECTION(&codegen->asmgen, ".data");
+            first = false;
+        }
+        ASMGEN_LABEL(&codegen->asmgen, "%s", (const char *) iter.node->key);
+        REQUIRE_OK(kefir_amd64_sysv_static_data(codegen, data));
+    }
+    return KEFIR_OK;
+}
+
 static kefir_result_t cg_translate(struct kefir_codegen *cg_iface, const struct kefir_ir_module *module) {
     REQUIRE(cg_iface != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid code generator interface"));
     REQUIRE(cg_iface->data != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 code generator"));
@@ -105,6 +122,7 @@ static kefir_result_t cg_translate(struct kefir_codegen *cg_iface, const struct 
         func = kefir_ir_module_function_next(&iter)) {
         REQUIRE_OK(cg_translate_function(func, codegen));
     }
+    REQUIRE_OK(cg_translate_data(codegen, module));
     return KEFIR_OK;
 }
 

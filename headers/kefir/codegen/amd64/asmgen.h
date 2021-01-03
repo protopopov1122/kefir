@@ -7,6 +7,9 @@
 #include "kefir/core/util.h"
 
 typedef enum kefir_amd64_asmgen_datawidth {
+    KEFIR_AMD64_BYTE = 'b',
+    KEFIR_AMD64_WORD = 'w',
+    KEFIR_AMD64_DOUBLE = 'd',
     KEFIR_AMD64_QUAD = 'q'
 } kefir_amd64_asmgen_datawidth_t;
 

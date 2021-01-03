@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <math.h>
 #include "kefir/core/basic-types.h"
 #include "kefir/core/util.h"
 #include "kefir/core/mem.h"
@@ -62,5 +63,10 @@ kefir_size_t kft_run_test_suite(const struct kft_test_case **, kefir_size_t, voi
             exit((int) _assert_ok_result); \
         } \
     } while (0)
+
+#define FLOAT_EQUALS(x, y, epsilon) (fabs(x - y) <= epsilon)
+#define FLOAT_EPSILON 1e-5
+#define DOUBLE_EQUALS(x, y, epsilon) (fabs(x - y) <= epsilon)
+#define DOUBLE_EPSILON 1e-10
 
 #endif

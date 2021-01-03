@@ -1,0 +1,72 @@
+SECTION .text
+
+extern __kefirrt_nop_impl
+extern __kefirrt_jmp_impl
+extern __kefirrt_branch_impl
+extern __kefirrt_push_impl
+extern __kefirrt_pop_impl
+extern __kefirrt_pick_impl
+extern __kefirrt_put_impl
+extern __kefirrt_insert_impl
+extern __kefirrt_xchg_impl
+extern __kefirrt_drop_impl
+extern __kefirrt_iadd_impl
+extern __kefirrt_iadd1_impl
+extern __kefirrt_isub_impl
+extern __kefirrt_imul_impl
+extern __kefirrt_idiv_impl
+extern __kefirrt_imod_impl
+extern __kefirrt_ineg_impl
+extern __kefirrt_inot_impl
+extern __kefirrt_iand_impl
+extern __kefirrt_ior_impl
+extern __kefirrt_ixor_impl
+extern __kefirrt_ishr_impl
+extern __kefirrt_isar_impl
+extern __kefirrt_ishl_impl
+extern __kefirrt_iequals_impl
+extern __kefirrt_igreater_impl
+extern __kefirrt_ilesser_impl
+extern __kefirrt_iabove_impl
+extern __kefirrt_ibelow_impl
+extern __kefirrt_band_impl
+extern __kefirrt_bor_impl
+extern __kefirrt_bnot_impl
+extern __kefirrt_trunc1_impl
+extern __kefirrt_extend8_impl
+extern __kefirrt_extend16_impl
+extern __kefirrt_extend32_impl
+extern __kefirrt_preserve_state
+extern __kefirrt_restore_state
+
+
+global float32_1
+global float32_2
+global float64_1
+global float64_2
+
+SECTION .data
+int8_1:
+db 104
+int8_2:
+db 0
+int16_1:
+dw 2589
+int16_2:
+dw 0
+int32_1:
+dd 131071
+int32_2:
+dd 0
+int64_1:
+dq 8589934591
+int64_2:
+dq 0
+float32_1:
+dd 0x1.921fap+1
+float32_2:
+dd 0x0p+0
+float64_1:
+dq 0x1.5bf0a8b04919bp+1
+float64_2:
+dq 0x0p+0

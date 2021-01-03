@@ -8,6 +8,7 @@
 #include "kefir/codegen/amd64/system-v/abi/registers.h"
 #include "kefir/codegen/amd64/asmgen.h"
 #include "kefir/ir/function.h"
+#include "kefir/ir/data.h"
 
 typedef enum kefir_amd64_sysv_internal_fields {
     KEFIR_AMD64_SYSV_INTERNAL_RETURN_ADDRESS = 0,
@@ -48,6 +49,7 @@ kefir_result_t kefir_amd64_sysv_function_alloc(struct kefir_mem *, const struct 
 kefir_result_t kefir_amd64_sysv_function_free(struct kefir_mem *, struct kefir_amd64_sysv_function *);
 kefir_result_t kefir_amd64_sysv_function_prologue(struct kefir_codegen_amd64 *, const struct kefir_amd64_sysv_function *);
 kefir_result_t kefir_amd64_sysv_function_epilogue(struct kefir_codegen_amd64 *, const struct kefir_amd64_sysv_function *);
+kefir_result_t kefir_amd64_sysv_static_data(struct kefir_codegen_amd64 *, const struct kefir_ir_data *);
 
 #define KEFIR_AMD64_SYSV_ABI_PROGRAM_REG KEFIR_AMD64_RBX
 #define KEFIR_AMD64_SYSV_ABI_DATA_REG KEFIR_AMD64_R11
