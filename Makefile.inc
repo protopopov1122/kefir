@@ -10,6 +10,7 @@ SOURCE_DIR=$(ROOT)/source
 
 DEPS :=
 OBJS :=
+BINS :=
 ALL :=
 
 $(BIN_DIR)/%.d: $(SOURCE_DIR)/%.c
