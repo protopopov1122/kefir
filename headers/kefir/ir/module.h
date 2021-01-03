@@ -60,5 +60,8 @@ struct kefir_ir_function * kefir_ir_module_new_function(struct kefir_mem *,
 
 const struct kefir_ir_function *kefir_ir_module_function_iter(const struct kefir_ir_module *, struct kefir_hashtree_node_iterator *);
 const struct kefir_ir_function *kefir_ir_module_function_next(struct kefir_hashtree_node_iterator *);
+const char *kefir_ir_module_globals_iter(const struct kefir_ir_module *, struct kefir_list_entry **);
+const char *kefir_ir_module_externals_iter(const struct kefir_ir_module *, struct kefir_list_entry **);
+const char *kefir_ir_module_string_iter_next(const struct kefir_list_entry **);
 
 #endif

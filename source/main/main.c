@@ -46,6 +46,7 @@ int main(int argc, const char **argv) {
     struct kefir_ir_function_decl *decl =
         kefir_ir_module_new_function_declaration(&mem, &module, "func1", decl_params, decl_result);
     struct kefir_ir_function *func = kefir_ir_module_new_function(&mem, &module, decl->identifier, 1024);
+    kefir_ir_module_declare_global(&mem, &module, decl->identifier);
     kefir_ir_type_append_v(func->declaration->params, KEFIR_IR_TYPE_STRUCT, 0, 2);
     kefir_ir_type_append_v(func->declaration->params, KEFIR_IR_TYPE_ARRAY, 0, 2);
     kefir_ir_type_append_v(func->declaration->params, KEFIR_IR_TYPE_INT, 0, 0);

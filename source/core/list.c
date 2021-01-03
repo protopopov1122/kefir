@@ -68,6 +68,9 @@ kefir_result_t kefir_list_insert_after(struct kefir_mem *mem,
         if (entry->next != NULL) {
             entry->next->prev = entry;
         }
+        if (iter == list->tail) {
+            list->tail = entry;
+        }
     }
     return KEFIR_OK;
 }
