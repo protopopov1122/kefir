@@ -33,14 +33,14 @@ static kefir_result_t cg_module_prologue(const struct kefir_ir_module *module,
     ASMGEN_COMMENT0(&codegen->asmgen, "Externals");
     for (const char *external = kefir_ir_module_externals_iter(module, &iter);
         external != NULL;
-        external = kefir_ir_module_string_iter_next((const struct kefir_list_entry **) &iter)) {
+        external = kefir_ir_module_named_symbol_iter_next((const struct kefir_list_entry **) &iter)) {
         ASMGEN_EXTERNAL(&codegen->asmgen, external);
     }
     ASMGEN_NEWLINE(&codegen->asmgen, 1);
     ASMGEN_COMMENT0(&codegen->asmgen, "Globals");
     for (const char *global = kefir_ir_module_globals_iter(module, &iter);
         global != NULL;
-        global = kefir_ir_module_string_iter_next((const struct kefir_list_entry **) &iter)) {
+        global = kefir_ir_module_named_symbol_iter_next((const struct kefir_list_entry **) &iter)) {
         ASMGEN_GLOBAL(&codegen->asmgen, "%s", global);
     }
     ASMGEN_NEWLINE(&codegen->asmgen, 1);

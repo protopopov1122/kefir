@@ -16,7 +16,7 @@ typedef struct kefir_ir_module {
     struct kefir_list external_symbols;
     struct kefir_hashtree functions;
     struct kefir_hashtree named_types;
-    struct kefir_hashtree named_strings;
+    struct kefir_hashtree named_symbols;
 
     kefir_ir_module_id_t next_type_id;
     kefir_ir_module_id_t next_string_id;
@@ -34,7 +34,7 @@ struct kefir_ir_type *kefir_ir_module_new_type(struct kefir_mem *,
                                            kefir_size_t,
                                            kefir_ir_module_id_t *);
 
-kefir_result_t kefir_ir_module_string(struct kefir_mem *,
+kefir_result_t kefir_ir_module_named_symbol(struct kefir_mem *,
                                   struct kefir_ir_module *,
                                   const char *,
                                   kefir_ir_module_id_t *);
@@ -62,6 +62,6 @@ const struct kefir_ir_function *kefir_ir_module_function_iter(const struct kefir
 const struct kefir_ir_function *kefir_ir_module_function_next(struct kefir_hashtree_node_iterator *);
 const char *kefir_ir_module_globals_iter(const struct kefir_ir_module *, struct kefir_list_entry **);
 const char *kefir_ir_module_externals_iter(const struct kefir_ir_module *, struct kefir_list_entry **);
-const char *kefir_ir_module_string_iter_next(const struct kefir_list_entry **);
+const char *kefir_ir_module_named_symbol_iter_next(const struct kefir_list_entry **);
 
 #endif

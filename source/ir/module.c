@@ -82,8 +82,8 @@ kefir_result_t kefir_ir_module_alloc(struct kefir_mem *mem, struct kefir_ir_modu
     REQUIRE_OK(kefir_hashtree_init(&module->functions, &kefir_hashtree_str_ops));
     REQUIRE_OK(kefir_hashtree_on_removal(&module->functions, destroy_function, NULL));
     REQUIRE_OK(kefir_hashtree_init(&module->named_types, &kefir_hashtree_uint_ops));
-    REQUIRE_OK(kefir_hashtree_init(&module->named_strings, &kefir_hashtree_uint_ops));
-    REQUIRE_OK(kefir_hashtree_on_removal(&module->named_strings, destroy_string_value, NULL));
+    REQUIRE_OK(kefir_hashtree_init(&module->named_symbols, &kefir_hashtree_uint_ops));
+    REQUIRE_OK(kefir_hashtree_on_removal(&module->named_symbols, destroy_string_value, NULL));
     module->next_type_id = 0;
     module->next_string_id = 0;
     return KEFIR_OK;
@@ -93,7 +93,7 @@ kefir_result_t kefir_ir_module_free(struct kefir_mem *mem,
                                 struct kefir_ir_module *module) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module pointer"));
-    REQUIRE_OK(kefir_hashtree_free(mem, &module->named_strings));
+    REQUIRE_OK(kefir_hashtree_free(mem, &module->named_symbols));
     REQUIRE_OK(kefir_hashtree_free(mem, &module->named_types));
     REQUIRE_OK(kefir_hashtree_free(mem, &module->functions));
     REQUIRE_OK(kefir_list_free(mem, &module->external_symbols));
@@ -162,7 +162,7 @@ struct kefir_ir_type *kefir_ir_module_new_type(struct kefir_mem *mem,
     return type;
 }
 
-kefir_result_t kefir_ir_module_string(struct kefir_mem *mem,
+kefir_result_t kefir_ir_module_named_symbol(struct kefir_mem *mem,
                                   struct kefir_ir_module *module,
                                   const char *string,
                                   kefir_ir_module_id_t *id) {
@@ -291,6 +291,6 @@ const char *kefir_ir_module_externals_iter(const struct kefir_ir_module *module,
     return kefir_list_next((const struct kefir_list_entry **) iter);
 }
 
-const char *kefir_ir_module_string_iter_next(const struct kefir_list_entry **iter) {
+const char *kefir_ir_module_named_symbol_iter_next(const struct kefir_list_entry **iter) {
     return kefir_list_next(iter);
 }
