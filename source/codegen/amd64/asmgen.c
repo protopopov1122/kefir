@@ -122,6 +122,22 @@ static kefir_result_t amd64_rawdata(struct kefir_amd64_asmgen *asmgen, kefir_amd
     return KEFIR_OK;
 }
 
+static kefir_result_t amd64_multrawdata(struct kefir_amd64_asmgen *asmgen, kefir_size_t times, kefir_amd64_asmgen_datawidth_t width) {
+    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 assembly generator"));
+    FILE *out = (FILE *) asmgen->data;
+    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid output file for AMD64 assembly"));
+    if (!asmgen->state.empty) {
+        fprintf(out, "\n");
+    }
+    asmgen->state.empty = false;
+    if (asmgen->settings.enable_identation) {
+        fprintf(out, "%s", INDENTATION);
+    }
+    fprintf(out, "times " KEFIR_SIZE_FMT " d%c", times, (char) width);
+    asmgen->state.arguments = 0;
+    return KEFIR_OK;
+}
+
 static kefir_result_t amd64_argument(struct kefir_amd64_asmgen *asmgen, const char *format, ...) {
     REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 assembly generator"));
     FILE *out = (FILE *) asmgen->data;
@@ -159,6 +175,7 @@ kefir_result_t kefir_amd64_nasm_gen_init(struct kefir_amd64_asmgen *asmgen, FILE
     asmgen->instr = amd64_instr;
     asmgen->close = amd64_close;
     asmgen->rawdata = amd64_rawdata;
+    asmgen->mulrawdata = amd64_multrawdata;
     asmgen->argument = amd64_argument;
     asmgen->data = (void *) out;
     asmgen->state.empty = true;

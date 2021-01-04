@@ -9,6 +9,12 @@ extern int32_t int32_1, int32_2;
 extern int64_t int64_1, int64_2;
 extern float float32_1, float32_2;
 extern double float64_1, float64_2;
+extern struct {
+    int8_t f1;
+    int64_t f2;
+    int16_t f3;
+    float f4;
+} struct1_1;
 
 int main(int argc, const char **argv) {
     UNUSED(argc);
@@ -25,5 +31,9 @@ int main(int argc, const char **argv) {
     ASSERT(FLOAT_EQUALS(float32_2, 0.0f, FLOAT_EPSILON));
     ASSERT(DOUBLE_EQUALS(float64_1, 2.718281828, DOUBLE_EPSILON));
     ASSERT(DOUBLE_EQUALS(float64_2, 0.0, DOUBLE_EPSILON));
+    ASSERT(struct1_1.f1 == 127);
+    ASSERT(struct1_1.f2 == 0x2ffffffff);
+    ASSERT(struct1_1.f3 == 4096);
+    ASSERT(FLOAT_EQUALS(struct1_1.f4, 106.9994, FLOAT_EPSILON));
     return EXIT_SUCCESS;
 }

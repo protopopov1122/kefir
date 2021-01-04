@@ -22,6 +22,7 @@ typedef struct kefir_amd64_asmgen {
     kefir_result_t (*section)(struct kefir_amd64_asmgen *, const char *);
     kefir_result_t (*instr)(struct kefir_amd64_asmgen *, const char *);
     kefir_result_t (*rawdata)(struct kefir_amd64_asmgen *, kefir_amd64_asmgen_datawidth_t);
+    kefir_result_t (*mulrawdata)(struct kefir_amd64_asmgen *, kefir_size_t, kefir_amd64_asmgen_datawidth_t);
     kefir_result_t (*argument)(struct kefir_amd64_asmgen *, const char *, ...);
     kefir_result_t (*close)(struct kefir_amd64_asmgen *);
 
@@ -56,6 +57,8 @@ kefir_result_t kefir_amd64_nasm_gen_init(struct kefir_amd64_asmgen *, FILE *);
     ((asmgen)->argument((asmgen), (format), __VA_ARGS__))
 #define KEFIR_AMD64_ASMGEN_RAWDATA(asmgen, width) \
     ((asmgen)->rawdata((asmgen), (width)))
+#define KEFIR_AMD64_ASMGEN_MULRAWDATA(asmgen, times, width) \
+    ((asmgen)->mulrawdata((asmgen), (times), (width)))
 #define KEFIR_AMD64_ASMGEN_CLOSE(asmgen) \
     ((asmgen)->close((asmgen)))
 
