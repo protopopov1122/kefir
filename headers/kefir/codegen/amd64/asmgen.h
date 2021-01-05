@@ -107,5 +107,6 @@ kefir_result_t kefir_amd64_nasm_gen_init(struct kefir_amd64_asmgen *, FILE *);
 #define KEFIR_AMD64_REP "rep "
 #define KEFIR_AMD64_INDIRECT "[%s]"
 #define KEFIR_AMD64_INDIRECT_OFFSET ("[%s + " KEFIR_SIZE_FMT "]")
+#define KEFIR_AMD64_ALIGN "align"
 
 #endif

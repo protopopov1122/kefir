@@ -9,6 +9,8 @@
 typedef struct kefir_ir_data {
     const struct kefir_ir_type *type;
     struct kefir_vector value;
+    kefir_size_t size;
+    kefir_size_t alignment;
 } kefir_ir_data_t;
 
 typedef struct kefir_ir_data_value {

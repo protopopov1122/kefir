@@ -105,8 +105,7 @@ static kefir_result_t cg_translate_data(struct kefir_codegen_amd64 *codegen,
             ASMGEN_SECTION(&codegen->asmgen, ".data");
             first = false;
         }
-        ASMGEN_LABEL(&codegen->asmgen, "%s", (const char *) iter.node->key);
-        REQUIRE_OK(kefir_amd64_sysv_static_data(codegen->mem, codegen, data));
+        REQUIRE_OK(kefir_amd64_sysv_static_data(codegen->mem, codegen, data, (const char *) iter.node->key));
     }
     return KEFIR_OK;
 }

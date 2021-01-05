@@ -55,6 +55,49 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_ir_module_new_named_data(mem, &module, "float64_2", float64type);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "float64_2"));
 
+    struct kefir_ir_type *struct1_type = kefir_ir_module_new_type(mem, &module, 5, NULL);
+    REQUIRE_OK(kefir_ir_type_append_v(struct1_type, KEFIR_IR_TYPE_STRUCT, 0, 4));
+    REQUIRE_OK(kefir_ir_type_append_v(struct1_type, KEFIR_IR_TYPE_INT8, 0, 0));
+    REQUIRE_OK(kefir_ir_type_append_v(struct1_type, KEFIR_IR_TYPE_INT64, 0, 0));
+    REQUIRE_OK(kefir_ir_type_append_v(struct1_type, KEFIR_IR_TYPE_INT16, 0, 0));
+    REQUIRE_OK(kefir_ir_type_append_v(struct1_type, KEFIR_IR_TYPE_FLOAT32, 0, 0));
+    struct kefir_ir_data *struct1_data1 = kefir_ir_module_new_named_data(mem, &module, "struct1_1", struct1_type);
+    REQUIRE_OK(kefir_ir_data_set_i64(struct1_data1, 1, 127));
+    REQUIRE_OK(kefir_ir_data_set_i64(struct1_data1, 2, 0x2ffffffff));
+    REQUIRE_OK(kefir_ir_data_set_i64(struct1_data1, 3, 4096));
+    REQUIRE_OK(kefir_ir_data_set_f32(struct1_data1, 4, 106.9994));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "struct1_1"));
+
+    struct kefir_ir_type *array1_type = kefir_ir_module_new_type(mem, &module, 6, NULL);
+    REQUIRE_OK(kefir_ir_type_append_v(array1_type, KEFIR_IR_TYPE_ARRAY, 0, 3));
+    REQUIRE_OK(kefir_ir_type_append_v(array1_type, KEFIR_IR_TYPE_STRUCT, 0, 2));
+    REQUIRE_OK(kefir_ir_type_append_v(array1_type, KEFIR_IR_TYPE_ARRAY, 0, 2));
+    REQUIRE_OK(kefir_ir_type_append_v(array1_type, KEFIR_IR_TYPE_CHAR, 0, 0));
+    REQUIRE_OK(kefir_ir_type_append_v(array1_type, KEFIR_IR_TYPE_ARRAY, 0, 2));
+    REQUIRE_OK(kefir_ir_type_append_v(array1_type, KEFIR_IR_TYPE_FLOAT32, 0, 0));
+    struct kefir_ir_data *array1_data = kefir_ir_module_new_named_data(mem, &module, "array1_1", array1_type);
+    REQUIRE_OK(kefir_ir_data_set_i64(array1_data, 3, 10));
+    REQUIRE_OK(kefir_ir_data_set_i64(array1_data, 4, 20));
+    REQUIRE_OK(kefir_ir_data_set_f32(array1_data, 6, 3.4));
+    REQUIRE_OK(kefir_ir_data_set_f32(array1_data, 7, 4.5));
+    REQUIRE_OK(kefir_ir_data_set_i64(array1_data, 17, 110));
+    REQUIRE_OK(kefir_ir_data_set_i64(array1_data, 18, 120));
+    REQUIRE_OK(kefir_ir_data_set_f32(array1_data, 20, 40.56));
+    REQUIRE_OK(kefir_ir_data_set_f32(array1_data, 21, 56.74));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "array1_1"));
+
+    struct kefir_ir_type *union1_type = kefir_ir_module_new_type(mem, &module, 6, NULL);
+    REQUIRE_OK(kefir_ir_type_append_v(union1_type, KEFIR_IR_TYPE_UNION, 0, 2));
+    REQUIRE_OK(kefir_ir_type_append_v(union1_type, KEFIR_IR_TYPE_STRUCT, 0, 2));
+    REQUIRE_OK(kefir_ir_type_append_v(union1_type, KEFIR_IR_TYPE_FLOAT32, 0, 0));
+    REQUIRE_OK(kefir_ir_type_append_v(union1_type, KEFIR_IR_TYPE_INT32, 0, 0));
+    REQUIRE_OK(kefir_ir_type_append_v(union1_type, KEFIR_IR_TYPE_ARRAY, 0, 8));
+    REQUIRE_OK(kefir_ir_type_append_v(union1_type, KEFIR_IR_TYPE_CHAR, 0, 0));
+    struct kefir_ir_data *union1_data = kefir_ir_module_new_named_data(mem, &module, "union1_1", union1_type);
+    REQUIRE_OK(kefir_ir_data_set_f32(union1_data, 2, 3.14));
+    REQUIRE_OK(kefir_ir_data_set_i64(union1_data, 3, 100500));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "union1_1"));
+
     REQUIRE_OK(KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &module));
     REQUIRE_OK(KEFIR_CODEGEN_CLOSE(&codegen.iface));
     REQUIRE_OK(kefir_ir_module_free(mem, &module));

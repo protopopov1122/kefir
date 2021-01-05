@@ -130,6 +130,7 @@ static kefir_result_t array_static_data(const struct kefir_ir_type *type,
 
 struct total_size {
     kefir_size_t size;
+    kefir_size_t alignment;
     struct kefir_vector *layout;
 };
 
@@ -144,39 +145,53 @@ static kefir_result_t calculate_total_size(const struct kefir_ir_type *type,
         kefir_vector_at(size->layout, index));
     size->size = kefir_codegen_pad_aligned(size->size, layout->alignment);
     size->size += layout->size;
+    size->alignment = MAX(size->alignment, layout->alignment);
     return KEFIR_OK;
 }
 
 static kefir_result_t type_total_size(const struct kefir_ir_type *type,
                                     struct kefir_vector *layout,
-                                    kefir_size_t *size) {
-    *size = 0;
+                                    kefir_size_t *size,
+                                    kefir_size_t *alignment) {
     struct total_size total_size = {
         .size = 0,
+        .alignment = 0,
         .layout = layout
     };
     struct kefir_ir_type_visitor visitor;
     REQUIRE_OK(kefir_ir_type_visitor_init(&visitor, calculate_total_size));
     REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type, &visitor, (void *) &total_size, 0, kefir_ir_type_nodes(type)));
     *size = total_size.size;
+    *alignment = total_size.alignment;
     return KEFIR_OK;
 }
 
 static kefir_result_t dump_buffer(struct kefir_codegen_amd64 *codegen,
                                 const unsigned char *buffer,
-                                kefir_size_t size) {
+                                kefir_size_t size,
+                                kefir_size_t alignment,
+                                const char *identifier) {
+    if (identifier != NULL) {
+        if (alignment > 1) {
+            ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_ALIGN);
+            ASMGEN_ARG(&codegen->asmgen, KEFIR_SIZE_FMT, alignment);
+        }
+        ASMGEN_LABEL(&codegen->asmgen, "%s", identifier);
+    }
     for (kefir_size_t i = 0; i < size; i++) {
         if (i % KEFIR_AMD64_SYSV_ABI_QWORD == 0) {
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_BYTE);
         }
         ASMGEN_ARG(&codegen->asmgen, "0x%02x", buffer[i]);
     }
+    ASMGEN_NEWLINE(&codegen->asmgen, 1);
     return KEFIR_OK;
 }
 
 kefir_result_t kefir_amd64_sysv_static_data(struct kefir_mem *mem,
                                         struct kefir_codegen_amd64 *codegen,
-                                        const struct kefir_ir_data *data) {
+                                        const struct kefir_ir_data *data,
+                                        const char *identifier) {
     REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 code generator"));
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR data pointer"));
     struct kefir_ir_type_visitor visitor;
@@ -187,8 +202,8 @@ kefir_result_t kefir_amd64_sysv_static_data(struct kefir_mem *mem,
         .slot = 0
     };
     REQUIRE_OK(kefir_amd64_sysv_type_layout(data->type, mem, &param.layout));
-    kefir_size_t buffer_size = 0;
-    kefir_result_t res = type_total_size(data->type, &param.layout, &buffer_size);
+    kefir_size_t buffer_size = 0, buffer_alignment = 0;
+    kefir_result_t res = type_total_size(data->type, &param.layout, &buffer_size, &buffer_alignment);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_vector_free(mem, &param.layout);
         return res;
@@ -215,7 +230,7 @@ kefir_result_t kefir_amd64_sysv_static_data(struct kefir_mem *mem,
         kefir_vector_free(mem, &param.layout);
         return res;
     });
-    res = dump_buffer(codegen, param.buffer, buffer_size);
+    res = dump_buffer(codegen, param.buffer, buffer_size, buffer_alignment, identifier);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, param.buffer);
         kefir_vector_free(mem, &param.layout);
