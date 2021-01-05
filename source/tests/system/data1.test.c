@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "kefir/core/util.h"
 #include "kefir/test/unit_test.h"
 
@@ -15,6 +16,19 @@ extern struct {
     int16_t f3;
     float f4;
 } struct1_1;
+extern struct {
+    char f1[2];
+    float f2[2];
+} array1_1[3];
+
+union union1 {
+    struct {
+        float f2;
+        int f3;
+    };
+    char f1[8];
+};
+extern union union1 union1_1;
 
 int main(int argc, const char **argv) {
     UNUSED(argc);
@@ -35,5 +49,22 @@ int main(int argc, const char **argv) {
     ASSERT(struct1_1.f2 == 0x2ffffffff);
     ASSERT(struct1_1.f3 == 4096);
     ASSERT(FLOAT_EQUALS(struct1_1.f4, 106.9994, FLOAT_EPSILON));
+    ASSERT(array1_1[0].f1[0] == 10);
+    ASSERT(array1_1[0].f1[1] == 20);
+    ASSERT(FLOAT_EQUALS(array1_1[0].f2[0], 3.4f, FLOAT_EPSILON));
+    ASSERT(FLOAT_EQUALS(array1_1[0].f2[1], 4.5f, FLOAT_EPSILON));
+    ASSERT(array1_1[1].f1[0] == 0);
+    ASSERT(array1_1[1].f1[1] == 0);
+    ASSERT(FLOAT_EQUALS(array1_1[1].f2[0], 0.0f, FLOAT_EPSILON));
+    ASSERT(FLOAT_EQUALS(array1_1[1].f2[1], 0.0f, FLOAT_EPSILON));
+    ASSERT(array1_1[2].f1[0] == 110);
+    ASSERT(array1_1[2].f1[1] == 120);
+    ASSERT(FLOAT_EQUALS(array1_1[2].f2[0], 40.56f, FLOAT_EPSILON));
+    ASSERT(FLOAT_EQUALS(array1_1[2].f2[1], 56.74f, FLOAT_EPSILON));
+
+    union union1 union1_1_copy;
+    memcpy(union1_1_copy.f1, union1_1.f1, 8);
+    ASSERT(FLOAT_EQUALS(union1_1_copy.f2, 3.14, FLOAT_EPSILON));
+    ASSERT(union1_1_copy.f3 == 100500);
     return EXIT_SUCCESS;
 }
