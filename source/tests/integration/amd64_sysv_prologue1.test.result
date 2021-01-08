@@ -1,10 +1,10 @@
 call __kefirrt_preserve_state
 add rsp, 16
-mov r13, rsp
+mov r14, rsp
 push rdi
 push rsi
-mov [r13 + 0], rdx
-pextrq r11, xmm0, 0
-mov [r13 + 8], r11
-lea r11, [r13 + 0]
-push r11
+mov [r14 + 0], rdx
+pextrq r12, xmm0, 0
+mov [r14 + 8], r12
+lea r12, [r14 + 0]
+push r12

@@ -10,9 +10,9 @@
 #include "kefir/codegen/amd64/system-v/abi/qwords.h"
 
 extern const char *KEFIR_AMD64_SYSV_INTEGER_REGISTERS[];
-extern kefir_size_t KEFIR_AMD64_SYSV_INTEGER_REGISTER_COUNT;
+extern const kefir_size_t KEFIR_AMD64_SYSV_INTEGER_REGISTER_COUNT;
 extern const char *KEFIR_AMD64_SYSV_SSE_REGISTERS[];
-extern kefir_size_t KEFIR_AMD64_SYSV_SSE_REGISTER_COUNT;
+extern const kefir_size_t KEFIR_AMD64_SYSV_SSE_REGISTER_COUNT;
 
 typedef enum kefir_amd64_sysv_parameter_type {
     KEFIR_AMD64_SYSV_INPUT_PARAM_IMMEDIATE,

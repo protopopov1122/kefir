@@ -1,9 +1,9 @@
-mov rdi, [r13 + 0]
+mov rdi, [r14 + 0]
 mov rax, rdi
 pop rsi
 mov rcx, 56
 cld
 rep movsb
-mov rsp, r13
+mov rsp, r14
 sub rsp, 8
 jmp __kefirrt_restore_state

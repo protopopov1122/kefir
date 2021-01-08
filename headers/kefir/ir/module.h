@@ -30,16 +30,12 @@ kefir_result_t kefir_ir_module_free(struct kefir_mem *,
 
 const char *kefir_ir_module_symbol(struct kefir_mem *,
                                  struct kefir_ir_module *,
-                                 const char *);
+                                 const char *,
+                                 kefir_ir_module_id_t *);
 struct kefir_ir_type *kefir_ir_module_new_type(struct kefir_mem *,
                                            struct kefir_ir_module *,
                                            kefir_size_t,
                                            kefir_ir_module_id_t *);
-
-kefir_result_t kefir_ir_module_named_symbol(struct kefir_mem *,
-                                  struct kefir_ir_module *,
-                                  const char *,
-                                  kefir_ir_module_id_t *);
 
 struct kefir_ir_function_decl * kefir_ir_module_new_function_declaration(struct kefir_mem *,
                                                                      struct kefir_ir_module *,
@@ -55,7 +51,7 @@ kefir_result_t kefir_ir_module_declare_external(struct kefir_mem *,
                                             struct kefir_ir_module *,
                                             const char *);
 
-struct kefir_ir_function * kefir_ir_module_new_function(struct kefir_mem *,
+struct kefir_ir_function *kefir_ir_module_new_function(struct kefir_mem *,
                                                     struct kefir_ir_module *,
                                                     const char *,
                                                     kefir_size_t);

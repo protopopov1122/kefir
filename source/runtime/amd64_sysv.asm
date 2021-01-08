@@ -14,9 +14,10 @@ define_opcode %1
 %endmacro
 
 %define PROGRAM_REG rbx
-%define DATA_REG r11
-%define DATA2_REG r12
-%define STACK_BASE_REG r13
+%define TMP_REG r11
+%define DATA_REG r12
+%define DATA2_REG r13
+%define STACK_BASE_REG r14
 %define INSTR_ARG_PTR PROGRAM_REG + 8
 
 %macro end_opcode 0

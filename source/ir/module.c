@@ -123,7 +123,8 @@ kefir_result_t kefir_ir_module_free(struct kefir_mem *mem,
 
 const char *kefir_ir_module_symbol(struct kefir_mem *mem,
                                  struct kefir_ir_module *module,
-                                 const char *symbol) {
+                                 const char *symbol,
+                                 kefir_ir_module_id_t *id) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(module != NULL, NULL);
     REQUIRE(symbol != NULL, NULL);
@@ -142,6 +143,13 @@ const char *kefir_ir_module_symbol(struct kefir_mem *mem,
         KEFIR_FREE(mem, symbol_copy);
         return NULL;
     });
+    if (id != NULL) {
+        *id = module->next_string_id++;
+        res = kefir_hashtree_insert(mem, &module->symbols, (kefir_hashtree_key_t) *id, (kefir_hashtree_value_t) symbol_copy);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            return NULL;
+        });
+    }
     return symbol_copy;
 }
 
@@ -179,27 +187,6 @@ struct kefir_ir_type *kefir_ir_module_new_type(struct kefir_mem *mem,
     return type;
 }
 
-kefir_result_t kefir_ir_module_named_symbol(struct kefir_mem *mem,
-                                  struct kefir_ir_module *module,
-                                  const char *string,
-                                  kefir_ir_module_id_t *id) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module pointer"));
-    REQUIRE(string != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string"));
-    REQUIRE(id != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid module ID pointer"));
-    char *copy = KEFIR_MALLOC(mem, strlen(string) + 1);
-    REQUIRE(copy != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate a string"));
-    strcpy(copy, string);
-    kefir_ir_module_id_t new_id = module->next_string_id++;
-    kefir_result_t res = kefir_hashtree_insert(mem, &module->symbols, (kefir_hashtree_key_t) new_id, (kefir_hashtree_value_t) copy);
-    REQUIRE_ELSE(res == KEFIR_OK, {
-        KEFIR_FREE(mem, copy);
-        return res;
-    });
-    *id = new_id;
-    return KEFIR_OK;
-}
-
 struct kefir_ir_function_decl *kefir_ir_module_new_function_declaration(struct kefir_mem *mem,
                                                                     struct kefir_ir_module *module,
                                                                     const char *identifier,
@@ -207,7 +194,7 @@ struct kefir_ir_function_decl *kefir_ir_module_new_function_declaration(struct k
                                                                     struct kefir_ir_type *returns) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(module != NULL, NULL);
-    const char *symbol = kefir_ir_module_symbol(mem, module, identifier);
+    const char *symbol = kefir_ir_module_symbol(mem, module, identifier, NULL);
     REQUIRE(symbol != NULL, NULL);
     struct kefir_ir_function_decl *decl = KEFIR_MALLOC(mem, sizeof(struct kefir_ir_function_decl));
     REQUIRE(decl != NULL, NULL);
@@ -230,7 +217,7 @@ kefir_result_t kefir_ir_module_declare_global(struct kefir_mem *mem,
                                           const char *original) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module pointer"));
-    const char *symbol = kefir_ir_module_symbol(mem, module, original);
+    const char *symbol = kefir_ir_module_symbol(mem, module, original, NULL);
     REQUIRE(symbol != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate a symbol"));
     return kefir_list_insert_after(mem, &module->global_symbols, kefir_list_tail(&module->global_symbols), (void *) symbol);
 }
@@ -240,7 +227,7 @@ kefir_result_t kefir_ir_module_declare_external(struct kefir_mem *mem,
                                           const char *original) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module pointer"));
-    const char *symbol = kefir_ir_module_symbol(mem, module, original);
+    const char *symbol = kefir_ir_module_symbol(mem, module, original, NULL);
     REQUIRE(symbol != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate a symbol"));
     return kefir_list_insert_after(mem, &module->external_symbols, kefir_list_tail(&module->external_symbols), (void *) symbol);
 }
@@ -318,7 +305,7 @@ struct kefir_ir_data * kefir_ir_module_new_named_data(struct kefir_mem *mem,
                                                   const struct kefir_ir_type *type) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(module != NULL, NULL);
-    const char *symbol = kefir_ir_module_symbol(mem, module, identifier);
+    const char *symbol = kefir_ir_module_symbol(mem, module, identifier, NULL);
     REQUIRE(symbol != NULL, NULL);
     struct kefir_ir_data *data = KEFIR_MALLOC(mem, sizeof(struct kefir_ir_data));
     REQUIRE(data != NULL, NULL);

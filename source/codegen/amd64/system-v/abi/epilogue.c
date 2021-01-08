@@ -146,9 +146,9 @@ static kefir_result_t return_aggregate(const struct kefir_ir_type *type,
     REQUIRE_OK(kefir_ir_type_iterator_init(type, &iter));
     REQUIRE_OK(kefir_ir_type_iterator_goto(&iter, index));
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, alloc,
-        kefir_vector_at(&param->func->returns.allocation, iter.slot));
+        kefir_vector_at(&param->func->decl.returns.allocation, iter.slot));
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
-        kefir_vector_at(&param->func->returns.layout, index));
+        kefir_vector_at(&param->func->decl.returns.layout, index));
     if (alloc->klass == KEFIR_AMD64_SYSV_PARAM_MEMORY) {
         REQUIRE_OK(return_memory_aggregate(param->codegen, param->func,
             layout));

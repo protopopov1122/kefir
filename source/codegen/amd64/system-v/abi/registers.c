@@ -12,7 +12,7 @@ const char *KEFIR_AMD64_SYSV_INTEGER_REGISTERS[] = {
     KEFIR_AMD64_R9
 };
 
-kefir_size_t KEFIR_AMD64_SYSV_INTEGER_REGISTER_COUNT =
+const kefir_size_t KEFIR_AMD64_SYSV_INTEGER_REGISTER_COUNT =
     sizeof(KEFIR_AMD64_SYSV_INTEGER_REGISTERS) / sizeof(KEFIR_AMD64_SYSV_INTEGER_REGISTERS[0]);
 
 const char *KEFIR_AMD64_SYSV_SSE_REGISTERS[] = {
@@ -26,7 +26,7 @@ const char *KEFIR_AMD64_SYSV_SSE_REGISTERS[] = {
     KEFIR_AMD64_XMM7
 };
 
-kefir_size_t KEFIR_AMD64_SYSV_SSE_REGISTER_COUNT =
+const kefir_size_t KEFIR_AMD64_SYSV_SSE_REGISTER_COUNT =
     sizeof(KEFIR_AMD64_SYSV_SSE_REGISTERS) / sizeof(KEFIR_AMD64_SYSV_SSE_REGISTERS[0]);
 
 static kefir_result_t visitor_not_supported(const struct kefir_ir_type *type,

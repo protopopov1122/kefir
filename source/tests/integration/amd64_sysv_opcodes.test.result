@@ -39,11 +39,12 @@ extern __kefirrt_extend32_impl
 extern __kefirrt_preserve_state
 extern __kefirrt_restore_state
 
+
 global func1
 
 func1:
     call __kefirrt_preserve_state
-    mov r13, rsp
+    mov r14, rsp
     mov rbx, __func1_body
     jmp [rbx]
 __func1_body:
@@ -80,5 +81,5 @@ __func1_body:
     dq __kefirrt_extend16_impl, 22
     dq __kefirrt_extend32_impl, 23
 __func1_epilogue:
-    mov rsp, r13
+    mov rsp, r14
     jmp __kefirrt_restore_state

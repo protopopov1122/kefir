@@ -103,6 +103,7 @@ kefir_result_t kefir_amd64_nasm_gen_init(struct kefir_amd64_asmgen *, FILE *);
 #define KEFIR_AMD64_ADD  "add"
 #define KEFIR_AMD64_SUB  "sub"
 #define KEFIR_AMD64_CLD  "cld"
+#define KEFIR_AMD64_AND  "and"
 
 #define KEFIR_AMD64_REP "rep "
 #define KEFIR_AMD64_INDIRECT "[%s]"
