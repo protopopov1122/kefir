@@ -11,7 +11,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_codegen_amd64 codegen;
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
-    struct kefir_ir_type *decl_params = kefir_ir_module_new_type(mem, &module, 10, NULL),
+    struct kefir_ir_type *decl_params = kefir_ir_module_new_type(mem, &module, 11, NULL),
                        *decl_result = kefir_ir_module_new_type(mem, &module, 0, NULL);
     REQUIRE(decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(decl_result != NULL, KEFIR_INTERNAL_ERROR);
@@ -34,6 +34,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_type_append_v(decl->params, KEFIR_IR_TYPE_INT, 0, 0));
     REQUIRE_OK(kefir_ir_type_append_v(decl->params, KEFIR_IR_TYPE_INT, 0, 0));
     REQUIRE_OK(kefir_ir_type_append_v(decl->params, KEFIR_IR_TYPE_INT, 0, 0));
+    REQUIRE_OK(kefir_ir_type_append_v(decl->params, KEFIR_IR_TYPE_FLOAT32, 0, 0));
 
     REQUIRE_OK(kefir_amd64_sysv_function_decl_alloc(mem, decl, &sysv_decl));
     REQUIRE_OK(kefir_amd64_sysv_function_invoke(&codegen, &sysv_decl));

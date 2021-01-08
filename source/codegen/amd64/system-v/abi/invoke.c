@@ -22,7 +22,7 @@ static kefir_result_t visitor_not_supported(const struct kefir_ir_type *type,
     return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, KEFIR_AMD64_SYSV_ABI_ERROR_PREFIX "Encountered not supported type code while traversing type");
 }
 
-static kefir_result_t integer_argument(const struct kefir_ir_type *type,
+static kefir_result_t scalar_argument(const struct kefir_ir_type *type,
                                      kefir_size_t index,
                                      const struct kefir_ir_typeentry *typeentry,
                                      void *payload) {
@@ -43,6 +43,17 @@ static kefir_result_t integer_argument(const struct kefir_ir_type *type,
                 KEFIR_AMD64_INDIRECT_OFFSET,
                 KEFIR_AMD64_SYSV_ABI_DATA_REG,
                 (parameters->total_arguments - parameters->argument - 1) * KEFIR_AMD64_SYSV_ABI_QWORD);
+            break;
+
+        case KEFIR_AMD64_SYSV_PARAM_SSE:
+            ASMGEN_INSTR(&parameters->codegen->asmgen, KEFIR_AMD64_PINSRQ);
+            ASMGEN_ARG0(&parameters->codegen->asmgen,
+                KEFIR_AMD64_SYSV_SSE_REGISTERS[allocation->location.sse_register]);
+            ASMGEN_ARG(&parameters->codegen->asmgen,
+                KEFIR_AMD64_INDIRECT_OFFSET,
+                KEFIR_AMD64_SYSV_ABI_DATA_REG,
+                (parameters->total_arguments - parameters->argument - 1) * KEFIR_AMD64_SYSV_ABI_QWORD);
+            ASMGEN_ARG0(&parameters->codegen->asmgen, "0");
             break;
 
         case KEFIR_AMD64_SYSV_PARAM_MEMORY:
@@ -75,7 +86,8 @@ kefir_result_t kefir_amd64_sysv_function_invoke(struct kefir_codegen_amd64 *code
     UNUSED(decl);
     struct kefir_ir_type_visitor visitor;
     REQUIRE_OK(kefir_ir_type_visitor_init(&visitor, visitor_not_supported));
-    KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS(&visitor, integer_argument);
+    KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS(&visitor, scalar_argument);
+    KEFIR_IR_TYPE_VISITOR_INIT_FIXED_FP(&visitor, scalar_argument);
     struct invoke_parameters parameters = {
         .codegen = codegen,
         .decl = decl,

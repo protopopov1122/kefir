@@ -1,20 +1,21 @@
 mov r12, rsp
 add rsp, 32
 and rsp, -16
-mov rdi, [r12 + 72]
-mov rsi, [r12 + 64]
-mov rdx, [r12 + 56]
-mov rcx, [r12 + 48]
-mov r8, [r12 + 40]
-mov r9, [r12 + 32]
-mov r11, [r12 + 24]
+mov rdi, [r12 + 80]
+mov rsi, [r12 + 72]
+mov rdx, [r12 + 64]
+mov rcx, [r12 + 56]
+mov r8, [r12 + 48]
+mov r9, [r12 + 40]
+mov r11, [r12 + 32]
 mov [rsp + 0], r11
-mov r11, [r12 + 16]
+mov r11, [r12 + 24]
 mov [rsp + 8], r11
-mov r11, [r12 + 8]
+mov r11, [r12 + 16]
 mov [rsp + 16], r11
-mov r11, [r12 + 0]
+mov r11, [r12 + 8]
 mov [rsp + 24], r11
+pinsrq xmm0, [r12 + 0], 0
 call func1
 mov rsp, r12
-add rsp, 80
+add rsp, 88
