@@ -10,6 +10,7 @@ typedef enum kefir_iropcode {
     KEFIR_IROPCODE_JMP,
     KEFIR_IROPCODE_BRANCH,
     KEFIR_IROPCODE_RET,
+    KEFIR_IROPCODE_INVOKE,
 
     // Stack control
     KEFIR_IROPCODE_PUSH,

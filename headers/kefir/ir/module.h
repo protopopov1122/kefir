@@ -37,7 +37,7 @@ struct kefir_ir_type *kefir_ir_module_new_type(struct kefir_mem *,
                                            kefir_size_t,
                                            kefir_ir_module_id_t *);
 
-struct kefir_ir_function_decl * kefir_ir_module_new_function_declaration(struct kefir_mem *,
+struct kefir_ir_function_decl *kefir_ir_module_new_function_declaration(struct kefir_mem *,
                                                                      struct kefir_ir_module *,
                                                                      const char *,
                                                                      struct kefir_ir_type *,
@@ -68,5 +68,9 @@ const char *kefir_ir_module_externals_iter(const struct kefir_ir_module *, struc
 const char *kefir_ir_module_named_symbol_iter_next(const struct kefir_list_entry **);
 const struct kefir_ir_data *kefir_ir_module_named_data_iter(const struct kefir_ir_module *, struct kefir_hashtree_node_iterator *);
 const struct kefir_ir_data *kefir_ir_module_named_data_next(struct kefir_hashtree_node_iterator *);
+const char *kefir_ir_module_named_symbol(const struct kefir_ir_module *,
+                                       kefir_ir_module_id_t);
+const struct kefir_ir_function_decl *kefir_ir_module_get_declaration(const struct kefir_ir_module *,
+                                          const char *);
 
 #endif
