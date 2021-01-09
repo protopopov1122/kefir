@@ -19,3 +19,4 @@ pinsrq xmm0, [r12 + 0], 0
 call func1
 mov rsp, r12
 add rsp, 88
+push rax
