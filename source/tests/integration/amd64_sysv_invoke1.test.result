@@ -1,5 +1,5 @@
 mov r12, rsp
-add rsp, 32
+sub rsp, 32
 and rsp, -16
 mov rdi, [r12 + 80]
 mov rsi, [r12 + 72]
