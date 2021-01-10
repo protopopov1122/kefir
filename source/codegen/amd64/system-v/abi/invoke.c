@@ -118,10 +118,50 @@ static kefir_result_t memory_aggregate_argument(struct invoke_info *info,
         ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_POP);
         ASMGEN_ARG0(&info->codegen->asmgen, KEFIR_AMD64_RDI);
     }
-    info->argument++;
     return KEFIR_OK;
 }
 
+
+static kefir_result_t register_aggregate_argument(struct invoke_info *info,
+                                              struct kefir_amd64_sysv_parameter_allocation *allocation) {
+    ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_MOV);
+    ASMGEN_ARG0(&info->codegen->asmgen,
+        KEFIR_AMD64_SYSV_ABI_TMP_REG);
+    ASMGEN_ARG(&info->codegen->asmgen,
+        KEFIR_AMD64_INDIRECT_OFFSET,
+        KEFIR_AMD64_SYSV_ABI_DATA_REG,
+        (info->total_arguments - info->argument - 1) * KEFIR_AMD64_SYSV_ABI_QWORD);
+    for (kefir_size_t i = 0; i < kefir_vector_length(&allocation->container.qwords); i++) {
+        ASSIGN_DECL_CAST(struct kefir_amd64_sysv_abi_qword *, qword,
+            kefir_vector_at(&allocation->container.qwords, i));
+        switch (qword->klass) {
+            case KEFIR_AMD64_SYSV_PARAM_INTEGER:                
+                ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_MOV);
+                ASMGEN_ARG0(&info->codegen->asmgen,
+                    KEFIR_AMD64_SYSV_INTEGER_REGISTERS[qword->location]);
+                ASMGEN_ARG(&info->codegen->asmgen,
+                    KEFIR_AMD64_INDIRECT_OFFSET,
+                    KEFIR_AMD64_SYSV_ABI_TMP_REG,
+                    i * KEFIR_AMD64_SYSV_ABI_QWORD);
+                break;
+
+            case KEFIR_AMD64_SYSV_PARAM_SSE:                
+                ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_PINSRQ);
+                ASMGEN_ARG0(&info->codegen->asmgen,
+                    KEFIR_AMD64_SYSV_SSE_REGISTERS[qword->location]);
+                ASMGEN_ARG(&info->codegen->asmgen,
+                    KEFIR_AMD64_INDIRECT_OFFSET,
+                    KEFIR_AMD64_SYSV_ABI_TMP_REG,
+                    i * KEFIR_AMD64_SYSV_ABI_QWORD);
+                ASMGEN_ARG0(&info->codegen->asmgen, "0");
+                break;
+
+            default:
+                return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Non-INTEGER & non-SSE arguments are not supported");
+        }
+    }
+    return KEFIR_OK;
+}
 static kefir_result_t aggregate_argument(const struct kefir_ir_type *type,
                                      kefir_size_t index,
                                      const struct kefir_ir_typeentry *typeentry,
@@ -139,8 +179,20 @@ static kefir_result_t aggregate_argument(const struct kefir_ir_type *type,
             kefir_vector_at(&info->decl->parameters.layout, index));
         REQUIRE_OK(memory_aggregate_argument(info, layout, allocation));
     } else {
-        return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Register aggregate arguments are not supported yet");
+        REQUIRE_OK(register_aggregate_argument(info, allocation));
     }
+    info->argument++;
+    return KEFIR_OK;
+}
+
+static kefir_result_t pad_argument(const struct kefir_ir_type *type,
+                                            kefir_size_t index,
+                                            const struct kefir_ir_typeentry *typeentry,
+                                            void *payload) {
+    UNUSED(type);
+    UNUSED(index);
+    UNUSED(typeentry);
+    UNUSED(payload);
     return KEFIR_OK;
 }
 
@@ -154,6 +206,8 @@ kefir_result_t invoke_prologue(struct kefir_codegen_amd64 *codegen,
     visitor.visit[KEFIR_IR_TYPE_STRUCT] = aggregate_argument;
     visitor.visit[KEFIR_IR_TYPE_ARRAY] = aggregate_argument;
     visitor.visit[KEFIR_IR_TYPE_UNION] = aggregate_argument;
+    visitor.visit[KEFIR_IR_TYPE_MEMORY] = aggregate_argument;
+    visitor.visit[KEFIR_IR_TYPE_PAD] = pad_argument;
     
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
