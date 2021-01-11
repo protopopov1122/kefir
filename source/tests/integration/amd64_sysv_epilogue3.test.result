@@ -1,4 +1,5 @@
 pop r12
 pinsrq xmm0, r12, 0
 mov rsp, r14
+add rsp, 8
 jmp __kefirrt_restore_state

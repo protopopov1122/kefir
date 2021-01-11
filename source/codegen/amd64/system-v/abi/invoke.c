@@ -109,6 +109,7 @@ static kefir_result_t memory_aggregate_argument(struct invoke_info *info,
         ASMGEN_ARG(&info->codegen->asmgen, KEFIR_AMD64_INDIRECT_OFFSET,
             KEFIR_AMD64_RSP,
             3 * KEFIR_AMD64_SYSV_ABI_QWORD + allocation->location.stack_offset);
+        ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_CLD);
         ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_REP KEFIR_AMD64_MOVSB);
 
         ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_POP);
@@ -222,6 +223,13 @@ kefir_result_t invoke_prologue(struct kefir_codegen_amd64 *codegen,
     ASMGEN_ARG(&codegen->asmgen, KEFIR_INT64_FMT, ~0xfll);
     REQUIRE_OK(kefir_ir_type_visitor_list_nodes(
         decl->decl->params, &visitor, (void *) info, 0, info->total_arguments));
+    if (decl->returns.implicit_parameter) {
+        ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_LEA);
+        ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_INTEGER_REGISTERS[0]);
+        ASMGEN_ARG(&codegen->asmgen,
+            KEFIR_AMD64_INDIRECT_OFFSET,
+            KEFIR_AMD64_SYSV_ABI_STACK_BASE_REG, KEFIR_AMD64_SYSV_ABI_QWORD * KEFIR_AMD64_SYSV_INTERNAL_COUNT);
+    }
     return KEFIR_OK;
 }
 
@@ -257,6 +265,30 @@ static kefir_result_t sse_return(const struct kefir_ir_type *type,
     return KEFIR_OK;
 }
 
+static kefir_result_t aggregate_return(const struct kefir_ir_type *type,
+                                     kefir_size_t index,
+                                     const struct kefir_ir_typeentry *typeentry,
+                                     void *payload) {
+    UNUSED(type);
+    UNUSED(index);
+    UNUSED(typeentry);
+    ASSIGN_DECL_CAST(struct invoke_info *, info,
+        payload);
+    struct kefir_ir_type_iterator iter;
+    REQUIRE_OK(kefir_ir_type_iterator_init(type, &iter));
+    REQUIRE_OK(kefir_ir_type_iterator_goto(&iter, index));
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, allocation,
+        kefir_vector_at(&info->decl->returns.allocation, iter.slot));
+    if (allocation->klass == KEFIR_AMD64_SYSV_PARAM_MEMORY) {
+        ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_PUSH);
+        ASMGEN_ARG0(&info->codegen->asmgen, KEFIR_AMD64_RAX);
+    } else {
+        REQUIRE_OK(register_aggregate_argument(info, allocation));
+        return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Register-based aggregate returns are not supported");
+    }
+    return KEFIR_OK;
+}
+
 kefir_result_t invoke_epilogue(struct kefir_codegen_amd64 *codegen,
                                             const struct kefir_amd64_sysv_function_decl *decl,
                                             struct invoke_info *info) {
@@ -272,6 +304,10 @@ kefir_result_t invoke_epilogue(struct kefir_codegen_amd64 *codegen,
     REQUIRE_OK(kefir_ir_type_visitor_init(&visitor, visitor_not_supported));
     KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS(&visitor, integer_return);
     KEFIR_IR_TYPE_VISITOR_INIT_FIXED_FP(&visitor, sse_return);
+    visitor.visit[KEFIR_IR_TYPE_STRUCT] = aggregate_return;
+    visitor.visit[KEFIR_IR_TYPE_UNION] = aggregate_return;
+    visitor.visit[KEFIR_IR_TYPE_ARRAY] = aggregate_return;
+    visitor.visit[KEFIR_IR_TYPE_MEMORY] = aggregate_return;
     REQUIRE(kefir_ir_type_nodes(decl->decl->result) <= 1, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Function cannot return more than one value"));
     REQUIRE_OK(kefir_ir_type_visitor_list_nodes(decl->decl->result, &visitor, (void *) info, 0, 1));
     return KEFIR_OK;

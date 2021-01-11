@@ -1,4 +1,5 @@
 call __kefirrt_preserve_state
+sub rsp, 8
 mov r14, rsp
 push rdi
 push rsi

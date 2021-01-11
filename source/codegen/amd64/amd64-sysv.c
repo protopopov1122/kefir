@@ -92,7 +92,7 @@ static kefir_result_t cg_translate_function(const struct kefir_ir_function *func
                                           struct kefir_codegen_amd64_sysv_module *sysv_module,
                                           struct kefir_codegen_amd64 *codegen) {
     struct kefir_amd64_sysv_function sysv_func;
-    REQUIRE_OK(kefir_amd64_sysv_function_alloc(codegen->mem, func, &sysv_func));
+    REQUIRE_OK(kefir_amd64_sysv_function_alloc(codegen->mem, sysv_module, func, &sysv_func));
     kefir_result_t res = cg_function_prologue(codegen, &sysv_func);
     REQUIRE_CHAIN(&res, cg_function_body(codegen, sysv_module, &sysv_func));
     REQUIRE_CHAIN(&res, cg_function_epilogue(codegen, &sysv_func));
@@ -103,17 +103,14 @@ static kefir_result_t cg_translate_function(const struct kefir_ir_function *func
 
 static kefir_result_t cg_translate_function_gates(struct kefir_codegen_amd64 *codegen,
                                       struct kefir_codegen_amd64_sysv_module *module) {
-    struct kefir_amd64_sysv_function_decl sysv_decl;
     struct kefir_hashtree_node_iterator iter;
     for (const struct kefir_hashtree_node *node = kefir_hashtree_iter(&module->function_gates, &iter);
         node != NULL;
         node = kefir_hashtree_next(&iter)) {
-        const struct kefir_ir_function_decl *decl = kefir_ir_module_get_declaration(module->module, (const char *) node->key);
-        REQUIRE(decl != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to find function declaration"));
-        ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_FUNCTION_GATE_LABEL, decl->identifier);
-        REQUIRE_OK(kefir_amd64_sysv_function_decl_alloc(codegen->mem, decl, &sysv_decl));
-        REQUIRE_OK(kefir_amd64_sysv_function_invoke(codegen, &sysv_decl));
-        REQUIRE_OK(kefir_amd64_sysv_function_decl_free(codegen->mem, &sysv_decl));
+        ASSIGN_DECL_CAST(struct kefir_amd64_sysv_function_decl *, sysv_decl,
+            node->value);
+        ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_FUNCTION_GATE_LABEL, sysv_decl->decl->identifier);
+        REQUIRE_OK(kefir_amd64_sysv_function_invoke(codegen, sysv_decl));
         ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_ADD);
         ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RBX);
         ASMGEN_ARG(&codegen->asmgen, KEFIR_INT64_FMT, 2 * KEFIR_AMD64_SYSV_ABI_QWORD);
@@ -144,10 +141,8 @@ static kefir_result_t cg_translate(struct kefir_codegen *cg_iface, const struct 
     REQUIRE(cg_iface != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid code generator interface"));
     REQUIRE(cg_iface->data != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 code generator"));
     struct kefir_codegen_amd64 *codegen = (struct kefir_codegen_amd64 *) cg_iface->data;
-    struct kefir_codegen_amd64_sysv_module sysv_module = {
-        .module = module
-    };
-    REQUIRE_OK(kefir_hashtree_init(&sysv_module.function_gates, &kefir_hashtree_str_ops));
+    struct kefir_codegen_amd64_sysv_module sysv_module;
+    REQUIRE_OK(kefir_codegen_amd64_sysv_module_alloc(codegen->mem, &sysv_module, module));
     REQUIRE_OK(cg_module_prologue(&sysv_module, codegen));
     struct kefir_hashtree_node_iterator iter;
     for (const struct kefir_ir_function *func = kefir_ir_module_function_iter(sysv_module.module, &iter);
@@ -157,7 +152,7 @@ static kefir_result_t cg_translate(struct kefir_codegen *cg_iface, const struct 
     }
     REQUIRE_OK(cg_translate_function_gates(codegen, &sysv_module));
     REQUIRE_OK(cg_translate_data(codegen, &sysv_module));
-    REQUIRE_OK(kefir_hashtree_free(codegen->mem, &sysv_module.function_gates));
+    REQUIRE_OK(kefir_codegen_amd64_sysv_module_free(codegen->mem, &sysv_module));
     return KEFIR_OK;
 }
 
@@ -167,6 +162,74 @@ static kefir_result_t cg_close(struct kefir_codegen *cg) {
     struct kefir_codegen_amd64 *codegen = (struct kefir_codegen_amd64 *) cg->data;
     KEFIR_AMD64_ASMGEN_CLOSE(&codegen->asmgen);
     return KEFIR_OK;
+}
+
+kefir_result_t function_gate_removal(struct kefir_mem *mem,
+                                   struct kefir_hashtree *tree,
+                                   kefir_hashtree_key_t key,
+                                   kefir_hashtree_value_t value,
+                                   void *payload) {
+    UNUSED(tree);
+    UNUSED(key);
+    UNUSED(payload);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_function_decl *, sysv_decl,
+        value);
+    REQUIRE_OK(kefir_amd64_sysv_function_decl_free(mem, sysv_decl));
+    KEFIR_FREE(mem, sysv_decl);
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_codegen_amd64_sysv_module_alloc(struct kefir_mem *mem,
+                                            struct kefir_codegen_amd64_sysv_module *sysv_module,
+                                            const struct kefir_ir_module *module) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(sysv_module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 System-V module"));
+    REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module"));
+    sysv_module->module = module;
+    REQUIRE_OK(kefir_hashtree_init(&sysv_module->function_gates, &kefir_hashtree_str_ops));
+    REQUIRE_OK(kefir_hashtree_on_removal(&sysv_module->function_gates, function_gate_removal, NULL));
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_codegen_amd64_sysv_module_free(struct kefir_mem *mem,
+                                           struct kefir_codegen_amd64_sysv_module *sysv_module) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(sysv_module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 System-V module"));
+    REQUIRE_OK(kefir_hashtree_free(mem, &sysv_module->function_gates));
+    sysv_module->module = NULL;
+    return KEFIR_OK;
+}
+
+struct kefir_amd64_sysv_function_decl *kefir_codegen_amd64_sysv_module_function_decl(struct kefir_mem *mem,
+                                           struct kefir_codegen_amd64_sysv_module *sysv_module,
+                                           const char *function) {
+    struct kefir_hashtree_node *node = NULL;
+    kefir_result_t res = kefir_hashtree_at(
+        &sysv_module->function_gates, (kefir_hashtree_key_t) function, &node);
+    if (res == KEFIR_NOT_FOUND) {
+        const struct kefir_ir_function_decl *decl = kefir_ir_module_get_declaration(sysv_module->module, function);
+        REQUIRE(decl != NULL, NULL);
+        struct kefir_amd64_sysv_function_decl *sysv_decl =
+            KEFIR_MALLOC(mem, sizeof(struct kefir_amd64_sysv_function_decl));
+        REQUIRE(sysv_decl != NULL, NULL);
+        res = kefir_amd64_sysv_function_decl_alloc(mem, decl, sysv_decl);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            KEFIR_FREE(mem, sysv_decl);
+            return NULL;
+        });
+        kefir_result_t res = kefir_hashtree_insert(
+            mem, &sysv_module->function_gates, (kefir_hashtree_key_t) function, (kefir_hashtree_value_t) sysv_decl);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_amd64_sysv_function_decl_free(mem, sysv_decl);
+            KEFIR_FREE(mem, sysv_decl);
+            return NULL;
+        });
+        return sysv_decl;
+    } else if (res == KEFIR_OK) {
+        return (struct kefir_amd64_sysv_function_decl *) node->value;
+    } else {
+        return NULL;
+    }
 }
 
 kefir_result_t kefir_codegen_amd64_sysv_init(struct kefir_codegen_amd64 *codegen, FILE *out, struct kefir_mem *mem) {

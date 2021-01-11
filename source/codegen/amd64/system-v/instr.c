@@ -40,10 +40,8 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_codegen_amd64 *codegen,
         case KEFIR_IROPCODE_INVOKE: {
             const char *function = kefir_ir_module_named_symbol(sysv_module->module, (kefir_ir_module_id_t) instr->arg);
             REQUIRE(function != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to invoke unknown function"));
-            kefir_result_t res = kefir_hashtree_insert(codegen->mem, &sysv_module->function_gates, (kefir_hashtree_key_t) function, (kefir_hashtree_value_t) NULL);
-            REQUIRE_ELSE(res == KEFIR_OK || res == KEFIR_ALREADY_EXISTS, {
-                return res;
-            });
+            REQUIRE(kefir_codegen_amd64_sysv_module_function_decl(codegen->mem, sysv_module, function),
+                KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AMD64 System-V IR module function decaration"));
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
             ASMGEN_ARG(&codegen->asmgen,
                 KEFIR_AMD64_SYSV_FUNCTION_GATE_LABEL,

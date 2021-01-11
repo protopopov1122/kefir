@@ -71,15 +71,12 @@ static kefir_result_t return_float(const struct kefir_ir_type *type,
 }
 
 static kefir_result_t return_memory_aggregate(struct kefir_codegen_amd64 *codegen,
-                                            const struct kefir_amd64_sysv_function *func,
                                             struct kefir_amd64_sysv_data_layout *layout) {
-    REQUIRE(func->internals[KEFIR_AMD64_SYSV_INTERNAL_RETURN_ADDRESS].enabled,
-        KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected to have return pointer"));
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RDI);
     ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_INDIRECT_OFFSET,
             KEFIR_AMD64_SYSV_ABI_STACK_BASE_REG,
-            func->internals[KEFIR_AMD64_SYSV_INTERNAL_RETURN_ADDRESS].offset);
+            KEFIR_AMD64_SYSV_INTERNAL_RETURN_ADDRESS * KEFIR_AMD64_SYSV_ABI_QWORD);
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RAX);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RDI);
@@ -150,7 +147,7 @@ static kefir_result_t return_aggregate(const struct kefir_ir_type *type,
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
         kefir_vector_at(&param->func->decl.returns.layout, index));
     if (alloc->klass == KEFIR_AMD64_SYSV_PARAM_MEMORY) {
-        REQUIRE_OK(return_memory_aggregate(param->codegen, param->func,
+        REQUIRE_OK(return_memory_aggregate(param->codegen,
             layout));
     } else {
         REQUIRE_OK(return_register_aggregate(param->codegen, alloc));
@@ -181,7 +178,7 @@ static kefir_result_t restore_state(struct kefir_codegen_amd64 *codegen,
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RSP);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_STACK_BASE_REG);
     if (func->frame.size > 0) {
-        ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_SUB);
+        ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_ADD);
         ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RSP);
         ASMGEN_ARG(&codegen->asmgen, KEFIR_SIZE_FMT, func->frame.size);
     }

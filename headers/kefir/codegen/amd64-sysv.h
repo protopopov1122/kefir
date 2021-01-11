@@ -19,6 +19,14 @@ typedef struct kefir_codegen_amd64_sysv_module {
     struct kefir_hashtree function_gates;
 } kefir_codegen_amd64_sysv_module_t;
 
+kefir_result_t kefir_codegen_amd64_sysv_module_alloc(struct kefir_mem *,
+                                                 struct kefir_codegen_amd64_sysv_module *,
+                                                 const struct kefir_ir_module *);
+kefir_result_t kefir_codegen_amd64_sysv_module_free(struct kefir_mem *,
+                                           struct kefir_codegen_amd64_sysv_module *);
+struct kefir_amd64_sysv_function_decl *kefir_codegen_amd64_sysv_module_function_decl(struct kefir_mem *,
+                                           struct kefir_codegen_amd64_sysv_module *,
+                                           const char *);
 kefir_result_t kefir_codegen_amd64_sysv_init(struct kefir_codegen_amd64 *, FILE *, struct kefir_mem *);
 
 #endif

@@ -1,3 +1,4 @@
 pop rax
 mov rsp, r14
+add rsp, 8
 jmp __kefirrt_restore_state

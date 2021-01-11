@@ -40,15 +40,11 @@ typedef struct kefir_amd64_sysv_function {
         kefir_size_t alignment;
         struct {
             kefir_size_t internals;
+            kefir_size_t temporary;
             kefir_size_t parameters;
             kefir_size_t locals;
         } base;
     } frame;
-
-    struct {
-        bool enabled;
-        kefir_size_t offset;
-    } internals[KEFIR_AMD64_SYSV_INTERNAL_COUNT];
 } kefir_amd64_sysv_function_t;
 
 kefir_result_t kefir_amd64_sysv_function_decl_alloc(struct kefir_mem *,
@@ -56,12 +52,16 @@ kefir_result_t kefir_amd64_sysv_function_decl_alloc(struct kefir_mem *,
                                                 struct kefir_amd64_sysv_function_decl *);
 kefir_result_t kefir_amd64_sysv_function_decl_free(struct kefir_mem *,
                                                struct kefir_amd64_sysv_function_decl *);
-kefir_result_t kefir_amd64_sysv_function_alloc(struct kefir_mem *, const struct kefir_ir_function *, struct kefir_amd64_sysv_function *);
+kefir_result_t kefir_amd64_sysv_function_alloc(struct kefir_mem *,
+                                           struct kefir_codegen_amd64_sysv_module*,
+                                           const struct kefir_ir_function *,
+                                           struct kefir_amd64_sysv_function *);
 kefir_result_t kefir_amd64_sysv_function_free(struct kefir_mem *, struct kefir_amd64_sysv_function *);
 kefir_result_t kefir_amd64_sysv_function_prologue(struct kefir_codegen_amd64 *, const struct kefir_amd64_sysv_function *);
 kefir_result_t kefir_amd64_sysv_function_epilogue(struct kefir_codegen_amd64 *, const struct kefir_amd64_sysv_function *);
 kefir_result_t kefir_amd64_sysv_static_data(struct kefir_mem *, struct kefir_codegen_amd64 *, const struct kefir_ir_data *, const char *);
-kefir_result_t kefir_amd64_sysv_function_invoke(struct kefir_codegen_amd64 *, const struct kefir_amd64_sysv_function_decl *);
+kefir_result_t kefir_amd64_sysv_function_invoke(struct kefir_codegen_amd64 *,
+                                            const struct kefir_amd64_sysv_function_decl *);
 
 #define KEFIR_AMD64_SYSV_ABI_PROGRAM_REG KEFIR_AMD64_RBX
 #define KEFIR_AMD64_SYSV_ABI_TMP_REG KEFIR_AMD64_R11

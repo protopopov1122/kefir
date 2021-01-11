@@ -173,7 +173,7 @@ static kefir_result_t load_pad_argument(const struct kefir_ir_type *type,
 static kefir_result_t load_arguments(struct kefir_codegen_amd64 *codegen,
                                    const struct kefir_amd64_sysv_function *sysv_func) {
     if (sysv_func->frame.size > 0) {
-        ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_ADD);
+        ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_SUB);
         ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RSP);
         ASMGEN_ARG(&codegen->asmgen, KEFIR_SIZE_FMT, sysv_func->frame.size);
     }
@@ -182,11 +182,11 @@ static kefir_result_t load_arguments(struct kefir_codegen_amd64 *codegen,
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RSP);
     const struct kefir_ir_function_decl *func = sysv_func->func->declaration;
     ASMGEN_COMMENT(&codegen->asmgen, "Load parameters of %s", func->identifier);
-    if (sysv_func->internals[KEFIR_AMD64_SYSV_INTERNAL_RETURN_ADDRESS].enabled) {
+    if (sysv_func->decl.returns.implicit_parameter) {
         ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
         ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_INDIRECT_OFFSET,
             KEFIR_AMD64_SYSV_ABI_STACK_BASE_REG,
-            sysv_func->internals[KEFIR_AMD64_SYSV_INTERNAL_RETURN_ADDRESS].offset);
+            KEFIR_AMD64_SYSV_INTERNAL_RETURN_ADDRESS * KEFIR_AMD64_SYSV_ABI_QWORD);
         ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RDI);
     }
     struct argument_load param = {
