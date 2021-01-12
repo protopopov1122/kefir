@@ -8,22 +8,6 @@
 #include "kefir/codegen/util.h"
 #include <stdio.h>
 
-static const char *KEFIR_AMD64_SYSV_INTEGER_RETURN_REGISTERS[] = {
-    KEFIR_AMD64_RAX,
-    KEFIR_AMD64_RDX
-};
-
-static kefir_size_t KEFIR_AMD64_SYSV_INTEGER_RETURN_REGISTER_COUNT =
-    sizeof(KEFIR_AMD64_SYSV_INTEGER_RETURN_REGISTERS) / sizeof(KEFIR_AMD64_SYSV_INTEGER_RETURN_REGISTERS[0]);
-
-static const char *KEFIR_AMD64_SYSV_SSE_RETURN_REGISTERS[] = {
-    KEFIR_AMD64_XMM0,
-    KEFIR_AMD64_XMM1
-};
-
-static kefir_size_t KEFIR_AMD64_SYSV_SSE_RETURN_REGISTER_COUNT =
-    sizeof(KEFIR_AMD64_SYSV_SSE_RETURN_REGISTERS) / sizeof(KEFIR_AMD64_SYSV_SSE_RETURN_REGISTERS[0]);
-
 struct result_return {
     struct kefir_codegen_amd64 *codegen;
     const struct kefir_amd64_sysv_function *func;

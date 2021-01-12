@@ -28,6 +28,21 @@ const char *KEFIR_AMD64_SYSV_SSE_REGISTERS[] = {
 
 const kefir_size_t KEFIR_AMD64_SYSV_SSE_REGISTER_COUNT =
     sizeof(KEFIR_AMD64_SYSV_SSE_REGISTERS) / sizeof(KEFIR_AMD64_SYSV_SSE_REGISTERS[0]);
+    const char *KEFIR_AMD64_SYSV_INTEGER_RETURN_REGISTERS[] = {
+    KEFIR_AMD64_RAX,
+    KEFIR_AMD64_RDX
+};
+
+const kefir_size_t KEFIR_AMD64_SYSV_INTEGER_RETURN_REGISTER_COUNT =
+    sizeof(KEFIR_AMD64_SYSV_INTEGER_RETURN_REGISTERS) / sizeof(KEFIR_AMD64_SYSV_INTEGER_RETURN_REGISTERS[0]);
+
+const char *KEFIR_AMD64_SYSV_SSE_RETURN_REGISTERS[] = {
+    KEFIR_AMD64_XMM0,
+    KEFIR_AMD64_XMM1
+};
+
+const kefir_size_t KEFIR_AMD64_SYSV_SSE_RETURN_REGISTER_COUNT =
+    sizeof(KEFIR_AMD64_SYSV_SSE_RETURN_REGISTERS) / sizeof(KEFIR_AMD64_SYSV_SSE_RETURN_REGISTERS[0]);
 
 static kefir_result_t visitor_not_supported(const struct kefir_ir_type *type,
                                             kefir_size_t index,

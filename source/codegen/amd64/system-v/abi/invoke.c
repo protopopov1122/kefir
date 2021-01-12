@@ -122,7 +122,6 @@ static kefir_result_t memory_aggregate_argument(struct invoke_info *info,
     return KEFIR_OK;
 }
 
-
 static kefir_result_t register_aggregate_argument(struct invoke_info *info,
                                               struct kefir_amd64_sysv_parameter_allocation *allocation) {
     ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_MOV);
@@ -163,6 +162,7 @@ static kefir_result_t register_aggregate_argument(struct invoke_info *info,
     }
     return KEFIR_OK;
 }
+
 static kefir_result_t aggregate_argument(const struct kefir_ir_type *type,
                                      kefir_size_t index,
                                      const struct kefir_ir_typeentry *typeentry,
@@ -265,12 +265,61 @@ static kefir_result_t sse_return(const struct kefir_ir_type *type,
     return KEFIR_OK;
 }
 
+static kefir_result_t register_aggregate_return(struct invoke_info *info,
+                                              struct kefir_amd64_sysv_parameter_allocation *allocation) {
+    kefir_size_t integer_register = 0;
+    kefir_size_t sse_register = 0;
+    for (kefir_size_t i = 0; i < kefir_vector_length(&allocation->container.qwords); i++) {
+        ASSIGN_DECL_CAST(struct kefir_amd64_sysv_abi_qword *, qword,
+            kefir_vector_at(&allocation->container.qwords, i));
+        switch (qword->klass) {
+            case KEFIR_AMD64_SYSV_PARAM_INTEGER:       
+                if (integer_register >= KEFIR_AMD64_SYSV_INTEGER_RETURN_REGISTER_COUNT) {
+                    return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to return aggregate which exceeds available registers");
+                }         
+                ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_MOV);
+                ASMGEN_ARG(&info->codegen->asmgen,
+                    KEFIR_AMD64_INDIRECT_OFFSET,
+                    KEFIR_AMD64_SYSV_ABI_STACK_BASE_REG,
+                    (KEFIR_AMD64_SYSV_INTERNAL_COUNT + i) * KEFIR_AMD64_SYSV_ABI_QWORD);
+                ASMGEN_ARG0(&info->codegen->asmgen,
+                    KEFIR_AMD64_SYSV_INTEGER_RETURN_REGISTERS[integer_register++]);
+                break;
+
+            case KEFIR_AMD64_SYSV_PARAM_SSE:                
+                if (sse_register >= KEFIR_AMD64_SYSV_SSE_RETURN_REGISTER_COUNT) {
+                    return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to return aggregate which exceeds available registers");
+                }
+                ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_PEXTRQ);
+                ASMGEN_ARG(&info->codegen->asmgen,
+                    KEFIR_AMD64_INDIRECT_OFFSET,
+                    KEFIR_AMD64_SYSV_ABI_STACK_BASE_REG,
+                    (KEFIR_AMD64_SYSV_INTERNAL_COUNT + i) * KEFIR_AMD64_SYSV_ABI_QWORD);
+                ASMGEN_ARG0(&info->codegen->asmgen,
+                    KEFIR_AMD64_SYSV_SSE_RETURN_REGISTERS[sse_register++]);
+                ASMGEN_ARG0(&info->codegen->asmgen, "0");
+                break;
+
+            default:
+                return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Non-INTEGER & non-SSE arguments are not supported");
+        }
+    }
+    ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_LEA);
+    ASMGEN_ARG0(&info->codegen->asmgen, KEFIR_AMD64_SYSV_ABI_TMP_REG);
+    ASMGEN_ARG(&info->codegen->asmgen,
+        KEFIR_AMD64_INDIRECT_OFFSET,
+        KEFIR_AMD64_SYSV_ABI_STACK_BASE_REG,
+        KEFIR_AMD64_SYSV_INTERNAL_COUNT * KEFIR_AMD64_SYSV_ABI_QWORD);
+    ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_PUSH);
+    ASMGEN_ARG0(&info->codegen->asmgen, KEFIR_AMD64_SYSV_ABI_TMP_REG);
+    return KEFIR_OK;
+}
+
 static kefir_result_t aggregate_return(const struct kefir_ir_type *type,
                                      kefir_size_t index,
                                      const struct kefir_ir_typeentry *typeentry,
                                      void *payload) {
     UNUSED(type);
-    UNUSED(index);
     UNUSED(typeentry);
     ASSIGN_DECL_CAST(struct invoke_info *, info,
         payload);
@@ -283,8 +332,7 @@ static kefir_result_t aggregate_return(const struct kefir_ir_type *type,
         ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_PUSH);
         ASMGEN_ARG0(&info->codegen->asmgen, KEFIR_AMD64_RAX);
     } else {
-        REQUIRE_OK(register_aggregate_argument(info, allocation));
-        return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Register-based aggregate returns are not supported");
+        REQUIRE_OK(register_aggregate_return(info, allocation));
     }
     return KEFIR_OK;
 }

@@ -35,12 +35,15 @@ static kefir_result_t frame_parameter_visitor(const struct kefir_ir_type *type,
 static kefir_result_t update_frame_temporaries(struct kefir_amd64_sysv_function_decl *decl,
                                              kefir_size_t *size,
                                              kefir_size_t *alignment) {
-    if (kefir_vector_length(&decl->returns.allocation) == 0) {
+    if (kefir_ir_type_nodes(decl->decl->result) == 0) {
         return KEFIR_OK;
     }
-    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, alloc,
-        kefir_vector_at(&decl->returns.allocation, 0));
-    if (alloc->klass == KEFIR_AMD64_SYSV_PARAM_MEMORY) {
+
+    struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(decl->decl->result, 0);
+    if (typeentry->typecode == KEFIR_IR_TYPE_STRUCT ||
+        typeentry->typecode == KEFIR_IR_TYPE_UNION ||
+        typeentry->typecode == KEFIR_IR_TYPE_ARRAY ||
+        typeentry->typecode == KEFIR_IR_TYPE_MEMORY) {
         ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
             kefir_vector_at(&decl->returns.layout, 0));
         *size = MAX(*size, layout->size);
