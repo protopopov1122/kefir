@@ -186,7 +186,7 @@ static kefir_result_t aggregate_argument(const struct kefir_ir_type *type,
     return KEFIR_OK;
 }
 
-static kefir_result_t pad_argument(const struct kefir_ir_type *type,
+static kefir_result_t visit_pad(const struct kefir_ir_type *type,
                                             kefir_size_t index,
                                             const struct kefir_ir_typeentry *typeentry,
                                             void *payload) {
@@ -208,7 +208,7 @@ kefir_result_t invoke_prologue(struct kefir_codegen_amd64 *codegen,
     visitor.visit[KEFIR_IR_TYPE_ARRAY] = aggregate_argument;
     visitor.visit[KEFIR_IR_TYPE_UNION] = aggregate_argument;
     visitor.visit[KEFIR_IR_TYPE_MEMORY] = aggregate_argument;
-    visitor.visit[KEFIR_IR_TYPE_PAD] = pad_argument;
+    visitor.visit[KEFIR_IR_TYPE_PAD] = visit_pad;
     
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
@@ -356,6 +356,7 @@ kefir_result_t invoke_epilogue(struct kefir_codegen_amd64 *codegen,
     visitor.visit[KEFIR_IR_TYPE_UNION] = aggregate_return;
     visitor.visit[KEFIR_IR_TYPE_ARRAY] = aggregate_return;
     visitor.visit[KEFIR_IR_TYPE_MEMORY] = aggregate_return;
+    visitor.visit[KEFIR_IR_TYPE_PAD] = visit_pad;
     REQUIRE(kefir_ir_type_nodes(decl->decl->result) <= 1, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Function cannot return more than one value"));
     REQUIRE_OK(kefir_ir_type_visitor_list_nodes(decl->decl->result, &visitor, (void *) info, 0, 1));
     return KEFIR_OK;
