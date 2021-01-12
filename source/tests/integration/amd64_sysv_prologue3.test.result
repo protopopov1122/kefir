@@ -1,5 +1,5 @@
 call __kefirrt_preserve_state
-sub rsp, 8
+sub rsp, 16
 mov r14, rsp
 pextrq r12, xmm0, 0
 push r12

@@ -46,7 +46,7 @@ global func1
 
 func1:
     call __kefirrt_preserve_state
-    sub rsp, 8
+    sub rsp, 16
     mov r14, rsp
     mov rbx, __func1_body
     jmp [rbx]
@@ -56,7 +56,7 @@ __func1_body:
     dq __func1_epilogue, 0
 __func1_epilogue:
     mov rsp, r14
-    add rsp, 8
+    add rsp, 16
     jmp __kefirrt_restore_state
 
 __func2_gate:

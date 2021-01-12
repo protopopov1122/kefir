@@ -5,5 +5,5 @@ mov rcx, 56
 cld
 rep movsb
 mov rsp, r14
-add rsp, 8
+add rsp, 16
 jmp __kefirrt_restore_state

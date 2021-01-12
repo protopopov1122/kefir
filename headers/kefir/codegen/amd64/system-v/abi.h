@@ -13,8 +13,12 @@
 typedef enum kefir_amd64_sysv_internal_fields {
     KEFIR_AMD64_SYSV_INTERNAL_RETURN_ADDRESS = 0,
     // Auxilary
-    KEFIR_AMD64_SYSV_INTERNAL_COUNT
+    KEFIR_AMD64_SYSV_INTERNAL_COUNT = 2
 } kefir_amd64_sysv_internal_fields_t;
+
+_Static_assert(KEFIR_AMD64_SYSV_INTERNAL_COUNT % 2 == 0, "KEFIR_AMD64_SYSV_INTERNAL_COUNT must be divisible by 2");
+
+#define KEFIR_AMD64_SYSV_INTERNAL_BOUND (KEFIR_AMD64_SYSV_INTERNAL_COUNT * KEFIR_AMD64_SYSV_ABI_QWORD)
 
 typedef struct kefir_amd64_sysv_function_decl {
     const struct kefir_ir_function_decl *decl;

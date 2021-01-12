@@ -52,6 +52,8 @@ static kefir_result_t update_frame_temporaries(struct kefir_amd64_sysv_function_
     return KEFIR_OK;
 }
 
+#define PAD_DQWORD(x) kefir_codegen_pad_aligned((x), 2 * KEFIR_AMD64_SYSV_ABI_QWORD)
+
 static kefir_result_t calculate_frame_temporaries(struct kefir_mem *mem,
                                                 struct kefir_codegen_amd64_sysv_module *sysv_module,
                                                 struct kefir_amd64_sysv_function *sysv_func) {
@@ -77,18 +79,19 @@ static kefir_result_t calculate_frame_temporaries(struct kefir_mem *mem,
 static kefir_result_t calculate_frame(struct kefir_mem *mem,
                                     struct kefir_codegen_amd64_sysv_module *sysv_module,
                                     struct kefir_amd64_sysv_function *sysv_func) {
-    sysv_func->frame.size = KEFIR_AMD64_SYSV_ABI_QWORD * KEFIR_AMD64_SYSV_INTERNAL_COUNT;
+    sysv_func->frame.size = KEFIR_AMD64_SYSV_INTERNAL_BOUND;
     sysv_func->frame.alignment = KEFIR_AMD64_SYSV_ABI_QWORD;
     sysv_func->frame.base.internals = 0;
     REQUIRE_OK(calculate_frame_temporaries(mem, sysv_module, sysv_func));
-    sysv_func->frame.base.parameters = sysv_func->frame.size; // TODO: Alignment
+    sysv_func->frame.size = PAD_DQWORD(sysv_func->frame.size);
+    sysv_func->frame.base.parameters = sysv_func->frame.size;
     struct kefir_ir_type_visitor visitor;
     kefir_ir_type_visitor_init(&visitor, frame_parameter_visitor);
     REQUIRE_OK(kefir_ir_type_visitor_list_nodes(
         sysv_func->func->declaration->params, &visitor, (void *) sysv_func, 0,
         kefir_ir_type_nodes(sysv_func->func->declaration->params)));
-    sysv_func->frame.size = kefir_codegen_pad_aligned(sysv_func->frame.size, KEFIR_AMD64_SYSV_ABI_QWORD);
-    sysv_func->frame.base.locals = sysv_func->frame.size; // TODO: Alignment
+    sysv_func->frame.size = PAD_DQWORD(sysv_func->frame.size);
+    sysv_func->frame.base.locals = sysv_func->frame.size;
     return KEFIR_OK;
 }
 

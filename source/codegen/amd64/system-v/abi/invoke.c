@@ -228,7 +228,7 @@ kefir_result_t invoke_prologue(struct kefir_codegen_amd64 *codegen,
         ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_INTEGER_REGISTERS[0]);
         ASMGEN_ARG(&codegen->asmgen,
             KEFIR_AMD64_INDIRECT_OFFSET,
-            KEFIR_AMD64_SYSV_ABI_STACK_BASE_REG, KEFIR_AMD64_SYSV_ABI_QWORD * KEFIR_AMD64_SYSV_INTERNAL_COUNT);
+            KEFIR_AMD64_SYSV_ABI_STACK_BASE_REG, KEFIR_AMD64_SYSV_INTERNAL_BOUND);
     }
     return KEFIR_OK;
 }
@@ -281,7 +281,7 @@ static kefir_result_t register_aggregate_return(struct invoke_info *info,
                 ASMGEN_ARG(&info->codegen->asmgen,
                     KEFIR_AMD64_INDIRECT_OFFSET,
                     KEFIR_AMD64_SYSV_ABI_STACK_BASE_REG,
-                    (KEFIR_AMD64_SYSV_INTERNAL_COUNT + i) * KEFIR_AMD64_SYSV_ABI_QWORD);
+                    KEFIR_AMD64_SYSV_INTERNAL_BOUND + i * KEFIR_AMD64_SYSV_ABI_QWORD);
                 ASMGEN_ARG0(&info->codegen->asmgen,
                     KEFIR_AMD64_SYSV_INTEGER_RETURN_REGISTERS[integer_register++]);
                 break;
@@ -294,7 +294,7 @@ static kefir_result_t register_aggregate_return(struct invoke_info *info,
                 ASMGEN_ARG(&info->codegen->asmgen,
                     KEFIR_AMD64_INDIRECT_OFFSET,
                     KEFIR_AMD64_SYSV_ABI_STACK_BASE_REG,
-                    (KEFIR_AMD64_SYSV_INTERNAL_COUNT + i) * KEFIR_AMD64_SYSV_ABI_QWORD);
+                    KEFIR_AMD64_SYSV_INTERNAL_BOUND + i * KEFIR_AMD64_SYSV_ABI_QWORD);
                 ASMGEN_ARG0(&info->codegen->asmgen,
                     KEFIR_AMD64_SYSV_SSE_RETURN_REGISTERS[sse_register++]);
                 ASMGEN_ARG0(&info->codegen->asmgen, "0");
@@ -309,7 +309,7 @@ static kefir_result_t register_aggregate_return(struct invoke_info *info,
     ASMGEN_ARG(&info->codegen->asmgen,
         KEFIR_AMD64_INDIRECT_OFFSET,
         KEFIR_AMD64_SYSV_ABI_STACK_BASE_REG,
-        KEFIR_AMD64_SYSV_INTERNAL_COUNT * KEFIR_AMD64_SYSV_ABI_QWORD);
+        KEFIR_AMD64_SYSV_INTERNAL_BOUND);
     ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_PUSH);
     ASMGEN_ARG0(&info->codegen->asmgen, KEFIR_AMD64_SYSV_ABI_TMP_REG);
     return KEFIR_OK;
