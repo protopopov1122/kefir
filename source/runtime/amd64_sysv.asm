@@ -62,6 +62,8 @@ declare_opcode trunc1
 declare_opcode extend8
 declare_opcode extend16
 declare_opcode extend32
+declare_opcode offsetptr
+declare_opcode elementptr
 ; Runtime
 global __kefirrt_preserve_state
 global __kefirrt_restore_state
@@ -343,6 +345,20 @@ define_opcode bnot
     test DATA_REG, DATA_REG
     cmovz DATA2_REG, rax
     push DATA2_REG
+    end_opcode
+
+define_opcode offsetptr
+    pop DATA_REG
+    add DATA_REG, [INSTR_ARG_PTR]
+    push DATA_REG
+    end_opcode
+
+define_opcode elementptr
+    pop DATA2_REG
+    pop DATA_REG
+    imul DATA2_REG, [INSTR_ARG_PTR]
+    add DATA_REG, DATA2_REG
+    push DATA_REG
     end_opcode
 
 ; Runtime helpers

@@ -35,6 +35,17 @@ kefir_result_t kefir_irblock_append(struct kefir_irblock *bcblock, kefir_iropcod
     return kefir_vector_append(&bcblock->content, &instr);
 }
 
+kefir_result_t kefir_irblock_append2(struct kefir_irblock *bcblock, kefir_iropcode_t opcode, kefir_uint32_t arg1, kefir_uint32_t arg2) {
+    REQUIRE(bcblock != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block"));
+    struct kefir_irinstr instr = {
+        .opcode = opcode,
+        .arg_pair = {
+            arg1, arg2
+        }
+    };
+    return kefir_vector_append(&bcblock->content, &instr);
+}
+
 kefir_result_t kefir_irblock_copy(struct kefir_irblock *dst, const struct kefir_irblock *src) {
     REQUIRE(dst != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL destination IR block pointer"));
     REQUIRE(src != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL source IR block pointer"));

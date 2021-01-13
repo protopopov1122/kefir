@@ -53,7 +53,11 @@ typedef enum kefir_iropcode {
     KEFIR_IROPCODE_TRUNCATE1,
     KEFIR_IROPCODE_EXTEND8,
     KEFIR_IROPCODE_EXTEND16,
-    KEFIR_IROPCODE_EXTEND32
+    KEFIR_IROPCODE_EXTEND32,
+
+    // Data structures
+    KEFIR_IROPCODE_OFFSETPTR,
+    KEFIR_IROPCODE_ELEMENTPTR
 } kefir_iropcode_t;
 
 #endif

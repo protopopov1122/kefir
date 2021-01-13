@@ -36,6 +36,8 @@ extern __kefirrt_trunc1_impl
 extern __kefirrt_extend8_impl
 extern __kefirrt_extend16_impl
 extern __kefirrt_extend32_impl
+extern __kefirrt_offsetptr_impl
+extern __kefirrt_elementptr_impl
 extern __kefirrt_preserve_state
 extern __kefirrt_restore_state
 

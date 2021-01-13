@@ -38,7 +38,7 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_codegen_amd64 *codegen,
         } break;
 
         case KEFIR_IROPCODE_INVOKE: {
-            const char *function = kefir_ir_module_named_symbol(sysv_module->module, (kefir_ir_module_id_t) instr->arg);
+            const char *function = kefir_ir_module_get_named_symbol(sysv_module->module, (kefir_ir_module_id_t) instr->arg);
             REQUIRE(function != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to invoke unknown function"));
             REQUIRE(kefir_codegen_amd64_sysv_module_function_decl(codegen->mem, sysv_module, function),
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AMD64 System-V IR module function decaration"));
@@ -47,6 +47,31 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_codegen_amd64 *codegen,
                 KEFIR_AMD64_SYSV_FUNCTION_GATE_LABEL,
                 function);
             ASMGEN_ARG0(&codegen->asmgen, "0");
+        } break;
+
+        case KEFIR_IROPCODE_OFFSETPTR:
+        case KEFIR_IROPCODE_ELEMENTPTR: {
+            const kefir_ir_module_id_t type_id = (kefir_ir_module_id_t) instr->arg_pair[0];
+            const kefir_size_t type_index = (kefir_size_t) instr->arg_pair[1];
+            struct kefir_vector *layout =
+                kefir_codegen_amd64_sysv_module_type_layout(codegen->mem, sysv_module, type_id);
+            REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unknown named type"));
+            ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, entry,
+                kefir_vector_at(layout, type_index));
+            REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to retrieve type node at index"));
+            const char *opcode_symbol = NULL;
+            if (entry->relative_offset > 0) {
+                REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_OFFSETPTR, &opcode_symbol));
+                ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
+                ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
+                ASMGEN_ARG(&codegen->asmgen, KEFIR_INT64_FMT, entry->relative_offset);
+            }
+            if (instr->opcode == KEFIR_IROPCODE_ELEMENTPTR && entry->size > 0) {
+                REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_ELEMENTPTR, &opcode_symbol));
+                ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
+                ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
+                ASMGEN_ARG(&codegen->asmgen, KEFIR_INT64_FMT, entry->size);
+            }
         } break;
 
         default: {

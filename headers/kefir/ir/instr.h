@@ -8,7 +8,10 @@
 
 typedef struct kefir_irinstr {
     kefir_iropcode_t opcode;
-    kefir_int64_t arg;
+    union {
+        kefir_int64_t arg;
+        kefir_uint32_t arg_pair[2];
+    };
 } kefir_irinstr_t;
 
 typedef struct kefir_irblock {
@@ -20,6 +23,7 @@ kefir_size_t kefir_irblock_available(const struct kefir_irblock *);
 kefir_size_t kefir_irblock_length(const struct kefir_irblock *);
 const struct kefir_irinstr *kefir_irblock_at(const struct kefir_irblock *, kefir_size_t);
 kefir_result_t kefir_irblock_append(struct kefir_irblock *, kefir_iropcode_t, kefir_int64_t);
+kefir_result_t kefir_irblock_append2(struct kefir_irblock *, kefir_iropcode_t, kefir_uint32_t, kefir_uint32_t);
 kefir_result_t kefir_irblock_copy(struct kefir_irblock *, const struct kefir_irblock *);
 kefir_result_t kefir_irblock_alloc(struct kefir_mem *, kefir_size_t, struct kefir_irblock *);
 kefir_result_t kefir_irblock_realloc(struct kefir_mem *, kefir_size_t, struct kefir_irblock *);

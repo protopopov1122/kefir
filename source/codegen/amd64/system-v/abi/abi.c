@@ -63,7 +63,7 @@ static kefir_result_t calculate_frame_temporaries(struct kefir_mem *mem,
         REQUIRE(instr != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected IR instructin at offset"));
         if (instr->opcode == KEFIR_IROPCODE_INVOKE) {
             kefir_ir_module_id_t id = (kefir_ir_module_id_t) instr->arg;
-            const char *function = kefir_ir_module_named_symbol(sysv_module->module, id);
+            const char *function = kefir_ir_module_get_named_symbol(sysv_module->module, id);
             REQUIRE(function != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to invoke unknown function"));
             struct kefir_amd64_sysv_function_decl *decl =
                 kefir_codegen_amd64_sysv_module_function_decl(mem, sysv_module, function);

@@ -46,45 +46,22 @@ global func1
 
 func1:
     call __kefirrt_preserve_state
-    sub rsp, 16
+    sub rsp, 32
     mov r14, rsp
+    push rdi
+    lea r12, [rbp + 16]
+    push r12
+    mov [r14 + 16], rsi
+    lea r12, [r14 + 16]
+    push r12
     mov rbx, __func1_body
     jmp [rbx]
 __func1_body:
-    dq __kefirrt_nop_impl, 0
-    dq __kefirrt_jmp_impl, __func1_body + 16
-    dq __kefirrt_branch_impl, __func1_body + 32
-    dq __func1_epilogue, 0
-    dq __kefirrt_push_impl, 1000
-    dq __kefirrt_pop_impl, 0
-    dq __kefirrt_pick_impl, 1
-    dq __kefirrt_drop_impl, 2
-    dq __kefirrt_iadd_impl, 0
-    dq __kefirrt_iadd1_impl, 1
-    dq __kefirrt_isub_impl, 2
-    dq __kefirrt_imul_impl, 3
-    dq __kefirrt_idiv_impl, 4
-    dq __kefirrt_imod_impl, 5
-    dq __kefirrt_ineg_impl, 6
-    dq __kefirrt_inot_impl, 7
-    dq __kefirrt_iand_impl, 8
-    dq __kefirrt_ior_impl, 9
-    dq __kefirrt_ixor_impl, 10
-    dq __kefirrt_ishr_impl, 11
-    dq __kefirrt_isar_impl, 12
-    dq __kefirrt_ishl_impl, 13
-    dq __kefirrt_iequals_impl, 14
-    dq __kefirrt_igreater_impl, 15
-    dq __kefirrt_ilesser_impl, 16
-    dq __kefirrt_band_impl, 17
-    dq __kefirrt_bor_impl, 18
-    dq __kefirrt_bnot_impl, 19
-    dq __kefirrt_trunc1_impl, 20
-    dq __kefirrt_extend8_impl, 21
-    dq __kefirrt_extend16_impl, 22
-    dq __kefirrt_extend32_impl, 23
+    dq __kefirrt_offsetptr_impl, 8
+    dq __kefirrt_push_impl, 5
+    dq __kefirrt_elementptr_impl, 8
     dq __func1_epilogue, 0
 __func1_epilogue:
     mov rsp, r14
-    add rsp, 16
+    add rsp, 32
     jmp __kefirrt_restore_state
