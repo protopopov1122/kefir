@@ -44,7 +44,18 @@ static struct {
     { KEFIR_IROPCODE_EXTEND16,      LABEL("extend16") },
     { KEFIR_IROPCODE_EXTEND32,      LABEL("extend32") },
     { KEFIR_IROPCODE_OFFSETPTR,     LABEL("offsetptr") },
-    { KEFIR_IROPCODE_ELEMENTPTR,    LABEL("elementptr") }
+    { KEFIR_IROPCODE_ELEMENTPTR,    LABEL("elementptr") },
+    { KEFIR_IROPCODE_LOAD8U,        LABEL("load8u") },
+    { KEFIR_IROPCODE_LOAD8I,        LABEL("load8i") },
+    { KEFIR_IROPCODE_LOAD16U,       LABEL("load16u") },
+    { KEFIR_IROPCODE_LOAD16I,       LABEL("load16i") },
+    { KEFIR_IROPCODE_LOAD32U,       LABEL("load32u") },
+    { KEFIR_IROPCODE_LOAD32I,       LABEL("load32i") },
+    { KEFIR_IROPCODE_LOAD64,        LABEL("load64") },
+    { KEFIR_IROPCODE_STORE8,        LABEL("store8") },
+    { KEFIR_IROPCODE_STORE16,       LABEL("store16") },
+    { KEFIR_IROPCODE_STORE32,       LABEL("store32") },
+    { KEFIR_IROPCODE_STORE64,       LABEL("store64") }
 };
 
 const char *kefir_amd64_iropcode_handler(kefir_iropcode_t opcode) {

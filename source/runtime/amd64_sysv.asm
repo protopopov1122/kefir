@@ -64,6 +64,17 @@ declare_opcode extend16
 declare_opcode extend32
 declare_opcode offsetptr
 declare_opcode elementptr
+declare_opcode load8u
+declare_opcode load8i
+declare_opcode load16u
+declare_opcode load16i
+declare_opcode load32u
+declare_opcode load32i
+declare_opcode load64
+declare_opcode store8
+declare_opcode store16
+declare_opcode store32
+declare_opcode store64
 ; Runtime
 global __kefirrt_preserve_state
 global __kefirrt_restore_state
@@ -359,6 +370,73 @@ define_opcode elementptr
     imul DATA2_REG, [INSTR_ARG_PTR]
     add DATA_REG, DATA2_REG
     push DATA_REG
+    end_opcode
+
+define_opcode load8u
+    pop DATA2_REG
+    movzx DATA_REG, byte [DATA2_REG]
+    push DATA_REG
+    end_opcode
+
+define_opcode load8i
+    pop DATA2_REG
+    movsx DATA_REG, byte [DATA2_REG]
+    push DATA_REG
+    end_opcode
+
+define_opcode load16u
+    pop DATA2_REG
+    movzx DATA_REG, word [DATA2_REG]
+    push DATA_REG
+    end_opcode
+
+define_opcode load16i
+    pop DATA2_REG
+    movsx DATA_REG, word [DATA2_REG]
+    push DATA_REG
+    end_opcode
+
+define_opcode load32u
+    pop DATA2_REG
+    mov eax, [DATA2_REG]
+    push rax
+    end_opcode
+
+define_opcode load32i
+    pop DATA2_REG
+    mov eax, [DATA2_REG]
+    movsx DATA_REG, eax
+    push DATA_REG
+    end_opcode
+
+define_opcode load64
+    pop DATA2_REG
+    mov DATA_REG, [DATA2_REG]
+    push DATA_REG
+    end_opcode
+
+define_opcode store8
+    pop DATA2_REG
+    pop rax
+    mov [DATA2_REG], al
+    end_opcode
+
+define_opcode store16
+    pop DATA2_REG
+    pop rax
+    mov [DATA2_REG], ax
+    end_opcode
+
+define_opcode store32
+    pop DATA2_REG
+    pop rax
+    mov [DATA2_REG], eax
+    end_opcode
+
+define_opcode store64
+    pop DATA2_REG
+    pop rax
+    mov [DATA2_REG], rax
     end_opcode
 
 ; Runtime helpers

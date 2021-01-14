@@ -38,6 +38,17 @@ extern __kefirrt_extend16_impl
 extern __kefirrt_extend32_impl
 extern __kefirrt_offsetptr_impl
 extern __kefirrt_elementptr_impl
+extern __kefirrt_load8u_impl
+extern __kefirrt_load8i_impl
+extern __kefirrt_load16u_impl
+extern __kefirrt_load16i_impl
+extern __kefirrt_load32u_impl
+extern __kefirrt_load32i_impl
+extern __kefirrt_load64_impl
+extern __kefirrt_store8_impl
+extern __kefirrt_store16_impl
+extern __kefirrt_store32_impl
+extern __kefirrt_store64_impl
 extern __kefirrt_preserve_state
 extern __kefirrt_restore_state
 
