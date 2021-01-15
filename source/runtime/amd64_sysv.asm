@@ -75,6 +75,7 @@ declare_opcode store8
 declare_opcode store16
 declare_opcode store32
 declare_opcode store64
+declare_opcode getlocals
 ; Runtime
 global __kefirrt_preserve_state
 global __kefirrt_restore_state
@@ -437,6 +438,12 @@ define_opcode store64
     pop DATA2_REG
     pop rax
     mov [DATA2_REG], rax
+    end_opcode
+
+define_opcode getlocals
+    mov DATA_REG, [INSTR_ARG_PTR]
+    add DATA_REG, STACK_BASE_REG
+    push DATA_REG
     end_opcode
 
 ; Runtime helpers

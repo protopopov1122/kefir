@@ -233,6 +233,7 @@ kefir_result_t kefir_ir_module_declare_external(struct kefir_mem *mem,
 struct kefir_ir_function * kefir_ir_module_new_function(struct kefir_mem *mem,
                                                     struct kefir_ir_module *module,
                                                     const char *identifier,
+                                                    struct kefir_ir_type *locals,
                                                     kefir_size_t length) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(module != NULL, NULL);
@@ -242,7 +243,7 @@ struct kefir_ir_function * kefir_ir_module_new_function(struct kefir_mem *mem,
     REQUIRE(decl != NULL, NULL);
     struct kefir_ir_function *func = KEFIR_MALLOC(mem, sizeof(struct kefir_ir_function));
     REQUIRE(func != NULL, NULL);
-    kefir_result_t result = kefir_ir_function_alloc(mem, decl, length, func);
+    kefir_result_t result = kefir_ir_function_alloc(mem, decl, locals, length, func);
     REQUIRE_ELSE(result == KEFIR_OK, {
         KEFIR_FREE(mem, func);
         return NULL;

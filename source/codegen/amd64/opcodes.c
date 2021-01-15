@@ -55,7 +55,8 @@ static struct {
     { KEFIR_IROPCODE_STORE8,        LABEL("store8") },
     { KEFIR_IROPCODE_STORE16,       LABEL("store16") },
     { KEFIR_IROPCODE_STORE32,       LABEL("store32") },
-    { KEFIR_IROPCODE_STORE64,       LABEL("store64") }
+    { KEFIR_IROPCODE_STORE64,       LABEL("store64") },
+    { KEFIR_IROPCODE_GETLOCALS,     LABEL("getlocals") }
 };
 
 const char *kefir_amd64_iropcode_handler(kefir_iropcode_t opcode) {

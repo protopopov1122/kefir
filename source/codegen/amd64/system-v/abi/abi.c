@@ -32,6 +32,23 @@ static kefir_result_t frame_parameter_visitor(const struct kefir_ir_type *type,
     return KEFIR_OK;
 }
 
+static kefir_result_t frame_local_visitor(const struct kefir_ir_type *type,
+                                            kefir_size_t index,
+                                            const struct kefir_ir_typeentry *typeentry,
+                                            void *payload) {
+    UNUSED(type);
+    UNUSED(index);
+    UNUSED(typeentry);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_function *, sysv_func,
+        payload);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
+        kefir_vector_at(&sysv_func->local_layout, index));
+    sysv_func->frame.alignment = MAX(sysv_func->frame.alignment, layout->alignment);
+    sysv_func->frame.size = kefir_codegen_pad_aligned(sysv_func->frame.size, sysv_func->frame.alignment);
+    sysv_func->frame.size += layout->size;
+    return KEFIR_OK;
+}
+
 static kefir_result_t update_frame_temporaries(struct kefir_amd64_sysv_function_decl *decl,
                                              kefir_size_t *size,
                                              kefir_size_t *alignment) {
@@ -92,6 +109,13 @@ static kefir_result_t calculate_frame(struct kefir_mem *mem,
         kefir_ir_type_nodes(sysv_func->func->declaration->params)));
     sysv_func->frame.size = PAD_DQWORD(sysv_func->frame.size);
     sysv_func->frame.base.locals = sysv_func->frame.size;
+    if (sysv_func->func->locals != NULL) {
+        kefir_ir_type_visitor_init(&visitor, frame_local_visitor);
+        REQUIRE_OK(kefir_ir_type_visitor_list_nodes(
+            sysv_func->func->locals, &visitor, (void *) sysv_func, 0,
+            kefir_ir_type_nodes(sysv_func->func->locals)));
+        sysv_func->frame.size = PAD_DQWORD(sysv_func->frame.size);
+    }
     return KEFIR_OK;
 }
 
@@ -175,6 +199,9 @@ kefir_result_t kefir_amd64_sysv_function_alloc(struct kefir_mem *mem,
     REQUIRE(sysv_func != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 System-V function"));
     sysv_func->func = func;
     REQUIRE_OK(kefir_amd64_sysv_function_decl_alloc(mem, func->declaration, &sysv_func->decl));
+    if (func->locals != NULL) {
+        REQUIRE_OK(kefir_amd64_sysv_type_layout(func->locals, mem, &sysv_func->local_layout));
+    }
     kefir_result_t res = calculate_frame(mem, sysv_module, sysv_func);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_amd64_sysv_parameter_free(mem, &sysv_func->decl.returns.allocation);
@@ -189,6 +216,9 @@ kefir_result_t kefir_amd64_sysv_function_alloc(struct kefir_mem *mem,
 kefir_result_t kefir_amd64_sysv_function_free(struct kefir_mem *mem, struct kefir_amd64_sysv_function *sysv_func) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(sysv_func != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 System-V function"));
+    if (sysv_func->func->locals != NULL) {
+        REQUIRE_OK(kefir_vector_free(mem, &sysv_func->local_layout));
+    }
     REQUIRE_OK(kefir_amd64_sysv_function_decl_free(mem, &sysv_func->decl));
     return KEFIR_OK;
 }

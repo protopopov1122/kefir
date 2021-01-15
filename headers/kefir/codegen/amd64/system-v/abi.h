@@ -38,6 +38,7 @@ typedef struct kefir_amd64_sysv_function_decl {
 typedef struct kefir_amd64_sysv_function {
     const struct kefir_ir_function *func;
     struct kefir_amd64_sysv_function_decl decl;
+    struct kefir_vector local_layout;
 
     struct {
         kefir_size_t size;

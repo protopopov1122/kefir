@@ -10,6 +10,9 @@ all: $(ALL)
 
 deps: $(DEPS)
 
+test:
+	@echo "Tests succeeded"
+
 clean:
 	@echo "Removing $(BIN_DIR)"
 	@rm -rf $(BIN_DIR)

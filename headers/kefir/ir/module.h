@@ -56,6 +56,7 @@ kefir_result_t kefir_ir_module_declare_external(struct kefir_mem *,
 struct kefir_ir_function *kefir_ir_module_new_function(struct kefir_mem *,
                                                    struct kefir_ir_module *,
                                                    const char *,
+                                                   struct kefir_ir_type *,
                                                    kefir_size_t);
 
 struct kefir_ir_data * kefir_ir_module_new_named_data(struct kefir_mem *,

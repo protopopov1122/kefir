@@ -6,6 +6,7 @@ KEFIR_INTEGRATION_TEST_DEPS := $(KEFIR_INTEGRATION_TEST_SRC:$(SOURCE_DIR)/%.c=$(
 KEFIR_INTEGRATION_TEST_OBJS := $(KEFIR_INTEGRATION_TEST_SRC:$(SOURCE_DIR)/%.c=$(BIN_DIR)/%.o)
 KEFIR_INTEGRATION_TEST_BINS := $(KEFIR_INTEGRATION_TESTS_SOURCES:$(SOURCE_DIR)/tests/integration/%.c=$(BIN_DIR)/tests/integration/%)
 KEFIR_INTEGRATION_TESTS := $(KEFIR_INTEGRATION_TESTS_SOURCES:$(SOURCE_DIR)/tests/integration/%.test.c=integration_test_%)
+KEFIR_REBUILD_INTEGRATION_TESTS := $(KEFIR_INTEGRATION_TESTS_SOURCES:$(SOURCE_DIR)/tests/integration/%.test.c=rebuild_integration_test_%)
 
 DEPS += $(KEFIR_INTEGRATION_TEST_DEPS)
 OBJS += $(KEFIR_INTEGRATION_TEST_OBJS)
@@ -19,8 +20,14 @@ $(BIN_DIR)/tests/integration/%: $(DEPS) $(KEFIR_LIB_OBJS) $(BIN_DIR)/tests/int_t
 integration_test_%: $(BIN_DIR)/tests/integration/%.test
 	@$(SOURCE_DIR)/tests/integration/run.sh $^
 
+rebuild_integration_test_%: $(BIN_DIR)/tests/integration/%.test
+	@echo "Rebuilding $(SOURCE_DIR)/tests/integration/$(<F).result"
+	$^ > $(SOURCE_DIR)/tests/integration/$(<F).result
+
 integration_tests: $(KEFIR_INTEGRATION_TESTS)
+
+rebuild_integration_tests: $(KEFIR_REBUILD_INTEGRATION_TESTS)
 
 test: integration_tests
 
-.PHONY: integration_tests
+.PHONY: integration_tests rebuild_integration_tests

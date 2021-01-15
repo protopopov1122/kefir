@@ -29,7 +29,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_function_decl *trunc_decl =
         kefir_ir_module_new_function_declaration(mem, &module, "truncate", trunc_decl_params, trunc_decl_result);
     REQUIRE(trunc_decl != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *trunc = kefir_ir_module_new_function(mem, &module, trunc_decl->identifier, 1024);
+    struct kefir_ir_function *trunc = kefir_ir_module_new_function(mem, &module, trunc_decl->identifier, NULL, 1024);
     REQUIRE(trunc != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, trunc_decl->identifier));
     kefir_ir_type_append_v(trunc->declaration->params, KEFIR_IR_TYPE_WORD, 0, 0);
