@@ -38,7 +38,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_type_append_v(decl->result, KEFIR_IR_TYPE_INT, 0, 0));
 
     REQUIRE_OK(kefir_amd64_sysv_function_decl_alloc(mem, decl, &sysv_decl));
-    REQUIRE_OK(kefir_amd64_sysv_function_invoke(&codegen, &sysv_decl));
+    REQUIRE_OK(kefir_amd64_sysv_function_invoke(&codegen, &sysv_decl, false));
     REQUIRE_OK(kefir_amd64_sysv_function_decl_free(mem, &sysv_decl));
 
     REQUIRE_OK(KEFIR_CODEGEN_CLOSE(&codegen.iface));

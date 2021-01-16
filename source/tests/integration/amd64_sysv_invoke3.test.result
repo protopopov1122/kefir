@@ -1,0 +1,100 @@
+SECTION .text
+
+extern __kefirrt_nop_impl
+extern __kefirrt_jmp_impl
+extern __kefirrt_branch_impl
+extern __kefirrt_push_impl
+extern __kefirrt_pop_impl
+extern __kefirrt_pick_impl
+extern __kefirrt_put_impl
+extern __kefirrt_insert_impl
+extern __kefirrt_xchg_impl
+extern __kefirrt_drop_impl
+extern __kefirrt_iadd_impl
+extern __kefirrt_iadd1_impl
+extern __kefirrt_isub_impl
+extern __kefirrt_imul_impl
+extern __kefirrt_idiv_impl
+extern __kefirrt_imod_impl
+extern __kefirrt_ineg_impl
+extern __kefirrt_inot_impl
+extern __kefirrt_iand_impl
+extern __kefirrt_ior_impl
+extern __kefirrt_ixor_impl
+extern __kefirrt_ishr_impl
+extern __kefirrt_isar_impl
+extern __kefirrt_ishl_impl
+extern __kefirrt_iequals_impl
+extern __kefirrt_igreater_impl
+extern __kefirrt_ilesser_impl
+extern __kefirrt_iabove_impl
+extern __kefirrt_ibelow_impl
+extern __kefirrt_band_impl
+extern __kefirrt_bor_impl
+extern __kefirrt_bnot_impl
+extern __kefirrt_trunc1_impl
+extern __kefirrt_extend8_impl
+extern __kefirrt_extend16_impl
+extern __kefirrt_extend32_impl
+extern __kefirrt_offsetptr_impl
+extern __kefirrt_elementptr_impl
+extern __kefirrt_load8u_impl
+extern __kefirrt_load8i_impl
+extern __kefirrt_load16u_impl
+extern __kefirrt_load16i_impl
+extern __kefirrt_load32u_impl
+extern __kefirrt_load32i_impl
+extern __kefirrt_load64_impl
+extern __kefirrt_store8_impl
+extern __kefirrt_store16_impl
+extern __kefirrt_store32_impl
+extern __kefirrt_store64_impl
+extern __kefirrt_getlocals_impl
+extern __kefirrt_preserve_state
+extern __kefirrt_restore_state
+
+
+global proxyadd
+
+proxyadd:
+    call __kefirrt_preserve_state
+    sub rsp, 48
+    mov r14, rsp
+    push rdi
+    mov [r14 + 32], rsi
+    pextrq r12, xmm0, 0
+    mov [r14 + 40], r12
+    lea r12, [r14 + 32]
+    push r12
+    mov rbx, __proxyadd_body
+    jmp [rbx]
+__proxyadd_body:
+    dq __kefirrt_push_impl, 7
+    dq __kefirrt_xchg_impl, 1
+    dq __addstruct_vgate, 0
+    dq __proxyadd_epilogue, 0
+__proxyadd_epilogue:
+    pop r12
+    mov rax, [r12 + 0]
+    mov r13, [r12 + 8]
+    pinsrq xmm0, r13, 0
+    mov rsp, r14
+    add rsp, 48
+    jmp __kefirrt_restore_state
+
+__addstruct_vgate:
+    mov r12, rsp
+    and rsp, -16
+    mov rdi, [r12 + 8]
+    mov r11, [r12 + 0]
+    mov rsi, [r11 + 0]
+    pinsrq xmm0, [r11 + 8], 0
+    call [r12 + 16]
+    mov rsp, r12
+    add rsp, 16
+    mov [r14 + 16], rax
+    pextrq [r14 + 24], xmm0, 0
+    lea r11, [r14 + 16]
+    push r11
+    add rbx, 16
+    jmp [rbx]

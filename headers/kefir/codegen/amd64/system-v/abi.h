@@ -66,7 +66,8 @@ kefir_result_t kefir_amd64_sysv_function_prologue(struct kefir_codegen_amd64 *, 
 kefir_result_t kefir_amd64_sysv_function_epilogue(struct kefir_codegen_amd64 *, const struct kefir_amd64_sysv_function *);
 kefir_result_t kefir_amd64_sysv_static_data(struct kefir_mem *, struct kefir_codegen_amd64 *, const struct kefir_ir_data *, const char *);
 kefir_result_t kefir_amd64_sysv_function_invoke(struct kefir_codegen_amd64 *,
-                                            const struct kefir_amd64_sysv_function_decl *);
+                                            const struct kefir_amd64_sysv_function_decl *,
+                                            bool);
 
 #define KEFIR_AMD64_SYSV_ABI_PROGRAM_REG KEFIR_AMD64_RBX
 #define KEFIR_AMD64_SYSV_ABI_TMP_REG KEFIR_AMD64_R11

@@ -43,6 +43,9 @@ do
     if [[ "x$?" != "x0" ]]; then
         echo "Failed"
         cat "$VALGRIND_FILE"
+        if [[ "x$GDB" = "xyes" ]]; then
+            gdb "$TEST_EXE"
+        fi
         exit 129
     fi
     echo "Ok"
