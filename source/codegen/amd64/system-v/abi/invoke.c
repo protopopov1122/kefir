@@ -230,6 +230,12 @@ kefir_result_t invoke_prologue(struct kefir_codegen_amd64 *codegen,
             KEFIR_AMD64_INDIRECT_OFFSET,
             KEFIR_AMD64_SYSV_ABI_STACK_BASE_REG, KEFIR_AMD64_SYSV_INTERNAL_BOUND);
     }
+    if (decl->decl->vararg) {
+        ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
+        ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RAX);
+        ASMGEN_ARG(&codegen->asmgen,
+            KEFIR_INT64_FMT, decl->parameters.location.sse_register);
+    }
     return KEFIR_OK;
 }
 
@@ -380,7 +386,11 @@ kefir_result_t kefir_amd64_sysv_function_invoke(struct kefir_codegen_amd64 *code
             info.total_arguments * KEFIR_AMD64_SYSV_ABI_QWORD);
     } else {
         ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_CALL);
-        ASMGEN_ARG0(&codegen->asmgen, decl->decl->identifier);
+        if (decl->decl->alias != NULL) {
+            ASMGEN_ARG0(&codegen->asmgen, decl->decl->alias);
+        } else {
+            ASMGEN_ARG0(&codegen->asmgen, decl->decl->identifier);
+        }
     }
     REQUIRE_OK(invoke_epilogue(codegen, decl, &info));
     return KEFIR_OK;

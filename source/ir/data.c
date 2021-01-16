@@ -62,20 +62,9 @@ kefir_result_t kefir_ir_data_set_f64(struct kefir_ir_data *data,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ir_data_set_string(struct kefir_ir_data *data,
-                                    kefir_size_t index,
-                                    const char *value) {
-    REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR data pointer"));
-    struct kefir_ir_data_value *entry = (struct kefir_ir_data_value *) kefir_vector_at(&data->value, index);
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to find specified index"));
-    entry->undefined = false;
-    entry->str = value;
-    return KEFIR_OK;
-}
-
 kefir_result_t kefir_ir_data_set_data(struct kefir_ir_data *data,
                                   kefir_size_t index,
-                                  void *ptr) {
+                                  const void *ptr) {
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR data pointer"));
     struct kefir_ir_data_value *entry = (struct kefir_ir_data_value *) kefir_vector_at(&data->value, index);
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to find specified index"));

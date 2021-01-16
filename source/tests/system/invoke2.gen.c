@@ -16,7 +16,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(proxysum_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(proxysum_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *proxysum_decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "proxysum", proxysum_decl_params, proxysum_decl_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "proxysum", NULL, proxysum_decl_params, false, proxysum_decl_result);
     REQUIRE(proxysum_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *proxysum = kefir_ir_module_new_function(mem, &module, proxysum_decl->identifier, NULL, 1024);
     REQUIRE(proxysum != NULL, KEFIR_INTERNAL_ERROR);
@@ -29,7 +29,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(sumstruct_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *sumstruct_decl =
         kefir_ir_module_new_function_declaration(mem, &module,
-            kefir_ir_module_symbol(mem, &module, "sumstruct", &sumstruct_id), sumstruct_decl_params, sumstruct_decl_result);
+            kefir_ir_module_symbol(mem, &module, "sumstruct", &sumstruct_id), NULL, sumstruct_decl_params, false, sumstruct_decl_result);
     REQUIRE(sumstruct_decl != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_external(mem, &module, sumstruct_decl->identifier));
 

@@ -1,3 +1,4 @@
+#include <string.h>
 #include "kefir/codegen/amd64/system-v/abi.h"
 #include "kefir/codegen/amd64/shortcuts.h"
 #include "kefir/codegen/amd64/system-v/abi/data_layout.h"
@@ -88,7 +89,10 @@ static kefir_result_t struct_union_static_data(const struct kefir_ir_type *type,
         kefir_vector_at(&param->layout, index));
     unsigned char *outer_buffer = param->buffer;
     param->buffer += layout->relative_offset;
-    param->slot++;
+    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
+    if (!entry->undefined) {
+        memcpy(param->buffer, entry->data, layout->size);
+    }
     REQUIRE_OK(kefir_ir_type_visitor_list_nodes(param->data->type,
                                               param->visitor,
                                               payload,
@@ -110,7 +114,10 @@ static kefir_result_t array_static_data(const struct kefir_ir_type *type,
         kefir_vector_at(&param->layout, index + 1));
     unsigned char *outer_buffer = param->buffer;
     param->buffer += layout->relative_offset;
-    param->slot++;
+    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
+    if (!entry->undefined) {
+        memcpy(param->buffer, entry->data, layout->size);
+    }
     unsigned char *buffer_base  = param->buffer;
     kefir_size_t offset = 0;
     for (kefir_size_t i = 0; i < (kefir_size_t) typeentry->param; i++) {

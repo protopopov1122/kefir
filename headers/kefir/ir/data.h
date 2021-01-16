@@ -19,8 +19,7 @@ typedef struct kefir_ir_data_value {
         kefir_int64_t i64;
         kefir_float32_t f32[2];
         kefir_float64_t f64;
-        const char *str;
-        void *data;
+        const void *data;
     };
 } kefir_ir_data_value_t;
 
@@ -38,11 +37,8 @@ kefir_result_t kefir_ir_data_set_f32(struct kefir_ir_data *,
 kefir_result_t kefir_ir_data_set_f64(struct kefir_ir_data *,
                                  kefir_size_t,
                                  kefir_float64_t);
-kefir_result_t kefir_ir_data_set_string(struct kefir_ir_data *,
-                                    kefir_size_t,
-                                    const char *);
 kefir_result_t kefir_ir_data_set_data(struct kefir_ir_data *,
                                   kefir_size_t,
-                                  void *);
+                                  const void *);
 
 #endif

@@ -39,6 +39,9 @@ do
     fi
     TEST_FILE="$DIR/$(basename $SYS_TEST .gen).test.c"
     $CC $TEST_FILE $ASM_OBJ $LIB_OBJ
+    if [[ "x$DISASM" == "xexe" ]]; then
+        objdump -d "$TEST_EXE"
+    fi
     $VALGRIND "$TEST_EXE"
     if [[ "x$?" != "x0" ]]; then
         echo "Failed"

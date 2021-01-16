@@ -188,15 +188,22 @@ struct kefir_ir_type *kefir_ir_module_new_type(struct kefir_mem *mem,
 struct kefir_ir_function_decl *kefir_ir_module_new_function_declaration(struct kefir_mem *mem,
                                                                     struct kefir_ir_module *module,
                                                                     const char *identifier,
+                                                                    const char *alias,
                                                                     struct kefir_ir_type *parameters,
+                                                                    bool vararg,
                                                                     struct kefir_ir_type *returns) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(module != NULL, NULL);
     const char *symbol = kefir_ir_module_symbol(mem, module, identifier, NULL);
     REQUIRE(symbol != NULL, NULL);
+    const char *alias_symbol = NULL;
+    if (alias != NULL) {
+        alias_symbol = kefir_ir_module_symbol(mem, module, alias, NULL);
+        REQUIRE(alias_symbol != NULL, NULL);
+    }
     struct kefir_ir_function_decl *decl = KEFIR_MALLOC(mem, sizeof(struct kefir_ir_function_decl));
     REQUIRE(decl != NULL, NULL);
-    kefir_result_t res = kefir_ir_function_decl_alloc(mem, symbol, parameters, returns, decl);
+    kefir_result_t res = kefir_ir_function_decl_alloc(mem, symbol, alias_symbol, parameters, vararg, returns, decl);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, decl);
         return NULL;
