@@ -47,6 +47,7 @@ typedef struct kefir_amd64_sysv_function {
             kefir_size_t internals;
             kefir_size_t temporary;
             kefir_size_t parameters;
+            kefir_size_t register_save_area;
             kefir_size_t locals;
         } base;
     } frame;

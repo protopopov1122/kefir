@@ -208,6 +208,19 @@ static kefir_result_t load_arguments(struct kefir_codegen_amd64 *codegen,
     return KEFIR_OK;
 }
 
+static kefir_result_t save_registers(struct kefir_codegen_amd64 *codegen,
+                                   const struct kefir_amd64_sysv_function *sysv_func) {
+    ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_LEA);
+    ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
+    ASMGEN_ARG(&codegen->asmgen,
+        KEFIR_AMD64_INDIRECT_OFFSET,
+        KEFIR_AMD64_SYSV_ABI_STACK_BASE_REG,
+        sysv_func->frame.base.register_save_area);
+    ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_CALL);
+    ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_SAVE_REGISTERS);
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_amd64_sysv_function_prologue(struct kefir_codegen_amd64 *codegen,
                                               const struct kefir_amd64_sysv_function *func) {
     REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 code generator"));
@@ -215,6 +228,9 @@ kefir_result_t kefir_amd64_sysv_function_prologue(struct kefir_codegen_amd64 *co
     ASMGEN_COMMENT(&codegen->asmgen, "Begin prologue of %s", func->func->declaration->identifier);
     REQUIRE_OK(preserve_state(&codegen->asmgen));
     REQUIRE_OK(load_arguments(codegen, func));
+    if (func->func->declaration->vararg) {
+        REQUIRE_OK(save_registers(codegen, func));
+    }
     ASMGEN_COMMENT(&codegen->asmgen, "End prologue of %s", func->func->declaration->identifier);
     return KEFIR_OK;
 }

@@ -79,6 +79,7 @@ declare_opcode getlocals
 ; Runtime
 global __kefirrt_preserve_state
 global __kefirrt_restore_state
+global __kefirrt_save_registers
 
 define_opcode nop
     end_opcode
@@ -469,4 +470,24 @@ __kefirrt_restore_state:
     pop r12
     pop rbx
     pop rbp
+    ret
+
+__kefirrt_save_registers:
+    test    al, al
+    je      __kefirrt_save_sse_registers
+    movaps  oword [r12 + 48], xmm0
+    movaps  oword [r12 + 64], xmm1
+    movaps  oword [r12 + 80], xmm2
+    movaps  oword [r12 + 96], xmm3
+    movaps  oword [r12 + 112], xmm4
+    movaps  oword [r12 + 128], xmm5
+    movaps  oword [r12 + 144], xmm6
+    movaps  oword [r12 + 160], xmm7
+__kefirrt_save_sse_registers:
+    mov     qword [r12], rdi
+    mov     qword [r12 + 8], rsi
+    mov     qword [r12 + 16], rdx
+    mov     qword [r12 + 24], rcx
+    mov     qword [r12 + 32], r8
+    mov     qword [r12 + 40], r9
     ret
