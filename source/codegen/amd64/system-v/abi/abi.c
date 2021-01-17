@@ -203,6 +203,23 @@ kefir_result_t kefir_amd64_sysv_function_decl_free(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+static kefir_result_t appendix_removal(struct kefir_mem *mem,
+                                     struct kefir_hashtree *tree,
+                                     kefir_hashtree_key_t key,
+                                     kefir_hashtree_value_t value,
+                                     void *payload) {
+    UNUSED(tree);
+    UNUSED(key);
+    UNUSED(payload);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_appendix_data *, data,
+        value);
+    if (data->cleanup != NULL) {
+        REQUIRE_OK(data->cleanup(mem, data->payload));
+    }
+    KEFIR_FREE(mem, data);
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_amd64_sysv_function_alloc(struct kefir_mem *mem,
                                            struct kefir_codegen_amd64_sysv_module *sysv_module,
                                            const struct kefir_ir_function *func,
@@ -213,6 +230,9 @@ kefir_result_t kefir_amd64_sysv_function_alloc(struct kefir_mem *mem,
     REQUIRE(sysv_func != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 System-V function"));
     sysv_func->func = func;
     REQUIRE_OK(kefir_amd64_sysv_function_decl_alloc(mem, func->declaration, &sysv_func->decl));
+    REQUIRE_OK(kefir_hashtree_init(&sysv_func->appendix, &kefir_hashtree_uint_ops));
+    REQUIRE_OK(kefir_hashtree_on_removal(&sysv_func->appendix, appendix_removal, NULL));
+    sysv_func->appendix_index = KEFIR_AMD64_SYSV_APPENDIX_CUSTOM;
     if (func->locals != NULL) {
         REQUIRE_OK(kefir_amd64_sysv_type_layout(func->locals, mem, &sysv_func->local_layout));
     }
@@ -233,6 +253,42 @@ kefir_result_t kefir_amd64_sysv_function_free(struct kefir_mem *mem, struct kefi
     if (sysv_func->func->locals != NULL) {
         REQUIRE_OK(kefir_vector_free(mem, &sysv_func->local_layout));
     }
+    REQUIRE_OK(kefir_hashtree_free(mem, &sysv_func->appendix));
     REQUIRE_OK(kefir_amd64_sysv_function_decl_free(mem, &sysv_func->decl));
     return KEFIR_OK;
+}
+
+kefir_result_t kefir_amd64_sysv_function_has_appendix(struct kefir_amd64_sysv_function *sysv_func,
+                                                  kefir_size_t appendix_id) {
+    struct kefir_hashtree_node *node = NULL;
+    return kefir_hashtree_at(&sysv_func->appendix, (kefir_hashtree_key_t) appendix_id, &node);
+}
+
+kefir_result_t kefir_amd64_sysv_function_insert_appendix(struct kefir_mem *mem,
+                                                     struct kefir_amd64_sysv_function *sysv_func,
+                                                     kefir_amd64_sysv_function_appendix_t callback,
+                                                     kefir_result_t (*cleanup)(struct kefir_mem *, void *),
+                                                     void *payload,
+                                                     kefir_size_t appendix_id) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(sysv_func != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 System-V function"));
+    REQUIRE(callback != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid appendix callback"));
+    kefir_result_t res = kefir_amd64_sysv_function_has_appendix(sysv_func, appendix_id);
+    if (res == KEFIR_NOT_FOUND) {
+        struct kefir_amd64_sysv_appendix_data *data = KEFIR_MALLOC(mem, sizeof(struct kefir_amd64_sysv_appendix_data));
+        REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocated appendix data"));
+        data->callback = callback;
+        data->cleanup = cleanup;
+        data->payload = payload;
+        res = kefir_hashtree_insert(mem, &sysv_func->appendix, (kefir_hashtree_key_t) appendix_id, (kefir_hashtree_value_t) data);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            KEFIR_FREE(mem, data);
+            return res;
+        });
+        return KEFIR_OK;
+    } else if (res == KEFIR_OK) {
+        return KEFIR_SET_ERROR(KEFIR_ALREADY_EXISTS, "Appendix with specified id already exists");
+    } else {
+        return res;
+    }
 }

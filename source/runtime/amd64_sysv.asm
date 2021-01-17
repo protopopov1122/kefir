@@ -80,6 +80,7 @@ declare_opcode getlocals
 global __kefirrt_preserve_state
 global __kefirrt_restore_state
 global __kefirrt_save_registers
+global __kefirrt_load_integer_vararg
 
 define_opcode nop
     end_opcode
@@ -474,7 +475,7 @@ __kefirrt_restore_state:
 
 __kefirrt_save_registers:
     test    al, al
-    je      __kefirrt_save_sse_registers
+    je      __kefirrt_save_int_registers
     movaps  oword [r12 + 48], xmm0
     movaps  oword [r12 + 64], xmm1
     movaps  oword [r12 + 80], xmm2
@@ -483,11 +484,27 @@ __kefirrt_save_registers:
     movaps  oword [r12 + 128], xmm5
     movaps  oword [r12 + 144], xmm6
     movaps  oword [r12 + 160], xmm7
-__kefirrt_save_sse_registers:
+__kefirrt_save_int_registers:
     mov     qword [r12], rdi
     mov     qword [r12 + 8], rsi
     mov     qword [r12 + 16], rdx
     mov     qword [r12 + 24], rcx
     mov     qword [r12 + 32], r8
     mov     qword [r12 + 40], r9
+    ret
+
+__kefirrt_load_integer_vararg:
+    mov rax, [DATA_REG]
+    cmp rax, 48
+    jae __kefirrt_load_integer_vararg_stack
+    lea rdx, [rax + 8]
+    add rax, [DATA_REG + 3*8]
+    mov [DATA_REG], rdx
+    jmp __kefirrt_load_integer_vararg_fetch
+__kefirrt_load_integer_vararg_stack:
+    mov rax, [DATA_REG + 2*8]
+    lea rdx, [rax + 8]
+    mov [DATA_REG + 2*8], rdx
+__kefirrt_load_integer_vararg_fetch:
+    mov DATA2_REG, [rax]
     ret

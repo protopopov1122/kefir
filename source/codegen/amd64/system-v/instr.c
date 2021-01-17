@@ -1,4 +1,5 @@
 #include "kefir/codegen/amd64/system-v/instr.h"
+#include "kefir/codegen/amd64/system-v/abi/builtins.h"
 #include "kefir/codegen/amd64/labels.h"
 #include "kefir/codegen/amd64/shortcuts.h"
 #include "kefir/codegen/amd64/opcodes.h"
@@ -11,7 +12,7 @@ static kefir_result_t cg_symbolic_opcode(kefir_iropcode_t opcode, const char **s
 }
 
 kefir_result_t kefir_amd64_sysv_instruction(struct kefir_codegen_amd64 *codegen,
-                                        const struct kefir_amd64_sysv_function *sysv_func,
+                                        struct kefir_amd64_sysv_function *sysv_func,
                                         struct kefir_codegen_amd64_sysv_module *sysv_module,
                                         const struct kefir_irinstr *instr) {
     switch (instr->opcode) {
@@ -72,13 +73,12 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_codegen_amd64 *codegen,
                 kefir_vector_at(layout, type_index));
             REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to retrieve type node at index"));
             const char *opcode_symbol = NULL;
-            if (entry->relative_offset > 0) {
+            if (instr->opcode == KEFIR_IROPCODE_OFFSETPTR) {
                 REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_OFFSETPTR, &opcode_symbol));
                 ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
                 ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
                 ASMGEN_ARG(&codegen->asmgen, KEFIR_INT64_FMT, entry->relative_offset);
-            }
-            if (instr->opcode == KEFIR_IROPCODE_ELEMENTPTR && entry->size > 0) {
+            } else {
                 REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_ELEMENTPTR, &opcode_symbol));
                 ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
                 ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
@@ -105,6 +105,12 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_codegen_amd64 *codegen,
             ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
             ASMGEN_ARG0(&codegen->asmgen, symbol);
         } break;
+
+        case KEFIR_IROPCODE_VARARG_START:
+        case KEFIR_IROPCODE_VARARG_COPY:
+        case KEFIR_IROPCODE_VARARG_GET:
+        case KEFIR_IROPCODE_VARARG_END:
+            return kefir_amd64_sysv_builtin_instruction(codegen, sysv_module, sysv_func, instr);
 
         default: {
             const char *opcode_symbol = NULL;

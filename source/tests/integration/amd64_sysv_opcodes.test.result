@@ -52,6 +52,8 @@ extern __kefirrt_store64_impl
 extern __kefirrt_getlocals_impl
 extern __kefirrt_preserve_state
 extern __kefirrt_restore_state
+extern __kefirrt_save_registers
+extern __kefirrt_load_integer_vararg
 
 
 global func1

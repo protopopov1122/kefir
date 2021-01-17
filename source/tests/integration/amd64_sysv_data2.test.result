@@ -52,6 +52,8 @@ extern __kefirrt_store64_impl
 extern __kefirrt_getlocals_impl
 extern __kefirrt_preserve_state
 extern __kefirrt_restore_state
+extern __kefirrt_save_registers
+extern __kefirrt_load_integer_vararg
 
 
 global func1
@@ -72,6 +74,7 @@ __func1_body:
     dq __kefirrt_offsetptr_impl, 8
     dq __kefirrt_push_impl, 5
     dq __kefirrt_elementptr_impl, 8
+    dq __kefirrt_offsetptr_impl, 0
     dq __func1_epilogue, 0
 __func1_epilogue:
     mov rsp, r14

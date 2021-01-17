@@ -5,7 +5,7 @@
 #include "kefir/codegen/amd64/system-v/abi.h"
 
 kefir_result_t kefir_amd64_sysv_instruction(struct kefir_codegen_amd64 *,
-                                        const struct kefir_amd64_sysv_function *,
+                                        struct kefir_amd64_sysv_function *,
                                         struct kefir_codegen_amd64_sysv_module *sysv_module,
                                         const struct kefir_irinstr *);
 

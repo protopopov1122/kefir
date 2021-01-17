@@ -27,6 +27,8 @@ typedef enum kefir_ir_typecode {
     KEFIR_IR_TYPE_INT,
     KEFIR_IR_TYPE_LONG,
     KEFIR_IR_TYPE_WORD,
+    // Built-ins
+    KEFIR_IR_TYPE_BUILTIN,
     // > 64-bit scalars are not supported yet
     KEFIR_IR_TYPE_COUNT, // Auxilary
 } kefir_ir_typecode_t;

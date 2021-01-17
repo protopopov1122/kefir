@@ -1,7 +1,9 @@
 #include "kefir/codegen/amd64/system-v/abi/registers.h"
+#include "kefir/codegen/amd64/system-v/abi/builtins.h"
 #include "kefir/codegen/util.h"
 #include "kefir/core/error.h"
 #include "kefir/core/mem.h"
+#include "kefir/ir/builtins.h"
 
 const char *KEFIR_AMD64_SYSV_INTEGER_REGISTERS[] = {
     KEFIR_AMD64_RDI,
@@ -288,6 +290,17 @@ static kefir_result_t assign_nested_array(const struct kefir_ir_type *type,
     return KEFIR_OK;
 }
 
+static kefir_result_t assign_nested_builtin(const struct kefir_ir_type *type,
+                                            kefir_size_t index,
+                                            const struct kefir_ir_typeentry *typeentry,
+                                            void *payload) {
+    UNUSED(type);
+    UNUSED(index);
+    UNUSED(typeentry);
+    UNUSED(payload);
+    return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Cannot pass built-in as a parameter");
+}
+
 static kefir_result_t aggregate_disown(struct kefir_mem *mem,
                                   struct kefir_amd64_sysv_parameter_allocation *alloc) {
     REQUIRE_OK(kefir_amd64_sysv_abi_qwords_free(&alloc->container, mem));
@@ -342,6 +355,7 @@ static kefir_result_t nested_visitor_init(struct kefir_ir_type_visitor *visitor)
     visitor->visit[KEFIR_IR_TYPE_STRUCT] = assign_nested_struct;
     visitor->visit[KEFIR_IR_TYPE_ARRAY] = assign_nested_array;
     visitor->visit[KEFIR_IR_TYPE_UNION] = assign_nested_union;
+    visitor->visit[KEFIR_IR_TYPE_BUILTIN] = assign_nested_builtin;
     return KEFIR_OK;
 }
 
@@ -559,6 +573,17 @@ static kefir_result_t assign_immediate_union(const struct kefir_ir_type *type,
     return calculate_qword_requirements(allocation, layout);
 }
 
+static kefir_result_t assign_immediate_builtin(const struct kefir_ir_type *type,
+                                    kefir_size_t index,
+                                    const struct kefir_ir_typeentry *typeentry,
+                                    void *payload) {
+    UNUSED(type);
+    UNUSED(index);
+    UNUSED(typeentry);
+    UNUSED(payload);
+    return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Cannot pass built-in as a parameter");
+}
+
 kefir_result_t kefir_amd64_sysv_parameter_classify(struct kefir_mem *mem,
                                                      const struct kefir_ir_type *type,
                                                      const struct kefir_vector *layout,
@@ -595,6 +620,7 @@ kefir_result_t kefir_amd64_sysv_parameter_classify(struct kefir_mem *mem,
     visitor.visit[KEFIR_IR_TYPE_STRUCT] = assign_immediate_struct;
     visitor.visit[KEFIR_IR_TYPE_UNION] = assign_immediate_union;
     visitor.visit[KEFIR_IR_TYPE_ARRAY] = assign_immediate_array;
+    visitor.visit[KEFIR_IR_TYPE_BUILTIN] = assign_immediate_builtin;
     struct input_allocation info = {
         .mem = mem,
         .layout = layout,
@@ -789,6 +815,17 @@ static kefir_result_t aggregate_allocate(const struct kefir_ir_type *type,
     return KEFIR_OK;
 }
 
+static kefir_result_t builtin_allocate(const struct kefir_ir_type *type,
+                                    kefir_size_t index,
+                                    const struct kefir_ir_typeentry *typeentry,
+                                    void *payload) {
+    UNUSED(type);
+    UNUSED(index);
+    UNUSED(typeentry);
+    UNUSED(payload);
+    return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Cannot pass built-in as a parameter");
+}
+
 kefir_result_t kefir_amd64_sysv_parameter_allocate(struct kefir_mem *mem,
                                                const struct kefir_ir_type *type,
                                                const struct kefir_vector *layout,
@@ -808,6 +845,7 @@ kefir_result_t kefir_amd64_sysv_parameter_allocate(struct kefir_mem *mem,
     visitor.visit[KEFIR_IR_TYPE_STRUCT] = aggregate_allocate;
     visitor.visit[KEFIR_IR_TYPE_ARRAY] = aggregate_allocate;
     visitor.visit[KEFIR_IR_TYPE_UNION] = aggregate_allocate;
+    visitor.visit[KEFIR_IR_TYPE_BUILTIN] = builtin_allocate;
     struct allocation_state state = {
         .mem = mem,
         .current = location,

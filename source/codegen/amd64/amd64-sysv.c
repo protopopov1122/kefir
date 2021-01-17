@@ -63,7 +63,7 @@ static kefir_result_t cg_function_epilogue(struct kefir_codegen_amd64 *codegen,
 
 static kefir_result_t cg_function_body(struct kefir_codegen_amd64 *codegen,
                                      struct kefir_codegen_amd64_sysv_module *sysv_module,
-                                     const struct kefir_amd64_sysv_function *sysv_func) {
+                                     struct kefir_amd64_sysv_function *sysv_func) {
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_PROGRAM_REG);
     ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL, sysv_func->func->declaration->identifier);
@@ -96,6 +96,14 @@ static kefir_result_t cg_translate_function(const struct kefir_ir_function *func
     kefir_result_t res = cg_function_prologue(codegen, &sysv_func);
     REQUIRE_CHAIN(&res, cg_function_body(codegen, sysv_module, &sysv_func));
     REQUIRE_CHAIN(&res, cg_function_epilogue(codegen, &sysv_func));
+    struct kefir_hashtree_node_iterator appendix_iter;
+    for (const struct kefir_hashtree_node *node = kefir_hashtree_iter(&sysv_func.appendix, &appendix_iter);
+        node != NULL;
+        node = kefir_hashtree_next(&appendix_iter)) {
+        ASSIGN_DECL_CAST(struct kefir_amd64_sysv_appendix_data *, appendix,
+            node->value);
+        REQUIRE_OK(appendix->callback(codegen, sysv_module, &sysv_func, (kefir_size_t) node->key, appendix->payload));
+    }
     kefir_amd64_sysv_function_free(codegen->mem, &sysv_func);
     ASMGEN_NEWLINE(&codegen->asmgen, 1);
     return KEFIR_OK;

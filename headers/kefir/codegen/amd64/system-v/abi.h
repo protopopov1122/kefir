@@ -35,10 +35,19 @@ typedef struct kefir_amd64_sysv_function_decl {
     } returns;
 } kefir_amd64_sysv_function_decl_t;
 
+
+typedef enum kefir_amd64_sysv_appendix_id {
+    KEFIR_AMD64_SYSV_APPENDIX_VARARG_START = 0,
+    KEFIR_AMD64_SYSV_APPENDIX_VARARG_END,
+    KEFIR_AMD64_SYSV_APPENDIX_CUSTOM,
+} kefir_amd64_sysv_appendix_id_t;
+
 typedef struct kefir_amd64_sysv_function {
     const struct kefir_ir_function *func;
     struct kefir_amd64_sysv_function_decl decl;
     struct kefir_vector local_layout;
+    struct kefir_hashtree appendix;
+    kefir_size_t appendix_index;
 
     struct {
         kefir_size_t size;
@@ -53,6 +62,18 @@ typedef struct kefir_amd64_sysv_function {
     } frame;
 } kefir_amd64_sysv_function_t;
 
+typedef kefir_result_t (*kefir_amd64_sysv_function_appendix_t)(struct kefir_codegen_amd64 *,
+                                                           struct kefir_codegen_amd64_sysv_module *,
+                                                           const struct kefir_amd64_sysv_function *,
+                                                           kefir_size_t,
+                                                           void *);
+
+typedef struct kefir_amd64_sysv_appendix_data {
+    kefir_amd64_sysv_function_appendix_t callback;
+    kefir_result_t (*cleanup)(struct kefir_mem *, void *);
+    void *payload;
+} kefir_amd64_sysv_appendix_data_t;
+
 kefir_result_t kefir_amd64_sysv_function_decl_alloc(struct kefir_mem *,
                                                 const struct kefir_ir_function_decl *,
                                                 struct kefir_amd64_sysv_function_decl *);
@@ -63,6 +84,14 @@ kefir_result_t kefir_amd64_sysv_function_alloc(struct kefir_mem *,
                                            const struct kefir_ir_function *,
                                            struct kefir_amd64_sysv_function *);
 kefir_result_t kefir_amd64_sysv_function_free(struct kefir_mem *, struct kefir_amd64_sysv_function *);
+kefir_result_t kefir_amd64_sysv_function_has_appendix(struct kefir_amd64_sysv_function *,
+                                                  kefir_size_t);
+kefir_result_t kefir_amd64_sysv_function_insert_appendix(struct kefir_mem *,
+                                                     struct kefir_amd64_sysv_function *,
+                                                     kefir_amd64_sysv_function_appendix_t,
+                                                     kefir_result_t (*)(struct kefir_mem *, void *),
+                                                     void *,
+                                                     kefir_size_t);
 kefir_result_t kefir_amd64_sysv_function_prologue(struct kefir_codegen_amd64 *, const struct kefir_amd64_sysv_function *);
 kefir_result_t kefir_amd64_sysv_function_epilogue(struct kefir_codegen_amd64 *, const struct kefir_amd64_sysv_function *);
 kefir_result_t kefir_amd64_sysv_static_data(struct kefir_mem *, struct kefir_codegen_amd64 *, const struct kefir_ir_data *, const char *);

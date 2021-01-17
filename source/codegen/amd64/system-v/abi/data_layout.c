@@ -4,6 +4,7 @@
 #include "kefir/codegen/util.h"
 #include "kefir/codegen/amd64/system-v/abi/data_layout.h"
 #include "kefir/codegen/amd64/system-v/abi/data.h"
+#include "kefir/codegen/amd64/system-v/abi/builtins.h"
 
 static kefir_result_t visitor_not_supported(const struct kefir_ir_type *type,
                                             kefir_size_t index,
@@ -199,6 +200,23 @@ static kefir_result_t calculate_array_layout(const struct kefir_ir_type *type,
     return update_compound_type_layout(compound_type_layout, data, typeentry);
 }
 
+
+static kefir_result_t calculate_builtin_layout(const struct kefir_ir_type *type,
+                               kefir_size_t index,
+                               const struct kefir_ir_typeentry *typeentry,
+                               void *payload) {
+    UNUSED(type);
+    struct compound_type_layout *compound_type_layout = (struct compound_type_layout *) payload;
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, data,
+        kefir_vector_at(compound_type_layout->vector, index));
+    kefir_ir_builtin_type_t builtin = (kefir_ir_builtin_type_t) typeentry->param;
+    REQUIRE(builtin < KEFIR_IR_TYPE_BUILTIN_COUNT, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unknown built-in type"));
+    data->aligned = true;
+    data->alignment = KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin].storage_layout.alignment;
+    data->size = KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin].storage_layout.size;
+    return update_compound_type_layout(compound_type_layout, data, typeentry);
+}
+
 static kefir_result_t calculate_layout(const struct kefir_ir_type *type,
                                    struct kefir_vector *vector) {
     struct kefir_ir_type_visitor visitor;
@@ -219,6 +237,7 @@ static kefir_result_t calculate_layout(const struct kefir_ir_type *type,
     visitor.visit[KEFIR_IR_TYPE_STRUCT] = calculate_struct_union_layout;
     visitor.visit[KEFIR_IR_TYPE_UNION] = calculate_struct_union_layout;
     visitor.visit[KEFIR_IR_TYPE_ARRAY] = calculate_array_layout;
+    visitor.visit[KEFIR_IR_TYPE_BUILTIN] = calculate_builtin_layout;
     return kefir_ir_type_visitor_list_nodes(type, &visitor,
         (void *) &compound_type_layout, 0, kefir_ir_type_nodes(type));
 }
