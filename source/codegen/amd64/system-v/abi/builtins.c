@@ -131,7 +131,6 @@ static kefir_result_t visitor_not_supported(const struct kefir_ir_type *type,
     return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, KEFIR_AMD64_SYSV_ABI_ERROR_PREFIX "Encountered not supported type code while traversing type");
 }
 
-
 static kefir_result_t vararg_get_int(struct kefir_codegen_amd64 *codegen,
                                  struct kefir_codegen_amd64_sysv_module *sysv_module,
                                  const struct kefir_amd64_sysv_function *sysv_func,
@@ -186,6 +185,60 @@ static kefir_result_t vararg_visit_integer(const struct kefir_ir_type *type,
     return KEFIR_OK;
 }
 
+static kefir_result_t vararg_get_sse(struct kefir_codegen_amd64 *codegen,
+                                 struct kefir_codegen_amd64_sysv_module *sysv_module,
+                                 const struct kefir_amd64_sysv_function *sysv_func,
+                                 kefir_size_t appendix_id,
+                                 void *payload) {
+    UNUSED(sysv_module);
+    UNUSED(payload);
+    ASMGEN_LABEL(&codegen->asmgen,
+        KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_LABEL,
+        sysv_func->func->declaration->identifier,
+        appendix_id);
+
+    ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_POP);
+    ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
+
+    ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_CALL);
+    ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_VARARG_SSE);
+
+    ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_PUSH);
+    ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA2_REG);
+
+    ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_ADD);
+    ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RBX);
+    ASMGEN_ARG(&codegen->asmgen,
+        KEFIR_INT64_FMT,
+        2 * KEFIR_AMD64_SYSV_ABI_QWORD);
+
+    ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_JMP);
+    ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_INDIRECT, KEFIR_AMD64_RBX);
+    return KEFIR_OK;
+}
+
+static kefir_result_t vararg_visit_sse(const struct kefir_ir_type *type,
+                                          kefir_size_t index,
+                                          const struct kefir_ir_typeentry *typeentry,
+                                          void *payload) {
+    UNUSED(type);
+    UNUSED(index);
+    UNUSED(typeentry);
+    ASSIGN_DECL_CAST(struct vararg_getter *, param,
+        payload);
+    kefir_size_t appendix_id = param->sysv_func->appendix_index++;
+    kefir_result_t res = kefir_amd64_sysv_function_insert_appendix(param->codegen->mem, param->sysv_func,
+        vararg_get_sse, NULL, NULL, appendix_id);
+    REQUIRE(res == KEFIR_OK || res == KEFIR_ALREADY_EXISTS, res);
+    ASMGEN_RAW(&param->codegen->asmgen, KEFIR_AMD64_QUAD);
+    ASMGEN_ARG(&param->codegen->asmgen,
+        KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_LABEL,
+        param->sysv_func->func->declaration->identifier,
+        appendix_id);
+    ASMGEN_ARG0(&param->codegen->asmgen, "0");
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_amd64_sysv_builtin_instruction(struct kefir_codegen_amd64 *codegen,
                                                 struct kefir_codegen_amd64_sysv_module *sysv_module,
                                                 struct kefir_amd64_sysv_function *sysv_func,
@@ -217,6 +270,7 @@ kefir_result_t kefir_amd64_sysv_builtin_instruction(struct kefir_codegen_amd64 *
             struct kefir_ir_type_visitor visitor;
             REQUIRE_OK(kefir_ir_type_visitor_init(&visitor, visitor_not_supported));
             KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS(&visitor, vararg_visit_integer);
+            KEFIR_IR_TYPE_VISITOR_INIT_FIXED_FP(&visitor, vararg_visit_sse);
             struct vararg_getter param = {
                 .codegen = codegen,
                 .sysv_module = sysv_module,

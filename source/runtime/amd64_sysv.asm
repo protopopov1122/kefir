@@ -81,6 +81,7 @@ global __kefirrt_preserve_state
 global __kefirrt_restore_state
 global __kefirrt_save_registers
 global __kefirrt_load_integer_vararg
+global __kefirrt_load_sse_vararg
 
 define_opcode nop
     end_opcode
@@ -507,4 +508,20 @@ __kefirrt_load_integer_vararg_stack:
     mov [DATA_REG + 2*8], rdx
 __kefirrt_load_integer_vararg_fetch:
     mov DATA2_REG, [rax]
+    ret
+
+__kefirrt_load_sse_vararg:
+    mov rax, [DATA_REG + 8]
+    cmp rax, 176
+    jae __kefirrt_load_sse_vararg_stack
+    lea rdx, [rax + 16]
+    add rax, [DATA_REG + 3*8]
+    mov [DATA_REG + 8], rdx
+    movaps xmm0, oword [rax]
+    ret
+__kefirrt_load_sse_vararg_stack:
+    mov rax, [DATA_REG + 2*8]
+    lea rdx, [rax + 8]
+    mov [DATA_REG + 2*8], rdx
+    movlps xmm0, qword [rax]
     ret
