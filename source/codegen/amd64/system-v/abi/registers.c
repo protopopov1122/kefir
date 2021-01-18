@@ -1,5 +1,5 @@
 #include "kefir/codegen/amd64/system-v/abi/registers.h"
-#include "kefir/codegen/amd64/system-v/abi/builtins.h"
+#include "kefir/codegen/amd64/system-v/abi/vararg.h"
 #include "kefir/codegen/util.h"
 #include "kefir/core/error.h"
 #include "kefir/core/mem.h"

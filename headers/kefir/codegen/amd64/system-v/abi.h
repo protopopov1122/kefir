@@ -39,6 +39,8 @@ typedef struct kefir_amd64_sysv_function_decl {
 typedef enum kefir_amd64_sysv_appendix_id {
     KEFIR_AMD64_SYSV_APPENDIX_VARARG_START = 0,
     KEFIR_AMD64_SYSV_APPENDIX_VARARG_END,
+    KEFIR_AMD64_SYSV_APPENDIX_VARARG_GET_INTEGER,
+    KEFIR_AMD64_SYSV_APPENDIX_VARARG_GET_SSE,
     KEFIR_AMD64_SYSV_APPENDIX_CUSTOM,
 } kefir_amd64_sysv_appendix_id_t;
 

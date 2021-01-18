@@ -4,7 +4,7 @@
 #include "kefir/codegen/util.h"
 #include "kefir/codegen/amd64/system-v/abi/data_layout.h"
 #include "kefir/codegen/amd64/system-v/abi/data.h"
-#include "kefir/codegen/amd64/system-v/abi/builtins.h"
+#include "kefir/codegen/amd64/system-v/abi/vararg.h"
 
 static kefir_result_t visitor_not_supported(const struct kefir_ir_type *type,
                                             kefir_size_t index,

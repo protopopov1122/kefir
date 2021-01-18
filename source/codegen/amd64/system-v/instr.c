@@ -1,5 +1,5 @@
 #include "kefir/codegen/amd64/system-v/instr.h"
-#include "kefir/codegen/amd64/system-v/abi/builtins.h"
+#include "kefir/codegen/amd64/system-v/abi/vararg.h"
 #include "kefir/codegen/amd64/labels.h"
 #include "kefir/codegen/amd64/shortcuts.h"
 #include "kefir/codegen/amd64/opcodes.h"
@@ -110,7 +110,7 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_codegen_amd64 *codegen,
         case KEFIR_IROPCODE_VARARG_COPY:
         case KEFIR_IROPCODE_VARARG_GET:
         case KEFIR_IROPCODE_VARARG_END:
-            return kefir_amd64_sysv_builtin_instruction(codegen, sysv_module, sysv_func, instr);
+            return kefir_codegen_amd64_sysv_vararg_instruction(codegen, sysv_module, sysv_func, instr);
 
         default: {
             const char *opcode_symbol = NULL;

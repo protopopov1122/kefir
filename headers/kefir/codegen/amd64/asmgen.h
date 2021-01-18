@@ -91,6 +91,7 @@ kefir_result_t kefir_amd64_nasm_gen_init(struct kefir_amd64_asmgen *, FILE *);
 #define KEFIR_AMD64_PUSH  "push"
 #define KEFIR_AMD64_POP   "pop"
 #define KEFIR_AMD64_MOV   "mov"
+#define KEFIR_AMD64_OR    "or"
 #define KEFIR_AMD64_LEA   "lea"
 #define KEFIR_AMD64_MOVQ  "movq"
 #define KEFIR_AMD64_MOVSB "movsb"
