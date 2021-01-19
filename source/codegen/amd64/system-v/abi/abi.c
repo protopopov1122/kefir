@@ -69,6 +69,44 @@ static kefir_result_t update_frame_temporaries(struct kefir_amd64_sysv_function_
     return KEFIR_OK;
 }
 
+static kefir_result_t update_frame_temporaries_type(struct kefir_mem *mem,
+                                                  struct kefir_ir_type *type,
+                                                  kefir_size_t index,
+                                                  kefir_size_t *size,
+                                                  kefir_size_t *alignment) {
+    struct kefir_vector layout;
+    struct kefir_vector allocation;
+    struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(type, index);
+    REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to fetch IR type entry at index"));
+
+    REQUIRE_OK(kefir_amd64_sysv_type_layout(type, mem, &layout));
+    kefir_result_t res = kefir_amd64_sysv_parameter_classify(mem, type, &layout, &allocation);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        REQUIRE_OK(kefir_vector_free(mem, &layout));
+        return res;
+    });
+
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, arg_layout,
+        kefir_vector_at(&layout, index));
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, arg_alloc,
+        kefir_vector_at(&allocation, index));
+    REQUIRE_ELSE(arg_layout != NULL && arg_alloc != NULL, {
+        REQUIRE_OK(kefir_amd64_sysv_parameter_free(mem, &allocation));
+        REQUIRE_OK(kefir_vector_free(mem, &layout));
+        return KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to fetch argument layout and classification");
+    });
+    if ((typeentry->typecode == KEFIR_IR_TYPE_STRUCT ||
+        typeentry->typecode == KEFIR_IR_TYPE_UNION ||
+        typeentry->typecode == KEFIR_IR_TYPE_ARRAY) && arg_alloc->klass != KEFIR_AMD64_SYSV_PARAM_MEMORY) {
+        *size = MAX(*size, arg_layout->size);
+        *alignment = MAX(*size, arg_layout->alignment);
+    }
+
+    REQUIRE_OK(kefir_amd64_sysv_parameter_free(mem, &allocation));
+    REQUIRE_OK(kefir_vector_free(mem, &layout));
+    return KEFIR_OK;
+}
+
 #define PAD_DQWORD(x) kefir_codegen_pad_aligned((x), 2 * KEFIR_AMD64_SYSV_ABI_QWORD)
 
 static kefir_result_t calculate_frame_temporaries(struct kefir_mem *mem,
@@ -93,6 +131,12 @@ static kefir_result_t calculate_frame_temporaries(struct kefir_mem *mem,
             struct kefir_amd64_sysv_function_decl *decl =
                 kefir_codegen_amd64_sysv_module_function_decl(mem, sysv_module, function, true);
             REQUIRE_OK(update_frame_temporaries(decl, &size, &alignment));
+        }
+        if (instr->opcode == KEFIR_IROPCODE_VARARG_GET) {
+            kefir_ir_module_id_t id = (kefir_ir_module_id_t) instr->arg_pair[0];
+            struct kefir_ir_type *type = kefir_ir_module_get_named_type(sysv_module->module, id);
+            REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to find named type"));
+            REQUIRE_OK(update_frame_temporaries_type(mem, type, (kefir_size_t) instr->arg_pair[1], &size, &alignment));
         }
     }
     sysv_func->frame.base.temporary = kefir_codegen_pad_aligned(sysv_func->frame.size, alignment);
