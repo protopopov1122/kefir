@@ -102,7 +102,7 @@ static kefir_result_t cg_translate_function(const struct kefir_ir_function *func
         node = kefir_hashtree_next(&appendix_iter)) {
         ASSIGN_DECL_CAST(struct kefir_amd64_sysv_appendix_data *, appendix,
             node->value);
-        REQUIRE_OK(appendix->callback(codegen, sysv_module, &sysv_func, (kefir_size_t) node->key, appendix->payload));
+        REQUIRE_OK(appendix->callback(codegen, sysv_module, &sysv_func, (const char *) node->key, appendix->payload));
     }
     kefir_amd64_sysv_function_free(codegen->mem, &sysv_func);
     ASMGEN_NEWLINE(&codegen->asmgen, 1);

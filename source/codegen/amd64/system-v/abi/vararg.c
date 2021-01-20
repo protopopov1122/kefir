@@ -9,14 +9,11 @@
 static kefir_result_t vararg_start(struct kefir_codegen_amd64 *codegen,
                                  struct kefir_codegen_amd64_sysv_module *sysv_module,
                                  const struct kefir_amd64_sysv_function *sysv_func,
-                                 kefir_size_t appendix_id,
+                                 const char *identifier,
                                  void *payload) {
     UNUSED(sysv_module);
-    UNUSED(appendix_id);
     UNUSED(payload);
-    ASMGEN_LABEL(&codegen->asmgen,
-        KEFIR_AMD64_SYSV_FUNCTION_VARARG_START_LABEL,
-        sysv_func->func->declaration->identifier);
+    ASMGEN_LABEL(&codegen->asmgen, "%s", identifier);
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_POP);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
 
@@ -80,14 +77,13 @@ static kefir_result_t vararg_start(struct kefir_codegen_amd64 *codegen,
 static kefir_result_t vararg_end(struct kefir_codegen_amd64 *codegen,
                                  struct kefir_codegen_amd64_sysv_module *sysv_module,
                                  const struct kefir_amd64_sysv_function *sysv_func,
-                                 kefir_size_t appendix_id,
+                                 const char *identifier,
                                  void *payload) {
     UNUSED(sysv_module);
-    UNUSED(appendix_id);
+    UNUSED(sysv_func);
     UNUSED(payload);
-    ASMGEN_LABEL(&codegen->asmgen,
-        KEFIR_AMD64_SYSV_FUNCTION_VARARG_END_LABEL,
-        sysv_func->func->declaration->identifier);
+    ASMGEN_LABEL(&codegen->asmgen, "%s",
+        identifier);
 
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_ADD);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RSP);
@@ -110,6 +106,7 @@ struct vararg_getter {
     struct kefir_codegen_amd64 *codegen;
     struct kefir_codegen_amd64_sysv_module *sysv_module;
     struct kefir_amd64_sysv_function *sysv_func;
+    const char *identifier;
 };
 
 static kefir_result_t visitor_not_supported(const struct kefir_ir_type *type,
@@ -126,14 +123,13 @@ static kefir_result_t visitor_not_supported(const struct kefir_ir_type *type,
 static kefir_result_t vararg_get_int(struct kefir_codegen_amd64 *codegen,
                                  struct kefir_codegen_amd64_sysv_module *sysv_module,
                                  const struct kefir_amd64_sysv_function *sysv_func,
-                                 kefir_size_t appendix_id,
+                                 const char *identifier,
                                  void *payload) {
     UNUSED(sysv_module);
+    UNUSED(sysv_func);
     UNUSED(payload);
-    ASMGEN_LABEL(&codegen->asmgen,
-        KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_LABEL,
-        sysv_func->func->declaration->identifier,
-        appendix_id);
+    ASMGEN_LABEL(&codegen->asmgen, "%s",
+        identifier);
 
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_POP);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
@@ -162,16 +158,19 @@ static kefir_result_t vararg_visit_integer(const struct kefir_ir_type *type,
     UNUSED(type);
     UNUSED(index);
     UNUSED(typeentry);
+    const kefir_size_t BUF_SIZE = 256;
+    char buffer[BUF_SIZE];
+
     ASSIGN_DECL_CAST(struct vararg_getter *, param,
         payload);
+    snprintf(buffer, BUF_SIZE - 1, KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_INT_LABEL,
+        param->sysv_func->func->declaration->identifier);
     kefir_result_t res = kefir_amd64_sysv_function_insert_appendix(param->codegen->mem, param->sysv_func,
-        vararg_get_int, NULL, NULL, KEFIR_AMD64_SYSV_APPENDIX_VARARG_GET_INTEGER);
+        vararg_get_int, NULL, NULL, buffer);
     REQUIRE(res == KEFIR_OK || res == KEFIR_ALREADY_EXISTS, res);
     ASMGEN_RAW(&param->codegen->asmgen, KEFIR_AMD64_QUAD);
-    ASMGEN_ARG(&param->codegen->asmgen,
-        KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_LABEL,
-        param->sysv_func->func->declaration->identifier,
-        KEFIR_AMD64_SYSV_APPENDIX_VARARG_GET_INTEGER);
+    ASMGEN_ARG0(&param->codegen->asmgen,
+        buffer);
     ASMGEN_ARG0(&param->codegen->asmgen, "0");
     return KEFIR_OK;
 }
@@ -179,14 +178,13 @@ static kefir_result_t vararg_visit_integer(const struct kefir_ir_type *type,
 static kefir_result_t vararg_get_sse(struct kefir_codegen_amd64 *codegen,
                                  struct kefir_codegen_amd64_sysv_module *sysv_module,
                                  const struct kefir_amd64_sysv_function *sysv_func,
-                                 kefir_size_t appendix_id,
+                                 const char *identifier,
                                  void *payload) {
     UNUSED(sysv_module);
+    UNUSED(sysv_func);
     UNUSED(payload);
-    ASMGEN_LABEL(&codegen->asmgen,
-        KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_LABEL,
-        sysv_func->func->declaration->identifier,
-        appendix_id);
+    ASMGEN_LABEL(&codegen->asmgen, "%s",
+        identifier);
 
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_POP);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
@@ -215,16 +213,19 @@ static kefir_result_t vararg_visit_sse(const struct kefir_ir_type *type,
     UNUSED(type);
     UNUSED(index);
     UNUSED(typeentry);
+    const kefir_size_t BUF_SIZE = 256;
+    char buffer[BUF_SIZE];
+
     ASSIGN_DECL_CAST(struct vararg_getter *, param,
         payload);
+    snprintf(buffer, BUF_SIZE - 1, KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_SSE_LABEL,
+        param->sysv_func->func->declaration->identifier);
     kefir_result_t res = kefir_amd64_sysv_function_insert_appendix(param->codegen->mem, param->sysv_func,
-        vararg_get_sse, NULL, NULL, KEFIR_AMD64_SYSV_APPENDIX_VARARG_GET_SSE);
+        vararg_get_sse, NULL, NULL, buffer);
     REQUIRE(res == KEFIR_OK || res == KEFIR_ALREADY_EXISTS, res);
     ASMGEN_RAW(&param->codegen->asmgen, KEFIR_AMD64_QUAD);
-    ASMGEN_ARG(&param->codegen->asmgen,
-        KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_LABEL,
-        param->sysv_func->func->declaration->identifier,
-        KEFIR_AMD64_SYSV_APPENDIX_VARARG_GET_SSE);
+    ASMGEN_ARG0(&param->codegen->asmgen,
+        buffer);
     ASMGEN_ARG0(&param->codegen->asmgen, "0");
     return KEFIR_OK;
 }
@@ -278,15 +279,14 @@ static kefir_result_t vararg_load_memory_aggregate(struct kefir_codegen_amd64 *c
 static kefir_result_t vararg_get_memory_aggregate(struct kefir_codegen_amd64 *codegen,
                                  struct kefir_codegen_amd64_sysv_module *sysv_module,
                                  const struct kefir_amd64_sysv_function *sysv_func,
-                                 kefir_size_t appendix_id,
+                                 const char *identifier,
                                  void *payload) {
     UNUSED(sysv_module);
+    UNUSED(sysv_func);
     ASSIGN_DECL_CAST(struct vararg_aggregate_info *, info,
         payload);
-    ASMGEN_LABEL(&codegen->asmgen,
-        KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_LABEL,
-        sysv_func->func->declaration->identifier,
-        appendix_id);
+    ASMGEN_LABEL(&codegen->asmgen, "%s",
+        identifier);
 
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_POP);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
@@ -334,9 +334,10 @@ static kefir_result_t register_aggregate_requirements(struct vararg_aggregate_in
 
 static kefir_result_t vararg_get_register_aggregate_intro(struct kefir_codegen_amd64 *codegen,
                                                         const struct kefir_amd64_sysv_function *sysv_func,
-                                                        kefir_size_t appendix_id,
+                                                        const char *identifier,
                                                         struct vararg_aggregate_info *info,
                                                         struct aggregate_requirements *requirements) {
+    UNUSED(sysv_func);
     REQUIRE_OK(register_aggregate_requirements(info, requirements));
     
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
@@ -359,9 +360,8 @@ static kefir_result_t vararg_get_register_aggregate_intro(struct kefir_codegen_a
 
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_JA);
     ASMGEN_ARG(&codegen->asmgen,
-        KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_LABEL "_stack",
-        sysv_func->func->declaration->identifier,
-        appendix_id);
+        "%s_stack",
+        identifier);
     
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RAX);
@@ -385,16 +385,16 @@ static kefir_result_t vararg_get_register_aggregate_intro(struct kefir_codegen_a
 
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_JA);
     ASMGEN_ARG(&codegen->asmgen,
-        KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_LABEL "_stack",
-        sysv_func->func->declaration->identifier,
-        appendix_id);
+        "%s_stack",
+        identifier);
     return KEFIR_OK;
 }
 static kefir_result_t vararg_get_register_aggregate_load(struct kefir_codegen_amd64 *codegen,
                                                         const struct kefir_amd64_sysv_function *sysv_func,
-                                                        kefir_size_t appendix_id,
+                                                        const char *identifier,
                                                         struct vararg_aggregate_info *info,
                                                         const struct aggregate_requirements *requirements) {
+    UNUSED(sysv_func);
     UNUSED(info);
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_LEA);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA2_REG);
@@ -516,40 +516,36 @@ static kefir_result_t vararg_get_register_aggregate_load(struct kefir_codegen_am
 
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_JMP);
     ASMGEN_ARG(&codegen->asmgen,
-        KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_LABEL "_end",
-        sysv_func->func->declaration->identifier,
-        appendix_id);
+        "%s_end",
+        identifier);
     return KEFIR_OK;
 }
 
 static kefir_result_t vararg_get_register_aggregate(struct kefir_codegen_amd64 *codegen,
                                  struct kefir_codegen_amd64_sysv_module *sysv_module,
                                  const struct kefir_amd64_sysv_function *sysv_func,
-                                 kefir_size_t appendix_id,
+                                 const char *identifier,
                                  void *payload) {
     UNUSED(sysv_module);
+    UNUSED(sysv_func);
     ASSIGN_DECL_CAST(struct vararg_aggregate_info *, info,
         payload);
     struct aggregate_requirements requirements;
 
-    ASMGEN_LABEL(&codegen->asmgen,
-        KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_LABEL,
-        sysv_func->func->declaration->identifier,
-        appendix_id);
+    ASMGEN_LABEL(&codegen->asmgen, "%s",
+        identifier);
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_POP);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
     
-    REQUIRE_OK(vararg_get_register_aggregate_intro(codegen, sysv_func, appendix_id, info, &requirements));
-    REQUIRE_OK(vararg_get_register_aggregate_load(codegen, sysv_func, appendix_id, info, &requirements));
+    REQUIRE_OK(vararg_get_register_aggregate_intro(codegen, sysv_func, identifier, info, &requirements));
+    REQUIRE_OK(vararg_get_register_aggregate_load(codegen, sysv_func, identifier, info, &requirements));
     ASMGEN_LABEL(&codegen->asmgen,
-        KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_LABEL "_stack",
-        sysv_func->func->declaration->identifier,
-        appendix_id);
+        "%s_stack",
+        identifier);
     REQUIRE_OK(vararg_load_memory_aggregate(codegen, info));
     ASMGEN_LABEL(&codegen->asmgen,
-        KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_LABEL "_end",
-        sysv_func->func->declaration->identifier,
-        appendix_id);
+        "%s_end",
+        identifier);
 
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_ADD);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RBX);
@@ -559,8 +555,6 @@ static kefir_result_t vararg_get_register_aggregate(struct kefir_codegen_amd64 *
 
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_JMP);
     ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_INDIRECT, KEFIR_AMD64_RBX);
-    return KEFIR_OK;
-    
     return KEFIR_OK;
 }
 
@@ -577,32 +571,28 @@ static kefir_result_t free_vararg_aggregate_info(struct kefir_mem *mem, void *pa
 
 static kefir_result_t vararg_visit_memory_aggregate(struct vararg_aggregate_info *info,
                                                   struct vararg_getter *param) {
-    kefir_size_t appendix_id = param->sysv_func->appendix_index++;
     kefir_result_t res = kefir_amd64_sysv_function_insert_appendix(param->codegen->mem, param->sysv_func,
-        vararg_get_memory_aggregate, free_vararg_aggregate_info, info, appendix_id);
+        vararg_get_memory_aggregate, free_vararg_aggregate_info, info, param->identifier);
     REQUIRE(res == KEFIR_OK || res == KEFIR_ALREADY_EXISTS, res);
+    kefir_result_t result = res;
     ASMGEN_RAW(&param->codegen->asmgen, KEFIR_AMD64_QUAD);
-    ASMGEN_ARG(&param->codegen->asmgen,
-        KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_LABEL,
-        param->sysv_func->func->declaration->identifier,
-        appendix_id);
+    ASMGEN_ARG0(&param->codegen->asmgen,
+        param->identifier);
     ASMGEN_ARG0(&param->codegen->asmgen, "0");
-    return KEFIR_OK;
+    return result;
 }
 
 static kefir_result_t vararg_visit_register_aggregate(struct vararg_aggregate_info *info,
                                                   struct vararg_getter *param) {
-    kefir_size_t appendix_id = param->sysv_func->appendix_index++;
     kefir_result_t res = kefir_amd64_sysv_function_insert_appendix(param->codegen->mem, param->sysv_func,
-        vararg_get_register_aggregate, free_vararg_aggregate_info, info, appendix_id);
+        vararg_get_register_aggregate, free_vararg_aggregate_info, info, param->identifier);
     REQUIRE(res == KEFIR_OK || res == KEFIR_ALREADY_EXISTS, res);
+    kefir_result_t result = res;
     ASMGEN_RAW(&param->codegen->asmgen, KEFIR_AMD64_QUAD);
-    ASMGEN_ARG(&param->codegen->asmgen,
-        KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_LABEL,
-        param->sysv_func->func->declaration->identifier,
-        appendix_id);
+    ASMGEN_ARG0(&param->codegen->asmgen,
+        param->identifier);
     ASMGEN_ARG0(&param->codegen->asmgen, "0");
-    return KEFIR_OK;
+    return result;
 }
 
 static kefir_result_t vararg_visit_aggregate(const struct kefir_ir_type *type,
@@ -636,11 +626,18 @@ static kefir_result_t vararg_visit_aggregate(const struct kefir_ir_type *type,
         KEFIR_FREE(param->codegen->mem, info);
         return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected to have layout and allocation info for slot");
     });
+    res = KEFIR_OK;
     if (info->arg_alloc->klass == KEFIR_AMD64_SYSV_PARAM_MEMORY) {
-        return vararg_visit_memory_aggregate(info, param);
+        res = vararg_visit_memory_aggregate(info, param);
     } else {
-        return vararg_visit_register_aggregate(info, param);
+        res = vararg_visit_register_aggregate(info, param);
     }
+    if (res == KEFIR_ALREADY_EXISTS) {
+        return free_vararg_aggregate_info(param->codegen->mem, info);
+    } else {
+        REQUIRE_OK(res);
+    }
+    return KEFIR_OK;
 }
 
 kefir_result_t kefir_codegen_amd64_sysv_vararg_instruction(struct kefir_codegen_amd64 *codegen,
@@ -650,16 +647,21 @@ kefir_result_t kefir_codegen_amd64_sysv_vararg_instruction(struct kefir_codegen_
     UNUSED(codegen);
     UNUSED(sysv_module);
     UNUSED(sysv_func);
+
+    const kefir_size_t BUF_SIZE = 256;
+    char buffer[BUF_SIZE];
+
     switch (instr->opcode) {
         case KEFIR_IROPCODE_VARARG_START: {
+            snprintf(buffer, BUF_SIZE - 1, KEFIR_AMD64_SYSV_FUNCTION_VARARG_START_LABEL,
+                sysv_func->func->declaration->identifier);
             kefir_result_t res = kefir_amd64_sysv_function_insert_appendix(codegen->mem, sysv_func,
-                vararg_start, NULL, NULL, KEFIR_AMD64_SYSV_APPENDIX_VARARG_START);
+                vararg_start, NULL, NULL, buffer);
             REQUIRE(res == KEFIR_OK || res == KEFIR_ALREADY_EXISTS, res);
 
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
-            ASMGEN_ARG(&codegen->asmgen,
-                KEFIR_AMD64_SYSV_FUNCTION_VARARG_START_LABEL,
-                sysv_func->func->declaration->identifier);
+            ASMGEN_ARG0(&codegen->asmgen,
+                buffer);
             ASMGEN_ARG0(&codegen->asmgen, "0");
         } break;
 
@@ -667,6 +669,11 @@ kefir_result_t kefir_codegen_amd64_sysv_vararg_instruction(struct kefir_codegen_
             break;
 
         case KEFIR_IROPCODE_VARARG_GET: {
+            snprintf(buffer, BUF_SIZE - 1, KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_LABEL,
+                sysv_func->func->declaration->identifier,
+                instr->arg_pair[0],
+                instr->arg_pair[1]);
+
             const kefir_ir_module_id_t type_id = (kefir_ir_module_id_t) instr->arg_pair[0];
             const kefir_size_t type_index = (kefir_size_t) instr->arg_pair[1];
             struct kefir_ir_type *type = kefir_ir_module_get_named_type(sysv_module->module, type_id);
@@ -682,20 +689,22 @@ kefir_result_t kefir_codegen_amd64_sysv_vararg_instruction(struct kefir_codegen_
             struct vararg_getter param = {
                 .codegen = codegen,
                 .sysv_module = sysv_module,
-                .sysv_func = sysv_func
+                .sysv_func = sysv_func,
+                .identifier = buffer
             };
             REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type, &visitor, (void *) &param, type_index, 1));
         } break;
 
         case KEFIR_IROPCODE_VARARG_END: {
+            snprintf(buffer, BUF_SIZE - 1, KEFIR_AMD64_SYSV_FUNCTION_VARARG_END_LABEL,
+                sysv_func->func->declaration->identifier);
             kefir_result_t res = kefir_amd64_sysv_function_insert_appendix(codegen->mem, sysv_func,
-                vararg_end, NULL, NULL, KEFIR_AMD64_SYSV_APPENDIX_VARARG_END);
+                vararg_end, NULL, NULL, buffer);
             REQUIRE(res == KEFIR_OK || res == KEFIR_ALREADY_EXISTS, res);
 
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
-            ASMGEN_ARG(&codegen->asmgen,
-                KEFIR_AMD64_SYSV_FUNCTION_VARARG_END_LABEL,
-                sysv_func->func->declaration->identifier);
+            ASMGEN_ARG0(&codegen->asmgen,
+                buffer);
             ASMGEN_ARG0(&codegen->asmgen, "0");
         } break;
 
