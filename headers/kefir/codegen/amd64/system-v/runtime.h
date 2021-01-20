@@ -8,6 +8,7 @@
 #define KEFIR_AMD64_SYSTEM_V_RUNTIME_SAVE_REGISTERS "__kefirrt_save_registers"
 #define KEFIR_AMD64_SYSTEM_V_RUNTIME_VARARG_INT "__kefirrt_load_integer_vararg"
 #define KEFIR_AMD64_SYSTEM_V_RUNTIME_VARARG_SSE "__kefirrt_load_sse_vararg"
+#define KEFIR_AMD64_SYSTEM_V_RUNTIME_VARARG_COPY "__kefirrt_copy_vararg"
 
 extern const char *KEFIR_AMD64_SYSTEM_V_RUNTIME_SYMBOLS[];
 extern kefir_size_t KEFIR_AMD64_SYSTEM_V_RUNTIME_SYMBOL_COUNT;

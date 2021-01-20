@@ -55,6 +55,7 @@ extern __kefirrt_restore_state
 extern __kefirrt_save_registers
 extern __kefirrt_load_integer_vararg
 extern __kefirrt_load_sse_vararg
+extern __kefirrt_copy_vararg
 
 
 global func1

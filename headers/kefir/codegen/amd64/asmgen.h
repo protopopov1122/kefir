@@ -62,6 +62,8 @@ kefir_result_t kefir_amd64_nasm_gen_init(struct kefir_amd64_asmgen *, FILE *);
 #define KEFIR_AMD64_ASMGEN_CLOSE(asmgen) \
     ((asmgen)->close((asmgen)))
 
+#define KEFIR_AMD64_EAX "eax"
+
 #define KEFIR_AMD64_RAX "rax"
 #define KEFIR_AMD64_RBX "rbx"
 #define KEFIR_AMD64_RCX "rcx"
@@ -113,6 +115,7 @@ kefir_result_t kefir_amd64_nasm_gen_init(struct kefir_amd64_asmgen *, FILE *);
 #define KEFIR_AMD64_INDIRECT_OFFSET "[%s + " KEFIR_SIZE_FMT "]"
 #define KEFIR_AMD64_ALIGN "align"
 
+#define KEFIR_AMD64_DWORD "dword "
 #define KEFIR_AMD64_QWORD "qword "
 
 #endif

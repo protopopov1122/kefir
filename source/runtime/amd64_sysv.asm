@@ -82,6 +82,7 @@ global __kefirrt_restore_state
 global __kefirrt_save_registers
 global __kefirrt_load_integer_vararg
 global __kefirrt_load_sse_vararg
+global __kefirrt_copy_vararg
 
 define_opcode nop
     end_opcode
@@ -495,33 +496,41 @@ __kefirrt_save_int_registers:
     ret
 
 __kefirrt_load_integer_vararg:
-    mov rax, [DATA_REG]
-    cmp rax, 48
+    mov eax, dword [DATA_REG]
+    cmp eax, 48
     jae __kefirrt_load_integer_vararg_stack
-    lea rdx, [rax + 8]
-    add rax, [DATA_REG + 3*8]
-    mov [DATA_REG], rdx
+    lea edx, [eax + 8]
+    add rax, [DATA_REG + 2*8]
+    mov [DATA_REG], edx
     jmp __kefirrt_load_integer_vararg_fetch
 __kefirrt_load_integer_vararg_stack:
-    mov rax, [DATA_REG + 2*8]
+    mov rax, [DATA_REG + 8]
     lea rdx, [rax + 8]
-    mov [DATA_REG + 2*8], rdx
+    mov [DATA_REG + 8], rdx
 __kefirrt_load_integer_vararg_fetch:
     mov DATA2_REG, [rax]
     ret
 
 __kefirrt_load_sse_vararg:
-    mov rax, [DATA_REG + 8]
-    cmp rax, 176
+    mov eax, dword [DATA_REG + 4]
+    cmp eax, 176
     jae __kefirrt_load_sse_vararg_stack
-    lea rdx, [rax + 16]
-    add rax, [DATA_REG + 3*8]
-    mov [DATA_REG + 8], rdx
+    lea edx, [eax + 16]
+    add rax, [DATA_REG + 2*8]
+    mov [DATA_REG + 4], edx
     movaps xmm0, oword [rax]
     ret
 __kefirrt_load_sse_vararg_stack:
-    mov rax, [DATA_REG + 2*8]
+    mov rax, [DATA_REG + 8]
     lea rdx, [rax + 8]
-    mov [DATA_REG + 2*8], rdx
+    mov [DATA_REG + 8], rdx
     movlps xmm0, qword [rax]
     ret
+
+__kefirrt_copy_vararg:
+    pop rsi
+    pop rdi
+    movsq
+    movsq
+    movsq
+    end_opcode
