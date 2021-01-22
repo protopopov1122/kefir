@@ -211,9 +211,9 @@ static kefir_result_t calculate_builtin_layout(const struct kefir_ir_type *type,
         kefir_vector_at(compound_type_layout->vector, index));
     kefir_ir_builtin_type_t builtin = (kefir_ir_builtin_type_t) typeentry->param;
     REQUIRE(builtin < KEFIR_IR_TYPE_BUILTIN_COUNT, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unknown built-in type"));
-    data->aligned = true;
-    data->alignment = KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin].storage_layout.alignment;
-    data->size = KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin].storage_layout.size;
+    const struct kefir_codegen_amd64_sysv_builtin_type *builtin_type =
+        &KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin];
+    REQUIRE_OK(builtin_type->layout(builtin_type, typeentry, data));
     return update_compound_type_layout(compound_type_layout, data, typeentry);
 }
 

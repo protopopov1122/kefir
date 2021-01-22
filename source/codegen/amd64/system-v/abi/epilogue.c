@@ -5,6 +5,7 @@
 #include "kefir/codegen/amd64/system-v/runtime.h"
 #include "kefir/codegen/amd64/system-v/abi/data_layout.h"
 #include "kefir/codegen/amd64/system-v/abi/registers.h"
+#include "kefir/codegen/amd64/system-v/abi/builtins.h"
 #include "kefir/codegen/util.h"
 #include <stdio.h>
 
@@ -139,6 +140,35 @@ static kefir_result_t return_aggregate(const struct kefir_ir_type *type,
     return KEFIR_OK;
 }
 
+static kefir_result_t return_pad(const struct kefir_ir_type *type,
+                                            kefir_size_t index,
+                                            const struct kefir_ir_typeentry *typeentry,
+                                            void *payload) {
+    UNUSED(type);
+    UNUSED(index);
+    UNUSED(typeentry);
+    UNUSED(payload);
+    return KEFIR_OK;
+}
+
+static kefir_result_t return_builtin(const struct kefir_ir_type *type,
+                                     kefir_size_t index,
+                                     const struct kefir_ir_typeentry *typeentry,
+                                     void *payload) {
+    struct result_return *param = (struct result_return *) payload;
+    struct kefir_ir_type_iterator iter;
+    REQUIRE_OK(kefir_ir_type_iterator_init(type, &iter));
+    REQUIRE_OK(kefir_ir_type_iterator_goto(&iter, index));
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, alloc,
+        kefir_vector_at(&param->func->decl.returns.allocation, iter.slot));
+    kefir_ir_builtin_type_t builtin = (kefir_ir_builtin_type_t) typeentry->param;
+    REQUIRE(builtin < KEFIR_IR_TYPE_BUILTIN_COUNT, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unknown built-in type"));
+    const struct kefir_codegen_amd64_sysv_builtin_type *builtin_type =
+        &KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin];
+    REQUIRE_OK(builtin_type->return_value(builtin_type, typeentry, param->codegen, alloc));
+    return KEFIR_OK;
+}
+
 static kefir_result_t return_values(struct kefir_codegen_amd64 *codegen,
                                   const struct kefir_amd64_sysv_function *func) {
     struct kefir_ir_type_visitor visitor;
@@ -148,6 +178,9 @@ static kefir_result_t return_values(struct kefir_codegen_amd64 *codegen,
     visitor.visit[KEFIR_IR_TYPE_STRUCT] = return_aggregate;
     visitor.visit[KEFIR_IR_TYPE_UNION] = return_aggregate;
     visitor.visit[KEFIR_IR_TYPE_ARRAY] = return_aggregate;
+    visitor.visit[KEFIR_IR_TYPE_MEMORY] = return_aggregate;
+    visitor.visit[KEFIR_IR_TYPE_PAD] = return_pad;
+    visitor.visit[KEFIR_IR_TYPE_BUILTIN] = return_builtin;
     struct result_return param = {
         .codegen = codegen,
         .func = func

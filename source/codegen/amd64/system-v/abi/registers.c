@@ -296,9 +296,19 @@ static kefir_result_t assign_nested_builtin(const struct kefir_ir_type *type,
                                             void *payload) {
     UNUSED(type);
     UNUSED(index);
-    UNUSED(typeentry);
-    UNUSED(payload);
-    return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Cannot pass built-in as a parameter");
+    struct recursive_aggregate_allocation *info = 
+        (struct recursive_aggregate_allocation *) payload;
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, allocation,
+        kefir_vector_at(info->allocation, (*info->slot)++));
+    kefir_ir_builtin_type_t builtin = (kefir_ir_builtin_type_t) typeentry->param;
+    REQUIRE(builtin < KEFIR_IR_TYPE_BUILTIN_COUNT, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unknown built-in type"));
+    const struct kefir_codegen_amd64_sysv_builtin_type *builtin_type =
+        &KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin];
+    allocation->type = KEFIR_AMD64_SYSV_INPUT_PARAM_NESTED;
+    allocation->klass = KEFIR_AMD64_SYSV_PARAM_NO_CLASS;
+    allocation->index = index;
+    REQUIRE_OK(builtin_type->classify_nested(builtin_type, typeentry, info->top_allocation, allocation));
+    return KEFIR_OK;
 }
 
 static kefir_result_t aggregate_disown(struct kefir_mem *mem,
@@ -578,10 +588,18 @@ static kefir_result_t assign_immediate_builtin(const struct kefir_ir_type *type,
                                     const struct kefir_ir_typeentry *typeentry,
                                     void *payload) {
     UNUSED(type);
-    UNUSED(index);
     UNUSED(typeentry);
-    UNUSED(payload);
-    return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Cannot pass built-in as a parameter");
+    struct input_allocation *info =
+        (struct input_allocation *) payload;
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, allocation,
+        kefir_vector_at(info->allocation, info->slot++));
+    kefir_ir_builtin_type_t builtin = (kefir_ir_builtin_type_t) typeentry->param;
+    REQUIRE(builtin < KEFIR_IR_TYPE_BUILTIN_COUNT, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unknown built-in type"));
+    const struct kefir_codegen_amd64_sysv_builtin_type *builtin_type =
+        &KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin];
+    allocation->index = index;
+    REQUIRE_OK(builtin_type->classify_immediate(builtin_type, typeentry, allocation));
+    return KEFIR_OK;
 }
 
 kefir_result_t kefir_amd64_sysv_parameter_classify(struct kefir_mem *mem,
@@ -821,9 +839,18 @@ static kefir_result_t builtin_allocate(const struct kefir_ir_type *type,
                                     void *payload) {
     UNUSED(type);
     UNUSED(index);
-    UNUSED(typeentry);
-    UNUSED(payload);
-    return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Cannot pass built-in as a parameter");
+    struct allocation_state *state = (struct allocation_state *) payload;
+    struct kefir_ir_type_iterator iter;
+    REQUIRE_OK(kefir_ir_type_iterator_init(type, &iter));
+    REQUIRE_OK(kefir_ir_type_iterator_goto(&iter, index));
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, alloc,
+        kefir_vector_at(state->allocation, iter.slot));
+    kefir_ir_builtin_type_t builtin = (kefir_ir_builtin_type_t) typeentry->param;
+    REQUIRE(builtin < KEFIR_IR_TYPE_BUILTIN_COUNT, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unknown built-in type"));
+    const struct kefir_codegen_amd64_sysv_builtin_type *builtin_type =
+        &KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin];
+    REQUIRE_OK(builtin_type->allocate_immediate(builtin_type, typeentry, state->current, alloc));
+    return KEFIR_OK;
 }
 
 kefir_result_t kefir_amd64_sysv_parameter_allocate(struct kefir_mem *mem,

@@ -452,7 +452,7 @@ define_opcode getlocals
 
 ; Runtime helpers
 __kefirrt_preserve_state:
-    pop DATA_REG
+    pop r11
     push rbp
     mov rbp, rsp
     push rbx
@@ -462,7 +462,7 @@ __kefirrt_preserve_state:
     push r15
     sub rsp, 8
     fstcw [rsp]
-    jmp DATA_REG
+    jmp r11
 
 __kefirrt_restore_state:
     fldcw [rsp]

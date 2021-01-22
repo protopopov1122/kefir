@@ -3,6 +3,7 @@
 #include "kefir/core/util.h"
 #include "kefir/codegen/amd64/shortcuts.h"
 #include "kefir/codegen/amd64/system-v/runtime.h"
+#include "kefir/codegen/amd64/system-v/abi/builtins.h"
 
 struct invoke_info {
     struct kefir_codegen_amd64 *codegen;
@@ -197,6 +198,28 @@ static kefir_result_t visit_pad(const struct kefir_ir_type *type,
     return KEFIR_OK;
 }
 
+static kefir_result_t builtin_argument(const struct kefir_ir_type *type,
+                                     kefir_size_t index,
+                                     const struct kefir_ir_typeentry *typeentry,
+                                     void *payload) {
+    UNUSED(typeentry);
+    ASSIGN_DECL_CAST(struct invoke_info *, info,
+        payload);
+    struct kefir_ir_type_iterator iter;
+    REQUIRE_OK(kefir_ir_type_iterator_init(type, &iter));
+    REQUIRE_OK(kefir_ir_type_iterator_goto(&iter, index));
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, allocation,
+        kefir_vector_at(&info->decl->parameters.allocation, iter.slot));
+    kefir_ir_builtin_type_t builtin = (kefir_ir_builtin_type_t) typeentry->param;
+    REQUIRE(builtin < KEFIR_IR_TYPE_BUILTIN_COUNT, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unknown built-in type"));
+    const struct kefir_codegen_amd64_sysv_builtin_type *builtin_type =
+        &KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin];
+    REQUIRE_OK(builtin_type->store_argument(builtin_type, typeentry, info->codegen, allocation,
+        info->total_arguments - info->argument - 1));
+    info->argument++;
+    return KEFIR_OK;
+}
+
 kefir_result_t invoke_prologue(struct kefir_codegen_amd64 *codegen,
                                             const struct kefir_amd64_sysv_function_decl *decl,
                                             struct invoke_info *info) {
@@ -209,6 +232,7 @@ kefir_result_t invoke_prologue(struct kefir_codegen_amd64 *codegen,
     visitor.visit[KEFIR_IR_TYPE_UNION] = aggregate_argument;
     visitor.visit[KEFIR_IR_TYPE_MEMORY] = aggregate_argument;
     visitor.visit[KEFIR_IR_TYPE_PAD] = visit_pad;
+    visitor.visit[KEFIR_IR_TYPE_BUILTIN] = builtin_argument;
     
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
@@ -343,6 +367,25 @@ static kefir_result_t aggregate_return(const struct kefir_ir_type *type,
     return KEFIR_OK;
 }
 
+static kefir_result_t builtin_return(const struct kefir_ir_type *type,
+                                     kefir_size_t index,
+                                     const struct kefir_ir_typeentry *typeentry,
+                                     void *payload) {
+    ASSIGN_DECL_CAST(struct invoke_info *, info,
+        payload);
+    struct kefir_ir_type_iterator iter;
+    REQUIRE_OK(kefir_ir_type_iterator_init(type, &iter));
+    REQUIRE_OK(kefir_ir_type_iterator_goto(&iter, index));
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, allocation,
+        kefir_vector_at(&info->decl->returns.allocation, iter.slot));
+    kefir_ir_builtin_type_t builtin = (kefir_ir_builtin_type_t) typeentry->param;
+    REQUIRE(builtin < KEFIR_IR_TYPE_BUILTIN_COUNT, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unknown built-in type"));
+    const struct kefir_codegen_amd64_sysv_builtin_type *builtin_type =
+        &KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin];
+    REQUIRE_OK(builtin_type->load_return_value(builtin_type, typeentry, info->codegen, allocation));
+    return KEFIR_OK;
+}
+
 kefir_result_t invoke_epilogue(struct kefir_codegen_amd64 *codegen,
                                             const struct kefir_amd64_sysv_function_decl *decl,
                                             struct invoke_info *info) {
@@ -363,6 +406,7 @@ kefir_result_t invoke_epilogue(struct kefir_codegen_amd64 *codegen,
     visitor.visit[KEFIR_IR_TYPE_ARRAY] = aggregate_return;
     visitor.visit[KEFIR_IR_TYPE_MEMORY] = aggregate_return;
     visitor.visit[KEFIR_IR_TYPE_PAD] = visit_pad;
+    visitor.visit[KEFIR_IR_TYPE_BUILTIN] = builtin_return;
     REQUIRE(kefir_ir_type_nodes(decl->decl->result) <= 1, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Function cannot return more than one value"));
     REQUIRE_OK(kefir_ir_type_visitor_list_nodes(decl->decl->result, &visitor, (void *) info, 0, 1));
     return KEFIR_OK;

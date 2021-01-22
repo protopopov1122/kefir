@@ -61,7 +61,8 @@ static kefir_result_t update_frame_temporaries(struct kefir_amd64_sysv_function_
     if (typeentry->typecode == KEFIR_IR_TYPE_STRUCT ||
         typeentry->typecode == KEFIR_IR_TYPE_UNION ||
         typeentry->typecode == KEFIR_IR_TYPE_ARRAY ||
-        typeentry->typecode == KEFIR_IR_TYPE_MEMORY) {
+        typeentry->typecode == KEFIR_IR_TYPE_MEMORY||
+        typeentry->typecode == KEFIR_IR_TYPE_BUILTIN) {
         ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
             kefir_vector_at(&decl->returns.layout, 0));
         *size = MAX(*size, layout->size);
@@ -98,7 +99,8 @@ static kefir_result_t update_frame_temporaries_type(struct kefir_mem *mem,
     });
     if ((typeentry->typecode == KEFIR_IR_TYPE_STRUCT ||
         typeentry->typecode == KEFIR_IR_TYPE_UNION ||
-        typeentry->typecode == KEFIR_IR_TYPE_ARRAY) && arg_alloc->klass != KEFIR_AMD64_SYSV_PARAM_MEMORY) {
+        typeentry->typecode == KEFIR_IR_TYPE_ARRAY ||
+        typeentry->typecode == KEFIR_IR_TYPE_BUILTIN) && arg_alloc->klass != KEFIR_AMD64_SYSV_PARAM_MEMORY) {
         *size = MAX(*size, arg_layout->size);
         *alignment = MAX(*size, arg_layout->alignment);
     }

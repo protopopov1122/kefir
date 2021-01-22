@@ -5,6 +5,7 @@
 #include "kefir/codegen/amd64/system-v/runtime.h"
 #include "kefir/codegen/amd64/system-v/abi/data_layout.h"
 #include "kefir/codegen/amd64/system-v/abi/registers.h"
+#include "kefir/codegen/amd64/system-v/abi/builtins.h"
 #include "kefir/codegen/util.h"
 #include <stdio.h>
 
@@ -170,6 +171,25 @@ static kefir_result_t load_pad_argument(const struct kefir_ir_type *type,
     return KEFIR_OK;
 }
 
+static kefir_result_t load_builtin_argument(const struct kefir_ir_type *type,
+                                          kefir_size_t index,
+                                          const struct kefir_ir_typeentry *typeentry,
+                                          void *payload) {
+    struct argument_load *param =
+        (struct argument_load *) payload;
+    struct kefir_ir_type_iterator iter;
+    REQUIRE_OK(kefir_ir_type_iterator_init(type, &iter));
+    REQUIRE_OK(kefir_ir_type_iterator_goto(&iter, index));
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, alloc,
+        kefir_vector_at(&param->sysv_func->decl.parameters.allocation, iter.slot));
+    kefir_ir_builtin_type_t builtin = (kefir_ir_builtin_type_t) typeentry->param;
+    REQUIRE(builtin < KEFIR_IR_TYPE_BUILTIN_COUNT, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unknown built-in type"));
+    const struct kefir_codegen_amd64_sysv_builtin_type *builtin_type =
+        &KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin];
+    REQUIRE_OK(builtin_type->load_argument(builtin_type, typeentry, param->codegen, alloc));
+    return KEFIR_OK;
+}
+
 static kefir_result_t load_arguments(struct kefir_codegen_amd64 *codegen,
                                    const struct kefir_amd64_sysv_function *sysv_func) {
     if (sysv_func->frame.size > 0) {
@@ -203,6 +223,7 @@ static kefir_result_t load_arguments(struct kefir_codegen_amd64 *codegen,
     visitor.visit[KEFIR_IR_TYPE_ARRAY] = load_aggregate_argument;
     visitor.visit[KEFIR_IR_TYPE_MEMORY] = load_aggregate_argument;
     visitor.visit[KEFIR_IR_TYPE_PAD] = load_pad_argument;
+    visitor.visit[KEFIR_IR_TYPE_BUILTIN] = load_builtin_argument;
     REQUIRE_OK(kefir_ir_type_visitor_list_nodes(func->params, &visitor,
         (void *) &param, 0, kefir_ir_type_nodes(func->params)));
     return KEFIR_OK;
