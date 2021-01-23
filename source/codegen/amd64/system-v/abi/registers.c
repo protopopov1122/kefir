@@ -303,11 +303,11 @@ static kefir_result_t assign_nested_builtin(const struct kefir_ir_type *type,
     kefir_ir_builtin_type_t builtin = (kefir_ir_builtin_type_t) typeentry->param;
     REQUIRE(builtin < KEFIR_IR_TYPE_BUILTIN_COUNT, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unknown built-in type"));
     const struct kefir_codegen_amd64_sysv_builtin_type *builtin_type =
-        &KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin];
+        KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin];
     allocation->type = KEFIR_AMD64_SYSV_INPUT_PARAM_NESTED;
     allocation->klass = KEFIR_AMD64_SYSV_PARAM_NO_CLASS;
     allocation->index = index;
-    REQUIRE_OK(builtin_type->classify_nested(builtin_type, typeentry, info->top_allocation, allocation));
+    REQUIRE_OK(builtin_type->classify_nested_argument(builtin_type, typeentry, info->top_allocation, allocation));
     return KEFIR_OK;
 }
 
@@ -596,9 +596,9 @@ static kefir_result_t assign_immediate_builtin(const struct kefir_ir_type *type,
     kefir_ir_builtin_type_t builtin = (kefir_ir_builtin_type_t) typeentry->param;
     REQUIRE(builtin < KEFIR_IR_TYPE_BUILTIN_COUNT, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unknown built-in type"));
     const struct kefir_codegen_amd64_sysv_builtin_type *builtin_type =
-        &KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin];
+        KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin];
     allocation->index = index;
-    REQUIRE_OK(builtin_type->classify_immediate(builtin_type, typeentry, allocation));
+    REQUIRE_OK(builtin_type->classify_immediate_argument(builtin_type, typeentry, allocation));
     return KEFIR_OK;
 }
 
@@ -848,8 +848,8 @@ static kefir_result_t builtin_allocate(const struct kefir_ir_type *type,
     kefir_ir_builtin_type_t builtin = (kefir_ir_builtin_type_t) typeentry->param;
     REQUIRE(builtin < KEFIR_IR_TYPE_BUILTIN_COUNT, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unknown built-in type"));
     const struct kefir_codegen_amd64_sysv_builtin_type *builtin_type =
-        &KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin];
-    REQUIRE_OK(builtin_type->allocate_immediate(builtin_type, typeentry, state->current, alloc));
+        KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin];
+    REQUIRE_OK(builtin_type->allocate_immediate_argument(builtin_type, typeentry, state->current, alloc));
     return KEFIR_OK;
 }
 

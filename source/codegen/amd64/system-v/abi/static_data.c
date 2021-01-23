@@ -135,6 +135,33 @@ static kefir_result_t array_static_data(const struct kefir_ir_type *type,
     return KEFIR_OK;
 }
 
+static kefir_result_t memory_data(const struct kefir_ir_type *type,
+                                       kefir_size_t index,
+                                       const struct kefir_ir_typeentry *typeentry,
+                                       void *payload) {
+    UNUSED(type);
+    UNUSED(typeentry);
+    struct static_data_param *param = (struct static_data_param *) payload;
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
+        kefir_vector_at(&param->layout, index));
+    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
+    if (!entry->undefined) {
+        memcpy(param->buffer + layout->relative_offset, entry->data, layout->size);
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t pad_data(const struct kefir_ir_type *type,
+                                       kefir_size_t index,
+                                       const struct kefir_ir_typeentry *typeentry,
+                                       void *payload) {
+    UNUSED(type);
+    UNUSED(index);
+    UNUSED(typeentry);
+    UNUSED(payload);
+    return KEFIR_OK;
+}
+
 struct total_size {
     kefir_size_t size;
     kefir_size_t alignment;
@@ -231,6 +258,9 @@ kefir_result_t kefir_amd64_sysv_static_data(struct kefir_mem *mem,
     visitor.visit[KEFIR_IR_TYPE_STRUCT] = struct_union_static_data;
     visitor.visit[KEFIR_IR_TYPE_UNION] = struct_union_static_data;
     visitor.visit[KEFIR_IR_TYPE_ARRAY] = array_static_data;
+    visitor.visit[KEFIR_IR_TYPE_MEMORY] = memory_data;
+    visitor.visit[KEFIR_IR_TYPE_PAD] = pad_data;
+    visitor.visit[KEFIR_IR_TYPE_BUILTIN] = memory_data;
     res = kefir_ir_type_visitor_list_nodes(data->type, &visitor, (void *) &param, 0, kefir_ir_type_nodes(data->type));
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, param.buffer);

@@ -30,6 +30,9 @@ union union1 {
 };
 extern union union1 union1_1;
 
+extern const char memory1_1[];
+extern const char pad1_1[];
+
 int main(int argc, const char **argv) {
     UNUSED(argc);
     UNUSED(argv);
@@ -66,5 +69,10 @@ int main(int argc, const char **argv) {
     memcpy(union1_1_copy.f1, union1_1.f1, 8);
     ASSERT(FLOAT_EQUALS(union1_1_copy.f2, 3.14, FLOAT_EPSILON));
     ASSERT(union1_1_copy.f3 == 100500);
+
+    ASSERT(strcmp(memory1_1, "Hello, cruel world!") == 0);
+    for (int i = 0; i < 10; i++) {
+        ASSERT(pad1_1[i] == 0);
+    }
     return EXIT_SUCCESS;
 }

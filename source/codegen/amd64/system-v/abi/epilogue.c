@@ -164,8 +164,8 @@ static kefir_result_t return_builtin(const struct kefir_ir_type *type,
     kefir_ir_builtin_type_t builtin = (kefir_ir_builtin_type_t) typeentry->param;
     REQUIRE(builtin < KEFIR_IR_TYPE_BUILTIN_COUNT, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unknown built-in type"));
     const struct kefir_codegen_amd64_sysv_builtin_type *builtin_type =
-        &KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin];
-    REQUIRE_OK(builtin_type->return_value(builtin_type, typeentry, param->codegen, alloc));
+        KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin];
+    REQUIRE_OK(builtin_type->store_function_return(builtin_type, typeentry, param->codegen, alloc));
     return KEFIR_OK;
 }
 

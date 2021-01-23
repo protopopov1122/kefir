@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "kefir/ir/function.h"
 #include "kefir/ir/module.h"
 #include "kefir/core/mem.h"
@@ -103,6 +104,19 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_data_set_f32(union1_data, 2, 3.14));
     REQUIRE_OK(kefir_ir_data_set_i64(union1_data, 3, 100500));
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "union1_1"));
+
+    const char *MSG = "Hello, cruel world!";
+    struct kefir_ir_type *memory1_type = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    REQUIRE_OK(kefir_ir_type_append_v(memory1_type, KEFIR_IR_TYPE_MEMORY, 0, strlen(MSG) + 1));
+    struct kefir_ir_data *memory1_data = kefir_ir_module_new_named_data(mem, &module, "memory1_1", memory1_type);
+    REQUIRE_OK(kefir_ir_data_set_data(memory1_data, 0, MSG));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "memory1_1"));
+
+    struct kefir_ir_type *pad1_type = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    REQUIRE_OK(kefir_ir_type_append_v(pad1_type, KEFIR_IR_TYPE_PAD, 0, 10));
+    struct kefir_ir_data *pad1_data = kefir_ir_module_new_named_data(mem, &module, "pad1_1", pad1_type);
+    REQUIRE_OK(kefir_ir_data_set_data(pad1_data, 0, MSG));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "pad1_1"));
 
     KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &module);
     KEFIR_CODEGEN_CLOSE(&codegen.iface);

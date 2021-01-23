@@ -5,6 +5,7 @@
 #include "kefir/codegen/amd64/system-v/runtime.h"
 #include "kefir/codegen/util.h"
 #include "kefir/core/error.h"
+#include "kefir/codegen/amd64/system-v/abi/builtins.h"
 
 static kefir_result_t vararg_start(struct kefir_codegen_amd64 *codegen,
                                  struct kefir_codegen_amd64_sysv_module *sysv_module,
@@ -641,6 +642,66 @@ static kefir_result_t vararg_visit_aggregate(const struct kefir_ir_type *type,
     return KEFIR_OK;
 }
 
+static kefir_result_t vararg_visit_pad(const struct kefir_ir_type *type,
+                                          kefir_size_t index,
+                                          const struct kefir_ir_typeentry *typeentry,
+                                          void *payload) {
+    UNUSED(type);
+    UNUSED(index);
+    UNUSED(typeentry);
+    UNUSED(payload);
+    return KEFIR_OK;
+}
+
+static kefir_result_t vararg_visit_builtin_impl(struct kefir_vector *allocation,
+                                             kefir_size_t slot,
+                                             const struct kefir_ir_typeentry *typeentry,
+                                             struct kefir_codegen_amd64 *codegen,
+                                             struct kefir_amd64_sysv_function *sysv_func,
+                                             const char *identifier) {
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, alloc,
+        kefir_vector_at(allocation, slot));
+    REQUIRE(alloc != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to find parameter allocation information"));
+    
+    kefir_ir_builtin_type_t builtin = (kefir_ir_builtin_type_t) typeentry->param;
+    REQUIRE(builtin < KEFIR_IR_TYPE_BUILTIN_COUNT, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unknown built-in type"));
+    const struct kefir_codegen_amd64_sysv_builtin_type *builtin_type =
+        KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin];
+    REQUIRE_OK(builtin_type->load_vararg(builtin_type, typeentry, codegen, sysv_func, identifier, alloc));
+    return KEFIR_OK;
+}
+
+static kefir_result_t vararg_visit_builtin(const struct kefir_ir_type *type,
+                                        kefir_size_t index,
+                                        const struct kefir_ir_typeentry *typeentry,
+                                        void *payload) {
+    ASSIGN_DECL_CAST(struct vararg_getter *, param,
+        payload);
+    struct kefir_ir_type_iterator iter;
+    REQUIRE_OK(kefir_ir_type_iterator_init(type, &iter));
+    REQUIRE_OK(kefir_ir_type_iterator_goto(&iter, index));
+
+    struct kefir_vector layout;
+    struct kefir_vector allocation;
+
+    REQUIRE_OK(kefir_amd64_sysv_type_layout(type, param->codegen->mem, &layout));
+    kefir_result_t res = kefir_amd64_sysv_parameter_classify(param->codegen->mem, type, &layout, &allocation);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_vector_free(param->codegen->mem, &layout);
+        return res;
+    });
+    res = vararg_visit_builtin_impl(&allocation, iter.slot, typeentry, param->codegen, param->sysv_func, param->identifier);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_amd64_sysv_parameter_free(param->codegen->mem, &allocation);
+        kefir_vector_free(param->codegen->mem, &layout);
+        return res;
+    });
+    
+    REQUIRE_OK(kefir_amd64_sysv_parameter_free(param->codegen->mem, &allocation));
+    kefir_vector_free(param->codegen->mem, &layout);
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_codegen_amd64_sysv_vararg_instruction(struct kefir_codegen_amd64 *codegen,
                                                 struct kefir_codegen_amd64_sysv_module *sysv_module,
                                                 struct kefir_amd64_sysv_function *sysv_func,
@@ -691,6 +752,8 @@ kefir_result_t kefir_codegen_amd64_sysv_vararg_instruction(struct kefir_codegen_
             visitor.visit[KEFIR_IR_TYPE_UNION] = vararg_visit_aggregate;
             visitor.visit[KEFIR_IR_TYPE_ARRAY] = vararg_visit_aggregate;
             visitor.visit[KEFIR_IR_TYPE_MEMORY] = vararg_visit_aggregate;
+            visitor.visit[KEFIR_IR_TYPE_PAD] = vararg_visit_pad;
+            visitor.visit[KEFIR_IR_TYPE_BUILTIN] = vararg_visit_builtin;
             struct vararg_getter param = {
                 .codegen = codegen,
                 .sysv_module = sysv_module,

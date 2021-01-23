@@ -213,8 +213,8 @@ static kefir_result_t builtin_argument(const struct kefir_ir_type *type,
     kefir_ir_builtin_type_t builtin = (kefir_ir_builtin_type_t) typeentry->param;
     REQUIRE(builtin < KEFIR_IR_TYPE_BUILTIN_COUNT, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unknown built-in type"));
     const struct kefir_codegen_amd64_sysv_builtin_type *builtin_type =
-        &KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin];
-    REQUIRE_OK(builtin_type->store_argument(builtin_type, typeentry, info->codegen, allocation,
+        KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin];
+    REQUIRE_OK(builtin_type->store_function_argument(builtin_type, typeentry, info->codegen, allocation,
         info->total_arguments - info->argument - 1));
     info->argument++;
     return KEFIR_OK;
@@ -381,8 +381,8 @@ static kefir_result_t builtin_return(const struct kefir_ir_type *type,
     kefir_ir_builtin_type_t builtin = (kefir_ir_builtin_type_t) typeentry->param;
     REQUIRE(builtin < KEFIR_IR_TYPE_BUILTIN_COUNT, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unknown built-in type"));
     const struct kefir_codegen_amd64_sysv_builtin_type *builtin_type =
-        &KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin];
-    REQUIRE_OK(builtin_type->load_return_value(builtin_type, typeentry, info->codegen, allocation));
+        KEFIR_CODEGEN_AMD64_SYSV_BUILTIN_TYPES[builtin];
+    REQUIRE_OK(builtin_type->load_function_return(builtin_type, typeentry, info->codegen, allocation));
     return KEFIR_OK;
 }
 
