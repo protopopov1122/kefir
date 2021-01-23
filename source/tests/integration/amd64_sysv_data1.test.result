@@ -50,6 +50,14 @@ extern __kefirrt_store16_impl
 extern __kefirrt_store32_impl
 extern __kefirrt_store64_impl
 extern __kefirrt_getlocals_impl
+extern __kefirrt_f32add_impl
+extern __kefirrt_f32sub_impl
+extern __kefirrt_f32mul_impl
+extern __kefirrt_f32div_impl
+extern __kefirrt_f64add_impl
+extern __kefirrt_f64sub_impl
+extern __kefirrt_f64mul_impl
+extern __kefirrt_f64div_impl
 extern __kefirrt_preserve_state
 extern __kefirrt_restore_state
 extern __kefirrt_save_registers

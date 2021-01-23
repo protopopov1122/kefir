@@ -56,7 +56,15 @@ static struct {
     { KEFIR_IROPCODE_STORE16,       LABEL("store16") },
     { KEFIR_IROPCODE_STORE32,       LABEL("store32") },
     { KEFIR_IROPCODE_STORE64,       LABEL("store64") },
-    { KEFIR_IROPCODE_GETLOCALS,     LABEL("getlocals") }
+    { KEFIR_IROPCODE_GETLOCALS,     LABEL("getlocals") },
+    { KEFIR_IROPCODE_F32ADD,        LABEL("f32add") },
+    { KEFIR_IROPCODE_F32SUB,        LABEL("f32sub") },
+    { KEFIR_IROPCODE_F32MUL,        LABEL("f32mul") },
+    { KEFIR_IROPCODE_F32DIV,        LABEL("f32div") },
+    { KEFIR_IROPCODE_F64ADD,        LABEL("f64add") },
+    { KEFIR_IROPCODE_F64SUB,        LABEL("f64sub") },
+    { KEFIR_IROPCODE_F64MUL,        LABEL("f64mul") },
+    { KEFIR_IROPCODE_F64DIV,        LABEL("f64div") },
 };
 
 const char *kefir_amd64_iropcode_handler(kefir_iropcode_t opcode) {

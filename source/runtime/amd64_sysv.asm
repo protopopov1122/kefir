@@ -76,6 +76,14 @@ declare_opcode store16
 declare_opcode store32
 declare_opcode store64
 declare_opcode getlocals
+declare_opcode f32add
+declare_opcode f32sub
+declare_opcode f32mul
+declare_opcode f32div
+declare_opcode f64add
+declare_opcode f64sub
+declare_opcode f64mul
+declare_opcode f64div
 ; Runtime
 global __kefirrt_preserve_state
 global __kefirrt_restore_state
@@ -448,6 +456,70 @@ define_opcode getlocals
     mov DATA_REG, [INSTR_ARG_PTR]
     add DATA_REG, STACK_BASE_REG
     push DATA_REG
+    end_opcode
+
+define_opcode f32add
+    movss xmm0, [rsp]
+    movss xmm1, [rsp + 8]
+    addss xmm0, xmm1
+    movss [rsp + 8], xmm0
+    add rsp, 8
+    end_opcode
+
+define_opcode f32sub
+    movss xmm0, [rsp]
+    movss xmm1, [rsp + 8]
+    subss xmm0, xmm1
+    movss [rsp + 8], xmm0
+    add rsp, 8
+    end_opcode
+
+define_opcode f32mul
+    movss xmm0, [rsp]
+    movss xmm1, [rsp + 8]
+    mulss xmm0, xmm1
+    movss [rsp + 8], xmm0
+    add rsp, 8
+    end_opcode
+
+define_opcode f32div
+    movss xmm0, [rsp]
+    movss xmm1, [rsp + 8]
+    divss xmm0, xmm1
+    movss [rsp + 8], xmm0
+    add rsp, 8
+    end_opcode
+
+define_opcode f64add
+    movsd xmm0, [rsp]
+    movsd xmm1, [rsp + 8]
+    addsd xmm0, xmm1
+    movsd [rsp + 8], xmm0
+    add rsp, 8
+    end_opcode
+
+define_opcode f64sub
+    movsd xmm0, [rsp]
+    movsd xmm1, [rsp + 8]
+    subsd xmm0, xmm1
+    movsd [rsp + 8], xmm0
+    add rsp, 8
+    end_opcode
+
+define_opcode f64mul
+    movsd xmm0, [rsp]
+    movsd xmm1, [rsp + 8]
+    mulsd xmm0, xmm1
+    movsd [rsp + 8], xmm0
+    add rsp, 8
+    end_opcode
+
+define_opcode f64div
+    movsd xmm0, [rsp]
+    movsd xmm1, [rsp + 8]
+    divsd xmm0, xmm1
+    movsd [rsp + 8], xmm0
+    add rsp, 8
     end_opcode
 
 ; Runtime helpers

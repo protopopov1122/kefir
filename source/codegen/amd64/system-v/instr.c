@@ -112,6 +112,24 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_codegen_amd64 *codegen,
         case KEFIR_IROPCODE_VARARG_END:
             return kefir_codegen_amd64_sysv_vararg_instruction(codegen, sysv_module, sysv_func, instr);
 
+        case KEFIR_IROPCODE_PUSHF32: {
+            const char *opcode_symbol = NULL;
+            REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_PUSH, &opcode_symbol));
+            ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
+            ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
+            ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_DOUBLE);
+            ASMGEN_ARG(&codegen->asmgen, "%a", instr->farg_pair[0]);
+            ASMGEN_ARG0(&codegen->asmgen, "0");
+        } break;
+
+        case KEFIR_IROPCODE_PUSHF64: {
+            const char *opcode_symbol = NULL;
+            REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_PUSH, &opcode_symbol));
+            ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
+            ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
+            ASMGEN_ARG(&codegen->asmgen, "%a", instr->farg);
+        } break;
+
         default: {
             const char *opcode_symbol = NULL;
             REQUIRE_OK(cg_symbolic_opcode(instr->opcode, &opcode_symbol));
