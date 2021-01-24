@@ -65,6 +65,16 @@ static struct {
     { KEFIR_IROPCODE_F64SUB,        LABEL("f64sub") },
     { KEFIR_IROPCODE_F64MUL,        LABEL("f64mul") },
     { KEFIR_IROPCODE_F64DIV,        LABEL("f64div") },
+    { KEFIR_IROPCODE_F32EQUALS,     LABEL("f32equals") },
+    { KEFIR_IROPCODE_F32GREATER,    LABEL("f32greater") },
+    { KEFIR_IROPCODE_F32LESSER,     LABEL("f32lesser") },
+    { KEFIR_IROPCODE_F64EQUALS,     LABEL("f64equals") },
+    { KEFIR_IROPCODE_F64GREATER,    LABEL("f64greater") },
+    { KEFIR_IROPCODE_F64LESSER,     LABEL("f64lesser") },
+    { KEFIR_IROPCODE_F32CINT,       LABEL("f32cint") },
+    { KEFIR_IROPCODE_F64CINT,       LABEL("f64cint") },
+    { KEFIR_IROPCODE_INTCF32,       LABEL("intcf32") },
+    { KEFIR_IROPCODE_INTCF64,       LABEL("intcf64") }
 };
 
 const char *kefir_amd64_iropcode_handler(kefir_iropcode_t opcode) {

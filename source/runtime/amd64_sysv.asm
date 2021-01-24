@@ -84,6 +84,16 @@ declare_opcode f64add
 declare_opcode f64sub
 declare_opcode f64mul
 declare_opcode f64div
+declare_opcode f32equals
+declare_opcode f32greater
+declare_opcode f32lesser
+declare_opcode f64equals
+declare_opcode f64greater
+declare_opcode f64lesser
+declare_opcode f32cint
+declare_opcode f64cint
+declare_opcode intcf32
+declare_opcode intcf64
 ; Runtime
 global __kefirrt_preserve_state
 global __kefirrt_restore_state
@@ -520,6 +530,86 @@ define_opcode f64div
     divsd xmm0, xmm1
     movsd [rsp + 8], xmm0
     add rsp, 8
+    end_opcode
+
+define_opcode f32equals
+    movss xmm0, [rsp + 8]
+    movss xmm1, [rsp]
+    cmpeqss xmm0, xmm1
+    movd eax, xmm0
+    and eax, 1
+    push rax
+    end_opcode
+
+define_opcode f32greater
+    movss xmm0, [rsp + 8]
+    movss xmm1, [rsp]
+    comiss xmm0, xmm1
+    seta al
+    and eax, 1
+    push rax
+    end_opcode
+
+define_opcode f32lesser
+    movss xmm0, [rsp + 8]
+    movss xmm1, [rsp]
+    cmpltss xmm0, xmm1
+    movd eax, xmm0
+    and eax, 1
+    push rax
+    end_opcode
+
+define_opcode f64equals
+    movsd xmm0, [rsp + 8]
+    movsd xmm1, [rsp]
+    cmpeqsd xmm0, xmm1
+    movd eax, xmm0
+    and eax, 1
+    push rax
+    end_opcode
+
+define_opcode f64greater
+    movsd xmm0, [rsp + 8]
+    movsd xmm1, [rsp]
+    comisd xmm0, xmm1
+    seta al
+    and eax, 1
+    push rax
+    end_opcode
+
+define_opcode f64lesser
+    movsd xmm0, [rsp + 8]
+    movsd xmm1, [rsp]
+    cmpltsd xmm0, xmm1
+    movd eax, xmm0
+    and eax, 1
+    push rax
+    end_opcode
+
+define_opcode f32cint
+    movss xmm0, [rsp]
+    cvttss2si rax, xmm0
+    mov [rsp], rax
+    end_opcode
+
+define_opcode f64cint
+    movsd xmm0, [rsp]
+    cvttsd2si rax, xmm0
+    mov [rsp], rax
+    end_opcode
+
+define_opcode intcf32
+    mov rax, [rsp]
+    pxor xmm0, xmm0
+    cvtsi2ss xmm0, rax
+    movss [rsp], xmm0
+    end_opcode
+
+define_opcode intcf64
+    mov rax, [rsp]
+    pxor xmm0, xmm0
+    cvtsi2sd xmm0, rax
+    movsd [rsp], xmm0
     end_opcode
 
 ; Runtime helpers
