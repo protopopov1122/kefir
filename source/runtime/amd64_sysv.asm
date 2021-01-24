@@ -459,32 +459,32 @@ define_opcode getlocals
     end_opcode
 
 define_opcode f32add
-    movss xmm0, [rsp]
-    movss xmm1, [rsp + 8]
+    movss xmm0, [rsp + 8]
+    movss xmm1, [rsp]
     addss xmm0, xmm1
     movss [rsp + 8], xmm0
     add rsp, 8
     end_opcode
 
 define_opcode f32sub
-    movss xmm0, [rsp]
-    movss xmm1, [rsp + 8]
+    movss xmm0, [rsp + 8]
+    movss xmm1, [rsp]
     subss xmm0, xmm1
     movss [rsp + 8], xmm0
     add rsp, 8
     end_opcode
 
 define_opcode f32mul
-    movss xmm0, [rsp]
-    movss xmm1, [rsp + 8]
+    movss xmm0, [rsp + 8]
+    movss xmm1, [rsp]
     mulss xmm0, xmm1
     movss [rsp + 8], xmm0
     add rsp, 8
     end_opcode
 
 define_opcode f32div
-    movss xmm0, [rsp]
-    movss xmm1, [rsp + 8]
+    movss xmm0, [rsp + 8]
+    movss xmm1, [rsp]
     divss xmm0, xmm1
     movss [rsp + 8], xmm0
     add rsp, 8
@@ -499,8 +499,8 @@ define_opcode f64add
     end_opcode
 
 define_opcode f64sub
-    movsd xmm0, [rsp]
-    movsd xmm1, [rsp + 8]
+    movsd xmm0, [rsp + 8]
+    movsd xmm1, [rsp]
     subsd xmm0, xmm1
     movsd [rsp + 8], xmm0
     add rsp, 8
@@ -515,8 +515,8 @@ define_opcode f64mul
     end_opcode
 
 define_opcode f64div
-    movsd xmm0, [rsp]
-    movsd xmm1, [rsp + 8]
+    movsd xmm0, [rsp + 8]
+    movsd xmm1, [rsp]
     divsd xmm0, xmm1
     movsd [rsp + 8], xmm0
     add rsp, 8
@@ -532,13 +532,15 @@ __kefirrt_preserve_state:
     push r13
     push r14
     push r15
-    sub rsp, 8
-    fstcw [rsp]
+    sub rsp, 24
+    fstcw [rsp + 16]
+    stmxcsr [rsp + 8]
     jmp r11
 
 __kefirrt_restore_state:
-    fldcw [rsp]
-    add rsp, 8
+    ldmxcsr [rsp + 8]
+    fldcw [rsp + 16]
+    add rsp, 24
     pop r15
     pop r14
     pop r13

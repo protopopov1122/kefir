@@ -1,7 +1,8 @@
 CC=gcc
 OPT=-O0
 DBG=-g3 -ggdb -DKFT_NOFORK
-CFLAGS=-std=c11 -Wall -Wextra -pedantic $(OPT) $(DBG)
+EXTRAFLAGS=
+CFLAGS=-std=c11 -Wall -Wextra -pedantic $(OPT) $(DBG) $(EXTRAFLAGS)
 INCLUDES=-Iheaders
 
 ROOT=.
