@@ -69,6 +69,34 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_ir_type_append_v(longToDouble->declaration->result, KEFIR_IR_TYPE_FLOAT64, 0, 3);
     kefir_irblock_append(&longToDouble->body, KEFIR_IROPCODE_INTCF64, 0);
 
+    struct kefir_ir_type *floatToDouble_decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL),
+                       *floatToDouble_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    REQUIRE(floatToDouble_decl_params != NULL, KEFIR_INTERNAL_ERROR);
+    REQUIRE(floatToDouble_decl_result != NULL, KEFIR_INTERNAL_ERROR);
+    struct kefir_ir_function_decl *floatToDouble_decl =
+        kefir_ir_module_new_function_declaration(mem, &module, "floatToDouble", NULL, floatToDouble_decl_params, false, floatToDouble_decl_result);
+    REQUIRE(floatToDouble_decl != NULL, KEFIR_INTERNAL_ERROR);
+    struct kefir_ir_function *floatToDouble = kefir_ir_module_new_function(mem, &module, floatToDouble_decl->identifier, NULL, 1024);
+    REQUIRE(floatToDouble != NULL, KEFIR_INTERNAL_ERROR);
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, floatToDouble_decl->identifier));
+    kefir_ir_type_append_v(floatToDouble->declaration->params, KEFIR_IR_TYPE_FLOAT32, 0, 0);
+    kefir_ir_type_append_v(floatToDouble->declaration->result, KEFIR_IR_TYPE_FLOAT64, 0, 3);
+    kefir_irblock_append(&floatToDouble->body, KEFIR_IROPCODE_F32CF64, 0);
+
+    struct kefir_ir_type *doubleToFloat_decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL),
+                       *doubleToFloat_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    REQUIRE(doubleToFloat_decl_params != NULL, KEFIR_INTERNAL_ERROR);
+    REQUIRE(doubleToFloat_decl_result != NULL, KEFIR_INTERNAL_ERROR);
+    struct kefir_ir_function_decl *doubleToFloat_decl =
+        kefir_ir_module_new_function_declaration(mem, &module, "doubleToFloat", NULL, doubleToFloat_decl_params, false, doubleToFloat_decl_result);
+    REQUIRE(doubleToFloat_decl != NULL, KEFIR_INTERNAL_ERROR);
+    struct kefir_ir_function *doubleToFloat = kefir_ir_module_new_function(mem, &module, doubleToFloat_decl->identifier, NULL, 1024);
+    REQUIRE(doubleToFloat != NULL, KEFIR_INTERNAL_ERROR);
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, doubleToFloat_decl->identifier));
+    kefir_ir_type_append_v(doubleToFloat->declaration->params, KEFIR_IR_TYPE_FLOAT64, 0, 0);
+    kefir_ir_type_append_v(doubleToFloat->declaration->result, KEFIR_IR_TYPE_FLOAT32, 0, 3);
+    kefir_irblock_append(&doubleToFloat->body, KEFIR_IROPCODE_F64CF32, 0);
+
     KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &module);
     KEFIR_CODEGEN_CLOSE(&codegen.iface);
     REQUIRE_OK(kefir_ir_module_free(mem, &module));

@@ -74,7 +74,9 @@ static struct {
     { KEFIR_IROPCODE_F32CINT,       LABEL("f32cint") },
     { KEFIR_IROPCODE_F64CINT,       LABEL("f64cint") },
     { KEFIR_IROPCODE_INTCF32,       LABEL("intcf32") },
-    { KEFIR_IROPCODE_INTCF64,       LABEL("intcf64") }
+    { KEFIR_IROPCODE_INTCF64,       LABEL("intcf64") },
+    { KEFIR_IROPCODE_F32CF64,       LABEL("f32cf64") },
+    { KEFIR_IROPCODE_F64CF32,       LABEL("f64cf32") }
 };
 
 const char *kefir_amd64_iropcode_handler(kefir_iropcode_t opcode) {

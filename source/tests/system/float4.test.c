@@ -8,6 +8,8 @@ long floatToLong(float);
 long doubleToLong(double);
 float longToFloat(long);
 double longToDouble(long);
+double floatToDouble(float);
+float doubleToFloat(double);
 
 int main(int argc, const char **argv) {
     UNUSED(argc);
@@ -15,6 +17,8 @@ int main(int argc, const char **argv) {
     for (float i = -1000.0f; i < 1000.0f; i += 0.01) {
         ASSERT(floatToLong(i) == ((long) i));
         ASSERT(doubleToLong((double) i) == ((long) i));
+        ASSERT(DOUBLE_EQUALS(floatToDouble(i), ((double) i), DOUBLE_EPSILON));
+        ASSERT(FLOAT_EQUALS(doubleToFloat((double) i), i, FLOAT_EPSILON));
     }
     for (long i = -1000; i < 1000; i++) {
         ASSERT(FLOAT_EQUALS(longToFloat((long) i), (float) i, FLOAT_EPSILON));

@@ -94,6 +94,8 @@ declare_opcode f32cint
 declare_opcode f64cint
 declare_opcode intcf32
 declare_opcode intcf64
+declare_opcode f32cf64
+declare_opcode f64cf32
 ; Runtime
 global __kefirrt_preserve_state
 global __kefirrt_restore_state
@@ -610,6 +612,18 @@ define_opcode intcf64
     pxor xmm0, xmm0
     cvtsi2sd xmm0, rax
     movsd [rsp], xmm0
+    end_opcode
+
+define_opcode f32cf64
+    movss xmm0, [rsp]
+    cvtss2sd xmm0, xmm0
+    movsd [rsp], xmm0
+    end_opcode
+
+define_opcode f64cf32
+    movsd xmm0, [rsp]
+    cvtsd2ss xmm0, xmm0
+    movss [rsp], xmm0
     end_opcode
 
 ; Runtime helpers
