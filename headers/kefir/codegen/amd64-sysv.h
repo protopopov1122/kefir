@@ -3,7 +3,6 @@
 
 #include "kefir/core/basic-types.h"
 #include "kefir/core/mem.h"
-#include "kefir/ir/bytecode.h"
 #include "kefir/codegen/codegen.h"
 #include "kefir/codegen/amd64/asmgen.h"
 #include "kefir/core/hashtree.h"
