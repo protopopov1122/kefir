@@ -2,6 +2,7 @@
 #include <inttypes.h>
 #include "kefir/test/unit_test.h"
 #include "kefir/ir/type.h"
+#include "kefir/ir/builder.h"
 #include "kefir/codegen/amd64/system-v/abi/data_layout.h"
 #include "kefir/codegen/amd64/system-v/abi/registers.h"
 
@@ -37,15 +38,15 @@ DEFINE_CASE(amd64_sysv_abi_allocation_test1, "AMD64 System V ABI - parameter all
     struct kefir_vector layout;
     struct kefir_vector allocation;
     ASSERT_OK(kefir_ir_type_alloc(&kft_mem, 9, &type));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT16, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT16, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT16, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT16, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT16, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT16, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT16, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT16, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT16, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_INT16, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_INT16, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_INT16, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_INT16, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_INT16, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_INT16, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_INT16, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_INT16, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_INT16, 0, 0));
     ASSERT_OK(kefir_amd64_sysv_type_layout(&type, &kft_mem, &layout));
     ASSERT_OK(kefir_amd64_sysv_parameter_classify(&kft_mem, &type, &layout, &allocation));
     struct kefir_amd64_sysv_parameter_location location = {0};
@@ -69,21 +70,21 @@ DEFINE_CASE(amd64_sysv_abi_allocation_test2, "AMD64 System V ABI - parameter all
     struct kefir_vector layout;
     struct kefir_vector allocation;
     ASSERT_OK(kefir_ir_type_alloc(&kft_mem, 15, &type));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT16, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_FLOAT32, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT16, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_FLOAT64, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT16, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_FLOAT32, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT16, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT16, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT16, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_FLOAT32, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_PAD, 0, 10));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_MEMORY, 0, 10));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT16, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_FLOAT64, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_INT16, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_FLOAT32, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_INT16, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_FLOAT64, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_INT16, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_FLOAT32, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_INT16, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_INT16, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_INT16, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_INT, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_FLOAT32, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_PAD, 0, 10));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_MEMORY, 0, 10));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_INT16, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_FLOAT64, 0, 0));
     ASSERT_OK(kefir_amd64_sysv_type_layout(&type, &kft_mem, &layout));
     ASSERT_OK(kefir_amd64_sysv_parameter_classify(&kft_mem, &type, &layout, &allocation));
     struct kefir_amd64_sysv_parameter_location location = {0};
@@ -113,12 +114,12 @@ DEFINE_CASE(amd64_sysv_abi_allocation_test3, "AMD64 System V ABI - parameter all
     struct kefir_vector layout;
     struct kefir_vector allocation;
     ASSERT_OK(kefir_ir_type_alloc(&kft_mem, 6, &type));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_STRUCT, 0, 4));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_FLOAT32, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_ARRAY, 0, 8));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_CHAR, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_INT, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_STRUCT, 0, 4));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_INT, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_FLOAT32, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_ARRAY, 0, 8));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_CHAR, 0, 0));
     ASSERT_OK(kefir_amd64_sysv_type_layout(&type, &kft_mem, &layout));
     ASSERT_OK(kefir_amd64_sysv_parameter_classify(&kft_mem, &type, &layout, &allocation));
     struct kefir_amd64_sysv_parameter_location location = {0};
@@ -145,10 +146,10 @@ DEFINE_CASE(amd64_sysv_abi_allocation_test4, "AMD64 System V ABI - parameter all
     struct kefir_vector layout;
     struct kefir_vector allocation;
     ASSERT_OK(kefir_ir_type_alloc(&kft_mem, 4, &type));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT8, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_STRUCT, 0, 1));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_ARRAY, 0, 4));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_FLOAT32, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_INT8, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_STRUCT, 0, 1));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_ARRAY, 0, 4));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_FLOAT32, 0, 0));
     ASSERT_OK(kefir_amd64_sysv_type_layout(&type, &kft_mem, &layout));
     ASSERT_OK(kefir_amd64_sysv_parameter_classify(&kft_mem, &type, &layout, &allocation));
     struct kefir_amd64_sysv_parameter_location location = {0};
@@ -170,12 +171,12 @@ DEFINE_CASE(amd64_sysv_abi_allocation_test5, "AMD64 System V ABI - parameter all
     struct kefir_vector layout;
     struct kefir_vector allocation;
     ASSERT_OK(kefir_ir_type_alloc(&kft_mem, 6, &type));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_STRUCT, 0, 1));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT64, 1, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_STRUCT, 0, 1));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT64, 1, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_STRUCT, 0, 1));
-    ASSERT_OK(kefir_ir_type_append_v(&type, KEFIR_IR_TYPE_INT64, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_STRUCT, 0, 1));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_INT64, 1, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_STRUCT, 0, 1));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_INT64, 1, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_STRUCT, 0, 1));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_INT64, 0, 0));
     ASSERT_OK(kefir_amd64_sysv_type_layout(&type, &kft_mem, &layout));
     ASSERT_OK(kefir_amd64_sysv_parameter_classify(&kft_mem, &type, &layout, &allocation));
     struct kefir_amd64_sysv_parameter_location location = {0};
@@ -194,16 +195,16 @@ DEFINE_CASE(amd64_sysv_abi_allocation_test6, "AMD64 System V ABI - parameter all
     struct kefir_vector layout;
     struct kefir_vector allocation;
     ASSERT_OK(kefir_ir_type_alloc(&kft_mem, 8, &type1));
-    ASSERT_OK(kefir_ir_type_append_v(&type1, KEFIR_IR_TYPE_ARRAY, 0, 10));
-    ASSERT_OK(kefir_ir_type_append_v(&type1, KEFIR_IR_TYPE_FLOAT32, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type1, KEFIR_IR_TYPE_STRUCT, 0, 1));
-    ASSERT_OK(kefir_ir_type_append_v(&type1, KEFIR_IR_TYPE_INT64, 0, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type1, KEFIR_IR_TYPE_STRUCT, 0, 1));
-    ASSERT_OK(kefir_ir_type_append_v(&type1, KEFIR_IR_TYPE_INT64, 1, 0));
-    ASSERT_OK(kefir_ir_type_append_v(&type1, KEFIR_IR_TYPE_STRUCT, 0, 1));
-    ASSERT_OK(kefir_ir_type_append_v(&type1, KEFIR_IR_TYPE_INT64, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type1, KEFIR_IR_TYPE_ARRAY, 0, 10));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type1, KEFIR_IR_TYPE_FLOAT32, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type1, KEFIR_IR_TYPE_STRUCT, 0, 1));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type1, KEFIR_IR_TYPE_INT64, 0, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type1, KEFIR_IR_TYPE_STRUCT, 0, 1));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type1, KEFIR_IR_TYPE_INT64, 1, 0));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type1, KEFIR_IR_TYPE_STRUCT, 0, 1));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type1, KEFIR_IR_TYPE_INT64, 0, 0));
     ASSERT_OK(kefir_ir_type_alloc(&kft_mem, 2, &type2));
-    ASSERT_OK(kefir_ir_type_append_e(&type2, &type1, 2));
+    ASSERT_OK(kefir_irbuilder_type_append_e(&kft_mem, &type2, &type1, 2));
     ASSERT_OK(kefir_amd64_sysv_type_layout(&type2, &kft_mem, &layout));
     ASSERT_OK(kefir_amd64_sysv_parameter_classify(&kft_mem, &type2, &layout, &allocation));
     struct kefir_amd64_sysv_parameter_location location = {0};

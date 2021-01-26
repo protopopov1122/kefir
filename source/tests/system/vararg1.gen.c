@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "kefir/ir/function.h"
+#include "kefir/ir/builder.h"
 #include "kefir/ir/module.h"
 #include "kefir/core/mem.h"
 #include "kefir/core/util.h"
@@ -39,33 +40,33 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     kefir_ir_module_id_t fmt_id;
     struct kefir_ir_type *string_type = kefir_ir_module_new_type(mem, &module, 2, NULL);
-    REQUIRE_OK(kefir_ir_type_append_v(string_type, KEFIR_IR_TYPE_ARRAY, 0, strlen(FMT) + 1));
-    REQUIRE_OK(kefir_ir_type_append_v(string_type, KEFIR_IR_TYPE_CHAR, 0, 0));
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, string_type, KEFIR_IR_TYPE_ARRAY, 0, strlen(FMT) + 1));
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, string_type, KEFIR_IR_TYPE_CHAR, 0, 0));
     struct kefir_ir_data *fmt_data1 = kefir_ir_module_new_named_data(mem, &module, kefir_ir_module_symbol(mem, &module, "fmt", &fmt_id), string_type);
     REQUIRE_OK(kefir_ir_data_set_data(fmt_data1, 0, FMT));
 
     kefir_ir_module_id_t result_id;
     struct kefir_ir_type *string2_type = kefir_ir_module_new_type(mem, &module, 2, NULL);
-    REQUIRE_OK(kefir_ir_type_append_v(string2_type, KEFIR_IR_TYPE_ARRAY, 0, 256));
-    REQUIRE_OK(kefir_ir_type_append_v(string2_type, KEFIR_IR_TYPE_CHAR, 0, 0));
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, string2_type, KEFIR_IR_TYPE_ARRAY, 0, 256));
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, string2_type, KEFIR_IR_TYPE_CHAR, 0, 0));
     kefir_ir_module_new_named_data(mem, &module, kefir_ir_module_symbol(mem, &module, "result", &result_id), string2_type);
 
     kefir_codegen_amd64_sysv_init(&codegen, stdout, mem);
     codegen.asmgen.settings.enable_comments = false;
 
-    REQUIRE_OK(kefir_ir_type_append_v(printint_decl_params, KEFIR_IR_TYPE_INT, 0, 0));
-    REQUIRE_OK(kefir_ir_type_append_v(printint_decl_result, KEFIR_IR_TYPE_WORD, 0, 0));
-    kefir_irblock_append(&printint->body, KEFIR_IROPCODE_GETGLOBAL, result_id);     // 0: [I, R*]
-    kefir_irblock_append(&printint->body, KEFIR_IROPCODE_PICK, 0);                  // 1: [I, R*, R*]
-    kefir_irblock_append(&printint->body, KEFIR_IROPCODE_GETGLOBAL, fmt_id);        // 2: [I, R*, R*, F*]
-    kefir_irblock_append(&printint->body, KEFIR_IROPCODE_PICK, 3);                  // 3: [I, R*, R*, F*, I]
-    kefir_irblock_append(&printint->body, KEFIR_IROPCODE_INVOKE, sprintf_id);       // 4: [I, R*, O]
-    kefir_irblock_append(&printint->body, KEFIR_IROPCODE_POP, 0);                   // 5: [I, R*]
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, printint_decl_params, KEFIR_IR_TYPE_INT, 0, 0));
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, printint_decl_result, KEFIR_IR_TYPE_WORD, 0, 0));
+    kefir_irbuilder_block_append(mem, &printint->body, KEFIR_IROPCODE_GETGLOBAL, result_id);     // 0: [I, R*]
+    kefir_irbuilder_block_append(mem, &printint->body, KEFIR_IROPCODE_PICK, 0);                  // 1: [I, R*, R*]
+    kefir_irbuilder_block_append(mem, &printint->body, KEFIR_IROPCODE_GETGLOBAL, fmt_id);        // 2: [I, R*, R*, F*]
+    kefir_irbuilder_block_append(mem, &printint->body, KEFIR_IROPCODE_PICK, 3);                  // 3: [I, R*, R*, F*, I]
+    kefir_irbuilder_block_append(mem, &printint->body, KEFIR_IROPCODE_INVOKE, sprintf_id);       // 4: [I, R*, O]
+    kefir_irbuilder_block_append(mem, &printint->body, KEFIR_IROPCODE_POP, 0);                   // 5: [I, R*]
 
-    REQUIRE_OK(kefir_ir_type_append_v(sprintf_decl_params, KEFIR_IR_TYPE_WORD, 0, 0));
-    REQUIRE_OK(kefir_ir_type_append_v(sprintf_decl_params, KEFIR_IR_TYPE_WORD, 0, 0));
-    REQUIRE_OK(kefir_ir_type_append_v(sprintf_decl_params, KEFIR_IR_TYPE_INT, 0, 0));
-    REQUIRE_OK(kefir_ir_type_append_v(sprintf_decl_result, KEFIR_IR_TYPE_INT, 0, 0));
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, sprintf_decl_params, KEFIR_IR_TYPE_WORD, 0, 0));
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, sprintf_decl_params, KEFIR_IR_TYPE_WORD, 0, 0));
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, sprintf_decl_params, KEFIR_IR_TYPE_INT, 0, 0));
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, sprintf_decl_result, KEFIR_IR_TYPE_INT, 0, 0));
 
     REQUIRE_OK(KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &module));
     REQUIRE_OK(KEFIR_CODEGEN_CLOSE(&codegen.iface));

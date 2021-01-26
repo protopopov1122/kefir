@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "kefir/ir/function.h"
 #include "kefir/ir/module.h"
+#include "kefir/ir/builder.h"
 #include "kefir/core/mem.h"
 #include "kefir/core/util.h"
 #include "kefir/codegen/amd64-sysv.h"
@@ -47,15 +48,15 @@ int main(int argc, const char **argv) {
         kefir_ir_module_new_function_declaration(&mem, &module, "func1", NULL, decl_params, false, decl_result);
     struct kefir_ir_function *func = kefir_ir_module_new_function(&mem, &module, decl->identifier, NULL, 1024);
     kefir_ir_module_declare_global(&mem, &module, decl->identifier);
-    kefir_ir_type_append_v(func->declaration->params, KEFIR_IR_TYPE_STRUCT, 0, 2);
-    kefir_ir_type_append_v(func->declaration->params, KEFIR_IR_TYPE_ARRAY, 0, 2);
-    kefir_ir_type_append_v(func->declaration->params, KEFIR_IR_TYPE_INT, 0, 0);
-    kefir_ir_type_append_v(func->declaration->result, KEFIR_IR_TYPE_STRUCT, 0, 2);
-    kefir_ir_type_append_v(func->declaration->result, KEFIR_IR_TYPE_ARRAY, 0, 2);
-    kefir_ir_type_append_v(func->declaration->result, KEFIR_IR_TYPE_INT, 0, 0);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_PUSH, 0);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_JMP, 1);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_RET, 0);
+    kefir_irbuilder_type_append_v(&mem, func->declaration->params, KEFIR_IR_TYPE_STRUCT, 0, 2);
+    kefir_irbuilder_type_append_v(&mem, func->declaration->params, KEFIR_IR_TYPE_ARRAY, 0, 2);
+    kefir_irbuilder_type_append_v(&mem, func->declaration->params, KEFIR_IR_TYPE_INT, 0, 0);
+    kefir_irbuilder_type_append_v(&mem, func->declaration->result, KEFIR_IR_TYPE_STRUCT, 0, 2);
+    kefir_irbuilder_type_append_v(&mem, func->declaration->result, KEFIR_IR_TYPE_ARRAY, 0, 2);
+    kefir_irbuilder_type_append_v(&mem, func->declaration->result, KEFIR_IR_TYPE_INT, 0, 0);
+    kefir_irbuilder_block_append(&mem, &func->body, KEFIR_IROPCODE_PUSH, 0);
+    kefir_irbuilder_block_append(&mem, &func->body, KEFIR_IROPCODE_JMP, 1);
+    kefir_irbuilder_block_append(&mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
     KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &module);
     KEFIR_CODEGEN_CLOSE(&codegen.iface);

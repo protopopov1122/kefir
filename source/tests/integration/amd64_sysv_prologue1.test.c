@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "kefir/ir/function.h"
+#include "kefir/ir/builder.h"
 #include "kefir/ir/module.h"
 #include "kefir/core/mem.h"
 #include "kefir/core/util.h"
@@ -28,12 +29,12 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     codegen.asmgen.settings.enable_comments = false;
     codegen.asmgen.settings.enable_identation = false;
 
-    REQUIRE_OK(kefir_ir_type_append_v(func->declaration->params, KEFIR_IR_TYPE_INT64, 0, 0));
-    REQUIRE_OK(kefir_ir_type_append_v(func->declaration->params, KEFIR_IR_TYPE_INT64, 0, 0));
-    REQUIRE_OK(kefir_ir_type_append_v(func->declaration->params, KEFIR_IR_TYPE_STRUCT, 0, 3));
-    REQUIRE_OK(kefir_ir_type_append_v(func->declaration->params, KEFIR_IR_TYPE_ARRAY, 0, 2));
-    REQUIRE_OK(kefir_ir_type_append_v(func->declaration->params, KEFIR_IR_TYPE_INT, 0, 0));
-    REQUIRE_OK(kefir_ir_type_append_v(func->declaration->params, KEFIR_IR_TYPE_FLOAT64, 0, 0));
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, func->declaration->params, KEFIR_IR_TYPE_INT64, 0, 0));
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, func->declaration->params, KEFIR_IR_TYPE_INT64, 0, 0));
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, func->declaration->params, KEFIR_IR_TYPE_STRUCT, 0, 3));
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, func->declaration->params, KEFIR_IR_TYPE_ARRAY, 0, 2));
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, func->declaration->params, KEFIR_IR_TYPE_INT, 0, 0));
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, func->declaration->params, KEFIR_IR_TYPE_FLOAT64, 0, 0));
 
     REQUIRE_OK(kefir_amd64_sysv_function_alloc(mem, &sysv_module, func, &sysv_func));
     REQUIRE_OK(kefir_amd64_sysv_function_prologue(&codegen, &sysv_func));

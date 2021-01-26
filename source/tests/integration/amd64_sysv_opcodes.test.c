@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "kefir/ir/module.h"
 #include "kefir/ir/function.h"
+#include "kefir/ir/builder.h"
 #include "kefir/core/mem.h"
 #include "kefir/core/util.h"
 #include "kefir/codegen/amd64-sysv.h"
@@ -24,38 +25,38 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_codegen_amd64_sysv_init(&codegen, stdout, mem);
     codegen.asmgen.settings.enable_comments = false;
 
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_NOP, 0);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_JMP, 1);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_BRANCH, 2);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_RET, 0);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_PUSH, 1000);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_POP, 0);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_PICK, 1);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_DROP, 2);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_IADD, 0);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_IADD1, 1);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_ISUB, 2);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_IMUL, 3);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_IDIV, 4);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_IMOD, 5);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_INEG, 6);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_INOT, 7);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_IAND, 8);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_IOR, 9);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_IXOR, 10);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_IRSHIFT, 11);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_IARSHIFT, 12);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_ILSHIFT, 13);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_IEQUALS, 14);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_IGREATER, 15);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_ILESSER, 16);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_BAND, 17);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_BOR, 18);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_BNOT, 19);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_TRUNCATE1, 20);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_EXTEND8, 21);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_EXTEND16, 22);
-    kefir_irblock_append(&func->body, KEFIR_IROPCODE_EXTEND32, 23);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_NOP, 0);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_JMP, 1);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_BRANCH, 2);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_RET, 0);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_PUSH, 1000);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_POP, 0);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_PICK, 1);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_DROP, 2);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_IADD, 0);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_IADD1, 1);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_ISUB, 2);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_IMUL, 3);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_IDIV, 4);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_IMOD, 5);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_INEG, 6);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_INOT, 7);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_IAND, 8);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_IOR, 9);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_IXOR, 10);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_IRSHIFT, 11);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_IARSHIFT, 12);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_ILSHIFT, 13);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_IEQUALS, 14);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_IGREATER, 15);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_ILESSER, 16);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_BAND, 17);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_BOR, 18);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_BNOT, 19);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_TRUNCATE1, 20);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_EXTEND8, 21);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_EXTEND16, 22);
+    kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_EXTEND32, 23);
     REQUIRE_OK(KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &module));
 
     REQUIRE_OK(KEFIR_CODEGEN_CLOSE(&codegen.iface));

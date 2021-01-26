@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "kefir/ir/function.h"
 #include "kefir/ir/module.h"
+#include "kefir/ir/builder.h"
 #include "kefir/core/mem.h"
 #include "kefir/core/util.h"
 #include "kefir/codegen/amd64-sysv.h"
@@ -36,19 +37,19 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_codegen_amd64_sysv_init(&codegen, stdout, mem);
     codegen.asmgen.settings.enable_comments = false;
 
-    REQUIRE_OK(kefir_ir_type_append_v(proxysum_decl_params, KEFIR_IR_TYPE_STRUCT, 0, 1));
-    REQUIRE_OK(kefir_ir_type_append_v(proxysum_decl_params, KEFIR_IR_TYPE_ARRAY, 0, 4));
-    REQUIRE_OK(kefir_ir_type_append_v(proxysum_decl_params, KEFIR_IR_TYPE_INT64, 0, 0));
-    REQUIRE_OK(kefir_ir_type_append_v(proxysum_decl_result, KEFIR_IR_TYPE_INT64, 0, 0));
-    kefir_irblock_append(&proxysum->body, KEFIR_IROPCODE_PUSH, 2);
-    kefir_irblock_append(&proxysum->body, KEFIR_IROPCODE_XCHG, 1);
-    kefir_irblock_append(&proxysum->body, KEFIR_IROPCODE_INVOKE, sumstruct_id);
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, proxysum_decl_params, KEFIR_IR_TYPE_STRUCT, 0, 1));
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, proxysum_decl_params, KEFIR_IR_TYPE_ARRAY, 0, 4));
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, proxysum_decl_params, KEFIR_IR_TYPE_INT64, 0, 0));
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, proxysum_decl_result, KEFIR_IR_TYPE_INT64, 0, 0));
+    kefir_irbuilder_block_append(mem, &proxysum->body, KEFIR_IROPCODE_PUSH, 2);
+    kefir_irbuilder_block_append(mem, &proxysum->body, KEFIR_IROPCODE_XCHG, 1);
+    kefir_irbuilder_block_append(mem, &proxysum->body, KEFIR_IROPCODE_INVOKE, sumstruct_id);
 
-    REQUIRE_OK(kefir_ir_type_append_v(sumstruct_decl_params, KEFIR_IR_TYPE_INT64, 0, 0));
-    REQUIRE_OK(kefir_ir_type_append_v(sumstruct_decl_params, KEFIR_IR_TYPE_STRUCT, 0, 1));
-    REQUIRE_OK(kefir_ir_type_append_v(sumstruct_decl_params, KEFIR_IR_TYPE_ARRAY, 0, 4));
-    REQUIRE_OK(kefir_ir_type_append_v(sumstruct_decl_params, KEFIR_IR_TYPE_INT64, 0, 0));
-    REQUIRE_OK(kefir_ir_type_append_v(sumstruct_decl_result, KEFIR_IR_TYPE_INT64, 0, 0));
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, sumstruct_decl_params, KEFIR_IR_TYPE_INT64, 0, 0));
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, sumstruct_decl_params, KEFIR_IR_TYPE_STRUCT, 0, 1));
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, sumstruct_decl_params, KEFIR_IR_TYPE_ARRAY, 0, 4));
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, sumstruct_decl_params, KEFIR_IR_TYPE_INT64, 0, 0));
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, sumstruct_decl_result, KEFIR_IR_TYPE_INT64, 0, 0));
 
     REQUIRE_OK(KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &module));
     REQUIRE_OK(KEFIR_CODEGEN_CLOSE(&codegen.iface));
