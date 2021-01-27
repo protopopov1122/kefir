@@ -258,7 +258,7 @@ static kefir_result_t appendix_removal(struct kefir_mem *mem,
     UNUSED(tree);
     UNUSED(key);
     UNUSED(payload);
-    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_appendix_data *, data,
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_function_appendix_data *, data,
         value);
     if (data->cleanup != NULL) {
         REQUIRE_OK(data->cleanup(mem, data->payload));
@@ -326,7 +326,7 @@ kefir_result_t kefir_amd64_sysv_function_insert_appendix(struct kefir_mem *mem,
         char *identifier_copy = KEFIR_MALLOC(mem, strlen(identifier) + 1);
         REQUIRE(identifier_copy != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate appendix identifier copy"));
         strcpy(identifier_copy, identifier);
-        struct kefir_amd64_sysv_appendix_data *data = KEFIR_MALLOC(mem, sizeof(struct kefir_amd64_sysv_appendix_data));
+        struct kefir_amd64_sysv_function_appendix_data *data = KEFIR_MALLOC(mem, sizeof(struct kefir_amd64_sysv_function_appendix_data));
         REQUIRE_ELSE(data != NULL, {
             KEFIR_FREE(mem, identifier_copy);
             return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocated appendix data");
