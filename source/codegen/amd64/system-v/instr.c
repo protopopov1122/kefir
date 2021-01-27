@@ -11,7 +11,8 @@ static kefir_result_t cg_symbolic_opcode(kefir_iropcode_t opcode, const char **s
     return *symbolic != NULL ? KEFIR_OK : KEFIR_MALFORMED_ARG;
 }
 
-kefir_result_t kefir_amd64_sysv_instruction(struct kefir_codegen_amd64 *codegen,
+kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
+                                        struct kefir_codegen_amd64 *codegen,
                                         struct kefir_amd64_sysv_function *sysv_func,
                                         struct kefir_codegen_amd64_sysv_module *sysv_module,
                                         const struct kefir_irinstr *instr) {
@@ -41,7 +42,7 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_codegen_amd64 *codegen,
         case KEFIR_IROPCODE_INVOKE: {
             const char *function = kefir_ir_module_get_named_symbol(sysv_module->module, (kefir_ir_module_id_t) instr->arg);
             REQUIRE(function != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to invoke unknown function"));
-            REQUIRE(kefir_codegen_amd64_sysv_module_function_decl(codegen->mem, sysv_module, function, false),
+            REQUIRE(kefir_codegen_amd64_sysv_module_function_decl(mem, sysv_module, function, false),
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AMD64 System-V IR module function decaration"));
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
             ASMGEN_ARG(&codegen->asmgen,
@@ -53,7 +54,7 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_codegen_amd64 *codegen,
         case KEFIR_IROPCODE_INVOKEV: {
             const char *function = kefir_ir_module_get_named_symbol(sysv_module->module, (kefir_ir_module_id_t) instr->arg);
             REQUIRE(function != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to invoke unknown function"));
-            REQUIRE(kefir_codegen_amd64_sysv_module_function_decl(codegen->mem, sysv_module, function, true),
+            REQUIRE(kefir_codegen_amd64_sysv_module_function_decl(mem, sysv_module, function, true),
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AMD64 System-V IR module function decaration"));
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
             ASMGEN_ARG(&codegen->asmgen,
@@ -67,7 +68,7 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_codegen_amd64 *codegen,
             const kefir_ir_module_id_t type_id = (kefir_ir_module_id_t) instr->arg_pair[0];
             const kefir_size_t type_index = (kefir_size_t) instr->arg_pair[1];
             struct kefir_vector *layout =
-                kefir_codegen_amd64_sysv_module_type_layout(codegen->mem, sysv_module, type_id);
+                kefir_codegen_amd64_sysv_module_type_layout(mem, sysv_module, type_id);
             REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unknown named type"));
             ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, entry,
                 kefir_vector_at(layout, type_index));
@@ -110,7 +111,7 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_codegen_amd64 *codegen,
         case KEFIR_IROPCODE_VARARG_COPY:
         case KEFIR_IROPCODE_VARARG_GET:
         case KEFIR_IROPCODE_VARARG_END:
-            return kefir_codegen_amd64_sysv_vararg_instruction(codegen, sysv_module, sysv_func, instr);
+            return kefir_codegen_amd64_sysv_vararg_instruction(mem, codegen, sysv_module, sysv_func, instr);
 
         case KEFIR_IROPCODE_PUSHF32: {
             const char *opcode_symbol = NULL;

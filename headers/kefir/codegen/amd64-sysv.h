@@ -10,7 +10,6 @@
 typedef struct kefir_codegen_amd64 {
     struct kefir_codegen iface;
     struct kefir_amd64_asmgen asmgen;
-    struct kefir_mem *mem;
 } kefir_codegen_amd64_t;
 
 typedef struct kefir_codegen_amd64_sysv_module {
@@ -33,6 +32,6 @@ struct kefir_vector *kefir_codegen_amd64_sysv_module_type_layout(struct kefir_me
                                                              struct kefir_codegen_amd64_sysv_module *,
                                                              kefir_ir_module_id_t);
 
-kefir_result_t kefir_codegen_amd64_sysv_init(struct kefir_codegen_amd64 *, FILE *, struct kefir_mem *);
+kefir_result_t kefir_codegen_amd64_sysv_init(struct kefir_codegen_amd64 *, FILE *);
 
 #endif

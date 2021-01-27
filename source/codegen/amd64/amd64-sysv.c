@@ -61,7 +61,8 @@ static kefir_result_t cg_function_epilogue(struct kefir_codegen_amd64 *codegen,
     return KEFIR_OK;
 }
 
-static kefir_result_t cg_function_body(struct kefir_codegen_amd64 *codegen,
+static kefir_result_t cg_function_body(struct kefir_mem *mem,
+                                     struct kefir_codegen_amd64 *codegen,
                                      struct kefir_codegen_amd64_sysv_module *sysv_module,
                                      struct kefir_amd64_sysv_function *sysv_func) {
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
@@ -74,7 +75,7 @@ static kefir_result_t cg_function_body(struct kefir_codegen_amd64 *codegen,
     for (kefir_size_t pc = 0; pc < kefir_irblock_length(&sysv_func->func->body); pc++) {
         instr = kefir_irblock_at(&sysv_func->func->body, pc);
         REQUIRE(instr != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to fetch instruction from IR block"));
-        REQUIRE_OK(kefir_amd64_sysv_instruction(codegen, sysv_func, sysv_module, instr));
+        REQUIRE_OK(kefir_amd64_sysv_instruction(mem, codegen, sysv_func, sysv_module, instr));
     }
     ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
     ASMGEN_ARG(&codegen->asmgen,
@@ -88,13 +89,14 @@ struct function_translator {
     struct kefir_codegen_amd64 *codegen;
 };
 
-static kefir_result_t cg_translate_function(const struct kefir_ir_function *func,
+static kefir_result_t cg_translate_function(struct kefir_mem *mem,
+                                          const struct kefir_ir_function *func,
                                           struct kefir_codegen_amd64_sysv_module *sysv_module,
                                           struct kefir_codegen_amd64 *codegen) {
     struct kefir_amd64_sysv_function sysv_func;
-    REQUIRE_OK(kefir_amd64_sysv_function_alloc(codegen->mem, sysv_module, func, &sysv_func));
+    REQUIRE_OK(kefir_amd64_sysv_function_alloc(mem, sysv_module, func, &sysv_func));
     kefir_result_t res = cg_function_prologue(codegen, &sysv_func);
-    REQUIRE_CHAIN(&res, cg_function_body(codegen, sysv_module, &sysv_func));
+    REQUIRE_CHAIN(&res, cg_function_body(mem, codegen, sysv_module, &sysv_func));
     REQUIRE_CHAIN(&res, cg_function_epilogue(codegen, &sysv_func));
     struct kefir_hashtree_node_iterator appendix_iter;
     for (const struct kefir_hashtree_node *node = kefir_hashtree_iter(&sysv_func.appendix, &appendix_iter);
@@ -104,7 +106,7 @@ static kefir_result_t cg_translate_function(const struct kefir_ir_function *func
             node->value);
         REQUIRE_OK(appendix->callback(codegen, sysv_module, &sysv_func, (const char *) node->key, appendix->payload));
     }
-    kefir_amd64_sysv_function_free(codegen->mem, &sysv_func);
+    kefir_amd64_sysv_function_free(mem, &sysv_func);
     ASMGEN_NEWLINE(&codegen->asmgen, 1);
     return KEFIR_OK;
 }
@@ -134,7 +136,8 @@ static kefir_result_t cg_translate_function_gates(struct kefir_codegen_amd64 *co
     return KEFIR_OK;
 }
 
-static kefir_result_t cg_translate_data(struct kefir_codegen_amd64 *codegen,
+static kefir_result_t cg_translate_data(struct kefir_mem *mem,
+                                      struct kefir_codegen_amd64 *codegen,
                                       struct kefir_codegen_amd64_sysv_module *module) {
     bool first = true;
     struct kefir_hashtree_node_iterator iter;
@@ -145,28 +148,28 @@ static kefir_result_t cg_translate_data(struct kefir_codegen_amd64 *codegen,
             ASMGEN_SECTION(&codegen->asmgen, ".data");
             first = false;
         }
-        REQUIRE_OK(kefir_amd64_sysv_static_data(codegen->mem, codegen, data, (const char *) iter.node->key));
+        REQUIRE_OK(kefir_amd64_sysv_static_data(mem, codegen, data, (const char *) iter.node->key));
     }
     return KEFIR_OK;
 }
 
-static kefir_result_t cg_translate(struct kefir_codegen *cg_iface, const struct kefir_ir_module *module) {
+static kefir_result_t cg_translate(struct kefir_mem *mem, struct kefir_codegen *cg_iface, const struct kefir_ir_module *module) {
     REQUIRE(cg_iface != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid code generator interface"));
     REQUIRE(cg_iface->data != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 code generator"));
     struct kefir_codegen_amd64 *codegen = (struct kefir_codegen_amd64 *) cg_iface->data;
     struct kefir_codegen_amd64_sysv_module sysv_module;
-    REQUIRE_OK(kefir_codegen_amd64_sysv_module_alloc(codegen->mem, &sysv_module, module));
+    REQUIRE_OK(kefir_codegen_amd64_sysv_module_alloc(mem, &sysv_module, module));
     REQUIRE_OK(cg_module_prologue(&sysv_module, codegen));
     struct kefir_hashtree_node_iterator iter;
     for (const struct kefir_ir_function *func = kefir_ir_module_function_iter(sysv_module.module, &iter);
         func != NULL;
         func = kefir_ir_module_function_next(&iter)) {
-        REQUIRE_OK(cg_translate_function(func, &sysv_module, codegen));
+        REQUIRE_OK(cg_translate_function(mem, func, &sysv_module, codegen));
     }
     REQUIRE_OK(cg_translate_function_gates(codegen, &sysv_module.function_gates, false));
     REQUIRE_OK(cg_translate_function_gates(codegen, &sysv_module.function_vgates, true));
-    REQUIRE_OK(cg_translate_data(codegen, &sysv_module));
-    REQUIRE_OK(kefir_codegen_amd64_sysv_module_free(codegen->mem, &sysv_module));
+    REQUIRE_OK(cg_translate_data(mem, codegen, &sysv_module));
+    REQUIRE_OK(kefir_codegen_amd64_sysv_module_free(mem, &sysv_module));
     return KEFIR_OK;
 }
 
@@ -300,13 +303,11 @@ struct kefir_vector *kefir_codegen_amd64_sysv_module_type_layout(struct kefir_me
     return layout;
 }
 
-kefir_result_t kefir_codegen_amd64_sysv_init(struct kefir_codegen_amd64 *codegen, FILE *out, struct kefir_mem *mem) {
+kefir_result_t kefir_codegen_amd64_sysv_init(struct kefir_codegen_amd64 *codegen, FILE *out) {
     REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 code generator pointer"));
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE_OK(kefir_amd64_nasm_gen_init(&codegen->asmgen, out));
     codegen->iface.translate = cg_translate;
     codegen->iface.close = cg_close;
     codegen->iface.data = codegen;
-    codegen->mem = mem;
     return KEFIR_OK;
 }

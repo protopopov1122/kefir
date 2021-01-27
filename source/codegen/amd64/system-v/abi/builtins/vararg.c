@@ -211,18 +211,19 @@ static kefir_result_t vararg_load_vararg_appendix(struct kefir_codegen_amd64 *co
     return KEFIR_OK;
 }
 
-static kefir_result_t vararg_load_vararg(const struct kefir_codegen_amd64_sysv_builtin_type *builtin_type,
-                                      const struct kefir_ir_typeentry *typeentry,
-                                      struct kefir_codegen_amd64 *codegen,
-                                      struct kefir_amd64_sysv_function *sysv_func,
-                                      const char *identifier,
-                                      struct kefir_amd64_sysv_parameter_allocation *allocation) {
+static kefir_result_t vararg_load_vararg(struct kefir_mem *mem,
+                                       const struct kefir_codegen_amd64_sysv_builtin_type *builtin_type,
+                                       const struct kefir_ir_typeentry *typeentry,
+                                       struct kefir_codegen_amd64 *codegen,
+                                       struct kefir_amd64_sysv_function *sysv_func,
+                                       const char *identifier,
+                                       struct kefir_amd64_sysv_parameter_allocation *allocation) {
     UNUSED(builtin_type);
     UNUSED(typeentry);
     REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid code generator"));
     REQUIRE(sysv_func != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 System-V function"));
     REQUIRE(allocation != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid built-in data allocation"));
-    kefir_result_t res = kefir_amd64_sysv_function_insert_appendix(codegen->mem, sysv_func,
+    kefir_result_t res = kefir_amd64_sysv_function_insert_appendix(mem, sysv_func,
         vararg_load_vararg_appendix, NULL, NULL, identifier);
     REQUIRE(res == KEFIR_OK || res == KEFIR_ALREADY_EXISTS, res);
     kefir_result_t result = res;

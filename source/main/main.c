@@ -38,7 +38,7 @@ int main(int argc, const char **argv) {
         .data = NULL
     };
     struct kefir_codegen_amd64 codegen;
-    kefir_codegen_amd64_sysv_init(&codegen, stdout, &mem);
+    kefir_codegen_amd64_sysv_init(&codegen, stdout);
 
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(&mem, &module));
@@ -58,7 +58,7 @@ int main(int argc, const char **argv) {
     kefir_irbuilder_block_append(&mem, &func->body, KEFIR_IROPCODE_JMP, 1);
     kefir_irbuilder_block_append(&mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &module);
+    KEFIR_CODEGEN_TRANSLATE(&mem, &codegen.iface, &module);
     KEFIR_CODEGEN_CLOSE(&codegen.iface);
     kefir_ir_module_free(&mem, &module);
     return EXIT_SUCCESS;

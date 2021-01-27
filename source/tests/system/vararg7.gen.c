@@ -27,7 +27,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(unit != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, unit_decl->identifier));
 
-    kefir_codegen_amd64_sysv_init(&codegen, stdout, mem);
+    kefir_codegen_amd64_sysv_init(&codegen, stdout);
     codegen.asmgen.settings.enable_comments = false;
 
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, unit_decl_params, KEFIR_IR_TYPE_BUILTIN, 0, KEFIR_IR_TYPE_BUILTIN_VARARG));
@@ -46,7 +46,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_function *getint = kefir_ir_module_new_function(mem, &module, getint_decl->identifier, getint_locals, 1024);
     REQUIRE(getint != NULL, KEFIR_INTERNAL_ERROR);
 
-    kefir_codegen_amd64_sysv_init(&codegen, stdout, mem);
+    kefir_codegen_amd64_sysv_init(&codegen, stdout);
     codegen.asmgen.settings.enable_comments = false;
 
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, inttype, KEFIR_IR_TYPE_INT, 0, 0));
@@ -81,7 +81,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(getarg != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, getarg_decl->identifier));
 
-    kefir_codegen_amd64_sysv_init(&codegen, stdout, mem);
+    kefir_codegen_amd64_sysv_init(&codegen, stdout);
     codegen.asmgen.settings.enable_comments = false;
 
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, getarg_decl_result, KEFIR_IR_TYPE_INT, 0, 0));
@@ -96,7 +96,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_append2(mem, &getarg->body, KEFIR_IROPCODE_OFFSETPTR, locals_id, 0);   // 7: [R, V*]
     kefir_irbuilder_block_append(mem, &getarg->body, KEFIR_IROPCODE_VARARG_END, 0);              // 8: [R]
 
-    REQUIRE_OK(KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &module));
+    REQUIRE_OK(KEFIR_CODEGEN_TRANSLATE(mem, &codegen.iface, &module));
     REQUIRE_OK(KEFIR_CODEGEN_CLOSE(&codegen.iface));
     REQUIRE_OK(kefir_ir_module_free(mem, &module));
     return EXIT_SUCCESS;

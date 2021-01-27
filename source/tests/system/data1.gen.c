@@ -10,7 +10,7 @@
 
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_codegen_amd64 codegen;
-    kefir_codegen_amd64_sysv_init(&codegen, stdout, mem);
+    kefir_codegen_amd64_sysv_init(&codegen, stdout);
 
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
@@ -119,7 +119,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_data_set_data(pad1_data, 0, MSG));
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "pad1_1"));
 
-    KEFIR_CODEGEN_TRANSLATE(&codegen.iface, &module);
+    KEFIR_CODEGEN_TRANSLATE(mem, &codegen.iface, &module);
     KEFIR_CODEGEN_CLOSE(&codegen.iface);
     REQUIRE_OK(kefir_ir_module_free(mem, &module));
     return EXIT_SUCCESS;

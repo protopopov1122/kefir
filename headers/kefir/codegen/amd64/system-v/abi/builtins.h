@@ -11,39 +11,40 @@ typedef struct kefir_codegen_amd64_sysv_builtin_type {
                            const struct kefir_ir_typeentry *,
                            struct kefir_amd64_sysv_data_layout *);
     kefir_result_t (*classify_nested_argument)(const struct kefir_codegen_amd64_sysv_builtin_type *,
-                                    const struct kefir_ir_typeentry *,
-                                    struct kefir_amd64_sysv_parameter_allocation *immediate_allocation,
-                                    struct kefir_amd64_sysv_parameter_allocation *allocation);
+                                             const struct kefir_ir_typeentry *,
+                                             struct kefir_amd64_sysv_parameter_allocation *immediate_allocation,
+                                             struct kefir_amd64_sysv_parameter_allocation *allocation);
     kefir_result_t (*classify_immediate_argument)(const struct kefir_codegen_amd64_sysv_builtin_type *,
-                                       const struct kefir_ir_typeentry *,
-                                       struct kefir_amd64_sysv_parameter_allocation *);
+                                                const struct kefir_ir_typeentry *,
+                                                struct kefir_amd64_sysv_parameter_allocation *);
     kefir_result_t (*allocate_immediate_argument)(const struct kefir_codegen_amd64_sysv_builtin_type *,
-                                       const struct kefir_ir_typeentry *,
-                                       struct kefir_amd64_sysv_parameter_location *total_allocation,
-                                       struct kefir_amd64_sysv_parameter_allocation *allocation);
+                                                const struct kefir_ir_typeentry *,
+                                                struct kefir_amd64_sysv_parameter_location *total_allocation,
+                                                struct kefir_amd64_sysv_parameter_allocation *allocation);
     kefir_result_t (*load_function_argument)(const struct kefir_codegen_amd64_sysv_builtin_type *,
-                                  const struct kefir_ir_typeentry *,
-                                  struct kefir_codegen_amd64 *,
-                                  struct kefir_amd64_sysv_parameter_allocation *);
+                                           const struct kefir_ir_typeentry *,
+                                           struct kefir_codegen_amd64 *,
+                                           struct kefir_amd64_sysv_parameter_allocation *);
     kefir_result_t (*store_function_return)(const struct kefir_codegen_amd64_sysv_builtin_type *,
-                                  const struct kefir_ir_typeentry *,
-                                  struct kefir_codegen_amd64 *,
-                                  struct kefir_amd64_sysv_parameter_allocation *);
+                                          const struct kefir_ir_typeentry *,
+                                          struct kefir_codegen_amd64 *,
+                                          struct kefir_amd64_sysv_parameter_allocation *);
     kefir_result_t (*store_function_argument)(const struct kefir_codegen_amd64_sysv_builtin_type *,
-                                   const struct kefir_ir_typeentry *,
-                                   struct kefir_codegen_amd64 *,
-                                   struct kefir_amd64_sysv_parameter_allocation *,
-                                   kefir_size_t);
+                                            const struct kefir_ir_typeentry *,
+                                            struct kefir_codegen_amd64 *,
+                                            struct kefir_amd64_sysv_parameter_allocation *,
+                                            kefir_size_t);
     kefir_result_t (*load_function_return)(const struct kefir_codegen_amd64_sysv_builtin_type *,
-                                  const struct kefir_ir_typeentry *,
-                                  struct kefir_codegen_amd64 *,
-                                  struct kefir_amd64_sysv_parameter_allocation *);
-    kefir_result_t (*load_vararg)(const struct kefir_codegen_amd64_sysv_builtin_type *,
-                                  const struct kefir_ir_typeentry *,
-                                  struct kefir_codegen_amd64 *,
-                                  struct kefir_amd64_sysv_function *,
-                                  const char *,
-                                  struct kefir_amd64_sysv_parameter_allocation *);
+                                         const struct kefir_ir_typeentry *,
+                                         struct kefir_codegen_amd64 *,
+                                         struct kefir_amd64_sysv_parameter_allocation *);
+    kefir_result_t (*load_vararg)(struct kefir_mem *,
+                                const struct kefir_codegen_amd64_sysv_builtin_type *,
+                                const struct kefir_ir_typeentry *,
+                                struct kefir_codegen_amd64 *,
+                                struct kefir_amd64_sysv_function *,
+                                const char *,
+                                struct kefir_amd64_sysv_parameter_allocation *);
 } kefir_codegen_amd64_sysv_builtin_type_t;
 
 extern const struct kefir_codegen_amd64_sysv_builtin_type KEFIR_CODEGEN_AMD64_SYSV_BUILIN_VARARG_TYPE;
