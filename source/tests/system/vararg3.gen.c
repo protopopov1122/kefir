@@ -14,7 +14,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
     
-    kefir_ir_module_id_t locals_id, doubletype_id;
+    kefir_id_t locals_id, doubletype_id;
     struct kefir_ir_type *inttype = kefir_ir_module_new_type(mem, &module, 1, NULL),
                        *getarg_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL),
                        *getarg_locals = kefir_ir_module_new_type(mem, &module, 1, &locals_id),

@@ -23,7 +23,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(proxysum != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, proxysum_decl->identifier));
 
-    kefir_ir_module_id_t sumstruct_id;
+    kefir_id_t sumstruct_id;
     struct kefir_ir_type *sumstruct_decl_params = kefir_ir_module_new_type(mem, &module, 9, NULL),
                        *sumstruct_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
     REQUIRE(sumstruct_decl_params != NULL, KEFIR_INTERNAL_ERROR);

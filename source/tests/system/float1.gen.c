@@ -11,7 +11,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_codegen_amd64 codegen;
     kefir_codegen_amd64_sysv_init(&codegen, stdout);
 
-    kefir_ir_module_id_t locals_id;
+    kefir_id_t locals_id;
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
     struct kefir_ir_type *decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL),

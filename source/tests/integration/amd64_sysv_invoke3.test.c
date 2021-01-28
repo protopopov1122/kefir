@@ -23,7 +23,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(proxyadd != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, proxyadd_decl->identifier));
 
-    kefir_ir_module_id_t addstruct_id;
+    kefir_id_t addstruct_id;
     struct kefir_ir_type *addstruct_decl_params = kefir_ir_module_new_type(mem, &module, 4, NULL),
                        *addstruct_decl_result = kefir_ir_module_new_type(mem, &module, 3, NULL);
     REQUIRE(addstruct_decl_params != NULL, KEFIR_INTERNAL_ERROR);

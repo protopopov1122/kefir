@@ -14,7 +14,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
 
-    kefir_ir_module_id_t type1_id;
+    kefir_id_t type1_id;
     struct kefir_ir_type *type1 = kefir_ir_module_new_type(mem, &module, 5, &type1_id);
     REQUIRE(type1 != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, type1, KEFIR_IR_TYPE_STRUCT, 0, 4));
@@ -23,7 +23,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, type1, KEFIR_IR_TYPE_INT32, 0, 0));
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, type1, KEFIR_IR_TYPE_INT64, 0, 0));
 
-    kefir_ir_module_id_t global1;
+    kefir_id_t global1;
     REQUIRE(kefir_ir_module_symbol(mem, &module, "global1", &global1) != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_external(mem, &module, "global1"));
 

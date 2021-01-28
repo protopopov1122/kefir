@@ -26,7 +26,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(printint != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, printint_decl->identifier));
 
-    kefir_ir_module_id_t sprintf_id;
+    kefir_id_t sprintf_id;
     struct kefir_ir_type *sprintf_decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL),
                        *sprintf_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
     REQUIRE(sprintf_decl_params != NULL, KEFIR_INTERNAL_ERROR);
@@ -38,14 +38,14 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(sprintf_decl != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_external(mem, &module, "sprintf"));
 
-    kefir_ir_module_id_t fmt_id;
+    kefir_id_t fmt_id;
     struct kefir_ir_type *string_type = kefir_ir_module_new_type(mem, &module, 2, NULL);
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, string_type, KEFIR_IR_TYPE_ARRAY, 0, strlen(FMT) + 1));
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, string_type, KEFIR_IR_TYPE_CHAR, 0, 0));
     struct kefir_ir_data *fmt_data1 = kefir_ir_module_new_named_data(mem, &module, kefir_ir_module_symbol(mem, &module, "fmt", &fmt_id), string_type);
     REQUIRE_OK(kefir_ir_data_set_data(fmt_data1, 0, FMT));
 
-    kefir_ir_module_id_t result_id;
+    kefir_id_t result_id;
     struct kefir_ir_type *string2_type = kefir_ir_module_new_type(mem, &module, 2, NULL);
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, string2_type, KEFIR_IR_TYPE_ARRAY, 0, 256));
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, string2_type, KEFIR_IR_TYPE_CHAR, 0, 0));

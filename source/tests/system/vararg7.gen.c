@@ -14,7 +14,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
 
-    kefir_ir_module_id_t locals_id, inttype_id, getint_id, unit_id;
+    kefir_id_t locals_id, inttype_id, getint_id, unit_id;
     struct kefir_ir_type *unit_decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL);
     struct kefir_ir_type *unit_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
     REQUIRE(unit_decl_params != NULL, KEFIR_INTERNAL_ERROR);

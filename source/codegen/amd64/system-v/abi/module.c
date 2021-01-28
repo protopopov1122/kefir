@@ -107,7 +107,7 @@ struct kefir_amd64_sysv_function_decl *kefir_codegen_amd64_sysv_module_function_
 
 struct kefir_vector *kefir_codegen_amd64_sysv_module_type_layout(struct kefir_mem *mem,
                                                              struct kefir_codegen_amd64_sysv_module *sysv_module,
-                                                             kefir_ir_module_id_t id) {
+                                                             kefir_id_t id) {
     struct kefir_hashtree_node *node = NULL;
     kefir_result_t res = kefir_hashtree_at(&sysv_module->type_layouts, (kefir_hashtree_key_t) id, &node);
     if (res == KEFIR_OK) {

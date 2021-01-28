@@ -23,7 +23,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(func1 != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, func1_decl->identifier));
 
-    kefir_ir_module_id_t func2_id;
+    kefir_id_t func2_id;
     struct kefir_ir_type *func2_decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL),
                        *func2_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
     REQUIRE(func2_decl_params != NULL, KEFIR_INTERNAL_ERROR);
@@ -34,7 +34,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(func2_decl != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_external(mem, &module, func2_decl->identifier));
 
-    kefir_ir_module_id_t func3_id;
+    kefir_id_t func3_id;
     struct kefir_ir_type *func3_decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL),
                        *func3_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
     REQUIRE(func3_decl_params != NULL, KEFIR_INTERNAL_ERROR);

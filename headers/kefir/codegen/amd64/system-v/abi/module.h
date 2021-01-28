@@ -25,6 +25,6 @@ struct kefir_amd64_sysv_function_decl *kefir_codegen_amd64_sysv_module_function_
                                                                                  bool);
 struct kefir_vector *kefir_codegen_amd64_sysv_module_type_layout(struct kefir_mem *,
                                                              struct kefir_codegen_amd64_sysv_module *,
-                                                             kefir_ir_module_id_t);
+                                                             kefir_id_t);
 
 #endif

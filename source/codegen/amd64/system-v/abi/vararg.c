@@ -743,7 +743,7 @@ kefir_result_t kefir_codegen_amd64_sysv_vararg_instruction(struct kefir_mem *mem
                 instr->arg_pair[0],
                 instr->arg_pair[1]);
 
-            const kefir_ir_module_id_t type_id = (kefir_ir_module_id_t) instr->arg_pair[0];
+            const kefir_id_t type_id = (kefir_id_t) instr->arg_pair[0];
             const kefir_size_t type_index = (kefir_size_t) instr->arg_pair[1];
             struct kefir_ir_type *type = kefir_ir_module_get_named_type(sysv_module->module, type_id);
             REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unknown named IR type"));

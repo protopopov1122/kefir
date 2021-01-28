@@ -34,7 +34,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(fdbl != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, fdbl_decl->identifier));
 
-    kefir_ir_module_id_t sum10_id;
+    kefir_id_t sum10_id;
     struct kefir_ir_type *sum10_decl_params = kefir_ir_module_new_type(mem, &module, 10, NULL),
                        *sum10_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
     REQUIRE(sum10_decl_params != NULL, KEFIR_INTERNAL_ERROR);
@@ -45,7 +45,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(sum10_decl != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_external(mem, &module, sum10_decl->identifier));
 
-    kefir_ir_module_id_t fsum_id;
+    kefir_id_t fsum_id;
     struct kefir_ir_type *fsum_decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL),
                        *fsum_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
     REQUIRE(fsum_decl_params != NULL, KEFIR_INTERNAL_ERROR);
