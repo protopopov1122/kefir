@@ -8,6 +8,8 @@ INCLUDES=-Iheaders
 ROOT=.
 BIN_DIR=$(ROOT)/bin
 SOURCE_DIR=$(ROOT)/source
+HEADERS_DIR=$(ROOT)/headers
+RESOURCES_DIR=$(ROOT)/resources
 
 DEPS :=
 OBJS :=

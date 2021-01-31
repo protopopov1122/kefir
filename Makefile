@@ -1,4 +1,5 @@
 include Makefile.inc
+include resources/Makefile.inc
 include source/Makefile.inc
 include source/tests/Makefile.inc
 include source/main/Makefile.inc
