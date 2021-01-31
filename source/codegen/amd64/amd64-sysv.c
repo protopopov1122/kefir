@@ -29,7 +29,7 @@ static kefir_result_t cg_module_prologue(struct kefir_codegen_amd64_sysv_module 
         ASMGEN_EXTERNAL(&codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_SYMBOLS[i]);
     }
     ASMGEN_NEWLINE(&codegen->asmgen, 1);
-    struct kefir_list_entry *iter = NULL;
+    const struct kefir_list_entry *iter = NULL;
     ASMGEN_COMMENT0(&codegen->asmgen, "Externals");
     for (const char *external = kefir_ir_module_externals_iter(module->module, &iter);
         external != NULL;

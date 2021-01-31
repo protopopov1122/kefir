@@ -5,7 +5,7 @@
 #include "kefir/ir/type.h"
 #include "kefir/ir/instr.h"
 
-kefir_result_t kefir_irbuilder_type_appendi64(struct kefir_mem *,
+kefir_result_t kefir_irbuilder_type_append(struct kefir_mem *,
                                        struct kefir_ir_type *,
                                        const struct kefir_ir_typeentry *);
 kefir_result_t kefir_irbuilder_type_append_v(struct kefir_mem *,
@@ -65,6 +65,10 @@ kefir_result_t kefir_irbuilder_block_init(struct kefir_mem *,
 
 #define KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, opcode, arg) \
     ((builder)->appendi64((builder), (opcode), (arg)))
+#define KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, opcode, arg) \
+    ((builder)->appendu64((builder), (opcode), (arg)))
+#define KEFIR_IRBUILDER_BLOCK_APPENDI32(builder, opcode, arg1, arg2) \
+    ((builder)->appendi32((builder), (opcode), (arg1), (arg2)))
 #define KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, opcode, arg1, arg2) \
     ((builder)->appendu32((builder), (opcode), (arg1), (arg2)))
 #define KEFIR_IRBUILDER_BLOCK_APPENDF64(builder, opcode, arg) \

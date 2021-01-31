@@ -89,7 +89,8 @@ kefir_result_t kefir_vector_realloc(struct kefir_mem *mem,
                                 struct kefir_vector *vector) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(vector != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL vector pointer"));
-    REQUIRE(vector->content != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid vector content pointer"));
+    REQUIRE((vector->content != NULL && vector->length > 0) ||
+        (vector->content == NULL && vector->length == 0), KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid vector content pointer"));
     REQUIRE(vector->length <= new_capacity, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Expected new capacity to fit current vector length"));
     vector->content = KEFIR_REALLOC(mem, vector->content, vector->element_size * new_capacity);
     if (vector->content == NULL) {

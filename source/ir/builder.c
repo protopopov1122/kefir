@@ -4,7 +4,7 @@
 
 #define GROW(x) (3 * (x) / 2 + 5)
 
-kefir_result_t kefir_irbuilder_type_appendi64(struct kefir_mem *mem,
+kefir_result_t kefir_irbuilder_type_append(struct kefir_mem *mem,
                                        struct kefir_ir_type *type,
                                        const struct kefir_ir_typeentry *typeentry) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));

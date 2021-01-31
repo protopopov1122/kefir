@@ -77,9 +77,9 @@ const struct kefir_ir_function *kefir_ir_module_function_iter(const struct kefir
 const struct kefir_ir_function *kefir_ir_module_function_next(struct kefir_hashtree_node_iterator *);
 
 const char *kefir_ir_module_globals_iter(const struct kefir_ir_module *,
-                                       struct kefir_list_entry **);
+                                       const struct kefir_list_entry **);
 const char *kefir_ir_module_externals_iter(const struct kefir_ir_module *,
-                                         struct kefir_list_entry **);
+                                         const struct kefir_list_entry **);
 const char *kefir_ir_module_symbol_iter_next(const struct kefir_list_entry **);
 
 const struct kefir_ir_data *kefir_ir_module_named_data_iter(const struct kefir_ir_module *,

@@ -237,15 +237,15 @@ const struct kefir_ir_function *kefir_ir_module_function_next(struct kefir_hasht
     }
 }
 
-const char *kefir_ir_module_globals_iter(const struct kefir_ir_module *module, struct kefir_list_entry **iter) {
+const char *kefir_ir_module_globals_iter(const struct kefir_ir_module *module, const struct kefir_list_entry **iter) {
     REQUIRE(module != NULL, NULL);
     REQUIRE(iter != NULL, NULL);
     *iter = kefir_list_head(&module->global_symbols);
     REQUIRE(*iter != NULL, NULL);
-    return kefir_list_next((const struct kefir_list_entry **) iter);
+    return kefir_list_next(iter);
 }
 
-const char *kefir_ir_module_externals_iter(const struct kefir_ir_module *module, struct kefir_list_entry **iter) {
+const char *kefir_ir_module_externals_iter(const struct kefir_ir_module *module, const struct kefir_list_entry **iter) {
     REQUIRE(module != NULL, NULL);
     REQUIRE(iter != NULL, NULL);
     *iter = kefir_list_head(&module->external_symbols);

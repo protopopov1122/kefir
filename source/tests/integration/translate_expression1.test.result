@@ -1,0 +1,19 @@
+global func1
+
+
+declare func1 = {
+	params:
+	vararg: no
+	returns:
+		int
+}
+
+implement func1 = {
+	body:
+		push	2
+		push	3
+		imul	0
+		push	1
+		ineg	0
+		iadd	0
+}
