@@ -48,8 +48,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_codegen_amd64_sysv_init(&codegen, stdout);
     codegen.asmgen.settings.enable_comments = false;
 
-    kefir_irbuilder_block_append(mem, &func1->body, KEFIR_IROPCODE_INVOKE, func2_id);
-    kefir_irbuilder_block_append(mem, &func1->body, KEFIR_IROPCODE_INVOKE, func3_id);
+    kefir_irbuilder_block_appendu64(mem, &func1->body, KEFIR_IROPCODE_INVOKE, func2_id);
+    kefir_irbuilder_block_appendu64(mem, &func1->body, KEFIR_IROPCODE_INVOKE, func3_id);
 
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, func2_decl_params, KEFIR_IR_TYPE_INT, 0, 0));
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, func2_decl_params, KEFIR_IR_TYPE_FLOAT32, 0, 0));

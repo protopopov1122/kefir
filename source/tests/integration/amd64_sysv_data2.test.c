@@ -40,10 +40,10 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, decl_params, KEFIR_IR_TYPE_CHAR, 0, 0));
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, decl_params, KEFIR_IR_TYPE_LONG, 0, 0));
 
-    REQUIRE_OK(kefir_irbuilder_block_append2(mem, &func->body, KEFIR_IROPCODE_OFFSETPTR, type_id, 3));
-    REQUIRE_OK(kefir_irbuilder_block_append(mem, &func->body, KEFIR_IROPCODE_PUSH, 5));
-    REQUIRE_OK(kefir_irbuilder_block_append2(mem, &func->body, KEFIR_IROPCODE_ELEMENTPTR, type_id, 4));
-    REQUIRE_OK(kefir_irbuilder_block_append2(mem, &func->body, KEFIR_IROPCODE_OFFSETPTR, type_id, 6));
+    REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &func->body, KEFIR_IROPCODE_OFFSETPTR, type_id, 3));
+    REQUIRE_OK(kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_PUSHI64, 5));
+    REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &func->body, KEFIR_IROPCODE_ELEMENTPTR, type_id, 4));
+    REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &func->body, KEFIR_IROPCODE_OFFSETPTR, type_id, 6));
     REQUIRE_OK(KEFIR_CODEGEN_TRANSLATE(mem, &codegen.iface, &module));
 
     REQUIRE_OK(KEFIR_CODEGEN_CLOSE(&codegen.iface));

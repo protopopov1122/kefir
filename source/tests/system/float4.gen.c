@@ -26,7 +26,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, floatToLong_decl->identifier));
     kefir_irbuilder_type_append_v(mem, floatToLong->declaration->params, KEFIR_IR_TYPE_FLOAT32, 0, 0);
     kefir_irbuilder_type_append_v(mem, floatToLong->declaration->result, KEFIR_IR_TYPE_LONG, 0, 3);
-    kefir_irbuilder_block_append(mem, &floatToLong->body, KEFIR_IROPCODE_F32CINT, 0);
+    kefir_irbuilder_block_appendi64(mem, &floatToLong->body, KEFIR_IROPCODE_F32CINT, 0);
 
     struct kefir_ir_type *doubleToLong_decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL),
                        *doubleToLong_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
@@ -40,7 +40,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, doubleToLong_decl->identifier));
     kefir_irbuilder_type_append_v(mem, doubleToLong->declaration->params, KEFIR_IR_TYPE_FLOAT64, 0, 0);
     kefir_irbuilder_type_append_v(mem, doubleToLong->declaration->result, KEFIR_IR_TYPE_LONG, 0, 3);
-    kefir_irbuilder_block_append(mem, &doubleToLong->body, KEFIR_IROPCODE_F64CINT, 0);
+    kefir_irbuilder_block_appendi64(mem, &doubleToLong->body, KEFIR_IROPCODE_F64CINT, 0);
 
     struct kefir_ir_type *longToFloat_decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL),
                        *longToFloat_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
@@ -54,7 +54,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, longToFloat_decl->identifier));
     kefir_irbuilder_type_append_v(mem, longToFloat->declaration->params, KEFIR_IR_TYPE_LONG, 0, 0);
     kefir_irbuilder_type_append_v(mem, longToFloat->declaration->result, KEFIR_IR_TYPE_FLOAT32, 0, 3);
-    kefir_irbuilder_block_append(mem, &longToFloat->body, KEFIR_IROPCODE_INTCF32, 0);
+    kefir_irbuilder_block_appendi64(mem, &longToFloat->body, KEFIR_IROPCODE_INTCF32, 0);
 
     struct kefir_ir_type *longToDouble_decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL),
                        *longToDouble_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
@@ -68,7 +68,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, longToDouble_decl->identifier));
     kefir_irbuilder_type_append_v(mem, longToDouble->declaration->params, KEFIR_IR_TYPE_LONG, 0, 0);
     kefir_irbuilder_type_append_v(mem, longToDouble->declaration->result, KEFIR_IR_TYPE_FLOAT64, 0, 3);
-    kefir_irbuilder_block_append(mem, &longToDouble->body, KEFIR_IROPCODE_INTCF64, 0);
+    kefir_irbuilder_block_appendi64(mem, &longToDouble->body, KEFIR_IROPCODE_INTCF64, 0);
 
     struct kefir_ir_type *floatToDouble_decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL),
                        *floatToDouble_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
@@ -82,7 +82,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, floatToDouble_decl->identifier));
     kefir_irbuilder_type_append_v(mem, floatToDouble->declaration->params, KEFIR_IR_TYPE_FLOAT32, 0, 0);
     kefir_irbuilder_type_append_v(mem, floatToDouble->declaration->result, KEFIR_IR_TYPE_FLOAT64, 0, 3);
-    kefir_irbuilder_block_append(mem, &floatToDouble->body, KEFIR_IROPCODE_F32CF64, 0);
+    kefir_irbuilder_block_appendi64(mem, &floatToDouble->body, KEFIR_IROPCODE_F32CF64, 0);
 
     struct kefir_ir_type *doubleToFloat_decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL),
                        *doubleToFloat_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
@@ -96,7 +96,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, doubleToFloat_decl->identifier));
     kefir_irbuilder_type_append_v(mem, doubleToFloat->declaration->params, KEFIR_IR_TYPE_FLOAT64, 0, 0);
     kefir_irbuilder_type_append_v(mem, doubleToFloat->declaration->result, KEFIR_IR_TYPE_FLOAT32, 0, 3);
-    kefir_irbuilder_block_append(mem, &doubleToFloat->body, KEFIR_IROPCODE_F64CF32, 0);
+    kefir_irbuilder_block_appendi64(mem, &doubleToFloat->body, KEFIR_IROPCODE_F64CF32, 0);
 
     KEFIR_CODEGEN_TRANSLATE(mem, &codegen.iface, &module);
     KEFIR_CODEGEN_CLOSE(&codegen.iface);

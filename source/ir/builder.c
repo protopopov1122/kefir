@@ -4,7 +4,7 @@
 
 #define GROW(x) (3 * (x) / 2 + 5)
 
-kefir_result_t kefir_irbuilder_type_append(struct kefir_mem *mem,
+kefir_result_t kefir_irbuilder_type_appendi64(struct kefir_mem *mem,
                                        struct kefir_ir_type *type,
                                        const struct kefir_ir_typeentry *typeentry) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
@@ -13,7 +13,7 @@ kefir_result_t kefir_irbuilder_type_append(struct kefir_mem *mem,
     if (kefir_ir_type_raw_available(type) == 0) {
         REQUIRE_OK(kefir_ir_type_realloc(mem, GROW(kefir_ir_type_raw_length(type)), type));
     }
-    REQUIRE_OK(kefir_ir_type_append(type, typeentry));
+    REQUIRE_OK(kefir_ir_type_appendi64(type, typeentry));
     return KEFIR_OK;
 }
 
@@ -45,7 +45,7 @@ kefir_result_t kefir_irbuilder_type_append_e(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_irbuilder_block_append(struct kefir_mem *mem,
+kefir_result_t kefir_irbuilder_block_appendi64(struct kefir_mem *mem,
                                         struct kefir_irblock *block,
                                         kefir_iropcode_t opcode,
                                         kefir_int64_t arg) {
@@ -54,11 +54,38 @@ kefir_result_t kefir_irbuilder_block_append(struct kefir_mem *mem,
     if (kefir_irblock_available(block) == 0) {
         REQUIRE_OK(kefir_irblock_realloc(mem, GROW(kefir_irblock_length(block)), block));
     }
-    REQUIRE_OK(kefir_irblock_append(block, opcode, arg));
+    REQUIRE_OK(kefir_irblock_appendi64(block, opcode, arg));
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_irbuilder_block_append2(struct kefir_mem *mem,
+kefir_result_t kefir_irbuilder_block_appendu64(struct kefir_mem *mem,
+                                        struct kefir_irblock *block,
+                                        kefir_iropcode_t opcode,
+                                        kefir_uint64_t arg) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(block != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Epected valid IR block"));
+    if (kefir_irblock_available(block) == 0) {
+        REQUIRE_OK(kefir_irblock_realloc(mem, GROW(kefir_irblock_length(block)), block));
+    }
+    REQUIRE_OK(kefir_irblock_appendu64(block, opcode, arg));
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_irbuilder_block_appendi32(struct kefir_mem *mem,
+                                         struct kefir_irblock *block,
+                                         kefir_iropcode_t opcode, 
+                                         kefir_int32_t arg1,
+                                         kefir_int32_t arg2) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(block != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Epected valid IR block"));
+    if (kefir_irblock_available(block) == 0) {
+        REQUIRE_OK(kefir_irblock_realloc(mem, GROW(kefir_irblock_length(block)), block));
+    }
+    REQUIRE_OK(kefir_irblock_appendi32(block, opcode, arg1, arg2));
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_irbuilder_block_appendu32(struct kefir_mem *mem,
                                          struct kefir_irblock *block,
                                          kefir_iropcode_t opcode, 
                                          kefir_uint32_t arg1,
@@ -68,11 +95,11 @@ kefir_result_t kefir_irbuilder_block_append2(struct kefir_mem *mem,
     if (kefir_irblock_available(block) == 0) {
         REQUIRE_OK(kefir_irblock_realloc(mem, GROW(kefir_irblock_length(block)), block));
     }
-    REQUIRE_OK(kefir_irblock_append2(block, opcode, arg1, arg2));
+    REQUIRE_OK(kefir_irblock_appendu32(block, opcode, arg1, arg2));
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_irbuilder_block_appendf(struct kefir_mem *mem,
+kefir_result_t kefir_irbuilder_block_appendf64(struct kefir_mem *mem,
                                          struct kefir_irblock *block, 
                                          kefir_iropcode_t opcode,
                                          double arg) {
@@ -81,11 +108,11 @@ kefir_result_t kefir_irbuilder_block_appendf(struct kefir_mem *mem,
     if (kefir_irblock_available(block) == 0) {
         REQUIRE_OK(kefir_irblock_realloc(mem, GROW(kefir_irblock_length(block)), block));
     }
-    REQUIRE_OK(kefir_irblock_appendf(block, opcode, arg));
+    REQUIRE_OK(kefir_irblock_appendf64(block, opcode, arg));
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_irbuilder_block_appendf2(struct kefir_mem *mem,
+kefir_result_t kefir_irbuilder_block_appendf32(struct kefir_mem *mem,
                                           struct kefir_irblock *block,
                                           kefir_iropcode_t opcode,
                                           float arg1,
@@ -95,6 +122,74 @@ kefir_result_t kefir_irbuilder_block_appendf2(struct kefir_mem *mem,
     if (kefir_irblock_available(block) == 0) {
         REQUIRE_OK(kefir_irblock_realloc(mem, GROW(kefir_irblock_length(block)), block));
     }
-    REQUIRE_OK(kefir_irblock_appendf2(block, opcode, arg1, arg2));
+    REQUIRE_OK(kefir_irblock_appendf32(block, opcode, arg1, arg2));
+    return KEFIR_OK;
+}
+
+static kefir_result_t block_builder_appendi64(struct kefir_irbuilder_block *builder,
+                                         kefir_iropcode_t opcode,
+                                         kefir_int64_t arg) {
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
+    return kefir_irbuilder_block_appendi64(builder->payload, builder->block, opcode, arg);
+}
+
+static kefir_result_t block_builder_appendu64(struct kefir_irbuilder_block *builder,
+                                         kefir_iropcode_t opcode,
+                                         kefir_uint64_t arg) {
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
+    return kefir_irbuilder_block_appendu64(builder->payload, builder->block, opcode, arg);
+}
+
+static kefir_result_t block_builder_appendi32(struct kefir_irbuilder_block *builder,
+                                          kefir_iropcode_t opcode,
+                                          kefir_int32_t arg1,
+                                          kefir_int32_t arg2) {
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
+    return kefir_irbuilder_block_appendi32(builder->payload, builder->block, opcode, arg1, arg2);
+}
+
+static kefir_result_t block_builder_appendu32(struct kefir_irbuilder_block *builder,
+                                          kefir_iropcode_t opcode,
+                                          kefir_uint32_t arg1,
+                                          kefir_uint32_t arg2) {
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
+    return kefir_irbuilder_block_appendu32(builder->payload, builder->block, opcode, arg1, arg2);
+}
+
+static kefir_result_t block_builder_appendf64(struct kefir_irbuilder_block *builder,
+                                          kefir_iropcode_t opcode,
+                                          kefir_float64_t arg) {
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
+    return kefir_irbuilder_block_appendf64(builder->payload, builder->block, opcode, arg);
+}
+
+static kefir_result_t block_builder_appendf32(struct kefir_irbuilder_block *builder, 
+                                           kefir_iropcode_t opcode,
+                                           kefir_float32_t arg1,
+                                           kefir_float32_t arg2) {
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
+    return kefir_irbuilder_block_appendf32(builder->payload, builder->block, opcode, arg1, arg2);
+}
+
+static kefir_result_t block_builder_free(struct kefir_irbuilder_block *builder) {
+    UNUSED(builder);
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_irbuilder_block_init(struct kefir_mem *mem,
+                                      struct kefir_irbuilder_block *builder,
+                                      struct kefir_irblock *block) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
+    REQUIRE(block != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block"));
+    builder->block = block;
+    builder->payload = mem;
+    builder->appendi64 = block_builder_appendi64;
+    builder->appendu64 = block_builder_appendu64;
+    builder->appendi32 = block_builder_appendi32;
+    builder->appendu32 = block_builder_appendu32;
+    builder->appendf64 = block_builder_appendf64;
+    builder->appendf32 = block_builder_appendf32;
+    builder->free = block_builder_free;
     return KEFIR_OK;
 }

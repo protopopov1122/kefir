@@ -740,11 +740,11 @@ kefir_result_t kefir_codegen_amd64_sysv_vararg_instruction(struct kefir_mem *mem
         case KEFIR_IROPCODE_VARARG_GET: {
             snprintf(buffer, BUF_SIZE - 1, KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_LABEL,
                 sysv_func->func->declaration->identifier,
-                instr->arg_pair[0],
-                instr->arg_pair[1]);
+                instr->arg.u32[0],
+                instr->arg.u32[1]);
 
-            const kefir_id_t type_id = (kefir_id_t) instr->arg_pair[0];
-            const kefir_size_t type_index = (kefir_size_t) instr->arg_pair[1];
+            const kefir_id_t type_id = (kefir_id_t) instr->arg.u32[0];
+            const kefir_size_t type_index = (kefir_size_t) instr->arg.u32[1];
             struct kefir_ir_type *type = kefir_ir_module_get_named_type(sysv_module->module, type_id);
             REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unknown named IR type"));
             struct kefir_ir_type_visitor visitor;

@@ -20,7 +20,7 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
         case KEFIR_IROPCODE_JMP:
         case KEFIR_IROPCODE_BRANCH: {
             const char *opcode_symbol = NULL;
-            REQUIRE(instr->arg >= 0 && instr->arg < (kefir_int64_t) kefir_irblock_length(&sysv_func->func->body),
+            REQUIRE(instr->arg.u64 < kefir_irblock_length(&sysv_func->func->body),
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Jump offset is out of IR block bounds"));
             REQUIRE_OK(cg_symbolic_opcode(instr->opcode, &opcode_symbol));
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
@@ -28,7 +28,7 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
             ASMGEN_ARG(&codegen->asmgen,
                 KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL " + " KEFIR_INT64_FMT,
                 sysv_func->func->declaration->identifier,
-                2 * KEFIR_AMD64_SYSV_ABI_QWORD * instr->arg);
+                2 * KEFIR_AMD64_SYSV_ABI_QWORD * instr->arg.u64);
         } break;
 
         case KEFIR_IROPCODE_RET: {
@@ -40,7 +40,7 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
         } break;
 
         case KEFIR_IROPCODE_INVOKE: {
-            const char *function = kefir_ir_module_get_named_symbol(sysv_module->module, (kefir_id_t) instr->arg);
+            const char *function = kefir_ir_module_get_named_symbol(sysv_module->module, (kefir_id_t) instr->arg.u64);
             REQUIRE(function != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to invoke unknown function"));
             REQUIRE(kefir_codegen_amd64_sysv_module_function_decl(mem, sysv_module, function, false),
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AMD64 System-V IR module function decaration"));
@@ -52,7 +52,7 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
         } break;
 
         case KEFIR_IROPCODE_INVOKEV: {
-            const char *function = kefir_ir_module_get_named_symbol(sysv_module->module, (kefir_id_t) instr->arg);
+            const char *function = kefir_ir_module_get_named_symbol(sysv_module->module, (kefir_id_t) instr->arg.u64);
             REQUIRE(function != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to invoke unknown function"));
             REQUIRE(kefir_codegen_amd64_sysv_module_function_decl(mem, sysv_module, function, true),
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AMD64 System-V IR module function decaration"));
@@ -65,8 +65,8 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
 
         case KEFIR_IROPCODE_OFFSETPTR:
         case KEFIR_IROPCODE_ELEMENTPTR: {
-            const kefir_id_t type_id = (kefir_id_t) instr->arg_pair[0];
-            const kefir_size_t type_index = (kefir_size_t) instr->arg_pair[1];
+            const kefir_id_t type_id = (kefir_id_t) instr->arg.u32[0];
+            const kefir_size_t type_index = (kefir_size_t) instr->arg.u32[1];
             struct kefir_vector *layout =
                 kefir_codegen_amd64_sysv_module_type_layout(mem, sysv_module, type_id);
             REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unknown named type"));
@@ -96,12 +96,12 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
         } break;
 
         case KEFIR_IROPCODE_GETGLOBAL: {
-            const kefir_id_t named_symbol = (kefir_id_t) instr->arg;
+            const kefir_id_t named_symbol = (kefir_id_t) instr->arg.u64;
             const char *symbol = kefir_ir_module_get_named_symbol(sysv_module->module, named_symbol);
             REQUIRE(symbol != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to find named symbol"));
 
             const char *opcode_symbol = NULL;
-            REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_PUSH, &opcode_symbol));
+            REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_PUSHI64, &opcode_symbol));
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
             ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
             ASMGEN_ARG0(&codegen->asmgen, symbol);
@@ -115,20 +115,28 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
 
         case KEFIR_IROPCODE_PUSHF32: {
             const char *opcode_symbol = NULL;
-            REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_PUSH, &opcode_symbol));
+            REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_PUSHI64, &opcode_symbol));
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
             ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_DOUBLE);
-            ASMGEN_ARG(&codegen->asmgen, "%a", instr->farg_pair[0]);
+            ASMGEN_ARG(&codegen->asmgen, "%a", instr->arg.f32[0]);
             ASMGEN_ARG0(&codegen->asmgen, "0");
         } break;
 
         case KEFIR_IROPCODE_PUSHF64: {
             const char *opcode_symbol = NULL;
-            REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_PUSH, &opcode_symbol));
+            REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_PUSHI64, &opcode_symbol));
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
             ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
-            ASMGEN_ARG(&codegen->asmgen, "%a", instr->farg);
+            ASMGEN_ARG(&codegen->asmgen, "%a", instr->arg.f64);
+        } break;
+
+        case KEFIR_IROPCODE_PUSHU64: {
+            const char *opcode_symbol = NULL;
+            REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_PUSHI64, &opcode_symbol));
+            ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
+            ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
+            ASMGEN_ARG(&codegen->asmgen, KEFIR_UINT64_FMT, instr->arg.u64);
         } break;
 
         default: {

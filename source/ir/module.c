@@ -3,18 +3,6 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-static kefir_result_t destroy_string(struct kefir_mem *mem,
-                                   struct kefir_hashtree *tree,
-                                   kefir_hashtree_key_t key,
-                                   kefir_hashtree_value_t value,
-                                   void *data) {
-    UNUSED(tree);
-    UNUSED(value);
-    UNUSED(data);
-    KEFIR_FREE(mem, (char *) key);
-    return KEFIR_OK;
-}
-
 static kefir_result_t destroy_type(struct kefir_mem *mem, struct kefir_list *list, struct kefir_list_entry *entry, void *data) {
     UNUSED(list);
     UNUSED(data);

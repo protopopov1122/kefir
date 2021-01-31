@@ -120,7 +120,7 @@ static kefir_result_t calculate_frame_temporaries(struct kefir_mem *mem,
         const struct kefir_irinstr *instr = kefir_irblock_at(&sysv_func->func->body, i);
         REQUIRE(instr != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected IR instructin at offset"));
         if (instr->opcode == KEFIR_IROPCODE_INVOKE) {
-            kefir_id_t id = (kefir_id_t) instr->arg;
+            kefir_id_t id = (kefir_id_t) instr->arg.u64;
             const char *function = kefir_ir_module_get_named_symbol(sysv_module->module, id);
             REQUIRE(function != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to invoke unknown function"));
             struct kefir_amd64_sysv_function_decl *decl =
@@ -128,7 +128,7 @@ static kefir_result_t calculate_frame_temporaries(struct kefir_mem *mem,
             REQUIRE_OK(update_frame_temporaries(decl, &size, &alignment));
         }
         if (instr->opcode == KEFIR_IROPCODE_INVOKEV) {
-            kefir_id_t id = (kefir_id_t) instr->arg;
+            kefir_id_t id = (kefir_id_t) instr->arg.u64;
             const char *function = kefir_ir_module_get_named_symbol(sysv_module->module, id);
             REQUIRE(function != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to invoke unknown function"));
             struct kefir_amd64_sysv_function_decl *decl =
@@ -136,10 +136,10 @@ static kefir_result_t calculate_frame_temporaries(struct kefir_mem *mem,
             REQUIRE_OK(update_frame_temporaries(decl, &size, &alignment));
         }
         if (instr->opcode == KEFIR_IROPCODE_VARARG_GET) {
-            kefir_id_t id = (kefir_id_t) instr->arg_pair[0];
+            kefir_id_t id = (kefir_id_t) instr->arg.u32[0];
             struct kefir_ir_type *type = kefir_ir_module_get_named_type(sysv_module->module, id);
             REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to find named type"));
-            REQUIRE_OK(update_frame_temporaries_type(mem, type, (kefir_size_t) instr->arg_pair[1], &size, &alignment));
+            REQUIRE_OK(update_frame_temporaries_type(mem, type, (kefir_size_t) instr->arg.u32[1], &size, &alignment));
         }
     }
     sysv_func->frame.base.temporary = kefir_codegen_pad_aligned(sysv_func->frame.size, alignment);

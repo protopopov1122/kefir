@@ -54,9 +54,9 @@ int main(int argc, const char **argv) {
     kefir_irbuilder_type_append_v(&mem, func->declaration->result, KEFIR_IR_TYPE_STRUCT, 0, 2);
     kefir_irbuilder_type_append_v(&mem, func->declaration->result, KEFIR_IR_TYPE_ARRAY, 0, 2);
     kefir_irbuilder_type_append_v(&mem, func->declaration->result, KEFIR_IR_TYPE_INT, 0, 0);
-    kefir_irbuilder_block_append(&mem, &func->body, KEFIR_IROPCODE_PUSH, 0);
-    kefir_irbuilder_block_append(&mem, &func->body, KEFIR_IROPCODE_JMP, 1);
-    kefir_irbuilder_block_append(&mem, &func->body, KEFIR_IROPCODE_RET, 0);
+    kefir_irbuilder_block_appendi64(&mem, &func->body, KEFIR_IROPCODE_PUSHI64, 0);
+    kefir_irbuilder_block_appendu64(&mem, &func->body, KEFIR_IROPCODE_JMP, 1);
+    kefir_irbuilder_block_appendi64(&mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
     KEFIR_CODEGEN_TRANSLATE(&mem, &codegen.iface, &module);
     KEFIR_CODEGEN_CLOSE(&codegen.iface);

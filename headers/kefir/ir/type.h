@@ -47,7 +47,7 @@ kefir_result_t kefir_ir_type_init(struct kefir_ir_type *, void *, kefir_size_t);
 kefir_size_t kefir_ir_type_raw_available(const struct kefir_ir_type *);
 kefir_size_t kefir_ir_type_raw_length(const struct kefir_ir_type *);
 struct kefir_ir_typeentry *kefir_ir_type_raw_at(const struct kefir_ir_type *, kefir_size_t);
-kefir_result_t kefir_ir_type_append(struct kefir_ir_type *, const struct kefir_ir_typeentry *);
+kefir_result_t kefir_ir_type_appendi64(struct kefir_ir_type *, const struct kefir_ir_typeentry *);
 kefir_result_t kefir_ir_type_append_v(struct kefir_ir_type *, kefir_ir_typecode_t, kefir_uint32_t, kefir_int64_t);
 kefir_result_t kefir_ir_type_append_e(struct kefir_ir_type *, const struct kefir_ir_type *, kefir_size_t);
 kefir_result_t kefir_ir_type_alloc(struct kefir_mem *, kefir_size_t, struct kefir_ir_type *);

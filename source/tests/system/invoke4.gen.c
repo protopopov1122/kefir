@@ -43,9 +43,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, proxyadd_decl_result, KEFIR_IR_TYPE_STRUCT, 0, 1));
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, proxyadd_decl_result, KEFIR_IR_TYPE_ARRAY, 0, 4));
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, proxyadd_decl_result, KEFIR_IR_TYPE_INT64, 0, 0));
-    kefir_irbuilder_block_append(mem, &proxyadd->body, KEFIR_IROPCODE_PUSH, 3);
-    kefir_irbuilder_block_append(mem, &proxyadd->body, KEFIR_IROPCODE_XCHG, 1);
-    kefir_irbuilder_block_append(mem, &proxyadd->body, KEFIR_IROPCODE_INVOKE, addstruct_id);
+    kefir_irbuilder_block_appendi64(mem, &proxyadd->body, KEFIR_IROPCODE_PUSHI64, 3);
+    kefir_irbuilder_block_appendi64(mem, &proxyadd->body, KEFIR_IROPCODE_XCHG, 1);
+    kefir_irbuilder_block_appendu64(mem, &proxyadd->body, KEFIR_IROPCODE_INVOKE, addstruct_id);
 
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, addstruct_decl_params, KEFIR_IR_TYPE_INT64, 0, 0));
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, addstruct_decl_params, KEFIR_IR_TYPE_STRUCT, 0, 1));

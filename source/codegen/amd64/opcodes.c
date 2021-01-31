@@ -10,7 +10,7 @@ static struct {
     { KEFIR_IROPCODE_NOP,           LABEL("nop") },
     { KEFIR_IROPCODE_JMP,           LABEL("jmp") },
     { KEFIR_IROPCODE_BRANCH,        LABEL("branch") },
-    { KEFIR_IROPCODE_PUSH,          LABEL("push") },
+    { KEFIR_IROPCODE_PUSHI64,       LABEL("push") },
     { KEFIR_IROPCODE_POP,           LABEL("pop") },
     { KEFIR_IROPCODE_PICK,          LABEL("pick") },
     { KEFIR_IROPCODE_PUT,           LABEL("put") },

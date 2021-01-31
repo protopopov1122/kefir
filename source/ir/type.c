@@ -26,7 +26,7 @@ struct kefir_ir_typeentry *kefir_ir_type_raw_at(const struct kefir_ir_type *type
     return (struct kefir_ir_typeentry *) kefir_vector_at(&type->vector, index);
 }
 
-kefir_result_t kefir_ir_type_append(struct kefir_ir_type *type, const struct kefir_ir_typeentry *value) {
+kefir_result_t kefir_ir_type_appendi64(struct kefir_ir_type *type, const struct kefir_ir_typeentry *value) {
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type pointer"));
     REQUIRE(value != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type entry pointer"));
     REQUIRE(value->typecode != KEFIR_IR_TYPE_COUNT,
@@ -43,7 +43,7 @@ kefir_result_t kefir_ir_type_append_v(struct kefir_ir_type *type,
         .alignment = alignment,
         .param = param
     };
-    return kefir_ir_type_append(type, &typeentry);
+    return kefir_ir_type_appendi64(type, &typeentry);
 }
 
 kefir_result_t kefir_ir_type_append_e(struct kefir_ir_type *type, const struct kefir_ir_type *ext, kefir_size_t index) {
@@ -55,7 +55,7 @@ kefir_result_t kefir_ir_type_append_e(struct kefir_ir_type *type, const struct k
     for (kefir_size_t i = index; i < index + length; i++) {
         struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(ext, i);
         REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to retrieve external type node"));
-        REQUIRE_OK(kefir_ir_type_append(type, typeentry));
+        REQUIRE_OK(kefir_ir_type_appendi64(type, typeentry));
     }
     return KEFIR_OK;
 }

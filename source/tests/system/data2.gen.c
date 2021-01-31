@@ -42,11 +42,11 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_type_append_v(mem, arrptr->declaration->params, KEFIR_IR_TYPE_LONG, 0, 0);
     kefir_irbuilder_type_append_v(mem, arrptr->declaration->result, KEFIR_IR_TYPE_WORD, 0, 0);
 
-    kefir_irbuilder_block_append(mem, &arrptr->body, KEFIR_IROPCODE_XCHG, 1);
-    kefir_irbuilder_block_append2(mem, &arrptr->body, KEFIR_IROPCODE_OFFSETPTR, type1_id, 2);
-    kefir_irbuilder_block_append2(mem, &arrptr->body, KEFIR_IROPCODE_OFFSETPTR, type1_id, 4);
-    kefir_irbuilder_block_append(mem, &arrptr->body, KEFIR_IROPCODE_XCHG, 1);
-    kefir_irbuilder_block_append2(mem, &arrptr->body, KEFIR_IROPCODE_ELEMENTPTR, type1_id, 8);
+    kefir_irbuilder_block_appendi64(mem, &arrptr->body, KEFIR_IROPCODE_XCHG, 1);
+    kefir_irbuilder_block_appendu32(mem, &arrptr->body, KEFIR_IROPCODE_OFFSETPTR, type1_id, 2);
+    kefir_irbuilder_block_appendu32(mem, &arrptr->body, KEFIR_IROPCODE_OFFSETPTR, type1_id, 4);
+    kefir_irbuilder_block_appendi64(mem, &arrptr->body, KEFIR_IROPCODE_XCHG, 1);
+    kefir_irbuilder_block_appendu32(mem, &arrptr->body, KEFIR_IROPCODE_ELEMENTPTR, type1_id, 8);
 
     KEFIR_CODEGEN_TRANSLATE(mem, &codegen.iface, &module);
     KEFIR_CODEGEN_CLOSE(&codegen.iface);

@@ -26,41 +26,73 @@ const struct kefir_irinstr *kefir_irblock_at(const struct kefir_irblock *bcblock
     return (const struct kefir_irinstr *) kefir_vector_at(&bcblock->content, idx);
 }
 
-kefir_result_t kefir_irblock_append(struct kefir_irblock *bcblock, kefir_iropcode_t opcode, kefir_int64_t arg) {
+kefir_result_t kefir_irblock_appendi64(struct kefir_irblock *bcblock, kefir_iropcode_t opcode, kefir_int64_t arg) {
     REQUIRE(bcblock != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block"));
     struct kefir_irinstr instr = {
         .opcode = opcode,
-        .arg = arg
-    };
-    return kefir_vector_append(&bcblock->content, &instr);
-}
-
-kefir_result_t kefir_irblock_append2(struct kefir_irblock *bcblock, kefir_iropcode_t opcode, kefir_uint32_t arg1, kefir_uint32_t arg2) {
-    REQUIRE(bcblock != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block"));
-    struct kefir_irinstr instr = {
-        .opcode = opcode,
-        .arg_pair = {
-            arg1, arg2
+        .arg = {
+            .i64 = arg
         }
     };
     return kefir_vector_append(&bcblock->content, &instr);
 }
 
-kefir_result_t kefir_irblock_appendf(struct kefir_irblock *bcblock, kefir_iropcode_t opcode, double arg) {
+kefir_result_t kefir_irblock_appendu64(struct kefir_irblock *bcblock, kefir_iropcode_t opcode, kefir_uint64_t arg) {
     REQUIRE(bcblock != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block"));
     struct kefir_irinstr instr = {
         .opcode = opcode,
-        .farg = arg
+        .arg = {
+            .u64 = arg
+        }
     };
     return kefir_vector_append(&bcblock->content, &instr);
 }
 
-kefir_result_t kefir_irblock_appendf2(struct kefir_irblock *bcblock, kefir_iropcode_t opcode, float arg1, float arg2) {
+kefir_result_t kefir_irblock_appendi32(struct kefir_irblock *bcblock, kefir_iropcode_t opcode, kefir_int32_t arg1, kefir_int32_t arg2) {
     REQUIRE(bcblock != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block"));
     struct kefir_irinstr instr = {
         .opcode = opcode,
-        .farg_pair = {
-            arg1, arg2
+        .arg = {
+            .i32 = {
+                arg1, arg2
+            }
+        }
+    };
+    return kefir_vector_append(&bcblock->content, &instr);
+}
+
+kefir_result_t kefir_irblock_appendu32(struct kefir_irblock *bcblock, kefir_iropcode_t opcode, kefir_uint32_t arg1, kefir_uint32_t arg2) {
+    REQUIRE(bcblock != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block"));
+    struct kefir_irinstr instr = {
+        .opcode = opcode,
+        .arg = {
+            .u32 = {
+                arg1, arg2
+            }
+        }
+    };
+    return kefir_vector_append(&bcblock->content, &instr);
+}
+
+kefir_result_t kefir_irblock_appendf64(struct kefir_irblock *bcblock, kefir_iropcode_t opcode, kefir_float64_t arg) {
+    REQUIRE(bcblock != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block"));
+    struct kefir_irinstr instr = {
+        .opcode = opcode,
+        .arg = {
+            .f64 = arg
+        }
+    };
+    return kefir_vector_append(&bcblock->content, &instr);
+}
+
+kefir_result_t kefir_irblock_appendf32(struct kefir_irblock *bcblock, kefir_iropcode_t opcode, kefir_float32_t arg1, kefir_float32_t arg2) {
+    REQUIRE(bcblock != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block"));
+    struct kefir_irinstr instr = {
+        .opcode = opcode,
+        .arg = {
+            .f32 = {
+                arg1, arg2
+            }
         }
     };
     return kefir_vector_append(&bcblock->content, &instr);
