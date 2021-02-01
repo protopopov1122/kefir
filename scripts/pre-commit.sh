@@ -3,4 +3,4 @@
 set -e
 ROOT="$(git rev-parse --show-toplevel)"
 
-cd "$ROOT" && make test MEMCHECK=yes -j$(nproc)
+cd "$ROOT" && make generate -B && make test MEMCHECK=yes -j$(nproc)
