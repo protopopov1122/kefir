@@ -4,7 +4,7 @@
 #include "kefir/ir/builder.h"
 #include "kefir/ast/node.h"
 #include "kefir/ast/translator/translator.h"
-#include "kefir/ir/print.h"
+#include "kefir/ir/format.h"
 
 
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
@@ -37,7 +37,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(ast)));
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_FREE(&builder));
 
-    REQUIRE_OK(kefir_ir_print_module(stdout, &module));
+    REQUIRE_OK(kefir_ir_format_module(stdout, &module));
     REQUIRE_OK(kefir_ir_module_free(mem, &module));
     return KEFIR_OK;
 }

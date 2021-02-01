@@ -12,8 +12,8 @@ implement func1 = {
 	body:
 		push	2
 		push	3
-		imul	0
+		imul
 		push	1
-		ineg	0
-		iadd	0
+		ineg
+		iadd
 }
