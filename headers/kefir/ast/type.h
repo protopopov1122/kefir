@@ -95,18 +95,44 @@ SCALAR_TYPE(float);
 SCALAR_TYPE(double);
 #undef SCALAR_TYPE
 
+typedef struct kefir_ast_type_repository {
+    struct kefir_symbol_table symbols;
+    struct kefir_list types;
+} kefir_ast_type_repository_t;
+
 const struct kefir_ast_type *kefir_ast_type_qualified(struct kefir_mem *,
+                                                  struct kefir_ast_type_repository *,
                                                   const struct kefir_ast_type *,
                                                   kefir_bool_t,
                                                   kefir_bool_t,
                                                   kefir_bool_t);
-const struct kefir_ast_type *kefir_ast_type_pointer(struct kefir_mem *, const struct kefir_ast_type *);
-const struct kefir_ast_type *kefir_ast_type_incomplete_structure(struct kefir_mem *, const char *);
-const struct kefir_ast_type *kefir_ast_type_incomplete_union(struct kefir_mem *, const char *);
-const struct kefir_ast_type *kefir_ast_type_structure(struct kefir_mem *, const char *, struct kefir_ast_struct_type **);
-const struct kefir_ast_type *kefir_ast_type_union(struct kefir_mem *, const char *, struct kefir_ast_struct_type **);
-const struct kefir_ast_type *kefir_ast_type_unbounded_array(struct kefir_mem *, const struct kefir_ast_type *);
-const struct kefir_ast_type *kefir_ast_type_array(struct kefir_mem *, const struct kefir_ast_type *, kefir_size_t);
+const struct kefir_ast_type *kefir_ast_type_pointer(struct kefir_mem *,
+                                                struct kefir_ast_type_repository *,
+                                                const struct kefir_ast_type *);
+const struct kefir_ast_type *kefir_ast_type_incomplete_structure(struct kefir_mem *,
+                                                             struct kefir_ast_type_repository *,
+                                                             const char *);
+const struct kefir_ast_type *kefir_ast_type_incomplete_union(struct kefir_mem *,
+                                                         struct kefir_ast_type_repository *,
+                                                         const char *);
+const struct kefir_ast_type *kefir_ast_type_structure(struct kefir_mem *,
+                                                  struct kefir_ast_type_repository *,
+                                                  const char *,
+                                                  struct kefir_ast_struct_type **);
+const struct kefir_ast_type *kefir_ast_type_union(struct kefir_mem *,
+                                              struct kefir_ast_type_repository *,
+                                              const char *,
+                                              struct kefir_ast_struct_type **);
+const struct kefir_ast_type *kefir_ast_type_unbounded_array(struct kefir_mem *,
+                                                        struct kefir_ast_type_repository *,
+                                                        const struct kefir_ast_type *);
+const struct kefir_ast_type *kefir_ast_type_array(struct kefir_mem *,
+                                              struct kefir_ast_type_repository *,
+                                              const struct kefir_ast_type *,
+                                              kefir_size_t);
+
+kefir_result_t kefir_ast_type_repository_init(struct kefir_ast_type_repository *);
+kefir_result_t kefir_ast_type_repository_free(struct kefir_mem *, struct kefir_ast_type_repository *);
 
 #define KEFIR_AST_TYPE_FREE(mem, type) ((type)->ops.free((mem), (type)))
 
