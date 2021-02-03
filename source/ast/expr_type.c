@@ -87,11 +87,14 @@ static kefir_result_t visit_binary_operation(const struct kefir_ast_visitor *vis
         payload);
     REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(param->mem, param->repo, node->arg1));
     REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(param->mem, param->repo, node->arg2));
-    REQUIRE(node->arg1->expression_type->basic && node->arg2->expression_type->basic,
-        KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Binary type derival from non-basic AST types is not supported yet"));
-    param->base->expression_type = kefir_ast_type_common_arithmetic(node->arg1->expression_type, node->arg2->expression_type);
-    REQUIRE(param->base->expression_type != NULL,
-        KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to determine common AST arithmetic type"));
+    if (KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(node->arg1->expression_type) &&
+        KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(node->arg2->expression_type)) {
+        param->base->expression_type = kefir_ast_type_common_arithmetic(node->arg1->expression_type, node->arg2->expression_type);
+        REQUIRE(param->base->expression_type != NULL,
+            KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to determine common AST arithmetic type"));    
+    } else {
+        return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Binary type derival from non-arithmetic AST types is not supported yet");
+    }    
     return KEFIR_OK;
 }
 

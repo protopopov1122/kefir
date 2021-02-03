@@ -88,6 +88,8 @@ kefir_result_t kefir_ir_format_instr(FILE *fp, const struct kefir_ir_module *mod
         case KEFIR_IROPCODE_F64CINT: return kefir_ir_format_instr_none(fp, module, instr);
         case KEFIR_IROPCODE_INTCF32: return kefir_ir_format_instr_none(fp, module, instr);
         case KEFIR_IROPCODE_INTCF64: return kefir_ir_format_instr_none(fp, module, instr);
+        case KEFIR_IROPCODE_UINTCF32: return kefir_ir_format_instr_none(fp, module, instr);
+        case KEFIR_IROPCODE_UINTCF64: return kefir_ir_format_instr_none(fp, module, instr);
         case KEFIR_IROPCODE_F32CF64: return kefir_ir_format_instr_none(fp, module, instr);
         case KEFIR_IROPCODE_F64CF32: return kefir_ir_format_instr_none(fp, module, instr);
     }

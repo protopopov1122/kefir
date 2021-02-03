@@ -16,9 +16,10 @@ implement func1 = {
 		push	1
 		ineg
 		iadd
-		pushf64	0x1p+1
-		pushf64	0x1.8p+1
-		f64mul
+		push	2
+		push	3
+		imul
+		intcf64
 		pushf64	0x1p+0
 		f64add
 }

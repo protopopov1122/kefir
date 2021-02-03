@@ -94,6 +94,8 @@ declare_opcode f32cint
 declare_opcode f64cint
 declare_opcode intcf32
 declare_opcode intcf64
+declare_opcode uintcf32
+declare_opcode uintcf64
 declare_opcode f32cf64
 declare_opcode f64cf32
 ; Runtime
@@ -613,6 +615,9 @@ define_opcode intcf64
     cvtsi2sd xmm0, rax
     movsd [rsp], xmm0
     end_opcode
+
+define_opcode_stub uintcf32
+define_opcode_stub uintcf64
 
 define_opcode f32cf64
     movss xmm0, [rsp]

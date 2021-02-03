@@ -17,6 +17,16 @@ const struct kefir_ast_type *kefir_ast_type_common_arithmetic(const struct kefir
     if (ANY_OF(type1, type2, kefir_ast_type_float())) {
         return kefir_ast_type_float();
     }
+    if (ANY_OF(type1, type2, kefir_ast_type_bool())) {
+        // TODO: Validate this clause according to the stardard
+        if (KEFIR_AST_TYPE_SAME(type1, type2)) {
+            return kefir_ast_type_signed_int();
+        } else if (KEFIR_AST_TYPE_SAME(type1, kefir_ast_type_bool())) {
+            return type2;
+        } else {
+            return type1;
+        }
+    }
     if (type1->basic_traits.signedness == type2->basic_traits.signedness) {
         if (type1->basic_traits.rank > type2->basic_traits.rank) {
             return type1;

@@ -138,4 +138,24 @@ kefir_result_t kefir_ast_type_repository_free(struct kefir_mem *, struct kefir_a
 #define KEFIR_AST_TYPE_SAME(type1, type2) ((type1)->ops.same((type1), (type2)))
 #define KEFIR_AST_TYPE_FREE(mem, type) ((type)->ops.free((mem), (type)))
 
+#define KEFIR_AST_TYPE_IS_SIGNED_INTEGER(base) \
+    ((base)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_CHAR || \
+        (base)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_SHORT || \
+        (base)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_INT || \
+        (base)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_LONG || \
+        (base)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_LONG_LONG)
+#define KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(base) \
+    ((base)->tag == KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR || \
+        (base)->tag == KEFIR_AST_TYPE_SCALAR_UNSIGNED_SHORT || \
+        (base)->tag == KEFIR_AST_TYPE_SCALAR_UNSIGNED_INT || \
+        (base)->tag == KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG || \
+        (base)->tag == KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG_LONG)
+#define KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(base) \
+    (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(base) || \
+        KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(base))
+#define KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(base) \
+    (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(base) || \
+        (base)->tag == KEFIR_AST_TYPE_SCALAR_FLOAT || \
+        (base)->tag == KEFIR_AST_TYPE_SCALAR_DOUBLE)
+
 #endif

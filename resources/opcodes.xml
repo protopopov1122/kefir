@@ -100,6 +100,8 @@
     <opcode id="f64cint"      mnemonic="f64cint"    code="0x91" type="none" />
     <opcode id="intcf32"      mnemonic="intcf32"    code="0x92" type="none" />
     <opcode id="intcf64"      mnemonic="intcf64"    code="0x93" type="none" />
-    <opcode id="f32cf64"      mnemonic="f32cf64"    code="0x94" type="none" />
-    <opcode id="f64cf32"      mnemonic="f64cf32"    code="0x95" type="none" />
+    <opcode id="uintcf32"     mnemonic="uintcf32"   code="0x94" type="none" />
+    <opcode id="uintcf64"     mnemonic="uintcf64"   code="0x95" type="none" />
+    <opcode id="f32cf64"      mnemonic="f32cf64"    code="0x96" type="none" />
+    <opcode id="f64cf32"      mnemonic="f64cf32"    code="0x97" type="none" />
 </opcodes>

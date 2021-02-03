@@ -44,8 +44,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         KEFIR_AST_OPERATION_ADD,
         KEFIR_AST_NODE_BASE(kefir_ast_new_binary_operation(mem,
             KEFIR_AST_OPERATION_MULTIPLY,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 2.0)),
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 3.0)))),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(mem, 2)),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 3)))),
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 1.0)));
     REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(mem, &type_repo, KEFIR_AST_NODE_BASE(ast)));
     REQUIRE_OK(kefir_ast_translate_expression(KEFIR_AST_NODE_BASE(ast), &builder));
