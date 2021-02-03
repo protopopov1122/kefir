@@ -61,6 +61,7 @@ typedef struct kefir_ast_qualified_type {
 } kefir_ast_qualified_type_t;
 
 typedef struct kefir_ast_type_ops {
+    kefir_bool_t (*same)(const struct kefir_ast_type *, const struct kefir_ast_type *);
     kefir_result_t (*free)(struct kefir_mem *, const struct kefir_ast_type *);
 } kefir_ast_type_ops_t;
 
@@ -134,6 +135,7 @@ const struct kefir_ast_type *kefir_ast_type_array(struct kefir_mem *,
 kefir_result_t kefir_ast_type_repository_init(struct kefir_ast_type_repository *);
 kefir_result_t kefir_ast_type_repository_free(struct kefir_mem *, struct kefir_ast_type_repository *);
 
+#define KEFIR_AST_TYPE_SAME(type1, type2) ((type1)->ops.same((type1), (type2)))
 #define KEFIR_AST_TYPE_FREE(mem, type) ((type)->ops.free((mem), (type)))
 
 #endif

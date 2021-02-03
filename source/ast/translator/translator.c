@@ -87,22 +87,79 @@ kefir_result_t translate_binary(const struct kefir_ast_visitor *visitor,
     ASSIGN_DECL_CAST(struct kefir_irbuilder_block *, builder,
         payload);
     REQUIRE_OK(KEFIR_AST_NODE_VISIT(visitor, node->arg1, builder));
+    if (!KEFIR_AST_TYPE_SAME(node->arg1->expression_type, node->base.expression_type)) {
+        // TODO Cast arg1 to the common type
+    }
     REQUIRE_OK(KEFIR_AST_NODE_VISIT(visitor, node->arg2, builder));
-    switch (node->type) {
-        case KEFIR_AST_OPERATION_ADD:
-            return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IADD, 0);
+    if (!KEFIR_AST_TYPE_SAME(node->arg2->expression_type, node->base.expression_type)) {
+        // TODO Cast arg2 to the common type
+    }
+    switch (node->base.expression_type->tag) {
+        case KEFIR_AST_TYPE_SCALAR_DOUBLE:
+            switch (node->type) {
+                case KEFIR_AST_OPERATION_ADD:
+                    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64ADD, 0);
 
-        case KEFIR_AST_OPERATION_SUBTRACT:
-            return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_ISUB, 0);
+                case KEFIR_AST_OPERATION_SUBTRACT:
+                    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64SUB, 0);
 
-        case KEFIR_AST_OPERATION_MULTIPLY:
-            return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IMUL, 0);
+                case KEFIR_AST_OPERATION_MULTIPLY:
+                    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64MUL, 0);
 
-        case KEFIR_AST_OPERATION_DIVIDE:
-            return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IDIV, 0);
-            
+                case KEFIR_AST_OPERATION_DIVIDE:
+                    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64DIV, 0);
+                    
+                default:
+                    return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected AST binary operation");
+            }
+
+        case KEFIR_AST_TYPE_SCALAR_FLOAT:
+            switch (node->type) {
+                case KEFIR_AST_OPERATION_ADD:
+                    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32ADD, 0);
+
+                case KEFIR_AST_OPERATION_SUBTRACT:
+                    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32SUB, 0);
+
+                case KEFIR_AST_OPERATION_MULTIPLY:
+                    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32MUL, 0);
+
+                case KEFIR_AST_OPERATION_DIVIDE:
+                    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32DIV, 0);
+                    
+                default:
+                    return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected AST binary operation");
+            }
+
+        case KEFIR_AST_TYPE_SCALAR_BOOL:
+        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR:
+        case KEFIR_AST_TYPE_SCALAR_SIGNED_CHAR:
+        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_SHORT:
+        case KEFIR_AST_TYPE_SCALAR_SIGNED_SHORT:
+        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_INT:
+        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG:
+        case KEFIR_AST_TYPE_SCALAR_SIGNED_LONG:
+        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG_LONG:
+        case KEFIR_AST_TYPE_SCALAR_SIGNED_LONG_LONG:
+            switch (node->type) {
+                case KEFIR_AST_OPERATION_ADD:
+                    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IADD, 0);
+
+                case KEFIR_AST_OPERATION_SUBTRACT:
+                    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_ISUB, 0);
+
+                case KEFIR_AST_OPERATION_MULTIPLY:
+                    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IMUL, 0);
+
+                case KEFIR_AST_OPERATION_DIVIDE:
+                    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IDIV, 0);
+                    
+                default:
+                    return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected AST binary operation");
+            }
+
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected AST binary operation");
+            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected AST binary operation type");
     }
 }
 

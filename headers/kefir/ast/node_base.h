@@ -4,6 +4,7 @@
 #include "kefir/core/basic-types.h"
 #include "kefir/core/mem.h"
 #include "kefir/ast/constants.h"
+#include "kefir/ast/type.h"
 
 typedef struct kefir_ast_node_base kefir_ast_node_base_t;
 typedef struct kefir_ast_visitor kefir_ast_visitor_t;
@@ -18,6 +19,7 @@ typedef struct kefir_ast_node_class {
 typedef struct kefir_ast_node_base {
     const struct kefir_ast_node_class *klass;
     void *self;
+    const struct kefir_ast_type *expression_type;
 } kefir_ast_node_base_t;
 
 #define KEFIR_AST_NODE_STRUCT(id, content) \

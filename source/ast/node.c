@@ -42,6 +42,7 @@ struct kefir_ast_constant *kefir_ast_new_constant_bool(struct kefir_mem *mem, ke
     REQUIRE(constant != NULL, NULL);
     constant->base.klass = &AST_CONSTANT_CLASS;
     constant->base.self = constant;
+    constant->base.expression_type = NULL;
     constant->type = KEFIR_AST_BOOL_CONSTANT;
     constant->value.boolean = value;
     return constant;
@@ -53,6 +54,7 @@ struct kefir_ast_constant *kefir_ast_new_constant_char(struct kefir_mem *mem, ke
     REQUIRE(constant != NULL, NULL);
     constant->base.klass = &AST_CONSTANT_CLASS;
     constant->base.self = constant;
+    constant->base.expression_type = NULL;
     constant->type = KEFIR_AST_CHAR_CONSTANT;
     constant->value.character = value;
     return constant;
@@ -64,6 +66,7 @@ struct kefir_ast_constant *kefir_ast_new_constant_int(struct kefir_mem *mem, kef
     REQUIRE(constant != NULL, NULL);
     constant->base.klass = &AST_CONSTANT_CLASS;
     constant->base.self = constant;
+    constant->base.expression_type = NULL;
     constant->type = KEFIR_AST_INT_CONSTANT;
     constant->value.integer = value;
     return constant;
@@ -75,6 +78,7 @@ struct kefir_ast_constant *kefir_ast_new_constant_uint(struct kefir_mem *mem, ke
     REQUIRE(constant != NULL, NULL);
     constant->base.klass = &AST_CONSTANT_CLASS;
     constant->base.self = constant;
+    constant->base.expression_type = NULL;
     constant->type = KEFIR_AST_UINT_CONSTANT;
     constant->value.uinteger = value;
     return constant;
@@ -86,6 +90,7 @@ struct kefir_ast_constant *kefir_ast_new_constant_long(struct kefir_mem *mem, ke
     REQUIRE(constant != NULL, NULL);
     constant->base.klass = &AST_CONSTANT_CLASS;
     constant->base.self = constant;
+    constant->base.expression_type = NULL;
     constant->type = KEFIR_AST_LONG_CONSTANT;
     constant->value.long_integer = value;
     return constant;
@@ -97,6 +102,7 @@ struct kefir_ast_constant *kefir_ast_new_constant_ulong(struct kefir_mem *mem, k
     REQUIRE(constant != NULL, NULL);
     constant->base.klass = &AST_CONSTANT_CLASS;
     constant->base.self = constant;
+    constant->base.expression_type = NULL;
     constant->type = KEFIR_AST_ULONG_CONSTANT;
     constant->value.ulong_integer = value;
     return constant;
@@ -108,6 +114,7 @@ struct kefir_ast_constant *kefir_ast_new_constant_long_long(struct kefir_mem *me
     REQUIRE(constant != NULL, NULL);
     constant->base.klass = &AST_CONSTANT_CLASS;
     constant->base.self = constant;
+    constant->base.expression_type = NULL;
     constant->type = KEFIR_AST_LONG_LONG_CONSTANT;
     constant->value.long_long = value;
     return constant;
@@ -119,6 +126,7 @@ struct kefir_ast_constant *kefir_ast_new_constant_ulong_long(struct kefir_mem *m
     REQUIRE(constant != NULL, NULL);
     constant->base.klass = &AST_CONSTANT_CLASS;
     constant->base.self = constant;
+    constant->base.expression_type = NULL;
     constant->type = KEFIR_AST_ULONG_LONG_CONSTANT;
     constant->value.ulong_long = value;
     return constant;
@@ -130,6 +138,7 @@ struct kefir_ast_constant *kefir_ast_new_constant_float(struct kefir_mem *mem, k
     REQUIRE(constant != NULL, NULL);
     constant->base.klass = &AST_CONSTANT_CLASS;
     constant->base.self = constant;
+    constant->base.expression_type = NULL;
     constant->type = KEFIR_AST_FLOAT_CONSTANT;
     constant->value.float32 = value;
     return constant;
@@ -141,6 +150,7 @@ struct kefir_ast_constant *kefir_ast_new_constant_double(struct kefir_mem *mem, 
     REQUIRE(constant != NULL, NULL);
     constant->base.klass = &AST_CONSTANT_CLASS;
     constant->base.self = constant;
+    constant->base.expression_type = NULL;
     constant->type = KEFIR_AST_DOUBLE_CONSTANT;
     constant->value.float64 = value;
     return constant;
@@ -173,6 +183,7 @@ struct kefir_ast_unary_operation *kefir_ast_new_unary_operation(struct kefir_mem
     REQUIRE(oper != NULL, NULL);
     oper->base.klass = &AST_UNARY_OPERATION_CLASS;
     oper->base.self = oper;
+    oper->base.expression_type = NULL;
     oper->type = type;
     oper->arg = arg;
     return oper;
@@ -208,6 +219,7 @@ struct kefir_ast_binary_operation *kefir_ast_new_binary_operation(struct kefir_m
     REQUIRE(oper != NULL, NULL);
     oper->base.klass = &AST_BINARY_OPERATION_CLASS;
     oper->base.self = oper;
+    oper->base.expression_type = NULL;
     oper->type = type;
     oper->arg1 = arg1;
     oper->arg2 = arg2;
