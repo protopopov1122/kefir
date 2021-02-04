@@ -4,7 +4,7 @@
 
 const struct kefir_ast_type *kefir_ast_type_int_promotion(const struct kefir_ast_type *type) {
     REQUIRE(type != NULL, NULL);
-    REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type), NULL);
+    REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type) || type->tag == KEFIR_AST_TYPE_SCALAR_BOOL, NULL);
     if (type->basic_traits.rank < kefir_ast_type_signed_int()->basic_traits.rank) {
         return kefir_ast_type_signed_int();
     }

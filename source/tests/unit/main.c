@@ -34,6 +34,8 @@ DECLARE_CASE(amd64_sysv_abi_allocation_test4);
 DECLARE_CASE(amd64_sysv_abi_allocation_test5);
 DECLARE_CASE(amd64_sysv_abi_allocation_test6);
 
+DECLARE_CASE(ast_type_analysis_integer_promotion1);
+
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
     &amd64_sysv_abi_data_test2,
@@ -64,7 +66,8 @@ TEST_SUITE(mainSuite,
     &amd64_sysv_abi_allocation_test3,
     &amd64_sysv_abi_allocation_test4,
     &amd64_sysv_abi_allocation_test5,
-    &amd64_sysv_abi_allocation_test6
+    &amd64_sysv_abi_allocation_test6,
+    &ast_type_analysis_integer_promotion1
 );
 
 int main(int argc, const char **argv) {
