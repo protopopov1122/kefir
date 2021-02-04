@@ -44,7 +44,7 @@ do
     else
         run_test "$INT_TEST"
     fi
-    $DIFF "$OUTPUT_FILE" "$TESTDIR/$(basename $INT_TEST).result" > "$DIFF_FILE" 2>&1
+    $DIFF "$OUTPUT_FILE" "$TESTDIR/$(basename $(dirname $INT_TEST))/$(basename $INT_TEST).result" > "$DIFF_FILE" 2>&1
     if [[ "x$?" != "x0" ]]; then
         echo "Failed"
         cat "$DIFF_FILE"
