@@ -17,6 +17,8 @@ implement func1 = {
 		ineg
 		iadd
 		push	2
+		push	1
+		ishl
 		push	3
 		imul
 		intcf64

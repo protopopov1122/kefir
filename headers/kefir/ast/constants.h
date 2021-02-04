@@ -33,6 +33,8 @@ typedef enum kefir_ast_binary_operation_type {
     KEFIR_AST_OPERATION_MULTIPLY,
     KEFIR_AST_OPERATION_DIVIDE,
     KEFIR_AST_OPERATION_MODULO,
+    KEFIR_AST_OPERATION_SHIFT_LEFT,
+    KEFIR_AST_OPERATION_SHIFT_RIGHT
 } kefir_ast_binary_operation_type_t;
 
 #endif
