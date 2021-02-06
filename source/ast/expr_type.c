@@ -7,6 +7,7 @@ struct assign_param {
     struct kefir_ast_type_repository *repo;
     struct kefir_mem *mem;
     struct kefir_ast_node_base *base;
+    const struct kefir_ast_basic_types *basic_types;
 };
 
 static kefir_result_t visit_non_expression(const struct kefir_ast_visitor *visitor,
@@ -26,43 +27,43 @@ static kefir_result_t visit_constant(const struct kefir_ast_visitor *visitor,
         payload);
     switch (node->type) {
         case KEFIR_AST_BOOL_CONSTANT:
-            param->base->expression_type = kefir_ast_type_bool();
+            param->base->expression_type = KEFIR_AST_BASIC_TYPE_BOOL(param->basic_types);
             break;
 
         case KEFIR_AST_CHAR_CONSTANT:
-            param->base->expression_type = kefir_ast_type_unsigned_char();
+            param->base->expression_type = KEFIR_AST_BASIC_TYPE_UNSIGNED_CHAR(param->basic_types);
             break;
 
         case KEFIR_AST_INT_CONSTANT:
-            param->base->expression_type = kefir_ast_type_signed_int();
+            param->base->expression_type = KEFIR_AST_BASIC_TYPE_SIGNED_INT(param->basic_types);
             break;
 
         case KEFIR_AST_UINT_CONSTANT:
-            param->base->expression_type = kefir_ast_type_unsigned_int();
+            param->base->expression_type = KEFIR_AST_BASIC_TYPE_UNSIGNED_INT(param->basic_types);
             break;
 
         case KEFIR_AST_LONG_CONSTANT:
-            param->base->expression_type = kefir_ast_type_signed_long();
+            param->base->expression_type = KEFIR_AST_BASIC_TYPE_SIGNED_LONG(param->basic_types);
             break;
 
         case KEFIR_AST_ULONG_CONSTANT:
-            param->base->expression_type = kefir_ast_type_unsigned_long();
+            param->base->expression_type = KEFIR_AST_BASIC_TYPE_UNSIGNED_LONG(param->basic_types);
             break;
 
         case KEFIR_AST_LONG_LONG_CONSTANT:
-            param->base->expression_type = kefir_ast_type_signed_long_long();
+            param->base->expression_type = KEFIR_AST_BASIC_TYPE_SIGNED_LONG_LONG(param->basic_types);
             break;
 
         case KEFIR_AST_ULONG_LONG_CONSTANT:
-            param->base->expression_type = kefir_ast_type_unsigned_long_long();
+            param->base->expression_type = KEFIR_AST_BASIC_TYPE_UNSIGNED_LONG_LONG(param->basic_types);
             break;
 
         case KEFIR_AST_FLOAT_CONSTANT:
-            param->base->expression_type = kefir_ast_type_float();
+            param->base->expression_type = KEFIR_AST_BASIC_TYPE_FLOAT(param->basic_types);
             break;
 
         case KEFIR_AST_DOUBLE_CONSTANT:
-            param->base->expression_type = kefir_ast_type_double();
+            param->base->expression_type = KEFIR_AST_BASIC_TYPE_DOUBLE(param->basic_types);
             break;
     }
     return KEFIR_OK;
@@ -74,7 +75,7 @@ static kefir_result_t visit_unary_operation(const struct kefir_ast_visitor *visi
     UNUSED(visitor);
     ASSIGN_DECL_CAST(struct assign_param *, param,
         payload);
-    REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(param->mem, param->repo, node->arg));
+    REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(param->mem, param->repo, param->basic_types, node->arg));
     param->base->expression_type = node->arg->expression_type;
     return KEFIR_OK;
 }
@@ -85,19 +86,19 @@ static kefir_result_t visit_binary_operation(const struct kefir_ast_visitor *vis
     UNUSED(visitor);
     ASSIGN_DECL_CAST(struct assign_param *, param,
         payload);
-    REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(param->mem, param->repo, node->arg1));
-    REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(param->mem, param->repo, node->arg2));
+    REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(param->mem, param->repo, param->basic_types, node->arg1));
+    REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(param->mem, param->repo, param->basic_types, node->arg2));
     if (node->type == KEFIR_AST_OPERATION_SHIFT_LEFT ||
         node->type == KEFIR_AST_OPERATION_SHIFT_RIGHT) {
         REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(node->arg1->expression_type) &&
             KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(node->arg2->expression_type),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Bitwise shift operator expects integer arguments"));
-        param->base->expression_type = kefir_ast_type_int_promotion(node->arg1->expression_type);
+        param->base->expression_type = kefir_ast_type_int_promotion(param->basic_types, node->arg1->expression_type);
         REQUIRE(param->base->expression_type != NULL,
             KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to determine common AST arithmetic type"));
     } else if (KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(node->arg1->expression_type) &&
         KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(node->arg2->expression_type)) {
-        param->base->expression_type = kefir_ast_type_common_arithmetic(node->arg1->expression_type, node->arg2->expression_type);
+        param->base->expression_type = kefir_ast_type_common_arithmetic(param->basic_types, node->arg1->expression_type, node->arg2->expression_type);
         REQUIRE(param->base->expression_type != NULL,
             KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to determine common AST arithmetic type"));
     } else {
@@ -108,6 +109,7 @@ static kefir_result_t visit_binary_operation(const struct kefir_ast_visitor *vis
 
 kefir_result_t kefir_ast_assign_expression_type(struct kefir_mem *mem,
                                             struct kefir_ast_type_repository *repo,
+                                            const struct kefir_ast_basic_types *basic_types,
                                             struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(repo != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type repository"));
@@ -115,6 +117,7 @@ kefir_result_t kefir_ast_assign_expression_type(struct kefir_mem *mem,
     struct assign_param param = {
         .repo = repo,
         .mem = mem,
+        .basic_types = basic_types,
         .base = base
     };
     struct kefir_ast_visitor visitor;
