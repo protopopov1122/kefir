@@ -36,7 +36,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(mem,
             KEFIR_AST_OPERATION_NEGATE,
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(mem, 1)))));
-    REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(mem, &type_repo, kefir_ast_default_basic_types(), KEFIR_AST_NODE_BASE(ast)));
+    REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(mem, &type_repo, kefir_ast_default_type_traits(), KEFIR_AST_NODE_BASE(ast)));
     REQUIRE_OK(kefir_ast_translate_expression(KEFIR_AST_NODE_BASE(ast), &builder));
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(ast)));
 
@@ -50,7 +50,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(mem, 1)))),
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 3)))),
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 1.0)));
-    REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(mem, &type_repo, kefir_ast_default_basic_types(), KEFIR_AST_NODE_BASE(ast)));
+    REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(mem, &type_repo, kefir_ast_default_type_traits(), KEFIR_AST_NODE_BASE(ast)));
     REQUIRE_OK(kefir_ast_translate_expression(KEFIR_AST_NODE_BASE(ast), &builder));
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(ast)));
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_FREE(&builder));

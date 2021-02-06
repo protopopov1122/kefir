@@ -28,7 +28,7 @@ const struct kefir_ast_type *kefir_ast_type_void() {
     return &SCALAR_VOID;
 }
 
-#define SCALAR_TYPE(id, _tag, _signedness, _rank, _fir_rank) \
+#define SCALAR_TYPE(id, _tag, _signedness, _rank) \
 static const struct kefir_ast_type DEFAULT_SCALAR_##id = { \
     .tag = (_tag), \
     .basic = true, \
@@ -36,47 +36,91 @@ static const struct kefir_ast_type DEFAULT_SCALAR_##id = { \
         .same = same_basic_type, \
         .free = free_nothing \
     }, \
-    .basic_traits = { \
+    .basic_props = { \
         .signedness = (_signedness), \
-        .rank = (_rank), \
-        .fit_rank = (_fir_rank) \
+        .rank = (_rank) \
     } \
-};
+}; \
+\
+const struct kefir_ast_type *kefir_ast_type_##id() { \
+    return &DEFAULT_SCALAR_##id; \
+}
 
-SCALAR_TYPE(bool, KEFIR_AST_TYPE_SCALAR_BOOL, false, 0, 1)
-SCALAR_TYPE(unsigned_char, KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR, false, 1, 1)
-SCALAR_TYPE(signed_char, KEFIR_AST_TYPE_SCALAR_SIGNED_CHAR, true, 1, 1)
-SCALAR_TYPE(unsigned_short, KEFIR_AST_TYPE_SCALAR_UNSIGNED_SHORT, false, 2, 2)
-SCALAR_TYPE(signed_short, KEFIR_AST_TYPE_SCALAR_SIGNED_SHORT, true, 2, 2)
-SCALAR_TYPE(unsigned_int, KEFIR_AST_TYPE_SCALAR_UNSIGNED_INT, false, 3, 3)
-SCALAR_TYPE(signed_int, KEFIR_AST_TYPE_SCALAR_SIGNED_INT, true, 3, 3)
-SCALAR_TYPE(unsigned_long, KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG, false, 4, 4)
-SCALAR_TYPE(signed_long, KEFIR_AST_TYPE_SCALAR_SIGNED_LONG, true, 4, 4)
-SCALAR_TYPE(unsigned_long_long, KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG_LONG, false, 4, 4)
-SCALAR_TYPE(signed_long_long, KEFIR_AST_TYPE_SCALAR_SIGNED_LONG_LONG, true, 4, 4)
-SCALAR_TYPE(float, KEFIR_AST_TYPE_SCALAR_FLOAT, false, 5, 3)
-SCALAR_TYPE(double, KEFIR_AST_TYPE_SCALAR_DOUBLE, false, 6, 4)
+SCALAR_TYPE(bool, KEFIR_AST_TYPE_SCALAR_BOOL, false, 0)
+SCALAR_TYPE(unsigned_char, KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR, false, 1)
+SCALAR_TYPE(signed_char, KEFIR_AST_TYPE_SCALAR_SIGNED_CHAR, true, 1)
+SCALAR_TYPE(unsigned_short, KEFIR_AST_TYPE_SCALAR_UNSIGNED_SHORT, false, 2)
+SCALAR_TYPE(signed_short, KEFIR_AST_TYPE_SCALAR_SIGNED_SHORT, true, 2)
+SCALAR_TYPE(unsigned_int, KEFIR_AST_TYPE_SCALAR_UNSIGNED_INT, false, 3)
+SCALAR_TYPE(signed_int, KEFIR_AST_TYPE_SCALAR_SIGNED_INT, true, 3)
+SCALAR_TYPE(unsigned_long, KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG, false, 4)
+SCALAR_TYPE(signed_long, KEFIR_AST_TYPE_SCALAR_SIGNED_LONG, true, 4)
+SCALAR_TYPE(unsigned_long_long, KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG_LONG, false, 4)
+SCALAR_TYPE(signed_long_long, KEFIR_AST_TYPE_SCALAR_SIGNED_LONG_LONG, true, 4)
+SCALAR_TYPE(float, KEFIR_AST_TYPE_SCALAR_FLOAT, false, 5)
+SCALAR_TYPE(double, KEFIR_AST_TYPE_SCALAR_DOUBLE, false, 6)
 
 #undef SCALAR_TYPE
 
-const struct kefir_ast_basic_types DEFAULT_BASIC_TYPES = {
-    .bool_type = &DEFAULT_SCALAR_bool,
-    .unsigned_char_type = &DEFAULT_SCALAR_unsigned_char,
-    .signed_char_type = &DEFAULT_SCALAR_signed_char,
-    .unsigned_short_type = &DEFAULT_SCALAR_unsigned_short,
-    .signed_short_type = &DEFAULT_SCALAR_signed_short,
-    .unsigned_int_type = &DEFAULT_SCALAR_unsigned_int,
-    .signed_int_type = &DEFAULT_SCALAR_signed_int,
-    .unsigned_long_type = &DEFAULT_SCALAR_unsigned_long,
-    .signed_long_type = &DEFAULT_SCALAR_signed_long,
-    .unsigned_long_long_type = &DEFAULT_SCALAR_unsigned_long_long,
-    .signed_long_long_type = &DEFAULT_SCALAR_signed_long_long,
-    .float_type = &DEFAULT_SCALAR_float,
-    .double_type = &DEFAULT_SCALAR_double
+static kefir_size_t default_integral_type_fit_rank(const struct kefir_ast_type *type) {
+    switch (type->tag) {
+        case KEFIR_AST_TYPE_SCALAR_BOOL:
+        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR:
+        case KEFIR_AST_TYPE_SCALAR_SIGNED_CHAR:
+            return 1;
+
+        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_SHORT:
+        case KEFIR_AST_TYPE_SCALAR_SIGNED_SHORT:
+            return 2;
+
+        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_INT:
+        case KEFIR_AST_TYPE_SCALAR_SIGNED_INT:
+            return 4;
+
+        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG:
+        case KEFIR_AST_TYPE_SCALAR_SIGNED_LONG:
+        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG_LONG:
+        case KEFIR_AST_TYPE_SCALAR_SIGNED_LONG_LONG:
+            return 8;
+        
+        default:
+            return 0;
+    }
+}
+
+static kefir_result_t default_integral_type_fits(const struct kefir_ast_type_traits *type_traits,
+                                               const struct kefir_ast_type *source,
+                                               const struct kefir_ast_type *dest,
+                                               kefir_bool_t *result) {
+    UNUSED(type_traits);
+    REQUIRE(source != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid source AST type"));
+    REQUIRE(dest != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid destination AST type"));
+    REQUIRE(result != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid result pointer"));
+    REQUIRE((KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(source) || source->tag == KEFIR_AST_TYPE_SCALAR_BOOL) &&
+        (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(dest) || dest->tag == KEFIR_AST_TYPE_SCALAR_BOOL),
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected both source and destination to be basic types"));
+    kefir_size_t source_fit = default_integral_type_fit_rank(source);
+    kefir_size_t dest_fit = default_integral_type_fit_rank(dest);
+    REQUIRE(source_fit != 0 && dest_fit != 0,
+        KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected integral type"));
+    if (source->basic_props.signedness == dest->basic_props.signedness ||
+        (source->basic_props.signedness && !dest->basic_props.signedness)) {
+        *result = source_fit <= dest_fit;
+    } else if (!source->basic_props.signedness && dest->basic_props.signedness) {
+        *result = source_fit < dest_fit;
+    } else {
+        *result = false;
+    }
+    return KEFIR_OK;
+}
+
+const struct kefir_ast_type_traits DEFAULT_TYPE_TRAITS = {
+    .integral_type_fits = default_integral_type_fits,
+    .payload = NULL
 };
 
-const struct kefir_ast_basic_types *kefir_ast_default_basic_types() {
-    return &DEFAULT_BASIC_TYPES;
+const struct kefir_ast_type_traits *kefir_ast_default_type_traits() {
+    return &DEFAULT_TYPE_TRAITS;
 }
 
 static kefir_result_t free_qualified_type(struct kefir_mem *mem, const struct kefir_ast_type *type) {
@@ -450,41 +494,42 @@ kefir_result_t kefir_ast_type_repository_free(struct kefir_mem *mem, struct kefi
     return KEFIR_OK;
 }
 
-const struct kefir_ast_type *kefir_ast_type_flip_integer_singedness(const struct kefir_ast_basic_types *basic_types,
+const struct kefir_ast_type *kefir_ast_type_flip_integer_singedness(const struct kefir_ast_type_traits *type_traits,
                                                                 const struct kefir_ast_type *type) {
+    UNUSED(type_traits);
     switch (type->tag) {
         case KEFIR_AST_TYPE_SCALAR_BOOL:
             return type;
 
         case KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR:
-            return KEFIR_AST_BASIC_TYPE_SIGNED_CHAR(basic_types);
+            return kefir_ast_type_signed_char();
 
         case KEFIR_AST_TYPE_SCALAR_SIGNED_CHAR:
-            return KEFIR_AST_BASIC_TYPE_UNSIGNED_CHAR(basic_types);
+            return kefir_ast_type_unsigned_char();
 
         case KEFIR_AST_TYPE_SCALAR_UNSIGNED_SHORT:
-            return KEFIR_AST_BASIC_TYPE_SIGNED_SHORT(basic_types);
+            return kefir_ast_type_signed_short();
 
         case KEFIR_AST_TYPE_SCALAR_SIGNED_SHORT:
-            return KEFIR_AST_BASIC_TYPE_UNSIGNED_SHORT(basic_types);
+            return kefir_ast_type_unsigned_short();
 
         case KEFIR_AST_TYPE_SCALAR_UNSIGNED_INT:
-            return KEFIR_AST_BASIC_TYPE_SIGNED_INT(basic_types);
+            return kefir_ast_type_signed_int();
 
         case KEFIR_AST_TYPE_SCALAR_SIGNED_INT:
-            return KEFIR_AST_BASIC_TYPE_UNSIGNED_INT(basic_types);
+            return kefir_ast_type_unsigned_int();
 
         case KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG:
-            return KEFIR_AST_BASIC_TYPE_SIGNED_LONG(basic_types);
+            return kefir_ast_type_signed_long();
 
         case KEFIR_AST_TYPE_SCALAR_SIGNED_LONG:
-            return KEFIR_AST_BASIC_TYPE_UNSIGNED_LONG(basic_types);
+            return kefir_ast_type_unsigned_long();
 
         case KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG_LONG:
-            return KEFIR_AST_BASIC_TYPE_SIGNED_LONG_LONG(basic_types);
+            return kefir_ast_type_signed_long_long();
 
         case KEFIR_AST_TYPE_SCALAR_SIGNED_LONG_LONG:
-            return KEFIR_AST_BASIC_TYPE_UNSIGNED_LONG_LONG(basic_types);
+            return kefir_ast_type_unsigned_long_long();
         
         default:
             return NULL;

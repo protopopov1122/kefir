@@ -7,7 +7,7 @@
 
 kefir_result_t kefir_ast_assign_expression_type(struct kefir_mem *,
                                             struct kefir_ast_type_repository *,
-                                            const struct kefir_ast_basic_types *,
+                                            const struct kefir_ast_type_traits *,
                                             struct kefir_ast_node_base *);
 
 #define KEFIR_AST_ASSIGN_EXPRESSION_TYPE(mem, repo, basic_types, base) \

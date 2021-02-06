@@ -29,11 +29,10 @@ typedef enum kefir_ast_type_tag {
     KEFIR_AST_TYPE_QUALIFIED
 } kefir_ast_type_tag_t;
 
-typedef struct kefir_ast_basic_type_traits {
+typedef struct kefir_ast_basic_type_properties {
     kefir_bool_t signedness;
     kefir_size_t rank;
-    kefir_size_t fit_rank;
-} kefir_ast_basic_type_traits_t;
+} kefir_ast_basic_type_properties_t;
 
 typedef struct kefir_ast_struct_field {
     const char *identifier;
@@ -71,7 +70,7 @@ typedef struct kefir_ast_type {
     kefir_bool_t basic;
     struct kefir_ast_type_ops ops;
     union {
-        struct kefir_ast_basic_type_traits basic_traits;
+        struct kefir_ast_basic_type_properties basic_props;
         const struct kefir_ast_type *pointer_to;
         struct kefir_ast_struct_type structure;
         struct kefir_ast_array_type array;
@@ -79,46 +78,39 @@ typedef struct kefir_ast_type {
     };
 } kefir_ast_type_t;
 
-typedef struct kefir_ast_basic_types {
-    #define SCALAR_TYPE(id) \
-        const struct kefir_ast_type *id##_type
-    SCALAR_TYPE(bool);
-    SCALAR_TYPE(unsigned_char);
-    SCALAR_TYPE(signed_char);
-    SCALAR_TYPE(unsigned_short);
-    SCALAR_TYPE(signed_short);
-    SCALAR_TYPE(unsigned_int);
-    SCALAR_TYPE(signed_int);
-    SCALAR_TYPE(unsigned_long);
-    SCALAR_TYPE(signed_long);
-    SCALAR_TYPE(unsigned_long_long);
-    SCALAR_TYPE(signed_long_long);
-    SCALAR_TYPE(float);
-    SCALAR_TYPE(double);
-    #undef SCALAR_TYPE
-} kefir_ast_basic_types_t;
+typedef struct kefir_ast_type_traits {
+    kefir_result_t (*integral_type_fits)(const struct kefir_ast_type_traits *,
+                                    const struct kefir_ast_type *,
+                                    const struct kefir_ast_type *,
+                                    kefir_bool_t *);
 
-#define KEFIR_AST_BASIC_TYPE_BOOL(types) ((types)->bool_type)
-#define KEFIR_AST_BASIC_TYPE_UNSIGNED_CHAR(types) ((types)->unsigned_char_type)
-#define KEFIR_AST_BASIC_TYPE_SIGNED_CHAR(types) ((types)->signed_char_type)
-#define KEFIR_AST_BASIC_TYPE_UNSIGNED_SHORT(types) ((types)->unsigned_short_type)
-#define KEFIR_AST_BASIC_TYPE_SIGNED_SHORT(types) ((types)->signed_short_type)
-#define KEFIR_AST_BASIC_TYPE_UNSIGNED_INT(types) ((types)->unsigned_int_type)
-#define KEFIR_AST_BASIC_TYPE_SIGNED_INT(types) ((types)->signed_int_type)
-#define KEFIR_AST_BASIC_TYPE_UNSIGNED_LONG(types) ((types)->unsigned_long_type)
-#define KEFIR_AST_BASIC_TYPE_SIGNED_LONG(types) ((types)->signed_long_type)
-#define KEFIR_AST_BASIC_TYPE_UNSIGNED_LONG_LONG(types) ((types)->unsigned_long_long_type)
-#define KEFIR_AST_BASIC_TYPE_SIGNED_LONG_LONG(types) ((types)->signed_long_long_type)
-#define KEFIR_AST_BASIC_TYPE_FLOAT(types) ((types)->float_type)
-#define KEFIR_AST_BASIC_TYPE_DOUBLE(types) ((types)->double_type)
+    void *payload;
+} kefir_ast_type_traits_t;
 
 typedef struct kefir_ast_type_repository {
     struct kefir_symbol_table symbols;
     struct kefir_list types;
 } kefir_ast_type_repository_t;
 
-const struct kefir_ast_type *kefir_ast_type_void();
-const struct kefir_ast_basic_types *kefir_ast_default_basic_types();
+const struct kefir_ast_type_traits *kefir_ast_default_type_traits();
+
+#define SCALAR_TYPE(id) \
+    const struct kefir_ast_type *kefir_ast_type_##id()
+SCALAR_TYPE(void);
+SCALAR_TYPE(bool);
+SCALAR_TYPE(unsigned_char);
+SCALAR_TYPE(signed_char);
+SCALAR_TYPE(unsigned_short);
+SCALAR_TYPE(signed_short);
+SCALAR_TYPE(unsigned_int);
+SCALAR_TYPE(signed_int);
+SCALAR_TYPE(unsigned_long);
+SCALAR_TYPE(signed_long);
+SCALAR_TYPE(unsigned_long_long);
+SCALAR_TYPE(signed_long_long);
+SCALAR_TYPE(float);
+SCALAR_TYPE(double);
+#undef SCALAR_TYPE
 const struct kefir_ast_type *kefir_ast_type_qualified(struct kefir_mem *,
                                                   struct kefir_ast_type_repository *,
                                                   const struct kefir_ast_type *,
@@ -176,7 +168,7 @@ kefir_result_t kefir_ast_type_repository_free(struct kefir_mem *, struct kefir_a
         (base)->tag == KEFIR_AST_TYPE_SCALAR_FLOAT || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_DOUBLE)
 
-const struct kefir_ast_type *kefir_ast_type_flip_integer_singedness(const struct kefir_ast_basic_types *,
+const struct kefir_ast_type *kefir_ast_type_flip_integer_singedness(const struct kefir_ast_type_traits *,
                                                                 const struct kefir_ast_type *);
 
 #endif
