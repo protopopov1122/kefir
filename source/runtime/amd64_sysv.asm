@@ -616,8 +616,41 @@ define_opcode intcf64
     movsd [rsp], xmm0
     end_opcode
 
-define_opcode_stub uintcf32
-define_opcode_stub uintcf64
+define_opcode uintcf32
+    mov DATA_REG, [rsp]
+    pxor xmm0, xmm0
+    test DATA_REG, DATA_REG
+    js __kefirrt_uintcf32_signed
+    cvtsi2ss        xmm0, DATA_REG
+    movss [rsp], xmm0
+    end_opcode
+__kefirrt_uintcf32_signed:
+    mov DATA2_REG, DATA_REG
+    shr DATA2_REG, 1
+    and DATA_REG, 1
+    or  DATA_REG, DATA2_REG
+    cvtsi2ss xmm0, DATA_REG
+    addss xmm0, xmm0
+    movss [rsp], xmm0
+    end_opcode
+
+define_opcode uintcf64
+    mov DATA_REG, [rsp]
+    pxor xmm0, xmm0
+    test DATA_REG, DATA_REG
+    js __kefirrt_uintcf64_signed
+    cvtsi2sd xmm0, DATA_REG
+    movsd [rsp], xmm0
+    end_opcode
+__kefirrt_uintcf64_signed:
+    mov DATA2_REG, DATA_REG
+    shr DATA2_REG, 1
+    and DATA_REG, 1
+    or  DATA_REG, DATA2_REG
+    cvtsi2sd xmm0, DATA_REG
+    addsd xmm0, xmm0
+    movsd [rsp], xmm0
+    end_opcode
 
 define_opcode f32cf64
     movss xmm0, [rsp]

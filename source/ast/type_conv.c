@@ -63,8 +63,8 @@ const struct kefir_ast_type *kefir_ast_type_common_arithmetic(const struct kefir
         return type2;
     }
     if (type1->basic_props.signedness) {
-        return kefir_ast_type_flip_integer_singedness(type_traits, type1);
+        return kefir_ast_type_flip_integer_singedness(type1);
     } else {
-        return kefir_ast_type_flip_integer_singedness(type_traits, type2);
+        return kefir_ast_type_flip_integer_singedness(type2);
     }
 }

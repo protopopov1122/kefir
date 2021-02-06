@@ -98,6 +98,34 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_type_append_v(mem, doubleToFloat->declaration->result, KEFIR_IR_TYPE_FLOAT32, 0, 3);
     kefir_irbuilder_block_appendi64(mem, &doubleToFloat->body, KEFIR_IROPCODE_F64CF32, 0);
 
+    struct kefir_ir_type *ulongToFloat_decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL),
+                       *ulongToFloat_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    REQUIRE(ulongToFloat_decl_params != NULL, KEFIR_INTERNAL_ERROR);
+    REQUIRE(ulongToFloat_decl_result != NULL, KEFIR_INTERNAL_ERROR);
+    struct kefir_ir_function_decl *ulongToFloat_decl =
+        kefir_ir_module_new_function_declaration(mem, &module, "ulongToFloat", NULL, ulongToFloat_decl_params, false, ulongToFloat_decl_result);
+    REQUIRE(ulongToFloat_decl != NULL, KEFIR_INTERNAL_ERROR);
+    struct kefir_ir_function *ulongToFloat = kefir_ir_module_new_function(mem, &module, ulongToFloat_decl->identifier, NULL, 1024);
+    REQUIRE(ulongToFloat != NULL, KEFIR_INTERNAL_ERROR);
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, ulongToFloat_decl->identifier));
+    kefir_irbuilder_type_append_v(mem, ulongToFloat->declaration->params, KEFIR_IR_TYPE_LONG, 0, 0);
+    kefir_irbuilder_type_append_v(mem, ulongToFloat->declaration->result, KEFIR_IR_TYPE_FLOAT32, 0, 3);
+    kefir_irbuilder_block_appendi64(mem, &ulongToFloat->body, KEFIR_IROPCODE_UINTCF32, 0);
+
+    struct kefir_ir_type *ulongToDouble_decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL),
+                       *ulongToDouble_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    REQUIRE(ulongToDouble_decl_params != NULL, KEFIR_INTERNAL_ERROR);
+    REQUIRE(ulongToDouble_decl_result != NULL, KEFIR_INTERNAL_ERROR);
+    struct kefir_ir_function_decl *ulongToDouble_decl =
+        kefir_ir_module_new_function_declaration(mem, &module, "ulongToDouble", NULL, ulongToDouble_decl_params, false, ulongToDouble_decl_result);
+    REQUIRE(ulongToDouble_decl != NULL, KEFIR_INTERNAL_ERROR);
+    struct kefir_ir_function *ulongToDouble = kefir_ir_module_new_function(mem, &module, ulongToDouble_decl->identifier, NULL, 1024);
+    REQUIRE(ulongToDouble != NULL, KEFIR_INTERNAL_ERROR);
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, ulongToDouble_decl->identifier));
+    kefir_irbuilder_type_append_v(mem, ulongToDouble->declaration->params, KEFIR_IR_TYPE_LONG, 0, 0);
+    kefir_irbuilder_type_append_v(mem, ulongToDouble->declaration->result, KEFIR_IR_TYPE_FLOAT64, 0, 3);
+    kefir_irbuilder_block_appendi64(mem, &ulongToDouble->body, KEFIR_IROPCODE_UINTCF64, 0);
+
     KEFIR_CODEGEN_TRANSLATE(mem, &codegen.iface, &module);
     KEFIR_CODEGEN_CLOSE(&codegen.iface);
     REQUIRE_OK(kefir_ir_module_free(mem, &module));

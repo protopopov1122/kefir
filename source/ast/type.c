@@ -494,9 +494,7 @@ kefir_result_t kefir_ast_type_repository_free(struct kefir_mem *mem, struct kefi
     return KEFIR_OK;
 }
 
-const struct kefir_ast_type *kefir_ast_type_flip_integer_singedness(const struct kefir_ast_type_traits *type_traits,
-                                                                const struct kefir_ast_type *type) {
-    UNUSED(type_traits);
+const struct kefir_ast_type *kefir_ast_type_flip_integer_singedness(const struct kefir_ast_type *type) {
     switch (type->tag) {
         case KEFIR_AST_TYPE_SCALAR_BOOL:
             return type;

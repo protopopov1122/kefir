@@ -10,6 +10,8 @@ float longToFloat(long);
 double longToDouble(long);
 double floatToDouble(float);
 float doubleToFloat(double);
+float ulongToFloat(unsigned long);
+double ulongToDouble(unsigned long);
 
 int main(int argc, const char **argv) {
     UNUSED(argc);
@@ -23,6 +25,12 @@ int main(int argc, const char **argv) {
     for (long i = -1000; i < 1000; i++) {
         ASSERT(FLOAT_EQUALS(longToFloat((long) i), (float) i, FLOAT_EPSILON));
         ASSERT(DOUBLE_EQUALS(longToDouble((long) i), (double) i, DOUBLE_EPSILON));
+    }
+    for (unsigned long i = 0; i < 10000; i++) {
+        ASSERT(FLOAT_EQUALS(ulongToFloat(i), (float) i, FLOAT_EPSILON));
+        ASSERT(DOUBLE_EQUALS(ulongToDouble(i), (double) i, DOUBLE_EPSILON));
+        ASSERT(FLOAT_EQUALS(ulongToFloat(ULONG_MAX - i), (float) (ULONG_MAX - i), FLOAT_EPSILON));
+        ASSERT(DOUBLE_EQUALS(ulongToDouble(ULONG_MAX - i), (double) (ULONG_MAX - i), DOUBLE_EPSILON));
     }
     return EXIT_SUCCESS;
 }
