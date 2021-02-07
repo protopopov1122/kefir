@@ -58,6 +58,86 @@ kefir_result_t translate_constant(const struct kefir_ast_visitor *visitor,
     }
 }
 
+static kefir_result_t unary_prologue(const struct kefir_ast_visitor *visitor,
+                                   struct kefir_irbuilder_block *builder,
+                                   const struct kefir_ast_unary_operation *node) {
+    REQUIRE_OK(KEFIR_AST_NODE_VISIT(visitor, node->arg, builder));
+    if (!KEFIR_AST_TYPE_SAME(node->arg->expression_type, node->base.expression_type)) {
+        kefir_ast_translate_typeconv(builder, node->arg->expression_type, node->base.expression_type);
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t translate_arithmetic_unary(const struct kefir_ast_visitor *visitor,
+                                               struct kefir_irbuilder_block *builder,
+                                               const struct kefir_ast_unary_operation *node) {
+    REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(node->arg->expression_type),
+        KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Non-arithmetic unary AST expressions are not supported"));
+    REQUIRE_OK(unary_prologue(visitor, builder, node));
+    switch (node->base.expression_type->tag) {
+        case KEFIR_AST_TYPE_SCALAR_DOUBLE:
+            switch (node->type) {
+                case KEFIR_AST_OPERATION_PLUS:
+                    return KEFIR_OK;
+                        
+                case KEFIR_AST_OPERATION_NEGATE:
+                    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64NEG, 0);
+                
+                default:
+                    break;
+            }
+            break;
+
+        case KEFIR_AST_TYPE_SCALAR_FLOAT:
+            switch (node->type) {
+                case KEFIR_AST_OPERATION_PLUS:
+                    return KEFIR_OK;
+                        
+                case KEFIR_AST_OPERATION_NEGATE:
+                    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32NEG, 0);
+
+                default:
+                    break;
+            }
+            break;
+
+        default:
+            if (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(node->base.expression_type) ||
+                KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(node->base.expression_type)) {
+                switch (node->type) {
+                    case KEFIR_AST_OPERATION_PLUS:
+                        return KEFIR_OK;
+
+                    case KEFIR_AST_OPERATION_NEGATE:
+                        return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_INEG, 0);
+
+                    default:
+                        break;
+                }
+            }
+            break;
+    }
+    return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unsupported combination of operation and types");
+}
+
+static kefir_result_t translate_unary_inversion(const struct kefir_ast_visitor *visitor,
+                                              struct kefir_irbuilder_block *builder,
+                                              const struct kefir_ast_unary_operation *node) {
+    REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(node->arg->expression_type),
+        KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Non-arithmetic unary AST expressions are not supported"));
+    REQUIRE_OK(unary_prologue(visitor, builder, node));
+    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_INOT, 0);
+}
+
+static kefir_result_t translate_logical_not_inversion(const struct kefir_ast_visitor *visitor,
+                                                    struct kefir_irbuilder_block *builder,
+                                                    const struct kefir_ast_unary_operation *node) {
+    REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(node->arg->expression_type),
+        KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Non-scalar unary AST expressions are not supported"));
+    REQUIRE_OK(unary_prologue(visitor, builder, node));
+    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_BNOT, 0);
+}
+
 kefir_result_t translate_unary(const struct kefir_ast_visitor *visitor,
                              const struct kefir_ast_unary_operation *node,
                              void *payload) {
@@ -66,13 +146,16 @@ kefir_result_t translate_unary(const struct kefir_ast_visitor *visitor,
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct kefir_irbuilder_block *, builder,
         payload);
-    REQUIRE_OK(KEFIR_AST_NODE_VISIT(visitor, node->arg, builder));
     switch (node->type) {
+        case KEFIR_AST_OPERATION_PLUS:
         case KEFIR_AST_OPERATION_NEGATE:
-            return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_INEG, 0);
+            return translate_arithmetic_unary(visitor, builder, node);
 
         case KEFIR_AST_OPERATION_INVERT:
-            return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_INOT, 0);
+            return translate_unary_inversion(visitor, builder, node);;
+
+        case KEFIR_AST_OPERATION_LOGICAL_NEGATE:
+            return translate_logical_not_inversion(visitor, builder, node);
             
         default:
             return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected AST unary operation");

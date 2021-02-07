@@ -23,8 +23,10 @@ typedef enum kefir_ast_constant_type {
 } kefir_ast_constant_type_t;
 
 typedef enum kefir_ast_unary_operation_type {
+    KEFIR_AST_OPERATION_PLUS,
     KEFIR_AST_OPERATION_NEGATE,
-    KEFIR_AST_OPERATION_INVERT
+    KEFIR_AST_OPERATION_INVERT,
+    KEFIR_AST_OPERATION_LOGICAL_NEGATE,
 } kefir_ast_unary_operation_type_t;
 
 typedef enum kefir_ast_binary_operation_type {

@@ -76,6 +76,33 @@ static kefir_result_t visit_unary_operation(const struct kefir_ast_visitor *visi
     ASSIGN_DECL_CAST(struct assign_param *, param,
         payload);
     REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(param->mem, param->repo, param->type_traits, node->arg));
+    switch (node->type) {
+        case KEFIR_AST_OPERATION_PLUS:
+        case KEFIR_AST_OPERATION_NEGATE:
+            REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(node->arg->expression_type),
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected arithmetic argument of unary +|-"));
+            if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(node->arg->expression_type)) {
+                param->base->expression_type = kefir_ast_type_int_promotion(param->type_traits, node->arg->expression_type);
+            } else {
+                param->base->expression_type = node->arg->expression_type;
+            }
+            break;
+        
+        case KEFIR_AST_OPERATION_INVERT:
+            REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(node->arg->expression_type),
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected integral argument of bitwise inversion"));
+            param->base->expression_type = kefir_ast_type_int_promotion(param->type_traits, node->arg->expression_type);
+            break;
+
+        case KEFIR_AST_OPERATION_LOGICAL_NEGATE:
+            REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(node->arg->expression_type),
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected type argument of logical negation"));
+            param->base->expression_type = kefir_ast_type_signed_int();
+            break;
+
+        default:
+            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected unary AST node type");
+    }
     param->base->expression_type = node->arg->expression_type;
     return KEFIR_OK;
 }

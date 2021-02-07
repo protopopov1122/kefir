@@ -167,6 +167,9 @@ kefir_result_t kefir_ast_type_repository_free(struct kefir_mem *, struct kefir_a
     (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(base) || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_FLOAT || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_DOUBLE)
+#define KEFIR_AST_TYPE_IS_SCALAR_TYPE(base) \
+    (KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(base) || \
+        (base)->tag == KEFIR_AST_TYPE_SCALAR_POINTER)
 
 const struct kefir_ast_type *kefir_ast_type_flip_integer_singedness(const struct kefir_ast_type *);
 
