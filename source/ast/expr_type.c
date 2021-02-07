@@ -76,26 +76,27 @@ static kefir_result_t visit_unary_operation(const struct kefir_ast_visitor *visi
     ASSIGN_DECL_CAST(struct assign_param *, param,
         payload);
     REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(param->mem, param->repo, param->type_traits, node->arg));
+    const struct kefir_ast_type *type1 = kefir_ast_unqualified_type(node->arg->expression_type);
     switch (node->type) {
         case KEFIR_AST_OPERATION_PLUS:
         case KEFIR_AST_OPERATION_NEGATE:
-            REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(node->arg->expression_type),
+            REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1),
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected arithmetic argument of unary +|-"));
-            if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(node->arg->expression_type)) {
-                param->base->expression_type = kefir_ast_type_int_promotion(param->type_traits, node->arg->expression_type);
+            if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1)) {
+                param->base->expression_type = kefir_ast_type_int_promotion(param->type_traits, type1);
             } else {
-                param->base->expression_type = node->arg->expression_type;
+                param->base->expression_type = type1;
             }
             break;
         
         case KEFIR_AST_OPERATION_INVERT:
-            REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(node->arg->expression_type),
+            REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1),
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected integral argument of bitwise inversion"));
-            param->base->expression_type = kefir_ast_type_int_promotion(param->type_traits, node->arg->expression_type);
+            param->base->expression_type = kefir_ast_type_int_promotion(param->type_traits, type1);
             break;
 
         case KEFIR_AST_OPERATION_LOGICAL_NEGATE:
-            REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(node->arg->expression_type),
+            REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(type1),
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected type argument of logical negation"));
             param->base->expression_type = kefir_ast_type_signed_int();
             break;
@@ -103,7 +104,7 @@ static kefir_result_t visit_unary_operation(const struct kefir_ast_visitor *visi
         default:
             return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected unary AST node type");
     }
-    param->base->expression_type = node->arg->expression_type;
+    param->base->expression_type = type1;
     return KEFIR_OK;
 }
 
@@ -115,22 +116,24 @@ static kefir_result_t visit_binary_operation(const struct kefir_ast_visitor *vis
         payload);
     REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(param->mem, param->repo, param->type_traits, node->arg1));
     REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(param->mem, param->repo, param->type_traits, node->arg2));
+    const struct kefir_ast_type *type1 = kefir_ast_unqualified_type(node->arg1->expression_type);
+    const struct kefir_ast_type *type2 = kefir_ast_unqualified_type(node->arg2->expression_type);
     if (node->type == KEFIR_AST_OPERATION_SHIFT_LEFT ||
         node->type == KEFIR_AST_OPERATION_SHIFT_RIGHT) {
-        REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(node->arg1->expression_type) &&
-            KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(node->arg2->expression_type),
+        REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1) &&
+            KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type2),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Bitwise shift operator expects integer arguments"));
-        param->base->expression_type = kefir_ast_type_int_promotion(param->type_traits, node->arg1->expression_type);
+        param->base->expression_type = kefir_ast_type_int_promotion(param->type_traits, type1);
         REQUIRE(param->base->expression_type != NULL,
             KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to determine common AST arithmetic type"));
-    } else if (KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(node->arg1->expression_type) &&
-        KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(node->arg2->expression_type)) {
-        param->base->expression_type = kefir_ast_type_common_arithmetic(param->type_traits, node->arg1->expression_type, node->arg2->expression_type);
+    } else if (KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1) &&
+        KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type2)) {
+        param->base->expression_type = kefir_ast_type_common_arithmetic(param->type_traits, type1, type2);
         REQUIRE(param->base->expression_type != NULL,
             KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to determine common AST arithmetic type"));
     } else {
         return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Binary type derival from non-arithmetic AST types is not supported yet");
-    }    
+    }
     return KEFIR_OK;
 }
 
