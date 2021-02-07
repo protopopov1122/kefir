@@ -82,10 +82,12 @@
     <opcode id="f32sub"       mnemonic="f32sub"     code="0x73" type="none" />
     <opcode id="f32mul"       mnemonic="f32mul"     code="0x74" type="none" />
     <opcode id="f32div"       mnemonic="f32div"     code="0x75" type="none" />
-    <opcode id="f64add"       mnemonic="f64add"     code="0x76" type="none" />
-    <opcode id="f64sub"       mnemonic="f64sub"     code="0x77" type="none" />
-    <opcode id="f64mul"       mnemonic="f64mul"     code="0x78" type="none" />
-    <opcode id="f64div"       mnemonic="f64div"     code="0x79" type="none" />
+    <opcode id="f32neg"       mnemonic="f32neg"     code="0x76" type="none" />
+    <opcode id="f64add"       mnemonic="f64add"     code="0x77" type="none" />
+    <opcode id="f64sub"       mnemonic="f64sub"     code="0x78" type="none" />
+    <opcode id="f64mul"       mnemonic="f64mul"     code="0x79" type="none" />
+    <opcode id="f64div"       mnemonic="f64div"     code="0x7a" type="none" />
+    <opcode id="f64neg"       mnemonic="f64neg"     code="0x7b" type="none" />
 
     <!-- Floating-point comparison -->
     <opcode id="f32equals"    mnemonic="f32equals"  code="0x80" type="none" />

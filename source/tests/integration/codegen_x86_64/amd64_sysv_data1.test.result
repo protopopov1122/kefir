@@ -54,10 +54,12 @@ extern __kefirrt_f32add_impl
 extern __kefirrt_f32sub_impl
 extern __kefirrt_f32mul_impl
 extern __kefirrt_f32div_impl
+extern __kefirrt_f32neg_impl
 extern __kefirrt_f64add_impl
 extern __kefirrt_f64sub_impl
 extern __kefirrt_f64mul_impl
 extern __kefirrt_f64div_impl
+extern __kefirrt_f64neg_impl
 extern __kefirrt_f32equals_impl
 extern __kefirrt_f32greater_impl
 extern __kefirrt_f32lesser_impl

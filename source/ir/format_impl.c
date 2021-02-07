@@ -74,10 +74,12 @@ kefir_result_t kefir_ir_format_instr(FILE *fp, const struct kefir_ir_module *mod
         case KEFIR_IROPCODE_F32SUB: return kefir_ir_format_instr_none(fp, module, instr);
         case KEFIR_IROPCODE_F32MUL: return kefir_ir_format_instr_none(fp, module, instr);
         case KEFIR_IROPCODE_F32DIV: return kefir_ir_format_instr_none(fp, module, instr);
+        case KEFIR_IROPCODE_F32NEG: return kefir_ir_format_instr_none(fp, module, instr);
         case KEFIR_IROPCODE_F64ADD: return kefir_ir_format_instr_none(fp, module, instr);
         case KEFIR_IROPCODE_F64SUB: return kefir_ir_format_instr_none(fp, module, instr);
         case KEFIR_IROPCODE_F64MUL: return kefir_ir_format_instr_none(fp, module, instr);
         case KEFIR_IROPCODE_F64DIV: return kefir_ir_format_instr_none(fp, module, instr);
+        case KEFIR_IROPCODE_F64NEG: return kefir_ir_format_instr_none(fp, module, instr);
         case KEFIR_IROPCODE_F32EQUALS: return kefir_ir_format_instr_none(fp, module, instr);
         case KEFIR_IROPCODE_F32GREATER: return kefir_ir_format_instr_none(fp, module, instr);
         case KEFIR_IROPCODE_F32LESSER: return kefir_ir_format_instr_none(fp, module, instr);

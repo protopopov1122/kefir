@@ -80,10 +80,12 @@ declare_opcode f32add
 declare_opcode f32sub
 declare_opcode f32mul
 declare_opcode f32div
+declare_opcode f32neg
 declare_opcode f64add
 declare_opcode f64sub
 declare_opcode f64mul
 declare_opcode f64div
+declare_opcode f64neg
 declare_opcode f32equals
 declare_opcode f32greater
 declare_opcode f32lesser
@@ -504,6 +506,17 @@ define_opcode f32div
     add rsp, 8
     end_opcode
 
+define_opcode f32neg
+    movss xmm0, [rsp]
+    xorps xmm0, oword [__kefirrt_f32neg_constant]
+    movss [rsp], xmm0
+    end_opcode
+__kefirrt_f32neg_constant:
+    dd 0x80000000
+    dd 0x80000000
+    dd 0x80000000
+    dd 0x80000000
+
 define_opcode f64add
     movsd xmm0, [rsp]
     movsd xmm1, [rsp + 8]
@@ -535,6 +548,15 @@ define_opcode f64div
     movsd [rsp + 8], xmm0
     add rsp, 8
     end_opcode
+
+define_opcode f64neg
+    movsd xmm0, [rsp]
+    xorps xmm0, oword [__kefirrt_f64neg_constant]
+    movsd [rsp], xmm0
+    end_opcode
+__kefirrt_f64neg_constant:
+    dq 0x8000000000000000
+    dq 0x8000000000000000
 
 define_opcode f32equals
     movss xmm0, [rsp + 8]
