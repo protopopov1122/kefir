@@ -86,6 +86,7 @@ typedef kefir_uint32_t kefir_id_t;
 typedef enum kefir_result {
     KEFIR_OK = 0,
     KEFIR_YIELD,
+    KEFIR_ITERATOR_END,
     KEFIR_UNKNOWN_ERROR,
     KEFIR_INTERNAL_ERROR,
     KEFIR_MALFORMED_ARG,

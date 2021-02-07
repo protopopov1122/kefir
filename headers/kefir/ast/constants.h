@@ -39,4 +39,11 @@ typedef enum kefir_ast_binary_operation_type {
     KEFIR_AST_OPERATION_SHIFT_RIGHT
 } kefir_ast_binary_operation_type_t;
 
+typedef enum kefir_ast_storage_duration {
+    KEFIR_AST_STORAGE_DURATION_STATIC,
+    KEFIR_AST_STORAGE_DURATION_THREAD,
+    KEFIR_AST_STORAGE_DURATION_AUTOMATIC,
+    KEFIR_AST_STORAGE_DURATION_ALLOCATED
+} kefir_ast_storage_duration_t;
+
 #endif
