@@ -47,7 +47,7 @@ kefir_result_t kefir_tree_on_removal(struct kefir_tree_node *node,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_tree_insert_child(struct kefir_mem *mem, struct kefir_tree_node *node, void *value) {
+kefir_result_t kefir_tree_insert_child(struct kefir_mem *mem, struct kefir_tree_node *node, void *value, struct kefir_tree_node **subnode) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid tree node"));
     struct kefir_tree_node *child = KEFIR_MALLOC(mem, sizeof(struct kefir_tree_node));
@@ -72,6 +72,9 @@ kefir_result_t kefir_tree_insert_child(struct kefir_mem *mem, struct kefir_tree_
     if (child->prev_sibling != NULL) {
         child->prev_sibling->next_sibling = child;
     }
+    if (subnode != NULL) {
+        *subnode = child;
+    }
     return KEFIR_OK;
 }
 
@@ -88,4 +91,33 @@ struct kefir_tree_node *kefir_tree_next_sibling(const struct kefir_tree_node *no
 struct kefir_tree_node *kefir_tree_prev_sibling(const struct kefir_tree_node *node) {
     REQUIRE(node != NULL, NULL);
     return node->prev_sibling;
+}
+
+kefir_result_t kefir_tree_iter(struct kefir_tree_node *root, struct kefir_tree_node_iterator *iter) {
+    REQUIRE(root != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid tree node"));
+    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid tree node iterator"));
+    iter->current = root;
+    REQUIRE_OK(kefir_list_init(&iter->pending));
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_tree_iter_next(struct kefir_mem *mem, struct kefir_tree_node_iterator *iter) {
+    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid tree node iterator"));
+    if (iter->current == NULL) {
+        return KEFIR_OK;
+    }
+    for (struct kefir_tree_node *child = kefir_tree_first_child(iter->current);
+        child != NULL;
+        child = kefir_tree_next_sibling(child)) {
+        REQUIRE_OK(kefir_list_insert_after(mem, &iter->pending, kefir_list_tail(&iter->pending), child));
+    }
+    struct kefir_list_entry *head = kefir_list_head(&iter->pending);
+    if (head != NULL) {
+        iter->current = (struct kefir_tree_node *) head->value;
+        REQUIRE_OK(kefir_list_pop(mem, &iter->pending, head));
+    } else {
+        iter->current = NULL;
+        REQUIRE_OK(kefir_list_free(mem, &iter->pending));
+    }
+    return KEFIR_OK;
 }
