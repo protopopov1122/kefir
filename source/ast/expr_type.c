@@ -4,10 +4,9 @@
 #include "kefir/ast/type_conv.h"
 
 struct assign_param {
-    struct kefir_ast_type_repository *repo;
     struct kefir_mem *mem;
     struct kefir_ast_node_base *base;
-    const struct kefir_ast_type_traits *type_traits;
+    const struct kefir_ast_translation_context *context;
 };
 
 static kefir_result_t visit_non_expression(const struct kefir_ast_visitor *visitor,
@@ -75,7 +74,7 @@ static kefir_result_t visit_unary_operation(const struct kefir_ast_visitor *visi
     UNUSED(visitor);
     ASSIGN_DECL_CAST(struct assign_param *, param,
         payload);
-    REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(param->mem, param->repo, param->type_traits, node->arg));
+    REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(param->mem, param->context, node->arg));
     const struct kefir_ast_type *type1 = kefir_ast_unqualified_type(node->arg->expression_type);
     switch (node->type) {
         case KEFIR_AST_OPERATION_PLUS:
@@ -83,7 +82,7 @@ static kefir_result_t visit_unary_operation(const struct kefir_ast_visitor *visi
             REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1),
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected arithmetic argument of unary +|-"));
             if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1)) {
-                param->base->expression_type = kefir_ast_type_int_promotion(param->type_traits, type1);
+                param->base->expression_type = kefir_ast_type_int_promotion(param->context->type_traits, type1);
             } else {
                 param->base->expression_type = type1;
             }
@@ -92,7 +91,7 @@ static kefir_result_t visit_unary_operation(const struct kefir_ast_visitor *visi
         case KEFIR_AST_OPERATION_INVERT:
             REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1),
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected integral argument of bitwise inversion"));
-            param->base->expression_type = kefir_ast_type_int_promotion(param->type_traits, type1);
+            param->base->expression_type = kefir_ast_type_int_promotion(param->context->type_traits, type1);
             break;
 
         case KEFIR_AST_OPERATION_LOGICAL_NEGATE:
@@ -114,8 +113,8 @@ static kefir_result_t visit_binary_operation(const struct kefir_ast_visitor *vis
     UNUSED(visitor);
     ASSIGN_DECL_CAST(struct assign_param *, param,
         payload);
-    REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(param->mem, param->repo, param->type_traits, node->arg1));
-    REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(param->mem, param->repo, param->type_traits, node->arg2));
+    REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(param->mem, param->context, node->arg1));
+    REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(param->mem, param->context, node->arg2));
     const struct kefir_ast_type *type1 = kefir_ast_unqualified_type(node->arg1->expression_type);
     const struct kefir_ast_type *type2 = kefir_ast_unqualified_type(node->arg2->expression_type);
     if (node->type == KEFIR_AST_OPERATION_SHIFT_LEFT ||
@@ -123,12 +122,12 @@ static kefir_result_t visit_binary_operation(const struct kefir_ast_visitor *vis
         REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1) &&
             KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type2),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Bitwise shift operator expects integer arguments"));
-        param->base->expression_type = kefir_ast_type_int_promotion(param->type_traits, type1);
+        param->base->expression_type = kefir_ast_type_int_promotion(param->context->type_traits, type1);
         REQUIRE(param->base->expression_type != NULL,
             KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to determine common AST arithmetic type"));
     } else if (KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1) &&
         KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type2)) {
-        param->base->expression_type = kefir_ast_type_common_arithmetic(param->type_traits, type1, type2);
+        param->base->expression_type = kefir_ast_type_common_arithmetic(param->context->type_traits, type1, type2);
         REQUIRE(param->base->expression_type != NULL,
             KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to determine common AST arithmetic type"));
     } else {
@@ -138,16 +137,14 @@ static kefir_result_t visit_binary_operation(const struct kefir_ast_visitor *vis
 }
 
 kefir_result_t kefir_ast_assign_expression_type(struct kefir_mem *mem,
-                                            struct kefir_ast_type_repository *repo,
-                                            const struct kefir_ast_type_traits *type_traits,
+                                            const struct kefir_ast_translation_context *context,
                                             struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(repo != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type repository"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translaction_context"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
     struct assign_param param = {
-        .repo = repo,
         .mem = mem,
-        .type_traits = type_traits,
+        .context = context,
         .base = base
     };
     struct kefir_ast_visitor visitor;
