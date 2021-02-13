@@ -78,4 +78,25 @@ kefir_result_t kefir_irbuilder_block_init(struct kefir_mem *,
 #define KEFIR_IRBUILDER_BLOCK_FREE(builder) \
     ((builder)->free((builder)))
 
+typedef struct kefir_irbuilder_type {
+    struct kefir_ir_type *type;
+    void *payload;
+
+    kefir_result_t (*append)(struct kefir_irbuilder_type *, const struct kefir_ir_typeentry *);
+    kefir_result_t (*append_v)(struct kefir_irbuilder_type *, kefir_ir_typecode_t, kefir_uint32_t, kefir_int64_t);
+    kefir_result_t (*append_e)(struct kefir_irbuilder_type *, const struct kefir_ir_type *, kefir_size_t);
+    kefir_result_t (*free)(struct kefir_irbuilder_type *);
+} kefir_irbuilder_type_t;
+
+kefir_result_t kefir_irbuilder_type_init(struct kefir_mem *,
+                                     struct kefir_irbuilder_type *,
+                                     struct kefir_ir_type *);
+
+#define KEFIR_IRBUILDER_TYPE_APPEND(builder, typeentry) \
+    ((builder)->append((builder), (typeentry)))
+#define KEFIR_IRBUILDER_TYPE_APPEND_V(builder, typecode, alignment, param) \
+    ((builder)->append_v((builder), (typecode), (alignment), (param)))
+#define KEFIR_IRBUILDER_TYPE_APPEND_E(builder, type, index) \
+    ((builder)->append_v((builder), (type), (index)))
+
 #endif

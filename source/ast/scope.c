@@ -65,41 +65,33 @@ kefir_result_t kefir_ast_identifier_flat_scope_at(const struct kefir_ast_identif
 }
 
 kefir_result_t kefir_ast_identifier_flat_scope_iter(const struct kefir_ast_identifier_flat_scope *scope,
-                                           struct kefir_ast_identifier_flat_scope_iterator *iter,
-                                           const char **identifier,
-                                           const struct kefir_ast_scoped_identifier **scoped_identifier) {
+                                           struct kefir_ast_identifier_flat_scope_iterator *iter) {
     REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier scope"));
     REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier scope iterator"));
-    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier"));
-    REQUIRE(scoped_identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST scoped identifier pointer"));
     const struct kefir_hashtree_node *node = kefir_hashtree_iter(&scope->content, &iter->iter);
     if (node != NULL) {
-        *identifier = (const char *) node->key;
-        *scoped_identifier = (const struct kefir_ast_scoped_identifier *) node->value;
+        iter->identifier = (const char *) node->key;
+        iter->value = (const struct kefir_ast_scoped_identifier *) node->value;
         return KEFIR_OK;
     } else {
-        *identifier = NULL;
-        *scoped_identifier = NULL;
+        iter->identifier = NULL;
+        iter->value = NULL;
         return KEFIR_ITERATOR_END;
     }
 }
 
 kefir_result_t kefir_ast_identifier_flat_scope_next(const struct kefir_ast_identifier_flat_scope *scope,
-                                           struct kefir_ast_identifier_flat_scope_iterator *iter,
-                                           const char **identifier,
-                                           const struct kefir_ast_scoped_identifier **scoped_identifier) {
+                                           struct kefir_ast_identifier_flat_scope_iterator *iter) {
     REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier scope"));
     REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier scope iterator"));
-    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier"));
-    REQUIRE(scoped_identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST scoped identifier pointer"));
     const struct kefir_hashtree_node *node = kefir_hashtree_next(&iter->iter);
     if (node != NULL) {
-        *identifier = (const char *) node->key;
-        *scoped_identifier = (const struct kefir_ast_scoped_identifier *) node->value;
+        iter->identifier = (const char *) node->key;
+        iter->value = (const struct kefir_ast_scoped_identifier *) node->value;
         return KEFIR_OK;
     } else {
-        *identifier = NULL;
-        *scoped_identifier = NULL;
+        iter->identifier = NULL;
+        iter->value = NULL;
         return KEFIR_ITERATOR_END;
     }
 }

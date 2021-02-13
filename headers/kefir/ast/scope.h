@@ -36,7 +36,6 @@ typedef struct kefir_ast_scoped_identifier {
     union {
         struct {
             const struct kefir_ast_type *type;
-            kefir_ast_scoped_identifier_linkage_t linkage;
             kefir_ast_scoped_identifier_storage_t storage;
         } object;
         const struct kefir_ast_type *type;
@@ -45,6 +44,9 @@ typedef struct kefir_ast_scoped_identifier {
 
 typedef struct kefir_ast_identifier_flat_scope_iterator {
     struct kefir_hashtree_node_iterator iter;
+
+    const char *identifier;
+    const struct kefir_ast_scoped_identifier *value;
 } kefir_ast_identifier_flat_scope_iterator_t;
 
 typedef struct kefir_ast_identifier_flat_scope {
@@ -62,13 +64,9 @@ kefir_result_t kefir_ast_identifier_flat_scope_at(const struct kefir_ast_identif
                                          const char *,
                                          const struct kefir_ast_scoped_identifier **);
 kefir_result_t kefir_ast_identifier_flat_scope_iter(const struct kefir_ast_identifier_flat_scope *,
-                                           struct kefir_ast_identifier_flat_scope_iterator *,
-                                           const char **,
-                                           const struct kefir_ast_scoped_identifier **);
+                                           struct kefir_ast_identifier_flat_scope_iterator *);
 kefir_result_t kefir_ast_identifier_flat_scope_next(const struct kefir_ast_identifier_flat_scope *,
-                                           struct kefir_ast_identifier_flat_scope_iterator *,
-                                           const char **,
-                                           const struct kefir_ast_scoped_identifier **);
+                                           struct kefir_ast_identifier_flat_scope_iterator *);
 
 typedef struct kefir_ast_identifier_block_scope {
     struct kefir_tree_node root;

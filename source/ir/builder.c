@@ -34,14 +34,15 @@ kefir_result_t kefir_irbuilder_type_append_v(struct kefir_mem *mem,
 kefir_result_t kefir_irbuilder_type_append_e(struct kefir_mem *mem,
                                          struct kefir_ir_type *type,
                                          const struct kefir_ir_type *source,
-                                         kefir_size_t length) {
+                                         kefir_size_t index) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Epected valid IR type"));
     REQUIRE(source != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Epected valid source IR type"));
+    const kefir_size_t length = kefir_ir_type_node_total_length(source, index);
     if (kefir_ir_type_raw_available(type) < length) {
         REQUIRE_OK(kefir_ir_type_realloc(mem, GROW(kefir_ir_type_raw_length(type) + length), type));
     }
-    REQUIRE_OK(kefir_ir_type_append_e(type, source, length));
+    REQUIRE_OK(kefir_ir_type_append_e(type, source, index));
     return KEFIR_OK;
 }
 
@@ -191,5 +192,43 @@ kefir_result_t kefir_irbuilder_block_init(struct kefir_mem *mem,
     builder->appendf64 = block_builder_appendf64;
     builder->appendf32 = block_builder_appendf32;
     builder->free = block_builder_free;
+    return KEFIR_OK;
+}
+
+kefir_result_t type_builder_append(struct kefir_irbuilder_type *builder, const struct kefir_ir_typeentry *typeentry) {
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type builder"));
+    return kefir_irbuilder_type_append(builder->payload, builder->type, typeentry);
+}
+
+kefir_result_t type_builder_append_v(struct kefir_irbuilder_type *builder,
+                                   kefir_ir_typecode_t typecode,
+                                   kefir_uint32_t alignment,
+                                   kefir_int64_t param) {
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type builder"));
+    return kefir_irbuilder_type_append_v(builder->payload, builder->type, typecode, alignment, param);
+}
+
+kefir_result_t type_builder_append_e(struct kefir_irbuilder_type *builder, const struct kefir_ir_type *type, kefir_size_t index) {
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type builder"));
+    return kefir_irbuilder_type_append_e(builder->payload, builder->type, type, index);
+}
+
+kefir_result_t type_builder_free(struct kefir_irbuilder_type *builder) {
+    UNUSED(builder);
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_irbuilder_type_init(struct kefir_mem *mem,
+                                     struct kefir_irbuilder_type *builder,
+                                     struct kefir_ir_type *type) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type builder"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type"));
+    builder->type = type;
+    builder->payload = mem;
+    builder->append = type_builder_append;
+    builder->append_v = type_builder_append_v;
+    builder->append_e = type_builder_append_e;
+    builder->free = type_builder_free;
     return KEFIR_OK;
 }
