@@ -1,10 +1,10 @@
-#include "kefir/ast/translator/context.h"
+#include "kefir/ast/context.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
 kefir_result_t kefir_ast_translation_global_context_init(struct kefir_mem *mem,
                                                      const struct kefir_ast_type_traits *type_traits,
-                                                     struct kefir_ast_global_translation_context *context) {
+                                                     struct kefir_ast_global_context *context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(type_traits != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type traits"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
@@ -15,7 +15,7 @@ kefir_result_t kefir_ast_translation_global_context_init(struct kefir_mem *mem,
 }
 
 kefir_result_t kefir_ast_translation_global_context_free(struct kefir_mem *mem,
-                                                     struct kefir_ast_global_translation_context *context) {
+                                                     struct kefir_ast_global_context *context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
     REQUIRE_OK(kefir_ast_identifier_flat_scope_free(mem, &context->object_scope));
@@ -24,9 +24,9 @@ kefir_result_t kefir_ast_translation_global_context_free(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_translation_context_init(struct kefir_mem *mem,
-                                              struct kefir_ast_global_translation_context *global,
-                                              struct kefir_ast_translation_context *context) {
+kefir_result_t kefir_ast_context_init(struct kefir_mem *mem,
+                                              struct kefir_ast_global_context *global,
+                                              struct kefir_ast_context *context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(global != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST global translation context"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
@@ -35,15 +35,15 @@ kefir_result_t kefir_ast_translation_context_init(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_translation_context_free(struct kefir_mem *mem,
-                                              struct kefir_ast_translation_context *context) {
+kefir_result_t kefir_ast_context_free(struct kefir_mem *mem,
+                                              struct kefir_ast_context *context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
     REQUIRE_OK(kefir_ast_identifier_block_scope_free(mem, &context->local_object_scope));
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_translation_context_resolve_object_identifier(const struct kefir_ast_translation_context *context,
+kefir_result_t kefir_ast_context_resolve_object_identifier(const struct kefir_ast_context *context,
                                                             const char *identifier,
                                                             const struct kefir_ast_scoped_identifier **scoped_identifier) {
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
@@ -56,8 +56,8 @@ kefir_result_t kefir_ast_translation_context_resolve_object_identifier(const str
     return res;
 }
 
-kefir_result_t kefir_ast_translation_context_declare_local_object_identifier(struct kefir_mem *mem,
-                                                                  struct kefir_ast_translation_context *context,
+kefir_result_t kefir_ast_context_declare_local_object_identifier(struct kefir_mem *mem,
+                                                                  struct kefir_ast_context *context,
                                                                   const char *identifier,
                                                                   const struct kefir_ast_scoped_identifier *scoped_identifier) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
@@ -68,8 +68,8 @@ kefir_result_t kefir_ast_translation_context_declare_local_object_identifier(str
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_translation_context_declare_global_object_identifier(struct kefir_mem *mem,
-                                                                   struct kefir_ast_translation_context *context,
+kefir_result_t kefir_ast_context_declare_global_object_identifier(struct kefir_mem *mem,
+                                                                   struct kefir_ast_context *context,
                                                                    const char *identifier,
                                                                    const struct kefir_ast_scoped_identifier *scoped_identifier) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
@@ -80,15 +80,15 @@ kefir_result_t kefir_ast_translation_context_declare_global_object_identifier(st
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_translation_context_push_block_scope(struct kefir_mem *mem,
-                                                          struct kefir_ast_translation_context *context) {
+kefir_result_t kefir_ast_context_push_block_scope(struct kefir_mem *mem,
+                                                          struct kefir_ast_context *context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
     REQUIRE_OK(kefir_ast_identifier_block_scope_push(mem, &context->local_object_scope));
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_translation_context_pop_block_scope(struct kefir_ast_translation_context *context) {
+kefir_result_t kefir_ast_context_pop_block_scope(struct kefir_ast_context *context) {
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
     REQUIRE_OK(kefir_ast_identifier_block_scope_pop(&context->local_object_scope));
     return KEFIR_OK;

@@ -6,7 +6,7 @@
 struct assign_param {
     struct kefir_mem *mem;
     struct kefir_ast_node_base *base;
-    const struct kefir_ast_translation_context *context;
+    const struct kefir_ast_context *context;
 };
 
 static kefir_result_t visit_non_expression(const struct kefir_ast_visitor *visitor,
@@ -75,7 +75,7 @@ static kefir_result_t visit_identifier(const struct kefir_ast_visitor *visitor,
     ASSIGN_DECL_CAST(struct assign_param *, param,
         payload);
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
-    REQUIRE_OK(kefir_ast_translation_context_resolve_object_identifier(
+    REQUIRE_OK(kefir_ast_context_resolve_object_identifier(
         param->context, node->identifier, &scoped_id));
     switch (scoped_id->klass) {
         case KEFIR_AST_SCOPE_IDENTIFIER_OBJECT:
@@ -156,7 +156,7 @@ static kefir_result_t visit_binary_operation(const struct kefir_ast_visitor *vis
 }
 
 kefir_result_t kefir_ast_assign_expression_type(struct kefir_mem *mem,
-                                            const struct kefir_ast_translation_context *context,
+                                            const struct kefir_ast_context *context,
                                             struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translaction_context"));

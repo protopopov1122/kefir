@@ -1,5 +1,5 @@
-#ifndef KEFIR_AST_TRANSLATOR_SCOPE_H_
-#define KEFIR_AST_TRANSLATOR_SCOPE_H_
+#ifndef KEFIR_AST_SCOPE_H_
+#define KEFIR_AST_SCOPE_H_
 
 #include "kefir/core/mem.h"
 #include "kefir/ast/type.h"
@@ -21,12 +21,23 @@ typedef enum kefir_ast_scoped_identifier_linkage {
     KEFIR_AST_SCOPED_IDENTIFIER_NONE_LINKAGE
 } kefir_ast_scoped_identifier_linkage_t;
 
+typedef enum kefir_ast_scoped_identifier_storage {
+    KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
+    KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC,
+    KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL,
+    KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL,
+    KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL,
+    KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO,
+    KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER
+} kefir_ast_scoped_identifier_storage_t;
+
 typedef struct kefir_ast_scoped_identifier {
     kefir_ast_scoped_identifier_class_t klass;
     union {
         struct {
             const struct kefir_ast_type *type;
             kefir_ast_scoped_identifier_linkage_t linkage;
+            kefir_ast_scoped_identifier_storage_t storage;
         } object;
         const struct kefir_ast_type *type;
     };
