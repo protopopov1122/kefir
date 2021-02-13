@@ -253,7 +253,7 @@ const struct kefir_ast_type *kefir_ast_type_incomplete_structure(struct kefir_me
     struct kefir_ast_type *type = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type));
     REQUIRE(type != NULL, NULL);
     if (repo != NULL) {
-        identifier = kefir_symbol_table_insert(mem, &repo->symbols, identifier, NULL);
+        identifier = kefir_symbol_table_insert(mem, repo->symbols, identifier, NULL);
         REQUIRE_ELSE(identifier != NULL, {
             KEFIR_FREE(mem, type);
             return NULL;
@@ -281,7 +281,7 @@ const struct kefir_ast_type *kefir_ast_type_incomplete_union(struct kefir_mem *m
     struct kefir_ast_type *type = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type));
     REQUIRE(type != NULL, NULL);
     if (repo != NULL) {
-        identifier = kefir_symbol_table_insert(mem, &repo->symbols, identifier, NULL);
+        identifier = kefir_symbol_table_insert(mem, repo->symbols, identifier, NULL);
         REQUIRE_ELSE(identifier != NULL, {
             KEFIR_FREE(mem, type);
             return NULL;
@@ -325,7 +325,7 @@ const struct kefir_ast_type *kefir_ast_type_structure(struct kefir_mem *mem,
     REQUIRE(type != NULL, NULL);
     if (repo != NULL) {
         if (identifier != NULL) {
-            identifier = kefir_symbol_table_insert(mem, &repo->symbols, identifier, NULL);
+            identifier = kefir_symbol_table_insert(mem, repo->symbols, identifier, NULL);
             REQUIRE_ELSE(identifier != NULL, {
                 KEFIR_FREE(mem, type);
                 return NULL;
@@ -368,7 +368,7 @@ const struct kefir_ast_type *kefir_ast_type_union(struct kefir_mem *mem,
     REQUIRE(type != NULL, NULL);
     if (repo != NULL) {
         if (identifier != NULL) {
-            identifier = kefir_symbol_table_insert(mem, &repo->symbols, identifier, NULL);
+            identifier = kefir_symbol_table_insert(mem, repo->symbols, identifier, NULL);
             REQUIRE_ELSE(identifier != NULL, {
                 KEFIR_FREE(mem, type);
                 return NULL;
@@ -478,9 +478,10 @@ static kefir_result_t free_type_repo(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_type_repository_init(struct kefir_ast_type_repository *repo) {
+kefir_result_t kefir_ast_type_repository_init(struct kefir_ast_type_repository *repo,
+                                          struct kefir_symbol_table *symbols) {
     REQUIRE(repo != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type repository"));
-    REQUIRE_OK(kefir_symbol_table_init(&repo->symbols));
+    repo->symbols = symbols;
     REQUIRE_OK(kefir_list_init(&repo->types));
     REQUIRE_OK(kefir_list_on_remove(&repo->types, free_type_repo, NULL));
     return KEFIR_OK;
@@ -490,7 +491,6 @@ kefir_result_t kefir_ast_type_repository_free(struct kefir_mem *mem, struct kefi
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(repo != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type repository"));
     REQUIRE_OK(kefir_list_free(mem, &repo->types));
-    REQUIRE_OK(kefir_symbol_table_free(mem, &repo->symbols));
     return KEFIR_OK;
 }
 

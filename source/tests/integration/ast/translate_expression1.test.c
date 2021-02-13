@@ -23,8 +23,10 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl->identifier));
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, decl_result, KEFIR_IR_TYPE_INT, 0, 0));
 
+    struct kefir_ast_global_translation_context global_context;
     struct kefir_ast_translation_context translation_context;
-    REQUIRE_OK(kefir_ast_translation_context_init(mem, kefir_ast_default_type_traits(), &translation_context));
+    REQUIRE_OK(kefir_ast_translation_global_context_init(mem, kefir_ast_default_type_traits(), &global_context));
+    REQUIRE_OK(kefir_ast_translation_context_init(mem, &global_context, &translation_context));
 
     struct kefir_irbuilder_block builder;
     REQUIRE_OK(kefir_irbuilder_block_init(mem, &builder, &func->body));
@@ -59,6 +61,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_FREE(&builder));
 
     REQUIRE_OK(kefir_ast_translation_context_free(mem, &translation_context));
+    REQUIRE_OK(kefir_ast_translation_global_context_free(mem, &global_context));
     REQUIRE_OK(kefir_ir_format_module(stdout, &module));
     REQUIRE_OK(kefir_ir_module_free(mem, &module));
     return KEFIR_OK;

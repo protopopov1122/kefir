@@ -5,6 +5,7 @@
 
 typedef enum kefir_ast_node_type {
     KEFIR_AST_CONSTANT,
+    KEFIR_AST_IDENTIFIER,
     KEFIR_AST_UNARY_OPERATION,
     KEFIR_AST_BINARY_OPERATION
 } kefir_ast_node_type_t;

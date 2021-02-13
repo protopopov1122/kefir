@@ -68,6 +68,25 @@ static kefir_result_t visit_constant(const struct kefir_ast_visitor *visitor,
     return KEFIR_OK;
 }
 
+static kefir_result_t visit_identifier(const struct kefir_ast_visitor *visitor,
+                                     const struct kefir_ast_identifier *node,
+                                     void *payload) {
+    UNUSED(visitor);
+    ASSIGN_DECL_CAST(struct assign_param *, param,
+        payload);
+    const struct kefir_ast_scoped_identifier *scoped_id = NULL;
+    REQUIRE_OK(kefir_ast_translation_context_resolve_object_identifier(
+        param->context, node->identifier, &scoped_id));
+    switch (scoped_id->klass) {
+        case KEFIR_AST_SCOPE_IDENTIFIER_OBJECT:
+            param->base->expression_type = scoped_id->object.type;
+            return KEFIR_OK;
+        
+        default:
+            return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Non-object identifiers are not supported yet");
+    }
+}
+
 static kefir_result_t visit_unary_operation(const struct kefir_ast_visitor *visitor,
                                           const struct kefir_ast_unary_operation *node,
                                           void *payload) {
@@ -82,7 +101,7 @@ static kefir_result_t visit_unary_operation(const struct kefir_ast_visitor *visi
             REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1),
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected arithmetic argument of unary +|-"));
             if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1)) {
-                param->base->expression_type = kefir_ast_type_int_promotion(param->context->type_traits, type1);
+                param->base->expression_type = kefir_ast_type_int_promotion(param->context->global->type_traits, type1);
             } else {
                 param->base->expression_type = type1;
             }
@@ -91,7 +110,7 @@ static kefir_result_t visit_unary_operation(const struct kefir_ast_visitor *visi
         case KEFIR_AST_OPERATION_INVERT:
             REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1),
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected integral argument of bitwise inversion"));
-            param->base->expression_type = kefir_ast_type_int_promotion(param->context->type_traits, type1);
+            param->base->expression_type = kefir_ast_type_int_promotion(param->context->global->type_traits, type1);
             break;
 
         case KEFIR_AST_OPERATION_LOGICAL_NEGATE:
@@ -122,12 +141,12 @@ static kefir_result_t visit_binary_operation(const struct kefir_ast_visitor *vis
         REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1) &&
             KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type2),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Bitwise shift operator expects integer arguments"));
-        param->base->expression_type = kefir_ast_type_int_promotion(param->context->type_traits, type1);
+        param->base->expression_type = kefir_ast_type_int_promotion(param->context->global->type_traits, type1);
         REQUIRE(param->base->expression_type != NULL,
             KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to determine common AST arithmetic type"));
     } else if (KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1) &&
         KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type2)) {
-        param->base->expression_type = kefir_ast_type_common_arithmetic(param->context->type_traits, type1, type2);
+        param->base->expression_type = kefir_ast_type_common_arithmetic(param->context->global->type_traits, type1, type2);
         REQUIRE(param->base->expression_type != NULL,
             KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to determine common AST arithmetic type"));
     } else {
@@ -150,6 +169,7 @@ kefir_result_t kefir_ast_assign_expression_type(struct kefir_mem *mem,
     struct kefir_ast_visitor visitor;
     REQUIRE_OK(kefir_ast_visitor_init(&visitor, visit_non_expression));
     visitor.constant = visit_constant;
+    visitor.identifier = visit_identifier;
     visitor.unary_operation = visit_unary_operation;
     visitor.binary_operation = visit_binary_operation;
     return KEFIR_AST_NODE_VISIT(&visitor, base, &param);
