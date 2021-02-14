@@ -43,6 +43,8 @@ kefir_result_t kefir_ast_identifier_flat_scope_insert(struct kefir_mem *mem,
     struct kefir_ast_scoped_identifier *scoped_copy = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_scoped_identifier));
     REQUIRE(scoped_copy != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate scoped identifier copy"));
     memcpy(scoped_copy, scoped_identifier, sizeof(struct kefir_ast_scoped_identifier));
+    memset(scoped_copy->payload.content, 0, KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE);
+    scoped_copy->payload.ptr = scoped_copy->payload.content;
     kefir_result_t res = kefir_hashtree_insert(mem, &scope->content, 
         (kefir_hashtree_key_t) identifier, (kefir_hashtree_value_t) scoped_copy);
     REQUIRE_ELSE(res == KEFIR_OK, {

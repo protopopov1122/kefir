@@ -31,6 +31,8 @@ typedef enum kefir_ast_scoped_identifier_storage {
     KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER
 } kefir_ast_scoped_identifier_storage_t;
 
+#define KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE (sizeof(kefir_uptr_t) * 4)
+
 typedef struct kefir_ast_scoped_identifier {
     kefir_ast_scoped_identifier_class_t klass;
     union {
@@ -40,6 +42,10 @@ typedef struct kefir_ast_scoped_identifier {
         } object;
         const struct kefir_ast_type *type;
     };
+    struct {
+        unsigned char content[KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE];
+        void *ptr;
+    } payload;
 } kefir_ast_scoped_identifier_t;
 
 typedef struct kefir_ast_identifier_flat_scope_iterator {
