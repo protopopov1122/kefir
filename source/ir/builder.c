@@ -13,7 +13,7 @@ kefir_result_t kefir_irbuilder_type_append(struct kefir_mem *mem,
     if (kefir_ir_type_raw_available(type) == 0) {
         REQUIRE_OK(kefir_ir_type_realloc(mem, GROW(kefir_ir_type_raw_length(type)), type));
     }
-    REQUIRE_OK(kefir_ir_type_appendi64(type, typeentry));
+    REQUIRE_OK(kefir_ir_type_append(type, typeentry));
     return KEFIR_OK;
 }
 

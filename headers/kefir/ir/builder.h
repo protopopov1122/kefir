@@ -98,5 +98,7 @@ kefir_result_t kefir_irbuilder_type_init(struct kefir_mem *,
     ((builder)->append_v((builder), (typecode), (alignment), (param)))
 #define KEFIR_IRBUILDER_TYPE_APPEND_E(builder, type, index) \
     ((builder)->append_v((builder), (type), (index)))
+#define KEFIR_IRBUILDER_TYPE_FREE(builder) \
+    ((builder)->free((builder)))
 
 #endif

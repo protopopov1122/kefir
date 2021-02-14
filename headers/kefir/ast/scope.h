@@ -73,11 +73,6 @@ typedef struct kefir_ast_identifier_block_scope {
     struct kefir_tree_node *top_scope;
 } kefir_ast_identifier_block_scope_t;
 
-typedef struct kefir_ast_identifier_block_scope_iterator {
-    struct kefir_ast_identifier_flat_scope_iterator current_scope_iter;
-    struct kefir_tree_node_iterator tree_iter;
-} kefir_ast_identifier_block_scope_iterator_t;
-
 kefir_result_t kefir_ast_identifier_block_scope_init(struct kefir_mem *,
                                       struct kefir_ast_identifier_block_scope *);
 kefir_result_t kefir_ast_identifier_block_scope_free(struct kefir_mem *,

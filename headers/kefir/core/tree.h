@@ -30,5 +30,6 @@ struct kefir_tree_node *kefir_tree_prev_sibling(const struct kefir_tree_node *);
 
 kefir_result_t kefir_tree_iter(struct kefir_tree_node *, struct kefir_tree_node_iterator *);
 kefir_result_t kefir_tree_iter_next(struct kefir_mem *, struct kefir_tree_node_iterator *);
+kefir_result_t kefir_tree_iter_free(struct kefir_mem *, struct kefir_tree_node_iterator *);
 
 #endif
