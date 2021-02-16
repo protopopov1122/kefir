@@ -146,6 +146,8 @@ kefir_result_t kefir_ast_type_repository_init(struct kefir_ast_type_repository *
 kefir_result_t kefir_ast_type_repository_free(struct kefir_mem *, struct kefir_ast_type_repository *);
 
 #define KEFIR_AST_TYPE_SAME(type1, type2) ((type1)->ops.same((type1), (type2)))
+// TODO: Define type compatibility function according to the standard
+#define KEFIR_AST_TYPE_COMPATIBLE(type1, type2) KEFIR_AST_TYPE_SAME((type1), (type2))
 #define KEFIR_AST_TYPE_FREE(mem, type) ((type)->ops.free((mem), (type)))
 
 #define KEFIR_AST_TYPE_IS_SIGNED_INTEGER(base) \

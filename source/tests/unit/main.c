@@ -38,6 +38,7 @@ DECLARE_CASE(ast_type_analysis_integer_promotion1);
 DECLARE_CASE(ast_type_analysis_arithmetic_conversion1);
 DECLARE_CASE(ast_type_analysis_arithmetic_conversion2);
 DECLARE_CASE(ast_type_analysis_arithmetic_conversion3);
+DECLARE_CASE(ast_scope_rules1);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -73,7 +74,8 @@ TEST_SUITE(mainSuite,
     &ast_type_analysis_integer_promotion1,
     &ast_type_analysis_arithmetic_conversion1,
     &ast_type_analysis_arithmetic_conversion2,
-    &ast_type_analysis_arithmetic_conversion3
+    &ast_type_analysis_arithmetic_conversion3,
+    &ast_scope_rules1
 );
 
 int main(int argc, const char **argv) {

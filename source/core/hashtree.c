@@ -94,6 +94,14 @@ static kefir_result_t node_find(struct kefir_hashtree_node *root,
     }
 }
 
+static struct kefir_hashtree_node *node_minimum(struct kefir_hashtree_node *root) {
+    if (root == NULL || root->left_child == NULL) {
+        return root;
+    } else {
+        return node_minimum(root->left_child);
+    }
+}
+
 kefir_result_t kefir_hashtree_init(struct kefir_hashtree *tree, const struct kefir_hashtree_ops *ops) {
     REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid hash tree pointer"));
     REQUIRE(ops != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid hash tree operation pointer"));
@@ -141,6 +149,59 @@ kefir_result_t kefir_hashtree_at(const struct kefir_hashtree *tree, kefir_hashtr
     if (node_find(tree->root, tree, hash, key, result) != KEFIR_OK) {
         return KEFIR_SET_ERROR(KEFIR_NOT_FOUND, "Could not find tree node with specified key");
     }
+    return KEFIR_OK;
+}
+
+kefir_bool_t kefir_hashtree_has(const struct kefir_hashtree *tree, kefir_hashtree_key_t key) {
+    REQUIRE(tree != NULL, false);
+    kefir_hashtree_hash_t hash = tree->ops->hash(key, tree->ops->data);
+    struct kefir_hashtree_node *result = NULL;
+    return node_find(tree->root, tree, hash, key, &result) == KEFIR_OK;
+}
+
+kefir_result_t kefir_hashtree_delete(struct kefir_mem *mem, struct kefir_hashtree *tree, kefir_hashtree_key_t key) {
+    REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid hash tree pointer"));
+    kefir_hashtree_hash_t hash = tree->ops->hash(key, tree->ops->data);
+    struct kefir_hashtree_node *node = NULL;
+    REQUIRE_OK(node_find(tree->root, tree, hash, key, &node));
+    struct kefir_hashtree_node *replacement = NULL;
+    if (node->left_child == NULL && node->right_child == NULL) {
+        // Do nothing
+    } else if (node->left_child != NULL && node->right_child == NULL) {
+        replacement = node->left_child;
+    } else if (node->left_child == NULL && node->right_child != NULL) {
+        replacement = node->right_child;
+    } else {
+        replacement = node_minimum(node->right_child);
+        REQUIRE(replacement != NULL,
+            KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Internal hash tree removal error"));
+        replacement->left_child = node->left_child;
+        replacement->left_child->parent = replacement;
+        if (replacement->parent != node) {
+            if (replacement->right_child != NULL) {
+                replacement->parent->left_child = replacement->right_child;
+                replacement->right_child = NULL;
+            }
+            replacement->right_child = node->right_child;
+            replacement->right_child->parent = replacement;
+        }
+    }
+    if (node->parent != NULL) {
+        if (node->parent->left_child == node) {
+            node->parent->left_child = replacement;
+        } else if (node->parent->right_child == node) {
+            node->parent->right_child = replacement;
+        } else {
+            return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Malformed binary tree");
+        }
+    } else {
+        tree->root = replacement;
+    }
+    replacement->parent = node->parent;
+    if (tree->node_remove.callback != NULL) {
+        REQUIRE_OK(tree->node_remove.callback(mem, tree, node->key, node->value, tree->node_remove.data));
+    }
+    KEFIR_FREE(mem, node);
     return KEFIR_OK;
 }
 

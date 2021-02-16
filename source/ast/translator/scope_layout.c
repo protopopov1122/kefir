@@ -69,9 +69,9 @@ static kefir_result_t translate_global_scoped_identifier(struct kefir_mem *mem,
         scoped_identifier->payload.ptr);
     switch (scoped_identifier->object.storage) {
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN: {
-            const struct kefir_ast_scoped_identifier *external_declaration = NULL;
+            struct kefir_hashtree_node *external_declaration = NULL;
             kefir_result_t res =
-                kefir_ast_identifier_flat_scope_at(&context->external_object_declarations, identifier, &external_declaration);
+                kefir_hashtree_at(&context->external_object_declarations, (kefir_hashtree_key_t) identifier, &external_declaration);
             REQUIRE(res == KEFIR_OK || res == KEFIR_NOT_FOUND, res);
             if (res == KEFIR_NOT_FOUND) {
                 struct kefir_ir_type *type = kefir_ir_module_new_type(mem, module, 0, &scoped_identifier_layout->type_id);
@@ -87,9 +87,9 @@ static kefir_result_t translate_global_scoped_identifier(struct kefir_mem *mem,
         } break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL: {
-            const struct kefir_ast_scoped_identifier *external_declaration = NULL;
+            struct kefir_hashtree_node *external_declaration = NULL;
             kefir_result_t res =
-                kefir_ast_identifier_flat_scope_at(&context->external_object_declarations, identifier, &external_declaration);
+                kefir_hashtree_at(&context->external_object_declarations, (kefir_hashtree_key_t) identifier, &external_declaration);
             REQUIRE(res == KEFIR_OK || res == KEFIR_NOT_FOUND, res);
             if (res == KEFIR_NOT_FOUND) {
                 struct kefir_ir_type *type = kefir_ir_module_new_type(mem, module, 0, &scoped_identifier_layout->type_id);
@@ -144,22 +144,22 @@ static kefir_result_t translate_global_scoped_identifier(struct kefir_mem *mem,
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER:
             return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "File-scope variable cannot have auto/register storage");
     }
-    struct kefir_ast_identifier_flat_scope_iterator iter;
-    kefir_result_t res;
-    for (res = kefir_ast_identifier_flat_scope_iter(&context->external_object_declarations, &iter);
-        res == KEFIR_OK;
-        res = kefir_ast_identifier_flat_scope_next(&context->external_object_declarations, &iter)) {
-        if (iter.value->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN) {
+    struct kefir_hashtree_node_iterator iter;
+    for (const struct kefir_hashtree_node *node = kefir_hashtree_iter(&context->external_object_declarations, &iter);
+        node != NULL;
+        node = kefir_hashtree_next(&iter)) {
+        ASSIGN_DECL_CAST(struct kefir_ast_scoped_identifier *, scoped_id,
+            node->value);
+        if (scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN) {
             REQUIRE_OK(kefir_hashtree_insert(mem, &layout->external_objects,
-                (kefir_hashtree_key_t) iter.identifier, (kefir_hashtree_value_t) NULL));
-        } else if (iter.value->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN) {
+                (kefir_hashtree_key_t) node->key, (kefir_hashtree_value_t) NULL));
+        } else if (scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN) {
             REQUIRE_OK(kefir_hashtree_insert(mem, &layout->external_thread_local_objects,
-                (kefir_hashtree_key_t) iter.identifier, (kefir_hashtree_value_t) NULL));
+                (kefir_hashtree_key_t) node->key, (kefir_hashtree_value_t) NULL));
         } else {
             return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected external scoped identifier declaration storage");
         }
     }
-    REQUIRE(res == KEFIR_ITERATOR_END, res);
     return KEFIR_OK;
 }
 

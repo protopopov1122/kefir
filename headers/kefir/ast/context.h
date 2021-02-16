@@ -10,7 +10,7 @@ typedef struct kefir_ast_global_context {
     const struct kefir_ast_type_traits *type_traits;
     struct kefir_ast_type_repository type_repository;
     struct kefir_ast_identifier_flat_scope object_scope;
-    struct kefir_ast_identifier_flat_scope external_object_declarations;
+    struct kefir_hashtree external_object_declarations;
 } kefir_ast_global_context_t;
 
 typedef struct kefir_ast_context {
@@ -18,10 +18,10 @@ typedef struct kefir_ast_context {
     struct kefir_ast_identifier_block_scope local_object_scope;
 } kefir_ast_context_t;
 
-kefir_result_t kefir_ast_translation_global_context_init(struct kefir_mem *,
+kefir_result_t kefir_ast_global_context_init(struct kefir_mem *,
                                                      const struct kefir_ast_type_traits *,
                                                      struct kefir_ast_global_context *);
-kefir_result_t kefir_ast_translation_global_context_free(struct kefir_mem *,
+kefir_result_t kefir_ast_global_context_free(struct kefir_mem *,
                                                      struct kefir_ast_global_context *);
 
 kefir_result_t kefir_ast_context_init(struct kefir_mem *,

@@ -80,7 +80,9 @@ kefir_result_t kefir_tree_insert_child(struct kefir_mem *mem, struct kefir_tree_
 
 struct kefir_tree_node *kefir_tree_first_child(const struct kefir_tree_node *node) {
     REQUIRE(node != NULL, NULL);
-    return (struct kefir_tree_node *) kefir_list_head(&node->children)->value;
+    struct kefir_list_entry *head = kefir_list_head(&node->children);
+    REQUIRE(head != NULL, NULL);
+    return (struct kefir_tree_node *) head->value;
 }
 
 struct kefir_tree_node *kefir_tree_next_sibling(const struct kefir_tree_node *node) {
