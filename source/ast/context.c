@@ -57,8 +57,9 @@ kefir_result_t kefir_ast_context_free(struct kefir_mem *mem,
 }
 
 kefir_result_t kefir_ast_context_resolve_object_identifier(const struct kefir_ast_context *context,
-                                                            const char *identifier,
-                                                            const struct kefir_ast_scoped_identifier **scoped_identifier) {
+                                                       const char *identifier,
+                                                       const struct kefir_ast_scoped_identifier **scoped_identifier,
+                                                       kefir_ast_scoped_identifier_linkage_t *linkage) {
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
     REQUIRE(scoped_identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST scoped identifier pointer"));
@@ -66,7 +67,27 @@ kefir_result_t kefir_ast_context_resolve_object_identifier(const struct kefir_as
     if (res == KEFIR_NOT_FOUND) {
         res = kefir_ast_identifier_flat_scope_at(&context->global->object_scope, identifier, scoped_identifier);
     }
-    return res;
+    REQUIRE_OK(res);
+    if (linkage != NULL) {
+        switch ((*scoped_identifier)->object.storage) {
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN:
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL:
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL:
+                *linkage = KEFIR_AST_SCOPED_IDENTIFIER_EXTERNAL_LINKAGE;
+                break;
+
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC:
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL:
+                *linkage = KEFIR_AST_SCOPED_IDENTIFIER_INTERNAL_LINKAGE;
+                break;
+
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO:
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER:
+                *linkage = KEFIR_AST_SCOPED_IDENTIFIER_NONE_LINKAGE;
+                break;
+        }
+    }
+    return KEFIR_OK;
 }
 
 kefir_result_t kefir_ast_context_push_block_scope(struct kefir_mem *mem,

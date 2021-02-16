@@ -76,7 +76,7 @@ static kefir_result_t visit_identifier(const struct kefir_ast_visitor *visitor,
         payload);
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
     REQUIRE_OK(kefir_ast_context_resolve_object_identifier(
-        param->context, node->identifier, &scoped_id));
+        param->context, node->identifier, &scoped_id, NULL));
     switch (scoped_id->klass) {
         case KEFIR_AST_SCOPE_IDENTIFIER_OBJECT:
             param->base->expression_type = scoped_id->object.type;

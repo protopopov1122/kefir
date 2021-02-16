@@ -31,8 +31,9 @@ kefir_result_t kefir_ast_context_free(struct kefir_mem *,
                                               struct kefir_ast_context *);
 
 kefir_result_t kefir_ast_context_resolve_object_identifier(const struct kefir_ast_context *,
-                                                            const char *,
-                                                            const struct kefir_ast_scoped_identifier **);
+                                                       const char *,
+                                                       const struct kefir_ast_scoped_identifier **,
+                                                       kefir_ast_scoped_identifier_linkage_t *);
 
 kefir_result_t kefir_ast_context_push_block_scope(struct kefir_mem *,
                                                           struct kefir_ast_context *);

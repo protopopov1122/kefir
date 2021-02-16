@@ -241,7 +241,11 @@ kefir_result_t kefir_ast_identifier_block_scope_at(const struct kefir_ast_identi
         kefir_result_t res = kefir_ast_identifier_flat_scope_at(current_scope, identifier, scoped_identifier);
         if (res == KEFIR_NOT_FOUND) {
             current_node = current_node->parent;
-            current_scope = (struct kefir_ast_identifier_flat_scope *) current_node->value;
+            if (current_node != NULL) {
+                current_scope = (struct kefir_ast_identifier_flat_scope *) current_node->value;
+            } else {
+                current_scope = NULL;
+            }
         } else {
             return res;
         }
