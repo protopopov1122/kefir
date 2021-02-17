@@ -35,6 +35,7 @@ kefir_result_t kefir_tree_free(struct kefir_mem *mem, struct kefir_tree_node *no
     if (node->removal_callback != NULL) {
         REQUIRE_OK(node->removal_callback(mem, node->value, node->removal_payload));
     }
+    REQUIRE_OK(kefir_list_free(mem, &node->children));
     return KEFIR_OK;
 }
 
@@ -67,7 +68,11 @@ kefir_result_t kefir_tree_insert_child(struct kefir_mem *mem, struct kefir_tree_
         KEFIR_FREE(mem, child);
         return res;
     });
-    child->prev_sibling = (struct kefir_tree_node *) kefir_list_tail(&node->children)->value;
+    struct kefir_list_entry *last_child = kefir_list_tail(&node->children);
+    REQUIRE_OK(kefir_list_insert_after(mem, &node->children, last_child, child));
+    child->prev_sibling = last_child != NULL
+        ? (struct kefir_tree_node *) last_child->value
+        : NULL;
     child->next_sibling = NULL;
     if (child->prev_sibling != NULL) {
         child->prev_sibling->next_sibling = child;

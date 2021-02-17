@@ -44,6 +44,13 @@ DECLARE_CASE(ast_scope_rules3);
 DECLARE_CASE(ast_scope_rules4);
 DECLARE_CASE(ast_scope_rules5);
 DECLARE_CASE(ast_scope_rules6);
+DECLARE_CASE(ast_scope_rules7);
+DECLARE_CASE(ast_scope_rules8);
+DECLARE_CASE(ast_scope_rules9);
+DECLARE_CASE(ast_scope_rules10);
+DECLARE_CASE(ast_scope_rules11);
+DECLARE_CASE(ast_scope_rules12);
+DECLARE_CASE(ast_scope_rules13);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -85,7 +92,14 @@ TEST_SUITE(mainSuite,
     &ast_scope_rules3,
     &ast_scope_rules4,
     &ast_scope_rules5,
-    &ast_scope_rules6
+    &ast_scope_rules6,
+    &ast_scope_rules7,
+    &ast_scope_rules8,
+    &ast_scope_rules9,
+    &ast_scope_rules10,
+    &ast_scope_rules11,
+    &ast_scope_rules12,
+    &ast_scope_rules13
 );
 
 int main(int argc, const char **argv) {

@@ -176,7 +176,7 @@ kefir_result_t kefir_ast_identifier_block_scope_on_removal(struct kefir_ast_iden
 
 struct kefir_ast_identifier_flat_scope *kefir_ast_identifier_block_scope_top(const struct kefir_ast_identifier_block_scope *scope) {
     REQUIRE(scope != NULL, NULL);
-    return (struct kefir_ast_identifier_flat_scope *) scope->top_scope;
+    return (struct kefir_ast_identifier_flat_scope *) scope->top_scope->value;
 }
 
 kefir_result_t kefir_ast_identifier_block_scope_push(struct kefir_mem *mem,

@@ -75,7 +75,7 @@ kefir_result_t kefir_ast_context_define_static(struct kefir_mem *,
                                            struct kefir_ast_context *,
                                            const char *,
                                            const struct kefir_ast_type *);
-kefir_result_t kefir_ast_context_define_external_thread_local(struct kefir_mem *,
+kefir_result_t kefir_ast_context_define_static_thread_local(struct kefir_mem *,
                                                           struct kefir_ast_context *,
                                                           const char *,
                                                           const struct kefir_ast_type *);
