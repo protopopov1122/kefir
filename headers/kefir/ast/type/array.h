@@ -22,30 +22,30 @@ typedef struct kefir_ast_array_type {
 } kefir_ast_array_type_t;
 
 const struct kefir_ast_type *kefir_ast_type_unbounded_array(struct kefir_mem *,
-                                                        struct kefir_ast_type_repository *,
+                                                        struct kefir_ast_type_storage *,
                                                         const struct kefir_ast_type *,
                                                         const struct kefir_ast_type_qualification *);
 
 const struct kefir_ast_type *kefir_ast_type_array(struct kefir_mem *,
-                                              struct kefir_ast_type_repository *,
+                                              struct kefir_ast_type_storage *,
                                               const struct kefir_ast_type *,
                                               kefir_size_t,
                                               const struct kefir_ast_type_qualification *);
                                               
 const struct kefir_ast_type *kefir_ast_type_array_static(struct kefir_mem *,
-                                              struct kefir_ast_type_repository *,
+                                              struct kefir_ast_type_storage *,
                                               const struct kefir_ast_type *,
                                               kefir_size_t,
                                               const struct kefir_ast_type_qualification *);
 
 const struct kefir_ast_type *kefir_ast_type_vlen_array(struct kefir_mem *,
-                                                   struct kefir_ast_type_repository *,
+                                                   struct kefir_ast_type_storage *,
                                                    const struct kefir_ast_type *,
                                                    void *,
                                                    const struct kefir_ast_type_qualification *);
                                               
 const struct kefir_ast_type *kefir_ast_type_vlen_array_static(struct kefir_mem *,
-                                                          struct kefir_ast_type_repository *,
+                                                          struct kefir_ast_type_storage *,
                                                           const struct kefir_ast_type *,
                                                           void *,
                                                           const struct kefir_ast_type_qualification *);

@@ -4,7 +4,7 @@
 #include "kefir/core/error.h"
 
 kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem,
-                                             struct kefir_ast_type_repository *repo,
+                                             struct kefir_symbol_table *symbols,
                                              struct kefir_ast_function_type *function_type,
                                              const char *identifier,
                                              const struct kefir_ast_type *type,
@@ -37,14 +37,12 @@ kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem,
     }
     struct kefir_ast_function_type_parameter *param = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_function_type_parameter));
     REQUIRE(param != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate memory for function parameter"));
-    if (repo != NULL) {
-        if (identifier != NULL) {
-            identifier = kefir_symbol_table_insert(mem, repo->symbols, identifier, NULL);
-            REQUIRE_ELSE(identifier != NULL, {
-                KEFIR_FREE(mem, param);
-                return KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate parameter identifier");
-            });
-        }
+    if (symbols != NULL && identifier != NULL) {
+        identifier = kefir_symbol_table_insert(mem, symbols, identifier, NULL);
+        REQUIRE_ELSE(identifier != NULL, {
+            KEFIR_FREE(mem, param);
+            return KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate parameter identifier");
+        });
     }
     param->identifier = identifier;
     param->type = type;
@@ -129,7 +127,7 @@ static kefir_result_t function_parameter_free(struct kefir_mem *mem,
 }
 
 const struct kefir_ast_type *kefir_ast_type_function(struct kefir_mem *mem,
-                                                 struct kefir_ast_type_repository *repo,
+                                                 struct kefir_ast_type_storage *type_storage,
                                                  const struct kefir_ast_type *return_type,
                                                  const char *identifier,
                                                  struct kefir_ast_function_type **function_type) {
@@ -138,15 +136,15 @@ const struct kefir_ast_type *kefir_ast_type_function(struct kefir_mem *mem,
     REQUIRE(function_type != NULL, NULL);
     struct kefir_ast_type *type = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type));
     REQUIRE(type != NULL, NULL);
-    if (repo != NULL) {
+    if (type_storage != NULL) {
         if (identifier != NULL) {
-            identifier = kefir_symbol_table_insert(mem, repo->symbols, identifier, NULL);
+            identifier = kefir_symbol_table_insert(mem, type_storage->symbols, identifier, NULL);
             REQUIRE_ELSE(identifier != NULL, {
                 KEFIR_FREE(mem, type);
                 return NULL;
             });
         }
-        kefir_result_t res = kefir_list_insert_after(mem, &repo->types, kefir_list_tail(&repo->types), type);
+        kefir_result_t res = kefir_list_insert_after(mem, &type_storage->types, kefir_list_tail(&type_storage->types), type);
         REQUIRE_ELSE(res == KEFIR_OK, {
             KEFIR_FREE(mem, type);
             return NULL;
@@ -159,6 +157,7 @@ const struct kefir_ast_type *kefir_ast_type_function(struct kefir_mem *mem,
     type->function_type.return_type = return_type;
     type->function_type.identifier = identifier;
     type->function_type.mode = KEFIR_AST_FUNCTION_TYPE_PARAM_EMPTY;
+    type->function_type.ellipsis = false;
     kefir_result_t res = kefir_hashtree_init(&type->function_type.parameter_index, &kefir_hashtree_str_ops);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, type);
@@ -178,5 +177,5 @@ const struct kefir_ast_type *kefir_ast_type_function(struct kefir_mem *mem,
         return NULL;
     });
     *function_type = &type->function_type;
-    return KEFIR_OK;
+    return type;
 }

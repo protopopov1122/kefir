@@ -43,15 +43,15 @@ typedef struct kefir_ast_type_traits {
     void *payload;
 } kefir_ast_type_traits_t;
 
-typedef struct kefir_ast_type_repository {
+typedef struct kefir_ast_type_storage {
     struct kefir_symbol_table *symbols;
     struct kefir_list types;
-} kefir_ast_type_repository_t;
+} kefir_ast_type_storage_t;
 
 const struct kefir_ast_type_traits *kefir_ast_default_type_traits();
 
-kefir_result_t kefir_ast_type_repository_init(struct kefir_ast_type_repository *, struct kefir_symbol_table *);
-kefir_result_t kefir_ast_type_repository_free(struct kefir_mem *, struct kefir_ast_type_repository *);
+kefir_result_t kefir_ast_type_storage_init(struct kefir_ast_type_storage *, struct kefir_symbol_table *);
+kefir_result_t kefir_ast_type_storage_free(struct kefir_mem *, struct kefir_ast_type_storage *);
 
 #define KEFIR_AST_TYPE_SAME(type1, type2) ((type1)->ops.same((type1), (type2)))
 // TODO: Define type compatibility function according to the standard

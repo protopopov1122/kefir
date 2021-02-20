@@ -9,7 +9,7 @@ typedef struct kefir_ast_qualified_type {
 } kefir_ast_qualified_type_t;
 
 const struct kefir_ast_type *kefir_ast_type_qualified(struct kefir_mem *,
-                                                  struct kefir_ast_type_repository *,
+                                                  struct kefir_ast_type_storage *,
                                                   const struct kefir_ast_type *,
                                                   struct kefir_ast_type_qualification);
                                                   

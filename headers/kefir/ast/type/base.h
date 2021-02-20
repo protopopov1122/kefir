@@ -5,7 +5,7 @@
 #include "kefir/core/mem.h"
 
 typedef struct kefir_ast_type kefir_ast_type_t;
-typedef struct kefir_ast_type_repository kefir_ast_type_repository_t;
+typedef struct kefir_ast_type_storage kefir_ast_type_storage_t;
 
 typedef enum kefir_ast_type_tag {
     KEFIR_AST_TYPE_VOID,

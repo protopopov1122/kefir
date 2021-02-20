@@ -33,14 +33,16 @@ SCALAR_TYPE(double);
         (base)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_LONG || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_LONG_LONG)
 #define KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(base) \
-    ((base)->tag == KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR || \
+    ((base)->tag == KEFIR_AST_TYPE_SCALAR_BOOL || \
+        (base)->tag == KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_UNSIGNED_SHORT || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_UNSIGNED_INT || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG_LONG)
 #define KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(base) \
     (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(base) || \
-        KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(base))
+        KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(base) || \
+        (base)->tag == KEFIR_AST_TYPE_ENUMERATION)
 #define KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(base) \
     (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(base) || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_FLOAT || \

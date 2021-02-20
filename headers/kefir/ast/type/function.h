@@ -29,7 +29,7 @@ typedef struct kefir_ast_function_type {
 } kefir_ast_function_type_t;
 
 kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *,
-                                             struct kefir_ast_type_repository *,
+                                             struct kefir_symbol_table *,
                                              struct kefir_ast_function_type *,
                                              const char *,
                                              const struct kefir_ast_type *,
@@ -39,7 +39,7 @@ kefir_result_t kefir_ast_type_function_ellipsis(struct kefir_ast_function_type *
                                             kefir_bool_t);
 
 const struct kefir_ast_type *kefir_ast_type_function(struct kefir_mem *,
-                                                 struct kefir_ast_type_repository *,
+                                                 struct kefir_ast_type_storage *,
                                                  const struct kefir_ast_type *,
                                                  const char *,
                                                  struct kefir_ast_function_type **);

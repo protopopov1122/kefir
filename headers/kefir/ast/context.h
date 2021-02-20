@@ -8,7 +8,7 @@
 typedef struct kefir_ast_global_context {
     struct kefir_symbol_table symbols;
     const struct kefir_ast_type_traits *type_traits;
-    struct kefir_ast_type_repository type_repository;
+    struct kefir_ast_type_storage type_storage;
     struct kefir_ast_identifier_flat_scope object_scope;
     struct kefir_hashtree external_object_declarations;
 } kefir_ast_global_context_t;

@@ -17,23 +17,27 @@ typedef struct kefir_ast_enum_type {
     struct kefir_hashtree enumerator_index;
 } kefir_ast_enum_type_t;
 
+kefir_result_t kefir_ast_enumeration_get(const struct kefir_ast_enum_type *,
+                                     const char *,
+                                     kefir_ast_enumerator_constant_t *);
+
 const struct kefir_ast_type *kefir_ast_type_incomplete_enumeration(struct kefir_mem *,
-                                                               struct kefir_ast_type_repository *,
+                                                               struct kefir_ast_type_storage *,
                                                                const char *);
 
 kefir_result_t kefir_ast_enumeration_type_constant(struct kefir_mem *,
-                                               struct kefir_ast_type_repository *,
+                                               struct kefir_symbol_table *,
                                                struct kefir_ast_enum_type *,
                                                const char *,
                                                kefir_ast_enumerator_constant_t);
 
 kefir_result_t kefir_ast_enumeration_type_constant_auto(struct kefir_mem *,
-                                                    struct kefir_ast_type_repository *,
+                                                    struct kefir_symbol_table *,
                                                     struct kefir_ast_enum_type *,
                                                     const char *);
 
 const struct kefir_ast_type *kefir_ast_type_enumeration(struct kefir_mem *,
-                                                   struct kefir_ast_type_repository *,
+                                                   struct kefir_ast_type_storage *,
                                                    const char *,
                                                    struct kefir_ast_enum_type **);
 

@@ -72,6 +72,7 @@ kefir_result_t kefir_list_insert_after(struct kefir_mem *mem,
             list->tail = entry;
         }
     }
+    list->length++;
     return KEFIR_OK;
 }
 
@@ -95,6 +96,7 @@ kefir_result_t kefir_list_pop(struct kefir_mem *mem, struct kefir_list *list, st
         iter->prev->next = iter->next;
     }
     KEFIR_FREE(mem, iter);
+    list->length--;
     return KEFIR_OK;
 }
 

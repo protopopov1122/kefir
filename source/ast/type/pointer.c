@@ -18,14 +18,14 @@ static kefir_result_t free_pointer_type(struct kefir_mem *mem, const struct kefi
 }
 
 const struct kefir_ast_type *kefir_ast_type_pointer(struct kefir_mem *mem,
-                                                struct kefir_ast_type_repository *repo,
+                                                struct kefir_ast_type_storage *type_storage,
                                                 const struct kefir_ast_type *base_type) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(base_type != NULL, NULL);
     struct kefir_ast_type *type = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type));
     REQUIRE(type != NULL, NULL);
-    if (repo != NULL) {
-        kefir_result_t res = kefir_list_insert_after(mem, &repo->types, kefir_list_tail(&repo->types), type);
+    if (type_storage != NULL) {
+        kefir_result_t res = kefir_list_insert_after(mem, &type_storage->types, kefir_list_tail(&type_storage->types), type);
         REQUIRE_ELSE(res == KEFIR_OK, {
             KEFIR_FREE(mem, type);
             return NULL;
@@ -37,4 +37,9 @@ const struct kefir_ast_type *kefir_ast_type_pointer(struct kefir_mem *mem,
     type->ops.free = free_pointer_type;
     type->referenced_type = base_type;
     return type;
+}
+
+const struct kefir_ast_type *kefir_ast_pointer_referenced_type(const struct kefir_ast_type *pointer_type) {
+    REQUIRE(pointer_type != NULL, NULL);
+    return pointer_type->referenced_type;
 }
