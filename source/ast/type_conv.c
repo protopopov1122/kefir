@@ -8,7 +8,7 @@ const struct kefir_ast_type *kefir_ast_type_int_promotion(const struct kefir_ast
     REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type) || type->tag == KEFIR_AST_TYPE_SCALAR_BOOL, NULL);
     const struct kefir_ast_type *SIGNED_INT = kefir_ast_type_signed_int();
     const struct kefir_ast_type *UNSIGNED_INT = kefir_ast_type_unsigned_int();
-    if (type->basic_props.rank < SIGNED_INT->basic_props.rank) {
+    if (type->basic_type.rank < SIGNED_INT->basic_type.rank) {
         kefir_bool_t fits = false;
         if (type_traits->integral_type_fits(type_traits, type, SIGNED_INT, &fits) == KEFIR_OK && fits) {
             return SIGNED_INT;
@@ -40,29 +40,29 @@ const struct kefir_ast_type *kefir_ast_type_common_arithmetic(const struct kefir
     if (KEFIR_AST_TYPE_SAME(type1, type2)) {
         return type1;
     }
-    if (type1->basic_props.signedness == type2->basic_props.signedness) {
-        if (type1->basic_props.rank > type2->basic_props.rank) {
+    if (type1->basic_type.signedness == type2->basic_type.signedness) {
+        if (type1->basic_type.rank > type2->basic_type.rank) {
             return type1;
         } else {
             return type2;
         }
     } 
     kefir_bool_t fits = false;
-    if (!type1->basic_props.signedness) {
-        if (type1->basic_props.rank >= type2->basic_props.rank) {
+    if (!type1->basic_type.signedness) {
+        if (type1->basic_type.rank >= type2->basic_type.rank) {
             return type1;
         }
-    } else if (type2->basic_props.rank >= type1->basic_props.rank) {
+    } else if (type2->basic_type.rank >= type1->basic_type.rank) {
         return type2;
     }
-    if (type1->basic_props.signedness) {
+    if (type1->basic_type.signedness) {
         if (type_traits->integral_type_fits(type_traits, type2, type1, &fits) == KEFIR_OK && fits) {
             return type1;
         }
     } else if (type_traits->integral_type_fits(type_traits, type1, type2, &fits) == KEFIR_OK && fits) {
         return type2;
     }
-    if (type1->basic_props.signedness) {
+    if (type1->basic_type.signedness) {
         return kefir_ast_type_flip_integer_singedness(type1);
     } else {
         return kefir_ast_type_flip_integer_singedness(type2);

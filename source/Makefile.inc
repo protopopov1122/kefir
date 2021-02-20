@@ -1,6 +1,7 @@
 KEFIR_LIB := $(wildcard \
 	$(SOURCE_DIR)/ast/*.c \
 	$(SOURCE_DIR)/ast/translator/*.c \
+	$(SOURCE_DIR)/ast/type/*.c \
 	$(SOURCE_DIR)/core/*.c \
 	$(SOURCE_DIR)/codegen/*.c \
 	$(SOURCE_DIR)/codegen/amd64/*.c \

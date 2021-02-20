@@ -1,0 +1,124 @@
+#include "kefir/ast/type.h"
+#include "kefir/core/util.h"
+#include "kefir/core/error.h"
+
+static kefir_bool_t same_array_type(const struct kefir_ast_type *type1, const struct kefir_ast_type *type2) {
+    REQUIRE(type1 != NULL, false);
+    REQUIRE(type2 != NULL, false);
+    REQUIRE(type1->tag == KEFIR_AST_TYPE_ARRAY &&
+        type2->tag == KEFIR_AST_TYPE_ARRAY, false);
+    REQUIRE(type1->array_type.boundary == type2->array_type.boundary, false);
+    switch (type1->array_type.boundary) {
+        case KEFIR_AST_ARRAY_UNBOUNDED:
+        case KEFIR_AST_ARRAY_VLA:
+        case KEFIR_AST_ARRAY_VLA_STATIC:
+            break;
+
+        case KEFIR_AST_ARRAY_BOUNDED:
+        case KEFIR_AST_ARRAY_BOUNDED_STATIC:
+            REQUIRE(type1->array_type.length == type2->array_type.length, false);
+            break;
+    }
+    return KEFIR_AST_TYPE_SAME(type1->array_type.element_type, type2->array_type.element_type);
+}
+
+static kefir_result_t free_array(struct kefir_mem *mem, const struct kefir_ast_type *type) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
+    KEFIR_FREE(mem, (void *) type);
+    return KEFIR_OK;
+}
+
+struct kefir_ast_type *kefir_ast_type_array_impl(struct kefir_mem *mem,
+                                             struct kefir_ast_type_repository *repo,
+                                             const struct kefir_ast_type *element_type,
+                                             const struct kefir_ast_type_qualification *qualification,
+                                             struct kefir_ast_array_type **array_type) {
+    REQUIRE(mem != NULL, NULL);
+    REQUIRE(element_type != NULL, NULL);
+    REQUIRE(array_type != NULL, NULL);
+    struct kefir_ast_type *type = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type));
+    REQUIRE(type != NULL, NULL);
+    if (repo != NULL) {
+        kefir_result_t res = kefir_list_insert_after(mem, &repo->types, kefir_list_tail(&repo->types), type);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            KEFIR_FREE(mem, type);
+            return NULL;
+        });
+    }
+    type->tag = KEFIR_AST_TYPE_ARRAY;
+    type->basic = false;
+    type->ops.same = same_array_type;
+    type->ops.free = free_array;
+    type->array_type.element_type = element_type;
+    if (qualification != NULL) {
+        type->array_type.qualifications = *qualification;
+    } else {
+        type->array_type.qualifications = (const struct kefir_ast_type_qualification){false};
+    }
+    *array_type = &type->array_type;
+    return type;
+}
+
+const struct kefir_ast_type *kefir_ast_type_unbounded_array(struct kefir_mem *mem,
+                                                        struct kefir_ast_type_repository *repo,
+                                                        const struct kefir_ast_type *element_type,
+                                                        const struct kefir_ast_type_qualification *qualification) {
+    struct kefir_ast_array_type *array_type = NULL;
+    struct kefir_ast_type *type = kefir_ast_type_array_impl(mem, repo, element_type, qualification, &array_type);
+    REQUIRE(type != NULL, NULL);
+    array_type->boundary = KEFIR_AST_ARRAY_UNBOUNDED;
+    return type;
+}
+
+const struct kefir_ast_type *kefir_ast_type_array(struct kefir_mem *mem,
+                                              struct kefir_ast_type_repository *repo,
+                                              const struct kefir_ast_type *element_type,
+                                              kefir_size_t length,
+                                              const struct kefir_ast_type_qualification *qualification) {
+    struct kefir_ast_array_type *array_type = NULL;
+    struct kefir_ast_type *type = kefir_ast_type_array_impl(mem, repo, element_type, qualification, &array_type);
+    REQUIRE(type != NULL, NULL);
+    array_type->boundary = KEFIR_AST_ARRAY_BOUNDED;
+    array_type->length = length;
+    return type;
+}
+                                              
+const struct kefir_ast_type *kefir_ast_type_array_static(struct kefir_mem *mem,
+                                                     struct kefir_ast_type_repository *repo,
+                                                     const struct kefir_ast_type *element_type,
+                                                     kefir_size_t length,
+                                                     const struct kefir_ast_type_qualification *qualification) {
+    struct kefir_ast_array_type *array_type = NULL;
+    struct kefir_ast_type *type = kefir_ast_type_array_impl(mem, repo, element_type, qualification, &array_type);
+    REQUIRE(type != NULL, NULL);
+    array_type->boundary = KEFIR_AST_ARRAY_BOUNDED_STATIC;
+    array_type->length = length;
+    return type;
+}
+
+const struct kefir_ast_type *kefir_ast_type_vlen_array(struct kefir_mem *mem,
+                                                   struct kefir_ast_type_repository *repo,
+                                                   const struct kefir_ast_type *element_type,
+                                                   void *length,
+                                                   const struct kefir_ast_type_qualification *qualification) {
+    struct kefir_ast_array_type *array_type = NULL;
+    struct kefir_ast_type *type = kefir_ast_type_array_impl(mem, repo, element_type, qualification, &array_type);
+    REQUIRE(type != NULL, NULL);
+    array_type->boundary = KEFIR_AST_ARRAY_VLA;
+    array_type->vla_length = length;
+    return type;
+}
+                                              
+const struct kefir_ast_type *kefir_ast_type_vlen_array_static(struct kefir_mem *mem,
+                                                          struct kefir_ast_type_repository *repo,
+                                                          const struct kefir_ast_type *element_type,
+                                                          void *length,
+                                                          const struct kefir_ast_type_qualification *qualification) {
+    struct kefir_ast_array_type *array_type = NULL;
+    struct kefir_ast_type *type = kefir_ast_type_array_impl(mem, repo, element_type, qualification, &array_type);
+    REQUIRE(type != NULL, NULL);
+    array_type->boundary = KEFIR_AST_ARRAY_VLA_STATIC;
+    array_type->vla_length = length;
+    return type;
+}
