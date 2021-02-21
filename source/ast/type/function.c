@@ -3,6 +3,22 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
+kefir_size_t kefir_ast_type_function_parameter_count(const struct kefir_ast_function_type *function_type) {
+    REQUIRE(function_type != NULL, 0);
+    return kefir_list_length(&function_type->parameters);
+}
+
+kefir_result_t kefir_ast_type_function_get_parameter(const struct kefir_ast_function_type *function_type,
+                                                 kefir_size_t index,
+                                                 const struct kefir_ast_function_type_parameter **parameter) {
+    REQUIRE(function_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST finction type"));
+    REQUIRE(parameter != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST function type parameter pointer"));
+    struct kefir_list_entry *entry = kefir_list_at(&function_type->parameters, index);
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Expected valid AST function type parameter index"));
+    *parameter = (const struct kefir_ast_function_type_parameter *) entry->value;
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem,
                                              struct kefir_symbol_table *symbols,
                                              struct kefir_ast_function_type *function_type,

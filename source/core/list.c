@@ -110,6 +110,15 @@ struct kefir_list_entry *kefir_list_tail(const struct kefir_list *list) {
     return list->tail;
 }
 
+struct kefir_list_entry *kefir_list_at(const struct kefir_list *list, kefir_size_t index) {
+    REQUIRE(list != NULL, NULL);
+    struct kefir_list_entry *entry = list->head;
+    while (index-- && entry != NULL) {
+        entry = entry->next;
+    }
+    return entry;
+}
+
 void *kefir_list_next(const struct kefir_list_entry **current) {
     REQUIRE(current != NULL, NULL);
     if (*current == NULL) {

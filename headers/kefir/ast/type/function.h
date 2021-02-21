@@ -28,6 +28,12 @@ typedef struct kefir_ast_function_type {
     kefir_bool_t ellipsis;
 } kefir_ast_function_type_t;
 
+kefir_size_t kefir_ast_type_function_parameter_count(const struct kefir_ast_function_type *);
+
+kefir_result_t kefir_ast_type_function_get_parameter(const struct kefir_ast_function_type *,
+                                                 kefir_size_t,
+                                                 const struct kefir_ast_function_type_parameter **);
+
 kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *,
                                              struct kefir_symbol_table *,
                                              struct kefir_ast_function_type *,

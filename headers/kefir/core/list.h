@@ -31,6 +31,7 @@ kefir_result_t kefir_list_insert_after(struct kefir_mem *, struct kefir_list *, 
 kefir_result_t kefir_list_pop(struct kefir_mem *, struct kefir_list *, struct kefir_list_entry *);
 struct kefir_list_entry *kefir_list_head(const struct kefir_list *);
 struct kefir_list_entry *kefir_list_tail(const struct kefir_list *);
+struct kefir_list_entry *kefir_list_at(const struct kefir_list *, kefir_size_t);
 void *kefir_list_next(const struct kefir_list_entry **);
 
 #endif

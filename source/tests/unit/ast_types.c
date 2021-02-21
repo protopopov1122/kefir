@@ -580,11 +580,37 @@ END_CASE
 #undef ASSERT_STRUCT_FIELD
 #undef ASSERT_STRUCT_BITFIELD
 
+#define ASSERT_FUNCTION_PARAM(_func, _index, _id, _type, _storage) \
+    do {\
+        const struct kefir_ast_function_type_parameter *_param = NULL; \
+        ASSERT_OK(kefir_ast_type_function_get_parameter((_func), (_index), &_param)); \
+        if (_id != NULL) { \
+            ASSERT((_param)->identifier != NULL); \
+            const char *_ident = (_id); \
+            ASSERT(strcmp(_param->identifier, _ident) == 0); \
+        } else { \
+            ASSERT((_param)->identifier == NULL); \
+        } \
+        if ((_type) != NULL) { \
+            ASSERT(_param->type != NULL); \
+            ASSERT(KEFIR_AST_TYPE_SAME(_param->type, (_type))); \
+        } else { \
+            ASSERT(_param->type == NULL); \
+        } \
+        if ((_storage) != NULL) { \
+            ASSERT(!KEFIR_OPTIONAL_EMPTY(&_param->storage)); \
+            ASSERT(*KEFIR_OPTIONAL_VALUE(&_param->storage) == *(const kefir_ast_scoped_identifier_storage_t *)(_storage)); \
+        } else { \
+            ASSERT(KEFIR_OPTIONAL_EMPTY(&_param->storage)); \
+        } \
+    } while (0)
+
 DEFINE_CASE(ast_types8, "AST Types - function type")
     struct kefir_ast_type_storage type_storage;
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
     ASSERT_OK(kefir_ast_type_storage_init(&type_storage, &symbols));
+    const kefir_ast_scoped_identifier_storage_t REGISTER = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER;
 
     struct kefir_ast_function_type *func_type1 = NULL;
     const struct kefir_ast_type *type1 = kefir_ast_type_function(&kft_mem, &type_storage,
@@ -602,14 +628,58 @@ DEFINE_CASE(ast_types8, "AST Types - function type")
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &symbols, func_type1,
         "arg2", kefir_ast_type_float(), NULL));
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &symbols, func_type1,
-        "arg3", kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_void()), NULL));
+        NULL, kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_void()),
+        &REGISTER));
     ASSERT_OK(kefir_ast_type_function_ellipsis(func_type1, true));
     
     ASSERT(func_type1->mode == KEFIR_AST_FUNCTION_TYPE_PARAMETERS);
-    ASSERT(kefir_list_length(&func_type1->parameters) == 3);
-    // TODO: Finish function unit testing
+    ASSERT(kefir_ast_type_function_parameter_count(func_type1) == 3);
+    ASSERT_FUNCTION_PARAM(func_type1, 0, "arg1",
+        kefir_ast_type_unbounded_array(&kft_mem, &type_storage, kefir_ast_type_unsigned_char(), NULL), NULL);
+    ASSERT_FUNCTION_PARAM(func_type1, 1, "arg2",
+        kefir_ast_type_float(), NULL);
+    ASSERT_FUNCTION_PARAM(func_type1, 2, NULL,
+        kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_void()), &REGISTER);
     ASSERT(func_type1->ellipsis);
+
+    struct kefir_ast_function_type *func_type2 = NULL;
+    const struct kefir_ast_type *type2 = kefir_ast_type_function(&kft_mem, &type_storage,
+        kefir_ast_type_void(), "func2", &func_type2);
+    ASSERT(type2 != NULL);
+    ASSERT(func_type2 != NULL);
+    ASSERT(KEFIR_AST_TYPE_SAME(func_type2->return_type, kefir_ast_type_void()));
+    ASSERT(func_type2->identifier != NULL && strcmp(func_type2->identifier, "func2") == 0);
+    ASSERT(func_type2->mode == KEFIR_AST_FUNCTION_TYPE_PARAM_EMPTY);
+    ASSERT(kefir_list_length(&func_type2->parameters) == 0);
+    ASSERT(!func_type2->ellipsis);
+
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &symbols, func_type2,
+        "arg1", NULL, NULL));
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &symbols, func_type2,
+        "arg2", NULL, NULL));
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &symbols, func_type2,
+        "arg3", NULL, NULL));
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &symbols, func_type2,
+        "arg4", NULL, NULL));
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &symbols, func_type2,
+        "arg5", NULL, NULL));
+    
+    ASSERT(func_type2->mode == KEFIR_AST_FUNCTION_TYPE_PARAM_IDENTIFIERS);
+    ASSERT(kefir_ast_type_function_parameter_count(func_type2) == 5); 
+    ASSERT_FUNCTION_PARAM(func_type2, 0, "arg1",
+        NULL, NULL);
+    ASSERT_FUNCTION_PARAM(func_type2, 1, "arg2",
+        NULL, NULL);
+    ASSERT_FUNCTION_PARAM(func_type2, 2, "arg3",
+        NULL, NULL);
+    ASSERT_FUNCTION_PARAM(func_type2, 3, "arg4",
+        NULL, NULL);
+    ASSERT_FUNCTION_PARAM(func_type2, 4, "arg5",
+        NULL, NULL);
+    ASSERT(!func_type2->ellipsis);
 
     ASSERT_OK(kefir_ast_type_storage_free(&kft_mem, &type_storage));
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
 END_CASE
+
+#undef ASSERT_FUNCTION_PARAM
