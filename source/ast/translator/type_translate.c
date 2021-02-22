@@ -77,7 +77,7 @@ kefir_result_t kefir_ast_translate_stored_object_type(const struct kefir_ast_typ
         case KEFIR_AST_TYPE_ARRAY: {
             switch (type->array_type.boundary) {
                 case KEFIR_AST_ARRAY_UNBOUNDED:
-                    return KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_WORD, 0, 0);
+                    return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot translate unbounded array type to IR type");
 
                 case KEFIR_AST_ARRAY_BOUNDED:
                     REQUIRE_OK(KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_ARRAY, 0, type->array_type.length));

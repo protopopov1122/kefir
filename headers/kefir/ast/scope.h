@@ -4,6 +4,7 @@
 #include "kefir/core/mem.h"
 #include "kefir/ast/type.h"
 #include "kefir/ast/constants.h"
+#include "kefir/ast/alignment.h"
 #include "kefir/core/hashtree.h"
 #include "kefir/core/tree.h"
 
@@ -14,6 +15,7 @@ typedef struct kefir_ast_scoped_identifier {
     union {
         struct {
             const struct kefir_ast_type *type;
+            struct kefir_ast_alignment alignment;
             kefir_ast_scoped_identifier_storage_t storage;
         } object;
         const struct kefir_ast_type *type;

@@ -100,7 +100,7 @@ const struct kefir_ast_type *kefir_ast_type_array_static(struct kefir_mem *mem,
 const struct kefir_ast_type *kefir_ast_type_vlen_array(struct kefir_mem *mem,
                                                    struct kefir_ast_type_storage *type_storage,
                                                    const struct kefir_ast_type *element_type,
-                                                   void *length,
+                                                   kefir_ast_constant_expression_t length,
                                                    const struct kefir_ast_type_qualification *qualification) {
     struct kefir_ast_array_type *array_type = NULL;
     struct kefir_ast_type *type = kefir_ast_type_array_impl(mem, type_storage, element_type, qualification, &array_type);
@@ -113,7 +113,7 @@ const struct kefir_ast_type *kefir_ast_type_vlen_array(struct kefir_mem *mem,
 const struct kefir_ast_type *kefir_ast_type_vlen_array_static(struct kefir_mem *mem,
                                                           struct kefir_ast_type_storage *type_storage,
                                                           const struct kefir_ast_type *element_type,
-                                                          void *length,
+                                                          kefir_ast_constant_expression_t length,
                                                           const struct kefir_ast_type_qualification *qualification) {
     struct kefir_ast_array_type *array_type = NULL;
     struct kefir_ast_type *type = kefir_ast_type_array_impl(mem, type_storage, element_type, qualification, &array_type);

@@ -2,6 +2,7 @@
 #define KEFIR_AST_TYPE_ARRAY_H_
 
 #include "kefir/ast/type/base.h"
+#include "kefir/ast/constants.h"
 
 typedef enum kefir_ast_array_boundary_type {
     KEFIR_AST_ARRAY_UNBOUNDED,
@@ -17,7 +18,7 @@ typedef struct kefir_ast_array_type {
     struct kefir_ast_type_qualification qualifications;
     union {
         kefir_size_t length;
-        void *vla_length;
+        kefir_ast_constant_expression_t vla_length;
     };
 } kefir_ast_array_type_t;
 
@@ -41,13 +42,13 @@ const struct kefir_ast_type *kefir_ast_type_array_static(struct kefir_mem *,
 const struct kefir_ast_type *kefir_ast_type_vlen_array(struct kefir_mem *,
                                                    struct kefir_ast_type_storage *,
                                                    const struct kefir_ast_type *,
-                                                   void *,
+                                                   kefir_ast_constant_expression_t,
                                                    const struct kefir_ast_type_qualification *);
                                               
 const struct kefir_ast_type *kefir_ast_type_vlen_array_static(struct kefir_mem *,
                                                           struct kefir_ast_type_storage *,
                                                           const struct kefir_ast_type *,
-                                                          void *,
+                                                          kefir_ast_constant_expression_t,
                                                           const struct kefir_ast_type_qualification *);
 
 #endif
