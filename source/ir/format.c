@@ -83,7 +83,7 @@ kefir_result_t kefir_ir_format_instr_coderef(FILE *fp, const struct kefir_ir_mod
     return KEFIR_OK;
 }
 
-static kefir_result_t kefir_ir_format_type(FILE *fp, const char *prefix, struct kefir_ir_type *type) {
+static kefir_result_t kefir_ir_format_type_impl(FILE *fp, const char *prefix, struct kefir_ir_type *type) {
     for (kefir_size_t i = 0; i < kefir_ir_type_raw_length(type); i++) {
         struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(type, i);
         switch (typeentry->typecode) {
@@ -96,7 +96,7 @@ static kefir_result_t kefir_ir_format_type(FILE *fp, const char *prefix, struct 
                 break;
 
             case KEFIR_IR_TYPE_ARRAY:
-                fprintf(fp, "%sstruct(" KEFIR_INT64_FMT ")", prefix, typeentry->param);
+                fprintf(fp, "%sarray(" KEFIR_INT64_FMT ")", prefix, typeentry->param);
                 break;
 
             case KEFIR_IR_TYPE_UNION:
@@ -143,6 +143,14 @@ static kefir_result_t kefir_ir_format_type(FILE *fp, const char *prefix, struct 
                 fprintf(fp, "%slong", prefix);
                 break;
 
+            case KEFIR_IR_TYPE_FLOAT32:
+                fprintf(fp, "%sfloat", prefix);
+                break;
+
+            case KEFIR_IR_TYPE_FLOAT64:
+                fprintf(fp, "%sdouble", prefix);
+                break;
+
             case KEFIR_IR_TYPE_WORD:
                 fprintf(fp, "%sword", prefix);
                 break;
@@ -170,20 +178,24 @@ static kefir_result_t kefir_ir_format_type(FILE *fp, const char *prefix, struct 
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_ir_format_type(FILE *fp, struct kefir_ir_type *type) {
+    return kefir_ir_format_type_impl(fp, "", type);
+}
+
 static kefir_result_t kefir_ir_format_function_declaration(FILE *fp, struct kefir_ir_function_decl *decl) {
     fprintf(fp, "declare %s", decl->identifier);
     if (decl->alias != NULL) {
         fprintf(fp, " as %s", decl->alias);
     }
     fprintf(fp," = {\n\tparams:\n");
-    REQUIRE_OK(kefir_ir_format_type(fp, "\t\t", decl->params));
+    REQUIRE_OK(kefir_ir_format_type_impl(fp, "\t\t", decl->params));
     if (decl->vararg) {
         fprintf(fp, "\tvararg: yes\n");
     } else {
         fprintf(fp, "\tvararg: no\n");
     }
     fprintf(fp, "\treturns:\n");
-    REQUIRE_OK(kefir_ir_format_type(fp, "\t\t", decl->result));
+    REQUIRE_OK(kefir_ir_format_type_impl(fp, "\t\t", decl->result));
     fprintf(fp, "}\n");
     return KEFIR_OK;
 }
@@ -192,7 +204,7 @@ static kefir_result_t kefir_ir_format_function(FILE *fp, const struct kefir_ir_m
     fprintf(fp, "implement %s = {\n", func->declaration->identifier);
     if (func->locals != NULL) {
         fprintf(fp, "\tlocals:\n");
-        REQUIRE_OK(kefir_ir_format_type(fp, "\t\t", func->locals));
+        REQUIRE_OK(kefir_ir_format_type_impl(fp, "\t\t", func->locals));
     }
     fprintf(fp, "\tbody:\n");
     for (kefir_size_t i = 0; i < kefir_irblock_length(&func->body); i++) {

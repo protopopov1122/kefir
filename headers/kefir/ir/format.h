@@ -6,5 +6,6 @@
 #include "kefir/ir/module.h"
 
 kefir_result_t kefir_ir_format_module(FILE *, const struct kefir_ir_module *);
+kefir_result_t kefir_ir_format_type(FILE *, struct kefir_ir_type *);
 
 #endif

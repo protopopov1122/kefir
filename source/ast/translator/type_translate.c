@@ -77,7 +77,8 @@ kefir_result_t kefir_ast_translate_stored_object_type(struct kefir_mem *mem,
                 REQUIRE_OK(kefir_ast_translator_eval_alignment(mem, &field->alignment, env, &field_alignment));
                 REQUIRE_OK(kefir_ast_translate_stored_object_type(mem, field->type, field_alignment, env, builder));
             }
-        } break;
+            return KEFIR_OK;
+        }
 
         case KEFIR_AST_TYPE_ARRAY: {
             switch (type->array_type.boundary) {
