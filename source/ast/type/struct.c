@@ -152,6 +152,7 @@ static kefir_result_t kefir_ast_struct_type_field_impl(struct kefir_mem *mem,
                                                    struct kefir_ast_struct_type *struct_type,
                                                    const char *identifier,
                                                    const struct kefir_ast_type *type,
+                                                   struct kefir_ast_alignment *alignment,
                                                    kefir_bool_t bitfield,
                                                    kefir_size_t bitwidth) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
@@ -175,7 +176,18 @@ static kefir_result_t kefir_ast_struct_type_field_impl(struct kefir_mem *mem,
     field->type = type;
     field->bitfield = bitfield;
     field->bitwidth = bitwidth;
-    kefir_result_t res = kefir_hashtree_insert(mem, &struct_type->field_index,
+    kefir_result_t res = KEFIR_OK;
+    if (alignment != NULL) {
+        field->alignment = *alignment;
+        res = kefir_ast_alignment_default(alignment);
+    } else {
+        res = kefir_ast_alignment_default(&field->alignment);
+    }
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, field);
+        return res;
+    });
+    res = kefir_hashtree_insert(mem, &struct_type->field_index,
         (kefir_hashtree_key_t) identifier, (kefir_hashtree_value_t) field);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, field);
@@ -207,8 +219,9 @@ kefir_result_t kefir_ast_struct_type_field(struct kefir_mem *mem,
                                        struct kefir_symbol_table *symbols,
                                        struct kefir_ast_struct_type *struct_type,
                                        const char *identifier,
-                                       const struct kefir_ast_type *type) {
-    return kefir_ast_struct_type_field_impl(mem, symbols, struct_type, identifier, type, false, 0);
+                                       const struct kefir_ast_type *type,
+                                       struct kefir_ast_alignment *alignment) {
+    return kefir_ast_struct_type_field_impl(mem, symbols, struct_type, identifier, type, alignment, false, 0);
 }
 
 kefir_result_t kefir_ast_struct_type_bitfield(struct kefir_mem *mem,
@@ -216,8 +229,9 @@ kefir_result_t kefir_ast_struct_type_bitfield(struct kefir_mem *mem,
                                           struct kefir_ast_struct_type *struct_type,
                                           const char *identifier,
                                           const struct kefir_ast_type *type,
+                                          struct kefir_ast_alignment *alignment,
                                           kefir_size_t bitwidth) {
-    return kefir_ast_struct_type_field_impl(mem, symbols, struct_type, identifier, type, true, bitwidth);
+    return kefir_ast_struct_type_field_impl(mem, symbols, struct_type, identifier, type, alignment, true, bitwidth);
 }
 
 const struct kefir_ast_type *kefir_ast_type_structure(struct kefir_mem *mem,

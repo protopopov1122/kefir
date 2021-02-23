@@ -5,6 +5,8 @@
 kefir_result_t kefir_ast_alignment_default(struct kefir_ast_alignment *alignment) {
     REQUIRE(alignment != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST alignment"));
     alignment->klass = KEFIR_AST_ALIGNMENT_DEFAULT;
+    alignment->type = NULL;
+    alignment->const_expr = NULL;
     return KEFIR_OK;
 }
 

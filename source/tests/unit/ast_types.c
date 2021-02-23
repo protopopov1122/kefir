@@ -510,13 +510,13 @@ DEFINE_CASE(ast_types6, "AST Types - struct type")
     ASSERT(type2->structure_type.complete);
     ASSERT(type2->structure_type.identifier != NULL && strcmp(type2->structure_type.identifier, "struct2") == 0);
 
-    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, struct_type2, "field0", kefir_ast_type_unsigned_short()));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, struct_type2, "field0", kefir_ast_type_unsigned_short(), NULL));
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, struct_type2,
-        "field1", kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_float())));
-    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, struct_type2, "field10", kefir_ast_type_unsigned_int(), 5));
-    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, struct_type2, "field11", kefir_ast_type_unsigned_int(), 3));
-    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, struct_type2, "field20", kefir_ast_type_unsigned_long(), 16));
-    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, struct_type2, "field21", kefir_ast_type_bool()));
+        "field1", kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_float()), NULL));
+    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, struct_type2, "field10", kefir_ast_type_unsigned_int(), NULL, 5));
+    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, struct_type2, "field11", kefir_ast_type_unsigned_int(), NULL, 3));
+    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, struct_type2, "field20", kefir_ast_type_unsigned_long(), NULL, 16));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, struct_type2, "field21", kefir_ast_type_bool(), NULL));
     
     ASSERT(KEFIR_AST_TYPE_SAME(type2, type2));
     ASSERT(!KEFIR_AST_TYPE_SAME(type1, type2));
@@ -554,13 +554,13 @@ DEFINE_CASE(ast_types7, "AST Types - union type")
     ASSERT(type2->structure_type.complete);
     ASSERT(type2->structure_type.identifier != NULL && strcmp(type2->structure_type.identifier, "union2") == 0);
 
-    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, union_type2, "field0", kefir_ast_type_unsigned_short()));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, union_type2, "field0", kefir_ast_type_unsigned_short(), NULL));
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, union_type2,
-        "field1", kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_float())));
-    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, union_type2, "field10", kefir_ast_type_unsigned_int(), 5));
-    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, union_type2, "field11", kefir_ast_type_unsigned_int(), 3));
-    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, union_type2, "field20", kefir_ast_type_unsigned_long(), 16));
-    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, union_type2, "field21", kefir_ast_type_bool()));
+        "field1", kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_float()), NULL));
+    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, union_type2, "field10", kefir_ast_type_unsigned_int(), NULL, 5));
+    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, union_type2, "field11", kefir_ast_type_unsigned_int(), NULL, 3));
+    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, union_type2, "field20", kefir_ast_type_unsigned_long(), NULL, 16));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, union_type2, "field21", kefir_ast_type_bool(), NULL));
     
     ASSERT(KEFIR_AST_TYPE_SAME(type2, type2));
     ASSERT(!KEFIR_AST_TYPE_SAME(type1, type2));

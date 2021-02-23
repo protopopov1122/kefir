@@ -2,6 +2,7 @@
 #define KEFIR_AST_TRANSLATOR_SCOPE_LAYOUT_H_
 
 #include "kefir/ast/context.h"
+#include "kefir/ast/translator/environment.h"
 #include "kefir/ir/builder.h"
 #include "kefir/ir/module.h"
 #include "kefir/ir/module.h"
@@ -48,9 +49,11 @@ kefir_result_t kefir_ast_lobal_scope_layout_free(struct kefir_mem *,
 kefir_result_t kefir_ast_translate_global_scope_layout(struct kefir_mem *,
                                                    struct kefir_ir_module *,
                                                    const struct kefir_ast_global_context *,
+                                                   const struct kefir_ast_translator_environment *,
                                                    struct kefir_ast_global_scope_layout *);
 kefir_result_t kefir_ast_translate_local_scope_layout(struct kefir_mem *,
                                                   const struct kefir_ast_context *,
+                                                  const struct kefir_ast_translator_environment *,
                                                   struct kefir_ast_local_scope_layout *);
 
 #endif

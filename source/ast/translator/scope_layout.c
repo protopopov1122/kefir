@@ -1,5 +1,6 @@
 #include "kefir/ast/translator/scope_layout.h"
 #include "kefir/ast/translator/translator.h"
+#include "kefir/ast/translator/alignment.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -64,7 +65,9 @@ static kefir_result_t translate_global_scoped_identifier(struct kefir_mem *mem,
                                                        const char *identifier,
                                                        const struct kefir_ast_scoped_identifier *scoped_identifier,
                                                        struct kefir_ast_global_scope_layout *layout,
+                                                       const struct kefir_ast_translator_environment *env,
                                                        const struct kefir_ast_global_context *context) {
+    UNUSED(env);
     ASSIGN_DECL_CAST(struct kefir_ast_scoped_identifier_layout *, scoped_identifier_layout,
         scoped_identifier->payload.ptr);
     switch (scoped_identifier->object.storage) {
@@ -78,8 +81,10 @@ static kefir_result_t translate_global_scoped_identifier(struct kefir_mem *mem,
                 REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to allocate new IR type"));
                 scoped_identifier_layout->type_index = 0;
                 struct kefir_irbuilder_type builder;
+                kefir_size_t alignment = 0;
+                REQUIRE_OK(kefir_ast_translator_eval_alignment(mem, &scoped_identifier->object.alignment, env, &alignment));
                 REQUIRE_OK(kefir_irbuilder_type_init(mem, &builder, type));
-                REQUIRE_OK(kefir_ast_translate_stored_object_type(scoped_identifier->object.type, &builder, NULL));
+                REQUIRE_OK(kefir_ast_translate_stored_object_type(mem, scoped_identifier->object.type, alignment, env, &builder));
                 REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
                 REQUIRE_OK(kefir_hashtree_insert(mem, &layout->external_objects,
                     (kefir_hashtree_key_t) identifier, (kefir_hashtree_value_t) type));
@@ -96,8 +101,10 @@ static kefir_result_t translate_global_scoped_identifier(struct kefir_mem *mem,
                 REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to allocate new IR type"));
                 scoped_identifier_layout->type_index = 0;
                 struct kefir_irbuilder_type builder;
+                kefir_size_t alignment = 0;
+                REQUIRE_OK(kefir_ast_translator_eval_alignment(mem, &scoped_identifier->object.alignment, env, &alignment));
                 REQUIRE_OK(kefir_irbuilder_type_init(mem, &builder, type));
-                REQUIRE_OK(kefir_ast_translate_stored_object_type(scoped_identifier->object.type, &builder, NULL));
+                REQUIRE_OK(kefir_ast_translate_stored_object_type(mem, scoped_identifier->object.type, alignment, env, &builder));
                 REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
                 REQUIRE_OK(kefir_hashtree_insert(mem, &layout->external_thread_local_objects,
                     (kefir_hashtree_key_t) identifier, (kefir_hashtree_value_t) type));
@@ -109,8 +116,10 @@ static kefir_result_t translate_global_scoped_identifier(struct kefir_mem *mem,
             REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to allocate new IR type"));
             scoped_identifier_layout->type_index = 0;
             struct kefir_irbuilder_type builder;
+            kefir_size_t alignment = 0;
+            REQUIRE_OK(kefir_ast_translator_eval_alignment(mem, &scoped_identifier->object.alignment, env, &alignment));
             REQUIRE_OK(kefir_irbuilder_type_init(mem, &builder, type));
-            REQUIRE_OK(kefir_ast_translate_stored_object_type(scoped_identifier->object.type, &builder, NULL));
+            REQUIRE_OK(kefir_ast_translate_stored_object_type(mem, scoped_identifier->object.type, alignment, env, &builder));
             REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
             REQUIRE_OK(kefir_hashtree_insert(mem, &layout->external_thread_local_objects,
                 (kefir_hashtree_key_t) identifier, (kefir_hashtree_value_t) type));
@@ -119,8 +128,10 @@ static kefir_result_t translate_global_scoped_identifier(struct kefir_mem *mem,
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC: {
             const kefir_size_t index = kefir_ir_type_total_length(layout->static_layout);
             struct kefir_irbuilder_type builder;
+            kefir_size_t alignment = 0;
+            REQUIRE_OK(kefir_ast_translator_eval_alignment(mem, &scoped_identifier->object.alignment, env, &alignment));
             REQUIRE_OK(kefir_irbuilder_type_init(mem, &builder, layout->static_layout));
-            REQUIRE_OK(kefir_ast_translate_stored_object_type(scoped_identifier->object.type, &builder, NULL));
+            REQUIRE_OK(kefir_ast_translate_stored_object_type(mem, scoped_identifier->object.type, alignment, env, &builder));
             REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
             REQUIRE_OK(kefir_hashtree_insert(mem, &layout->static_objects,
                 (kefir_hashtree_key_t) identifier, (kefir_hashtree_value_t) index));
@@ -131,8 +142,10 @@ static kefir_result_t translate_global_scoped_identifier(struct kefir_mem *mem,
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL: {
             const kefir_size_t index = kefir_ir_type_total_length(layout->static_thread_local_layout);
             struct kefir_irbuilder_type builder;
+            kefir_size_t alignment = 0;
+            REQUIRE_OK(kefir_ast_translator_eval_alignment(mem, &scoped_identifier->object.alignment, env, &alignment));
             REQUIRE_OK(kefir_irbuilder_type_init(mem, &builder, layout->static_thread_local_layout));
-            REQUIRE_OK(kefir_ast_translate_stored_object_type(scoped_identifier->object.type, &builder, NULL));
+            REQUIRE_OK(kefir_ast_translate_stored_object_type(mem, scoped_identifier->object.type, alignment, env, &builder));
             REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
             REQUIRE_OK(kefir_hashtree_insert(mem, &layout->static_thread_local_objects,
                 (kefir_hashtree_key_t) identifier, (kefir_hashtree_value_t) index));
@@ -166,6 +179,7 @@ static kefir_result_t translate_global_scoped_identifier(struct kefir_mem *mem,
 kefir_result_t kefir_ast_translate_global_scope_layout(struct kefir_mem *mem,
                                                    struct kefir_ir_module *module,
                                                    const struct kefir_ast_global_context *context,
+                                                   const struct kefir_ast_translator_environment *env,
                                                    struct kefir_ast_global_scope_layout *layout) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module"));
@@ -176,7 +190,7 @@ kefir_result_t kefir_ast_translate_global_scope_layout(struct kefir_mem *mem,
     for (res = kefir_ast_identifier_flat_scope_iter(&context->object_scope, &iter);
         res == KEFIR_OK;
         res = kefir_ast_identifier_flat_scope_next(&context->object_scope, &iter)) {
-        REQUIRE_OK(translate_global_scoped_identifier(mem, module, iter.identifier, iter.value, layout, context));
+        REQUIRE_OK(translate_global_scoped_identifier(mem, module, iter.identifier, iter.value, layout, env, context));
     }
     REQUIRE_ELSE(res == KEFIR_ITERATOR_END, {
         return res;
@@ -187,7 +201,9 @@ kefir_result_t kefir_ast_translate_global_scope_layout(struct kefir_mem *mem,
 static kefir_result_t translate_local_scoped_identifier(struct kefir_mem *mem,
                                                       struct kefir_irbuilder_type *builder,
                                                       const struct kefir_ast_scoped_identifier *scoped_identifier,
+                                                      const struct kefir_ast_translator_environment *env,
                                                       struct kefir_ast_local_scope_layout *local_layout) {
+    UNUSED(env);
     ASSIGN_DECL_CAST(struct kefir_ast_scoped_identifier_layout *, scoped_identifier_layout,
         scoped_identifier->payload.ptr);
     switch (scoped_identifier->object.storage) {
@@ -198,8 +214,10 @@ static kefir_result_t translate_local_scoped_identifier(struct kefir_mem *mem,
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC: {
             const kefir_size_t index = kefir_ir_type_total_length(local_layout->global->static_layout);
             struct kefir_irbuilder_type global_builder;
+            kefir_size_t alignment = 0;
+            REQUIRE_OK(kefir_ast_translator_eval_alignment(mem, &scoped_identifier->object.alignment, env, &alignment));
             REQUIRE_OK(kefir_irbuilder_type_init(mem, &global_builder, local_layout->global->static_layout));
-            REQUIRE_OK(kefir_ast_translate_stored_object_type(scoped_identifier->object.type, &global_builder, NULL));
+            REQUIRE_OK(kefir_ast_translate_stored_object_type(mem, scoped_identifier->object.type, alignment, env, &global_builder));
             REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&global_builder));
             scoped_identifier_layout->type_id = local_layout->global->static_layout_id;
             scoped_identifier_layout->type_index = index;
@@ -211,8 +229,10 @@ static kefir_result_t translate_local_scoped_identifier(struct kefir_mem *mem,
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL: {
             const kefir_size_t index = kefir_ir_type_total_length(local_layout->global->static_thread_local_layout);
             struct kefir_irbuilder_type global_builder;
+            kefir_size_t alignment = 0;
+            REQUIRE_OK(kefir_ast_translator_eval_alignment(mem, &scoped_identifier->object.alignment, env, &alignment));
             REQUIRE_OK(kefir_irbuilder_type_init(mem, &global_builder, local_layout->global->static_thread_local_layout));
-            REQUIRE_OK(kefir_ast_translate_stored_object_type(scoped_identifier->object.type, &global_builder, NULL));
+            REQUIRE_OK(kefir_ast_translate_stored_object_type(mem, scoped_identifier->object.type, alignment, env, &global_builder));
             REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&global_builder));
             scoped_identifier_layout->type_id = local_layout->global->static_thread_local_layout_id;
             scoped_identifier_layout->type_index = index;
@@ -221,7 +241,9 @@ static kefir_result_t translate_local_scoped_identifier(struct kefir_mem *mem,
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO:
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER: {
             const kefir_size_t index = kefir_ir_type_total_length(builder->type);
-            REQUIRE_OK(kefir_ast_translate_stored_object_type(scoped_identifier->object.type, builder, NULL));
+            kefir_size_t alignment = 0;
+            REQUIRE_OK(kefir_ast_translator_eval_alignment(mem, &scoped_identifier->object.alignment, env, &alignment));
+            REQUIRE_OK(kefir_ast_translate_stored_object_type(mem, scoped_identifier->object.type, alignment, env, builder));
             scoped_identifier_layout->type_id = local_layout->local_layout_id;
             scoped_identifier_layout->type_index = index;
         } break;
@@ -232,6 +254,7 @@ static kefir_result_t translate_local_scoped_identifier(struct kefir_mem *mem,
 static kefir_result_t traverse_local_scope(struct kefir_mem *mem,
                                          const struct kefir_tree_node *root,
                                          struct kefir_irbuilder_type *builder,
+                                         const struct kefir_ast_translator_environment *env,
                                          struct kefir_ast_local_scope_layout *local_layout) {
     ASSIGN_DECL_CAST(struct kefir_ast_identifier_flat_scope *, scope,
         root->value);
@@ -244,7 +267,7 @@ static kefir_result_t traverse_local_scope(struct kefir_mem *mem,
         res == KEFIR_OK;
         res = kefir_ast_identifier_flat_scope_next(scope, &iter)) {
         scope_length++;
-        REQUIRE_OK(translate_local_scoped_identifier(mem, builder, iter.value, local_layout));
+        REQUIRE_OK(translate_local_scoped_identifier(mem, builder, iter.value, env, local_layout));
     }
     REQUIRE_ELSE(res == KEFIR_ITERATOR_END, {
         return res;
@@ -259,7 +282,7 @@ static kefir_result_t traverse_local_scope(struct kefir_mem *mem,
             child != NULL;
             child = kefir_tree_next_sibling(child)) {
             children++;
-            REQUIRE_OK(traverse_local_scope(mem, child, builder, local_layout));
+            REQUIRE_OK(traverse_local_scope(mem, child, builder, env, local_layout));
         }
         child_typeentry->param = children;
     }
@@ -269,6 +292,7 @@ static kefir_result_t traverse_local_scope(struct kefir_mem *mem,
 
 kefir_result_t kefir_ast_translate_local_scope_layout(struct kefir_mem *mem,
                                                   const struct kefir_ast_context *context,
+                                                  const struct kefir_ast_translator_environment *env,
                                                   struct kefir_ast_local_scope_layout *layout) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
@@ -276,7 +300,7 @@ kefir_result_t kefir_ast_translate_local_scope_layout(struct kefir_mem *mem,
 
     struct kefir_irbuilder_type builder;
     REQUIRE_OK(kefir_irbuilder_type_init(mem, &builder, layout->local_layout));
-    REQUIRE_OK(traverse_local_scope(mem, &context->local_object_scope.root, &builder, layout));
+    REQUIRE_OK(traverse_local_scope(mem, &context->local_object_scope.root, &builder, env, layout));
     REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
     return KEFIR_OK;
 }

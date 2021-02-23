@@ -42,50 +42,62 @@ kefir_result_t kefir_ast_context_pop_block_scope(struct kefir_ast_context *);
 kefir_result_t kefir_ast_global_context_declare_external(struct kefir_mem *,
                                                      struct kefir_ast_global_context *,
                                                      const char *,
-                                                     const struct kefir_ast_type *);
+                                                     const struct kefir_ast_type *,
+                                                     struct kefir_ast_alignment *);
 kefir_result_t kefir_ast_global_context_declare_external_thread_local(struct kefir_mem *,
                                                                   struct kefir_ast_global_context *,
                                                                   const char *,
-                                                                  const struct kefir_ast_type *);
+                                                                  const struct kefir_ast_type *,
+                                                                  struct kefir_ast_alignment *);
 kefir_result_t kefir_ast_global_context_define_external(struct kefir_mem *,
                                                     struct kefir_ast_global_context *,
                                                     const char *,
-                                                    const struct kefir_ast_type *);
+                                                    const struct kefir_ast_type *,
+                                                    struct kefir_ast_alignment *);
 kefir_result_t kefir_ast_global_context_define_external_thread_local(struct kefir_mem *,
                                                                  struct kefir_ast_global_context *,
                                                                  const char *,
-                                                                 const struct kefir_ast_type *);
+                                                                 const struct kefir_ast_type *,
+                                                                  struct kefir_ast_alignment *);
 kefir_result_t kefir_ast_global_context_define_static(struct kefir_mem *,
                                                   struct kefir_ast_global_context *,
                                                   const char *,
-                                                  const struct kefir_ast_type *);
+                                                  const struct kefir_ast_type *,
+                                                  struct kefir_ast_alignment *);
 kefir_result_t kefir_ast_global_context_define_static_thread_local(struct kefir_mem *,
                                                                struct kefir_ast_global_context *,
                                                                const char *,
-                                                               const struct kefir_ast_type *);
+                                                               const struct kefir_ast_type *,
+                                                               struct kefir_ast_alignment *);
 kefir_result_t kefir_ast_context_declare_external(struct kefir_mem *,
                                               struct kefir_ast_context *,
                                               const char *,
-                                              const struct kefir_ast_type *);
+                                              const struct kefir_ast_type *,
+                                              struct kefir_ast_alignment *);
 kefir_result_t kefir_ast_context_declare_external_thread_local(struct kefir_mem *,
                                                            struct kefir_ast_context *,
                                                            const char *,
-                                                           const struct kefir_ast_type *);
+                                                           const struct kefir_ast_type *,
+                                                           struct kefir_ast_alignment *);
 kefir_result_t kefir_ast_context_define_static(struct kefir_mem *,
                                            struct kefir_ast_context *,
                                            const char *,
-                                           const struct kefir_ast_type *);
+                                           const struct kefir_ast_type *,
+                                           struct kefir_ast_alignment *);
 kefir_result_t kefir_ast_context_define_static_thread_local(struct kefir_mem *,
                                                           struct kefir_ast_context *,
                                                           const char *,
-                                                          const struct kefir_ast_type *);
+                                                          const struct kefir_ast_type *,
+                                                          struct kefir_ast_alignment *);
 kefir_result_t kefir_ast_context_define_auto(struct kefir_mem *,
                                          struct kefir_ast_context *,
                                          const char *,
-                                         const struct kefir_ast_type *);
+                                         const struct kefir_ast_type *,
+                                         struct kefir_ast_alignment *);
 kefir_result_t kefir_ast_context_define_register(struct kefir_mem *,
                                              struct kefir_ast_context *,
                                              const char *,
-                                             const struct kefir_ast_type *);
+                                             const struct kefir_ast_type *,
+                                             struct kefir_ast_alignment *);
 
 #endif

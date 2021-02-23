@@ -2,10 +2,12 @@
 #define KEFIR_AST_TYPE_STRUCT_H_
 
 #include "kefir/ast/type/base.h"
+#include "kefir/ast/alignment.h"
 
 typedef struct kefir_ast_struct_field {
     const char *identifier;
     const struct kefir_ast_type *type;
+    struct kefir_ast_alignment alignment;
     kefir_bool_t bitfield;
     kefir_size_t bitwidth;
 } kefir_ast_struct_field_t;
@@ -32,13 +34,15 @@ kefir_result_t kefir_ast_struct_type_field(struct kefir_mem *,
                                        struct kefir_symbol_table *,
                                        struct kefir_ast_struct_type *,
                                        const char *,
-                                       const struct kefir_ast_type *);
+                                       const struct kefir_ast_type *,
+                                       struct kefir_ast_alignment *);
 
 kefir_result_t kefir_ast_struct_type_bitfield(struct kefir_mem *,
                                           struct kefir_symbol_table *,
                                           struct kefir_ast_struct_type *,
                                           const char *,
                                           const struct kefir_ast_type *,
+                                          struct kefir_ast_alignment *,
                                           kefir_size_t);
                                     
 const struct kefir_ast_type *kefir_ast_type_structure(struct kefir_mem *,

@@ -1,5 +1,6 @@
 #include "kefir/ast/translator/environment.h"
 #include "kefir/ast/translator/translator.h"
+#include "kefir/ast/alignment.h"
 #include "kefir/ir/builder.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
@@ -29,7 +30,7 @@ kefir_result_t kefir_ast_translator_environment_target_stored_type_info(struct k
         kefir_ir_type_free(mem, &ir_type);
         return res;
     });
-    res = kefir_ast_translate_stored_object_type(type, &builder, NULL);
+    res = kefir_ast_translate_stored_object_type(mem, type, KEFIR_AST_DEFAULT_ALIGNMENT, env, &builder);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_IRBUILDER_TYPE_FREE(&builder);
         kefir_ir_type_free(mem, &ir_type);
