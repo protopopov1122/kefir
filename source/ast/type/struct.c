@@ -143,6 +143,14 @@ static kefir_result_t struct_field_free(struct kefir_mem *mem,
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid list entry"));
     ASSIGN_DECL_CAST(const struct kefir_ast_struct_field *, field,
         entry->value);
+    if (field->alignment != NULL) {
+        REQUIRE_OK(kefir_ast_alignment_free(mem, field->alignment));
+        KEFIR_FREE(mem, field->alignment);
+    }
+    if (field->bitfield) {
+        REQUIRE_OK(kefir_ast_constant_expression_free(mem, field->bitwidth));
+        KEFIR_FREE(mem, field->bitwidth);
+    }
     KEFIR_FREE(mem, (void *) field);
     return KEFIR_OK;
 }
@@ -154,7 +162,7 @@ static kefir_result_t kefir_ast_struct_type_field_impl(struct kefir_mem *mem,
                                                    const struct kefir_ast_type *type,
                                                    struct kefir_ast_alignment *alignment,
                                                    kefir_bool_t bitfield,
-                                                   kefir_size_t bitwidth) {
+                                                   struct kefir_ast_constant_expression *bitwidth) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(struct_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST structure type"));
     REQUIRE(identifier == NULL || strlen(identifier) > 0,
@@ -176,17 +184,8 @@ static kefir_result_t kefir_ast_struct_type_field_impl(struct kefir_mem *mem,
     field->type = type;
     field->bitfield = bitfield;
     field->bitwidth = bitwidth;
+    field->alignment = alignment;
     kefir_result_t res = KEFIR_OK;
-    if (alignment != NULL) {
-        field->alignment = *alignment;
-        res = kefir_ast_alignment_default(alignment);
-    } else {
-        res = kefir_ast_alignment_default(&field->alignment);
-    }
-    REQUIRE_ELSE(res == KEFIR_OK, {
-        KEFIR_FREE(mem, field);
-        return res;
-    });
     if (identifier != NULL) {
         res = kefir_hashtree_insert(mem, &struct_type->field_index,
             (kefir_hashtree_key_t) identifier, (kefir_hashtree_value_t) field);
@@ -223,7 +222,7 @@ kefir_result_t kefir_ast_struct_type_field(struct kefir_mem *mem,
                                        const char *identifier,
                                        const struct kefir_ast_type *type,
                                        struct kefir_ast_alignment *alignment) {
-    return kefir_ast_struct_type_field_impl(mem, symbols, struct_type, identifier, type, alignment, false, 0);
+    return kefir_ast_struct_type_field_impl(mem, symbols, struct_type, identifier, type, alignment, false, NULL);
 }
 
 kefir_result_t kefir_ast_struct_type_bitfield(struct kefir_mem *mem,
@@ -232,7 +231,8 @@ kefir_result_t kefir_ast_struct_type_bitfield(struct kefir_mem *mem,
                                           const char *identifier,
                                           const struct kefir_ast_type *type,
                                           struct kefir_ast_alignment *alignment,
-                                          kefir_size_t bitwidth) {
+                                          struct kefir_ast_constant_expression *bitwidth) {
+    REQUIRE(bitwidth != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST constant exression bitwidth"));
     return kefir_ast_struct_type_field_impl(mem, symbols, struct_type, identifier, type, alignment, true, bitwidth);
 }
 

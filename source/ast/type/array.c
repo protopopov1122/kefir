@@ -1,4 +1,5 @@
 #include "kefir/ast/type.h"
+#include "kefir/ast/node_base.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -25,6 +26,11 @@ static kefir_bool_t same_array_type(const struct kefir_ast_type *type1, const st
 static kefir_result_t free_array(struct kefir_mem *mem, const struct kefir_ast_type *type) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
+    if ((type->array_type.boundary == KEFIR_AST_ARRAY_VLA ||
+        type->array_type.boundary == KEFIR_AST_ARRAY_VLA_STATIC) &&
+        type->array_type.vla_length != NULL) {
+        REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, type->array_type.vla_length));
+    }
     KEFIR_FREE(mem, (void *) type);
     return KEFIR_OK;
 }
@@ -100,7 +106,7 @@ const struct kefir_ast_type *kefir_ast_type_array_static(struct kefir_mem *mem,
 const struct kefir_ast_type *kefir_ast_type_vlen_array(struct kefir_mem *mem,
                                                    struct kefir_ast_type_storage *type_storage,
                                                    const struct kefir_ast_type *element_type,
-                                                   kefir_ast_constant_expression_t length,
+                                                   struct kefir_ast_node_base *length,
                                                    const struct kefir_ast_type_qualification *qualification) {
     struct kefir_ast_array_type *array_type = NULL;
     struct kefir_ast_type *type = kefir_ast_type_array_impl(mem, type_storage, element_type, qualification, &array_type);
@@ -113,7 +119,7 @@ const struct kefir_ast_type *kefir_ast_type_vlen_array(struct kefir_mem *mem,
 const struct kefir_ast_type *kefir_ast_type_vlen_array_static(struct kefir_mem *mem,
                                                           struct kefir_ast_type_storage *type_storage,
                                                           const struct kefir_ast_type *element_type,
-                                                          kefir_ast_constant_expression_t length,
+                                                          struct kefir_ast_node_base *length,
                                                           const struct kefir_ast_type_qualification *qualification) {
     struct kefir_ast_array_type *array_type = NULL;
     struct kefir_ast_type *type = kefir_ast_type_array_impl(mem, type_storage, element_type, qualification, &array_type);

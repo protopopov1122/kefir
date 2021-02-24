@@ -71,6 +71,4 @@ typedef enum kefir_ast_scoped_identifier_storage {
     KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER
 } kefir_ast_scoped_identifier_storage_t;
 
-typedef void *kefir_ast_constant_expression_t; // TODO: Temporary type for marking const expressions
-
 #endif

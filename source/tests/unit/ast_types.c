@@ -1,4 +1,5 @@
 #include "kefir/test/unit_test.h"
+#include "kefir/ast/node.h"
 #include "kefir/ast/type.h"
 
 DEFINE_CASE(ast_types1, "AST Types - basic types")
@@ -317,14 +318,14 @@ END_CASE
 
 #define ASSERT_ENUM_CONSTANT(_enum, _id, _value) \
     do { \
-        kefir_ast_enumerator_constant_t _cnst; \
+        const struct kefir_ast_constant_expression *_cnst; \
         ASSERT_OK(kefir_ast_enumeration_get((_enum), (_id), &_cnst)); \
-        ASSERT(_cnst == (_value)); \
+        ASSERT(_cnst->value == (_value)); \
     } while (0)
 
 #define ASSERT_NO_ENUM_CONSTANT(_enum, _id) \
     do { \
-        kefir_ast_enumerator_constant_t _cnst; \
+        const struct kefir_ast_constant_expression *_cnst; \
         ASSERT(kefir_ast_enumeration_get((_enum), (_id), &_cnst) == KEFIR_NOT_FOUND); \
     } while (0)
 
@@ -344,12 +345,15 @@ DEFINE_CASE(ast_types4, "AST Types - enum type")
     ASSERT(enum1_type->complete);
     ASSERT(strcmp(enum1_type->identifier, "enum1") == 0);
 
-    ASSERT_OK(kefir_ast_enumeration_type_constant(&kft_mem, &symbols, enum1_type, "c1", 10));
+    ASSERT_OK(kefir_ast_enumeration_type_constant(&kft_mem, &symbols, enum1_type, "c1",
+        kefir_ast_constant_expression_empty(&kft_mem, 10)));
     ASSERT_OK(kefir_ast_enumeration_type_constant_auto(&kft_mem, &symbols, enum1_type, "c2"));
     ASSERT_OK(kefir_ast_enumeration_type_constant_auto(&kft_mem, &symbols, enum1_type, "c3"));
-    ASSERT_OK(kefir_ast_enumeration_type_constant(&kft_mem, &symbols, enum1_type, "c4", 1));
+    ASSERT_OK(kefir_ast_enumeration_type_constant(&kft_mem, &symbols, enum1_type, "c4",
+        kefir_ast_constant_expression_empty(&kft_mem, 1)));
     ASSERT_OK(kefir_ast_enumeration_type_constant_auto(&kft_mem, &symbols, enum1_type, "c5"));
-    ASSERT_OK(kefir_ast_enumeration_type_constant(&kft_mem, &symbols, enum1_type, "c10", 0));
+    ASSERT_OK(kefir_ast_enumeration_type_constant(&kft_mem, &symbols, enum1_type, "c10",
+        kefir_ast_constant_expression_empty(&kft_mem, 0)));
     ASSERT(kefir_list_length(&enum1_type->enumerators) == 6);
     ASSERT_ENUM_CONSTANT(enum1_type, "c1", 10);
     ASSERT_ENUM_CONSTANT(enum1_type, "c2", 11);
@@ -450,8 +454,9 @@ DEFINE_CASE(ast_types5, "AST Types - array type")
     ASSERT(!type4->array_type.qualifications.restricted);
     ASSERT(!type4->array_type.qualifications.volatile_type);
 
+    struct kefir_ast_constant *type5_len = kefir_ast_new_constant_int(&kft_mem, 5);
     const struct kefir_ast_type *type5 = kefir_ast_type_vlen_array_static(&kft_mem, &type_storage,
-        kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_signed_char()), (void *) kefir_ast_type_signed_int(),
+        kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_signed_char()), KEFIR_AST_NODE_BASE(type5_len),
         &(const struct kefir_ast_type_qualification) {
             .constant = true,
             .restricted = false,
@@ -463,7 +468,7 @@ DEFINE_CASE(ast_types5, "AST Types - array type")
     ASSERT(KEFIR_AST_TYPE_SAME(type5, type5));
     ASSERT(KEFIR_AST_TYPE_SAME(type5->array_type.element_type,
         kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_signed_char())));
-    ASSERT(type5->array_type.vla_length == kefir_ast_type_signed_int());
+    ASSERT(type5->array_type.vla_length == KEFIR_AST_NODE_BASE(type5_len));
     ASSERT(type5->array_type.qualifications.constant);
     ASSERT(!type5->array_type.qualifications.restricted);
     ASSERT(!type5->array_type.qualifications.volatile_type);
@@ -486,7 +491,7 @@ END_CASE
         ASSERT_OK(kefir_ast_struct_type_get_field((_struct), (_id), &_field)); \
         ASSERT(KEFIR_AST_TYPE_SAME(_field->type, (_type))); \
         ASSERT(_field->bitfield); \
-        ASSERT(_field->bitwidth == (_width)); \
+        ASSERT(_field->bitwidth->value == (_width)); \
     } while (0)
 
 DEFINE_CASE(ast_types6, "AST Types - struct type")
@@ -513,9 +518,12 @@ DEFINE_CASE(ast_types6, "AST Types - struct type")
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, struct_type2, "field0", kefir_ast_type_unsigned_short(), NULL));
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, struct_type2,
         "field1", kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_float()), NULL));
-    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, struct_type2, "field10", kefir_ast_type_unsigned_int(), NULL, 5));
-    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, struct_type2, "field11", kefir_ast_type_unsigned_int(), NULL, 3));
-    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, struct_type2, "field20", kefir_ast_type_unsigned_long(), NULL, 16));
+    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, struct_type2, "field10", kefir_ast_type_unsigned_int(), NULL,
+        kefir_ast_constant_expression_empty(&kft_mem, 5)));
+    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, struct_type2, "field11", kefir_ast_type_unsigned_int(), NULL,
+        kefir_ast_constant_expression_empty(&kft_mem, 3)));
+    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, struct_type2, "field20", kefir_ast_type_unsigned_long(), NULL,
+        kefir_ast_constant_expression_empty(&kft_mem, 16)));
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, struct_type2, "field21", kefir_ast_type_bool(), NULL));
     
     ASSERT(KEFIR_AST_TYPE_SAME(type2, type2));
@@ -557,9 +565,12 @@ DEFINE_CASE(ast_types7, "AST Types - union type")
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, union_type2, "field0", kefir_ast_type_unsigned_short(), NULL));
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, union_type2,
         "field1", kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_float()), NULL));
-    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, union_type2, "field10", kefir_ast_type_unsigned_int(), NULL, 5));
-    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, union_type2, "field11", kefir_ast_type_unsigned_int(), NULL, 3));
-    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, union_type2, "field20", kefir_ast_type_unsigned_long(), NULL, 16));
+    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, union_type2, "field10", kefir_ast_type_unsigned_int(), NULL,
+        kefir_ast_constant_expression_empty(&kft_mem, 5)));
+    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, union_type2, "field11", kefir_ast_type_unsigned_int(), NULL,
+        kefir_ast_constant_expression_empty(&kft_mem, 3)));
+    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, &symbols, union_type2, "field20", kefir_ast_type_unsigned_long(), NULL,
+        kefir_ast_constant_expression_empty(&kft_mem, 16)));
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, union_type2, "field21", kefir_ast_type_bool(), NULL));
     
     ASSERT(KEFIR_AST_TYPE_SAME(type2, type2));

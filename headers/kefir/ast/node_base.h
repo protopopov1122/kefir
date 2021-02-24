@@ -3,10 +3,10 @@
 
 #include "kefir/core/basic-types.h"
 #include "kefir/core/mem.h"
+#include "kefir/ast/base.h"
 #include "kefir/ast/constants.h"
 #include "kefir/ast/type.h"
 
-typedef struct kefir_ast_node_base kefir_ast_node_base_t;
 typedef struct kefir_ast_visitor kefir_ast_visitor_t;
 typedef struct kefir_ast_visitor kefir_ast_visitor_t;
 

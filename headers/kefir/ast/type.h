@@ -5,6 +5,7 @@
 #include "kefir/core/list.h"
 #include "kefir/core/hashtree.h"
 #include "kefir/core/symbol_table.h"
+#include "kefir/ast/base.h"
 #include "kefir/ast/type/base.h"
 #include "kefir/ast/type/basic.h"
 #include "kefir/ast/type/struct.h"

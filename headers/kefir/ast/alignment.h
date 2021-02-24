@@ -2,6 +2,8 @@
 #define KEFIR_AST_ALIGNMENT_H_
 
 #include "kefir/core/basic-types.h"
+#include "kefir/core/mem.h"
+#include "kefir/ast/const_expr.h"
 #include "kefir/ast/constants.h"
 
 // Forward declaration
@@ -17,7 +19,7 @@ typedef struct kefir_ast_alignment {
     kefir_ast_alignment_class_t klass;
     union {
         const struct kefir_ast_type *type;
-        kefir_ast_constant_expression_t const_expr;
+        struct kefir_ast_constant_expression *const_expr;
     };
 } kefir_ast_alignment_t;
 
@@ -29,6 +31,9 @@ kefir_result_t kefir_ast_alignment_as_type(struct kefir_ast_alignment *,
                                        const struct kefir_ast_type *);
 
 kefir_result_t kefir_ast_alignment_const_expression(struct kefir_ast_alignment *,
-                                                kefir_ast_constant_expression_t);
+                                                struct kefir_ast_constant_expression *);
+
+kefir_result_t kefir_ast_alignment_free(struct kefir_mem *,
+                                    struct kefir_ast_alignment *);
 
 #endif

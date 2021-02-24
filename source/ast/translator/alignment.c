@@ -7,9 +7,12 @@ kefir_result_t kefir_ast_translator_eval_alignment(struct kefir_mem *mem,
                                                const struct kefir_ast_translator_environment *env,
                                                kefir_size_t *value) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(alignment != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST alignment pointer"));
     REQUIRE(env != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator environment"));
     REQUIRE(value != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid alignment pointer"));
+    if (alignment == NULL) {
+        *value = KEFIR_AST_DEFAULT_ALIGNMENT;
+        return KEFIR_OK;
+    }
     switch (alignment->klass) {
         case KEFIR_AST_ALIGNMENT_DEFAULT:
             *value = 0;
