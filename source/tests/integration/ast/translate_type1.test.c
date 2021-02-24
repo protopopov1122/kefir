@@ -52,6 +52,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ast_struct_type *union_type3;
     const struct kefir_ast_type *type3 = kefir_ast_type_union(mem, &type_storage, "union1", &union_type3);
     REQUIRE(type3 != NULL, KEFIR_INTERNAL_ERROR);
+    struct kefir_ast_function_type *function_type4 = NULL;
+    const struct kefir_ast_type *type4 = kefir_ast_type_function(mem, &type_storage, kefir_ast_type_void(), "func1", &function_type4);
 
     REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, struct_type2, "field1", kefir_ast_type_float(), NULL));
     REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, union_type3, "sub1", kefir_ast_type_array(
@@ -63,6 +65,11 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
             }), 256, NULL), NULL));
     REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, union_type3, "sub2", kefir_ast_type_unsigned_long_long(), NULL));
     REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, struct_type2, NULL, type3, NULL));
+    REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, struct_type2, NULL, kefir_ast_type_pointer(
+        mem, &type_storage, type4), NULL));
+    REQUIRE_OK(kefir_ast_struct_type_bitfield(mem, &symbols, struct_type2, "h1", kefir_ast_type_signed_short(), NULL, 6));
+    REQUIRE_OK(kefir_ast_struct_type_bitfield(mem, &symbols, struct_type2, "h2", kefir_ast_type_signed_short(), NULL, 1));
+    REQUIRE_OK(kefir_ast_struct_type_bitfield(mem, &symbols, struct_type2, "h10", kefir_ast_type_signed_short(), NULL, 0));
     REQUIRE_OK(kefir_ast_translate_stored_object_type(mem, type2, 0, &env, &builder));
 
     REQUIRE_OK(kefir_ir_format_type(stdout, &ir_type));

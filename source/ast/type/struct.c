@@ -160,7 +160,7 @@ static kefir_result_t kefir_ast_struct_type_field_impl(struct kefir_mem *mem,
     REQUIRE(identifier == NULL || strlen(identifier) > 0,
         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid field identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid field type"));
-    if (kefir_hashtree_has(&struct_type->field_index, (kefir_hashtree_key_t) identifier)) {
+    if (identifier != NULL && kefir_hashtree_has(&struct_type->field_index, (kefir_hashtree_key_t) identifier)) {
         return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Duplicate structure field identifier");
     }
     struct kefir_ast_struct_field *field = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_struct_field));
@@ -187,12 +187,14 @@ static kefir_result_t kefir_ast_struct_type_field_impl(struct kefir_mem *mem,
         KEFIR_FREE(mem, field);
         return res;
     });
-    res = kefir_hashtree_insert(mem, &struct_type->field_index,
-        (kefir_hashtree_key_t) identifier, (kefir_hashtree_value_t) field);
-    REQUIRE_ELSE(res == KEFIR_OK, {
-        KEFIR_FREE(mem, field);
-        return res;
-    });
+    if (identifier != NULL) {
+        res = kefir_hashtree_insert(mem, &struct_type->field_index,
+            (kefir_hashtree_key_t) identifier, (kefir_hashtree_value_t) field);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            KEFIR_FREE(mem, field);
+            return res;
+        });
+    }
     res = kefir_list_insert_after(mem, &struct_type->fields, kefir_list_tail(&struct_type->fields), field);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_hashtree_delete(mem, &struct_type->field_index, (kefir_hashtree_key_t) identifier);
