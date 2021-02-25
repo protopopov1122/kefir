@@ -59,6 +59,14 @@ DECLARE_CASE(ast_types5);
 DECLARE_CASE(ast_types6);
 DECLARE_CASE(ast_types7);
 DECLARE_CASE(ast_types8);
+DECLARE_CASE(ast_nodes_constants);
+DECLARE_CASE(ast_nodes_identifiers);
+DECLARE_CASE(ast_nodes_string_literals);
+DECLARE_CASE(ast_nodes_array_subscripts);
+DECLARE_CASE(ast_nodes_function_calls);
+DECLARE_CASE(ast_nodes_struct_members);
+DECLARE_CASE(ast_nodes_unary_operations);
+DECLARE_CASE(ast_nodes_binary_operations);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -115,7 +123,15 @@ TEST_SUITE(mainSuite,
     &ast_types5,
     &ast_types6,
     &ast_types7,
-    &ast_types8
+    &ast_types8,
+    &ast_nodes_constants,
+    &ast_nodes_identifiers,
+    &ast_nodes_string_literals,
+    &ast_nodes_array_subscripts,
+    &ast_nodes_function_calls,
+    &ast_nodes_struct_members,
+    &ast_nodes_unary_operations,
+    &ast_nodes_binary_operations
 );
 
 int main(int argc, const char **argv) {

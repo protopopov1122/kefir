@@ -24,6 +24,25 @@ KEFIR_AST_NODE_STRUCT(kefir_ast_identifier, {
     const char *identifier;
 });
 
+KEFIR_AST_NODE_STRUCT(kefir_ast_string_literal, {
+    const char *literal;
+});
+
+KEFIR_AST_NODE_STRUCT(kefir_ast_array_subscript, {
+   struct kefir_ast_node_base *array;
+   struct kefir_ast_node_base *subscript; 
+});
+
+KEFIR_AST_NODE_STRUCT(kefir_ast_function_call, {
+   struct kefir_ast_node_base *function;
+   struct kefir_list arguments;
+});
+
+KEFIR_AST_NODE_STRUCT(kefir_ast_struct_member, {
+   struct kefir_ast_node_base *structure;
+   const char *member; 
+});
+
 KEFIR_AST_NODE_STRUCT(kefir_ast_unary_operation, {
     kefir_ast_unary_operation_type_t type;
     struct kefir_ast_node_base *arg;
@@ -49,6 +68,30 @@ struct kefir_ast_constant *kefir_ast_new_constant_double(struct kefir_mem *, kef
 struct kefir_ast_identifier *kefir_ast_new_identifier(struct kefir_mem *,
                                                   struct kefir_symbol_table *,
                                                   const char *);
+
+struct kefir_ast_string_literal *kefir_ast_new_string_literal(struct kefir_mem *,
+                                                      struct kefir_symbol_table *,
+                                                      const char *);
+
+struct kefir_ast_array_subscript *kefir_ast_new_array_subscript(struct kefir_mem *,
+                                                            struct kefir_ast_node_base *,
+                                                            struct kefir_ast_node_base *);
+
+struct kefir_ast_function_call *kefir_ast_new_function_call(struct kefir_mem *,
+                                                        struct kefir_ast_node_base *);
+                                            
+kefir_result_t kefir_ast_function_call_append(struct kefir_mem *,
+                                          struct kefir_ast_function_call *,
+                                          struct kefir_ast_node_base *);
+
+struct kefir_ast_struct_member *kefir_ast_new_struct_member(struct kefir_mem *,
+                                                        struct kefir_symbol_table *,
+                                                        struct kefir_ast_node_base *,
+                                                        const char *);
+struct kefir_ast_struct_member *kefir_ast_new_struct_indirect_member(struct kefir_mem *,
+                                                                 struct kefir_symbol_table *,
+                                                                 struct kefir_ast_node_base *,
+                                                                 const char *);
 struct kefir_ast_unary_operation *kefir_ast_new_unary_operation(struct kefir_mem *,
                                                             kefir_ast_unary_operation_type_t,
                                                             struct kefir_ast_node_base *);
@@ -61,6 +104,11 @@ typedef struct kefir_ast_visitor {
     KEFIR_AST_VISITOR_METHOD(generic_handler, kefir_ast_node_base);
     KEFIR_AST_VISITOR_METHOD(constant, kefir_ast_constant);
     KEFIR_AST_VISITOR_METHOD(identifier, kefir_ast_identifier);
+    KEFIR_AST_VISITOR_METHOD(string_literal, kefir_ast_string_literal);
+    KEFIR_AST_VISITOR_METHOD(array_subscript, kefir_ast_array_subscript);
+    KEFIR_AST_VISITOR_METHOD(function_call, kefir_ast_function_call);
+    KEFIR_AST_VISITOR_METHOD(struct_member, kefir_ast_struct_member);
+    KEFIR_AST_VISITOR_METHOD(struct_indirect_member, kefir_ast_struct_member);
     KEFIR_AST_VISITOR_METHOD(unary_operation, kefir_ast_unary_operation);
     KEFIR_AST_VISITOR_METHOD(binary_operation, kefir_ast_binary_operation);
 } kefir_ast_visitor_t;

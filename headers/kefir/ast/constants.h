@@ -4,8 +4,17 @@
 #include "kefir/core/basic-types.h"
 
 typedef enum kefir_ast_node_type {
+    // Primary expressions
     KEFIR_AST_CONSTANT,
     KEFIR_AST_IDENTIFIER,
+    KEFIR_AST_STRING_LITERAL,
+    // TODO: Generic selection
+    // Postfix operators
+    KEFIR_AST_ARRAY_SUBSCRIPT,
+    KEFIR_AST_FUNCTION_CALL,
+    KEFIR_AST_STRUCTURE_MEMBER,
+    KEFIR_AST_STRUCTURE_INDIRECT_MEMBER,
+
     KEFIR_AST_UNARY_OPERATION,
     KEFIR_AST_BINARY_OPERATION
 } kefir_ast_node_type_t;
@@ -27,7 +36,7 @@ typedef enum kefir_ast_unary_operation_type {
     KEFIR_AST_OPERATION_PLUS,
     KEFIR_AST_OPERATION_NEGATE,
     KEFIR_AST_OPERATION_INVERT,
-    KEFIR_AST_OPERATION_LOGICAL_NEGATE,
+    KEFIR_AST_OPERATION_LOGICAL_NEGATE
 } kefir_ast_unary_operation_type_t;
 
 typedef enum kefir_ast_binary_operation_type {

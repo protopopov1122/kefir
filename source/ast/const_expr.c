@@ -3,12 +3,23 @@
 #include "kefir/core/error.h"
 #include "kefir/core/util.h"
 
-struct kefir_ast_constant_expression *kefir_ast_constant_expression_empty(struct kefir_mem *mem,
-                                                                      kefir_ast_constant_expression_value_t value) {
+struct kefir_ast_constant_expression *kefir_ast_constant_expression_integer(struct kefir_mem *mem,
+                                                                        kefir_ast_constant_expression_value_t integer) {
     REQUIRE(mem != NULL, NULL);
     struct kefir_ast_constant_expression *const_expr = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_constant_expression));
     REQUIRE(const_expr != NULL, NULL);
-    const_expr->value = value;
+    const_expr->type = KEFIR_AST_CONSTANT_EXPRESSION_INTEGER;
+    const_expr->value = integer;
+    const_expr->expression = NULL;
+    return const_expr;
+}
+
+struct kefir_ast_constant_expression *kefir_ast_constant_expression_null(struct kefir_mem *mem) {
+    REQUIRE(mem != NULL, NULL);
+    struct kefir_ast_constant_expression *const_expr = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_constant_expression));
+    REQUIRE(const_expr != NULL, NULL);
+    const_expr->type = KEFIR_AST_CONSTANT_EXPRESSION_NULL;
+    const_expr->value = 0;
     const_expr->expression = NULL;
     return const_expr;
 }

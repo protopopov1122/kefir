@@ -9,6 +9,8 @@
 
 typedef bool kefir_bool_t;
 typedef char kefir_char_t;
+#define KEFIR_CHAR_MIN CHAR_MIN
+#define KEFIR_CHAR_MAX CHAR_MAX
 
 typedef int kefir_int_t;
 typedef unsigned int kefir_uint_t;
