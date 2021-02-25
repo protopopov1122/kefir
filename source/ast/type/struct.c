@@ -3,6 +3,8 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
+// TODO: Take structure alignment in account for same and compatible functions
+
 static kefir_bool_t same_structure_type(const struct kefir_ast_type *type1, const struct kefir_ast_type *type2) {
     REQUIRE(type1 != NULL, false);
     REQUIRE(type2 != NULL, false);
@@ -25,6 +27,32 @@ static kefir_bool_t same_structure_type(const struct kefir_ast_type *type1, cons
             REQUIRE((!field1->bitfield && !field2->bitfield) ||
                 (field1->bitwidth == field2->bitwidth), false);
             REQUIRE(KEFIR_AST_TYPE_SAME(field1->type, field2->type), false);
+        }
+    }
+    return true;
+}
+
+static kefir_bool_t compatible_structure_types(const struct kefir_ast_type *type1, const struct kefir_ast_type *type2) {
+    REQUIRE(type1 != NULL, false);
+    REQUIRE(type2 != NULL, false);
+    REQUIRE(type1->tag == KEFIR_AST_TYPE_STRUCTURE &&
+        type2->tag == KEFIR_AST_TYPE_STRUCTURE, false);
+    REQUIRE((type1->structure_type.identifier == NULL && type2->structure_type.identifier == NULL) ||
+        strcmp(type1->structure_type.identifier, type2->structure_type.identifier) == 0, false);
+    if (type1->structure_type.complete && type2->structure_type.complete) {
+        REQUIRE(kefir_list_length(&type1->structure_type.fields) == kefir_list_length(&type2->structure_type.fields), false);
+        const struct kefir_list_entry *iter1 = kefir_list_head(&type1->structure_type.fields);
+        const struct kefir_list_entry *iter2 = kefir_list_head(&type2->structure_type.fields);
+        for (; iter1 != NULL && iter2 != NULL; kefir_list_next(&iter1), kefir_list_next(&iter2)) {
+            ASSIGN_DECL_CAST(const struct kefir_ast_struct_field *, field1,
+                iter1->value);
+            ASSIGN_DECL_CAST(const struct kefir_ast_struct_field *, field2,
+                iter2->value);
+            REQUIRE((field1->identifier == NULL && field2->identifier == NULL) ||
+                strcmp(field1->identifier, field2->identifier) == 0, false);
+            REQUIRE((!field1->bitfield && !field2->bitfield) ||
+                (field1->bitwidth == field2->bitwidth), false);
+            REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(field1->type, field2->type), false);
         }
     }
     return true;
@@ -56,6 +84,41 @@ static kefir_bool_t same_union_type(const struct kefir_ast_type *type1, const st
             REQUIRE((!field1->bitfield && !field2->bitfield) ||
                 (field1->bitwidth == field2->bitwidth), false);
             REQUIRE(KEFIR_AST_TYPE_SAME(field1->type, field2->type), false);
+        }
+        for (const struct kefir_hashtree_node *node2 = kefir_hashtree_iter(&type2->structure_type.field_index, &iter);
+            node2 != NULL;
+            node2 = kefir_hashtree_next(&iter), type2_field_count++) {
+        }
+        REQUIRE(type1_field_count == type2_field_count, false);
+    }
+    return true;
+}
+
+static kefir_bool_t compatible_union_types(const struct kefir_ast_type *type1, const struct kefir_ast_type *type2) {
+    REQUIRE(type1 != NULL, false);
+    REQUIRE(type2 != NULL, false);
+    REQUIRE(type1->tag == KEFIR_AST_TYPE_UNION &&
+        type2->tag == KEFIR_AST_TYPE_UNION, false);
+    REQUIRE((type1->structure_type.identifier == NULL && type2->structure_type.identifier == NULL) ||
+        strcmp(type1->structure_type.identifier, type2->structure_type.identifier) == 0, false);
+    if (type1->structure_type.complete && type2->structure_type.complete) {
+        struct kefir_hashtree_node_iterator iter;
+        kefir_size_t type1_field_count = 0, type2_field_count = 0;
+        for (const struct kefir_hashtree_node *node1 = kefir_hashtree_iter(&type1->structure_type.field_index, &iter);
+            node1 != NULL;
+            node1 = kefir_hashtree_next(&iter), type1_field_count++) {
+            struct kefir_hashtree_node *node2 = NULL;
+            kefir_result_t res = kefir_hashtree_at(&type1->structure_type.field_index, node1->key, &node2);
+            REQUIRE(res == KEFIR_OK, false);
+            ASSIGN_DECL_CAST(const struct kefir_ast_struct_field *, field1,
+                node1->value);
+            ASSIGN_DECL_CAST(const struct kefir_ast_struct_field *, field2,
+                node2->value);
+            REQUIRE((field1->identifier == NULL && field2->identifier == NULL) ||
+                strcmp(field1->identifier, field2->identifier) == 0, false);
+            REQUIRE((!field1->bitfield && !field2->bitfield) ||
+                (field1->bitwidth == field2->bitwidth), false);
+            REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(field1->type, field2->type), false);
         }
         for (const struct kefir_hashtree_node *node2 = kefir_hashtree_iter(&type2->structure_type.field_index, &iter);
             node2 != NULL;
@@ -99,6 +162,7 @@ const struct kefir_ast_type *kefir_ast_type_incomplete_structure(struct kefir_me
     type->tag = KEFIR_AST_TYPE_STRUCTURE;
     type->basic = false;
     type->ops.same = same_structure_type;
+    type->ops.compatible = compatible_structure_types;
     type->ops.free = free_structure;
     type->structure_type.complete = false;
     type->structure_type.identifier = identifier;
@@ -127,6 +191,7 @@ const struct kefir_ast_type *kefir_ast_type_incomplete_union(struct kefir_mem *m
     type->tag = KEFIR_AST_TYPE_UNION;
     type->basic = false;
     type->ops.same = same_union_type;
+    type->ops.compatible = compatible_union_types;
     type->ops.free = free_structure;
     type->structure_type.complete = false;
     type->structure_type.identifier = identifier;
@@ -261,6 +326,7 @@ const struct kefir_ast_type *kefir_ast_type_structure(struct kefir_mem *mem,
     type->tag = KEFIR_AST_TYPE_STRUCTURE;
     type->basic = false;
     type->ops.same = same_structure_type;
+    type->ops.compatible = compatible_structure_types;
     type->ops.free = free_structure;
     type->structure_type.complete = true;
     type->structure_type.identifier = identifier;
@@ -311,6 +377,7 @@ const struct kefir_ast_type *kefir_ast_type_union(struct kefir_mem *mem,
     type->tag = KEFIR_AST_TYPE_UNION;
     type->basic = false;
     type->ops.same = same_union_type;
+    type->ops.compatible = compatible_union_types;
     type->ops.free = free_structure;
     type->structure_type.complete = true;
     type->structure_type.identifier = identifier;

@@ -10,6 +10,14 @@ static kefir_bool_t same_pointer_type(const struct kefir_ast_type *type1, const 
     return KEFIR_AST_TYPE_SAME(type1->referenced_type, type2->referenced_type);
 }
 
+static kefir_bool_t compatible_pointer_types(const struct kefir_ast_type *type1, const struct kefir_ast_type *type2) {
+    REQUIRE(type1 != NULL, false);
+    REQUIRE(type2 != NULL, false);
+    REQUIRE(type1->tag == KEFIR_AST_TYPE_SCALAR_POINTER &&
+        type2->tag == KEFIR_AST_TYPE_SCALAR_POINTER, false);
+    return KEFIR_AST_TYPE_COMPATIBLE(type1->referenced_type, type2->referenced_type);
+}
+
 static kefir_result_t free_pointer_type(struct kefir_mem *mem, const struct kefir_ast_type *type) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
@@ -34,6 +42,7 @@ const struct kefir_ast_type *kefir_ast_type_pointer(struct kefir_mem *mem,
     type->tag = KEFIR_AST_TYPE_SCALAR_POINTER;
     type->basic = false;
     type->ops.same = same_pointer_type;
+    type->ops.compatible = compatible_pointer_types;
     type->ops.free = free_pointer_type;
     type->referenced_type = base_type;
     return type;

@@ -23,6 +23,22 @@ static kefir_bool_t same_array_type(const struct kefir_ast_type *type1, const st
     return KEFIR_AST_TYPE_SAME(type1->array_type.element_type, type2->array_type.element_type);
 }
 
+static kefir_bool_t compatbile_array_types(const struct kefir_ast_type *type1, const struct kefir_ast_type *type2) {
+    REQUIRE(type1 != NULL, false);
+    REQUIRE(type2 != NULL, false);
+    REQUIRE(type1->tag == KEFIR_AST_TYPE_ARRAY &&
+        type2->tag == KEFIR_AST_TYPE_ARRAY, false);
+    REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(type1->array_type.element_type, type2->array_type.element_type),
+        false);
+    if ((type1->array_type.boundary == KEFIR_AST_ARRAY_BOUNDED ||
+        type1->array_type.boundary == KEFIR_AST_ARRAY_BOUNDED_STATIC) &&
+        (type2->array_type.boundary == KEFIR_AST_ARRAY_BOUNDED ||
+        type2->array_type.boundary == KEFIR_AST_ARRAY_BOUNDED_STATIC)) {
+        REQUIRE(type1->array_type.length == type2->array_type.length, false);
+    }
+    return true;
+}
+
 static kefir_result_t free_array(struct kefir_mem *mem, const struct kefir_ast_type *type) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
@@ -55,6 +71,7 @@ static struct kefir_ast_type *kefir_ast_type_array_impl(struct kefir_mem *mem,
     type->tag = KEFIR_AST_TYPE_ARRAY;
     type->basic = false;
     type->ops.same = same_array_type;
+    type->ops.compatible = compatbile_array_types;
     type->ops.free = free_array;
     type->array_type.element_type = element_type;
     if (qualification != NULL) {

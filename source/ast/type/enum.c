@@ -42,6 +42,30 @@ static kefir_bool_t same_enumeration_type(const struct kefir_ast_type *type1, co
     return true;
 }
 
+static kefir_bool_t compatible_enumeration_types(const struct kefir_ast_type *type1, const struct kefir_ast_type *type2) {
+    REQUIRE(type1 != NULL, false);
+    REQUIRE(type2 != NULL, false);
+    // TODO: Enumeration compatibility to integral type
+    REQUIRE(type1->tag == KEFIR_AST_TYPE_ENUMERATION &&
+        type2->tag == KEFIR_AST_TYPE_ENUMERATION, false);
+    REQUIRE((type1->enumeration_type.identifier == NULL && type2->enumeration_type.identifier == NULL) ||
+        strcmp(type1->enumeration_type.identifier, type2->enumeration_type.identifier) == 0, false);
+    if (type1->enumeration_type.complete && type2->enumeration_type.complete) {
+        REQUIRE(kefir_list_length(&type1->enumeration_type.enumerators) == kefir_list_length(&type2->enumeration_type.enumerators), false);
+        const struct kefir_list_entry *iter1 = kefir_list_head(&type1->enumeration_type.enumerators);
+        const struct kefir_list_entry *iter2 = kefir_list_head(&type2->enumeration_type.enumerators);
+        for (; iter1 != NULL && iter2 != NULL; kefir_list_next(&iter1), kefir_list_next(&iter2)) {
+            ASSIGN_DECL_CAST(const struct kefir_ast_enum_enumerator *, enum1,
+                iter1->value);
+            ASSIGN_DECL_CAST(const struct kefir_ast_enum_enumerator *, enum2,
+                iter2->value);
+            REQUIRE(strcmp(enum1->identifier, enum2->identifier) == 0, false);
+            REQUIRE(enum1->value->value == enum2->value->value, false);
+        }
+    }
+    return true;
+}
+
 static kefir_result_t free_enumeration_type(struct kefir_mem *mem, const struct kefir_ast_type *type) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
@@ -75,6 +99,7 @@ const struct kefir_ast_type *kefir_ast_type_incomplete_enumeration(struct kefir_
     type->tag = KEFIR_AST_TYPE_ENUMERATION;
     type->basic = false;
     type->ops.same = same_enumeration_type;
+    type->ops.compatible = compatible_enumeration_types;
     type->ops.free = free_enumeration_type;
     type->structure_type.complete = false;
     type->structure_type.identifier = identifier;
@@ -182,6 +207,7 @@ const struct kefir_ast_type *kefir_ast_type_enumeration(struct kefir_mem *mem,
     type->tag = KEFIR_AST_TYPE_ENUMERATION;
     type->basic = false;
     type->ops.same = same_enumeration_type;
+    type->ops.compatible = compatible_enumeration_types;
     type->ops.free = free_enumeration_type;
     type->enumeration_type.complete = true;
     type->enumeration_type.identifier = identifier;

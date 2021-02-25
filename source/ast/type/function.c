@@ -119,6 +119,11 @@ static kefir_bool_t same_function_type(const struct kefir_ast_type *type1, const
     return true;
 }
 
+static kefir_bool_t compatible_function_types(const struct kefir_ast_type *type1, const struct kefir_ast_type *type2) {
+    // TODO: Define function type compatibility
+    return same_function_type(type1, type2);
+}
+
 static kefir_result_t free_function_type(struct kefir_mem *mem, const struct kefir_ast_type *type) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
@@ -169,6 +174,7 @@ const struct kefir_ast_type *kefir_ast_type_function(struct kefir_mem *mem,
     type->tag = KEFIR_AST_TYPE_FUNCTION;
     type->basic = false;
     type->ops.same = same_function_type;
+    type->ops.compatible = compatible_function_types;
     type->ops.free = free_function_type;
     type->function_type.return_type = return_type;
     type->function_type.identifier = identifier;

@@ -20,6 +20,18 @@ static kefir_bool_t same_qualified_type(const struct kefir_ast_type *type1, cons
         KEFIR_AST_TYPE_SAME(type1->qualified_type.type, type2->qualified_type.type);
 }
 
+static kefir_bool_t compatbile_qualified_types(const struct kefir_ast_type *type1, const struct kefir_ast_type *type2) {
+    // TODO: Define zero-qualified type with non-qualified compatibility
+    REQUIRE(type1 != NULL, false);
+    REQUIRE(type2 != NULL, false);
+    REQUIRE(type1->tag == KEFIR_AST_TYPE_QUALIFIED &&
+        type2->tag == KEFIR_AST_TYPE_QUALIFIED, false);
+    return type1->qualified_type.qualification.constant == type2->qualified_type.qualification.constant &&
+        type1->qualified_type.qualification.restricted == type2->qualified_type.qualification.restricted &&
+        type1->qualified_type.qualification.volatile_type == type2->qualified_type.qualification.volatile_type &&
+        KEFIR_AST_TYPE_COMPATIBLE(type1->qualified_type.type, type2->qualified_type.type);
+}
+
 const struct kefir_ast_type *kefir_ast_type_qualified(struct kefir_mem *mem,
                                                  struct kefir_ast_type_storage *type_storage,
                                                  const struct kefir_ast_type *base_type,
@@ -44,6 +56,7 @@ const struct kefir_ast_type *kefir_ast_type_qualified(struct kefir_mem *mem,
     type->tag = KEFIR_AST_TYPE_QUALIFIED;
     type->basic = false;
     type->ops.same = same_qualified_type;
+    type->ops.compatible = compatbile_qualified_types;
     type->ops.free = free_qualified_type;
     type->qualified_type.qualification = qualification;
     type->qualified_type.type = base_type;

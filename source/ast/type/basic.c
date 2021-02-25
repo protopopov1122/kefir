@@ -8,6 +8,11 @@ static kefir_bool_t same_basic_type(const struct kefir_ast_type *type1, const st
     return type1->tag == type2->tag;
 }
 
+static kefir_bool_t compatible_basic_types(const struct kefir_ast_type *type1, const struct kefir_ast_type *type2) {
+    // TODO: Enumeration compatibility to integral type
+    return same_basic_type(type1, type2);
+}
+
 static kefir_result_t free_nothing(struct kefir_mem *mem, const struct kefir_ast_type *type) {
     UNUSED(mem);
     UNUSED(type);
@@ -19,6 +24,7 @@ static const struct kefir_ast_type SCALAR_VOID = {
     .basic = false,
     .ops = {
         .same = same_basic_type,
+        .compatible = compatible_basic_types,
         .free = free_nothing
     }
 };
@@ -33,6 +39,7 @@ static const struct kefir_ast_type DEFAULT_SCALAR_##id = { \
     .basic = true, \
     .ops = { \
         .same = same_basic_type, \
+        .compatible = compatible_basic_types, \
         .free = free_nothing \
     }, \
     .basic_type = { \
