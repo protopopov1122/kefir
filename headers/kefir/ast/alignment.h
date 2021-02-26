@@ -17,6 +17,7 @@ typedef enum kefir_ast_alignment_class {
 
 typedef struct kefir_ast_alignment {
     kefir_ast_alignment_class_t klass;
+    kefir_size_t value;
     union {
         const struct kefir_ast_type *type;
         struct kefir_ast_constant_expression *const_expr;
@@ -25,13 +26,13 @@ typedef struct kefir_ast_alignment {
 
 #define KEFIR_AST_DEFAULT_ALIGNMENT 0
 
-kefir_result_t kefir_ast_alignment_default(struct kefir_ast_alignment *);
+struct kefir_ast_alignment *kefir_ast_alignment_default(struct kefir_mem *);
 
-kefir_result_t kefir_ast_alignment_as_type(struct kefir_ast_alignment *,
-                                       const struct kefir_ast_type *);
+struct kefir_ast_alignment *kefir_ast_alignment_as_type(struct kefir_mem *,
+                                                    const struct kefir_ast_type *);
 
-kefir_result_t kefir_ast_alignment_const_expression(struct kefir_ast_alignment *,
-                                                struct kefir_ast_constant_expression *);
+struct kefir_ast_alignment *kefir_ast_alignment_const_expression(struct kefir_mem *,
+                                                             struct kefir_ast_constant_expression *);
 
 kefir_result_t kefir_ast_alignment_free(struct kefir_mem *,
                                     struct kefir_ast_alignment *);

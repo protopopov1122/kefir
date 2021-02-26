@@ -7,6 +7,9 @@ static kefir_result_t free_scoped_identifier(struct kefir_mem *mem,
                                            struct kefir_ast_scoped_identifier *scoped_id,
                                            void *payload) {
     UNUSED(payload);
+    if (scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_OBJECT) {
+        REQUIRE_OK(kefir_ast_alignment_free(mem, scoped_id->object.alignment));
+    }
     KEFIR_FREE(mem, scoped_id);
     return KEFIR_OK;
 }
@@ -129,17 +132,15 @@ static struct kefir_ast_scoped_identifier *allocate_scoped_object_identifier(str
     scoped_id->object.storage = storage;
     memset(scoped_id->payload.content, 0, KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE);
     scoped_id->payload.ptr = scoped_id->payload.content;
-    kefir_result_t res = KEFIR_OK;
     if (alignment != NULL) {
-        scoped_id->object.alignment = *alignment;
-        res = kefir_ast_alignment_default(alignment);
+        scoped_id->object.alignment = alignment;
     } else {
-        res = kefir_ast_alignment_default(&scoped_id->object.alignment);
+        scoped_id->object.alignment = kefir_ast_alignment_default(mem);
+        REQUIRE_ELSE(scoped_id->object.alignment != NULL, {
+            KEFIR_FREE(mem, scoped_id);
+            return NULL;
+        });
     }
-    REQUIRE_ELSE(res == KEFIR_OK, {
-        KEFIR_FREE(mem, scoped_id);
-        return NULL;
-    });
     return scoped_id;
 }
 

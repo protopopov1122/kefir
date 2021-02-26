@@ -3,8 +3,6 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-// TODO: Take structure alignment in account for same and compatible functions
-
 static kefir_bool_t same_structure_type(const struct kefir_ast_type *type1, const struct kefir_ast_type *type2) {
     REQUIRE(type1 != NULL, false);
     REQUIRE(type2 != NULL, false);
@@ -24,6 +22,7 @@ static kefir_bool_t same_structure_type(const struct kefir_ast_type *type1, cons
                 iter2->value);
             REQUIRE((field1->identifier == NULL && field2->identifier == NULL) ||
                 strcmp(field1->identifier, field2->identifier) == 0, false);
+            REQUIRE(field1->alignment->value == field2->alignment->value, false);
             REQUIRE((!field1->bitfield && !field2->bitfield) ||
                 (field1->bitwidth == field2->bitwidth), false);
             REQUIRE(KEFIR_AST_TYPE_SAME(field1->type, field2->type), false);
@@ -50,6 +49,7 @@ static kefir_bool_t compatible_structure_types(const struct kefir_ast_type *type
                 iter2->value);
             REQUIRE((field1->identifier == NULL && field2->identifier == NULL) ||
                 strcmp(field1->identifier, field2->identifier) == 0, false);
+            REQUIRE(field1->alignment->value == field2->alignment->value, false);
             REQUIRE((!field1->bitfield && !field2->bitfield) ||
                 (field1->bitwidth == field2->bitwidth), false);
             REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(field1->type, field2->type), false);
@@ -210,7 +210,6 @@ static kefir_result_t struct_field_free(struct kefir_mem *mem,
         entry->value);
     if (field->alignment != NULL) {
         REQUIRE_OK(kefir_ast_alignment_free(mem, field->alignment));
-        KEFIR_FREE(mem, field->alignment);
     }
     if (field->bitfield) {
         REQUIRE_OK(kefir_ast_constant_expression_free(mem, field->bitwidth));
@@ -249,7 +248,12 @@ static kefir_result_t kefir_ast_struct_type_field_impl(struct kefir_mem *mem,
     field->type = type;
     field->bitfield = bitfield;
     field->bitwidth = bitwidth;
-    field->alignment = alignment;
+    if (alignment != NULL) {
+        field->alignment = alignment;
+    } else {
+        field->alignment = kefir_ast_alignment_default(mem);
+        REQUIRE(field->alignment != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate default AST alignment"));
+    }
     kefir_result_t res = KEFIR_OK;
     if (identifier != NULL) {
         res = kefir_hashtree_insert(mem, &struct_type->field_index,

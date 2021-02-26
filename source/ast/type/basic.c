@@ -9,8 +9,14 @@ static kefir_bool_t same_basic_type(const struct kefir_ast_type *type1, const st
 }
 
 static kefir_bool_t compatible_basic_types(const struct kefir_ast_type *type1, const struct kefir_ast_type *type2) {
-    // TODO: Enumeration compatibility to integral type
-    return same_basic_type(type1, type2);
+    REQUIRE(type1 != NULL, false);
+    REQUIRE(type2 != NULL, false);
+    if (type1->tag == KEFIR_AST_TYPE_ENUMERATION) {
+        return KEFIR_AST_TYPE_SAME(kefir_ast_enumeration_underlying_type(&type1->enumeration_type), type2);
+    } else if (type2->tag == KEFIR_AST_TYPE_ENUMERATION) {
+        return KEFIR_AST_TYPE_SAME(type1, kefir_ast_enumeration_underlying_type(&type2->enumeration_type));
+    }
+    return type1->tag == type2->tag;
 }
 
 static kefir_result_t free_nothing(struct kefir_mem *mem, const struct kefir_ast_type *type) {

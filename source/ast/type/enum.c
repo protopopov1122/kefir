@@ -45,7 +45,13 @@ static kefir_bool_t same_enumeration_type(const struct kefir_ast_type *type1, co
 static kefir_bool_t compatible_enumeration_types(const struct kefir_ast_type *type1, const struct kefir_ast_type *type2) {
     REQUIRE(type1 != NULL, false);
     REQUIRE(type2 != NULL, false);
-    // TODO: Enumeration compatibility to integral type
+    if (type1->tag == KEFIR_AST_TYPE_ENUMERATION &&
+        KEFIR_AST_TYPE_SAME(kefir_ast_enumeration_underlying_type(&type1->enumeration_type), type2)) {
+        return true;
+    } else if (type2->tag == KEFIR_AST_TYPE_ENUMERATION &&
+        KEFIR_AST_TYPE_SAME(type1, kefir_ast_enumeration_underlying_type(&type2->enumeration_type))) {
+        return true;
+    }
     REQUIRE(type1->tag == KEFIR_AST_TYPE_ENUMERATION &&
         type2->tag == KEFIR_AST_TYPE_ENUMERATION, false);
     REQUIRE((type1->enumeration_type.identifier == NULL && type2->enumeration_type.identifier == NULL) ||
@@ -180,6 +186,12 @@ kefir_result_t kefir_ast_enumeration_type_constant_auto(struct kefir_mem *mem,
         const_expr->value = prev->value->value + 1;
     }
     return kefir_ast_enumeration_type_constant(mem, symbols, enum_type, identifier, const_expr);
+}
+
+const struct kefir_ast_type *kefir_ast_enumeration_underlying_type(const struct kefir_ast_enum_type *enumeration) {
+    // TODO: Proper underlying type detection
+    REQUIRE(enumeration != NULL, NULL);
+    return kefir_ast_type_signed_int();
 }
 
 const struct kefir_ast_type *kefir_ast_type_enumeration(struct kefir_mem *mem,

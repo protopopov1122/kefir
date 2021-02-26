@@ -35,6 +35,8 @@ kefir_result_t kefir_ast_enumeration_type_constant_auto(struct kefir_mem *,
                                                     struct kefir_ast_enum_type *,
                                                     const char *);
 
+const struct kefir_ast_type *kefir_ast_enumeration_underlying_type(const struct kefir_ast_enum_type *);
+
 const struct kefir_ast_type *kefir_ast_type_enumeration(struct kefir_mem *,
                                                    struct kefir_ast_type_storage *,
                                                    const char *,

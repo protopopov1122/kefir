@@ -15,7 +15,7 @@ typedef struct kefir_ast_scoped_identifier {
     union {
         struct {
             const struct kefir_ast_type *type;
-            struct kefir_ast_alignment alignment;
+            struct kefir_ast_alignment *alignment;
             kefir_ast_scoped_identifier_storage_t storage;
         } object;
         const struct kefir_ast_type *type;
