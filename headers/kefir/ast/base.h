@@ -5,6 +5,7 @@
 
 // Forward declarations
 typedef struct kefir_ast_type kefir_ast_type_t;
+typedef struct kefir_ast_type_traits kefir_ast_type_traits_t;
 typedef struct kefir_ast_node_base kefir_ast_node_base_t;
 
 #endif

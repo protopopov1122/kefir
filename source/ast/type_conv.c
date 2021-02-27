@@ -2,10 +2,15 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
+#define IS_INTEGER(type) \
+    (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(type)|| \
+        KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(type) || \
+        (type)->tag == KEFIR_AST_TYPE_SCALAR_BOOL)
+
 const struct kefir_ast_type *kefir_ast_type_int_promotion(const struct kefir_ast_type_traits *type_traits,
                                                       const struct kefir_ast_type *type) {
     REQUIRE(type != NULL, NULL);
-    REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type) || type->tag == KEFIR_AST_TYPE_SCALAR_BOOL, NULL);
+    REQUIRE(IS_INTEGER(type), NULL);
     const struct kefir_ast_type *SIGNED_INT = kefir_ast_type_signed_int();
     const struct kefir_ast_type *UNSIGNED_INT = kefir_ast_type_unsigned_int();
     if (type->basic_type.rank < SIGNED_INT->basic_type.rank) {
@@ -66,5 +71,16 @@ const struct kefir_ast_type *kefir_ast_type_common_arithmetic(const struct kefir
         return kefir_ast_type_flip_integer_singedness(type1);
     } else {
         return kefir_ast_type_flip_integer_singedness(type2);
+    }
+}
+
+const struct kefir_ast_type *kefir_ast_type_function_default_argument_promotion(const struct kefir_ast_type_traits *type_traits,
+                                                                            const struct kefir_ast_type *type) {
+    if (IS_INTEGER(type)) {
+        return kefir_ast_type_int_promotion(type_traits, type);
+    } else if (type->tag == KEFIR_AST_TYPE_SCALAR_FLOAT) {
+        return kefir_ast_type_double();
+    } else {
+        return type;
     }
 }

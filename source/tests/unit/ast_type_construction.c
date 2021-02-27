@@ -2,7 +2,7 @@
 #include "kefir/ast/node.h"
 #include "kefir/ast/type.h"
 
-DEFINE_CASE(ast_types1, "AST Types - basic types")
+DEFINE_CASE(ast_type_construction1, "AST Types - basic types")
     const struct kefir_ast_type *BASIC_TYPES[] = {
         kefir_ast_type_void(),
         kefir_ast_type_bool(),
@@ -109,7 +109,7 @@ DEFINE_CASE(ast_types1, "AST Types - basic types")
     ASSERT(KEFIR_AST_TYPE_IS_SCALAR_TYPE(kefir_ast_type_double()));
 END_CASE
 
-DEFINE_CASE(ast_types2, "AST Types - pointer type")
+DEFINE_CASE(ast_type_construction2, "AST Types - pointer type")
     struct kefir_ast_type_storage type_storage;
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
@@ -188,7 +188,7 @@ DEFINE_CASE(ast_types2, "AST Types - pointer type")
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
 END_CASE
 
-DEFINE_CASE(ast_types3, "AST Types - qualified type")
+DEFINE_CASE(ast_type_construction3, "AST Types - qualified type")
     struct kefir_ast_type_storage type_storage;
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
@@ -329,7 +329,7 @@ END_CASE
         ASSERT(kefir_ast_enumeration_get((_enum), (_id), &_cnst) == KEFIR_NOT_FOUND); \
     } while (0)
 
-DEFINE_CASE(ast_types4, "AST Types - enum type")
+DEFINE_CASE(ast_type_construction4, "AST Types - enum type")
     struct kefir_ast_type_storage type_storage;
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
@@ -382,7 +382,7 @@ END_CASE
 #undef ASSERT_ENUM_CONSTANT
 #undef ASSERT_NO_ENUM_CONSTANT
 
-DEFINE_CASE(ast_types5, "AST Types - array type")
+DEFINE_CASE(ast_type_construction5, "AST Types - array type")
     struct kefir_ast_type_storage type_storage;
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
@@ -494,7 +494,7 @@ END_CASE
         ASSERT(_field->bitwidth->value == (_width)); \
     } while (0)
 
-DEFINE_CASE(ast_types6, "AST Types - struct type")
+DEFINE_CASE(ast_type_construction6, "AST Types - struct type")
     struct kefir_ast_type_storage type_storage;
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
@@ -541,7 +541,7 @@ DEFINE_CASE(ast_types6, "AST Types - struct type")
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
 END_CASE
 
-DEFINE_CASE(ast_types7, "AST Types - union type")
+DEFINE_CASE(ast_type_construction7, "AST Types - union type")
     struct kefir_ast_type_storage type_storage;
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
@@ -616,7 +616,7 @@ END_CASE
         } \
     } while (0)
 
-DEFINE_CASE(ast_types8, "AST Types - function type")
+DEFINE_CASE(ast_type_construction8, "AST Types - function type")
     struct kefir_ast_type_storage type_storage;
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
@@ -634,11 +634,11 @@ DEFINE_CASE(ast_types8, "AST Types - function type")
     ASSERT(kefir_list_length(&func_type1->parameters) == 0);
     ASSERT(!func_type1->ellipsis);
 
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &symbols, func_type1,
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_storage, func_type1,
         "arg1", kefir_ast_type_unbounded_array(&kft_mem, &type_storage, kefir_ast_type_unsigned_char(), NULL), NULL));
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &symbols, func_type1,
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_storage, func_type1,
         "arg2", kefir_ast_type_float(), NULL));
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &symbols, func_type1,
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_storage, func_type1,
         NULL, kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_void()),
         &REGISTER));
     ASSERT_OK(kefir_ast_type_function_ellipsis(func_type1, true));
@@ -664,15 +664,15 @@ DEFINE_CASE(ast_types8, "AST Types - function type")
     ASSERT(kefir_list_length(&func_type2->parameters) == 0);
     ASSERT(!func_type2->ellipsis);
 
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &symbols, func_type2,
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_storage, func_type2,
         "arg1", NULL, NULL));
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &symbols, func_type2,
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_storage, func_type2,
         "arg2", NULL, NULL));
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &symbols, func_type2,
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_storage, func_type2,
         "arg3", NULL, NULL));
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &symbols, func_type2,
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_storage, func_type2,
         "arg4", NULL, NULL));
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &symbols, func_type2,
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_storage, func_type2,
         "arg5", NULL, NULL));
     
     ASSERT(func_type2->mode == KEFIR_AST_FUNCTION_TYPE_PARAM_IDENTIFIERS);

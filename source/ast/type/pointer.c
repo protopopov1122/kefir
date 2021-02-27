@@ -10,12 +10,14 @@ static kefir_bool_t same_pointer_type(const struct kefir_ast_type *type1, const 
     return KEFIR_AST_TYPE_SAME(type1->referenced_type, type2->referenced_type);
 }
 
-static kefir_bool_t compatible_pointer_types(const struct kefir_ast_type *type1, const struct kefir_ast_type *type2) {
+static kefir_bool_t compatible_pointer_types(const struct kefir_ast_type_traits *type_traits,
+                                           const struct kefir_ast_type *type1,
+                                           const struct kefir_ast_type *type2) {
     REQUIRE(type1 != NULL, false);
     REQUIRE(type2 != NULL, false);
     REQUIRE(type1->tag == KEFIR_AST_TYPE_SCALAR_POINTER &&
         type2->tag == KEFIR_AST_TYPE_SCALAR_POINTER, false);
-    return KEFIR_AST_TYPE_COMPATIBLE(type1->referenced_type, type2->referenced_type);
+    return KEFIR_AST_TYPE_COMPATIBLE(type_traits, type1->referenced_type, type2->referenced_type);
 }
 
 static kefir_result_t free_pointer_type(struct kefir_mem *mem, const struct kefir_ast_type *type) {

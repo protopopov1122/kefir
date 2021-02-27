@@ -17,7 +17,7 @@
 
 typedef struct kefir_ast_type_ops {
     kefir_bool_t (*same)(const struct kefir_ast_type *, const struct kefir_ast_type *);
-    kefir_bool_t (*compatible)(const struct kefir_ast_type *, const struct kefir_ast_type *);
+    kefir_bool_t (*compatible)(const struct kefir_ast_type_traits *, const struct kefir_ast_type *, const struct kefir_ast_type *);
     kefir_result_t (*free)(struct kefir_mem *, const struct kefir_ast_type *);
 } kefir_ast_type_ops_t;
 
@@ -56,8 +56,8 @@ kefir_result_t kefir_ast_type_storage_init(struct kefir_ast_type_storage *, stru
 kefir_result_t kefir_ast_type_storage_free(struct kefir_mem *, struct kefir_ast_type_storage *);
 
 #define KEFIR_AST_TYPE_SAME(type1, type2) ((type1)->ops.same((type1), (type2)))
-#define KEFIR_AST_TYPE_COMPATIBLE(type1, type2) \
-    (KEFIR_AST_TYPE_SAME((type1), (type2)) || (type1)->ops.compatible((type1), (type2)))
+#define KEFIR_AST_TYPE_COMPATIBLE(type_traits, type1, type2) \
+    (KEFIR_AST_TYPE_SAME((type1), (type2)) || (type1)->ops.compatible((type_traits), (type1), (type2)))
 #define KEFIR_AST_TYPE_FREE(mem, type) ((type)->ops.free((mem), (type)))
 
 #endif

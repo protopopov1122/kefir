@@ -20,24 +20,26 @@ static kefir_bool_t same_qualified_type(const struct kefir_ast_type *type1, cons
         KEFIR_AST_TYPE_SAME(type1->qualified_type.type, type2->qualified_type.type);
 }
 
-static kefir_bool_t compatbile_qualified_types(const struct kefir_ast_type *type1, const struct kefir_ast_type *type2) {
+static kefir_bool_t compatbile_qualified_types(const struct kefir_ast_type_traits *type_traits,
+                                             const struct kefir_ast_type *type1,
+                                             const struct kefir_ast_type *type2) {
     REQUIRE(type1 != NULL, false);
     REQUIRE(type2 != NULL, false);
     if (type1->tag == KEFIR_AST_TYPE_QUALIFIED &&
         type2->tag != KEFIR_AST_TYPE_QUALIFIED) {
         return KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&type1->qualified_type.qualification) &&
-            KEFIR_AST_TYPE_COMPATIBLE(kefir_ast_unqualified_type(type1), type2);
+            KEFIR_AST_TYPE_COMPATIBLE(type_traits, kefir_ast_unqualified_type(type1), type2);
     } else if (type1->tag != KEFIR_AST_TYPE_QUALIFIED &&
         type2->tag == KEFIR_AST_TYPE_QUALIFIED) {
         return KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&type2->qualified_type.qualification) &&
-            KEFIR_AST_TYPE_COMPATIBLE(type1, kefir_ast_unqualified_type(type2));
+            KEFIR_AST_TYPE_COMPATIBLE(type_traits, type1, kefir_ast_unqualified_type(type2));
     }
     REQUIRE(type1->tag == KEFIR_AST_TYPE_QUALIFIED &&
         type2->tag == KEFIR_AST_TYPE_QUALIFIED, false);
     return type1->qualified_type.qualification.constant == type2->qualified_type.qualification.constant &&
         type1->qualified_type.qualification.restricted == type2->qualified_type.qualification.restricted &&
         type1->qualified_type.qualification.volatile_type == type2->qualified_type.qualification.volatile_type &&
-        KEFIR_AST_TYPE_COMPATIBLE(type1->qualified_type.type, type2->qualified_type.type);
+        KEFIR_AST_TYPE_COMPATIBLE(type_traits, type1->qualified_type.type, type2->qualified_type.type);
 }
 
 const struct kefir_ast_type *kefir_ast_type_qualified(struct kefir_mem *mem,

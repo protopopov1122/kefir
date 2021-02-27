@@ -162,7 +162,7 @@ kefir_result_t kefir_ast_global_context_declare_external(struct kefir_mem *mem,
         scoped_id = (const struct kefir_ast_scoped_identifier *) external_node->value;
         REQUIRE(scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot declare the same identifier with different storage class"));
-        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(scoped_id->object.type, type),
+        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, scoped_id->object.type, type),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "All declarations of the same identifier shall have compatible types"));
         external_declaration_exists = true;
     }
@@ -172,7 +172,7 @@ kefir_result_t kefir_ast_global_context_declare_external(struct kefir_mem *mem,
         REQUIRE(scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN ||
             scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot declare the same identifier with different storage class"));
-        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(scoped_id->object.type, type),
+        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, scoped_id->object.type, type),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "All declarations of the same identifier shall have compatible types"));
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
@@ -208,7 +208,7 @@ kefir_result_t kefir_ast_global_context_declare_external_thread_local(struct kef
         scoped_id = (const struct kefir_ast_scoped_identifier *) external_node->value;
         REQUIRE(scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot declare the same identifier with different storage class"));
-        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(scoped_id->object.type, type),
+        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, scoped_id->object.type, type),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "All declarations of the same identifier shall have compatible types"));
         external_declaration_exists = true;
     }
@@ -218,7 +218,7 @@ kefir_result_t kefir_ast_global_context_declare_external_thread_local(struct kef
         REQUIRE(scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL ||
             scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot declare the same identifier with different storage class"));
-        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(scoped_id->object.type, type),
+        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, scoped_id->object.type, type),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "All declarations of the same identifier shall have compatible types"));
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
@@ -254,7 +254,7 @@ kefir_result_t kefir_ast_global_context_define_external(struct kefir_mem *mem,
         scoped_id = (const struct kefir_ast_scoped_identifier *) external_node->value;
         REQUIRE(scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot declare the same identifier with different storage class"));
-        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(scoped_id->object.type, type),
+        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, scoped_id->object.type, type),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "All declarations of the same identifier shall have compatible types"));
         external_declaration_exists = true;
     }
@@ -263,7 +263,7 @@ kefir_result_t kefir_ast_global_context_define_external(struct kefir_mem *mem,
     if (res == KEFIR_OK) {
         REQUIRE(scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot declare the same identifier with different storage class"));
-        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(scoped_id->object.type, type),
+        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, scoped_id->object.type, type),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "All declarations of the same identifier shall have compatible types"));
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
@@ -298,7 +298,7 @@ kefir_result_t kefir_ast_global_context_define_external_thread_local(struct kefi
         scoped_id = (const struct kefir_ast_scoped_identifier *) external_node->value;
         REQUIRE(scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot declare the same identifier with different storage class"));
-        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(scoped_id->object.type, type),
+        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, scoped_id->object.type, type),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "All declarations of the same identifier shall have compatible types"));
         external_declaration_exists = true;
     }
@@ -307,7 +307,7 @@ kefir_result_t kefir_ast_global_context_define_external_thread_local(struct kefi
     if (res == KEFIR_OK) {
         REQUIRE(scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot declare the same identifier with different storage class"));
-        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(scoped_id->object.type, type),
+        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, scoped_id->object.type, type),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "All declarations of the same identifier shall have compatible types"));
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
@@ -342,7 +342,7 @@ kefir_result_t kefir_ast_global_context_define_static(struct kefir_mem *mem,
     if (res == KEFIR_OK) {
         REQUIRE(scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot declare the same identifier with different storage class"));
-        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(scoped_id->object.type, type),
+        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, scoped_id->object.type, type),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "All declarations of the same identifier shall have compatible types"));
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
@@ -374,7 +374,7 @@ kefir_result_t kefir_ast_global_context_define_static_thread_local(struct kefir_
     if (res == KEFIR_OK) {
         REQUIRE(scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot declare the same identifier with different storage class"));
-        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(scoped_id->object.type, type),
+        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, scoped_id->object.type, type),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "All declarations of the same identifier shall have compatible types"));
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
@@ -406,7 +406,7 @@ kefir_result_t kefir_ast_context_declare_external(struct kefir_mem *mem,
         scoped_id = (const struct kefir_ast_scoped_identifier *) external_node->value;
         REQUIRE(scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot declare the same identifier with different storage class"));
-        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(scoped_id->object.type, type),
+        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->global->type_traits, scoped_id->object.type, type),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "All declarations of the same identifier shall have compatible types"));
         external_declaration_exists = true;
     }
@@ -416,7 +416,7 @@ kefir_result_t kefir_ast_context_declare_external(struct kefir_mem *mem,
     if (res == KEFIR_OK) {
         REQUIRE(scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot declare the same identifier with different storage class"));
-        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(scoped_id->object.type, type),
+        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->global->type_traits, scoped_id->object.type, type),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "All declarations of the same identifier shall have compatible types"));
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
@@ -452,7 +452,7 @@ kefir_result_t kefir_ast_context_declare_external_thread_local(struct kefir_mem 
         scoped_id = (const struct kefir_ast_scoped_identifier *) external_node->value;
         REQUIRE(scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot declare the same identifier with different storage class"));
-        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(scoped_id->object.type, type),
+        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->global->type_traits, scoped_id->object.type, type),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "All declarations of the same identifier shall have compatible types"));
         external_declaration_exists = true;
     }
@@ -462,7 +462,7 @@ kefir_result_t kefir_ast_context_declare_external_thread_local(struct kefir_mem 
     if (res == KEFIR_OK) {
         REQUIRE(scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot declare the same identifier with different storage class"));
-        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(scoped_id->object.type, type),
+        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->global->type_traits, scoped_id->object.type, type),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "All declarations of the same identifier shall have compatible types"));
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);

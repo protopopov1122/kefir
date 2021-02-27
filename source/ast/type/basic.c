@@ -8,7 +8,10 @@ static kefir_bool_t same_basic_type(const struct kefir_ast_type *type1, const st
     return type1->tag == type2->tag;
 }
 
-static kefir_bool_t compatible_basic_types(const struct kefir_ast_type *type1, const struct kefir_ast_type *type2) {
+static kefir_bool_t compatible_basic_types(const struct kefir_ast_type_traits *type_traits,
+                                         const struct kefir_ast_type *type1, 
+                                         const struct kefir_ast_type *type2) {
+    UNUSED(type_traits);
     REQUIRE(type1 != NULL, false);
     REQUIRE(type2 != NULL, false);
     if (type1->tag == KEFIR_AST_TYPE_ENUMERATION) {

@@ -51,14 +51,14 @@ DECLARE_CASE(ast_scope_rules10);
 DECLARE_CASE(ast_scope_rules11);
 DECLARE_CASE(ast_scope_rules12);
 DECLARE_CASE(ast_scope_rules13);
-DECLARE_CASE(ast_types1);
-DECLARE_CASE(ast_types2);
-DECLARE_CASE(ast_types3);
-DECLARE_CASE(ast_types4);
-DECLARE_CASE(ast_types5);
-DECLARE_CASE(ast_types6);
-DECLARE_CASE(ast_types7);
-DECLARE_CASE(ast_types8);
+DECLARE_CASE(ast_type_construction1);
+DECLARE_CASE(ast_type_construction2);
+DECLARE_CASE(ast_type_construction3);
+DECLARE_CASE(ast_type_construction4);
+DECLARE_CASE(ast_type_construction5);
+DECLARE_CASE(ast_type_construction6);
+DECLARE_CASE(ast_type_construction7);
+DECLARE_CASE(ast_type_construction8);
 DECLARE_CASE(ast_nodes_constants);
 DECLARE_CASE(ast_nodes_identifiers);
 DECLARE_CASE(ast_nodes_string_literals);
@@ -67,6 +67,9 @@ DECLARE_CASE(ast_nodes_function_calls);
 DECLARE_CASE(ast_nodes_struct_members);
 DECLARE_CASE(ast_nodes_unary_operations);
 DECLARE_CASE(ast_nodes_binary_operations);
+DECLARE_CASE(ast_type_compatibility1);
+DECLARE_CASE(ast_type_basic_compatibility);
+DECLARE_CASE(ast_type_enum_compatibility);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -116,14 +119,14 @@ TEST_SUITE(mainSuite,
     &ast_scope_rules11,
     &ast_scope_rules12,
     &ast_scope_rules13,
-    &ast_types1,
-    &ast_types2,
-    &ast_types3,
-    &ast_types4,
-    &ast_types5,
-    &ast_types6,
-    &ast_types7,
-    &ast_types8,
+    &ast_type_construction1,
+    &ast_type_construction2,
+    &ast_type_construction3,
+    &ast_type_construction4,
+    &ast_type_construction5,
+    &ast_type_construction6,
+    &ast_type_construction7,
+    &ast_type_construction8,
     &ast_nodes_constants,
     &ast_nodes_identifiers,
     &ast_nodes_string_literals,
@@ -131,7 +134,10 @@ TEST_SUITE(mainSuite,
     &ast_nodes_function_calls,
     &ast_nodes_struct_members,
     &ast_nodes_unary_operations,
-    &ast_nodes_binary_operations
+    &ast_nodes_binary_operations,
+    &ast_type_compatibility1,
+    &ast_type_basic_compatibility,
+    &ast_type_enum_compatibility
 );
 
 int main(int argc, const char **argv) {

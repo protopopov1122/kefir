@@ -1,5 +1,6 @@
 #include <string.h>
 #include "kefir/ast/type.h"
+#include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -19,13 +20,34 @@ kefir_result_t kefir_ast_type_function_get_parameter(const struct kefir_ast_func
     return KEFIR_OK;
 }
 
+static const struct kefir_ast_type *adjust_function_parameter(struct kefir_mem *mem,
+                                                            struct kefir_ast_type_storage *type_storage,
+                                                            const struct kefir_ast_type *type) {
+    switch (type->tag) {
+        case KEFIR_AST_TYPE_FUNCTION:
+            return kefir_ast_type_pointer(mem, type_storage, type);
+
+        case KEFIR_AST_TYPE_ARRAY: {
+            const struct kefir_ast_type *adjusted = kefir_ast_type_pointer(mem, type_storage, type->array_type.element_type);
+            if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&type->array_type.qualifications)) {
+                adjusted = kefir_ast_type_qualified(mem, type_storage, adjusted, type->array_type.qualifications);
+            }
+            return adjusted;
+        }
+        
+        default:
+            return type;
+    }
+}
+
 kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem,
-                                             struct kefir_symbol_table *symbols,
+                                             struct kefir_ast_type_storage *type_storage,
                                              struct kefir_ast_function_type *function_type,
                                              const char *identifier,
                                              const struct kefir_ast_type *type,
                                              const kefir_ast_scoped_identifier_storage_t *storage) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(type_storage != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type storage"));
     REQUIRE(function_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST finction type"));
     switch (function_type->mode) {
         case KEFIR_AST_FUNCTION_TYPE_PARAMETERS:
@@ -53,8 +75,8 @@ kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem,
     }
     struct kefir_ast_function_type_parameter *param = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_function_type_parameter));
     REQUIRE(param != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate memory for function parameter"));
-    if (symbols != NULL && identifier != NULL) {
-        identifier = kefir_symbol_table_insert(mem, symbols, identifier, NULL);
+    if (identifier != NULL) {
+        identifier = kefir_symbol_table_insert(mem, type_storage->symbols, identifier, NULL);
         REQUIRE_ELSE(identifier != NULL, {
             KEFIR_FREE(mem, param);
             return KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate parameter identifier");
@@ -62,6 +84,12 @@ kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem,
     }
     param->identifier = identifier;
     param->type = type;
+    if (type) {
+        param->adjusted_type = adjust_function_parameter(mem, type_storage, type);
+        REQUIRE(param->adjusted_type != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to adjust AST function parameter type"));
+    } else {
+        param->adjusted_type = NULL;
+    }
     if (storage == NULL) {
         KEFIR_OPTIONAL_SET_EMPTY(&param->storage);
     } else {
@@ -119,9 +147,60 @@ static kefir_bool_t same_function_type(const struct kefir_ast_type *type1, const
     return true;
 }
 
-static kefir_bool_t compatible_function_types(const struct kefir_ast_type *type1, const struct kefir_ast_type *type2) {
-    // TODO: Define function type compatibility
-    return same_function_type(type1, type2);
+static kefir_bool_t parameter_list_unaffected_by_promotions(const struct kefir_ast_type_traits *type_traits,
+                                                          const struct kefir_ast_type *type) {
+    const struct kefir_list_entry *iter = NULL;
+    for (iter = kefir_list_head(&type->function_type.parameters);
+        iter != NULL;
+        kefir_list_next(&iter)) {
+        ASSIGN_DECL_CAST(struct kefir_ast_function_type_parameter *, param,
+            iter->value);
+            const struct kefir_ast_type *unqualified = kefir_ast_unqualified_type(param->type);
+        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(type_traits,
+            param->type, kefir_ast_type_function_default_argument_promotion(type_traits, unqualified)),
+            false);
+    }
+    return true;
+}
+
+static kefir_bool_t compatible_function_types(const struct kefir_ast_type_traits *type_traits,
+                                            const struct kefir_ast_type *type1,
+                                            const struct kefir_ast_type *type2) {
+    REQUIRE(type1 != NULL, false);
+    REQUIRE(type2 != NULL, false);
+    REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(type_traits,
+        kefir_ast_unqualified_type(type1->function_type.return_type),
+        kefir_ast_unqualified_type(type2->function_type.return_type)), false);
+    if (type1->function_type.mode == KEFIR_AST_FUNCTION_TYPE_PARAMETERS &&
+        type2->function_type.mode == KEFIR_AST_FUNCTION_TYPE_PARAMETERS) {
+        REQUIRE(kefir_list_length(&type1->function_type.parameters) == kefir_list_length(&type2->function_type.parameters),
+            false);
+        REQUIRE(type1->function_type.ellipsis == type2->function_type.ellipsis, false);
+        const struct kefir_list_entry *iter1 = NULL;
+        const struct kefir_list_entry *iter2 = NULL;
+        for (iter1 = kefir_list_head(&type1->function_type.parameters),
+            iter2 = kefir_list_head(&type2->function_type.parameters);
+            iter1 != NULL && iter2 != NULL;
+            kefir_list_next(&iter1), kefir_list_next(&iter2)) {
+            ASSIGN_DECL_CAST(struct kefir_ast_function_type_parameter *, param1,
+                iter1->value);
+            ASSIGN_DECL_CAST(struct kefir_ast_function_type_parameter *, param2,
+                iter2->value);
+            const struct kefir_ast_type *unqualified1 = kefir_ast_unqualified_type(param1->type);
+            const struct kefir_ast_type *unqualified2 = kefir_ast_unqualified_type(param2->type);
+            REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(type_traits, unqualified1, unqualified2), false);
+        }
+        REQUIRE(iter1 == NULL && iter2 == NULL, false);
+        return true;
+    } else if (type1->function_type.mode == KEFIR_AST_FUNCTION_TYPE_PARAMETERS) {
+        REQUIRE(!type1->function_type.ellipsis, false);
+        return parameter_list_unaffected_by_promotions(type_traits, type1);
+    } else if (type2->function_type.mode == KEFIR_AST_FUNCTION_TYPE_PARAMETERS) {
+        REQUIRE(!type1->function_type.ellipsis, false);
+        return parameter_list_unaffected_by_promotions(type_traits, type2);
+    } else {
+        return true;
+    }
 }
 
 static kefir_result_t free_function_type(struct kefir_mem *mem, const struct kefir_ast_type *type) {

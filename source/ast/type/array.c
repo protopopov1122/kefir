@@ -23,12 +23,14 @@ static kefir_bool_t same_array_type(const struct kefir_ast_type *type1, const st
     return KEFIR_AST_TYPE_SAME(type1->array_type.element_type, type2->array_type.element_type);
 }
 
-static kefir_bool_t compatbile_array_types(const struct kefir_ast_type *type1, const struct kefir_ast_type *type2) {
+static kefir_bool_t compatbile_array_types(const struct kefir_ast_type_traits *type_traits,
+                                         const struct kefir_ast_type *type1,
+                                         const struct kefir_ast_type *type2) {
     REQUIRE(type1 != NULL, false);
     REQUIRE(type2 != NULL, false);
     REQUIRE(type1->tag == KEFIR_AST_TYPE_ARRAY &&
         type2->tag == KEFIR_AST_TYPE_ARRAY, false);
-    REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(type1->array_type.element_type, type2->array_type.element_type),
+    REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(type_traits, type1->array_type.element_type, type2->array_type.element_type),
         false);
     if ((type1->array_type.boundary == KEFIR_AST_ARRAY_BOUNDED ||
         type1->array_type.boundary == KEFIR_AST_ARRAY_BOUNDED_STATIC) &&

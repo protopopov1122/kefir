@@ -42,7 +42,10 @@ static kefir_bool_t same_enumeration_type(const struct kefir_ast_type *type1, co
     return true;
 }
 
-static kefir_bool_t compatible_enumeration_types(const struct kefir_ast_type *type1, const struct kefir_ast_type *type2) {
+static kefir_bool_t compatible_enumeration_types(const struct kefir_ast_type_traits *type_traits,
+                                               const struct kefir_ast_type *type1,
+                                               const struct kefir_ast_type *type2) {
+    UNUSED(type_traits);
     REQUIRE(type1 != NULL, false);
     REQUIRE(type2 != NULL, false);
     if (type1->tag == KEFIR_AST_TYPE_ENUMERATION &&
@@ -57,7 +60,8 @@ static kefir_bool_t compatible_enumeration_types(const struct kefir_ast_type *ty
     REQUIRE((type1->enumeration_type.identifier == NULL && type2->enumeration_type.identifier == NULL) ||
         strcmp(type1->enumeration_type.identifier, type2->enumeration_type.identifier) == 0, false);
     if (type1->enumeration_type.complete && type2->enumeration_type.complete) {
-        REQUIRE(kefir_list_length(&type1->enumeration_type.enumerators) == kefir_list_length(&type2->enumeration_type.enumerators), false);
+        REQUIRE(kefir_list_length(&type1->enumeration_type.enumerators) ==
+            kefir_list_length(&type2->enumeration_type.enumerators), false);
         const struct kefir_list_entry *iter1 = kefir_list_head(&type1->enumeration_type.enumerators);
         const struct kefir_list_entry *iter2 = kefir_list_head(&type2->enumeration_type.enumerators);
         for (; iter1 != NULL && iter2 != NULL; kefir_list_next(&iter1), kefir_list_next(&iter2)) {
