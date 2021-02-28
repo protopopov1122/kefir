@@ -70,6 +70,11 @@ DECLARE_CASE(ast_nodes_binary_operations);
 DECLARE_CASE(ast_type_compatibility1);
 DECLARE_CASE(ast_type_basic_compatibility);
 DECLARE_CASE(ast_type_enum_compatibility);
+DECLARE_CASE(ast_type_pointer_compatibility);
+DECLARE_CASE(ast_type_qualified_compatibility);
+DECLARE_CASE(ast_type_struct_compatibility);
+DECLARE_CASE(ast_type_union_compatibility);
+DECLARE_CASE(ast_type_array_compatibility);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -137,7 +142,12 @@ TEST_SUITE(mainSuite,
     &ast_nodes_binary_operations,
     &ast_type_compatibility1,
     &ast_type_basic_compatibility,
-    &ast_type_enum_compatibility
+    &ast_type_enum_compatibility,
+    &ast_type_pointer_compatibility,
+    &ast_type_qualified_compatibility,
+    &ast_type_struct_compatibility,
+    &ast_type_union_compatibility,
+    &ast_type_array_compatibility
 );
 
 int main(int argc, const char **argv) {

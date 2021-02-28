@@ -15,6 +15,8 @@ const struct kefir_ast_type *kefir_ast_type_qualified(struct kefir_mem *,
                                                   
 const struct kefir_ast_type *kefir_ast_unqualified_type(const struct kefir_ast_type *);
 
+const struct kefir_ast_type *kefir_ast_zero_unqualified_type(const struct kefir_ast_type *);
+
 #define KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(qualification) \
     (!(qualification)->constant && \
         !(qualification)->restricted && \

@@ -29,10 +29,6 @@ static kefir_bool_t compatbile_qualified_types(const struct kefir_ast_type_trait
         type2->tag != KEFIR_AST_TYPE_QUALIFIED) {
         return KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&type1->qualified_type.qualification) &&
             KEFIR_AST_TYPE_COMPATIBLE(type_traits, kefir_ast_unqualified_type(type1), type2);
-    } else if (type1->tag != KEFIR_AST_TYPE_QUALIFIED &&
-        type2->tag == KEFIR_AST_TYPE_QUALIFIED) {
-        return KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&type2->qualified_type.qualification) &&
-            KEFIR_AST_TYPE_COMPATIBLE(type_traits, type1, kefir_ast_unqualified_type(type2));
     }
     REQUIRE(type1->tag == KEFIR_AST_TYPE_QUALIFIED &&
         type2->tag == KEFIR_AST_TYPE_QUALIFIED, false);
@@ -101,4 +97,13 @@ const struct kefir_ast_type *kefir_ast_unqualified_type(const struct kefir_ast_t
             return type->qualified_type.type;
     }
     return NULL;
+}
+
+const struct kefir_ast_type *kefir_ast_zero_unqualified_type(const struct kefir_ast_type *type) {
+    if (type->tag == KEFIR_AST_TYPE_QUALIFIED &&
+        KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&type->qualified_type.qualification)) {
+        return type->qualified_type.type;
+    } else {
+        return type;
+    }
 }

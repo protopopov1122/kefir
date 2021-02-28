@@ -53,7 +53,7 @@ static kefir_bool_t compatible_structure_types(const struct kefir_ast_type_trait
                 strcmp(field1->identifier, field2->identifier) == 0, false);
             REQUIRE(field1->alignment->value == field2->alignment->value, false);
             REQUIRE((!field1->bitfield && !field2->bitfield) ||
-                (field1->bitwidth == field2->bitwidth), false);
+                (field1->bitwidth->value == field2->bitwidth->value), false);
             REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(type_traits, field1->type, field2->type), false);
         }
     }
@@ -121,7 +121,7 @@ static kefir_bool_t compatible_union_types(const struct kefir_ast_type_traits *t
             REQUIRE((field1->identifier == NULL && field2->identifier == NULL) ||
                 strcmp(field1->identifier, field2->identifier) == 0, false);
             REQUIRE((!field1->bitfield && !field2->bitfield) ||
-                (field1->bitwidth == field2->bitwidth), false);
+                (field1->bitwidth->value == field2->bitwidth->value), false);
             REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(type_traits, field1->type, field2->type), false);
         }
         for (const struct kefir_hashtree_node *node2 = kefir_hashtree_iter(&type2->structure_type.field_index, &iter);
