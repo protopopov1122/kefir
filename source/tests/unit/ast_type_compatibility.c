@@ -451,4 +451,92 @@ DEFINE_CASE(ast_type_array_compatibility, "AST Types - array type compatibility"
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
 END_CASE
 
-// TODO: Implement function type compatibility tests
+static const struct kefir_ast_type *build_function_type(struct kefir_mem *mem,
+                                                      struct kefir_ast_type_storage *type_storage,
+                                                      const struct kefir_ast_type *return_type,
+                                                      const char *id,
+                                                      struct kefir_ast_function_type **function_type) {
+    const struct kefir_ast_type *type = kefir_ast_type_function(mem, type_storage, return_type,
+        id, function_type);
+    ASSERT(type != NULL);
+    ASSERT(*function_type != NULL);
+    ASSERT_OK(kefir_ast_type_function_parameter(mem, type_storage, *function_type, "param1",
+        kefir_ast_type_double(), NULL));
+    ASSERT_OK(kefir_ast_type_function_parameter(mem, type_storage, *function_type, "param2",
+        kefir_ast_type_array_static(mem, type_storage, kefir_ast_type_char(), 140, NULL), NULL));
+    ASSERT_OK(kefir_ast_type_function_parameter(mem, type_storage, *function_type, "param3",
+        kefir_ast_type_pointer(mem, type_storage,
+            kefir_ast_type_qualified(mem, type_storage, kefir_ast_type_unsigned_char(), (struct kefir_ast_type_qualification){
+                .constant = true,
+                .restricted = false,
+                .volatile_type = false
+            })), NULL));
+
+    return type;
+}
+
+static const struct kefir_ast_type *build_function_type2(struct kefir_mem *mem,
+                                                      struct kefir_ast_type_storage *type_storage,
+                                                      const struct kefir_ast_type *return_type,
+                                                      const char *id,
+                                                      struct kefir_ast_function_type **function_type) {
+    const struct kefir_ast_type *type = kefir_ast_type_function(mem, type_storage, return_type,
+        id, function_type);
+    ASSERT(type != NULL);
+    ASSERT(*function_type != NULL);
+    ASSERT_OK(kefir_ast_type_function_parameter(mem, type_storage, *function_type, "param1",
+        NULL, NULL));
+    ASSERT_OK(kefir_ast_type_function_parameter(mem, type_storage, *function_type, "param2",
+        NULL, NULL));
+    ASSERT_OK(kefir_ast_type_function_parameter(mem, type_storage, *function_type, "param3",
+        NULL, NULL));
+
+    return type;
+}
+
+DEFINE_CASE(ast_type_function_compatibility, "AST Types - function type compatibility")
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_type_storage type_storage;
+    struct kefir_symbol_table symbols;
+    ASSERT_OK(kefir_symbol_table_init(&symbols));
+    ASSERT_OK(kefir_ast_type_storage_init(&type_storage, &symbols));
+
+    struct kefir_ast_function_type *function_type1 = NULL;
+    const struct kefir_ast_type *type1 = build_function_type(&kft_mem, &type_storage, kefir_ast_type_void(),
+        "", &function_type1);
+    struct kefir_ast_function_type *function_type2 = NULL;
+    const struct kefir_ast_type *type2 = build_function_type(&kft_mem, &type_storage, kefir_ast_type_void(),
+        "", &function_type2);
+    struct kefir_ast_function_type *function_type3 = NULL;
+    const struct kefir_ast_type *type3 = build_function_type(&kft_mem, &type_storage,
+        kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_signed_int()),
+        "", &function_type3);
+    struct kefir_ast_function_type *function_type4 = NULL;
+    const struct kefir_ast_type *type4 = build_function_type(&kft_mem, &type_storage, kefir_ast_type_void(),
+        "", &function_type4);
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_storage, function_type4, "param10",
+        kefir_ast_type_signed_int(), NULL));
+    struct kefir_ast_function_type *function_type5 = NULL;
+    const struct kefir_ast_type *type5 = build_function_type2(&kft_mem, &type_storage, kefir_ast_type_void(),
+        "", &function_type5);
+
+    ASSERT(KEFIR_AST_TYPE_COMPATIBLE(type_traits, type1, type2));
+    ASSERT(KEFIR_AST_TYPE_COMPATIBLE(type_traits, type2, type1));
+    ASSERT(!KEFIR_AST_TYPE_COMPATIBLE(type_traits, type1, type3));
+    ASSERT(!KEFIR_AST_TYPE_COMPATIBLE(type_traits, type2, type3));
+    ASSERT(!KEFIR_AST_TYPE_COMPATIBLE(type_traits, type3, type1));
+    ASSERT(!KEFIR_AST_TYPE_COMPATIBLE(type_traits, type3, type2));
+    ASSERT(!KEFIR_AST_TYPE_COMPATIBLE(type_traits, type1, type4));
+    ASSERT(!KEFIR_AST_TYPE_COMPATIBLE(type_traits, type2, type4));
+    ASSERT(!KEFIR_AST_TYPE_COMPATIBLE(type_traits, type4, type1));
+    ASSERT(!KEFIR_AST_TYPE_COMPATIBLE(type_traits, type4, type2));
+    ASSERT(KEFIR_AST_TYPE_COMPATIBLE(type_traits, type1, type5));
+    ASSERT(KEFIR_AST_TYPE_COMPATIBLE(type_traits, type2, type5));
+    ASSERT(KEFIR_AST_TYPE_COMPATIBLE(type_traits, type5, type1));
+    ASSERT(KEFIR_AST_TYPE_COMPATIBLE(type_traits, type2, type5));
+    ASSERT(!KEFIR_AST_TYPE_COMPATIBLE(type_traits, type3, type5));
+    ASSERT(!KEFIR_AST_TYPE_COMPATIBLE(type_traits, type5, type3));
+
+    ASSERT_OK(kefir_ast_type_storage_free(&kft_mem, &type_storage));
+    ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
+END_CASE

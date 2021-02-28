@@ -75,6 +75,7 @@ DECLARE_CASE(ast_type_qualified_compatibility);
 DECLARE_CASE(ast_type_struct_compatibility);
 DECLARE_CASE(ast_type_union_compatibility);
 DECLARE_CASE(ast_type_array_compatibility);
+DECLARE_CASE(ast_type_function_compatibility);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -147,7 +148,8 @@ TEST_SUITE(mainSuite,
     &ast_type_qualified_compatibility,
     &ast_type_struct_compatibility,
     &ast_type_union_compatibility,
-    &ast_type_array_compatibility
+    &ast_type_array_compatibility,
+    &ast_type_function_compatibility
 );
 
 int main(int argc, const char **argv) {
