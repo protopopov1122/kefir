@@ -10,6 +10,7 @@ typedef struct kefir_ast_type_storage kefir_ast_type_storage_t;
 typedef enum kefir_ast_type_tag {
     KEFIR_AST_TYPE_VOID,
     KEFIR_AST_TYPE_SCALAR_BOOL,
+    KEFIR_AST_TYPE_SCALAR_CHAR,
     KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR,
     KEFIR_AST_TYPE_SCALAR_SIGNED_CHAR,
     KEFIR_AST_TYPE_SCALAR_UNSIGNED_SHORT,

@@ -69,6 +69,7 @@ DEFINE_CASE(ast_type_basic_compatibility, "AST Types - basic type compatibility"
     const struct kefir_ast_type *BASIC_TYPES[] = {
         kefir_ast_type_void(),
         kefir_ast_type_bool(),
+        kefir_ast_type_char(),
         kefir_ast_type_unsigned_char(),
         kefir_ast_type_signed_char(),
         kefir_ast_type_unsigned_short(),
@@ -158,6 +159,7 @@ DEFINE_CASE(ast_type_pointer_compatibility, "AST Types - pointer type compatibil
     const struct kefir_ast_type *BASIC_TYPES[] = {
         kefir_ast_type_void(),
         kefir_ast_type_bool(),
+        kefir_ast_type_char(),
         kefir_ast_type_unsigned_char(),
         kefir_ast_type_signed_char(),
         kefir_ast_type_unsigned_short(),
@@ -175,6 +177,7 @@ DEFINE_CASE(ast_type_pointer_compatibility, "AST Types - pointer type compatibil
     const struct kefir_ast_type *POINTER_TYPES[] = {
         kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_void()),
         kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_bool()),
+        kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_char()),
         kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_unsigned_char()),
         kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_signed_char()),
         kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_unsigned_short()),
@@ -227,6 +230,7 @@ DEFINE_CASE(ast_type_qualified_compatibility, "AST Types - qualified type compat
     const struct kefir_ast_type *BASE_TYPES[] = {
         kefir_ast_type_void(),
         kefir_ast_type_bool(),
+        kefir_ast_type_char(),
         kefir_ast_type_unsigned_char(),
         kefir_ast_type_signed_char(),
         kefir_ast_type_unsigned_short(),
@@ -241,6 +245,7 @@ DEFINE_CASE(ast_type_qualified_compatibility, "AST Types - qualified type compat
         kefir_ast_type_double(),
         kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_void()),
         kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_bool()),
+        kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_char()),
         kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_unsigned_char()),
         kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_signed_char()),
         kefir_ast_type_pointer(&kft_mem, &type_storage, kefir_ast_type_unsigned_short()),

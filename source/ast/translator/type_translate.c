@@ -16,33 +16,23 @@ kefir_result_t kefir_ast_translate_stored_object_type(struct kefir_mem *mem,
         case KEFIR_AST_TYPE_SCALAR_BOOL:
             return KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_BOOL, alignment, 0);
 
+        case KEFIR_AST_TYPE_SCALAR_CHAR:
         case KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR:
-            return KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_CHAR, alignment, 0);
-
         case KEFIR_AST_TYPE_SCALAR_SIGNED_CHAR:
             return KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_CHAR, alignment, 0);
 
         case KEFIR_AST_TYPE_SCALAR_UNSIGNED_SHORT:
-            return KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_SHORT, alignment, 0);
-
         case KEFIR_AST_TYPE_SCALAR_SIGNED_SHORT:
             return KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_SHORT, alignment, 0);
 
         case KEFIR_AST_TYPE_SCALAR_UNSIGNED_INT:
-            return KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_INT, alignment, 0);
-
         case KEFIR_AST_TYPE_SCALAR_SIGNED_INT:
+        case KEFIR_AST_TYPE_ENUMERATION:
             return KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_INT, alignment, 0);
 
         case KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG:
-            return KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_LONG, alignment, 0);
-
         case KEFIR_AST_TYPE_SCALAR_SIGNED_LONG:
-            return KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_LONG, alignment, 0);
-
         case KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG_LONG:
-            return KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_LONG, alignment, 0);
-
         case KEFIR_AST_TYPE_SCALAR_SIGNED_LONG_LONG:
             return KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_LONG, alignment, 0);
 
@@ -54,9 +44,6 @@ kefir_result_t kefir_ast_translate_stored_object_type(struct kefir_mem *mem,
 
         case KEFIR_AST_TYPE_SCALAR_POINTER:
             return KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_WORD, alignment, 0);
-
-        case KEFIR_AST_TYPE_ENUMERATION:
-            return KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_INT, alignment, 0);
 
         case KEFIR_AST_TYPE_STRUCTURE:
         case KEFIR_AST_TYPE_UNION: {

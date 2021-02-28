@@ -12,6 +12,7 @@ typedef struct kefir_ast_basic_type_properties {
     const struct kefir_ast_type *kefir_ast_type_##id()
 SCALAR_TYPE(void);
 SCALAR_TYPE(bool);
+SCALAR_TYPE(char);
 SCALAR_TYPE(unsigned_char);
 SCALAR_TYPE(signed_char);
 SCALAR_TYPE(unsigned_short);
@@ -26,6 +27,10 @@ SCALAR_TYPE(float);
 SCALAR_TYPE(double);
 #undef SCALAR_TYPE
 
+#define KEFIR_AST_TYPE_IS_CHARACTER(base) \
+    ((base)->tag == KEFIR_AST_TYPE_SCALAR_CHAR || \
+        (base)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_CHAR || \
+        (base)->tag == KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR)
 #define KEFIR_AST_TYPE_IS_SIGNED_INTEGER(base) \
     ((base)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_CHAR || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_SHORT || \
@@ -34,6 +39,7 @@ SCALAR_TYPE(double);
         (base)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_LONG_LONG)
 #define KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(base) \
     ((base)->tag == KEFIR_AST_TYPE_SCALAR_BOOL || \
+        (base)->tag == KEFIR_AST_TYPE_SCALAR_CHAR || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_UNSIGNED_SHORT || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_UNSIGNED_INT || \

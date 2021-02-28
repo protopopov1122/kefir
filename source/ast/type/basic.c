@@ -62,6 +62,7 @@ const struct kefir_ast_type *kefir_ast_type_##id() { \
 }
 
 SCALAR_TYPE(bool, KEFIR_AST_TYPE_SCALAR_BOOL, false, 0)
+SCALAR_TYPE(char, KEFIR_AST_TYPE_SCALAR_CHAR, false, 1)
 SCALAR_TYPE(unsigned_char, KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR, false, 1)
 SCALAR_TYPE(signed_char, KEFIR_AST_TYPE_SCALAR_SIGNED_CHAR, true, 1)
 SCALAR_TYPE(unsigned_short, KEFIR_AST_TYPE_SCALAR_UNSIGNED_SHORT, false, 2)
@@ -81,6 +82,9 @@ const struct kefir_ast_type *kefir_ast_type_flip_integer_singedness(const struct
     switch (type->tag) {
         case KEFIR_AST_TYPE_SCALAR_BOOL:
             return type;
+
+        case KEFIR_AST_TYPE_SCALAR_CHAR:
+            return kefir_ast_type_signed_char();
 
         case KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR:
             return kefir_ast_type_signed_char();

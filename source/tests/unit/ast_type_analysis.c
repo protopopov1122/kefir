@@ -12,6 +12,8 @@ DEFINE_CASE(ast_type_analysis_integer_promotion1, "AST Type analysis - integer p
     ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits,
         kefir_ast_type_bool()), KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
     ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits,
+        kefir_ast_type_char()), KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
+    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits,
         kefir_ast_type_signed_char()), KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
     ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits,
         kefir_ast_type_unsigned_char()), KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
@@ -42,6 +44,7 @@ DEFINE_CASE(ast_type_analysis_arithmetic_conversion1, "AST Type analysis - arith
     const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
     const struct kefir_ast_type *TYPES[] = {
         kefir_ast_type_bool(),
+        kefir_ast_type_char(),
         kefir_ast_type_unsigned_char(),
         kefir_ast_type_signed_char(),
         kefir_ast_type_unsigned_short(),
@@ -72,6 +75,7 @@ DEFINE_CASE(ast_type_analysis_arithmetic_conversion2, "AST Type analysis - arith
     const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
     const struct kefir_ast_type *TYPES[] = {
         kefir_ast_type_bool(),
+        kefir_ast_type_char(),
         kefir_ast_type_unsigned_char(),
         kefir_ast_type_signed_char(),
         kefir_ast_type_unsigned_short(),
@@ -101,6 +105,7 @@ DEFINE_CASE(ast_type_analysis_arithmetic_conversion3, "AST Type analysis - arith
     const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
     const struct kefir_ast_type *TYPES[] = {
         kefir_ast_type_bool(),
+        kefir_ast_type_char(),
         kefir_ast_type_unsigned_char(),
         kefir_ast_type_signed_char(),
         kefir_ast_type_unsigned_short(),

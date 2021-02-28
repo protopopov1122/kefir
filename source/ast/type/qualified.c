@@ -71,30 +71,11 @@ const struct kefir_ast_type *kefir_ast_type_qualified(struct kefir_mem *mem,
 
 const struct kefir_ast_type *kefir_ast_unqualified_type(const struct kefir_ast_type *type) {
     switch (type->tag) {
-        case KEFIR_AST_TYPE_VOID:
-        case KEFIR_AST_TYPE_SCALAR_BOOL:
-        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR:
-        case KEFIR_AST_TYPE_SCALAR_SIGNED_CHAR:
-        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_SHORT:
-        case KEFIR_AST_TYPE_SCALAR_SIGNED_SHORT:
-        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_INT:
-        case KEFIR_AST_TYPE_SCALAR_SIGNED_INT:
-        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG:
-        case KEFIR_AST_TYPE_SCALAR_SIGNED_LONG:
-        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG_LONG:
-        case KEFIR_AST_TYPE_SCALAR_SIGNED_LONG_LONG:
-        case KEFIR_AST_TYPE_SCALAR_FLOAT:
-        case KEFIR_AST_TYPE_SCALAR_DOUBLE:
-        case KEFIR_AST_TYPE_SCALAR_POINTER:
-        case KEFIR_AST_TYPE_ENUMERATION:
-        case KEFIR_AST_TYPE_STRUCTURE:
-        case KEFIR_AST_TYPE_UNION:
-        case KEFIR_AST_TYPE_ARRAY:
-        case KEFIR_AST_TYPE_FUNCTION:
-            return type;
-
         case KEFIR_AST_TYPE_QUALIFIED:
             return type->qualified_type.type;
+
+        default:
+            return type;
     }
     return NULL;
 }

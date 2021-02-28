@@ -6,6 +6,7 @@
 static kefir_size_t default_integral_type_fit_rank(const struct kefir_ast_type *type) {
     switch (type->tag) {
         case KEFIR_AST_TYPE_SCALAR_BOOL:
+        case KEFIR_AST_TYPE_SCALAR_CHAR:
         case KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR:
         case KEFIR_AST_TYPE_SCALAR_SIGNED_CHAR:
             return 1;
