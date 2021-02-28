@@ -38,6 +38,25 @@ static kefir_bool_t compatbile_qualified_types(const struct kefir_ast_type_trait
         KEFIR_AST_TYPE_COMPATIBLE(type_traits, type1->qualified_type.type, type2->qualified_type.type);
 }
 
+const struct kefir_ast_type *composite_qualified_types(struct kefir_mem *mem,
+                                                     struct kefir_ast_type_storage *type_storage,
+                                                     struct kefir_ast_type_traits *type_traits,
+                                                     const struct kefir_ast_type *type1,
+                                                     const struct kefir_ast_type *type2) {
+    REQUIRE(mem != NULL, NULL);
+    REQUIRE(type_traits != NULL, NULL);
+    REQUIRE(type1 != NULL, NULL);
+    REQUIRE(type2 != NULL, NULL);
+    REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(type_traits, type1, type2), NULL);
+    const struct kefir_ast_type *composite_unqualified = KEFIR_AST_TYPE_COMPOSITE(mem, type_storage, type_traits,
+        kefir_ast_unqualified_type(type1), kefir_ast_unqualified_type(type2));
+    if (KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&type1->qualified_type.qualification)) {
+        return composite_unqualified;
+    } else {
+        return kefir_ast_type_qualified(mem, type_storage, composite_unqualified, type1->qualified_type.qualification);
+    }
+}
+
 const struct kefir_ast_type *kefir_ast_type_qualified(struct kefir_mem *mem,
                                                  struct kefir_ast_type_storage *type_storage,
                                                  const struct kefir_ast_type *base_type,
@@ -63,6 +82,7 @@ const struct kefir_ast_type *kefir_ast_type_qualified(struct kefir_mem *mem,
     type->basic = false;
     type->ops.same = same_qualified_type;
     type->ops.compatible = compatbile_qualified_types;
+    type->ops.composite = composite_qualified_types;
     type->ops.free = free_qualified_type;
     type->qualified_type.qualification = qualification;
     type->qualified_type.type = base_type;

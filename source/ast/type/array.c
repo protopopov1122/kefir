@@ -41,6 +41,19 @@ static kefir_bool_t compatbile_array_types(const struct kefir_ast_type_traits *t
     return true;
 }
 
+const struct kefir_ast_type *composite_array_types(struct kefir_mem *mem,
+                                                 struct kefir_ast_type_storage *type_storage,
+                                                 struct kefir_ast_type_traits *type_traits,
+                                                 const struct kefir_ast_type *type1,
+                                                 const struct kefir_ast_type *type2) {
+    UNUSED(mem);
+    UNUSED(type_storage);
+    UNUSED(type_traits);
+    UNUSED(type1);
+    UNUSED(type2);
+    return NULL; // TODO: Implement composite array type
+}
+
 static kefir_result_t free_array(struct kefir_mem *mem, const struct kefir_ast_type *type) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
@@ -74,6 +87,7 @@ static struct kefir_ast_type *kefir_ast_type_array_impl(struct kefir_mem *mem,
     type->basic = false;
     type->ops.same = same_array_type;
     type->ops.compatible = compatbile_array_types;
+    type->ops.composite = composite_array_types;
     type->ops.free = free_array;
     type->array_type.element_type = element_type;
     if (qualification != NULL) {

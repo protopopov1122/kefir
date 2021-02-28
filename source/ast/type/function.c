@@ -203,6 +203,19 @@ static kefir_bool_t compatible_function_types(const struct kefir_ast_type_traits
     }
 }
 
+const struct kefir_ast_type *composite_function_types(struct kefir_mem *mem,
+                                                    struct kefir_ast_type_storage *type_storage,
+                                                    struct kefir_ast_type_traits *type_traits,
+                                                    const struct kefir_ast_type *type1,
+                                                    const struct kefir_ast_type *type2) {
+    UNUSED(mem);
+    UNUSED(type_storage);
+    UNUSED(type_traits);
+    UNUSED(type1);
+    UNUSED(type2);
+    return NULL; // TODO: Implement composite function type
+}
+
 static kefir_result_t free_function_type(struct kefir_mem *mem, const struct kefir_ast_type *type) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
@@ -254,6 +267,7 @@ const struct kefir_ast_type *kefir_ast_type_function(struct kefir_mem *mem,
     type->basic = false;
     type->ops.same = same_function_type;
     type->ops.compatible = compatible_function_types;
+    type->ops.composite = composite_function_types;
     type->ops.free = free_function_type;
     type->function_type.return_type = return_type;
     type->function_type.identifier = identifier;

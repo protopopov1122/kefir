@@ -76,6 +76,20 @@ static kefir_bool_t compatible_enumeration_types(const struct kefir_ast_type_tra
     return true;
 }
 
+const struct kefir_ast_type *composite_enum_types(struct kefir_mem *mem,
+                                                struct kefir_ast_type_storage *type_storage,
+                                                struct kefir_ast_type_traits *type_traits,
+                                                const struct kefir_ast_type *type1,
+                                                const struct kefir_ast_type *type2) {
+    UNUSED(mem);
+    UNUSED(type_storage);
+    REQUIRE(type_traits != NULL, NULL);
+    REQUIRE(type1 != NULL, NULL);
+    REQUIRE(type2 != NULL, NULL);
+    REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(type_traits, type1, type2), NULL);
+    return type1;
+}
+
 static kefir_result_t free_enumeration_type(struct kefir_mem *mem, const struct kefir_ast_type *type) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
@@ -110,6 +124,7 @@ const struct kefir_ast_type *kefir_ast_type_incomplete_enumeration(struct kefir_
     type->basic = false;
     type->ops.same = same_enumeration_type;
     type->ops.compatible = compatible_enumeration_types;
+    type->ops.composite = composite_enum_types;
     type->ops.free = free_enumeration_type;
     type->structure_type.complete = false;
     type->structure_type.identifier = identifier;
@@ -224,6 +239,7 @@ const struct kefir_ast_type *kefir_ast_type_enumeration(struct kefir_mem *mem,
     type->basic = false;
     type->ops.same = same_enumeration_type;
     type->ops.compatible = compatible_enumeration_types;
+    type->ops.composite = composite_enum_types;
     type->ops.free = free_enumeration_type;
     type->enumeration_type.complete = true;
     type->enumeration_type.identifier = identifier;
