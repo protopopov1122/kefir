@@ -76,6 +76,14 @@ DECLARE_CASE(ast_type_struct_compatibility);
 DECLARE_CASE(ast_type_union_compatibility);
 DECLARE_CASE(ast_type_array_compatibility);
 DECLARE_CASE(ast_type_function_compatibility);
+DECLARE_CASE(ast_type_basic_composite);
+DECLARE_CASE(ast_type_pointer_composite);
+DECLARE_CASE(ast_type_enum_composite);
+DECLARE_CASE(ast_type_qualified_composite);
+DECLARE_CASE(ast_type_struct_composite);
+DECLARE_CASE(ast_type_union_composite);
+DECLARE_CASE(ast_type_array_composite);
+DECLARE_CASE(ast_type_function_composite);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -149,7 +157,15 @@ TEST_SUITE(mainSuite,
     &ast_type_struct_compatibility,
     &ast_type_union_compatibility,
     &ast_type_array_compatibility,
-    &ast_type_function_compatibility
+    &ast_type_function_compatibility,
+    &ast_type_basic_composite,
+    &ast_type_pointer_composite,
+    &ast_type_enum_composite,
+    &ast_type_qualified_composite,
+    &ast_type_struct_composite,
+    &ast_type_union_composite,
+    &ast_type_array_composite,
+    &ast_type_function_composite
 );
 
 int main(int argc, const char **argv) {

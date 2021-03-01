@@ -20,7 +20,7 @@ typedef struct kefir_ast_type_ops {
     kefir_bool_t (*compatible)(const struct kefir_ast_type_traits *, const struct kefir_ast_type *, const struct kefir_ast_type *);
     const struct kefir_ast_type *(*composite)(struct kefir_mem *,
                                             struct kefir_ast_type_storage *,
-                                            struct kefir_ast_type_traits *,
+                                            const struct kefir_ast_type_traits *,
                                             const struct kefir_ast_type *,
                                             const struct kefir_ast_type *);
     kefir_result_t (*free)(struct kefir_mem *, const struct kefir_ast_type *);

@@ -95,12 +95,15 @@ kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem,
     } else {
         KEFIR_OPTIONAL_SET_VALUE(&param->storage, *storage);
     }
-    kefir_result_t res = kefir_hashtree_insert(mem, &function_type->parameter_index,
-        (kefir_hashtree_key_t) identifier, (kefir_hashtree_value_t) param);
-    REQUIRE_ELSE(res == KEFIR_OK, {
-        KEFIR_FREE(mem, param);
-        return res;
-    });
+    kefir_result_t res = KEFIR_OK;
+    if (identifier != NULL) {
+        res = kefir_hashtree_insert(mem, &function_type->parameter_index,
+            (kefir_hashtree_key_t) identifier, (kefir_hashtree_value_t) param);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            KEFIR_FREE(mem, param);
+            return res;
+        });
+    }
     res = kefir_list_insert_after(mem, &function_type->parameters, kefir_list_tail(&function_type->parameters), param);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_hashtree_delete(mem, &function_type->parameter_index, (kefir_hashtree_key_t) identifier);
@@ -136,7 +139,8 @@ static kefir_bool_t same_function_type(const struct kefir_ast_type *type1, const
         ASSIGN_DECL_CAST(const struct kefir_ast_function_type_parameter *, param2,
             iter2->value);
         REQUIRE((param1->identifier == NULL && param2->identifier == NULL) ||
-            strcmp(param1->identifier, param2->identifier) == 0, false);
+            (param1->identifier != NULL && param2->identifier != NULL &&
+                strcmp(param1->identifier, param2->identifier) == 0), false);
         REQUIRE(KEFIR_AST_TYPE_SAME(param1->type, param2->type), false);
         REQUIRE((KEFIR_OPTIONAL_EMPTY(&param1->storage) && KEFIR_OPTIONAL_EMPTY(&param2->storage)) ||
             (!KEFIR_OPTIONAL_EMPTY(&param1->storage) && !KEFIR_OPTIONAL_EMPTY(&param2->storage) &&
@@ -155,9 +159,9 @@ static kefir_bool_t parameter_list_unaffected_by_promotions(const struct kefir_a
         kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_function_type_parameter *, param,
             iter->value);
-            const struct kefir_ast_type *unqualified = kefir_ast_unqualified_type(param->type);
+            const struct kefir_ast_type *unqualified = kefir_ast_unqualified_type(param->adjusted_type);
         REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(type_traits,
-            param->type, kefir_ast_type_function_default_argument_promotion(type_traits, unqualified)),
+            unqualified, kefir_ast_type_function_default_argument_promotion(type_traits, unqualified)),
             false);
     }
     return true;
@@ -186,8 +190,8 @@ static kefir_bool_t compatible_function_types(const struct kefir_ast_type_traits
                 iter1->value);
             ASSIGN_DECL_CAST(struct kefir_ast_function_type_parameter *, param2,
                 iter2->value);
-            const struct kefir_ast_type *unqualified1 = kefir_ast_unqualified_type(param1->type);
-            const struct kefir_ast_type *unqualified2 = kefir_ast_unqualified_type(param2->type);
+            const struct kefir_ast_type *unqualified1 = kefir_ast_unqualified_type(param1->adjusted_type);
+            const struct kefir_ast_type *unqualified2 = kefir_ast_unqualified_type(param2->adjusted_type);
             REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(type_traits, unqualified1, unqualified2), false);
         }
         REQUIRE(iter1 == NULL && iter2 == NULL, false);
@@ -205,15 +209,43 @@ static kefir_bool_t compatible_function_types(const struct kefir_ast_type_traits
 
 const struct kefir_ast_type *composite_function_types(struct kefir_mem *mem,
                                                     struct kefir_ast_type_storage *type_storage,
-                                                    struct kefir_ast_type_traits *type_traits,
+                                                    const struct kefir_ast_type_traits *type_traits,
                                                     const struct kefir_ast_type *type1,
                                                     const struct kefir_ast_type *type2) {
-    UNUSED(mem);
-    UNUSED(type_storage);
-    UNUSED(type_traits);
-    UNUSED(type1);
-    UNUSED(type2);
-    return NULL; // TODO: Implement composite function type
+    REQUIRE(mem != NULL, NULL);
+    REQUIRE(type_traits != NULL, NULL);
+    REQUIRE(type1 != NULL, NULL);
+    REQUIRE(type2 != NULL, NULL);
+    REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(type_traits, type1, type2), NULL);
+    if (type1->function_type.mode == KEFIR_AST_FUNCTION_TYPE_PARAMETERS &&
+        type2->function_type.mode == KEFIR_AST_FUNCTION_TYPE_PARAMETERS) {
+        const struct kefir_ast_type *composite_return_type = KEFIR_AST_TYPE_COMPOSITE(mem, type_storage, type_traits,
+            type1->function_type.return_type, type2->function_type.return_type);
+        REQUIRE(composite_return_type != NULL, NULL);
+        struct kefir_ast_function_type *composite_function = NULL;
+        const struct kefir_ast_type *composite_type = kefir_ast_type_function(mem, type_storage,
+            composite_return_type, "", &composite_function);
+        REQUIRE(composite_type != NULL, NULL);
+        for (kefir_size_t i = 0; i < kefir_ast_type_function_parameter_count(&type1->function_type); i++) {
+            const struct kefir_ast_function_type_parameter *param1 = NULL;
+            REQUIRE(kefir_ast_type_function_get_parameter(&type1->function_type, i, &param1) == KEFIR_OK,
+                NULL);
+            const struct kefir_ast_function_type_parameter *param2 = NULL;
+            REQUIRE(kefir_ast_type_function_get_parameter(&type2->function_type, i, &param2) == KEFIR_OK,
+                NULL);
+            const struct kefir_ast_type *composite_parameter = KEFIR_AST_TYPE_COMPOSITE(mem, type_storage, type_traits,
+                kefir_ast_unqualified_type(param1->adjusted_type),
+                kefir_ast_unqualified_type(param2->adjusted_type));
+            REQUIRE(composite_parameter != NULL, NULL);
+            REQUIRE(kefir_ast_type_function_parameter(mem, type_storage, composite_function, NULL,
+                composite_parameter, NULL) == KEFIR_OK, NULL);
+        }
+        return composite_type;
+    } else if (type2->function_type.mode == KEFIR_AST_FUNCTION_TYPE_PARAMETERS) {
+        return type2;
+    } else {
+        return type1;
+    }
 }
 
 static kefir_result_t free_function_type(struct kefir_mem *mem, const struct kefir_ast_type *type) {

@@ -40,7 +40,7 @@ static kefir_bool_t compatbile_qualified_types(const struct kefir_ast_type_trait
 
 const struct kefir_ast_type *composite_qualified_types(struct kefir_mem *mem,
                                                      struct kefir_ast_type_storage *type_storage,
-                                                     struct kefir_ast_type_traits *type_traits,
+                                                     const struct kefir_ast_type_traits *type_traits,
                                                      const struct kefir_ast_type *type1,
                                                      const struct kefir_ast_type *type2) {
     REQUIRE(mem != NULL, NULL);

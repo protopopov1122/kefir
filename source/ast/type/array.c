@@ -43,15 +43,59 @@ static kefir_bool_t compatbile_array_types(const struct kefir_ast_type_traits *t
 
 const struct kefir_ast_type *composite_array_types(struct kefir_mem *mem,
                                                  struct kefir_ast_type_storage *type_storage,
-                                                 struct kefir_ast_type_traits *type_traits,
+                                                 const struct kefir_ast_type_traits *type_traits,
                                                  const struct kefir_ast_type *type1,
                                                  const struct kefir_ast_type *type2) {
-    UNUSED(mem);
-    UNUSED(type_storage);
-    UNUSED(type_traits);
-    UNUSED(type1);
-    UNUSED(type2);
-    return NULL; // TODO: Implement composite array type
+    REQUIRE(mem != NULL, NULL);
+    REQUIRE(type_traits != NULL, NULL);
+    REQUIRE(type1 != NULL, NULL);
+    REQUIRE(type2 != NULL, NULL);
+    REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(type_traits, type1, type2), NULL);
+    if (type1->array_type.boundary == KEFIR_AST_ARRAY_BOUNDED_STATIC ||
+        type1->array_type.boundary == KEFIR_AST_ARRAY_BOUNDED) {
+        return kefir_ast_type_array(mem, type_storage,
+            KEFIR_AST_TYPE_COMPOSITE(mem, type_storage, type_traits,
+                type1->array_type.element_type, type2->array_type.element_type),
+            type1->array_type.length, NULL);
+    } else if (type2->array_type.boundary == KEFIR_AST_ARRAY_BOUNDED_STATIC ||
+        type2->array_type.boundary == KEFIR_AST_ARRAY_BOUNDED) {
+        return kefir_ast_type_array(mem, type_storage,
+            KEFIR_AST_TYPE_COMPOSITE(mem, type_storage, type_traits,
+                type1->array_type.element_type, type2->array_type.element_type),
+            type2->array_type.length, NULL);
+    } else if (type1->array_type.boundary == KEFIR_AST_ARRAY_VLA_STATIC ||
+        type1->array_type.boundary == KEFIR_AST_ARRAY_VLA) {
+        struct kefir_ast_node_base *vlen = KEFIR_AST_NODE_CLONE(mem, type1->array_type.vla_length);
+        REQUIRE((vlen != NULL && type1->array_type.vla_length != NULL) ||
+            (vlen == NULL && type1->array_type.vla_length == NULL), NULL);
+        const struct kefir_ast_type *composite_type = kefir_ast_type_vlen_array(mem, type_storage,
+            KEFIR_AST_TYPE_COMPOSITE(mem, type_storage, type_traits,
+                type1->array_type.element_type, type2->array_type.element_type),
+            vlen, NULL);
+        REQUIRE_ELSE(composite_type != NULL, {
+            KEFIR_AST_NODE_FREE(mem, vlen);
+            return NULL;
+        });
+        return composite_type;
+    } else if (type2->array_type.boundary == KEFIR_AST_ARRAY_VLA_STATIC ||
+        type2->array_type.boundary == KEFIR_AST_ARRAY_VLA) {
+        struct kefir_ast_node_base *vlen = KEFIR_AST_NODE_CLONE(mem, type2->array_type.vla_length);
+        REQUIRE((vlen != NULL && type2->array_type.vla_length != NULL) ||
+            (vlen == NULL && type2->array_type.vla_length == NULL), NULL);
+        const struct kefir_ast_type *composite_type = kefir_ast_type_vlen_array(mem, type_storage,
+            KEFIR_AST_TYPE_COMPOSITE(mem, type_storage, type_traits,
+                type1->array_type.element_type, type2->array_type.element_type),
+            vlen, NULL);
+        REQUIRE_ELSE(composite_type != NULL, {
+            KEFIR_AST_NODE_FREE(mem, vlen);
+            return NULL;
+        });
+        return composite_type;
+    } else {
+        return kefir_ast_type_unbounded_array(mem, type_storage,
+            KEFIR_AST_TYPE_COMPOSITE(mem, type_storage, type_traits,
+                type1->array_type.element_type, type2->array_type.element_type), NULL);
+    }
 }
 
 static kefir_result_t free_array(struct kefir_mem *mem, const struct kefir_ast_type *type) {
