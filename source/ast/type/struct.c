@@ -61,7 +61,7 @@ static kefir_bool_t compatible_structure_types(const struct kefir_ast_type_trait
 }
 
 const struct kefir_ast_type *composite_struct_types(struct kefir_mem *mem,
-                                                     struct kefir_ast_type_storage *type_storage,
+                                                     struct kefir_ast_type_bundle *type_bundle,
                                                      const struct kefir_ast_type_traits *type_traits,
                                                      const struct kefir_ast_type *type1,
                                                      const struct kefir_ast_type *type2) {
@@ -71,12 +71,12 @@ const struct kefir_ast_type *composite_struct_types(struct kefir_mem *mem,
     REQUIRE(type2 != NULL, NULL);
     REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(type_traits, type1, type2), NULL);
     struct kefir_ast_struct_type *composite_struct = NULL;
-    const struct kefir_ast_type *composite_type = kefir_ast_type_structure(mem, type_storage,
+    const struct kefir_ast_type *composite_type = kefir_ast_type_structure(mem, type_bundle,
         type1->structure_type.identifier, &composite_struct);
     REQUIRE(composite_type != NULL && composite_struct != NULL, NULL);
     struct kefir_symbol_table *symbols = NULL;
-    if (type_storage != NULL) {
-        symbols = type_storage->symbols;
+    if (type_bundle != NULL) {
+        symbols = type_bundle->symbols;
     }
     if (type1->structure_type.complete && type2->structure_type.complete) {
         const struct kefir_list_entry *iter1 = kefir_list_head(&type1->structure_type.fields);
@@ -86,7 +86,7 @@ const struct kefir_ast_type *composite_struct_types(struct kefir_mem *mem,
                 iter1->value);
             ASSIGN_DECL_CAST(const struct kefir_ast_struct_field *, field2,
                 iter2->value);
-            const struct kefir_ast_type *composite_field_type = KEFIR_AST_TYPE_COMPOSITE(mem, type_storage, type_traits,
+            const struct kefir_ast_type *composite_field_type = KEFIR_AST_TYPE_COMPOSITE(mem, type_bundle, type_traits,
                 field1->type, field2->type);
             REQUIRE(composite_field_type != NULL, NULL);
             kefir_result_t res = KEFIR_OK;
@@ -182,7 +182,7 @@ static kefir_bool_t compatible_union_types(const struct kefir_ast_type_traits *t
 }
 
 const struct kefir_ast_type *composite_union_types(struct kefir_mem *mem,
-                                                 struct kefir_ast_type_storage *type_storage,
+                                                 struct kefir_ast_type_bundle *type_bundle,
                                                  const struct kefir_ast_type_traits *type_traits,
                                                  const struct kefir_ast_type *type1,
                                                  const struct kefir_ast_type *type2) {
@@ -192,12 +192,12 @@ const struct kefir_ast_type *composite_union_types(struct kefir_mem *mem,
     REQUIRE(type2 != NULL, NULL);
     REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(type_traits, type1, type2), NULL);
     struct kefir_ast_struct_type *composite_union = NULL;
-    const struct kefir_ast_type *composite_type = kefir_ast_type_union(mem, type_storage,
+    const struct kefir_ast_type *composite_type = kefir_ast_type_union(mem, type_bundle,
         type1->structure_type.identifier, &composite_union);
     REQUIRE(composite_type != NULL && composite_union != NULL, NULL);
     struct kefir_symbol_table *symbols = NULL;
-    if (type_storage != NULL) {
-        symbols = type_storage->symbols;
+    if (type_bundle != NULL) {
+        symbols = type_bundle->symbols;
     }
     if (type1->structure_type.complete && type2->structure_type.complete) {
         struct kefir_hashtree_node_iterator iter;
@@ -211,7 +211,7 @@ const struct kefir_ast_type *composite_union_types(struct kefir_mem *mem,
                 node1->value);
             ASSIGN_DECL_CAST(const struct kefir_ast_struct_field *, field2,
                 node2->value);
-            const struct kefir_ast_type *composite_field_type = KEFIR_AST_TYPE_COMPOSITE(mem, type_storage, type_traits,
+            const struct kefir_ast_type *composite_field_type = KEFIR_AST_TYPE_COMPOSITE(mem, type_bundle, type_traits,
                 field1->type, field2->type);
             REQUIRE(composite_field_type != NULL, NULL);
             if (field1->bitfield) {
@@ -244,19 +244,19 @@ static kefir_result_t free_structure(struct kefir_mem *mem, const struct kefir_a
 }
 
 const struct kefir_ast_type *kefir_ast_type_incomplete_structure(struct kefir_mem *mem,
-                                                             struct kefir_ast_type_storage *type_storage,
+                                                             struct kefir_ast_type_bundle *type_bundle,
                                                              const char *identifier) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(identifier != NULL, NULL);
     struct kefir_ast_type *type = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type));
     REQUIRE(type != NULL, NULL);
-    if (type_storage != NULL) {
-        identifier = kefir_symbol_table_insert(mem, type_storage->symbols, identifier, NULL);
+    if (type_bundle != NULL) {
+        identifier = kefir_symbol_table_insert(mem, type_bundle->symbols, identifier, NULL);
         REQUIRE_ELSE(identifier != NULL, {
             KEFIR_FREE(mem, type);
             return NULL;
         });
-        kefir_result_t res = kefir_list_insert_after(mem, &type_storage->types, kefir_list_tail(&type_storage->types), type);
+        kefir_result_t res = kefir_list_insert_after(mem, &type_bundle->types, kefir_list_tail(&type_bundle->types), type);
         REQUIRE_ELSE(res == KEFIR_OK, {
             KEFIR_FREE(mem, type);
             return NULL;
@@ -274,19 +274,19 @@ const struct kefir_ast_type *kefir_ast_type_incomplete_structure(struct kefir_me
 }
 
 const struct kefir_ast_type *kefir_ast_type_incomplete_union(struct kefir_mem *mem,
-                                                         struct kefir_ast_type_storage *type_storage,
+                                                         struct kefir_ast_type_bundle *type_bundle,
                                                          const char *identifier) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(identifier != NULL, NULL);
     struct kefir_ast_type *type = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type));
     REQUIRE(type != NULL, NULL);
-    if (type_storage != NULL) {
-        identifier = kefir_symbol_table_insert(mem, type_storage->symbols, identifier, NULL);
+    if (type_bundle != NULL) {
+        identifier = kefir_symbol_table_insert(mem, type_bundle->symbols, identifier, NULL);
         REQUIRE_ELSE(identifier != NULL, {
             KEFIR_FREE(mem, type);
             return NULL;
         });
-        kefir_result_t res = kefir_list_insert_after(mem, &type_storage->types, kefir_list_tail(&type_storage->types), type);
+        kefir_result_t res = kefir_list_insert_after(mem, &type_bundle->types, kefir_list_tail(&type_bundle->types), type);
         REQUIRE_ELSE(res == KEFIR_OK, {
             KEFIR_FREE(mem, type);
             return NULL;
@@ -411,22 +411,22 @@ kefir_result_t kefir_ast_struct_type_bitfield(struct kefir_mem *mem,
 }
 
 const struct kefir_ast_type *kefir_ast_type_structure(struct kefir_mem *mem,
-                                                  struct kefir_ast_type_storage *type_storage,
+                                                  struct kefir_ast_type_bundle *type_bundle,
                                                   const char *identifier,
                                                   struct kefir_ast_struct_type **struct_type) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(struct_type != NULL, NULL);
     struct kefir_ast_type *type = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type));
     REQUIRE(type != NULL, NULL);
-    if (type_storage != NULL) {
+    if (type_bundle != NULL) {
         if (identifier != NULL) {
-            identifier = kefir_symbol_table_insert(mem, type_storage->symbols, identifier, NULL);
+            identifier = kefir_symbol_table_insert(mem, type_bundle->symbols, identifier, NULL);
             REQUIRE_ELSE(identifier != NULL, {
                 KEFIR_FREE(mem, type);
                 return NULL;
             });
         }
-        kefir_result_t res = kefir_list_insert_after(mem, &type_storage->types, kefir_list_tail(&type_storage->types), type);
+        kefir_result_t res = kefir_list_insert_after(mem, &type_bundle->types, kefir_list_tail(&type_bundle->types), type);
         REQUIRE_ELSE(res == KEFIR_OK, {
             KEFIR_FREE(mem, type);
             return NULL;
@@ -463,22 +463,22 @@ const struct kefir_ast_type *kefir_ast_type_structure(struct kefir_mem *mem,
 }
 
 const struct kefir_ast_type *kefir_ast_type_union(struct kefir_mem *mem,
-                                              struct kefir_ast_type_storage *type_storage,
+                                              struct kefir_ast_type_bundle *type_bundle,
                                               const char *identifier,
                                               struct kefir_ast_struct_type **union_type) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(union_type != NULL, NULL);
     struct kefir_ast_type *type = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type));
     REQUIRE(type != NULL, NULL);
-    if (type_storage != NULL) {
+    if (type_bundle != NULL) {
         if (identifier != NULL) {
-            identifier = kefir_symbol_table_insert(mem, type_storage->symbols, identifier, NULL);
+            identifier = kefir_symbol_table_insert(mem, type_bundle->symbols, identifier, NULL);
             REQUIRE_ELSE(identifier != NULL, {
                 KEFIR_FREE(mem, type);
                 return NULL;
             });
         }
-        kefir_result_t res = kefir_list_insert_after(mem, &type_storage->types, kefir_list_tail(&type_storage->types), type);
+        kefir_result_t res = kefir_list_insert_after(mem, &type_bundle->types, kefir_list_tail(&type_bundle->types), type);
         REQUIRE_ELSE(res == KEFIR_OK, {
             KEFIR_FREE(mem, type);
             return NULL;

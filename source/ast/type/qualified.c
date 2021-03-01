@@ -39,7 +39,7 @@ static kefir_bool_t compatbile_qualified_types(const struct kefir_ast_type_trait
 }
 
 const struct kefir_ast_type *composite_qualified_types(struct kefir_mem *mem,
-                                                     struct kefir_ast_type_storage *type_storage,
+                                                     struct kefir_ast_type_bundle *type_bundle,
                                                      const struct kefir_ast_type_traits *type_traits,
                                                      const struct kefir_ast_type *type1,
                                                      const struct kefir_ast_type *type2) {
@@ -48,25 +48,25 @@ const struct kefir_ast_type *composite_qualified_types(struct kefir_mem *mem,
     REQUIRE(type1 != NULL, NULL);
     REQUIRE(type2 != NULL, NULL);
     REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(type_traits, type1, type2), NULL);
-    const struct kefir_ast_type *composite_unqualified = KEFIR_AST_TYPE_COMPOSITE(mem, type_storage, type_traits,
+    const struct kefir_ast_type *composite_unqualified = KEFIR_AST_TYPE_COMPOSITE(mem, type_bundle, type_traits,
         kefir_ast_unqualified_type(type1), kefir_ast_unqualified_type(type2));
     if (KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&type1->qualified_type.qualification)) {
         return composite_unqualified;
     } else {
-        return kefir_ast_type_qualified(mem, type_storage, composite_unqualified, type1->qualified_type.qualification);
+        return kefir_ast_type_qualified(mem, type_bundle, composite_unqualified, type1->qualified_type.qualification);
     }
 }
 
 const struct kefir_ast_type *kefir_ast_type_qualified(struct kefir_mem *mem,
-                                                 struct kefir_ast_type_storage *type_storage,
+                                                 struct kefir_ast_type_bundle *type_bundle,
                                                  const struct kefir_ast_type *base_type,
                                                  struct kefir_ast_type_qualification qualification) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(base_type != NULL, NULL);
     struct kefir_ast_type *type = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type));
     REQUIRE(type != NULL, NULL);
-    if (type_storage != NULL) {
-        kefir_result_t res = kefir_list_insert_after(mem, &type_storage->types, kefir_list_tail(&type_storage->types), type);
+    if (type_bundle != NULL) {
+        kefir_result_t res = kefir_list_insert_after(mem, &type_bundle->types, kefir_list_tail(&type_bundle->types), type);
         REQUIRE_ELSE(res == KEFIR_OK, {
             KEFIR_FREE(mem, type);
             return NULL;

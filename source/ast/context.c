@@ -21,7 +21,7 @@ kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem,
     REQUIRE(type_traits != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type traits"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
     REQUIRE_OK(kefir_symbol_table_init(&context->symbols));
-    REQUIRE_OK(kefir_ast_type_storage_init(&context->type_storage, &context->symbols));
+    REQUIRE_OK(kefir_ast_type_bundle_init(&context->type_bundle, &context->symbols));
     REQUIRE_OK(kefir_ast_identifier_flat_scope_init(&context->object_scope));
     REQUIRE_OK(kefir_ast_identifier_flat_scope_on_removal(&context->object_scope, free_scoped_identifier, NULL));
     REQUIRE_OK(kefir_hashtree_init(&context->external_object_declarations, &kefir_hashtree_str_ops));
@@ -34,7 +34,7 @@ kefir_result_t kefir_ast_global_context_free(struct kefir_mem *mem,
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
     REQUIRE_OK(kefir_hashtree_free(mem, &context->external_object_declarations));
     REQUIRE_OK(kefir_ast_identifier_flat_scope_free(mem, &context->object_scope));
-    REQUIRE_OK(kefir_ast_type_storage_free(mem, &context->type_storage));
+    REQUIRE_OK(kefir_ast_type_bundle_free(mem, &context->type_bundle));
     REQUIRE_OK(kefir_symbol_table_free(mem, &context->symbols));
     return KEFIR_OK;
 }

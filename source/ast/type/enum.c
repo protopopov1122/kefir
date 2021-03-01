@@ -77,12 +77,12 @@ static kefir_bool_t compatible_enumeration_types(const struct kefir_ast_type_tra
 }
 
 const struct kefir_ast_type *composite_enum_types(struct kefir_mem *mem,
-                                                struct kefir_ast_type_storage *type_storage,
+                                                struct kefir_ast_type_bundle *type_bundle,
                                                 const struct kefir_ast_type_traits *type_traits,
                                                 const struct kefir_ast_type *type1,
                                                 const struct kefir_ast_type *type2) {
     UNUSED(mem);
-    UNUSED(type_storage);
+    UNUSED(type_bundle);
     REQUIRE(type_traits != NULL, NULL);
     REQUIRE(type1 != NULL, NULL);
     REQUIRE(type2 != NULL, NULL);
@@ -102,19 +102,19 @@ static kefir_result_t free_enumeration_type(struct kefir_mem *mem, const struct 
 }
 
 const struct kefir_ast_type *kefir_ast_type_incomplete_enumeration(struct kefir_mem *mem,
-                                                               struct kefir_ast_type_storage *type_storage,
+                                                               struct kefir_ast_type_bundle *type_bundle,
                                                                const char *identifier) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(identifier != NULL, NULL);
     struct kefir_ast_type *type = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type));
     REQUIRE(type != NULL, NULL);
-    if (type_storage != NULL) {
-        identifier = kefir_symbol_table_insert(mem, type_storage->symbols, identifier, NULL);
+    if (type_bundle != NULL) {
+        identifier = kefir_symbol_table_insert(mem, type_bundle->symbols, identifier, NULL);
         REQUIRE_ELSE(identifier != NULL, {
             KEFIR_FREE(mem, type);
             return NULL;
         });
-        kefir_result_t res = kefir_list_insert_after(mem, &type_storage->types, kefir_list_tail(&type_storage->types), type);
+        kefir_result_t res = kefir_list_insert_after(mem, &type_bundle->types, kefir_list_tail(&type_bundle->types), type);
         REQUIRE_ELSE(res == KEFIR_OK, {
             KEFIR_FREE(mem, type);
             return NULL;
@@ -214,22 +214,22 @@ const struct kefir_ast_type *kefir_ast_enumeration_underlying_type(const struct 
 }
 
 const struct kefir_ast_type *kefir_ast_type_enumeration(struct kefir_mem *mem,
-                                                   struct kefir_ast_type_storage *type_storage,
+                                                   struct kefir_ast_type_bundle *type_bundle,
                                                    const char *identifier,
                                                    struct kefir_ast_enum_type **enum_type) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(enum_type != NULL, NULL);
     struct kefir_ast_type *type = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type));
     REQUIRE(type != NULL, NULL);
-    if (type_storage != NULL) {
+    if (type_bundle != NULL) {
         if (identifier != NULL) {
-            identifier = kefir_symbol_table_insert(mem, type_storage->symbols, identifier, NULL);
+            identifier = kefir_symbol_table_insert(mem, type_bundle->symbols, identifier, NULL);
             REQUIRE_ELSE(identifier != NULL, {
                 KEFIR_FREE(mem, type);
                 return NULL;
             });
         }
-        kefir_result_t res = kefir_list_insert_after(mem, &type_storage->types, kefir_list_tail(&type_storage->types), type);
+        kefir_result_t res = kefir_list_insert_after(mem, &type_bundle->types, kefir_list_tail(&type_bundle->types), type);
         REQUIRE_ELSE(res == KEFIR_OK, {
             KEFIR_FREE(mem, type);
             return NULL;

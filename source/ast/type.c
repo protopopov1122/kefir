@@ -65,7 +65,7 @@ const struct kefir_ast_type_traits *kefir_ast_default_type_traits() {
     return &DEFAULT_TYPE_TRAITS;
 }
 
-static kefir_result_t free_type_storage(struct kefir_mem *mem,
+static kefir_result_t free_type_bundle(struct kefir_mem *mem,
                                    struct kefir_list *list,
                                    struct kefir_list_entry *entry,
                                    void *payload) {
@@ -77,18 +77,18 @@ static kefir_result_t free_type_storage(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_type_storage_init(struct kefir_ast_type_storage *type_storage,
+kefir_result_t kefir_ast_type_bundle_init(struct kefir_ast_type_bundle *type_bundle,
                                           struct kefir_symbol_table *symbols) {
-    REQUIRE(type_storage != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type type_storagesitory"));
-    type_storage->symbols = symbols;
-    REQUIRE_OK(kefir_list_init(&type_storage->types));
-    REQUIRE_OK(kefir_list_on_remove(&type_storage->types, free_type_storage, NULL));
+    REQUIRE(type_bundle != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type type_bundlesitory"));
+    type_bundle->symbols = symbols;
+    REQUIRE_OK(kefir_list_init(&type_bundle->types));
+    REQUIRE_OK(kefir_list_on_remove(&type_bundle->types, free_type_bundle, NULL));
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_type_storage_free(struct kefir_mem *mem, struct kefir_ast_type_storage *type_storage) {
+kefir_result_t kefir_ast_type_bundle_free(struct kefir_mem *mem, struct kefir_ast_type_bundle *type_bundle) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(type_storage != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type type_storagesitory"));
-    REQUIRE_OK(kefir_list_free(mem, &type_storage->types));
+    REQUIRE(type_bundle != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type type_bundlesitory"));
+    REQUIRE_OK(kefir_list_free(mem, &type_bundle->types));
     return KEFIR_OK;
 }

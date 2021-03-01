@@ -21,7 +21,7 @@ static kefir_bool_t compatible_pointer_types(const struct kefir_ast_type_traits 
 }
 
 const struct kefir_ast_type *composite_pointer_types(struct kefir_mem *mem,
-                                                   struct kefir_ast_type_storage *type_storage,
+                                                   struct kefir_ast_type_bundle *type_bundle,
                                                    const struct kefir_ast_type_traits *type_traits,
                                                    const struct kefir_ast_type *type1,
                                                    const struct kefir_ast_type *type2) {
@@ -30,8 +30,8 @@ const struct kefir_ast_type *composite_pointer_types(struct kefir_mem *mem,
     REQUIRE(type1 != NULL, NULL);
     REQUIRE(type2 != NULL, NULL);
     REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(type_traits, type1, type2), NULL);
-    return kefir_ast_type_pointer(mem, type_storage,
-        KEFIR_AST_TYPE_COMPOSITE(mem, type_storage, type_traits,
+    return kefir_ast_type_pointer(mem, type_bundle,
+        KEFIR_AST_TYPE_COMPOSITE(mem, type_bundle, type_traits,
             kefir_ast_pointer_referenced_type(type1),
             kefir_ast_pointer_referenced_type(type2)));
 }
@@ -44,14 +44,14 @@ static kefir_result_t free_pointer_type(struct kefir_mem *mem, const struct kefi
 }
 
 const struct kefir_ast_type *kefir_ast_type_pointer(struct kefir_mem *mem,
-                                                struct kefir_ast_type_storage *type_storage,
+                                                struct kefir_ast_type_bundle *type_bundle,
                                                 const struct kefir_ast_type *base_type) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(base_type != NULL, NULL);
     struct kefir_ast_type *type = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type));
     REQUIRE(type != NULL, NULL);
-    if (type_storage != NULL) {
-        kefir_result_t res = kefir_list_insert_after(mem, &type_storage->types, kefir_list_tail(&type_storage->types), type);
+    if (type_bundle != NULL) {
+        kefir_result_t res = kefir_list_insert_after(mem, &type_bundle->types, kefir_list_tail(&type_bundle->types), type);
         REQUIRE_ELSE(res == KEFIR_OK, {
             KEFIR_FREE(mem, type);
             return NULL;

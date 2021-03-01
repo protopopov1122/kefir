@@ -23,12 +23,12 @@ static kefir_bool_t compatible_basic_types(const struct kefir_ast_type_traits *t
 }
 
 const struct kefir_ast_type *composite_basic_types(struct kefir_mem *mem,
-                                           struct kefir_ast_type_storage *type_storage,
+                                           struct kefir_ast_type_bundle *type_bundle,
                                            const struct kefir_ast_type_traits *type_traits,
                                            const struct kefir_ast_type *type1,
                                            const struct kefir_ast_type *type2) {
     UNUSED(mem);
-    UNUSED(type_storage);
+    UNUSED(type_bundle);
     REQUIRE(type_traits != NULL, NULL);
     REQUIRE(type1 != NULL, NULL);
     REQUIRE(type2 != NULL, NULL);

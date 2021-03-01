@@ -21,7 +21,7 @@ kefir_result_t kefir_ast_enumeration_get(const struct kefir_ast_enum_type *,
                                      const struct kefir_ast_constant_expression **);
 
 const struct kefir_ast_type *kefir_ast_type_incomplete_enumeration(struct kefir_mem *,
-                                                               struct kefir_ast_type_storage *,
+                                                               struct kefir_ast_type_bundle *,
                                                                const char *);
 
 kefir_result_t kefir_ast_enumeration_type_constant(struct kefir_mem *,
@@ -38,7 +38,7 @@ kefir_result_t kefir_ast_enumeration_type_constant_auto(struct kefir_mem *,
 const struct kefir_ast_type *kefir_ast_enumeration_underlying_type(const struct kefir_ast_enum_type *);
 
 const struct kefir_ast_type *kefir_ast_type_enumeration(struct kefir_mem *,
-                                                   struct kefir_ast_type_storage *,
+                                                   struct kefir_ast_type_bundle *,
                                                    const char *,
                                                    struct kefir_ast_enum_type **);
 
