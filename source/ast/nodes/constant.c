@@ -5,6 +5,8 @@
 
 NODE_VISIT_IMPL(ast_constant_visit, kefir_ast_constant, constant)
 
+struct kefir_ast_node_base *ast_constant_clone(struct kefir_mem *, struct kefir_ast_node_base *);
+
 kefir_result_t ast_constant_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
@@ -17,8 +19,25 @@ kefir_result_t ast_constant_free(struct kefir_mem *mem, struct kefir_ast_node_ba
 const struct kefir_ast_node_class AST_CONSTANT_CLASS = {
     .type = KEFIR_AST_CONSTANT,
     .visit = ast_constant_visit,
+    .clone = ast_constant_clone,
     .free = ast_constant_free
 };
+
+struct kefir_ast_node_base *ast_constant_clone(struct kefir_mem *mem,
+                                             struct kefir_ast_node_base *base) {
+    REQUIRE(mem != NULL, NULL);
+    REQUIRE(base != NULL, NULL);
+    ASSIGN_DECL_CAST(struct kefir_ast_constant *, node,
+        base->self);
+    struct kefir_ast_constant *clone = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_constant));
+    REQUIRE(clone != NULL, NULL);
+    clone->base.klass = &AST_CONSTANT_CLASS;
+    clone->base.self = clone;
+    clone->base.expression_type = node->base.expression_type;
+    clone->type = node->type;
+    clone->value = node->value;
+    return KEFIR_AST_NODE_BASE(clone);
+}
 
 struct kefir_ast_constant *kefir_ast_new_constant_bool(struct kefir_mem *mem, kefir_bool_t value) {
     REQUIRE(mem != NULL, NULL);

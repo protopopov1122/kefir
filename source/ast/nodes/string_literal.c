@@ -5,6 +5,8 @@
 
 NODE_VISIT_IMPL(ast_string_literal_visit, kefir_ast_string_literal, string_literal)
 
+struct kefir_ast_node_base *ast_string_literal_clone(struct kefir_mem *, struct kefir_ast_node_base *);
+
 kefir_result_t ast_string_literal_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
@@ -17,8 +19,24 @@ kefir_result_t ast_string_literal_free(struct kefir_mem *mem, struct kefir_ast_n
 const struct kefir_ast_node_class AST_STRING_LITERAL_CLASS = {
     .type = KEFIR_AST_STRING_LITERAL,
     .visit = ast_string_literal_visit,
+    .clone = ast_string_literal_clone,
     .free = ast_string_literal_free
 };
+
+struct kefir_ast_node_base *ast_string_literal_clone(struct kefir_mem *mem,
+                                               struct kefir_ast_node_base *base) {
+    REQUIRE(mem != NULL, NULL);
+    REQUIRE(base != NULL, NULL);
+    ASSIGN_DECL_CAST(struct kefir_ast_string_literal *, node,
+        base->self);
+    struct kefir_ast_string_literal *clone = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_string_literal));
+    REQUIRE(clone != NULL, NULL);
+    clone->base.klass = &AST_STRING_LITERAL_CLASS;
+    clone->base.self = clone;
+    clone->base.expression_type = node->base.expression_type;
+    clone->literal = node->literal;
+    return KEFIR_AST_NODE_BASE(clone);
+}
 
 struct kefir_ast_string_literal *kefir_ast_new_string_literal(struct kefir_mem *mem,
                                                           struct kefir_symbol_table *symbols,

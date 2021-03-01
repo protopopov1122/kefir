@@ -5,6 +5,8 @@
 
 NODE_VISIT_IMPL(ast_array_subscript_visit, kefir_ast_array_subscript, array_subscript)
 
+struct kefir_ast_node_base *ast_array_subscript_clone(struct kefir_mem *, struct kefir_ast_node_base *);
+
 kefir_result_t ast_array_subscript_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
@@ -19,8 +21,34 @@ kefir_result_t ast_array_subscript_free(struct kefir_mem *mem, struct kefir_ast_
 const struct kefir_ast_node_class AST_ARRAY_SUBSCRIPT_CLASS = {
     .type = KEFIR_AST_ARRAY_SUBSCRIPT,
     .visit = ast_array_subscript_visit,
+    .clone = ast_array_subscript_clone,
     .free = ast_array_subscript_free
 };
+
+struct kefir_ast_node_base *ast_array_subscript_clone(struct kefir_mem *mem,
+                                                     struct kefir_ast_node_base *base) {
+    REQUIRE(mem != NULL, NULL);
+    REQUIRE(base != NULL, NULL);
+    ASSIGN_DECL_CAST(struct kefir_ast_array_subscript *, node,
+        base->self);
+    struct kefir_ast_array_subscript *clone = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_array_subscript));
+    REQUIRE(clone != NULL, NULL);
+    clone->base.klass = &AST_ARRAY_SUBSCRIPT_CLASS;
+    clone->base.self = clone;
+    clone->base.expression_type = node->base.expression_type;
+    clone->array = KEFIR_AST_NODE_CLONE(mem, node->array);
+    REQUIRE_ELSE(clone->array != NULL, {
+        KEFIR_FREE(mem, clone);
+        return NULL;
+    });
+    clone->subscript = KEFIR_AST_NODE_CLONE(mem, node->subscript);
+    REQUIRE_ELSE(clone->subscript != NULL, {
+        KEFIR_AST_NODE_FREE(mem, clone->array);
+        KEFIR_FREE(mem, clone);
+        return NULL;
+    });
+    return KEFIR_AST_NODE_BASE(clone);
+}
 
 struct kefir_ast_array_subscript *kefir_ast_new_array_subscript(struct kefir_mem *mem,
                                                             struct kefir_ast_node_base *array,
