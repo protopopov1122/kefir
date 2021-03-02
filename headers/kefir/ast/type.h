@@ -56,6 +56,7 @@ typedef struct kefir_ast_type_bundle {
 } kefir_ast_type_bundle_t;
 
 const struct kefir_ast_type_traits *kefir_ast_default_type_traits();
+kefir_bool_t kefir_ast_type_is_complete(const struct kefir_ast_type *);
 
 kefir_result_t kefir_ast_type_bundle_init(struct kefir_ast_type_bundle *, struct kefir_symbol_table *);
 kefir_result_t kefir_ast_type_bundle_free(struct kefir_mem *, struct kefir_ast_type_bundle *);

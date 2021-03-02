@@ -61,7 +61,7 @@ kefir_result_t kefir_ast_identifier_flat_scope_insert(struct kefir_mem *mem,
 
 kefir_result_t kefir_ast_identifier_flat_scope_at(const struct kefir_ast_identifier_flat_scope *scope,
                                          const char *identifier,
-                                         const struct kefir_ast_scoped_identifier **scope_identifier) {
+                                         struct kefir_ast_scoped_identifier **scope_identifier) {
     REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier scope"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier"));
     REQUIRE(scope_identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST scoped identifier pointer"));
@@ -78,7 +78,7 @@ kefir_result_t kefir_ast_identifier_flat_scope_iter(const struct kefir_ast_ident
     const struct kefir_hashtree_node *node = kefir_hashtree_iter(&scope->content, &iter->iter);
     if (node != NULL) {
         iter->identifier = (const char *) node->key;
-        iter->value = (const struct kefir_ast_scoped_identifier *) node->value;
+        iter->value = (struct kefir_ast_scoped_identifier *) node->value;
         return KEFIR_OK;
     } else {
         iter->identifier = NULL;
@@ -94,7 +94,7 @@ kefir_result_t kefir_ast_identifier_flat_scope_next(const struct kefir_ast_ident
     const struct kefir_hashtree_node *node = kefir_hashtree_next(&iter->iter);
     if (node != NULL) {
         iter->identifier = (const char *) node->key;
-        iter->value = (const struct kefir_ast_scoped_identifier *) node->value;
+        iter->value = (struct kefir_ast_scoped_identifier *) node->value;
         return KEFIR_OK;
     } else {
         iter->identifier = NULL;
@@ -230,7 +230,7 @@ kefir_result_t kefir_ast_identifier_block_scope_insert(struct kefir_mem *mem,
 
 kefir_result_t kefir_ast_identifier_block_scope_at(const struct kefir_ast_identifier_block_scope *scope,
                                     const char *identifier,
-                                    const struct kefir_ast_scoped_identifier **scoped_identifier) {
+                                    struct kefir_ast_scoped_identifier **scoped_identifier) {
     REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid multi scope"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
     struct kefir_tree_node *current_node = scope->top_scope;

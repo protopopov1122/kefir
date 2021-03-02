@@ -65,6 +65,20 @@ const struct kefir_ast_type_traits *kefir_ast_default_type_traits() {
     return &DEFAULT_TYPE_TRAITS;
 }
 
+kefir_bool_t kefir_ast_type_is_complete(const struct kefir_ast_type *type) {
+    switch (type->tag) {
+        case KEFIR_AST_TYPE_STRUCTURE:
+        case KEFIR_AST_TYPE_UNION:
+            return type->structure_type.complete;
+
+        case KEFIR_AST_TYPE_ENUMERATION:
+            return type->enumeration_type.complete;
+        
+        default:
+            return true;
+    }
+}
+
 static kefir_result_t free_type_bundle(struct kefir_mem *mem,
                                    struct kefir_list *list,
                                    struct kefir_list_entry *entry,

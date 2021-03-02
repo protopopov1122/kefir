@@ -84,6 +84,8 @@ DECLARE_CASE(ast_type_struct_composite);
 DECLARE_CASE(ast_type_union_composite);
 DECLARE_CASE(ast_type_array_composite);
 DECLARE_CASE(ast_type_function_composite);
+DECLARE_CASE(ast_type_scope1);
+DECLARE_CASE(ast_type_scope2);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -165,7 +167,9 @@ TEST_SUITE(mainSuite,
     &ast_type_struct_composite,
     &ast_type_union_composite,
     &ast_type_array_composite,
-    &ast_type_function_composite
+    &ast_type_function_composite,
+    &ast_type_scope1,
+    &ast_type_scope2
 );
 
 int main(int argc, const char **argv) {

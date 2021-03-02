@@ -70,6 +70,7 @@ static kefir_result_t translate_global_scoped_identifier(struct kefir_mem *mem,
     UNUSED(env);
     ASSIGN_DECL_CAST(struct kefir_ast_scoped_identifier_layout *, scoped_identifier_layout,
         scoped_identifier->payload.ptr);
+    REQUIRE(scoped_identifier->klass == KEFIR_AST_SCOPE_IDENTIFIER_OBJECT, KEFIR_OK);
     switch (scoped_identifier->object.storage) {
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN: {
             struct kefir_hashtree_node *external_declaration = NULL;
@@ -177,9 +178,9 @@ kefir_result_t kefir_ast_translate_global_scope_layout(struct kefir_mem *mem,
     REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST global scope layout"));
     struct kefir_ast_identifier_flat_scope_iterator iter;
     kefir_result_t res;
-    for (res = kefir_ast_identifier_flat_scope_iter(&context->object_scope, &iter);
+    for (res = kefir_ast_identifier_flat_scope_iter(&context->ordinary_scope, &iter);
         res == KEFIR_OK;
-        res = kefir_ast_identifier_flat_scope_next(&context->object_scope, &iter)) {
+        res = kefir_ast_identifier_flat_scope_next(&context->ordinary_scope, &iter)) {
         REQUIRE_OK(translate_global_scoped_identifier(mem, module, iter.identifier, iter.value, layout, env, context));
     }
     REQUIRE_ELSE(res == KEFIR_ITERATOR_END, {
@@ -194,6 +195,7 @@ static kefir_result_t translate_local_scoped_identifier(struct kefir_mem *mem,
                                                       const struct kefir_ast_translator_environment *env,
                                                       struct kefir_ast_local_scope_layout *local_layout) {
     UNUSED(env);
+    REQUIRE(scoped_identifier->klass == KEFIR_AST_SCOPE_IDENTIFIER_OBJECT, KEFIR_OK);
     ASSIGN_DECL_CAST(struct kefir_ast_scoped_identifier_layout *, scoped_identifier_layout,
         scoped_identifier->payload.ptr);
     switch (scoped_identifier->object.storage) {
@@ -284,7 +286,7 @@ kefir_result_t kefir_ast_translate_local_scope_layout(struct kefir_mem *mem,
 
     struct kefir_irbuilder_type builder;
     REQUIRE_OK(kefir_irbuilder_type_init(mem, &builder, layout->local_layout));
-    REQUIRE_OK(traverse_local_scope(mem, &context->local_object_scope.root, &builder, env, layout));
+    REQUIRE_OK(traverse_local_scope(mem, &context->local_ordinary_scope.root, &builder, env, layout));
     REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
     return KEFIR_OK;
 }

@@ -5,6 +5,7 @@
 #include "kefir/ast/type.h"
 #include "kefir/ast/constants.h"
 #include "kefir/ast/alignment.h"
+#include "kefir/ast/const_expr.h"
 #include "kefir/core/hashtree.h"
 #include "kefir/core/tree.h"
 
@@ -18,7 +19,12 @@ typedef struct kefir_ast_scoped_identifier {
             struct kefir_ast_alignment *alignment;
             kefir_ast_scoped_identifier_storage_t storage;
         } object;
+
+        struct kefir_ast_constant_expression *enum_constant;
+
         const struct kefir_ast_type *type;
+
+        // TODO: Define scoped identifier payload for labels
     };
     struct {
         unsigned char content[KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE];
@@ -30,7 +36,7 @@ typedef struct kefir_ast_identifier_flat_scope_iterator {
     struct kefir_hashtree_node_iterator iter;
 
     const char *identifier;
-    const struct kefir_ast_scoped_identifier *value;
+    struct kefir_ast_scoped_identifier *value;
 } kefir_ast_identifier_flat_scope_iterator_t;
 
 typedef struct kefir_ast_identifier_flat_scope {
@@ -52,7 +58,7 @@ kefir_result_t kefir_ast_identifier_flat_scope_insert(struct kefir_mem *,
                                                   struct kefir_ast_scoped_identifier *);
 kefir_result_t kefir_ast_identifier_flat_scope_at(const struct kefir_ast_identifier_flat_scope *,
                                               const char *,
-                                              const struct kefir_ast_scoped_identifier **);
+                                              struct kefir_ast_scoped_identifier **);
 kefir_result_t kefir_ast_identifier_flat_scope_iter(const struct kefir_ast_identifier_flat_scope *,
                                                 struct kefir_ast_identifier_flat_scope_iterator *);
 kefir_result_t kefir_ast_identifier_flat_scope_next(const struct kefir_ast_identifier_flat_scope *,
@@ -84,7 +90,7 @@ kefir_result_t kefir_ast_identifier_block_scope_insert(struct kefir_mem *,
                                                    struct kefir_ast_scoped_identifier *);
 kefir_result_t kefir_ast_identifier_block_scope_at(const struct kefir_ast_identifier_block_scope *,
                                                const char *,
-                                               const struct kefir_ast_scoped_identifier **);
+                                               struct kefir_ast_scoped_identifier **);
 
 
 #endif
