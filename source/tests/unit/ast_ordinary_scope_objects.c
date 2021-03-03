@@ -12,7 +12,7 @@
         ASSERT(__linkage == (_linkage)); \
     } while (0)
 
-DEFINE_CASE(ast_scope_rules1, "AST Declaration scoping - global rules for extern")
+DEFINE_CASE(ast_ordinary_scope_objects1, "AST Declaration scoping - global rules for extern")
     const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_context context;
@@ -41,7 +41,7 @@ DEFINE_CASE(ast_scope_rules1, "AST Declaration scoping - global rules for extern
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
 
-DEFINE_CASE(ast_scope_rules2, "AST Declaration scoping - global rules for thread_local extern")
+DEFINE_CASE(ast_ordinary_scope_objects2, "AST Declaration scoping - global rules for thread_local extern")
     const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_context context;
@@ -70,7 +70,7 @@ DEFINE_CASE(ast_scope_rules2, "AST Declaration scoping - global rules for thread
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
 
-DEFINE_CASE(ast_scope_rules3, "AST Declaration scoping - global rules for extern #2")
+DEFINE_CASE(ast_ordinary_scope_objects3, "AST Declaration scoping - global rules for extern #2")
     const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_context context;
@@ -103,7 +103,7 @@ DEFINE_CASE(ast_scope_rules3, "AST Declaration scoping - global rules for extern
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
 
-DEFINE_CASE(ast_scope_rules4, "AST Declaration scoping - global rules for thread_local extern #2")
+DEFINE_CASE(ast_ordinary_scope_objects4, "AST Declaration scoping - global rules for thread_local extern #2")
     const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_context context;
@@ -136,7 +136,7 @@ DEFINE_CASE(ast_scope_rules4, "AST Declaration scoping - global rules for thread
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
 
-DEFINE_CASE(ast_scope_rules5, "AST Declaration scoping - global rules for static")
+DEFINE_CASE(ast_ordinary_scope_objects5, "AST Declaration scoping - global rules for static")
     const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_context context;
@@ -175,7 +175,7 @@ DEFINE_CASE(ast_scope_rules5, "AST Declaration scoping - global rules for static
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
 
-DEFINE_CASE(ast_scope_rules6, "AST Declaration scoping - global rules for thread_local static")
+DEFINE_CASE(ast_ordinary_scope_objects6, "AST Declaration scoping - global rules for thread_local static")
     const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_context context;
@@ -214,7 +214,7 @@ DEFINE_CASE(ast_scope_rules6, "AST Declaration scoping - global rules for thread
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
 
-DEFINE_CASE(ast_scope_rules7, "AST Declaration scoping - local extern")
+DEFINE_CASE(ast_ordinary_scope_objects7, "AST Declaration scoping - local extern")
     const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_context context;
@@ -259,7 +259,7 @@ DEFINE_CASE(ast_scope_rules7, "AST Declaration scoping - local extern")
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
 
-DEFINE_CASE(ast_scope_rules8, "AST Declaration scoping - local extern thread_local")
+DEFINE_CASE(ast_ordinary_scope_objects8, "AST Declaration scoping - local extern thread_local")
     const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_context context;
@@ -304,7 +304,7 @@ DEFINE_CASE(ast_scope_rules8, "AST Declaration scoping - local extern thread_loc
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
 
-DEFINE_CASE(ast_scope_rules9, "AST Declaration scoping - local static")
+DEFINE_CASE(ast_ordinary_scope_objects9, "AST Declaration scoping - local static")
     const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_context context;
@@ -339,7 +339,7 @@ DEFINE_CASE(ast_scope_rules9, "AST Declaration scoping - local static")
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
 
-DEFINE_CASE(ast_scope_rules10, "AST Declaration scoping - local static thread_local")
+DEFINE_CASE(ast_ordinary_scope_objects10, "AST Declaration scoping - local static thread_local")
     const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_context context;
@@ -374,7 +374,7 @@ DEFINE_CASE(ast_scope_rules10, "AST Declaration scoping - local static thread_lo
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
 
-DEFINE_CASE(ast_scope_rules11, "AST Declaration scoping - local auto")
+DEFINE_CASE(ast_ordinary_scope_objects11, "AST Declaration scoping - local auto")
     const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_context context;
@@ -413,7 +413,7 @@ DEFINE_CASE(ast_scope_rules11, "AST Declaration scoping - local auto")
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
 
-DEFINE_CASE(ast_scope_rules12, "AST Declaration scoping - local register")
+DEFINE_CASE(ast_ordinary_scope_objects12, "AST Declaration scoping - local register")
     const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_context context;
@@ -452,7 +452,7 @@ DEFINE_CASE(ast_scope_rules12, "AST Declaration scoping - local register")
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
 
-DEFINE_CASE(ast_scope_rules13, "AST Declaration scoping - block scoping")
+DEFINE_CASE(ast_ordinary_scope_objects13, "AST Declaration scoping - block scoping")
     const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_context context;

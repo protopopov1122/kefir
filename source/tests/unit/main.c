@@ -38,19 +38,19 @@ DECLARE_CASE(ast_type_analysis_integer_promotion1);
 DECLARE_CASE(ast_type_analysis_arithmetic_conversion1);
 DECLARE_CASE(ast_type_analysis_arithmetic_conversion2);
 DECLARE_CASE(ast_type_analysis_arithmetic_conversion3);
-DECLARE_CASE(ast_scope_rules1);
-DECLARE_CASE(ast_scope_rules2);
-DECLARE_CASE(ast_scope_rules3);
-DECLARE_CASE(ast_scope_rules4);
-DECLARE_CASE(ast_scope_rules5);
-DECLARE_CASE(ast_scope_rules6);
-DECLARE_CASE(ast_scope_rules7);
-DECLARE_CASE(ast_scope_rules8);
-DECLARE_CASE(ast_scope_rules9);
-DECLARE_CASE(ast_scope_rules10);
-DECLARE_CASE(ast_scope_rules11);
-DECLARE_CASE(ast_scope_rules12);
-DECLARE_CASE(ast_scope_rules13);
+DECLARE_CASE(ast_ordinary_scope_objects1);
+DECLARE_CASE(ast_ordinary_scope_objects2);
+DECLARE_CASE(ast_ordinary_scope_objects3);
+DECLARE_CASE(ast_ordinary_scope_objects4);
+DECLARE_CASE(ast_ordinary_scope_objects5);
+DECLARE_CASE(ast_ordinary_scope_objects6);
+DECLARE_CASE(ast_ordinary_scope_objects7);
+DECLARE_CASE(ast_ordinary_scope_objects8);
+DECLARE_CASE(ast_ordinary_scope_objects9);
+DECLARE_CASE(ast_ordinary_scope_objects10);
+DECLARE_CASE(ast_ordinary_scope_objects11);
+DECLARE_CASE(ast_ordinary_scope_objects12);
+DECLARE_CASE(ast_ordinary_scope_objects13);
 DECLARE_CASE(ast_type_construction1);
 DECLARE_CASE(ast_type_construction2);
 DECLARE_CASE(ast_type_construction3);
@@ -89,6 +89,8 @@ DECLARE_CASE(ast_type_scope2);
 DECLARE_CASE(ast_type_scope3);
 DECLARE_CASE(ast_ordinary_constant_scope1);
 DECLARE_CASE(ast_ordinary_typedef_scope1);
+DECLARE_CASE(ast_ordinary_scope_composite_objects1);
+DECLARE_CASE(ast_ordinary_scope_composite_objects2);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -125,19 +127,19 @@ TEST_SUITE(mainSuite,
     &ast_type_analysis_arithmetic_conversion1,
     &ast_type_analysis_arithmetic_conversion2,
     &ast_type_analysis_arithmetic_conversion3,
-    &ast_scope_rules1,
-    &ast_scope_rules2,
-    &ast_scope_rules3,
-    &ast_scope_rules4,
-    &ast_scope_rules5,
-    &ast_scope_rules6,
-    &ast_scope_rules7,
-    &ast_scope_rules8,
-    &ast_scope_rules9,
-    &ast_scope_rules10,
-    &ast_scope_rules11,
-    &ast_scope_rules12,
-    &ast_scope_rules13,
+    &ast_ordinary_scope_objects1,
+    &ast_ordinary_scope_objects2,
+    &ast_ordinary_scope_objects3,
+    &ast_ordinary_scope_objects4,
+    &ast_ordinary_scope_objects5,
+    &ast_ordinary_scope_objects6,
+    &ast_ordinary_scope_objects7,
+    &ast_ordinary_scope_objects8,
+    &ast_ordinary_scope_objects9,
+    &ast_ordinary_scope_objects10,
+    &ast_ordinary_scope_objects11,
+    &ast_ordinary_scope_objects12,
+    &ast_ordinary_scope_objects13,
     &ast_type_construction1,
     &ast_type_construction2,
     &ast_type_construction3,
@@ -175,7 +177,9 @@ TEST_SUITE(mainSuite,
     &ast_type_scope2,
     &ast_type_scope3,
     &ast_ordinary_constant_scope1,
-    &ast_ordinary_typedef_scope1
+    &ast_ordinary_typedef_scope1,
+    &ast_ordinary_scope_composite_objects1,
+    &ast_ordinary_scope_composite_objects2
 );
 
 int main(int argc, const char **argv) {

@@ -55,3 +55,5 @@ dkms.conf
 bin
 tmp
 vgcore.*
+compile_commands.json
+.vscode

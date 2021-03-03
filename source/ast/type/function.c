@@ -141,7 +141,8 @@ static kefir_bool_t same_function_type(const struct kefir_ast_type *type1, const
         REQUIRE((param1->identifier == NULL && param2->identifier == NULL) ||
             (param1->identifier != NULL && param2->identifier != NULL &&
                 strcmp(param1->identifier, param2->identifier) == 0), false);
-        REQUIRE(KEFIR_AST_TYPE_SAME(param1->type, param2->type), false);
+        REQUIRE((param1->type == NULL && param2->type == NULL) ||
+            (param1->type != NULL && param2->type != NULL && KEFIR_AST_TYPE_SAME(param1->type, param2->type)), false);
         REQUIRE((KEFIR_OPTIONAL_EMPTY(&param1->storage) && KEFIR_OPTIONAL_EMPTY(&param2->storage)) ||
             (!KEFIR_OPTIONAL_EMPTY(&param1->storage) && !KEFIR_OPTIONAL_EMPTY(&param2->storage) &&
                 *KEFIR_OPTIONAL_VALUE(&param1->storage) == *KEFIR_OPTIONAL_VALUE(&param2->storage)),
