@@ -226,6 +226,16 @@ static struct kefir_ast_scoped_identifier *allocate_scoped_type_tag(struct kefir
     return scoped_id;
 }
 
+static struct kefir_ast_scoped_identifier *allocate_scoped_type_definition(struct kefir_mem *mem,
+                                                                         const struct kefir_ast_type *type) {
+    struct kefir_ast_scoped_identifier *scoped_id = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_scoped_identifier));
+    scoped_id->klass = KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION;
+    scoped_id->type = type;
+    memset(scoped_id->payload.content, 0, KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE);
+    scoped_id->payload.ptr = scoped_id->payload.content;
+    return scoped_id;
+}
+
 kefir_result_t kefir_ast_global_context_declare_external(struct kefir_mem *mem,
                                                      struct kefir_ast_global_context *context,
                                                      const char *identifier,
@@ -584,6 +594,36 @@ kefir_result_t kefir_ast_global_context_define_tag(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_ast_global_context_define_type(struct kefir_mem *mem,
+                                                struct kefir_ast_global_context *context,
+                                                const char *identifier,
+                                                const struct kefir_ast_type *type) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
+
+    struct kefir_ast_scoped_identifier *scoped_id = NULL;
+    kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->ordinary_scope, identifier,
+        (struct kefir_ast_scoped_identifier **) &scoped_id);
+    if (res == KEFIR_OK) {
+        REQUIRE(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION,
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to redefine identifier with different kind of symbol"));
+        REQUIRE(KEFIR_AST_TYPE_SAME(type, scoped_id->type),
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to redefine different type with the same identifier"));
+        return KEFIR_OK;
+    } else {
+        REQUIRE(res == KEFIR_NOT_FOUND, res);
+        struct kefir_ast_scoped_identifier *scoped_id =
+            allocate_scoped_type_definition(mem, type);
+        REQUIRE(scoped_id != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
+        const char *id = kefir_symbol_table_insert(mem, &context->symbols, identifier, NULL);
+        REQUIRE(id != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate identifier"));
+        REQUIRE_OK(kefir_ast_identifier_flat_scope_insert(mem, &context->ordinary_scope, id, scoped_id));
+    }
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_context_declare_external(struct kefir_mem *mem,
                                               struct kefir_ast_context *context,
                                               const char *identifier,
@@ -837,6 +877,36 @@ kefir_result_t kefir_ast_context_define_tag(struct kefir_mem *mem,
         const char *id = kefir_symbol_table_insert(mem, &context->global->symbols, identifier, NULL);
         REQUIRE(id != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate identifier"));
         REQUIRE_OK(kefir_ast_identifier_block_scope_insert(mem, &context->local_tag_scope, id, scoped_id));
+    }
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_ast_context_define_type(struct kefir_mem *mem,
+                                         struct kefir_ast_context *context,
+                                         const char *identifier,
+                                         const struct kefir_ast_type *type) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
+
+    struct kefir_ast_scoped_identifier *scoped_id = NULL;
+    kefir_result_t res = kefir_ast_identifier_flat_scope_at(kefir_ast_identifier_block_scope_top(&context->local_ordinary_scope),
+        identifier, (struct kefir_ast_scoped_identifier **) &scoped_id);
+    if (res == KEFIR_OK) {
+        REQUIRE(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION,
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to redefine identifier with different kind of symbol"));
+        REQUIRE(KEFIR_AST_TYPE_SAME(type, scoped_id->type),
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to redefine different type with the same identifier"));
+        return KEFIR_OK;
+    } else {
+        REQUIRE(res == KEFIR_NOT_FOUND, res);
+        struct kefir_ast_scoped_identifier *scoped_id =
+            allocate_scoped_type_definition(mem, type);
+        REQUIRE(scoped_id != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
+        const char *id = kefir_symbol_table_insert(mem, &context->global->symbols, identifier, NULL);
+        REQUIRE(id != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate identifier"));
+        REQUIRE_OK(kefir_ast_identifier_block_scope_insert(mem, &context->local_ordinary_scope, id, scoped_id));
     }
     return KEFIR_OK;
 }

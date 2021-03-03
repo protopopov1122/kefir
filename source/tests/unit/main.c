@@ -87,7 +87,8 @@ DECLARE_CASE(ast_type_function_composite);
 DECLARE_CASE(ast_type_scope1);
 DECLARE_CASE(ast_type_scope2);
 DECLARE_CASE(ast_type_scope3);
-DECLARE_CASE(ast_ordinary_scope1);
+DECLARE_CASE(ast_ordinary_constant_scope1);
+DECLARE_CASE(ast_ordinary_typedef_scope1);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -173,7 +174,8 @@ TEST_SUITE(mainSuite,
     &ast_type_scope1,
     &ast_type_scope2,
     &ast_type_scope3,
-    &ast_ordinary_scope1
+    &ast_ordinary_constant_scope1,
+    &ast_ordinary_typedef_scope1
 );
 
 int main(int argc, const char **argv) {

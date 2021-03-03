@@ -86,6 +86,10 @@ kefir_result_t kefir_ast_global_context_define_constant(struct kefir_mem *,
 kefir_result_t kefir_ast_global_context_define_tag(struct kefir_mem *,
                                                struct kefir_ast_global_context *,
                                                const struct kefir_ast_type *);
+kefir_result_t kefir_ast_global_context_define_type(struct kefir_mem *,
+                                                struct kefir_ast_global_context *,
+                                                const char *,
+                                                const struct kefir_ast_type *);
 kefir_result_t kefir_ast_context_declare_external(struct kefir_mem *,
                                               struct kefir_ast_context *,
                                               const char *,
@@ -123,5 +127,9 @@ kefir_result_t kefir_ast_context_define_constant(struct kefir_mem *,
 kefir_result_t kefir_ast_context_define_tag(struct kefir_mem *,
                                         struct kefir_ast_context *,
                                         const struct kefir_ast_type *);
+kefir_result_t kefir_ast_context_define_type(struct kefir_mem *,
+                                         struct kefir_ast_context *,
+                                         const char *,
+                                         const struct kefir_ast_type *);
 
 #endif
