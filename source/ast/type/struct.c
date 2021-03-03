@@ -318,7 +318,6 @@ static kefir_result_t struct_field_free(struct kefir_mem *mem,
     }
     if (field->bitfield) {
         REQUIRE_OK(kefir_ast_constant_expression_free(mem, field->bitwidth));
-        KEFIR_FREE(mem, field->bitwidth);
     }
     KEFIR_FREE(mem, (void *) field);
     return KEFIR_OK;

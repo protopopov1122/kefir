@@ -798,7 +798,8 @@ kefir_result_t kefir_ast_context_define_constant(struct kefir_mem *mem,
     REQUIRE(value != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST constant expression"));
 
     struct kefir_ast_scoped_identifier *scoped_id = NULL;
-    kefir_result_t res = kefir_ast_identifier_block_scope_at(&context->local_ordinary_scope, identifier, &scoped_id);
+    kefir_result_t res = kefir_ast_identifier_flat_scope_at(kefir_ast_identifier_block_scope_top(&context->local_ordinary_scope),
+        identifier, &scoped_id);
     if (res == KEFIR_OK) {
         return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot redefine constant");
     } else {

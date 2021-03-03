@@ -142,7 +142,6 @@ static kefir_result_t enumeration_free(struct kefir_mem *mem,
     ASSIGN_DECL_CAST(const struct kefir_ast_enum_enumerator *, enumerator,
         entry->value);
     REQUIRE_OK(kefir_ast_constant_expression_free(mem, enumerator->value));
-    KEFIR_FREE(mem, enumerator->value);
     KEFIR_FREE(mem, (void *) enumerator);
     return KEFIR_OK;
 }

@@ -33,5 +33,6 @@ kefir_result_t kefir_ast_constant_expression_free(struct kefir_mem *mem,
         const_expr->expression = NULL;
     }
     const_expr->value = 0;
+    KEFIR_FREE(mem, const_expr);
     return KEFIR_OK;
 }

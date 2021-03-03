@@ -48,7 +48,6 @@ kefir_result_t kefir_ast_alignment_free(struct kefir_mem *mem,
         case KEFIR_AST_ALIGNMENT_AS_CONST_EXPR:
             alignment->klass = KEFIR_AST_ALIGNMENT_DEFAULT;
             REQUIRE_OK(kefir_ast_constant_expression_free(mem, alignment->const_expr));
-            KEFIR_FREE(mem, alignment->const_expr);
             alignment->const_expr = NULL;
             break;
     }
