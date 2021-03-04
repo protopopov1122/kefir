@@ -197,7 +197,9 @@ kefir_result_t kefir_hashtree_delete(struct kefir_mem *mem, struct kefir_hashtre
     } else {
         tree->root = replacement;
     }
-    replacement->parent = node->parent;
+    if (replacement != NULL) {
+        replacement->parent = node->parent;
+    }
     if (tree->node_remove.callback != NULL) {
         REQUIRE_OK(tree->node_remove.callback(mem, tree, node->key, node->value, tree->node_remove.data));
     }

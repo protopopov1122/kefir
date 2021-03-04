@@ -123,3 +123,39 @@ kefir_result_t kefir_ast_context_update_existing_scoped_type_tag(struct kefir_as
             return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected AST type");
     }
 }
+
+
+struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_function_identifier(struct kefir_mem *mem,
+                                                                                      const struct kefir_ast_type *type,
+                                                                                      kefir_ast_function_specifier_t specifier,
+                                                                                      kefir_ast_scoped_identifier_storage_t storage) {
+    struct kefir_ast_scoped_identifier *scoped_id = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_scoped_identifier));
+    scoped_id->klass = KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION;
+    scoped_id->function.type = type;
+    scoped_id->function.specifier = specifier;
+    scoped_id->function.storage = storage;
+    memset(scoped_id->payload.content, 0, KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE);
+    scoped_id->payload.ptr = scoped_id->payload.content;
+    return scoped_id;
+}
+
+kefir_ast_function_specifier_t kefir_ast_context_merge_function_specifiers(kefir_ast_function_specifier_t s1,
+                                                                       kefir_ast_function_specifier_t s2) {
+    kefir_bool_t spec_inline = s1 == KEFIR_AST_FUNCTION_SPECIFIER_INLINE || 
+                             s1 == KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN ||
+                             s2 == KEFIR_AST_FUNCTION_SPECIFIER_INLINE ||
+                             s2 == KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN;
+    kefir_bool_t spec_noreturn = s1 == KEFIR_AST_FUNCTION_SPECIFIER_NORETURN || 
+                               s1 == KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN ||
+                               s2 == KEFIR_AST_FUNCTION_SPECIFIER_NORETURN ||
+                               s2 == KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN;
+    if (spec_inline && spec_noreturn) {
+        return KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN;
+    } else if (spec_inline) {
+        return KEFIR_AST_FUNCTION_SPECIFIER_INLINE;
+    } else if (spec_noreturn) {
+        return KEFIR_AST_FUNCTION_SPECIFIER_NORETURN;
+    } else {
+        return KEFIR_AST_FUNCTION_SPECIFIER_NONE;
+    }
+}

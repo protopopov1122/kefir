@@ -20,6 +20,12 @@ typedef struct kefir_ast_scoped_identifier {
             kefir_ast_scoped_identifier_storage_t storage;
         } object;
 
+        struct {
+            const struct kefir_ast_type *type;
+            kefir_ast_function_specifier_t specifier;
+            kefir_ast_scoped_identifier_storage_t storage;
+        } function;
+
         struct kefir_ast_constant_expression *enum_constant;
 
         const struct kefir_ast_type *type;

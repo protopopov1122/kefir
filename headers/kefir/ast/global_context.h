@@ -12,6 +12,7 @@ typedef struct kefir_ast_global_context {
     struct kefir_ast_identifier_flat_scope ordinary_scope;
     struct kefir_ast_identifier_flat_scope tag_scope;
     struct kefir_hashtree external_object_declarations;
+    struct kefir_hashtree external_function_declarations;
 } kefir_ast_global_context_t;
 
 kefir_result_t kefir_ast_global_context_init(struct kefir_mem *,
@@ -61,5 +62,17 @@ kefir_result_t kefir_ast_global_context_define_type(struct kefir_mem *,
                                                 struct kefir_ast_global_context *,
                                                 const char *,
                                                 const struct kefir_ast_type *);
+kefir_result_t kefir_ast_global_context_declare_function(struct kefir_mem *,
+                                                     struct kefir_ast_global_context *,
+                                                     kefir_ast_function_specifier_t,
+                                                     const struct kefir_ast_type *);
+kefir_result_t kefir_ast_global_context_define_function(struct kefir_mem *,
+                                                     struct kefir_ast_global_context *,
+                                                     kefir_ast_function_specifier_t,
+                                                     const struct kefir_ast_type *);
+kefir_result_t kefir_ast_global_context_define_static_function(struct kefir_mem *,
+                                                           struct kefir_ast_global_context *,
+                                                           kefir_ast_function_specifier_t,
+                                                           const struct kefir_ast_type *);
 
 #endif

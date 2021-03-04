@@ -29,4 +29,12 @@ kefir_result_t kefir_ast_context_type_retrieve_tag(const struct kefir_ast_type *
 kefir_result_t kefir_ast_context_update_existing_scoped_type_tag(struct kefir_ast_scoped_identifier *,
                                                              const struct kefir_ast_type *);
 
+struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_function_identifier(struct kefir_mem *,
+                                                                                      const struct kefir_ast_type *,
+                                                                                      kefir_ast_function_specifier_t,
+                                                                                      kefir_ast_scoped_identifier_storage_t);
+
+kefir_ast_function_specifier_t kefir_ast_context_merge_function_specifiers(kefir_ast_function_specifier_t,
+                                                                       kefir_ast_function_specifier_t);
+
 #endif
