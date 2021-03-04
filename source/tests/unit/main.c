@@ -89,8 +89,14 @@ DECLARE_CASE(ast_type_scope2);
 DECLARE_CASE(ast_type_scope3);
 DECLARE_CASE(ast_ordinary_constant_scope1);
 DECLARE_CASE(ast_ordinary_typedef_scope1);
-DECLARE_CASE(ast_ordinary_scope_composite_objects1);
-DECLARE_CASE(ast_ordinary_scope_composite_objects2);
+DECLARE_CASE(ast_ordinary_scope_composite_objects_external);
+DECLARE_CASE(ast_ordinary_scope_composite_objects_external_declaration);
+DECLARE_CASE(ast_ordinary_scope_composite_objects_thread_local_external);
+DECLARE_CASE(ast_ordinary_scope_composite_objects_thread_local_external_declaration);
+DECLARE_CASE(ast_ordinary_scope_composite_objects_static);
+DECLARE_CASE(ast_ordinary_scope_composite_objects_static_thread_local);
+DECLARE_CASE(ast_ordinary_scope_composite_objects_local_external);
+DECLARE_CASE(ast_ordinary_scope_composite_objects_local_thread_local_external);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -178,8 +184,14 @@ TEST_SUITE(mainSuite,
     &ast_type_scope3,
     &ast_ordinary_constant_scope1,
     &ast_ordinary_typedef_scope1,
-    &ast_ordinary_scope_composite_objects1,
-    &ast_ordinary_scope_composite_objects2
+    &ast_ordinary_scope_composite_objects_external,
+    &ast_ordinary_scope_composite_objects_external_declaration,
+    &ast_ordinary_scope_composite_objects_thread_local_external,
+    &ast_ordinary_scope_composite_objects_thread_local_external_declaration,
+    &ast_ordinary_scope_composite_objects_static,
+    &ast_ordinary_scope_composite_objects_static_thread_local,
+    &ast_ordinary_scope_composite_objects_local_external,
+    &ast_ordinary_scope_composite_objects_local_thread_local_external
 );
 
 int main(int argc, const char **argv) {
