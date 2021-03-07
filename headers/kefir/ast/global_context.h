@@ -25,6 +25,14 @@ kefir_result_t kefir_ast_global_context_init(struct kefir_mem *,
 kefir_result_t kefir_ast_global_context_free(struct kefir_mem *,
                                          struct kefir_ast_global_context *);
 
+kefir_result_t kefir_ast_global_context_resolve_scoped_ordinary_identifier(const struct kefir_ast_global_context *,
+                                                                       const char *,
+                                                                       const struct kefir_ast_scoped_identifier **);
+
+kefir_result_t kefir_ast_global_context_resolve_scoped_tag_identifier(const struct kefir_ast_global_context *,
+                                                                  const char *,
+                                                                  const struct kefir_ast_scoped_identifier **);
+
 kefir_result_t kefir_ast_global_context_declare_external(struct kefir_mem *,
                                                      struct kefir_ast_global_context *,
                                                      const char *,

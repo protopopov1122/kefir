@@ -50,9 +50,8 @@ kefir_result_t kefir_ast_context_resolve_scoped_ordinary_identifier(const struct
     struct kefir_ast_scoped_identifier *result = NULL;
     kefir_result_t res = kefir_ast_identifier_block_scope_at(&context->ordinary_scope, identifier, &result);
     if (res == KEFIR_NOT_FOUND) {
-        res = kefir_ast_identifier_flat_scope_at(&context->global->ordinary_scope, identifier, &result);
-    }
-    if (res == KEFIR_OK) {
+        res = kefir_ast_global_context_resolve_scoped_ordinary_identifier(context->global, identifier, scoped_identifier);
+    } else if (res == KEFIR_OK) {
         *scoped_identifier = result;
     }
     return res;
@@ -67,9 +66,8 @@ kefir_result_t kefir_ast_context_resolve_scoped_tag_identifier(const struct kefi
     struct kefir_ast_scoped_identifier *result = NULL;
     kefir_result_t res = kefir_ast_identifier_block_scope_at(&context->tag_scope, identifier, &result);
     if (res == KEFIR_NOT_FOUND) {
-        res = kefir_ast_identifier_flat_scope_at(&context->global->tag_scope, identifier, &result);
-    }
-    if (res == KEFIR_OK) {
+        res = kefir_ast_global_context_resolve_scoped_tag_identifier(context->global, identifier, scoped_identifier);
+    } else if (res == KEFIR_OK) {
         *scoped_identifier = result;
     }
     return res;

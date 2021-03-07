@@ -47,6 +47,24 @@ kefir_result_t kefir_ast_global_context_free(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_ast_global_context_resolve_scoped_ordinary_identifier(const struct kefir_ast_global_context *context,
+                                                                       const char *identifier,
+                                                                       const struct kefir_ast_scoped_identifier **scoped_id) {
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
+    REQUIRE(scoped_id != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST scoped identifier pointer"));
+    return kefir_ast_identifier_flat_scope_at(&context->ordinary_scope, identifier, scoped_id);
+}
+
+kefir_result_t kefir_ast_global_context_resolve_scoped_tag_identifier(const struct kefir_ast_global_context *context,
+                                                                  const char *identifier,
+                                                                  const struct kefir_ast_scoped_identifier **scoped_id) {
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
+    REQUIRE(scoped_id != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST scoped identifier pointer"));
+    return kefir_ast_identifier_flat_scope_at(&context->tag_scope, identifier, scoped_id);
+}
+
 static kefir_result_t insert_ordinary_identifier(struct kefir_mem *mem,
                                               struct kefir_ast_global_context *context,
                                               const char *identifier,
