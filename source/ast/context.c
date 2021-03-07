@@ -139,7 +139,7 @@ static kefir_result_t require_global_ordinary_object(struct kefir_ast_global_con
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot redeclare identifier with different storage class"));
         }
         REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, (*ordinary_id)->object.type, type),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot redeclare identifier with incompatible tyoes"));
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot redeclare identifier with incompatible types"));
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
     }
@@ -467,6 +467,69 @@ kefir_result_t kefir_ast_context_define_type(struct kefir_mem *mem,
         const char *id = kefir_symbol_table_insert(mem, &context->global->symbols, identifier, NULL);
         REQUIRE(id != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate identifier"));
         REQUIRE_OK(kefir_ast_identifier_block_scope_insert(mem, &context->ordinary_scope, id, scoped_id));
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t require_global_ordinary_function(struct kefir_ast_global_context *context,
+                                                     const char *identifier,
+                                                     const struct kefir_ast_type *type,
+                                                     struct kefir_ast_scoped_identifier **ordinary_id) {
+    *ordinary_id = NULL;
+    kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->function_identifiers, identifier, ordinary_id);
+    if (res == KEFIR_OK) {
+        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, (*ordinary_id)->object.type, type),
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot redeclare identifier with incompatible types"));
+    } else {
+        REQUIRE(res == KEFIR_NOT_FOUND, res);
+    }
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_ast_context_declare_function(struct kefir_mem *mem,
+                                              struct kefir_ast_context *context,
+                                              kefir_ast_function_specifier_t specifier,
+                                              const struct kefir_ast_type *function) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
+    REQUIRE(function != NULL && function->tag == KEFIR_AST_TYPE_FUNCTION,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST function type"));
+    REQUIRE(function->function_type.identifier != NULL && strlen(function->function_type.identifier) > 0,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected function with non-empty identifier"));
+
+    const char *identifier = function->function_type.identifier;
+
+    struct kefir_ast_scoped_identifier *global_ordinary_id = NULL, *ordinary_id = NULL;
+    REQUIRE_OK(require_global_ordinary_function(context->global, identifier, function, &global_ordinary_id));
+
+    kefir_result_t res = kefir_ast_identifier_flat_scope_at(
+            kefir_ast_identifier_block_scope_top(&context->ordinary_scope), identifier, &ordinary_id);
+    if (res == KEFIR_OK) {
+        REQUIRE(ordinary_id == global_ordinary_id,
+            KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Local extern function identifier cannot be different than global"));
+        REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->global->type_traits, ordinary_id->function.type, function),
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "All declarations of the same identifier shall have compatible types"));
+        ordinary_id->function.type = KEFIR_AST_TYPE_COMPOSITE(mem, &context->global->type_bundle, context->global->type_traits,
+            ordinary_id->function.type, function);
+        ordinary_id->function.specifier = kefir_ast_context_merge_function_specifiers(ordinary_id->function.specifier, specifier);
+    } else if (global_ordinary_id != NULL) {
+        REQUIRE(res == KEFIR_NOT_FOUND, res);
+        REQUIRE_OK(kefir_ast_identifier_block_scope_insert(mem, &context->ordinary_scope, identifier, global_ordinary_id));
+        global_ordinary_id->function.type = KEFIR_AST_TYPE_COMPOSITE(mem, &context->global->type_bundle, context->global->type_traits,
+            global_ordinary_id->function.type, function);
+        global_ordinary_id->function.specifier = kefir_ast_context_merge_function_specifiers(global_ordinary_id->function.specifier, specifier);
+    } else {
+        REQUIRE(res == KEFIR_NOT_FOUND, res);
+        struct kefir_ast_scoped_identifier *ordinary_id =
+            kefir_ast_context_allocate_scoped_function_identifier(mem, function, specifier,
+                KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN, true);
+        REQUIRE(ordinary_id != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
+        res = kefir_ast_identifier_flat_scope_insert(mem, &context->global->function_identifiers, identifier, ordinary_id);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_ast_context_free_scoped_identifier(mem, ordinary_id, NULL);
+            return res;
+        });
+        REQUIRE_OK(kefir_ast_identifier_block_scope_insert(mem, &context->ordinary_scope, identifier, ordinary_id));
     }
     return KEFIR_OK;
 }

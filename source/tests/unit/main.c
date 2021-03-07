@@ -101,6 +101,9 @@ DECLARE_CASE(ast_ordinary_scope_composite_objects_local_external);
 DECLARE_CASE(ast_ordinary_scope_composite_objects_local_thread_local_external);
 DECLARE_CASE(ast_ordinary_function_scope1);
 DECLARE_CASE(ast_ordinary_function_scope2);
+DECLARE_CASE(ast_ordinary_function_scope3);
+DECLARE_CASE(ast_ordinary_function_scope4);
+DECLARE_CASE(ast_ordinary_function_scope5);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -199,7 +202,10 @@ TEST_SUITE(mainSuite,
     &ast_ordinary_scope_composite_objects_local_external,
     &ast_ordinary_scope_composite_objects_local_thread_local_external,
     &ast_ordinary_function_scope1,
-    &ast_ordinary_function_scope2
+    &ast_ordinary_function_scope2,
+    &ast_ordinary_function_scope3,
+    &ast_ordinary_function_scope4,
+    &ast_ordinary_function_scope5
 );
 
 int main(int argc, const char **argv) {

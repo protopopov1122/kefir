@@ -70,12 +70,13 @@ kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem,
             }
             break;
     }
-    if (identifier != NULL && kefir_hashtree_has(&function_type->parameter_index, (kefir_hashtree_key_t) identifier)) {
+    if (identifier != NULL && strlen(identifier) > 0 &&
+        kefir_hashtree_has(&function_type->parameter_index, (kefir_hashtree_key_t) identifier)) {
         return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Duplicate function parameter identifier");
     }
     struct kefir_ast_function_type_parameter *param = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_function_type_parameter));
     REQUIRE(param != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate memory for function parameter"));
-    if (identifier != NULL) {
+    if (identifier != NULL && strlen(identifier) > 0) {
         identifier = kefir_symbol_table_insert(mem, type_bundle->symbols, identifier, NULL);
         REQUIRE_ELSE(identifier != NULL, {
             KEFIR_FREE(mem, param);
@@ -96,7 +97,7 @@ kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem,
         KEFIR_OPTIONAL_SET_VALUE(&param->storage, *storage);
     }
     kefir_result_t res = KEFIR_OK;
-    if (identifier != NULL) {
+    if (identifier != NULL && strlen(identifier) > 0) {
         res = kefir_hashtree_insert(mem, &function_type->parameter_index,
             (kefir_hashtree_key_t) identifier, (kefir_hashtree_value_t) param);
         REQUIRE_ELSE(res == KEFIR_OK, {

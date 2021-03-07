@@ -80,5 +80,9 @@ kefir_result_t kefir_ast_context_define_type(struct kefir_mem *,
                                          struct kefir_ast_context *,
                                          const char *,
                                          const struct kefir_ast_type *);
+kefir_result_t kefir_ast_context_declare_function(struct kefir_mem *,
+                                              struct kefir_ast_context *,
+                                              kefir_ast_function_specifier_t,
+                                              const struct kefir_ast_type *);
 
 #endif
