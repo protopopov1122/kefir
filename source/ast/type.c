@@ -56,12 +56,13 @@ static kefir_result_t default_integral_type_fits(const struct kefir_ast_type_tra
     return KEFIR_OK;
 }
 
-const struct kefir_ast_type_traits DEFAULT_TYPE_TRAITS = {
-    .integral_type_fits = default_integral_type_fits,
-    .payload = NULL
-};
-
 const struct kefir_ast_type_traits *kefir_ast_default_type_traits() {
+    static struct kefir_ast_type_traits DEFAULT_TYPE_TRAITS = {
+        .integral_type_fits = default_integral_type_fits,
+        .underlying_enumeration_type = NULL,
+        .payload = NULL
+    };
+    DEFAULT_TYPE_TRAITS.underlying_enumeration_type = kefir_ast_type_signed_int();
     return &DEFAULT_TYPE_TRAITS;
 }
 

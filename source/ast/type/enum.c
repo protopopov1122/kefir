@@ -103,9 +103,11 @@ static kefir_result_t free_enumeration_type(struct kefir_mem *mem, const struct 
 
 const struct kefir_ast_type *kefir_ast_type_incomplete_enumeration(struct kefir_mem *mem,
                                                                struct kefir_ast_type_bundle *type_bundle,
-                                                               const char *identifier) {
+                                                               const char *identifier,
+                                                               const struct kefir_ast_type *underlying_type) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(identifier != NULL, NULL);
+    REQUIRE(underlying_type != NULL, NULL);
     struct kefir_ast_type *type = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type));
     REQUIRE(type != NULL, NULL);
     if (type_bundle != NULL) {
@@ -126,8 +128,9 @@ const struct kefir_ast_type *kefir_ast_type_incomplete_enumeration(struct kefir_
     type->ops.compatible = compatible_enumeration_types;
     type->ops.composite = composite_enum_types;
     type->ops.free = free_enumeration_type;
-    type->structure_type.complete = false;
-    type->structure_type.identifier = identifier;
+    type->enumeration_type.complete = false;
+    type->enumeration_type.identifier = identifier;
+    type->enumeration_type.underlying_type = underlying_type;
     return type;
 }
 
@@ -207,17 +210,18 @@ kefir_result_t kefir_ast_enumeration_type_constant_auto(struct kefir_mem *mem,
 }
 
 const struct kefir_ast_type *kefir_ast_enumeration_underlying_type(const struct kefir_ast_enum_type *enumeration) {
-    // TODO: Proper underlying type detection
     REQUIRE(enumeration != NULL, NULL);
-    return kefir_ast_type_signed_int();
+    return enumeration->underlying_type;
 }
 
 const struct kefir_ast_type *kefir_ast_type_enumeration(struct kefir_mem *mem,
                                                    struct kefir_ast_type_bundle *type_bundle,
                                                    const char *identifier,
+                                                   const struct kefir_ast_type *underlying_type,
                                                    struct kefir_ast_enum_type **enum_type) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(enum_type != NULL, NULL);
+    REQUIRE(underlying_type != NULL, NULL);
     struct kefir_ast_type *type = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type));
     REQUIRE(type != NULL, NULL);
     if (type_bundle != NULL) {
@@ -242,6 +246,7 @@ const struct kefir_ast_type *kefir_ast_type_enumeration(struct kefir_mem *mem,
     type->ops.free = free_enumeration_type;
     type->enumeration_type.complete = true;
     type->enumeration_type.identifier = identifier;
+    type->enumeration_type.underlying_type = underlying_type;
     kefir_result_t res = kefir_hashtree_init(&type->enumeration_type.enumerator_index, &kefir_hashtree_str_ops);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, type);

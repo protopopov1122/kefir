@@ -125,17 +125,18 @@ DEFINE_CASE(ast_type_scope2, "AST Declaration scoping - tagged type scoping #2")
     ASSERT(&scoped_id->type->structure_type == union_type1);
 
     ASSERT_OK(kefir_ast_context_define_tag(&kft_mem, &context, kefir_ast_type_incomplete_enumeration(
-        &kft_mem, &type_bundle, "type1")));
+        &kft_mem, &type_bundle, "type1", type_traits->underlying_enumeration_type)));
 
     ASSERT_OK(kefir_ast_context_resolve_scoped_tag_identifier(&context, "type1", &scoped_id));
     ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_TYPE_TAG);
     ASSERT(scoped_id->type->tag == KEFIR_AST_TYPE_ENUMERATION);
-    ASSERT(strcmp(scoped_id->type->structure_type.identifier, "type1") == 0);
-    ASSERT(!scoped_id->type->structure_type.complete);
+    ASSERT(strcmp(scoped_id->type->enumeration_type.identifier, "type1") == 0);
+    ASSERT(!scoped_id->type->enumeration_type.complete);
+    ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->type->enumeration_type.underlying_type, type_traits->underlying_enumeration_type));
 
     struct kefir_ast_enum_type *enum_type1 = NULL;
     ASSERT_OK(kefir_ast_context_define_tag(&kft_mem, &context, kefir_ast_type_enumeration(
-        &kft_mem, &type_bundle, "type1", &enum_type1)));
+        &kft_mem, &type_bundle, "type1", type_traits->underlying_enumeration_type, &enum_type1)));
     ASSERT_OK(kefir_ast_enumeration_type_constant_auto(&kft_mem, &symbols, enum_type1, "field1"));
     ASSERT_OK(kefir_ast_enumeration_type_constant_auto(&kft_mem, &symbols, enum_type1, "field2"));
     ASSERT_OK(kefir_ast_enumeration_type_constant_auto(&kft_mem, &symbols, enum_type1, "field3"));
@@ -197,7 +198,7 @@ DEFINE_CASE(ast_type_scope3, "AST Declaration scoping - tagged type scoping #3")
     ASSERT_NOK(kefir_ast_context_define_tag(&kft_mem, &context, kefir_ast_type_incomplete_union(
         &kft_mem, &type_bundle, "struct1")));
     ASSERT_NOK(kefir_ast_context_define_tag(&kft_mem, &context, kefir_ast_type_incomplete_enumeration(
-        &kft_mem, &type_bundle, "struct1")));
+        &kft_mem, &type_bundle, "struct1", type_traits->underlying_enumeration_type)));
     ASSERT_OK(kefir_ast_context_define_tag(&kft_mem, &context, kefir_ast_type_incomplete_structure(
         &kft_mem, &type_bundle, "struct1")));
 
@@ -236,7 +237,7 @@ DEFINE_CASE(ast_type_scope3, "AST Declaration scoping - tagged type scoping #3")
         ASSERT(!scoped_id->type->structure_type.complete);
 
         ASSERT_NOK(kefir_ast_context_define_tag(&kft_mem, &context, kefir_ast_type_incomplete_enumeration(
-            &kft_mem, &type_bundle, "union1")));
+            &kft_mem, &type_bundle, "union1", type_traits->underlying_enumeration_type)));
         ASSERT_NOK(kefir_ast_context_define_tag(&kft_mem, &context, kefir_ast_type_incomplete_structure(
             &kft_mem, &type_bundle, "union1")));
         ASSERT_OK(kefir_ast_context_define_tag(&kft_mem, &context, kefir_ast_type_incomplete_union(
@@ -275,24 +276,26 @@ DEFINE_CASE(ast_type_scope3, "AST Declaration scoping - tagged type scoping #3")
             ASSERT(&scoped_id->type->structure_type == union_type1);
 
             ASSERT_OK(kefir_ast_context_define_tag(&kft_mem, &context, kefir_ast_type_incomplete_enumeration(
-                &kft_mem, &type_bundle, "enum1")));
+                &kft_mem, &type_bundle, "enum1", type_traits->underlying_enumeration_type)));
 
             ASSERT_OK(kefir_ast_context_resolve_scoped_tag_identifier(&context, "enum1", &scoped_id));
             ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_TYPE_TAG);
             ASSERT(scoped_id->type->tag == KEFIR_AST_TYPE_ENUMERATION);
             ASSERT(strcmp(scoped_id->type->enumeration_type.identifier, "enum1") == 0);
             ASSERT(!scoped_id->type->enumeration_type.complete);
+            ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->type->enumeration_type.underlying_type,
+                type_traits->underlying_enumeration_type));
 
             ASSERT_NOK(kefir_ast_context_define_tag(&kft_mem, &context, kefir_ast_type_incomplete_structure(
                 &kft_mem, &type_bundle, "enum1")));
             ASSERT_NOK(kefir_ast_context_define_tag(&kft_mem, &context, kefir_ast_type_incomplete_union(
                 &kft_mem, &type_bundle, "enum1")));
             ASSERT_OK(kefir_ast_context_define_tag(&kft_mem, &context, kefir_ast_type_incomplete_enumeration(
-                &kft_mem, &type_bundle, "enum1")));
+                &kft_mem, &type_bundle, "enum1", type_traits->underlying_enumeration_type)));
 
             struct kefir_ast_enum_type *enum_type1 = NULL;
             ASSERT_OK(kefir_ast_context_define_tag(&kft_mem, &context, kefir_ast_type_enumeration(
-                &kft_mem, &type_bundle, "enum1", &enum_type1)));
+                &kft_mem, &type_bundle, "enum1", type_traits->underlying_enumeration_type, &enum_type1)));
             ASSERT_OK(kefir_ast_enumeration_type_constant_auto(&kft_mem, &symbols, enum_type1, "field1"));
             ASSERT_OK(kefir_ast_enumeration_type_constant_auto(&kft_mem, &symbols, enum_type1, "field2"));
             ASSERT_OK(kefir_ast_enumeration_type_constant_auto(&kft_mem, &symbols, enum_type1, "field3"));
@@ -303,6 +306,8 @@ DEFINE_CASE(ast_type_scope3, "AST Declaration scoping - tagged type scoping #3")
             ASSERT(strcmp(scoped_id->type->enumeration_type.identifier, "enum1") == 0);
             ASSERT(scoped_id->type->enumeration_type.complete);
             ASSERT(&scoped_id->type->enumeration_type == enum_type1);
+            ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->type->enumeration_type.underlying_type,
+                type_traits->underlying_enumeration_type));
 
             do {
                 ASSERT_OK(kefir_ast_context_push_block_scope(&kft_mem, &context));
@@ -312,7 +317,7 @@ DEFINE_CASE(ast_type_scope3, "AST Declaration scoping - tagged type scoping #3")
                 ASSERT_OK(kefir_ast_context_define_tag(&kft_mem, &context, kefir_ast_type_incomplete_union(
                     &kft_mem, &type_bundle, "struct1")));
                 ASSERT_OK(kefir_ast_context_define_tag(&kft_mem, &context, kefir_ast_type_incomplete_enumeration(
-                    &kft_mem, &type_bundle, "union1")));
+                    &kft_mem, &type_bundle, "union1", type_traits->underlying_enumeration_type)));
 
                 ASSERT_OK(kefir_ast_context_resolve_scoped_tag_identifier(&context, "enum1", &scoped_id));
                 ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_TYPE_TAG);
@@ -386,112 +391,152 @@ DEFINE_CASE(ast_ordinary_constant_scope1, "AST ordinary scope - constant scoping
     ASSERT_OK(kefir_ast_context_init(&kft_mem, &global_context, &context));
 
     ASSERT_OK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "c1",
-        kefir_ast_constant_expression_integer(&kft_mem, 1)));
+        kefir_ast_constant_expression_integer(&kft_mem, 1),
+        type_traits->underlying_enumeration_type));
     ASSERT_OK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "c2",
-        kefir_ast_constant_expression_integer(&kft_mem, 2)));
+        kefir_ast_constant_expression_integer(&kft_mem, 2),
+        type_traits->underlying_enumeration_type));
     ASSERT_OK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "c3",
-        kefir_ast_constant_expression_integer(&kft_mem, 3)));
+        kefir_ast_constant_expression_integer(&kft_mem, 3),
+        type_traits->underlying_enumeration_type));
 
     struct kefir_ast_constant_expression *cexpr = kefir_ast_constant_expression_integer(&kft_mem, 10);
     ASSERT_NOK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "c1",
-        cexpr));
+        cexpr, type_traits->underlying_enumeration_type));
     ASSERT_NOK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "c2",
-        cexpr));
+        cexpr, type_traits->underlying_enumeration_type));
     ASSERT_NOK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "c3",
-        cexpr));
+        cexpr, type_traits->underlying_enumeration_type));
     ASSERT_OK(kefir_ast_constant_expression_free(&kft_mem, cexpr));
 
     ASSERT_OK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "c4",
-        kefir_ast_constant_expression_integer(&kft_mem, 40)));
+        kefir_ast_constant_expression_integer(&kft_mem, 40),
+        type_traits->underlying_enumeration_type));
 
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
     ASSERT_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c1", &scoped_id));
     ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
-    ASSERT(scoped_id->enum_constant->value == 1);
+    ASSERT(scoped_id->enum_constant.value->value == 1);
+    ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type,
+        type_traits->underlying_enumeration_type));
 
     ASSERT_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c2", &scoped_id));
     ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
-    ASSERT(scoped_id->enum_constant->value == 2);
+    ASSERT(scoped_id->enum_constant.value->value == 2);
+    ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type,
+        type_traits->underlying_enumeration_type));
 
     ASSERT_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c3", &scoped_id));
     ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
-    ASSERT(scoped_id->enum_constant->value == 3);
+    ASSERT(scoped_id->enum_constant.value->value == 3);
+    ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type,
+        type_traits->underlying_enumeration_type));
 
     ASSERT_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c4", &scoped_id));
     ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
-    ASSERT(scoped_id->enum_constant->value == 40);
+    ASSERT(scoped_id->enum_constant.value->value == 40);
+    ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type,
+        type_traits->underlying_enumeration_type));
 
     do {
         ASSERT_OK(kefir_ast_context_push_block_scope(&kft_mem, &context));
 
         ASSERT_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c1", &scoped_id));
         ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
-        ASSERT(scoped_id->enum_constant->value == 1);
+        ASSERT(scoped_id->enum_constant.value->value == 1);
+        ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type,
+            type_traits->underlying_enumeration_type));
 
         ASSERT_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c2", &scoped_id));
         ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
-        ASSERT(scoped_id->enum_constant->value == 2);
+        ASSERT(scoped_id->enum_constant.value->value == 2);
+        ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type,
+            type_traits->underlying_enumeration_type));
 
         ASSERT_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c3", &scoped_id));
         ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
-        ASSERT(scoped_id->enum_constant->value == 3);
+        ASSERT(scoped_id->enum_constant.value->value == 3);
+        ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type,
+            type_traits->underlying_enumeration_type));
 
         ASSERT_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c4", &scoped_id));
         ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
-        ASSERT(scoped_id->enum_constant->value == 40);
+        ASSERT(scoped_id->enum_constant.value->value == 40);
+        ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type,
+            type_traits->underlying_enumeration_type));
 
         ASSERT_OK(kefir_ast_context_define_constant(&kft_mem, &context, "c1",
-            kefir_ast_constant_expression_integer(&kft_mem, 10)));
+            kefir_ast_constant_expression_integer(&kft_mem, 10),
+            type_traits->underlying_enumeration_type));
         ASSERT_OK(kefir_ast_context_define_constant(&kft_mem, &context, "c2",
-            kefir_ast_constant_expression_integer(&kft_mem, 20)));
+            kefir_ast_constant_expression_integer(&kft_mem, 20),
+            type_traits->underlying_enumeration_type));
         ASSERT_OK(kefir_ast_context_define_constant(&kft_mem, &context, "c5",
-            kefir_ast_constant_expression_integer(&kft_mem, 50)));
+            kefir_ast_constant_expression_integer(&kft_mem, 50),
+            type_traits->underlying_enumeration_type));
 
         ASSERT_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c1", &scoped_id));
         ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
-        ASSERT(scoped_id->enum_constant->value == 10);
+        ASSERT(scoped_id->enum_constant.value->value == 10);
+        ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type,
+            type_traits->underlying_enumeration_type));
 
         ASSERT_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c2", &scoped_id));
         ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
-        ASSERT(scoped_id->enum_constant->value == 20);
+        ASSERT(scoped_id->enum_constant.value->value == 20);
+        ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type,
+            type_traits->underlying_enumeration_type));
 
         ASSERT_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c3", &scoped_id));
         ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
-        ASSERT(scoped_id->enum_constant->value == 3);
+        ASSERT(scoped_id->enum_constant.value->value == 3);
+        ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type,
+            type_traits->underlying_enumeration_type));
 
         ASSERT_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c4", &scoped_id));
         ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
-        ASSERT(scoped_id->enum_constant->value == 40);
+        ASSERT(scoped_id->enum_constant.value->value == 40);
+        ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type,
+            type_traits->underlying_enumeration_type));
 
         ASSERT_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c5", &scoped_id));
         ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
-        ASSERT(scoped_id->enum_constant->value == 50);
+        ASSERT(scoped_id->enum_constant.value->value == 50);
+        ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type,
+            type_traits->underlying_enumeration_type));
 
         do {
             ASSERT_OK(kefir_ast_context_push_block_scope(&kft_mem, &context));
 
             ASSERT_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c3", &scoped_id));
             ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
-            ASSERT(scoped_id->enum_constant->value == 3);
+            ASSERT(scoped_id->enum_constant.value->value == 3);
+            ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type,
+                type_traits->underlying_enumeration_type));
 
             ASSERT_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c4", &scoped_id));
             ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
-            ASSERT(scoped_id->enum_constant->value == 40);
+            ASSERT(scoped_id->enum_constant.value->value == 40);
+            ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type,
+                type_traits->underlying_enumeration_type));
 
             ASSERT_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c5", &scoped_id));
             ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
-            ASSERT(scoped_id->enum_constant->value == 50);
+            ASSERT(scoped_id->enum_constant.value->value == 50);
+            ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type,
+                type_traits->underlying_enumeration_type));
 
             ASSERT_OK(kefir_ast_context_define_auto(&kft_mem, &context, "c3",
                 kefir_ast_type_unsigned_char(), NULL));
 
             struct kefir_ast_constant_expression *cexpr = kefir_ast_constant_expression_integer(&kft_mem, 300);
             ASSERT_NOK(kefir_ast_context_define_constant(&kft_mem, &context, "c3",
-                cexpr));
+                cexpr, type_traits->underlying_enumeration_type));
             ASSERT_OK(kefir_ast_constant_expression_free(&kft_mem, cexpr));
 
             ASSERT_OK(kefir_ast_context_define_constant(&kft_mem, &context, "c5",
-                kefir_ast_constant_expression_integer(&kft_mem, 500)));
+                kefir_ast_constant_expression_integer(&kft_mem, 500),
+                type_traits->underlying_enumeration_type));
 
             ASSERT_NOK(kefir_ast_context_define_register(&kft_mem, &context, "c5",
                 kefir_ast_type_unsigned_char(), NULL));
@@ -501,22 +546,26 @@ DEFINE_CASE(ast_ordinary_constant_scope1, "AST ordinary scope - constant scoping
 
             ASSERT_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c4", &scoped_id));
             ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
-            ASSERT(scoped_id->enum_constant->value == 40);
+            ASSERT(scoped_id->enum_constant.value->value == 40);
+            ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type,
+                type_traits->underlying_enumeration_type));
 
             ASSERT_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c5", &scoped_id));
             ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
-            ASSERT(scoped_id->enum_constant->value == 500);
+            ASSERT(scoped_id->enum_constant.value->value == 500);
+            ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type,
+                type_traits->underlying_enumeration_type));
 
             ASSERT_OK(kefir_ast_context_pop_block_scope(&context));
         } while (0);
 
         struct kefir_ast_constant_expression *cexpr = kefir_ast_constant_expression_integer(&kft_mem, 100);
         ASSERT_NOK(kefir_ast_context_define_constant(&kft_mem, &context, "c1",
-            cexpr));
+            cexpr, type_traits->underlying_enumeration_type));
         ASSERT_NOK(kefir_ast_context_define_constant(&kft_mem, &context, "c2",
-            cexpr));
+            cexpr, type_traits->underlying_enumeration_type));
         ASSERT_NOK(kefir_ast_context_define_constant(&kft_mem, &context, "c5",
-            cexpr));
+            cexpr, type_traits->underlying_enumeration_type));
         ASSERT_OK(kefir_ast_constant_expression_free(&kft_mem, cexpr));
 
         ASSERT_OK(kefir_ast_context_pop_block_scope(&context));
@@ -524,19 +573,27 @@ DEFINE_CASE(ast_ordinary_constant_scope1, "AST ordinary scope - constant scoping
 
     ASSERT_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c1", &scoped_id));
     ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
-    ASSERT(scoped_id->enum_constant->value == 1);
+    ASSERT(scoped_id->enum_constant.value->value == 1);
+    ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type,
+        type_traits->underlying_enumeration_type));
 
     ASSERT_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c2", &scoped_id));
     ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
-    ASSERT(scoped_id->enum_constant->value == 2);
+    ASSERT(scoped_id->enum_constant.value->value == 2);
+    ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type,
+        type_traits->underlying_enumeration_type));
 
     ASSERT_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c3", &scoped_id));
     ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
-    ASSERT(scoped_id->enum_constant->value == 3);
+    ASSERT(scoped_id->enum_constant.value->value == 3);
+    ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type,
+        type_traits->underlying_enumeration_type));
 
     ASSERT_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c4", &scoped_id));
     ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
-    ASSERT(scoped_id->enum_constant->value == 40);
+    ASSERT(scoped_id->enum_constant.value->value == 40);
+    ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type,
+        type_traits->underlying_enumeration_type));
 
     ASSERT_NOK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c5", &scoped_id));
 

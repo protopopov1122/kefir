@@ -16,7 +16,8 @@ struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_object_ide
                                                                                     kefir_bool_t);
 
 struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_constant(struct kefir_mem *,
-                                                                           struct kefir_ast_constant_expression *);
+                                                                           struct kefir_ast_constant_expression *,
+                                                                           const struct kefir_ast_type *);
 
 struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_type_tag(struct kefir_mem *,
                                                                           const struct kefir_ast_type *);

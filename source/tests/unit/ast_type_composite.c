@@ -115,8 +115,10 @@ END_CASE
 static const struct kefir_ast_type *build_enum_type(struct kefir_mem *mem,
                                                   struct kefir_symbol_table *symbols,
                                                   struct kefir_ast_type_bundle *type_bundle,
+                                                  const struct kefir_ast_type_traits *type_traits,
                                                   struct kefir_ast_enum_type **enum1_type) {
-    const struct kefir_ast_type *type1 = kefir_ast_type_enumeration(&kft_mem, type_bundle, "enum1", enum1_type);
+    const struct kefir_ast_type *type1 = kefir_ast_type_enumeration(&kft_mem,
+        type_bundle, "enum1", type_traits->underlying_enumeration_type, enum1_type);
     ASSERT_OK(kefir_ast_enumeration_type_constant(mem, symbols, *enum1_type, "c1",
     kefir_ast_constant_expression_integer(mem, 10)));
     ASSERT_OK(kefir_ast_enumeration_type_constant_auto(mem, symbols, *enum1_type, "c2"));
@@ -137,11 +139,11 @@ DEFINE_CASE(ast_type_enum_composite, "AST types - enum composite type")
     ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
 
     struct kefir_ast_enum_type *enum1_type;
-    const struct kefir_ast_type *enum1 = build_enum_type(&kft_mem, &symbols, &type_bundle, &enum1_type);
+    const struct kefir_ast_type *enum1 = build_enum_type(&kft_mem, &symbols, &type_bundle, type_traits, &enum1_type);
     struct kefir_ast_enum_type *enum2_type;
-    const struct kefir_ast_type *enum2 = build_enum_type(&kft_mem, &symbols, &type_bundle, &enum2_type);
+    const struct kefir_ast_type *enum2 = build_enum_type(&kft_mem, &symbols, &type_bundle, type_traits, &enum2_type);
     struct kefir_ast_enum_type *enum3_type;
-    const struct kefir_ast_type *enum3 = build_enum_type(&kft_mem, &symbols, &type_bundle, &enum3_type);
+    const struct kefir_ast_type *enum3 = build_enum_type(&kft_mem, &symbols, &type_bundle, type_traits, &enum3_type);
     ASSERT_OK(kefir_ast_enumeration_type_constant(&kft_mem, &symbols, enum3_type, "c20",
         kefir_ast_constant_expression_integer(&kft_mem, 1000)));
 

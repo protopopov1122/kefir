@@ -46,6 +46,7 @@ typedef struct kefir_ast_type_traits {
                                     const struct kefir_ast_type *,
                                     const struct kefir_ast_type *,
                                     kefir_bool_t *);
+    const struct kefir_ast_type *underlying_enumeration_type;
 
     void *payload;
 } kefir_ast_type_traits_t;

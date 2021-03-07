@@ -12,6 +12,7 @@ typedef struct kefir_ast_enum_enumerator {
 typedef struct kefir_ast_enum_type {
     kefir_bool_t complete;
     const char *identifier;
+    const struct kefir_ast_type *underlying_type;
     struct kefir_list enumerators;
     struct kefir_hashtree enumerator_index;
 } kefir_ast_enum_type_t;
@@ -22,7 +23,8 @@ kefir_result_t kefir_ast_enumeration_get(const struct kefir_ast_enum_type *,
 
 const struct kefir_ast_type *kefir_ast_type_incomplete_enumeration(struct kefir_mem *,
                                                                struct kefir_ast_type_bundle *,
-                                                               const char *);
+                                                               const char *,
+                                                               const struct kefir_ast_type *);
 
 kefir_result_t kefir_ast_enumeration_type_constant(struct kefir_mem *,
                                                struct kefir_symbol_table *,
@@ -40,6 +42,7 @@ const struct kefir_ast_type *kefir_ast_enumeration_underlying_type(const struct 
 const struct kefir_ast_type *kefir_ast_type_enumeration(struct kefir_mem *,
                                                    struct kefir_ast_type_bundle *,
                                                    const char *,
+                                                   const struct kefir_ast_type *,
                                                    struct kefir_ast_enum_type **);
 
 #endif

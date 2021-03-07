@@ -12,7 +12,7 @@ kefir_result_t kefir_ast_context_free_scoped_identifier(struct kefir_mem *mem,
             break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT:
-            REQUIRE_OK(kefir_ast_constant_expression_free(mem, scoped_id->enum_constant));
+            REQUIRE_OK(kefir_ast_constant_expression_free(mem, scoped_id->enum_constant.value));
             break;
 
         default:
@@ -49,10 +49,12 @@ struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_object_ide
 }
 
 struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_constant(struct kefir_mem *mem,
-                                                                           struct kefir_ast_constant_expression *value) {
+                                                                           struct kefir_ast_constant_expression *value,
+                                                                           const struct kefir_ast_type *type) {
     struct kefir_ast_scoped_identifier *scoped_id = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_scoped_identifier));
     scoped_id->klass = KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT;
-    scoped_id->enum_constant = value;
+    scoped_id->enum_constant.type = type;
+    scoped_id->enum_constant.value = value;
     memset(scoped_id->payload.content, 0, KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE);
     scoped_id->payload.ptr = scoped_id->payload.content;
     return scoped_id;

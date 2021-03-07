@@ -345,7 +345,8 @@ kefir_result_t kefir_ast_context_define_register(struct kefir_mem *mem,
 kefir_result_t kefir_ast_context_define_constant(struct kefir_mem *mem,
                                              struct kefir_ast_context *context,
                                              const char *identifier,
-                                             struct kefir_ast_constant_expression *value) {
+                                             struct kefir_ast_constant_expression *value,
+                                             const struct kefir_ast_type *type) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
@@ -359,7 +360,7 @@ kefir_result_t kefir_ast_context_define_constant(struct kefir_mem *mem,
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
         struct kefir_ast_scoped_identifier *scoped_id =
-            kefir_ast_context_allocate_scoped_constant(mem, value);
+            kefir_ast_context_allocate_scoped_constant(mem, value, type);
         REQUIRE(scoped_id != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
         res = kefir_list_insert_after(mem, &context->identifiers, kefir_list_tail(&context->identifiers), scoped_id);
         REQUIRE_ELSE(res == KEFIR_OK, {

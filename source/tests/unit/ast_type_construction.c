@@ -360,13 +360,15 @@ END_CASE
     } while (0)
 
 DEFINE_CASE(ast_type_construction4, "AST Types - enum type")
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
     ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
 
     struct kefir_ast_enum_type *enum1_type = NULL;
-    const struct kefir_ast_type *type1 = kefir_ast_type_enumeration(&kft_mem, &type_bundle, "enum1", &enum1_type);
+    const struct kefir_ast_type *type1 = kefir_ast_type_enumeration(&kft_mem,
+        &type_bundle, "enum1", type_traits->underlying_enumeration_type, &enum1_type);
     ASSERT(type1 != NULL);
     ASSERT(type1->tag == KEFIR_AST_TYPE_ENUMERATION);
     ASSERT(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1));
@@ -374,6 +376,7 @@ DEFINE_CASE(ast_type_construction4, "AST Types - enum type")
     ASSERT(KEFIR_AST_TYPE_SAME(type1, type1));
     ASSERT(enum1_type->complete);
     ASSERT(strcmp(enum1_type->identifier, "enum1") == 0);
+    ASSERT(KEFIR_AST_TYPE_SAME(type_traits->underlying_enumeration_type, kefir_ast_enumeration_underlying_type(enum1_type)));
 
     ASSERT_OK(kefir_ast_enumeration_type_constant(&kft_mem, &symbols, enum1_type, "c1",
         kefir_ast_constant_expression_integer(&kft_mem, 10)));
@@ -394,7 +397,8 @@ DEFINE_CASE(ast_type_construction4, "AST Types - enum type")
     ASSERT_NO_ENUM_CONSTANT(enum1_type, "c0");
     ASSERT_NO_ENUM_CONSTANT(enum1_type, "c6");
 
-    const struct kefir_ast_type *type2 = kefir_ast_type_incomplete_enumeration(&kft_mem, &type_bundle, "enum2");
+    const struct kefir_ast_type *type2 = kefir_ast_type_incomplete_enumeration(
+        &kft_mem, &type_bundle, "enum2", type_traits->underlying_enumeration_type);
     ASSERT(type2 != NULL);
     ASSERT(type2->tag == KEFIR_AST_TYPE_ENUMERATION);
     ASSERT(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type2));

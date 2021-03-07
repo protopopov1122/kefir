@@ -29,7 +29,10 @@ typedef struct kefir_ast_scoped_identifier {
             kefir_bool_t external;
         } function;
 
-        struct kefir_ast_constant_expression *enum_constant;
+        struct {
+            const struct kefir_ast_type *type;
+            struct kefir_ast_constant_expression *value;
+        } enum_constant;
 
         const struct kefir_ast_type *type;
 
