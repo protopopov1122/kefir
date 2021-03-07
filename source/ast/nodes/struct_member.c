@@ -42,7 +42,7 @@ struct kefir_ast_node_base *ast_struct_member_clone(struct kefir_mem *mem,
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = node->base.klass;
     clone->base.self = clone;
-    clone->base.expression_type = node->base.expression_type;
+    clone->base.properties = node->base.properties;
     clone->structure = KEFIR_AST_NODE_CLONE(mem, node->structure);
     REQUIRE_ELSE(clone->structure != NULL, {
         KEFIR_FREE(mem, clone);
@@ -66,7 +66,8 @@ struct kefir_ast_struct_member *kefir_ast_new_struct_member(struct kefir_mem *me
     REQUIRE(struct_member != NULL, NULL);
     struct_member->base.klass = &AST_STRUCT_MEMBER_CLASS;
     struct_member->base.self = struct_member;
-    struct_member->base.expression_type = NULL;
+    struct_member->base.properties.category = KEFIR_AST_NODE_CATEGORY_UNKNOWN;
+    struct_member->base.properties.type = NULL;
     struct_member->structure = structure;
     struct_member->member = member_copy;
     return struct_member;
@@ -86,7 +87,8 @@ struct kefir_ast_struct_member *kefir_ast_new_struct_indirect_member(struct kefi
     REQUIRE(struct_member != NULL, NULL);
     struct_member->base.klass = &AST_STRUCT_INDIRECT_MEMBER_CLASS;
     struct_member->base.self = struct_member;
-    struct_member->base.expression_type = NULL;
+    struct_member->base.properties.category = KEFIR_AST_NODE_CATEGORY_UNKNOWN;
+    struct_member->base.properties.type = NULL;
     struct_member->structure = structure;
     struct_member->member = member_copy;
     return struct_member;

@@ -34,7 +34,7 @@ struct kefir_ast_node_base *ast_unary_operation_clone(struct kefir_mem *mem,
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_UNARY_OPERATION_CLASS;
     clone->base.self = clone;
-    clone->base.expression_type = node->base.expression_type;
+    clone->base.properties = node->base.properties;
     clone->type = node->type;
     clone->arg = KEFIR_AST_NODE_CLONE(mem, node->arg);
     REQUIRE_ELSE(clone->arg != NULL, {
@@ -53,7 +53,8 @@ struct kefir_ast_unary_operation *kefir_ast_new_unary_operation(struct kefir_mem
     REQUIRE(oper != NULL, NULL);
     oper->base.klass = &AST_UNARY_OPERATION_CLASS;
     oper->base.self = oper;
-    oper->base.expression_type = NULL;
+    oper->base.properties.category = KEFIR_AST_NODE_CATEGORY_UNKNOWN;
+    oper->base.properties.type = NULL;
     oper->type = type;
     oper->arg = arg;
     return oper;

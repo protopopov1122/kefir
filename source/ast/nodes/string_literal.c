@@ -33,7 +33,7 @@ struct kefir_ast_node_base *ast_string_literal_clone(struct kefir_mem *mem,
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_STRING_LITERAL_CLASS;
     clone->base.self = clone;
-    clone->base.expression_type = node->base.expression_type;
+    clone->base.properties = node->base.properties;
     clone->literal = node->literal;
     return KEFIR_AST_NODE_BASE(clone);
 }
@@ -50,7 +50,8 @@ struct kefir_ast_string_literal *kefir_ast_new_string_literal(struct kefir_mem *
     REQUIRE(string_literal != NULL, NULL);
     string_literal->base.klass = &AST_STRING_LITERAL_CLASS;
     string_literal->base.self = string_literal;
-    string_literal->base.expression_type = NULL;
+    string_literal->base.properties.category = KEFIR_AST_NODE_CATEGORY_UNKNOWN;
+    string_literal->base.properties.type = NULL;
     string_literal->literal = literal_copy;
     return string_literal;
 }

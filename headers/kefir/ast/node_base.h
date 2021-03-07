@@ -20,7 +20,10 @@ typedef struct kefir_ast_node_class {
 typedef struct kefir_ast_node_base {
     const struct kefir_ast_node_class *klass;
     void *self;
-    const struct kefir_ast_type *expression_type;
+    struct {
+        kefir_ast_node_category_t category;
+        const struct kefir_ast_type *type;
+    } properties;
 } kefir_ast_node_base_t;
 
 #define KEFIR_AST_NODE_STRUCT(id, content) \

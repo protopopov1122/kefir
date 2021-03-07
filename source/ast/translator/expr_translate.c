@@ -62,8 +62,8 @@ static kefir_result_t unary_prologue(const struct kefir_ast_visitor *visitor,
                                    struct kefir_irbuilder_block *builder,
                                    const struct kefir_ast_unary_operation *node) {
     REQUIRE_OK(KEFIR_AST_NODE_VISIT(visitor, node->arg, builder));
-    if (!KEFIR_AST_TYPE_SAME(node->arg->expression_type, node->base.expression_type)) {
-        kefir_ast_translate_typeconv(builder, node->arg->expression_type, node->base.expression_type);
+    if (!KEFIR_AST_TYPE_SAME(node->arg->properties.type, node->base.properties.type)) {
+        kefir_ast_translate_typeconv(builder, node->arg->properties.type, node->base.properties.type);
     }
     return KEFIR_OK;
 }
@@ -71,10 +71,10 @@ static kefir_result_t unary_prologue(const struct kefir_ast_visitor *visitor,
 static kefir_result_t translate_arithmetic_unary(const struct kefir_ast_visitor *visitor,
                                                struct kefir_irbuilder_block *builder,
                                                const struct kefir_ast_unary_operation *node) {
-    REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(node->arg->expression_type),
+    REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(node->arg->properties.type),
         KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Non-arithmetic unary AST expressions are not supported"));
     REQUIRE_OK(unary_prologue(visitor, builder, node));
-    switch (node->base.expression_type->tag) {
+    switch (node->base.properties.type->tag) {
         case KEFIR_AST_TYPE_SCALAR_DOUBLE:
             switch (node->type) {
                 case KEFIR_AST_OPERATION_PLUS:
@@ -102,8 +102,8 @@ static kefir_result_t translate_arithmetic_unary(const struct kefir_ast_visitor 
             break;
 
         default:
-            if (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(node->base.expression_type) ||
-                KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(node->base.expression_type)) {
+            if (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(node->base.properties.type) ||
+                KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(node->base.properties.type)) {
                 switch (node->type) {
                     case KEFIR_AST_OPERATION_PLUS:
                         return KEFIR_OK;
@@ -123,7 +123,7 @@ static kefir_result_t translate_arithmetic_unary(const struct kefir_ast_visitor 
 static kefir_result_t translate_unary_inversion(const struct kefir_ast_visitor *visitor,
                                               struct kefir_irbuilder_block *builder,
                                               const struct kefir_ast_unary_operation *node) {
-    REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(node->arg->expression_type),
+    REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(node->arg->properties.type),
         KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Non-arithmetic unary AST expressions are not supported"));
     REQUIRE_OK(unary_prologue(visitor, builder, node));
     return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_INOT, 0);
@@ -132,7 +132,7 @@ static kefir_result_t translate_unary_inversion(const struct kefir_ast_visitor *
 static kefir_result_t translate_logical_not_inversion(const struct kefir_ast_visitor *visitor,
                                                     struct kefir_irbuilder_block *builder,
                                                     const struct kefir_ast_unary_operation *node) {
-    REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(node->arg->expression_type),
+    REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(node->arg->properties.type),
         KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Non-scalar unary AST expressions are not supported"));
     REQUIRE_OK(unary_prologue(visitor, builder, node));
     return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_BNOT, 0);
@@ -166,12 +166,12 @@ static kefir_result_t binary_prologue(const struct kefir_ast_visitor *visitor,
                                     struct kefir_irbuilder_block *builder,
                                     const struct kefir_ast_binary_operation *node) {
     REQUIRE_OK(KEFIR_AST_NODE_VISIT(visitor, node->arg1, builder));
-    if (!KEFIR_AST_TYPE_SAME(node->arg1->expression_type, node->base.expression_type)) {
-        kefir_ast_translate_typeconv(builder, node->arg1->expression_type, node->base.expression_type);
+    if (!KEFIR_AST_TYPE_SAME(node->arg1->properties.type, node->base.properties.type)) {
+        kefir_ast_translate_typeconv(builder, node->arg1->properties.type, node->base.properties.type);
     }
     REQUIRE_OK(KEFIR_AST_NODE_VISIT(visitor, node->arg2, builder));
-    if (!KEFIR_AST_TYPE_SAME(node->arg2->expression_type, node->base.expression_type)) {
-        kefir_ast_translate_typeconv(builder, node->arg2->expression_type, node->base.expression_type);
+    if (!KEFIR_AST_TYPE_SAME(node->arg2->properties.type, node->base.properties.type)) {
+        kefir_ast_translate_typeconv(builder, node->arg2->properties.type, node->base.properties.type);
     }
     return KEFIR_OK;
 }
@@ -179,11 +179,11 @@ static kefir_result_t binary_prologue(const struct kefir_ast_visitor *visitor,
 static kefir_result_t translate_addition(const struct kefir_ast_visitor *visitor,
                                        struct kefir_irbuilder_block *builder,
                                        const struct kefir_ast_binary_operation *node) {
-    REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(node->arg1->expression_type) &&
-        KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(node->arg2->expression_type),
+    REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(node->arg1->properties.type) &&
+        KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(node->arg2->properties.type),
         KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Non-arithmetic additive AST expressions are not supported yet"));
     REQUIRE_OK(binary_prologue(visitor, builder, node));
-    switch (node->base.expression_type->tag) {
+    switch (node->base.properties.type->tag) {
         case KEFIR_AST_TYPE_SCALAR_DOUBLE:
             switch (node->type) {
                 case KEFIR_AST_OPERATION_ADD:
@@ -211,8 +211,8 @@ static kefir_result_t translate_addition(const struct kefir_ast_visitor *visitor
             break;
 
         default:
-            if (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(node->base.expression_type) ||
-                KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(node->base.expression_type)) {
+            if (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(node->base.properties.type) ||
+                KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(node->base.properties.type)) {
                 switch (node->type) {
                     case KEFIR_AST_OPERATION_ADD:
                         return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IADD, 0);
@@ -233,7 +233,7 @@ static kefir_result_t translate_multiplication(const struct kefir_ast_visitor *v
                                              struct kefir_irbuilder_block *builder,
                                              const struct kefir_ast_binary_operation *node) {
     REQUIRE_OK(binary_prologue(visitor, builder, node));
-    switch (node->base.expression_type->tag) {
+    switch (node->base.properties.type->tag) {
         case KEFIR_AST_TYPE_SCALAR_DOUBLE:
             switch (node->type) {
                 case KEFIR_AST_OPERATION_MULTIPLY:
@@ -261,8 +261,8 @@ static kefir_result_t translate_multiplication(const struct kefir_ast_visitor *v
             break;
 
         default:
-            if (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(node->base.expression_type) ||
-                KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(node->base.expression_type)) {
+            if (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(node->base.properties.type) ||
+                KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(node->base.properties.type)) {
                 switch (node->type) {
                     case KEFIR_AST_OPERATION_MULTIPLY:
                         return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IMUL, 0);
@@ -286,7 +286,7 @@ static kefir_result_t translate_bitwise_shift(const struct kefir_ast_visitor *vi
                                             struct kefir_irbuilder_block *builder,
                                             const struct kefir_ast_binary_operation *node) {
     REQUIRE_OK(binary_prologue(visitor, builder, node));
-    if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(node->base.expression_type)) {
+    if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(node->base.properties.type)) {
         switch (node->type) {
             case KEFIR_AST_OPERATION_SHIFT_LEFT:
                 return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_ILSHIFT, 0);

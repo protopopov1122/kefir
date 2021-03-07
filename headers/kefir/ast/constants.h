@@ -19,6 +19,13 @@ typedef enum kefir_ast_node_type {
     KEFIR_AST_BINARY_OPERATION
 } kefir_ast_node_type_t;
 
+typedef enum kefir_ast_node_category {
+    KEFIR_AST_NODE_CATEGORY_UNKNOWN,
+    KEFIR_AST_NODE_CATEGORY_EXPRESSION,
+    KEFIR_AST_NODE_CATEGORY_LVALUE_EXPRESSION,
+    KEFIR_AST_NODE_CATEGORY_TYPE
+} kefir_ast_node_category_t;
+
 typedef enum kefir_ast_constant_type {
     KEFIR_AST_BOOL_CONSTANT,
     KEFIR_AST_CHAR_CONSTANT,

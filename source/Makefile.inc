@@ -1,5 +1,6 @@
 KEFIR_LIB := $(wildcard \
 	$(SOURCE_DIR)/ast/*.c \
+	$(SOURCE_DIR)/ast/analyzer/*.c \
 	$(SOURCE_DIR)/ast/nodes/*.c \
 	$(SOURCE_DIR)/ast/translator/*.c \
 	$(SOURCE_DIR)/ast/type/*.c \

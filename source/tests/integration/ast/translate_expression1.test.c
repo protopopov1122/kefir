@@ -5,7 +5,7 @@
 #include "kefir/ast/node.h"
 #include "kefir/ast/translator/translator.h"
 #include "kefir/ir/format.h"
-#include "kefir/ast/expr_type.h"
+#include "kefir/ast/analyzer/analyzer.h"
 
 
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
@@ -41,7 +41,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(mem,
             KEFIR_AST_OPERATION_NEGATE,
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(mem, 1)))));
-    REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(mem, &translation_context, KEFIR_AST_NODE_BASE(ast)));
+    REQUIRE_OK(kefir_ast_analyze_node(mem, &translation_context, KEFIR_AST_NODE_BASE(ast)));
     REQUIRE_OK(kefir_ast_translate_expression(KEFIR_AST_NODE_BASE(ast), &builder));
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(ast)));
 
@@ -55,7 +55,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(mem, 1)))),
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 3)))),
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 1.0)));
-    REQUIRE_OK(KEFIR_AST_ASSIGN_EXPRESSION_TYPE(mem, &translation_context, KEFIR_AST_NODE_BASE(ast)));
+    REQUIRE_OK(kefir_ast_analyze_node(mem, &translation_context, KEFIR_AST_NODE_BASE(ast)));
     REQUIRE_OK(kefir_ast_translate_expression(KEFIR_AST_NODE_BASE(ast), &builder));
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(ast)));
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_FREE(&builder));
