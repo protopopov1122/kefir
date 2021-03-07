@@ -41,36 +41,6 @@ kefir_result_t kefir_ast_context_free(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_context_resolve_object_identifier(const struct kefir_ast_context *context,
-                                                       const char *identifier,
-                                                       const struct kefir_ast_scoped_identifier **scoped_identifier,
-                                                       kefir_ast_scoped_identifier_linkage_t *linkage) {
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
-    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
-    REQUIRE(scoped_identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST scoped identifier pointer"));
-    struct kefir_ast_scoped_identifier *result = NULL;
-    kefir_result_t res = kefir_ast_identifier_block_scope_at(&context->ordinary_scope, identifier, &result);
-    if (res == KEFIR_NOT_FOUND) {
-        res = kefir_ast_identifier_flat_scope_at(&context->global->ordinary_scope, identifier, &result);
-        REQUIRE_OK(res);
-        *scoped_identifier = result;
-        REQUIRE((*scoped_identifier)->klass == KEFIR_AST_SCOPE_IDENTIFIER_OBJECT,
-            KEFIR_SET_ERROR(KEFIR_NOT_FOUND, "Cannot found object with specified identifier"));
-        if (linkage != NULL) {
-            *linkage = result->object.linkage;
-        }
-    } else {
-        REQUIRE_OK(res);
-        *scoped_identifier = result;
-        REQUIRE((*scoped_identifier)->klass == KEFIR_AST_SCOPE_IDENTIFIER_OBJECT,
-            KEFIR_SET_ERROR(KEFIR_NOT_FOUND, "Cannot found object with specified identifier"));
-        if (linkage != NULL) {
-            *linkage = result->object.linkage;
-        }
-    }
-    return KEFIR_OK;
-}
-
 kefir_result_t kefir_ast_context_resolve_scoped_ordinary_identifier(const struct kefir_ast_context *context,
                                                        const char *identifier,
                                                        const struct kefir_ast_scoped_identifier **scoped_identifier) {

@@ -405,11 +405,6 @@ DEFINE_CASE(ast_ordinary_constant_scope1, "AST ordinary scope - constant scoping
         kefir_ast_constant_expression_integer(&kft_mem, 40)));
 
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
-    ASSERT_NOK(kefir_ast_context_resolve_object_identifier(&context, "c1", &scoped_id, NULL));
-    ASSERT_NOK(kefir_ast_context_resolve_object_identifier(&context, "c2", &scoped_id, NULL));
-    ASSERT_NOK(kefir_ast_context_resolve_object_identifier(&context, "c3", &scoped_id, NULL));
-    ASSERT_NOK(kefir_ast_context_resolve_object_identifier(&context, "c4", &scoped_id, NULL));
-
     ASSERT_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(&context, "c1", &scoped_id));
     ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
     ASSERT(scoped_id->enum_constant->value == 1);
