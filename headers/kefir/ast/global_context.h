@@ -9,10 +9,14 @@ typedef struct kefir_ast_global_context {
     struct kefir_symbol_table symbols;
     const struct kefir_ast_type_traits *type_traits;
     struct kefir_ast_type_bundle type_bundle;
+
+    struct kefir_ast_identifier_flat_scope object_identifiers;
+    struct kefir_ast_identifier_flat_scope constant_identifiers;
+    struct kefir_ast_identifier_flat_scope type_identifiers;
+    struct kefir_ast_identifier_flat_scope function_identifiers;
+    
     struct kefir_ast_identifier_flat_scope ordinary_scope;
     struct kefir_ast_identifier_flat_scope tag_scope;
-    struct kefir_hashtree external_object_declarations;
-    struct kefir_hashtree external_function_declarations;
 } kefir_ast_global_context_t;
 
 kefir_result_t kefir_ast_global_context_init(struct kefir_mem *,

@@ -34,7 +34,7 @@ DEFINE_CASE(ast_ordinary_function_scope1, "AST ordinary scope - functions #1")
     ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->function.type, type1));
     ASSERT(scoped_id->function.specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
     ASSERT(scoped_id->function.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);
-    ASSERT(kefir_hashtree_has(&global_context.external_function_declarations, (kefir_hashtree_key_t) "func1"));
+    ASSERT(scoped_id->function.external);
 
     struct kefir_ast_function_type *function_type2 = NULL;
     const struct kefir_ast_type *type2 = kefir_ast_type_function(&kft_mem, &global_context.type_bundle,
@@ -60,7 +60,7 @@ DEFINE_CASE(ast_ordinary_function_scope1, "AST ordinary scope - functions #1")
     ASSERT(KEFIR_AST_TYPE_COMPATIBLE(type_traits, scoped_id->function.type, type2));
     ASSERT(scoped_id->function.specifier == KEFIR_AST_FUNCTION_SPECIFIER_INLINE);
     ASSERT(scoped_id->function.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);
-    ASSERT(!kefir_hashtree_has(&global_context.external_function_declarations, (kefir_hashtree_key_t) "func1"));
+    ASSERT(!scoped_id->function.external);
 
     ASSERT_NOK(kefir_ast_global_context_define_static_function(&kft_mem, &global_context, KEFIR_AST_FUNCTION_SPECIFIER_INLINE,
         type2));
@@ -109,7 +109,7 @@ DEFINE_CASE(ast_ordinary_function_scope2, "AST ordinary scope - functions #2")
     ASSERT(KEFIR_AST_TYPE_COMPATIBLE(type_traits, scoped_id->function.type, type1));
     ASSERT(scoped_id->function.specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
     ASSERT(scoped_id->function.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC);
-    ASSERT(!kefir_hashtree_has(&global_context.external_function_declarations, (kefir_hashtree_key_t) "func1"));
+    ASSERT(!scoped_id->function.external);
 
     struct kefir_ast_function_type *function_type2 = NULL;
     const struct kefir_ast_type *type2 = kefir_ast_type_function(&kft_mem, &global_context.type_bundle,
@@ -150,7 +150,7 @@ DEFINE_CASE(ast_ordinary_function_scope2, "AST ordinary scope - functions #2")
     ASSERT(KEFIR_AST_TYPE_COMPATIBLE(type_traits, scoped_id->function.type, type2));
     ASSERT(scoped_id->function.specifier == KEFIR_AST_FUNCTION_SPECIFIER_NORETURN);
     ASSERT(scoped_id->function.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC);
-    ASSERT(!kefir_hashtree_has(&global_context.external_function_declarations, (kefir_hashtree_key_t) "func1"));
+    ASSERT(!scoped_id->function.external);
 
     ASSERT_OK(kefir_ast_context_free(&kft_mem, &context));
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));

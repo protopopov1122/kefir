@@ -65,19 +65,14 @@ static kefir_result_t translate_global_scoped_identifier(struct kefir_mem *mem,
                                                        const char *identifier,
                                                        const struct kefir_ast_scoped_identifier *scoped_identifier,
                                                        struct kefir_ast_global_scope_layout *layout,
-                                                       const struct kefir_ast_translator_environment *env,
-                                                       const struct kefir_ast_global_context *context) {
+                                                       const struct kefir_ast_translator_environment *env) {
     UNUSED(env);
     ASSIGN_DECL_CAST(struct kefir_ast_scoped_identifier_layout *, scoped_identifier_layout,
         scoped_identifier->payload.ptr);
     REQUIRE(scoped_identifier->klass == KEFIR_AST_SCOPE_IDENTIFIER_OBJECT, KEFIR_OK);
     switch (scoped_identifier->object.storage) {
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN: {
-            struct kefir_hashtree_node *external_declaration = NULL;
-            kefir_result_t res =
-                kefir_hashtree_at(&context->external_object_declarations, (kefir_hashtree_key_t) identifier, &external_declaration);
-            REQUIRE(res == KEFIR_OK || res == KEFIR_NOT_FOUND, res);
-            if (res == KEFIR_NOT_FOUND) {
+            if (!scoped_identifier->object.external) {
                 struct kefir_ir_type *type = kefir_ir_module_new_type(mem, module, 0, &scoped_identifier_layout->type_id);
                 REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to allocate new IR type"));
                 scoped_identifier_layout->type_index = 0;
@@ -85,17 +80,19 @@ static kefir_result_t translate_global_scoped_identifier(struct kefir_mem *mem,
                 REQUIRE_OK(kefir_irbuilder_type_init(mem, &builder, type));
                 REQUIRE_OK(kefir_ast_translate_stored_object_type(mem, scoped_identifier->object.type, scoped_identifier->object.alignment->value, env, &builder));
                 REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
-                REQUIRE_OK(kefir_hashtree_insert(mem, &layout->external_objects,
-                    (kefir_hashtree_key_t) identifier, (kefir_hashtree_value_t) type));
+                if (scoped_identifier->object.external) {
+                    kefir_result_t res = kefir_hashtree_insert(mem, &layout->external_objects,
+                        (kefir_hashtree_key_t) identifier, (kefir_hashtree_value_t) NULL);
+                    REQUIRE(res == KEFIR_OK || res == KEFIR_ALREADY_EXISTS, res);
+                } else {
+                    REQUIRE_OK(kefir_hashtree_insert(mem, &layout->external_objects,
+                        (kefir_hashtree_key_t) identifier, (kefir_hashtree_value_t) type));
+                }
             }
         } break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL: {
-            struct kefir_hashtree_node *external_declaration = NULL;
-            kefir_result_t res =
-                kefir_hashtree_at(&context->external_object_declarations, (kefir_hashtree_key_t) identifier, &external_declaration);
-            REQUIRE(res == KEFIR_OK || res == KEFIR_NOT_FOUND, res);
-            if (res == KEFIR_NOT_FOUND) {
+            if (!scoped_identifier->object.external) {
                 struct kefir_ir_type *type = kefir_ir_module_new_type(mem, module, 0, &scoped_identifier_layout->type_id);
                 REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to allocate new IR type"));
                 scoped_identifier_layout->type_index = 0;
@@ -103,8 +100,14 @@ static kefir_result_t translate_global_scoped_identifier(struct kefir_mem *mem,
                 REQUIRE_OK(kefir_irbuilder_type_init(mem, &builder, type));
                 REQUIRE_OK(kefir_ast_translate_stored_object_type(mem, scoped_identifier->object.type, scoped_identifier->object.alignment->value, env, &builder));
                 REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
-                REQUIRE_OK(kefir_hashtree_insert(mem, &layout->external_thread_local_objects,
-                    (kefir_hashtree_key_t) identifier, (kefir_hashtree_value_t) type));
+                if (scoped_identifier->object.external) {
+                    kefir_result_t res = kefir_hashtree_insert(mem, &layout->external_thread_local_objects,
+                        (kefir_hashtree_key_t) identifier, (kefir_hashtree_value_t) NULL);
+                    REQUIRE(res == KEFIR_OK || res == KEFIR_ALREADY_EXISTS, res);
+                } else {
+                    REQUIRE_OK(kefir_hashtree_insert(mem, &layout->external_thread_local_objects,
+                        (kefir_hashtree_key_t) identifier, (kefir_hashtree_value_t) type));
+                }
             }
         } break;
 
@@ -148,22 +151,6 @@ static kefir_result_t translate_global_scoped_identifier(struct kefir_mem *mem,
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER:
             return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "File-scope variable cannot have auto/register storage");
     }
-    struct kefir_hashtree_node_iterator iter;
-    for (const struct kefir_hashtree_node *node = kefir_hashtree_iter(&context->external_object_declarations, &iter);
-        node != NULL;
-        node = kefir_hashtree_next(&iter)) {
-        ASSIGN_DECL_CAST(struct kefir_ast_scoped_identifier *, scoped_id,
-            node->value);
-        if (scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN) {
-            REQUIRE_OK(kefir_hashtree_insert(mem, &layout->external_objects,
-                (kefir_hashtree_key_t) node->key, (kefir_hashtree_value_t) NULL));
-        } else if (scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN) {
-            REQUIRE_OK(kefir_hashtree_insert(mem, &layout->external_thread_local_objects,
-                (kefir_hashtree_key_t) node->key, (kefir_hashtree_value_t) NULL));
-        } else {
-            return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected external scoped identifier declaration storage");
-        }
-    }
     return KEFIR_OK;
 }
 
@@ -181,7 +168,7 @@ kefir_result_t kefir_ast_translate_global_scope_layout(struct kefir_mem *mem,
     for (res = kefir_ast_identifier_flat_scope_iter(&context->ordinary_scope, &iter);
         res == KEFIR_OK;
         res = kefir_ast_identifier_flat_scope_next(&context->ordinary_scope, &iter)) {
-        REQUIRE_OK(translate_global_scoped_identifier(mem, module, iter.identifier, iter.value, layout, env, context));
+        REQUIRE_OK(translate_global_scoped_identifier(mem, module, iter.identifier, iter.value, layout, env));
     }
     REQUIRE_ELSE(res == KEFIR_ITERATOR_END, {
         return res;
@@ -191,6 +178,7 @@ kefir_result_t kefir_ast_translate_global_scope_layout(struct kefir_mem *mem,
 
 static kefir_result_t translate_local_scoped_identifier(struct kefir_mem *mem,
                                                       struct kefir_irbuilder_type *builder,
+                                                      const char *identifier,
                                                       const struct kefir_ast_scoped_identifier *scoped_identifier,
                                                       const struct kefir_ast_translator_environment *env,
                                                       struct kefir_ast_local_scope_layout *local_layout) {
@@ -199,9 +187,17 @@ static kefir_result_t translate_local_scoped_identifier(struct kefir_mem *mem,
     ASSIGN_DECL_CAST(struct kefir_ast_scoped_identifier_layout *, scoped_identifier_layout,
         scoped_identifier->payload.ptr);
     switch (scoped_identifier->object.storage) {
-        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN:
-        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL:
-            break;
+        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN: {
+            kefir_result_t res = kefir_hashtree_insert(mem, &local_layout->global->external_objects,
+                (kefir_hashtree_key_t) identifier, (kefir_hashtree_value_t) NULL);
+            REQUIRE(res == KEFIR_OK || res == KEFIR_ALREADY_EXISTS, res);
+        } break;
+
+        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL: {
+            kefir_result_t res = kefir_hashtree_insert(mem, &local_layout->global->external_thread_local_objects,
+                (kefir_hashtree_key_t) identifier, (kefir_hashtree_value_t) NULL);
+            REQUIRE(res == KEFIR_OK || res == KEFIR_ALREADY_EXISTS, res);
+        } break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC: {
             const kefir_size_t index = kefir_ir_type_total_length(local_layout->global->static_layout);
@@ -253,7 +249,7 @@ static kefir_result_t traverse_local_scope(struct kefir_mem *mem,
         res == KEFIR_OK;
         res = kefir_ast_identifier_flat_scope_next(scope, &iter)) {
         scope_length++;
-        REQUIRE_OK(translate_local_scoped_identifier(mem, builder, iter.value, env, local_layout));
+        REQUIRE_OK(translate_local_scoped_identifier(mem, builder, iter.identifier, iter.value, env, local_layout));
     }
     REQUIRE_ELSE(res == KEFIR_ITERATOR_END, {
         return res;
@@ -286,7 +282,7 @@ kefir_result_t kefir_ast_translate_local_scope_layout(struct kefir_mem *mem,
 
     struct kefir_irbuilder_type builder;
     REQUIRE_OK(kefir_irbuilder_type_init(mem, &builder, layout->local_layout));
-    REQUIRE_OK(traverse_local_scope(mem, &context->local_ordinary_scope.root, &builder, env, layout));
+    REQUIRE_OK(traverse_local_scope(mem, &context->ordinary_scope.root, &builder, env, layout));
     REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
     return KEFIR_OK;
 }

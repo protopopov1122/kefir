@@ -51,6 +51,8 @@ DECLARE_CASE(ast_ordinary_scope_objects10);
 DECLARE_CASE(ast_ordinary_scope_objects11);
 DECLARE_CASE(ast_ordinary_scope_objects12);
 DECLARE_CASE(ast_ordinary_scope_objects13);
+DECLARE_CASE(ast_ordinary_scope_objects14);
+DECLARE_CASE(ast_ordinary_scope_objects15);
 DECLARE_CASE(ast_type_construction1);
 DECLARE_CASE(ast_type_construction2);
 DECLARE_CASE(ast_type_construction3);
@@ -148,6 +150,8 @@ TEST_SUITE(mainSuite,
     &ast_ordinary_scope_objects11,
     &ast_ordinary_scope_objects12,
     &ast_ordinary_scope_objects13,
+    &ast_ordinary_scope_objects14,
+    &ast_ordinary_scope_objects15,
     &ast_type_construction1,
     &ast_type_construction2,
     &ast_type_construction3,

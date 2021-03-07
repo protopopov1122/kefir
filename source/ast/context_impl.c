@@ -25,11 +25,15 @@ kefir_result_t kefir_ast_context_free_scoped_identifier(struct kefir_mem *mem,
 struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_object_identifier(struct kefir_mem *mem,
                                                                                     const struct kefir_ast_type *type,
                                                                                     kefir_ast_scoped_identifier_storage_t storage,
-                                                                                    struct kefir_ast_alignment *alignment) {
+                                                                                    struct kefir_ast_alignment *alignment,
+                                                                                    kefir_ast_scoped_identifier_linkage_t linkage,
+                                                                                    kefir_bool_t external) {
     struct kefir_ast_scoped_identifier *scoped_id = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_scoped_identifier));
     scoped_id->klass = KEFIR_AST_SCOPE_IDENTIFIER_OBJECT;
     scoped_id->object.type = type;
     scoped_id->object.storage = storage;
+    scoped_id->object.external = external;
+    scoped_id->object.linkage = linkage;
     memset(scoped_id->payload.content, 0, KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE);
     scoped_id->payload.ptr = scoped_id->payload.content;
     if (alignment != NULL) {
@@ -128,12 +132,14 @@ kefir_result_t kefir_ast_context_update_existing_scoped_type_tag(struct kefir_as
 struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_function_identifier(struct kefir_mem *mem,
                                                                                       const struct kefir_ast_type *type,
                                                                                       kefir_ast_function_specifier_t specifier,
-                                                                                      kefir_ast_scoped_identifier_storage_t storage) {
+                                                                                      kefir_ast_scoped_identifier_storage_t storage,
+                                                                                      kefir_bool_t external) {
     struct kefir_ast_scoped_identifier *scoped_id = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_scoped_identifier));
     scoped_id->klass = KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION;
     scoped_id->function.type = type;
     scoped_id->function.specifier = specifier;
     scoped_id->function.storage = storage;
+    scoped_id->function.external = external;
     memset(scoped_id->payload.content, 0, KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE);
     scoped_id->payload.ptr = scoped_id->payload.content;
     return scoped_id;
@@ -158,4 +164,21 @@ kefir_ast_function_specifier_t kefir_ast_context_merge_function_specifiers(kefir
     } else {
         return KEFIR_AST_FUNCTION_SPECIFIER_NONE;
     }
+}
+
+kefir_result_t kefir_ast_context_merge_alignment(struct kefir_mem *mem,
+                                             struct kefir_ast_alignment **original,
+                                             struct kefir_ast_alignment *alignment) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(original != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid original alignment pointer"));
+    REQUIRE(alignment != NULL, KEFIR_OK);
+    if (*original == NULL) {
+        *original = alignment;
+    } else if (alignment->value > (*original)->value) {
+        REQUIRE_OK(kefir_ast_alignment_free(mem, *original));
+        *original = alignment;
+    } else {
+        REQUIRE_OK(kefir_ast_alignment_free(mem, alignment));
+    }
+    return KEFIR_OK;
 }

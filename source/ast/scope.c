@@ -71,6 +71,13 @@ kefir_result_t kefir_ast_identifier_flat_scope_at(const struct kefir_ast_identif
     return KEFIR_OK;
 }
 
+kefir_bool_t kefir_ast_identifier_flat_scope_has(const struct kefir_ast_identifier_flat_scope *scope,
+                                             const char *identifier) {
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier scope"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier"));
+    return kefir_hashtree_has(&scope->content, (kefir_hashtree_key_t) identifier);
+}
+
 kefir_result_t kefir_ast_identifier_flat_scope_iter(const struct kefir_ast_identifier_flat_scope *scope,
                                            struct kefir_ast_identifier_flat_scope_iterator *iter) {
     REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier scope"));

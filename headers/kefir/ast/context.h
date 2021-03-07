@@ -3,13 +3,17 @@
 
 #include "kefir/core/mem.h"
 #include "kefir/core/symbol_table.h"
+#include "kefir/core/list.h"
 #include "kefir/ast/scope.h"
 #include "kefir/ast/global_context.h"
 
 typedef struct kefir_ast_context {
     struct kefir_ast_global_context *global;
-    struct kefir_ast_identifier_block_scope local_ordinary_scope;
-    struct kefir_ast_identifier_block_scope local_tag_scope;
+
+    struct kefir_list identifiers;
+
+    struct kefir_ast_identifier_block_scope ordinary_scope;
+    struct kefir_ast_identifier_block_scope tag_scope;
 } kefir_ast_context_t;
 
 kefir_result_t kefir_ast_context_init(struct kefir_mem *,
