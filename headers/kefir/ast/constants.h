@@ -22,7 +22,6 @@ typedef enum kefir_ast_node_type {
 typedef enum kefir_ast_node_category {
     KEFIR_AST_NODE_CATEGORY_UNKNOWN,
     KEFIR_AST_NODE_CATEGORY_EXPRESSION,
-    KEFIR_AST_NODE_CATEGORY_LVALUE_EXPRESSION,
     KEFIR_AST_NODE_CATEGORY_TYPE
 } kefir_ast_node_category_t;
 

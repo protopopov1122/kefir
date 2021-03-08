@@ -47,8 +47,12 @@ struct kefir_ast_node_base *ast_function_call_clone(struct kefir_mem *mem,
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_FUNCTION_CALL_CLASS;
     clone->base.self = clone;
-    clone->base.properties = node->base.properties;
-    kefir_result_t res = kefir_list_init(&clone->arguments);
+    kefir_result_t res = kefir_ast_node_properties_clone(&clone->base.properties, &node->base.properties);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, clone);
+        return NULL;
+    });
+    res = kefir_list_init(&clone->arguments);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, clone);
         return NULL;
@@ -96,10 +100,13 @@ struct kefir_ast_function_call *kefir_ast_new_function_call(struct kefir_mem *me
     REQUIRE(function_call != NULL, NULL);
     function_call->base.klass = &AST_FUNCTION_CALL_CLASS;
     function_call->base.self = function_call;
-    function_call->base.properties.category = KEFIR_AST_NODE_CATEGORY_UNKNOWN;
-    function_call->base.properties.type = NULL;
+    kefir_result_t res = kefir_ast_node_properties_init(&function_call->base.properties);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, function_call);
+        return NULL;
+    });
     function_call->function = function;
-    kefir_result_t res = kefir_list_init(&function_call->arguments);
+    res = kefir_list_init(&function_call->arguments);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, function_call);
         return NULL;

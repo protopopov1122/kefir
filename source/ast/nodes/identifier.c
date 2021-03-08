@@ -33,7 +33,11 @@ struct kefir_ast_node_base *ast_identifier_clone(struct kefir_mem *mem,
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_IDENTIFIER_CLASS;
     clone->base.self = clone;
-    clone->base.properties = node->base.properties;
+    kefir_result_t res = kefir_ast_node_properties_clone(&clone->base.properties, &node->base.properties);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, clone);
+        return NULL;
+    });
     clone->identifier = node->identifier;
     return KEFIR_AST_NODE_BASE(clone);
 }
@@ -50,8 +54,11 @@ struct kefir_ast_identifier *kefir_ast_new_identifier(struct kefir_mem *mem,
     REQUIRE(id != NULL, NULL);
     id->base.klass = &AST_IDENTIFIER_CLASS;
     id->base.self = id;
-    id->base.properties.category = KEFIR_AST_NODE_CATEGORY_UNKNOWN;
-    id->base.properties.type = NULL;
+    kefir_result_t res = kefir_ast_node_properties_init(&id->base.properties);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, id);
+        return NULL;
+    });
     id->identifier = id_copy;
     return id;
 }

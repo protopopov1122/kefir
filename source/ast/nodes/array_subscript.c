@@ -35,7 +35,11 @@ struct kefir_ast_node_base *ast_array_subscript_clone(struct kefir_mem *mem,
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_ARRAY_SUBSCRIPT_CLASS;
     clone->base.self = clone;
-    clone->base.properties = node->base.properties;
+    kefir_result_t res = kefir_ast_node_properties_clone(&clone->base.properties, &node->base.properties);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, clone);
+        return NULL;
+    });
     clone->array = KEFIR_AST_NODE_CLONE(mem, node->array);
     REQUIRE_ELSE(clone->array != NULL, {
         KEFIR_FREE(mem, clone);
@@ -60,8 +64,11 @@ struct kefir_ast_array_subscript *kefir_ast_new_array_subscript(struct kefir_mem
     REQUIRE(array_subscript != NULL, NULL);
     array_subscript->base.klass = &AST_ARRAY_SUBSCRIPT_CLASS;
     array_subscript->base.self = array_subscript;
-    array_subscript->base.properties.category = KEFIR_AST_NODE_CATEGORY_UNKNOWN;
-    array_subscript->base.properties.type = NULL;
+    kefir_result_t res = kefir_ast_node_properties_init(&array_subscript->base.properties);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, array_subscript);
+        return NULL;
+    });
     array_subscript->array = array;
     array_subscript->subscript = subscript;
     return array_subscript;

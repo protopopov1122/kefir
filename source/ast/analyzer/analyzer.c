@@ -2,6 +2,7 @@
 #include "kefir/ast/type_conv.h"
 #include "kefir/core/error.h"
 #include "kefir/core/util.h"
+#include "kefir/ast/analyzer/nodes.h"
 
 struct assign_param {
     struct kefir_mem *mem;
@@ -22,139 +23,40 @@ static kefir_result_t visit_constant(const struct kefir_ast_visitor *visitor,
                                    const struct kefir_ast_constant *node,
                                    void *payload) {
     UNUSED(visitor);
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST analyzer payload"));
     ASSIGN_DECL_CAST(struct assign_param *, param,
         payload);
-    param->base->properties.category = KEFIR_AST_NODE_CATEGORY_EXPRESSION;
-    switch (node->type) {
-        case KEFIR_AST_BOOL_CONSTANT:
-            param->base->properties.type = kefir_ast_type_bool();
-            break;
-
-        case KEFIR_AST_CHAR_CONSTANT:
-            param->base->properties.type = kefir_ast_type_unsigned_char();
-            break;
-
-        case KEFIR_AST_INT_CONSTANT:
-            param->base->properties.type = kefir_ast_type_signed_int();
-            break;
-
-        case KEFIR_AST_UINT_CONSTANT:
-            param->base->properties.type = kefir_ast_type_unsigned_int();
-            break;
-
-        case KEFIR_AST_LONG_CONSTANT:
-            param->base->properties.type = kefir_ast_type_signed_long();
-            break;
-
-        case KEFIR_AST_ULONG_CONSTANT:
-            param->base->properties.type = kefir_ast_type_unsigned_long();
-            break;
-
-        case KEFIR_AST_LONG_LONG_CONSTANT:
-            param->base->properties.type = kefir_ast_type_signed_long_long();
-            break;
-
-        case KEFIR_AST_ULONG_LONG_CONSTANT:
-            param->base->properties.type = kefir_ast_type_unsigned_long_long();
-            break;
-
-        case KEFIR_AST_FLOAT_CONSTANT:
-            param->base->properties.type = kefir_ast_type_float();
-            break;
-
-        case KEFIR_AST_DOUBLE_CONSTANT:
-            param->base->properties.type = kefir_ast_type_double();
-            break;
-    }
-    return KEFIR_OK;
+    return kefir_ast_analyze_constant_node(param->mem, param->context, node, param->base);
 }
 
 static kefir_result_t visit_identifier(const struct kefir_ast_visitor *visitor,
                                      const struct kefir_ast_identifier *node,
                                      void *payload) {
     UNUSED(visitor);
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST analyzer payload"));
     ASSIGN_DECL_CAST(struct assign_param *, param,
         payload);
-    const struct kefir_ast_scoped_identifier *scoped_id = NULL;
-    REQUIRE_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(
-        param->context, node->identifier, &scoped_id));
-    switch (scoped_id->klass) {
-        case KEFIR_AST_SCOPE_IDENTIFIER_OBJECT:
-            param->base->properties.category = KEFIR_AST_NODE_CATEGORY_LVALUE_EXPRESSION;
-            param->base->properties.type = scoped_id->object.type;
-            return KEFIR_OK;
-        
-        default:
-            return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Non-object identifiers are not supported yet");
-    }
+    return kefir_ast_analyze_identifier_node(param->mem, param->context, node, param->base);
 }
 
 static kefir_result_t visit_unary_operation(const struct kefir_ast_visitor *visitor,
                                           const struct kefir_ast_unary_operation *node,
                                           void *payload) {
     UNUSED(visitor);
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST analyzer payload"));
     ASSIGN_DECL_CAST(struct assign_param *, param,
         payload);
-    REQUIRE_OK(kefir_ast_analyze_node(param->mem, param->context, node->arg));
-    const struct kefir_ast_type *type1 = kefir_ast_unqualified_type(node->arg->properties.type);
-    switch (node->type) {
-        case KEFIR_AST_OPERATION_PLUS:
-        case KEFIR_AST_OPERATION_NEGATE:
-            REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1),
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected arithmetic argument of unary +|-"));
-            if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1)) {
-                param->base->properties.type = kefir_ast_type_int_promotion(param->context->global->type_traits, type1);
-            } else {
-                param->base->properties.type = type1;
-            }
-            break;
-        
-        case KEFIR_AST_OPERATION_INVERT:
-            REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1),
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected integral argument of bitwise inversion"));
-            param->base->properties.type = kefir_ast_type_int_promotion(param->context->global->type_traits, type1);
-            break;
-
-        case KEFIR_AST_OPERATION_LOGICAL_NEGATE:
-            REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(type1),
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected type argument of logical negation"));
-            param->base->properties.type = kefir_ast_type_signed_int();
-            break;
-
-        default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected unary AST node type");
-    }
-    param->base->properties.type = type1;
-    return KEFIR_OK;
+    return kefir_ast_analyze_unary_operation_node(param->mem, param->context, node, param->base);
 }
 
 static kefir_result_t visit_binary_operation(const struct kefir_ast_visitor *visitor,
                                            const struct kefir_ast_binary_operation *node,
                                            void *payload) {
     UNUSED(visitor);
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST analyzer payload"));
     ASSIGN_DECL_CAST(struct assign_param *, param,
         payload);
-    REQUIRE_OK(kefir_ast_analyze_node(param->mem, param->context, node->arg1));
-    REQUIRE_OK(kefir_ast_analyze_node(param->mem, param->context, node->arg2));
-    const struct kefir_ast_type *type1 = kefir_ast_unqualified_type(node->arg1->properties.type);
-    const struct kefir_ast_type *type2 = kefir_ast_unqualified_type(node->arg2->properties.type);
-    if (node->type == KEFIR_AST_OPERATION_SHIFT_LEFT ||
-        node->type == KEFIR_AST_OPERATION_SHIFT_RIGHT) {
-        REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1) &&
-            KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type2),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Bitwise shift operator expects integer arguments"));
-        param->base->properties.type = kefir_ast_type_int_promotion(param->context->global->type_traits, type1);
-        REQUIRE(param->base->properties.type != NULL,
-            KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to determine common AST arithmetic type"));
-    } else if (KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1) &&
-        KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type2)) {
-        param->base->properties.type = kefir_ast_type_common_arithmetic(param->context->global->type_traits, type1, type2);
-        REQUIRE(param->base->properties.type != NULL,
-            KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to determine common AST arithmetic type"));
-    } else {
-        return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Binary type derival from non-arithmetic AST types is not supported yet");
-    }
-    return KEFIR_OK;
+    return kefir_ast_analyze_binary_operation_node(param->mem, param->context, node, param->base);
 }
 
 kefir_result_t kefir_ast_analyze_node(struct kefir_mem *mem,

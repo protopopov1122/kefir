@@ -17,13 +17,19 @@ typedef struct kefir_ast_node_class {
     kefir_result_t (*free)(struct kefir_mem *, struct kefir_ast_node_base *);
 } kefir_ast_node_class_t;
 
+typedef struct kefir_ast_node_properties {
+    kefir_ast_node_category_t category;
+    const struct kefir_ast_type *type;
+    struct {
+        kefir_bool_t lvalue;
+        kefir_bool_t constant_expression;
+    } expression_props;
+} kefir_ast_node_properties_t;
+
 typedef struct kefir_ast_node_base {
     const struct kefir_ast_node_class *klass;
     void *self;
-    struct {
-        kefir_ast_node_category_t category;
-        const struct kefir_ast_type *type;
-    } properties;
+    struct kefir_ast_node_properties properties;
 } kefir_ast_node_base_t;
 
 #define KEFIR_AST_NODE_STRUCT(id, content) \
@@ -42,5 +48,10 @@ typedef struct kefir_ast_node_base {
 
 kefir_result_t kefir_ast_visitor_init(struct kefir_ast_visitor *,
                                   KEFIR_AST_VISITOR_METHOD(method, kefir_ast_node_base));
+
+kefir_result_t kefir_ast_node_properties_init(struct kefir_ast_node_properties *);
+
+kefir_result_t kefir_ast_node_properties_clone(struct kefir_ast_node_properties *,
+                                           const struct kefir_ast_node_properties *);
 
 #endif
