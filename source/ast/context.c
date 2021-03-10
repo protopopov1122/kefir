@@ -1,5 +1,5 @@
 #include <string.h>
-#include "kefir/ast/context.h"
+#include "kefir/ast/local_context.h"
 #include "kefir/ast/context_impl.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
@@ -16,9 +16,27 @@ static kefir_result_t free_scoped_identifier(struct kefir_mem *mem,
     return kefir_ast_context_free_scoped_identifier(mem, scoped_id, payload);
 }
 
-kefir_result_t kefir_ast_context_init(struct kefir_mem *mem,
+static kefir_result_t context_resolve_ordinary_identifier(const struct kefir_ast_context *context,
+                                                        const char *identifier,
+                                                        const struct kefir_ast_scoped_identifier **scoped_id) {
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
+    ASSIGN_DECL_CAST(struct kefir_ast_local_context *, local_ctx,
+        context->payload);
+    return kefir_ast_local_context_resolve_scoped_ordinary_identifier(local_ctx, identifier, scoped_id);
+}
+
+static kefir_result_t context_resolve_tag_identifier(const struct kefir_ast_context *context,
+                                                   const char *identifier,
+                                                   const struct kefir_ast_scoped_identifier **scoped_id) {
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
+    ASSIGN_DECL_CAST(struct kefir_ast_local_context *, local_ctx,
+        context->payload);
+    return kefir_ast_local_context_resolve_scoped_tag_identifier(local_ctx, identifier, scoped_id);
+}
+
+kefir_result_t kefir_ast_local_context_init(struct kefir_mem *mem,
                                   struct kefir_ast_global_context *global,
-                                  struct kefir_ast_context *context) {
+                                  struct kefir_ast_local_context *context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(global != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST global translation context"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
@@ -28,11 +46,18 @@ kefir_result_t kefir_ast_context_init(struct kefir_mem *mem,
     REQUIRE_OK(kefir_ast_identifier_block_scope_init(mem, &context->ordinary_scope));
     REQUIRE_OK(kefir_ast_identifier_block_scope_init(mem, &context->tag_scope));
     REQUIRE_OK(kefir_ast_identifier_block_scope_on_removal(&context->tag_scope, kefir_ast_context_free_scoped_identifier, NULL));
+
+    context->context.resolve_ordinary_identifier = context_resolve_ordinary_identifier;
+    context->context.resolve_tag_identifier = context_resolve_tag_identifier;
+    context->context.symbols = &context->global->symbols;
+    context->context.type_bundle = &context->global->type_bundle;
+    context->context.type_traits = context->global->type_traits;
+    context->context.payload = context;
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_context_free(struct kefir_mem *mem,
-                                 struct kefir_ast_context *context) {
+kefir_result_t kefir_ast_local_context_free(struct kefir_mem *mem,
+                                 struct kefir_ast_local_context *context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
     REQUIRE_OK(kefir_ast_identifier_block_scope_free(mem, &context->tag_scope));
@@ -41,7 +66,7 @@ kefir_result_t kefir_ast_context_free(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_context_resolve_scoped_ordinary_identifier(const struct kefir_ast_context *context,
+kefir_result_t kefir_ast_local_context_resolve_scoped_ordinary_identifier(const struct kefir_ast_local_context *context,
                                                        const char *identifier,
                                                        const struct kefir_ast_scoped_identifier **scoped_identifier) {
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
@@ -57,7 +82,7 @@ kefir_result_t kefir_ast_context_resolve_scoped_ordinary_identifier(const struct
     return res;
 }
 
-kefir_result_t kefir_ast_context_resolve_scoped_tag_identifier(const struct kefir_ast_context *context,
+kefir_result_t kefir_ast_local_context_resolve_scoped_tag_identifier(const struct kefir_ast_local_context *context,
                                                            const char *identifier,
                                                            const struct kefir_ast_scoped_identifier **scoped_identifier) {
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
@@ -73,8 +98,8 @@ kefir_result_t kefir_ast_context_resolve_scoped_tag_identifier(const struct kefi
     return res;
 }
 
-kefir_result_t kefir_ast_context_push_block_scope(struct kefir_mem *mem,
-                                              struct kefir_ast_context *context) {
+kefir_result_t kefir_ast_local_context_push_block_scope(struct kefir_mem *mem,
+                                              struct kefir_ast_local_context *context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
     REQUIRE_OK(kefir_ast_identifier_block_scope_push(mem, &context->ordinary_scope));
@@ -82,7 +107,7 @@ kefir_result_t kefir_ast_context_push_block_scope(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_context_pop_block_scope(struct kefir_ast_context *context) {
+kefir_result_t kefir_ast_local_context_pop_block_scope(struct kefir_ast_local_context *context) {
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
     REQUIRE_OK(kefir_ast_identifier_block_scope_pop(&context->tag_scope));
     REQUIRE_OK(kefir_ast_identifier_block_scope_pop(&context->ordinary_scope));
@@ -114,8 +139,8 @@ static kefir_result_t require_global_ordinary_object(struct kefir_ast_global_con
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_context_declare_external(struct kefir_mem *mem,
-                                              struct kefir_ast_context *context,
+kefir_result_t kefir_ast_local_context_declare_external(struct kefir_mem *mem,
+                                              struct kefir_ast_local_context *context,
                                               const char *identifier,
                                               const struct kefir_ast_type *type,
                                               struct kefir_ast_alignment *alignment) {
@@ -162,8 +187,8 @@ kefir_result_t kefir_ast_context_declare_external(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_context_declare_external_thread_local(struct kefir_mem *mem,
-                                                           struct kefir_ast_context *context,
+kefir_result_t kefir_ast_local_context_declare_external_thread_local(struct kefir_mem *mem,
+                                                           struct kefir_ast_local_context *context,
                                                            const char *identifier,
                                                            const struct kefir_ast_type *type,
                                                            struct kefir_ast_alignment *alignment) {
@@ -210,8 +235,8 @@ kefir_result_t kefir_ast_context_declare_external_thread_local(struct kefir_mem 
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_context_define_static(struct kefir_mem *mem,
-                                           struct kefir_ast_context *context,
+kefir_result_t kefir_ast_local_context_define_static(struct kefir_mem *mem,
+                                           struct kefir_ast_local_context *context,
                                            const char *identifier,
                                            const struct kefir_ast_type *type,
                                            struct kefir_ast_alignment *alignment) {
@@ -243,8 +268,8 @@ kefir_result_t kefir_ast_context_define_static(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_context_define_static_thread_local(struct kefir_mem *mem,
-                                                          struct kefir_ast_context *context,
+kefir_result_t kefir_ast_local_context_define_static_thread_local(struct kefir_mem *mem,
+                                                          struct kefir_ast_local_context *context,
                                                           const char *identifier,
                                                           const struct kefir_ast_type *type,
                                                           struct kefir_ast_alignment *alignment) {
@@ -276,8 +301,8 @@ kefir_result_t kefir_ast_context_define_static_thread_local(struct kefir_mem *me
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_context_define_auto(struct kefir_mem *mem,
-                                         struct kefir_ast_context *context,
+kefir_result_t kefir_ast_local_context_define_auto(struct kefir_mem *mem,
+                                         struct kefir_ast_local_context *context,
                                          const char *identifier,
                                          const struct kefir_ast_type *type,
                                          struct kefir_ast_alignment *alignment) {
@@ -309,8 +334,8 @@ kefir_result_t kefir_ast_context_define_auto(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_context_define_register(struct kefir_mem *mem,
-                                             struct kefir_ast_context *context,
+kefir_result_t kefir_ast_local_context_define_register(struct kefir_mem *mem,
+                                             struct kefir_ast_local_context *context,
                                              const char *identifier,
                                              const struct kefir_ast_type *type,
                                              struct kefir_ast_alignment *alignment) {
@@ -342,8 +367,8 @@ kefir_result_t kefir_ast_context_define_register(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_context_define_constant(struct kefir_mem *mem,
-                                             struct kefir_ast_context *context,
+kefir_result_t kefir_ast_local_context_define_constant(struct kefir_mem *mem,
+                                             struct kefir_ast_local_context *context,
                                              const char *identifier,
                                              struct kefir_ast_constant_expression *value,
                                              const struct kefir_ast_type *type) {
@@ -374,8 +399,8 @@ kefir_result_t kefir_ast_context_define_constant(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_context_define_tag(struct kefir_mem *mem,
-                                        struct kefir_ast_context *context,
+kefir_result_t kefir_ast_local_context_define_tag(struct kefir_mem *mem,
+                                        struct kefir_ast_local_context *context,
                                         const struct kefir_ast_type *type) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
@@ -405,8 +430,8 @@ kefir_result_t kefir_ast_context_define_tag(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_context_define_type(struct kefir_mem *mem,
-                                         struct kefir_ast_context *context,
+kefir_result_t kefir_ast_local_context_define_type(struct kefir_mem *mem,
+                                         struct kefir_ast_local_context *context,
                                          const char *identifier,
                                          const struct kefir_ast_type *type) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
@@ -455,8 +480,8 @@ static kefir_result_t require_global_ordinary_function(struct kefir_ast_global_c
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_context_declare_function(struct kefir_mem *mem,
-                                              struct kefir_ast_context *context,
+kefir_result_t kefir_ast_local_context_declare_function(struct kefir_mem *mem,
+                                              struct kefir_ast_local_context *context,
                                               kefir_ast_function_specifier_t specifier,
                                               const struct kefir_ast_type *function) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));

@@ -4,8 +4,11 @@
 #include "kefir/core/mem.h"
 #include "kefir/core/symbol_table.h"
 #include "kefir/ast/scope.h"
+#include "kefir/ast/context.h"
 
 typedef struct kefir_ast_global_context {
+    struct kefir_ast_context context;
+
     struct kefir_symbol_table symbols;
     const struct kefir_ast_type_traits *type_traits;
     struct kefir_ast_type_bundle type_bundle;

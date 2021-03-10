@@ -24,7 +24,7 @@ kefir_result_t kefir_ast_analyze_function_call_node(struct kefir_mem *mem,
     }
 
     // TODO: Function parameter type and number validation
-    const struct kefir_ast_type *func_type = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, &context->global->type_bundle,
+    const struct kefir_ast_type *func_type = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle,
         node->function->properties.type);
     REQUIRE(func_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER &&
         func_type->referenced_type->tag == KEFIR_AST_TYPE_FUNCTION,

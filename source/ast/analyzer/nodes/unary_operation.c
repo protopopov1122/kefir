@@ -21,25 +21,25 @@ kefir_result_t kefir_ast_analyze_unary_operation_node(struct kefir_mem *mem,
     switch (node->type) {
         case KEFIR_AST_OPERATION_PLUS:
         case KEFIR_AST_OPERATION_NEGATE: {
-            type1 = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, &context->global->type_bundle, node->arg->properties.type);
+            type1 = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->arg->properties.type);
             REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1),
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected arithmetic argument of unary +|-"));
             if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1)) {
-                base->properties.type = kefir_ast_type_int_promotion(context->global->type_traits, type1);
+                base->properties.type = kefir_ast_type_int_promotion(context->type_traits, type1);
             } else {
                 base->properties.type = type1;
             }
         } break;
         
         case KEFIR_AST_OPERATION_INVERT: {
-            type1 = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, &context->global->type_bundle, node->arg->properties.type);
+            type1 = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->arg->properties.type);
             REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1),
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected integral argument of bitwise inversion"));
-            base->properties.type = kefir_ast_type_int_promotion(context->global->type_traits, type1);
+            base->properties.type = kefir_ast_type_int_promotion(context->type_traits, type1);
         } break;
 
         case KEFIR_AST_OPERATION_LOGICAL_NEGATE: {
-            type1 = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, &context->global->type_bundle, node->arg->properties.type);
+            type1 = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->arg->properties.type);
             REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(type1),
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected type argument of logical negation"));
             base->properties.type = kefir_ast_type_signed_int();

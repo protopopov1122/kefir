@@ -11,7 +11,7 @@ kefir_result_t kefir_ast_analyze_identifier_node(struct kefir_mem *mem,
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST base node"));
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
-    REQUIRE_OK(kefir_ast_context_resolve_scoped_ordinary_identifier(
+    REQUIRE_OK(context->resolve_ordinary_identifier(
         context, node->identifier, &scoped_id));
     switch (scoped_id->klass) {
         case KEFIR_AST_SCOPE_IDENTIFIER_OBJECT:

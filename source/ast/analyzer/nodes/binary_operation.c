@@ -15,9 +15,9 @@ kefir_result_t kefir_ast_analyze_binary_operation_node(struct kefir_mem *mem,
     
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->arg1));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->arg2));
-    const struct kefir_ast_type *type1 = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, &context->global->type_bundle,
+    const struct kefir_ast_type *type1 = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle,
         node->arg1->properties.type);
-    const struct kefir_ast_type *type2 = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, &context->global->type_bundle,
+    const struct kefir_ast_type *type2 = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle,
         node->arg2->properties.type);
     REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
     base->properties.category = KEFIR_AST_NODE_CATEGORY_EXPRESSION;
@@ -30,7 +30,7 @@ kefir_result_t kefir_ast_analyze_binary_operation_node(struct kefir_mem *mem,
             REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1) &&
                 KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type2),
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Bitwise shift operator expects integer arguments"));
-            base->properties.type = kefir_ast_type_int_promotion(context->global->type_traits, type1);
+            base->properties.type = kefir_ast_type_int_promotion(context->type_traits, type1);
             REQUIRE(base->properties.type != NULL,
                 KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to determine common AST arithmetic type"));
         } break;
@@ -38,7 +38,7 @@ kefir_result_t kefir_ast_analyze_binary_operation_node(struct kefir_mem *mem,
         default: {
             if (KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1) &&
                 KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type2)) {
-                base->properties.type = kefir_ast_type_common_arithmetic(context->global->type_traits, type1, type2);
+                base->properties.type = kefir_ast_type_common_arithmetic(context->type_traits, type1, type2);
                 REQUIRE(base->properties.type != NULL,
                     KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR,
                         "Unable to determine common AST arithmetic type"));

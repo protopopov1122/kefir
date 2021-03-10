@@ -273,7 +273,7 @@ static kefir_result_t traverse_local_scope(struct kefir_mem *mem,
 }
 
 kefir_result_t kefir_ast_translate_local_scope_layout(struct kefir_mem *mem,
-                                                  const struct kefir_ast_context *context,
+                                                  const struct kefir_ast_local_context *context,
                                                   const struct kefir_ast_translator_environment *env,
                                                   struct kefir_ast_local_scope_layout *layout) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));

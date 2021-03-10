@@ -17,7 +17,7 @@ kefir_result_t kefir_ast_analyze_struct_member_node(struct kefir_mem *mem,
     const struct kefir_ast_type *struct_type = node->structure->properties.type;
     const struct kefir_ast_type_qualification *qualification = NULL;
     if (node->base.klass->type == KEFIR_AST_STRUCTURE_INDIRECT_MEMBER) {
-        struct_type = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, &context->global->type_bundle, struct_type);
+        struct_type = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, struct_type);
         REQUIRE(struct_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected pointer type on the left side"));
         struct_type = struct_type->referenced_type;
@@ -38,7 +38,7 @@ kefir_result_t kefir_ast_analyze_struct_member_node(struct kefir_mem *mem,
     REQUIRE_OK(kefir_ast_struct_type_get_field(&struct_type->structure_type, node->member, &field));
     const struct kefir_ast_type *type = field->type;
     if (qualification != NULL) {
-        type = kefir_ast_type_qualified(mem, &context->global->type_bundle, type, *qualification);
+        type = kefir_ast_type_qualified(mem, context->type_bundle, type, *qualification);
     }
 
     REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
