@@ -104,6 +104,8 @@ DECLARE_CASE(ast_ordinary_function_scope2);
 DECLARE_CASE(ast_ordinary_function_scope3);
 DECLARE_CASE(ast_ordinary_function_scope4);
 DECLARE_CASE(ast_ordinary_function_scope5);
+DECLARE_CASE(ast_node_analysis_constants);
+DECLARE_CASE(ast_node_analysis_string_literals);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -205,7 +207,9 @@ TEST_SUITE(mainSuite,
     &ast_ordinary_function_scope2,
     &ast_ordinary_function_scope3,
     &ast_ordinary_function_scope4,
-    &ast_ordinary_function_scope5
+    &ast_ordinary_function_scope5,
+    &ast_node_analysis_constants,
+    &ast_node_analysis_string_literals
 );
 
 int main(int argc, const char **argv) {

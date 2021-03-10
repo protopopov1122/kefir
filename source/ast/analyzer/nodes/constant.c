@@ -19,7 +19,7 @@ kefir_result_t kefir_ast_analyze_constant_node(struct kefir_mem *mem,
             break;
 
         case KEFIR_AST_CHAR_CONSTANT:
-            base->properties.type = kefir_ast_type_unsigned_char();
+            base->properties.type = kefir_ast_type_char();
             break;
 
         case KEFIR_AST_INT_CONSTANT:

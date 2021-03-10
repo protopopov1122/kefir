@@ -19,45 +19,27 @@ static kefir_result_t visit_non_expression(const struct kefir_ast_visitor *visit
     return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to assign type to non-expression AST node");
 }
 
-static kefir_result_t visit_constant(const struct kefir_ast_visitor *visitor,
-                                   const struct kefir_ast_constant *node,
-                                   void *payload) {
-    UNUSED(visitor);
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST analyzer payload"));
-    ASSIGN_DECL_CAST(struct assign_param *, param,
-        payload);
-    return kefir_ast_analyze_constant_node(param->mem, param->context, node, param->base);
-}
+#define VISITOR(id, type) \
+    static kefir_result_t visit_##id(const struct kefir_ast_visitor *visitor, \
+                                   const type *node, \
+                                   void *payload) { \
+        UNUSED(visitor); \
+        REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST analyzer payload")); \
+        ASSIGN_DECL_CAST(struct assign_param *, param, \
+            payload); \
+        return kefir_ast_analyze_##id##_node(param->mem, param->context, node, param->base); \
+    }
 
-static kefir_result_t visit_identifier(const struct kefir_ast_visitor *visitor,
-                                     const struct kefir_ast_identifier *node,
-                                     void *payload) {
-    UNUSED(visitor);
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST analyzer payload"));
-    ASSIGN_DECL_CAST(struct assign_param *, param,
-        payload);
-    return kefir_ast_analyze_identifier_node(param->mem, param->context, node, param->base);
-}
+VISITOR(constant, struct kefir_ast_constant)
+VISITOR(identifier, struct kefir_ast_identifier)
+VISITOR(unary_operation, struct kefir_ast_unary_operation)
+VISITOR(binary_operation, struct kefir_ast_binary_operation)
+VISITOR(array_subscript, struct kefir_ast_array_subscript)
+VISITOR(function_call, struct kefir_ast_function_call)
+VISITOR(struct_member, struct kefir_ast_struct_member)
+VISITOR(string_literal, struct kefir_ast_string_literal)
 
-static kefir_result_t visit_unary_operation(const struct kefir_ast_visitor *visitor,
-                                          const struct kefir_ast_unary_operation *node,
-                                          void *payload) {
-    UNUSED(visitor);
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST analyzer payload"));
-    ASSIGN_DECL_CAST(struct assign_param *, param,
-        payload);
-    return kefir_ast_analyze_unary_operation_node(param->mem, param->context, node, param->base);
-}
-
-static kefir_result_t visit_binary_operation(const struct kefir_ast_visitor *visitor,
-                                           const struct kefir_ast_binary_operation *node,
-                                           void *payload) {
-    UNUSED(visitor);
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST analyzer payload"));
-    ASSIGN_DECL_CAST(struct assign_param *, param,
-        payload);
-    return kefir_ast_analyze_binary_operation_node(param->mem, param->context, node, param->base);
-}
+#undef VISITOR
 
 kefir_result_t kefir_ast_analyze_node(struct kefir_mem *mem,
                                   const struct kefir_ast_context *context,
@@ -76,5 +58,9 @@ kefir_result_t kefir_ast_analyze_node(struct kefir_mem *mem,
     visitor.identifier = visit_identifier;
     visitor.unary_operation = visit_unary_operation;
     visitor.binary_operation = visit_binary_operation;
+    visitor.array_subscript = visit_array_subscript;
+    visitor.function_call = visit_function_call;
+    visitor.struct_member = visit_struct_member;
+    visitor.string_literal = visit_string_literal;
     return KEFIR_AST_NODE_VISIT(&visitor, base, &param);
 }
