@@ -15,13 +15,10 @@ kefir_result_t kefir_ast_analyze_unary_operation_node(struct kefir_mem *mem,
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->arg));
     REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
     base->properties.category = KEFIR_AST_NODE_CATEGORY_EXPRESSION;
-    base->properties.expression_props.constant_expression =
-        node->arg->properties.expression_props.constant_expression;
-    const struct kefir_ast_type *type1 = NULL;
     switch (node->type) {
         case KEFIR_AST_OPERATION_PLUS:
         case KEFIR_AST_OPERATION_NEGATE: {
-            type1 = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->arg->properties.type);
+            const struct kefir_ast_type *type1 = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->arg->properties.type);
             REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1),
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected arithmetic argument of unary +|-"));
             if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1)) {
@@ -29,25 +26,64 @@ kefir_result_t kefir_ast_analyze_unary_operation_node(struct kefir_mem *mem,
             } else {
                 base->properties.type = type1;
             }
+            base->properties.expression_props.constant_expression =
+                node->arg->properties.expression_props.constant_expression;
         } break;
         
         case KEFIR_AST_OPERATION_INVERT: {
-            type1 = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->arg->properties.type);
+            const struct kefir_ast_type *type1 = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->arg->properties.type);
             REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1),
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected integral argument of bitwise inversion"));
             base->properties.type = kefir_ast_type_int_promotion(context->type_traits, type1);
+            base->properties.expression_props.constant_expression =
+                node->arg->properties.expression_props.constant_expression;
         } break;
 
         case KEFIR_AST_OPERATION_LOGICAL_NEGATE: {
-            type1 = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->arg->properties.type);
+            const struct kefir_ast_type *type1 = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->arg->properties.type);
             REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(type1),
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected type argument of logical negation"));
             base->properties.type = kefir_ast_type_signed_int();
+            base->properties.expression_props.constant_expression =
+                node->arg->properties.expression_props.constant_expression;
         } break;
+
+        case KEFIR_AST_OPERATION_PREFIX_INCREMENT:
+        case KEFIR_AST_OPERATION_PREFIX_DECREMENT:
+        case KEFIR_AST_OPERATION_POSTFIX_INCREMENT:
+        case KEFIR_AST_OPERATION_POSTFIX_DECREMENT: {
+            REQUIRE(node->arg->properties.expression_props.lvalue,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected lvalue argument"));
+            const struct kefir_ast_type *type = node->arg->properties.type;
+            REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(type),
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected scalar type argument"));
+            base->properties.type = type;
+        } break;
+
+        case KEFIR_AST_OPERATION_ADDRESS: {
+            REQUIRE(node->arg->properties.expression_props.addressable,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected addressable argument"));
+            const struct kefir_ast_type *type = node->arg->properties.type;
+            base->properties.type = kefir_ast_type_pointer(mem, context->type_bundle, type);
+        } break;
+
+        case KEFIR_AST_OPERATION_INDIRECTION: {
+            const struct kefir_ast_type *type = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem,
+                context->type_bundle, node->arg->properties.type);
+            REQUIRE(type->tag == KEFIR_AST_TYPE_SCALAR_POINTER,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected type argument of logical negation"));
+            type = type->referenced_type;
+            base->properties.type = type;
+            if (type->tag != KEFIR_AST_TYPE_FUNCTION) {
+                base->properties.expression_props.lvalue = true;
+            }
+            base->properties.expression_props.addressable = true;
+        } break;
+
+        // TODO: Implement sizeof and alignof
 
         default:
             return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected unary AST node type");
     }
-    base->properties.type = type1;
     return KEFIR_OK;
 }

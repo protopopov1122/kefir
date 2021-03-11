@@ -18,13 +18,16 @@ kefir_result_t kefir_ast_analyze_identifier_node(struct kefir_mem *mem,
             REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
             base->properties.category = KEFIR_AST_NODE_CATEGORY_EXPRESSION;
             base->properties.type = scoped_id->object.type;
-            base->properties.expression_props.lvalue = true;
+            base->properties.expression_props.lvalue = scoped_id->object.type->tag != KEFIR_AST_TYPE_ARRAY;
+            base->properties.expression_props.addressable =
+                scoped_id->object.storage != KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER;
             return KEFIR_OK;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION:
             REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
             base->properties.category = KEFIR_AST_NODE_CATEGORY_EXPRESSION;
             base->properties.type = scoped_id->function.type;
+            base->properties.expression_props.addressable = true;
             return KEFIR_OK;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT:

@@ -36,5 +36,6 @@ kefir_result_t kefir_ast_analyze_array_subscript_node(struct kefir_mem *mem,
     base->properties.category = KEFIR_AST_NODE_CATEGORY_EXPRESSION;
     base->properties.type = type;
     base->properties.expression_props.lvalue = true;
+    base->properties.expression_props.addressable = true;
     return KEFIR_OK;
 }

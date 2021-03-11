@@ -23,6 +23,7 @@ typedef struct kefir_ast_node_properties {
     struct {
         kefir_bool_t lvalue;
         kefir_bool_t constant_expression;
+        kefir_bool_t addressable;
     } expression_props;
 } kefir_ast_node_properties_t;
 

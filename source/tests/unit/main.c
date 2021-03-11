@@ -109,6 +109,11 @@ DECLARE_CASE(ast_node_analysis_string_literals);
 DECLARE_CASE(ast_node_analysis_identifiers);
 DECLARE_CASE(ast_node_analysis_array_subscripts);
 DECLARE_CASE(ast_node_analysis_struct_members);
+DECLARE_CASE(ast_node_analysis_function_calls);
+DECLARE_CASE(ast_node_analysis_unary_operation_arithmetic);
+DECLARE_CASE(ast_node_analysis_unary_operation_address);
+DECLARE_CASE(ast_node_analysis_unary_operation_indirect);
+DECLARE_CASE(ast_node_analysis_unary_operation_incdec);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -215,7 +220,12 @@ TEST_SUITE(mainSuite,
     &ast_node_analysis_string_literals,
     &ast_node_analysis_identifiers,
     &ast_node_analysis_array_subscripts,
-    &ast_node_analysis_struct_members
+    &ast_node_analysis_struct_members,
+    &ast_node_analysis_function_calls,
+    &ast_node_analysis_unary_operation_arithmetic,
+    &ast_node_analysis_unary_operation_address,
+    &ast_node_analysis_unary_operation_indirect,
+    &ast_node_analysis_unary_operation_incdec
 );
 
 int main(int argc, const char **argv) {
