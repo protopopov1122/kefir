@@ -578,7 +578,6 @@ DEFINE_CASE(ast_node_analysis_unary_operation_indirect, "AST node analysis - una
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
 
-
 DEFINE_CASE(ast_node_analysis_unary_operation_incdec, "AST node analysis - unary increment/decrement operations")
     const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
     struct kefir_ast_global_context global_context;
@@ -688,3 +687,39 @@ DEFINE_CASE(ast_node_analysis_unary_operation_incdec, "AST node analysis - unary
 END_CASE
 
 #undef ASSERT_UNARY_OPERATION
+
+#define ASSERT_TYPE_NAME(_mem, _context, _type) \
+    do { \
+        struct kefir_ast_type_name *type_name = kefir_ast_new_type_name( \
+            (_mem), (_type)); \
+        ASSERT_OK(kefir_ast_analyze_node((_mem), (_context), KEFIR_AST_NODE_BASE(type_name))); \
+        ASSERT(type_name->base.properties.category == KEFIR_AST_NODE_CATEGORY_TYPE); \
+        ASSERT(KEFIR_AST_TYPE_SAME(type_name->base.properties.type, (_type))); \
+        ASSERT(!type_name->base.properties.expression_props.constant_expression); \
+        ASSERT(!type_name->base.properties.expression_props.lvalue); \
+        ASSERT(!type_name->base.properties.expression_props.addressable); \
+        KEFIR_AST_NODE_FREE((_mem), KEFIR_AST_NODE_BASE(type_name)); \
+    } while (0)
+
+DEFINE_CASE(ast_node_analysis_type_name, "AST node analysis - type names")
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    ASSERT_TYPE_NAME(&kft_mem, context, kefir_ast_type_bool());
+    ASSERT_TYPE_NAME(&kft_mem, context, kefir_ast_type_signed_char());
+    ASSERT_TYPE_NAME(&kft_mem, context, kefir_ast_type_signed_int());
+    ASSERT_TYPE_NAME(&kft_mem, context, kefir_ast_type_unsigned_long_long());
+    ASSERT_TYPE_NAME(&kft_mem, context, kefir_ast_type_float());
+    ASSERT_TYPE_NAME(&kft_mem, context, kefir_ast_type_double());
+    ASSERT_TYPE_NAME(&kft_mem, context, kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()));
+    ASSERT_TYPE_NAME(&kft_mem, context, kefir_ast_type_array(&kft_mem, context->type_bundle,
+        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()), 256, NULL));
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+END_CASE

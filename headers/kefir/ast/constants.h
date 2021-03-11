@@ -16,7 +16,9 @@ typedef enum kefir_ast_node_type {
     KEFIR_AST_STRUCTURE_INDIRECT_MEMBER,
 
     KEFIR_AST_UNARY_OPERATION,
-    KEFIR_AST_BINARY_OPERATION
+    KEFIR_AST_BINARY_OPERATION,
+
+    KEFIR_AST_TYPE_NAME
 } kefir_ast_node_type_t;
 
 typedef enum kefir_ast_node_category {

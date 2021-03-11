@@ -130,6 +130,41 @@ DEFINE_CASE(ast_nodes_string_literals, "AST nodes - string literals")
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
 END_CASE
 
+DEFINE_CASE(ast_nodes_type_name, "AST nodes - type name")
+    struct kefir_symbol_table symbols;
+    struct kefir_ast_type_bundle type_bundle;
+    ASSERT_OK(kefir_symbol_table_init(&symbols));
+    ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
+    struct kefir_ast_type_name *type1 = kefir_ast_new_type_name(&kft_mem,
+        kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_void()));
+    struct kefir_ast_type_name *type2 = kefir_ast_new_type_name(&kft_mem,
+        kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_pointer(&kft_mem, &type_bundle,
+            kefir_ast_type_qualified(&kft_mem, &type_bundle, kefir_ast_type_char(), (struct kefir_ast_type_qualification){
+                .constant = true,
+                .restricted = false,
+                .volatile_type = false
+            })), 256, NULL));
+    ASSERT(type1 != NULL);
+    ASSERT(type2 != NULL);
+    ASSERT(type1->base.klass->type == KEFIR_AST_TYPE_NAME);
+    ASSERT(type2->base.klass->type == KEFIR_AST_TYPE_NAME);
+    ASSERT(type1->base.self == type1);
+    ASSERT(type2->base.self == type2);
+    ASSERT(KEFIR_AST_TYPE_SAME(type1->type,
+        kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_void())));
+    ASSERT(KEFIR_AST_TYPE_SAME(type2->type,
+        kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_pointer(&kft_mem, &type_bundle,
+            kefir_ast_type_qualified(&kft_mem, &type_bundle, kefir_ast_type_char(), (struct kefir_ast_type_qualification){
+                .constant = true,
+                .restricted = false,
+                .volatile_type = false
+            })), 256, NULL)));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(type1)));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(type2)));
+    ASSERT_OK(kefir_ast_type_bundle_free(&kft_mem, &type_bundle));
+    ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
+END_CASE
+
 DEFINE_CASE(ast_nodes_array_subscripts, "AST nodes - array sybscripts")
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));

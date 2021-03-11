@@ -38,6 +38,7 @@ VISITOR(array_subscript, struct kefir_ast_array_subscript)
 VISITOR(function_call, struct kefir_ast_function_call)
 VISITOR(struct_member, struct kefir_ast_struct_member)
 VISITOR(string_literal, struct kefir_ast_string_literal)
+VISITOR(type_name, struct kefir_ast_type_name)
 
 #undef VISITOR
 
@@ -62,5 +63,6 @@ kefir_result_t kefir_ast_analyze_node(struct kefir_mem *mem,
     visitor.function_call = visit_function_call;
     visitor.struct_member = visit_struct_member;
     visitor.string_literal = visit_string_literal;
+    visitor.type_name = visit_type_name;
     return KEFIR_AST_NODE_VISIT(&visitor, base, &param);
 }

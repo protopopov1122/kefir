@@ -64,6 +64,7 @@ DECLARE_CASE(ast_type_construction8);
 DECLARE_CASE(ast_nodes_constants);
 DECLARE_CASE(ast_nodes_identifiers);
 DECLARE_CASE(ast_nodes_string_literals);
+DECLARE_CASE(ast_nodes_type_name);
 DECLARE_CASE(ast_nodes_array_subscripts);
 DECLARE_CASE(ast_nodes_function_calls);
 DECLARE_CASE(ast_nodes_struct_members);
@@ -114,6 +115,7 @@ DECLARE_CASE(ast_node_analysis_unary_operation_arithmetic);
 DECLARE_CASE(ast_node_analysis_unary_operation_address);
 DECLARE_CASE(ast_node_analysis_unary_operation_indirect);
 DECLARE_CASE(ast_node_analysis_unary_operation_incdec);
+DECLARE_CASE(ast_node_analysis_type_name);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -176,6 +178,7 @@ TEST_SUITE(mainSuite,
     &ast_nodes_constants,
     &ast_nodes_identifiers,
     &ast_nodes_string_literals,
+    &ast_nodes_type_name,
     &ast_nodes_array_subscripts,
     &ast_nodes_function_calls,
     &ast_nodes_struct_members,
@@ -225,7 +228,8 @@ TEST_SUITE(mainSuite,
     &ast_node_analysis_unary_operation_arithmetic,
     &ast_node_analysis_unary_operation_address,
     &ast_node_analysis_unary_operation_indirect,
-    &ast_node_analysis_unary_operation_incdec
+    &ast_node_analysis_unary_operation_incdec,
+    &ast_node_analysis_type_name
 );
 
 int main(int argc, const char **argv) {
