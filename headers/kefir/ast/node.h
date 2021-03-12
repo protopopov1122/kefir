@@ -28,6 +28,17 @@ KEFIR_AST_NODE_STRUCT(kefir_ast_string_literal, {
     const char *literal;
 });
 
+typedef struct kefir_ast_generic_selection_assoc {
+    const struct kefir_ast_type *type;
+    struct kefir_ast_node_base *expr;
+} kefir_ast_generic_selection_assoc_t;
+
+KEFIR_AST_NODE_STRUCT(kefir_ast_generic_selection, {
+    struct kefir_ast_node_base *control;
+    struct kefir_list associations;
+    struct kefir_ast_node_base *default_assoc;
+});
+
 KEFIR_AST_NODE_STRUCT(kefir_ast_type_name, {
     const struct kefir_ast_type *type;
 });
@@ -77,6 +88,9 @@ struct kefir_ast_string_literal *kefir_ast_new_string_literal(struct kefir_mem *
                                                       struct kefir_symbol_table *,
                                                       const char *);
 
+struct kefir_ast_generic_selection *kefir_ast_new_generic_selection(struct kefir_mem *,
+                                                                struct kefir_ast_node_base *);
+
 struct kefir_ast_type_name *kefir_ast_new_type_name(struct kefir_mem *,
                                                 const struct kefir_ast_type *);
 
@@ -86,10 +100,6 @@ struct kefir_ast_array_subscript *kefir_ast_new_array_subscript(struct kefir_mem
 
 struct kefir_ast_function_call *kefir_ast_new_function_call(struct kefir_mem *,
                                                         struct kefir_ast_node_base *);
-                                            
-kefir_result_t kefir_ast_function_call_append(struct kefir_mem *,
-                                          struct kefir_ast_function_call *,
-                                          struct kefir_ast_node_base *);
 
 struct kefir_ast_struct_member *kefir_ast_new_struct_member(struct kefir_mem *,
                                                         struct kefir_symbol_table *,
@@ -112,6 +122,7 @@ typedef struct kefir_ast_visitor {
     KEFIR_AST_VISITOR_METHOD(constant, kefir_ast_constant);
     KEFIR_AST_VISITOR_METHOD(identifier, kefir_ast_identifier);
     KEFIR_AST_VISITOR_METHOD(string_literal, kefir_ast_string_literal);
+    KEFIR_AST_VISITOR_METHOD(generic_selection, kefir_ast_generic_selection);
     KEFIR_AST_VISITOR_METHOD(type_name, kefir_ast_type_name);
     KEFIR_AST_VISITOR_METHOD(array_subscript, kefir_ast_array_subscript);
     KEFIR_AST_VISITOR_METHOD(function_call, kefir_ast_function_call);
@@ -120,5 +131,9 @@ typedef struct kefir_ast_visitor {
     KEFIR_AST_VISITOR_METHOD(unary_operation, kefir_ast_unary_operation);
     KEFIR_AST_VISITOR_METHOD(binary_operation, kefir_ast_binary_operation);
 } kefir_ast_visitor_t;
+
+#define KEFIR_AST_NODE_INTERNAL_DEF
+#include "kefir/ast/node_helpers.h"
+#undef KEFIR_AST_NODE_INTERNAL_DEF
 
 #endif

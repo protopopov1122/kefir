@@ -8,7 +8,7 @@ typedef enum kefir_ast_node_type {
     KEFIR_AST_CONSTANT,
     KEFIR_AST_IDENTIFIER,
     KEFIR_AST_STRING_LITERAL,
-    // TODO: Generic selection
+    KEFIR_AST_GENERIC_SELECTION,
     // Postfix operators
     KEFIR_AST_ARRAY_SUBSCRIPT,
     KEFIR_AST_FUNCTION_CALL,
