@@ -16,7 +16,7 @@ kefir_result_t ast_type_name_free(struct kefir_mem *mem, struct kefir_ast_node_b
     return KEFIR_OK;
 }
 
-const struct kefir_ast_node_class AST_type_name_CLASS = {
+const struct kefir_ast_node_class AST_TYPE_NAME_CLASS = {
     .type = KEFIR_AST_TYPE_NAME,
     .visit = ast_type_name_visit,
     .clone = ast_type_name_clone,
@@ -31,7 +31,7 @@ struct kefir_ast_node_base *ast_type_name_clone(struct kefir_mem *mem,
         base->self);
     struct kefir_ast_type_name *clone = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type_name));
     REQUIRE(clone != NULL, NULL);
-    clone->base.klass = &AST_type_name_CLASS;
+    clone->base.klass = &AST_TYPE_NAME_CLASS;
     clone->base.self = clone;
     kefir_result_t res = kefir_ast_node_properties_clone(&clone->base.properties, &node->base.properties);
     REQUIRE_ELSE(res == KEFIR_OK, {
@@ -48,7 +48,7 @@ struct kefir_ast_type_name *kefir_ast_new_type_name(struct kefir_mem *mem,
     REQUIRE(type != NULL, NULL);
     struct kefir_ast_type_name *type_name = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type_name));
     REQUIRE(type_name != NULL, NULL);
-    type_name->base.klass = &AST_type_name_CLASS;
+    type_name->base.klass = &AST_TYPE_NAME_CLASS;
     type_name->base.self = type_name;
     kefir_result_t res = kefir_ast_node_properties_init(&type_name->base.properties);
     REQUIRE_ELSE(res == KEFIR_OK, {

@@ -22,6 +22,8 @@ DEFINE_CASE(ast_nodes_generic_selections, "AST nodes - generic selections")
     struct kefir_ast_generic_selection *selection1 = kefir_ast_new_generic_selection(&kft_mem,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 5)));
     ASSERT(selection1 != NULL);
+    ASSERT(selection1->base.klass->type == KEFIR_AST_GENERIC_SELECTION);
+    ASSERT(selection1->base.self == selection1);
     ASSERT(selection1->control != NULL);
     ASSERT(selection1->control->klass->type == KEFIR_AST_CONSTANT);
     ASSERT(((struct kefir_ast_constant *) selection1->control->self)->type == KEFIR_AST_INT_CONSTANT);
@@ -118,6 +120,58 @@ DEFINE_CASE(ast_nodes_generic_selections, "AST nodes - generic selections")
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(cnst2)));
 
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(selection1)));
+    ASSERT_OK(kefir_ast_type_bundle_free(&kft_mem, &type_bundle));
+    ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
+END_CASE
+
+#undef ASSERT_ASSOC
+
+#define ASSERT_CAST(_mem, _type, _expr, _checker) \
+    do { \
+        struct kefir_ast_cast_operator *cast = kefir_ast_new_cast_operator((_mem), \
+            (_type), \
+            (_expr)); \
+        ASSERT(cast != NULL); \
+        ASSERT(cast->base.klass->type == KEFIR_AST_CAST_OPERATOR); \
+        ASSERT(cast->base.self == cast); \
+        ASSERT(KEFIR_AST_TYPE_SAME(cast->type, (_type))); \
+        _checker \
+        ASSERT_OK(KEFIR_AST_NODE_FREE((_mem), KEFIR_AST_NODE_BASE(cast))); \
+    } while (0)
+
+DEFINE_CASE(ast_nodes_cast_operators, "AST nodes - cast operators")
+    struct kefir_symbol_table symbols;
+    struct kefir_ast_type_bundle type_bundle;
+
+    ASSERT_OK(kefir_symbol_table_init(&symbols));
+    ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
+
+    ASSERT_CAST(&kft_mem, kefir_ast_type_unsigned_char(),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_constant_uint(&kft_mem, 100)), {
+        ASSERT(cast->expr->klass->type == KEFIR_AST_CONSTANT); \
+        ASSERT(((struct kefir_ast_constant *) cast->expr->self)->type == KEFIR_AST_UINT_CONSTANT); \
+        ASSERT(((struct kefir_ast_constant *) cast->expr->self)->value.uinteger == 100); \
+    });
+    ASSERT_CAST(&kft_mem, kefir_ast_type_float(),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long_long(&kft_mem, 1234)), {
+        ASSERT(cast->expr->klass->type == KEFIR_AST_CONSTANT); \
+        ASSERT(((struct kefir_ast_constant *) cast->expr->self)->type == KEFIR_AST_LONG_LONG_CONSTANT); \
+        ASSERT(((struct kefir_ast_constant *) cast->expr->self)->value.long_long == 1234); \
+    });
+    ASSERT_CAST(&kft_mem, kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_void()),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(&kft_mem, 0)), {
+        ASSERT(cast->expr->klass->type == KEFIR_AST_CONSTANT); \
+        ASSERT(((struct kefir_ast_constant *) cast->expr->self)->type == KEFIR_AST_LONG_CONSTANT); \
+        ASSERT(((struct kefir_ast_constant *) cast->expr->self)->value.long_integer == 0); \
+    });
+    ASSERT_CAST(&kft_mem, kefir_ast_type_unsigned_long(),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ADDRESS, 
+            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, &symbols, "x")))), {
+        ASSERT(cast->expr->klass->type == KEFIR_AST_UNARY_OPERATION); \
+        ASSERT(((struct kefir_ast_unary_operation *) cast->expr->self)->type == KEFIR_AST_OPERATION_ADDRESS); \
+        ASSERT(((struct kefir_ast_unary_operation *) cast->expr->self)->arg->klass->type == KEFIR_AST_IDENTIFIER); \
+    });
+
     ASSERT_OK(kefir_ast_type_bundle_free(&kft_mem, &type_bundle));
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
 END_CASE

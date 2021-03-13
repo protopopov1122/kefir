@@ -49,10 +49,12 @@ SCALAR_TYPE(double);
     (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(base) || \
         KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(base) || \
         (base)->tag == KEFIR_AST_TYPE_ENUMERATION)
+#define KEFIR_AST_TYPE_IS_FLOATING_POINT(base) \
+    ((base)->tag == KEFIR_AST_TYPE_SCALAR_FLOAT || \
+        (base)->tag == KEFIR_AST_TYPE_SCALAR_DOUBLE)
 #define KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(base) \
     (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(base) || \
-        (base)->tag == KEFIR_AST_TYPE_SCALAR_FLOAT || \
-        (base)->tag == KEFIR_AST_TYPE_SCALAR_DOUBLE)
+        KEFIR_AST_TYPE_IS_FLOATING_POINT(base))
 #define KEFIR_AST_TYPE_IS_SCALAR_TYPE(base) \
     (KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(base) || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_POINTER)

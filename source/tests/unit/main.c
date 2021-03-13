@@ -71,6 +71,7 @@ DECLARE_CASE(ast_nodes_struct_members);
 DECLARE_CASE(ast_nodes_unary_operations);
 DECLARE_CASE(ast_nodes_binary_operations);
 DECLARE_CASE(ast_nodes_generic_selections);
+DECLARE_CASE(ast_nodes_cast_operators);
 DECLARE_CASE(ast_type_compatibility1);
 DECLARE_CASE(ast_type_basic_compatibility);
 DECLARE_CASE(ast_type_enum_compatibility);
@@ -120,6 +121,7 @@ DECLARE_CASE(ast_node_analysis_unary_operation_sizeof);
 DECLARE_CASE(ast_node_analysis_unary_operation_alignof);
 DECLARE_CASE(ast_node_analysis_type_name);
 DECLARE_CASE(ast_node_analysis_generic_selections);
+DECLARE_CASE(ast_node_analysis_cast_operators);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -189,6 +191,7 @@ TEST_SUITE(mainSuite,
     &ast_nodes_unary_operations,
     &ast_nodes_binary_operations,
     &ast_nodes_generic_selections,
+    &ast_nodes_cast_operators,
     &ast_type_compatibility1,
     &ast_type_basic_compatibility,
     &ast_type_enum_compatibility,
@@ -237,7 +240,8 @@ TEST_SUITE(mainSuite,
     &ast_node_analysis_unary_operation_sizeof,
     &ast_node_analysis_unary_operation_alignof,
     &ast_node_analysis_type_name,
-    &ast_node_analysis_generic_selections
+    &ast_node_analysis_generic_selections,
+    &ast_node_analysis_cast_operators
 );
 
 int main(int argc, const char **argv) {
