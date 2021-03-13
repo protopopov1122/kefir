@@ -25,6 +25,27 @@ kefir_result_t kefir_ast_analyze_binary_operation_node(struct kefir_mem *mem,
         node->arg1->properties.expression_props.constant_expression &&
         node->arg2->properties.expression_props.constant_expression;
     switch (node->type) {
+        case KEFIR_AST_OPERATION_MODULO: {
+            REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1) &&
+                KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type2),
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
+                    "Both modulo operands shall have integral type"));
+            base->properties.type = kefir_ast_type_common_arithmetic(context->type_traits, type1, type2);
+            REQUIRE(base->properties.type != NULL,
+                KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to determine common AST arithmetic type"));
+        } break;
+
+        case KEFIR_AST_OPERATION_MULTIPLY:
+        case KEFIR_AST_OPERATION_DIVIDE: {
+            REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1) &&
+                KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type2),
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
+                    "Both multiply/divide operands shall have arithmetic type"));
+            base->properties.type = kefir_ast_type_common_arithmetic(context->type_traits, type1, type2);
+            REQUIRE(base->properties.type != NULL,
+                KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to determine common AST arithmetic type"));
+        } break;
+
         case KEFIR_AST_OPERATION_SHIFT_LEFT:
         case KEFIR_AST_OPERATION_SHIFT_RIGHT: {
             REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1) &&
@@ -36,16 +57,13 @@ kefir_result_t kefir_ast_analyze_binary_operation_node(struct kefir_mem *mem,
         } break;
 
         default: {
-            if (KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1) &&
-                KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type2)) {
-                base->properties.type = kefir_ast_type_common_arithmetic(context->type_traits, type1, type2);
-                REQUIRE(base->properties.type != NULL,
-                    KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR,
-                        "Unable to determine common AST arithmetic type"));
-            } else {
-                return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED,
-                    "Binary type derival from non-arithmetic AST types is not supported yet");
-            }
+            REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1) &&
+                KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type2),
+                KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED,
+                    "Binary type derival from non-arithmetic AST types is not supported yet"));
+            base->properties.type = kefir_ast_type_common_arithmetic(context->type_traits, type1, type2);
+            REQUIRE(base->properties.type != NULL,
+                KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to determine common AST arithmetic type"));
         }
     }
     return KEFIR_OK;

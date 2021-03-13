@@ -304,7 +304,7 @@ DEFINE_CASE(ast_node_analysis_struct_members, "AST node analysis - struct member
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
 
-// TODO Indirect struct member, binary tests
+// TODO Indirect struct member tests
 
 #undef ASSERT_STRUCT_MEMBER
 
