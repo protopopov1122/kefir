@@ -46,5 +46,6 @@ kefir_result_t kefir_ast_analyze_struct_member_node(struct kefir_mem *mem,
     base->properties.type = type;
     base->properties.expression_props.lvalue = true;
     base->properties.expression_props.addressable = !field->bitfield;
+    base->properties.expression_props.bitfield = field->bitfield;
     return KEFIR_OK;
 }

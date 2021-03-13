@@ -14,6 +14,7 @@ typedef enum kefir_ast_node_type {
     KEFIR_AST_FUNCTION_CALL,
     KEFIR_AST_STRUCTURE_MEMBER,
     KEFIR_AST_STRUCTURE_INDIRECT_MEMBER,
+    // TODO: Implement compound literals
 
     KEFIR_AST_UNARY_OPERATION,
     KEFIR_AST_BINARY_OPERATION,

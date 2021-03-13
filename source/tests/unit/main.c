@@ -116,6 +116,8 @@ DECLARE_CASE(ast_node_analysis_unary_operation_arithmetic);
 DECLARE_CASE(ast_node_analysis_unary_operation_address);
 DECLARE_CASE(ast_node_analysis_unary_operation_indirect);
 DECLARE_CASE(ast_node_analysis_unary_operation_incdec);
+DECLARE_CASE(ast_node_analysis_unary_operation_sizeof);
+DECLARE_CASE(ast_node_analysis_unary_operation_alignof);
 DECLARE_CASE(ast_node_analysis_type_name);
 DECLARE_CASE(ast_node_analysis_generic_selections);
 
@@ -232,6 +234,8 @@ TEST_SUITE(mainSuite,
     &ast_node_analysis_unary_operation_address,
     &ast_node_analysis_unary_operation_indirect,
     &ast_node_analysis_unary_operation_incdec,
+    &ast_node_analysis_unary_operation_sizeof,
+    &ast_node_analysis_unary_operation_alignof,
     &ast_node_analysis_type_name,
     &ast_node_analysis_generic_selections
 );

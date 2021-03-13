@@ -69,5 +69,10 @@ kefir_result_t kefir_ast_type_bundle_free(struct kefir_mem *, struct kefir_ast_t
 #define KEFIR_AST_TYPE_COMPOSITE(mem, type_bundle, type_traits, type1, type2) \
     ((type1)->ops.composite((mem), (type_bundle), (type_traits), (type1), (type2)))
 #define KEFIR_AST_TYPE_FREE(mem, type) ((type)->ops.free((mem), (type)))
+#define KEFIR_AST_TYPE_IS_INCOMPLETE(type) \
+    ((type)->tag == KEFIR_AST_TYPE_VOID || \
+        ((type)->tag == KEFIR_AST_TYPE_ARRAY && (type)->array_type.boundary == KEFIR_AST_ARRAY_UNBOUNDED) || \
+        (((type)->tag == KEFIR_AST_TYPE_STRUCTURE || (type->tag) == KEFIR_AST_TYPE_UNION) && \
+            !(type)->structure_type.complete))
 
 #endif

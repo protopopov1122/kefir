@@ -80,7 +80,33 @@ kefir_result_t kefir_ast_analyze_unary_operation_node(struct kefir_mem *mem,
             base->properties.expression_props.addressable = true;
         } break;
 
-        // TODO: Implement sizeof and alignof
+        case KEFIR_AST_OPERATION_SIZEOF: {
+            REQUIRE(node->arg->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION ||
+                node->arg->properties.category == KEFIR_AST_NODE_CATEGORY_TYPE,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Sizeof operator expects expression or type argument"));
+            const struct kefir_ast_type *type = node->arg->properties.type;
+            REQUIRE(!node->arg->properties.expression_props.bitfield,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Sizeof operator cannot be applied to bit-fields"));
+            REQUIRE(type->tag != KEFIR_AST_TYPE_FUNCTION,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Sizeof operator cannot be applied to function types"));
+            REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Sizeof operator cannot be applied to incomplete type"));
+            base->properties.type = kefir_ast_type_signed_int();
+            base->properties.expression_props.constant_expression = type->tag != KEFIR_AST_TYPE_ARRAY ||
+                (type->array_type.boundary != KEFIR_AST_ARRAY_VLA && type->array_type.boundary != KEFIR_AST_ARRAY_VLA_STATIC);
+        } break;
+
+        case KEFIR_AST_OPERATION_ALIGNOF: {
+            REQUIRE(node->arg->properties.category == KEFIR_AST_NODE_CATEGORY_TYPE,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Sizeof operator expects type argument"));
+            const struct kefir_ast_type *type = node->arg->properties.type;
+            REQUIRE(type->tag != KEFIR_AST_TYPE_FUNCTION,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Sizeof operator cannot be applied to function types"));
+            REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Sizeof operator cannot be applied to incomplete type"));
+            base->properties.type = kefir_ast_type_signed_int();
+            base->properties.expression_props.constant_expression = true;
+        } break;
 
         default:
             return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected unary AST node type");
