@@ -68,7 +68,9 @@ typedef enum kefir_ast_binary_operation_type {
     KEFIR_AST_OPERATION_LESS,
     KEFIR_AST_OPERATION_LESS_EQUAL,
     KEFIR_AST_OPERATION_GREATER,
-    KEFIR_AST_OPERATION_GREATER_EQUAL
+    KEFIR_AST_OPERATION_GREATER_EQUAL,
+    KEFIR_AST_OPERATION_EQUAL,
+    KEFIR_AST_OPERATION_NOT_EQUAL
 } kefir_ast_binary_operation_type_t;
 
 typedef enum kefir_ast_storage_duration {

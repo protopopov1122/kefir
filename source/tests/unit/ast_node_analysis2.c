@@ -606,7 +606,6 @@ DEFINE_CASE(ast_node_analysis_shift_operator, "AST node analysis - shift operato
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
 
-
 DEFINE_CASE(ast_node_analysis_relational_operators, "AST node analysis - relational operators")
     const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
     struct kefir_ast_global_context global_context;
@@ -786,6 +785,153 @@ DEFINE_CASE(ast_node_analysis_relational_operators, "AST node analysis - relatio
     oper = kefir_ast_new_binary_operation(&kft_mem, KEFIR_AST_OPERATION_GREATER_EQUAL,
         KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "y")),
         KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "z")));
+    ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(oper)));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(oper)));
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+END_CASE
+
+DEFINE_CASE(ast_node_analysis_equality_operators, "AST node analysis - equality operators")
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "x",
+        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_signed_int()), NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "y",
+        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_int()), NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "z",
+        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()), NULL));
+
+    const struct kefir_ast_type *TYPES[] = {
+        kefir_ast_type_bool(),
+        kefir_ast_type_char(),
+        kefir_ast_type_unsigned_char(),
+        kefir_ast_type_signed_char(),
+        kefir_ast_type_unsigned_int(),
+        kefir_ast_type_signed_int(),
+        kefir_ast_type_unsigned_long(),
+        kefir_ast_type_signed_long(),
+        kefir_ast_type_unsigned_long_long(),
+        kefir_ast_type_signed_long_long(),
+        kefir_ast_type_float(),
+        kefir_ast_type_double()
+    };
+    const kefir_size_t TYPES_LEN = sizeof(TYPES) / sizeof(TYPES[0]);
+    
+    for (kefir_size_t i = 0; i < TYPES_LEN; i++) {
+        for (kefir_size_t j = 0; j < TYPES_LEN; j++) {
+            ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_EQUAL,
+                KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
+                KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])),
+                kefir_ast_type_signed_int(),
+                true);
+
+            ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_NOT_EQUAL,
+                KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
+                KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])),
+                kefir_ast_type_signed_int(),
+                true);
+        }
+        struct kefir_ast_binary_operation *oper = kefir_ast_new_binary_operation(&kft_mem, KEFIR_AST_OPERATION_EQUAL,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
+            KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])));
+        ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(oper)));
+        ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(oper)));
+
+        oper = kefir_ast_new_binary_operation(&kft_mem, KEFIR_AST_OPERATION_NOT_EQUAL,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
+            KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])));
+        ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(oper)));
+        ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(oper)));
+    }
+
+    ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_EQUAL,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
+        kefir_ast_type_signed_int(),
+        false);
+
+    ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_EQUAL,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "z")),
+        kefir_ast_type_signed_int(),
+        false);
+
+    ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_EQUAL,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "y")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "y")),
+        kefir_ast_type_signed_int(),
+        false);
+
+    ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_EQUAL,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "z")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "y")),
+        kefir_ast_type_signed_int(),
+        false);
+
+    ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_EQUAL,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "z")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "z")),
+        kefir_ast_type_signed_int(),
+        false);
+
+    ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_NOT_EQUAL,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
+        kefir_ast_type_signed_int(),
+        false);
+
+    ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_NOT_EQUAL,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "z")),
+        kefir_ast_type_signed_int(),
+        false);
+
+    ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_NOT_EQUAL,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "y")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "y")),
+        kefir_ast_type_signed_int(),
+        false);
+
+    ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_NOT_EQUAL,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "z")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "y")),
+        kefir_ast_type_signed_int(),
+        false);
+
+    ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_NOT_EQUAL,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "z")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "z")),
+        kefir_ast_type_signed_int(),
+        false);
+
+    struct kefir_ast_binary_operation *oper = kefir_ast_new_binary_operation(&kft_mem, KEFIR_AST_OPERATION_EQUAL,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "y")));
+    ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(oper)));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(oper)));
+    
+    oper = kefir_ast_new_binary_operation(&kft_mem, KEFIR_AST_OPERATION_EQUAL,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "y")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")));
+    ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(oper)));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(oper)));
+
+    oper = kefir_ast_new_binary_operation(&kft_mem, KEFIR_AST_OPERATION_NOT_EQUAL,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "y")));
+    ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(oper)));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(oper)));
+    
+    oper = kefir_ast_new_binary_operation(&kft_mem, KEFIR_AST_OPERATION_NOT_EQUAL,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "y")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")));
     ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(oper)));
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(oper)));
 
