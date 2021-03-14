@@ -47,6 +47,7 @@ typedef struct kefir_ast_type_traits {
                                     const struct kefir_ast_type *,
                                     kefir_bool_t *);
     const struct kefir_ast_type *underlying_enumeration_type;
+    const struct kefir_ast_type *ptrdiff_type;
 
     void *payload;
 } kefir_ast_type_traits_t;
@@ -69,10 +70,12 @@ kefir_result_t kefir_ast_type_bundle_free(struct kefir_mem *, struct kefir_ast_t
 #define KEFIR_AST_TYPE_COMPOSITE(mem, type_bundle, type_traits, type1, type2) \
     ((type1)->ops.composite((mem), (type_bundle), (type_traits), (type1), (type2)))
 #define KEFIR_AST_TYPE_FREE(mem, type) ((type)->ops.free((mem), (type)))
-#define KEFIR_AST_TYPE_IS_INCOMPLETE(type) \
+#define KEFIR_AST_TYPE_IS_INCOMPLETE_IMPL(type) \
     ((type)->tag == KEFIR_AST_TYPE_VOID || \
         ((type)->tag == KEFIR_AST_TYPE_ARRAY && (type)->array_type.boundary == KEFIR_AST_ARRAY_UNBOUNDED) || \
         (((type)->tag == KEFIR_AST_TYPE_STRUCTURE || (type->tag) == KEFIR_AST_TYPE_UNION) && \
             !(type)->structure_type.complete))
+#define KEFIR_AST_TYPE_IS_INCOMPLETE(type) \
+    KEFIR_AST_TYPE_IS_INCOMPLETE_IMPL(kefir_ast_unqualified_type((type)))
 
 #endif
