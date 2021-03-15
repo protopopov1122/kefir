@@ -128,6 +128,8 @@ DECLARE_CASE(ast_node_analysis_subtract_operator);
 DECLARE_CASE(ast_node_analysis_shift_operator);
 DECLARE_CASE(ast_node_analysis_relational_operators);
 DECLARE_CASE(ast_node_analysis_equality_operators);
+DECLARE_CASE(ast_node_analysis_bitwise_operators);
+DECLARE_CASE(ast_node_analysis_logical_operators);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -253,7 +255,9 @@ TEST_SUITE(mainSuite,
     &ast_node_analysis_subtract_operator,
     &ast_node_analysis_shift_operator,
     &ast_node_analysis_relational_operators,
-    &ast_node_analysis_equality_operators
+    &ast_node_analysis_equality_operators,
+    &ast_node_analysis_bitwise_operators,
+    &ast_node_analysis_logical_operators
 );
 
 int main(int argc, const char **argv) {

@@ -142,6 +142,29 @@ static kefir_result_t analyze_equality(const struct kefir_ast_context *context,
     return KEFIR_OK;
 }
 
+static kefir_result_t analyze_bitwise(const struct kefir_ast_context *context,
+                                    const struct kefir_ast_type *type1,
+                                    const struct kefir_ast_type *type2,
+                                    struct kefir_ast_node_base *base) {
+    REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1) && KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type2),
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both operands shall have integral types"));
+    base->properties.type = kefir_ast_type_common_arithmetic(context->type_traits, type1, type2);
+    REQUIRE(base->properties.type != NULL,
+        KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to determine common AST arithmetic type"));
+    return KEFIR_OK;
+}
+
+static kefir_result_t analyze_logical(const struct kefir_ast_context *context,
+                                    const struct kefir_ast_type *type1,
+                                    const struct kefir_ast_type *type2,
+                                    struct kefir_ast_node_base *base) {
+    UNUSED(context);
+    REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(type1) && KEFIR_AST_TYPE_IS_SCALAR_TYPE(type2),
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both operands shall have scalar types"));
+    base->properties.type = kefir_ast_type_signed_int();
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_analyze_binary_operation_node(struct kefir_mem *mem,
                                                    const struct kefir_ast_context *context,
                                                    const struct kefir_ast_binary_operation *node,
@@ -195,6 +218,17 @@ kefir_result_t kefir_ast_analyze_binary_operation_node(struct kefir_mem *mem,
         case KEFIR_AST_OPERATION_EQUAL:
         case KEFIR_AST_OPERATION_NOT_EQUAL:
             REQUIRE_OK(analyze_equality(context, node->arg1, type1, node->arg2, type2, base));
+            break;
+
+        case KEFIR_AST_OPERATION_BITWISE_AND:
+        case KEFIR_AST_OPERATION_BITWISE_OR:
+        case KEFIR_AST_OPERATION_BITWISE_XOR:
+            REQUIRE_OK(analyze_bitwise(context, type1, type2, base));
+            break;
+
+        case KEFIR_AST_OPERATION_LOGICAL_AND:
+        case KEFIR_AST_OPERATION_LOGICAL_OR:
+            REQUIRE_OK(analyze_logical(context, type1, type2, base));
             break;
 
         default:
