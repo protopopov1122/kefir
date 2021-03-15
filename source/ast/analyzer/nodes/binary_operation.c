@@ -113,20 +113,30 @@ static kefir_result_t analyze_relational(const struct kefir_ast_context *context
 
 
 static kefir_result_t analyze_equality(const struct kefir_ast_context *context,
+                                     const struct kefir_ast_node_base *node1,
                                      const struct kefir_ast_type *type1,
+                                     const struct kefir_ast_node_base *node2,
                                      const struct kefir_ast_type *type2,
                                      struct kefir_ast_node_base *base) {
-    if (type1->tag == KEFIR_AST_TYPE_SCALAR_POINTER && type2->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
+    if (KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1) && KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type2)) {
+        base->properties.type = kefir_ast_type_signed_int();
+    } else if (type1->tag == KEFIR_AST_TYPE_SCALAR_POINTER && type2->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
         const struct kefir_ast_type *unqualified1 = kefir_ast_unqualified_type(type1->referenced_type);
         const struct kefir_ast_type *unqualified2 = kefir_ast_unqualified_type(type2->referenced_type);
         REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, unqualified1, unqualified2) ||
             unqualified1->tag == KEFIR_AST_TYPE_VOID ||
             unqualified2->tag == KEFIR_AST_TYPE_VOID,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both pointer operands shall have compatible or void types"));
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both pointer operands shall point to compatible types or void"));
+        base->properties.type = kefir_ast_type_signed_int();
+    } else if (type1->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
+        REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type2) && node2->properties.expression_props.constant_expression,
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Second operand shall be NULL pointer"));
         base->properties.type = kefir_ast_type_signed_int();
     } else {
-        REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1) && KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type2),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both operands shall habe arithmetic types"));
+        REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1) && node1->properties.expression_props.constant_expression,
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "First operand shall be NULL pointer"));
+        REQUIRE(type2->tag == KEFIR_AST_TYPE_SCALAR_POINTER,
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Second operand shall be pointer"));
         base->properties.type = kefir_ast_type_signed_int();
     }
     return KEFIR_OK;
@@ -184,7 +194,7 @@ kefir_result_t kefir_ast_analyze_binary_operation_node(struct kefir_mem *mem,
 
         case KEFIR_AST_OPERATION_EQUAL:
         case KEFIR_AST_OPERATION_NOT_EQUAL:
-            REQUIRE_OK(analyze_equality(context, type1, type2, base));
+            REQUIRE_OK(analyze_equality(context, node->arg1, type1, node->arg2, type2, base));
             break;
 
         default:
