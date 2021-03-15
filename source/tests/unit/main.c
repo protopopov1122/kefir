@@ -72,6 +72,7 @@ DECLARE_CASE(ast_nodes_unary_operations);
 DECLARE_CASE(ast_nodes_binary_operations);
 DECLARE_CASE(ast_nodes_generic_selections);
 DECLARE_CASE(ast_nodes_cast_operators);
+DECLARE_CASE(ast_nodes_conditional_operators);
 DECLARE_CASE(ast_type_compatibility1);
 DECLARE_CASE(ast_type_basic_compatibility);
 DECLARE_CASE(ast_type_enum_compatibility);
@@ -200,6 +201,7 @@ TEST_SUITE(mainSuite,
     &ast_nodes_binary_operations,
     &ast_nodes_generic_selections,
     &ast_nodes_cast_operators,
+    &ast_nodes_conditional_operators,
     &ast_type_compatibility1,
     &ast_type_basic_compatibility,
     &ast_type_enum_compatibility,

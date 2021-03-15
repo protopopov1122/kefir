@@ -175,3 +175,60 @@ DEFINE_CASE(ast_nodes_cast_operators, "AST nodes - cast operators")
     ASSERT_OK(kefir_ast_type_bundle_free(&kft_mem, &type_bundle));
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
 END_CASE
+
+#undef ASSERT_CAST
+
+#define ASSERT_CONDITIONAL(_mem, _condition, _expr1, _expr2, _checker) \
+    do { \
+        struct kefir_ast_conditional_operator *oper = kefir_ast_new_conditional_operator((_mem), \
+            (_condition), (_expr1), (_expr2)); \
+        ASSERT(oper != NULL); \
+        ASSERT(oper->base.klass->type == KEFIR_AST_CONDITIONAL_OPERATION); \
+        ASSERT(oper->base.self == oper); \
+        _checker \
+        ASSERT_OK(KEFIR_AST_NODE_FREE((_mem), KEFIR_AST_NODE_BASE(oper))); \
+    } while (0)
+
+DEFINE_CASE(ast_nodes_conditional_operators, "AST nodes - conditional operators")
+    struct kefir_symbol_table symbols;
+    struct kefir_ast_type_bundle type_bundle;
+
+    ASSERT_OK(kefir_symbol_table_init(&symbols));
+    ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
+
+    ASSERT_CONDITIONAL(&kft_mem,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(&kft_mem, true)),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, -1)),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_constant_uint(&kft_mem, 2)), {
+        ASSERT(oper->condition->klass->type == KEFIR_AST_CONSTANT);
+        ASSERT(((struct kefir_ast_constant *) oper->condition->self)->type == KEFIR_AST_BOOL_CONSTANT);
+        ASSERT(((struct kefir_ast_constant *) oper->condition->self)->value.boolean);
+
+        ASSERT(oper->expr1->klass->type == KEFIR_AST_CONSTANT);
+        ASSERT(((struct kefir_ast_constant *) oper->expr1->self)->type == KEFIR_AST_INT_CONSTANT);
+        ASSERT(((struct kefir_ast_constant *) oper->expr1->self)->value.integer == -1);
+
+        ASSERT(oper->expr2->klass->type == KEFIR_AST_CONSTANT);
+        ASSERT(((struct kefir_ast_constant *) oper->expr2->self)->type == KEFIR_AST_UINT_CONSTANT);
+        ASSERT(((struct kefir_ast_constant *) oper->expr2->self)->value.uinteger == 2);
+    });
+
+    ASSERT_CONDITIONAL(&kft_mem,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, &symbols, "x")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, &symbols, "y")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, &symbols, "z")), {
+        ASSERT(oper->condition->klass->type == KEFIR_AST_IDENTIFIER);
+        ASSERT(strcmp(((struct kefir_ast_identifier *) oper->condition->self)->identifier, "x") == 0);
+
+        ASSERT(oper->expr1->klass->type == KEFIR_AST_IDENTIFIER);
+        ASSERT(strcmp(((struct kefir_ast_identifier *) oper->expr1->self)->identifier, "y") == 0);
+
+        ASSERT(oper->expr2->klass->type == KEFIR_AST_IDENTIFIER);
+        ASSERT(strcmp(((struct kefir_ast_identifier *) oper->expr2->self)->identifier, "z") == 0);
+    });
+
+    ASSERT_OK(kefir_ast_type_bundle_free(&kft_mem, &type_bundle));
+    ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
+END_CASE
+
+#undef ASSERT_CONDITIONAL

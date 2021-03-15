@@ -41,6 +41,7 @@ VISITOR(string_literal, struct kefir_ast_string_literal)
 VISITOR(type_name, struct kefir_ast_type_name)
 VISITOR(cast_operator, struct kefir_ast_cast_operator)
 VISITOR(generic_selection, struct kefir_ast_generic_selection)
+VISITOR(conditional_operator, struct kefir_ast_conditional_operator)
 
 #undef VISITOR
 
@@ -68,5 +69,6 @@ kefir_result_t kefir_ast_analyze_node(struct kefir_mem *mem,
     visitor.type_name = visit_type_name;
     visitor.cast_operator = visit_cast_operator;
     visitor.generic_selection = visit_generic_selection;
+    visitor.conditional_operator = visit_conditional_operator;
     return KEFIR_AST_NODE_VISIT(&visitor, base, &param);
 }

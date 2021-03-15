@@ -108,3 +108,29 @@ const struct kefir_ast_type *kefir_ast_zero_unqualified_type(const struct kefir_
         return type;
     }
 }
+
+kefir_result_t kefir_ast_type_retrieve_qualifications(struct kefir_ast_type_qualification *qualifications,
+                                                  const struct kefir_ast_type *type) {
+    REQUIRE(qualifications != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type qualification pointer"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
+    if (type->tag == KEFIR_AST_TYPE_QUALIFIED) {
+        *qualifications = type->qualified_type.qualification;
+    } else {
+        qualifications->constant = false;
+        qualifications->restricted = false;
+        qualifications->volatile_type = false;
+    }
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_ast_type_merge_qualifications(struct kefir_ast_type_qualification *dst,
+                                               const struct kefir_ast_type_qualification *src1,
+                                               const struct kefir_ast_type_qualification *src2) {
+    REQUIRE(dst != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid destination AST type qualification pointer"));
+    REQUIRE(src1 != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid first source AST type qualification pointer"));
+    REQUIRE(src2 != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid second source AST type qualification pointer"));
+    dst->constant = src1->constant || src2->constant;
+    dst->restricted = src1->restricted || src2->restricted;
+    dst->volatile_type = src1->volatile_type || src2->volatile_type;
+    return KEFIR_OK;
+}
