@@ -131,6 +131,11 @@ DECLARE_CASE(ast_node_analysis_relational_operators);
 DECLARE_CASE(ast_node_analysis_equality_operators);
 DECLARE_CASE(ast_node_analysis_bitwise_operators);
 DECLARE_CASE(ast_node_analysis_logical_operators);
+DECLARE_CASE(ast_node_analysis_conditional_operator1);
+DECLARE_CASE(ast_node_analysis_conditional_operator2);
+DECLARE_CASE(ast_node_analysis_conditional_operator3);
+DECLARE_CASE(ast_node_analysis_conditional_operator4);
+DECLARE_CASE(ast_node_analysis_conditional_operator5);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -259,7 +264,12 @@ TEST_SUITE(mainSuite,
     &ast_node_analysis_relational_operators,
     &ast_node_analysis_equality_operators,
     &ast_node_analysis_bitwise_operators,
-    &ast_node_analysis_logical_operators
+    &ast_node_analysis_logical_operators,
+    &ast_node_analysis_conditional_operator1,
+    &ast_node_analysis_conditional_operator2,
+    &ast_node_analysis_conditional_operator3,
+    &ast_node_analysis_conditional_operator4,
+    &ast_node_analysis_conditional_operator5
 );
 
 int main(int argc, const char **argv) {
