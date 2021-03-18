@@ -22,7 +22,8 @@ typedef enum kefir_ast_node_type {
     KEFIR_AST_ASSIGNMENT_OPERATOR,
 
     KEFIR_AST_TYPE_NAME,
-    KEFIR_AST_CAST_OPERATOR
+    KEFIR_AST_CAST_OPERATOR,
+    KEFIR_AST_COMMA_OPERATOR
 } kefir_ast_node_type_t;
 
 typedef enum kefir_ast_node_category {

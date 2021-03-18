@@ -253,3 +253,62 @@ DEFINE_CASE(ast_node_analysis_compound_assignment_operator3, "AST node analysis 
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
+
+DEFINE_CASE(ast_node_analysis_comma_operator, "AST node analysis - comma operator")
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context,
+        "x", kefir_ast_type_float(), NULL));
+    ASSERT_OK(kefir_ast_local_context_define_constant(&kft_mem, &local_context,
+        "y", kefir_ast_constant_expression_integer(&kft_mem, 100), type_traits->underlying_enumeration_type));
+
+    struct kefir_ast_comma_operator *comma = kefir_ast_new_comma_operator(&kft_mem);
+    ASSERT(comma != NULL);
+    ASSERT_OK(kefir_ast_comma_append(&kft_mem, comma,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(&kft_mem, true))));
+    ASSERT_OK(kefir_ast_comma_append(&kft_mem, comma,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(&kft_mem,
+            kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_uint(&kft_mem, 0))))));
+    ASSERT_OK(kefir_ast_comma_append(&kft_mem, comma,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x"))));
+
+    ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(comma)));
+    ASSERT(comma->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);
+    ASSERT(!comma->base.properties.expression_props.lvalue);
+    ASSERT(!comma->base.properties.expression_props.constant_expression);
+    ASSERT(!comma->base.properties.expression_props.bitfield);
+    ASSERT(!comma->base.properties.expression_props.addressable);
+    ASSERT(KEFIR_AST_TYPE_SAME(comma->base.properties.type, kefir_ast_type_float()));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(comma)));
+
+    comma = kefir_ast_new_comma_operator(&kft_mem);
+    ASSERT(comma != NULL);
+    ASSERT_OK(kefir_ast_comma_append(&kft_mem, comma,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "y"))));
+    ASSERT_OK(kefir_ast_comma_append(&kft_mem, comma,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(&kft_mem, true))));
+    ASSERT_OK(kefir_ast_comma_append(&kft_mem, comma,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(&kft_mem,
+            kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_char()),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_uint(&kft_mem, 0))))));
+
+    ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(comma)));
+    ASSERT(comma->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);
+    ASSERT(!comma->base.properties.expression_props.lvalue);
+    ASSERT(!comma->base.properties.expression_props.constant_expression);
+    ASSERT(!comma->base.properties.expression_props.bitfield);
+    ASSERT(!comma->base.properties.expression_props.addressable);
+    ASSERT(KEFIR_AST_TYPE_SAME(comma->base.properties.type,
+        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_char())));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(comma)));
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+END_CASE

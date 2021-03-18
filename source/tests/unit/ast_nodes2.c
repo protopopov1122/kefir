@@ -290,3 +290,35 @@ DEFINE_CASE(ast_nodes_assignment_operators, "AST nodes - assignment operators")
     ASSERT_OK(kefir_ast_type_bundle_free(&kft_mem, &type_bundle));
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
 END_CASE
+
+DEFINE_CASE(ast_nodes_comma_operators, "AST nodes - comma operators")
+    struct kefir_symbol_table symbols;
+    struct kefir_ast_type_bundle type_bundle;
+
+    ASSERT_OK(kefir_symbol_table_init(&symbols));
+    ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
+
+    struct kefir_ast_comma_operator *comma
+        = kefir_ast_new_comma_operator(&kft_mem);
+    ASSERT(comma != NULL);
+    ASSERT(comma->base.klass->type == KEFIR_AST_COMMA_OPERATOR);
+    ASSERT(comma->base.self == comma);
+
+    for (kefir_size_t i = 0; i < 10; i++) {
+        ASSERT_OK(kefir_ast_comma_append(&kft_mem, comma,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, i))));
+        ASSERT(kefir_list_length(&comma->expressions) == i + 1);
+        ASSIGN_DECL_CAST(struct kefir_ast_node_base *, expr,
+            kefir_list_tail(&comma->expressions)->value);
+        ASSERT(expr->klass->type == KEFIR_AST_CONSTANT);
+        ASSIGN_DECL_CAST(struct kefir_ast_constant *, cnst,
+            expr->self);
+        ASSERT(cnst->type == KEFIR_AST_INT_CONSTANT);
+        ASSERT(cnst->value.integer == (kefir_int_t) i);
+    }
+
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(comma)));
+
+    ASSERT_OK(kefir_ast_type_bundle_free(&kft_mem, &type_bundle));
+    ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
+END_CASE

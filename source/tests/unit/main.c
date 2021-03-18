@@ -74,6 +74,7 @@ DECLARE_CASE(ast_nodes_generic_selections);
 DECLARE_CASE(ast_nodes_cast_operators);
 DECLARE_CASE(ast_nodes_conditional_operators);
 DECLARE_CASE(ast_nodes_assignment_operators);
+DECLARE_CASE(ast_nodes_comma_operators);
 DECLARE_CASE(ast_type_compatibility1);
 DECLARE_CASE(ast_type_basic_compatibility);
 DECLARE_CASE(ast_type_enum_compatibility);
@@ -147,6 +148,7 @@ DECLARE_CASE(ast_node_analysis_simple_assignment_operator7);
 DECLARE_CASE(ast_node_analysis_compound_assignment_operator1);
 DECLARE_CASE(ast_node_analysis_compound_assignment_operator2);
 DECLARE_CASE(ast_node_analysis_compound_assignment_operator3);
+DECLARE_CASE(ast_nodes_comma_operators);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -219,6 +221,7 @@ TEST_SUITE(mainSuite,
     &ast_nodes_cast_operators,
     &ast_nodes_conditional_operators,
     &ast_nodes_assignment_operators,
+    &ast_nodes_comma_operators,
     &ast_type_compatibility1,
     &ast_type_basic_compatibility,
     &ast_type_enum_compatibility,
@@ -291,7 +294,8 @@ TEST_SUITE(mainSuite,
     &ast_node_analysis_simple_assignment_operator7,
     &ast_node_analysis_compound_assignment_operator1,
     &ast_node_analysis_compound_assignment_operator2,
-    &ast_node_analysis_compound_assignment_operator3
+    &ast_node_analysis_compound_assignment_operator3,
+    &ast_nodes_comma_operators
 );
 
 int main(int argc, const char **argv) {
