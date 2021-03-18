@@ -23,13 +23,32 @@ kefir_result_t kefir_ast_analyze_function_call_node(struct kefir_mem *mem,
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, arg));
     }
 
-    // TODO: Function parameter type and number validation
     const struct kefir_ast_type *func_type = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle,
         node->function->properties.type);
     REQUIRE(func_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER &&
         func_type->referenced_type->tag == KEFIR_AST_TYPE_FUNCTION,
         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected expression to be a pointer to function"));
-    // TODO: Function return type qualifications?
+    const struct kefir_ast_type *function_type = func_type->referenced_type;
+
+    if (function_type->function_type.mode == KEFIR_AST_FUNCTION_TYPE_PARAMETERS) {
+        REQUIRE((!function_type->function_type.ellipsis  &&
+            kefir_ast_type_function_parameter_count(&function_type->function_type) == kefir_list_length(&node->arguments)) ||
+            (function_type->function_type.ellipsis &&
+                kefir_ast_type_function_parameter_count(&function_type->function_type) <= kefir_list_length(&node->arguments)),
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
+                "Number of parameters for function invocation shall agree with number of parameters for prototype"));
+
+        const struct kefir_list_entry *call_iter = kefir_list_head(&node->arguments);
+        for (kefir_size_t i = 0; call_iter != NULL; kefir_list_next(&call_iter), i++) {
+            ASSIGN_DECL_CAST(struct kefir_ast_node_base *, arg,
+                call_iter->value);
+            REQUIRE_OK(kefir_ast_analyze_node(mem, context, arg));
+            const struct kefir_ast_function_type_parameter *param = NULL;
+            REQUIRE_OK(kefir_ast_type_function_get_parameter(&function_type->function_type, i, &param));
+            REQUIRE_OK(kefir_ast_node_assignable(mem, context, arg, kefir_ast_unqualified_type(param->adjusted_type)));
+        }
+    }
+
     const struct kefir_ast_type *return_type = kefir_ast_unqualified_type(func_type->referenced_type->function_type.return_type);
     REQUIRE(return_type->tag != KEFIR_AST_TYPE_ARRAY,
         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Function cannot return array type"));
