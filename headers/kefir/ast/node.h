@@ -80,6 +80,11 @@ KEFIR_AST_NODE_STRUCT(kefir_ast_conditional_operator, {
     struct kefir_ast_node_base *expr2;
 });
 
+KEFIR_AST_NODE_STRUCT(kefir_ast_assignment_operator, {
+    kefir_ast_assignment_operation_t operation;
+    struct kefir_ast_node_base *target;
+    struct kefir_ast_node_base *value;
+});
 
 struct kefir_ast_constant *kefir_ast_new_constant_bool(struct kefir_mem *, kefir_bool_t);
 struct kefir_ast_constant *kefir_ast_new_constant_char(struct kefir_mem *, kefir_char_t);
@@ -137,6 +142,15 @@ struct kefir_ast_conditional_operator *kefir_ast_new_conditional_operator(struct
                                                                         struct kefir_ast_node_base *,
                                                                         struct kefir_ast_node_base *);
 
+struct kefir_ast_assignment_operator *kefir_ast_new_simple_assignment(struct kefir_mem *,
+                                                               struct kefir_ast_node_base *,
+                                                               struct kefir_ast_node_base *);
+
+struct kefir_ast_assignment_operator *kefir_ast_new_compound_assignment(struct kefir_mem *,
+                                                                 kefir_ast_assignment_operation_t,
+                                                                 struct kefir_ast_node_base *,
+                                                                 struct kefir_ast_node_base *);
+
 typedef struct kefir_ast_visitor {
     KEFIR_AST_VISITOR_METHOD(generic_handler, kefir_ast_node_base);
     KEFIR_AST_VISITOR_METHOD(constant, kefir_ast_constant);
@@ -152,6 +166,7 @@ typedef struct kefir_ast_visitor {
     KEFIR_AST_VISITOR_METHOD(unary_operation, kefir_ast_unary_operation);
     KEFIR_AST_VISITOR_METHOD(binary_operation, kefir_ast_binary_operation);
     KEFIR_AST_VISITOR_METHOD(conditional_operator, kefir_ast_conditional_operator);
+    KEFIR_AST_VISITOR_METHOD(assignment_operator, kefir_ast_assignment_operator);
 } kefir_ast_visitor_t;
 
 #define KEFIR_AST_NODE_INTERNAL_DEF

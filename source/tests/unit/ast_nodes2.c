@@ -232,3 +232,61 @@ DEFINE_CASE(ast_nodes_conditional_operators, "AST nodes - conditional operators"
 END_CASE
 
 #undef ASSERT_CONDITIONAL
+
+DEFINE_CASE(ast_nodes_assignment_operators, "AST nodes - assignment operators")
+    struct kefir_symbol_table symbols;
+    struct kefir_ast_type_bundle type_bundle;
+
+    ASSERT_OK(kefir_symbol_table_init(&symbols));
+    ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
+
+    kefir_ast_assignment_operation_t OPERATIONS[] = {
+        KEFIR_AST_ASSIGNMENT_SIMPLE,
+        KEFIR_AST_ASSIGNMENT_MULTIPLY,
+        KEFIR_AST_ASSIGNMENT_DIVIDE,
+        KEFIR_AST_ASSIGNMENT_MODULO,
+        KEFIR_AST_ASSIGNMENT_ADD,
+        KEFIR_AST_ASSIGNMENT_SUBTRACT,
+        KEFIR_AST_ASSIGNMENT_SHIFT_LEFT,
+        KEFIR_AST_ASSIGNMENT_SHIFT_RIGHT,
+        KEFIR_AST_ASSIGNMENT_BITWISE_AND,
+        KEFIR_AST_ASSIGNMENT_BITWISE_OR,
+        KEFIR_AST_ASSIGNMENT_BITWISE_XOR  
+    };
+    const kefir_size_t OPERATIONS_LENGTH = sizeof(OPERATIONS) / sizeof(OPERATIONS[0]);
+
+    for (kefir_size_t i = 0; i < OPERATIONS_LENGTH; i++) {
+        struct kefir_ast_assignment_operator *oper =
+            kefir_ast_new_compound_assignment(&kft_mem, OPERATIONS[i],
+                KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, &symbols, "x")),
+                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 100)));
+        ASSERT(oper != NULL);
+        ASSERT(oper->base.klass->type == KEFIR_AST_ASSIGNMENT_OPERATOR);
+        ASSERT(oper->base.self == oper);
+        ASSERT(oper->operation == OPERATIONS[i]);
+        ASSERT(oper->target->klass->type == KEFIR_AST_IDENTIFIER);
+        ASSERT(strcmp(((struct kefir_ast_identifier *) oper->target->self)->identifier, "x") == 0);
+        ASSERT(oper->value->klass->type == KEFIR_AST_CONSTANT);
+        ASSERT(((struct kefir_ast_constant *) oper->value->self)->type == KEFIR_AST_INT_CONSTANT);
+        ASSERT(((struct kefir_ast_constant *) oper->value->self)->value.integer == 100);
+        ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(oper)));
+    }
+
+    struct kefir_ast_assignment_operator *oper =
+        kefir_ast_new_simple_assignment(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, &symbols, "x")),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 100)));
+    ASSERT(oper != NULL);
+    ASSERT(oper->base.klass->type == KEFIR_AST_ASSIGNMENT_OPERATOR);
+    ASSERT(oper->base.self == oper);
+    ASSERT(oper->operation == KEFIR_AST_ASSIGNMENT_SIMPLE);
+    ASSERT(oper->target->klass->type == KEFIR_AST_IDENTIFIER);
+    ASSERT(strcmp(((struct kefir_ast_identifier *) oper->target->self)->identifier, "x") == 0);
+    ASSERT(oper->value->klass->type == KEFIR_AST_CONSTANT);
+    ASSERT(((struct kefir_ast_constant *) oper->value->self)->type == KEFIR_AST_INT_CONSTANT);
+    ASSERT(((struct kefir_ast_constant *) oper->value->self)->value.integer == 100);
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(oper)));
+
+    ASSERT_OK(kefir_ast_type_bundle_free(&kft_mem, &type_bundle));
+    ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
+END_CASE

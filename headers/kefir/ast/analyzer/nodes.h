@@ -22,6 +22,7 @@ ANALYZE_NODE(type_name, struct kefir_ast_type_name);
 ANALYZE_NODE(cast_operator, struct kefir_ast_cast_operator);
 ANALYZE_NODE(generic_selection, struct kefir_ast_generic_selection);
 ANALYZE_NODE(conditional_operator, struct kefir_ast_conditional_operator);
+ANALYZE_NODE(assignment_operator, struct kefir_ast_assignment_operator);
 
 #undef ANALYZE_NODE
 

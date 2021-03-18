@@ -8,8 +8,8 @@ kefir_result_t kefir_ast_analyze_conditional_operator_node(struct kefir_mem *mem
                                                        const struct kefir_ast_context *context,
                                                        const struct kefir_ast_conditional_operator *node,
                                                        struct kefir_ast_node_base *base) {
-    UNUSED(mem);
-    UNUSED(context);
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST constant"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST base node"));
 
