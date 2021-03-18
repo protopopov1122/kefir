@@ -75,6 +75,8 @@ static kefir_result_t validate_compound_assignment(struct kefir_mem *mem,
         case KEFIR_AST_ASSIGNMENT_ADD:
         case KEFIR_AST_ASSIGNMENT_SUBTRACT:
             if (target_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
+                REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(kefir_ast_unqualified_type(target_type->referenced_type)),
+                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Left assignment operand shall be a pointer to complete type"));
                 REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(value_type),
                     KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Right assignment operand shall have integral type"));
             } else {
