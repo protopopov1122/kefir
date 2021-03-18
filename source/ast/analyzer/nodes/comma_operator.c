@@ -25,6 +25,8 @@ kefir_result_t kefir_ast_analyze_comma_operator_node(struct kefir_mem *mem,
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, expr,
             iter->value);
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, expr));
+        REQUIRE(expr->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "All comma operands shall be expressions"));
 
         base->properties.type = expr->properties.type;
     }

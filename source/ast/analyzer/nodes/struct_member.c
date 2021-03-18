@@ -14,6 +14,10 @@ kefir_result_t kefir_ast_analyze_struct_member_node(struct kefir_mem *mem,
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST base node"));
 
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->structure));
+
+    REQUIRE(node->structure->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Structure shall be an expression"));
+
     const struct kefir_ast_type *struct_type = node->structure->properties.type;
     const struct kefir_ast_type_qualification *qualification = NULL;
     if (node->base.klass->type == KEFIR_AST_STRUCTURE_INDIRECT_MEMBER) {

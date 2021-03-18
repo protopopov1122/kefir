@@ -16,6 +16,14 @@ kefir_result_t kefir_ast_analyze_conditional_operator_node(struct kefir_mem *mem
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->condition));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->expr1));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->expr2));
+
+    REQUIRE(node->condition->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "All conditional operator operands shall be expressions"));
+    REQUIRE(node->expr1->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "All conditional operator operands shall be expressions"));
+    REQUIRE(node->expr2->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "All conditional operator operands shall be expressions"));
+
     const struct kefir_ast_type *cond_type = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle,
         node->condition->properties.type);
     const struct kefir_ast_type *type1 = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle,

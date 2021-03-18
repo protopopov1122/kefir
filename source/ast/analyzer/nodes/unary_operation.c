@@ -18,6 +18,8 @@ kefir_result_t kefir_ast_analyze_unary_operation_node(struct kefir_mem *mem,
     switch (node->type) {
         case KEFIR_AST_OPERATION_PLUS:
         case KEFIR_AST_OPERATION_NEGATE: {
+            REQUIRE(node->arg->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unary operator operand shall be an expression"));
             const struct kefir_ast_type *type1 = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->arg->properties.type);
             REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1),
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected arithmetic argument of unary +|-"));
@@ -31,6 +33,8 @@ kefir_result_t kefir_ast_analyze_unary_operation_node(struct kefir_mem *mem,
         } break;
         
         case KEFIR_AST_OPERATION_INVERT: {
+            REQUIRE(node->arg->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unary operator operand shall be an expression"));
             const struct kefir_ast_type *type1 = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->arg->properties.type);
             REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1),
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected integral argument of bitwise inversion"));
@@ -40,6 +44,8 @@ kefir_result_t kefir_ast_analyze_unary_operation_node(struct kefir_mem *mem,
         } break;
 
         case KEFIR_AST_OPERATION_LOGICAL_NEGATE: {
+            REQUIRE(node->arg->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unary operator operand shall be an expression"));
             const struct kefir_ast_type *type1 = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->arg->properties.type);
             REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(type1),
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected type argument of logical negation"));
@@ -52,6 +58,8 @@ kefir_result_t kefir_ast_analyze_unary_operation_node(struct kefir_mem *mem,
         case KEFIR_AST_OPERATION_PREFIX_DECREMENT:
         case KEFIR_AST_OPERATION_POSTFIX_INCREMENT:
         case KEFIR_AST_OPERATION_POSTFIX_DECREMENT: {
+            REQUIRE(node->arg->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unary operator operand shall be an expression"));
             REQUIRE(node->arg->properties.expression_props.lvalue,
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected lvalue argument"));
             const struct kefir_ast_type *type = node->arg->properties.type;
@@ -61,6 +69,8 @@ kefir_result_t kefir_ast_analyze_unary_operation_node(struct kefir_mem *mem,
         } break;
 
         case KEFIR_AST_OPERATION_ADDRESS: {
+            REQUIRE(node->arg->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unary operator operand shall be an expression"));
             REQUIRE(node->arg->properties.expression_props.addressable,
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected addressable argument"));
             const struct kefir_ast_type *type = node->arg->properties.type;
@@ -68,6 +78,8 @@ kefir_result_t kefir_ast_analyze_unary_operation_node(struct kefir_mem *mem,
         } break;
 
         case KEFIR_AST_OPERATION_INDIRECTION: {
+            REQUIRE(node->arg->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unary operator operand shall be an expression"));
             const struct kefir_ast_type *type = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem,
                 context->type_bundle, node->arg->properties.type);
             REQUIRE(type->tag == KEFIR_AST_TYPE_SCALAR_POINTER,

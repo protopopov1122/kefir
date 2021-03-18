@@ -15,6 +15,9 @@ kefir_result_t kefir_ast_analyze_cast_operator_node(struct kefir_mem *mem,
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
 
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, cast->expr));
+    REQUIRE(cast->expr->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cast operator operand shall be an expression"));
+
     const struct kefir_ast_type *expr_type =
         KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, cast->expr->properties.type);
     const struct kefir_ast_type *cast_type =

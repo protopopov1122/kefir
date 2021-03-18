@@ -104,6 +104,11 @@ kefir_result_t kefir_ast_analyze_assignment_operator_node(struct kefir_mem *mem,
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->target));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->value));
 
+    REQUIRE(node->target->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both assignment operands shall be expressions"));
+    REQUIRE(node->value->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both assignment operands shall be expressions"));
+
     REQUIRE(node->target->properties.expression_props.lvalue,
         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-const lvalue as assignment left operand"));
     struct kefir_ast_type_qualification target_qualifications;

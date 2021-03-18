@@ -16,6 +16,11 @@ kefir_result_t kefir_ast_analyze_array_subscript_node(struct kefir_mem *mem,
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->array));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->subscript));
 
+    REQUIRE(node->array->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both array subscript operands shall be expressions"));
+    REQUIRE(node->subscript->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both array subscript operands shall be expressions"));
+
     const struct kefir_ast_type *array_type = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem,
         context->type_bundle, node->array->properties.type);
     const struct kefir_ast_type *subcript_type = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem,

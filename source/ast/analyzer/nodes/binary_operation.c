@@ -176,6 +176,12 @@ kefir_result_t kefir_ast_analyze_binary_operation_node(struct kefir_mem *mem,
     
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->arg1));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->arg2));
+
+    REQUIRE(node->arg1->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both assignment operands shall be expressions"));
+    REQUIRE(node->arg2->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both binary operator operands shall be expressions"));
+
     const struct kefir_ast_type *type1 = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle,
         node->arg1->properties.type);
     const struct kefir_ast_type *type2 = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle,
