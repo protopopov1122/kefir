@@ -39,7 +39,8 @@ kefir_result_t kefir_ast_analyze_function_call_node(struct kefir_mem *mem,
                 "Number of parameters for function invocation shall agree with number of parameters for prototype"));
 
         const struct kefir_list_entry *call_iter = kefir_list_head(&node->arguments);
-        for (kefir_size_t i = 0; call_iter != NULL; kefir_list_next(&call_iter), i++) {
+        for (kefir_size_t i = 0; call_iter != NULL && i < kefir_ast_type_function_parameter_count(&function_type->function_type);
+            kefir_list_next(&call_iter), i++) {
             ASSIGN_DECL_CAST(struct kefir_ast_node_base *, arg,
                 call_iter->value);
             REQUIRE_OK(kefir_ast_analyze_node(mem, context, arg));

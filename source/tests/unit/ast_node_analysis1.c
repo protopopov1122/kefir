@@ -304,9 +304,58 @@ DEFINE_CASE(ast_node_analysis_struct_members, "AST node analysis - struct member
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
 
-// TODO Indirect struct member tests
-
 #undef ASSERT_STRUCT_MEMBER
+
+#define ASSERT_INDIRECT_STRUCT_MEMBER(_mem, _context, _identifier, _field, _type) \
+    do { \
+        struct kefir_ast_struct_member *member = kefir_ast_new_struct_indirect_member( \
+            (_mem), (_context)->symbols, \
+            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier((_mem), (_context)->symbols, (_identifier))), \
+            (_field)); \
+        ASSERT_OK(kefir_ast_analyze_node((_mem), (_context), KEFIR_AST_NODE_BASE(member))); \
+        ASSERT(member->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION); \
+        ASSERT(KEFIR_AST_TYPE_SAME(member->base.properties.type, (_type))); \
+        ASSERT(!member->base.properties.expression_props.constant_expression); \
+        ASSERT(member->base.properties.expression_props.lvalue); \
+        KEFIR_AST_NODE_FREE((_mem), KEFIR_AST_NODE_BASE(member)); \
+    } while (0)
+
+DEFINE_CASE(ast_node_analysis_indirect_struct_members, "AST node analysis - indirect struct members")
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    struct kefir_ast_struct_type *struct1 = NULL;
+    const struct kefir_ast_type *struct1_type = kefir_ast_type_structure(&kft_mem, context->type_bundle,
+        "type1", &struct1);
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct1, "field1",
+        kefir_ast_type_unsigned_char(), NULL));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct1, "field2",
+        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_long()), NULL));
+    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, context->symbols, struct1, "field3",
+        kefir_ast_type_signed_int(), NULL, kefir_ast_constant_expression_integer(&kft_mem, 3)));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct1, "field4",
+        kefir_ast_type_unbounded_array(&kft_mem, context->type_bundle, kefir_ast_type_float(), NULL), NULL));
+
+    ASSERT_OK(kefir_ast_global_context_define_external(&kft_mem, &global_context, "var1",
+        kefir_ast_type_pointer(&kft_mem, context->type_bundle, struct1_type), NULL));
+
+    ASSERT_INDIRECT_STRUCT_MEMBER(&kft_mem, context, "var1", "field1", kefir_ast_type_unsigned_char());
+    ASSERT_INDIRECT_STRUCT_MEMBER(&kft_mem, context, "var1", "field2",
+        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_long()));
+    ASSERT_INDIRECT_STRUCT_MEMBER(&kft_mem, context, "var1", "field3", kefir_ast_type_signed_int());
+    ASSERT_INDIRECT_STRUCT_MEMBER(&kft_mem, context, "var1", "field4",
+        kefir_ast_type_unbounded_array(&kft_mem, context->type_bundle, kefir_ast_type_float(), NULL));
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+END_CASE
+
+#undef ASSERT_INDIRECT_STRUCT_MEMBER
 
 #define ASSERT_FUNCTION_CALL(_mem, _context, _id, _type) \
     do { \
@@ -371,8 +420,6 @@ DEFINE_CASE(ast_node_analysis_function_calls, "AST node analysis - function call
     ASSERT_FUNCTION_CALL(&kft_mem, context, "func1", kefir_ast_type_signed_long_long());
     ASSERT_FUNCTION_CALL(&kft_mem, context, "func2", kefir_ast_type_signed_long_long());
     ASSERT_FUNCTION_CALL_NOK(&kft_mem, context, "func3");
-
-    // TODO Extend function call unit tests
 
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));

@@ -67,6 +67,7 @@ kefir_result_t kefir_ast_analyze_node(struct kefir_mem *mem,
     visitor.array_subscript = visit_array_subscript;
     visitor.function_call = visit_function_call;
     visitor.struct_member = visit_struct_member;
+    visitor.struct_indirect_member = visit_struct_member;
     visitor.string_literal = visit_string_literal;
     visitor.type_name = visit_type_name;
     visitor.cast_operator = visit_cast_operator;
