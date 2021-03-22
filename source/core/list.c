@@ -100,6 +100,28 @@ kefir_result_t kefir_list_pop(struct kefir_mem *mem, struct kefir_list *list, st
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_list_clear(struct kefir_mem *mem, struct kefir_list *list) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL list pointer"));
+    while (list->head != NULL) {
+        struct kefir_list_entry *entry = list->head;
+        if (list->entry_removal.callback != NULL){
+             REQUIRE_OK(list->entry_removal.callback(mem, list, entry, list->entry_removal.data));
+        }
+
+        list->head = entry->next;
+        if (list->head != NULL) {
+            list->head->prev = NULL;
+        }
+        if (list->tail == entry) {
+            list->tail = NULL;
+        }
+        list->length--;
+        KEFIR_FREE(mem, entry);
+    }
+    return KEFIR_OK;
+}
+
 struct kefir_list_entry *kefir_list_head(const struct kefir_list *list) {
     REQUIRE(list != NULL, NULL);
     return list->head;

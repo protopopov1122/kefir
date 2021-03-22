@@ -29,6 +29,7 @@ kefir_result_t kefir_list_on_remove(struct kefir_list *,
 kefir_size_t kefir_list_length(const struct kefir_list *);
 kefir_result_t kefir_list_insert_after(struct kefir_mem *, struct kefir_list *, struct kefir_list_entry *, void *);
 kefir_result_t kefir_list_pop(struct kefir_mem *, struct kefir_list *, struct kefir_list_entry *);
+kefir_result_t kefir_list_clear(struct kefir_mem *, struct kefir_list *);
 struct kefir_list_entry *kefir_list_head(const struct kefir_list *);
 struct kefir_list_entry *kefir_list_tail(const struct kefir_list *);
 struct kefir_list_entry *kefir_list_at(const struct kefir_list *, kefir_size_t);
