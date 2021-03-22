@@ -271,3 +271,8 @@ kefir_result_t kefir_ast_type_traversal_navigate(struct kefir_mem *mem,
     REQUIRE_OK(navigate_impl(mem, traversal, designator, false));
     return KEFIR_OK;
 }
+
+kefir_bool_t kefir_ast_type_traversal_empty(struct kefir_ast_type_traversal *traversal) {
+    REQUIRE(traversal != NULL, true);
+    return kefir_list_length(&traversal->stack) == 0;
+}

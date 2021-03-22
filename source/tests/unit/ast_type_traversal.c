@@ -5,6 +5,7 @@
 
 #define ASSERT_NEXT(_mem, _traversal, _type) \
     do { \
+        ASSERT(kefir_ast_type_traversal_empty((_traversal)) == (_type == NULL)); \
         const struct kefir_ast_type *type = NULL; \
         ASSERT_OK(kefir_ast_type_traversal_next((_mem), (_traversal), &type)); \
         if ((_type) == NULL) { \
@@ -16,6 +17,7 @@
 
 #define ASSERT_NEXT_REC(_mem, _traversal, _type) \
     do { \
+        ASSERT(kefir_ast_type_traversal_empty((_traversal)) == (_type == NULL)); \
         const struct kefir_ast_type *type = NULL; \
         ASSERT_OK(kefir_ast_type_traversal_next_recursive((_mem), (_traversal), &type)); \
         if ((_type) == NULL) { \

@@ -157,6 +157,10 @@ DECLARE_CASE(ast_type_traversal1);
 DECLARE_CASE(ast_type_traversal2);
 DECLARE_CASE(ast_type_traversal3);
 DECLARE_CASE(ast_type_traversal4);
+DECLARE_CASE(ast_initializer_construction1);
+DECLARE_CASE(ast_initializer_construction2);
+DECLARE_CASE(ast_initializer_analysis1);
+DECLARE_CASE(ast_initializer_analysis2);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -311,7 +315,11 @@ TEST_SUITE(mainSuite,
     &ast_type_traversal1,
     &ast_type_traversal2,
     &ast_type_traversal3,
-    &ast_type_traversal4
+    &ast_type_traversal4,
+    &ast_initializer_construction1,
+    &ast_initializer_construction2,
+    &ast_initializer_analysis1,
+    &ast_initializer_analysis2
 );
 
 int main(int argc, const char **argv) {
