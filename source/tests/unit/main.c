@@ -161,6 +161,9 @@ DECLARE_CASE(ast_initializer_construction1);
 DECLARE_CASE(ast_initializer_construction2);
 DECLARE_CASE(ast_initializer_analysis1);
 DECLARE_CASE(ast_initializer_analysis2);
+DECLARE_CASE(ast_initializer_analysis3);
+DECLARE_CASE(ast_initializer_analysis4);
+DECLARE_CASE(ast_initializer_analysis5);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -319,7 +322,10 @@ TEST_SUITE(mainSuite,
     &ast_initializer_construction1,
     &ast_initializer_construction2,
     &ast_initializer_analysis1,
-    &ast_initializer_analysis2
+    &ast_initializer_analysis2,
+    &ast_initializer_analysis3,
+    &ast_initializer_analysis4,
+    &ast_initializer_analysis5
 );
 
 int main(int argc, const char **argv) {

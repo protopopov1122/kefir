@@ -66,6 +66,19 @@ kefir_result_t kefir_ast_initializer_free(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+struct kefir_ast_node_base *kefir_ast_initializer_head(const struct kefir_ast_initializer *initializer) {
+    REQUIRE(initializer != NULL, NULL);
+    if (initializer->type == KEFIR_AST_INITIALIZER_EXPRESSION) {
+        return initializer->expression;
+    } else {
+        const struct kefir_list_entry *head_entry = kefir_list_head(&initializer->list.initializers);
+        REQUIRE(head_entry != NULL, NULL);
+        ASSIGN_DECL_CAST(struct kefir_ast_initializer_list_entry *, entry,
+            head_entry->value);
+        return kefir_ast_initializer_head(entry->value);
+    }
+}
+
 kefir_result_t kefir_ast_initializer_list_init(struct kefir_ast_initializer_list *list) {
     REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST initializer list"));
     REQUIRE_OK(kefir_list_init(&list->initializers));

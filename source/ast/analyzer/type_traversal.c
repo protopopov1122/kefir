@@ -137,6 +137,14 @@ kefir_result_t kefir_ast_type_traversal_next(struct kefir_mem *mem,
 kefir_result_t kefir_ast_type_traversal_next_recursive(struct kefir_mem *mem,
                                                    struct kefir_ast_type_traversal *traversal,
                                                    const struct kefir_ast_type **type) {
+    return kefir_ast_type_traversal_next_recursive2(mem, traversal, NULL, NULL, type);
+}
+
+kefir_result_t kefir_ast_type_traversal_next_recursive2(struct kefir_mem *mem,
+                                                    struct kefir_ast_type_traversal *traversal,
+                                                    kefir_bool_t (*stop)(const struct kefir_ast_type *, void *),
+                                                    void *stop_payload,
+                                                    const struct kefir_ast_type **type) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(traversal != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid traversal structure"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type pointer"));
@@ -148,8 +156,11 @@ kefir_result_t kefir_ast_type_traversal_next_recursive(struct kefir_mem *mem,
             case KEFIR_AST_TYPE_STRUCTURE:
             case KEFIR_AST_TYPE_UNION:
             case KEFIR_AST_TYPE_ARRAY:
-                REQUIRE_OK(push_layer(mem, traversal, top_type));
-                return kefir_ast_type_traversal_next_recursive(mem, traversal, type);
+                if (stop == NULL || !stop(top_type, stop_payload)) {
+                    REQUIRE_OK(push_layer(mem, traversal, top_type));
+                    return kefir_ast_type_traversal_next_recursive(mem, traversal, type);
+                }
+                // Intentional fallthrough
 
             default:
                 *type = top_type;

@@ -64,6 +64,7 @@ END_CASE
             (_context)->type_bundle, kefir_ast_type_char(), strlen((_literal)), NULL))); \
         ASSERT(literal->base.properties.expression_props.constant_expression); \
         ASSERT(!literal->base.properties.expression_props.lvalue); \
+        ASSERT(literal->base.properties.expression_props.string_literal); \
         KEFIR_AST_NODE_FREE((_mem), KEFIR_AST_NODE_BASE(literal)); \
     } while (0)
 

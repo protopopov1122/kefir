@@ -50,6 +50,12 @@ kefir_result_t kefir_ast_type_traversal_next_recursive(struct kefir_mem *,
                                                    struct kefir_ast_type_traversal *,
                                                    const struct kefir_ast_type **);
 
+kefir_result_t kefir_ast_type_traversal_next_recursive2(struct kefir_mem *,
+                                                    struct kefir_ast_type_traversal *,
+                                                    kefir_bool_t (*)(const struct kefir_ast_type *, void *),
+                                                    void *,
+                                                    const struct kefir_ast_type **);
+
 kefir_result_t kefir_ast_type_traversal_navigate(struct kefir_mem *,
                                              struct kefir_ast_type_traversal *,
                                              const struct kefir_ast_designator *);

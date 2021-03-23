@@ -32,6 +32,7 @@ struct kefir_ast_initializer *kefir_ast_new_expression_initializer(struct kefir_
 struct kefir_ast_initializer *kefir_ast_new_list_initializer(struct kefir_mem *);
 kefir_result_t kefir_ast_initializer_free(struct kefir_mem *,
                                       struct kefir_ast_initializer *);
+struct kefir_ast_node_base *kefir_ast_initializer_head(const struct kefir_ast_initializer *);
 
 kefir_result_t kefir_ast_initializer_list_init(struct kefir_ast_initializer_list *);
 kefir_result_t kefir_ast_initializer_list_free(struct kefir_mem *,
