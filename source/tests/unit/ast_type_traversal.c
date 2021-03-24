@@ -3,28 +3,40 @@
 #include "kefir/ast/type.h"
 #include "kefir/ast/local_context.h"
 
-#define ASSERT_NEXT(_mem, _traversal, _type) \
+static kefir_size_t layer_depth(const struct kefir_ast_type_traversal_layer *layer) {
+    if (layer == NULL) {
+        return 0;
+    } else {
+        return layer_depth(layer->parent) + 1;
+    }
+}
+
+#define ASSERT_NEXT(_mem, _traversal, _type, _depth) \
     do { \
         ASSERT(kefir_ast_type_traversal_empty((_traversal)) == (_type == NULL)); \
         const struct kefir_ast_type *type = NULL; \
-        ASSERT_OK(kefir_ast_type_traversal_next((_mem), (_traversal), &type)); \
+        const struct kefir_ast_type_traversal_layer *layer = NULL; \
+        ASSERT_OK(kefir_ast_type_traversal_next((_mem), (_traversal), &type, &layer)); \
         if ((_type) == NULL) { \
             ASSERT(type == NULL); \
         } else { \
             ASSERT(KEFIR_AST_TYPE_SAME((const struct kefir_ast_type *) (_type), type)); \
         } \
+        ASSERT(layer_depth(layer) == (_depth)); \
     } while (0)
 
-#define ASSERT_NEXT_REC(_mem, _traversal, _type) \
+#define ASSERT_NEXT_REC(_mem, _traversal, _type, _depth) \
     do { \
         ASSERT(kefir_ast_type_traversal_empty((_traversal)) == (_type == NULL)); \
         const struct kefir_ast_type *type = NULL; \
-        ASSERT_OK(kefir_ast_type_traversal_next_recursive((_mem), (_traversal), &type)); \
+        const struct kefir_ast_type_traversal_layer *layer = NULL; \
+        ASSERT_OK(kefir_ast_type_traversal_next_recursive((_mem), (_traversal), &type, &layer)); \
         if ((_type) == NULL) { \
             ASSERT(type == NULL); \
         } else { \
             ASSERT(KEFIR_AST_TYPE_SAME((const struct kefir_ast_type *) (_type), type)); \
         } \
+        ASSERT(layer_depth(layer) == (_depth)); \
     } while (0)
 
 DEFINE_CASE(ast_type_traversal1, "AST Type analysis - type traversal #1")
@@ -76,42 +88,42 @@ DEFINE_CASE(ast_type_traversal1, "AST Type analysis - type traversal #1")
 
     struct kefir_ast_type_traversal traversal;
     ASSERT_OK(kefir_ast_type_traversal_init(&kft_mem, &traversal, type1));
-    ASSERT_NEXT(&kft_mem, &traversal, kefir_ast_type_signed_int());
-    ASSERT_NEXT(&kft_mem, &traversal, kefir_ast_type_char());
-    ASSERT_NEXT(&kft_mem, &traversal, kefir_ast_type_double());
-    ASSERT_NEXT(&kft_mem, &traversal, NULL);
+    ASSERT_NEXT(&kft_mem, &traversal, kefir_ast_type_signed_int(), 1);
+    ASSERT_NEXT(&kft_mem, &traversal, kefir_ast_type_char(), 1);
+    ASSERT_NEXT(&kft_mem, &traversal, kefir_ast_type_double(), 1);
+    ASSERT_NEXT(&kft_mem, &traversal, NULL, 0);
     ASSERT_OK(kefir_ast_type_traversal_free(&kft_mem, &traversal));
 
     ASSERT_OK(kefir_ast_type_traversal_init(&kft_mem, &traversal, type2));
-    ASSERT_NEXT(&kft_mem, &traversal, kefir_ast_type_float());
-    ASSERT_NEXT(&kft_mem, &traversal, type1);
-    ASSERT_NEXT(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()));
-    ASSERT_NEXT(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, type1));
-    ASSERT_NEXT(&kft_mem, &traversal, NULL);
+    ASSERT_NEXT(&kft_mem, &traversal, kefir_ast_type_float(), 1);
+    ASSERT_NEXT(&kft_mem, &traversal, type1, 1);
+    ASSERT_NEXT(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()), 1);
+    ASSERT_NEXT(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, type1), 1);
+    ASSERT_NEXT(&kft_mem, &traversal, NULL, 0);
     ASSERT_OK(kefir_ast_type_traversal_free(&kft_mem, &traversal));
 
     ASSERT_OK(kefir_ast_type_traversal_init(&kft_mem, &traversal, type3));
-    ASSERT_NEXT(&kft_mem, &traversal, type2);
-    ASSERT_NEXT(&kft_mem, &traversal, NULL);
+    ASSERT_NEXT(&kft_mem, &traversal, type2, 1);
+    ASSERT_NEXT(&kft_mem, &traversal, NULL, 0);
     ASSERT_OK(kefir_ast_type_traversal_free(&kft_mem, &traversal));
 
     ASSERT_OK(kefir_ast_type_traversal_init(&kft_mem, &traversal, type4));
-    ASSERT_NEXT(&kft_mem, &traversal, type3);
-    ASSERT_NEXT(&kft_mem, &traversal, type3);
-    ASSERT_NEXT(&kft_mem, &traversal, type3);
-    ASSERT_NEXT(&kft_mem, &traversal, type3);
-    ASSERT_NEXT(&kft_mem, &traversal, NULL);
+    ASSERT_NEXT(&kft_mem, &traversal, type3, 1);
+    ASSERT_NEXT(&kft_mem, &traversal, type3, 1);
+    ASSERT_NEXT(&kft_mem, &traversal, type3, 1);
+    ASSERT_NEXT(&kft_mem, &traversal, type3, 1);
+    ASSERT_NEXT(&kft_mem, &traversal, NULL, 0);
     ASSERT_OK(kefir_ast_type_traversal_free(&kft_mem, &traversal));
 
     ASSERT_OK(kefir_ast_type_traversal_init(&kft_mem, &traversal, type5));
     for (kefir_size_t i = 0; i < 100; i++) {
-        ASSERT_NEXT(&kft_mem, &traversal, type1);
+        ASSERT_NEXT(&kft_mem, &traversal, type1, 1);
     }
     ASSERT_OK(kefir_ast_type_traversal_free(&kft_mem, &traversal));
 
     ASSERT_OK(kefir_ast_type_traversal_init(&kft_mem, &traversal, kefir_ast_type_signed_short()));
-    ASSERT_NEXT(&kft_mem, &traversal, kefir_ast_type_signed_short());
-    ASSERT_NEXT(&kft_mem, &traversal, NULL);
+    ASSERT_NEXT(&kft_mem, &traversal, kefir_ast_type_signed_short(), 1);
+    ASSERT_NEXT(&kft_mem, &traversal, NULL, 0);
     ASSERT_OK(kefir_ast_type_traversal_free(&kft_mem, &traversal));
 
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
@@ -167,74 +179,74 @@ DEFINE_CASE(ast_type_traversal2, "AST Type analysis - type traversal #2")
 
     struct kefir_ast_type_traversal traversal;
     ASSERT_OK(kefir_ast_type_traversal_init(&kft_mem, &traversal, type1));
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, NULL);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 1);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char(), 1);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double(), 1);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, NULL, 0);
     ASSERT_OK(kefir_ast_type_traversal_free(&kft_mem, &traversal));
 
     ASSERT_OK(kefir_ast_type_traversal_init(&kft_mem, &traversal, type2));
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_float());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()));
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, type1));
-    ASSERT_NEXT_REC(&kft_mem, &traversal, NULL);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_float(), 1);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char(), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double(), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()), 1);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, type1), 1);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, NULL, 0);
     ASSERT_OK(kefir_ast_type_traversal_free(&kft_mem, &traversal));
 
     ASSERT_OK(kefir_ast_type_traversal_init(&kft_mem, &traversal, type3));
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_float());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()));
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, type1));
-    ASSERT_NEXT_REC(&kft_mem, &traversal, NULL);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_float(), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char(), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double(), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, type1), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, NULL, 0);
     ASSERT_OK(kefir_ast_type_traversal_free(&kft_mem, &traversal));
 
     ASSERT_OK(kefir_ast_type_traversal_init(&kft_mem, &traversal, type4));
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_float());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()));
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, type1));
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_float(), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 4);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char(), 4);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double(), 4);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, type1), 3);
 
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_float());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()));
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, type1));
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_float(), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 4);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char(), 4);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double(), 4);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, type1), 3);
 
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_float());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()));
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, type1));
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_float(), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 4);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char(), 4);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double(), 4);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, type1), 3);
 
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_float());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()));
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, type1));
-    ASSERT_NEXT_REC(&kft_mem, &traversal, NULL);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_float(), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 4);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char(), 4);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double(), 4);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_pointer(&kft_mem, context->type_bundle, type1), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, NULL, 0);
     ASSERT_OK(kefir_ast_type_traversal_free(&kft_mem, &traversal));
 
     ASSERT_OK(kefir_ast_type_traversal_init(&kft_mem, &traversal, type5));
     for (kefir_size_t i = 0; i < 100; i++) {
-        ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int());
-        ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char());
-        ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double());
+        ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 2);
+        ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char(), 2);
+        ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double(), 2);
     }
     ASSERT_OK(kefir_ast_type_traversal_free(&kft_mem, &traversal));
 
     ASSERT_OK(kefir_ast_type_traversal_init(&kft_mem, &traversal, kefir_ast_type_signed_short()));
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_short());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, NULL);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_short(), 1);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, NULL, 0);
     ASSERT_OK(kefir_ast_type_traversal_free(&kft_mem, &traversal));
 
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
@@ -298,29 +310,29 @@ DEFINE_CASE(ast_type_traversal3, "AST Type analysis - type traversal #3")
 
     struct kefir_ast_type_traversal traversal;
     ASSERT_OK(kefir_ast_type_traversal_init(&kft_mem, &traversal, type6));
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_float());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int());
-    ASSERT_NEXT(&kft_mem, &traversal, type2);
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double());
-    ASSERT_NEXT(&kft_mem, &traversal, type1);
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double());
-    ASSERT_NEXT(&kft_mem, &traversal, type1);
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int());
-    ASSERT_NEXT(&kft_mem, &traversal, type2);
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double());
-    ASSERT_NEXT(&kft_mem, &traversal, type3);
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_unsigned_long());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, NULL);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_float(), 1);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 4);
+    ASSERT_NEXT(&kft_mem, &traversal, type2, 4);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 4);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 6);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char(), 6);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double(), 6);
+    ASSERT_NEXT(&kft_mem, &traversal, type1, 5);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 6);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char(), 6);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double(), 6);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 6);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char(), 6);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double(), 6);
+    ASSERT_NEXT(&kft_mem, &traversal, type1, 5);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 4);
+    ASSERT_NEXT(&kft_mem, &traversal, type2, 4);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_char(), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_double(), 2);
+    ASSERT_NEXT(&kft_mem, &traversal, type3, 1);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_unsigned_long(), 1);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, NULL, 0);
     ASSERT_OK(kefir_ast_type_traversal_free(&kft_mem, &traversal));
 
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
@@ -371,17 +383,17 @@ DEFINE_CASE(ast_type_traversal4, "AST Type analysis - type traversal #4")
     ASSERT(designator1->next->next->next == NULL);
     ASSERT_OK(kefir_ast_type_traversal_navigate(&kft_mem, &traversal, designator1));
     ASSERT_OK(kefir_ast_designator_free(&kft_mem, designator1));
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, NULL);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long(), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long(), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long(), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long(), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long(), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long(), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long(), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, NULL, 0);
     
     designator1 = kefir_ast_new_member_desginator(&kft_mem, context->symbols,
         "c", kefir_ast_new_index_desginator(&kft_mem, 98, kefir_ast_new_member_desginator(&kft_mem, context->symbols,
@@ -392,14 +404,14 @@ DEFINE_CASE(ast_type_traversal4, "AST Type analysis - type traversal #4")
     ASSERT(designator1->next->next->next == NULL);
     ASSERT_OK(kefir_ast_type_traversal_navigate(&kft_mem, &traversal, designator1));
     ASSERT_OK(kefir_ast_designator_free(&kft_mem, designator1));
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, NULL);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long(), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long(), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long(), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long(), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long(), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, NULL, 0);
 
     designator1 = kefir_ast_new_member_desginator(&kft_mem, context->symbols,
         "c", kefir_ast_new_index_desginator(&kft_mem, 99, kefir_ast_new_member_desginator(&kft_mem, context->symbols,
@@ -410,11 +422,11 @@ DEFINE_CASE(ast_type_traversal4, "AST Type analysis - type traversal #4")
     ASSERT(designator1->next->next->next == NULL);
     ASSERT_OK(kefir_ast_type_traversal_navigate(&kft_mem, &traversal, designator1));
     ASSERT_OK(kefir_ast_designator_free(&kft_mem, designator1));
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, NULL);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long(), 3);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long(), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long(), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, NULL, 0);
 
     designator1 = kefir_ast_new_member_desginator(&kft_mem, context->symbols,
         "z", NULL);
@@ -422,10 +434,10 @@ DEFINE_CASE(ast_type_traversal4, "AST Type analysis - type traversal #4")
     ASSERT(designator1->next == NULL);
     ASSERT_OK(kefir_ast_type_traversal_navigate(&kft_mem, &traversal, designator1));
     ASSERT_OK(kefir_ast_designator_free(&kft_mem, designator1));
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long());
-    ASSERT_NEXT_REC(&kft_mem, &traversal, NULL);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long(), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long(), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, NULL, 0);
 
     designator1 = kefir_ast_new_member_desginator(&kft_mem, context->symbols,
         "x", NULL);
@@ -434,12 +446,18 @@ DEFINE_CASE(ast_type_traversal4, "AST Type analysis - type traversal #4")
     ASSERT_OK(kefir_ast_type_traversal_navigate(&kft_mem, &traversal, designator1));
     ASSERT_OK(kefir_ast_designator_free(&kft_mem, designator1));
 
-    for (kefir_size_t i = 0; i < 102; i++) {
-        ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int());
-        ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long());
-        ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long());
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long(), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long(), 2);
+    for (kefir_size_t i = 0; i < 100; i++) {
+        ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 3);
+        ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long(), 3);
+        ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long(), 3);
     }
-    ASSERT_NEXT_REC(&kft_mem, &traversal, NULL);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_int(), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long(), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long(), 2);
+    ASSERT_NEXT_REC(&kft_mem, &traversal, NULL, 0);
     ASSERT_OK(kefir_ast_type_traversal_free(&kft_mem, &traversal));
 
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));

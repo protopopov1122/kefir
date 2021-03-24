@@ -3,6 +3,13 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
+static kefir_bool_t is_array_finished(const struct kefir_ast_type *type,
+                                    kefir_size_t index) {
+    return type->array_type.boundary != KEFIR_AST_ARRAY_UNBOUNDED &&
+           index >= type->array_type.length &&
+           type->array_type.length > 0;
+}
+
 static kefir_result_t remove_layer(struct kefir_mem *mem,
                                  struct kefir_list *list,
                                  struct kefir_list_entry *entry,
@@ -11,7 +18,7 @@ static kefir_result_t remove_layer(struct kefir_mem *mem,
     UNUSED(payload);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid list entry"));
-    ASSIGN_DECL_CAST(struct kefir_ast_type_traversal_step *, layer,
+    ASSIGN_DECL_CAST(struct kefir_ast_type_traversal_layer *, layer,
         entry->value);
     KEFIR_FREE(mem, layer);
     return KEFIR_OK;
@@ -19,10 +26,13 @@ static kefir_result_t remove_layer(struct kefir_mem *mem,
 
 static kefir_result_t push_layer(struct kefir_mem *mem,
                                struct kefir_ast_type_traversal *traversal,
-                               const struct kefir_ast_type *object_type) {
-    struct kefir_ast_type_traversal_step *layer = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type_traversal_step));
+                               const struct kefir_ast_type *object_type,
+                               const struct kefir_ast_type_traversal_layer *parent) {
+    struct kefir_ast_type_traversal_layer *layer = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type_traversal_layer));
     REQUIRE(layer != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST type traversal layer"));
+    layer->parent = parent;
     layer->object_type = object_type;
+    layer->init = true;
     switch (object_type->tag) {
         case KEFIR_AST_TYPE_STRUCTURE: {
             layer->type = KEFIR_AST_TYPE_TRAVERSAL_STRUCTURE;
@@ -72,7 +82,7 @@ kefir_result_t kefir_ast_type_traversal_init(struct kefir_mem *mem,
     traversal->current_object_type = object_type;
     REQUIRE_OK(kefir_list_init(&traversal->stack));
     REQUIRE_OK(kefir_list_on_remove(&traversal->stack, remove_layer, NULL));
-    REQUIRE_OK(push_layer(mem, traversal, object_type));
+    REQUIRE_OK(push_layer(mem, traversal, object_type, NULL));
     return KEFIR_OK;
 }
 
@@ -87,47 +97,67 @@ kefir_result_t kefir_ast_type_traversal_free(struct kefir_mem *mem,
 
 kefir_result_t kefir_ast_type_traversal_next(struct kefir_mem *mem,
                                          struct kefir_ast_type_traversal *traversal,
-                                         const struct kefir_ast_type **type) {
+                                         const struct kefir_ast_type **type,
+                                         const struct kefir_ast_type_traversal_layer **layer_ptr) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(traversal != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid traversal structure"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type pointer"));
     
     if (kefir_list_length(&traversal->stack) == 0) {
+        ASSIGN_PTR(layer_ptr, NULL);
         *type = NULL;
         return KEFIR_OK;
     }
 
-    struct kefir_ast_type_traversal_step *layer = NULL;
+    struct kefir_ast_type_traversal_layer *layer = NULL;
     REQUIRE_OK(kefir_linked_stack_peek(&traversal->stack, (void **) &layer));
     switch (layer->type) {
         case KEFIR_AST_TYPE_TRAVERSAL_STRUCTURE: {
-            struct kefir_ast_struct_field *field = layer->structure.iterator->value;
-            *type = field->type;
-            kefir_list_next(&layer->structure.iterator);
+            if (!layer->init) {
+                kefir_list_next(&layer->structure.iterator);
+            }
             if (layer->structure.iterator == NULL) {
                 REQUIRE_OK(kefir_linked_stack_pop(mem, &traversal->stack, NULL));
+                return kefir_ast_type_traversal_next(mem, traversal, type, layer_ptr);
             }
+            layer->init = false;
+            struct kefir_ast_struct_field *field = layer->structure.iterator->value;
+            *type = field->type;
+            ASSIGN_PTR(layer_ptr, layer);
         } break;
 
         case KEFIR_AST_TYPE_TRAVERSAL_UNION: {
+            if (!layer->init || layer->structure.iterator == NULL) {
+                REQUIRE_OK(kefir_linked_stack_pop(mem, &traversal->stack, NULL));
+                return kefir_ast_type_traversal_next(mem, traversal, type, layer_ptr);
+            }
+            layer->init = false;
             struct kefir_ast_struct_field *field = layer->structure.iterator->value;
             *type = field->type;
-            REQUIRE_OK(kefir_linked_stack_pop(mem, &traversal->stack, NULL));
+            ASSIGN_PTR(layer_ptr, layer);
         } break;
 
         case KEFIR_AST_TYPE_TRAVERSAL_ARRAY: {
-            *type = layer->object_type->array_type.element_type;
-            layer->array.index++;
-            if (layer->object_type->array_type.boundary != KEFIR_AST_ARRAY_UNBOUNDED &&
-                layer->array.index >= layer->object_type->array_type.length &&
-                layer->object_type->array_type.length > 0) {
-                REQUIRE_OK(kefir_linked_stack_pop(mem, &traversal->stack, NULL));
+            if (!layer->init) {
+                layer->array.index++;
             }
+            if (is_array_finished(layer->object_type, layer->array.index)) {
+                REQUIRE_OK(kefir_linked_stack_pop(mem, &traversal->stack, NULL));
+                return kefir_ast_type_traversal_next(mem, traversal, type, layer_ptr);
+            }
+            layer->init = false;
+            *type = layer->object_type->array_type.element_type;
+            ASSIGN_PTR(layer_ptr, layer);
         } break;
 
         case KEFIR_AST_TYPE_TRAVERSAL_SCALAR:
+            if (!layer->init) {
+                REQUIRE_OK(kefir_linked_stack_pop(mem, &traversal->stack, NULL));
+                return kefir_ast_type_traversal_next(mem, traversal, type, layer_ptr);
+            }
+            layer->init = false;
             *type = layer->object_type;
-            REQUIRE_OK(kefir_linked_stack_pop(mem, &traversal->stack, NULL));
+            ASSIGN_PTR(layer_ptr, layer);
             break;
     }
 
@@ -136,37 +166,42 @@ kefir_result_t kefir_ast_type_traversal_next(struct kefir_mem *mem,
 
 kefir_result_t kefir_ast_type_traversal_next_recursive(struct kefir_mem *mem,
                                                    struct kefir_ast_type_traversal *traversal,
-                                                   const struct kefir_ast_type **type) {
-    return kefir_ast_type_traversal_next_recursive2(mem, traversal, NULL, NULL, type);
+                                                   const struct kefir_ast_type **type,
+                                                   const struct kefir_ast_type_traversal_layer **layer_ptr) {
+    return kefir_ast_type_traversal_next_recursive2(mem, traversal, NULL, NULL, type, layer_ptr);
 }
 
 kefir_result_t kefir_ast_type_traversal_next_recursive2(struct kefir_mem *mem,
                                                     struct kefir_ast_type_traversal *traversal,
                                                     kefir_bool_t (*stop)(const struct kefir_ast_type *, void *),
                                                     void *stop_payload,
-                                                    const struct kefir_ast_type **type) {
+                                                    const struct kefir_ast_type **type,
+                                                    const struct kefir_ast_type_traversal_layer **layer_ptr) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(traversal != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid traversal structure"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type pointer"));
 
     const struct kefir_ast_type *top_type = NULL;
-    REQUIRE_OK(kefir_ast_type_traversal_next(mem, traversal, &top_type));
+    const struct kefir_ast_type_traversal_layer *top_layer = NULL;
+    REQUIRE_OK(kefir_ast_type_traversal_next(mem, traversal, &top_type, &top_layer));
     if (top_type != NULL) {
         switch (top_type->tag) {
             case KEFIR_AST_TYPE_STRUCTURE:
             case KEFIR_AST_TYPE_UNION:
             case KEFIR_AST_TYPE_ARRAY:
                 if (stop == NULL || !stop(top_type, stop_payload)) {
-                    REQUIRE_OK(push_layer(mem, traversal, top_type));
-                    return kefir_ast_type_traversal_next_recursive(mem, traversal, type);
+                    REQUIRE_OK(push_layer(mem, traversal, top_type, top_layer));
+                    return kefir_ast_type_traversal_next_recursive(mem, traversal, type, layer_ptr);
                 }
                 // Intentional fallthrough
 
             default:
+                ASSIGN_PTR(layer_ptr, top_layer);
                 *type = top_type;
                 break;
         }
     } else {
+        ASSIGN_PTR(layer_ptr, NULL);
         *type = NULL;
     }
     return KEFIR_OK;
@@ -176,10 +211,34 @@ static kefir_result_t navigate_member(struct kefir_mem *mem,
                                     struct kefir_ast_type_traversal *traversal,
                                     const char *member,
                                     kefir_bool_t push) {
-    struct kefir_ast_type_traversal_step *layer = NULL;
+    struct kefir_ast_type_traversal_layer *layer = NULL;
     REQUIRE_OK(kefir_linked_stack_peek(&traversal->stack, (void **) &layer));
     switch (layer->type) {
-        case KEFIR_AST_TYPE_TRAVERSAL_STRUCTURE:
+        case KEFIR_AST_TYPE_TRAVERSAL_STRUCTURE: {
+            for (const struct kefir_list_entry *iter = kefir_list_head(&layer->object_type->structure_type.fields);
+                iter != NULL;
+                kefir_list_next(&iter)) {
+                ASSIGN_DECL_CAST(struct kefir_ast_struct_field *, field,
+                    iter->value);
+                if (strcmp(member, field->identifier) == 0) {
+                    layer->init = false;
+                    if (push) {
+                        layer->structure.iterator = iter;
+                        REQUIRE_OK(push_layer(mem, traversal, field->type, layer));
+                    } else {
+                        if (iter->prev != NULL) {
+                            layer->structure.iterator = iter->prev;
+                        } else {
+                            layer->structure.iterator = iter;
+                            layer->init = true;
+                        }
+                    }
+                    return KEFIR_OK;
+                }
+            }
+            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to find specified structure/union member");
+        };
+
         case KEFIR_AST_TYPE_TRAVERSAL_UNION: {
             for (const struct kefir_list_entry *iter = kefir_list_head(&layer->object_type->structure_type.fields);
                 iter != NULL;
@@ -187,16 +246,10 @@ static kefir_result_t navigate_member(struct kefir_mem *mem,
                 ASSIGN_DECL_CAST(struct kefir_ast_struct_field *, field,
                     iter->value);
                 if (strcmp(member, field->identifier) == 0) {
+                    layer->init = true;
+                    layer->structure.iterator = iter;
                     if (push) {
-                        kefir_list_next(&iter);
-                        if (iter == NULL) {
-                            REQUIRE_OK(kefir_linked_stack_pop(mem, &traversal->stack, NULL));
-                        } else {
-                            layer->structure.iterator = iter;
-                        }
-                        REQUIRE_OK(push_layer(mem, traversal, field->type));
-                    } else {
-                        layer->structure.iterator = iter;
+                        REQUIRE_OK(push_layer(mem, traversal, field->type, layer));
                     }
                     return KEFIR_OK;
                 }
@@ -217,7 +270,7 @@ static kefir_result_t navigate_index(struct kefir_mem *mem,
                                     struct kefir_ast_type_traversal *traversal,
                                     kefir_size_t index,
                                     kefir_bool_t push) {
-    struct kefir_ast_type_traversal_step *layer = NULL;
+    struct kefir_ast_type_traversal_layer *layer = NULL;
     REQUIRE_OK(kefir_linked_stack_peek(&traversal->stack, (void **) &layer));
     switch (layer->type) {
         case KEFIR_AST_TYPE_TRAVERSAL_STRUCTURE:
@@ -230,18 +283,17 @@ static kefir_result_t navigate_index(struct kefir_mem *mem,
                 array->array_type.length <= index) {
                 return KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Specified index exceeds array bounds");
             }
+            layer->init = false;
             if (push) {
-                index++;
-                if (layer->object_type->array_type.boundary != KEFIR_AST_ARRAY_UNBOUNDED &&
-                    index >= layer->object_type->array_type.length &&
-                    layer->object_type->array_type.length > 0) {
-                    REQUIRE_OK(kefir_linked_stack_pop(mem, &traversal->stack, NULL));
-                } else {
-                    layer->array.index = index;
-                }
-                REQUIRE_OK(push_layer(mem, traversal, array->array_type.element_type));
-            } else {
                 layer->array.index = index;
+                REQUIRE_OK(push_layer(mem, traversal, array->array_type.element_type, layer));
+            } else {
+                if (index > 0) {
+                    layer->array.index = index;
+                } else {
+                    layer->init = true;
+                    layer->array.index = 0;
+                }
             }
         } break;
 
@@ -278,12 +330,40 @@ kefir_result_t kefir_ast_type_traversal_navigate(struct kefir_mem *mem,
     REQUIRE(designator != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST designator"));
 
     REQUIRE_OK(kefir_list_clear(mem, &traversal->stack));
-    REQUIRE_OK(push_layer(mem, traversal, traversal->current_object_type));
+    REQUIRE_OK(push_layer(mem, traversal, traversal->current_object_type, NULL));
     REQUIRE_OK(navigate_impl(mem, traversal, designator, false));
     return KEFIR_OK;
 }
 
 kefir_bool_t kefir_ast_type_traversal_empty(struct kefir_ast_type_traversal *traversal) {
     REQUIRE(traversal != NULL, true);
-    return kefir_list_length(&traversal->stack) == 0;
+    const struct kefir_list_entry *iter = kefir_list_head(&traversal->stack);
+    for (; iter != NULL; kefir_list_next(&iter)) {
+        ASSIGN_DECL_CAST(struct kefir_ast_type_traversal_layer *, step,
+            iter->value);
+        kefir_bool_t empty = true;
+        switch (step->type) {
+            case KEFIR_AST_TYPE_TRAVERSAL_STRUCTURE:
+                empty = step->structure.iterator == NULL ||
+                    (!step->init && step->structure.iterator->next == NULL);
+                break;
+
+            case KEFIR_AST_TYPE_TRAVERSAL_UNION:
+                empty = step->structure.iterator == NULL || !step->init;
+                break;
+
+            case KEFIR_AST_TYPE_TRAVERSAL_ARRAY:
+                empty = is_array_finished(step->object_type, step->array.index) ||
+                    (!step->init && is_array_finished(step->object_type, step->array.index + 1));
+                break;
+
+            case KEFIR_AST_TYPE_TRAVERSAL_SCALAR:
+                empty = !step->init;
+                break;
+        }
+        if (!empty) {
+            return false;
+        }
+    }
+    return true;
 }
