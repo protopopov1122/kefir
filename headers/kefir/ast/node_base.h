@@ -25,7 +25,7 @@ typedef struct kefir_ast_node_properties {
         kefir_bool_t constant_expression;
         kefir_bool_t addressable;
         kefir_bool_t bitfield;
-        kefir_bool_t string_literal;
+        const char *string_literal;
     } expression_props;
 } kefir_ast_node_properties_t;
 

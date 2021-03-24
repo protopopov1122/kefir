@@ -18,7 +18,7 @@ kefir_result_t kefir_ast_node_properties_init(struct kefir_ast_node_properties *
     props->expression_props.lvalue = false;
     props->expression_props.addressable = false;
     props->expression_props.bitfield = false;
-    props->expression_props.string_literal = false;
+    props->expression_props.string_literal = NULL;
     return KEFIR_OK;
 }
 

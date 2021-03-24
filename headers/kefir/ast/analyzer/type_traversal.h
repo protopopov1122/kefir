@@ -6,6 +6,8 @@
 #include "kefir/ast/type.h"
 #include "kefir/ast/designator.h"
 
+typedef struct kefir_ast_type_traversal kefir_ast_type_traversal_t; // Forward declaration
+
 typedef enum kefir_ast_type_traversal_layer_type {
     KEFIR_AST_TYPE_TRAVERSAL_STRUCTURE,
     KEFIR_AST_TYPE_TRAVERSAL_UNION,
@@ -32,9 +34,23 @@ typedef struct kefir_ast_type_traversal_layer {
     };
 } kefir_ast_type_traversal_layer_t;
 
+typedef struct kefir_ast_type_traversal_events {
+    kefir_result_t (*layer_begin)(const struct kefir_ast_type_traversal *,
+                                const struct kefir_ast_type_traversal_layer *,
+                                void *);
+    kefir_result_t (*layer_next)(const struct kefir_ast_type_traversal *,
+                               const struct kefir_ast_type_traversal_layer *,
+                               void *);
+    kefir_result_t (*layer_end)(const struct kefir_ast_type_traversal *,
+                              const struct kefir_ast_type_traversal_layer *,
+                              void *);
+    void *payload;
+} kefir_ast_type_traversal_events_t;
+
 typedef struct kefir_ast_type_traversal {
     struct kefir_list stack;
     const struct kefir_ast_type *current_object_type;
+    struct kefir_ast_type_traversal_events events;
 } kefir_ast_type_traversal_t;
 
 kefir_result_t kefir_ast_type_traversal_init(struct kefir_mem *,

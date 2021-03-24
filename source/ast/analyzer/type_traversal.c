@@ -69,6 +69,22 @@ static kefir_result_t push_layer(struct kefir_mem *mem,
         KEFIR_FREE(mem, layer);
         return res;
     });
+    if (traversal->events.layer_begin != NULL) {
+        REQUIRE_OK(traversal->events.layer_begin(traversal, layer, traversal->events.payload));
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t pop_layer(struct kefir_mem *mem,
+                              struct kefir_ast_type_traversal *traversal) {
+    if (kefir_list_length(&traversal->stack) > 0) {
+        if (traversal->events.layer_end != NULL) {
+            struct kefir_ast_type_traversal_layer *layer = NULL;
+            REQUIRE_OK(kefir_linked_stack_peek(&traversal->stack, (void **) &layer));
+            REQUIRE_OK(traversal->events.layer_end(traversal, layer, traversal->events.payload));
+        }
+        REQUIRE_OK(kefir_linked_stack_pop(mem, &traversal->stack, NULL));
+    }
     return KEFIR_OK;
 }
 
@@ -80,6 +96,7 @@ kefir_result_t kefir_ast_type_traversal_init(struct kefir_mem *mem,
     REQUIRE(object_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid object type"));
 
     traversal->current_object_type = object_type;
+    traversal->events = (struct kefir_ast_type_traversal_events){0};
     REQUIRE_OK(kefir_list_init(&traversal->stack));
     REQUIRE_OK(kefir_list_on_remove(&traversal->stack, remove_layer, NULL));
     REQUIRE_OK(push_layer(mem, traversal, object_type, NULL));
@@ -90,6 +107,9 @@ kefir_result_t kefir_ast_type_traversal_free(struct kefir_mem *mem,
                                          struct kefir_ast_type_traversal *traversal) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(traversal != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid traversal structure"));
+    while (kefir_list_length(&traversal->stack) > 0) {
+        REQUIRE_OK(pop_layer(mem, traversal));
+    }
     REQUIRE_OK(kefir_list_free(mem, &traversal->stack));
     traversal->current_object_type = NULL;
     return KEFIR_OK;
@@ -117,7 +137,7 @@ kefir_result_t kefir_ast_type_traversal_next(struct kefir_mem *mem,
                 kefir_list_next(&layer->structure.iterator);
             }
             if (layer->structure.iterator == NULL) {
-                REQUIRE_OK(kefir_linked_stack_pop(mem, &traversal->stack, NULL));
+                REQUIRE_OK(pop_layer(mem, traversal));
                 return kefir_ast_type_traversal_next(mem, traversal, type, layer_ptr);
             }
             layer->init = false;
@@ -128,7 +148,7 @@ kefir_result_t kefir_ast_type_traversal_next(struct kefir_mem *mem,
 
         case KEFIR_AST_TYPE_TRAVERSAL_UNION: {
             if (!layer->init || layer->structure.iterator == NULL) {
-                REQUIRE_OK(kefir_linked_stack_pop(mem, &traversal->stack, NULL));
+                REQUIRE_OK(pop_layer(mem, traversal));
                 return kefir_ast_type_traversal_next(mem, traversal, type, layer_ptr);
             }
             layer->init = false;
@@ -142,7 +162,7 @@ kefir_result_t kefir_ast_type_traversal_next(struct kefir_mem *mem,
                 layer->array.index++;
             }
             if (is_array_finished(layer->object_type, layer->array.index)) {
-                REQUIRE_OK(kefir_linked_stack_pop(mem, &traversal->stack, NULL));
+                REQUIRE_OK(pop_layer(mem, traversal));
                 return kefir_ast_type_traversal_next(mem, traversal, type, layer_ptr);
             }
             layer->init = false;
@@ -152,7 +172,7 @@ kefir_result_t kefir_ast_type_traversal_next(struct kefir_mem *mem,
 
         case KEFIR_AST_TYPE_TRAVERSAL_SCALAR:
             if (!layer->init) {
-                REQUIRE_OK(kefir_linked_stack_pop(mem, &traversal->stack, NULL));
+                REQUIRE_OK(pop_layer(mem, traversal));
                 return kefir_ast_type_traversal_next(mem, traversal, type, layer_ptr);
             }
             layer->init = false;
@@ -161,6 +181,9 @@ kefir_result_t kefir_ast_type_traversal_next(struct kefir_mem *mem,
             break;
     }
 
+    if (traversal->events.layer_next != NULL) {
+        REQUIRE_OK(traversal->events.layer_next(traversal, layer, traversal->events.payload));
+    }
     return KEFIR_OK;
 }
 
