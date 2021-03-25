@@ -65,19 +65,29 @@ static kefir_result_t traverse_aggregate_union(struct kefir_mem *mem,
             const struct kefir_ast_type *type = NULL;
             REQUIRE_OK(kefir_ast_type_traversal_next(mem, traversal, &type, NULL));
             REQUIRE_OK(kefir_ast_analyze_initializer(mem, context, type, entry->value, NULL));
-        } else {
-            if (entry->value->expression->properties.expression_props.string_literal != NULL) {
-                const struct kefir_ast_type *type = NULL;
-                REQUIRE_OK(kefir_ast_type_traversal_next_recursive2(mem, traversal, is_char_array, NULL, &type, NULL));
-                if (!is_char_array(type, NULL)) {
-                    REQUIRE_OK(kefir_ast_node_assignable(mem, context,
-                        entry->value->expression, kefir_ast_unqualified_type(type)));
-                }
-            } else {
-                const struct kefir_ast_type *type = NULL;
-                REQUIRE_OK(kefir_ast_type_traversal_next_recursive(mem, traversal, &type, NULL));
-                REQUIRE_OK(kefir_ast_node_assignable(mem, context, entry->value->expression, kefir_ast_unqualified_type(type)));
+        } else if (entry->value->expression->properties.expression_props.string_literal != NULL) {
+            const struct kefir_ast_type *type = NULL;
+            REQUIRE_OK(kefir_ast_type_traversal_next_recursive2(mem, traversal, is_char_array, NULL, &type, NULL));
+            if (!is_char_array(type, NULL)) {
+                REQUIRE_OK(kefir_ast_node_assignable(mem, context,
+                    entry->value->expression, kefir_ast_unqualified_type(type)));
             }
+        } else if (KEFIR_AST_TYPE_IS_SCALAR_TYPE(entry->value->expression->properties.type)) {
+            const struct kefir_ast_type *type = NULL;
+            REQUIRE_OK(kefir_ast_type_traversal_next_recursive(mem, traversal, &type, NULL));
+            REQUIRE_OK(kefir_ast_node_assignable(mem, context, entry->value->expression, kefir_ast_unqualified_type(type)));
+        } else {
+            const struct kefir_ast_type *type = NULL;
+            REQUIRE_OK(kefir_ast_type_traversal_next(mem, traversal, &type, NULL));
+            kefir_result_t res = kefir_ast_node_assignable(mem, context,
+                entry->value->expression, kefir_ast_unqualified_type(type));
+            while (res == KEFIR_NO_MATCH) {
+                REQUIRE_OK(kefir_ast_type_traversal_step(mem, traversal));
+                REQUIRE_OK(kefir_ast_type_traversal_next(mem, traversal, &type, NULL));
+                res = kefir_ast_node_assignable(mem, context,
+                    entry->value->expression, kefir_ast_unqualified_type(type));
+            }
+            REQUIRE_OK(res);
         }
     }
     return KEFIR_OK;

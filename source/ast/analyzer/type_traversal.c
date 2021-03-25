@@ -230,6 +230,34 @@ kefir_result_t kefir_ast_type_traversal_next_recursive2(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_ast_type_traversal_step(struct kefir_mem *mem,
+                                         struct kefir_ast_type_traversal *traversal) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(traversal != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid traversal structure"));
+    
+    if (kefir_list_length(&traversal->stack) == 0) {
+        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Type traversal is empty");
+    }
+
+    struct kefir_ast_type_traversal_layer *layer = NULL;
+    REQUIRE_OK(kefir_linked_stack_peek(&traversal->stack, (void **) &layer));
+    switch (layer->type) {
+        case KEFIR_AST_TYPE_TRAVERSAL_STRUCTURE:
+        case KEFIR_AST_TYPE_TRAVERSAL_UNION: {
+            struct kefir_ast_struct_field *field = layer->structure.iterator->value;
+            REQUIRE_OK(push_layer(mem, traversal, field->type, layer));
+        } break;
+
+        case KEFIR_AST_TYPE_TRAVERSAL_ARRAY:
+            REQUIRE_OK(push_layer(mem, traversal, layer->object_type->array_type.element_type, layer));
+            break;
+
+        case KEFIR_AST_TYPE_TRAVERSAL_SCALAR:
+            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Type traversal is unable to step into scalar");
+    }
+    return KEFIR_OK;
+}
+
 static kefir_result_t navigate_member(struct kefir_mem *mem,
                                     struct kefir_ast_type_traversal *traversal,
                                     const char *member,

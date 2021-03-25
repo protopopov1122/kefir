@@ -77,6 +77,9 @@ kefir_result_t kefir_ast_type_traversal_next_recursive2(struct kefir_mem *,
                                                     const struct kefir_ast_type **,
                                                     const struct kefir_ast_type_traversal_layer **);
 
+kefir_result_t kefir_ast_type_traversal_step(struct kefir_mem *,
+                                         struct kefir_ast_type_traversal *);
+
 kefir_result_t kefir_ast_type_traversal_navigate(struct kefir_mem *,
                                              struct kefir_ast_type_traversal *,
                                              const struct kefir_ast_designator *);

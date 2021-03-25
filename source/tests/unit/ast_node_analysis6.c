@@ -458,6 +458,8 @@ DEFINE_CASE(ast_node_analysis_compound_literal3, "AST node analysis - compound l
 
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context,
         "var1", type1, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context,
+        "var2", type2, NULL));
     
     ASSERT_COMPOUND_LITERAL(&kft_mem, context, type2, {
     }, type2, true);
@@ -474,14 +476,32 @@ DEFINE_CASE(ast_node_analysis_compound_literal3, "AST node analysis - compound l
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(&kft_mem, 2.71f)))));
     }, type2, true);
 
-    // ASSERT_COMPOUND_LITERAL(&kft_mem, context, type2, {
-    //     ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
-    //         NULL, kefir_ast_new_expression_initializer(&kft_mem,
-    //         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(&kft_mem, 2.71f)))));
-    //     ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
-    //         NULL, kefir_ast_new_expression_initializer(&kft_mem,
-    //         KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "var1")))));
-    // }, type2, false);
+    ASSERT_COMPOUND_LITERAL(&kft_mem, context, type2, {
+        ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+            NULL, kefir_ast_new_expression_initializer(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(&kft_mem, 2.71f)))));
+        ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+            NULL, kefir_ast_new_expression_initializer(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "var1")))));
+    }, type2, false);
+
+    ASSERT_COMPOUND_LITERAL(&kft_mem, context, type2, {
+        ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+            NULL, kefir_ast_new_expression_initializer(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(&kft_mem, 2.71f)))));
+        ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+            NULL, kefir_ast_new_expression_initializer(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "var1")))));
+        ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+            NULL, kefir_ast_new_expression_initializer(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "var1")))));
+    }, type2, false);
+
+    ASSERT_COMPOUND_LITERAL_NOK(&kft_mem, context, type2, {
+        ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+            NULL, kefir_ast_new_expression_initializer(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "var2")))));
+    });
 
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));

@@ -399,7 +399,6 @@ DEFINE_CASE(ast_initializer_analysis5, "AST initializer - analysis #5")
         type1, 1, NULL)));
     ASSERT_OK(kefir_ast_initializer_free(&kft_mem, init6));
 
-
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
