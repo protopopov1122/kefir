@@ -3,6 +3,7 @@
 
 #include "kefir/ast/node_base.h"
 #include "kefir/core/symbol_table.h"
+#include "kefir/ast/initializer.h"
 
 KEFIR_AST_NODE_STRUCT(kefir_ast_constant, {
     kefir_ast_constant_type_t type;
@@ -41,6 +42,11 @@ KEFIR_AST_NODE_STRUCT(kefir_ast_generic_selection, {
 
 KEFIR_AST_NODE_STRUCT(kefir_ast_type_name, {
     const struct kefir_ast_type *type;
+});
+
+KEFIR_AST_NODE_STRUCT(kefir_ast_compound_literal, {
+    const struct kefir_ast_type *type;
+    struct kefir_ast_initializer *initializer;
 });
 
 KEFIR_AST_NODE_STRUCT(kefir_ast_cast_operator, {
@@ -114,6 +120,9 @@ struct kefir_ast_generic_selection *kefir_ast_new_generic_selection(struct kefir
 struct kefir_ast_type_name *kefir_ast_new_type_name(struct kefir_mem *,
                                                 const struct kefir_ast_type *);
 
+struct kefir_ast_compound_literal *kefir_ast_new_compound_literal(struct kefir_mem *,
+                                                              const struct kefir_ast_type *);
+
 struct kefir_ast_cast_operator *kefir_ast_new_cast_operator(struct kefir_mem *,
                                                         const struct kefir_ast_type *,
                                                         struct kefir_ast_node_base *);
@@ -174,6 +183,7 @@ typedef struct kefir_ast_visitor {
     KEFIR_AST_VISITOR_METHOD(conditional_operator, kefir_ast_conditional_operator);
     KEFIR_AST_VISITOR_METHOD(assignment_operator, kefir_ast_assignment_operator);
     KEFIR_AST_VISITOR_METHOD(comma_operator, kefir_ast_comma_operator);
+    KEFIR_AST_VISITOR_METHOD(compound_literal, kefir_ast_compound_literal);
 } kefir_ast_visitor_t;
 
 #define KEFIR_AST_NODE_INTERNAL_DEF

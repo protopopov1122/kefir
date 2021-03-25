@@ -9,7 +9,6 @@ struct kefir_ast_designator *kefir_ast_new_member_desginator(struct kefir_mem *m
                                                          struct kefir_ast_designator *child) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(member != NULL && strlen(member) > 0, NULL);
-    REQUIRE(child == NULL || child->prev == NULL, NULL);
 
     if (symbols != NULL) {
         member = kefir_symbol_table_insert(mem, symbols, member, NULL);
@@ -20,11 +19,7 @@ struct kefir_ast_designator *kefir_ast_new_member_desginator(struct kefir_mem *m
 
     designator->type = KEFIR_AST_DESIGNATOR_MEMBER;
     designator->member = member;
-    designator->prev = NULL;
     designator->next = child;
-    if (designator->next != NULL) {
-        designator->next->prev = designator;
-    }
     return designator;
 }
 
@@ -32,18 +27,13 @@ struct kefir_ast_designator *kefir_ast_new_index_desginator(struct kefir_mem *me
                                                         kefir_size_t index,
                                                         struct kefir_ast_designator *child) {
     REQUIRE(mem != NULL, NULL);
-    REQUIRE(child == NULL || child->prev == NULL, NULL);
 
     struct kefir_ast_designator *designator = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_designator));
     REQUIRE(designator != NULL, NULL);
 
     designator->type = KEFIR_AST_DESIGNATOR_SUBSCRIPT;
     designator->index = index;
-    designator->prev = NULL;
     designator->next = child;
-    if (designator->next != NULL) {
-        designator->next->prev = designator;
-    }
     return designator;
 }
 
@@ -56,8 +46,34 @@ kefir_result_t kefir_ast_designator_free(struct kefir_mem *mem,
         REQUIRE_OK(kefir_ast_designator_free(mem, designator->next));
         designator->next = NULL;
     }
-    designator->prev = NULL;
     designator->member = NULL;
     KEFIR_FREE(mem, designator);
     return KEFIR_OK;
+}
+
+struct kefir_ast_designator *kefir_ast_designator_clone(struct kefir_mem *mem,
+                                                    const struct kefir_ast_designator *src) {
+    REQUIRE(mem != NULL, NULL);
+    REQUIRE(src != NULL, NULL);
+    
+    struct kefir_ast_designator *dst = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_designator));
+    REQUIRE(dst != NULL, NULL);
+    dst->type = src->type;
+    switch (src->type) {
+        case KEFIR_AST_DESIGNATOR_MEMBER:
+            dst->member = src->member;
+            break;
+        
+        case KEFIR_AST_DESIGNATOR_SUBSCRIPT:
+            dst->index = src->index;
+            break;
+    }
+    dst->next = kefir_ast_designator_clone(mem, src->next);
+    if (src->next != NULL) {
+        REQUIRE_ELSE(dst->next != NULL, {
+            KEFIR_FREE(mem, dst);
+            return NULL;
+        });
+    }
+    return dst;
 }

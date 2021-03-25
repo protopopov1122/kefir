@@ -17,7 +17,6 @@ typedef struct kefir_ast_designator {
         kefir_size_t index;
     };
     struct kefir_ast_designator *next;
-    struct kefir_ast_designator *prev;
 } kefir_ast_designator_t;
 
 struct kefir_ast_designator *kefir_ast_new_member_desginator(struct kefir_mem *,
@@ -31,5 +30,8 @@ struct kefir_ast_designator *kefir_ast_new_index_desginator(struct kefir_mem *,
 
 kefir_result_t kefir_ast_designator_free(struct kefir_mem *,
                                      struct kefir_ast_designator *);
+                        
+struct kefir_ast_designator *kefir_ast_designator_clone(struct kefir_mem *,
+                                                    const struct kefir_ast_designator *);
 
 #endif

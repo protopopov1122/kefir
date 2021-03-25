@@ -245,3 +245,247 @@ DEFINE_CASE(ast_node_analysis_function_calls3, "AST node analysis - function cal
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
+
+#define ASSERT_COMPOUND_LITERAL(_mem, _context, _type, _init, _result_type, _constant) \
+    do { \
+        struct kefir_ast_compound_literal *compound = kefir_ast_new_compound_literal((_mem), (_type));\
+        ASSERT(compound != NULL); \
+        _init \
+        ASSERT_OK(kefir_ast_analyze_node((_mem), (_context), KEFIR_AST_NODE_BASE(compound))); \
+        ASSERT(compound->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION); \
+        ASSERT(KEFIR_AST_TYPE_SAME(compound->base.properties.type, (_result_type))); \
+        ASSERT(compound->base.properties.expression_props.constant_expression == (_constant)); \
+        ASSERT(compound->base.properties.expression_props.lvalue); \
+        ASSERT(compound->base.properties.expression_props.addressable); \
+        ASSERT(!compound->base.properties.expression_props.bitfield); \
+        ASSERT(!compound->base.properties.expression_props.string_literal); \
+        ASSERT_OK(KEFIR_AST_NODE_FREE((_mem), KEFIR_AST_NODE_BASE(compound))); \
+    } while (0)
+
+#define ASSERT_COMPOUND_LITERAL_NOK(_mem, _context, _type, _init) \
+    do { \
+        struct kefir_ast_compound_literal *compound = kefir_ast_new_compound_literal((_mem), (_type));\
+        ASSERT(compound != NULL); \
+        _init \
+        ASSERT_NOK(kefir_ast_analyze_node((_mem), (_context), KEFIR_AST_NODE_BASE(compound))); \
+        ASSERT_OK(KEFIR_AST_NODE_FREE((_mem), KEFIR_AST_NODE_BASE(compound))); \
+    } while (0)
+
+DEFINE_CASE(ast_node_analysis_compound_literal1, "AST node analysis - compound literals #1")
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context,
+        "x", kefir_ast_type_signed_int(), NULL));
+    ASSERT_OK(kefir_ast_local_context_define_constant(&kft_mem, &local_context,
+        "y", kefir_ast_constant_expression_integer(&kft_mem, 100), type_traits->underlying_enumeration_type));
+
+    const struct kefir_ast_type *TYPES[] = {
+        kefir_ast_type_bool(),
+        kefir_ast_type_char(),
+        kefir_ast_type_unsigned_char(),
+        kefir_ast_type_signed_char(),
+        kefir_ast_type_unsigned_int(),
+        kefir_ast_type_signed_int(),
+        kefir_ast_type_unsigned_long(),
+        kefir_ast_type_signed_long(),
+        kefir_ast_type_unsigned_long_long(),
+        kefir_ast_type_signed_long_long(),
+        kefir_ast_type_float(),
+        kefir_ast_type_double()
+    };
+    const kefir_size_t TYPES_LEN = sizeof(TYPES) / sizeof(TYPES[0]);
+
+    for (kefir_size_t i = 0; i < TYPES_LEN; i++) {
+        ASSERT_COMPOUND_LITERAL_NOK(&kft_mem, context, TYPES[i], {
+        });
+
+        ASSERT_COMPOUND_LITERAL(&kft_mem, context, TYPES[i], {
+            ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+                NULL, kefir_ast_new_expression_initializer(&kft_mem,
+                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 5)))));
+        }, TYPES[i], true);
+
+        ASSERT_COMPOUND_LITERAL(&kft_mem, context, TYPES[i], {
+            ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+                NULL, kefir_ast_new_expression_initializer(&kft_mem,
+                KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")))));
+        }, TYPES[i], false);
+
+        ASSERT_COMPOUND_LITERAL(&kft_mem, context, TYPES[i], {
+            ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+                NULL, kefir_ast_new_expression_initializer(&kft_mem,
+                KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "y")))));
+        }, TYPES[i], true);
+
+        if (i != 0) {
+            ASSERT_COMPOUND_LITERAL_NOK(&kft_mem, context, TYPES[i], {
+                ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+                    NULL, kefir_ast_new_expression_initializer(&kft_mem,
+                    KEFIR_AST_NODE_BASE(kefir_ast_new_string_literal(&kft_mem, context->symbols, "Hello, world!")))));
+            });
+        } else {
+            ASSERT_COMPOUND_LITERAL(&kft_mem, context, TYPES[i], {
+                ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+                    NULL, kefir_ast_new_expression_initializer(&kft_mem,
+                    KEFIR_AST_NODE_BASE(kefir_ast_new_string_literal(&kft_mem, context->symbols, "Hello, world!")))));
+            }, TYPES[i], true);
+        }
+    }
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+END_CASE
+
+DEFINE_CASE(ast_node_analysis_compound_literal2, "AST node analysis - compound literals #2")
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context,
+        "x", kefir_ast_type_array(&kft_mem, context->type_bundle, kefir_ast_type_char(),
+            10, NULL), NULL));
+
+    const struct kefir_ast_type *type1 = kefir_ast_type_unbounded_array(&kft_mem, context->type_bundle,
+        kefir_ast_type_char(), NULL);
+    const struct kefir_ast_type *type2 = kefir_ast_type_pointer(&kft_mem, context->type_bundle,
+        kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_char(),
+            (struct kefir_ast_type_qualification){
+                .constant = true,
+                .restricted = false,
+                .volatile_type = false
+            }));
+    
+    ASSERT_COMPOUND_LITERAL(&kft_mem, context, type1, {
+    }, kefir_ast_type_array(&kft_mem, context->type_bundle, kefir_ast_type_char(), 0, NULL), true);
+    
+    ASSERT_COMPOUND_LITERAL(&kft_mem, context, type1, {
+        ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+            NULL, kefir_ast_new_expression_initializer(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_string_literal(&kft_mem, context->symbols, "Hello, world!")))));
+    }, kefir_ast_type_array(&kft_mem, context->type_bundle, kefir_ast_type_char(), 14, NULL), true);
+
+    ASSERT_COMPOUND_LITERAL(&kft_mem, context, type1, {
+        ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+            NULL, kefir_ast_new_expression_initializer(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'H')))));
+        ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+            NULL, kefir_ast_new_expression_initializer(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'e')))));
+        ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+            NULL, kefir_ast_new_expression_initializer(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'l')))));
+        ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+            NULL, kefir_ast_new_expression_initializer(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'l')))));
+        ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+            NULL, kefir_ast_new_expression_initializer(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'o')))));
+    }, kefir_ast_type_array(&kft_mem, context->type_bundle, kefir_ast_type_char(), 5, NULL), true);
+    
+    ASSERT_COMPOUND_LITERAL_NOK(&kft_mem, context, type2, {
+    });
+    
+    ASSERT_COMPOUND_LITERAL(&kft_mem, context, type2, {
+        ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+            NULL, kefir_ast_new_expression_initializer(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_string_literal(&kft_mem, context->symbols, "Hello, world!")))));
+    }, type2, true);
+    
+    ASSERT_COMPOUND_LITERAL(&kft_mem, context, type2, {
+        ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+            NULL, kefir_ast_new_expression_initializer(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'H')))));
+        ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+            NULL, kefir_ast_new_expression_initializer(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'e')))));
+        ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+            NULL, kefir_ast_new_expression_initializer(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'l')))));
+        ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+            NULL, kefir_ast_new_expression_initializer(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'l')))));
+        ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+            NULL, kefir_ast_new_expression_initializer(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'o')))));
+    }, type2, true);
+    
+    ASSERT_COMPOUND_LITERAL(&kft_mem, context, type2, {
+        ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+            NULL, kefir_ast_new_expression_initializer(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")))));
+    }, type2, false);
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+END_CASE
+
+DEFINE_CASE(ast_node_analysis_compound_literal3, "AST node analysis - compound literals #3")
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    struct kefir_ast_struct_type *structure1 = NULL;
+    const struct kefir_ast_type *type1 = kefir_ast_type_structure(&kft_mem, context->type_bundle,
+        "", &structure1);
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, structure1,
+        "field1", kefir_ast_type_signed_int(), NULL));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, structure1,
+        "field2", kefir_ast_type_char(), NULL));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, structure1,
+        "field3", kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()), NULL));
+
+    struct kefir_ast_struct_type *structure2 = NULL;
+    const struct kefir_ast_type *type2 = kefir_ast_type_structure(&kft_mem, context->type_bundle,
+        "", &structure2);
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, structure2,
+        "x", kefir_ast_type_float(), NULL));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, structure2,
+        "y", kefir_ast_type_array(&kft_mem, context->type_bundle, type1, 2, NULL), NULL));
+
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context,
+        "var1", type1, NULL));
+    
+    ASSERT_COMPOUND_LITERAL(&kft_mem, context, type2, {
+    }, type2, true);
+
+    ASSERT_COMPOUND_LITERAL(&kft_mem, context, type2, {
+        ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+            NULL, kefir_ast_new_expression_initializer(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(&kft_mem, 2.71f)))));
+    }, type2, true);
+
+    ASSERT_COMPOUND_LITERAL(&kft_mem, context, type2, {
+        ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+            NULL, kefir_ast_new_expression_initializer(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(&kft_mem, 2.71f)))));
+    }, type2, true);
+
+    // ASSERT_COMPOUND_LITERAL(&kft_mem, context, type2, {
+    //     ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+    //         NULL, kefir_ast_new_expression_initializer(&kft_mem,
+    //         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(&kft_mem, 2.71f)))));
+    //     ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
+    //         NULL, kefir_ast_new_expression_initializer(&kft_mem,
+    //         KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "var1")))));
+    // }, type2, false);
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+END_CASE
+
+#undef ASSERT_COMPOUND_LITERAL
+#undef ASSERT_COMPOUND_LITERAL_NOK
