@@ -51,22 +51,26 @@ kefir_result_t kefir_ast_local_context_define_static(struct kefir_mem *,
                                            struct kefir_ast_local_context *,
                                            const char *,
                                            const struct kefir_ast_type *,
-                                           struct kefir_ast_alignment *);
+                                           struct kefir_ast_alignment *,
+                                           struct kefir_ast_initializer *);
 kefir_result_t kefir_ast_local_context_define_static_thread_local(struct kefir_mem *,
                                                           struct kefir_ast_local_context *,
                                                           const char *,
                                                           const struct kefir_ast_type *,
-                                                          struct kefir_ast_alignment *);
+                                                          struct kefir_ast_alignment *,
+                                                          struct kefir_ast_initializer *);
 kefir_result_t kefir_ast_local_context_define_auto(struct kefir_mem *,
                                          struct kefir_ast_local_context *,
                                          const char *,
                                          const struct kefir_ast_type *,
-                                         struct kefir_ast_alignment *);
+                                         struct kefir_ast_alignment *,
+                                         struct kefir_ast_initializer *);
 kefir_result_t kefir_ast_local_context_define_register(struct kefir_mem *,
                                              struct kefir_ast_local_context *,
                                              const char *,
                                              const struct kefir_ast_type *,
-                                             struct kefir_ast_alignment *);
+                                             struct kefir_ast_alignment *,
+                                             struct kefir_ast_initializer *);
 kefir_result_t kefir_ast_local_context_define_constant(struct kefir_mem *,
                                              struct kefir_ast_local_context *,
                                              const char *,

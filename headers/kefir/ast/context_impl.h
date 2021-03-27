@@ -13,7 +13,8 @@ struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_object_ide
                                                                                     kefir_ast_scoped_identifier_storage_t,
                                                                                     struct kefir_ast_alignment *,
                                                                                     kefir_ast_scoped_identifier_linkage_t,
-                                                                                    kefir_bool_t);
+                                                                                    kefir_bool_t,
+                                                                                    struct kefir_ast_initializer *);
 
 struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_constant(struct kefir_mem *,
                                                                            struct kefir_ast_constant_expression *,

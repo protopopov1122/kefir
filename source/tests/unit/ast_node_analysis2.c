@@ -95,9 +95,9 @@ DEFINE_CASE(ast_node_analysis_cast_operators, "AST node analysis - cast operator
         "", &structure1);
 
     ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context, "x",
-        kefir_ast_type_float(), NULL));
+        kefir_ast_type_float(), NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context, "y",
-        structure1_type, NULL));
+        structure1_type, NULL, NULL));
 
     ASSERT_CAST(&kft_mem, context,
         kefir_ast_type_signed_int(),
@@ -173,7 +173,7 @@ DEFINE_CASE(ast_node_analysis_multiplicative_operators, "AST node analysis - mul
     struct kefir_ast_context *context = &local_context.context;
 
     ASSERT_OK(kefir_ast_global_context_define_static(&kft_mem, &global_context, "x",
-        kefir_ast_type_signed_int(), NULL));
+        kefir_ast_type_signed_int(), NULL, NULL));
     ASSERT_OK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "y",
         kefir_ast_constant_expression_integer(&kft_mem, 100), type_traits->underlying_enumeration_type));
 

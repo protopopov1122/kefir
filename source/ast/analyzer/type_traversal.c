@@ -340,7 +340,7 @@ static kefir_result_t navigate_index(struct kefir_mem *mem,
                 REQUIRE_OK(push_layer(mem, traversal, array->array_type.element_type, layer));
             } else {
                 if (index > 0) {
-                    layer->array.index = index;
+                    layer->array.index = index - 1;
                 } else {
                     layer->init = true;
                     layer->array.index = 0;

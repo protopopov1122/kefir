@@ -292,7 +292,7 @@ DEFINE_CASE(ast_node_analysis_struct_members, "AST node analysis - struct member
         kefir_ast_type_unbounded_array(&kft_mem, context->type_bundle, kefir_ast_type_float(), NULL), NULL));
 
     ASSERT_OK(kefir_ast_global_context_define_external(&kft_mem, &global_context, "var1",
-        struct1_type, NULL));
+        struct1_type, NULL, NULL));
     
     ASSERT_STRUCT_MEMBER(&kft_mem, context, "var1", "field1", kefir_ast_type_unsigned_char());
     ASSERT_STRUCT_MEMBER(&kft_mem, context, "var1", "field2",
@@ -343,7 +343,7 @@ DEFINE_CASE(ast_node_analysis_indirect_struct_members, "AST node analysis - indi
         kefir_ast_type_unbounded_array(&kft_mem, context->type_bundle, kefir_ast_type_float(), NULL), NULL));
 
     ASSERT_OK(kefir_ast_global_context_define_external(&kft_mem, &global_context, "var1",
-        kefir_ast_type_pointer(&kft_mem, context->type_bundle, struct1_type), NULL));
+        kefir_ast_type_pointer(&kft_mem, context->type_bundle, struct1_type), NULL, NULL));
 
     ASSERT_INDIRECT_STRUCT_MEMBER(&kft_mem, context, "var1", "field1", kefir_ast_type_unsigned_char());
     ASSERT_INDIRECT_STRUCT_MEMBER(&kft_mem, context, "var1", "field2",
@@ -416,7 +416,7 @@ DEFINE_CASE(ast_node_analysis_function_calls, "AST node analysis - function call
     ASSERT_OK(kefir_ast_local_context_declare_function(&kft_mem, &local_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
         function2_type));
     ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context, "func2",
-        function1_ptr_type, NULL));
+        function1_ptr_type, NULL, NULL));
 
     ASSERT_FUNCTION_CALL(&kft_mem, context, "func1", kefir_ast_type_signed_long_long());
     ASSERT_FUNCTION_CALL(&kft_mem, context, "func2", kefir_ast_type_signed_long_long());

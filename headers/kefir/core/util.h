@@ -5,6 +5,7 @@
 #include "kefir/core/basic-types.h"
 
 #define UNUSED(x) (void)(x)
+#define UNOWNED(x) x
 #define BITSIZE_OF(x) (sizeof(x) * CHAR_BIT)
 #define ASSIGN_CAST(type, dest, expr) \
     do { \

@@ -1,6 +1,7 @@
 #include <string.h>
 #include "kefir/ast/local_context.h"
 #include "kefir/ast/context_impl.h"
+#include "kefir/ast/analyzer/initializer.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -175,7 +176,7 @@ kefir_result_t kefir_ast_local_context_declare_external(struct kefir_mem *mem,
         REQUIRE(res == KEFIR_NOT_FOUND, res);
         struct kefir_ast_scoped_identifier *ordinary_id =
             kefir_ast_context_allocate_scoped_object_identifier(mem, type, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
-                alignment, KEFIR_AST_SCOPED_IDENTIFIER_EXTERNAL_LINKAGE, true);
+                alignment, KEFIR_AST_SCOPED_IDENTIFIER_EXTERNAL_LINKAGE, true, NULL);
         REQUIRE(ordinary_id != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
         res = kefir_ast_identifier_flat_scope_insert(mem, &context->global->object_identifiers, identifier, ordinary_id);
         REQUIRE_ELSE(res == KEFIR_OK, {
@@ -223,7 +224,7 @@ kefir_result_t kefir_ast_local_context_declare_external_thread_local(struct kefi
         REQUIRE(res == KEFIR_NOT_FOUND, res);
         struct kefir_ast_scoped_identifier *ordinary_id =
             kefir_ast_context_allocate_scoped_object_identifier(mem, type, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL,
-                alignment, KEFIR_AST_SCOPED_IDENTIFIER_EXTERNAL_LINKAGE, true);
+                alignment, KEFIR_AST_SCOPED_IDENTIFIER_EXTERNAL_LINKAGE, true, NULL);
         REQUIRE(ordinary_id != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
         res = kefir_ast_identifier_flat_scope_insert(mem, &context->global->object_identifiers, identifier, ordinary_id);
         REQUIRE_ELSE(res == KEFIR_OK, {
@@ -239,11 +240,21 @@ kefir_result_t kefir_ast_local_context_define_static(struct kefir_mem *mem,
                                            struct kefir_ast_local_context *context,
                                            const char *identifier,
                                            const struct kefir_ast_type *type,
-                                           struct kefir_ast_alignment *alignment) {
+                                           struct kefir_ast_alignment *alignment,
+                                           struct kefir_ast_initializer *initializer) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
+
+    if (initializer != NULL) {
+        struct kefir_ast_initializer_properties props;
+        REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
+        type = props.type;
+    }
+    
+    REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Identifier with no linkage shall have complete type"));
     
     struct kefir_ast_scoped_identifier *scoped_id = NULL;
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(
@@ -254,7 +265,7 @@ kefir_result_t kefir_ast_local_context_define_static(struct kefir_mem *mem,
         REQUIRE(res == KEFIR_NOT_FOUND, res);
         struct kefir_ast_scoped_identifier *scoped_id =
             kefir_ast_context_allocate_scoped_object_identifier(mem, type, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC, alignment,
-                KEFIR_AST_SCOPED_IDENTIFIER_NONE_LINKAGE, false);
+                KEFIR_AST_SCOPED_IDENTIFIER_NONE_LINKAGE, false, initializer);
         REQUIRE(scoped_id != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
         res = kefir_list_insert_after(mem, &context->identifiers, kefir_list_tail(&context->identifiers), scoped_id);
         REQUIRE_ELSE(res == KEFIR_OK, {
@@ -272,12 +283,22 @@ kefir_result_t kefir_ast_local_context_define_static_thread_local(struct kefir_m
                                                           struct kefir_ast_local_context *context,
                                                           const char *identifier,
                                                           const struct kefir_ast_type *type,
-                                                          struct kefir_ast_alignment *alignment) {
+                                                          struct kefir_ast_alignment *alignment,
+                                                          struct kefir_ast_initializer *initializer) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
     
+    if (initializer != NULL) {
+        struct kefir_ast_initializer_properties props;
+        REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
+        type = props.type;
+    }
+    
+    REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Identifier with no linkage shall have complete type"));
+
     struct kefir_ast_scoped_identifier *scoped_id = NULL;
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(
             kefir_ast_identifier_block_scope_top(&context->ordinary_scope), identifier, &scoped_id);
@@ -287,7 +308,7 @@ kefir_result_t kefir_ast_local_context_define_static_thread_local(struct kefir_m
         REQUIRE(res == KEFIR_NOT_FOUND, res);
         struct kefir_ast_scoped_identifier *scoped_id =
             kefir_ast_context_allocate_scoped_object_identifier(mem, type, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL,
-                alignment, KEFIR_AST_SCOPED_IDENTIFIER_NONE_LINKAGE, false);
+                alignment, KEFIR_AST_SCOPED_IDENTIFIER_NONE_LINKAGE, false, initializer);
         REQUIRE(scoped_id != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
         res = kefir_list_insert_after(mem, &context->identifiers, kefir_list_tail(&context->identifiers), scoped_id);
         REQUIRE_ELSE(res == KEFIR_OK, {
@@ -305,12 +326,22 @@ kefir_result_t kefir_ast_local_context_define_auto(struct kefir_mem *mem,
                                          struct kefir_ast_local_context *context,
                                          const char *identifier,
                                          const struct kefir_ast_type *type,
-                                         struct kefir_ast_alignment *alignment) {
+                                         struct kefir_ast_alignment *alignment,
+                                         struct kefir_ast_initializer *initializer) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
-        
+
+    if (initializer != NULL) {
+        struct kefir_ast_initializer_properties props;
+        REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
+        type = props.type;
+    }
+    
+    REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Identifier with no linkage shall have complete type"));
+
     struct kefir_ast_scoped_identifier *scoped_id = NULL;
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(
             kefir_ast_identifier_block_scope_top(&context->ordinary_scope), identifier, &scoped_id);
@@ -320,7 +351,7 @@ kefir_result_t kefir_ast_local_context_define_auto(struct kefir_mem *mem,
         REQUIRE(res == KEFIR_NOT_FOUND, res);
         struct kefir_ast_scoped_identifier *scoped_id =
             kefir_ast_context_allocate_scoped_object_identifier(mem, type, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO, alignment,
-                KEFIR_AST_SCOPED_IDENTIFIER_NONE_LINKAGE, false);
+                KEFIR_AST_SCOPED_IDENTIFIER_NONE_LINKAGE, false, initializer);
         REQUIRE(scoped_id != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
         res = kefir_list_insert_after(mem, &context->identifiers, kefir_list_tail(&context->identifiers), scoped_id);
         REQUIRE_ELSE(res == KEFIR_OK, {
@@ -338,12 +369,22 @@ kefir_result_t kefir_ast_local_context_define_register(struct kefir_mem *mem,
                                              struct kefir_ast_local_context *context,
                                              const char *identifier,
                                              const struct kefir_ast_type *type,
-                                             struct kefir_ast_alignment *alignment) {
+                                             struct kefir_ast_alignment *alignment,
+                                             struct kefir_ast_initializer *initializer) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
     
+    if (initializer != NULL) {
+        struct kefir_ast_initializer_properties props;
+        REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
+        type = props.type;
+    }
+    
+    REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Identifier with no linkage shall have complete type"));
+        
     struct kefir_ast_scoped_identifier *scoped_id = NULL;
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(
             kefir_ast_identifier_block_scope_top(&context->ordinary_scope), identifier, &scoped_id);
@@ -353,7 +394,7 @@ kefir_result_t kefir_ast_local_context_define_register(struct kefir_mem *mem,
         REQUIRE(res == KEFIR_NOT_FOUND, res);
         struct kefir_ast_scoped_identifier *scoped_id =
             kefir_ast_context_allocate_scoped_object_identifier(mem, type, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER, alignment,
-                KEFIR_AST_SCOPED_IDENTIFIER_NONE_LINKAGE, false);
+                KEFIR_AST_SCOPED_IDENTIFIER_NONE_LINKAGE, false, initializer);
         REQUIRE(scoped_id != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
         res = kefir_list_insert_after(mem, &context->identifiers, kefir_list_tail(&context->identifiers), scoped_id);
         REQUIRE_ELSE(res == KEFIR_OK, {

@@ -28,7 +28,7 @@ DEFINE_CASE(ast_ordinary_typedef_scope1, "AST ordinary scope - type definitions 
         kefir_ast_type_double()));
 
     ASSERT_OK(kefir_ast_global_context_define_static(&kft_mem, &global_context, "val1",
-        kefir_ast_type_unsigned_char(), NULL));
+        kefir_ast_type_unsigned_char(), NULL, NULL));
     ASSERT_NOK(kefir_ast_global_context_define_type(&kft_mem, &global_context, "val1",
         kefir_ast_type_unsigned_char()));
 
@@ -54,7 +54,7 @@ DEFINE_CASE(ast_ordinary_typedef_scope1, "AST ordinary scope - type definitions 
         ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context));
 
         ASSERT_OK(kefir_ast_local_context_define_static(&kft_mem, &context, "type1",
-            kefir_ast_type_unsigned_char(), NULL));
+            kefir_ast_type_unsigned_char(), NULL, NULL));
             
         ASSERT_OK(kefir_ast_local_context_define_type(&kft_mem, &context, "val1",
             kefir_ast_type_unbounded_array(&kft_mem, &type_bundle, kefir_ast_type_unsigned_long_long(), NULL)));

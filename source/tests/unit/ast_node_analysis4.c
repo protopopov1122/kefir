@@ -195,21 +195,21 @@ DEFINE_CASE(ast_node_analysis_simple_assignment_operator3, "AST node analysis - 
         "l", kefir_ast_type_pointer(&kft_mem, context->type_bundle, type1), NULL));
 
     ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context,
-        "x1", type1, NULL));
+        "x1", type1, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context,
-        "x2", type1, NULL));
+        "x2", type1, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context,
-        "y1", type2, NULL));
+        "y1", type2, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context,
-        "y2", type2, NULL));
+        "y2", type2, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context,
-        "z1", type3, NULL));
+        "z1", type3, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context,
-        "z2", type3, NULL));
+        "z2", type3, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context,
-        "w1", type4, NULL));
+        "w1", type4, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context,
-        "w2", type4, NULL));
+        "w2", type4, NULL, NULL));
 
     ASSERT_SIMPLE_ASSIGNMENT(&kft_mem, context,
         KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x1")),

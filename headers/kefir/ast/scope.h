@@ -8,6 +8,8 @@
 #include "kefir/ast/const_expr.h"
 #include "kefir/core/hashtree.h"
 #include "kefir/core/tree.h"
+#include "kefir/ast/initializer.h"
+#include "kefir/core/util.h"
 
 #define KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE (sizeof(kefir_uptr_t) * 4)
 
@@ -20,6 +22,7 @@ typedef struct kefir_ast_scoped_identifier {
             kefir_ast_scoped_identifier_storage_t storage;
             kefir_ast_scoped_identifier_linkage_t linkage;
             kefir_bool_t external;
+            struct kefir_ast_initializer *UNOWNED(initializer);
         } object;
 
         struct {

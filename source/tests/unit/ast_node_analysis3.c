@@ -230,21 +230,21 @@ DEFINE_CASE(ast_node_analysis_conditional_operator3, "AST node analysis - condit
         "z", kefir_ast_type_double(), NULL));
 
     ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context,
-        "a1", type1, NULL));
+        "a1", type1, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_static(&kft_mem, &local_context,
-        "a2", type1, NULL));
+        "a2", type1, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context,
-        "b1", type2, NULL));
+        "b1", type2, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_static(&kft_mem, &local_context,
-        "b2", type2, NULL));
+        "b2", type2, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context,
-        "c1", type3, NULL));
+        "c1", type3, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_static(&kft_mem, &local_context,
-        "c2", type3, NULL));
+        "c2", type3, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context,
-        "d1", type4, NULL));
+        "d1", type4, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_static(&kft_mem, &local_context,
-        "d2", type4, NULL));
+        "d2", type4, NULL, NULL));
 
     ASSERT_CONDITIONAL(&kft_mem, context,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(&kft_mem, true)),

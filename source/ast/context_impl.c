@@ -27,13 +27,15 @@ struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_object_ide
                                                                                     kefir_ast_scoped_identifier_storage_t storage,
                                                                                     struct kefir_ast_alignment *alignment,
                                                                                     kefir_ast_scoped_identifier_linkage_t linkage,
-                                                                                    kefir_bool_t external) {
+                                                                                    kefir_bool_t external,
+                                                                                    struct kefir_ast_initializer *initializer) {
     struct kefir_ast_scoped_identifier *scoped_id = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_scoped_identifier));
     scoped_id->klass = KEFIR_AST_SCOPE_IDENTIFIER_OBJECT;
     scoped_id->object.type = type;
     scoped_id->object.storage = storage;
     scoped_id->object.external = external;
     scoped_id->object.linkage = linkage;
+    scoped_id->object.initializer = initializer;
     memset(scoped_id->payload.content, 0, KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE);
     scoped_id->payload.ptr = scoped_id->payload.content;
     if (alignment != NULL) {
