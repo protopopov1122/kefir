@@ -180,6 +180,8 @@ DECLARE_CASE(ast_initializer_analysis2);
 DECLARE_CASE(ast_initializer_analysis3);
 DECLARE_CASE(ast_initializer_analysis4);
 DECLARE_CASE(ast_initializer_analysis5);
+DECLARE_CASE(ast_constant_expression_constant1);
+DECLARE_CASE(ast_constant_expression_identifier1);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -357,7 +359,9 @@ TEST_SUITE(mainSuite,
     &ast_initializer_analysis2,
     &ast_initializer_analysis3,
     &ast_initializer_analysis4,
-    &ast_initializer_analysis5
+    &ast_initializer_analysis5,
+    &ast_constant_expression_constant1,
+    &ast_constant_expression_identifier1
 );
 
 int main(int argc, const char **argv) {

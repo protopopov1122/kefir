@@ -23,11 +23,12 @@ struct kefir_ast_alignment *kefir_ast_alignment_const_expression(struct kefir_me
                                                              struct kefir_ast_constant_expression *const_expr) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(const_expr != NULL, NULL);
+    REQUIRE(const_expr->value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER, NULL);
     struct kefir_ast_alignment *alignment = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_alignment));
     REQUIRE(alignment != NULL, NULL);
     *alignment = (const struct kefir_ast_alignment){0};
     alignment->klass = KEFIR_AST_ALIGNMENT_AS_CONST_EXPR;
-    alignment->value = const_expr->value;
+    alignment->value = const_expr->value.integer;
     alignment->const_expr = const_expr;
     return alignment;
 }

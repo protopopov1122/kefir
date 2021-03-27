@@ -1,7 +1,7 @@
 #ifndef KEFIR_AST_TYPE_ARRAY_H_
 #define KEFIR_AST_TYPE_ARRAY_H_
 
-#include "kefir/ast/const_expr.h"
+#include "kefir/ast/constant_expression.h"
 #include "kefir/ast/type/base.h"
 #include "kefir/ast/constants.h"
 

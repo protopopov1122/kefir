@@ -3,7 +3,7 @@
 
 #include "kefir/core/basic-types.h"
 #include "kefir/core/mem.h"
-#include "kefir/ast/const_expr.h"
+#include "kefir/ast/constant_expression.h"
 #include "kefir/ast/constants.h"
 
 // Forward declaration

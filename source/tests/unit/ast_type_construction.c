@@ -350,7 +350,7 @@ END_CASE
     do { \
         const struct kefir_ast_constant_expression *_cnst; \
         ASSERT_OK(kefir_ast_enumeration_get((_enum), (_id), &_cnst)); \
-        ASSERT(_cnst->value == (_value)); \
+        ASSERT(_cnst->value.integer == (_value)); \
     } while (0)
 
 #define ASSERT_NO_ENUM_CONSTANT(_enum, _id) \
@@ -525,7 +525,7 @@ END_CASE
         ASSERT_OK(kefir_ast_struct_type_get_field((_struct), (_id), &_field)); \
         ASSERT(KEFIR_AST_TYPE_SAME(_field->type, (_type))); \
         ASSERT(_field->bitfield); \
-        ASSERT(_field->bitwidth->value == (_width)); \
+        ASSERT(_field->bitwidth->value.integer == (_width)); \
     } while (0)
 
 DEFINE_CASE(ast_type_construction6, "AST Types - struct type")

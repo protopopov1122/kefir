@@ -5,7 +5,7 @@
 #include "kefir/ast/type.h"
 #include "kefir/ast/constants.h"
 #include "kefir/ast/alignment.h"
-#include "kefir/ast/const_expr.h"
+#include "kefir/ast/constant_expression.h"
 #include "kefir/core/hashtree.h"
 #include "kefir/core/tree.h"
 #include "kefir/ast/initializer.h"
