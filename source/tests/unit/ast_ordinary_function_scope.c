@@ -116,7 +116,7 @@ DEFINE_CASE(ast_ordinary_function_scope2, "AST ordinary scope - functions #2")
         kefir_ast_type_pointer(&kft_mem, &global_context.type_bundle, kefir_ast_type_void()), "func1", &function_type2);
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &global_context.type_bundle, function_type2,
         NULL, kefir_ast_type_array(&kft_mem, &global_context.type_bundle,
-            kefir_ast_type_signed_long_long(), 1, NULL), NULL));
+            kefir_ast_type_signed_long_long(), kefir_ast_constant_expression_integer(&kft_mem, 1), NULL), NULL));
 
     ASSERT_NOK(kefir_ast_global_context_declare_function(&kft_mem, &global_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
         type2));

@@ -42,7 +42,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
 
     const struct kefir_ast_type *type1 = kefir_ast_type_array(mem, &type_bundle,
-        kefir_ast_type_pointer(mem, &type_bundle, kefir_ast_type_void()), 10, NULL);
+        kefir_ast_type_pointer(mem, &type_bundle, kefir_ast_type_void()),
+            kefir_ast_constant_expression_integer(mem, 10), NULL);
     REQUIRE(type1 != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ast_translate_stored_object_type(mem, type1, 0, &env, &builder));
     
@@ -62,7 +63,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                 .constant = true,
                 .restricted = false,
                 .volatile_type = false
-            }), 256, NULL), NULL));
+            }), kefir_ast_constant_expression_integer(mem, 256), NULL), NULL));
     REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, union_type3, "sub2", kefir_ast_type_unsigned_long_long(), NULL));
     REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, struct_type2, NULL, type3, NULL));
     REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, struct_type2, NULL, kefir_ast_type_pointer(

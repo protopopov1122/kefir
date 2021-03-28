@@ -160,7 +160,8 @@ DEFINE_CASE(ast_node_analysis_simple_assignment_operator3, "AST node analysis - 
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type1,
         "a", kefir_ast_type_char(), NULL));
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type1,
-        "b", kefir_ast_type_array(&kft_mem, context->type_bundle, kefir_ast_type_signed_short(), 10, NULL), NULL));
+        "b", kefir_ast_type_array(&kft_mem, context->type_bundle, kefir_ast_type_signed_short(),
+            kefir_ast_constant_expression_integer(&kft_mem, 10), NULL), NULL));
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type1,
         "c", kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()), NULL));
 
@@ -170,7 +171,8 @@ DEFINE_CASE(ast_node_analysis_simple_assignment_operator3, "AST node analysis - 
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type2,
         "x", kefir_ast_type_unsigned_long(), NULL));
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type2,
-        "y", kefir_ast_type_array(&kft_mem, context->type_bundle, kefir_ast_type_char(), 12, NULL), NULL));
+        "y", kefir_ast_type_array(&kft_mem, context->type_bundle, kefir_ast_type_char(),
+            kefir_ast_constant_expression_integer(&kft_mem, 12), NULL), NULL));
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type2,
         "z", kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_float()), NULL));
 
@@ -180,7 +182,8 @@ DEFINE_CASE(ast_node_analysis_simple_assignment_operator3, "AST node analysis - 
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type3,
         "j", kefir_ast_type_double(), NULL));
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type3,
-        "k", kefir_ast_type_array(&kft_mem, context->type_bundle, type2, 3, NULL), NULL));
+        "k", kefir_ast_type_array(&kft_mem, context->type_bundle, type2,
+            kefir_ast_constant_expression_integer(&kft_mem, 3), NULL), NULL));
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type3,
         "l", kefir_ast_type_pointer(&kft_mem, context->type_bundle, type1), NULL));
 
@@ -190,7 +193,8 @@ DEFINE_CASE(ast_node_analysis_simple_assignment_operator3, "AST node analysis - 
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, union_type4,
         "j", kefir_ast_type_double(), NULL));
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, union_type4,
-        "k", kefir_ast_type_array(&kft_mem, context->type_bundle, type2, 3, NULL), NULL));
+        "k", kefir_ast_type_array(&kft_mem, context->type_bundle, type2, 
+            kefir_ast_constant_expression_integer(&kft_mem, 3), NULL), NULL));
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, union_type4,
         "l", kefir_ast_type_pointer(&kft_mem, context->type_bundle, type1), NULL));
 

@@ -30,17 +30,21 @@ DEFINE_CASE(ast_type_compatibility1, "AST Types - function paramter adjusted typ
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_bundle, function_type, "param2",
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_signed_int()), NULL));
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_bundle, function_type, "param3",
-        kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_signed_int(), 10, NULL), NULL));
+        kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_signed_int(),
+            kefir_ast_constant_expression_integer(&kft_mem, 10), NULL), NULL));
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_bundle, function_type, "param4",
-        kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_signed_int(), 11, NULL), NULL));
+        kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_signed_int(),
+            kefir_ast_constant_expression_integer(&kft_mem, 11), NULL), NULL));
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_bundle, function_type, "param5",
-        kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_signed_int(), 12, &(const struct kefir_ast_type_qualification){
+        kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_signed_int(),
+            kefir_ast_constant_expression_integer(&kft_mem, 12), &(const struct kefir_ast_type_qualification){
             .constant = false,
             .restricted = false,
             .volatile_type = false
         }), NULL));
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_bundle, function_type, "param6",
-        kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_signed_int(), 13, &(const struct kefir_ast_type_qualification){
+        kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_signed_int(),
+            kefir_ast_constant_expression_integer(&kft_mem, 13), &(const struct kefir_ast_type_qualification){
             .constant = true,
             .restricted = true,
             .volatile_type = false
@@ -371,13 +375,15 @@ DEFINE_CASE(ast_type_union_compatibility, "AST Types - union type compatibility"
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, union_type1, "field2",
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_float()), NULL));
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, union_type1, "field3",
-        kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_unsigned_char(), 128, NULL), NULL));
+        kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_unsigned_char(),
+            kefir_ast_constant_expression_integer(&kft_mem, 128), NULL), NULL));
     
     struct kefir_ast_struct_type *union_type2 = NULL;
     const struct kefir_ast_type *type2 = kefir_ast_type_union(&kft_mem, &type_bundle, "union1", &union_type2);
     ASSERT(type2 != NULL);
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, union_type2, "field3",
-        kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_unsigned_char(), 128, NULL), NULL));
+        kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_unsigned_char(),
+            kefir_ast_constant_expression_integer(&kft_mem, 128), NULL), NULL));
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, union_type2, "field2",
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_float()), NULL));
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, union_type2, "field1",
@@ -387,7 +393,8 @@ DEFINE_CASE(ast_type_union_compatibility, "AST Types - union type compatibility"
     const struct kefir_ast_type *type3 = kefir_ast_type_union(&kft_mem, &type_bundle, "union1", &union_type3);
     ASSERT(type3 != NULL);
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, union_type3, "field3",
-        kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_unsigned_char(), 128, NULL), NULL));
+        kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_unsigned_char(),
+            kefir_ast_constant_expression_integer(&kft_mem, 128), NULL), NULL));
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, union_type3, "field2",
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_float()), NULL));
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, union_type3, "field1",
@@ -413,14 +420,17 @@ DEFINE_CASE(ast_type_array_compatibility, "AST Types - array type compatibility"
     ASSERT_OK(kefir_symbol_table_init(&symbols));
     ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
 
-    const struct kefir_ast_type *type1 = kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_unsigned_char(), 100, NULL);
-    const struct kefir_ast_type *type2 = kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_unsigned_char(), 101, NULL);
+    const struct kefir_ast_type *type1 = kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_unsigned_char(),
+        kefir_ast_constant_expression_integer(&kft_mem, 100), NULL);
+    const struct kefir_ast_type *type2 = kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_unsigned_char(),
+        kefir_ast_constant_expression_integer(&kft_mem, 101), NULL);
     const struct kefir_ast_type *type3 = kefir_ast_type_unbounded_array(&kft_mem, &type_bundle,
         kefir_ast_type_unsigned_char(), NULL);
     const struct kefir_ast_type *type4 = kefir_ast_type_vlen_array(&kft_mem, &type_bundle,
         kefir_ast_type_unsigned_char(), NULL, NULL);
     const struct kefir_ast_type *type5 = kefir_ast_type_array_static(&kft_mem, &type_bundle,
-        kefir_ast_type_unsigned_char(), 100, &(const struct kefir_ast_type_qualification){
+        kefir_ast_type_unsigned_char(), kefir_ast_constant_expression_integer(&kft_mem, 100),
+        &(const struct kefir_ast_type_qualification){
             .constant = false,
             .restricted = true,
             .volatile_type = false
@@ -467,7 +477,8 @@ static const struct kefir_ast_type *build_function_type(struct kefir_mem *mem,
     ASSERT_OK(kefir_ast_type_function_parameter(mem, type_bundle, *function_type, "param1",
         kefir_ast_type_double(), NULL));
     ASSERT_OK(kefir_ast_type_function_parameter(mem, type_bundle, *function_type, "param2",
-        kefir_ast_type_array_static(mem, type_bundle, kefir_ast_type_char(), 140, NULL), NULL));
+        kefir_ast_type_array_static(mem, type_bundle, kefir_ast_type_char(),
+        kefir_ast_constant_expression_integer(&kft_mem, 140), NULL), NULL));
     ASSERT_OK(kefir_ast_type_function_parameter(mem, type_bundle, *function_type, "param3",
         kefir_ast_type_pointer(mem, type_bundle,
             kefir_ast_type_qualified(mem, type_bundle, kefir_ast_type_unsigned_char(), (struct kefir_ast_type_qualification){

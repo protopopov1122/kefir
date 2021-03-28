@@ -143,7 +143,7 @@ DEFINE_CASE(ast_nodes_type_name, "AST nodes - type name")
                 .constant = true,
                 .restricted = false,
                 .volatile_type = false
-            })), 256, NULL));
+            })), kefir_ast_constant_expression_integer(&kft_mem, 256), NULL));
     ASSERT(type1 != NULL);
     ASSERT(type2 != NULL);
     ASSERT(type1->base.klass->type == KEFIR_AST_TYPE_NAME);
@@ -158,7 +158,7 @@ DEFINE_CASE(ast_nodes_type_name, "AST nodes - type name")
                 .constant = true,
                 .restricted = false,
                 .volatile_type = false
-            })), 256, NULL)));
+            })), kefir_ast_constant_expression_integer(&kft_mem, 256), NULL)));
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(type1)));
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(type2)));
     ASSERT_OK(kefir_ast_type_bundle_free(&kft_mem, &type_bundle));

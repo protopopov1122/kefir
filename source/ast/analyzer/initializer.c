@@ -155,7 +155,8 @@ static kefir_result_t analyze_array(struct kefir_mem *mem,
     if (properties != NULL) {
         if (type->array_type.boundary == KEFIR_AST_ARRAY_UNBOUNDED) {
             properties->type = kefir_ast_type_array(mem, context->type_bundle,
-                type->array_type.element_type, array_length, &type->array_type.qualifications);
+                type->array_type.element_type, kefir_ast_constant_expression_integer(mem, array_length),
+                &type->array_type.qualifications);
         } else {
             properties->type = type;
         }

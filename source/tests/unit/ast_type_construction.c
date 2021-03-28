@@ -438,7 +438,8 @@ DEFINE_CASE(ast_type_construction5, "AST Types - array type")
     ASSERT(!type1->array_type.qualifications.restricted);
     ASSERT(type1->array_type.qualifications.volatile_type);
 
-    const struct kefir_ast_type *type2 = kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_float(), 10,
+    const struct kefir_ast_type *type2 = kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_float(),
+        kefir_ast_constant_expression_integer(&kft_mem, 10),
         &(const struct kefir_ast_type_qualification) {
             .constant = false,
             .restricted = true,
@@ -449,12 +450,13 @@ DEFINE_CASE(ast_type_construction5, "AST Types - array type")
     ASSERT(type2->array_type.boundary == KEFIR_AST_ARRAY_BOUNDED);
     ASSERT(KEFIR_AST_TYPE_SAME(type2, type2));
     ASSERT(KEFIR_AST_TYPE_SAME(type2->array_type.element_type, kefir_ast_type_float()));
-    ASSERT(type2->array_type.length == 10);
+    ASSERT(kefir_ast_type_array_const_length(&type2->array_type) == 10);
     ASSERT(!type2->array_type.qualifications.constant);
     ASSERT(type2->array_type.qualifications.restricted);
     ASSERT(!type2->array_type.qualifications.volatile_type);
 
-    const struct kefir_ast_type *type3 = kefir_ast_type_array_static(&kft_mem, &type_bundle, kefir_ast_type_double(), 15,
+    const struct kefir_ast_type *type3 = kefir_ast_type_array_static(&kft_mem, &type_bundle, kefir_ast_type_double(),
+        kefir_ast_constant_expression_integer(&kft_mem, 15),
         &(const struct kefir_ast_type_qualification) {
             .constant = false,
             .restricted = true,
@@ -465,7 +467,7 @@ DEFINE_CASE(ast_type_construction5, "AST Types - array type")
     ASSERT(type3->array_type.boundary == KEFIR_AST_ARRAY_BOUNDED_STATIC);
     ASSERT(KEFIR_AST_TYPE_SAME(type3, type3));
     ASSERT(KEFIR_AST_TYPE_SAME(type3->array_type.element_type, kefir_ast_type_double()));
-    ASSERT(type3->array_type.length == 15);
+    ASSERT(kefir_ast_type_array_const_length(&type3->array_type) == 15);
     ASSERT(!type3->array_type.qualifications.constant);
     ASSERT(type3->array_type.qualifications.restricted);
     ASSERT(type3->array_type.qualifications.volatile_type);

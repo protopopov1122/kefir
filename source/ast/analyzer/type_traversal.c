@@ -6,8 +6,8 @@
 static kefir_bool_t is_array_finished(const struct kefir_ast_type *type,
                                     kefir_size_t index) {
     return type->array_type.boundary != KEFIR_AST_ARRAY_UNBOUNDED &&
-           index >= type->array_type.length &&
-           type->array_type.length > 0;
+           index >= kefir_ast_type_array_const_length(&type->array_type) &&
+           kefir_ast_type_array_const_length(&type->array_type) > 0;
 }
 
 static kefir_result_t remove_layer(struct kefir_mem *mem,
@@ -331,7 +331,7 @@ static kefir_result_t navigate_index(struct kefir_mem *mem,
         case KEFIR_AST_TYPE_TRAVERSAL_ARRAY: {
             const struct kefir_ast_type *array = layer->object_type;
             if (array->array_type.boundary != KEFIR_AST_ARRAY_UNBOUNDED &&
-                array->array_type.length <= index) {
+                kefir_ast_type_array_const_length(&array->array_type) <= index) {
                 return KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Specified index exceeds array bounds");
             }
             layer->init = false;

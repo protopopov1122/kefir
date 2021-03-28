@@ -71,7 +71,8 @@ kefir_result_t kefir_ast_translate_stored_object_type(struct kefir_mem *mem,
                     return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot translate unbounded array type to IR type");
 
                 case KEFIR_AST_ARRAY_BOUNDED:
-                    REQUIRE_OK(KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_ARRAY, alignment, type->array_type.length));
+                    REQUIRE_OK(KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_ARRAY, alignment,
+                        kefir_ast_type_array_const_length(&type->array_type)));
                     return kefir_ast_translate_stored_object_type(mem, type->array_type.element_type, KEFIR_AST_DEFAULT_ALIGNMENT, env, builder);
 
                 case KEFIR_AST_ARRAY_BOUNDED_STATIC:
