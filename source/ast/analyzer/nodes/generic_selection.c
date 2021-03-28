@@ -1,5 +1,6 @@
 #include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/ast/analyzer/nodes.h"
+#include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -14,7 +15,8 @@ kefir_result_t kefir_ast_analyze_generic_selection_node(struct kefir_mem *mem,
 
 
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->control));
-    const struct kefir_ast_type *control_type = node->control->properties.type;
+    const struct kefir_ast_type *control_type = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle,
+        node->control->properties.type);
 
     kefir_bool_t matched = false;
     for (const struct kefir_list_entry *iter = kefir_list_head(&node->associations);

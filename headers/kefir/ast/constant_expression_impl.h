@@ -9,8 +9,13 @@
                                                const struct kefir_ast_context *, \
                                                const _type *, \
                                                struct kefir_ast_constant_expression_value *)
+
 EVAL(scalar, struct kefir_ast_constant);
 EVAL(identifier, struct kefir_ast_identifier);
+EVAL(string_literal, struct kefir_ast_string_literal);
+EVAL(generic_selection, struct kefir_ast_generic_selection);
+EVAL(unary_operation, struct kefir_ast_unary_operation);
+// EVAL(binary_operation, struct kefir_ast_binary_operation);
 #undef EVAL
 
 #endif

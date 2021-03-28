@@ -28,7 +28,7 @@ DEFINE_CASE(ast_node_analysis_constants, "AST node analysis - constant types")
     ASSERT_CONSTANT(&kft_mem, context, kefir_ast_new_constant_bool(&kft_mem, true), kefir_ast_type_bool());
 
     for (kefir_char_t i = KEFIR_CHAR_MIN; i < KEFIR_CHAR_MAX; i++) {
-        ASSERT_CONSTANT(&kft_mem, context, kefir_ast_new_constant_char(&kft_mem, i), kefir_ast_type_char());
+        ASSERT_CONSTANT(&kft_mem, context, kefir_ast_new_constant_char(&kft_mem, i), kefir_ast_type_unsigned_char());
     }
 
     for (kefir_int_t i = -1000; i < 1000; i++) {

@@ -54,7 +54,7 @@ DEFINE_CASE(ast_node_analysis_conditional_operator1, "AST node analysis - condit
 
     const struct kefir_ast_type *TYPES[] = {
         kefir_ast_type_bool(),
-        kefir_ast_type_char(),
+        kefir_ast_type_unsigned_char(),
         kefir_ast_type_unsigned_int(),
         kefir_ast_type_signed_int(),
         kefir_ast_type_unsigned_long(),

@@ -1,4 +1,5 @@
 #include "kefir/ast/constant_expression_impl.h"
+#include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -28,6 +29,9 @@ static kefir_result_t visit_non_constant_expression(const struct kefir_ast_visit
     }
 VISITOR(scalar, struct kefir_ast_constant)
 VISITOR(identifier, struct kefir_ast_identifier)
+VISITOR(string_literal, struct kefir_ast_string_literal)
+VISITOR(generic_selection, struct kefir_ast_generic_selection)
+VISITOR(unary_operation, struct kefir_ast_unary_operation)
 #undef VISITOR
 
 kefir_result_t kefir_ast_constant_expression_evaluate(struct kefir_mem *mem,
@@ -53,17 +57,30 @@ kefir_result_t kefir_ast_constant_expression_evaluate(struct kefir_mem *mem,
     REQUIRE_OK(kefir_ast_visitor_init(&visitor, visit_non_constant_expression));
     visitor.constant = evaluate_scalar;
     visitor.identifier = evaluate_identifier;
+    visitor.string_literal = evaluate_string_literal;
+    visitor.generic_selection = evaluate_generic_selection;
+    visitor.unary_operation = evaluate_unary_operation;
     return KEFIR_AST_NODE_VISIT(&visitor, node, &param);
 }
 
-struct kefir_ast_constant_expression *kefir_ast_constant_expression_integer(struct kefir_mem *mem,
-                                                                        kefir_ast_constant_expression_int_t integer) {
+struct kefir_ast_constant_expression *kefir_ast_new_constant_expression(struct kefir_mem *mem,
+                                                                    const struct kefir_ast_context *context,
+                                                                    struct kefir_ast_node_base *node) {
     REQUIRE(mem != NULL, NULL);
+    REQUIRE(context != NULL, NULL);
+    REQUIRE(node != NULL, NULL);
+
+    kefir_result_t res = kefir_ast_analyze_node(mem, context, node);
+    REQUIRE(res == KEFIR_OK, NULL);
     struct kefir_ast_constant_expression *const_expr = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_constant_expression));
     REQUIRE(const_expr != NULL, NULL);
-    const_expr->value.klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
-    const_expr->value.integer = integer;
-    const_expr->expression = NULL;
+
+    res = kefir_ast_constant_expression_evaluate(mem, context, node, &const_expr->value);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, const_expr);
+        return NULL;
+    });
+    const_expr->expression = node;
     return const_expr;
 }
 
@@ -77,4 +94,15 @@ kefir_result_t kefir_ast_constant_expression_free(struct kefir_mem *mem,
     }
     KEFIR_FREE(mem, const_expr);
     return KEFIR_OK;
+}
+
+struct kefir_ast_constant_expression *kefir_ast_constant_expression_integer(struct kefir_mem *mem,
+                                                                        kefir_ast_constant_expression_int_t integer) {
+    REQUIRE(mem != NULL, NULL);
+    struct kefir_ast_constant_expression *const_expr = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_constant_expression));
+    REQUIRE(const_expr != NULL, NULL);
+    const_expr->value.klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
+    const_expr->value.integer = integer;
+    const_expr->expression = NULL;
+    return const_expr;
 }
