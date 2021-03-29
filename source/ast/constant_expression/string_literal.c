@@ -15,6 +15,6 @@ kefir_result_t kefir_ast_evaluate_string_literal_node(struct kefir_mem *mem,
         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected constant expression AST node"));
 
     value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS;
-    value->referred_value = KEFIR_AST_NODE_BASE(node);
+    value->pointer = KEFIR_AST_NODE_BASE(node);
     return KEFIR_OK;
 }

@@ -32,6 +32,8 @@ VISITOR(identifier, struct kefir_ast_identifier)
 VISITOR(string_literal, struct kefir_ast_string_literal)
 VISITOR(generic_selection, struct kefir_ast_generic_selection)
 VISITOR(unary_operation, struct kefir_ast_unary_operation)
+VISITOR(binary_operation, struct kefir_ast_binary_operation)
+VISITOR(conditional_operator, struct kefir_ast_conditional_operator   )
 #undef VISITOR
 
 kefir_result_t kefir_ast_constant_expression_evaluate(struct kefir_mem *mem,
@@ -60,6 +62,8 @@ kefir_result_t kefir_ast_constant_expression_evaluate(struct kefir_mem *mem,
     visitor.string_literal = evaluate_string_literal;
     visitor.generic_selection = evaluate_generic_selection;
     visitor.unary_operation = evaluate_unary_operation;
+    visitor.binary_operation = evaluate_binary_operation;
+    visitor.conditional_operator = evaluate_conditional_operator;
     return KEFIR_AST_NODE_VISIT(&visitor, node, &param);
 }
 

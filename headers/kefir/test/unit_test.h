@@ -64,9 +64,15 @@ kefir_size_t kft_run_test_suite(const struct kft_test_case **, kefir_size_t, voi
         } \
     } while (0)
 
-#define FLOAT_EQUALS(x, y, epsilon) (fabs((x) - (y)) <= (epsilon))
+#define FLOAT_EQUALS(x, y, epsilon) \
+    (fabs((x) - (y)) <= (epsilon) || \
+        (isinf((x)) && isinf((y)) && signbit((x)) == signbit((y))) || \
+        (isnan((x)) && isnan((y))))
 #define FLOAT_EPSILON 1e-5
-#define DOUBLE_EQUALS(x, y, epsilon) (fabs((x) - (y)) <= (epsilon))
+#define DOUBLE_EQUALS(x, y, epsilon) \
+    (fabs((x) - (y)) <= (epsilon) || \
+        (isinf((x)) && isinf((y)) && signbit((x)) == signbit((y))) || \
+        (isnan((x)) && isnan((y))))
 #define DOUBLE_EPSILON 1e-10
 
 #endif

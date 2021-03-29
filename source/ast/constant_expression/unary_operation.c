@@ -73,8 +73,8 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem,
                     "Addressed constant expressions are not implemented yet");
                 
             case KEFIR_AST_OPERATION_INDIRECTION:
-                return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED,
-                    "Addressed constant expressions are not implemented yet");
+                return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
+                    "Constant expression cannot contain indirection operator");
                 
             case KEFIR_AST_OPERATION_SIZEOF:
             case KEFIR_AST_OPERATION_ALIGNOF:

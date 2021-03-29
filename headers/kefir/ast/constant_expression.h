@@ -18,10 +18,8 @@ typedef struct kefir_ast_constant_expression_value {
     kefir_ast_constant_expression_class_t klass;
 
     kefir_ast_constant_expression_int_t integer;
-    union {
-        kefir_ast_constant_expression_float_t floating_point;
-        const struct kefir_ast_node_base *referred_value;
-    };
+    kefir_ast_constant_expression_float_t floating_point;
+    const struct kefir_ast_node_base *pointer;
 } kefir_ast_constant_expression_value_t;
 
 typedef struct kefir_ast_constant_expression {

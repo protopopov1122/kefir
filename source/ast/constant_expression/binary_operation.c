@@ -1,0 +1,221 @@
+#include "kefir/ast/constant_expression_impl.h"
+#include "kefir/core/util.h"
+#include "kefir/core/error.h"
+
+#define ANY_OF(x, y, _klass) \
+    ((x)->klass == (_klass) || (y)->klass == (_klass))
+
+static kefir_ast_constant_expression_float_t as_float(const struct kefir_ast_constant_expression_value *value) {
+    switch (value->klass) {
+        case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER:
+            return (kefir_ast_constant_expression_float_t) value->integer;
+
+        case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT:
+            return value->floating_point;
+
+        case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS:
+            return 0.0f;
+    }
+    return 0.0f;
+}
+
+kefir_result_t kefir_ast_evaluate_binary_operation_node(struct kefir_mem *mem,
+                                                    const struct kefir_ast_context *context,
+                                                    const struct kefir_ast_binary_operation *node,
+                                                    struct kefir_ast_constant_expression_value *value) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST binary operation node"));
+    REQUIRE(value != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST constant expression value pointer"));
+    REQUIRE(node->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION &&
+        node->base.properties.expression_props.constant_expression,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected constant expression AST node"));
+    
+    struct kefir_ast_constant_expression_value arg1_value, arg2_value;
+    REQUIRE_OK(kefir_ast_constant_expression_evaluate(mem, context, node->arg1, &arg1_value));
+    REQUIRE_OK(kefir_ast_constant_expression_evaluate(mem, context, node->arg2, &arg2_value));
+    switch (node->type) {
+        case KEFIR_AST_OPERATION_ADD:
+            if (arg1_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS) {
+                value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS;
+                value->pointer = arg1_value.pointer;
+                value->integer = arg1_value.integer + arg2_value.integer;
+            } else if (arg2_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS) {
+                value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS;
+                value->pointer = arg2_value.pointer;
+                value->integer = arg1_value.integer + arg2_value.integer;
+            } else if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT)) {
+                value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT;
+                value->floating_point = as_float(&arg1_value) + as_float(&arg2_value);
+            } else {
+                value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
+                value->integer = arg1_value.integer + arg2_value.integer;
+            }
+            break;
+
+        case KEFIR_AST_OPERATION_SUBTRACT:
+            if (arg1_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS) {
+                REQUIRE(arg2_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
+                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Second subtraction operand shall have integral type"));
+                value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS;
+                value->pointer = arg1_value.pointer;
+                value->integer = arg1_value.integer - arg2_value.integer;
+            } else if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT)) {
+                value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT;
+                value->floating_point = as_float(&arg1_value) - as_float(&arg2_value);
+            } else {
+                value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
+                value->integer = arg1_value.integer - arg2_value.integer;
+            }
+            break;
+
+        case KEFIR_AST_OPERATION_MULTIPLY:
+            if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT)) {
+                value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT;
+                value->floating_point = as_float(&arg1_value) * as_float(&arg2_value);
+            } else {
+                value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
+                value->integer = arg1_value.integer * arg2_value.integer;
+            }
+            break;
+
+        case KEFIR_AST_OPERATION_DIVIDE:
+            if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT)) {
+                value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT;
+                value->floating_point = as_float(&arg1_value) / as_float(&arg2_value);
+            } else {
+                value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
+                value->integer = arg1_value.integer / arg2_value.integer;
+            }
+            break;
+
+        case KEFIR_AST_OPERATION_MODULO:
+            value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
+            value->integer = arg1_value.integer % arg2_value.integer;
+            break;
+
+        case KEFIR_AST_OPERATION_SHIFT_LEFT:
+            value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
+            value->integer = arg1_value.integer << arg2_value.integer;
+            break;
+
+        case KEFIR_AST_OPERATION_SHIFT_RIGHT:
+            value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
+            value->integer = arg1_value.integer >> arg2_value.integer;
+            break;
+
+        case KEFIR_AST_OPERATION_LESS:
+            value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
+            if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS)) {
+                return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Constant expressions with address comparisons are not supported");
+            } else if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT)) {
+                value->integer = as_float(&arg1_value) < as_float(&arg2_value);
+            } else {
+                value->integer = arg1_value.integer < arg2_value.integer;
+            }
+            break;
+
+        case KEFIR_AST_OPERATION_LESS_EQUAL:
+            value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
+            if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS)) {
+                return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Constant expressions with address comparisons are not supported");
+            } else if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT)) {
+                value->integer = as_float(&arg1_value) <= as_float(&arg2_value);
+            } else {
+                value->integer = arg1_value.integer <= arg2_value.integer;
+            }
+            break;
+
+        case KEFIR_AST_OPERATION_GREATER:
+            value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
+            if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS)) {
+                return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Constant expressions with address comparisons are not supported");
+            } else if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT)) {
+                value->integer = as_float(&arg1_value) > as_float(&arg2_value);
+            } else {
+                value->integer = arg1_value.integer > arg2_value.integer;
+            }
+            break;
+
+        case KEFIR_AST_OPERATION_GREATER_EQUAL:
+            value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
+            if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS)) {
+                return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Constant expressions with address comparisons are not supported");
+            } else if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT)) {
+                value->integer = as_float(&arg1_value) >= as_float(&arg2_value);
+            } else {
+                value->integer = arg1_value.integer >= arg2_value.integer;
+            }
+            break;
+
+        case KEFIR_AST_OPERATION_EQUAL:
+            value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
+            if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS)) {
+                return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Constant expressions with address comparisons are not supported");
+            } else if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT)) {
+                value->integer = as_float(&arg1_value) == as_float(&arg2_value);
+            } else {
+                value->integer = arg1_value.integer == arg2_value.integer;
+            }
+            break;
+
+        case KEFIR_AST_OPERATION_NOT_EQUAL:
+            value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
+            if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS)) {
+                return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Constant expressions with address comparisons are not supported");
+            } else if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT)) {
+                value->integer = as_float(&arg1_value) != as_float(&arg2_value);
+            } else {
+                value->integer = arg1_value.integer != arg2_value.integer;
+            }
+            break;
+
+        case KEFIR_AST_OPERATION_BITWISE_AND:
+            value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
+            value->integer = arg1_value.integer & arg2_value.integer;
+            break;
+
+        case KEFIR_AST_OPERATION_BITWISE_OR:
+            value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
+            value->integer = arg1_value.integer | arg2_value.integer;
+            break;
+
+        case KEFIR_AST_OPERATION_BITWISE_XOR:
+            value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
+            value->integer = arg1_value.integer ^ arg2_value.integer;
+            break;
+
+        case KEFIR_AST_OPERATION_LOGICAL_AND:
+            value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
+            if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS)) {
+                return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Constant logical expressions with addresses are not supported");
+            } else if (arg1_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT &&
+                arg2_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT) {
+                value->integer = arg1_value.floating_point && arg2_value.floating_point;
+            } else if (arg1_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT) {
+                value->integer = arg1_value.floating_point && arg2_value.integer;
+            } else if (arg2_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT) {
+                value->integer = arg1_value.integer && arg2_value.floating_point;
+            } else {
+                value->integer = arg1_value.integer && arg2_value.integer;
+            }
+            break;
+
+        case KEFIR_AST_OPERATION_LOGICAL_OR:
+            value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
+            if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS)) {
+                return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Constant logical expressions with addresses are not supported");
+            } else if (arg1_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT &&
+                arg2_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT) {
+                value->integer = arg1_value.floating_point || arg2_value.floating_point;
+            } else if (arg1_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT) {
+                value->integer = arg1_value.floating_point || arg2_value.integer;
+            } else if (arg2_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT) {
+                value->integer = arg1_value.integer || arg2_value.floating_point;
+            } else {
+                value->integer = arg1_value.integer || arg2_value.integer;
+            }
+            break;
+    }
+    return KEFIR_OK;
+}
