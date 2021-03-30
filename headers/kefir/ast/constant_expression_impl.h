@@ -17,6 +17,7 @@ EVAL(generic_selection, struct kefir_ast_generic_selection);
 EVAL(unary_operation, struct kefir_ast_unary_operation);
 EVAL(binary_operation, struct kefir_ast_binary_operation);
 EVAL(conditional_operator, struct kefir_ast_conditional_operator);
+EVAL(cast_operator, struct kefir_ast_cast_operator);
 #undef EVAL
 
 #endif
