@@ -14,6 +14,7 @@ kefir_result_t kefir_ast_translator_type_alignment(struct kefir_mem *mem,
     struct kefir_ast_target_type_info type_info;
     REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_TYPE_INFO(mem, &env->target_env, type, &type_info));
     *value = type_info.alignment;
+    REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE_INFO(mem, &env->target_env, &type_info));
     return KEFIR_OK;
 }
 

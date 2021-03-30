@@ -45,7 +45,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ast_type_pointer(mem, &type_bundle, kefir_ast_type_void()),
             kefir_ast_constant_expression_integer(mem, 10), NULL);
     REQUIRE(type1 != NULL, KEFIR_INTERNAL_ERROR);
-    REQUIRE_OK(kefir_ast_translate_stored_object_type(mem, type1, 0, &env, &builder));
+    REQUIRE_OK(kefir_ast_translate_object_type(mem, type1, 0, &env, &builder, NULL));
     
     struct kefir_ast_struct_type *struct_type2;
     const struct kefir_ast_type *type2 = kefir_ast_type_structure(mem, &type_bundle, "struct1", &struct_type2);
@@ -74,7 +74,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ast_constant_expression_integer(mem, 1)));
     REQUIRE_OK(kefir_ast_struct_type_bitfield(mem, &symbols, struct_type2, "h10", kefir_ast_type_signed_short(), NULL,
         kefir_ast_constant_expression_integer(mem, 0)));
-    REQUIRE_OK(kefir_ast_translate_stored_object_type(mem, type2, 0, &env, &builder));
+    REQUIRE_OK(kefir_ast_translate_object_type(mem, type2, 0, &env, &builder, NULL));
 
     REQUIRE_OK(kefir_ir_format_type(stdout, &ir_type));
     REQUIRE_OK(kefir_ast_type_bundle_free(mem, &type_bundle));

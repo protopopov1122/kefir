@@ -3,7 +3,14 @@
 
 #include "kefir/ir/platform.h"
 #include "kefir/ast/type.h"
+#include "kefir/ast/type_layout.h"
 #include "kefir/ast/target_environment.h"
+
+typedef struct kefir_ast_translator_environment_type {
+    const struct kefir_ast_type *ast_type;
+    struct kefir_ir_type type;
+    struct kefir_ast_type_layout *layout;
+} kefir_ast_translator_environment_type_t;
 
 typedef struct kefir_ast_translator_environment {
     struct kefir_ast_target_environment target_env;

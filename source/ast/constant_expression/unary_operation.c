@@ -85,6 +85,7 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem,
                     node->arg->properties.type, &type_info));
                 value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
                 value->integer = type_info.size;
+                REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE_INFO(mem, context->target_env, &type_info));
             } break;
 
             case KEFIR_AST_OPERATION_ALIGNOF: {
@@ -93,6 +94,7 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem,
                     node->arg->properties.type, &type_info));
                 value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
                 value->integer = type_info.alignment;
+                REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE_INFO(mem, context->target_env, &type_info));
             } break;
     }
     return KEFIR_OK;
