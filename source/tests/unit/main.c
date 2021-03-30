@@ -189,6 +189,9 @@ DECLARE_CASE(ast_constant_expression_binary_operations1);
 DECLARE_CASE(ast_constant_expression_binary_operations2);
 DECLARE_CASE(ast_constant_expression_binary_operations3);
 DECLARE_CASE(ast_constant_expression_conditional_operator1);
+DECLARE_CASE(ast_constant_expression_unary_operations2);
+DECLARE_CASE(ast_constant_expression_unary_operations3);
+DECLARE_CASE(ast_constant_expression_unary_operations4);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -375,7 +378,10 @@ TEST_SUITE(mainSuite,
     &ast_constant_expression_binary_operations1,
     &ast_constant_expression_binary_operations2,
     &ast_constant_expression_binary_operations3,
-    &ast_constant_expression_conditional_operator1
+    &ast_constant_expression_conditional_operator1,
+    &ast_constant_expression_unary_operations2,
+    &ast_constant_expression_unary_operations3,
+    &ast_constant_expression_unary_operations4
 );
 
 int main(int argc, const char **argv) {

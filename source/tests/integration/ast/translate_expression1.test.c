@@ -4,10 +4,11 @@
 #include "kefir/ir/builder.h"
 #include "kefir/ast/node.h"
 #include "kefir/ast/translator/translator.h"
+#include "kefir/ast/translator/environment.h"
 #include "kefir/ir/format.h"
 #include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/ast/local_context.h"
-
+#include "kefir/test/util.h"
 
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_module module;
@@ -26,7 +27,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context translation_context;
-    REQUIRE_OK(kefir_ast_global_context_init(mem, kefir_ast_default_type_traits(), &global_context));
+    REQUIRE_OK(kefir_ast_global_context_init(mem, kefir_ast_default_type_traits(),
+        &kft_util_get_translator_environment()->target_env, &global_context));
     REQUIRE_OK(kefir_ast_local_context_init(mem, &global_context, &translation_context));
 
     struct kefir_irbuilder_block builder;

@@ -12,6 +12,7 @@ typedef struct kefir_ast_global_context {
     struct kefir_symbol_table symbols;
     const struct kefir_ast_type_traits *type_traits;
     struct kefir_ast_type_bundle type_bundle;
+    const struct kefir_ast_target_environment *target_env;
 
     struct kefir_ast_identifier_flat_scope object_identifiers;
     struct kefir_ast_identifier_flat_scope constant_identifiers;
@@ -24,6 +25,7 @@ typedef struct kefir_ast_global_context {
 
 kefir_result_t kefir_ast_global_context_init(struct kefir_mem *,
                                          const struct kefir_ast_type_traits *,
+                                         const struct kefir_ast_target_environment *,
                                          struct kefir_ast_global_context *);
 kefir_result_t kefir_ast_global_context_free(struct kefir_mem *,
                                          struct kefir_ast_global_context *);

@@ -1,4 +1,5 @@
 #include "kefir/ast/translator/alignment.h"
+#include "kefir/ast/target_environment.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -10,8 +11,8 @@ kefir_result_t kefir_ast_translator_type_alignment(struct kefir_mem *mem,
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
     REQUIRE(env != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator environment"));
     REQUIRE(value != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid alignment pointer"));
-    struct kefir_ir_target_type_info type_info;
-    REQUIRE_OK(kefir_ast_translator_environment_target_stored_type_info(mem, env, type, &type_info));
+    struct kefir_ast_target_type_info type_info;
+    REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_TYPE_INFO(mem, &env->target_env, type, &type_info));
     *value = type_info.alignment;
     return KEFIR_OK;
 }

@@ -13,10 +13,15 @@ OBJS += $(KEFIR_INTEGRATION_TEST_OBJS)
 BINS += $(KEFIR_INTEGRATION_TEST_BINS)
 
 $(BIN_DIR)/tests/integration/$(INT_TEST_SUBDIR)/%: INT_TEST_SUBDIR:=$(INT_TEST_SUBDIR)
-$(BIN_DIR)/tests/integration/$(INT_TEST_SUBDIR)/%: $(DEPS) $(KEFIR_LIB_OBJS) $(BIN_DIR)/tests/int_test.o $(BIN_DIR)/tests/integration/$(INT_TEST_SUBDIR)/%.o
+$(BIN_DIR)/tests/integration/$(INT_TEST_SUBDIR)/%: $(DEPS) $(KEFIR_LIB_OBJS) \
+                                                   $(BIN_DIR)/tests/int_test.o \
+												   $(BIN_DIR)/tests/util/util.o \
+												   $(BIN_DIR)/tests/integration/$(INT_TEST_SUBDIR)/%.o
 	@mkdir -p $(@D)
 	@echo "Linking $@"
-	@$(CC) -o $@ $(KEFIR_LIB_OBJS) $(BIN_DIR)/tests/int_test.o $(BIN_DIR)/tests/integration/$(INT_TEST_SUBDIR)/$(@F).o
+	@$(CC) -o $@ $(KEFIR_LIB_OBJS) $(BIN_DIR)/tests/int_test.o \
+	                             $(BIN_DIR)/tests/util/util.o \
+								 $(BIN_DIR)/tests/integration/$(INT_TEST_SUBDIR)/$(@F).o
 
 integration_test_$(INT_TEST_SUBDIR)_%: $(BIN_DIR)/tests/integration/$(INT_TEST_SUBDIR)/%.test
 	@$(SOURCE_DIR)/tests/integration/run.sh $^

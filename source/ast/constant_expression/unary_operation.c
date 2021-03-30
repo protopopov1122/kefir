@@ -15,9 +15,9 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem,
         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected constant expression AST node"));
 
     struct kefir_ast_constant_expression_value arg_value;
-    REQUIRE_OK(kefir_ast_constant_expression_evaluate(mem, context, node->arg, &arg_value));
     switch (node->type) {
             case KEFIR_AST_OPERATION_PLUS:
+                REQUIRE_OK(kefir_ast_constant_expression_evaluate(mem, context, node->arg, &arg_value));
                 if (arg_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER) {
                     value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
                     value->integer = arg_value.integer;
@@ -30,6 +30,7 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem,
                 break;
                 
             case KEFIR_AST_OPERATION_NEGATE:
+                REQUIRE_OK(kefir_ast_constant_expression_evaluate(mem, context, node->arg, &arg_value));
                 if (arg_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER) {
                     value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
                     value->integer = -arg_value.integer;
@@ -42,6 +43,7 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem,
                 break;
                 
             case KEFIR_AST_OPERATION_INVERT:
+                REQUIRE_OK(kefir_ast_constant_expression_evaluate(mem, context, node->arg, &arg_value));
                 if (arg_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER) {
                     value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
                     value->integer = ~arg_value.integer;
@@ -51,6 +53,7 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem,
                 break;
                 
             case KEFIR_AST_OPERATION_LOGICAL_NEGATE:
+                REQUIRE_OK(kefir_ast_constant_expression_evaluate(mem, context, node->arg, &arg_value));
                 value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
                 if (arg_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER) {
                     value->integer = !arg_value.integer;
@@ -76,10 +79,21 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem,
                 return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
                     "Constant expression cannot contain indirection operator");
                 
-            case KEFIR_AST_OPERATION_SIZEOF:
-            case KEFIR_AST_OPERATION_ALIGNOF:
-                return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED,
-                    "Sizeof/alignof constant expressions are not implemented yet");
+            case KEFIR_AST_OPERATION_SIZEOF: {
+                struct kefir_ast_target_type_info type_info;
+                REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_TYPE_INFO(mem, context->target_env,
+                    node->arg->properties.type, &type_info));
+                value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
+                value->integer = type_info.size;
+            } break;
+
+            case KEFIR_AST_OPERATION_ALIGNOF: {
+                struct kefir_ast_target_type_info type_info;
+                REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_TYPE_INFO(mem, context->target_env,
+                    node->arg->properties.type, &type_info));
+                value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
+                value->integer = type_info.alignment;
+            } break;
     }
     return KEFIR_OK;
 }

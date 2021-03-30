@@ -53,6 +53,7 @@ kefir_result_t kefir_ast_local_context_init(struct kefir_mem *mem,
     context->context.symbols = &context->global->symbols;
     context->context.type_bundle = &context->global->type_bundle;
     context->context.type_traits = context->global->type_traits;
+    context->context.target_env = context->global->target_env;
     context->context.payload = context;
     return KEFIR_OK;
 }

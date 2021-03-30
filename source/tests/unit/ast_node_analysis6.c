@@ -3,6 +3,7 @@
 #include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/ast/local_context.h"
 #include "kefir/ast/type_conv.h"
+#include "kefir/test/util.h"
 
 #define ASSERT_FUNCTION_CALL(_mem, _context, _id, _type, _args) \
     do { \
@@ -34,7 +35,8 @@ DEFINE_CASE(ast_node_analysis_function_calls1, "AST node analysis - function cal
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
-    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &global_context));
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits,
+        &kft_util_get_translator_environment()->target_env, &global_context));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
@@ -86,7 +88,8 @@ DEFINE_CASE(ast_node_analysis_function_calls2, "AST node analysis - function cal
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
-    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &global_context));
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits,
+        &kft_util_get_translator_environment()->target_env, &global_context));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
@@ -192,7 +195,8 @@ DEFINE_CASE(ast_node_analysis_function_calls3, "AST node analysis - function cal
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
-    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &global_context));
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits,
+        &kft_util_get_translator_environment()->target_env, &global_context));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
@@ -276,7 +280,8 @@ DEFINE_CASE(ast_node_analysis_compound_literal1, "AST node analysis - compound l
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
-    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &global_context));
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits,
+        &kft_util_get_translator_environment()->target_env, &global_context));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
@@ -347,7 +352,8 @@ DEFINE_CASE(ast_node_analysis_compound_literal2, "AST node analysis - compound l
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
-    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &global_context));
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits,
+        &kft_util_get_translator_environment()->target_env, &global_context));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
@@ -437,7 +443,8 @@ DEFINE_CASE(ast_node_analysis_compound_literal3, "AST node analysis - compound l
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
-    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &global_context));
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits,
+        &kft_util_get_translator_environment()->target_env, &global_context));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 

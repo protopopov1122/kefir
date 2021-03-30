@@ -25,13 +25,16 @@ static kefir_result_t context_resolve_tag_identifier(const struct kefir_ast_cont
 
 kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem,
                                          const struct kefir_ast_type_traits *type_traits,
+                                         const struct kefir_ast_target_environment *target_env,
                                          struct kefir_ast_global_context *context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(type_traits != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type traits"));
+    REQUIRE(target_env != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST target environment"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
     REQUIRE_OK(kefir_symbol_table_init(&context->symbols));
     REQUIRE_OK(kefir_ast_type_bundle_init(&context->type_bundle, &context->symbols));
     context->type_traits = type_traits;
+    context->target_env = target_env;
     REQUIRE_OK(kefir_ast_identifier_flat_scope_init(&context->tag_scope));
     REQUIRE_OK(kefir_ast_identifier_flat_scope_on_removal(&context->tag_scope, kefir_ast_context_free_scoped_identifier, NULL));
     
@@ -54,6 +57,7 @@ kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem,
     context->context.symbols = &context->symbols;
     context->context.type_bundle = &context->type_bundle;
     context->context.type_traits = context->type_traits;
+    context->context.target_env = context->target_env;
     context->context.payload = context;
     return KEFIR_OK;
 }

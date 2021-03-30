@@ -3,13 +3,15 @@
 #include "kefir/ast/initializer.h"
 #include "kefir/ast/local_context.h"
 #include "kefir/ast/node.h"
+#include "kefir/test/util.h"
 
 DEFINE_CASE(ast_initializer_construction1, "AST initializer - construction #1")
     const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
-    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &global_context));
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits,
+        &kft_util_get_translator_environment()->target_env, &global_context));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
@@ -51,7 +53,8 @@ DEFINE_CASE(ast_initializer_construction2, "AST initializer - construction #2")
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
-    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &global_context));
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits,
+        &kft_util_get_translator_environment()->target_env, &global_context));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
