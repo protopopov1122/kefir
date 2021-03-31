@@ -1,31 +1,32 @@
-SCALAR(0)
+SCALAR(0){size=8; alignment=8; rel_offset=0}
 
-ARRAY(0)
-	SCALAR(1)
+ARRAY(0){size=10; alignment=1; rel_offset=0}
+	SCALAR(1){size=1; alignment=1; rel_offset=0}
 
-ARRAY(0)
-	ARRAY(1)
-		SCALAR(2)
+ARRAY(0){size=50; alignment=1; rel_offset=0}
+	ARRAY(1){size=5; alignment=1; rel_offset=0}
+		SCALAR(2){size=1; alignment=1; rel_offset=0}
 
-STRUCT(0)
-	a: ARRAY(4)
-		SCALAR(5)
-	b: STRUCT(6)
-		field1: SCALAR(7)
-		field2: SCALAR(8)
-		field3: ARRAY(9)
-			SCALAR(10)
-	c: ARRAY(16)
-		STRUCT(17)
-			field1: SCALAR(18)
-			field2: SCALAR(19)
-			field3: ARRAY(20)
-				SCALAR(21)
-	x: SCALAR(1)
-	y: SCALAR(2)
-	z: SCALAR(3)
-	field1: SCALAR(12)
-	field2: SCALAR(13)
-	field3: ARRAY(14)
-		SCALAR(15)
+STRUCT(0){size=984; alignment=8; rel_offset=0}
+	a: ARRAY(4){size=4; alignment=4; rel_offset=20}
+		SCALAR(5){size=4; alignment=4; rel_offset=0}
+	b: STRUCT(6){size=80; alignment=8; rel_offset=24}
+		field1: SCALAR(7){size=1; alignment=1; rel_offset=0}
+		field2: SCALAR(8){size=8; alignment=8; rel_offset=8}
+		field3: ARRAY(9){size=60; alignment=4; rel_offset=16}
+			SCALAR(10){size=4; alignment=4; rel_offset=0}
+	c: ARRAY(16){size=800; alignment=8; rel_offset=184}
+		STRUCT(17){size=80; alignment=8; rel_offset=0}
+			field1: SCALAR(18){size=1; alignment=1; rel_offset=0}
+			field2: SCALAR(19){size=8; alignment=8; rel_offset=8}
+			field3: ARRAY(20){size=60; alignment=4; rel_offset=16}
+				SCALAR(21){size=4; alignment=4; rel_offset=0}
+	x: SCALAR(1){size=4; alignment=4; rel_offset=0}
+	y: SCALAR(2){size=8; alignment=8; rel_offset=8}
+	z: SCALAR(3){size=2; alignment=2; rel_offset=16}
+	STRUCT(11){size=80; alignment=8; rel_offset=104}
+		field1: SCALAR(12){size=1; alignment=1; rel_offset=0}
+		field2: SCALAR(13){size=8; alignment=8; rel_offset=8}
+		field3: ARRAY(14){size=60; alignment=4; rel_offset=16}
+			SCALAR(15){size=4; alignment=4; rel_offset=0}
 

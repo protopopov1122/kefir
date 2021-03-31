@@ -10,6 +10,7 @@ typedef struct kefir_ast_translator_environment_type {
     const struct kefir_ast_type *ast_type;
     struct kefir_ir_type type;
     struct kefir_ast_type_layout *layout;
+    kefir_ir_target_platform_opaque_type_t target_type;
 } kefir_ast_translator_environment_type_t;
 
 typedef struct kefir_ast_translator_environment {

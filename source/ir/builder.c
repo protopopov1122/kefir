@@ -11,7 +11,7 @@ kefir_result_t kefir_irbuilder_type_append(struct kefir_mem *mem,
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Epected valid IR type"));
     REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type entry"));
     if (kefir_ir_type_raw_available(type) == 0) {
-        REQUIRE_OK(kefir_ir_type_realloc(mem, GROW(kefir_ir_type_raw_length(type)), type));
+        REQUIRE_OK(kefir_ir_type_realloc(mem, GROW(kefir_ir_type_total_length(type)), type));
     }
     REQUIRE_OK(kefir_ir_type_append(type, typeentry));
     return KEFIR_OK;
@@ -25,7 +25,7 @@ kefir_result_t kefir_irbuilder_type_append_v(struct kefir_mem *mem,
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Epected valid IR type"));
     if (kefir_ir_type_raw_available(type) == 0) {
-        REQUIRE_OK(kefir_ir_type_realloc(mem, GROW(kefir_ir_type_raw_length(type)), type));
+        REQUIRE_OK(kefir_ir_type_realloc(mem, GROW(kefir_ir_type_total_length(type)), type));
     }
     REQUIRE_OK(kefir_ir_type_append_v(type, typecode, alignment, arg));
     return KEFIR_OK;
@@ -40,7 +40,7 @@ kefir_result_t kefir_irbuilder_type_append_e(struct kefir_mem *mem,
     REQUIRE(source != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Epected valid source IR type"));
     const kefir_size_t length = kefir_ir_type_node_total_length(source, index);
     if (kefir_ir_type_raw_available(type) < length) {
-        REQUIRE_OK(kefir_ir_type_realloc(mem, GROW(kefir_ir_type_raw_length(type) + length), type));
+        REQUIRE_OK(kefir_ir_type_realloc(mem, GROW(kefir_ir_type_total_length(type) + length), type));
     }
     REQUIRE_OK(kefir_ir_type_append_e(type, source, index));
     return KEFIR_OK;

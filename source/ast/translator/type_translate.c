@@ -122,14 +122,11 @@ static kefir_result_t translate_struct_type(struct kefir_mem *mem,
     kefir_bool_t allocated = false;
     struct kefir_ast_type_layout *layout = NULL;
     if (layout_ptr != NULL) {
-        layout = *layout_ptr;
-        if (layout == NULL) {
-            layout = kefir_ast_new_type_layout(mem, type, type_index);
-            REQUIRE(layout != NULL,
-                KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST type layout"));
-            allocated = true;
-            *layout_ptr = layout;
-        }
+        layout = kefir_ast_new_type_layout(mem, type, type_index);
+        REQUIRE(layout != NULL,
+            KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST type layout"));
+        allocated = true;
+        *layout_ptr = layout;
     }
     
     kefir_result_t res = KEFIR_OK;
@@ -139,22 +136,22 @@ static kefir_result_t translate_struct_type(struct kefir_mem *mem,
         ASSIGN_DECL_CAST(struct kefir_ast_struct_field *, field,
             iter->value);
 
-        struct kefir_ast_type_layout *element_layout = NULL;
-        struct kefir_ast_type_layout **element_layout_ptr = NULL;
-        if (field->identifier == NULL || strlen(field->identifier) == 0) {
-            element_layout_ptr = layout_ptr;
-        } else if (layout_ptr != NULL) {
-            element_layout_ptr = &element_layout;
-        }
-        
+        struct kefir_ast_type_layout *element_layout = NULL;        
         res = kefir_ast_translate_object_type(mem, field->type,
-            field->alignment->value, env, builder, element_layout_ptr);
+            field->alignment->value, env, builder,
+            layout != NULL ? &element_layout : NULL);
         if (res == KEFIR_OK && element_layout != NULL) {
-            res = kefir_hashtree_insert(mem, &layout->structure_layout.members,
-                (kefir_hashtree_key_t) field->identifier, (kefir_hashtree_value_t) element_layout);
-            REQUIRE_ELSE(res == KEFIR_OK, {
-                kefir_ast_type_layout_free(mem, element_layout);
-            });
+            if (field->identifier == NULL || strlen(field->identifier) == 0) {
+                res = kefir_ast_type_layout_add_structure_anonymous_member(mem, layout, element_layout);
+                REQUIRE_ELSE(res == KEFIR_OK, {
+                    kefir_ast_type_layout_free(mem, element_layout);
+                });
+            } else {
+                res = kefir_ast_type_layout_insert_structure_member(mem, layout, field->identifier, element_layout);
+                REQUIRE_ELSE(res == KEFIR_OK, {
+                    kefir_ast_type_layout_free(mem, element_layout);
+                });
+            }
         }
     }
     

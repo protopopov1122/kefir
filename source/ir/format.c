@@ -84,7 +84,7 @@ kefir_result_t kefir_ir_format_instr_coderef(FILE *fp, const struct kefir_ir_mod
 }
 
 static kefir_result_t kefir_ir_format_type_impl(FILE *fp, const char *prefix, struct kefir_ir_type *type) {
-    for (kefir_size_t i = 0; i < kefir_ir_type_raw_length(type); i++) {
+    for (kefir_size_t i = 0; i < kefir_ir_type_total_length(type); i++) {
         struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(type, i);
         switch (typeentry->typecode) {
             case KEFIR_IR_TYPE_PAD:

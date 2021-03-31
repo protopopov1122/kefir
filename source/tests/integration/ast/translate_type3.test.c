@@ -2,6 +2,7 @@
 #include "kefir/core/mem.h"
 #include "kefir/core/util.h"
 #include "kefir/ast/translator/translator.h"
+#include "kefir/ast/translator/layout.h"
 #include "kefir/test/util.h"
 
 static kefir_result_t dump_type_layout(FILE *out, kefir_size_t indent, const char *prefix, const struct kefir_ast_type_layout *layout) {
@@ -14,11 +15,14 @@ static kefir_result_t dump_type_layout(FILE *out, kefir_size_t indent, const cha
     switch (layout->type->tag) {
         case KEFIR_AST_TYPE_STRUCTURE:
         case KEFIR_AST_TYPE_UNION: {
-            fprintf(out, "%s("KEFIR_SIZE_FMT")\n",
+            fprintf(out, "%s("KEFIR_SIZE_FMT"){size="KEFIR_SIZE_FMT"; alignment="KEFIR_SIZE_FMT"; rel_offset="KEFIR_SIZE_FMT"}\n",
                 layout->type->tag == KEFIR_AST_TYPE_STRUCTURE
                     ? "STRUCT"
                     : "UNION",
-                layout->value);
+                layout->value,
+                layout->properties.size,
+                layout->properties.alignment,
+                layout->properties.relative_offset);
             struct kefir_hashtree_node_iterator iter;
             for (const struct kefir_hashtree_node *node = kefir_hashtree_iter(&layout->structure_layout.members, &iter);
                 node != NULL;
@@ -27,15 +31,33 @@ static kefir_result_t dump_type_layout(FILE *out, kefir_size_t indent, const cha
                     node->value);
                 REQUIRE_OK(dump_type_layout(out, indent + 1, (const char *) node->key, member));
             }
+
+            for (const struct kefir_list_entry *iter = kefir_list_head(&layout->structure_layout.anonymous_members);
+                iter != NULL;
+                kefir_list_next(&iter)) {
+                ASSIGN_DECL_CAST(const struct kefir_ast_type_layout *, member,
+                    iter->value);
+                REQUIRE_OK(dump_type_layout(out, indent + 1, NULL, member));
+            }
         } break;
 
         case KEFIR_AST_TYPE_ARRAY:
-            fprintf(out, "ARRAY("KEFIR_SIZE_FMT")\n", layout->value);
+            fprintf(out, "ARRAY("KEFIR_SIZE_FMT")"
+                "{size="KEFIR_SIZE_FMT"; alignment="KEFIR_SIZE_FMT"; rel_offset="KEFIR_SIZE_FMT"}\n",
+                layout->value,
+                layout->properties.size,
+                layout->properties.alignment,
+                layout->properties.relative_offset);
             REQUIRE_OK(dump_type_layout(out, indent + 1, NULL, layout->array_layout.element_type));
             break;
 
         default:
-            fprintf(out, "SCALAR("KEFIR_SIZE_FMT")\n", layout->value);
+            fprintf(out, "SCALAR("KEFIR_SIZE_FMT")"
+                "{size="KEFIR_SIZE_FMT"; alignment="KEFIR_SIZE_FMT"; rel_offset="KEFIR_SIZE_FMT"}\n",
+                    layout->value,
+                    layout->properties.size,
+                    layout->properties.alignment,
+                    layout->properties.relative_offset);
             break;
     }
     return KEFIR_OK;
@@ -53,6 +75,7 @@ kefir_result_t dump_type(struct kefir_mem *mem,
     
     struct kefir_ast_type_layout *layout1 = NULL;
     REQUIRE_OK(kefir_ast_translate_object_type(mem, type, 0, &env, &builder, &layout1));
+    REQUIRE_OK(kefir_ast_translator_evaluate_type_layout(mem, &env, layout1, &ir_type));
     REQUIRE(layout1 != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(dump_type_layout(stdout, 0, NULL, layout1));
     REQUIRE_OK(kefir_ast_type_layout_free(mem, layout1));
