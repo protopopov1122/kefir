@@ -39,7 +39,7 @@ kefir_result_t kefir_ast_analyze_struct_member_node(struct kefir_mem *mem,
     }
 
     const struct kefir_ast_struct_field *field = NULL;
-    REQUIRE_OK(kefir_ast_struct_type_get_field(&struct_type->structure_type, node->member, &field));
+    REQUIRE_OK(kefir_ast_struct_type_resolve_field(&struct_type->structure_type, node->member, &field));
     const struct kefir_ast_type *type = field->type;
     if (qualification != NULL) {
         type = kefir_ast_type_qualified(mem, context->type_bundle, type, *qualification);

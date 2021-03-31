@@ -127,8 +127,10 @@ DECLARE_CASE(ast_node_analysis_constants);
 DECLARE_CASE(ast_node_analysis_string_literals);
 DECLARE_CASE(ast_node_analysis_identifiers);
 DECLARE_CASE(ast_node_analysis_array_subscripts);
-DECLARE_CASE(ast_node_analysis_struct_members);
-DECLARE_CASE(ast_node_analysis_indirect_struct_members);
+DECLARE_CASE(ast_node_analysis_struct_members1);
+DECLARE_CASE(ast_node_analysis_struct_members2);
+DECLARE_CASE(ast_node_analysis_indirect_struct_members1);
+DECLARE_CASE(ast_node_analysis_indirect_struct_members2);
 DECLARE_CASE(ast_node_analysis_function_calls);
 DECLARE_CASE(ast_node_analysis_function_calls1);
 DECLARE_CASE(ast_node_analysis_function_calls2);
@@ -318,8 +320,10 @@ TEST_SUITE(mainSuite,
     &ast_node_analysis_string_literals,
     &ast_node_analysis_identifiers,
     &ast_node_analysis_array_subscripts,
-    &ast_node_analysis_struct_members,
-    &ast_node_analysis_indirect_struct_members,
+    &ast_node_analysis_struct_members1,
+    &ast_node_analysis_struct_members2,
+    &ast_node_analysis_indirect_struct_members1,
+    &ast_node_analysis_indirect_struct_members2,
     &ast_node_analysis_function_calls,
     &ast_node_analysis_function_calls1,
     &ast_node_analysis_function_calls2,

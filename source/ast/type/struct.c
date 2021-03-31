@@ -387,10 +387,44 @@ kefir_result_t kefir_ast_struct_type_get_field(const struct kefir_ast_struct_typ
     REQUIRE(identifier == NULL || strlen(identifier) > 0,
         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid field identifier"));
     REQUIRE(field != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST structure field pointer"));
+
     struct kefir_hashtree_node *node = NULL;
     REQUIRE_OK(kefir_hashtree_at(&struct_type->field_index, (kefir_hashtree_key_t) identifier, &node));
     *field = (const struct kefir_ast_struct_field *) node->value;
     return KEFIR_OK;
+}
+
+kefir_result_t kefir_ast_struct_type_resolve_field(const struct kefir_ast_struct_type *struct_type,
+                                               const char *identifier,
+                                               const struct kefir_ast_struct_field **field) {
+    REQUIRE(struct_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST structure type"));
+    REQUIRE(identifier == NULL || strlen(identifier) > 0,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid field identifier"));
+    REQUIRE(field != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST structure field pointer"));
+    
+    *field = NULL;
+    struct kefir_hashtree_node *node = NULL;
+    kefir_result_t res = kefir_hashtree_at(&struct_type->field_index, (kefir_hashtree_key_t) identifier, &node);
+    if (res == KEFIR_OK) {
+        *field = (const struct kefir_ast_struct_field *) node->value;
+    } else {
+        REQUIRE(res == KEFIR_NOT_FOUND, res);
+        for (const struct kefir_list_entry *iter = kefir_list_head(&struct_type->fields);
+            iter != NULL && res == KEFIR_NOT_FOUND;
+            kefir_list_next(&iter)) {
+            ASSIGN_DECL_CAST(const struct kefir_ast_struct_field *, struct_field,
+                iter->value);
+            if (struct_field->identifier == NULL) {
+                REQUIRE(struct_field->type->tag == KEFIR_AST_TYPE_STRUCTURE ||
+                    struct_field->type->tag == KEFIR_AST_TYPE_UNION,
+                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected anonymous field to have structure/union type"));
+                res = kefir_ast_struct_type_resolve_field(&struct_field->type->structure_type,
+                    identifier, field);
+                REQUIRE(res == KEFIR_OK || res == KEFIR_NOT_FOUND, res);
+            }
+        }
+    }
+    return res;
 }
 
 kefir_result_t kefir_ast_struct_type_field(struct kefir_mem *mem,

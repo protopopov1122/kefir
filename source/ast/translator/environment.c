@@ -82,7 +82,7 @@ static kefir_result_t free_type_info(struct kefir_mem *mem,
 
 static kefir_result_t offsetof_member(struct kefir_mem *mem,
                                     const struct kefir_ast_target_environment *env,
-                                    kefir_ast_target_environment_type_t env_type,
+                                    kefir_ast_target_environment_opaque_type_t env_type,
                                     const char *member,
                                     kefir_size_t *offset_ptr) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
@@ -102,7 +102,7 @@ static kefir_result_t offsetof_member(struct kefir_mem *mem,
 
 static kefir_result_t offsetof_element(struct kefir_mem *mem,
                                      const struct kefir_ast_target_environment *env,
-                                     kefir_ast_target_environment_type_t env_type,
+                                     kefir_ast_target_environment_opaque_type_t env_type,
                                      kefir_int64_t index,
                                      kefir_size_t *offset_ptr) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));

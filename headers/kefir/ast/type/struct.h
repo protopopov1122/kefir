@@ -30,6 +30,10 @@ kefir_result_t kefir_ast_struct_type_get_field(const struct kefir_ast_struct_typ
                                            const char *,
                                            const struct kefir_ast_struct_field **);
 
+kefir_result_t kefir_ast_struct_type_resolve_field(const struct kefir_ast_struct_type *,
+                                               const char *,
+                                               const struct kefir_ast_struct_field **);
+
 kefir_result_t kefir_ast_struct_type_field(struct kefir_mem *,
                                        struct kefir_symbol_table *,
                                        struct kefir_ast_struct_type *,

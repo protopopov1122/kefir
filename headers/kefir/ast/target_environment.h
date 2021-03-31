@@ -3,10 +3,10 @@
 
 #include "kefir/ast/type.h"
 
-typedef void *kefir_ast_target_environment_type_t;
+typedef void *kefir_ast_target_environment_opaque_type_t;
 
 typedef struct kefir_ast_target_type_info {
-    kefir_ast_target_environment_type_t type;
+    kefir_ast_target_environment_opaque_type_t type;
 
     kefir_size_t size;
     kefir_size_t alignment;
@@ -23,12 +23,12 @@ typedef struct kefir_ast_target_environment {
                                    struct kefir_ast_target_type_info *);
     kefir_result_t (*offsetof_member)(struct kefir_mem *,
                                     const struct kefir_ast_target_environment *,
-                                    kefir_ast_target_environment_type_t,
+                                    kefir_ast_target_environment_opaque_type_t,
                                     const char *,
                                     kefir_size_t *);
     kefir_result_t (*offsetof_element)(struct kefir_mem *,
                                     const struct kefir_ast_target_environment *,
-                                    kefir_ast_target_environment_type_t,
+                                    kefir_ast_target_environment_opaque_type_t,
                                     kefir_int64_t,
                                     kefir_size_t *);
     void *payload;
