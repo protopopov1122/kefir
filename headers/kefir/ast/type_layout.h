@@ -49,8 +49,4 @@ kefir_result_t kefir_ast_type_layout_add_structure_anonymous_member(struct kefir
                                                                 struct kefir_ast_type_layout *,
                                                                 struct kefir_ast_type_layout *);
 
-kefir_result_t kefir_ast_type_layout_resolve_member(const struct kefir_ast_type_layout *,
-                                                const char *,
-                                                const struct kefir_ast_type_layout **);
-
 #endif

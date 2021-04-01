@@ -11,10 +11,16 @@ kefir_result_t kefir_ast_translator_type_alignment(struct kefir_mem *mem,
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
     REQUIRE(env != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator environment"));
     REQUIRE(value != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid alignment pointer"));
-    struct kefir_ast_target_type_info type_info;
-    REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_TYPE_INFO(mem, &env->target_env, type, &type_info));
+    kefir_ast_target_environment_opaque_type_t target_type;
+    struct kefir_ast_target_environment_object_info type_info;
+    REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_GET_TYPE(mem, &env->target_env, type, &target_type));
+    kefir_result_t res = KEFIR_AST_TARGET_ENVIRONMENT_OBJECT_INFO(mem, &env->target_env, target_type, NULL, &type_info);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(mem, &env->target_env, target_type);
+        return res;
+    });
     *value = type_info.alignment;
-    REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE_INFO(mem, &env->target_env, &type_info));
+    REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(mem, &env->target_env, target_type));
     return KEFIR_OK;
 }
 

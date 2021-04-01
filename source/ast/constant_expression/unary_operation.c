@@ -80,21 +80,35 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem,
                     "Constant expression cannot contain indirection operator");
                 
             case KEFIR_AST_OPERATION_SIZEOF: {
-                struct kefir_ast_target_type_info type_info;
-                REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_TYPE_INFO(mem, context->target_env,
-                    node->arg->properties.type, &type_info));
+                kefir_ast_target_environment_opaque_type_t opaque_type;
+                struct kefir_ast_target_environment_object_info type_info;
+                REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_GET_TYPE(mem, context->target_env,
+                    node->arg->properties.type, &opaque_type));
+                kefir_result_t res = KEFIR_AST_TARGET_ENVIRONMENT_OBJECT_INFO(mem, context->target_env,
+                    opaque_type, NULL, &type_info);
+                REQUIRE_ELSE(res == KEFIR_OK, {
+                    KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(mem, context->target_env, opaque_type);
+                    return res;
+                });
                 value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
                 value->integer = type_info.size;
-                REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE_INFO(mem, context->target_env, &type_info));
+                REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(mem, context->target_env, opaque_type));
             } break;
 
             case KEFIR_AST_OPERATION_ALIGNOF: {
-                struct kefir_ast_target_type_info type_info;
-                REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_TYPE_INFO(mem, context->target_env,
-                    node->arg->properties.type, &type_info));
+                kefir_ast_target_environment_opaque_type_t opaque_type;
+                struct kefir_ast_target_environment_object_info type_info;
+                REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_GET_TYPE(mem, context->target_env,
+                    node->arg->properties.type, &opaque_type));
+                kefir_result_t res = KEFIR_AST_TARGET_ENVIRONMENT_OBJECT_INFO(mem, context->target_env,
+                    opaque_type, NULL, &type_info);
+                REQUIRE_ELSE(res == KEFIR_OK, {
+                    KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(mem, context->target_env, opaque_type);
+                    return res;
+                });
                 value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
                 value->integer = type_info.alignment;
-                REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE_INFO(mem, context->target_env, &type_info));
+                REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(mem, context->target_env, opaque_type));
             } break;
     }
     return KEFIR_OK;

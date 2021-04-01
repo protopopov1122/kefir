@@ -139,32 +139,3 @@ kefir_result_t kefir_ast_type_layout_add_structure_anonymous_member(struct kefir
         kefir_list_tail(&root_layout->structure_layout.anonymous_members), member));
     return KEFIR_OK;
 }
-
-kefir_result_t kefir_ast_type_layout_resolve_member(const struct kefir_ast_type_layout *root_layout,
-                                                const char *identifier,
-                                                const struct kefir_ast_type_layout **layout) {
-    REQUIRE(root_layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid root AST type layout"));
-    REQUIRE(root_layout->type->tag == KEFIR_AST_TYPE_STRUCTURE ||
-        root_layout->type->tag == KEFIR_AST_TYPE_UNION,
-        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Root AST type layout should have struct/union type"));
-    REQUIRE(identifier != NULL && strlen(identifier) > 0,
-        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid member AST type layout"));
-    REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type layout pointer"));
-
-    struct kefir_hashtree_node *node = NULL;
-    kefir_result_t res = kefir_hashtree_at(&root_layout->structure_layout.members,
-        (kefir_hashtree_key_t) identifier, &node);
-    if (res == KEFIR_OK) {
-        *layout = (const struct kefir_ast_type_layout *) node->value;
-    } else {
-        REQUIRE(res == KEFIR_NOT_FOUND, res);
-        for (const struct kefir_list_entry *iter = kefir_list_head(&root_layout->structure_layout.anonymous_members);
-            iter != NULL && res == KEFIR_NOT_FOUND;
-            kefir_list_next(&iter)) {
-            ASSIGN_DECL_CAST(const struct kefir_ast_type_layout *, anon_member,
-                iter->value);
-            res = kefir_ast_type_layout_resolve_member(anon_member, identifier, layout);
-        }
-    }
-    return res;
-}
