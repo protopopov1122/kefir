@@ -57,7 +57,7 @@ static kefir_result_t visit_struct_member(const struct kefir_ast_visitor *visito
                                         const struct kefir_ast_struct_member *node,
                                         void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST identifier"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST struct member node"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
     
     REQUIRE_OK(KEFIR_AST_NODE_VISIT(visitor, node->structure, payload));
@@ -69,7 +69,7 @@ static kefir_result_t visit_array_subscript(const struct kefir_ast_visitor *visi
                                           const struct kefir_ast_array_subscript *node,
                                           void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST identifier"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST array subscript node"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param,
         payload);
@@ -77,6 +77,19 @@ static kefir_result_t visit_array_subscript(const struct kefir_ast_visitor *visi
     REQUIRE_OK(KEFIR_AST_NODE_VISIT(visitor, node->array, payload));
     *param->constant = *param->constant && node->subscript->properties.expression_props.constant_expression;
     return KEFIR_OK;
+}
+
+static kefir_result_t visit_struct_indirect_member(const struct kefir_ast_visitor *visitor,
+                                                 const struct kefir_ast_struct_member *node,
+                                                 void *payload) {
+    UNUSED(visitor);
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST struct member node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct visitor_param *, param,
+        payload);
+
+    *param->constant = *param->constant && node->structure->properties.expression_props.constant_expression;
+    return KEFIR_OK;    
 }
 
 kefir_result_t kefir_ast_node_is_lvalue_reference_constant(const struct kefir_ast_context *context,
@@ -96,6 +109,7 @@ kefir_result_t kefir_ast_node_is_lvalue_reference_constant(const struct kefir_as
     visitor.identifier = visit_identifier;
     visitor.struct_member = visit_struct_member;
     visitor.array_subscript = visit_array_subscript;
+    visitor.struct_indirect_member = visit_struct_indirect_member;
     REQUIRE_OK(KEFIR_AST_NODE_VISIT(&visitor, node, &param));
     return KEFIR_OK;
 }

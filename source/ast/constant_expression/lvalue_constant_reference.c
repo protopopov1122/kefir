@@ -95,7 +95,6 @@ static kefir_result_t visit_structure_member(const struct kefir_ast_visitor *vis
     return KEFIR_OK;
 }
 
-
 static kefir_result_t visit_array_subscript(const struct kefir_ast_visitor *visitor,
                                           const struct kefir_ast_array_subscript *node,
                                           void *payload) {
@@ -139,6 +138,46 @@ static kefir_result_t visit_array_subscript(const struct kefir_ast_visitor *visi
     return KEFIR_OK;
 }
 
+static kefir_result_t visit_struct_indirect_member(const struct kefir_ast_visitor *visitor,
+                                                 const struct kefir_ast_struct_member  *node,
+                                                 void *payload) {
+    UNUSED(visitor);
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST struct member node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct visitor_param *, param,
+        payload);
+
+    struct kefir_ast_constant_expression_value base_expr;
+    REQUIRE_OK(kefir_ast_constant_expression_evaluate(param->mem, param->context,
+        node->structure, &base_expr));
+    REQUIRE(base_expr.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected constant expression to yield an address"));
+
+    struct kefir_ast_designator designator = {
+        .type = KEFIR_AST_DESIGNATOR_MEMBER,
+        .member = node->member,
+        .next = NULL
+    };
+
+    struct kefir_ast_target_environment_object_info object_info;
+    kefir_ast_target_environment_opaque_type_t opaque_type;
+    REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_GET_TYPE(param->mem, param->context->target_env,
+        node->structure->properties.type->referenced_type, &opaque_type));
+    kefir_result_t res = KEFIR_AST_TARGET_ENVIRONMENT_OBJECT_INFO(param->mem, param->context->target_env,
+        opaque_type, &designator, &object_info);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(param->mem, param->context->target_env, opaque_type);
+        return res;
+    });
+    REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(param->mem, param->context->target_env, opaque_type));
+
+    *param->pointer = base_expr.pointer;
+    param->pointer->offset += object_info.relative_offset;
+    param->pointer->pointer_node = KEFIR_AST_NODE_BASE(node);
+
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_constant_expression_evaluate_lvalue_reference(struct kefir_mem *mem,
                                                                    const struct kefir_ast_context *context,
                                                                    const struct kefir_ast_node_base *node,
@@ -153,6 +192,7 @@ kefir_result_t kefir_ast_constant_expression_evaluate_lvalue_reference(struct ke
     visitor.identifier = visit_identifier;
     visitor.struct_member = visit_structure_member;
     visitor.array_subscript = visit_array_subscript;
+    visitor.struct_indirect_member = visit_struct_indirect_member;
 
     struct visitor_param param = {
         .mem = mem,
