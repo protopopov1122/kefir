@@ -190,6 +190,22 @@ static kefir_result_t target_env_object_info(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+static kefir_result_t target_env_object_offset(struct kefir_mem *mem,
+                                             const struct kefir_ast_target_environment *env,
+                                             kefir_ast_target_environment_opaque_type_t target_type,
+                                             kefir_int64_t index,
+                                             kefir_int64_t *offset) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(env != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST target environment"));
+    REQUIRE(target_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid target type"));
+    REQUIRE(offset != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid offset pointer"));
+
+    ASSIGN_DECL_CAST(struct kefir_ast_translator_environment_type *, type,
+        target_type);
+    *offset = type->layout->properties.size * index;
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_translator_environment_init(struct kefir_ast_translator_environment *env,
                                                  struct kefir_ir_target_platform *target_platform) {    
     REQUIRE(env != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expectd valid AST translator environment"));
@@ -198,6 +214,7 @@ kefir_result_t kefir_ast_translator_environment_init(struct kefir_ast_translator
     env->target_env.get_type = target_env_get_type;
     env->target_env.free_type = target_env_free_type;
     env->target_env.object_info = target_env_object_info;
+    env->target_env.object_offset = target_env_object_offset;
     env->target_env.payload = env;
     return KEFIR_OK;
 }

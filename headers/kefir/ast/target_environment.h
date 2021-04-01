@@ -20,6 +20,11 @@ typedef struct kefir_ast_target_environment {
                                 kefir_ast_target_environment_opaque_type_t,
                                 const struct kefir_ast_designator *,
                                 struct kefir_ast_target_environment_object_info *);
+    kefir_result_t (*object_offset)(struct kefir_mem *,
+                                  const struct kefir_ast_target_environment *,
+                                  kefir_ast_target_environment_opaque_type_t,
+                                  kefir_int64_t,
+                                  kefir_int64_t *);
     void *payload;
 } kefir_ast_target_environment_t;
 
@@ -29,5 +34,7 @@ typedef struct kefir_ast_target_environment {
     ((env)->free_type((mem), (env), (info)))
 #define KEFIR_AST_TARGET_ENVIRONMENT_OBJECT_INFO(mem, env, type, designator, info) \
     ((env)->object_info((mem), (env), (type), (designator), (info)))
+#define KEFIR_AST_TARGET_ENVIRONMENT_OBJECT_OFFSET(mem, env, type, index, offset_ptr) \
+    ((env)->object_offset((mem), (env), (type), (index), (offset_ptr)))
 
 #endif

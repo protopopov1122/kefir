@@ -19,6 +19,30 @@ static kefir_ast_constant_expression_float_t as_float(const struct kefir_ast_con
     return 0.0f;
 }
 
+static kefir_result_t evaluate_pointer_offset(struct kefir_mem *mem,
+                                            const struct kefir_ast_context *context,
+                                            const struct kefir_ast_binary_operation *node,
+                                            struct kefir_ast_constant_expression_pointer *pointer,
+                                            kefir_ast_constant_expression_int_t index,
+                                            struct kefir_ast_constant_expression_value *value) {
+    kefir_ast_target_environment_opaque_type_t opaque_type;
+    REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_GET_TYPE(mem, context->target_env,
+        node->base.properties.type->referenced_type, &opaque_type));
+    kefir_int64_t offset = 0;
+    kefir_result_t res = KEFIR_AST_TARGET_ENVIRONMENT_OBJECT_OFFSET(mem, context->target_env, opaque_type, index, &offset);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(mem, context->target_env, opaque_type);
+        return res;
+    });
+    REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(mem, context->target_env, opaque_type));
+
+    value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS;
+    value->pointer = *pointer;
+    value->pointer.offset += offset;
+    value->pointer.pointer_node = KEFIR_AST_NODE_BASE(node);
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_evaluate_binary_operation_node(struct kefir_mem *mem,
                                                     const struct kefir_ast_context *context,
                                                     const struct kefir_ast_binary_operation *node,
@@ -37,13 +61,11 @@ kefir_result_t kefir_ast_evaluate_binary_operation_node(struct kefir_mem *mem,
     switch (node->type) {
         case KEFIR_AST_OPERATION_ADD:
             if (arg1_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS) {
-                value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS;
-                value->pointer = arg1_value.pointer;
-                value->integer = arg1_value.integer + arg2_value.integer;
+                REQUIRE_OK(evaluate_pointer_offset(mem, context, node, &arg1_value.pointer,
+                    arg2_value.integer, value));
             } else if (arg2_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS) {
-                value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS;
-                value->pointer = arg2_value.pointer;
-                value->integer = arg1_value.integer + arg2_value.integer;
+                REQUIRE_OK(evaluate_pointer_offset(mem, context, node, &arg2_value.pointer,
+                    arg1_value.integer, value));
             } else if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT)) {
                 value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT;
                 value->floating_point = as_float(&arg1_value) + as_float(&arg2_value);
@@ -57,9 +79,8 @@ kefir_result_t kefir_ast_evaluate_binary_operation_node(struct kefir_mem *mem,
             if (arg1_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS) {
                 REQUIRE(arg2_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
                     KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Second subtraction operand shall have integral type"));
-                value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS;
-                value->pointer = arg1_value.pointer;
-                value->integer = arg1_value.integer - arg2_value.integer;
+                REQUIRE_OK(evaluate_pointer_offset(mem, context, node, &arg1_value.pointer,
+                    -arg2_value.integer, value));
             } else if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT)) {
                 value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT;
                 value->floating_point = as_float(&arg1_value) - as_float(&arg2_value);

@@ -28,7 +28,7 @@ typedef struct kefir_ast_constant_expression_pointer {
         const char *literal;
         kefir_size_t integral;
     } base;
-    kefir_size_t offset;
+    kefir_int64_t offset;
 } kefir_ast_constant_expression_pointer_t;
 
 typedef struct kefir_ast_constant_expression_value {
