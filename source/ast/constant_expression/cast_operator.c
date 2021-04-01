@@ -51,6 +51,7 @@ kefir_result_t kefir_ast_evaluate_cast_operator_node(struct kefir_mem *mem,
         REQUIRE(arg_value.klass != KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot cast floating point to address"));
 
+        value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS;
         switch (arg_value.klass) {
             case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER:
                 value->pointer.type = KEFIR_AST_CONSTANT_EXPRESSION_POINTER_INTEGER;

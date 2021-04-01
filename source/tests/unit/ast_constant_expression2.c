@@ -40,6 +40,19 @@
         ASSERT_OK(KEFIR_AST_NODE_FREE((_mem), base)); \
     } while (0)
 
+#define ASSERT_INTPTR_CONST_EXPR(_mem, _context, _node, _value, _offset) \
+    do { \
+        struct kefir_ast_node_base *base = KEFIR_AST_NODE_BASE((_node)); \
+        ASSERT_OK(kefir_ast_analyze_node((_mem), (_context), base)); \
+        struct kefir_ast_constant_expression_value value; \
+        ASSERT_OK(kefir_ast_constant_expression_evaluate((_mem), (_context), base, &value)); \
+        ASSERT(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS); \
+        ASSERT(value.pointer.type == KEFIR_AST_CONSTANT_EXPRESSION_POINTER_INTEGER); \
+        ASSERT(value.pointer.base.integral == (_value)); \
+        ASSERT(value.pointer.offset == (_offset)); \
+        ASSERT_OK(KEFIR_AST_NODE_FREE((_mem), base)); \
+    } while (0)
+
 #define ASSERT_CONST_EXPR_NOK(_mem, _context, _node) \
     do { \
         struct kefir_ast_node_base *base = KEFIR_AST_NODE_BASE((_node)); \
@@ -267,6 +280,46 @@ DEFINE_CASE(ast_constant_expression_binary_operations4, "AST constant expression
                     KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "y")))),
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, i))),
             "y", -i * 64);
+    }
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+END_CASE
+
+DEFINE_CASE(ast_constant_expression_cast_operator2, "AST constant expressions - cast operator #2")
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits,
+        &kft_util_get_translator_environment()->target_env, &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    for (kefir_size_t i = 0; i < 100; i++) {
+        ASSERT_INTPTR_CONST_EXPR(&kft_mem, context,
+            kefir_ast_new_cast_operator(&kft_mem, kefir_ast_type_pointer(&kft_mem, context->type_bundle,
+                kefir_ast_type_void()),
+                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, i))),
+            i, 0);
+
+        ASSERT_INTPTR_CONST_EXPR(&kft_mem, context,
+            kefir_ast_new_cast_operator(&kft_mem, kefir_ast_type_pointer(&kft_mem, context->type_bundle,
+                kefir_ast_type_signed_long()),
+                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, i))),
+            i, 0);
+
+        ASSERT_INTPTR_CONST_EXPR(&kft_mem, context,
+            kefir_ast_new_cast_operator(&kft_mem, kefir_ast_type_pointer(&kft_mem, context->type_bundle,
+                kefir_ast_type_double()),
+                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, i))),
+            i, 0);
+
+        ASSERT_INTPTR_CONST_EXPR(&kft_mem, context,
+            kefir_ast_new_cast_operator(&kft_mem, kefir_ast_type_pointer(&kft_mem, context->type_bundle,
+                kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_signed_int())),
+                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, i))),
+            i, 0);
     }
 
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
