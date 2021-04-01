@@ -470,7 +470,7 @@ DEFINE_CASE(ast_node_analysis_compound_literal3, "AST node analysis - compound l
     const struct kefir_ast_type *type3 = kefir_ast_type_unbounded_array(&kft_mem, context->type_bundle,
         type2, NULL);
 
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context,
+    ASSERT_OK(kefir_ast_local_context_declare_external_thread_local(&kft_mem, &local_context,
         "var1", type1, NULL));
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context,
         "var2", type2, NULL));

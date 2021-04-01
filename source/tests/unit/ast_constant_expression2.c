@@ -181,3 +181,75 @@ DEFINE_CASE(ast_constant_expression_conditional_operator1, "AST constant express
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
+
+DEFINE_CASE(ast_constant_expression_conditional_operator2, "AST constant expressions - conditional operators #2")
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits,
+        &kft_util_get_translator_environment()->target_env, &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    ASSERT_OK(kefir_ast_global_context_declare_external(&kft_mem, &global_context,
+        "variableX", kefir_ast_type_signed_int(), NULL));
+
+    ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
+        kefir_ast_new_conditional_operator(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ADDRESS,
+                KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "variableX")))),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 1)),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 2))),
+        1);
+
+    ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
+        kefir_ast_new_conditional_operator(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_string_literal(&kft_mem, context->symbols, "Hello, world!")),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 10)),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 200))),
+        10);
+
+    ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
+        kefir_ast_new_conditional_operator(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(&kft_mem,
+                kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_char()),
+                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0)))),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 5)),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 7))),
+        7);
+
+    ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
+        kefir_ast_new_conditional_operator(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(&kft_mem,
+                kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_char()),
+                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 1)))),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 6)),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 9))),
+        6);
+
+    ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
+        kefir_ast_new_conditional_operator(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_binary_operation(&kft_mem, KEFIR_AST_OPERATION_ADD,
+                KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(&kft_mem,
+                    kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_char()),
+                    KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0)))),
+                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 1)))),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 101)),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 202))),
+        101);
+
+    ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
+        kefir_ast_new_conditional_operator(&kft_mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_binary_operation(&kft_mem, KEFIR_AST_OPERATION_SUBTRACT,
+                KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(&kft_mem,
+                    kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_signed_int()),
+                    KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 4)))),
+                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 1)))),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 101)),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 202))),
+        202);
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+END_CASE

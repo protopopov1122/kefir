@@ -23,7 +23,7 @@ kefir_result_t kefir_ast_evaluate_identifier_node(struct kefir_mem *mem,
             } break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_OBJECT:
-                return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Object identifier constants are not implemented yet");
+                return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Object identifier constants are not supported");
 
             case KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION:
             case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_TAG:

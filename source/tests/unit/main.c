@@ -192,11 +192,13 @@ DECLARE_CASE(ast_constant_expression_unary_operations3);
 DECLARE_CASE(ast_constant_expression_unary_operations4);
 DECLARE_CASE(ast_constant_expression_unary_operations5);
 DECLARE_CASE(ast_constant_expression_unary_operations6);
+DECLARE_CASE(ast_constant_expression_unary_operations7);
 DECLARE_CASE(ast_constant_expression_binary_operations1);
 DECLARE_CASE(ast_constant_expression_binary_operations2);
 DECLARE_CASE(ast_constant_expression_binary_operations3);
 DECLARE_CASE(ast_constant_expression_binary_operations4);
 DECLARE_CASE(ast_constant_expression_conditional_operator1);
+DECLARE_CASE(ast_constant_expression_conditional_operator2);
 DECLARE_CASE(ast_constant_expression_cast_operator1);
 DECLARE_CASE(ast_constant_expression_cast_operator2);
 DECLARE_CASE(ast_translator_environment1);
@@ -391,11 +393,13 @@ TEST_SUITE(mainSuite,
     &ast_constant_expression_unary_operations4,
     &ast_constant_expression_unary_operations5,
     &ast_constant_expression_unary_operations6,
+    &ast_constant_expression_unary_operations7,
     &ast_constant_expression_binary_operations1,
     &ast_constant_expression_binary_operations2,
     &ast_constant_expression_binary_operations3,
     &ast_constant_expression_binary_operations4,
     &ast_constant_expression_conditional_operator1,
+    &ast_constant_expression_conditional_operator2,
     &ast_constant_expression_cast_operator1,
     &ast_constant_expression_cast_operator2,
     &ast_translator_environment1,

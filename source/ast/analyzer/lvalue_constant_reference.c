@@ -33,10 +33,8 @@ static kefir_result_t visit_identifier(const struct kefir_ast_visitor *visitor,
         param->context, node->identifier, &scoped_id));
     switch (scoped_id->klass) {
         case KEFIR_AST_SCOPE_IDENTIFIER_OBJECT: {
-            struct kefir_ast_type_qualification qualification;
-            REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualification, scoped_id->object.type));
-            *param->constant = scoped_id->object.linkage != KEFIR_AST_SCOPED_IDENTIFIER_NONE_LINKAGE &&
-                qualification.constant;
+            *param->constant = scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC ||
+                scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN;
         } break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION:

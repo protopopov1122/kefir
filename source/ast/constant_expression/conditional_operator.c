@@ -30,7 +30,17 @@ kefir_result_t kefir_ast_evaluate_conditional_operator_node(struct kefir_mem *me
             break;
 
         case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS:
-            return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Constant expressions with addresses are not implemented yet");
+            switch (cond_value.pointer.type) {
+                case KEFIR_AST_CONSTANT_EXPRESSION_POINTER_IDENTIFER:
+                case KEFIR_AST_CONSTANT_EXPRESSION_POINTER_LITERAL:
+                    condition = true;
+                    break;
+
+                case KEFIR_AST_CONSTANT_EXPRESSION_POINTER_INTEGER:
+                    condition = (kefir_bool_t) (cond_value.pointer.base.integral + cond_value.pointer.offset);
+                    break;
+            }
+            break;
     }
 
     if (condition) {

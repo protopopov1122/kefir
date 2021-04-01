@@ -60,7 +60,16 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem,
                 } else if (arg_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT) {
                     value->integer = !arg_value.floating_point;
                 } else {
-                    value->integer = true;
+                    switch (arg_value.pointer.type) {
+                        case KEFIR_AST_CONSTANT_EXPRESSION_POINTER_IDENTIFER:
+                        case KEFIR_AST_CONSTANT_EXPRESSION_POINTER_LITERAL:
+                            value->integer = false;
+                            break;
+
+                        case KEFIR_AST_CONSTANT_EXPRESSION_POINTER_INTEGER:
+                            value->integer = !(kefir_bool_t) (arg_value.pointer.base.integral + arg_value.pointer.offset);
+                            break;
+                    }
                 }
                 break;
                 

@@ -31,11 +31,8 @@ static kefir_result_t visit_identifier(const struct kefir_ast_visitor *visitor,
         param->context, node->identifier, &scoped_id));
     switch (scoped_id->klass) {
         case KEFIR_AST_SCOPE_IDENTIFIER_OBJECT: {
-            REQUIRE(scoped_id->object.linkage != KEFIR_AST_SCOPED_IDENTIFIER_NONE_LINKAGE,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Not a constant expression"));
-            struct kefir_ast_type_qualification qualification;
-            REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualification, scoped_id->object.type));
-            REQUIRE(qualification.constant,
+            REQUIRE(scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC ||
+                scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Not a constant expression"));
         } break;
 
