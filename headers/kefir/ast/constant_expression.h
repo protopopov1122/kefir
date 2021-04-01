@@ -11,15 +11,32 @@ typedef enum kefir_ast_constant_expression_class {
     KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS
 } kefir_ast_constant_expression_class_t;
 
+typedef enum kefir_ast_constant_expression_pointer_base_type {
+    KEFIR_AST_CONSTANT_EXPRESSION_POINTER_IDENTIFER,
+    KEFIR_AST_CONSTANT_EXPRESSION_POINTER_INTEGER,
+    KEFIR_AST_CONSTANT_EXPRESSION_POINTER_LITERAL
+} kefir_ast_constant_expression_pointer_base_type_t;
+
 typedef kefir_int64_t kefir_ast_constant_expression_int_t;
 typedef kefir_float64_t kefir_ast_constant_expression_float_t;
+
+typedef struct kefir_ast_constant_expression_pointer {
+    const struct kefir_ast_node_base *pointer_node;
+
+    kefir_ast_constant_expression_pointer_base_type_t type;
+    union {
+        const char *literal;
+        kefir_size_t integral;
+    } base;
+    kefir_size_t offset;
+} kefir_ast_constant_expression_pointer_t;
 
 typedef struct kefir_ast_constant_expression_value {
     kefir_ast_constant_expression_class_t klass;
 
     kefir_ast_constant_expression_int_t integer;
     kefir_ast_constant_expression_float_t floating_point;
-    const struct kefir_ast_node_base *pointer;
+    struct kefir_ast_constant_expression_pointer pointer;
 } kefir_ast_constant_expression_value_t;
 
 typedef struct kefir_ast_constant_expression {

@@ -196,6 +196,7 @@ DECLARE_CASE(ast_constant_expression_unary_operations3);
 DECLARE_CASE(ast_constant_expression_unary_operations4);
 DECLARE_CASE(ast_constant_expression_cast_operator1);
 DECLARE_CASE(ast_translator_environment1);
+DECLARE_CASE(ast_constant_expression_unary_operations5);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -389,7 +390,8 @@ TEST_SUITE(mainSuite,
     &ast_constant_expression_unary_operations3,
     &ast_constant_expression_unary_operations4,
     &ast_constant_expression_cast_operator1,
-    &ast_translator_environment1
+    &ast_translator_environment1,
+    &ast_constant_expression_unary_operations5
 );
 
 int main(int argc, const char **argv) {

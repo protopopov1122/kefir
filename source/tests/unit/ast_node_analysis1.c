@@ -660,6 +660,11 @@ DEFINE_CASE(ast_node_analysis_unary_operation_address, "AST node analysis - unar
     const struct kefir_ast_type *function_type3 = kefir_ast_type_function(&kft_mem, context->type_bundle,
         kefir_ast_type_void(), "func1", &function3);
 
+    ASSERT_OK(kefir_ast_global_context_declare_external(&kft_mem, &global_context, "var0",
+        kefir_ast_type_qualified(&kft_mem, context->type_bundle,
+            kefir_ast_type_signed_long(), (struct kefir_ast_type_qualification){
+                .constant = true
+            }), NULL));
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "var1",
         kefir_ast_type_signed_int(), NULL));
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "var2",
@@ -669,6 +674,13 @@ DEFINE_CASE(ast_node_analysis_unary_operation_address, "AST node analysis - unar
     ASSERT_OK(kefir_ast_local_context_declare_function(&kft_mem, &local_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
         function_type3));
 
+    ASSERT_UNARY_OPERATION(&kft_mem, context, KEFIR_AST_OPERATION_ADDRESS,
+        kefir_ast_new_identifier(&kft_mem, context->symbols, "var0"),
+        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_qualified(&kft_mem, context->type_bundle,
+            kefir_ast_type_signed_long(), (struct kefir_ast_type_qualification){
+                .constant = true
+            })),
+        true, false, false);
     ASSERT_UNARY_OPERATION(&kft_mem, context, KEFIR_AST_OPERATION_ADDRESS,
         kefir_ast_new_identifier(&kft_mem, context->symbols, "var1"),
         kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_signed_int()),
@@ -684,7 +696,7 @@ DEFINE_CASE(ast_node_analysis_unary_operation_address, "AST node analysis - unar
     ASSERT_UNARY_OPERATION(&kft_mem, context, KEFIR_AST_OPERATION_ADDRESS,
         kefir_ast_new_identifier(&kft_mem, context->symbols, "func1"),
         kefir_ast_type_pointer(&kft_mem, context->type_bundle, function_type3),
-        false, false, false);
+        true, false, false);
     
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));

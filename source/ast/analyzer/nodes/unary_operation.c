@@ -73,6 +73,8 @@ kefir_result_t kefir_ast_analyze_unary_operation_node(struct kefir_mem *mem,
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unary operator operand shall be an expression"));
             REQUIRE(node->arg->properties.expression_props.addressable,
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected addressable argument"));
+            REQUIRE_OK(kefir_ast_node_is_lvalue_reference_constant(context, node->arg,
+                &base->properties.expression_props.constant_expression));
             const struct kefir_ast_type *type = node->arg->properties.type;
             base->properties.type = kefir_ast_type_pointer(mem, context->type_bundle, type);
         } break;

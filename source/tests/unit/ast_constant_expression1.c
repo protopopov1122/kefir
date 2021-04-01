@@ -27,15 +27,16 @@
         ASSERT_OK(KEFIR_AST_NODE_FREE((_mem), base)); \
     } while (0)
 
-#define ASSERT_STRING_CONST_EXPR(_mem, _context, _node, _value) \
+#define ASSERT_LITERAL_CONST_EXPR(_mem, _context, _node, _value) \
     do { \
         struct kefir_ast_node_base *base = KEFIR_AST_NODE_BASE((_node)); \
         ASSERT_OK(kefir_ast_analyze_node((_mem), (_context), base)); \
         struct kefir_ast_constant_expression_value value; \
         ASSERT_OK(kefir_ast_constant_expression_evaluate((_mem), (_context), base, &value)); \
         ASSERT(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS); \
-        ASSERT(value.pointer->klass->type == KEFIR_AST_STRING_LITERAL); \
-        ASSERT(strcmp(((struct kefir_ast_string_literal *) value.pointer->self)->literal, (_value)) == 0); \
+        ASSERT(value.pointer.type == KEFIR_AST_CONSTANT_EXPRESSION_POINTER_LITERAL); \
+        ASSERT(strcmp(value.pointer.base.literal, (_value)) == 0); \
+        ASSERT(value.pointer.offset == 0); \
         ASSERT_OK(KEFIR_AST_NODE_FREE((_mem), base)); \
     } while (0)
 
@@ -155,16 +156,16 @@ DEFINE_CASE(ast_constant_expression_string_literal1, "AST constant expressions -
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
-    ASSERT_STRING_CONST_EXPR(&kft_mem, context,
+    ASSERT_LITERAL_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_string_literal(&kft_mem, context->symbols, ""),
         "") ;
-    ASSERT_STRING_CONST_EXPR(&kft_mem, context,
+    ASSERT_LITERAL_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_string_literal(&kft_mem, context->symbols, "Hello, world!"),
         "Hello, world!") ;
-    ASSERT_STRING_CONST_EXPR(&kft_mem, context,
+    ASSERT_LITERAL_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_string_literal(&kft_mem, context->symbols, "Hello, cruel world!"),
         "Hello, cruel world!") ;
-    ASSERT_STRING_CONST_EXPR(&kft_mem, context,
+    ASSERT_LITERAL_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_string_literal(&kft_mem, context->symbols, "\n\naaaAAA\tAbc\n   \tCBA\n\t\t"),
         "\n\naaaAAA\tAbc\n   \tCBA\n\t\t") ;
 

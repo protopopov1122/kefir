@@ -20,4 +20,9 @@ EVAL(conditional_operator, struct kefir_ast_conditional_operator);
 EVAL(cast_operator, struct kefir_ast_cast_operator);
 #undef EVAL
 
+kefir_result_t kefir_ast_constant_expression_evaluate_lvalue_reference(struct kefir_mem *,
+                                                                 const struct kefir_ast_context *,
+                                                                 const struct kefir_ast_node_base *,
+                                                                 struct kefir_ast_constant_expression_pointer *);
+
 #endif

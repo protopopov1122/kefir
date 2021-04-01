@@ -49,9 +49,24 @@ kefir_result_t kefir_ast_evaluate_cast_operator_node(struct kefir_mem *mem,
         }
     } else if (unqualified->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
         REQUIRE(arg_value.klass != KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to cast floating point to address"));
-        value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS;
-        value->pointer = KEFIR_AST_NODE_BASE(node);
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot cast floating point to address"));
+
+        switch (arg_value.klass) {
+            case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER:
+                value->pointer.type = KEFIR_AST_CONSTANT_EXPRESSION_POINTER_INTEGER;
+                value->pointer.base.integral = arg_value.integer;
+                value->pointer.offset = 0;
+                value->pointer.pointer_node = KEFIR_AST_NODE_BASE(node);
+                break;
+
+            case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT:
+                return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to cast floating point to address");
+
+            case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS:
+                value->pointer = arg_value.pointer;
+                value->pointer.pointer_node = KEFIR_AST_NODE_BASE(node);
+                break;
+        }
     } else {
         return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected constant expression");
     }

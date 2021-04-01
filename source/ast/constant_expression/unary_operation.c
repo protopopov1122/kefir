@@ -72,8 +72,10 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem,
                     "Constant expressions shall not contain increment/decrement operators");
                 
             case KEFIR_AST_OPERATION_ADDRESS:
-                return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED,
-                    "Addressed constant expressions are not implemented yet");
+                REQUIRE_OK(kefir_ast_constant_expression_evaluate_lvalue_reference(mem, context,
+                    node->arg, &value->pointer));
+                value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS;
+                break;
                 
             case KEFIR_AST_OPERATION_INDIRECTION:
                 return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
