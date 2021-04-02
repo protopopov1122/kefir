@@ -36,9 +36,13 @@ static kefir_bool_t same_enumeration_type(const struct kefir_ast_type *type1, co
             ASSIGN_DECL_CAST(const struct kefir_ast_enum_enumerator *, enum2,
                 iter2->value);
             REQUIRE(strcmp(enum1->identifier, enum2->identifier) == 0, false);
-            REQUIRE(enum1->value->value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER &&
-                enum2->value->value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER, false);
-            REQUIRE(enum1->value->value.integer == enum2->value->value.integer, false);
+            if (enum1->value != NULL && enum2->value != NULL) {
+                REQUIRE(enum1->value->value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER &&
+                    enum2->value->value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER, false);
+                REQUIRE(enum1->value->value.integer == enum2->value->value.integer, false);
+            } else {
+                REQUIRE(enum1->value == NULL && enum2->value == NULL, false);
+            }
         }
     }
     return true;
@@ -72,9 +76,13 @@ static kefir_bool_t compatible_enumeration_types(const struct kefir_ast_type_tra
             ASSIGN_DECL_CAST(const struct kefir_ast_enum_enumerator *, enum2,
                 iter2->value);
             REQUIRE(strcmp(enum1->identifier, enum2->identifier) == 0, false);
-            REQUIRE(enum1->value->value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER &&
-                enum2->value->value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER, false);
-            REQUIRE(enum1->value->value.integer == enum2->value->value.integer, false);
+            if (enum1->value != NULL && enum2->value != NULL) {
+                REQUIRE(enum1->value->value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER &&
+                    enum2->value->value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER, false);
+                REQUIRE(enum1->value->value.integer == enum2->value->value.integer, false);
+            } else {
+                REQUIRE(enum1->value == NULL && enum2->value == NULL, false);
+            }
         }
     }
     return true;
@@ -148,7 +156,9 @@ static kefir_result_t enumeration_free(struct kefir_mem *mem,
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid list entry"));
     ASSIGN_DECL_CAST(const struct kefir_ast_enum_enumerator *, enumerator,
         entry->value);
-    REQUIRE_OK(kefir_ast_constant_expression_free(mem, enumerator->value));
+    if (enumerator->value != NULL) {
+        REQUIRE_OK(kefir_ast_constant_expression_free(mem, enumerator->value));
+    }
     KEFIR_FREE(mem, (void *) enumerator);
     return KEFIR_OK;
 }
@@ -162,9 +172,6 @@ kefir_result_t kefir_ast_enumeration_type_constant(struct kefir_mem *mem,
     REQUIRE(enum_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST enum type"));
     REQUIRE(identifier != NULL && strlen(identifier) > 0,
         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid constant identifier"));
-    REQUIRE(value != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST constant expression"));
-    REQUIRE(value->value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
-        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected AST constant expression of integer type"));
     if (kefir_hashtree_has(&enum_type->enumerator_index, (kefir_hashtree_key_t) identifier)) {
         return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Duplicate enumerate constant identifier");
     }
@@ -202,18 +209,7 @@ kefir_result_t kefir_ast_enumeration_type_constant_auto(struct kefir_mem *mem,
     REQUIRE(enum_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST enum type"));
     REQUIRE(identifier != NULL && strlen(identifier) > 0,
         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid constant identifier"));
-    struct kefir_list_entry *tail = kefir_list_tail(&enum_type->enumerators);
-    struct kefir_ast_constant_expression *const_expr = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_constant_expression));
-    REQUIRE(const_expr != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST constant expression"));
-    const_expr->value.klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
-    const_expr->value.integer = 0;
-    const_expr->expression = NULL;
-    if (tail != NULL) {
-        ASSIGN_DECL_CAST(struct kefir_ast_enum_enumerator *, prev,
-            tail->value);
-        const_expr->value.integer = prev->value->value.integer + 1;
-    }
-    return kefir_ast_enumeration_type_constant(mem, symbols, enum_type, identifier, const_expr);
+    return kefir_ast_enumeration_type_constant(mem, symbols, enum_type, identifier, NULL);
 }
 
 const struct kefir_ast_type *kefir_ast_enumeration_underlying_type(const struct kefir_ast_enum_type *enumeration) {

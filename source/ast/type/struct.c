@@ -353,7 +353,8 @@ static kefir_result_t kefir_ast_struct_type_field_impl(struct kefir_mem *mem,
     field->bitfield = bitfield;
     field->bitwidth = bitwidth;
     if (field->bitwidth != NULL) {
-        REQUIRE(field->bitwidth->value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
+        REQUIRE(field->bitwidth->value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_NONE ||
+            field->bitwidth->value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Structure/union field alignment should be an integer constant"));
     }
     if (alignment != NULL) {

@@ -206,6 +206,12 @@ DECLARE_CASE(ast_translator_environment2);
 DECLARE_CASE(ast_alignment_default);
 DECLARE_CASE(ast_alignment_as_type);
 DECLARE_CASE(ast_alignment_as_const_expr);
+DECLARE_CASE(ast_type_analysis_scalars);
+DECLARE_CASE(ast_type_analysis_pointers_qualifications);
+DECLARE_CASE(ast_type_analysis_enumerations);
+DECLARE_CASE(ast_type_analysis_arrays);
+DECLARE_CASE(ast_type_analysis_structs);
+DECLARE_CASE(ast_type_analysis_functions);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -409,7 +415,13 @@ TEST_SUITE(mainSuite,
     &ast_translator_environment2,
     &ast_alignment_default,
     &ast_alignment_as_type,
-    &ast_alignment_as_const_expr
+    &ast_alignment_as_const_expr,
+    &ast_type_analysis_scalars,
+    &ast_type_analysis_pointers_qualifications,
+    &ast_type_analysis_enumerations,
+    &ast_type_analysis_arrays,
+    &ast_type_analysis_structs,
+    &ast_type_analysis_functions
 );
 
 int main(int argc, const char **argv) {
