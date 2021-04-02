@@ -1,6 +1,5 @@
 #include "kefir/ast/translator/translator.h"
 #include "kefir/ast/alignment.h"
-#include "kefir/ast/translator/alignment.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 

@@ -6,6 +6,7 @@
 #include "kefir/ast/base.h"
 
 typedef enum kefir_ast_constant_expression_class {
+    KEFIR_AST_CONSTANT_EXPRESSION_CLASS_NONE,
     KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
     KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT,
     KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS
@@ -41,22 +42,25 @@ typedef struct kefir_ast_constant_expression_value {
 
 typedef struct kefir_ast_constant_expression {
     struct kefir_ast_constant_expression_value value;
-    const struct kefir_ast_node_base *expression;
+    struct kefir_ast_node_base *expression;
 } kefir_ast_constant_expression_t;
 
+kefir_result_t kefir_ast_constant_expression_value_evaluate(struct kefir_mem *,
+                                                        const struct kefir_ast_context *,
+                                                        const struct kefir_ast_node_base *,
+                                                        struct kefir_ast_constant_expression_value *);
+
 struct kefir_ast_constant_expression *kefir_ast_new_constant_expression(struct kefir_mem *,
-                                                                    const struct kefir_ast_context *,
                                                                     struct kefir_ast_node_base *);
+
+struct kefir_ast_constant_expression *kefir_ast_constant_expression_integer(struct kefir_mem *,
+                                                                        kefir_ast_constant_expression_int_t);
 
 kefir_result_t kefir_ast_constant_expression_free(struct kefir_mem *,
                                               struct kefir_ast_constant_expression *);
 
 kefir_result_t kefir_ast_constant_expression_evaluate(struct kefir_mem *,
                                                   const struct kefir_ast_context *,
-                                                  struct kefir_ast_node_base *,
-                                                  struct kefir_ast_constant_expression_value *);
-
-struct kefir_ast_constant_expression *kefir_ast_constant_expression_integer(struct kefir_mem *,
-                                                                        kefir_ast_constant_expression_int_t);
+                                                  struct kefir_ast_constant_expression *);
                                                                         
 #endif

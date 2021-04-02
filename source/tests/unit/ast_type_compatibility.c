@@ -1,5 +1,8 @@
 #include "kefir/test/unit_test.h"
+#include "kefir/ast/analyzer/analyzer.h"
+#include "kefir/ast/local_context.h"
 #include "kefir/ast/type.h"
+#include "kefir/test/util.h"
 
 #define ASSERT_FUNCTION_PARAM_ADJ_TYPE(_func, _index, _type) \
     do { \
@@ -309,40 +312,47 @@ DEFINE_CASE(ast_type_qualified_compatibility, "AST Types - qualified type compat
 END_CASE
 
 static const struct kefir_ast_type *build_struct_type(struct kefir_mem *mem,
-                                                    struct kefir_ast_type_bundle *type_bundle,
+                                                    const struct kefir_ast_context *context,
                                                     const char *id,
                                                     struct kefir_ast_struct_type **struct_type) {
-    const struct kefir_ast_type *type = kefir_ast_type_structure(mem, type_bundle, id, struct_type);
+    struct kefir_ast_alignment *align1 = kefir_ast_alignment_as_type(mem, kefir_ast_type_unsigned_long_long());
+    ASSERT_OK(kefir_ast_analyze_alignment(mem, context, align1));
+    ASSERT_OK(kefir_ast_alignment_evaluate(mem, context, align1));
+                                                    
+    const struct kefir_ast_type *type = kefir_ast_type_structure(mem, context->type_bundle, id, struct_type);
     ASSERT(type != NULL);
-    ASSERT_OK(kefir_ast_struct_type_field(mem, type_bundle->symbols, *struct_type, "field1",
-        kefir_ast_type_pointer(mem, type_bundle, kefir_ast_type_void()), NULL));
-    ASSERT_OK(kefir_ast_struct_type_field(mem, type_bundle->symbols, *struct_type, "field2",
+    ASSERT_OK(kefir_ast_struct_type_field(mem, context->symbols, *struct_type, "field1",
+        kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_void()), NULL));
+    ASSERT_OK(kefir_ast_struct_type_field(mem, context->symbols, *struct_type, "field2",
         kefir_ast_type_double(), NULL));
-    ASSERT_OK(kefir_ast_struct_type_bitfield(mem, type_bundle->symbols, *struct_type, "field3",
+    ASSERT_OK(kefir_ast_struct_type_bitfield(mem, context->symbols, *struct_type, "field3",
         kefir_ast_type_signed_long_long(), NULL, kefir_ast_constant_expression_integer(mem, 10)));
-    ASSERT_OK(kefir_ast_struct_type_bitfield(mem, type_bundle->symbols, *struct_type, "field4",
+    ASSERT_OK(kefir_ast_struct_type_bitfield(mem, context->symbols, *struct_type, "field4",
         kefir_ast_type_signed_long_long(), NULL, kefir_ast_constant_expression_integer(mem, 2)));
-    ASSERT_OK(kefir_ast_struct_type_field(mem, type_bundle->symbols, *struct_type, "field5",
-        kefir_ast_type_unsigned_int(), kefir_ast_alignment_as_type(mem, kefir_ast_type_unsigned_long_long())));
+    ASSERT_OK(kefir_ast_struct_type_field(mem, context->symbols, *struct_type, "field5",
+        kefir_ast_type_unsigned_int(), align1));
     return type;
 }
 
 DEFINE_CASE(ast_type_struct_compatibility, "AST Types - structure type compatibility")
     const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
-    struct kefir_ast_type_bundle type_bundle;
-    struct kefir_symbol_table symbols;
-    ASSERT_OK(kefir_symbol_table_init(&symbols));
-    ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits,
+        &kft_util_get_translator_environment()->target_env, &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
 
     struct kefir_ast_struct_type *struct_type1 = NULL;
-    const struct kefir_ast_type *type1 = build_struct_type(&kft_mem, &type_bundle, "struct1", &struct_type1);
+    const struct kefir_ast_type *type1 = build_struct_type(&kft_mem, context, "struct1", &struct_type1);
     struct kefir_ast_struct_type *struct_type2 = NULL;
-    const struct kefir_ast_type *type2 = build_struct_type(&kft_mem, &type_bundle, "struct1", &struct_type2);
+    const struct kefir_ast_type *type2 = build_struct_type(&kft_mem, context, "struct1", &struct_type2);
     struct kefir_ast_struct_type *struct_type3 = NULL;
-    const struct kefir_ast_type *type3 = build_struct_type(&kft_mem, &type_bundle, "struct2", &struct_type3);
+    const struct kefir_ast_type *type3 = build_struct_type(&kft_mem, context, "struct2", &struct_type3);
     struct kefir_ast_struct_type *struct_type4 = NULL;
-    const struct kefir_ast_type *type4 = build_struct_type(&kft_mem, &type_bundle, "struct1", &struct_type4);
-    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, struct_type4, "field1010",
+    const struct kefir_ast_type *type4 = build_struct_type(&kft_mem, context, "struct1", &struct_type4);
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type4, "field1010",
         kefir_ast_type_signed_int(), NULL));
 
     ASSERT(KEFIR_AST_TYPE_COMPATIBLE(type_traits, type1, type2));
@@ -356,8 +366,8 @@ DEFINE_CASE(ast_type_struct_compatibility, "AST Types - structure type compatibi
     ASSERT(!KEFIR_AST_TYPE_COMPATIBLE(type_traits, type2, type4));
     ASSERT(!KEFIR_AST_TYPE_COMPATIBLE(type_traits, type4, type2));
 
-    ASSERT_OK(kefir_ast_type_bundle_free(&kft_mem, &type_bundle));
-    ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
 
 DEFINE_CASE(ast_type_union_compatibility, "AST Types - union type compatibility")

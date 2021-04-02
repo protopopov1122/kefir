@@ -203,6 +203,9 @@ DECLARE_CASE(ast_constant_expression_cast_operator1);
 DECLARE_CASE(ast_constant_expression_cast_operator2);
 DECLARE_CASE(ast_translator_environment1);
 DECLARE_CASE(ast_translator_environment2);
+DECLARE_CASE(ast_alignment_default);
+DECLARE_CASE(ast_alignment_as_type);
+DECLARE_CASE(ast_alignment_as_const_expr);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -403,7 +406,10 @@ TEST_SUITE(mainSuite,
     &ast_constant_expression_cast_operator1,
     &ast_constant_expression_cast_operator2,
     &ast_translator_environment1,
-    &ast_translator_environment2
+    &ast_translator_environment2,
+    &ast_alignment_default,
+    &ast_alignment_as_type,
+    &ast_alignment_as_const_expr
 );
 
 int main(int argc, const char **argv) {

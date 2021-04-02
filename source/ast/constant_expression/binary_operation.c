@@ -14,6 +14,7 @@ static kefir_ast_constant_expression_float_t as_float(const struct kefir_ast_con
             return value->floating_point;
 
         case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS:
+        case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_NONE:
             return 0.0f;
     }
     return 0.0f;
@@ -56,8 +57,8 @@ kefir_result_t kefir_ast_evaluate_binary_operation_node(struct kefir_mem *mem,
         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected constant expression AST node"));
     
     struct kefir_ast_constant_expression_value arg1_value, arg2_value;
-    REQUIRE_OK(kefir_ast_constant_expression_evaluate(mem, context, node->arg1, &arg1_value));
-    REQUIRE_OK(kefir_ast_constant_expression_evaluate(mem, context, node->arg2, &arg2_value));
+    REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->arg1, &arg1_value));
+    REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->arg2, &arg2_value));
     switch (node->type) {
         case KEFIR_AST_OPERATION_ADD:
             if (arg1_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS) {

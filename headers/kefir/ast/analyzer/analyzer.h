@@ -4,6 +4,15 @@
 #include "kefir/core/mem.h"
 #include "kefir/ast/node.h"
 #include "kefir/ast/context.h"
+#include "kefir/ast/alignment.h"
+
+kefir_result_t kefir_ast_analyze_constant_expression(struct kefir_mem *,
+                                                 const struct kefir_ast_context *,
+                                                 struct kefir_ast_constant_expression *);
+
+kefir_result_t kefir_ast_analyze_alignment(struct kefir_mem *,
+                                       const struct kefir_ast_context *,
+                                       struct kefir_ast_alignment *);
 
 kefir_result_t kefir_ast_node_is_lvalue_reference_constant(const struct kefir_ast_context *,
                                                        const struct kefir_ast_node_base *,

@@ -4,6 +4,7 @@
 #include "kefir/core/basic-types.h"
 #include "kefir/core/mem.h"
 #include "kefir/ast/constant_expression.h"
+#include "kefir/ast/context.h"
 #include "kefir/ast/constants.h"
 
 // Forward declaration
@@ -36,5 +37,9 @@ struct kefir_ast_alignment *kefir_ast_alignment_const_expression(struct kefir_me
 
 kefir_result_t kefir_ast_alignment_free(struct kefir_mem *,
                                     struct kefir_ast_alignment *);
+
+kefir_result_t kefir_ast_alignment_evaluate(struct kefir_mem *,
+                                        const struct kefir_ast_context *,
+                                        struct kefir_ast_alignment *);
 
 #endif

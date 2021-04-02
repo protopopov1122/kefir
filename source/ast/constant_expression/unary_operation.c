@@ -17,7 +17,7 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem,
     struct kefir_ast_constant_expression_value arg_value;
     switch (node->type) {
             case KEFIR_AST_OPERATION_PLUS:
-                REQUIRE_OK(kefir_ast_constant_expression_evaluate(mem, context, node->arg, &arg_value));
+                REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->arg, &arg_value));
                 if (arg_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER) {
                     value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
                     value->integer = arg_value.integer;
@@ -30,7 +30,7 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem,
                 break;
                 
             case KEFIR_AST_OPERATION_NEGATE:
-                REQUIRE_OK(kefir_ast_constant_expression_evaluate(mem, context, node->arg, &arg_value));
+                REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->arg, &arg_value));
                 if (arg_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER) {
                     value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
                     value->integer = -arg_value.integer;
@@ -43,7 +43,7 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem,
                 break;
                 
             case KEFIR_AST_OPERATION_INVERT:
-                REQUIRE_OK(kefir_ast_constant_expression_evaluate(mem, context, node->arg, &arg_value));
+                REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->arg, &arg_value));
                 if (arg_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER) {
                     value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
                     value->integer = ~arg_value.integer;
@@ -53,7 +53,7 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem,
                 break;
                 
             case KEFIR_AST_OPERATION_LOGICAL_NEGATE:
-                REQUIRE_OK(kefir_ast_constant_expression_evaluate(mem, context, node->arg, &arg_value));
+                REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->arg, &arg_value));
                 value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
                 if (arg_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER) {
                     value->integer = !arg_value.integer;
@@ -81,7 +81,7 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem,
                     "Constant expressions shall not contain increment/decrement operators");
                 
             case KEFIR_AST_OPERATION_ADDRESS:
-                REQUIRE_OK(kefir_ast_constant_expression_evaluate_lvalue_reference(mem, context,
+                REQUIRE_OK(kefir_ast_constant_expression_value_evaluate_lvalue_reference(mem, context,
                     node->arg, &value->pointer));
                 value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS;
                 break;

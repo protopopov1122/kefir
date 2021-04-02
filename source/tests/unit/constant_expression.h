@@ -8,7 +8,7 @@
         struct kefir_ast_node_base *base = KEFIR_AST_NODE_BASE((_node)); \
         ASSERT_OK(kefir_ast_analyze_node((_mem), (_context), base)); \
         struct kefir_ast_constant_expression_value value; \
-        ASSERT_OK(kefir_ast_constant_expression_evaluate((_mem), (_context), base, &value)); \
+        ASSERT_OK(kefir_ast_constant_expression_value_evaluate((_mem), (_context), base, &value)); \
         ASSERT(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER); \
         ASSERT(value.integer == (_value)); \
         ASSERT_OK(KEFIR_AST_NODE_FREE((_mem), base)); \
@@ -19,7 +19,7 @@
         struct kefir_ast_node_base *base = KEFIR_AST_NODE_BASE((_node)); \
         ASSERT_OK(kefir_ast_analyze_node((_mem), (_context), base)); \
         struct kefir_ast_constant_expression_value value; \
-        ASSERT_OK(kefir_ast_constant_expression_evaluate((_mem), (_context), base, &value)); \
+        ASSERT_OK(kefir_ast_constant_expression_value_evaluate((_mem), (_context), base, &value)); \
         ASSERT(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT); \
         ASSERT(DOUBLE_EQUALS(value.floating_point, (_value), DOUBLE_EPSILON)); \
         ASSERT_OK(KEFIR_AST_NODE_FREE((_mem), base)); \
@@ -30,7 +30,7 @@
         struct kefir_ast_node_base *base = KEFIR_AST_NODE_BASE((_node)); \
         ASSERT_OK(kefir_ast_analyze_node((_mem), (_context), base)); \
         struct kefir_ast_constant_expression_value value; \
-        ASSERT_OK(kefir_ast_constant_expression_evaluate((_mem), (_context), base, &value)); \
+        ASSERT_OK(kefir_ast_constant_expression_value_evaluate((_mem), (_context), base, &value)); \
         ASSERT(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS); \
         ASSERT(value.pointer.type == KEFIR_AST_CONSTANT_EXPRESSION_POINTER_IDENTIFER); \
         ASSERT(strcmp(value.pointer.base.literal, (_value)) == 0); \
@@ -43,7 +43,7 @@
         struct kefir_ast_node_base *base = KEFIR_AST_NODE_BASE((_node)); \
         ASSERT_OK(kefir_ast_analyze_node((_mem), (_context), base)); \
         struct kefir_ast_constant_expression_value value; \
-        ASSERT_OK(kefir_ast_constant_expression_evaluate((_mem), (_context), base, &value)); \
+        ASSERT_OK(kefir_ast_constant_expression_value_evaluate((_mem), (_context), base, &value)); \
         ASSERT(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS); \
         ASSERT(value.pointer.type == KEFIR_AST_CONSTANT_EXPRESSION_POINTER_LITERAL); \
         ASSERT(strcmp(value.pointer.base.literal, (_value)) == 0); \
@@ -56,7 +56,7 @@
         struct kefir_ast_node_base *base = KEFIR_AST_NODE_BASE((_node)); \
         ASSERT_OK(kefir_ast_analyze_node((_mem), (_context), base)); \
         struct kefir_ast_constant_expression_value value; \
-        ASSERT_OK(kefir_ast_constant_expression_evaluate((_mem), (_context), base, &value)); \
+        ASSERT_OK(kefir_ast_constant_expression_value_evaluate((_mem), (_context), base, &value)); \
         ASSERT(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS); \
         ASSERT(value.pointer.type == KEFIR_AST_CONSTANT_EXPRESSION_POINTER_INTEGER); \
         ASSERT(value.pointer.base.integral == (_value)); \
@@ -69,7 +69,7 @@
         struct kefir_ast_node_base *base = KEFIR_AST_NODE_BASE((_node)); \
         ASSERT_OK(kefir_ast_analyze_node((_mem), (_context), base)); \
         struct kefir_ast_constant_expression_value value; \
-        ASSERT_NOK(kefir_ast_constant_expression_evaluate((_mem), (_context), base, &value)); \
+        ASSERT_NOK(kefir_ast_constant_expression_value_evaluate((_mem), (_context), base, &value)); \
         ASSERT_OK(KEFIR_AST_NODE_FREE((_mem), base)); \
     } while (0)
 

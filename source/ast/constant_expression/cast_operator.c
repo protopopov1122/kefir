@@ -16,7 +16,7 @@ kefir_result_t kefir_ast_evaluate_cast_operator_node(struct kefir_mem *mem,
 
     
     struct kefir_ast_constant_expression_value arg_value;
-    REQUIRE_OK(kefir_ast_constant_expression_evaluate(mem, context, node->expr, &arg_value));
+    REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->expr, &arg_value));
 
     const struct kefir_ast_type *unqualified = kefir_ast_unqualified_type(node->type);
     if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(unqualified)) {
@@ -32,6 +32,9 @@ kefir_result_t kefir_ast_evaluate_cast_operator_node(struct kefir_mem *mem,
 
             case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS:
                 return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Address to integer cast is not a constant expression");
+
+            case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_NONE:
+                return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Non-evaluated constant expression");
         }
     } else if (KEFIR_AST_TYPE_IS_FLOATING_POINT(unqualified)) {
         value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT;
@@ -46,6 +49,9 @@ kefir_result_t kefir_ast_evaluate_cast_operator_node(struct kefir_mem *mem,
 
             case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS:
                 return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Address to floating point cast is not a constant expression");
+
+            case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_NONE:
+                return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Non-evaluated constant expression");
         }
     } else if (unqualified->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
         REQUIRE(arg_value.klass != KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT,
@@ -67,6 +73,9 @@ kefir_result_t kefir_ast_evaluate_cast_operator_node(struct kefir_mem *mem,
                 value->pointer = arg_value.pointer;
                 value->pointer.pointer_node = KEFIR_AST_NODE_BASE(node);
                 break;
+
+            case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_NONE:
+                return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Non-evaluated constant expression");
         }
     } else {
         return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected constant expression");

@@ -64,7 +64,7 @@ static kefir_result_t visit_structure_member(const struct kefir_ast_visitor *vis
         payload);
 
     struct kefir_ast_constant_expression_pointer base_pointer;
-    REQUIRE_OK(kefir_ast_constant_expression_evaluate_lvalue_reference(param->mem, param->context,
+    REQUIRE_OK(kefir_ast_constant_expression_value_evaluate_lvalue_reference(param->mem, param->context,
         node->structure, &base_pointer));
 
     struct kefir_ast_designator designator = {
@@ -102,11 +102,11 @@ static kefir_result_t visit_array_subscript(const struct kefir_ast_visitor *visi
         payload);
 
     struct kefir_ast_constant_expression_pointer base_pointer;
-    REQUIRE_OK(kefir_ast_constant_expression_evaluate_lvalue_reference(param->mem, param->context,
+    REQUIRE_OK(kefir_ast_constant_expression_value_evaluate_lvalue_reference(param->mem, param->context,
         node->array, &base_pointer));
 
     struct kefir_ast_constant_expression_value subscript_value;
-    REQUIRE_OK(kefir_ast_constant_expression_evaluate(param->mem, param->context, node->subscript, &subscript_value));
+    REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(param->mem, param->context, node->subscript, &subscript_value));
     REQUIRE(subscript_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected constant array subscript to have integral type"));
 
@@ -145,7 +145,7 @@ static kefir_result_t visit_struct_indirect_member(const struct kefir_ast_visito
         payload);
 
     struct kefir_ast_constant_expression_value base_expr;
-    REQUIRE_OK(kefir_ast_constant_expression_evaluate(param->mem, param->context,
+    REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(param->mem, param->context,
         node->structure, &base_expr));
     REQUIRE(base_expr.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS,
         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected constant expression to yield an address"));
@@ -175,7 +175,7 @@ static kefir_result_t visit_struct_indirect_member(const struct kefir_ast_visito
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_constant_expression_evaluate_lvalue_reference(struct kefir_mem *mem,
+kefir_result_t kefir_ast_constant_expression_value_evaluate_lvalue_reference(struct kefir_mem *mem,
                                                                    const struct kefir_ast_context *context,
                                                                    const struct kefir_ast_node_base *node,
                                                                    struct kefir_ast_constant_expression_pointer *pointer) {

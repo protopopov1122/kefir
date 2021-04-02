@@ -23,11 +23,11 @@ kefir_result_t kefir_ast_evaluate_generic_selection_node(struct kefir_mem *mem,
         ASSIGN_DECL_CAST(struct kefir_ast_generic_selection_assoc *, assoc,
             iter->value);
         if (KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, control_type, assoc->type)) {
-            return kefir_ast_constant_expression_evaluate(mem, context, assoc->expr, value);
+            return kefir_ast_constant_expression_value_evaluate(mem, context, assoc->expr, value);
         }
     }
     if (node->default_assoc != NULL) {
-        return kefir_ast_constant_expression_evaluate(mem, context, node->default_assoc, value);
+        return kefir_ast_constant_expression_value_evaluate(mem, context, node->default_assoc, value);
     }
 
     return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected at least one of associations in generic selection to be compatible"
