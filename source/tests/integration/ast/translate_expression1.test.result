@@ -2,10 +2,9 @@ global func1
 
 
 declare func1 = {
-	params:
+	params: 
 	vararg: no
-	returns:
-		int
+	returns: int; 
 }
 
 implement func1 = {

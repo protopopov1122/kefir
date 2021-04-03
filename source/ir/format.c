@@ -83,103 +83,182 @@ kefir_result_t kefir_ir_format_instr_coderef(FILE *fp, const struct kefir_ir_mod
     return KEFIR_OK;
 }
 
-static kefir_result_t kefir_ir_format_type_impl(FILE *fp, const char *prefix, struct kefir_ir_type *type) {
-    for (kefir_size_t i = 0; i < kefir_ir_type_total_length(type); i++) {
-        struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(type, i);
-        switch (typeentry->typecode) {
-            case KEFIR_IR_TYPE_PAD:
-                fprintf(fp, "%spad(" KEFIR_INT64_FMT ")", prefix, typeentry->param);
-                break;
+struct format_param {
+    FILE *fp;
+    struct kefir_ir_type_visitor *visitor;
+};
 
-            case KEFIR_IR_TYPE_STRUCT:
-                fprintf(fp, "%sstruct(" KEFIR_INT64_FMT ")", prefix, typeentry->param);
-                break;
+static kefir_result_t format_type_default(const struct kefir_ir_type *type,
+                                        kefir_size_t index,
+                                        const struct kefir_ir_typeentry *typeentry,
+                                        void *payload) {
+    UNUSED(type);
+    UNUSED(index);
+    REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type entry"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct format_param *, param,
+        payload);
 
-            case KEFIR_IR_TYPE_ARRAY:
-                fprintf(fp, "%sarray(" KEFIR_INT64_FMT ")", prefix, typeentry->param);
-                break;
+    FILE *fp = param->fp;
+    switch (typeentry->typecode) {
+        case KEFIR_IR_TYPE_PAD:
+            fprintf(fp, "pad(" KEFIR_INT64_FMT ")", typeentry->param);
+            break;
 
-            case KEFIR_IR_TYPE_UNION:
-                fprintf(fp, "%sunion(" KEFIR_INT64_FMT ")", prefix, typeentry->param);
-                break;
+        case KEFIR_IR_TYPE_MEMORY:
+            fprintf(fp, "memory(" KEFIR_INT64_FMT ")", typeentry->param);
+            break;
 
-            case KEFIR_IR_TYPE_MEMORY:
-                fprintf(fp, "%smemory(" KEFIR_INT64_FMT ")", prefix, typeentry->param);
-                break;
+        case KEFIR_IR_TYPE_INT8:
+            fprintf(fp, "int8");
+            break;
 
-            case KEFIR_IR_TYPE_INT8:
-                fprintf(fp, "%sint8", prefix);
-                break;
+        case KEFIR_IR_TYPE_INT16:
+            fprintf(fp, "int16");
+            break;
 
-            case KEFIR_IR_TYPE_INT16:
-                fprintf(fp, "%sint16", prefix);
-                break;
+        case KEFIR_IR_TYPE_INT32:
+            fprintf(fp, "int32");
+            break;
 
-            case KEFIR_IR_TYPE_INT32:
-                fprintf(fp, "%sint32", prefix);
-                break;
+        case KEFIR_IR_TYPE_INT64:
+            fprintf(fp, "int64");
+            break;
 
-            case KEFIR_IR_TYPE_INT64:
-                fprintf(fp, "%sint64", prefix);
-                break;
+        case KEFIR_IR_TYPE_BOOL:
+            fprintf(fp, "bool");
+            break;
 
-            case KEFIR_IR_TYPE_BOOL:
-                fprintf(fp, "%sbool", prefix);
-                break;
+        case KEFIR_IR_TYPE_CHAR:
+            fprintf(fp, "char");
+            break;
 
-            case KEFIR_IR_TYPE_CHAR:
-                fprintf(fp, "%schar", prefix);
-                break;
+        case KEFIR_IR_TYPE_SHORT:
+            fprintf(fp, "short");
+            break;
 
-            case KEFIR_IR_TYPE_SHORT:
-                fprintf(fp, "%sshort", prefix);
-                break;
+        case KEFIR_IR_TYPE_INT:
+            fprintf(fp, "int");
+            break;
 
-            case KEFIR_IR_TYPE_INT:
-                fprintf(fp, "%sint", prefix);
-                break;
+        case KEFIR_IR_TYPE_LONG:
+            fprintf(fp, "long");
+            break;
 
-            case KEFIR_IR_TYPE_LONG:
-                fprintf(fp, "%slong", prefix);
-                break;
+        case KEFIR_IR_TYPE_FLOAT32:
+            fprintf(fp, "float");
+            break;
 
-            case KEFIR_IR_TYPE_FLOAT32:
-                fprintf(fp, "%sfloat", prefix);
-                break;
+        case KEFIR_IR_TYPE_FLOAT64:
+            fprintf(fp, "double");
+            break;
 
-            case KEFIR_IR_TYPE_FLOAT64:
-                fprintf(fp, "%sdouble", prefix);
-                break;
+        case KEFIR_IR_TYPE_WORD:
+            fprintf(fp, "word");
+            break;
 
-            case KEFIR_IR_TYPE_WORD:
-                fprintf(fp, "%sword", prefix);
-                break;
-
-            case KEFIR_IR_TYPE_BUILTIN:
-                fprintf(fp, "%s", prefix);
-                switch (typeentry->param) {
-                    case KEFIR_IR_TYPE_BUILTIN_VARARG:
-                        fprintf(fp, "vararg");
-                        break;
-                    
-                    default:
-                        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid built-in type code");
-                }
-                break;
-
-            default:
-                return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid type code");
-        }
-        if (typeentry->alignment > 0) {
-            fprintf(fp, " align as " KEFIR_UINT32_FMT, typeentry->alignment);
-        }
-        fprintf(fp, "\n");
+        default:
+            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid type code");
     }
     return KEFIR_OK;
 }
 
+static kefir_result_t format_type_struct_union(const struct kefir_ir_type *type,
+                                             kefir_size_t index,
+                                             const struct kefir_ir_typeentry *typeentry,
+                                             void *payload) {
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type"));
+    REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type entry"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct format_param *, param,
+        payload);
+
+    FILE *fp = param->fp;
+    if (typeentry->typecode == KEFIR_IR_TYPE_STRUCT) {
+        fprintf(fp, "struct { ");
+    } else {
+        fprintf(fp, "union { ");
+    }
+
+    REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type, param->visitor, payload, index + 1, typeentry->param));
+    fprintf(fp, "}");
+    return KEFIR_OK;
+}
+
+static kefir_result_t format_type_array(const struct kefir_ir_type *type,
+                                      kefir_size_t index,
+                                      const struct kefir_ir_typeentry *typeentry,
+                                      void *payload) {
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type"));
+    REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type entry"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct format_param *, param,
+        payload);
+
+    FILE *fp = param->fp;
+    fprintf(fp, "array[" KEFIR_INT64_FMT "] { ", typeentry->param);
+    REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type, param->visitor, payload, index + 1, 1));
+    fprintf(fp, "}");
+    return KEFIR_OK;
+}
+
+static kefir_result_t format_type_builtin(const struct kefir_ir_type *type,
+                                        kefir_size_t index,
+                                        const struct kefir_ir_typeentry *typeentry,
+                                        void *payload) {
+    UNUSED(type);
+    UNUSED(index);
+    REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type entry"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct format_param *, param,
+        payload);
+
+    FILE *fp = param->fp;
+    switch (typeentry->param) {
+        case KEFIR_IR_TYPE_BUILTIN_VARARG:
+            fprintf(fp, "vararg");
+            break;
+
+        default:
+            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid built-in type code");
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t format_type_posthook(const struct kefir_ir_type *type,
+                                         kefir_size_t index,
+                                         const struct kefir_ir_typeentry *typeentry,
+                                         void *payload) {
+    UNUSED(type);
+    UNUSED(index);
+    REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type entry"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct format_param *, param,
+        payload);
+
+    FILE *fp = param->fp;
+    if (typeentry->alignment > 0) {
+        fprintf(fp, " align as " KEFIR_UINT32_FMT, typeentry->alignment);
+    }
+    fprintf(fp, "; ");
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ir_format_type(FILE *fp, struct kefir_ir_type *type) {
-    return kefir_ir_format_type_impl(fp, "", type);
+    struct kefir_ir_type_visitor visitor;
+    REQUIRE_OK(kefir_ir_type_visitor_init(&visitor, format_type_default));
+    visitor.visit[KEFIR_IR_TYPE_STRUCT] = format_type_struct_union;
+    visitor.visit[KEFIR_IR_TYPE_UNION] = format_type_struct_union;
+    visitor.visit[KEFIR_IR_TYPE_ARRAY] = format_type_array;
+    visitor.visit[KEFIR_IR_TYPE_BUILTIN] = format_type_builtin;
+    visitor.posthook = format_type_posthook;
+
+    struct format_param param = {
+        .fp = fp,
+        .visitor = &visitor
+    };
+    REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type, &visitor, &param, 0, kefir_ir_type_total_length(type)));
+    return KEFIR_OK;
 }
 
 static kefir_result_t kefir_ir_format_function_declaration(FILE *fp, struct kefir_ir_function_decl *decl) {
@@ -187,24 +266,26 @@ static kefir_result_t kefir_ir_format_function_declaration(FILE *fp, struct kefi
     if (decl->alias != NULL) {
         fprintf(fp, " as %s", decl->alias);
     }
-    fprintf(fp," = {\n\tparams:\n");
-    REQUIRE_OK(kefir_ir_format_type_impl(fp, "\t\t", decl->params));
+    fprintf(fp," = {\n\tparams: ");
+    REQUIRE_OK(kefir_ir_format_type(fp, decl->params));
+    fprintf(fp, "\n");
     if (decl->vararg) {
         fprintf(fp, "\tvararg: yes\n");
     } else {
         fprintf(fp, "\tvararg: no\n");
     }
-    fprintf(fp, "\treturns:\n");
-    REQUIRE_OK(kefir_ir_format_type_impl(fp, "\t\t", decl->result));
-    fprintf(fp, "}\n");
+    fprintf(fp, "\treturns: ");
+    REQUIRE_OK(kefir_ir_format_type(fp, decl->result));
+    fprintf(fp, "\n}\n");
     return KEFIR_OK;
 }
 
 static kefir_result_t kefir_ir_format_function(FILE *fp, const struct kefir_ir_module *module, const struct kefir_ir_function *func)  {
     fprintf(fp, "implement %s = {\n", func->declaration->identifier);
     if (func->locals != NULL) {
-        fprintf(fp, "\tlocals:\n");
-        REQUIRE_OK(kefir_ir_format_type_impl(fp, "\t\t", func->locals));
+        fprintf(fp, "\tlocals: ");
+        REQUIRE_OK(kefir_ir_format_type(fp, func->locals));
+        fprintf(fp, "\n");
     }
     fprintf(fp, "\tbody:\n");
     for (kefir_size_t i = 0; i < kefir_irblock_length(&func->body); i++) {

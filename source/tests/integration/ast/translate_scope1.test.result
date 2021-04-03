@@ -1,0 +1,29 @@
+external:
+	declare global_var1: int; 
+	define global_var2: long; 
+	declare global_var100: char; 
+
+external thread_local:
+	declare global_var3: float; 
+	define global_var4: array[16] { char; }; 
+	declare global_var101: array[100] { word; } align as 32; 
+
+static: word; struct { double; array[32] { char; }; }; array[128] { char; }; long; 
+	define static_var1: static[0]
+	define static_var2: static[1]
+
+static thread_local: array[1] { struct { double; array[32] { char; }; }; }; short; bool align as 8; float; 
+	define static_var3: static thread_local[0]
+	define static_var4: static thread_local[5]
+
+local static:
+	define local_static_var1: static[5]
+	define local_static_var2: static[7]
+
+local static thread_local:
+	define local_static_var3: static thread_local[6]
+	define local_static_var4: static thread_local[7]
+
+local: struct { struct { double; array[32] { char; }; }; array[64] { array[16] { int; }; }; }; 
+	define local_var1: local[1]
+	define local_var2: local[5]
