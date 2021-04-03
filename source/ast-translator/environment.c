@@ -1,7 +1,7 @@
 #include <string.h>
-#include "kefir/ast/translator/environment.h"
-#include "kefir/ast/translator/translator.h"
-#include "kefir/ast/translator/layout.h"
+#include "kefir/ast-translator/environment.h"
+#include "kefir/ast-translator/translator.h"
+#include "kefir/ast-translator/layout.h"
 #include "kefir/ast/alignment.h"
 #include "kefir/ir/builder.h"
 #include "kefir/core/util.h"

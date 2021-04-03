@@ -2,7 +2,7 @@
 #define KEFIR_AST_TRANSLATOR_SCOPE_LAYOUT_H_
 
 #include "kefir/ast/local_context.h"
-#include "kefir/ast/translator/environment.h"
+#include "kefir/ast-translator/environment.h"
 #include "kefir/ir/builder.h"
 #include "kefir/ir/module.h"
 #include "kefir/ir/module.h"

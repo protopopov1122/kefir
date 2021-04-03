@@ -1,5 +1,5 @@
-#include "kefir/ast/translator/translator.h"
-#include "kefir/ast/translator/typeconv.h"
+#include "kefir/ast-translator/translator.h"
+#include "kefir/ast-translator/typeconv.h"
 #include "kefir/core/error.h"
 #include "kefir/core/util.h"
 #include "kefir/ir/builder.h"

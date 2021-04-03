@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include "kefir/core/mem.h"
 #include "kefir/core/util.h"
-#include "kefir/ast/translator/translator.h"
-#include "kefir/ast/translator/layout.h"
+#include "kefir/ast-translator/translator.h"
+#include "kefir/ast-translator/layout.h"
 #include "kefir/test/util.h"
 
 static kefir_result_t dump_type_layout(FILE *out, kefir_size_t indent, const char *prefix, const struct kefir_ast_type_layout *layout) {

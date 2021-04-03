@@ -1,5 +1,5 @@
-#include "kefir/ast/translator/scope_layout.h"
-#include "kefir/ast/translator/translator.h"
+#include "kefir/ast-translator/scope_layout.h"
+#include "kefir/ast-translator/translator.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 

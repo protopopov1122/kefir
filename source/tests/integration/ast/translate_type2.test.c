@@ -2,7 +2,7 @@
 #include "kefir/core/mem.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
-#include "kefir/ast/translator/translator.h"
+#include "kefir/ast-translator/translator.h"
 #include "kefir/ir/format.h"
 #include "kefir/test/util.h"
 

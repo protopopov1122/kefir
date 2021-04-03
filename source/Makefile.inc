@@ -4,7 +4,7 @@ KEFIR_LIB := $(wildcard \
 	$(SOURCE_DIR)/ast/analyzer/nodes/*.c \
 	$(SOURCE_DIR)/ast/constant_expression/*.c \
 	$(SOURCE_DIR)/ast/nodes/*.c \
-	$(SOURCE_DIR)/ast/translator/*.c \
+	$(SOURCE_DIR)/ast-translator/*.c \
 	$(SOURCE_DIR)/ast/type/*.c \
 	$(SOURCE_DIR)/core/*.c \
 	$(SOURCE_DIR)/codegen/*.c \

@@ -1,4 +1,4 @@
-#include "kefir/ast/translator/typeconv.h"
+#include "kefir/ast-translator/typeconv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 

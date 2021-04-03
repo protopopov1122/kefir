@@ -1,4 +1,4 @@
-#include "kefir/ast/translator/layout.h"
+#include "kefir/ast-translator/layout.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/core/hashtree.h"

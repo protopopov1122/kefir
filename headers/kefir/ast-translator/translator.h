@@ -4,7 +4,7 @@
 #include "kefir/core/mem.h"
 #include "kefir/ast/node.h"
 #include "kefir/ast/type_layout.h"
-#include "kefir/ast/translator/environment.h"
+#include "kefir/ast-translator/environment.h"
 #include "kefir/ir/builder.h"
 
 kefir_result_t kefir_ast_translate_object_type(struct kefir_mem *,
