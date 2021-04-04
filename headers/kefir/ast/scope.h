@@ -14,8 +14,16 @@
 
 #define KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE (sizeof(kefir_uptr_t) * 4)
 
+typedef struct kefir_ast_scoped_identifier kefir_ast_scoped_identifier_t;
+
+typedef struct kefir_ast_scoped_identifier_cleanup {
+    kefir_result_t (*callback)(struct kefir_mem *, struct kefir_ast_scoped_identifier *, void *);
+    void *payload;
+} kefir_ast_scoped_identifier_cleanup_t;
+
 typedef struct kefir_ast_scoped_identifier {
     kefir_ast_scoped_identifier_class_t klass;
+    struct kefir_ast_scoped_identifier_cleanup cleanup;
     union {
         struct {
             const struct kefir_ast_type *type;
@@ -45,6 +53,7 @@ typedef struct kefir_ast_scoped_identifier {
     struct {
         unsigned char content[KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE];
         void *ptr;
+        struct kefir_ast_scoped_identifier_cleanup *cleanup;
     } payload;
 } kefir_ast_scoped_identifier_t;
 
@@ -61,6 +70,12 @@ typedef struct kefir_ast_identifier_flat_scope {
     kefir_result_t (*remove_callback)(struct kefir_mem *, struct kefir_ast_scoped_identifier *, void *);
     void *remove_payload;
 } kefir_ast_identifier_flat_scope_t;
+
+#define KEFIR_AST_SCOPE_SET_CLEANUP(_scope, _callback, _payload) \
+    do { \
+        (_scope)->payload.cleanup->callback = (_callback); \
+        (_scope)->payload.cleanup->payload = (_payload); \
+    } while (0)
 
 kefir_result_t kefir_ast_identifier_flat_scope_init(struct kefir_ast_identifier_flat_scope *);
 kefir_result_t kefir_ast_identifier_flat_scope_free(struct kefir_mem *,

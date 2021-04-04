@@ -1,4 +1,6 @@
+global extern_variable2
 
+external extern_variable1
 
 declare func1 = {
 	params: 
@@ -12,6 +14,8 @@ implement func1 = {
 		getglobal	data(0)
 		load32i
 		getglobal	data(1)
+		load8u
+		getglobal	data(2)
 		elementptr	type(0)[0]
 		load32u
 		getlocals

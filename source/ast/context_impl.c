@@ -6,6 +6,11 @@ kefir_result_t kefir_ast_context_free_scoped_identifier(struct kefir_mem *mem,
                                                     struct kefir_ast_scoped_identifier *scoped_id,
                                                     void *payload) {
     UNUSED(payload);
+    if (scoped_id->cleanup.callback != NULL) {
+        REQUIRE_OK(scoped_id->cleanup.callback(mem, scoped_id, scoped_id->cleanup.payload));
+        scoped_id->cleanup.callback = NULL;
+        scoped_id->cleanup.payload = NULL;
+    }
     switch (scoped_id->klass) {
         case KEFIR_AST_SCOPE_IDENTIFIER_OBJECT:
             REQUIRE_OK(kefir_ast_alignment_free(mem, scoped_id->object.alignment));
@@ -31,6 +36,8 @@ struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_object_ide
                                                                                     struct kefir_ast_initializer *initializer) {
     struct kefir_ast_scoped_identifier *scoped_id = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_scoped_identifier));
     scoped_id->klass = KEFIR_AST_SCOPE_IDENTIFIER_OBJECT;
+    scoped_id->cleanup.callback = NULL;
+    scoped_id->cleanup.payload = NULL;
     scoped_id->object.type = type;
     scoped_id->object.storage = storage;
     scoped_id->object.external = external;
@@ -38,6 +45,7 @@ struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_object_ide
     scoped_id->object.initializer = initializer;
     memset(scoped_id->payload.content, 0, KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE);
     scoped_id->payload.ptr = scoped_id->payload.content;
+    scoped_id->payload.cleanup = &scoped_id->cleanup;
     if (alignment != NULL) {
         scoped_id->object.alignment = alignment;
     } else {
@@ -55,6 +63,8 @@ struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_constant(s
                                                                            const struct kefir_ast_type *type) {
     struct kefir_ast_scoped_identifier *scoped_id = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_scoped_identifier));
     scoped_id->klass = KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT;
+    scoped_id->cleanup.callback = NULL;
+    scoped_id->cleanup.payload = NULL;
     scoped_id->enum_constant.type = type;
     scoped_id->enum_constant.value = value;
     memset(scoped_id->payload.content, 0, KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE);
@@ -66,6 +76,8 @@ struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_type_tag(s
                                                                            const struct kefir_ast_type *type) {
     struct kefir_ast_scoped_identifier *scoped_id = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_scoped_identifier));
     scoped_id->klass = KEFIR_AST_SCOPE_IDENTIFIER_TYPE_TAG;
+    scoped_id->cleanup.callback = NULL;
+    scoped_id->cleanup.payload = NULL;
     scoped_id->type = type;
     memset(scoped_id->payload.content, 0, KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE);
     scoped_id->payload.ptr = scoped_id->payload.content;
@@ -76,6 +88,8 @@ struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_type_defin
                                                                                   const struct kefir_ast_type *type) {
     struct kefir_ast_scoped_identifier *scoped_id = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_scoped_identifier));
     scoped_id->klass = KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION;
+    scoped_id->cleanup.callback = NULL;
+    scoped_id->cleanup.payload = NULL;
     scoped_id->type = type;
     memset(scoped_id->payload.content, 0, KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE);
     scoped_id->payload.ptr = scoped_id->payload.content;
@@ -140,6 +154,8 @@ struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_function_i
                                                                                       kefir_bool_t external) {
     struct kefir_ast_scoped_identifier *scoped_id = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_scoped_identifier));
     scoped_id->klass = KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION;
+    scoped_id->cleanup.callback = NULL;
+    scoped_id->cleanup.payload = NULL;
     scoped_id->function.type = type;
     scoped_id->function.specifier = specifier;
     scoped_id->function.storage = storage;

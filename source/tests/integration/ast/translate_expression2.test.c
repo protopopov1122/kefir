@@ -3,7 +3,7 @@
 #include "kefir/ast/local_context.h"
 #include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/ast-translator/context.h"
-#include "kefir/ast-translator/local_scope.h"
+#include "kefir/ast-translator/local_scope_layout.h"
 #include "kefir/test/util.h"
 #include "kefir/ir/builder.h"
 #include "kefir/ir/format.h"
@@ -21,32 +21,41 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     REQUIRE_OK(kefir_ast_local_context_declare_external(mem, &local_context,
         "extern_variable1", kefir_ast_type_signed_int(), NULL));
+    REQUIRE_OK(kefir_ast_global_context_define_external(mem, &global_context,
+        "extern_variable2", kefir_ast_type_char(), NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_define_static(mem, &local_context,
         "static_variable1", kefir_ast_type_float(), NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, &local_context,
         "local_var1", kefir_ast_type_bool(), NULL, NULL));
 
+    struct kefir_ast_constant_expression *const_expr_X = kefir_ast_new_constant_expression(mem,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 10)));
+    REQUIRE_OK(kefir_ast_analyze_constant_expression(mem, context, const_expr_X));
+    REQUIRE_OK(kefir_ast_constant_expression_evaluate(mem, context, const_expr_X));
     REQUIRE_OK(kefir_ast_local_context_define_constant(mem, &local_context,
-        "X", kefir_ast_constant_expression_integer(mem, 10), context->type_traits->underlying_enumeration_type));
+        "X", const_expr_X, context->type_traits->underlying_enumeration_type));
 
     struct kefir_ast_node_base *node1 = KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "extern_variable1"));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node1));
-    struct kefir_ast_node_base *node2 = KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "static_variable1"));
+    struct kefir_ast_node_base *node2 = KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "extern_variable2"));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node1));
-    struct kefir_ast_node_base *node3 = KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "local_var1"));
+    struct kefir_ast_node_base *node3 = KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "static_variable1"));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node1));
-    struct kefir_ast_node_base *node4 = KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "X"));
+    struct kefir_ast_node_base *node4 = KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "local_var1"));
+    REQUIRE_OK(kefir_ast_analyze_node(mem, context, node1));
+    struct kefir_ast_node_base *node5 = KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "X"));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node4));
 
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
 
-    struct kefir_ast_translator_global_scope translator_global_scope;
-    struct kefir_ast_translator_local_scope translator_local_scope;
-    REQUIRE_OK(kefir_ast_translator_global_scope_init(mem, &module, &translator_global_scope));
-    REQUIRE_OK(kefir_ast_translator_local_scope_init(mem, &module, &translator_global_scope, &translator_local_scope));
-    REQUIRE_OK(kefir_ast_translate_global_scope(mem, &module, &global_context, &env, &translator_global_scope));
-    REQUIRE_OK(kefir_ast_translate_local_scope(mem, &local_context, &env, &translator_local_scope));
+    struct kefir_ast_translator_global_scope_layout translator_global_scope;
+    struct kefir_ast_translator_local_scope_layout translator_local_scope;
+    REQUIRE_OK(kefir_ast_translator_global_scope_layout_init(mem, &module, &translator_global_scope));
+    REQUIRE_OK(kefir_ast_translator_local_scope_layout_init(mem, &module, &translator_global_scope, &translator_local_scope));
+    REQUIRE_OK(kefir_ast_translate_global_scope_layout(mem, &module, &global_context, &env, &translator_global_scope));
+    REQUIRE_OK(kefir_ast_translate_local_scope_layout(mem, &local_context, &env, &translator_local_scope));
+    REQUIRE_OK(kefir_ast_translator_declare_global_scope_layout(mem, &module, &translator_global_scope));
 
     struct kefir_ast_translator_context translator_context;
     REQUIRE_OK(kefir_ast_translator_context_init(&translator_context, context, &env, &module));
@@ -64,17 +73,19 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_translate_expression(mem, node2, &builder, &translator_context));
     REQUIRE_OK(kefir_ast_translate_expression(mem, node3, &builder, &translator_context));
     REQUIRE_OK(kefir_ast_translate_expression(mem, node4, &builder, &translator_context));
+    REQUIRE_OK(kefir_ast_translate_expression(mem, node5, &builder, &translator_context));
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_FREE(&builder));
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node1));
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node2));
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node3));
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node4));
+    REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node5));
 
     REQUIRE_OK(kefir_ir_format_module(stdout, &module));
 
     REQUIRE_OK(kefir_ast_translator_context_free(&translator_context));
-    REQUIRE_OK(kefir_ast_translator_local_scope_free(mem, &translator_local_scope));
-    REQUIRE_OK(kefir_ast_translator_global_scope_free(mem, &translator_global_scope));
+    REQUIRE_OK(kefir_ast_translator_local_scope_layout_free(mem, &translator_local_scope));
+    REQUIRE_OK(kefir_ast_translator_global_scope_layout_free(mem, &translator_global_scope));
     REQUIRE_OK(kefir_ir_module_free(mem, &module));
     REQUIRE_OK(kefir_ast_local_context_free(mem, &local_context));
     REQUIRE_OK(kefir_ast_global_context_free(mem, &global_context));

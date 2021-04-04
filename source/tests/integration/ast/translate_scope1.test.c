@@ -1,43 +1,41 @@
-#include "kefir/ast-translator/local_scope.h"
+#include "kefir/ast-translator/local_scope_layout.h"
 #include "kefir/test/util.h"
 #include "kefir/ir/format.h"
 #include <stdio.h>
 
-static kefir_result_t format_global_scope(FILE *out, struct kefir_ast_translator_global_scope *scope) {
-    struct kefir_hashtree_node_iterator iter;
-
+static kefir_result_t format_global_scope(FILE *out, struct kefir_ast_translator_global_scope_layout *scope) {
     fprintf(out, "external:\n");
-    for (const struct kefir_hashtree_node *node = kefir_hashtree_iter(&scope->external_objects, &iter);
-        node != NULL;
-        node = kefir_hashtree_next(&iter)) {
-        ASSIGN_DECL_CAST(const char *, identifier,
-            node->key);
+    for (const struct kefir_list_entry *iter = kefir_list_head(&scope->external_objects);
+        iter != NULL;
+        kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier *, scoped_identifier,
-            node->value);
-        if (scoped_identifier->external) {
-            fprintf(out, "\tdeclare %s: ", identifier);
+            iter->value);
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_payload *, scoped_identifier_payload,
+            scoped_identifier->value->payload.ptr);
+        if (scoped_identifier->value->object.external) {
+            fprintf(out, "\tdeclare %s: ", scoped_identifier->identifier);
         } else {
-            fprintf(out, "\tdefine %s: ", identifier);
+            fprintf(out, "\tdefine %s: ", scoped_identifier->identifier);
         }
-        kefir_ir_format_type(out, scoped_identifier->type);
+        kefir_ir_format_type(out, scoped_identifier_payload->type);
         fprintf(out, "\n");
     }
     fprintf(out, "\n");
 
     fprintf(out, "external thread_local:\n");
-    for (const struct kefir_hashtree_node *node = kefir_hashtree_iter(&scope->external_thread_local_objects, &iter);
-        node != NULL;
-        node = kefir_hashtree_next(&iter)) {
-        ASSIGN_DECL_CAST(const char *, identifier,
-            node->key);
+    for (const struct kefir_list_entry *iter = kefir_list_head(&scope->external_thread_local_objects);
+        iter != NULL;
+        kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier *, scoped_identifier,
-            node->value);
-        if (scoped_identifier->external) {
-            fprintf(out, "\tdeclare %s: ", identifier);
+            iter->value);
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_payload *, scoped_identifier_payload,
+            scoped_identifier->value->payload.ptr);
+        if (scoped_identifier->value->object.external) {
+            fprintf(out, "\tdeclare %s: ", scoped_identifier->identifier);
         } else {
-            fprintf(out, "\tdefine %s: ", identifier);
+            fprintf(out, "\tdefine %s: ", scoped_identifier->identifier);
         }
-        kefir_ir_format_type(out, scoped_identifier->type);
+        kefir_ir_format_type(out, scoped_identifier_payload->type);
         fprintf(out, "\n");
     }
     fprintf(out, "\n");
@@ -45,14 +43,15 @@ static kefir_result_t format_global_scope(FILE *out, struct kefir_ast_translator
     fprintf(out, "static: ");
     kefir_ir_format_type(out, scope->static_layout);
     fprintf(out, "\n");
-    for (const struct kefir_hashtree_node *node = kefir_hashtree_iter(&scope->static_objects, &iter);
-        node != NULL;
-        node = kefir_hashtree_next(&iter)) {
-        ASSIGN_DECL_CAST(const char *, identifier,
-            node->key);
+    for (const struct kefir_list_entry *iter = kefir_list_head(&scope->static_objects);
+        iter != NULL;
+        kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier *, scoped_identifier,
-            node->value);
-        fprintf(out, "\tdefine %s: static[" KEFIR_SIZE_FMT "]", identifier, scoped_identifier->layout->value);
+            iter->value);
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_payload *, scoped_identifier_payload,
+            scoped_identifier->value->payload.ptr);
+        fprintf(out, "\tdefine %s: static[" KEFIR_SIZE_FMT "]", scoped_identifier->identifier,
+            scoped_identifier_payload->layout->value);
         fprintf(out, "\n");
     }
     fprintf(out, "\n");
@@ -60,44 +59,45 @@ static kefir_result_t format_global_scope(FILE *out, struct kefir_ast_translator
     fprintf(out, "static thread_local: ");
     kefir_ir_format_type(out, scope->static_thread_local_layout);
     fprintf(out, "\n");
-    for (const struct kefir_hashtree_node *node = kefir_hashtree_iter(&scope->static_thread_local_objects, &iter);
-        node != NULL;
-        node = kefir_hashtree_next(&iter)) {
-        ASSIGN_DECL_CAST(const char *, identifier,
-            node->key);
+    for (const struct kefir_list_entry *iter = kefir_list_head(&scope->static_thread_local_objects);
+        iter != NULL;
+        kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier *, scoped_identifier,
-            node->value);
-        fprintf(out, "\tdefine %s: static thread_local[" KEFIR_SIZE_FMT "]", identifier, scoped_identifier->layout->value);
+            iter->value);
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_payload *, scoped_identifier_payload,
+            scoped_identifier->value->payload.ptr);
+        fprintf(out, "\tdefine %s: static thread_local[" KEFIR_SIZE_FMT "]", scoped_identifier->identifier,
+            scoped_identifier_payload->layout->value);
         fprintf(out, "\n");
     }
     return KEFIR_OK;
 }
 
-static kefir_result_t format_local_scope(FILE *out, struct kefir_ast_translator_local_scope *scope) {
-    struct kefir_hashtree_node_iterator iter;
-
+static kefir_result_t format_local_scope(FILE *out, struct kefir_ast_translator_local_scope_layout *scope) {
     fprintf(out, "local static:\n");
-    for (const struct kefir_hashtree_node *node = kefir_hashtree_iter(&scope->static_objects, &iter);
-        node != NULL;
-        node = kefir_hashtree_next(&iter)) {
-        ASSIGN_DECL_CAST(const char *, identifier,
-            node->key);
+    for (const struct kefir_list_entry *iter = kefir_list_head(&scope->static_objects);
+        iter != NULL;
+        kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier *, scoped_identifier,
-            node->value);
-        fprintf(out, "\tdefine %s: static[" KEFIR_SIZE_FMT "]", identifier, scoped_identifier->layout->value);
+            iter->value);
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_payload *, scoped_identifier_payload,
+            scoped_identifier->value->payload.ptr);
+        fprintf(out, "\tdefine %s: static[" KEFIR_SIZE_FMT "]", scoped_identifier->identifier,
+            scoped_identifier_payload->layout->value);
         fprintf(out, "\n");
     }
     fprintf(out, "\n");
 
     fprintf(out, "local static thread_local:\n");
-    for (const struct kefir_hashtree_node *node = kefir_hashtree_iter(&scope->static_thread_local_objects, &iter);
-        node != NULL;
-        node = kefir_hashtree_next(&iter)) {
-        ASSIGN_DECL_CAST(const char *, identifier,
-            node->key);
+    for (const struct kefir_list_entry *iter = kefir_list_head(&scope->static_thread_local_objects);
+        iter != NULL;
+        kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier *, scoped_identifier,
-            node->value);
-        fprintf(out, "\tdefine %s: static thread_local[" KEFIR_SIZE_FMT "]", identifier, scoped_identifier->layout->value);
+            iter->value);
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_payload *, scoped_identifier_payload,
+            scoped_identifier->value->payload.ptr);
+        fprintf(out, "\tdefine %s: static thread_local[" KEFIR_SIZE_FMT "]", scoped_identifier->identifier,
+            scoped_identifier_payload->layout->value);
         fprintf(out, "\n");
     }
     fprintf(out, "\n");
@@ -105,14 +105,15 @@ static kefir_result_t format_local_scope(FILE *out, struct kefir_ast_translator_
     fprintf(out, "local: ");
     kefir_ir_format_type(out, scope->local_layout);
     fprintf(out, "\n");
-    for (const struct kefir_hashtree_node *node = kefir_hashtree_iter(&scope->local_objects, &iter);
-        node != NULL;
-        node = kefir_hashtree_next(&iter)) {
-        ASSIGN_DECL_CAST(const char *, identifier,
-            node->key);
+    for (const struct kefir_list_entry *iter = kefir_list_head(&scope->local_objects);
+        iter != NULL;
+        kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier *, scoped_identifier,
-            node->value);
-        fprintf(out, "\tdefine %s: local[" KEFIR_SIZE_FMT "]", identifier, scoped_identifier->layout->value);
+            iter->value);
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_payload *, scoped_identifier_payload,
+            scoped_identifier->value->payload.ptr);
+        fprintf(out, "\tdefine %s: local[" KEFIR_SIZE_FMT "]", scoped_identifier->identifier,
+            scoped_identifier_payload->layout->value);
         fprintf(out, "\n");
     }
     return KEFIR_OK;
@@ -195,17 +196,17 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                 kefir_ast_constant_expression_integer(mem, 16), NULL),
             kefir_ast_constant_expression_integer(mem, 64), NULL), NULL, NULL));
 
-    struct kefir_ast_translator_global_scope translator_global_scope;
-    struct kefir_ast_translator_local_scope translator_local_scope;
-    REQUIRE_OK(kefir_ast_translator_global_scope_init(mem, &module, &translator_global_scope));
-    REQUIRE_OK(kefir_ast_translator_local_scope_init(mem, &module, &translator_global_scope, &translator_local_scope));
-    REQUIRE_OK(kefir_ast_translate_global_scope(mem, &module, &global_context, &env, &translator_global_scope));
-    REQUIRE_OK(kefir_ast_translate_local_scope(mem, &local_context, &env, &translator_local_scope));
+    struct kefir_ast_translator_global_scope_layout translator_global_scope;
+    struct kefir_ast_translator_local_scope_layout translator_local_scope;
+    REQUIRE_OK(kefir_ast_translator_global_scope_layout_init(mem, &module, &translator_global_scope));
+    REQUIRE_OK(kefir_ast_translator_local_scope_layout_init(mem, &module, &translator_global_scope, &translator_local_scope));
+    REQUIRE_OK(kefir_ast_translate_global_scope_layout(mem, &module, &global_context, &env, &translator_global_scope));
+    REQUIRE_OK(kefir_ast_translate_local_scope_layout(mem, &local_context, &env, &translator_local_scope));
     REQUIRE_OK(format_global_scope(stdout, &translator_global_scope));
     fprintf(stdout, "\n");
     REQUIRE_OK(format_local_scope(stdout, &translator_local_scope));
-    REQUIRE_OK(kefir_ast_translator_local_scope_free(mem, &translator_local_scope));
-    REQUIRE_OK(kefir_ast_translator_global_scope_free(mem, &translator_global_scope));
+    REQUIRE_OK(kefir_ast_translator_local_scope_layout_free(mem, &translator_local_scope));
+    REQUIRE_OK(kefir_ast_translator_global_scope_layout_free(mem, &translator_global_scope));
 
     REQUIRE_OK(kefir_ast_local_context_free(mem, &local_context));
     REQUIRE_OK(kefir_ast_global_context_free(mem, &global_context));
