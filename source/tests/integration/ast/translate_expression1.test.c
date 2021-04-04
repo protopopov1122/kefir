@@ -26,10 +26,13 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, decl_result, KEFIR_IR_TYPE_INT, 0, 0));
 
     struct kefir_ast_global_context global_context;
-    struct kefir_ast_local_context translation_context;
+    struct kefir_ast_local_context local_context;
     REQUIRE_OK(kefir_ast_global_context_init(mem, kefir_ast_default_type_traits(),
         &kft_util_get_translator_environment()->target_env, &global_context));
-    REQUIRE_OK(kefir_ast_local_context_init(mem, &global_context, &translation_context));
+    REQUIRE_OK(kefir_ast_local_context_init(mem, &global_context, &local_context));
+
+    struct kefir_ast_translator_context translator_context;
+    REQUIRE_OK(kefir_ast_translator_context_init(&translator_context, &local_context.context, global_context.target_env));
 
     struct kefir_irbuilder_block builder;
     REQUIRE_OK(kefir_irbuilder_block_init(mem, &builder, &func->body));
@@ -44,8 +47,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(mem,
             KEFIR_AST_OPERATION_NEGATE,
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(mem, 1)))));
-    REQUIRE_OK(kefir_ast_analyze_node(mem, &translation_context.context, KEFIR_AST_NODE_BASE(ast)));
-    REQUIRE_OK(kefir_ast_translate_expression(KEFIR_AST_NODE_BASE(ast), &builder));
+    REQUIRE_OK(kefir_ast_analyze_node(mem, &local_context.context, KEFIR_AST_NODE_BASE(ast)));
+    REQUIRE_OK(kefir_ast_translate_expression(KEFIR_AST_NODE_BASE(ast), &builder, &translator_context));
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(ast)));
 
     ast = kefir_ast_new_binary_operation(mem,
@@ -58,12 +61,13 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(mem, 1)))),
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 3)))),
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 1.0)));
-    REQUIRE_OK(kefir_ast_analyze_node(mem, &translation_context.context, KEFIR_AST_NODE_BASE(ast)));
-    REQUIRE_OK(kefir_ast_translate_expression(KEFIR_AST_NODE_BASE(ast), &builder));
+    REQUIRE_OK(kefir_ast_analyze_node(mem, &local_context.context, KEFIR_AST_NODE_BASE(ast)));
+    REQUIRE_OK(kefir_ast_translate_expression(KEFIR_AST_NODE_BASE(ast), &builder, &translator_context));
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(ast)));
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_FREE(&builder));
 
-    REQUIRE_OK(kefir_ast_local_context_free(mem, &translation_context));
+    REQUIRE_OK(kefir_ast_translator_context_free(&translator_context));
+    REQUIRE_OK(kefir_ast_local_context_free(mem, &local_context));
     REQUIRE_OK(kefir_ast_global_context_free(mem, &global_context));
     REQUIRE_OK(kefir_ir_format_module(stdout, &module));
     REQUIRE_OK(kefir_ir_module_free(mem, &module));
