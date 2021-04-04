@@ -1,0 +1,21 @@
+
+
+declare func1 = {
+	params: 
+	vararg: no
+	returns: 
+}
+
+implement func1 = {
+	locals: struct { bool; }; 
+	body:
+		getglobal	data(0)
+		load32i
+		getglobal	data(1)
+		elementptr	type(0)[0]
+		load32u
+		getlocals
+		elementptr	type(2)[1]
+		load8u
+		push	10
+}

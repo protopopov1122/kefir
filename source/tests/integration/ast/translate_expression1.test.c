@@ -32,7 +32,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_local_context_init(mem, &global_context, &local_context));
 
     struct kefir_ast_translator_context translator_context;
-    REQUIRE_OK(kefir_ast_translator_context_init(&translator_context, &local_context.context, global_context.target_env));
+    REQUIRE_OK(kefir_ast_translator_context_init(&translator_context,
+        &local_context.context, global_context.target_env, &module));
 
     struct kefir_irbuilder_block builder;
     REQUIRE_OK(kefir_irbuilder_block_init(mem, &builder, &func->body));
@@ -48,7 +49,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
             KEFIR_AST_OPERATION_NEGATE,
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(mem, 1)))));
     REQUIRE_OK(kefir_ast_analyze_node(mem, &local_context.context, KEFIR_AST_NODE_BASE(ast)));
-    REQUIRE_OK(kefir_ast_translate_expression(KEFIR_AST_NODE_BASE(ast), &builder, &translator_context));
+    REQUIRE_OK(kefir_ast_translate_expression(mem, KEFIR_AST_NODE_BASE(ast), &builder, &translator_context));
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(ast)));
 
     ast = kefir_ast_new_binary_operation(mem,
@@ -62,7 +63,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 3)))),
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 1.0)));
     REQUIRE_OK(kefir_ast_analyze_node(mem, &local_context.context, KEFIR_AST_NODE_BASE(ast)));
-    REQUIRE_OK(kefir_ast_translate_expression(KEFIR_AST_NODE_BASE(ast), &builder, &translator_context));
+    REQUIRE_OK(kefir_ast_translate_expression(mem, KEFIR_AST_NODE_BASE(ast), &builder, &translator_context));
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(ast)));
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_FREE(&builder));
 

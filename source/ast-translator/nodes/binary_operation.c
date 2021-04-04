@@ -4,27 +4,29 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-static kefir_result_t binary_prologue(const struct kefir_ast_translator_context *context,
+static kefir_result_t binary_prologue(struct kefir_mem *mem,
+                                    const struct kefir_ast_translator_context *context,
                                     struct kefir_irbuilder_block *builder,
                                     const struct kefir_ast_binary_operation *node) {
-    REQUIRE_OK(kefir_ast_translate_expression(node->arg1, builder, context));
+    REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg1, builder, context));
     if (!KEFIR_AST_TYPE_SAME(node->arg1->properties.type, node->base.properties.type)) {
         kefir_ast_translate_typeconv(builder, node->arg1->properties.type, node->base.properties.type);
     }
-    REQUIRE_OK(kefir_ast_translate_expression(node->arg2, builder, context));
+    REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg2, builder, context));
     if (!KEFIR_AST_TYPE_SAME(node->arg2->properties.type, node->base.properties.type)) {
         kefir_ast_translate_typeconv(builder, node->arg2->properties.type, node->base.properties.type);
     }
     return KEFIR_OK;
 }
 
-static kefir_result_t translate_addition(const struct kefir_ast_translator_context *context,
+static kefir_result_t translate_addition(struct kefir_mem *mem,
+                                       const struct kefir_ast_translator_context *context,
                                        struct kefir_irbuilder_block *builder,
                                        const struct kefir_ast_binary_operation *node) {
     REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(node->arg1->properties.type) &&
         KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(node->arg2->properties.type),
         KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Non-arithmetic additive AST expressions are not supported yet"));
-    REQUIRE_OK(binary_prologue(context, builder, node));
+    REQUIRE_OK(binary_prologue(mem, context, builder, node));
     switch (node->base.properties.type->tag) {
         case KEFIR_AST_TYPE_SCALAR_DOUBLE:
             switch (node->type) {
@@ -71,10 +73,11 @@ static kefir_result_t translate_addition(const struct kefir_ast_translator_conte
     return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unsupported combination of operation and types");
 }
 
-static kefir_result_t translate_multiplication(const struct kefir_ast_translator_context *context,
+static kefir_result_t translate_multiplication(struct kefir_mem *mem,
+                                             const struct kefir_ast_translator_context *context,
                                              struct kefir_irbuilder_block *builder,
                                              const struct kefir_ast_binary_operation *node) {
-    REQUIRE_OK(binary_prologue(context, builder, node));
+    REQUIRE_OK(binary_prologue(mem, context, builder, node));
     switch (node->base.properties.type->tag) {
         case KEFIR_AST_TYPE_SCALAR_DOUBLE:
             switch (node->type) {
@@ -124,10 +127,11 @@ static kefir_result_t translate_multiplication(const struct kefir_ast_translator
     return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unsupported combination of operation and types");
 }
 
-static kefir_result_t translate_bitwise_shift(const struct kefir_ast_translator_context *context,
+static kefir_result_t translate_bitwise_shift(struct kefir_mem *mem,
+                                            const struct kefir_ast_translator_context *context,
                                             struct kefir_irbuilder_block *builder,
                                             const struct kefir_ast_binary_operation *node) {
-    REQUIRE_OK(binary_prologue(context, builder, node));
+    REQUIRE_OK(binary_prologue(mem, context, builder, node));
     if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(node->base.properties.type)) {
         switch (node->type) {
             case KEFIR_AST_OPERATION_SHIFT_LEFT:
@@ -143,9 +147,11 @@ static kefir_result_t translate_bitwise_shift(const struct kefir_ast_translator_
     return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unsupported combination of operation and types");
 }
 
-kefir_result_t kefir_ast_translate_binary_operation_node(const struct kefir_ast_translator_context *context,
-                                             struct kefir_irbuilder_block *builder,
-                                             const struct kefir_ast_binary_operation *node) {
+kefir_result_t kefir_ast_translate_binary_operation_node(struct kefir_mem *mem,
+                                                     const struct kefir_ast_translator_context *context,
+                                                     struct kefir_irbuilder_block *builder,
+                                                     const struct kefir_ast_binary_operation *node) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translation context"));
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST binary operation node"));
@@ -153,16 +159,16 @@ kefir_result_t kefir_ast_translate_binary_operation_node(const struct kefir_ast_
     switch (node->type) {
         case KEFIR_AST_OPERATION_ADD:
         case KEFIR_AST_OPERATION_SUBTRACT:
-            return translate_addition(context, builder, node);
+            return translate_addition(mem, context, builder, node);
 
         case KEFIR_AST_OPERATION_MULTIPLY:
         case KEFIR_AST_OPERATION_DIVIDE:
         case KEFIR_AST_OPERATION_MODULO:
-            return translate_multiplication(context, builder, node);
+            return translate_multiplication(mem, context, builder, node);
 
         case KEFIR_AST_OPERATION_SHIFT_RIGHT:
         case KEFIR_AST_OPERATION_SHIFT_LEFT:
-            return translate_bitwise_shift(context, builder, node);
+            return translate_bitwise_shift(mem, context, builder, node);
         
         default:
             return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected AST binary operation type");
