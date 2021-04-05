@@ -1,0 +1,48 @@
+{
+    "globals": [],
+    "externals": [
+        "structure"
+    ],
+    "function_declarations": [
+        {
+            "identifier": "func1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": "func1",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 0
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 5,
+                        "index": 2
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 4,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "load32i"
+                }
+            ]
+        }
+    ]
+}

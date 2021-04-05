@@ -49,4 +49,14 @@ kefir_result_t kefir_ast_type_layout_add_structure_anonymous_member(struct kefir
                                                                 struct kefir_ast_type_layout *,
                                                                 struct kefir_ast_type_layout *);
 
+typedef kefir_result_t (*kefir_ast_type_layout_resolver_callback_t)(struct kefir_ast_type_layout *,
+                                                                const struct kefir_ast_designator *,
+                                                                void *);
+
+kefir_result_t kefir_ast_type_layout_resolve(struct kefir_ast_type_layout *,
+                                         const struct kefir_ast_designator *,
+                                         struct kefir_ast_type_layout **,
+                                         kefir_ast_type_layout_resolver_callback_t,
+                                         void *);
+
 #endif

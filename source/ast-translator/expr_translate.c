@@ -37,6 +37,7 @@ TRANSLATE_NODE(constant, struct kefir_ast_constant)
 TRANSLATE_NODE(identifier, struct kefir_ast_identifier)
 TRANSLATE_NODE(generic_selection, struct kefir_ast_generic_selection)
 TRANSLATE_NODE(array_subscript, struct kefir_ast_array_subscript)
+TRANSLATE_NODE(struct_member, struct kefir_ast_struct_member)
 TRANSLATE_NODE(unary_operation, struct kefir_ast_unary_operation)
 TRANSLATE_NODE(binary_operation, struct kefir_ast_binary_operation)
 #undef TRANSLATE_NODE
@@ -54,6 +55,8 @@ kefir_result_t kefir_ast_translate_expression(struct kefir_mem *mem,
     visitor.identifier = translate_identifier;
     visitor.generic_selection = translate_generic_selection;
     visitor.array_subscript = translate_array_subscript;
+    visitor.struct_member = translate_struct_member;
+    visitor.struct_indirect_member = translate_struct_member;
     visitor.unary_operation = translate_unary_operation;
     visitor.binary_operation = translate_binary_operation;
 

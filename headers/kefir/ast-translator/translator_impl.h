@@ -15,6 +15,7 @@ NODE_TRANSLATOR(constant, struct kefir_ast_constant);
 NODE_TRANSLATOR(identifier, struct kefir_ast_identifier);
 NODE_TRANSLATOR(generic_selection, struct kefir_ast_generic_selection);
 NODE_TRANSLATOR(array_subscript, struct kefir_ast_array_subscript);
+NODE_TRANSLATOR(struct_member, struct kefir_ast_struct_member);
 NODE_TRANSLATOR(unary_operation, struct kefir_ast_unary_operation);
 NODE_TRANSLATOR(binary_operation, struct kefir_ast_binary_operation);
 #undef NODE_TRANSLATOR
