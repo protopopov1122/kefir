@@ -92,6 +92,7 @@ kefir_result_t kefir_ast_identifier_flat_scope_at(const struct kefir_ast_identif
                                               struct kefir_ast_scoped_identifier **);
 kefir_bool_t kefir_ast_identifier_flat_scope_has(const struct kefir_ast_identifier_flat_scope *,
                                              const char *);
+kefir_bool_t kefir_ast_identifier_flat_scope_empty(const struct kefir_ast_identifier_flat_scope *);
 kefir_result_t kefir_ast_identifier_flat_scope_iter(const struct kefir_ast_identifier_flat_scope *,
                                                 struct kefir_ast_identifier_flat_scope_iterator *);
 kefir_result_t kefir_ast_identifier_flat_scope_next(const struct kefir_ast_identifier_flat_scope *,
@@ -124,6 +125,7 @@ kefir_result_t kefir_ast_identifier_block_scope_insert(struct kefir_mem *,
 kefir_result_t kefir_ast_identifier_block_scope_at(const struct kefir_ast_identifier_block_scope *,
                                                const char *,
                                                struct kefir_ast_scoped_identifier **);
+kefir_bool_t kefir_ast_identifier_block_scope_empty(const struct kefir_ast_identifier_block_scope *);
 
 
 #endif

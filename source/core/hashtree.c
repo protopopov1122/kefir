@@ -159,6 +159,11 @@ kefir_bool_t kefir_hashtree_has(const struct kefir_hashtree *tree, kefir_hashtre
     return node_find(tree->root, tree, hash, key, &result) == KEFIR_OK;
 }
 
+kefir_bool_t kefir_hashtree_empty(const struct kefir_hashtree *tree) {
+    REQUIRE(tree != NULL, true);
+    return tree->root == NULL;
+}
+
 kefir_result_t kefir_hashtree_delete(struct kefir_mem *mem, struct kefir_hashtree *tree, kefir_hashtree_key_t key) {
     REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid hash tree pointer"));
     kefir_hashtree_hash_t hash = tree->ops->hash(key, tree->ops->data);

@@ -35,6 +35,7 @@ kefir_result_t translate_not_impl(const struct kefir_ast_visitor *visitor,
 
 TRANSLATE_NODE(constant, struct kefir_ast_constant)
 TRANSLATE_NODE(identifier, struct kefir_ast_identifier)
+TRANSLATE_NODE(generic_selection, struct kefir_ast_generic_selection)
 TRANSLATE_NODE(unary_operation, struct kefir_ast_unary_operation)
 TRANSLATE_NODE(binary_operation, struct kefir_ast_binary_operation)
 #undef TRANSLATE_NODE
@@ -50,6 +51,7 @@ kefir_result_t kefir_ast_translate_expression(struct kefir_mem *mem,
     REQUIRE_OK(kefir_ast_visitor_init(&visitor, translate_not_impl));
     visitor.constant = translate_constant;
     visitor.identifier = translate_identifier;
+    visitor.generic_selection = translate_generic_selection;
     visitor.unary_operation = translate_unary_operation;
     visitor.binary_operation = translate_binary_operation;
 

@@ -179,9 +179,11 @@ kefir_result_t kefir_ast_translator_build_local_scope_layout(struct kefir_mem *m
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
     REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST local scope layout"));
 
-    struct kefir_irbuilder_type builder;
-    REQUIRE_OK(kefir_irbuilder_type_init(mem, &builder, layout->local_layout));
-    REQUIRE_OK(traverse_local_scope(mem, &context->ordinary_scope.root, &builder, env, layout));
-    REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
+    if (!kefir_ast_identifier_block_scope_empty(&context->ordinary_scope)) {
+        struct kefir_irbuilder_type builder;
+        REQUIRE_OK(kefir_irbuilder_type_init(mem, &builder, layout->local_layout));
+        REQUIRE_OK(traverse_local_scope(mem, &context->ordinary_scope.root, &builder, env, layout));
+        REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
+    }
     return KEFIR_OK;
 }

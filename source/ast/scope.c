@@ -78,6 +78,11 @@ kefir_bool_t kefir_ast_identifier_flat_scope_has(const struct kefir_ast_identifi
     return kefir_hashtree_has(&scope->content, (kefir_hashtree_key_t) identifier);
 }
 
+kefir_bool_t kefir_ast_identifier_flat_scope_empty(const struct kefir_ast_identifier_flat_scope *scope) {
+    REQUIRE(scope != NULL, true);
+    return kefir_hashtree_empty(&scope->content);
+}
+
 kefir_result_t kefir_ast_identifier_flat_scope_iter(const struct kefir_ast_identifier_flat_scope *scope,
                                            struct kefir_ast_identifier_flat_scope_iterator *iter) {
     REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier scope"));
@@ -258,4 +263,26 @@ kefir_result_t kefir_ast_identifier_block_scope_at(const struct kefir_ast_identi
         }
     }
     return KEFIR_SET_ERROR(KEFIR_NOT_FOUND, "Unable to find specified scoped identifier");
+}
+
+static kefir_bool_t block_tree_empty(const struct kefir_tree_node *node) {
+    REQUIRE(node != NULL, true);
+    ASSIGN_DECL_CAST(struct kefir_ast_identifier_flat_scope *, scope,
+        node->value);
+    if (!kefir_ast_identifier_flat_scope_empty(scope)) {
+        return false;
+    }
+    for (struct kefir_tree_node *child = kefir_tree_first_child(node);
+        child != NULL;
+        child = kefir_tree_next_sibling(child)) {
+        if (!block_tree_empty(node)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+kefir_bool_t kefir_ast_identifier_block_scope_empty(const struct kefir_ast_identifier_block_scope *scope) {
+    REQUIRE(scope != NULL, true);
+    return block_tree_empty(&scope->root);
 }
