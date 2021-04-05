@@ -1,4 +1,5 @@
 #include "kefir/ast/constant_expression_impl.h"
+#include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -101,12 +102,21 @@ static kefir_result_t visit_array_subscript(const struct kefir_ast_visitor *visi
     ASSIGN_DECL_CAST(struct visitor_param *, param,
         payload);
 
+    const struct kefir_ast_type *array_type = kefir_ast_type_lvalue_conversion(node->array->properties.type);
+    struct kefir_ast_node_base *array = node->array;
+    struct kefir_ast_node_base *subscript = node->subscript;
+    if (array_type->tag != KEFIR_AST_TYPE_ARRAY &&
+        array_type->tag != KEFIR_AST_TYPE_SCALAR_POINTER) {
+        array = node->subscript;
+        subscript = node->array;
+    }
+
     struct kefir_ast_constant_expression_pointer base_pointer;
     REQUIRE_OK(kefir_ast_constant_expression_value_evaluate_lvalue_reference(param->mem, param->context,
-        node->array, &base_pointer));
+        array, &base_pointer));
 
     struct kefir_ast_constant_expression_value subscript_value;
-    REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(param->mem, param->context, node->subscript, &subscript_value));
+    REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(param->mem, param->context, subscript, &subscript_value));
     REQUIRE(subscript_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected constant array subscript to have integral type"));
 
@@ -119,7 +129,7 @@ static kefir_result_t visit_array_subscript(const struct kefir_ast_visitor *visi
     struct kefir_ast_target_environment_object_info object_info;
     kefir_ast_target_environment_opaque_type_t opaque_type;
     REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_GET_TYPE(param->mem, param->context->target_env,
-        node->array->properties.type, &opaque_type));
+        array->properties.type, &opaque_type));
     kefir_result_t res = KEFIR_AST_TARGET_ENVIRONMENT_OBJECT_INFO(param->mem, param->context->target_env,
         opaque_type, &designator, &object_info);
     REQUIRE_ELSE(res == KEFIR_OK, {

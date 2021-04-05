@@ -49,71 +49,7 @@ static kefir_result_t translate_object_identifier(struct kefir_mem *mem,
         } break;
     }
 
-    const struct kefir_ast_type *unqualified = kefir_ast_unqualified_type(scoped_identifier->object.type);
-    if (unqualified->tag == KEFIR_AST_TYPE_ENUMERATION) {
-        unqualified = kefir_ast_unqualified_type(unqualified->enumeration_type.underlying_type);
-    }
-
-    switch (unqualified->tag) {
-        case KEFIR_AST_TYPE_VOID:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot load variable with void type");
-            
-        case KEFIR_AST_TYPE_SCALAR_BOOL:
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD8U, 0));
-            break;
-            
-        case KEFIR_AST_TYPE_SCALAR_CHAR:
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD8U, 0));
-            break;
-            
-        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR:
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD8U, 0));
-            break;
-            
-        case KEFIR_AST_TYPE_SCALAR_SIGNED_CHAR:
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD8I, 0));
-            break;
-            
-        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_SHORT:
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD16U, 0));
-            break;
-            
-        case KEFIR_AST_TYPE_SCALAR_SIGNED_SHORT:
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD16I, 0));
-            break;
-            
-        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_INT:
-        case KEFIR_AST_TYPE_SCALAR_FLOAT:
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD32U, 0));
-            break;
-            
-        case KEFIR_AST_TYPE_SCALAR_SIGNED_INT:
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD32I, 0));
-            break;
-            
-        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG:
-        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG_LONG:
-        case KEFIR_AST_TYPE_SCALAR_SIGNED_LONG:
-        case KEFIR_AST_TYPE_SCALAR_SIGNED_LONG_LONG:
-        case KEFIR_AST_TYPE_SCALAR_DOUBLE:
-        case KEFIR_AST_TYPE_SCALAR_POINTER:
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD64, 0));
-            break;
-            
-        case KEFIR_AST_TYPE_ENUMERATION:
-            return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected enumeration type");
-            
-        case KEFIR_AST_TYPE_STRUCTURE:
-        case KEFIR_AST_TYPE_UNION:
-        case KEFIR_AST_TYPE_ARRAY:
-        case KEFIR_AST_TYPE_FUNCTION:
-            // Intentionally left blank
-            break;
-            
-        case KEFIR_AST_TYPE_QUALIFIED:
-            return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected qualified type");
-            
-    }
+    REQUIRE_OK(kefir_ast_translator_resolve_value(scoped_identifier->object.type, builder));
     return KEFIR_OK;
 }
 

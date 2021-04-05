@@ -1,0 +1,90 @@
+{
+    "globals": [],
+    "externals": [
+        "array1"
+    ],
+    "function_declarations": [
+        {
+            "identifier": "func1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": "func1",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 0
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": 5
+                },
+                {
+                    "opcode": "elementptr",
+                    "arg": {
+                        "type": 5,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 10
+                },
+                {
+                    "opcode": "elementptr",
+                    "arg": {
+                        "type": 4,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "load8u"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 1
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": 11
+                },
+                {
+                    "opcode": "elementptr",
+                    "arg": {
+                        "type": 7,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 12
+                },
+                {
+                    "opcode": "elementptr",
+                    "arg": {
+                        "type": 6,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "load8u"
+                }
+            ]
+        }
+    ]
+}

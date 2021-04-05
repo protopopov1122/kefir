@@ -74,8 +74,19 @@ static kefir_result_t translate_array_type(struct kefir_mem *mem,
     struct kefir_ast_type_layout *element_layout = NULL;
 
     switch (type->array_type.boundary) {
-        case KEFIR_AST_ARRAY_UNBOUNDED:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot translate unbounded array type to IR type");
+        case KEFIR_AST_ARRAY_UNBOUNDED: {
+            REQUIRE_OK(KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_ARRAY, alignment,
+                0));
+            REQUIRE_OK(kefir_ast_translate_object_type(mem,
+                type->array_type.element_type, KEFIR_AST_DEFAULT_ALIGNMENT, env, builder,
+                layout_ptr != NULL ? &element_layout : NULL));
+            if (layout_ptr != NULL) {
+                *layout_ptr = kefir_ast_new_type_layout(mem, type, type_index);
+                REQUIRE(*layout_ptr != NULL,
+                    KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST type layout"));
+                (*layout_ptr)->array_layout.element_type = element_layout;
+            }
+        } break;
 
         case KEFIR_AST_ARRAY_BOUNDED:
             REQUIRE_OK(KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_ARRAY, alignment,

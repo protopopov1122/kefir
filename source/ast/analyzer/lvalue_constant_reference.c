@@ -1,4 +1,5 @@
 #include "kefir/ast/analyzer/analyzer.h"
+#include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -72,8 +73,15 @@ static kefir_result_t visit_array_subscript(const struct kefir_ast_visitor *visi
     ASSIGN_DECL_CAST(struct visitor_param *, param,
         payload);
 
-    REQUIRE_OK(KEFIR_AST_NODE_VISIT(visitor, node->array, payload));
-    *param->constant = *param->constant && node->subscript->properties.expression_props.constant_expression;
+    const struct kefir_ast_type *array_type = kefir_ast_type_lvalue_conversion(node->array->properties.type);
+    if (array_type->tag == KEFIR_AST_TYPE_ARRAY ||
+        array_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
+        REQUIRE_OK(KEFIR_AST_NODE_VISIT(visitor, node->array, payload));
+        *param->constant = *param->constant && node->subscript->properties.expression_props.constant_expression;
+    } else {
+        REQUIRE_OK(KEFIR_AST_NODE_VISIT(visitor, node->subscript, payload));
+        *param->constant = *param->constant && node->array->properties.expression_props.constant_expression;
+    }
     return KEFIR_OK;
 }
 
