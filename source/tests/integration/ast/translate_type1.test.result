@@ -1,1 +1,44 @@
-array[10] { word; }; struct { float; union { array[256] { char; }; long; }; word; short; short; short; }; 
+[
+    {
+        "type": "array",
+        "length": 10,
+        "element_type": {
+            "type": "word"
+        }
+    },
+    {
+        "type": "struct",
+        "fields": [
+            {
+                "type": "float"
+            },
+            {
+                "type": "struct",
+                "fields": [
+                    {
+                        "type": "array",
+                        "length": 256,
+                        "element_type": {
+                            "type": "char"
+                        }
+                    },
+                    {
+                        "type": "long"
+                    }
+                ]
+            },
+            {
+                "type": "word"
+            },
+            {
+                "type": "short"
+            },
+            {
+                "type": "short"
+            },
+            {
+                "type": "short"
+            }
+        ]
+    }
+]

@@ -14,7 +14,8 @@ KEFIR_LIB := $(wildcard \
 	$(SOURCE_DIR)/codegen/amd64/system-v/*.c \
 	$(SOURCE_DIR)/codegen/amd64/system-v/abi/*.c \
 	$(SOURCE_DIR)/codegen/amd64/system-v/abi/builtins/*.c \
-	$(SOURCE_DIR)/ir/*.c)
+	$(SOURCE_DIR)/ir/*.c \
+	$(SOURCE_DIR)/util/*.c)
 KEFIR_LIB_DEPS := $(KEFIR_LIB:$(SOURCE_DIR)/%.c=$(BIN_DIR)/%.d)
 KEFIR_LIB_OBJS := $(KEFIR_LIB:$(SOURCE_DIR)/%.c=$(BIN_DIR)/%.o)
 

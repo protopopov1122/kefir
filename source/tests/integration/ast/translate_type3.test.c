@@ -4,32 +4,40 @@
 #include "kefir/ast-translator/translator.h"
 #include "kefir/ast-translator/layout.h"
 #include "kefir/test/util.h"
+#include "kefir/util/json.h"
 
-static kefir_result_t dump_type_layout(FILE *out, kefir_size_t indent, const char *prefix, const struct kefir_ast_type_layout *layout) {
-    for (kefir_size_t i = 0; i < indent; i++) {
-        fprintf(out, "\t");
-    }
-    if (prefix != NULL) {
-        fprintf(out, "%s: ", prefix);
-    }
+static kefir_result_t dump_type_layout(struct kefir_json_output *json,
+                                     const struct kefir_ast_type_layout *layout) {
+    REQUIRE_OK(kefir_json_output_object_begin(json));
+    REQUIRE_OK(kefir_json_output_object_key(json, "index"));
+    REQUIRE_OK(kefir_json_output_uinteger(json, layout->value));
+    REQUIRE_OK(kefir_json_output_object_key(json, "size"));
+    REQUIRE_OK(kefir_json_output_uinteger(json, layout->properties.size));
+    REQUIRE_OK(kefir_json_output_object_key(json, "alignment"));
+    REQUIRE_OK(kefir_json_output_uinteger(json, layout->properties.alignment));
+    REQUIRE_OK(kefir_json_output_object_key(json, "relative_offset"));
+    REQUIRE_OK(kefir_json_output_uinteger(json, layout->properties.relative_offset));
+    REQUIRE_OK(kefir_json_output_object_key(json, "type"));
     switch (layout->type->tag) {
         case KEFIR_AST_TYPE_STRUCTURE:
         case KEFIR_AST_TYPE_UNION: {
-            fprintf(out, "%s("KEFIR_SIZE_FMT"){size="KEFIR_SIZE_FMT"; alignment="KEFIR_SIZE_FMT"; rel_offset="KEFIR_SIZE_FMT"}\n",
-                layout->type->tag == KEFIR_AST_TYPE_STRUCTURE
-                    ? "STRUCT"
-                    : "UNION",
-                layout->value,
-                layout->properties.size,
-                layout->properties.alignment,
-                layout->properties.relative_offset);
+            REQUIRE_OK(kefir_json_output_string(json, layout->type->tag == KEFIR_AST_TYPE_STRUCTURE
+                ? "struct"
+                : "union"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "fields"));
+            REQUIRE_OK(kefir_json_output_array_begin(json));
             struct kefir_hashtree_node_iterator iter;
             for (const struct kefir_hashtree_node *node = kefir_hashtree_iter(&layout->structure_layout.members, &iter);
                 node != NULL;
                 node = kefir_hashtree_next(&iter)) {
                 ASSIGN_DECL_CAST(const struct kefir_ast_type_layout *, member,
                     node->value);
-                REQUIRE_OK(dump_type_layout(out, indent + 1, (const char *) node->key, member));
+                REQUIRE_OK(kefir_json_output_object_begin(json));
+                REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
+                REQUIRE_OK(kefir_json_output_string(json, (const char *) node->key));
+                REQUIRE_OK(kefir_json_output_object_key(json, "layout"));
+                REQUIRE_OK(dump_type_layout(json, member));
+                REQUIRE_OK(kefir_json_output_object_end(json));
             }
 
             for (const struct kefir_list_entry *iter = kefir_list_head(&layout->structure_layout.anonymous_members);
@@ -37,33 +45,32 @@ static kefir_result_t dump_type_layout(FILE *out, kefir_size_t indent, const cha
                 kefir_list_next(&iter)) {
                 ASSIGN_DECL_CAST(const struct kefir_ast_type_layout *, member,
                     iter->value);
-                REQUIRE_OK(dump_type_layout(out, indent + 1, NULL, member));
+                REQUIRE_OK(kefir_json_output_object_begin(json));
+                REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
+                REQUIRE_OK(kefir_json_output_null(json));
+                REQUIRE_OK(kefir_json_output_object_key(json, "layout"));
+                REQUIRE_OK(dump_type_layout(json, member));
+                REQUIRE_OK(kefir_json_output_object_end(json));
             }
+            REQUIRE_OK(kefir_json_output_array_end(json));
         } break;
 
         case KEFIR_AST_TYPE_ARRAY:
-            fprintf(out, "ARRAY("KEFIR_SIZE_FMT")"
-                "{size="KEFIR_SIZE_FMT"; alignment="KEFIR_SIZE_FMT"; rel_offset="KEFIR_SIZE_FMT"}\n",
-                layout->value,
-                layout->properties.size,
-                layout->properties.alignment,
-                layout->properties.relative_offset);
-            REQUIRE_OK(dump_type_layout(out, indent + 1, NULL, layout->array_layout.element_type));
+            REQUIRE_OK(kefir_json_output_string(json, "array"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "element"));
+            REQUIRE_OK(dump_type_layout(json, layout->array_layout.element_type));
             break;
 
         default:
-            fprintf(out, "SCALAR("KEFIR_SIZE_FMT")"
-                "{size="KEFIR_SIZE_FMT"; alignment="KEFIR_SIZE_FMT"; rel_offset="KEFIR_SIZE_FMT"}\n",
-                    layout->value,
-                    layout->properties.size,
-                    layout->properties.alignment,
-                    layout->properties.relative_offset);
+            REQUIRE_OK(kefir_json_output_string(json, "scalar"));
             break;
     }
+    REQUIRE_OK(kefir_json_output_object_end(json));
     return KEFIR_OK;
 }
 
 kefir_result_t dump_type(struct kefir_mem *mem,
+                       struct kefir_json_output *json,
                        const struct kefir_ast_type *type) {
     struct kefir_ir_type ir_type;
     struct kefir_irbuilder_type builder;
@@ -77,12 +84,12 @@ kefir_result_t dump_type(struct kefir_mem *mem,
     REQUIRE_OK(kefir_ast_translate_object_type(mem, type, 0, &env, &builder, &layout1));
     REQUIRE_OK(kefir_ast_translator_evaluate_type_layout(mem, &env, layout1, &ir_type));
     REQUIRE(layout1 != NULL, KEFIR_INTERNAL_ERROR);
-    REQUIRE_OK(dump_type_layout(stdout, 0, NULL, layout1));
+
+    REQUIRE_OK(dump_type_layout(json, layout1));
     REQUIRE_OK(kefir_ast_type_layout_free(mem, layout1));
 
     REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
     REQUIRE_OK(kefir_ir_type_free(mem, &ir_type));
-    printf("\n");
     return KEFIR_OK;
 }
 
@@ -93,18 +100,22 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_symbol_table_init(&symbols));
     REQUIRE_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
 
+    struct kefir_json_output json;
+    REQUIRE_OK(kefir_json_output_init(&json, stdout, 4));
+    REQUIRE_OK(kefir_json_output_array_begin(&json));
+
     const struct kefir_ast_type *type1 = kefir_ast_type_signed_long();
-    REQUIRE_OK(dump_type(mem, type1));
+    REQUIRE_OK(dump_type(mem, &json, type1));
 
     const struct kefir_ast_type *type2 = kefir_ast_type_array(mem, &type_bundle,
         kefir_ast_type_char(), kefir_ast_constant_expression_integer(mem, 10), NULL);
-    REQUIRE_OK(dump_type(mem, type2));
+    REQUIRE_OK(dump_type(mem, &json, type2));
 
     const struct kefir_ast_type *type3 = kefir_ast_type_array(mem, &type_bundle,
         kefir_ast_type_array(mem, &type_bundle, kefir_ast_type_char(),
             kefir_ast_constant_expression_integer(mem, 5), NULL),
         kefir_ast_constant_expression_integer(mem, 10), NULL);
-    REQUIRE_OK(dump_type(mem, type3));
+    REQUIRE_OK(dump_type(mem, &json, type3));
 
     struct kefir_ast_enum_type *enum_type_4_0 = NULL;
     const struct kefir_ast_type *type4_0 = kefir_ast_type_enumeration(mem, &type_bundle,
@@ -142,7 +153,10 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, struct_type4, "c",
         kefir_ast_type_array(mem, &type_bundle,
             type4_1, kefir_ast_constant_expression_integer(mem, 10), NULL), NULL));
-    REQUIRE_OK(dump_type(mem, type4));
+    REQUIRE_OK(dump_type(mem, &json, type4));
+
+    REQUIRE_OK(kefir_json_output_array_end(&json));
+    REQUIRE_OK(kefir_json_output_finalize(&json));
 
     REQUIRE_OK(kefir_ast_type_bundle_free(mem, &type_bundle));
     REQUIRE_OK(kefir_symbol_table_free(mem, &symbols));

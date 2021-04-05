@@ -3,8 +3,9 @@
 #include "kefir/ir/format.h"
 #include <stdio.h>
 
-static kefir_result_t format_global_scope(FILE *out, struct kefir_ast_translator_global_scope_layout *scope) {
-    fprintf(out, "external:\n");
+static kefir_result_t format_global_scope(struct kefir_json_output *json, struct kefir_ast_translator_global_scope_layout *scope) {
+    REQUIRE_OK(kefir_json_output_object_key(json, "externals"));
+    REQUIRE_OK(kefir_json_output_array_begin(json));
     for (const struct kefir_list_entry *iter = kefir_list_head(&scope->external_objects);
         iter != NULL;
         kefir_list_next(&iter)) {
@@ -12,17 +13,24 @@ static kefir_result_t format_global_scope(FILE *out, struct kefir_ast_translator
             iter->value);
         ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_payload,
             scoped_identifier->value->payload.ptr);
-        if (scoped_identifier->value->object.external) {
-            fprintf(out, "\tdeclare %s: ", scoped_identifier->identifier);
-        } else {
-            fprintf(out, "\tdefine %s: ", scoped_identifier->identifier);
-        }
-        kefir_ir_format_type(out, scoped_identifier_payload->type);
-        fprintf(out, "\n");
-    }
-    fprintf(out, "\n");
 
-    fprintf(out, "external thread_local:\n");
+        REQUIRE_OK(kefir_json_output_object_begin(json));
+        REQUIRE_OK(kefir_json_output_object_key(json, "class"));
+        if (scoped_identifier->value->object.external) {
+            REQUIRE_OK(kefir_json_output_string(json, "declaration"));
+        } else {
+            REQUIRE_OK(kefir_json_output_string(json, "definition"));
+        }
+        REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
+        REQUIRE_OK(kefir_json_output_string(json, scoped_identifier->identifier));
+        REQUIRE_OK(kefir_json_output_object_key(json, "type"));
+        REQUIRE_OK(kefir_ir_format_type_json(json, scoped_identifier_payload->type));
+        REQUIRE_OK(kefir_json_output_object_end(json));
+    }
+    REQUIRE_OK(kefir_json_output_array_end(json));
+
+    REQUIRE_OK(kefir_json_output_object_key(json, "external_thread_locals"));
+    REQUIRE_OK(kefir_json_output_array_begin(json));
     for (const struct kefir_list_entry *iter = kefir_list_head(&scope->external_thread_local_objects);
         iter != NULL;
         kefir_list_next(&iter)) {
@@ -30,19 +38,28 @@ static kefir_result_t format_global_scope(FILE *out, struct kefir_ast_translator
             iter->value);
         ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_payload,
             scoped_identifier->value->payload.ptr);
+        
+        REQUIRE_OK(kefir_json_output_object_begin(json));
+        REQUIRE_OK(kefir_json_output_object_key(json, "class"));
         if (scoped_identifier->value->object.external) {
-            fprintf(out, "\tdeclare %s: ", scoped_identifier->identifier);
+            REQUIRE_OK(kefir_json_output_string(json, "declaration"));
         } else {
-            fprintf(out, "\tdefine %s: ", scoped_identifier->identifier);
+            REQUIRE_OK(kefir_json_output_string(json, "definition"));
         }
-        kefir_ir_format_type(out, scoped_identifier_payload->type);
-        fprintf(out, "\n");
+        REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
+        REQUIRE_OK(kefir_json_output_string(json, scoped_identifier->identifier));
+        REQUIRE_OK(kefir_json_output_object_key(json, "type"));
+        REQUIRE_OK(kefir_ir_format_type_json(json, scoped_identifier_payload->type));
+        REQUIRE_OK(kefir_json_output_object_end(json));
     }
-    fprintf(out, "\n");
+    REQUIRE_OK(kefir_json_output_array_end(json));
     
-    fprintf(out, "static: ");
-    kefir_ir_format_type(out, scope->static_layout);
-    fprintf(out, "\n");
+    REQUIRE_OK(kefir_json_output_object_key(json, "statics"));
+    REQUIRE_OK(kefir_json_output_object_begin(json));
+    REQUIRE_OK(kefir_json_output_object_key(json, "layout"));
+    REQUIRE_OK(kefir_ir_format_type_json(json, scope->static_layout));
+    REQUIRE_OK(kefir_json_output_object_key(json, "variables"));
+    REQUIRE_OK(kefir_json_output_array_begin(json));
     for (const struct kefir_list_entry *iter = kefir_list_head(&scope->static_objects);
         iter != NULL;
         kefir_list_next(&iter)) {
@@ -50,15 +67,23 @@ static kefir_result_t format_global_scope(FILE *out, struct kefir_ast_translator
             iter->value);
         ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_payload,
             scoped_identifier->value->payload.ptr);
-        fprintf(out, "\tdefine %s: static[" KEFIR_SIZE_FMT "]", scoped_identifier->identifier,
-            scoped_identifier_payload->layout->value);
-        fprintf(out, "\n");
-    }
-    fprintf(out, "\n");
 
-    fprintf(out, "static thread_local: ");
-    kefir_ir_format_type(out, scope->static_thread_local_layout);
-    fprintf(out, "\n");
+        REQUIRE_OK(kefir_json_output_object_begin(json));
+        REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
+        REQUIRE_OK(kefir_json_output_string(json, scoped_identifier->identifier));
+        REQUIRE_OK(kefir_json_output_object_key(json, "offset"));
+        REQUIRE_OK(kefir_json_output_uinteger(json, scoped_identifier_payload->layout->value));
+        REQUIRE_OK(kefir_json_output_object_end(json));
+    }
+    REQUIRE_OK(kefir_json_output_array_end(json));
+    REQUIRE_OK(kefir_json_output_object_end(json));
+
+    REQUIRE_OK(kefir_json_output_object_key(json, "static_thread_locals"));
+    REQUIRE_OK(kefir_json_output_object_begin(json));
+    REQUIRE_OK(kefir_json_output_object_key(json, "layout"));
+    REQUIRE_OK(kefir_ir_format_type_json(json, scope->static_thread_local_layout));
+    REQUIRE_OK(kefir_json_output_object_key(json, "variables"));
+    REQUIRE_OK(kefir_json_output_array_begin(json));
     for (const struct kefir_list_entry *iter = kefir_list_head(&scope->static_thread_local_objects);
         iter != NULL;
         kefir_list_next(&iter)) {
@@ -66,15 +91,23 @@ static kefir_result_t format_global_scope(FILE *out, struct kefir_ast_translator
             iter->value);
         ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_payload,
             scoped_identifier->value->payload.ptr);
-        fprintf(out, "\tdefine %s: static thread_local[" KEFIR_SIZE_FMT "]", scoped_identifier->identifier,
-            scoped_identifier_payload->layout->value);
-        fprintf(out, "\n");
+
+        REQUIRE_OK(kefir_json_output_object_begin(json));
+        REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
+        REQUIRE_OK(kefir_json_output_string(json, scoped_identifier->identifier));
+        REQUIRE_OK(kefir_json_output_object_key(json, "offset"));
+        REQUIRE_OK(kefir_json_output_uinteger(json, scoped_identifier_payload->layout->value));
+        REQUIRE_OK(kefir_json_output_object_end(json));
     }
+    REQUIRE_OK(kefir_json_output_array_end(json));
+    REQUIRE_OK(kefir_json_output_object_end(json));
     return KEFIR_OK;
 }
 
-static kefir_result_t format_local_scope(FILE *out, struct kefir_ast_translator_local_scope_layout *scope) {
-    fprintf(out, "local static:\n");
+static kefir_result_t format_local_scope(struct kefir_json_output *json, struct kefir_ast_translator_local_scope_layout *scope) {
+    
+    REQUIRE_OK(kefir_json_output_object_key(json, "local_statics"));
+    REQUIRE_OK(kefir_json_output_array_begin(json));
     for (const struct kefir_list_entry *iter = kefir_list_head(&scope->static_objects);
         iter != NULL;
         kefir_list_next(&iter)) {
@@ -82,13 +115,18 @@ static kefir_result_t format_local_scope(FILE *out, struct kefir_ast_translator_
             iter->value);
         ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_payload,
             scoped_identifier->value->payload.ptr);
-        fprintf(out, "\tdefine %s: static[" KEFIR_SIZE_FMT "]", scoped_identifier->identifier,
-            scoped_identifier_payload->layout->value);
-        fprintf(out, "\n");
+        
+        REQUIRE_OK(kefir_json_output_object_begin(json));
+        REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
+        REQUIRE_OK(kefir_json_output_string(json, scoped_identifier->identifier));
+        REQUIRE_OK(kefir_json_output_object_key(json, "offset"));
+        REQUIRE_OK(kefir_json_output_uinteger(json, scoped_identifier_payload->layout->value));
+        REQUIRE_OK(kefir_json_output_object_end(json));
     }
-    fprintf(out, "\n");
+    REQUIRE_OK(kefir_json_output_array_end(json));
 
-    fprintf(out, "local static thread_local:\n");
+    REQUIRE_OK(kefir_json_output_object_key(json, "local_thread_local_statics"));
+    REQUIRE_OK(kefir_json_output_array_begin(json));
     for (const struct kefir_list_entry *iter = kefir_list_head(&scope->static_thread_local_objects);
         iter != NULL;
         kefir_list_next(&iter)) {
@@ -96,15 +134,22 @@ static kefir_result_t format_local_scope(FILE *out, struct kefir_ast_translator_
             iter->value);
         ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_payload,
             scoped_identifier->value->payload.ptr);
-        fprintf(out, "\tdefine %s: static thread_local[" KEFIR_SIZE_FMT "]", scoped_identifier->identifier,
-            scoped_identifier_payload->layout->value);
-        fprintf(out, "\n");
+        
+        REQUIRE_OK(kefir_json_output_object_begin(json));
+        REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
+        REQUIRE_OK(kefir_json_output_string(json, scoped_identifier->identifier));
+        REQUIRE_OK(kefir_json_output_object_key(json, "offset"));
+        REQUIRE_OK(kefir_json_output_uinteger(json, scoped_identifier_payload->layout->value));
+        REQUIRE_OK(kefir_json_output_object_end(json));
     }
-    fprintf(out, "\n");
+    REQUIRE_OK(kefir_json_output_array_end(json));
 
-    fprintf(out, "local: ");
-    kefir_ir_format_type(out, scope->local_layout);
-    fprintf(out, "\n");
+    REQUIRE_OK(kefir_json_output_object_key(json, "locals"));
+    REQUIRE_OK(kefir_json_output_object_begin(json));
+    REQUIRE_OK(kefir_json_output_object_key(json, "layout"));
+    REQUIRE_OK(kefir_ir_format_type_json(json, scope->local_layout));
+    REQUIRE_OK(kefir_json_output_object_key(json, "variables"));
+    REQUIRE_OK(kefir_json_output_array_begin(json));
     for (const struct kefir_list_entry *iter = kefir_list_head(&scope->local_objects);
         iter != NULL;
         kefir_list_next(&iter)) {
@@ -112,10 +157,16 @@ static kefir_result_t format_local_scope(FILE *out, struct kefir_ast_translator_
             iter->value);
         ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_payload,
             scoped_identifier->value->payload.ptr);
-        fprintf(out, "\tdefine %s: local[" KEFIR_SIZE_FMT "]", scoped_identifier->identifier,
-            scoped_identifier_payload->layout->value);
-        fprintf(out, "\n");
+        
+        REQUIRE_OK(kefir_json_output_object_begin(json));
+        REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
+        REQUIRE_OK(kefir_json_output_string(json, scoped_identifier->identifier));
+        REQUIRE_OK(kefir_json_output_object_key(json, "offset"));
+        REQUIRE_OK(kefir_json_output_uinteger(json, scoped_identifier_payload->layout->value));
+        REQUIRE_OK(kefir_json_output_object_end(json));
     }
+    REQUIRE_OK(kefir_json_output_array_end(json));
+    REQUIRE_OK(kefir_json_output_object_end(json));
     return KEFIR_OK;
 }
 
@@ -202,9 +253,15 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_translator_local_scope_layout_init(mem, &module, &translator_global_scope, &translator_local_scope));
     REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(mem, &module, &global_context, &env, &translator_global_scope));
     REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(mem, &local_context, &env, &translator_local_scope));
-    REQUIRE_OK(format_global_scope(stdout, &translator_global_scope));
-    fprintf(stdout, "\n");
-    REQUIRE_OK(format_local_scope(stdout, &translator_local_scope));
+
+    struct kefir_json_output json;
+    REQUIRE_OK(kefir_json_output_init(&json, stdout, 4));
+    REQUIRE_OK(kefir_json_output_object_begin(&json));
+    REQUIRE_OK(format_global_scope(&json, &translator_global_scope));
+    REQUIRE_OK(format_local_scope(&json, &translator_local_scope));
+    REQUIRE_OK(kefir_json_output_object_end(&json));
+    REQUIRE_OK(kefir_json_output_finalize(&json));
+
     REQUIRE_OK(kefir_ast_translator_local_scope_layout_free(mem, &translator_local_scope));
     REQUIRE_OK(kefir_ast_translator_global_scope_layout_free(mem, &translator_global_scope));
 

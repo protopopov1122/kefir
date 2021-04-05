@@ -1,29 +1,219 @@
-external:
-	declare global_var1: int; 
-	define global_var2: long; 
-	declare global_var100: char; 
-
-external thread_local:
-	declare global_var3: float; 
-	define global_var4: array[16] { char; }; 
-	declare global_var101: array[100] { word; } align as 32; 
-
-static: word; struct { double; array[32] { char; }; }; array[128] { char; }; long; 
-	define static_var1: static[0]
-	define static_var2: static[1]
-
-static thread_local: array[1] { struct { double; array[32] { char; }; }; }; short; bool align as 8; float; 
-	define static_var3: static thread_local[0]
-	define static_var4: static thread_local[5]
-
-local static:
-	define local_static_var1: static[5]
-	define local_static_var2: static[7]
-
-local static thread_local:
-	define local_static_var3: static thread_local[6]
-	define local_static_var4: static thread_local[7]
-
-local: struct { struct { double; array[32] { char; }; }; array[64] { array[16] { int; }; }; }; 
-	define local_var1: local[1]
-	define local_var2: local[5]
+{
+    "externals": [
+        {
+            "class": "declaration",
+            "identifier": "global_var1",
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "class": "definition",
+            "identifier": "global_var2",
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "class": "declaration",
+            "identifier": "global_var100",
+            "type": [
+                {
+                    "type": "char"
+                }
+            ]
+        }
+    ],
+    "external_thread_locals": [
+        {
+            "class": "declaration",
+            "identifier": "global_var3",
+            "type": [
+                {
+                    "type": "float"
+                }
+            ]
+        },
+        {
+            "class": "definition",
+            "identifier": "global_var4",
+            "type": [
+                {
+                    "type": "array",
+                    "length": 16,
+                    "element_type": {
+                        "type": "char"
+                    }
+                }
+            ]
+        },
+        {
+            "class": "declaration",
+            "identifier": "global_var101",
+            "type": [
+                {
+                    "type": "array",
+                    "length": 100,
+                    "element_type": {
+                        "type": "word"
+                    },
+                    "alignment": 32
+                }
+            ]
+        }
+    ],
+    "statics": {
+        "layout": [
+            {
+                "type": "word"
+            },
+            {
+                "type": "struct",
+                "fields": [
+                    {
+                        "type": "double"
+                    },
+                    {
+                        "type": "array",
+                        "length": 32,
+                        "element_type": {
+                            "type": "char"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "array",
+                "length": 128,
+                "element_type": {
+                    "type": "char"
+                }
+            },
+            {
+                "type": "long"
+            }
+        ],
+        "variables": [
+            {
+                "identifier": "static_var1",
+                "offset": 0
+            },
+            {
+                "identifier": "static_var2",
+                "offset": 1
+            }
+        ]
+    },
+    "static_thread_locals": {
+        "layout": [
+            {
+                "type": "array",
+                "length": 1,
+                "element_type": {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "double"
+                        },
+                        {
+                            "type": "array",
+                            "length": 32,
+                            "element_type": {
+                                "type": "char"
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "type": "short"
+            },
+            {
+                "type": "bool",
+                "alignment": 8
+            },
+            {
+                "type": "float"
+            }
+        ],
+        "variables": [
+            {
+                "identifier": "static_var3",
+                "offset": 0
+            },
+            {
+                "identifier": "static_var4",
+                "offset": 5
+            }
+        ]
+    },
+    "local_statics": [
+        {
+            "identifier": "local_static_var1",
+            "offset": 5
+        },
+        {
+            "identifier": "local_static_var2",
+            "offset": 7
+        }
+    ],
+    "local_thread_local_statics": [
+        {
+            "identifier": "local_static_var3",
+            "offset": 6
+        },
+        {
+            "identifier": "local_static_var4",
+            "offset": 7
+        }
+    ],
+    "locals": {
+        "layout": [
+            {
+                "type": "struct",
+                "fields": [
+                    {
+                        "type": "struct",
+                        "fields": [
+                            {
+                                "type": "double"
+                            },
+                            {
+                                "type": "array",
+                                "length": 32,
+                                "element_type": {
+                                    "type": "char"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "array",
+                        "length": 64,
+                        "element_type": {
+                            "type": "array",
+                            "length": 16,
+                            "element_type": {
+                                "type": "int"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "variables": [
+            {
+                "identifier": "local_var1",
+                "offset": 1
+            },
+            {
+                "identifier": "local_var2",
+                "offset": 5
+            }
+        ]
+    }
+}

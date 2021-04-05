@@ -1,27 +1,77 @@
-global func1
-
-
-declare func1 = {
-	params: 
-	vararg: no
-	returns: int; 
-}
-
-implement func1 = {
-	body:
-		push	2
-		inot
-		push	3
-		imul
-		push	1
-		ineg
-		iadd
-		push	2
-		push	1
-		ishl
-		push	3
-		imul
-		intcf64
-		pushf64	0x1p+0
-		f64add
+{
+    "globals": [
+        "func1"
+    ],
+    "externals": [],
+    "function_declarations": [
+        {
+            "identifier": "func1",
+            "parameters": [],
+            "vararg": false,
+            "returns": [
+                {
+                    "type": "int"
+                }
+            ]
+        }
+    ],
+    "functions": [
+        {
+            "identifier": "func1",
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 2
+                },
+                {
+                    "opcode": "inot"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 3
+                },
+                {
+                    "opcode": "imul"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "ineg"
+                },
+                {
+                    "opcode": "iadd"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 2
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "ishl"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 3
+                },
+                {
+                    "opcode": "imul"
+                },
+                {
+                    "opcode": "intcf64"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 1.000000
+                },
+                {
+                    "opcode": "f64add"
+                }
+            ]
+        }
+    ]
 }

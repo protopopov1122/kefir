@@ -1,1 +1,262 @@
-bool align as 1; char align as 1; char align as 1; short align as 1; short align as 1; int align as 1; int align as 1; long align as 1; long align as 1; long align as 1; long align as 1; float align as 1; double align as 1; bool align as 2; char align as 2; char align as 2; short align as 2; short align as 2; int align as 2; int align as 2; long align as 2; long align as 2; long align as 2; long align as 2; float align as 2; double align as 2; bool align as 4; char align as 4; char align as 4; short align as 4; short align as 4; int align as 4; int align as 4; long align as 4; long align as 4; long align as 4; long align as 4; float align as 4; double align as 4; bool align as 8; char align as 8; char align as 8; short align as 8; short align as 8; int align as 8; int align as 8; long align as 8; long align as 8; long align as 8; long align as 8; float align as 8; double align as 8; bool align as 16; char align as 16; char align as 16; short align as 16; short align as 16; int align as 16; int align as 16; long align as 16; long align as 16; long align as 16; long align as 16; float align as 16; double align as 16; 
+[
+    {
+        "type": "bool",
+        "alignment": 1
+    },
+    {
+        "type": "char",
+        "alignment": 1
+    },
+    {
+        "type": "char",
+        "alignment": 1
+    },
+    {
+        "type": "short",
+        "alignment": 1
+    },
+    {
+        "type": "short",
+        "alignment": 1
+    },
+    {
+        "type": "int",
+        "alignment": 1
+    },
+    {
+        "type": "int",
+        "alignment": 1
+    },
+    {
+        "type": "long",
+        "alignment": 1
+    },
+    {
+        "type": "long",
+        "alignment": 1
+    },
+    {
+        "type": "long",
+        "alignment": 1
+    },
+    {
+        "type": "long",
+        "alignment": 1
+    },
+    {
+        "type": "float",
+        "alignment": 1
+    },
+    {
+        "type": "double",
+        "alignment": 1
+    },
+    {
+        "type": "bool",
+        "alignment": 2
+    },
+    {
+        "type": "char",
+        "alignment": 2
+    },
+    {
+        "type": "char",
+        "alignment": 2
+    },
+    {
+        "type": "short",
+        "alignment": 2
+    },
+    {
+        "type": "short",
+        "alignment": 2
+    },
+    {
+        "type": "int",
+        "alignment": 2
+    },
+    {
+        "type": "int",
+        "alignment": 2
+    },
+    {
+        "type": "long",
+        "alignment": 2
+    },
+    {
+        "type": "long",
+        "alignment": 2
+    },
+    {
+        "type": "long",
+        "alignment": 2
+    },
+    {
+        "type": "long",
+        "alignment": 2
+    },
+    {
+        "type": "float",
+        "alignment": 2
+    },
+    {
+        "type": "double",
+        "alignment": 2
+    },
+    {
+        "type": "bool",
+        "alignment": 4
+    },
+    {
+        "type": "char",
+        "alignment": 4
+    },
+    {
+        "type": "char",
+        "alignment": 4
+    },
+    {
+        "type": "short",
+        "alignment": 4
+    },
+    {
+        "type": "short",
+        "alignment": 4
+    },
+    {
+        "type": "int",
+        "alignment": 4
+    },
+    {
+        "type": "int",
+        "alignment": 4
+    },
+    {
+        "type": "long",
+        "alignment": 4
+    },
+    {
+        "type": "long",
+        "alignment": 4
+    },
+    {
+        "type": "long",
+        "alignment": 4
+    },
+    {
+        "type": "long",
+        "alignment": 4
+    },
+    {
+        "type": "float",
+        "alignment": 4
+    },
+    {
+        "type": "double",
+        "alignment": 4
+    },
+    {
+        "type": "bool",
+        "alignment": 8
+    },
+    {
+        "type": "char",
+        "alignment": 8
+    },
+    {
+        "type": "char",
+        "alignment": 8
+    },
+    {
+        "type": "short",
+        "alignment": 8
+    },
+    {
+        "type": "short",
+        "alignment": 8
+    },
+    {
+        "type": "int",
+        "alignment": 8
+    },
+    {
+        "type": "int",
+        "alignment": 8
+    },
+    {
+        "type": "long",
+        "alignment": 8
+    },
+    {
+        "type": "long",
+        "alignment": 8
+    },
+    {
+        "type": "long",
+        "alignment": 8
+    },
+    {
+        "type": "long",
+        "alignment": 8
+    },
+    {
+        "type": "float",
+        "alignment": 8
+    },
+    {
+        "type": "double",
+        "alignment": 8
+    },
+    {
+        "type": "bool",
+        "alignment": 16
+    },
+    {
+        "type": "char",
+        "alignment": 16
+    },
+    {
+        "type": "char",
+        "alignment": 16
+    },
+    {
+        "type": "short",
+        "alignment": 16
+    },
+    {
+        "type": "short",
+        "alignment": 16
+    },
+    {
+        "type": "int",
+        "alignment": 16
+    },
+    {
+        "type": "int",
+        "alignment": 16
+    },
+    {
+        "type": "long",
+        "alignment": 16
+    },
+    {
+        "type": "long",
+        "alignment": 16
+    },
+    {
+        "type": "long",
+        "alignment": 16
+    },
+    {
+        "type": "long",
+        "alignment": 16
+    },
+    {
+        "type": "float",
+        "alignment": 16
+    },
+    {
+        "type": "double",
+        "alignment": 16
+    }
+]
