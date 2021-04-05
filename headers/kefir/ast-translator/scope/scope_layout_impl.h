@@ -1,7 +1,7 @@
-#ifndef KEFIR_AST_TRANSLATOR_SCOPE_LAYOUT_IMPL_H_
-#define KEFIR_AST_TRANSLATOR_SCOPE_LAYOUT_IMPL_H_
+#ifndef KEFIR_AST_TRANSLATOR_SCOPE_SCOPE_LAYOUT_IMPL_H_
+#define KEFIR_AST_TRANSLATOR_SCOPE_SCOPE_LAYOUT_IMPL_H_
 
-#include "kefir/ast-translator/scope_layout.h"
+#include "kefir/ast-translator/scope/scoped_identifier.h"
 
 kefir_result_t kefir_ast_translator_scoped_identifer_payload_free(struct kefir_mem *,
                                                               struct kefir_ast_scoped_identifier *,

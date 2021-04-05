@@ -1,8 +1,8 @@
-#include "kefir/ast-translator/local_scope_layout.h"
+#include "kefir/ast-translator/scope/local_scope_layout.h"
 #include "kefir/ast-translator/translator.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
-#include "kefir/ast-translator/scope_layout_impl.h"
+#include "kefir/ast-translator/scope/scope_layout_impl.h"
 
 kefir_result_t kefir_ast_translator_local_scope_layout_init(struct kefir_mem *mem,
                                              struct kefir_ir_module *module,
@@ -41,7 +41,7 @@ static kefir_result_t translate_static_identifier(struct kefir_mem *mem,
                                                 struct kefir_ast_translator_local_scope_layout *local_layout,
                                                 const char *identifier,
                                                 const struct kefir_ast_scoped_identifier *scoped_identifier) {
-    ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_payload *, scoped_identifier_layout,
+    ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_layout,
         scoped_identifier->payload.ptr);
     KEFIR_AST_SCOPE_SET_CLEANUP(scoped_identifier, kefir_ast_translator_scoped_identifer_payload_free, NULL);
     struct kefir_irbuilder_type global_builder;
@@ -64,7 +64,7 @@ static kefir_result_t translate_static_thread_local_identifier(struct kefir_mem 
                                                              struct kefir_ast_translator_local_scope_layout *local_layout,
                                                              const char *identifier,
                                                              const struct kefir_ast_scoped_identifier *scoped_identifier) {
-    ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_payload *, scoped_identifier_layout,
+    ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_layout,
         scoped_identifier->payload.ptr);
     KEFIR_AST_SCOPE_SET_CLEANUP(scoped_identifier, kefir_ast_translator_scoped_identifer_payload_free, NULL);
     struct kefir_irbuilder_type global_builder;
@@ -89,7 +89,7 @@ static kefir_result_t translate_auto_register_identifier(struct kefir_mem *mem,
                                                        struct kefir_ast_translator_local_scope_layout *local_layout,
                                                        const char *identifier,
                                                        const struct kefir_ast_scoped_identifier *scoped_identifier) {
-    ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_payload *, scoped_identifier_layout,
+    ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_layout,
         scoped_identifier->payload.ptr);
     KEFIR_AST_SCOPE_SET_CLEANUP(scoped_identifier, kefir_ast_translator_scoped_identifer_payload_free, NULL);
     REQUIRE_OK(kefir_ast_translate_object_type(mem, scoped_identifier->object.type,
@@ -171,7 +171,7 @@ static kefir_result_t traverse_local_scope(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_translate_local_scope_layout(struct kefir_mem *mem,
+kefir_result_t kefir_ast_translator_build_local_scope_layout(struct kefir_mem *mem,
                                            const struct kefir_ast_local_context *context,
                                            const struct kefir_ast_translator_environment *env,
                                            struct kefir_ast_translator_local_scope_layout *layout) {

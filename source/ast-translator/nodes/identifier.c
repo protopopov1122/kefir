@@ -4,7 +4,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/ir/module.h"
-#include "kefir/ast-translator/scope_layout.h"
+#include "kefir/ast-translator/scope/scoped_identifier.h"
 
 static kefir_result_t translate_object_identifier(struct kefir_mem *mem,
                                                 const struct kefir_ast_translator_context *context,
@@ -21,7 +21,7 @@ static kefir_result_t translate_object_identifier(struct kefir_mem *mem,
         } break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC: {
-            ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_payload *, identifier_data,
+            ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, identifier_data,
                 scoped_identifier->payload.ptr);
             kefir_id_t id;
             REQUIRE(kefir_ir_module_symbol(mem, context->module,
@@ -41,7 +41,7 @@ static kefir_result_t translate_object_identifier(struct kefir_mem *mem,
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO:
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER: {
-            ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_payload *, identifier_data,
+            ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, identifier_data,
                 scoped_identifier->payload.ptr);
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_GETLOCALS, 0));
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_ELEMENTPTR,

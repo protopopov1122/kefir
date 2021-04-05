@@ -1,4 +1,4 @@
-#include "kefir/ast-translator/local_scope_layout.h"
+#include "kefir/ast-translator/scope/local_scope_layout.h"
 #include "kefir/test/util.h"
 #include "kefir/ir/format.h"
 #include <stdio.h>
@@ -8,9 +8,9 @@ static kefir_result_t format_global_scope(FILE *out, struct kefir_ast_translator
     for (const struct kefir_list_entry *iter = kefir_list_head(&scope->external_objects);
         iter != NULL;
         kefir_list_next(&iter)) {
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier *, scoped_identifier,
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_entry *, scoped_identifier,
             iter->value);
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_payload *, scoped_identifier_payload,
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_payload,
             scoped_identifier->value->payload.ptr);
         if (scoped_identifier->value->object.external) {
             fprintf(out, "\tdeclare %s: ", scoped_identifier->identifier);
@@ -26,9 +26,9 @@ static kefir_result_t format_global_scope(FILE *out, struct kefir_ast_translator
     for (const struct kefir_list_entry *iter = kefir_list_head(&scope->external_thread_local_objects);
         iter != NULL;
         kefir_list_next(&iter)) {
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier *, scoped_identifier,
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_entry *, scoped_identifier,
             iter->value);
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_payload *, scoped_identifier_payload,
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_payload,
             scoped_identifier->value->payload.ptr);
         if (scoped_identifier->value->object.external) {
             fprintf(out, "\tdeclare %s: ", scoped_identifier->identifier);
@@ -46,9 +46,9 @@ static kefir_result_t format_global_scope(FILE *out, struct kefir_ast_translator
     for (const struct kefir_list_entry *iter = kefir_list_head(&scope->static_objects);
         iter != NULL;
         kefir_list_next(&iter)) {
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier *, scoped_identifier,
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_entry *, scoped_identifier,
             iter->value);
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_payload *, scoped_identifier_payload,
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_payload,
             scoped_identifier->value->payload.ptr);
         fprintf(out, "\tdefine %s: static[" KEFIR_SIZE_FMT "]", scoped_identifier->identifier,
             scoped_identifier_payload->layout->value);
@@ -62,9 +62,9 @@ static kefir_result_t format_global_scope(FILE *out, struct kefir_ast_translator
     for (const struct kefir_list_entry *iter = kefir_list_head(&scope->static_thread_local_objects);
         iter != NULL;
         kefir_list_next(&iter)) {
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier *, scoped_identifier,
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_entry *, scoped_identifier,
             iter->value);
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_payload *, scoped_identifier_payload,
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_payload,
             scoped_identifier->value->payload.ptr);
         fprintf(out, "\tdefine %s: static thread_local[" KEFIR_SIZE_FMT "]", scoped_identifier->identifier,
             scoped_identifier_payload->layout->value);
@@ -78,9 +78,9 @@ static kefir_result_t format_local_scope(FILE *out, struct kefir_ast_translator_
     for (const struct kefir_list_entry *iter = kefir_list_head(&scope->static_objects);
         iter != NULL;
         kefir_list_next(&iter)) {
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier *, scoped_identifier,
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_entry *, scoped_identifier,
             iter->value);
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_payload *, scoped_identifier_payload,
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_payload,
             scoped_identifier->value->payload.ptr);
         fprintf(out, "\tdefine %s: static[" KEFIR_SIZE_FMT "]", scoped_identifier->identifier,
             scoped_identifier_payload->layout->value);
@@ -92,9 +92,9 @@ static kefir_result_t format_local_scope(FILE *out, struct kefir_ast_translator_
     for (const struct kefir_list_entry *iter = kefir_list_head(&scope->static_thread_local_objects);
         iter != NULL;
         kefir_list_next(&iter)) {
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier *, scoped_identifier,
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_entry *, scoped_identifier,
             iter->value);
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_payload *, scoped_identifier_payload,
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_payload,
             scoped_identifier->value->payload.ptr);
         fprintf(out, "\tdefine %s: static thread_local[" KEFIR_SIZE_FMT "]", scoped_identifier->identifier,
             scoped_identifier_payload->layout->value);
@@ -108,9 +108,9 @@ static kefir_result_t format_local_scope(FILE *out, struct kefir_ast_translator_
     for (const struct kefir_list_entry *iter = kefir_list_head(&scope->local_objects);
         iter != NULL;
         kefir_list_next(&iter)) {
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier *, scoped_identifier,
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_entry *, scoped_identifier,
             iter->value);
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_payload *, scoped_identifier_payload,
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_payload,
             scoped_identifier->value->payload.ptr);
         fprintf(out, "\tdefine %s: local[" KEFIR_SIZE_FMT "]", scoped_identifier->identifier,
             scoped_identifier_payload->layout->value);
@@ -200,8 +200,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ast_translator_local_scope_layout translator_local_scope;
     REQUIRE_OK(kefir_ast_translator_global_scope_layout_init(mem, &module, &translator_global_scope));
     REQUIRE_OK(kefir_ast_translator_local_scope_layout_init(mem, &module, &translator_global_scope, &translator_local_scope));
-    REQUIRE_OK(kefir_ast_translate_global_scope_layout(mem, &module, &global_context, &env, &translator_global_scope));
-    REQUIRE_OK(kefir_ast_translate_local_scope_layout(mem, &local_context, &env, &translator_local_scope));
+    REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(mem, &module, &global_context, &env, &translator_global_scope));
+    REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(mem, &local_context, &env, &translator_local_scope));
     REQUIRE_OK(format_global_scope(stdout, &translator_global_scope));
     fprintf(stdout, "\n");
     REQUIRE_OK(format_local_scope(stdout, &translator_local_scope));

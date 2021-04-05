@@ -1,9 +1,10 @@
 #include "kefir/core/mem.h"
 #include "kefir/ast-translator/translator.h"
+#include "kefir/ast-translator/scope/translator.h"
 #include "kefir/ast/local_context.h"
 #include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/ast-translator/context.h"
-#include "kefir/ast-translator/local_scope_layout.h"
+#include "kefir/ast-translator/scope/local_scope_layout.h"
 #include "kefir/test/util.h"
 #include "kefir/ir/builder.h"
 #include "kefir/ir/format.h"
@@ -53,9 +54,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ast_translator_local_scope_layout translator_local_scope;
     REQUIRE_OK(kefir_ast_translator_global_scope_layout_init(mem, &module, &translator_global_scope));
     REQUIRE_OK(kefir_ast_translator_local_scope_layout_init(mem, &module, &translator_global_scope, &translator_local_scope));
-    REQUIRE_OK(kefir_ast_translate_global_scope_layout(mem, &module, &global_context, &env, &translator_global_scope));
-    REQUIRE_OK(kefir_ast_translate_local_scope_layout(mem, &local_context, &env, &translator_local_scope));
-    REQUIRE_OK(kefir_ast_translator_declare_global_scope_layout(mem, &module, &translator_global_scope));
+    REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(mem, &module, &global_context, &env, &translator_global_scope));
+    REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(mem, &local_context, &env, &translator_local_scope));
+    REQUIRE_OK(kefir_ast_translate_global_scope(mem, &module, &translator_global_scope));
 
     struct kefir_ast_translator_context translator_context;
     REQUIRE_OK(kefir_ast_translator_context_init(&translator_context, context, &env, &module));

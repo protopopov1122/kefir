@@ -6,6 +6,7 @@ KEFIR_LIB := $(wildcard \
 	$(SOURCE_DIR)/ast/nodes/*.c \
 	$(SOURCE_DIR)/ast-translator/*.c \
 	$(SOURCE_DIR)/ast-translator/nodes/*.c \
+	$(SOURCE_DIR)/ast-translator/scope/*.c \
 	$(SOURCE_DIR)/ast/type/*.c \
 	$(SOURCE_DIR)/core/*.c \
 	$(SOURCE_DIR)/codegen/*.c \

@@ -1,4 +1,4 @@
-#include "kefir/ast-translator/scope_layout_impl.h"
+#include "kefir/ast-translator/scope/scope_layout_impl.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -9,7 +9,7 @@ kefir_result_t kefir_ast_translator_scoped_identifer_payload_free(struct kefir_m
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid memory allocator"));
     REQUIRE(scoped_identifier != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid scoped identifier"));
     if (scoped_identifier->payload.ptr != NULL) {
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_payload *, scoped_identifier_payload,
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_payload,
             scoped_identifier->payload.ptr);
         if (scoped_identifier_payload->layout != NULL) {
             REQUIRE_OK(kefir_ast_type_layout_free(mem, scoped_identifier_payload->layout));
@@ -29,7 +29,7 @@ kefir_result_t kefir_ast_translator_scoped_identifier_remove(struct kefir_mem *m
     UNUSED(payload);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid memory allocator"));
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid list entry"));
-    ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier *, scoped_id,
+    ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_entry *, scoped_id,
         entry->value);
     scoped_id->identifier = NULL;
     scoped_id->value = NULL;
@@ -46,8 +46,8 @@ kefir_result_t kefir_ast_translator_scoped_identifier_insert(struct kefir_mem *m
     REQUIRE(scoped_identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST scoped identifier"));
     REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid list"));
     
-    struct kefir_ast_translator_scoped_identifier *scoped_id =
-        KEFIR_MALLOC(mem, sizeof(struct kefir_ast_translator_scoped_identifier));
+    struct kefir_ast_translator_scoped_identifier_entry *scoped_id =
+        KEFIR_MALLOC(mem, sizeof(struct kefir_ast_translator_scoped_identifier_entry));
     REQUIRE(scoped_id != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST translator scoped identifier"));
     scoped_id->identifier = identifier;
     scoped_id->value = scoped_identifier;
