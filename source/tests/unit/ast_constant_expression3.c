@@ -432,6 +432,15 @@ DEFINE_CASE(ast_constant_expression_unary_operations5, "AST constant expressions
                         "fieldZ")),
                     KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, i))))),
             "var2", (kefir_int64_t) (16 + i * 8));
+
+        ASSERT_IDENTIFIER_CONST_EXPR(&kft_mem, context,
+            kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ADDRESS,
+                KEFIR_AST_NODE_BASE(kefir_ast_new_array_subscript(&kft_mem,
+                    KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, i)),
+                    KEFIR_AST_NODE_BASE(kefir_ast_new_struct_member(&kft_mem, context->symbols,
+                        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "var2")),
+                        "fieldZ"))))),
+            "var2", (kefir_int64_t) (16 + i * 8));
     }
 
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
@@ -500,6 +509,16 @@ DEFINE_CASE(ast_constant_expression_unary_operations6, "AST constant expressions
                             KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "var1")))),
                         "fieldZ")),
                     KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, i))))),
+            "var1", (kefir_int64_t) (16 + i * 8));
+
+        ASSERT_IDENTIFIER_CONST_EXPR(&kft_mem, context,
+            kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ADDRESS,
+                KEFIR_AST_NODE_BASE(kefir_ast_new_array_subscript(&kft_mem,
+                    KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, i)),
+                    KEFIR_AST_NODE_BASE(kefir_ast_new_struct_indirect_member(&kft_mem, context->symbols,
+                        KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ADDRESS,
+                            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "var1")))),
+                        "fieldZ"))))),
             "var1", (kefir_int64_t) (16 + i * 8));
     }
 
