@@ -15,6 +15,8 @@
 #include "kefir/ast/type/pointer.h"
 #include "kefir/ast/type/function.h"
 
+typedef kefir_uint64_t kefir_ast_type_hash_t;
+
 typedef struct kefir_ast_type_ops {
     kefir_bool_t (*same)(const struct kefir_ast_type *, const struct kefir_ast_type *);
     kefir_bool_t (*compatible)(const struct kefir_ast_type_traits *, const struct kefir_ast_type *, const struct kefir_ast_type *);
@@ -81,5 +83,6 @@ kefir_result_t kefir_ast_type_bundle_free(struct kefir_mem *, struct kefir_ast_t
     ((type)->tag == KEFIR_AST_TYPE_ARRAY && \
         ((type)->array_type.boundary == KEFIR_AST_ARRAY_VLA || \
         (type)->array_type.boundary == KEFIR_AST_ARRAY_VLA_STATIC))
+#define KEFIR_AST_TYPE_HASH(type) ((kefir_ast_type_hash_t) type)
 
 #endif

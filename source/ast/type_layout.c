@@ -35,6 +35,7 @@ static kefir_result_t on_anonymous_member_remove(struct kefir_mem *mem,
 
 struct kefir_ast_type_layout *kefir_ast_new_type_layout(struct kefir_mem *mem,
                                                     const struct kefir_ast_type *type,
+                                                    kefir_size_t alignment,
                                                     kefir_uptr_t value) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(type != NULL, NULL);
@@ -42,6 +43,7 @@ struct kefir_ast_type_layout *kefir_ast_new_type_layout(struct kefir_mem *mem,
     struct kefir_ast_type_layout *layout = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type_layout));
     REQUIRE(layout != NULL, NULL);
     layout->type = type;
+    layout->alignment = alignment;
     layout->value = value;
     layout->properties.valid = false;
     switch (type->tag) {

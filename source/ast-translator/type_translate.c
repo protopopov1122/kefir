@@ -58,7 +58,7 @@ static kefir_result_t translate_scalar_type(struct kefir_mem *mem,
     }
 
     if (layout_ptr != NULL) {
-        *layout_ptr = kefir_ast_new_type_layout(mem, type, type_index);
+        *layout_ptr = kefir_ast_new_type_layout(mem, type, alignment, type_index);
         REQUIRE(*layout_ptr != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST type layout"));
     }
     return KEFIR_OK;
@@ -81,7 +81,7 @@ static kefir_result_t translate_array_type(struct kefir_mem *mem,
                 type->array_type.element_type, KEFIR_AST_DEFAULT_ALIGNMENT, env, builder,
                 layout_ptr != NULL ? &element_layout : NULL));
             if (layout_ptr != NULL) {
-                *layout_ptr = kefir_ast_new_type_layout(mem, type, type_index);
+                *layout_ptr = kefir_ast_new_type_layout(mem, type, alignment, type_index);
                 REQUIRE(*layout_ptr != NULL,
                     KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST type layout"));
                 (*layout_ptr)->array_layout.element_type = element_layout;
@@ -95,7 +95,7 @@ static kefir_result_t translate_array_type(struct kefir_mem *mem,
                 type->array_type.element_type, KEFIR_AST_DEFAULT_ALIGNMENT, env, builder,
                 layout_ptr != NULL ? &element_layout : NULL));
             if (layout_ptr != NULL) {
-                *layout_ptr = kefir_ast_new_type_layout(mem, type, type_index);
+                *layout_ptr = kefir_ast_new_type_layout(mem, type, alignment, type_index);
                 REQUIRE(*layout_ptr != NULL,
                     KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST type layout"));
                 (*layout_ptr)->array_layout.element_type = element_layout;
@@ -132,7 +132,7 @@ static kefir_result_t translate_struct_type(struct kefir_mem *mem,
     kefir_bool_t allocated = false;
     struct kefir_ast_type_layout *layout = NULL;
     if (layout_ptr != NULL) {
-        layout = kefir_ast_new_type_layout(mem, type, type_index);
+        layout = kefir_ast_new_type_layout(mem, type, alignment, type_index);
         REQUIRE(layout != NULL,
             KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST type layout"));
         allocated = true;

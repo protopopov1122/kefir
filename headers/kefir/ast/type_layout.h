@@ -18,6 +18,7 @@ typedef struct kefir_ast_array_type_layout {
 
 typedef struct kefir_ast_type_layout {
     const struct kefir_ast_type *type;
+    kefir_size_t alignment;
     kefir_uptr_t value;
     struct {
         kefir_bool_t valid;
@@ -35,6 +36,7 @@ typedef struct kefir_ast_type_layout {
 
 struct kefir_ast_type_layout *kefir_ast_new_type_layout(struct kefir_mem *,
                                                     const struct kefir_ast_type *,
+                                                    kefir_size_t,
                                                     kefir_uptr_t);
 
 kefir_result_t kefir_ast_type_layout_free(struct kefir_mem *,

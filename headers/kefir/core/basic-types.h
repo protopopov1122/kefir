@@ -101,7 +101,8 @@ typedef enum kefir_result {
     KEFIR_NOT_IMPLEMENTED,
     KEFIR_NOT_FOUND,
     KEFIR_ALREADY_EXISTS,
-    KEFIR_NO_MATCH
+    KEFIR_NO_MATCH,
+    KEFIR_OUT_OF_SPACE
 } kefir_result_t;
 
 #endif
