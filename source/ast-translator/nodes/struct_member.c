@@ -5,7 +5,7 @@
 #include "kefir/core/error.h"
 
 static kefir_result_t translate_struct_member(struct kefir_mem *mem,
-                                            const struct kefir_ast_translator_context *context,
+                                            struct kefir_ast_translator_context *context,
                                             struct kefir_irbuilder_block *builder,
                                             const struct kefir_ast_struct_member *node,
                                             kefir_id_t type_id,
@@ -25,7 +25,7 @@ static kefir_result_t translate_struct_member(struct kefir_mem *mem,
 }
 
 kefir_result_t kefir_ast_translate_struct_member_node(struct kefir_mem *mem,
-                                                  const struct kefir_ast_translator_context *context,
+                                                  struct kefir_ast_translator_context *context,
                                                   struct kefir_irbuilder_block *builder,
                                                   const struct kefir_ast_struct_member *node) {
     UNUSED(mem);
@@ -39,21 +39,10 @@ kefir_result_t kefir_ast_translate_struct_member_node(struct kefir_mem *mem,
         structure_type = kefir_ast_unqualified_type(structure_type->referenced_type);
     }
 
-    kefir_id_t type_id;
-    struct kefir_ast_type_layout *type_layout = NULL;
-    struct kefir_irbuilder_type type_builder;
-    struct kefir_ir_type *type = kefir_ir_module_new_type(mem, context->module, 0, &type_id);
-    REQUIRE_OK(kefir_irbuilder_type_init(mem, &type_builder, type));
-    REQUIRE_OK(kefir_ast_translate_object_type(mem, structure_type, 0, context->environment,
-        &type_builder, &type_layout));
-    kefir_result_t res = translate_struct_member(mem, context, builder, node, type_id, type_layout);
-    REQUIRE_ELSE(res == KEFIR_OK, {
-        kefir_ast_type_layout_free(mem, type_layout);
-        KEFIR_IRBUILDER_TYPE_FREE(&type_builder);
-        return res;
-    });
+    const struct kefir_ast_translator_cached_type *cached_type = NULL;
+    REQUIRE_OK(kefir_ast_translator_type_cache_generate_owned(mem, structure_type, 0,
+        &context->type_cache, context->environment, context->module, &cached_type));
 
-    REQUIRE_OK(kefir_ast_type_layout_free(mem, type_layout));
-    REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&type_builder));
+    REQUIRE_OK(translate_struct_member(mem, context, builder, node, cached_type->ir_type_id, cached_type->type_layout));
     return KEFIR_OK;
 }

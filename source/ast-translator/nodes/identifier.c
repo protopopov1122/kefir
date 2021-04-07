@@ -7,7 +7,7 @@
 #include "kefir/ast-translator/scope/scoped_identifier.h"
 
 static kefir_result_t translate_object_identifier(struct kefir_mem *mem,
-                                                const struct kefir_ast_translator_context *context,
+                                                struct kefir_ast_translator_context *context,
                                                 struct kefir_irbuilder_block *builder,
                                                 const char *identifier,
                                                 const struct kefir_ast_scoped_identifier *scoped_identifier) {
@@ -68,7 +68,7 @@ static kefir_result_t translate_enum_constant(struct kefir_irbuilder_block *buil
 }
 
 static kefir_result_t translate_function_identifier(struct kefir_mem *mem,
-                                                  const struct kefir_ast_translator_context *context,
+                                                  struct kefir_ast_translator_context *context,
                                                   struct kefir_irbuilder_block *builder,
                                                   const char *identifier) {
     REQUIRE(identifier != NULL && strlen(identifier) > 0,
@@ -82,7 +82,7 @@ static kefir_result_t translate_function_identifier(struct kefir_mem *mem,
 }
 
 kefir_result_t kefir_ast_translate_identifier_node(struct kefir_mem *mem,
-                                               const struct kefir_ast_translator_context *context,
+                                               struct kefir_ast_translator_context *context,
                                                struct kefir_irbuilder_block *builder,
                                                const struct kefir_ast_identifier *node) {
     UNUSED(mem);

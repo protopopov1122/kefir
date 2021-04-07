@@ -7,7 +7,7 @@
 
 #define NODE_TRANSLATOR(_id, _type) \
     kefir_result_t kefir_ast_translate_##_id##_node(struct kefir_mem *, \
-                                                const struct kefir_ast_translator_context *, \
+                                                struct kefir_ast_translator_context *, \
                                                 struct kefir_irbuilder_block *, \
                                                 const _type *)
 

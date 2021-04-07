@@ -5,7 +5,7 @@
 #include "kefir/core/error.h"
 
 static kefir_result_t unary_prologue(struct kefir_mem *mem,
-                                   const struct kefir_ast_translator_context *context,
+                                   struct kefir_ast_translator_context *context,
                                    struct kefir_irbuilder_block *builder,
                                    const struct kefir_ast_unary_operation *node) {
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg, builder, context));
@@ -16,7 +16,7 @@ static kefir_result_t unary_prologue(struct kefir_mem *mem,
 }
 
 static kefir_result_t translate_arithmetic_unary(struct kefir_mem *mem,
-                                               const struct kefir_ast_translator_context *context,
+                                               struct kefir_ast_translator_context *context,
                                                struct kefir_irbuilder_block *builder,
                                                const struct kefir_ast_unary_operation *node) {
     REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(node->arg->properties.type),
@@ -69,7 +69,7 @@ static kefir_result_t translate_arithmetic_unary(struct kefir_mem *mem,
 }
 
 static kefir_result_t translate_unary_inversion(struct kefir_mem *mem,
-                                              const struct kefir_ast_translator_context *context,
+                                              struct kefir_ast_translator_context *context,
                                               struct kefir_irbuilder_block *builder,
                                               const struct kefir_ast_unary_operation *node) {
     REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(node->arg->properties.type),
@@ -79,7 +79,7 @@ static kefir_result_t translate_unary_inversion(struct kefir_mem *mem,
 }
 
 static kefir_result_t translate_logical_not_inversion(struct kefir_mem *mem,
-                                                    const struct kefir_ast_translator_context *context,
+                                                    struct kefir_ast_translator_context *context,
                                                     struct kefir_irbuilder_block *builder,
                                                     const struct kefir_ast_unary_operation *node) {
     REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(node->arg->properties.type),
@@ -89,7 +89,7 @@ static kefir_result_t translate_logical_not_inversion(struct kefir_mem *mem,
 }
 
 kefir_result_t kefir_ast_translate_unary_operation_node(struct kefir_mem *mem,
-                                                    const struct kefir_ast_translator_context *context,
+                                                    struct kefir_ast_translator_context *context,
                                                     struct kefir_irbuilder_block *builder,
                                                     const struct kefir_ast_unary_operation *node) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));

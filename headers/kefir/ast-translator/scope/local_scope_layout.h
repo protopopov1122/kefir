@@ -26,6 +26,7 @@ kefir_result_t kefir_ast_translator_local_scope_layout_free(struct kefir_mem *,
 kefir_result_t kefir_ast_translator_build_local_scope_layout(struct kefir_mem *,
                                                          const struct kefir_ast_local_context *,
                                                          const struct kefir_ast_translator_environment *,
+                                                         struct kefir_ast_translator_type_cache *,
                                                          struct kefir_ast_translator_local_scope_layout *);
 
 #endif

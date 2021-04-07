@@ -44,6 +44,7 @@ kefir_result_t kefir_ast_translator_global_scope_layout_free(struct kefir_mem *m
 
 static kefir_result_t translate_scoped_identifier_type(struct kefir_mem *mem,
                                                      struct kefir_ir_module *module,
+                                                     struct kefir_ast_translator_type_cache *type_cache,
                                                      const struct kefir_ast_translator_environment *env,
                                                      const struct kefir_ast_scoped_identifier *scoped_identifier,
                                                      struct kefir_ir_type **type_ptr) {
@@ -58,29 +59,34 @@ static kefir_result_t translate_scoped_identifier_type(struct kefir_mem *mem,
         scoped_identifier->object.alignment->value, env, &builder, &scoped_identifier_layout->layout));
     REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
     *type_ptr = scoped_identifier_layout->type;
+
+    REQUIRE_OK(kefir_ast_translator_type_cache_insert_unowned(mem, type_cache,
+        scoped_identifier_layout->type_id, scoped_identifier_layout->type, scoped_identifier_layout->layout));
     return KEFIR_OK;
 }
 
 static kefir_result_t translate_extern_identifier(struct kefir_mem *mem,
                                                 struct kefir_ir_module *module,
+                                                struct kefir_ast_translator_type_cache *type_cache,
                                                 const struct kefir_ast_translator_environment *env,
                                                 struct kefir_ast_translator_global_scope_layout *layout,
                                                 const char *identifier,
                                                 const struct kefir_ast_scoped_identifier *scoped_identifier) {      
     struct kefir_ir_type *type = NULL;
-    REQUIRE_OK(translate_scoped_identifier_type(mem, module, env, scoped_identifier, &type));
+    REQUIRE_OK(translate_scoped_identifier_type(mem, module, type_cache, env, scoped_identifier, &type));
     REQUIRE_OK(kefir_ast_translator_scoped_identifier_insert(mem, identifier, scoped_identifier, &layout->external_objects));
     return KEFIR_OK;
 }
 
 static kefir_result_t translate_extern_thread_local_identifier(struct kefir_mem *mem,
                                                              struct kefir_ir_module *module,
+                                                             struct kefir_ast_translator_type_cache *type_cache,
                                                              const struct kefir_ast_translator_environment *env,
                                                              struct kefir_ast_translator_global_scope_layout *layout,
                                                              const char *identifier,
                                                              const struct kefir_ast_scoped_identifier *scoped_identifier) {
     struct kefir_ir_type *type = NULL;
-    REQUIRE_OK(translate_scoped_identifier_type(mem, module, env, scoped_identifier, &type));
+    REQUIRE_OK(translate_scoped_identifier_type(mem, module, type_cache, env, scoped_identifier, &type));
     REQUIRE_OK(kefir_ast_translator_scoped_identifier_insert(mem, identifier, scoped_identifier,
         &layout->external_thread_local_objects));
     return KEFIR_OK;
@@ -88,18 +94,20 @@ static kefir_result_t translate_extern_thread_local_identifier(struct kefir_mem 
 
 static kefir_result_t translate_thread_local_identifier(struct kefir_mem *mem,
                                                       struct kefir_ir_module *module,
+                                                      struct kefir_ast_translator_type_cache *type_cache,
                                                       const struct kefir_ast_translator_environment *env,
                                                       struct kefir_ast_translator_global_scope_layout *layout,
                                                       const char *identifier,
                                                       const struct kefir_ast_scoped_identifier *scoped_identifier) {
     struct kefir_ir_type *type = NULL;
-    REQUIRE_OK(translate_scoped_identifier_type(mem, module, env, scoped_identifier, &type));
+    REQUIRE_OK(translate_scoped_identifier_type(mem, module, type_cache, env, scoped_identifier, &type));
     REQUIRE_OK(kefir_ast_translator_scoped_identifier_insert(mem, identifier, scoped_identifier,
         &layout->external_thread_local_objects));
     return KEFIR_OK;
 }
 
 static kefir_result_t translate_static_identifier(struct kefir_mem *mem,
+                                                struct kefir_ast_translator_type_cache *type_cache,
                                                 const struct kefir_ast_translator_environment *env,
                                                 struct kefir_ast_translator_global_scope_layout *layout,
                                                 const char *identifier,
@@ -115,10 +123,14 @@ static kefir_result_t translate_static_identifier(struct kefir_mem *mem,
     scoped_identifier_layout->type_id = layout->static_layout_id;
     scoped_identifier_layout->type = layout->static_layout;
     REQUIRE_OK(kefir_ast_translator_scoped_identifier_insert(mem, identifier, scoped_identifier, &layout->static_objects));
+
+    REQUIRE_OK(kefir_ast_translator_type_cache_insert_unowned(mem, type_cache, scoped_identifier_layout->type_id,
+        scoped_identifier_layout->type, scoped_identifier_layout->layout));
     return KEFIR_OK;                             
 }
 
 static kefir_result_t translate_static_thread_local_identifier(struct kefir_mem *mem,
+                                                             struct kefir_ast_translator_type_cache *type_cache,
                                                              const struct kefir_ast_translator_environment *env,
                                                              struct kefir_ast_translator_global_scope_layout *layout,
                                                              const char *identifier,
@@ -135,11 +147,15 @@ static kefir_result_t translate_static_thread_local_identifier(struct kefir_mem 
     scoped_identifier_layout->type = layout->static_thread_local_layout;
     REQUIRE_OK(kefir_ast_translator_scoped_identifier_insert(mem, identifier, scoped_identifier,
         &layout->static_thread_local_objects));
+
+    REQUIRE_OK(kefir_ast_translator_type_cache_insert_unowned(mem, type_cache, scoped_identifier_layout->type_id,
+        scoped_identifier_layout->type, scoped_identifier_layout->layout));
     return KEFIR_OK;
 }
 
 static kefir_result_t translate_global_scoped_identifier(struct kefir_mem *mem,
                                                        struct kefir_ir_module *module,
+                                                       struct kefir_ast_translator_type_cache *type_cache,
                                                        const char *identifier,
                                                        const struct kefir_ast_scoped_identifier *scoped_identifier,
                                                        struct kefir_ast_translator_global_scope_layout *layout,
@@ -147,23 +163,23 @@ static kefir_result_t translate_global_scoped_identifier(struct kefir_mem *mem,
     REQUIRE(scoped_identifier->klass == KEFIR_AST_SCOPE_IDENTIFIER_OBJECT, KEFIR_OK);
     switch (scoped_identifier->object.storage) {
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN:
-            REQUIRE_OK(translate_extern_identifier(mem, module, env, layout, identifier, scoped_identifier));
+            REQUIRE_OK(translate_extern_identifier(mem, module, type_cache, env, layout, identifier, scoped_identifier));
             break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL:
-            REQUIRE_OK(translate_extern_thread_local_identifier(mem, module, env, layout, identifier, scoped_identifier));
+            REQUIRE_OK(translate_extern_thread_local_identifier(mem, module, type_cache, env, layout, identifier, scoped_identifier));
             break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL:
-            REQUIRE_OK(translate_thread_local_identifier(mem, module, env, layout, identifier, scoped_identifier));
+            REQUIRE_OK(translate_thread_local_identifier(mem, module, type_cache, env, layout, identifier, scoped_identifier));
             break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC:
-            REQUIRE_OK(translate_static_identifier(mem, env, layout, identifier, scoped_identifier));
+            REQUIRE_OK(translate_static_identifier(mem, type_cache, env, layout, identifier, scoped_identifier));
             break;
         
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL:
-            REQUIRE_OK(translate_static_thread_local_identifier(mem, env, layout, identifier, scoped_identifier));
+            REQUIRE_OK(translate_static_thread_local_identifier(mem, type_cache, env, layout, identifier, scoped_identifier));
             break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO:
@@ -177,18 +193,20 @@ kefir_result_t kefir_ast_translator_build_global_scope_layout(struct kefir_mem *
                                                    struct kefir_ir_module *module,
                                                    const struct kefir_ast_global_context *context,
                                                    const struct kefir_ast_translator_environment *env,
+                                                   struct kefir_ast_translator_type_cache *type_cache,
                                                    struct kefir_ast_translator_global_scope_layout *layout) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST global context"));
     REQUIRE(env != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator environment"));
+    REQUIRE(type_cache != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator type cache"));
     REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST global scope layout"));
     struct kefir_ast_identifier_flat_scope_iterator iter;
     kefir_result_t res;
     for (res = kefir_ast_identifier_flat_scope_iter(&context->object_identifiers, &iter);
         res == KEFIR_OK;
         res = kefir_ast_identifier_flat_scope_next(&context->object_identifiers, &iter)) {
-        REQUIRE_OK(translate_global_scoped_identifier(mem, module, iter.identifier, iter.value, layout, env));
+        REQUIRE_OK(translate_global_scoped_identifier(mem, module, type_cache, iter.identifier, iter.value, layout, env));
     }
     REQUIRE(res == KEFIR_ITERATOR_END, res);
     return KEFIR_OK;

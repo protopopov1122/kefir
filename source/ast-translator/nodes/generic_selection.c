@@ -5,7 +5,7 @@
 #include "kefir/core/error.h"
 
 kefir_result_t kefir_ast_translate_generic_selection_node(struct kefir_mem *mem,
-                                                      const struct kefir_ast_translator_context *context,
+                                                      struct kefir_ast_translator_context *context,
                                                       struct kefir_irbuilder_block *builder,
                                                       const struct kefir_ast_generic_selection *node) {
     UNUSED(mem);

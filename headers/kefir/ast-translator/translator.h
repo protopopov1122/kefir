@@ -18,7 +18,7 @@ kefir_result_t kefir_ast_translate_object_type(struct kefir_mem *,
 kefir_result_t kefir_ast_translate_expression(struct kefir_mem *,
                                           const struct kefir_ast_node_base *,
                                           struct kefir_irbuilder_block *,
-                                          const struct kefir_ast_translator_context *);
+                                          struct kefir_ast_translator_context *);
 
 kefir_result_t kefir_ast_translator_resolve_value(const struct kefir_ast_type *,
                                               struct kefir_irbuilder_block *);

@@ -5,7 +5,7 @@
 #include "kefir/core/error.h"
 
 static kefir_result_t binary_prologue(struct kefir_mem *mem,
-                                    const struct kefir_ast_translator_context *context,
+                                    struct kefir_ast_translator_context *context,
                                     struct kefir_irbuilder_block *builder,
                                     const struct kefir_ast_binary_operation *node) {
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg1, builder, context));
@@ -20,7 +20,7 @@ static kefir_result_t binary_prologue(struct kefir_mem *mem,
 }
 
 static kefir_result_t translate_addition(struct kefir_mem *mem,
-                                       const struct kefir_ast_translator_context *context,
+                                       struct kefir_ast_translator_context *context,
                                        struct kefir_irbuilder_block *builder,
                                        const struct kefir_ast_binary_operation *node) {
     REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(node->arg1->properties.type) &&
@@ -74,7 +74,7 @@ static kefir_result_t translate_addition(struct kefir_mem *mem,
 }
 
 static kefir_result_t translate_multiplication(struct kefir_mem *mem,
-                                             const struct kefir_ast_translator_context *context,
+                                             struct kefir_ast_translator_context *context,
                                              struct kefir_irbuilder_block *builder,
                                              const struct kefir_ast_binary_operation *node) {
     REQUIRE_OK(binary_prologue(mem, context, builder, node));
@@ -128,7 +128,7 @@ static kefir_result_t translate_multiplication(struct kefir_mem *mem,
 }
 
 static kefir_result_t translate_bitwise_shift(struct kefir_mem *mem,
-                                            const struct kefir_ast_translator_context *context,
+                                            struct kefir_ast_translator_context *context,
                                             struct kefir_irbuilder_block *builder,
                                             const struct kefir_ast_binary_operation *node) {
     REQUIRE_OK(binary_prologue(mem, context, builder, node));
@@ -148,7 +148,7 @@ static kefir_result_t translate_bitwise_shift(struct kefir_mem *mem,
 }
 
 kefir_result_t kefir_ast_translate_binary_operation_node(struct kefir_mem *mem,
-                                                     const struct kefir_ast_translator_context *context,
+                                                     struct kefir_ast_translator_context *context,
                                                      struct kefir_irbuilder_block *builder,
                                                      const struct kefir_ast_binary_operation *node) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));

@@ -247,12 +247,17 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                 kefir_ast_constant_expression_integer(mem, 16), NULL),
             kefir_ast_constant_expression_integer(mem, 64), NULL), NULL, NULL));
 
+    struct kefir_ast_translator_type_cache type_cache;
+    REQUIRE_OK(kefir_ast_translator_type_cache_init(&type_cache));
+
     struct kefir_ast_translator_global_scope_layout translator_global_scope;
     struct kefir_ast_translator_local_scope_layout translator_local_scope;
     REQUIRE_OK(kefir_ast_translator_global_scope_layout_init(mem, &module, &translator_global_scope));
     REQUIRE_OK(kefir_ast_translator_local_scope_layout_init(mem, &module, &translator_global_scope, &translator_local_scope));
-    REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(mem, &module, &global_context, &env, &translator_global_scope));
-    REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(mem, &local_context, &env, &translator_local_scope));
+    REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(mem, &module, &global_context, &env,
+        &type_cache, &translator_global_scope));
+    REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(mem, &local_context, &env,
+        &type_cache, &translator_local_scope));
 
     struct kefir_json_output json;
     REQUIRE_OK(kefir_json_output_init(&json, stdout, 4));
@@ -264,6 +269,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     REQUIRE_OK(kefir_ast_translator_local_scope_layout_free(mem, &translator_local_scope));
     REQUIRE_OK(kefir_ast_translator_global_scope_layout_free(mem, &translator_global_scope));
+    REQUIRE_OK(kefir_ast_translator_type_cache_free(mem, &type_cache));
 
     REQUIRE_OK(kefir_ast_local_context_free(mem, &local_context));
     REQUIRE_OK(kefir_ast_global_context_free(mem, &global_context));

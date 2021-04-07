@@ -11,14 +11,18 @@ kefir_result_t kefir_ast_translator_context_init(struct kefir_ast_translator_con
     REQUIRE(environment != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator environment"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module"));
 
+    REQUIRE_OK(kefir_ast_translator_type_cache_init(&context->type_cache));
     context->ast_context = ast_context;
     context->environment = environment;
     context->module = module;
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_translator_context_free(struct kefir_ast_translator_context *context) {
+kefir_result_t kefir_ast_translator_context_free(struct kefir_mem *mem,
+                                             struct kefir_ast_translator_context *context) {
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected a pointer to valid AST translator context"));
+    
+    REQUIRE_OK(kefir_ast_translator_type_cache_free(mem, &context->type_cache));
     context->ast_context = NULL;
     context->environment = NULL;
     context->module = NULL;
