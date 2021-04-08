@@ -3,6 +3,36 @@
     "externals": [
         "structure"
     ],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": []
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "int"
+                        },
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
     "function_declarations": [
         {
             "identifier": "func1",

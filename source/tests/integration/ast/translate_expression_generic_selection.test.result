@@ -1,6 +1,20 @@
 {
     "globals": [],
     "externals": [],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": []
+        }
+    ],
     "function_declarations": [
         {
             "identifier": "func1",

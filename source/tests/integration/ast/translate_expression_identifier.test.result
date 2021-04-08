@@ -5,6 +5,49 @@
     "externals": [
         "extern_variable1"
     ],
+    "types": [
+        {
+            "identifier": 0,
+            "type": [
+                {
+                    "type": "float"
+                }
+            ]
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "bool"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "type": [
+                {
+                    "type": "char"
+                }
+            ]
+        }
+    ],
     "function_declarations": [
         {
             "identifier": "func1",

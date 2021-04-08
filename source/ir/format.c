@@ -421,6 +421,25 @@ static kefir_result_t format_externals(struct kefir_json_output *json, const str
     return KEFIR_OK;
 }
 
+static kefir_result_t format_types(struct kefir_json_output *json, const struct kefir_ir_module *module) {
+    REQUIRE_OK(kefir_json_output_array_begin(json));
+    struct kefir_hashtree_node_iterator iter;
+    for (const struct kefir_hashtree_node *node = kefir_hashtree_iter(&module->named_types, &iter);
+        node != NULL;
+        node = kefir_hashtree_next(&iter)) {
+        ASSIGN_DECL_CAST(struct kefir_ir_type *, type,
+            node->value);
+        REQUIRE_OK(kefir_json_output_object_begin(json));
+        REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
+        REQUIRE_OK(kefir_json_output_uinteger(json, node->key));
+        REQUIRE_OK(kefir_json_output_object_key(json, "type"));
+        REQUIRE_OK(kefir_ir_format_type_json(json, type));
+        REQUIRE_OK(kefir_json_output_object_end(json));
+    }
+    REQUIRE_OK(kefir_json_output_array_end(json));
+    return KEFIR_OK;
+}
+
 static kefir_result_t format_function_declarations(struct kefir_json_output *json, const struct kefir_ir_module *module) {
     REQUIRE_OK(kefir_json_output_array_begin(json));
     struct kefir_hashtree_node_iterator iter;
@@ -452,6 +471,8 @@ kefir_result_t kefir_ir_format_module_json(struct kefir_json_output *json, const
     REQUIRE_OK(format_globals(json, module));
     REQUIRE_OK(kefir_json_output_object_key(json, "externals"));
     REQUIRE_OK(format_externals(json, module));
+    REQUIRE_OK(kefir_json_output_object_key(json, "types"));
+    REQUIRE_OK(format_types(json, module));
     REQUIRE_OK(kefir_json_output_object_key(json, "function_declarations"));
     REQUIRE_OK(format_function_declarations(json, module));
     REQUIRE_OK(kefir_json_output_object_key(json, "functions"));

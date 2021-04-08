@@ -3,6 +3,40 @@
     "externals": [
         "array1"
     ],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": []
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 0,
+                    "element_type": {
+                        "type": "word"
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "type": [
+                {
+                    "type": "char"
+                }
+            ]
+        }
+    ],
     "function_declarations": [
         {
             "identifier": "func1",

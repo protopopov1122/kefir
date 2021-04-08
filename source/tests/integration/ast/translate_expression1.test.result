@@ -3,6 +3,7 @@
         "func1"
     ],
     "externals": [],
+    "types": [],
     "function_declarations": [
         {
             "identifier": "func1",
