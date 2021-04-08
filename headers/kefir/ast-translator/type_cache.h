@@ -49,6 +49,9 @@ kefir_result_t kefir_ast_translator_type_cache_insert(struct kefir_mem *,
                                                   struct kefir_ast_translator_type_cache *,
                                                   struct kefir_ast_translator_cached_type *);
 
+kefir_result_t kefir_ast_translator_type_cache_clear(struct kefir_mem *,
+                                                 struct kefir_ast_translator_type_cache *);
+
 kefir_result_t kefir_ast_translator_type_cache_insert_unowned(struct kefir_mem *,
                                                           struct kefir_ast_translator_type_cache *,
                                                           kefir_id_t,

@@ -4,6 +4,29 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
+static kefir_hashtree_hash_t ast_type_hash(kefir_hashtree_key_t key, void *data) {
+    UNUSED(data);
+    ASSIGN_DECL_CAST(const struct kefir_ast_type *, type,
+        key);
+    REQUIRE(type != 0, 0);
+    return (kefir_hashtree_hash_t) KEFIR_AST_TYPE_HASH(type);
+}
+
+static bool ast_type_compare(kefir_hashtree_key_t key1, kefir_hashtree_key_t key2, void *data) {
+    UNUSED(data);
+    ASSIGN_DECL_CAST(const struct kefir_ast_type *, type1,
+        key1);
+    ASSIGN_DECL_CAST(const struct kefir_ast_type *, type2,
+        key2);
+    return type1 == type2 || KEFIR_AST_TYPE_SAME(type1, type2);
+}
+
+const struct kefir_hashtree_ops ast_type_ops = {
+    .hash = ast_type_hash,
+    .compare_keys = ast_type_compare,
+    .data = NULL
+};
+
 static kefir_result_t clone_cached_type(struct kefir_mem *mem,
                                       const struct kefir_ast_translator_cached_type *original,
                                       struct kefir_ast_type_layout *layout,
@@ -49,7 +72,7 @@ static kefir_result_t aligned_cache_on_remove(struct kefir_mem *mem,
 kefir_result_t kefir_ast_translator_aligned_type_cache_init(struct kefir_ast_translator_aligned_type_cache *cache,
                                                         kefir_size_t alignment) {
     REQUIRE(cache != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator alignned type cache"));
-    REQUIRE_OK(kefir_hashtree_init(&cache->cache, &kefir_hashtree_uint_ops));
+    REQUIRE_OK(kefir_hashtree_init(&cache->cache, &ast_type_ops));
     REQUIRE_OK(kefir_hashtree_on_removal(&cache->cache, aligned_cache_on_remove, NULL));
     cache->alignment = alignment;
     return KEFIR_OK;
@@ -233,6 +256,14 @@ kefir_result_t kefir_ast_translator_type_cache_insert(struct kefir_mem *mem,
     REQUIRE_OK(kefir_ast_translator_aligned_type_layout_insert(mem, aligned_cache, cached_type));
     REQUIRE_OK(traverse_type_layout(mem, cache, cached_type));
     return res;
+}
+
+kefir_result_t kefir_ast_translator_type_cache_clear(struct kefir_mem *mem,
+                                                 struct kefir_ast_translator_type_cache *cache) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(cache != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator alignned type cache"));
+    REQUIRE_OK(kefir_hashtree_clean(mem, &cache->cache));
+    return KEFIR_OK;
 }
 
 kefir_result_t kefir_ast_translator_type_cache_insert_unowned(struct kefir_mem *mem,

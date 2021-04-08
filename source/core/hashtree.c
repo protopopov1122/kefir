@@ -165,6 +165,7 @@ kefir_bool_t kefir_hashtree_empty(const struct kefir_hashtree *tree) {
 }
 
 kefir_result_t kefir_hashtree_delete(struct kefir_mem *mem, struct kefir_hashtree *tree, kefir_hashtree_key_t key) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid hash tree pointer"));
     kefir_hashtree_hash_t hash = tree->ops->hash(key, tree->ops->data);
     struct kefir_hashtree_node *node = NULL;
@@ -209,6 +210,14 @@ kefir_result_t kefir_hashtree_delete(struct kefir_mem *mem, struct kefir_hashtre
         REQUIRE_OK(tree->node_remove.callback(mem, tree, node->key, node->value, tree->node_remove.data));
     }
     KEFIR_FREE(mem, node);
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_hashtree_clean(struct kefir_mem *mem, struct kefir_hashtree *tree) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid hash tree pointer"));
+    REQUIRE_OK(node_free(mem, tree, tree->root));
+    tree->root = NULL;
     return KEFIR_OK;
 }
 
