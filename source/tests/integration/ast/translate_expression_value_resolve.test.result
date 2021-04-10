@@ -1,0 +1,638 @@
+{
+    "globals": [
+        "char",
+        "enum",
+        "float",
+        "union",
+        "array1",
+        "array2",
+        "double",
+        "boolean",
+        "void_ptr",
+        "qualified",
+        "structure",
+        "signed_int",
+        "signed_char",
+        "signed_long",
+        "unsigned_char",
+        "unsigned_long",
+        "signed_short",
+        "unsigned_int",
+        "signed_long_long",
+        "unsigned_short",
+        "unsigned_long_long"
+    ],
+    "externals": [],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": []
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "char"
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 5,
+            "type": [
+                {
+                    "type": "float"
+                }
+            ]
+        },
+        {
+            "identifier": 6,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "float"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 7,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 2,
+                    "element_type": {
+                        "type": "int"
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": 8,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 0,
+                    "element_type": {
+                        "type": "struct",
+                        "fields": [
+                            {
+                                "type": "float"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": 9,
+            "type": [
+                {
+                    "type": "double"
+                }
+            ]
+        },
+        {
+            "identifier": 10,
+            "type": [
+                {
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "identifier": 11,
+            "type": [
+                {
+                    "type": "word"
+                }
+            ]
+        },
+        {
+            "identifier": 12,
+            "type": [
+                {
+                    "type": "short"
+                }
+            ]
+        },
+        {
+            "identifier": 13,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "bool"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 14,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 15,
+            "type": [
+                {
+                    "type": "char"
+                }
+            ]
+        },
+        {
+            "identifier": 16,
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 17,
+            "type": [
+                {
+                    "type": "char"
+                }
+            ]
+        },
+        {
+            "identifier": 18,
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 19,
+            "type": [
+                {
+                    "type": "short"
+                }
+            ]
+        },
+        {
+            "identifier": 20,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 21,
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 22,
+            "type": [
+                {
+                    "type": "short"
+                }
+            ]
+        },
+        {
+            "identifier": 23,
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "identifier": "char",
+            "type": 3,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "enum",
+            "type": 4,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "float",
+            "type": 5,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "union",
+            "type": 6,
+            "value": [
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "array1",
+            "type": 7,
+            "value": [
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "array2",
+            "type": 8,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "double",
+            "type": 9,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "boolean",
+            "type": 10,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "void_ptr",
+            "type": 11,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "qualified",
+            "type": 12,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "structure",
+            "type": 13,
+            "value": [
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "signed_int",
+            "type": 14,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "signed_char",
+            "type": 15,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "signed_long",
+            "type": 16,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "unsigned_char",
+            "type": 17,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "unsigned_long",
+            "type": 18,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": []
+        },
+        {
+            "identifier": "signed_short",
+            "type": 19,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "unsigned_int",
+            "type": 20,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "signed_long_long",
+            "type": 21,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "unsigned_short",
+            "type": 22,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "unsigned_long_long",
+            "type": 23,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        }
+    ],
+    "function_declarations": [
+        {
+            "identifier": "func1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": "func1",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 0
+                    }
+                },
+                {
+                    "opcode": "load8u"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 1
+                    }
+                },
+                {
+                    "opcode": "load8u"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 2
+                    }
+                },
+                {
+                    "opcode": "load8u"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 3
+                    }
+                },
+                {
+                    "opcode": "load8i"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 4
+                    }
+                },
+                {
+                    "opcode": "load16u"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 5
+                    }
+                },
+                {
+                    "opcode": "load16i"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 6
+                    }
+                },
+                {
+                    "opcode": "load32u"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 7
+                    }
+                },
+                {
+                    "opcode": "load32i"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 8
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 9
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 10
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 11
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 12
+                    }
+                },
+                {
+                    "opcode": "load32u"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 13
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 14
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 15
+                    }
+                },
+                {
+                    "opcode": "load32i"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 16
+                    }
+                },
+                {
+                    "opcode": "load16i"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 17
+                    }
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 18
+                    }
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 19
+                    }
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 20
+                    }
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 21
+                    }
+                }
+            ]
+        }
+    ]
+}
