@@ -4,6 +4,8 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
+// TODO Bitfield support
+
 static kefir_result_t translate_struct_member(struct kefir_mem *mem,
                                             struct kefir_ast_translator_context *context,
                                             struct kefir_irbuilder_block *builder,

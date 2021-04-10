@@ -1,0 +1,251 @@
+{
+    "globals": [],
+    "externals": [
+        "ptr",
+        "structure"
+    ],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": []
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "word"
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "char"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": []
+        }
+    ],
+    "function_declarations": [
+        {
+            "identifier": "func1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": "func1",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": -150
+                },
+                {
+                    "opcode": "push",
+                    "arg": -100
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 100
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 3.140000
+                },
+                {
+                    "opcode": "f32cint"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 3.140000
+                },
+                {
+                    "opcode": "f64cint"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 0
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1234
+                },
+                {
+                    "opcode": "push",
+                    "arg": 101
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 2.710000
+                },
+                {
+                    "opcode": "f32cint"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 2.710000
+                },
+                {
+                    "opcode": "f64cint"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 1
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -67
+                },
+                {
+                    "opcode": "intcf32"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 67
+                },
+                {
+                    "opcode": "uintcf32"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 0.069000
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 42.000000
+                },
+                {
+                    "opcode": "f64cf32"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -100500
+                },
+                {
+                    "opcode": "intcf64"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1597
+                },
+                {
+                    "opcode": "uintcf64"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 0.011200
+                },
+                {
+                    "opcode": "f32cf64"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 42.100000
+                },
+                {
+                    "opcode": "push",
+                    "arg": -4078
+                },
+                {
+                    "opcode": "push",
+                    "arg": 51934
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 2
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 10000
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 10001
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 16.700001
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 982.000100
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 3
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 4
+                    }
+                },
+                {
+                    "opcode": "pop"
+                }
+            ]
+        }
+    ]
+}
