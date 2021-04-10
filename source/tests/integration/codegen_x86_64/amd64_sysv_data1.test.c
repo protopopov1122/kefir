@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "kefir/ir/function.h"
 #include "kefir/ir/module.h"
 #include "kefir/ir/builder.h"
@@ -107,6 +108,21 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_data_set_integer(union1_data, 3, 100500));
     REQUIRE_OK(kefir_ir_data_finalize(union1_data));
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "union1_1"));
+
+    const char *MSG = "Hello, cruel world!";
+    struct kefir_ir_type *memory1_type = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, memory1_type, KEFIR_IR_TYPE_MEMORY, 0, strlen(MSG) + 1));
+    struct kefir_ir_data *memory1_data = kefir_ir_module_new_named_data(mem, &module, "memory1_1", memory1_type);
+    REQUIRE_OK(kefir_ir_data_set_string(memory1_data, 0, MSG));
+    REQUIRE_OK(kefir_ir_data_finalize(memory1_data));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "memory1_1"));
+
+    struct kefir_ir_type *pointer1_type = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, pointer1_type, KEFIR_IR_TYPE_WORD, 0, 0));
+    struct kefir_ir_data *pointer1_data = kefir_ir_module_new_named_data(mem, &module, "pointer1_1", pointer1_type);
+    REQUIRE_OK(kefir_ir_data_set_pointer(pointer1_data, 0, "memory1_1", 2));
+    REQUIRE_OK(kefir_ir_data_finalize(pointer1_data));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "pointer1_1"));
 
     REQUIRE_OK(KEFIR_CODEGEN_TRANSLATE(mem, &codegen.iface, &module));
     REQUIRE_OK(KEFIR_CODEGEN_CLOSE(&codegen.iface));

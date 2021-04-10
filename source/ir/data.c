@@ -34,6 +34,7 @@ kefir_result_t kefir_ir_data_set_integer(struct kefir_ir_data *data,
                                      kefir_size_t index,
                                      kefir_int64_t value) {
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR data pointer"));
+    REQUIRE(!data->finalized, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot modify finalized data"));
     ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry,
         kefir_vector_at(&data->value, index));
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to find specified index"));
@@ -46,6 +47,7 @@ kefir_result_t kefir_ir_data_set_float32(struct kefir_ir_data *data,
                                      kefir_size_t index,
                                      kefir_float32_t value) {
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR data pointer"));
+    REQUIRE(!data->finalized, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot modify finalized data"));
     ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry,
         kefir_vector_at(&data->value, index));
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to find specified index"));
@@ -58,6 +60,7 @@ kefir_result_t kefir_ir_data_set_float64(struct kefir_ir_data *data,
                                      kefir_size_t index,
                                      kefir_float64_t value) {
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR data pointer"));
+    REQUIRE(!data->finalized, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot modify finalized data"));
     ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry,
         kefir_vector_at(&data->value, index));
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to find specified index"));
@@ -70,6 +73,7 @@ kefir_result_t kefir_ir_data_set_string(struct kefir_ir_data *data,
                                      kefir_size_t index,
                                      const char *value) {
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR data pointer"));
+    REQUIRE(!data->finalized, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot modify finalized data"));
     ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry,
         kefir_vector_at(&data->value, index));
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to find specified index"));
@@ -83,6 +87,7 @@ kefir_result_t kefir_ir_data_set_pointer(struct kefir_ir_data *data,
                                      const char *reference,
                                      kefir_size_t offset) {
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR data pointer"));
+    REQUIRE(!data->finalized, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot modify finalized data"));
     ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry,
         kefir_vector_at(&data->value, index));
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to find specified index"));
@@ -97,6 +102,7 @@ kefir_result_t kefir_ir_data_set_raw(struct kefir_ir_data *data,
                                  const void *raw,
                                  kefir_size_t length) {
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR data pointer"));
+    REQUIRE(!data->finalized, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot modify finalized data"));
     ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry,
         kefir_vector_at(&data->value, index));
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to find specified index"));
@@ -165,6 +171,9 @@ static kefir_result_t finalize_struct_union(const struct kefir_ir_type *type,
     
     ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry,
         kefir_vector_at(&param->data->value, param->slot++));
+    REQUIRE(entry->type == KEFIR_IR_DATA_VALUE_UNDEFINED,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "IR data for structure/union cannot have directly assigned value"));
+    
     struct finalize_param subparam = {
         .visitor = param->visitor,
         .data = param->data,
@@ -202,7 +211,9 @@ static kefir_result_t finalize_array(const struct kefir_ir_type *type,
     }
     param->slot = subparam.slot;
     param->defined = param->defined || subparam.defined;
-    if (subparam.defined && entry->type == KEFIR_IR_DATA_VALUE_UNDEFINED) {
+    if (subparam.defined) {
+        REQUIRE(entry->type == KEFIR_IR_DATA_VALUE_UNDEFINED,
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Array data cannot simultaneously have directly assigned and aggregate values"));
         entry->type = KEFIR_IR_DATA_VALUE_AGGREGATE;
     }
     return KEFIR_OK;

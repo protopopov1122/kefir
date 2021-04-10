@@ -89,6 +89,8 @@ global float64_2
 global struct1_1
 global array1_1
 global union1_1
+global memory1_1
+global pointer1_1
 
 SECTION .data
 int8_1:
@@ -160,6 +162,10 @@ align 8
 float64_2:
 dq 0x0p+0
 
+memory1_1:
+db 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2c, 0x20, 0x63, 0x72, 0x75, 0x65, 0x6c, 0x20, 0x77, 0x6f, 0x72, 0x6c, 0x64, 0x21
+times 1 db 0
+
 align 8
 struct1_1:
 db 0x7f
@@ -168,3 +174,7 @@ dq 0x00000002ffffffff
 dw 0x1000
 times 2 db 0
 dd 0x1.abff62p+6
+
+align 8
+pointer1_1:
+dq memory1_1 + 2

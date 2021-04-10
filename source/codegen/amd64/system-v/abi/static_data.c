@@ -39,13 +39,32 @@ static kefir_result_t align_offset(struct kefir_amd64_sysv_data_layout *layout,
     return KEFIR_OK;
 }
 
+static kefir_result_t trailing_padding(kefir_size_t start_offset,
+                                     struct kefir_amd64_sysv_data_layout *layout,
+                                     struct static_data_param *param) {
+    kefir_size_t end_offset = start_offset + layout->size;
+    if (end_offset > param->offset) {
+        ASMGEN_MULRAW(&param->codegen->asmgen, end_offset - param->offset, KEFIR_AMD64_BYTE);
+        ASMGEN_ARG0(&param->codegen->asmgen, "0");
+        param->offset = end_offset;
+    } else {
+        REQUIRE(end_offset == param->offset, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Actual object size exceeds expected"));
+    }
+    return KEFIR_OK;
+}
+
 static kefir_result_t integral_static_data(const struct kefir_ir_type *type,
                                          kefir_size_t index,
                                          const struct kefir_ir_typeentry *typeentry,
                                          void *payload) {
     UNUSED(type);
-    struct static_data_param *param = (struct static_data_param *) payload;
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
+    REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type entry"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+
+    ASSIGN_DECL_CAST(struct static_data_param *, param,
+        payload);
+    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry,
+        kefir_vector_at(&param->data->value, param->slot++));
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid entry for index"));
     kefir_int64_t value = 0;
     switch (entry->type) {
@@ -57,7 +76,7 @@ static kefir_result_t integral_static_data(const struct kefir_ir_type *type,
             break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected data type");
+            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected value of integral field");
     }
 
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
@@ -84,7 +103,6 @@ static kefir_result_t integral_static_data(const struct kefir_ir_type *type,
             break;
 
         case KEFIR_IR_TYPE_LONG:
-        case KEFIR_IR_TYPE_WORD:
         case KEFIR_IR_TYPE_INT64:
             ASMGEN_RAW(&param->codegen->asmgen, KEFIR_AMD64_QUAD);
             ASMGEN_ARG(&param->codegen->asmgen, "0x%016lx", value);
@@ -98,13 +116,66 @@ static kefir_result_t integral_static_data(const struct kefir_ir_type *type,
     return KEFIR_OK;
 }
 
+static kefir_result_t word_static_data(const struct kefir_ir_type *type,
+                                     kefir_size_t index,
+                                     const struct kefir_ir_typeentry *typeentry,
+                                     void *payload) {
+    UNUSED(type);
+    REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type entry"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+
+    ASSIGN_DECL_CAST(struct static_data_param *, param,
+        payload);
+    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry,
+        kefir_vector_at(&param->data->value, param->slot++));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid entry for index"));
+    
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
+            kefir_vector_at(&param->layout, index));
+    REQUIRE_OK(align_offset(layout, param));
+    ASMGEN_RAW(&param->codegen->asmgen, KEFIR_AMD64_QUAD);
+    switch (entry->type) {
+        case KEFIR_IR_DATA_VALUE_UNDEFINED:
+            ASMGEN_ARG(&param->codegen->asmgen, "0x%016lx", 0);
+            break;
+
+        case KEFIR_IR_DATA_VALUE_INTEGER:
+            ASMGEN_ARG(&param->codegen->asmgen, "0x%016lx", entry->value.integer);
+            break;
+
+        case KEFIR_IR_DATA_VALUE_POINTER:
+            if (entry->value.pointer.offset > 0) {
+                ASMGEN_ARG(&param->codegen->asmgen, "%s + " KEFIR_INT64_FMT,
+                    entry->value.pointer.reference, entry->value.pointer.offset);
+            } else if (entry->value.pointer.offset < 0) {
+                ASMGEN_ARG(&param->codegen->asmgen, "%s " KEFIR_INT64_FMT,
+                    entry->value.pointer.reference, entry->value.pointer.offset);
+            } else {
+                ASMGEN_ARG(&param->codegen->asmgen, "%s",
+                    entry->value.pointer.reference);
+            }
+            break;
+
+        default:
+            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected value of word type field");
+    }
+
+    param->offset += layout->size;
+    return KEFIR_OK;
+}
+
 static kefir_result_t float32_static_data(const struct kefir_ir_type *type,
                                         kefir_size_t index,
                                         const struct kefir_ir_typeentry *typeentry,
                                         void *payload) {
     UNUSED(type);
-    struct static_data_param *param = (struct static_data_param *) payload;
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
+    REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type entry"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+
+    ASSIGN_DECL_CAST(struct static_data_param *, param,
+        payload);
+    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry,
+        kefir_vector_at(&param->data->value, param->slot++));
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid entry for index"));
     kefir_float32_t value = 0.0f;
     switch (entry->type) {
@@ -116,7 +187,7 @@ static kefir_result_t float32_static_data(const struct kefir_ir_type *type,
             break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected data type");
+            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected value of floating-point type field");
     }
 
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
@@ -130,7 +201,7 @@ static kefir_result_t float32_static_data(const struct kefir_ir_type *type,
 
         default:
             return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR,
-                KEFIR_AMD64_SYSV_ABI_ERROR_PREFIX "Unexpectedly encountered non-float type");
+                KEFIR_AMD64_SYSV_ABI_ERROR_PREFIX "Unexpectedly encountered non-float32 type");
     }
     param->offset += layout->size;
     return KEFIR_OK;
@@ -141,8 +212,13 @@ static kefir_result_t float64_static_data(const struct kefir_ir_type *type,
                                         const struct kefir_ir_typeentry *typeentry,
                                         void *payload) {
     UNUSED(type);
-    struct static_data_param *param = (struct static_data_param *) payload;
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
+    REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type entry"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+
+    ASSIGN_DECL_CAST(struct static_data_param *, param,
+        payload);
+    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry,
+        kefir_vector_at(&param->data->value, param->slot++));
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid entry for index"));
     kefir_float64_t value = 0.0;
     switch (entry->type) {
@@ -154,7 +230,7 @@ static kefir_result_t float64_static_data(const struct kefir_ir_type *type,
             break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected data type");
+            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected value of floating-point type field");
     }
 
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
@@ -178,26 +254,25 @@ static kefir_result_t struct_static_data(const struct kefir_ir_type *type,
                                        kefir_size_t index,
                                        const struct kefir_ir_typeentry *typeentry,
                                        void *payload) {
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type"));
+    REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type entry"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+
     ASSIGN_DECL_CAST(struct static_data_param *, param,
         payload);
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
             kefir_vector_at(&param->layout, index));
+    param->slot++;
 
     REQUIRE_OK(align_offset(layout, param));
     kefir_size_t start_offset = param->offset;
-    REQUIRE_OK(kefir_ir_type_visitor_list_nodes(param->data->type,
+    REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type,
                                             param->visitor,
                                             payload,
                                             index + 1,
                                             typeentry->param));
         
-    kefir_size_t end_offset = start_offset + layout->size;
-    if (end_offset > param->offset) {
-        ASMGEN_MULRAW(&param->codegen->asmgen, end_offset - param->offset, KEFIR_AMD64_BYTE);
-        ASMGEN_ARG0(&param->codegen->asmgen, "0");
-        param->offset = end_offset;
-    }
+    REQUIRE_OK(trailing_padding(start_offset, layout, param));
     return KEFIR_OK;
 }
 
@@ -205,20 +280,25 @@ static kefir_result_t union_static_data(const struct kefir_ir_type *type,
                                       kefir_size_t index,
                                       const struct kefir_ir_typeentry *typeentry,
                                       void *payload) {
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type"));
+    REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type entry"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+
     ASSIGN_DECL_CAST(struct static_data_param *, param,
         payload);
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
-            kefir_vector_at(&param->layout, index));
+        kefir_vector_at(&param->layout, index));
+    param->slot++;
 
     REQUIRE_OK(align_offset(layout, param));
     kefir_size_t start_offset = param->offset;
 
     kefir_size_t subindex = index + 1;
     for (kefir_size_t i = 0; i < (kefir_size_t) typeentry->param; i++) {
-        ASSIGN_DECL_CAST(struct kefir_ir_data_value *, subentry, kefir_vector_at(&param->data->value, param->slot));
+        ASSIGN_DECL_CAST(struct kefir_ir_data_value *, subentry,
+            kefir_vector_at(&param->data->value, param->slot));
         if (subentry->type != KEFIR_IR_DATA_VALUE_UNDEFINED) {
-            REQUIRE_OK(kefir_ir_type_visitor_list_nodes(param->data->type,
+            REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type,
                                                     param->visitor,
                                                     payload,
                                                     subindex,
@@ -229,13 +309,8 @@ static kefir_result_t union_static_data(const struct kefir_ir_type *type,
             subindex += kefir_ir_type_subnodes(type, subindex);
         }
     }
-        
-    kefir_size_t end_offset = start_offset + layout->size;
-    if (end_offset > param->offset) {
-        ASMGEN_MULRAW(&param->codegen->asmgen, end_offset - param->offset, KEFIR_AMD64_BYTE);
-        ASMGEN_ARG0(&param->codegen->asmgen, "0");
-        param->offset = end_offset;
-    }
+     
+    REQUIRE_OK(trailing_padding(start_offset, layout, param));
     return KEFIR_OK;
 }
 
@@ -252,11 +327,16 @@ static kefir_result_t array_static_data(const struct kefir_ir_type *type,
                                        kefir_size_t index,
                                        const struct kefir_ir_typeentry *typeentry,
                                        void *payload) {
-    UNUSED(type);
-    struct static_data_param *param = (struct static_data_param *) payload;
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type"));
+    REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type entry"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+
+    ASSIGN_DECL_CAST(struct static_data_param *, param,
+        payload);
+    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry,
+        kefir_vector_at(&param->data->value, param->slot++));
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
-            kefir_vector_at(&param->layout, index));
+        kefir_vector_at(&param->layout, index));
 
     REQUIRE_OK(align_offset(layout, param));
     kefir_size_t start_offset = param->offset;
@@ -265,7 +345,7 @@ static kefir_result_t array_static_data(const struct kefir_ir_type *type,
         case KEFIR_IR_DATA_VALUE_UNDEFINED:
         case KEFIR_IR_DATA_VALUE_AGGREGATE:
             for (kefir_size_t i = 0; i < (kefir_size_t) typeentry->param; i++) {
-                REQUIRE_OK(kefir_ir_type_visitor_list_nodes(param->data->type,
+                REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type,
                                                         param->visitor,
                                                         payload,
                                                         index + 1,
@@ -287,12 +367,7 @@ static kefir_result_t array_static_data(const struct kefir_ir_type *type,
             return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected array data type");
     }
 
-    kefir_size_t end_offset = start_offset + layout->size;
-    if (end_offset > param->offset) {
-        ASMGEN_MULRAW(&param->codegen->asmgen, end_offset - param->offset, KEFIR_AMD64_BYTE);
-        ASMGEN_ARG0(&param->codegen->asmgen, "0");
-        param->offset = end_offset;
-    }
+    REQUIRE_OK(trailing_padding(start_offset, layout, param));
     return KEFIR_OK;
 
 }
@@ -302,10 +377,15 @@ static kefir_result_t memory_static_data(const struct kefir_ir_type *type,
                                        const struct kefir_ir_typeentry *typeentry,
                                        void *payload) {
     UNUSED(type);
-    struct static_data_param *param = (struct static_data_param *) payload;
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
+    UNUSED(typeentry);
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+
+    ASSIGN_DECL_CAST(struct static_data_param *, param,
+        payload);
+    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry,
+        kefir_vector_at(&param->data->value, param->slot++));
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
-                kefir_vector_at(&param->layout, index));
+        kefir_vector_at(&param->layout, index));
 
     REQUIRE_OK(align_offset(layout, param));
     kefir_size_t start_offset = param->offset;
@@ -328,12 +408,7 @@ static kefir_result_t memory_static_data(const struct kefir_ir_type *type,
             return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected memory data type");
     }
 
-    kefir_size_t end_offset = start_offset + layout->size;
-    if (end_offset > param->offset) {
-        ASMGEN_MULRAW(&param->codegen->asmgen, end_offset - param->offset, KEFIR_AMD64_BYTE);
-        ASMGEN_ARG0(&param->codegen->asmgen, "0");
-        param->offset = end_offset;
-    }
+    REQUIRE_OK(trailing_padding(start_offset, layout, param));
     return KEFIR_OK;
 }
 
@@ -342,11 +417,15 @@ static kefir_result_t pad_static_data(const struct kefir_ir_type *type,
                                        kefir_size_t index,
                                        const struct kefir_ir_typeentry *typeentry,
                                        void *payload) {
-                                           UNUSED(type);
-    struct static_data_param *param = (struct static_data_param *) payload;
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
+    UNUSED(type);
+    UNUSED(typeentry);
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+
+    ASSIGN_DECL_CAST(struct static_data_param *, param,
+        payload);
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
-                kefir_vector_at(&param->layout, index));
+        kefir_vector_at(&param->layout, index));
+    param->slot++;
 
     REQUIRE_OK(align_offset(layout, param));
     ASMGEN_MULRAW(&param->codegen->asmgen, layout->size, KEFIR_AMD64_BYTE);
@@ -367,7 +446,9 @@ static kefir_result_t calculate_type_properties_visitor(const struct kefir_ir_ty
                                          void *payload) {
     UNUSED(type);
     UNUSED(typeentry);
-    struct type_properties *props = (struct type_properties *) payload;
+    
+    ASSIGN_DECL_CAST(struct type_properties *, props,
+        payload);
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout,
         kefir_vector_at(props->layout, index));
     props->size = kefir_codegen_pad_aligned(props->size, layout->alignment);
@@ -405,6 +486,7 @@ kefir_result_t kefir_amd64_sysv_static_data(struct kefir_mem *mem,
     struct kefir_ir_type_visitor visitor;
     REQUIRE_OK(kefir_ir_type_visitor_init(&visitor, visitor_not_supported));
     KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS(&visitor, integral_static_data);
+    visitor.visit[KEFIR_IR_TYPE_WORD] = word_static_data;
     visitor.visit[KEFIR_IR_TYPE_FLOAT32] = float32_static_data;
     visitor.visit[KEFIR_IR_TYPE_FLOAT64] = float64_static_data;
     visitor.visit[KEFIR_IR_TYPE_ARRAY] = array_static_data;

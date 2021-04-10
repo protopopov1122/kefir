@@ -130,6 +130,13 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_data_finalize(pad1_data));
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "pad1_1"));
 
+    struct kefir_ir_type *pointer1_type = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, pointer1_type, KEFIR_IR_TYPE_WORD, 0, 0));
+    struct kefir_ir_data *pointer1_data = kefir_ir_module_new_named_data(mem, &module, "pointer1_1", pointer1_type);
+    REQUIRE_OK(kefir_ir_data_set_pointer(pointer1_data, 0, "memory1_1", 2));
+    REQUIRE_OK(kefir_ir_data_finalize(pointer1_data));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "pointer1_1"));
+
     KEFIR_CODEGEN_TRANSLATE(mem, &codegen.iface, &module);
     KEFIR_CODEGEN_CLOSE(&codegen.iface);
     REQUIRE_OK(kefir_ir_module_free(mem, &module));
