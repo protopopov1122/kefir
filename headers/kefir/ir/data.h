@@ -7,6 +7,7 @@
 #include "kefir/core/mem.h"
 
 typedef struct kefir_ir_data {
+    kefir_id_t type_id;
     const struct kefir_ir_type *type;
     struct kefir_vector value;
     kefir_bool_t finalized;
@@ -43,6 +44,7 @@ typedef struct kefir_ir_data_value {
 
 kefir_result_t kefir_ir_data_alloc(struct kefir_mem *,
                                const struct kefir_ir_type *,
+                               kefir_id_t,
                                struct kefir_ir_data *);
 
 kefir_result_t kefir_ir_data_free(struct kefir_mem *,

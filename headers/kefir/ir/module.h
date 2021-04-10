@@ -62,7 +62,7 @@ struct kefir_ir_function *kefir_ir_module_new_function(struct kefir_mem *,
 struct kefir_ir_data * kefir_ir_module_new_named_data(struct kefir_mem *,
                                                   struct kefir_ir_module *,
                                                   const char *,
-                                                  const struct kefir_ir_type *);
+                                                  kefir_id_t);
 
 const char *kefir_ir_module_get_named_symbol(const struct kefir_ir_module *,
                                            kefir_id_t);

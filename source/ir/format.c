@@ -447,7 +447,7 @@ static kefir_result_t format_datum(struct kefir_json_output *json,
         ASSIGN_DECL_CAST(struct kefir_ir_data_value *, value,
             kefir_vector_at(&data->value, i));
         REQUIRE_OK(kefir_json_output_object_begin(json));
-        REQUIRE_OK(kefir_json_output_object_key(json, "type"));
+        REQUIRE_OK(kefir_json_output_object_key(json, "class"));
         switch (value->type) {
             case KEFIR_IR_DATA_VALUE_UNDEFINED:
                 REQUIRE_OK(kefir_json_output_string(json, "undefined"));
@@ -518,7 +518,7 @@ static kefir_result_t format_data(struct kefir_json_output *json, const struct k
         REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
         REQUIRE_OK(kefir_json_output_string(json, identifier));
         REQUIRE_OK(kefir_json_output_object_key(json, "type"));
-        REQUIRE_OK(kefir_ir_format_type_json(json, data->type));
+        REQUIRE_OK(kefir_json_output_uinteger(json, data->type_id));
         REQUIRE_OK(kefir_json_output_object_key(json, "value"));
         REQUIRE_OK(format_datum(json, data));
         REQUIRE_OK(kefir_json_output_object_end(json));

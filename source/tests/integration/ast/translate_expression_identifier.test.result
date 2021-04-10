@@ -48,7 +48,26 @@
             ]
         }
     ],
-    "data": [],
+    "data": [
+        {
+            "identifier": "extern_variable2",
+            "type": 4,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        }
+    ],
     "function_declarations": [
         {
             "identifier": "func1",

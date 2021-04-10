@@ -4,6 +4,7 @@
 
 kefir_result_t kefir_ir_data_alloc(struct kefir_mem *mem,
                                const struct kefir_ir_type *type,
+                               kefir_id_t type_id,
                                struct kefir_ir_data *data) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type pointer"));
@@ -12,6 +13,7 @@ kefir_result_t kefir_ir_data_alloc(struct kefir_mem *mem,
     REQUIRE_OK(kefir_vector_alloc(mem, sizeof(struct kefir_ir_data_value), slots, &data->value));
     REQUIRE_OK(kefir_vector_extend(&data->value, slots));
     data->type = type;
+    data->type_id = type_id;
     for (kefir_size_t i = 0; i < kefir_vector_length(&data->value); i++) {
         ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&data->value, i));
         REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected to have valid entry at index"));

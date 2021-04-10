@@ -260,14 +260,18 @@ const char *kefir_ir_module_symbol_iter_next(const struct kefir_list_entry **ite
 struct kefir_ir_data * kefir_ir_module_new_named_data(struct kefir_mem *mem,
                                                   struct kefir_ir_module *module,
                                                   const char *identifier,
-                                                  const struct kefir_ir_type *type) {
+                                                  kefir_id_t type_id) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(module != NULL, NULL);
+
+    const struct kefir_ir_type *type = kefir_ir_module_get_named_type(module, type_id);
+    REQUIRE(type != NULL, NULL);
+
     const char *symbol = kefir_ir_module_symbol(mem, module, identifier, NULL);
     REQUIRE(symbol != NULL, NULL);
     struct kefir_ir_data *data = KEFIR_MALLOC(mem, sizeof(struct kefir_ir_data));
     REQUIRE(data != NULL, NULL);
-    kefir_result_t res = kefir_ir_data_alloc(mem, type, data);
+    kefir_result_t res = kefir_ir_data_alloc(mem, type, type_id, data);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, data);
         return NULL;

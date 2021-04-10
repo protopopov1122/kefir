@@ -38,20 +38,21 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(sprintf_decl != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_external(mem, &module, "sprintf"));
 
-    kefir_id_t fmt_id;
-    struct kefir_ir_type *string_type = kefir_ir_module_new_type(mem, &module, 2, NULL);
+    kefir_id_t fmt_id, fmt_type_id;
+    struct kefir_ir_type *string_type = kefir_ir_module_new_type(mem, &module, 2, &fmt_type_id);
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, string_type, KEFIR_IR_TYPE_ARRAY, 0, strlen(FMT) + 1));
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, string_type, KEFIR_IR_TYPE_CHAR, 0, 0));
-    struct kefir_ir_data *fmt_data1 = kefir_ir_module_new_named_data(mem, &module, kefir_ir_module_symbol(mem, &module, "fmt", &fmt_id), string_type);
+    struct kefir_ir_data *fmt_data1 = kefir_ir_module_new_named_data(mem, &module,
+        kefir_ir_module_symbol(mem, &module, "fmt", &fmt_id), fmt_type_id);
     REQUIRE_OK(kefir_ir_data_set_string(fmt_data1, 0, FMT));
     REQUIRE_OK(kefir_ir_data_finalize(fmt_data1));
 
-    kefir_id_t result_id;
-    struct kefir_ir_type *string2_type = kefir_ir_module_new_type(mem, &module, 2, NULL);
+    kefir_id_t result_id, result_type_id;
+    struct kefir_ir_type *string2_type = kefir_ir_module_new_type(mem, &module, 2, &result_type_id);
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, string2_type, KEFIR_IR_TYPE_ARRAY, 0, 256));
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, string2_type, KEFIR_IR_TYPE_CHAR, 0, 0));
     REQUIRE_OK(kefir_ir_data_finalize(kefir_ir_module_new_named_data(mem, &module,
-        kefir_ir_module_symbol(mem, &module, "result", &result_id), string2_type)));
+        kefir_ir_module_symbol(mem, &module, "result", &result_id), result_type_id)));
 
     kefir_codegen_amd64_sysv_init(&codegen, stdout);
     codegen.asmgen.settings.enable_comments = false;
