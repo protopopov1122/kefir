@@ -282,22 +282,36 @@ struct kefir_ir_data * kefir_ir_module_new_named_data(struct kefir_mem *mem,
 }
 
 const struct kefir_ir_data *kefir_ir_module_named_data_iter(const struct kefir_ir_module *module,
-                                                          struct kefir_hashtree_node_iterator *iter) {
+                                                          struct kefir_hashtree_node_iterator *iter,
+                                                          const char **identifier) {
     REQUIRE(module != NULL, NULL); 
     REQUIRE(iter != NULL, NULL);
     const struct kefir_hashtree_node *node = kefir_hashtree_iter(&module->named_data, iter);
     if (node != NULL) {
+        if (identifier != NULL) {
+            *identifier = (const char *) node->key;
+        }
         return (const struct kefir_ir_data *) node->value;
     } else {
+        if (identifier != NULL) {
+            *identifier = NULL;
+        }
         return NULL;
     }
 }
-const struct kefir_ir_data *kefir_ir_module_named_data_next(struct kefir_hashtree_node_iterator *iter) {
+const struct kefir_ir_data *kefir_ir_module_named_data_next(struct kefir_hashtree_node_iterator *iter,
+                                                        const char **identifier) {
     REQUIRE(iter != NULL, NULL);
     const struct kefir_hashtree_node *node = kefir_hashtree_next(iter);
     if (node != NULL) {
+        if (identifier != NULL) {
+            *identifier = (const char *) node->key;
+        }
         return (const struct kefir_ir_data *) node->value;
     } else {
+        if (identifier != NULL) {
+            *identifier = NULL;
+        }
         return NULL;
     }
 }

@@ -15,6 +15,7 @@
             "type": []
         }
     ],
+    "data": [],
     "function_declarations": [
         {
             "identifier": "func1",

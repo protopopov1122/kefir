@@ -4,6 +4,7 @@
     ],
     "externals": [],
     "types": [],
+    "data": [],
     "function_declarations": [
         {
             "identifier": "func1",

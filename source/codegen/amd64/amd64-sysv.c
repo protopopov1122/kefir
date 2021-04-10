@@ -141,14 +141,15 @@ static kefir_result_t cg_translate_data(struct kefir_mem *mem,
                                       struct kefir_codegen_amd64_sysv_module *module) {
     bool first = true;
     struct kefir_hashtree_node_iterator iter;
-    for (const struct kefir_ir_data *data = kefir_ir_module_named_data_iter(module->module, &iter);
+    const char *identifier = NULL;
+    for (const struct kefir_ir_data *data = kefir_ir_module_named_data_iter(module->module, &iter, &identifier);
         data != NULL;
-        data = kefir_ir_module_named_data_next(&iter)) {
+        data = kefir_ir_module_named_data_next(&iter, &identifier)) {
         if (first) {
             ASMGEN_SECTION(&codegen->asmgen, ".data");
             first = false;
         }
-        REQUIRE_OK(kefir_amd64_sysv_static_data(mem, codegen, data, (const char *) iter.node->key));
+        REQUIRE_OK(kefir_amd64_sysv_static_data(mem, codegen, data, identifier));
     }
     return KEFIR_OK;
 }

@@ -324,7 +324,7 @@ static kefir_result_t format_type_posthook(const struct kefir_ir_type *type,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ir_format_type_json(struct kefir_json_output *json, struct kefir_ir_type *type) {
+kefir_result_t kefir_ir_format_type_json(struct kefir_json_output *json, const struct kefir_ir_type *type) {
     struct kefir_ir_type_visitor visitor;
     REQUIRE_OK(kefir_ir_type_visitor_init(&visitor, format_type_default));
     visitor.visit[KEFIR_IR_TYPE_STRUCT] = format_type_struct_union;
@@ -344,7 +344,7 @@ kefir_result_t kefir_ir_format_type_json(struct kefir_json_output *json, struct 
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ir_format_type(FILE *fp, struct kefir_ir_type *type) {
+kefir_result_t kefir_ir_format_type(FILE *fp, const struct kefir_ir_type *type) {
     REQUIRE(fp != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid file pointer"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type"));
 
@@ -440,6 +440,93 @@ static kefir_result_t format_types(struct kefir_json_output *json, const struct 
     return KEFIR_OK;
 }
 
+static kefir_result_t format_datum(struct kefir_json_output *json,
+                                 const struct kefir_ir_data *data) {
+    REQUIRE_OK(kefir_json_output_array_begin(json));
+    for (kefir_size_t i = 0; i < kefir_vector_length(&data->value); i++) {
+        ASSIGN_DECL_CAST(struct kefir_ir_data_value *, value,
+            kefir_vector_at(&data->value, i));
+        REQUIRE_OK(kefir_json_output_object_begin(json));
+        REQUIRE_OK(kefir_json_output_object_key(json, "type"));
+        switch (value->type) {
+            case KEFIR_IR_DATA_VALUE_UNDEFINED:
+                REQUIRE_OK(kefir_json_output_string(json, "undefined"));
+                break;
+
+            case KEFIR_IR_DATA_VALUE_INTEGER:
+                REQUIRE_OK(kefir_json_output_string(json, "integer"));
+                REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+                REQUIRE_OK(kefir_json_output_integer(json, value->value.integer));
+                break;
+
+            case KEFIR_IR_DATA_VALUE_FLOAT32:
+                REQUIRE_OK(kefir_json_output_string(json, "float32"));
+                REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+                REQUIRE_OK(kefir_json_output_float(json, value->value.float32));
+                break;
+
+            case KEFIR_IR_DATA_VALUE_FLOAT64:
+                REQUIRE_OK(kefir_json_output_string(json, "float64"));
+                REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+                REQUIRE_OK(kefir_json_output_float(json, value->value.float64));
+                break;
+
+            case KEFIR_IR_DATA_VALUE_STRING:
+                REQUIRE_OK(kefir_json_output_string(json, "string"));
+                REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+                REQUIRE_OK(kefir_json_output_string(json, value->value.string));
+                break;
+
+            case KEFIR_IR_DATA_VALUE_POINTER:
+                REQUIRE_OK(kefir_json_output_string(json, "pointer"));
+                REQUIRE_OK(kefir_json_output_object_key(json, "reference"));
+                REQUIRE_OK(kefir_json_output_string(json, value->value.pointer.reference));
+                REQUIRE_OK(kefir_json_output_object_key(json, "offset"));
+                REQUIRE_OK(kefir_json_output_integer(json, value->value.pointer.offset));
+                break;
+
+            case KEFIR_IR_DATA_VALUE_RAW:
+                REQUIRE_OK(kefir_json_output_string(json, "raw"));
+                REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+                REQUIRE_OK(kefir_json_output_array_begin(json));
+                for (kefir_size_t i = 0; i < value->value.raw.length; i++) {
+                    REQUIRE_OK(kefir_json_output_integer(json, ((const char *) value->value.raw.data)[i]));
+                }
+                REQUIRE_OK(kefir_json_output_array_end(json));
+                break;
+
+            case KEFIR_IR_DATA_VALUE_AGGREGATE:
+                REQUIRE_OK(kefir_json_output_string(json, "aggregate"));
+                break;
+
+        }
+        REQUIRE_OK(kefir_json_output_object_end(json));
+    }
+    REQUIRE_OK(kefir_json_output_array_end(json));
+    return KEFIR_OK;
+}
+
+static kefir_result_t format_data(struct kefir_json_output *json, const struct kefir_ir_module *module) {
+    REQUIRE_OK(kefir_json_output_array_begin(json));
+    struct kefir_hashtree_node_iterator iter;
+    const char *identifier;
+    for (const struct kefir_ir_data *data = kefir_ir_module_named_data_iter(module, &iter, &identifier);
+        data != NULL;
+        data = kefir_ir_module_named_data_next(&iter, &identifier)) {
+        
+        REQUIRE_OK(kefir_json_output_object_begin(json));
+        REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
+        REQUIRE_OK(kefir_json_output_string(json, identifier));
+        REQUIRE_OK(kefir_json_output_object_key(json, "type"));
+        REQUIRE_OK(kefir_ir_format_type_json(json, data->type));
+        REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+        REQUIRE_OK(format_datum(json, data));
+        REQUIRE_OK(kefir_json_output_object_end(json));
+    }
+    REQUIRE_OK(kefir_json_output_array_end(json));
+    return KEFIR_OK;
+}
+
 static kefir_result_t format_function_declarations(struct kefir_json_output *json, const struct kefir_ir_module *module) {
     REQUIRE_OK(kefir_json_output_array_begin(json));
     struct kefir_hashtree_node_iterator iter;
@@ -473,6 +560,8 @@ kefir_result_t kefir_ir_format_module_json(struct kefir_json_output *json, const
     REQUIRE_OK(format_externals(json, module));
     REQUIRE_OK(kefir_json_output_object_key(json, "types"));
     REQUIRE_OK(format_types(json, module));
+    REQUIRE_OK(kefir_json_output_object_key(json, "data"));
+    REQUIRE_OK(format_data(json, module));
     REQUIRE_OK(kefir_json_output_object_key(json, "function_declarations"));
     REQUIRE_OK(format_function_declarations(json, module));
     REQUIRE_OK(kefir_json_output_object_key(json, "functions"));
