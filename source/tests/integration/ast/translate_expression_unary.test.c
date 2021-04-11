@@ -183,6 +183,40 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         }
     });
 
+    FUNC("indirection", {
+        UNARY_NODE(KEFIR_AST_OPERATION_INDIRECTION, KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
+            kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_char()),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 0)))));
+        UNARY_NODE(KEFIR_AST_OPERATION_INDIRECTION, KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
+            kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_signed_short()),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 1)))));
+        UNARY_NODE(KEFIR_AST_OPERATION_INDIRECTION, KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
+            kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_float()),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 2)))));
+        UNARY_NODE(KEFIR_AST_OPERATION_INDIRECTION, KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
+            kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_signed_long()),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 3)))));
+        UNARY_NODE(KEFIR_AST_OPERATION_INDIRECTION, KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(mem,
+            KEFIR_AST_OPERATION_INDIRECTION,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
+                kefir_ast_type_pointer(mem, context->type_bundle,
+                    kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_bool())),
+                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 4)))))));
+
+        UNARY_NODE(KEFIR_AST_OPERATION_INDIRECTION, KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
+            kefir_ast_type_pointer(mem, context->type_bundle, type1),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 5)))));
+        UNARY_NODE(KEFIR_AST_OPERATION_INDIRECTION, KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
+            kefir_ast_type_pointer(mem, context->type_bundle, type2),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 6)))));
+        UNARY_NODE(KEFIR_AST_OPERATION_INDIRECTION, KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
+            kefir_ast_type_pointer(mem, context->type_bundle, type3),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 7)))));
+        UNARY_NODE(KEFIR_AST_OPERATION_INDIRECTION, KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
+            kefir_ast_type_pointer(mem, context->type_bundle, type4),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 8)))));
+    });
+
     REQUIRE_OK(kefir_ir_format_module(stdout, &module));
 
     REQUIRE_OK(kefir_ast_translator_context_free(mem, &translator_context));

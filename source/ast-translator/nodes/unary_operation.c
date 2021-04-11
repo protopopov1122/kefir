@@ -129,6 +129,17 @@ static kefir_result_t translate_alignof(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+
+static kefir_result_t translate_indirection(struct kefir_mem *mem,
+                                          struct kefir_ast_translator_context *context,
+                                          struct kefir_irbuilder_block *builder,
+                                          const struct kefir_ast_unary_operation *node) {
+    const struct kefir_ast_type *normalized_type = kefir_ast_translator_normalize_type(node->base.properties.type);
+    REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg, builder, context));  
+    REQUIRE_OK(kefir_ast_translator_resolve_value(normalized_type, builder));
+    return KEFIR_OK;
+}  
+
 kefir_result_t kefir_ast_translate_unary_operation_node(struct kefir_mem *mem,
                                                     struct kefir_ast_translator_context *context,
                                                     struct kefir_irbuilder_block *builder,
@@ -171,7 +182,8 @@ kefir_result_t kefir_ast_translate_unary_operation_node(struct kefir_mem *mem,
             break;
 
         case KEFIR_AST_OPERATION_INDIRECTION:
-            return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Not implemented yet");
+            REQUIRE_OK(translate_indirection(mem, context, builder, node));
+            break;
             
         default:
             return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected AST unary operation");
