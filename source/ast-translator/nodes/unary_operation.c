@@ -167,6 +167,9 @@ kefir_result_t kefir_ast_translate_unary_operation_node(struct kefir_mem *mem,
             break;
 
         case KEFIR_AST_OPERATION_ADDRESS:
+            REQUIRE_OK(kefir_ast_translate_lvalue(mem, context, builder, node->arg));
+            break;
+
         case KEFIR_AST_OPERATION_INDIRECTION:
             return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Not implemented yet");
             

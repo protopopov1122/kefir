@@ -115,7 +115,7 @@
                     }
                 },
                 {
-                    "opcode": "elementptr",
+                    "opcode": "offsetptr",
                     "arg": {
                         "type": 0,
                         "index": 0
@@ -128,7 +128,7 @@
                     "opcode": "getlocals"
                 },
                 {
-                    "opcode": "elementptr",
+                    "opcode": "offsetptr",
                     "arg": {
                         "type": 2,
                         "index": 1

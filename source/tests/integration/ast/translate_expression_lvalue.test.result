@@ -1,0 +1,431 @@
+{
+    "globals": [
+        "variable2"
+    ],
+    "externals": [
+        "variable1",
+        "variable4"
+    ],
+    "types": [
+        {
+            "identifier": 0,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 3,
+                    "element_type": {
+                        "type": "bool"
+                    }
+                },
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "array",
+                            "length": 4,
+                            "element_type": {
+                                "type": "double"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "type": [
+                {
+                    "type": "char"
+                }
+            ]
+        },
+        {
+            "identifier": 5,
+            "type": [
+                {
+                    "type": "word"
+                }
+            ]
+        },
+        {
+            "identifier": 6,
+            "type": [
+                {
+                    "type": "float"
+                }
+            ]
+        },
+        {
+            "identifier": 7,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "identifier": "variable2",
+            "type": 4,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": [
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                }
+            ]
+        }
+    ],
+    "function_declarations": [
+        {
+            "identifier": "identifier",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "indirection",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "struct_field",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "struct_field_indirect",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "array_subscript",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": "identifier",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 0
+                    }
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 1
+                    }
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 2
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 0,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 3
+                    }
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 4
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 0,
+                        "index": 2
+                    }
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": "indirection",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 0
+                }
+            ]
+        },
+        {
+            "identifier": "struct_field",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 7
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 0,
+                        "index": 2
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 0,
+                        "index": 3
+                    }
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 8
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 0,
+                        "index": 2
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 0,
+                        "index": 4
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": "struct_field_indirect",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 7,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 0,
+                        "index": 4
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": "array_subscript",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 5
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 0,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": 2
+                },
+                {
+                    "opcode": "elementptr",
+                    "arg": {
+                        "type": 0,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 6
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 100
+                },
+                {
+                    "opcode": "elementptr",
+                    "arg": {
+                        "type": 6,
+                        "index": 0
+                    }
+                }
+            ]
+        }
+    ]
+}

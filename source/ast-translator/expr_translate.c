@@ -11,9 +11,9 @@ struct translator_param {
     struct kefir_irbuilder_block *builder;
 };
 
-kefir_result_t translate_not_impl(const struct kefir_ast_visitor *visitor,
-                                const struct kefir_ast_node_base *base,
-                                void *payload) {
+static kefir_result_t translate_not_impl(const struct kefir_ast_visitor *visitor,
+                                       const struct kefir_ast_node_base *base,
+                                       void *payload) {
     UNUSED(visitor);
     UNUSED(base);
     UNUSED(payload);
