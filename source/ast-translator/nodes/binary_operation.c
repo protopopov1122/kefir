@@ -1,6 +1,7 @@
 #include "kefir/ast-translator/translator_impl.h"
 #include "kefir/ast-translator/translator.h"
 #include "kefir/ast-translator/typeconv.h"
+#include "kefir/ast-translator/util.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -9,13 +10,9 @@ static kefir_result_t binary_prologue(struct kefir_mem *mem,
                                     struct kefir_irbuilder_block *builder,
                                     const struct kefir_ast_binary_operation *node) {
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg1, builder, context));
-    if (!KEFIR_AST_TYPE_SAME(node->arg1->properties.type, node->base.properties.type)) {
-        kefir_ast_translate_typeconv(builder, node->arg1->properties.type, node->base.properties.type);
-    }
+    REQUIRE_OK(kefir_ast_translate_typeconv(builder, node->arg1->properties.type, node->base.properties.type));
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg2, builder, context));
-    if (!KEFIR_AST_TYPE_SAME(node->arg2->properties.type, node->base.properties.type)) {
-        kefir_ast_translate_typeconv(builder, node->arg2->properties.type, node->base.properties.type);
-    }
+    REQUIRE_OK(kefir_ast_translate_typeconv(builder, node->arg2->properties.type, node->base.properties.type));
     return KEFIR_OK;
 }
 
@@ -23,108 +20,125 @@ static kefir_result_t translate_addition(struct kefir_mem *mem,
                                        struct kefir_ast_translator_context *context,
                                        struct kefir_irbuilder_block *builder,
                                        const struct kefir_ast_binary_operation *node) {
-    REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(node->arg1->properties.type) &&
-        KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(node->arg2->properties.type),
+    const struct kefir_ast_type *arg1_normalized_type = kefir_ast_translator_normalize_type(node->arg1->properties.type);
+    const struct kefir_ast_type *arg2_normalized_type = kefir_ast_translator_normalize_type(node->arg2->properties.type);
+    const struct kefir_ast_type *result_normalized_type = kefir_ast_translator_normalize_type(node->base.properties.type);
+
+    REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(arg1_normalized_type) &&
+        KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(arg2_normalized_type),
         KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Non-arithmetic additive AST expressions are not supported yet"));
     REQUIRE_OK(binary_prologue(mem, context, builder, node));
-    switch (node->base.properties.type->tag) {
+    switch (result_normalized_type->tag) {
         case KEFIR_AST_TYPE_SCALAR_DOUBLE:
             switch (node->type) {
                 case KEFIR_AST_OPERATION_ADD:
-                    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64ADD, 0);
+                    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64ADD, 0));
+                    break;
 
                 case KEFIR_AST_OPERATION_SUBTRACT:
-                    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64SUB, 0);
+                    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64SUB, 0));
+                    break;
                 
                 default:
-                    break;
+                    return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected additive operation type");
             }
             break;
 
         case KEFIR_AST_TYPE_SCALAR_FLOAT:
             switch (node->type) {
                 case KEFIR_AST_OPERATION_ADD:
-                    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32ADD, 0);
+                    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32ADD, 0));
+                    break;
 
                 case KEFIR_AST_OPERATION_SUBTRACT:
-                    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32SUB, 0);
+                    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32SUB, 0));
+                    break;
 
                 default:
-                    break;
+                    return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected additive operation type");
             }
             break;
 
         default:
-            if (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(node->base.properties.type) ||
-                KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(node->base.properties.type)) {
-                switch (node->type) {
-                    case KEFIR_AST_OPERATION_ADD:
-                        return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IADD, 0);
+            REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(result_normalized_type),
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected result to have integral type"));
+            switch (node->type) {
+                case KEFIR_AST_OPERATION_ADD:
+                    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IADD, 0));
+                    break;
 
-                    case KEFIR_AST_OPERATION_SUBTRACT:
-                        return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_ISUB, 0);
+                case KEFIR_AST_OPERATION_SUBTRACT:
+                    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_ISUB, 0));
+                    break;
 
-                    default:
-                        break;
-                }
+                default:
+                    return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected additive operation type");
             }
             break;
     }
-    return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unsupported combination of operation and types");
+    return KEFIR_OK;
 }
 
 static kefir_result_t translate_multiplication(struct kefir_mem *mem,
                                              struct kefir_ast_translator_context *context,
                                              struct kefir_irbuilder_block *builder,
                                              const struct kefir_ast_binary_operation *node) {
+    const struct kefir_ast_type *result_normalized_type = kefir_ast_translator_normalize_type(node->base.properties.type);
+
     REQUIRE_OK(binary_prologue(mem, context, builder, node));
-    switch (node->base.properties.type->tag) {
+    switch (result_normalized_type->tag) {
         case KEFIR_AST_TYPE_SCALAR_DOUBLE:
             switch (node->type) {
                 case KEFIR_AST_OPERATION_MULTIPLY:
-                    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64MUL, 0);
+                    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64MUL, 0));
+                    break;
 
                 case KEFIR_AST_OPERATION_DIVIDE:
-                    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64DIV, 0);
+                    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64DIV, 0));
+                    break;
 
                 default:
-                    break;
+                    return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected multiplicative operation type");
             }
             break;
 
         case KEFIR_AST_TYPE_SCALAR_FLOAT:
             switch (node->type) {
                 case KEFIR_AST_OPERATION_MULTIPLY:
-                    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32MUL, 0);
+                    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32MUL, 0));
+                    break;
 
                 case KEFIR_AST_OPERATION_DIVIDE:
-                    return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32DIV, 0);
+                    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32DIV, 0));
+                    break;
+
+                default:
+                    return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected multiplicative operation type");
+            }
+            break;
+
+        default:
+            REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(result_normalized_type),
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected result to have integral type"));
+            switch (node->type) {
+                case KEFIR_AST_OPERATION_MULTIPLY:
+                    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IMUL, 0));
+                    break;
+
+                case KEFIR_AST_OPERATION_DIVIDE:
+                    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IDIV, 0));
+                    break;
+
+                case KEFIR_AST_OPERATION_MODULO:
+                    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IMOD, 0));
+                    break;
 
                 default:
                     break;
             }
             break;
-
-        default:
-            if (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(node->base.properties.type) ||
-                KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(node->base.properties.type)) {
-                switch (node->type) {
-                    case KEFIR_AST_OPERATION_MULTIPLY:
-                        return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IMUL, 0);
-
-                    case KEFIR_AST_OPERATION_DIVIDE:
-                        return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IDIV, 0);
-
-                    case KEFIR_AST_OPERATION_MODULO:
-                        return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IMOD, 0);
-
-                    default:
-                        break;
-                }
-            }
-            break;
     }
-    return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unsupported combination of operation and types");
+    return KEFIR_OK;
 }
 
 static kefir_result_t translate_bitwise_shift(struct kefir_mem *mem,

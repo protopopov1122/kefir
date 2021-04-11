@@ -1,0 +1,398 @@
+{
+    "globals": [],
+    "externals": [],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": []
+        }
+    ],
+    "data": [
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": []
+        }
+    ],
+    "function_declarations": [
+        {
+            "identifier": "divide",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "modulo",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "multiply",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": "divide",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": -100
+                },
+                {
+                    "opcode": "push",
+                    "arg": -150
+                },
+                {
+                    "opcode": "idiv"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 156
+                },
+                {
+                    "opcode": "push",
+                    "arg": 239
+                },
+                {
+                    "opcode": "idiv"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -76
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1000
+                },
+                {
+                    "opcode": "idiv"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -1
+                },
+                {
+                    "opcode": "intcf32"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 4.560000
+                },
+                {
+                    "opcode": "f32div"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 3.098000
+                },
+                {
+                    "opcode": "push",
+                    "arg": 65
+                },
+                {
+                    "opcode": "uintcf32"
+                },
+                {
+                    "opcode": "f32div"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 73.900002
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": -7366.439941
+                },
+                {
+                    "opcode": "f32div"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1024
+                },
+                {
+                    "opcode": "uintcf64"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 1000.004000
+                },
+                {
+                    "opcode": "f64div"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 0.000056
+                },
+                {
+                    "opcode": "push",
+                    "arg": -7
+                },
+                {
+                    "opcode": "intcf64"
+                },
+                {
+                    "opcode": "f64div"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 1.010000
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 2.050000
+                },
+                {
+                    "opcode": "f32cf64"
+                },
+                {
+                    "opcode": "f64div"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 90.400002
+                },
+                {
+                    "opcode": "f32cf64"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 10.010000
+                },
+                {
+                    "opcode": "f64div"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 0.000050
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 200000.010000
+                },
+                {
+                    "opcode": "f64div"
+                }
+            ]
+        },
+        {
+            "identifier": "modulo",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 65
+                },
+                {
+                    "opcode": "push",
+                    "arg": 98
+                },
+                {
+                    "opcode": "imod"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1005
+                },
+                {
+                    "opcode": "push",
+                    "arg": 37
+                },
+                {
+                    "opcode": "imod"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -255
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1024
+                },
+                {
+                    "opcode": "imod"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 10001
+                },
+                {
+                    "opcode": "push",
+                    "arg": 10
+                },
+                {
+                    "opcode": "imod"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 6000
+                },
+                {
+                    "opcode": "imod"
+                }
+            ]
+        },
+        {
+            "identifier": "multiply",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": -100
+                },
+                {
+                    "opcode": "push",
+                    "arg": -150
+                },
+                {
+                    "opcode": "imul"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 156
+                },
+                {
+                    "opcode": "push",
+                    "arg": 239
+                },
+                {
+                    "opcode": "imul"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -76
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1000
+                },
+                {
+                    "opcode": "imul"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -1
+                },
+                {
+                    "opcode": "intcf32"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 4.560000
+                },
+                {
+                    "opcode": "f32mul"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 3.098000
+                },
+                {
+                    "opcode": "push",
+                    "arg": 65
+                },
+                {
+                    "opcode": "uintcf32"
+                },
+                {
+                    "opcode": "f32mul"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 73.900002
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": -7366.439941
+                },
+                {
+                    "opcode": "f32mul"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1024
+                },
+                {
+                    "opcode": "uintcf64"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 1000.004000
+                },
+                {
+                    "opcode": "f64mul"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 0.000056
+                },
+                {
+                    "opcode": "push",
+                    "arg": -7
+                },
+                {
+                    "opcode": "intcf64"
+                },
+                {
+                    "opcode": "f64mul"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 1.010000
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 2.050000
+                },
+                {
+                    "opcode": "f32cf64"
+                },
+                {
+                    "opcode": "f64mul"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 90.400002
+                },
+                {
+                    "opcode": "f32cf64"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 10.010000
+                },
+                {
+                    "opcode": "f64mul"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 0.000050
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 200000.010000
+                },
+                {
+                    "opcode": "f64mul"
+                }
+            ]
+        }
+    ]
+}
