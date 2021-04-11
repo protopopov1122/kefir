@@ -1,0 +1,612 @@
+{
+    "globals": [
+        "W",
+        "X",
+        "Y",
+        "Z"
+    ],
+    "externals": [],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": []
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "long"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 5,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 16,
+                    "element_type": {
+                        "type": "short"
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": 6,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "long"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "identifier": "W",
+            "type": 3,
+            "value": [
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "X",
+            "type": 4,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "Y",
+            "type": 5,
+            "value": [
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "Z",
+            "type": 6,
+            "value": [
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": []
+        }
+    ],
+    "function_declarations": [
+        {
+            "identifier": "plus",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "minus",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "invert",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "alignof",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "sizeof1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "sizeof2",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "logical_negate",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": "plus",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": -100
+                },
+                {
+                    "opcode": "push",
+                    "arg": 100
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 3.140000
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 3.141590
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 0
+                    }
+                },
+                {
+                    "opcode": "load32i"
+                }
+            ]
+        },
+        {
+            "identifier": "minus",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": -512
+                },
+                {
+                    "opcode": "ineg"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 128
+                },
+                {
+                    "opcode": "ineg"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 2.710000
+                },
+                {
+                    "opcode": "f32neg"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 2.718280
+                },
+                {
+                    "opcode": "f64neg"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 1
+                    }
+                },
+                {
+                    "opcode": "load32i"
+                },
+                {
+                    "opcode": "ineg"
+                }
+            ]
+        },
+        {
+            "identifier": "invert",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 65
+                },
+                {
+                    "opcode": "inot"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -100500
+                },
+                {
+                    "opcode": "inot"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 45
+                },
+                {
+                    "opcode": "inot"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 2
+                    }
+                },
+                {
+                    "opcode": "load32i"
+                },
+                {
+                    "opcode": "inot"
+                }
+            ]
+        },
+        {
+            "identifier": "alignof",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 2
+                },
+                {
+                    "opcode": "push",
+                    "arg": 2
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4
+                },
+                {
+                    "opcode": "push",
+                    "arg": 2
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                }
+            ]
+        },
+        {
+            "identifier": "sizeof1",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 2
+                },
+                {
+                    "opcode": "push",
+                    "arg": 2
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4
+                },
+                {
+                    "opcode": "push",
+                    "arg": 32
+                },
+                {
+                    "opcode": "push",
+                    "arg": 16
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                }
+            ]
+        },
+        {
+            "identifier": "sizeof2",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4
+                },
+                {
+                    "opcode": "push",
+                    "arg": 32
+                },
+                {
+                    "opcode": "push",
+                    "arg": 16
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                }
+            ]
+        },
+        {
+            "identifier": "logical_negate",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": -1
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 1.760000
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 1.234560
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 3
+                    }
+                },
+                {
+                    "opcode": "load32i"
+                },
+                {
+                    "opcode": "bnot"
+                }
+            ]
+        }
+    ]
+}
