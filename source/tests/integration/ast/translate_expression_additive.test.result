@@ -1,0 +1,627 @@
+{
+    "globals": [],
+    "externals": [],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": []
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "short"
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "type": [
+                {
+                    "type": "double"
+                }
+            ]
+        },
+        {
+            "identifier": 5,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 4,
+                    "element_type": {
+                        "type": "char"
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": 6,
+            "type": [
+                {
+                    "type": "word"
+                }
+            ]
+        },
+        {
+            "identifier": 7,
+            "type": [
+                {
+                    "type": "short"
+                }
+            ]
+        },
+        {
+            "identifier": 8,
+            "type": [
+                {
+                    "type": "float"
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": []
+        }
+    ],
+    "function_declarations": [
+        {
+            "identifier": "add_integral",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "sub_pointer_integer",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "add_pointer_int",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "sub_integral",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "sub_pointers",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "sub_floating_point",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "add_floating_point",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": "add_integral",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 120
+                },
+                {
+                    "opcode": "push",
+                    "arg": 89
+                },
+                {
+                    "opcode": "iadd"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 100
+                },
+                {
+                    "opcode": "push",
+                    "arg": -99
+                },
+                {
+                    "opcode": "iadd"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1001
+                },
+                {
+                    "opcode": "iadd"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 100500
+                },
+                {
+                    "opcode": "push",
+                    "arg": 200600
+                },
+                {
+                    "opcode": "iadd"
+                }
+            ]
+        },
+        {
+            "identifier": "sub_pointer_integer",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 100
+                },
+                {
+                    "opcode": "push",
+                    "arg": 16
+                },
+                {
+                    "opcode": "ineg"
+                },
+                {
+                    "opcode": "elementptr",
+                    "arg": {
+                        "type": 5,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": 200
+                },
+                {
+                    "opcode": "push",
+                    "arg": 9
+                },
+                {
+                    "opcode": "ineg"
+                },
+                {
+                    "opcode": "elementptr",
+                    "arg": {
+                        "type": 7,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": 2
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "ineg"
+                },
+                {
+                    "opcode": "elementptr",
+                    "arg": {
+                        "type": 8,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": 42
+                },
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "ineg"
+                },
+                {
+                    "opcode": "elementptr",
+                    "arg": {
+                        "type": 4,
+                        "index": 0
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": "add_pointer_int",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "push",
+                    "arg": 67
+                },
+                {
+                    "opcode": "elementptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": -5
+                },
+                {
+                    "opcode": "elementptr",
+                    "arg": {
+                        "type": 4,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": 101
+                },
+                {
+                    "opcode": "push",
+                    "arg": 100
+                },
+                {
+                    "opcode": "elementptr",
+                    "arg": {
+                        "type": 5,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": -1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "elementptr",
+                    "arg": {
+                        "type": 6,
+                        "index": 0
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": "sub_integral",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 99
+                },
+                {
+                    "opcode": "push",
+                    "arg": 97
+                },
+                {
+                    "opcode": "isub"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 100
+                },
+                {
+                    "opcode": "push",
+                    "arg": -50
+                },
+                {
+                    "opcode": "isub"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 123456
+                },
+                {
+                    "opcode": "push",
+                    "arg": 98765
+                },
+                {
+                    "opcode": "isub"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 10
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "isub"
+                }
+            ]
+        },
+        {
+            "identifier": "sub_pointers",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 128
+                },
+                {
+                    "opcode": "push",
+                    "arg": 64
+                },
+                {
+                    "opcode": "isub"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "idiv"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1024
+                },
+                {
+                    "opcode": "push",
+                    "arg": 32
+                },
+                {
+                    "opcode": "isub"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 2
+                },
+                {
+                    "opcode": "idiv"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 256
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "isub"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4
+                },
+                {
+                    "opcode": "idiv"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "isub"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "idiv"
+                }
+            ]
+        },
+        {
+            "identifier": "sub_floating_point",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 69
+                },
+                {
+                    "opcode": "intcf32"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 5.004500
+                },
+                {
+                    "opcode": "f32sub"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 1.000000
+                },
+                {
+                    "opcode": "push",
+                    "arg": 92
+                },
+                {
+                    "opcode": "uintcf32"
+                },
+                {
+                    "opcode": "f32sub"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 5.110000
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 2.030000
+                },
+                {
+                    "opcode": "f32sub"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 2048
+                },
+                {
+                    "opcode": "intcf64"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 100000.000000
+                },
+                {
+                    "opcode": "f64sub"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 0.000100
+                },
+                {
+                    "opcode": "f32cf64"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 0.000020
+                },
+                {
+                    "opcode": "f64sub"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 6.010000
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 0.300000
+                },
+                {
+                    "opcode": "f32cf64"
+                },
+                {
+                    "opcode": "f64sub"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 0.005000
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 0.004000
+                },
+                {
+                    "opcode": "f64sub"
+                }
+            ]
+        },
+        {
+            "identifier": "add_floating_point",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "intcf32"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 1.420000
+                },
+                {
+                    "opcode": "f32add"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 0.763000
+                },
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "uintcf32"
+                },
+                {
+                    "opcode": "f32add"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 3.141000
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 2.718000
+                },
+                {
+                    "opcode": "f32add"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 100.000100
+                },
+                {
+                    "opcode": "push",
+                    "arg": 2
+                },
+                {
+                    "opcode": "intcf64"
+                },
+                {
+                    "opcode": "f64add"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 0.000100
+                },
+                {
+                    "opcode": "f32cf64"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 0.020000
+                },
+                {
+                    "opcode": "f64add"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 6492.000540
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 92.315000
+                },
+                {
+                    "opcode": "f64add"
+                }
+            ]
+        }
+    ]
+}
