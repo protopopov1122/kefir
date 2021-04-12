@@ -181,6 +181,33 @@ static kefir_result_t translate_bitwise_right_shift(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+static kefir_result_t translate_bitwise_and(struct kefir_mem *mem,
+                                          struct kefir_ast_translator_context *context,
+                                          struct kefir_irbuilder_block *builder,
+                                          const struct kefir_ast_binary_operation *node) {
+    REQUIRE_OK(binary_prologue(mem, context, builder, node));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IAND, 0));
+    return KEFIR_OK;
+}
+
+static kefir_result_t translate_bitwise_or(struct kefir_mem *mem,
+                                         struct kefir_ast_translator_context *context,
+                                         struct kefir_irbuilder_block *builder,
+                                         const struct kefir_ast_binary_operation *node) {
+    REQUIRE_OK(binary_prologue(mem, context, builder, node));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IOR, 0));
+    return KEFIR_OK;
+}
+
+static kefir_result_t translate_bitwise_xor(struct kefir_mem *mem,
+                                          struct kefir_ast_translator_context *context,
+                                          struct kefir_irbuilder_block *builder,
+                                          const struct kefir_ast_binary_operation *node) {
+    REQUIRE_OK(binary_prologue(mem, context, builder, node));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IXOR, 0));
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_translate_binary_operation_node(struct kefir_mem *mem,
                                                      struct kefir_ast_translator_context *context,
                                                      struct kefir_irbuilder_block *builder,
@@ -218,6 +245,18 @@ kefir_result_t kefir_ast_translate_binary_operation_node(struct kefir_mem *mem,
 
         case KEFIR_AST_OPERATION_SHIFT_LEFT:
             REQUIRE_OK(translate_bitwise_left_shift(mem, context, builder, node));
+            break;
+
+        case KEFIR_AST_OPERATION_BITWISE_AND:
+            REQUIRE_OK(translate_bitwise_and(mem, context, builder, node));
+            break;
+
+        case KEFIR_AST_OPERATION_BITWISE_OR:
+            REQUIRE_OK(translate_bitwise_or(mem, context, builder, node));
+            break;
+
+        case KEFIR_AST_OPERATION_BITWISE_XOR:
+            REQUIRE_OK(translate_bitwise_xor(mem, context, builder, node));
             break;
         
         default:

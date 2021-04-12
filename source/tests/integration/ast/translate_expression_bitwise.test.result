@@ -1,0 +1,254 @@
+{
+    "globals": [],
+    "externals": [],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": []
+        }
+    ],
+    "data": [
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": []
+        }
+    ],
+    "function_declarations": [
+        {
+            "identifier": "or",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "and",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "xor",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "left_shift",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "right_shift",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": "or",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 34
+                },
+                {
+                    "opcode": "push",
+                    "arg": 39
+                },
+                {
+                    "opcode": "ior"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 666
+                },
+                {
+                    "opcode": "push",
+                    "arg": 12
+                },
+                {
+                    "opcode": "ior"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -1001
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1001
+                },
+                {
+                    "opcode": "ior"
+                }
+            ]
+        },
+        {
+            "identifier": "and",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 91
+                },
+                {
+                    "opcode": "push",
+                    "arg": 93
+                },
+                {
+                    "opcode": "iand"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 87094
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4294962926
+                },
+                {
+                    "opcode": "iand"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -736402640
+                },
+                {
+                    "opcode": "push",
+                    "arg": 71
+                },
+                {
+                    "opcode": "iand"
+                }
+            ]
+        },
+        {
+            "identifier": "xor",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 56
+                },
+                {
+                    "opcode": "push",
+                    "arg": 48
+                },
+                {
+                    "opcode": "ixor"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 312
+                },
+                {
+                    "opcode": "push",
+                    "arg": 304
+                },
+                {
+                    "opcode": "ixor"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -206
+                },
+                {
+                    "opcode": "push",
+                    "arg": 101
+                },
+                {
+                    "opcode": "ixor"
+                }
+            ]
+        },
+        {
+            "identifier": "left_shift",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 88
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "ishl"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1000
+                },
+                {
+                    "opcode": "push",
+                    "arg": 6
+                },
+                {
+                    "opcode": "ishl"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 3405691582
+                },
+                {
+                    "opcode": "push",
+                    "arg": 53
+                },
+                {
+                    "opcode": "ishl"
+                }
+            ]
+        },
+        {
+            "identifier": "right_shift",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 84
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "isar"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 870
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "isar"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 195934910
+                },
+                {
+                    "opcode": "push",
+                    "arg": 48
+                },
+                {
+                    "opcode": "isar"
+                }
+            ]
+        }
+    ]
+}
