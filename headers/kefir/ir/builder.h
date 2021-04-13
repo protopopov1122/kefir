@@ -75,6 +75,10 @@ kefir_result_t kefir_irbuilder_block_init(struct kefir_mem *,
     ((builder)->appendf64((builder), (opcode), (arg)))
 #define KEFIR_IRBUILDER_BLOCK_APPENDF32(builder, opcode, arg1, arg2) \
     ((builder)->appendf32((builder), (opcode), (arg1), (arg2)))
+#define KEFIR_IRBUILDER_BLOCK_CURRENT_INDEX(builder) \
+    (kefir_irblock_length((builder)->block))
+#define KEFIR_IRBUILDER_BLOCK_INSTR_AT(builder, index) \
+    (kefir_irblock_at((builder)->block, (index)))
 #define KEFIR_IRBUILDER_BLOCK_FREE(builder) \
     ((builder)->free((builder)))
 

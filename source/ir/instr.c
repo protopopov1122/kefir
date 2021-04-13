@@ -21,9 +21,9 @@ kefir_size_t kefir_irblock_length(const struct kefir_irblock *bcblock) {
     return kefir_vector_length(&bcblock->content);
 }
 
-const struct kefir_irinstr *kefir_irblock_at(const struct kefir_irblock *bcblock, kefir_size_t idx) {
+struct kefir_irinstr *kefir_irblock_at(const struct kefir_irblock *bcblock, kefir_size_t idx) {
     REQUIRE(bcblock != NULL, NULL);
-    return (const struct kefir_irinstr *) kefir_vector_at(&bcblock->content, idx);
+    return (struct kefir_irinstr *) kefir_vector_at(&bcblock->content, idx);
 }
 
 kefir_result_t kefir_irblock_appendi64(struct kefir_irblock *bcblock, kefir_iropcode_t opcode, kefir_int64_t arg) {

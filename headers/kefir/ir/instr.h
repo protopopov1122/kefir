@@ -25,7 +25,7 @@ typedef struct kefir_irblock {
 kefir_result_t kefir_irblock_init(struct kefir_irblock *, void *, kefir_size_t);
 kefir_size_t kefir_irblock_available(const struct kefir_irblock *);
 kefir_size_t kefir_irblock_length(const struct kefir_irblock *);
-const struct kefir_irinstr *kefir_irblock_at(const struct kefir_irblock *, kefir_size_t);
+struct kefir_irinstr *kefir_irblock_at(const struct kefir_irblock *, kefir_size_t);
 kefir_result_t kefir_irblock_appendi64(struct kefir_irblock *, kefir_iropcode_t, kefir_int64_t);
 kefir_result_t kefir_irblock_appendu64(struct kefir_irblock *, kefir_iropcode_t, kefir_uint64_t);
 kefir_result_t kefir_irblock_appendi32(struct kefir_irblock *, kefir_iropcode_t, kefir_int32_t, kefir_int32_t);

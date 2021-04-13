@@ -345,6 +345,41 @@ static kefir_result_t translate_relational_equality(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+static kefir_result_t translate_logical_and(struct kefir_mem *mem,
+                                          struct kefir_ast_translator_context *context,
+                                          struct kefir_irbuilder_block *builder,
+                                          const struct kefir_ast_binary_operation *node) {
+    REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg1, builder, context));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_TRUNCATE1, 0));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 0));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_BNOT, 0));
+    kefir_size_t jmpIndex = KEFIR_IRBUILDER_BLOCK_CURRENT_INDEX(builder);
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_BRANCH, 0));
+    REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg2, builder, context));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_TRUNCATE1, 0));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_BAND, 0));
+    kefir_size_t jmpTarget = KEFIR_IRBUILDER_BLOCK_CURRENT_INDEX(builder);
+    KEFIR_IRBUILDER_BLOCK_INSTR_AT(builder, jmpIndex)->arg.i64 = jmpTarget;
+    return KEFIR_OK;
+}
+
+static kefir_result_t translate_logical_or(struct kefir_mem *mem,
+                                         struct kefir_ast_translator_context *context,
+                                         struct kefir_irbuilder_block *builder,
+                                         const struct kefir_ast_binary_operation *node) {
+    REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg1, builder, context));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_TRUNCATE1, 0));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 0));
+    kefir_size_t jmpIndex = KEFIR_IRBUILDER_BLOCK_CURRENT_INDEX(builder);
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_BRANCH, 0));
+    REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg2, builder, context));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_TRUNCATE1, 0));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_BOR, 0));
+    kefir_size_t jmpTarget = KEFIR_IRBUILDER_BLOCK_CURRENT_INDEX(builder);
+    KEFIR_IRBUILDER_BLOCK_INSTR_AT(builder, jmpIndex)->arg.i64 = jmpTarget;
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_translate_binary_operation_node(struct kefir_mem *mem,
                                                      struct kefir_ast_translator_context *context,
                                                      struct kefir_irbuilder_block *builder,
@@ -391,6 +426,14 @@ kefir_result_t kefir_ast_translate_binary_operation_node(struct kefir_mem *mem,
         case KEFIR_AST_OPERATION_EQUAL:
         case KEFIR_AST_OPERATION_NOT_EQUAL:
             REQUIRE_OK(translate_relational_equality(mem, context, builder, node));
+            break;
+
+        case KEFIR_AST_OPERATION_LOGICAL_AND:
+            REQUIRE_OK(translate_logical_and(mem, context, builder, node));
+            break;
+
+        case KEFIR_AST_OPERATION_LOGICAL_OR:
+            REQUIRE_OK(translate_logical_or(mem, context, builder, node));
             break;
         
         default:

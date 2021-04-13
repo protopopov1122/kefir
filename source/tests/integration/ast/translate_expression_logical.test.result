@@ -1,0 +1,260 @@
+{
+    "globals": [],
+    "externals": [],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": []
+        }
+    ],
+    "data": [
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": []
+        }
+    ],
+    "function_declarations": [
+        {
+            "identifier": "logical_or1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "logical_or2",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "logical_or3",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "logical_and1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "logical_and2",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "logical_and3",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": "logical_or1",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "trunc1"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "branch",
+                    "arg": 7
+                },
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "trunc1"
+                },
+                {
+                    "opcode": "bor"
+                }
+            ]
+        },
+        {
+            "identifier": "logical_or2",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "pushf32",
+                    "arg": 0.400000
+                },
+                {
+                    "opcode": "trunc1"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "branch",
+                    "arg": 7
+                },
+                {
+                    "opcode": "push",
+                    "arg": 55
+                },
+                {
+                    "opcode": "trunc1"
+                },
+                {
+                    "opcode": "bor"
+                }
+            ]
+        },
+        {
+            "identifier": "logical_or3",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 8192
+                },
+                {
+                    "opcode": "trunc1"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "branch",
+                    "arg": 7
+                },
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "trunc1"
+                },
+                {
+                    "opcode": "bor"
+                }
+            ]
+        },
+        {
+            "identifier": "logical_and1",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "trunc1"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "branch",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "trunc1"
+                },
+                {
+                    "opcode": "band"
+                }
+            ]
+        },
+        {
+            "identifier": "logical_and2",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "pushf32",
+                    "arg": 0.067000
+                },
+                {
+                    "opcode": "trunc1"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "branch",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 67
+                },
+                {
+                    "opcode": "trunc1"
+                },
+                {
+                    "opcode": "band"
+                }
+            ]
+        },
+        {
+            "identifier": "logical_and3",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 4096
+                },
+                {
+                    "opcode": "trunc1"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "branch",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "trunc1"
+                },
+                {
+                    "opcode": "band"
+                }
+            ]
+        }
+    ]
+}
