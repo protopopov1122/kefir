@@ -1,0 +1,191 @@
+{
+    "globals": [],
+    "externals": [],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": []
+        }
+    ],
+    "data": [
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": []
+        }
+    ],
+    "function_declarations": [
+        {
+            "identifier": "comma1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "comma2",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "comma3",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "comma4",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "comma5",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "comma6",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": "comma1",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 1
+                }
+            ]
+        },
+        {
+            "identifier": "comma2",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 210000.000000
+                }
+            ]
+        },
+        {
+            "identifier": "comma3",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 210000.000000
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 66536
+                }
+            ]
+        },
+        {
+            "identifier": "comma4",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 210000.000000
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 66536
+                }
+            ]
+        },
+        {
+            "identifier": "comma5",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 120
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 0.300000
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 16
+                }
+            ]
+        },
+        {
+            "identifier": "comma6",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 120
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 0.000560
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 65534
+                },
+                {
+                    "opcode": "pop"
+                }
+            ]
+        }
+    ]
+}
