@@ -2,6 +2,7 @@
 #include "kefir/ast-translator/translator.h"
 #include "kefir/ast-translator/typeconv.h"
 #include "kefir/ast-translator/util.h"
+#include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -9,10 +10,14 @@ static kefir_result_t binary_prologue(struct kefir_mem *mem,
                                     struct kefir_ast_translator_context *context,
                                     struct kefir_irbuilder_block *builder,
                                     const struct kefir_ast_binary_operation *node) {
+    const struct kefir_ast_type *arg1_normalized_type = kefir_ast_translator_normalize_type(node->arg1->properties.type);
+    const struct kefir_ast_type *arg2_normalized_type = kefir_ast_translator_normalize_type(node->arg2->properties.type);
+    const struct kefir_ast_type *result_normalized_type = kefir_ast_translator_normalize_type(node->base.properties.type);
+
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg1, builder, context));
-    REQUIRE_OK(kefir_ast_translate_typeconv(builder, node->arg1->properties.type, node->base.properties.type));
+    REQUIRE_OK(kefir_ast_translate_typeconv(builder, arg1_normalized_type, result_normalized_type));
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg2, builder, context));
-    REQUIRE_OK(kefir_ast_translate_typeconv(builder, node->arg2->properties.type, node->base.properties.type));
+    REQUIRE_OK(kefir_ast_translate_typeconv(builder, arg2_normalized_type, result_normalized_type));
     return KEFIR_OK;
 }
 
@@ -163,48 +168,180 @@ static kefir_result_t translate_modulo(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-static kefir_result_t translate_bitwise_left_shift(struct kefir_mem *mem,
-                                                 struct kefir_ast_translator_context *context,
-                                                 struct kefir_irbuilder_block *builder,
-                                                 const struct kefir_ast_binary_operation *node) {
+static kefir_result_t translate_bitwise(struct kefir_mem *mem,
+                                          struct kefir_ast_translator_context *context,
+                                          struct kefir_irbuilder_block *builder,
+                                          const struct kefir_ast_binary_operation *node) {
     REQUIRE_OK(binary_prologue(mem, context, builder, node));
-    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_ILSHIFT, 0));
+
+    switch (node->type) {
+        case KEFIR_AST_OPERATION_SHIFT_LEFT:
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_ILSHIFT, 0));
+            break;
+
+        case KEFIR_AST_OPERATION_SHIFT_RIGHT:
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IARSHIFT, 0));
+            break;
+
+        case KEFIR_AST_OPERATION_BITWISE_AND:
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IAND, 0));
+            break;
+
+        case KEFIR_AST_OPERATION_BITWISE_OR:
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IOR, 0));
+            break;
+
+        case KEFIR_AST_OPERATION_BITWISE_XOR:
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IXOR, 0));
+            break;
+
+        default:
+            return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected bitwise operation");
+    }
     return KEFIR_OK;
 }
 
-static kefir_result_t translate_bitwise_right_shift(struct kefir_mem *mem,
+static kefir_result_t translate_relational_equals(const struct kefir_ast_type *common_type,
+                                                struct kefir_irbuilder_block *builder) {
+    switch (common_type->tag) {
+        case KEFIR_AST_TYPE_SCALAR_DOUBLE:
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64EQUALS, 0));
+            break;
+
+        case KEFIR_AST_TYPE_SCALAR_FLOAT:
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32EQUALS, 0));
+            break;
+
+        default:
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IEQUALS, 0));
+            break;
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t translate_relational_not_equals(const struct kefir_ast_type *common_type,
+                                                    struct kefir_irbuilder_block *builder) {
+    switch (common_type->tag) {
+        case KEFIR_AST_TYPE_SCALAR_DOUBLE:
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64EQUALS, 0));
+            break;
+
+        case KEFIR_AST_TYPE_SCALAR_FLOAT:
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32EQUALS, 0));
+            break;
+
+        default:
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IEQUALS, 0));
+            break;
+    }
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_BNOT, 0));
+    return KEFIR_OK;
+}
+
+static kefir_result_t translate_relational_less(const struct kefir_ast_type *common_type,
+                                              struct kefir_irbuilder_block *builder) {
+    switch (common_type->tag) {
+        case KEFIR_AST_TYPE_SCALAR_DOUBLE:
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64LESSER, 0));
+            break;
+
+        case KEFIR_AST_TYPE_SCALAR_FLOAT:
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32LESSER, 0));
+            break;
+
+        default:
+            if (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(common_type)) {
+                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_ILESSER, 0));
+            } else {
+                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IBELOW, 0));
+            }
+            break;
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t translate_relational_greater(const struct kefir_ast_type *common_type,
+                                                 struct kefir_irbuilder_block *builder) {
+    switch (common_type->tag) {
+        case KEFIR_AST_TYPE_SCALAR_DOUBLE:
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64GREATER, 0));
+            break;
+
+        case KEFIR_AST_TYPE_SCALAR_FLOAT:
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32GREATER, 0));
+            break;
+
+        default:
+            if (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(common_type)) {
+                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IGREATER, 0));
+            } else {
+                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IABOVE, 0));
+            }
+            break;
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t translate_relational_equality(struct kefir_mem *mem,
                                                   struct kefir_ast_translator_context *context,
                                                   struct kefir_irbuilder_block *builder,
                                                   const struct kefir_ast_binary_operation *node) {
-    REQUIRE_OK(binary_prologue(mem, context, builder, node));
-    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IARSHIFT, 0));
-    return KEFIR_OK;
-}
+    const struct kefir_ast_type *arg1_normalized_type = kefir_ast_translator_normalize_type(node->arg1->properties.type);
+    const struct kefir_ast_type *arg2_normalized_type = kefir_ast_translator_normalize_type(node->arg2->properties.type);
+    
+    const struct kefir_ast_type *common_type = NULL;
+    if (KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(arg1_normalized_type) &&
+        KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(arg2_normalized_type)) {
+        common_type = kefir_ast_type_common_arithmetic(
+            context->ast_context->type_traits, arg1_normalized_type, arg2_normalized_type);
+        REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg1, builder, context));
+        REQUIRE_OK(kefir_ast_translate_typeconv(builder, arg1_normalized_type, common_type));
+        REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg2, builder, context));
+        REQUIRE_OK(kefir_ast_translate_typeconv(builder, arg2_normalized_type, common_type));
+    } else {
+        REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg1, builder, context));
+        REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg2, builder, context));
+        common_type = arg1_normalized_type;
+    }
 
-static kefir_result_t translate_bitwise_and(struct kefir_mem *mem,
-                                          struct kefir_ast_translator_context *context,
-                                          struct kefir_irbuilder_block *builder,
-                                          const struct kefir_ast_binary_operation *node) {
-    REQUIRE_OK(binary_prologue(mem, context, builder, node));
-    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IAND, 0));
-    return KEFIR_OK;
-}
+    switch (node->type) {
+        case KEFIR_AST_OPERATION_EQUAL:
+            REQUIRE_OK(translate_relational_equals(common_type, builder));
+            break;
 
-static kefir_result_t translate_bitwise_or(struct kefir_mem *mem,
-                                         struct kefir_ast_translator_context *context,
-                                         struct kefir_irbuilder_block *builder,
-                                         const struct kefir_ast_binary_operation *node) {
-    REQUIRE_OK(binary_prologue(mem, context, builder, node));
-    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IOR, 0));
-    return KEFIR_OK;
-}
+        case KEFIR_AST_OPERATION_NOT_EQUAL:
+            REQUIRE_OK(translate_relational_not_equals(common_type, builder));
+            break;
 
-static kefir_result_t translate_bitwise_xor(struct kefir_mem *mem,
-                                          struct kefir_ast_translator_context *context,
-                                          struct kefir_irbuilder_block *builder,
-                                          const struct kefir_ast_binary_operation *node) {
-    REQUIRE_OK(binary_prologue(mem, context, builder, node));
-    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IXOR, 0));
+        case KEFIR_AST_OPERATION_LESS:
+            REQUIRE_OK(translate_relational_less(common_type, builder));
+            break;
+
+        case KEFIR_AST_OPERATION_GREATER:
+            REQUIRE_OK(translate_relational_greater(common_type, builder));
+            break;
+
+        case KEFIR_AST_OPERATION_LESS_EQUAL:
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 1));
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 1));
+            REQUIRE_OK(translate_relational_less(common_type, builder));
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_XCHG, 2));
+            REQUIRE_OK(translate_relational_equals(common_type, builder));
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_BOR, 2));
+            break;
+
+        case KEFIR_AST_OPERATION_GREATER_EQUAL:
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 1));
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 1));
+            REQUIRE_OK(translate_relational_greater(common_type, builder));
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_XCHG, 2));
+            REQUIRE_OK(translate_relational_equals(common_type, builder));
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_BOR, 2));
+            break;
+
+        default:
+            return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected relational or equality operation");
+    }
     return KEFIR_OK;
 }
 
@@ -240,23 +377,20 @@ kefir_result_t kefir_ast_translate_binary_operation_node(struct kefir_mem *mem,
             break;
 
         case KEFIR_AST_OPERATION_SHIFT_RIGHT:
-            REQUIRE_OK(translate_bitwise_right_shift(mem, context, builder, node));
-            break;
-
         case KEFIR_AST_OPERATION_SHIFT_LEFT:
-            REQUIRE_OK(translate_bitwise_left_shift(mem, context, builder, node));
-            break;
-
         case KEFIR_AST_OPERATION_BITWISE_AND:
-            REQUIRE_OK(translate_bitwise_and(mem, context, builder, node));
-            break;
-
         case KEFIR_AST_OPERATION_BITWISE_OR:
-            REQUIRE_OK(translate_bitwise_or(mem, context, builder, node));
+        case KEFIR_AST_OPERATION_BITWISE_XOR:
+            REQUIRE_OK(translate_bitwise(mem, context, builder, node));
             break;
 
-        case KEFIR_AST_OPERATION_BITWISE_XOR:
-            REQUIRE_OK(translate_bitwise_xor(mem, context, builder, node));
+        case KEFIR_AST_OPERATION_LESS:
+        case KEFIR_AST_OPERATION_LESS_EQUAL:
+        case KEFIR_AST_OPERATION_GREATER:
+        case KEFIR_AST_OPERATION_GREATER_EQUAL:
+        case KEFIR_AST_OPERATION_EQUAL:
+        case KEFIR_AST_OPERATION_NOT_EQUAL:
+            REQUIRE_OK(translate_relational_equality(mem, context, builder, node));
             break;
         
         default:

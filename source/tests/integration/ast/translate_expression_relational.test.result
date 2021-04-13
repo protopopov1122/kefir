@@ -1,0 +1,1595 @@
+{
+    "globals": [
+        "ptr1"
+    ],
+    "externals": [],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "word"
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "identifier": "ptr1",
+            "type": 3,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": []
+        }
+    ],
+    "function_declarations": [
+        {
+            "identifier": "less_than",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "less_equals",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "non_equality_arithemtical",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "non_equality_pointer",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "equality_pointer",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "greater_than",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "ptr_relational",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "equality_arithemtical",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "greater_equal",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": "less_than",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 1000
+                },
+                {
+                    "opcode": "push",
+                    "arg": 90
+                },
+                {
+                    "opcode": "ibelow"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -10
+                },
+                {
+                    "opcode": "push",
+                    "arg": 90
+                },
+                {
+                    "opcode": "ilesser"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 835
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "ibelow"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -844
+                },
+                {
+                    "opcode": "push",
+                    "arg": 955
+                },
+                {
+                    "opcode": "ilesser"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 5.467000
+                },
+                {
+                    "opcode": "push",
+                    "arg": -400
+                },
+                {
+                    "opcode": "intcf32"
+                },
+                {
+                    "opcode": "f32lesser"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 7.330000
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 0.001000
+                },
+                {
+                    "opcode": "f32lesser"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 10.000700
+                },
+                {
+                    "opcode": "f32cf64"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 0.000001
+                },
+                {
+                    "opcode": "f64lesser"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 1.000000
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "intcf64"
+                },
+                {
+                    "opcode": "f64lesser"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": -0.000780
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 11.450000
+                },
+                {
+                    "opcode": "f64lesser"
+                }
+            ]
+        },
+        {
+            "identifier": "less_equals",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 1000
+                },
+                {
+                    "opcode": "push",
+                    "arg": 90
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "ibelow"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
+                },
+                {
+                    "opcode": "iequals"
+                },
+                {
+                    "opcode": "bor"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -10
+                },
+                {
+                    "opcode": "push",
+                    "arg": 90
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "ilesser"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
+                },
+                {
+                    "opcode": "iequals"
+                },
+                {
+                    "opcode": "bor"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 835
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "ibelow"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
+                },
+                {
+                    "opcode": "iequals"
+                },
+                {
+                    "opcode": "bor"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -844
+                },
+                {
+                    "opcode": "push",
+                    "arg": 955
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "ilesser"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
+                },
+                {
+                    "opcode": "iequals"
+                },
+                {
+                    "opcode": "bor"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 5.467000
+                },
+                {
+                    "opcode": "push",
+                    "arg": -400
+                },
+                {
+                    "opcode": "intcf32"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "f32lesser"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
+                },
+                {
+                    "opcode": "f32equals"
+                },
+                {
+                    "opcode": "bor"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 7.330000
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 0.001000
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "f32lesser"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
+                },
+                {
+                    "opcode": "f32equals"
+                },
+                {
+                    "opcode": "bor"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 10.000700
+                },
+                {
+                    "opcode": "f32cf64"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 0.000001
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "f64lesser"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
+                },
+                {
+                    "opcode": "f64equals"
+                },
+                {
+                    "opcode": "bor"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 1.000000
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "intcf64"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "f64lesser"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
+                },
+                {
+                    "opcode": "f64equals"
+                },
+                {
+                    "opcode": "bor"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": -0.000780
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 11.450000
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "f64lesser"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
+                },
+                {
+                    "opcode": "f64equals"
+                },
+                {
+                    "opcode": "bor"
+                }
+            ]
+        },
+        {
+            "identifier": "non_equality_arithemtical",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 34
+                },
+                {
+                    "opcode": "push",
+                    "arg": 7
+                },
+                {
+                    "opcode": "iequals"
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -100
+                },
+                {
+                    "opcode": "push",
+                    "arg": 100000
+                },
+                {
+                    "opcode": "iequals"
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": -3.140000
+                },
+                {
+                    "opcode": "push",
+                    "arg": 15
+                },
+                {
+                    "opcode": "intcf32"
+                },
+                {
+                    "opcode": "f32equals"
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 0.000010
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 20000.000000
+                },
+                {
+                    "opcode": "f32equals"
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 0.781000
+                },
+                {
+                    "opcode": "f32cf64"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 1100.000000
+                },
+                {
+                    "opcode": "f64equals"
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 839.510000
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 93871.100010
+                },
+                {
+                    "opcode": "f64equals"
+                },
+                {
+                    "opcode": "bnot"
+                }
+            ]
+        },
+        {
+            "identifier": "non_equality_pointer",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 3
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 4
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "iequals"
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 5
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "iequals"
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "iequals"
+                },
+                {
+                    "opcode": "bnot"
+                }
+            ]
+        },
+        {
+            "identifier": "equality_pointer",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 0
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 1
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "iequals"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 2
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "iequals"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "iequals"
+                }
+            ]
+        },
+        {
+            "identifier": "greater_than",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 671
+                },
+                {
+                    "opcode": "push",
+                    "arg": 121
+                },
+                {
+                    "opcode": "iabove"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 80
+                },
+                {
+                    "opcode": "igreater"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 945
+                },
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "iabove"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -1755
+                },
+                {
+                    "opcode": "push",
+                    "arg": 900
+                },
+                {
+                    "opcode": "igreater"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 295.100006
+                },
+                {
+                    "opcode": "push",
+                    "arg": -553
+                },
+                {
+                    "opcode": "intcf32"
+                },
+                {
+                    "opcode": "f32greater"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 8.210000
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 0.007000
+                },
+                {
+                    "opcode": "f32greater"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 14.003000
+                },
+                {
+                    "opcode": "f32cf64"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 0.004000
+                },
+                {
+                    "opcode": "f64greater"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 1.991000
+                },
+                {
+                    "opcode": "push",
+                    "arg": 5
+                },
+                {
+                    "opcode": "intcf64"
+                },
+                {
+                    "opcode": "f64greater"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": -0.008750
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 18.002000
+                },
+                {
+                    "opcode": "f64greater"
+                }
+            ]
+        },
+        {
+            "identifier": "ptr_relational",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 6
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 7
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "ibelow"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "ibelow"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 8
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 9
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "ibelow"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
+                },
+                {
+                    "opcode": "iequals"
+                },
+                {
+                    "opcode": "bor"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "ibelow"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
+                },
+                {
+                    "opcode": "iequals"
+                },
+                {
+                    "opcode": "bor"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 10
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 11
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "iabove"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "iabove"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 12
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": 13
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "iabove"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
+                },
+                {
+                    "opcode": "iequals"
+                },
+                {
+                    "opcode": "bor"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "iabove"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
+                },
+                {
+                    "opcode": "iequals"
+                },
+                {
+                    "opcode": "bor"
+                }
+            ]
+        },
+        {
+            "identifier": "equality_arithemtical",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 88
+                },
+                {
+                    "opcode": "push",
+                    "arg": 67
+                },
+                {
+                    "opcode": "iequals"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1000
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1010
+                },
+                {
+                    "opcode": "iequals"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 3.140000
+                },
+                {
+                    "opcode": "push",
+                    "arg": -1
+                },
+                {
+                    "opcode": "intcf32"
+                },
+                {
+                    "opcode": "f32equals"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 0.004100
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 1.230600
+                },
+                {
+                    "opcode": "f32equals"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 62.474998
+                },
+                {
+                    "opcode": "f32cf64"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 0.077001
+                },
+                {
+                    "opcode": "f64equals"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 7.001000
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 3529.001000
+                },
+                {
+                    "opcode": "f64equals"
+                }
+            ]
+        },
+        {
+            "identifier": "greater_equal",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 671
+                },
+                {
+                    "opcode": "push",
+                    "arg": 121
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "iabove"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
+                },
+                {
+                    "opcode": "iequals"
+                },
+                {
+                    "opcode": "bor"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 80
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "igreater"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
+                },
+                {
+                    "opcode": "iequals"
+                },
+                {
+                    "opcode": "bor"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 945
+                },
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "iabove"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
+                },
+                {
+                    "opcode": "iequals"
+                },
+                {
+                    "opcode": "bor"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -1755
+                },
+                {
+                    "opcode": "push",
+                    "arg": 900
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "igreater"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
+                },
+                {
+                    "opcode": "iequals"
+                },
+                {
+                    "opcode": "bor"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 295.100006
+                },
+                {
+                    "opcode": "push",
+                    "arg": -553
+                },
+                {
+                    "opcode": "intcf32"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "f32greater"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
+                },
+                {
+                    "opcode": "f32equals"
+                },
+                {
+                    "opcode": "bor"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 8.210000
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 0.007000
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "f32greater"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
+                },
+                {
+                    "opcode": "f32equals"
+                },
+                {
+                    "opcode": "bor"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 14.003000
+                },
+                {
+                    "opcode": "f32cf64"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 0.004000
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "f64greater"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
+                },
+                {
+                    "opcode": "f64equals"
+                },
+                {
+                    "opcode": "bor"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 1.991000
+                },
+                {
+                    "opcode": "push",
+                    "arg": 5
+                },
+                {
+                    "opcode": "intcf64"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "f64greater"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
+                },
+                {
+                    "opcode": "f64equals"
+                },
+                {
+                    "opcode": "bor"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": -0.008750
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 18.002000
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "f64greater"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
+                },
+                {
+                    "opcode": "f64equals"
+                },
+                {
+                    "opcode": "bor"
+                }
+            ]
+        }
+    ]
+}
