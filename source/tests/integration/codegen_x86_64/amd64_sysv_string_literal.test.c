@@ -28,16 +28,20 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
 
     kefir_id_t literal_id;
-    REQUIRE(kefir_ir_module_string_literal(mem, &module, "Hello, world!", &literal_id) != NULL, KEFIR_INTERNAL_ERROR);
+    const char *literal = "Hello, world!";
+    REQUIRE_OK(kefir_ir_module_string_literal(mem, &module, literal, strlen(literal) + 1, &literal_id));
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_PUSHSTRING, literal_id);
 
-    REQUIRE(kefir_ir_module_string_literal(mem, &module, "Hello,\ncruel\tworld!", &literal_id) != NULL, KEFIR_INTERNAL_ERROR);
+    literal = "Hello,\ncruel\tworld!";
+    REQUIRE_OK(kefir_ir_module_string_literal(mem, &module, literal, strlen(literal) + 1, &literal_id));
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_PUSHSTRING, literal_id);
 
-    REQUIRE(kefir_ir_module_string_literal(mem, &module, "\n\n\n\t\t\t   \t\t\t\v\v\v\n", &literal_id) != NULL, KEFIR_INTERNAL_ERROR);
+    literal = "\n\n\n\t\t\t   \t\t\t\v\v\v\n";
+    REQUIRE_OK(kefir_ir_module_string_literal(mem, &module, literal, strlen(literal) + 1, &literal_id));
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_PUSHSTRING, literal_id);
 
-    REQUIRE(kefir_ir_module_string_literal(mem, &module, "\'\"Hey ho!\"\'\\\"", &literal_id) != NULL, KEFIR_INTERNAL_ERROR);
+    literal = "\'\"Hey ho!\"\'\\\"";
+    REQUIRE_OK(kefir_ir_module_string_literal(mem, &module, literal, strlen(literal) + 1, &literal_id));
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_PUSHSTRING, literal_id);
 
     REQUIRE_OK(KEFIR_CODEGEN_TRANSLATE(mem, &codegen.iface, &module));

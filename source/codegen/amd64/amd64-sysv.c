@@ -153,9 +153,12 @@ static kefir_result_t cg_translate_data(struct kefir_mem *mem,
     }
 
     kefir_id_t id;
-    for (const char *string_literal = kefir_ir_module_string_literal_iter(module->module, &iter, &id);
-        string_literal != NULL;
-        string_literal = kefir_ir_module_string_literal_next(&iter, &id)) {
+    const char *content = NULL;
+    kefir_size_t length = 0;
+    kefir_result_t res = KEFIR_OK;
+    for (res = kefir_ir_module_string_literal_iter(module->module, &iter, &id, &content, &length);
+        res == KEFIR_OK;
+        res = kefir_ir_module_string_literal_next(&iter, &id, &content, &length)) {
         if (first) {
             ASMGEN_SECTION(&codegen->asmgen, ".data");
             first = false;
@@ -163,9 +166,10 @@ static kefir_result_t cg_translate_data(struct kefir_mem *mem,
 
         ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_STRING_LITERAL, id);
         ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_BYTE);
-        ASMGEN_STRING_LITERAL(&codegen->asmgen, string_literal);
+        ASMGEN_STRING_LITERAL(&codegen->asmgen, content);
         ASMGEN_ARG0(&codegen->asmgen, "0");
     }
+    REQUIRE(res == KEFIR_ITERATOR_END, res);
     return KEFIR_OK;
 }
 
