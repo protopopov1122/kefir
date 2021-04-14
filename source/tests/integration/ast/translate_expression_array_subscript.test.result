@@ -60,7 +60,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 0
+                        "data": "array1"
                     }
                 },
                 {
@@ -94,7 +94,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 1
+                        "data": "array1"
                     }
                 },
                 {

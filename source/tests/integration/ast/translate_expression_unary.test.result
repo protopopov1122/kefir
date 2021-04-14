@@ -249,7 +249,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 0
+                        "data": "X"
                     }
                 },
                 {
@@ -292,7 +292,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 1
+                        "data": "X"
                     }
                 },
                 {
@@ -331,7 +331,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 2
+                        "data": "X"
                     }
                 },
                 {
@@ -666,7 +666,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 3
+                        "data": "X"
                     }
                 },
                 {

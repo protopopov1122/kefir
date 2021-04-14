@@ -636,7 +636,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 3
+                        "data": "ptr1"
                     }
                 },
                 {
@@ -645,7 +645,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 4
+                        "data": "ptr1"
                     }
                 },
                 {
@@ -660,7 +660,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 5
+                        "data": "ptr1"
                     }
                 },
                 {
@@ -735,7 +735,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 0
+                        "data": "ptr1"
                     }
                 },
                 {
@@ -744,7 +744,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 1
+                        "data": "ptr1"
                     }
                 },
                 {
@@ -756,7 +756,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 2
+                        "data": "ptr1"
                     }
                 },
                 {
@@ -948,7 +948,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 6
+                        "data": "ptr1"
                     }
                 },
                 {
@@ -957,7 +957,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 7
+                        "data": "ptr1"
                     }
                 },
                 {
@@ -998,7 +998,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 8
+                        "data": "ptr1"
                     }
                 },
                 {
@@ -1007,7 +1007,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 9
+                        "data": "ptr1"
                     }
                 },
                 {
@@ -1084,7 +1084,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 10
+                        "data": "ptr1"
                     }
                 },
                 {
@@ -1093,7 +1093,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 11
+                        "data": "ptr1"
                     }
                 },
                 {
@@ -1134,7 +1134,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 12
+                        "data": "ptr1"
                     }
                 },
                 {
@@ -1143,7 +1143,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 13
+                        "data": "ptr1"
                     }
                 },
                 {

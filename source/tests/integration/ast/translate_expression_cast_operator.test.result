@@ -92,7 +92,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 0
+                        "data": "ptr"
                     }
                 },
                 {
@@ -123,7 +123,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 1
+                        "data": "ptr"
                     }
                 },
                 {
@@ -190,7 +190,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 2
+                        "data": "ptr"
                     }
                 },
                 {
@@ -227,7 +227,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 3
+                        "data": "ptr"
                     }
                 },
                 {
@@ -239,7 +239,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 4
+                        "data": "structure"
                     }
                 },
                 {

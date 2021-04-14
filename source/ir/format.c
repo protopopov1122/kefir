@@ -105,7 +105,7 @@ kefir_result_t kefir_ir_format_instr_dataref(struct kefir_json_output *json, con
     REQUIRE_OK(kefir_json_output_object_key(json, "arg"));
     REQUIRE_OK(kefir_json_output_object_begin(json));
     REQUIRE_OK(kefir_json_output_object_key(json, "data"));
-    REQUIRE_OK(kefir_json_output_uinteger(json, instr->arg.u64));
+    REQUIRE_OK(kefir_json_output_string(json, kefir_symbol_table_get(&module->symbols, instr->arg.u64)));
     REQUIRE_OK(kefir_json_output_object_end(json));
     REQUIRE_OK(kefir_json_output_object_end(json));
     return KEFIR_OK;

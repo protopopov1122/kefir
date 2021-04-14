@@ -93,7 +93,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 0
+                        "data": "extern_variable1"
                     }
                 },
                 {
@@ -102,7 +102,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 1
+                        "data": "extern_variable2"
                     }
                 },
                 {
@@ -111,7 +111,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 2
+                        "data": "__kefirrt_module_static_vars"
                     }
                 },
                 {

@@ -196,19 +196,19 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 0
+                        "data": "variable1"
                     }
                 },
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 1
+                        "data": "variable2"
                     }
                 },
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 2
+                        "data": "__kefirrt_module_static_vars"
                     }
                 },
                 {
@@ -221,13 +221,13 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 3
+                        "data": "variable4"
                     }
                 },
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 4
+                        "data": "__kefirrt_module_static_vars"
                     }
                 },
                 {
@@ -284,7 +284,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 7
+                        "data": "__kefirrt_module_static_vars"
                     }
                 },
                 {
@@ -304,7 +304,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 8
+                        "data": "__kefirrt_module_static_vars"
                     }
                 },
                 {
@@ -384,7 +384,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 5
+                        "data": "__kefirrt_module_static_vars"
                     }
                 },
                 {
@@ -408,7 +408,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 6
+                        "data": "variable4"
                     }
                 },
                 {

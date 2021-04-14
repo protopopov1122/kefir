@@ -452,7 +452,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 0
+                        "data": "boolean"
                     }
                 },
                 {
@@ -461,7 +461,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 1
+                        "data": "char"
                     }
                 },
                 {
@@ -470,7 +470,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 2
+                        "data": "unsigned_char"
                     }
                 },
                 {
@@ -479,7 +479,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 3
+                        "data": "signed_char"
                     }
                 },
                 {
@@ -488,7 +488,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 4
+                        "data": "unsigned_short"
                     }
                 },
                 {
@@ -497,7 +497,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 5
+                        "data": "signed_short"
                     }
                 },
                 {
@@ -506,7 +506,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 6
+                        "data": "unsigned_int"
                     }
                 },
                 {
@@ -515,7 +515,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 7
+                        "data": "signed_int"
                     }
                 },
                 {
@@ -524,7 +524,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 8
+                        "data": "unsigned_long"
                     }
                 },
                 {
@@ -533,7 +533,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 9
+                        "data": "signed_long"
                     }
                 },
                 {
@@ -542,7 +542,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 10
+                        "data": "unsigned_long_long"
                     }
                 },
                 {
@@ -551,7 +551,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 11
+                        "data": "signed_long_long"
                     }
                 },
                 {
@@ -560,7 +560,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 12
+                        "data": "float"
                     }
                 },
                 {
@@ -569,7 +569,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 13
+                        "data": "double"
                     }
                 },
                 {
@@ -578,7 +578,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 14
+                        "data": "void_ptr"
                     }
                 },
                 {
@@ -587,7 +587,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 15
+                        "data": "enum"
                     }
                 },
                 {
@@ -596,7 +596,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 16
+                        "data": "qualified"
                     }
                 },
                 {
@@ -605,31 +605,31 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 17
+                        "data": "structure"
                     }
                 },
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 18
+                        "data": "union"
                     }
                 },
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 19
+                        "data": "array1"
                     }
                 },
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 20
+                        "data": "array2"
                     }
                 },
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 21
+                        "data": "func1"
                     }
                 }
             ]

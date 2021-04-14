@@ -56,7 +56,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": 0
+                        "data": "structure"
                     }
                 },
                 {
