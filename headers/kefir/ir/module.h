@@ -17,6 +17,7 @@ typedef struct kefir_ir_module {
     struct kefir_hashtree functions;
     struct kefir_hashtree named_types;
     struct kefir_hashtree named_data;
+    struct kefir_hashtree string_literals;
 
     kefir_id_t next_type_id;
     kefir_id_t next_string_id;
@@ -32,6 +33,11 @@ const char *kefir_ir_module_symbol(struct kefir_mem *,
                                  struct kefir_ir_module *,
                                  const char *,
                                  kefir_id_t *);
+
+const char *kefir_ir_module_string_literal(struct kefir_mem *,
+                                         struct kefir_ir_module *,
+                                         const char *,
+                                         kefir_id_t *);
 struct kefir_ir_type *kefir_ir_module_new_type(struct kefir_mem *,
                                            struct kefir_ir_module *,
                                            kefir_size_t,

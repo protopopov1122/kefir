@@ -73,6 +73,7 @@ kefir_result_t kefir_ir_module_alloc(struct kefir_mem *mem, struct kefir_ir_modu
     REQUIRE_OK(kefir_hashtree_init(&module->named_types, &kefir_hashtree_uint_ops));
     REQUIRE_OK(kefir_hashtree_init(&module->named_data, &kefir_hashtree_str_ops));
     REQUIRE_OK(kefir_hashtree_on_removal(&module->named_data, destroy_named_data, NULL));
+    REQUIRE_OK(kefir_hashtree_init(&module->string_literals, &kefir_hashtree_uint_ops));
     module->next_type_id = 0;
     module->next_string_id = 0;
     return KEFIR_OK;
@@ -82,6 +83,7 @@ kefir_result_t kefir_ir_module_free(struct kefir_mem *mem,
                                 struct kefir_ir_module *module) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module pointer"));
+    REQUIRE_OK(kefir_hashtree_free(mem, &module->string_literals));
     REQUIRE_OK(kefir_hashtree_free(mem, &module->named_data));
     REQUIRE_OK(kefir_hashtree_free(mem, &module->named_types));
     REQUIRE_OK(kefir_hashtree_free(mem, &module->functions));
@@ -101,6 +103,22 @@ const char *kefir_ir_module_symbol(struct kefir_mem *mem,
     REQUIRE(module != NULL, NULL);
     REQUIRE(symbol != NULL, NULL);
     return kefir_symbol_table_insert(mem, &module->symbols, symbol, id);
+}
+
+const char *kefir_ir_module_string_literal(struct kefir_mem *mem,
+                                         struct kefir_ir_module *module,
+                                         const char *symbol,
+                                         kefir_id_t *id) {
+    REQUIRE(mem != NULL, NULL);
+    REQUIRE(module != NULL, NULL);
+    REQUIRE(symbol != NULL, NULL);  
+    REQUIRE(id != NULL, NULL);
+
+    const char *symbol_copy = kefir_symbol_table_insert(mem, &module->symbols, symbol, id);
+    REQUIRE(symbol_copy != NULL, NULL);
+    REQUIRE(kefir_hashtree_insert(mem, &module->string_literals,
+        (kefir_hashtree_key_t) id, (kefir_hashtree_value_t) *id) == KEFIR_OK, NULL);
+    return symbol_copy;
 }
 
 struct kefir_ir_type *kefir_ir_module_new_type(struct kefir_mem *mem,
