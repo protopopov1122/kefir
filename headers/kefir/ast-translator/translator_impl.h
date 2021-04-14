@@ -20,6 +20,7 @@ NODE_TRANSLATOR(cast_operator, struct kefir_ast_cast_operator);
 NODE_TRANSLATOR(unary_operation, struct kefir_ast_unary_operation);
 NODE_TRANSLATOR(binary_operation, struct kefir_ast_binary_operation);
 NODE_TRANSLATOR(comma_operator, struct kefir_ast_comma_operator);
+NODE_TRANSLATOR(conditional_operator, struct kefir_ast_conditional_operator);
 #undef NODE_TRANSLATOR
 
 #endif
