@@ -1,4 +1,6 @@
 #include <stdarg.h>
+#include <string.h>
+#include <uchar.h>
 #include "kefir/codegen/amd64/asmgen.h"
 #include "kefir/core/basic-types.h"
 #include "kefir/core/util.h"
@@ -155,6 +157,83 @@ static kefir_result_t amd64_argument(struct kefir_amd64_asmgen *asmgen, const ch
     return KEFIR_OK;
 }
 
+kefir_result_t amd64_string_literal(struct kefir_amd64_asmgen *asmgen, const char *literal) {
+    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 assembly generator"));
+    REQUIRE(literal != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string literal"));
+
+    FILE *out = (FILE *) asmgen->data;
+    if (asmgen->state.arguments > 0) {
+        fprintf(out, ", ");
+    } else {
+        fprintf(out, " ");
+    }
+    asmgen->state.arguments++;
+    fprintf(out, "`");
+
+    mbstate_t state;
+    const char *end = literal + strlen(literal);
+    size_t sz = 0;
+    char32_t wide_char;
+    while (literal < end && (sz = mbrtoc32(&wide_char, literal, end - literal, &state)) != 0) {
+        switch (wide_char) {
+            case U'\'':
+                fprintf(out, "\\\'");
+                break;
+
+            case U'\"':
+                fprintf(out, "\\\"");
+                break;
+
+            case U'`':
+                fprintf(out, "\\`");
+                break;
+
+            case U'\\':
+                fprintf(out, "\\\\");
+                break;
+
+            case U'\?':
+                fprintf(out, "\\?");
+                break;
+
+            case U'\a':
+                fprintf(out, "\\a");
+                break;
+
+            case U'\b':
+                fprintf(out, "\\b");
+                break;
+
+            case U'\t':
+                fprintf(out, "\\t");
+                break;
+
+            case U'\n':
+                fprintf(out, "\\n");
+                break;
+
+            case U'\v':
+                fprintf(out, "\\v");
+                break;
+
+            case U'\f':
+                fprintf(out, "\\f");
+                break;
+
+            case U'\r':
+                fprintf(out, "\\r");
+                break;
+
+            default:
+                fwrite(literal, 1, sz, out);
+                break;
+        }
+        literal += sz;
+    }
+    fprintf(out, "`");
+    return KEFIR_OK;
+}
+
 static kefir_result_t amd64_close(struct kefir_amd64_asmgen *asmgen) {
     REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 assembly generator"));
     FILE *out = (FILE *) asmgen->data;
@@ -175,6 +254,7 @@ kefir_result_t kefir_amd64_nasm_gen_init(struct kefir_amd64_asmgen *asmgen, FILE
     asmgen->instr = amd64_instr;
     asmgen->close = amd64_close;
     asmgen->rawdata = amd64_rawdata;
+    asmgen->string_literal = amd64_string_literal;
     asmgen->mulrawdata = amd64_multrawdata;
     asmgen->argument = amd64_argument;
     asmgen->data = (void *) out;

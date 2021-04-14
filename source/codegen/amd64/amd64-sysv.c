@@ -151,6 +151,21 @@ static kefir_result_t cg_translate_data(struct kefir_mem *mem,
         }
         REQUIRE_OK(kefir_amd64_sysv_static_data(mem, codegen, data, identifier));
     }
+
+    kefir_id_t id;
+    for (const char *string_literal = kefir_ir_module_string_literal_iter(module->module, &iter, &id);
+        string_literal != NULL;
+        string_literal = kefir_ir_module_string_literal_next(&iter, &id)) {
+        if (first) {
+            ASMGEN_SECTION(&codegen->asmgen, ".data");
+            first = false;
+        }
+
+        ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_STRING_LITERAL, id);
+        ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_BYTE);
+        ASMGEN_STRING_LITERAL(&codegen->asmgen, string_literal);
+        ASMGEN_ARG0(&codegen->asmgen, "0");
+    }
     return KEFIR_OK;
 }
 

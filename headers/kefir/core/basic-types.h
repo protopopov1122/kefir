@@ -81,6 +81,8 @@ typedef float kefir_float32_t;
 typedef double kefir_float64_t;
 typedef kefir_uint32_t kefir_id_t;
 
+#define KEFIR_ID_FMT KEFIR_UINT32_FMT
+
 #define KEFIR_FLOAT32_FMT "%f"
 #define KEFIR_FLOAT64_FMT "%lf"
 

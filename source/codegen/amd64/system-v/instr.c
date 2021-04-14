@@ -3,6 +3,7 @@
 #include "kefir/codegen/amd64/labels.h"
 #include "kefir/codegen/amd64/shortcuts.h"
 #include "kefir/codegen/amd64/opcodes.h"
+#include "kefir/codegen/amd64/system-v/runtime.h"
 #include "kefir/core/error.h"
 
 static kefir_result_t cg_symbolic_opcode(kefir_iropcode_t opcode, const char **symbolic) {
@@ -61,6 +62,16 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
                 KEFIR_AMD64_SYSV_FUNCTION_VIRTUAL_GATE_LABEL,
                 function);
             ASMGEN_ARG0(&codegen->asmgen, "0");
+        } break;
+
+        case KEFIR_IROPCODE_PUSHSTRING: {
+            const kefir_id_t identifier = (kefir_id_t) instr->arg.u64;
+
+            const char *opcode_symbol = NULL;
+            REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_PUSHI64, &opcode_symbol));
+            ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
+            ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
+            ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_STRING_LITERAL, identifier);
         } break;
 
         case KEFIR_IROPCODE_OFFSETPTR:

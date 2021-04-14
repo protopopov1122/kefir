@@ -13,12 +13,13 @@
     <!-- Stack control -->
     <opcode id="pushi64"     mnemonic="push"        code="0x10" type="i64" />
     <opcode id="pushu64"     mnemonic="push"        code="0x11" type="u64" />
-    <opcode id="pop"         mnemonic="pop"         code="0x12" type="none" />
-    <opcode id="pick"        mnemonic="pick"        code="0x13" type="u64" />
-    <opcode id="put"         mnemonic="put"         code="0x14" type="u64" />
-    <opcode id="insert"      mnemonic="insert"      code="0x15" type="u64" />
-    <opcode id="xchg"        mnemonic="xchg"        code="0x16" type="u64" />
-    <opcode id="drop"        mnemonic="drop"        code="0x17" type="u64" />
+    <opcode id="pushstring"  mnemonic="pushstring"  code="0x12" type="dataref" />
+    <opcode id="pop"         mnemonic="pop"         code="0x13" type="none" />
+    <opcode id="pick"        mnemonic="pick"        code="0x14" type="u64" />
+    <opcode id="put"         mnemonic="put"         code="0x15" type="u64" />
+    <opcode id="insert"      mnemonic="insert"      code="0x16" type="u64" />
+    <opcode id="xchg"        mnemonic="xchg"        code="0x17" type="u64" />
+    <opcode id="drop"        mnemonic="drop"        code="0x18" type="u64" />
 
     <!-- Integer arithmetics & bitwise -->
     <opcode id="iadd"        mnemonic="iadd"        code="0x20" type="none" />

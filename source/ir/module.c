@@ -117,7 +117,7 @@ const char *kefir_ir_module_string_literal(struct kefir_mem *mem,
     const char *symbol_copy = kefir_symbol_table_insert(mem, &module->symbols, symbol, id);
     REQUIRE(symbol_copy != NULL, NULL);
     REQUIRE(kefir_hashtree_insert(mem, &module->string_literals,
-        (kefir_hashtree_key_t) id, (kefir_hashtree_value_t) *id) == KEFIR_OK, NULL);
+        (kefir_hashtree_key_t) *id, (kefir_hashtree_value_t) symbol_copy) == KEFIR_OK, NULL);
     return symbol_copy;
 }
 
@@ -273,6 +273,28 @@ const char *kefir_ir_module_externals_iter(const struct kefir_ir_module *module,
 
 const char *kefir_ir_module_symbol_iter_next(const struct kefir_list_entry **iter) {
     return kefir_list_next(iter);
+}
+
+const char *kefir_ir_module_string_literal_iter(const struct kefir_ir_module *module,
+                                              struct kefir_hashtree_node_iterator *iter,
+                                              kefir_id_t *id) {
+    REQUIRE(module != NULL, NULL);
+    REQUIRE(iter != NULL, NULL);
+
+    const struct kefir_hashtree_node *node = kefir_hashtree_iter(&module->string_literals, iter);
+    REQUIRE(node != NULL, NULL);
+    ASSIGN_PTR(id, (kefir_id_t) node->key);
+    return (const char *) node->value;
+}
+
+const char *kefir_ir_module_string_literal_next(struct kefir_hashtree_node_iterator *iter,
+                                              kefir_id_t *id) {
+    REQUIRE(iter != NULL, NULL);
+
+    const struct kefir_hashtree_node *node = kefir_hashtree_next(iter);
+    REQUIRE(node != NULL, NULL);
+    ASSIGN_PTR(id, (kefir_id_t) node->key);
+    return (const char *) node->value;
 }
 
 struct kefir_ir_data * kefir_ir_module_new_named_data(struct kefir_mem *mem,
