@@ -7,7 +7,7 @@
 
 typedef struct kefir_symbol_table {
     struct kefir_hashtree symbols;
-    struct kefir_hashtree named_symbols;
+    struct kefir_hashtree symbol_identifiers;
     kefir_size_t next_id;
 } kefir_symbol_table_t;
 
