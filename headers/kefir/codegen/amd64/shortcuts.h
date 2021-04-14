@@ -26,8 +26,8 @@
     REQUIRE_OK(KEFIR_AMD64_ASMGEN_ARG((asmgen), "%s", (arg)))
 #define ASMGEN_RAW(asmgen, width) \
     REQUIRE_OK(KEFIR_AMD64_ASMGEN_RAWDATA((asmgen), (width)))
-#define ASMGEN_STRING_LITERAL(asmgen, literal) \
-    KEFIR_AMD64_ASMGEN_STRING_LITERAL((asmgen), (literal))
+#define ASMGEN_STRING_LITERAL(asmgen, literal, length) \
+    KEFIR_AMD64_ASMGEN_STRING_LITERAL((asmgen), (literal), (length))
 #define ASMGEN_MULRAW(asmgen, times, width) \
     REQUIRE_OK(KEFIR_AMD64_ASMGEN_MULRAWDATA((asmgen), (times), (width)))
 

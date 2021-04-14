@@ -157,7 +157,7 @@ static kefir_result_t amd64_argument(struct kefir_amd64_asmgen *asmgen, const ch
     return KEFIR_OK;
 }
 
-kefir_result_t amd64_string_literal(struct kefir_amd64_asmgen *asmgen, const char *literal) {
+kefir_result_t amd64_string_literal(struct kefir_amd64_asmgen *asmgen, const char *literal, kefir_size_t length) {
     REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 assembly generator"));
     REQUIRE(literal != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string literal"));
 
@@ -171,10 +171,15 @@ kefir_result_t amd64_string_literal(struct kefir_amd64_asmgen *asmgen, const cha
     fprintf(out, "`");
 
     mbstate_t state;
-    const char *end = literal + strlen(literal);
+    const char *end = literal + length;
     size_t sz = 0;
     char32_t wide_char;
-    while (literal < end && (sz = mbrtoc32(&wide_char, literal, end - literal, &state)) != 0) {
+    while (literal < end && (*literal == '\0' || (sz = mbrtoc32(&wide_char, literal, end - literal, &state)) != 0)) {
+        if (*literal == '\0') {
+            fprintf(out, "\\000");
+            literal++;
+            continue;
+        }
         switch (wide_char) {
             case U'\'':
                 fprintf(out, "\\\'");

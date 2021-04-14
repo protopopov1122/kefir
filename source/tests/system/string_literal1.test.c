@@ -13,9 +13,15 @@ int main(int argc, const char **argv) {
     UNUSED(argv);
     ASSERT(strcmp(string1(), "Hello, world!") == 0);
     ASSERT(strcmp(string2(), "\n\n\t\tHey there\'\"!\v\n") == 0);
-    ASSERT(strcmp(string3(), "") == 0);
+    ASSERT(string3()[0] == '\0');
+    ASSERT(string3()[1] == '\0');
+    ASSERT(string3()[2] == '\0');
+    ASSERT(string3()[3] == '\0');
     ASSERT(strcmp(string1(), "Hello, world!") == 0);
-    ASSERT(strcmp(string3(), "") == 0);
+    ASSERT(string3()[0] == '\0');
+    ASSERT(string3()[1] == '\0');
+    ASSERT(string3()[2] == '\0');
+    ASSERT(string3()[3] == '\0');
     ASSERT(strcmp(string2(), "\n\n\t\tHey there\'\"!\v\n") == 0);
     return EXIT_SUCCESS;
 }

@@ -94,6 +94,7 @@ dq __kefirrt_push_impl, __kefirrt_string_literal0
 dq __kefirrt_push_impl, __kefirrt_string_literal1
 dq __kefirrt_push_impl, __kefirrt_string_literal2
 dq __kefirrt_push_impl, __kefirrt_string_literal3
+dq __kefirrt_push_impl, __kefirrt_string_literal4
 dq __func1_epilogue, 0
 __func1_epilogue:
 mov rsp, r14
@@ -102,10 +103,12 @@ jmp __kefirrt_restore_state
 
 SECTION .data
 __kefirrt_string_literal0:
-db `Hello, world!`, 0
+db `Hello, world!\000`
 __kefirrt_string_literal1:
-db `Hello,\ncruel\tworld!`, 0
+db `Hello,\ncruel\tworld!\000`
 __kefirrt_string_literal2:
-db `\n\n\n\t\t\t   \t\t\t\v\v\v\n`, 0
+db `\n\n\n\t\t\t   \t\t\t\v\v\v\n\000`
 __kefirrt_string_literal3:
-db `\'\"Hey ho!\"\'\\\"`, 0
+db `\'\"Hey ho!\"\'\\\"\000`
+__kefirrt_string_literal4:
+db `\000\000\000\n\000\000`

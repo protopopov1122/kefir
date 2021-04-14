@@ -166,8 +166,7 @@ static kefir_result_t cg_translate_data(struct kefir_mem *mem,
 
         ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_STRING_LITERAL, id);
         ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_BYTE);
-        ASMGEN_STRING_LITERAL(&codegen->asmgen, content);
-        ASMGEN_ARG0(&codegen->asmgen, "0");
+        ASMGEN_STRING_LITERAL(&codegen->asmgen, content, length);
     }
     REQUIRE(res == KEFIR_ITERATOR_END, res);
     return KEFIR_OK;

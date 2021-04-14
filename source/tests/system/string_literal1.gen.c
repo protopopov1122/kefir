@@ -61,8 +61,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl3->identifier));
     kefir_irbuilder_type_append_v(mem, func3->declaration->result, KEFIR_IR_TYPE_WORD, 0, 0);
 
-    literal = "";
-    REQUIRE_OK(kefir_ir_module_string_literal(mem, &module, literal, strlen(literal) + 1, &literal_id));
+    literal = "\0\0\0";
+    REQUIRE_OK(kefir_ir_module_string_literal(mem, &module, literal, 4, &literal_id));
     kefir_irbuilder_block_appendi64(mem, &func3->body, KEFIR_IROPCODE_PUSHSTRING, literal_id);
 
     KEFIR_CODEGEN_TRANSLATE(mem, &codegen.iface, &module);
