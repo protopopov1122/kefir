@@ -26,7 +26,8 @@ KEFIR_AST_NODE_STRUCT(kefir_ast_identifier, {
 });
 
 KEFIR_AST_NODE_STRUCT(kefir_ast_string_literal, {
-    const char *literal;
+    char *literal;
+    kefir_size_t length;
 });
 
 typedef struct kefir_ast_generic_selection_assoc {
@@ -111,8 +112,11 @@ struct kefir_ast_identifier *kefir_ast_new_identifier(struct kefir_mem *,
                                                   const char *);
 
 struct kefir_ast_string_literal *kefir_ast_new_string_literal(struct kefir_mem *,
-                                                      struct kefir_symbol_table *,
-                                                      const char *);
+                                                          const char *,
+                                                          kefir_size_t);
+
+#define KEFIR_AST_MAKE_STRING_LITERAL(_mem, _string) \
+    (kefir_ast_new_string_literal((_mem), (_string), strlen((_string)) + 1))
 
 struct kefir_ast_generic_selection *kefir_ast_new_generic_selection(struct kefir_mem *,
                                                                 struct kefir_ast_node_base *);

@@ -17,7 +17,7 @@ kefir_result_t kefir_ast_analyze_string_literal_node(struct kefir_mem *mem,
     REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
     base->properties.category = KEFIR_AST_NODE_CATEGORY_EXPRESSION;
     base->properties.type = kefir_ast_type_array(mem, context->type_bundle,
-        kefir_ast_type_char(), kefir_ast_constant_expression_integer(mem, strlen(node->literal)), NULL);
+        kefir_ast_type_char(), kefir_ast_constant_expression_integer(mem, node->length), NULL);
     base->properties.expression_props.constant_expression = true;
     base->properties.expression_props.string_literal = node->literal;
     return KEFIR_OK;

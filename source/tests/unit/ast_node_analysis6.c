@@ -332,13 +332,13 @@ DEFINE_CASE(ast_node_analysis_compound_literal1, "AST node analysis - compound l
             ASSERT_COMPOUND_LITERAL_NOK(&kft_mem, context, TYPES[i], {
                 ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
                     NULL, kefir_ast_new_expression_initializer(&kft_mem,
-                    KEFIR_AST_NODE_BASE(kefir_ast_new_string_literal(&kft_mem, context->symbols, "Hello, world!")))));
+                    KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!")))));
             });
         } else {
             ASSERT_COMPOUND_LITERAL(&kft_mem, context, TYPES[i], {
                 ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
                     NULL, kefir_ast_new_expression_initializer(&kft_mem,
-                    KEFIR_AST_NODE_BASE(kefir_ast_new_string_literal(&kft_mem, context->symbols, "Hello, world!")))));
+                    KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!")))));
             }, TYPES[i], true);
         }
     }
@@ -378,7 +378,7 @@ DEFINE_CASE(ast_node_analysis_compound_literal2, "AST node analysis - compound l
     ASSERT_COMPOUND_LITERAL(&kft_mem, context, type1, {
         ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
             NULL, kefir_ast_new_expression_initializer(&kft_mem,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_string_literal(&kft_mem, context->symbols, "Hello, world!")))));
+            KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!")))));
     }, kefir_ast_type_array(&kft_mem, context->type_bundle, kefir_ast_type_char(),
         kefir_ast_constant_expression_integer(&kft_mem, 14), NULL), true);
 
@@ -407,7 +407,7 @@ DEFINE_CASE(ast_node_analysis_compound_literal2, "AST node analysis - compound l
     ASSERT_COMPOUND_LITERAL(&kft_mem, context, type2, {
         ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound->initializer->list,
             NULL, kefir_ast_new_expression_initializer(&kft_mem,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_string_literal(&kft_mem, context->symbols, "Hello, world!")))));
+            KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!")))));
     }, type2, true);
     
     ASSERT_COMPOUND_LITERAL(&kft_mem, context, type2, {

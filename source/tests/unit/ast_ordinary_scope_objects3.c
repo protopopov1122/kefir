@@ -218,7 +218,7 @@ DEFINE_CASE(ast_ordinary_scope_objects_local_init3, "AST Declaration initializer
         KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO, type2, KEFIR_AST_SCOPED_IDENTIFIER_NONE_LINKAGE);
 
     struct kefir_ast_initializer *init3 = kefir_ast_new_expression_initializer(&kft_mem,
-        KEFIR_AST_NODE_BASE(kefir_ast_new_string_literal(&kft_mem, context.context.symbols, "Hey!")));
+        KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hey!")));
     ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &context,
         "var4", type1, NULL, init3));
     ASSERT_RESOLVED_IDENTIFIER(&context, "var4",
@@ -286,7 +286,7 @@ DEFINE_CASE(ast_ordinary_scope_objects_local_init4, "AST Declaration initializer
         KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER, type2, KEFIR_AST_SCOPED_IDENTIFIER_NONE_LINKAGE);
 
     struct kefir_ast_initializer *init3 = kefir_ast_new_expression_initializer(&kft_mem,
-        KEFIR_AST_NODE_BASE(kefir_ast_new_string_literal(&kft_mem, context.context.symbols, "Hey!")));
+        KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hey!")));
     ASSERT_OK(kefir_ast_local_context_define_register(&kft_mem, &context,
         "var4", type1, NULL, init3));
     ASSERT_RESOLVED_IDENTIFIER(&context, "var4",

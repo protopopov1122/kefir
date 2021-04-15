@@ -58,13 +58,13 @@ END_CASE
 
 #define ASSERT_STRING_LITERAL(_mem, _context, _literal) \
     do { \
-        struct kefir_ast_string_literal *literal = kefir_ast_new_string_literal( \
-            (_mem), (_context)->symbols, (_literal)); \
+        struct kefir_ast_string_literal *literal = KEFIR_AST_MAKE_STRING_LITERAL( \
+            (_mem), (_literal)); \
         ASSERT_OK(kefir_ast_analyze_node((_mem), (_context), KEFIR_AST_NODE_BASE(literal))); \
         ASSERT(literal->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION); \
         ASSERT(KEFIR_AST_TYPE_SAME(literal->base.properties.type, kefir_ast_type_array((_mem), \
             (_context)->type_bundle, kefir_ast_type_char(), \
-            kefir_ast_constant_expression_integer((_mem), strlen((_literal))), NULL))); \
+            kefir_ast_constant_expression_integer((_mem), strlen((_literal)) + 1), NULL))); \
         ASSERT(literal->base.properties.expression_props.constant_expression); \
         ASSERT(!literal->base.properties.expression_props.lvalue); \
         ASSERT(strcmp(literal->base.properties.expression_props.string_literal, (_literal)) == 0); \
@@ -895,7 +895,7 @@ DEFINE_CASE(ast_node_analysis_unary_operation_sizeof, "AST node analysis - unary
         kefir_ast_type_signed_int(),
         true, false, false);
     ASSERT_UNARY_OPERATION(&kft_mem, context, KEFIR_AST_OPERATION_SIZEOF,
-        kefir_ast_new_string_literal(&kft_mem, context->symbols, "Hello, world!"),
+        KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!"),
         kefir_ast_type_signed_int(),
         true, false, false);
     ASSERT_UNARY_OPERATION(&kft_mem, context, KEFIR_AST_OPERATION_SIZEOF,

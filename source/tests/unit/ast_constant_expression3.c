@@ -541,7 +541,7 @@ DEFINE_CASE(ast_constant_expression_unary_operations7, "AST constant expressions
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_LOGICAL_NEGATE,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_string_literal(&kft_mem, context->symbols,
+            KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem,
                 "Hello, world!"))),
         0);
 

@@ -115,8 +115,8 @@ END_CASE
 DEFINE_CASE(ast_nodes_string_literals, "AST nodes - string literals")
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
-    struct kefir_ast_string_literal *sym1 = kefir_ast_new_string_literal(&kft_mem, &symbols, "Hello, world!");
-    struct kefir_ast_string_literal *sym2 = kefir_ast_new_string_literal(&kft_mem, &symbols, "Goodbue, cruel world!");
+    struct kefir_ast_string_literal *sym1 = KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!");
+    struct kefir_ast_string_literal *sym2 = KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Goodbue, cruel world!");
     ASSERT(sym1 != NULL);
     ASSERT(sym2 != NULL);
     ASSERT(sym1->base.klass->type == KEFIR_AST_STRING_LITERAL);

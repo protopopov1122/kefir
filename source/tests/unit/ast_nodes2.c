@@ -68,7 +68,7 @@ DEFINE_CASE(ast_nodes_generic_selections, "AST nodes - generic selections")
 
     ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection1, type_traits,
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_char()),
-        KEFIR_AST_NODE_BASE(kefir_ast_new_string_literal(&kft_mem, &symbols, "Hello, world!"))));
+        KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!"))));
     ASSERT(kefir_list_length(&selection1->associations) == 3);
     ASSERT_ASSOC(selection1, 0, kefir_ast_type_signed_int(), {
         ASSERT(assoc->expr->klass->type == KEFIR_AST_CONSTANT);
