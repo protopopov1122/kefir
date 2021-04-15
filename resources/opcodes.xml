@@ -13,7 +13,7 @@
     <!-- Stack control -->
     <opcode id="pushi64"     mnemonic="push"        code="0x10" type="i64" />
     <opcode id="pushu64"     mnemonic="push"        code="0x11" type="u64" />
-    <opcode id="pushstring"  mnemonic="pushstring"  code="0x12" type="dataref" />
+    <opcode id="pushstring"  mnemonic="pushstring"  code="0x12" type="string" />
     <opcode id="pop"         mnemonic="pop"         code="0x13" type="none" />
     <opcode id="pick"        mnemonic="pick"        code="0x14" type="u64" />
     <opcode id="put"         mnemonic="put"         code="0x15" type="u64" />
@@ -56,7 +56,7 @@
     <!-- Data access -->
     <opcode id="offsetptr"   mnemonic="offsetptr"   code="0x50" type="typeref" />
     <opcode id="elementptr"  mnemonic="elementptr"  code="0x51" type="typeref" />
-    <opcode id="getglobal"   mnemonic="getglobal"   code="0x52" type="dataref" />
+    <opcode id="getglobal"   mnemonic="getglobal"   code="0x52" type="identifier" />
     <opcode id="getlocals"   mnemonic="getlocals"   code="0x53" type="none" />
     <opcode id="load8u"      mnemonic="load8u"      code="0x54" type="none" />
     <opcode id="load8i"      mnemonic="load8i"      code="0x55" type="none" />

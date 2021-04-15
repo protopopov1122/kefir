@@ -1,0 +1,77 @@
+{
+    "globals": [],
+    "externals": [],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": []
+        }
+    ],
+    "data": [
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": []
+        }
+    ],
+    "function_declarations": [
+        {
+            "identifier": "string_literal1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "string_literal2",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "string_literal3",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": "string_literal1",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "pushstring",
+                    "arg": "Hello, cruel world!"
+                }
+            ]
+        },
+        {
+            "identifier": "string_literal2",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "pushstring",
+                    "arg": "\n\n\t\n\\'\"```T   E\nST"
+                }
+            ]
+        },
+        {
+            "identifier": "string_literal3",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "pushstring",
+                    "arg": ""
+                }
+            ]
+        }
+    ]
+}
