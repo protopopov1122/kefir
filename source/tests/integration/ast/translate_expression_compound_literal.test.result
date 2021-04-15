@@ -1,0 +1,103 @@
+{
+    "globals": [],
+    "externals": [],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "long"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": []
+        }
+    ],
+    "function_declarations": [
+        {
+            "identifier": "compound_literal1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": "compound_literal1",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "long"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 2
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 3
+                    }
+                }
+            ]
+        }
+    ]
+}
