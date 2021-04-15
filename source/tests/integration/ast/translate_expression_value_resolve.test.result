@@ -64,7 +64,7 @@
             "identifier": 6,
             "type": [
                 {
-                    "type": "struct",
+                    "type": "union",
                     "fields": [
                         {
                             "type": "float"
@@ -92,7 +92,7 @@
                     "type": "array",
                     "length": 0,
                     "element_type": {
-                        "type": "struct",
+                        "type": "union",
                         "fields": [
                             {
                                 "type": "float"

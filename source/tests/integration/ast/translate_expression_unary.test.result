@@ -23,7 +23,7 @@
             "identifier": 3,
             "type": [
                 {
-                    "type": "struct",
+                    "type": "union",
                     "fields": [
                         {
                             "type": "char"

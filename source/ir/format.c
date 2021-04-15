@@ -255,7 +255,9 @@ static kefir_result_t format_type_struct_union(const struct kefir_ir_type *type,
         payload);
 
     REQUIRE_OK(kefir_json_output_object_key(param->json, "type"));
-    REQUIRE_OK(kefir_json_output_string(param->json, "struct"));
+    REQUIRE_OK(kefir_json_output_string(param->json, typeentry->typecode == KEFIR_IR_TYPE_STRUCT
+        ? "struct"
+        : "union"));
     REQUIRE_OK(kefir_json_output_object_key(param->json, "fields"));
     REQUIRE_OK(kefir_json_output_array_begin(param->json));
     REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type, param->visitor, payload, index + 1, typeentry->param));
