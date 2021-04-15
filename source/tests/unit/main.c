@@ -171,6 +171,7 @@ DECLARE_CASE(ast_nodes_comma_operators);
 DECLARE_CASE(ast_node_analysis_compound_literal1);
 DECLARE_CASE(ast_node_analysis_compound_literal2);
 DECLARE_CASE(ast_node_analysis_compound_literal3);
+DECLARE_CASE(ast_node_analysis_compound_literal4);
 DECLARE_CASE(ast_type_traversal1);
 DECLARE_CASE(ast_type_traversal2);
 DECLARE_CASE(ast_type_traversal3);
@@ -381,6 +382,7 @@ TEST_SUITE(mainSuite,
     &ast_node_analysis_compound_literal1,
     &ast_node_analysis_compound_literal2,
     &ast_node_analysis_compound_literal3,
+    &ast_node_analysis_compound_literal4,
     &ast_type_traversal1,
     &ast_type_traversal2,
     &ast_type_traversal3,

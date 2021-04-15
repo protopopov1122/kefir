@@ -1,8 +1,10 @@
 #ifndef KEFIR_AST_CONTEXT_H_
 #define KEFIR_AST_CONTEXT_H_
 
+#include "kefir/core/mem.h"
 #include "kefir/ast/scope.h"
 #include "kefir/ast/target_environment.h"
+#include "kefir/ast/temporary_value.h"
 
 typedef struct kefir_ast_context {
     kefir_result_t (*resolve_ordinary_identifier)(const struct kefir_ast_context *,
@@ -11,6 +13,10 @@ typedef struct kefir_ast_context {
     kefir_result_t (*resolve_tag_identifier)(const struct kefir_ast_context *,
                                            const char *,
                                            const struct kefir_ast_scoped_identifier **);
+    kefir_result_t (*allocate_temporary_value)(struct kefir_mem *,
+                                             const struct kefir_ast_context *,
+                                             const struct kefir_ast_type *,
+                                             struct kefir_ast_temporary_value_identifier *);
 
     struct kefir_symbol_table *symbols;
     const struct kefir_ast_type_traits *type_traits;

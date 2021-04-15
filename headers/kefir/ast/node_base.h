@@ -6,6 +6,7 @@
 #include "kefir/ast/base.h"
 #include "kefir/ast/constants.h"
 #include "kefir/ast/type.h"
+#include "kefir/ast/temporary_value.h"
 
 typedef struct kefir_ast_visitor kefir_ast_visitor_t;
 typedef struct kefir_ast_visitor kefir_ast_visitor_t;
@@ -26,6 +27,10 @@ typedef struct kefir_ast_node_properties {
         kefir_bool_t addressable;
         kefir_bool_t bitfield;
         const char *string_literal;
+        struct {
+            kefir_bool_t allocated;
+            struct kefir_ast_temporary_value_identifier identifier;
+        } temporary;
     } expression_props;
 } kefir_ast_node_properties_t;
 

@@ -54,6 +54,7 @@ kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem,
 
     context->context.resolve_ordinary_identifier = context_resolve_ordinary_identifier;
     context->context.resolve_tag_identifier = context_resolve_tag_identifier;
+    context->context.allocate_temporary_value = NULL;
     context->context.symbols = &context->symbols;
     context->context.type_bundle = &context->type_bundle;
     context->context.type_traits = context->type_traits;

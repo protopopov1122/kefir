@@ -1,5 +1,6 @@
 #include "kefir/ast-translator/scope/translator.h"
 #include "kefir/ast-translator/context.h"
+#include "kefir/ast/runtime.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 

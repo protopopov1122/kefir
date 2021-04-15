@@ -1,6 +1,7 @@
 #include <string.h>
 #include "kefir/ast-translator/translator.h"
 #include "kefir/ast-translator/lvalue.h"
+#include "kefir/ast/runtime.h"
 #include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"

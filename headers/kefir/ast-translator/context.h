@@ -6,8 +6,6 @@
 #include "kefir/ast-translator/type_cache.h"
 #include "kefir/ir/module.h"
 
-#define KEFIR_AST_TRANSLATOR_STATIC_VARIABLES_IDENTIFIER "__kefirrt_module_static_vars"
-
 typedef struct kefir_ast_translator_context {
     const struct kefir_ast_context *ast_context;
     const struct kefir_ast_translator_environment *environment;
