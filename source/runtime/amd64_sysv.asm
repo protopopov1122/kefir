@@ -76,6 +76,7 @@ declare_opcode store16
 declare_opcode store32
 declare_opcode store64
 declare_opcode bzero
+declare_opcode bcopy
 declare_opcode getlocals
 declare_opcode f32add
 declare_opcode f32sub
@@ -480,6 +481,13 @@ __kefirrt_bzero_loop_begin:
     dec rcx
     jmp __kefirrt_bzero_loop_begin
 __kefirrt_bzero_loop_end:
+    end_opcode
+
+define_opcode bcopy
+    mov rcx, [INSTR_ARG_PTR]
+    pop rdi
+    pop rsi
+    rep movsb
     end_opcode
 
 define_opcode getlocals

@@ -50,6 +50,7 @@ extern __kefirrt_store16_impl
 extern __kefirrt_store32_impl
 extern __kefirrt_store64_impl
 extern __kefirrt_bzero_impl
+extern __kefirrt_bcopy_impl
 extern __kefirrt_getlocals_impl
 extern __kefirrt_f32add_impl
 extern __kefirrt_f32sub_impl
@@ -92,10 +93,15 @@ mov rbx, __func1_body
 jmp [rbx]
 __func1_body:
 dq __kefirrt_bzero_impl, 1
+dq __kefirrt_bcopy_impl, 1
 dq __kefirrt_bzero_impl, 4
+dq __kefirrt_bcopy_impl, 4
 dq __kefirrt_bzero_impl, 8
+dq __kefirrt_bcopy_impl, 8
 dq __kefirrt_bzero_impl, 40
+dq __kefirrt_bcopy_impl, 40
 dq __kefirrt_bzero_impl, 24
+dq __kefirrt_bcopy_impl, 24
 dq __func1_epilogue, 0
 __func1_epilogue:
 mov rsp, r14
