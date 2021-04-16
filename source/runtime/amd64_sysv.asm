@@ -75,6 +75,7 @@ declare_opcode store8
 declare_opcode store16
 declare_opcode store32
 declare_opcode store64
+declare_opcode bzero
 declare_opcode getlocals
 declare_opcode f32add
 declare_opcode f32sub
@@ -466,6 +467,19 @@ define_opcode store64
     pop DATA2_REG
     pop rax
     mov [DATA2_REG], rax
+    end_opcode
+
+define_opcode bzero
+    mov rcx, [INSTR_ARG_PTR]
+    pop rdi
+__kefirrt_bzero_loop_begin:
+    cmp rcx, 0
+    je __kefirrt_bzero_loop_end
+    mov byte [rdi], 0
+    inc rdi
+    dec rcx
+    jmp __kefirrt_bzero_loop_begin
+__kefirrt_bzero_loop_end:
     end_opcode
 
 define_opcode getlocals

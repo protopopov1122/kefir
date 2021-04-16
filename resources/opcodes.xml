@@ -69,6 +69,7 @@
     <opcode id="store16"     mnemonic="store16"     code="0x5c" type="none" />
     <opcode id="store32"     mnemonic="store32"     code="0x5d" type="none" />
     <opcode id="store64"     mnemonic="store64"     code="0x5e" type="none" />
+    <opcode id="bzero"       mnemonic="bzero"       code="0x5f" type="typeref" />
 
     <!-- Built-ins -->
     <opcode id="vararg_start" mnemonic="startvarg"  code="0x60" type="none" />

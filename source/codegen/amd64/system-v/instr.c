@@ -74,6 +74,23 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
             ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_STRING_LITERAL, identifier);
         } break;
 
+        case KEFIR_IROPCODE_BZERO: {
+            const kefir_id_t type_id = (kefir_id_t) instr->arg.u32[0];
+            const kefir_size_t type_index = (kefir_size_t) instr->arg.u32[1];
+            struct kefir_vector *layout =
+                kefir_codegen_amd64_sysv_module_type_layout(mem, sysv_module, type_id);
+            REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unknown named type"));
+            ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, entry,
+                kefir_vector_at(layout, type_index));
+            REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to retrieve type node at index"));
+
+            const char *opcode_symbol = NULL;
+            REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_BZERO, &opcode_symbol));
+            ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
+            ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
+            ASMGEN_ARG(&codegen->asmgen, KEFIR_INT64_FMT, entry->size);
+        } break;
+
         case KEFIR_IROPCODE_OFFSETPTR:
         case KEFIR_IROPCODE_ELEMENTPTR: {
             const kefir_id_t type_id = (kefir_id_t) instr->arg.u32[0];
