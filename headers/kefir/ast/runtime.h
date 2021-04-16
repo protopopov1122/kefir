@@ -4,8 +4,8 @@
 #include "kefir/core/basic-types.h"
 
 #define KEFIR_AST_TRANSLATOR_STATIC_VARIABLES_IDENTIFIER "__kefirrt_module_static_vars"
-#define KEFIR_AST_TRANSLATOR_LOCAL_TEMPORARIES_IDENTIFIER "__kefirrt_local_temporaries"
-#define KEFIR_AST_TRANSLATOR_LOCAL_TEMPORARY_VALUE_IDENTIFIER "__kefirrt_local_temporary_" KEFIR_ID_FMT
-#define KEFIR_AST_TRANSLATOR_LOCAL_TEMPORARY_MEMBER_IDENTIFIER "__kefirrt_local_temporary_member_" KEFIR_ID_FMT
+#define KEFIR_AST_TRANSLATOR_TEMPORARIES_IDENTIFIER "__kefirrt_temporaries"
+#define KEFIR_AST_TRANSLATOR_TEMPORARY_VALUE_IDENTIFIER "__kefirrt_temporary_" KEFIR_ID_FMT
+#define KEFIR_AST_TRANSLATOR_TEMPORARY_MEMBER_IDENTIFIER "__kefirrt_temporary_member_" KEFIR_ID_FMT
 
 #endif

@@ -40,7 +40,7 @@ static kefir_result_t context_resolve_tag_identifier(const struct kefir_ast_cont
 static kefir_result_t context_allocate_temporary_value(struct kefir_mem *mem,
                                                      const struct kefir_ast_context *context,
                                                      const struct kefir_ast_type *type,
-                                                     struct kefir_ast_temporary_value_identifier *temp_id) {
+                                                     struct kefir_ast_temporary_identifier *temp_id) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
@@ -48,45 +48,13 @@ static kefir_result_t context_allocate_temporary_value(struct kefir_mem *mem,
 
     ASSIGN_DECL_CAST(struct kefir_ast_local_context *, local_ctx,
         context->payload);
-    if (local_ctx->temporaries.type == NULL) {
-        local_ctx->temporaries.type = kefir_ast_type_union(mem, context->type_bundle,
-            "", &local_ctx->temporaries.temporaries);
-        REQUIRE(local_ctx->temporaries.type != NULL &&
-            local_ctx->temporaries.temporaries != NULL,
-            KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate a temporary type"));
+    if (kefir_ast_temporaries_init(mem, context->type_bundle, context->temporaries)) {
+        REQUIRE(context->temporaries->type != NULL,
+            KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to initialize a temporary type"));
         REQUIRE_OK(kefir_ast_local_context_define_auto(mem, local_ctx,
-            KEFIR_AST_TRANSLATOR_LOCAL_TEMPORARIES_IDENTIFIER, local_ctx->temporaries.type, NULL, NULL));
+            KEFIR_AST_TRANSLATOR_TEMPORARIES_IDENTIFIER, context->temporaries->type, NULL, NULL));
     }
-
-#define BUFFER_LEN 128
-    char BUFFER[BUFFER_LEN] = {0};
-    snprintf(BUFFER, BUFFER_LEN - 1, KEFIR_AST_TRANSLATOR_LOCAL_TEMPORARY_VALUE_IDENTIFIER,
-        local_ctx->temporaries.identifier.temporary_id);
-
-    struct kefir_ast_struct_type *temporary_value = NULL;
-    const struct kefir_ast_struct_field *temporary_value_field = NULL;
-    kefir_result_t res = kefir_ast_struct_type_get_field(local_ctx->temporaries.temporaries,
-        BUFFER, &temporary_value_field);
-    if (res == KEFIR_NOT_FOUND) {
-        const struct kefir_ast_type *temporary_value_type = kefir_ast_type_structure(mem, context->type_bundle,
-            BUFFER, &temporary_value);
-        REQUIRE(temporary_value_type != NULL,
-            KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate a temporary value type"));
-        REQUIRE_OK(kefir_ast_struct_type_field(mem, context->symbols, local_ctx->temporaries.temporaries,
-            BUFFER, temporary_value_type, NULL));
-    } else {
-        REQUIRE_OK(res);
-        temporary_value = (struct kefir_ast_struct_type *) &temporary_value_field->type->structure_type;
-    }
-
-    snprintf(BUFFER, BUFFER_LEN - 1, KEFIR_AST_TRANSLATOR_LOCAL_TEMPORARY_MEMBER_IDENTIFIER,
-        local_ctx->temporaries.identifier.temporary_field_id);
-    REQUIRE_OK(kefir_ast_struct_type_field(mem, context->symbols, temporary_value,
-        BUFFER, type, NULL));
-
-    *temp_id = local_ctx->temporaries.identifier;
-    local_ctx->temporaries.identifier.temporary_field_id++;
-#undef BUFFER_LEN
+    REQUIRE_OK(kefir_ast_temporaries_new_temporary(mem, context, type, temp_id));
     return KEFIR_OK;
 }
 
@@ -97,6 +65,7 @@ kefir_result_t kefir_ast_local_context_init(struct kefir_mem *mem,
     REQUIRE(global != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST global translation context"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
     context->global = global;
+    context->temporaries = (struct kefir_ast_context_temporaries){0};
     REQUIRE_OK(kefir_list_init(&context->identifiers));
     REQUIRE_OK(kefir_list_on_remove(&context->identifiers, free_scoped_identifier, NULL));
     REQUIRE_OK(kefir_ast_identifier_block_scope_init(mem, &context->ordinary_scope));
@@ -110,10 +79,7 @@ kefir_result_t kefir_ast_local_context_init(struct kefir_mem *mem,
     context->context.type_bundle = &context->global->type_bundle;
     context->context.type_traits = context->global->type_traits;
     context->context.target_env = context->global->target_env;
-    context->temporaries.type = NULL;
-    context->temporaries.temporaries = NULL;
-    context->temporaries.identifier.temporary_id = 0;
-    context->temporaries.identifier.temporary_field_id = 0;
+    context->context.temporaries = &context->temporaries;
     context->context.payload = context;
     return KEFIR_OK;
 }
@@ -627,12 +593,5 @@ kefir_result_t kefir_ast_local_context_declare_function(struct kefir_mem *mem,
         });
         REQUIRE_OK(kefir_ast_identifier_block_scope_insert(mem, &context->ordinary_scope, identifier, ordinary_id));
     }
-    return KEFIR_OK;
-}
-
-kefir_result_t kefir_ast_local_context_next_temporary(struct kefir_ast_local_context *context) {
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
-    context->temporaries.identifier.temporary_id++;
-    context->temporaries.identifier.temporary_field_id = 0;
     return KEFIR_OK;
 }

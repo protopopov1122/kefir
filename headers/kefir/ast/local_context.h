@@ -18,11 +18,7 @@ typedef struct kefir_ast_local_context {
     struct kefir_ast_identifier_block_scope ordinary_scope;
     struct kefir_ast_identifier_block_scope tag_scope;
 
-    struct {
-        const struct kefir_ast_type *type;
-        struct kefir_ast_struct_type *temporaries;
-        struct kefir_ast_temporary_value_identifier identifier;
-    } temporaries;
+    struct kefir_ast_context_temporaries temporaries;
 } kefir_ast_local_context_t;
 
 kefir_result_t kefir_ast_local_context_init(struct kefir_mem *,
@@ -93,6 +89,5 @@ kefir_result_t kefir_ast_local_context_declare_function(struct kefir_mem *,
                                               struct kefir_ast_local_context *,
                                               kefir_ast_function_specifier_t,
                                               const struct kefir_ast_type *);
-kefir_result_t kefir_ast_local_context_next_temporary(struct kefir_ast_local_context *);
 
 #endif

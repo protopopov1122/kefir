@@ -1,5 +1,6 @@
 #include <string.h>
 #include "kefir/ast/global_context.h"
+#include "kefir/ast/runtime.h"
 #include "kefir/ast/context_impl.h"
 #include "kefir/ast/analyzer/initializer.h"
 #include "kefir/core/util.h"
@@ -23,6 +24,27 @@ static kefir_result_t context_resolve_tag_identifier(const struct kefir_ast_cont
     return kefir_ast_global_context_resolve_scoped_tag_identifier(global_ctx, identifier, scoped_id);
 }
 
+static kefir_result_t context_allocate_temporary_value(struct kefir_mem *mem,
+                                                     const struct kefir_ast_context *context,
+                                                     const struct kefir_ast_type *type,
+                                                     struct kefir_ast_temporary_identifier *temp_id) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
+    REQUIRE(temp_id != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid temporary identifier pointer"));
+
+    ASSIGN_DECL_CAST(struct kefir_ast_global_context *, global_ctx,
+        context->payload);
+    if (kefir_ast_temporaries_init(mem, context->type_bundle, context->temporaries)) {
+        REQUIRE(context->temporaries->type != NULL,
+            KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to initialize a temporary type"));
+        REQUIRE_OK(kefir_ast_global_context_define_static(mem, global_ctx,
+            KEFIR_AST_TRANSLATOR_TEMPORARIES_IDENTIFIER, context->temporaries->type, NULL, NULL));
+    }
+    REQUIRE_OK(kefir_ast_temporaries_new_temporary(mem, context, type, temp_id));
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem,
                                          const struct kefir_ast_type_traits *type_traits,
                                          const struct kefir_ast_target_environment *target_env,
@@ -35,6 +57,7 @@ kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem,
     REQUIRE_OK(kefir_ast_type_bundle_init(&context->type_bundle, &context->symbols));
     context->type_traits = type_traits;
     context->target_env = target_env;
+    context->temporaries = (struct kefir_ast_context_temporaries){0};
     REQUIRE_OK(kefir_ast_identifier_flat_scope_init(&context->tag_scope));
     REQUIRE_OK(kefir_ast_identifier_flat_scope_on_removal(&context->tag_scope, kefir_ast_context_free_scoped_identifier, NULL));
     
@@ -54,11 +77,12 @@ kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem,
 
     context->context.resolve_ordinary_identifier = context_resolve_ordinary_identifier;
     context->context.resolve_tag_identifier = context_resolve_tag_identifier;
-    context->context.allocate_temporary_value = NULL;
+    context->context.allocate_temporary_value = context_allocate_temporary_value;
     context->context.symbols = &context->symbols;
     context->context.type_bundle = &context->type_bundle;
     context->context.type_traits = context->type_traits;
     context->context.target_env = context->target_env;
+    context->context.temporaries = &context->temporaries;
     context->context.payload = context;
     return KEFIR_OK;
 }

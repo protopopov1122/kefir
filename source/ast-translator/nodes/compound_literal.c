@@ -14,22 +14,20 @@ kefir_result_t kefir_ast_translate_compound_literal_node(struct kefir_mem *mem,
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translation context"));
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST compound literal node"));
-    REQUIRE(node->base.properties.expression_props.temporary.allocated,
-        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected AST compound literal node to have an allocated temporary value"));
     
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
     REQUIRE_OK(context->ast_context->resolve_ordinary_identifier(context->ast_context,
-        KEFIR_AST_TRANSLATOR_LOCAL_TEMPORARIES_IDENTIFIER, &scoped_id));
+        KEFIR_AST_TRANSLATOR_TEMPORARIES_IDENTIFIER, &scoped_id));
     ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_id_layout,
         scoped_id->payload.ptr);
     
 #define BUFFER_LEN 128
     char TEMP_VALUE[BUFFER_LEN] = {0}, TEMP_MEMBER[BUFFER_LEN] = {0};
 
-    snprintf(TEMP_VALUE, BUFFER_LEN - 1, KEFIR_AST_TRANSLATOR_LOCAL_TEMPORARY_VALUE_IDENTIFIER,
-        node->base.properties.expression_props.temporary.identifier.temporary_id);
-    snprintf(TEMP_MEMBER, BUFFER_LEN - 1, KEFIR_AST_TRANSLATOR_LOCAL_TEMPORARY_MEMBER_IDENTIFIER,
-        node->base.properties.expression_props.temporary.identifier.temporary_field_id);
+    snprintf(TEMP_VALUE, BUFFER_LEN - 1, KEFIR_AST_TRANSLATOR_TEMPORARY_VALUE_IDENTIFIER,
+        node->base.properties.expression_props.temporary.identifier);
+    snprintf(TEMP_MEMBER, BUFFER_LEN - 1, KEFIR_AST_TRANSLATOR_TEMPORARY_MEMBER_IDENTIFIER,
+        node->base.properties.expression_props.temporary.field);
 #undef BUFFER_LEN
 
     struct kefir_ast_designator temp_value_designator = {

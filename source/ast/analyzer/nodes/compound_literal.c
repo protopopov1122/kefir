@@ -19,14 +19,8 @@ kefir_result_t kefir_ast_analyze_compound_literal_node(struct kefir_mem *mem,
     struct kefir_ast_initializer_properties initializer_properties;
     REQUIRE_OK(kefir_ast_analyze_initializer(mem, context, node->type, node->initializer, &initializer_properties));
     REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
-    
-    if (context->allocate_temporary_value != NULL) {
-        REQUIRE_OK(context->allocate_temporary_value(mem, context, initializer_properties.type,
-            &base->properties.expression_props.temporary.identifier));
-        base->properties.expression_props.temporary.allocated = true;
-    } else {
-        base->properties.expression_props.temporary.allocated = false;
-    }
+    REQUIRE_OK(context->allocate_temporary_value(mem, context, initializer_properties.type,
+        &base->properties.expression_props.temporary));
 
     base->properties.category = KEFIR_AST_NODE_CATEGORY_EXPRESSION;
     base->properties.type = initializer_properties.type;
