@@ -1,5 +1,6 @@
 #include "kefir/ast-translator/translator_impl.h"
 #include "kefir/ast-translator/translator.h"
+#include "kefir/ast-translator/value.h"
 #include "kefir/ast-translator/typeconv.h"
 #include "kefir/ast-translator/util.h"
 #include "kefir/core/util.h"
@@ -136,7 +137,7 @@ static kefir_result_t translate_indirection(struct kefir_mem *mem,
                                           const struct kefir_ast_unary_operation *node) {
     const struct kefir_ast_type *normalized_type = kefir_ast_translator_normalize_type(node->base.properties.type);
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg, builder, context));  
-    REQUIRE_OK(kefir_ast_translator_resolve_value(normalized_type, builder));
+    REQUIRE_OK(kefir_ast_translator_load_value(normalized_type, builder));
     return KEFIR_OK;
 }  
 
