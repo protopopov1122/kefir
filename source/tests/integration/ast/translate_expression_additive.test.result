@@ -188,7 +188,7 @@
                     "opcode": "elementptr",
                     "arg": {
                         "type": 5,
-                        "index": 0
+                        "index": 1
                     }
                 },
                 {

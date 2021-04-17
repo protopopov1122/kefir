@@ -1,0 +1,929 @@
+{
+    "globals": [],
+    "externals": [],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "int"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "float"
+                        },
+                        {
+                            "type": "short"
+                        },
+                        {
+                            "type": "double"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 4,
+                    "element_type": {
+                        "type": "long"
+                    }
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": []
+        }
+    ],
+    "function_declarations": [
+        {
+            "identifier": "decrement_int1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "decrement_int2",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "increment_int1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "increment_int2",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "increment_double",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "increment_pointer1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "increment_pointer2",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "decrement_double",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "decrement_pointer1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "decrement_pointer2",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "decrement_float",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "increment_float",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": "decrement_int1",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "int"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "float"
+                        },
+                        {
+                            "type": "short"
+                        },
+                        {
+                            "type": "double"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load32i"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": -1
+                },
+                {
+                    "opcode": "store32"
+                }
+            ]
+        },
+        {
+            "identifier": "decrement_int2",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "int"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "float"
+                        },
+                        {
+                            "type": "short"
+                        },
+                        {
+                            "type": "double"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 5
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load16u"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": -1
+                },
+                {
+                    "opcode": "store16"
+                }
+            ]
+        },
+        {
+            "identifier": "increment_int1",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "int"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "float"
+                        },
+                        {
+                            "type": "short"
+                        },
+                        {
+                            "type": "double"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load32i"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store32"
+                }
+            ]
+        },
+        {
+            "identifier": "increment_int2",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "int"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "float"
+                        },
+                        {
+                            "type": "short"
+                        },
+                        {
+                            "type": "double"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 5
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load16u"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store16"
+                }
+            ]
+        },
+        {
+            "identifier": "increment_double",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "int"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "float"
+                        },
+                        {
+                            "type": "short"
+                        },
+                        {
+                            "type": "double"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 6
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 1.000000
+                },
+                {
+                    "opcode": "f64add"
+                },
+                {
+                    "opcode": "store64"
+                }
+            ]
+        },
+        {
+            "identifier": "increment_pointer1",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "int"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "float"
+                        },
+                        {
+                            "type": "short"
+                        },
+                        {
+                            "type": "double"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 2
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "elementptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "store64"
+                }
+            ]
+        },
+        {
+            "identifier": "increment_pointer2",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "int"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "float"
+                        },
+                        {
+                            "type": "short"
+                        },
+                        {
+                            "type": "double"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 3
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "elementptr",
+                    "arg": {
+                        "type": 4,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "store64"
+                }
+            ]
+        },
+        {
+            "identifier": "decrement_double",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "int"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "float"
+                        },
+                        {
+                            "type": "short"
+                        },
+                        {
+                            "type": "double"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 6
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": -1.000000
+                },
+                {
+                    "opcode": "f64add"
+                },
+                {
+                    "opcode": "store64"
+                }
+            ]
+        },
+        {
+            "identifier": "decrement_pointer1",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "int"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "float"
+                        },
+                        {
+                            "type": "short"
+                        },
+                        {
+                            "type": "double"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 2
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": -1
+                },
+                {
+                    "opcode": "elementptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "store64"
+                }
+            ]
+        },
+        {
+            "identifier": "decrement_pointer2",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "int"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "float"
+                        },
+                        {
+                            "type": "short"
+                        },
+                        {
+                            "type": "double"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 3
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": -1
+                },
+                {
+                    "opcode": "elementptr",
+                    "arg": {
+                        "type": 4,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "store64"
+                }
+            ]
+        },
+        {
+            "identifier": "decrement_float",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "int"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "float"
+                        },
+                        {
+                            "type": "short"
+                        },
+                        {
+                            "type": "double"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 4
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load32u"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": -1.000000
+                },
+                {
+                    "opcode": "f32add"
+                },
+                {
+                    "opcode": "store32"
+                }
+            ]
+        },
+        {
+            "identifier": "increment_float",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "int"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "float"
+                        },
+                        {
+                            "type": "short"
+                        },
+                        {
+                            "type": "double"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 4
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load32u"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 1.000000
+                },
+                {
+                    "opcode": "f32add"
+                },
+                {
+                    "opcode": "store32"
+                }
+            ]
+        }
+    ]
+}
