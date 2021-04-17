@@ -12,9 +12,6 @@ static kefir_result_t translate_arithmetic_unary(struct kefir_mem *mem,
                                                struct kefir_irbuilder_block *builder,
                                                const struct kefir_ast_unary_operation *node) {
     const struct kefir_ast_type *normalized_type = kefir_ast_translator_normalize_type(node->arg->properties.type);
-    REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(normalized_type),
-        KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Non-arithmetic unary AST expressions are not supported"));
-
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg, builder, context));
     switch (normalized_type->tag) {
         case KEFIR_AST_TYPE_SCALAR_DOUBLE:
@@ -68,10 +65,6 @@ static kefir_result_t translate_unary_inversion(struct kefir_mem *mem,
                                               struct kefir_ast_translator_context *context,
                                               struct kefir_irbuilder_block *builder,
                                               const struct kefir_ast_unary_operation *node) {
-    const struct kefir_ast_type *normalized_type = kefir_ast_translator_normalize_type(node->arg->properties.type);
-    REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(normalized_type),
-        KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Non-arithmetic unary AST expressions are not supported"));
-        
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg, builder, context));
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_INOT, 0));
     return KEFIR_OK;
@@ -81,10 +74,6 @@ static kefir_result_t translate_logical_not_inversion(struct kefir_mem *mem,
                                                     struct kefir_ast_translator_context *context,
                                                     struct kefir_irbuilder_block *builder,
                                                     const struct kefir_ast_unary_operation *node) {
-    const struct kefir_ast_type *normalized_type = kefir_ast_translator_normalize_type(node->arg->properties.type);
-    REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(normalized_type),
-        KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Non-scalar unary AST expressions are not supported"));
-    
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg, builder, context));
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_BNOT, 0));
     return KEFIR_OK;
