@@ -45,6 +45,7 @@ TRANSLATE_NODE(unary_operation, struct kefir_ast_unary_operation)
 TRANSLATE_NODE(binary_operation, struct kefir_ast_binary_operation)
 TRANSLATE_NODE(comma_operator, struct kefir_ast_comma_operator)
 TRANSLATE_NODE(conditional_operator, struct kefir_ast_conditional_operator)
+TRANSLATE_NODE(assignment_operator, struct kefir_ast_assignment_operator)
 #undef TRANSLATE_NODE
 
 kefir_result_t kefir_ast_translate_expression(struct kefir_mem *mem,
@@ -69,6 +70,7 @@ kefir_result_t kefir_ast_translate_expression(struct kefir_mem *mem,
     visitor.binary_operation = translate_binary_operation;
     visitor.comma_operator = translate_comma_operator;
     visitor.conditional_operator = translate_conditional_operator;
+    visitor.assignment_operator = translate_assignment_operator;
 
     struct translator_param param = {
         .mem = mem,

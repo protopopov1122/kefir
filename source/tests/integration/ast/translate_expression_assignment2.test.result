@@ -1,0 +1,344 @@
+{
+    "globals": [],
+    "externals": [
+        "union1",
+        "struct1"
+    ],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "struct",
+                                            "fields": [
+                                                {
+                                                    "type": "bool"
+                                                },
+                                                {
+                                                    "type": "double"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "length": 5,
+                                                    "element_type": {
+                                                        "type": "char"
+                                                    }
+                                                },
+                                                {
+                                                    "type": "word"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "union",
+                                            "fields": [
+                                                {
+                                                    "type": "long"
+                                                },
+                                                {
+                                                    "type": "char"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "length": 4,
+                                                    "element_type": {
+                                                        "type": "int"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "union",
+                    "fields": [
+                        {
+                            "type": "long"
+                        },
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "array",
+                            "length": 4,
+                            "element_type": {
+                                "type": "int"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "bool"
+                        },
+                        {
+                            "type": "double"
+                        },
+                        {
+                            "type": "array",
+                            "length": 5,
+                            "element_type": {
+                                "type": "char"
+                            }
+                        },
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": []
+        }
+    ],
+    "function_declarations": [
+        {
+            "identifier": "assign_union",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_struct",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": "assign_union",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "struct",
+                                            "fields": [
+                                                {
+                                                    "type": "bool"
+                                                },
+                                                {
+                                                    "type": "double"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "length": 5,
+                                                    "element_type": {
+                                                        "type": "char"
+                                                    }
+                                                },
+                                                {
+                                                    "type": "word"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "union",
+                                            "fields": [
+                                                {
+                                                    "type": "long"
+                                                },
+                                                {
+                                                    "type": "char"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "length": 4,
+                                                    "element_type": {
+                                                        "type": "int"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "union1"
+                    }
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 2
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 9
+                    }
+                },
+                {
+                    "opcode": "bcopy",
+                    "arg": {
+                        "type": 3,
+                        "index": 0
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": "assign_struct",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "struct",
+                                            "fields": [
+                                                {
+                                                    "type": "bool"
+                                                },
+                                                {
+                                                    "type": "double"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "length": 5,
+                                                    "element_type": {
+                                                        "type": "char"
+                                                    }
+                                                },
+                                                {
+                                                    "type": "word"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "union",
+                                            "fields": [
+                                                {
+                                                    "type": "long"
+                                                },
+                                                {
+                                                    "type": "char"
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "length": 4,
+                                                    "element_type": {
+                                                        "type": "int"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "struct1"
+                    }
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 2
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 3
+                    }
+                },
+                {
+                    "opcode": "bcopy",
+                    "arg": {
+                        "type": 4,
+                        "index": 0
+                    }
+                }
+            ]
+        }
+    ]
+}

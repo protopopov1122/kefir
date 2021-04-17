@@ -1,0 +1,540 @@
+{
+    "globals": [],
+    "externals": [
+        "ptr",
+        "bool",
+        "char",
+        "enum",
+        "sint",
+        "uint",
+        "float",
+        "schar",
+        "slong",
+        "uchar",
+        "ulong",
+        "double",
+        "sllong",
+        "sshort",
+        "ullong",
+        "ushort"
+    ],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": []
+                }
+            ]
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "word"
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "type": [
+                {
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "identifier": 5,
+            "type": [
+                {
+                    "type": "char"
+                }
+            ]
+        },
+        {
+            "identifier": 6,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 7,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 8,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 9,
+            "type": [
+                {
+                    "type": "float"
+                }
+            ]
+        },
+        {
+            "identifier": 10,
+            "type": [
+                {
+                    "type": "char"
+                }
+            ]
+        },
+        {
+            "identifier": 11,
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 12,
+            "type": [
+                {
+                    "type": "char"
+                }
+            ]
+        },
+        {
+            "identifier": 13,
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 14,
+            "type": [
+                {
+                    "type": "double"
+                }
+            ]
+        },
+        {
+            "identifier": 15,
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 16,
+            "type": [
+                {
+                    "type": "short"
+                }
+            ]
+        },
+        {
+            "identifier": 17,
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 18,
+            "type": [
+                {
+                    "type": "short"
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": []
+        }
+    ],
+    "function_declarations": [
+        {
+            "identifier": "enum",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "pointer",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_int",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_bool",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_char",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_long",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_short",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_long_long",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_float_double",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": "enum",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": []
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "enum"
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store32"
+                }
+            ]
+        },
+        {
+            "identifier": "pointer",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": []
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "ptr"
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "store64"
+                }
+            ]
+        },
+        {
+            "identifier": "assign_int",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": []
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "uint"
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": 131071
+                },
+                {
+                    "opcode": "store32"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "sint"
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": -5588207
+                },
+                {
+                    "opcode": "store32"
+                }
+            ]
+        },
+        {
+            "identifier": "assign_bool",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": []
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "bool"
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store8"
+                }
+            ]
+        },
+        {
+            "identifier": "assign_char",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": []
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "char"
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": 65
+                },
+                {
+                    "opcode": "store8"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "uchar"
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": 66
+                },
+                {
+                    "opcode": "store8"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "schar"
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": 67
+                },
+                {
+                    "opcode": "store8"
+                }
+            ]
+        },
+        {
+            "identifier": "assign_long",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": []
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "ulong"
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store64"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "slong"
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": -1
+                },
+                {
+                    "opcode": "store64"
+                }
+            ]
+        },
+        {
+            "identifier": "assign_short",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": []
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "ushort"
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": 254
+                },
+                {
+                    "opcode": "store16"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "sshort"
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": -74
+                },
+                {
+                    "opcode": "store16"
+                }
+            ]
+        },
+        {
+            "identifier": "assign_long_long",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": []
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "ullong"
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1990
+                },
+                {
+                    "opcode": "store64"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "sllong"
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": -65196362
+                },
+                {
+                    "opcode": "store64"
+                }
+            ]
+        },
+        {
+            "identifier": "assign_float_double",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": []
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "float"
+                    }
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 0.514000
+                },
+                {
+                    "opcode": "store32"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "double"
+                    }
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": -10000.000000
+                },
+                {
+                    "opcode": "store64"
+                }
+            ]
+        }
+    ]
+}
