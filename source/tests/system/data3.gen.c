@@ -71,8 +71,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &sum->body, KEFIR_IROPCODE_IADD, 0);                 // 4: [S*, U8+I8+U16+I16+U32+I32+I64]
     kefir_irbuilder_block_appendi64(mem, &sum->body, KEFIR_IROPCODE_PICK, 1);                 // 1: [S*, SUM, S*]
     kefir_irbuilder_block_appendu32(mem, &sum->body, KEFIR_IROPCODE_OFFSETPTR, type1_id, 8); // 2: [S*, VAL, SUM*]
-    kefir_irbuilder_block_appendi64(mem, &sum->body, KEFIR_IROPCODE_XCHG, 1);                 // 1: [S*, SUM*, VAL]
-    kefir_irbuilder_block_appendi64(mem, &sum->body, KEFIR_IROPCODE_PICK, 1);                 // 1: [S*, SUM*, VAL, SUM*]
+    kefir_irbuilder_block_appendi64(mem, &sum->body, KEFIR_IROPCODE_PICK, 0);                 // 1: [S*, VAL, SUM*, SUM*]
+    kefir_irbuilder_block_appendi64(mem, &sum->body, KEFIR_IROPCODE_XCHG, 2);                 // 1: [S*, SUM*, SUM*, VAL]
     kefir_irbuilder_block_appendi64(mem, &sum->body, KEFIR_IROPCODE_STORE64, 0);              // 1: [S*, SUM*]
 
     KEFIR_CODEGEN_TRANSLATE(mem, &codegen.iface, &module);

@@ -447,26 +447,26 @@ define_opcode load64
     end_opcode
 
 define_opcode store8
-    pop DATA2_REG
     pop rax
+    pop DATA2_REG
     mov [DATA2_REG], al
     end_opcode
 
 define_opcode store16
-    pop DATA2_REG
     pop rax
+    pop DATA2_REG
     mov [DATA2_REG], ax
     end_opcode
 
 define_opcode store32
-    pop DATA2_REG
     pop rax
+    pop DATA2_REG
     mov [DATA2_REG], eax
     end_opcode
 
 define_opcode store64
-    pop DATA2_REG
     pop rax
+    pop DATA2_REG
     mov [DATA2_REG], rax
     end_opcode
 
@@ -485,8 +485,8 @@ __kefirrt_bzero_loop_end:
 
 define_opcode bcopy
     mov rcx, [INSTR_ARG_PTR]
-    pop rdi
     pop rsi
+    pop rdi
     rep movsb
     end_opcode
 
