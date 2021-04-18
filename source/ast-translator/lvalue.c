@@ -1,6 +1,8 @@
 #include <string.h>
 #include "kefir/ast-translator/translator.h"
 #include "kefir/ast-translator/lvalue.h"
+#include "kefir/ast-translator/temporaries.h"
+#include "kefir/ast-translator/initializer.h"
 #include "kefir/ast/runtime.h"
 #include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
@@ -137,6 +139,21 @@ kefir_result_t kefir_ast_translate_struct_member_lvalue(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_ast_translate_compound_literal_lvalue(struct kefir_mem *mem,
+                                                       struct kefir_ast_translator_context *context,
+                                                       struct kefir_irbuilder_block *builder,
+                                                       const struct kefir_ast_compound_literal *node) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translation context"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST compound literal node"));
+    
+    REQUIRE_OK(kefir_ast_translator_fetch_temporary(mem, context, builder,
+        &node->base.properties.expression_props.temporary));
+    REQUIRE_OK(kefir_ast_translate_initializer(mem, context, builder, node->base.properties.type, node->initializer));
+    return KEFIR_OK;
+}
+
 struct translator_param {
     struct kefir_mem *mem;
     struct kefir_ast_translator_context *context;
@@ -235,6 +252,19 @@ static kefir_result_t translate_unary_operation_node(const struct kefir_ast_visi
     return KEFIR_OK;
 }
 
+static kefir_result_t translate_compound_literal_node(const struct kefir_ast_visitor *visitor,
+                                                    const struct kefir_ast_compound_literal *node,
+                                                    void *payload) {
+    REQUIRE(visitor != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST visitor"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct translator_param *, param,
+        payload);
+
+    REQUIRE_OK(kefir_ast_translate_compound_literal_lvalue(param->mem, param->context, param->builder, node));
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_translate_lvalue(struct kefir_mem *mem,
                                       struct kefir_ast_translator_context *context,
                                       struct kefir_irbuilder_block *builder,
@@ -251,6 +281,7 @@ kefir_result_t kefir_ast_translate_lvalue(struct kefir_mem *mem,
     visitor.struct_member = translate_struct_member_node;
     visitor.struct_indirect_member = translate_struct_member_node;
     visitor.unary_operation = translate_unary_operation_node;
+    visitor.compound_literal = translate_compound_literal_node;
     struct translator_param param = {
         .mem = mem,
         .builder = builder,

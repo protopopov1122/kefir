@@ -203,6 +203,9 @@
                 },
                 {
                     "opcode": "store64"
+                },
+                {
+                    "opcode": "load64"
                 }
             ]
         },

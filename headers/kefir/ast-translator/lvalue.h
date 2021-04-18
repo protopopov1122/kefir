@@ -27,4 +27,9 @@ kefir_result_t kefir_ast_translate_struct_member_lvalue(struct kefir_mem *,
                                                     struct kefir_irbuilder_block *,
                                                     const struct kefir_ast_struct_member *);
 
+kefir_result_t kefir_ast_translate_compound_literal_lvalue(struct kefir_mem *,
+                                                       struct kefir_ast_translator_context *,
+                                                       struct kefir_irbuilder_block *,
+                                                       const struct kefir_ast_compound_literal *);
+
 #endif
