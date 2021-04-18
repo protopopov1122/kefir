@@ -1,0 +1,566 @@
+{
+    "globals": [],
+    "externals": [],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "array",
+                                            "length": 14,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "array",
+                                            "length": 4,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        },
+                                        {
+                                            "type": "array",
+                                            "length": 0,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "array",
+                                            "length": 8,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": []
+        }
+    ],
+    "function_declarations": [
+        {
+            "identifier": "compound_literal1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "compound_literal2",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "compound_literal3",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "compound_literal4",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": "compound_literal1",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "array",
+                                            "length": 14,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "array",
+                                            "length": 4,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        },
+                                        {
+                                            "type": "array",
+                                            "length": 0,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "array",
+                                            "length": 8,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 2
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 3
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "pushstring",
+                    "arg": "Hello, world!"
+                },
+                {
+                    "opcode": "bcopy",
+                    "arg": {
+                        "type": 2,
+                        "index": 3
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": "compound_literal2",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "array",
+                                            "length": 14,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "array",
+                                            "length": 4,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        },
+                                        {
+                                            "type": "array",
+                                            "length": 0,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "array",
+                                            "length": 8,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 5
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 6
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "bzero",
+                    "arg": {
+                        "type": 2,
+                        "index": 6
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "push",
+                    "arg": 72
+                },
+                {
+                    "opcode": "store8"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 101
+                },
+                {
+                    "opcode": "store8"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 2
+                },
+                {
+                    "opcode": "push",
+                    "arg": 108
+                },
+                {
+                    "opcode": "store8"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 3
+                },
+                {
+                    "opcode": "push",
+                    "arg": 108
+                },
+                {
+                    "opcode": "store8"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 111
+                },
+                {
+                    "opcode": "store8"
+                }
+            ]
+        },
+        {
+            "identifier": "compound_literal3",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "array",
+                                            "length": 14,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "array",
+                                            "length": 4,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        },
+                                        {
+                                            "type": "array",
+                                            "length": 0,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "array",
+                                            "length": 8,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 5
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 8
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "bzero",
+                    "arg": {
+                        "type": 2,
+                        "index": 8
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": "compound_literal4",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "array",
+                                            "length": 14,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "array",
+                                            "length": 4,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        },
+                                        {
+                                            "type": "array",
+                                            "length": 0,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "array",
+                                            "length": 8,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 10
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 11
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "pushstring",
+                    "arg": "test..."
+                },
+                {
+                    "opcode": "bcopy",
+                    "arg": {
+                        "type": 2,
+                        "index": 11
+                    }
+                }
+            ]
+        }
+    ]
+}

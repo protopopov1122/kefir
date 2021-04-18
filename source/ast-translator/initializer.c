@@ -97,11 +97,9 @@ static kefir_result_t traverse_aggregate_union(struct kefir_mem *mem,
         } else if (entry->value->expression->properties.expression_props.string_literal != NULL) {
             const struct kefir_ast_type *type = NULL;
             REQUIRE_OK(kefir_ast_type_traversal_next_recursive2(mem, traversal, is_char_array, NULL, &type, &layer));
-            if (!is_char_array(type, NULL)) {;
-                REQUIRE_OK(layer_address(mem, context, builder, layer));
-                REQUIRE_OK(kefir_ast_translate_expression(mem, entry->value->expression, builder, context));
-                REQUIRE_OK(kefir_ast_translator_store_value(mem, type, context, builder));
-            }
+            REQUIRE_OK(layer_address(mem, context, builder, layer));
+            REQUIRE_OK(kefir_ast_translate_expression(mem, entry->value->expression, builder, context));
+            REQUIRE_OK(kefir_ast_translator_store_value(mem, type, context, builder));
         } else if (KEFIR_AST_TYPE_IS_SCALAR_TYPE(entry->value->expression->properties.type)) {
             const struct kefir_ast_type *type = NULL;
             REQUIRE_OK(kefir_ast_type_traversal_next_recursive(mem, traversal, &type, &layer));
@@ -149,6 +147,7 @@ static kefir_result_t translate_struct_union(struct kefir_mem *mem,
     REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot initialize incomplete object type"));
     if (initializer->type == KEFIR_AST_INITIALIZER_EXPRESSION) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 0));
         REQUIRE_OK(kefir_ast_translate_expression(mem, initializer->expression, builder, context));
         REQUIRE_OK(kefir_ast_translator_store_value(mem, type, context, builder));
     } else {
@@ -170,6 +169,7 @@ static kefir_result_t translate_array(struct kefir_mem *mem,
     struct kefir_ast_node_base *head_expr = kefir_ast_initializer_head(initializer);
     if (head_expr != NULL && head_expr->properties.expression_props.string_literal != NULL &&
         is_char_array(type, NULL)) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 0));
         REQUIRE_OK(kefir_ast_translate_expression(mem, head_expr, builder, context));
         REQUIRE_OK(kefir_ast_translator_store_value(mem, type, context, builder));
     } else {
@@ -182,7 +182,6 @@ static kefir_result_t translate_array(struct kefir_mem *mem,
         kefir_result_t res = traverse_aggregate_union(mem, context, builder, type, initializer, &traversal);
         REQUIRE_OK(kefir_ast_type_traversal_free(mem, &traversal));
         REQUIRE_OK(res);
-        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POP, 0));
     }
     return KEFIR_OK;
 }

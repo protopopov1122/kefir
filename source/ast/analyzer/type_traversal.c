@@ -214,7 +214,7 @@ kefir_result_t kefir_ast_type_traversal_next_recursive2(struct kefir_mem *mem,
             case KEFIR_AST_TYPE_ARRAY:
                 if (stop == NULL || !stop(top_type, stop_payload)) {
                     REQUIRE_OK(push_layer(mem, traversal, top_type, top_layer));
-                    return kefir_ast_type_traversal_next_recursive(mem, traversal, type, layer_ptr);
+                    return kefir_ast_type_traversal_next_recursive2(mem, traversal, stop, stop_payload, type, layer_ptr);
                 }
                 // Intentional fallthrough
 
