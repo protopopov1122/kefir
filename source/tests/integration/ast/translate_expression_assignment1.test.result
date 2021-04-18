@@ -249,6 +249,14 @@
                     "arg": 1
                 },
                 {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 2
+                },
+                {
                     "opcode": "store32"
                 }
             ]
@@ -271,6 +279,14 @@
                 {
                     "opcode": "push",
                     "arg": 0
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 2
                 },
                 {
                     "opcode": "store64"
@@ -297,6 +313,14 @@
                     "arg": 131071
                 },
                 {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 2
+                },
+                {
                     "opcode": "store32"
                 },
                 {
@@ -308,6 +332,14 @@
                 {
                     "opcode": "push",
                     "arg": -5588207
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 2
                 },
                 {
                     "opcode": "store32"
@@ -334,6 +366,14 @@
                     "arg": 1
                 },
                 {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 2
+                },
+                {
                     "opcode": "store8"
                 }
             ]
@@ -358,6 +398,14 @@
                     "arg": 65
                 },
                 {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 2
+                },
+                {
                     "opcode": "store8"
                 },
                 {
@@ -371,6 +419,14 @@
                     "arg": 66
                 },
                 {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 2
+                },
+                {
                     "opcode": "store8"
                 },
                 {
@@ -382,6 +438,14 @@
                 {
                     "opcode": "push",
                     "arg": 67
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 2
                 },
                 {
                     "opcode": "store8"
@@ -408,6 +472,14 @@
                     "arg": 1
                 },
                 {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 2
+                },
+                {
                     "opcode": "store64"
                 },
                 {
@@ -419,6 +491,14 @@
                 {
                     "opcode": "push",
                     "arg": -1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 2
                 },
                 {
                     "opcode": "store64"
@@ -445,6 +525,14 @@
                     "arg": 254
                 },
                 {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 2
+                },
+                {
                     "opcode": "store16"
                 },
                 {
@@ -456,6 +544,14 @@
                 {
                     "opcode": "push",
                     "arg": -74
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 2
                 },
                 {
                     "opcode": "store16"
@@ -482,6 +578,14 @@
                     "arg": 1990
                 },
                 {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 2
+                },
+                {
                     "opcode": "store64"
                 },
                 {
@@ -493,6 +597,14 @@
                 {
                     "opcode": "push",
                     "arg": -65196362
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 2
                 },
                 {
                     "opcode": "store64"
@@ -519,6 +631,14 @@
                     "arg": 0.514000
                 },
                 {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 2
+                },
+                {
                     "opcode": "store32"
                 },
                 {
@@ -530,6 +650,14 @@
                 {
                     "opcode": "pushf32",
                     "arg": -10000.000000
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 2
                 },
                 {
                     "opcode": "store64"

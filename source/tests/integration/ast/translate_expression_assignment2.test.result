@@ -234,6 +234,14 @@
                     }
                 },
                 {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 2
+                },
+                {
                     "opcode": "bcopy",
                     "arg": {
                         "type": 3,
@@ -330,6 +338,14 @@
                         "type": 2,
                         "index": 3
                     }
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 2
                 },
                 {
                     "opcode": "bcopy",

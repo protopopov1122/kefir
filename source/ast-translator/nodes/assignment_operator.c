@@ -18,6 +18,8 @@ kefir_result_t kefir_ast_translate_assignment_operator_node(struct kefir_mem *me
     switch (node->operation) {
         case KEFIR_AST_ASSIGNMENT_SIMPLE:
             REQUIRE_OK(kefir_ast_translate_expression(mem, node->value, builder, context));
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_XCHG, 1));
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 2));
             REQUIRE_OK(kefir_ast_translator_store_value(mem, node->base.properties.type, context, builder));
             break;
             
