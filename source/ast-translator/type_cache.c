@@ -171,29 +171,13 @@ static kefir_result_t traverse_type_layout(struct kefir_mem *mem,
     switch (cached_type->type_layout->type->tag) {
         case KEFIR_AST_TYPE_STRUCTURE:
         case KEFIR_AST_TYPE_UNION: {
-            struct kefir_hashtree_node_iterator iter;
-            for (const struct kefir_hashtree_node *node =
-                    kefir_hashtree_iter(&cached_type->type_layout->structure_layout.members, &iter);
-                node != NULL;
-                node = kefir_hashtree_next(&iter)) {
-                ASSIGN_DECL_CAST(struct kefir_ast_type_layout *, member_layout,
-                    node->value);
-                REQUIRE_OK(clone_cached_type(mem, cached_type, member_layout, &cached_subtype));
-                kefir_result_t res = kefir_ast_translator_type_cache_insert(mem, cache, cached_subtype);
-                if (res == KEFIR_ALREADY_EXISTS) {
-                    free_cached_type(mem, cached_subtype);
-                } else {
-                    REQUIRE_OK(res);
-                }
-            }
-
-            for (const struct kefir_list_entry *anon_iter =
-                    kefir_list_head(&cached_type->type_layout->structure_layout.anonymous_members);
-                anon_iter != NULL;
-                kefir_list_next(&anon_iter)) {
-                ASSIGN_DECL_CAST(struct kefir_ast_type_layout *, member_layout,
-                    anon_iter->value);
-                REQUIRE_OK(clone_cached_type(mem, cached_type, member_layout, &cached_subtype));
+            for (const struct kefir_list_entry *iter =
+                    kefir_list_head(&cached_type->type_layout->structure_layout.member_list);
+                iter != NULL;
+                kefir_list_next(&iter)) {
+                ASSIGN_DECL_CAST(struct kefir_ast_type_layout_structure_member *, member,
+                    iter->value);
+                REQUIRE_OK(clone_cached_type(mem, cached_type, member->layout, &cached_subtype));
                 kefir_result_t res = kefir_ast_translator_type_cache_insert(mem, cache, cached_subtype);
                 if (res == KEFIR_ALREADY_EXISTS) {
                     free_cached_type(mem, cached_subtype);

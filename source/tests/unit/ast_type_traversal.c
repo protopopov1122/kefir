@@ -470,3 +470,80 @@ DEFINE_CASE(ast_type_traversal4, "AST Type analysis - type traversal #4")
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
+
+DEFINE_CASE(ast_type_traversal5, "AST Type analysis - type traversal designators")
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits,
+        &kft_util_get_translator_environment()->target_env, &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    struct kefir_ast_struct_type *structure1 = NULL;
+    const struct kefir_ast_type *type1 = kefir_ast_type_structure(&kft_mem, context->type_bundle,
+        "", &structure1);
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, structure1,
+        "a", kefir_ast_type_signed_int(), NULL));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, structure1,
+        "b", kefir_ast_type_signed_long(), NULL));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, structure1,
+        "c", kefir_ast_type_signed_long_long(), NULL));
+
+    const struct kefir_ast_type *type2 = kefir_ast_type_array(&kft_mem, context->type_bundle,
+        type1, kefir_ast_constant_expression_integer(&kft_mem, 100), NULL);
+
+    struct kefir_ast_struct_type *structure3 = NULL;
+    const struct kefir_ast_type *type3 = kefir_ast_type_structure(&kft_mem, context->type_bundle,
+        "", &structure3);
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, structure3,
+        "x", type1, NULL));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, structure3,
+        "y", type2, NULL));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, structure3,
+        "z", type1, NULL));
+
+    struct kefir_ast_type_traversal traversal;
+    ASSERT_OK(kefir_ast_type_traversal_init(&kft_mem, &traversal, type3));
+
+    const struct kefir_ast_type *type = NULL;
+    const struct kefir_ast_type_traversal_layer *layer = NULL;
+    ASSERT_OK(kefir_ast_type_traversal_next(&kft_mem, &traversal, &type, &layer));
+    ASSERT_OK(kefir_ast_type_traversal_next_recursive(&kft_mem, &traversal, &type, &layer));
+
+    struct kefir_ast_designator *designator = kefir_ast_type_traversal_layer_designator(&kft_mem, context->symbols, layer);
+    ASSERT(designator != NULL);
+    ASSERT(designator->type == KEFIR_AST_DESIGNATOR_MEMBER);
+    ASSERT(strcmp(designator->member, "a") == 0);
+    ASSERT(designator->next != NULL);
+    ASSERT(designator->next->type == KEFIR_AST_DESIGNATOR_SUBSCRIPT);
+    ASSERT(designator->next->index == 0);
+    ASSERT(designator->next->next != NULL);
+    ASSERT(designator->next->next->type == KEFIR_AST_DESIGNATOR_MEMBER);
+    ASSERT(strcmp(designator->next->next->member, "y") == 0);
+    ASSERT(designator->next->next->next == NULL);
+    ASSERT_OK(kefir_ast_designator_free(&kft_mem, designator));
+
+    ASSERT_OK(kefir_ast_type_traversal_next(&kft_mem, &traversal, &type, &layer));
+    ASSERT_OK(kefir_ast_type_traversal_next(&kft_mem, &traversal, &type, &layer));
+    ASSERT_OK(kefir_ast_type_traversal_next_recursive(&kft_mem, &traversal, &type, &layer));
+    ASSERT_OK(kefir_ast_type_traversal_next(&kft_mem, &traversal, &type, &layer));
+
+    designator = kefir_ast_type_traversal_layer_designator(&kft_mem, context->symbols, layer);
+    ASSERT(designator != NULL);
+    ASSERT(designator->type == KEFIR_AST_DESIGNATOR_MEMBER);
+    ASSERT(strcmp(designator->member, "b") == 0);
+    ASSERT(designator->next != NULL);
+    ASSERT(designator->next->type == KEFIR_AST_DESIGNATOR_SUBSCRIPT);
+    ASSERT(designator->next->index == 1);
+    ASSERT(designator->next->next != NULL);
+    ASSERT(designator->next->next->type == KEFIR_AST_DESIGNATOR_MEMBER);
+    ASSERT(strcmp(designator->next->next->member, "y") == 0);
+    ASSERT(designator->next->next->next == NULL);
+    ASSERT_OK(kefir_ast_designator_free(&kft_mem, designator));
+
+    ASSERT_OK(kefir_ast_type_traversal_free(&kft_mem, &traversal));
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+END_CASE

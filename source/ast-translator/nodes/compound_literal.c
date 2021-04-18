@@ -2,6 +2,7 @@
 #include "kefir/ast-translator/translator_impl.h"
 #include "kefir/ast-translator/translator.h"
 #include "kefir/ast-translator/temporaries.h"
+#include "kefir/ast-translator/initializer.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -16,6 +17,6 @@ kefir_result_t kefir_ast_translate_compound_literal_node(struct kefir_mem *mem,
     
     REQUIRE_OK(kefir_ast_translator_fetch_temporary(mem, context, builder,
         &node->base.properties.expression_props.temporary));
-    // TODO Implement compound literal initialization
+    REQUIRE_OK(kefir_ast_translate_initializer(mem, context, builder, node->base.properties.type, node->initializer));
     return KEFIR_OK;
 }

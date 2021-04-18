@@ -26,30 +26,21 @@ static kefir_result_t dump_type_layout(struct kefir_json_output *json,
                 : "union"));
             REQUIRE_OK(kefir_json_output_object_key(json, "fields"));
             REQUIRE_OK(kefir_json_output_array_begin(json));
-            struct kefir_hashtree_node_iterator iter;
-            for (const struct kefir_hashtree_node *node = kefir_hashtree_iter(&layout->structure_layout.members, &iter);
-                node != NULL;
-                node = kefir_hashtree_next(&iter)) {
-                ASSIGN_DECL_CAST(const struct kefir_ast_type_layout *, member,
-                    node->value);
-                REQUIRE_OK(kefir_json_output_object_begin(json));
-                REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
-                REQUIRE_OK(kefir_json_output_string(json, (const char *) node->key));
-                REQUIRE_OK(kefir_json_output_object_key(json, "layout"));
-                REQUIRE_OK(dump_type_layout(json, member));
-                REQUIRE_OK(kefir_json_output_object_end(json));
-            }
 
-            for (const struct kefir_list_entry *iter = kefir_list_head(&layout->structure_layout.anonymous_members);
+            for (const struct kefir_list_entry *iter = kefir_list_head(&layout->structure_layout.member_list);
                 iter != NULL;
                 kefir_list_next(&iter)) {
-                ASSIGN_DECL_CAST(const struct kefir_ast_type_layout *, member,
+                ASSIGN_DECL_CAST(const struct kefir_ast_type_layout_structure_member *, member,
                     iter->value);
                 REQUIRE_OK(kefir_json_output_object_begin(json));
                 REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
-                REQUIRE_OK(kefir_json_output_null(json));
+                if (member->identifier != NULL) {
+                    REQUIRE_OK(kefir_json_output_string(json, member->identifier));
+                } else {
+                    REQUIRE_OK(kefir_json_output_null(json));
+                }
                 REQUIRE_OK(kefir_json_output_object_key(json, "layout"));
-                REQUIRE_OK(dump_type_layout(json, member));
+                REQUIRE_OK(dump_type_layout(json, member->layout));
                 REQUIRE_OK(kefir_json_output_object_end(json));
             }
             REQUIRE_OK(kefir_json_output_array_end(json));

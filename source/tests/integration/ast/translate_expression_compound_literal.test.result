@@ -24,6 +24,48 @@
                                     "fields": [
                                         {
                                             "type": "long"
+                                        },
+                                        {
+                                            "type": "struct",
+                                            "fields": [
+                                                {
+                                                    "type": "bool"
+                                                },
+                                                {
+                                                    "type": "long"
+                                                },
+                                                {
+                                                    "type": "float"
+                                                },
+                                                {
+                                                    "type": "int"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "struct",
+                                            "fields": [
+                                                {
+                                                    "type": "struct",
+                                                    "fields": [
+                                                        {
+                                                            "type": "bool"
+                                                        },
+                                                        {
+                                                            "type": "long"
+                                                        },
+                                                        {
+                                                            "type": "float"
+                                                        },
+                                                        {
+                                                            "type": "int"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "int"
+                                                }
+                                            ]
                                         }
                                     ]
                                 }
@@ -47,6 +89,18 @@
             "parameters": [],
             "vararg": false,
             "returns": []
+        },
+        {
+            "identifier": "compound_literal2",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "compound_literal3",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
         }
     ],
     "functions": [
@@ -64,6 +118,48 @@
                                     "fields": [
                                         {
                                             "type": "long"
+                                        },
+                                        {
+                                            "type": "struct",
+                                            "fields": [
+                                                {
+                                                    "type": "bool"
+                                                },
+                                                {
+                                                    "type": "long"
+                                                },
+                                                {
+                                                    "type": "float"
+                                                },
+                                                {
+                                                    "type": "int"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "struct",
+                                            "fields": [
+                                                {
+                                                    "type": "struct",
+                                                    "fields": [
+                                                        {
+                                                            "type": "bool"
+                                                        },
+                                                        {
+                                                            "type": "long"
+                                                        },
+                                                        {
+                                                            "type": "float"
+                                                        },
+                                                        {
+                                                            "type": "int"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "int"
+                                                }
+                                            ]
                                         }
                                     ]
                                 }
@@ -96,6 +192,348 @@
                         "type": 2,
                         "index": 3
                     }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "push",
+                    "arg": 5
+                },
+                {
+                    "opcode": "store64"
+                }
+            ]
+        },
+        {
+            "identifier": "compound_literal2",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "long"
+                                        },
+                                        {
+                                            "type": "struct",
+                                            "fields": [
+                                                {
+                                                    "type": "bool"
+                                                },
+                                                {
+                                                    "type": "long"
+                                                },
+                                                {
+                                                    "type": "float"
+                                                },
+                                                {
+                                                    "type": "int"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "struct",
+                                            "fields": [
+                                                {
+                                                    "type": "struct",
+                                                    "fields": [
+                                                        {
+                                                            "type": "bool"
+                                                        },
+                                                        {
+                                                            "type": "long"
+                                                        },
+                                                        {
+                                                            "type": "float"
+                                                        },
+                                                        {
+                                                            "type": "int"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "int"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 2
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 4
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "bzero",
+                    "arg": {
+                        "type": 2,
+                        "index": 4
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "store8"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 16
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 1.000000
+                },
+                {
+                    "opcode": "store32"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 20
+                },
+                {
+                    "opcode": "push",
+                    "arg": 2
+                },
+                {
+                    "opcode": "store32"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 3
+                },
+                {
+                    "opcode": "store64"
+                }
+            ]
+        },
+        {
+            "identifier": "compound_literal3",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "long"
+                                        },
+                                        {
+                                            "type": "struct",
+                                            "fields": [
+                                                {
+                                                    "type": "bool"
+                                                },
+                                                {
+                                                    "type": "long"
+                                                },
+                                                {
+                                                    "type": "float"
+                                                },
+                                                {
+                                                    "type": "int"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "struct",
+                                            "fields": [
+                                                {
+                                                    "type": "struct",
+                                                    "fields": [
+                                                        {
+                                                            "type": "bool"
+                                                        },
+                                                        {
+                                                            "type": "long"
+                                                        },
+                                                        {
+                                                            "type": "float"
+                                                        },
+                                                        {
+                                                            "type": "int"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "int"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 2
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 9
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "bzero",
+                    "arg": {
+                        "type": 2,
+                        "index": 9
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store8"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 16
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 2.000000
+                },
+                {
+                    "opcode": "store32"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 20
+                },
+                {
+                    "opcode": "push",
+                    "arg": 3
+                },
+                {
+                    "opcode": "store32"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 24
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4
+                },
+                {
+                    "opcode": "store32"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 6
+                },
+                {
+                    "opcode": "store64"
                 }
             ]
         }

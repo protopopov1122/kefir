@@ -19,22 +19,12 @@ static kefir_result_t traverse_layout(struct kefir_mem *mem,
     switch (layout->type->tag) {
         case KEFIR_AST_TYPE_STRUCTURE:
         case KEFIR_AST_TYPE_UNION: {
-            struct kefir_hashtree_node_iterator iter;
-            for (const struct kefir_hashtree_node *node = kefir_hashtree_iter(&layout->structure_layout.members, &iter);
-                node != NULL;
-                node = kefir_hashtree_next(&iter)) {
-                
-                ASSIGN_DECL_CAST(struct kefir_ast_type_layout *, member,
-                    node->value);
-                REQUIRE_OK(traverse_layout(mem, member, param));
-            }
-
-            for (const struct kefir_list_entry *iter2 = kefir_list_head(&layout->structure_layout.anonymous_members);
-                iter2 != NULL;
-                kefir_list_next(&iter2)) {
-                ASSIGN_DECL_CAST(struct kefir_ast_type_layout *, member,
-                    iter2->value);
-                REQUIRE_OK(traverse_layout(mem, member, param));
+            for (const struct kefir_list_entry *iter = kefir_list_head(&layout->structure_layout.member_list);
+                iter != NULL;
+                kefir_list_next(&iter)) {
+                ASSIGN_DECL_CAST(struct kefir_ast_type_layout_structure_member *, member,
+                    iter->value);
+                REQUIRE_OK(traverse_layout(mem, member->layout, param));
             }
         } break;
 

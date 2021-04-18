@@ -54,11 +54,13 @@ static kefir_result_t traverse_aggregate_union(struct kefir_mem *mem,
                                              const struct kefir_ast_initializer *initializer,
                                              struct kefir_ast_type_traversal *traversal) {
     const struct kefir_list_entry *init_iter = kefir_list_head(&initializer->list.initializers);
-    for (; init_iter != NULL && !kefir_ast_type_traversal_empty(traversal); kefir_list_next(&init_iter)) {
+    for (; init_iter != NULL; kefir_list_next(&init_iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_initializer_list_entry *, entry,
             init_iter->value);
         if (entry->designator != NULL) {
             REQUIRE_OK(kefir_ast_type_traversal_navigate(mem, traversal, entry->designator));
+        } else if (kefir_ast_type_traversal_empty(traversal)) {
+            continue;
         }
 
         if (entry->value->type == KEFIR_AST_INITIALIZER_LIST) {
@@ -173,6 +175,8 @@ kefir_result_t kefir_ast_analyze_initializer(struct kefir_mem *mem,
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
     REQUIRE(initializer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST initializer"));
+
+    type = kefir_ast_unqualified_type(type);
 
     if (properties != NULL) {
         properties->type = NULL;

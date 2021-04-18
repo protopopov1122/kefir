@@ -418,3 +418,32 @@ kefir_bool_t kefir_ast_type_traversal_empty(struct kefir_ast_type_traversal *tra
     }
     return true;
 }
+
+struct kefir_ast_designator *kefir_ast_type_traversal_layer_designator(struct kefir_mem *mem,
+                                                                   struct kefir_symbol_table *symbols,
+                                                                   const struct kefir_ast_type_traversal_layer *layer) {
+    REQUIRE(mem != NULL, NULL);
+    REQUIRE(layer != NULL, NULL);
+
+    struct kefir_ast_designator *base = kefir_ast_type_traversal_layer_designator(mem, symbols, layer->parent);
+    struct kefir_ast_designator *designator = NULL;
+    switch (layer->type) {
+        case KEFIR_AST_TYPE_TRAVERSAL_STRUCTURE:
+        case KEFIR_AST_TYPE_TRAVERSAL_UNION: {
+            ASSIGN_DECL_CAST(struct kefir_ast_struct_field *, field,
+                layer->structure.iterator->value);
+            if (field != NULL) {
+                designator = kefir_ast_new_member_desginator(mem, symbols, field->identifier, base);
+            }
+        } break;
+
+        case KEFIR_AST_TYPE_TRAVERSAL_ARRAY:
+            designator = kefir_ast_new_index_desginator(mem, layer->array.index, base);
+            break;
+
+        case KEFIR_AST_TYPE_TRAVERSAL_SCALAR:
+            // Intentionally left blank
+            break;
+    }
+    return designator;
+}

@@ -7,9 +7,14 @@
 
 typedef struct kefir_ast_type_layout kefir_ast_type_layout_t;
 
+typedef struct kefir_ast_type_layout_structure_member {
+    const char *identifier;
+    struct kefir_ast_type_layout *layout;
+} kefir_ast_type_layout_structure_member_t;
+
 typedef struct kefir_ast_struct_type_layout {
-    struct kefir_hashtree members;
-    struct kefir_list anonymous_members;
+    struct kefir_hashtree named_members;
+    struct kefir_list member_list;
 } kefir_ast_struct_type_layout_t;
 
 typedef struct kefir_ast_array_type_layout {

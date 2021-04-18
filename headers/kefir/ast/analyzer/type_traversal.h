@@ -86,4 +86,8 @@ kefir_result_t kefir_ast_type_traversal_navigate(struct kefir_mem *,
 
 kefir_bool_t kefir_ast_type_traversal_empty(struct kefir_ast_type_traversal *);
 
+struct kefir_ast_designator *kefir_ast_type_traversal_layer_designator(struct kefir_mem *,
+                                                                   struct kefir_symbol_table *,
+                                                                   const struct kefir_ast_type_traversal_layer *);
+
 #endif

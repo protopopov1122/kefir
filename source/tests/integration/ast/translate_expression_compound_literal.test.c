@@ -24,12 +24,72 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
 
+    struct kefir_ast_struct_type *struct_type1 = NULL;
+    const struct kefir_ast_type *type1 = kefir_ast_type_structure(mem, context->type_bundle, "", &struct_type1);
+    REQUIRE_OK(kefir_ast_struct_type_field(mem, context->symbols, struct_type1,
+        "a", kefir_ast_type_bool(), NULL));
+    REQUIRE_OK(kefir_ast_struct_type_field(mem, context->symbols, struct_type1,
+        "b", kefir_ast_type_signed_long(), NULL));
+    REQUIRE_OK(kefir_ast_struct_type_field(mem, context->symbols, struct_type1,
+        "c", kefir_ast_type_float(), NULL));
+    REQUIRE_OK(kefir_ast_struct_type_field(mem, context->symbols, struct_type1,
+        "d", kefir_ast_type_signed_int(), NULL));
+
+    struct kefir_ast_struct_type *struct_type2 = NULL;
+    const struct kefir_ast_type *type2 = kefir_ast_type_structure(mem, context->type_bundle, "", &struct_type2);
+    REQUIRE_OK(kefir_ast_struct_type_field(mem, context->symbols, struct_type2,
+        "x", type1, NULL));
+    REQUIRE_OK(kefir_ast_struct_type_field(mem, context->symbols, struct_type2,
+        "y", kefir_ast_type_unsigned_int(), NULL));
+
     struct kefir_ast_compound_literal *literal1 = kefir_ast_new_compound_literal(mem, kefir_ast_type_signed_long());
     REQUIRE_OK(kefir_ast_initializer_list_append(mem, &literal1->initializer->list,
         NULL, kefir_ast_new_expression_initializer(mem,
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(mem, 5)))));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, KEFIR_AST_NODE_BASE(literal1)));
 
+    struct kefir_ast_compound_literal *literal2 = kefir_ast_new_compound_literal(mem, type1);
+    REQUIRE_OK(kefir_ast_initializer_list_append(mem, &literal2->initializer->list,
+        NULL, kefir_ast_new_expression_initializer(mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(mem, false)))));
+    REQUIRE_OK(kefir_ast_initializer_list_append(mem, &literal2->initializer->list,
+        kefir_ast_new_member_desginator(mem, context->symbols, "c", NULL),
+        kefir_ast_new_expression_initializer(mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 1.0f)))));
+    REQUIRE_OK(kefir_ast_initializer_list_append(mem, &literal2->initializer->list,
+        NULL, kefir_ast_new_expression_initializer(mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 2)))));
+    REQUIRE_OK(kefir_ast_initializer_list_append(mem, &literal2->initializer->list,
+        kefir_ast_new_member_desginator(mem, context->symbols, "b", NULL),
+        kefir_ast_new_expression_initializer(mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 3)))));
+    REQUIRE_OK(kefir_ast_analyze_node(mem, context, KEFIR_AST_NODE_BASE(literal2)));
+
+    struct kefir_ast_compound_literal *literal3 = kefir_ast_new_compound_literal(mem, type2);
+    REQUIRE_OK(kefir_ast_initializer_list_append(mem, &literal3->initializer->list,
+        NULL, kefir_ast_new_expression_initializer(mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(mem, true)))));
+    REQUIRE_OK(kefir_ast_initializer_list_append(mem, &literal3->initializer->list,
+        kefir_ast_new_member_desginator(mem, context->symbols, "c",
+            kefir_ast_new_member_desginator(mem, context->symbols, "x", NULL)),
+        kefir_ast_new_expression_initializer(mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 2)))));
+    REQUIRE_OK(kefir_ast_initializer_list_append(mem, &literal3->initializer->list,
+        NULL, kefir_ast_new_expression_initializer(mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 3)))));
+    REQUIRE_OK(kefir_ast_initializer_list_append(mem, &literal3->initializer->list,
+        NULL, kefir_ast_new_expression_initializer(mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 4)))));
+    REQUIRE_OK(kefir_ast_initializer_list_append(mem, &literal3->initializer->list,
+        NULL, kefir_ast_new_expression_initializer(mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 5)))));
+    REQUIRE_OK(kefir_ast_initializer_list_append(mem, &literal3->initializer->list,
+        kefir_ast_new_member_desginator(mem, context->symbols, "b",
+            kefir_ast_new_member_desginator(mem, context->symbols, "x", NULL)),
+        kefir_ast_new_expression_initializer(mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 6)))));
+    REQUIRE_OK(kefir_ast_analyze_node(mem, context, KEFIR_AST_NODE_BASE(literal3)));
+            
     struct kefir_ast_translator_global_scope_layout translator_global_scope;
     struct kefir_ast_translator_local_scope_layout translator_local_scope;
     REQUIRE_OK(kefir_ast_translator_global_scope_layout_init(mem, &module, &translator_global_scope));
@@ -46,6 +106,18 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     FUNC("compound_literal1", {
         struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(literal1);
+        REQUIRE_OK(kefir_ast_translate_expression(mem, node, &builder, &translator_context));
+        REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
+    });
+
+    FUNC("compound_literal2", {
+        struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(literal2);
+        REQUIRE_OK(kefir_ast_translate_expression(mem, node, &builder, &translator_context));
+        REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
+    });
+
+    FUNC("compound_literal3", {
+        struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(literal3);
         REQUIRE_OK(kefir_ast_translate_expression(mem, node, &builder, &translator_context));
         REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
     });

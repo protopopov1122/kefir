@@ -49,6 +49,36 @@
         "type": "struct",
         "fields": [
             {
+                "identifier": "x",
+                "layout": {
+                    "index": 1,
+                    "size": 4,
+                    "alignment": 4,
+                    "relative_offset": 0,
+                    "type": "scalar"
+                }
+            },
+            {
+                "identifier": "y",
+                "layout": {
+                    "index": 2,
+                    "size": 8,
+                    "alignment": 8,
+                    "relative_offset": 8,
+                    "type": "scalar"
+                }
+            },
+            {
+                "identifier": "z",
+                "layout": {
+                    "index": 3,
+                    "size": 2,
+                    "alignment": 2,
+                    "relative_offset": 16,
+                    "type": "scalar"
+                }
+            },
+            {
                 "identifier": "a",
                 "layout": {
                     "index": 4,
@@ -115,6 +145,55 @@
                 }
             },
             {
+                "identifier": null,
+                "layout": {
+                    "index": 11,
+                    "size": 80,
+                    "alignment": 8,
+                    "relative_offset": 104,
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "identifier": "field1",
+                            "layout": {
+                                "index": 12,
+                                "size": 1,
+                                "alignment": 1,
+                                "relative_offset": 0,
+                                "type": "scalar"
+                            }
+                        },
+                        {
+                            "identifier": "field2",
+                            "layout": {
+                                "index": 13,
+                                "size": 8,
+                                "alignment": 8,
+                                "relative_offset": 8,
+                                "type": "scalar"
+                            }
+                        },
+                        {
+                            "identifier": "field3",
+                            "layout": {
+                                "index": 14,
+                                "size": 60,
+                                "alignment": 4,
+                                "relative_offset": 16,
+                                "type": "array",
+                                "element": {
+                                    "index": 15,
+                                    "size": 4,
+                                    "alignment": 4,
+                                    "relative_offset": 0,
+                                    "type": "scalar"
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            {
                 "identifier": "c",
                 "layout": {
                     "index": 16,
@@ -168,85 +247,6 @@
                             }
                         ]
                     }
-                }
-            },
-            {
-                "identifier": "x",
-                "layout": {
-                    "index": 1,
-                    "size": 4,
-                    "alignment": 4,
-                    "relative_offset": 0,
-                    "type": "scalar"
-                }
-            },
-            {
-                "identifier": "y",
-                "layout": {
-                    "index": 2,
-                    "size": 8,
-                    "alignment": 8,
-                    "relative_offset": 8,
-                    "type": "scalar"
-                }
-            },
-            {
-                "identifier": "z",
-                "layout": {
-                    "index": 3,
-                    "size": 2,
-                    "alignment": 2,
-                    "relative_offset": 16,
-                    "type": "scalar"
-                }
-            },
-            {
-                "identifier": null,
-                "layout": {
-                    "index": 11,
-                    "size": 80,
-                    "alignment": 8,
-                    "relative_offset": 104,
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "identifier": "field1",
-                            "layout": {
-                                "index": 12,
-                                "size": 1,
-                                "alignment": 1,
-                                "relative_offset": 0,
-                                "type": "scalar"
-                            }
-                        },
-                        {
-                            "identifier": "field2",
-                            "layout": {
-                                "index": 13,
-                                "size": 8,
-                                "alignment": 8,
-                                "relative_offset": 8,
-                                "type": "scalar"
-                            }
-                        },
-                        {
-                            "identifier": "field3",
-                            "layout": {
-                                "index": 14,
-                                "size": 60,
-                                "alignment": 4,
-                                "relative_offset": 16,
-                                "type": "array",
-                                "element": {
-                                    "index": 15,
-                                    "size": 4,
-                                    "alignment": 4,
-                                    "relative_offset": 0,
-                                    "type": "scalar"
-                                }
-                            }
-                        }
-                    ]
                 }
             }
         ]

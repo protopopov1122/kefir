@@ -234,6 +234,17 @@
                     }
                 },
                 {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "bzero",
+                    "arg": {
+                        "type": 3,
+                        "index": 0
+                    }
+                },
+                {
                     "opcode": "xchg",
                     "arg": 1
                 },
@@ -337,6 +348,17 @@
                     "arg": {
                         "type": 2,
                         "index": 3
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "bzero",
+                    "arg": {
+                        "type": 4,
+                        "index": 0
                     }
                 },
                 {
