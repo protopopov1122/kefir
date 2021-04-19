@@ -1,6 +1,7 @@
 #include "kefir/ast-translator/initializer.h"
 #include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/ast/analyzer/type_traversal.h"
+#include "kefir/ast-translator/typeconv.h"
 #include "kefir/ast-translator/translator.h"
 #include "kefir/ast-translator/value.h"
 #include "kefir/core/util.h"
@@ -94,6 +95,7 @@ static kefir_result_t traverse_aggregate_union(struct kefir_mem *mem,
             REQUIRE_OK(kefir_ast_type_traversal_next(mem, traversal, &type, &layer));
             REQUIRE_OK(layer_address(mem, context, builder, layer));
             REQUIRE_OK(kefir_ast_translate_initializer(mem, context, builder, type, entry->value));
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POP, 0));
         } else if (entry->value->expression->properties.expression_props.string_literal != NULL) {
             const struct kefir_ast_type *type = NULL;
             REQUIRE_OK(kefir_ast_type_traversal_next_recursive2(mem, traversal, is_char_array, NULL, &type, &layer));
@@ -105,6 +107,7 @@ static kefir_result_t traverse_aggregate_union(struct kefir_mem *mem,
             REQUIRE_OK(kefir_ast_type_traversal_next_recursive(mem, traversal, &type, &layer));
             REQUIRE_OK(layer_address(mem, context, builder, layer));
             REQUIRE_OK(kefir_ast_translate_expression(mem, entry->value->expression, builder, context));
+            REQUIRE_OK(kefir_ast_translate_typeconv(builder, entry->value->expression->properties.type, type));
             REQUIRE_OK(kefir_ast_translator_store_value(mem, type, context, builder));
         } else {
             const struct kefir_ast_type *type = NULL;

@@ -40,7 +40,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         "X", type1, NULL));
     REQUIRE_OK(kefir_ast_struct_type_field(mem, context->symbols, union_type2,
         "Y", kefir_ast_type_array(mem, context->type_bundle, kefir_ast_type_signed_int(),
-            kefir_ast_constant_expression_integer(mem, 2), NULL), NULL));
+            kefir_ast_constant_expression_integer(mem, 3), NULL), NULL));
 
     struct kefir_ast_struct_type *struct_type3 = NULL;
     const struct kefir_ast_type *type3 = kefir_ast_type_structure(mem, context->type_bundle, "", &struct_type3);
@@ -59,6 +59,49 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
             kefir_ast_new_member_desginator(mem, context->symbols, "X",
                 kefir_ast_new_member_desginator(mem, context->symbols, "hello", NULL))),
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 1)))));
+    REQUIRE_OK(kefir_ast_initializer_list_append(mem, &literal1->initializer->list,
+        kefir_ast_new_index_desginator(mem, 1,
+            kefir_ast_new_member_desginator(mem, context->symbols, "Y",
+                kefir_ast_new_member_desginator(mem, context->symbols, "hello", NULL))),
+        kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 2)))));
+    REQUIRE_OK(kefir_ast_initializer_list_append(mem, &literal1->initializer->list,
+        NULL,
+        kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 3)))));
+    REQUIRE_OK(kefir_ast_initializer_list_append(mem, &literal1->initializer->list,
+        NULL,
+        kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 4)))));
+
+    struct kefir_ast_initializer *init1 = kefir_ast_new_list_initializer(mem);
+    REQUIRE_OK(kefir_ast_initializer_list_append(mem, &init1->list, NULL,
+        kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(mem, 'A')))));
+    REQUIRE_OK(kefir_ast_initializer_list_append(mem, &init1->list,
+        kefir_ast_new_index_desginator(mem, 8, NULL),
+        kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(mem, 'B')))));
+    REQUIRE_OK(kefir_ast_initializer_list_append(mem, &init1->list,
+        NULL,
+        kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(mem, 'B')))));
+    REQUIRE_OK(kefir_ast_initializer_list_append(mem, &literal1->initializer->list,
+        kefir_ast_new_member_desginator(mem, context->symbols, "field1",
+            kefir_ast_new_member_desginator(mem, context->symbols, "world", NULL)),
+        init1));
+    REQUIRE_OK(kefir_ast_initializer_list_append(mem, &literal1->initializer->list,
+        NULL,
+        kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 5)))));
+    REQUIRE_OK(kefir_ast_initializer_list_append(mem, &literal1->initializer->list,
+        NULL,
+        kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 6)))));
+    REQUIRE_OK(kefir_ast_initializer_list_append(mem, &literal1->initializer->list,
+        NULL,
+        kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 7)))));
+
+    REQUIRE_OK(kefir_ast_initializer_list_append(mem, &literal1->initializer->list,
+        kefir_ast_new_member_desginator(mem, context->symbols, "field3",
+            kefir_ast_new_member_desginator(mem, context->symbols, "X",
+                kefir_ast_new_member_desginator(mem, context->symbols, "hello", NULL))),
+        kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 8)))));
+    REQUIRE_OK(kefir_ast_initializer_list_append(mem, &literal1->initializer->list,
+        NULL,
+        kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 9)))));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, KEFIR_AST_NODE_BASE(literal1)));
             
     struct kefir_ast_translator_global_scope_layout translator_global_scope;

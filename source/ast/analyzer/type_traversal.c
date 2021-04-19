@@ -297,10 +297,12 @@ static kefir_result_t navigate_member(struct kefir_mem *mem,
                 ASSIGN_DECL_CAST(struct kefir_ast_struct_field *, field,
                     iter->value);
                 if (strcmp(member, field->identifier) == 0) {
-                    layer->init = true;
                     layer->structure.iterator = iter;
                     if (push) {
+                        layer->init = false;
                         REQUIRE_OK(push_layer(mem, traversal, field->type, layer));
+                    } else {
+                        layer->init = true;
                     }
                     return KEFIR_OK;
                 }

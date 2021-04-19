@@ -48,7 +48,7 @@
                                                         },
                                                         {
                                                             "type": "array",
-                                                            "length": 2,
+                                                            "length": 3,
                                                             "element_type": {
                                                                 "type": "int"
                                                             }
@@ -141,7 +141,7 @@
                                                         },
                                                         {
                                                             "type": "array",
-                                                            "length": 2,
+                                                            "length": 3,
                                                             "element_type": {
                                                                 "type": "int"
                                                             }
@@ -243,6 +243,180 @@
                 },
                 {
                     "opcode": "store64"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 4
+                },
+                {
+                    "opcode": "push",
+                    "arg": 2
+                },
+                {
+                    "opcode": "store32"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 3
+                },
+                {
+                    "opcode": "store32"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 32
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4
+                },
+                {
+                    "opcode": "intcf32"
+                },
+                {
+                    "opcode": "store32"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 40
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "bzero",
+                    "arg": {
+                        "type": 2,
+                        "index": 6
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "push",
+                    "arg": 65
+                },
+                {
+                    "opcode": "store8"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 66
+                },
+                {
+                    "opcode": "store8"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 9
+                },
+                {
+                    "opcode": "push",
+                    "arg": 66
+                },
+                {
+                    "opcode": "store8"
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 56
+                },
+                {
+                    "opcode": "push",
+                    "arg": 5
+                },
+                {
+                    "opcode": "store64"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 64
+                },
+                {
+                    "opcode": "push",
+                    "arg": 6
+                },
+                {
+                    "opcode": "store64"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 24
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "store64"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 32
+                },
+                {
+                    "opcode": "push",
+                    "arg": 9
+                },
+                {
+                    "opcode": "intcf32"
+                },
+                {
+                    "opcode": "store32"
                 }
             ]
         }
