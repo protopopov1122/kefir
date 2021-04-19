@@ -96,26 +96,6 @@ static kefir_result_t target_env_free_type(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-static kefir_result_t add_to_offset(struct kefir_ast_type_layout *layout,
-                                  const struct kefir_ast_designator *designator,
-                                  void *payload) {
-    REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST type layout"));
-    REQUIRE(designator != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid designator"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
-
-    ASSIGN_DECL_CAST(kefir_size_t *, offset,
-        payload);
-    if (designator->type == KEFIR_AST_DESIGNATOR_MEMBER) {
-        *offset += layout->properties.relative_offset;
-    } else if (designator->type == KEFIR_AST_DESIGNATOR_SUBSCRIPT) {
-        *offset += layout->properties.relative_offset + 
-            designator->index * layout->properties.size;
-    } else {
-        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected designator type");
-    }
-    return KEFIR_OK;
-}
-
 static kefir_result_t target_env_object_info(struct kefir_mem *mem,
                                          const struct kefir_ast_target_environment *env,
                                          kefir_ast_target_environment_opaque_type_t target_type,
@@ -128,20 +108,13 @@ static kefir_result_t target_env_object_info(struct kefir_mem *mem,
 
     ASSIGN_DECL_CAST(struct kefir_ast_translator_environment_type *, type,
         target_type);
-    if (designator != NULL) {
-        *object_info = (struct kefir_ast_target_environment_object_info){0};
-        struct kefir_ast_type_layout *final_layout = NULL;
-        REQUIRE_OK(kefir_ast_type_layout_resolve(type->layout, designator,
-            &final_layout, add_to_offset, &object_info->relative_offset));
-        object_info->size = final_layout->properties.size;
-        object_info->aligned = final_layout->properties.aligned;
-        object_info->alignment = final_layout->properties.alignment;
-    } else {
-        object_info->size = type->layout->properties.size;
-        object_info->aligned = type->layout->properties.aligned;
-        object_info->alignment = type->layout->properties.alignment;
-        object_info->relative_offset = type->layout->properties.relative_offset;
-    }
+
+    struct kefir_ast_type_layout *final_layout = NULL;
+    REQUIRE_OK(kefir_ast_type_layout_resolve_offset(type->layout, designator,
+        &final_layout, &object_info->relative_offset));
+    object_info->size = final_layout->properties.size;
+    object_info->aligned = final_layout->properties.aligned;
+    object_info->alignment = final_layout->properties.alignment;
     
     return KEFIR_OK;
 }

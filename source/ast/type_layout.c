@@ -231,3 +231,42 @@ kefir_result_t kefir_ast_type_layout_resolve(struct kefir_ast_type_layout *root,
     REQUIRE_OK(resolve_layout(root, designator, layout_ptr, callback, payload));
     return KEFIR_OK;
 }
+
+static kefir_result_t add_to_offset(struct kefir_ast_type_layout *layout,
+                                  const struct kefir_ast_designator *designator,
+                                  void *payload) {
+    REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST type layout"));
+    REQUIRE(designator != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid designator"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+
+    ASSIGN_DECL_CAST(kefir_size_t *, offset,
+        payload);
+    if (designator->type == KEFIR_AST_DESIGNATOR_MEMBER) {
+        *offset += layout->properties.relative_offset;
+    } else if (designator->type == KEFIR_AST_DESIGNATOR_SUBSCRIPT) {
+        *offset += layout->properties.relative_offset + 
+            designator->index * layout->properties.size;
+    } else {
+        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected designator type");
+    }
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_ast_type_layout_resolve_offset(struct kefir_ast_type_layout *root,
+                                                const struct kefir_ast_designator *designator,
+                                                struct kefir_ast_type_layout **layout_ptr,
+                                                kefir_size_t *offset) {
+    REQUIRE(root != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid root AST type layout"));
+    REQUIRE(layout_ptr != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type layout pointer"));
+    REQUIRE(offset != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid type layout offset pointer"));
+    
+    if (designator != NULL) {
+        *offset = 0;
+        REQUIRE_OK(kefir_ast_type_layout_resolve(root, designator,
+            layout_ptr, add_to_offset, offset));
+    } else {
+        *layout_ptr = root;
+        *offset = root->properties.relative_offset;
+    }
+    return KEFIR_OK;
+}

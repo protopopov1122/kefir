@@ -66,4 +66,9 @@ kefir_result_t kefir_ast_type_layout_resolve(struct kefir_ast_type_layout *,
                                          kefir_ast_type_layout_resolver_callback_t,
                                          void *);
 
+kefir_result_t kefir_ast_type_layout_resolve_offset(struct kefir_ast_type_layout *,
+                                                const struct kefir_ast_designator *,
+                                                struct kefir_ast_type_layout **,
+                                                kefir_size_t *);
+
 #endif

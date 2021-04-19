@@ -5,7 +5,7 @@ OUTPUT_FILE="$(mktemp)"
 DIFF_FILE="$(mktemp)"
 VALGRIND_FILE="$(mktemp)"
 DIFF="diff -u -B"
-VALGRIND="valgrind --trace-children=yes --leak-check=full --error-exitcode=127 --log-file=$VALGRIND_FILE"
+VALGRIND="valgrind --trace-children=yes --track-origins=yes --leak-check=full --error-exitcode=127 --log-file=$VALGRIND_FILE"
 
 function cleanup {
     rm -rf "$OUTPUT_FILE"
