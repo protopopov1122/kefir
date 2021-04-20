@@ -1,5 +1,6 @@
 #include "kefir/ast-translator/scope/global_scope_layout.h"
 #include "kefir/ast-translator/translator.h"
+#include "kefir/ast-translator/layout.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/ast-translator/scope/scope_layout_impl.h"
@@ -58,6 +59,8 @@ static kefir_result_t translate_scoped_identifier_type(struct kefir_mem *mem,
     REQUIRE_OK(kefir_ast_translate_object_type(mem, scoped_identifier->object.type,
         scoped_identifier->object.alignment->value, env, &builder, &scoped_identifier_layout->layout));
     REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
+
+    REQUIRE_OK(kefir_ast_translator_evaluate_type_layout(mem, env, scoped_identifier_layout->layout, scoped_identifier_layout->type));
     *type_ptr = scoped_identifier_layout->type;
 
     REQUIRE_OK(kefir_ast_translator_type_cache_insert_unowned(mem, type_cache,
@@ -122,6 +125,8 @@ static kefir_result_t translate_static_identifier(struct kefir_mem *mem,
     REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
     scoped_identifier_layout->type_id = layout->static_layout_id;
     scoped_identifier_layout->type = layout->static_layout;
+
+    REQUIRE_OK(kefir_ast_translator_evaluate_type_layout(mem, env, scoped_identifier_layout->layout, scoped_identifier_layout->type));
     REQUIRE_OK(kefir_ast_translator_scoped_identifier_insert(mem, identifier, scoped_identifier, &layout->static_objects));
 
     REQUIRE_OK(kefir_ast_translator_type_cache_insert_unowned(mem, type_cache, scoped_identifier_layout->type_id,
@@ -145,6 +150,8 @@ static kefir_result_t translate_static_thread_local_identifier(struct kefir_mem 
     REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
     scoped_identifier_layout->type_id = layout->static_thread_local_layout_id;
     scoped_identifier_layout->type = layout->static_thread_local_layout;
+
+    REQUIRE_OK(kefir_ast_translator_evaluate_type_layout(mem, env, scoped_identifier_layout->layout, scoped_identifier_layout->type));
     REQUIRE_OK(kefir_ast_translator_scoped_identifier_insert(mem, identifier, scoped_identifier,
         &layout->static_thread_local_objects));
 

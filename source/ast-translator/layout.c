@@ -136,7 +136,7 @@ kefir_result_t kefir_ast_translator_evaluate_type_layout(struct kefir_mem *mem,
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_IR_TARGET_PLATFORM_FREE_TYPE(mem, env->target_platform, param.platform_type);
         kefir_hashtree_free(mem, &tree);
-        return KEFIR_OK;
+        return res;
     });
 
 

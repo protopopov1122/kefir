@@ -1,5 +1,6 @@
 #include "kefir/ast-translator/scope/local_scope_layout.h"
 #include "kefir/ast-translator/translator.h"
+#include "kefir/ast-translator/layout.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/ast-translator/scope/scope_layout_impl.h"
@@ -56,6 +57,8 @@ static kefir_result_t translate_static_identifier(struct kefir_mem *mem,
     REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&global_builder));
     scoped_identifier_layout->type_id = local_layout->global->static_layout_id;
     scoped_identifier_layout->type = local_layout->global->static_layout;
+
+    REQUIRE_OK(kefir_ast_translator_evaluate_type_layout(mem, env, scoped_identifier_layout->layout, scoped_identifier_layout->type));
     REQUIRE_OK(kefir_ast_translator_scoped_identifier_insert(mem, identifier, scoped_identifier, &local_layout->static_objects));
 
     REQUIRE_OK(kefir_ast_translator_type_cache_insert_unowned(mem, type_cache, scoped_identifier_layout->type_id,
@@ -83,6 +86,8 @@ static kefir_result_t translate_static_thread_local_identifier(struct kefir_mem 
     REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&global_builder));
     scoped_identifier_layout->type_id = local_layout->global->static_thread_local_layout_id;
     scoped_identifier_layout->type = local_layout->global->static_thread_local_layout;
+
+    REQUIRE_OK(kefir_ast_translator_evaluate_type_layout(mem, env, scoped_identifier_layout->layout, scoped_identifier_layout->type));
     REQUIRE_OK(kefir_ast_translator_scoped_identifier_insert(mem, identifier, scoped_identifier,
         &local_layout->static_thread_local_objects));
 
@@ -105,6 +110,8 @@ static kefir_result_t translate_auto_register_identifier(struct kefir_mem *mem,
         scoped_identifier->object.alignment->value, env, builder, &scoped_identifier_layout->layout));
     scoped_identifier_layout->type_id = local_layout->local_layout_id;
     scoped_identifier_layout->type = builder->type;
+    
+    REQUIRE_OK(kefir_ast_translator_evaluate_type_layout(mem, env, scoped_identifier_layout->layout, scoped_identifier_layout->type));
     REQUIRE_OK(kefir_ast_translator_scoped_identifier_insert(mem, identifier, scoped_identifier,
         &local_layout->local_objects));
 
@@ -155,33 +162,28 @@ static kefir_result_t traverse_local_scope(struct kefir_mem *mem,
         root->value);
     REQUIRE_OK(KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_STRUCT, 0, 0));
     const kefir_size_t begin = kefir_ir_type_total_length(builder->type) - 1;
-    kefir_size_t scope_length = 0;
     struct kefir_ast_identifier_flat_scope_iterator iter;
     kefir_result_t res;
     for (res = kefir_ast_identifier_flat_scope_iter(scope, &iter);
         res == KEFIR_OK;
         res = kefir_ast_identifier_flat_scope_next(scope, &iter)) {
-        scope_length++;
+        struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(builder->type, begin);
+        typeentry->param++;
         REQUIRE_OK(translate_local_scoped_identifier(mem, builder, iter.identifier, iter.value, env, type_cache, local_layout));
     }
     REQUIRE(res == KEFIR_ITERATOR_END, res);
     if (kefir_tree_first_child(root) != NULL) {
-        scope_length++;
         REQUIRE_OK(KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_UNION, 0, 0));
         const kefir_size_t child_begin = kefir_ir_type_total_length(builder->type) - 1;
-        kefir_size_t children = 0;
         for (struct kefir_tree_node *child = kefir_tree_first_child(root);
             child != NULL;
             child = kefir_tree_next_sibling(child)) {
-            children++;
+            struct kefir_ir_typeentry *child_typeentry =
+                kefir_ir_type_at(builder->type, child_begin);
+            child_typeentry->param++;
             REQUIRE_OK(traverse_local_scope(mem, child, builder, env, type_cache, local_layout));
         }
-        struct kefir_ir_typeentry *child_typeentry =
-            kefir_ir_type_at(builder->type, child_begin);
-        child_typeentry->param = children;
     }
-    struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(builder->type, begin);
-    typeentry->param = scope_length;
     return KEFIR_OK;
 }
 

@@ -266,7 +266,7 @@ kefir_result_t kefir_ast_type_layout_resolve_offset(struct kefir_ast_type_layout
             layout_ptr, add_to_offset, offset));
     } else {
         *layout_ptr = root;
-        *offset = root->properties.relative_offset;
+        *offset = 0;
     }
     return KEFIR_OK;
 }

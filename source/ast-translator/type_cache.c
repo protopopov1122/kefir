@@ -1,5 +1,6 @@
 #include "kefir/ast-translator/type_cache.h"
 #include "kefir/ast-translator/translator.h"
+#include "kefir/ast-translator/layout.h"
 #include "kefir/ir/builder.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
@@ -259,6 +260,7 @@ kefir_result_t kefir_ast_translator_type_cache_insert_unowned(struct kefir_mem *
     REQUIRE(cache != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator alignned type cache"));
     REQUIRE(ir_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type"));
     REQUIRE(type_layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type layout"));
+    REQUIRE(type_layout->properties.valid, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected provided type layout to have valid properties"));
 
     struct kefir_ast_translator_cached_type *cached_type =
         KEFIR_MALLOC(mem, sizeof(struct kefir_ast_translator_cached_type));
@@ -316,6 +318,13 @@ kefir_result_t kefir_ast_translator_type_cache_generate_owned(struct kefir_mem *
         cached_type->layout_owner = true;
         
         res = KEFIR_IRBUILDER_TYPE_FREE(&type_builder);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_ast_type_layout_free(mem, cached_type->type_layout);
+            KEFIR_FREE(mem, cached_type);
+            return res;
+        });
+
+        res = kefir_ast_translator_evaluate_type_layout(mem, env, cached_type->type_layout, cached_type->ir_type);
         REQUIRE_ELSE(res == KEFIR_OK, {
             kefir_ast_type_layout_free(mem, cached_type->type_layout);
             KEFIR_FREE(mem, cached_type);
