@@ -254,7 +254,7 @@
                 },
                 {
                     "opcode": "pick",
-                    "arg": 2
+                    "arg": 1
                 },
                 {
                     "opcode": "store32"
@@ -286,7 +286,7 @@
                 },
                 {
                     "opcode": "pick",
-                    "arg": 2
+                    "arg": 1
                 },
                 {
                     "opcode": "store64"
@@ -318,7 +318,7 @@
                 },
                 {
                     "opcode": "pick",
-                    "arg": 2
+                    "arg": 1
                 },
                 {
                     "opcode": "store32"
@@ -339,7 +339,31 @@
                 },
                 {
                     "opcode": "pick",
-                    "arg": 2
+                    "arg": 1
+                },
+                {
+                    "opcode": "store32"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "uint"
+                    }
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 10000.000000
+                },
+                {
+                    "opcode": "f64cint"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
                 },
                 {
                     "opcode": "store32"
@@ -371,7 +395,31 @@
                 },
                 {
                     "opcode": "pick",
-                    "arg": 2
+                    "arg": 1
+                },
+                {
+                    "opcode": "store8"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "bool"
+                    }
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 1.000000
+                },
+                {
+                    "opcode": "f32cint"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
                 },
                 {
                     "opcode": "store8"
@@ -403,7 +451,7 @@
                 },
                 {
                     "opcode": "pick",
-                    "arg": 2
+                    "arg": 1
                 },
                 {
                     "opcode": "store8"
@@ -424,7 +472,7 @@
                 },
                 {
                     "opcode": "pick",
-                    "arg": 2
+                    "arg": 1
                 },
                 {
                     "opcode": "store8"
@@ -445,7 +493,31 @@
                 },
                 {
                     "opcode": "pick",
-                    "arg": 2
+                    "arg": 1
+                },
+                {
+                    "opcode": "store8"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "schar"
+                    }
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 0.000000
+                },
+                {
+                    "opcode": "f64cint"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
                 },
                 {
                     "opcode": "store8"
@@ -477,7 +549,7 @@
                 },
                 {
                     "opcode": "pick",
-                    "arg": 2
+                    "arg": 1
                 },
                 {
                     "opcode": "store64"
@@ -498,7 +570,31 @@
                 },
                 {
                     "opcode": "pick",
-                    "arg": 2
+                    "arg": 1
+                },
+                {
+                    "opcode": "store64"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "slong"
+                    }
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 1.000600
+                },
+                {
+                    "opcode": "f32cint"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
                 },
                 {
                     "opcode": "store64"
@@ -530,7 +626,7 @@
                 },
                 {
                     "opcode": "pick",
-                    "arg": 2
+                    "arg": 1
                 },
                 {
                     "opcode": "store16"
@@ -551,7 +647,7 @@
                 },
                 {
                     "opcode": "pick",
-                    "arg": 2
+                    "arg": 1
                 },
                 {
                     "opcode": "store16"
@@ -583,7 +679,7 @@
                 },
                 {
                     "opcode": "pick",
-                    "arg": 2
+                    "arg": 1
                 },
                 {
                     "opcode": "store64"
@@ -604,7 +700,7 @@
                 },
                 {
                     "opcode": "pick",
-                    "arg": 2
+                    "arg": 1
                 },
                 {
                     "opcode": "store64"
@@ -636,7 +732,7 @@
                 },
                 {
                     "opcode": "pick",
-                    "arg": 2
+                    "arg": 1
                 },
                 {
                     "opcode": "store32"
@@ -652,12 +748,63 @@
                     "arg": -10000.000000
                 },
                 {
+                    "opcode": "f32cf64"
+                },
+                {
                     "opcode": "xchg",
                     "arg": 1
                 },
                 {
                     "opcode": "pick",
-                    "arg": 2
+                    "arg": 1
+                },
+                {
+                    "opcode": "store64"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "float"
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": 65
+                },
+                {
+                    "opcode": "uintcf32"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store32"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "double"
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": -15
+                },
+                {
+                    "opcode": "intcf64"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
                 },
                 {
                     "opcode": "store64"

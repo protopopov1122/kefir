@@ -250,7 +250,7 @@
                 },
                 {
                     "opcode": "pick",
-                    "arg": 2
+                    "arg": 1
                 },
                 {
                     "opcode": "bcopy",
@@ -367,7 +367,7 @@
                 },
                 {
                     "opcode": "pick",
-                    "arg": 2
+                    "arg": 1
                 },
                 {
                     "opcode": "bcopy",

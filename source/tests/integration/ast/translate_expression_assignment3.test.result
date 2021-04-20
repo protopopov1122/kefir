@@ -1,0 +1,520 @@
+{
+    "globals": [],
+    "externals": [
+        "int",
+        "float",
+        "double",
+        "ullong"
+    ],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": []
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "type": [
+                {
+                    "type": "float"
+                }
+            ]
+        },
+        {
+            "identifier": 5,
+            "type": [
+                {
+                    "type": "double"
+                }
+            ]
+        },
+        {
+            "identifier": 6,
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": []
+        }
+    ],
+    "function_declarations": [
+        {
+            "identifier": "assign_multiply_int_double",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_divide_int",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_divide_double",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_divide_ullong",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_multiply_float",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_divide_ullong_double",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_multiply_double",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_multiply_ullong",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_divide_float",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_multiply_int",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": "assign_multiply_int_double",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "int"
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load32i"
+                },
+                {
+                    "opcode": "intcf64"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 0.005270
+                },
+                {
+                    "opcode": "f64mul"
+                },
+                {
+                    "opcode": "f64cint"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store32"
+                }
+            ]
+        },
+        {
+            "identifier": "assign_divide_int",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "int"
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load32i"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -6
+                },
+                {
+                    "opcode": "idiv"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store32"
+                }
+            ]
+        },
+        {
+            "identifier": "assign_divide_double",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "double"
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 7.500000
+                },
+                {
+                    "opcode": "f32cf64"
+                },
+                {
+                    "opcode": "f64div"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store64"
+                }
+            ]
+        },
+        {
+            "identifier": "assign_divide_ullong",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "ullong"
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1006
+                },
+                {
+                    "opcode": "idiv"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store64"
+                }
+            ]
+        },
+        {
+            "identifier": "assign_multiply_float",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "float"
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load32u"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -5
+                },
+                {
+                    "opcode": "intcf32"
+                },
+                {
+                    "opcode": "f32mul"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store32"
+                }
+            ]
+        },
+        {
+            "identifier": "assign_divide_ullong_double",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "ullong"
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "uintcf64"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 6.660000
+                },
+                {
+                    "opcode": "f64div"
+                },
+                {
+                    "opcode": "f64cint"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store64"
+                }
+            ]
+        },
+        {
+            "identifier": "assign_multiply_double",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "double"
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 5.003000
+                },
+                {
+                    "opcode": "f32cf64"
+                },
+                {
+                    "opcode": "f64mul"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store64"
+                }
+            ]
+        },
+        {
+            "identifier": "assign_multiply_ullong",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "ullong"
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 100
+                },
+                {
+                    "opcode": "imul"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store64"
+                }
+            ]
+        },
+        {
+            "identifier": "assign_divide_float",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "float"
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load32u"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 42
+                },
+                {
+                    "opcode": "uintcf32"
+                },
+                {
+                    "opcode": "f32div"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store32"
+                }
+            ]
+        },
+        {
+            "identifier": "assign_multiply_int",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "int"
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load32i"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -1
+                },
+                {
+                    "opcode": "imul"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store32"
+                }
+            ]
+        }
+    ]
+}
