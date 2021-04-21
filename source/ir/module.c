@@ -271,16 +271,14 @@ kefir_result_t kefir_ir_module_declare_external(struct kefir_mem *mem,
 
 struct kefir_ir_function * kefir_ir_module_new_function(struct kefir_mem *mem,
                                                     struct kefir_ir_module *module,
-                                                    const char *identifier,
+                                                    struct kefir_ir_function_decl *decl,
                                                     struct kefir_ir_type *locals,
                                                     kefir_size_t length) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(module != NULL, NULL);
-    struct kefir_hashtree_node *decl_node;
-    REQUIRE(kefir_hashtree_at(&module->named_function_declarations,
-        (kefir_hashtree_key_t) identifier, &decl_node) == KEFIR_OK, NULL);
-    struct kefir_ir_function_decl *decl = (struct kefir_ir_function_decl *) decl_node->value;
     REQUIRE(decl != NULL, NULL);
+    REQUIRE(decl->name != NULL && strlen(decl->name) != 0, NULL);
+
     struct kefir_ir_function *func = KEFIR_MALLOC(mem, sizeof(struct kefir_ir_function));
     REQUIRE(func != NULL, NULL);
     kefir_result_t result = kefir_ir_function_alloc(mem, decl, locals, length, func);
@@ -288,7 +286,7 @@ struct kefir_ir_function * kefir_ir_module_new_function(struct kefir_mem *mem,
         KEFIR_FREE(mem, func);
         return NULL;
     });
-    result = kefir_hashtree_insert(mem, &module->functions, (kefir_hashtree_key_t) identifier, (kefir_hashtree_value_t) func);
+    result = kefir_hashtree_insert(mem, &module->functions, (kefir_hashtree_key_t) decl->name, (kefir_hashtree_value_t) func);
     REQUIRE_ELSE(result == KEFIR_OK, {
         kefir_ir_function_free(mem, func);
         KEFIR_FREE(mem, func);

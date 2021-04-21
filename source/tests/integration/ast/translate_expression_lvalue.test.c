@@ -37,7 +37,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
             (_id), func1_params, false, func1_returns); \
         REQUIRE(func1_decl != NULL, KEFIR_INTERNAL_ERROR); \
         struct kefir_ir_function *func1 = kefir_ir_module_new_function(mem, &module, \
-            (_id), translator_local_scope.local_layout, 0); \
+            func1_decl, translator_local_scope.local_layout, 0); \
         struct kefir_irbuilder_block builder; \
         REQUIRE_OK(kefir_irbuilder_block_init(mem, &builder, &func1->body)); \
         _init \

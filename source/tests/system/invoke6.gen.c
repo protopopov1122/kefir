@@ -20,7 +20,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ir_module_new_named_function_declaration(mem, &module, "proxyadd",
             proxyadd_decl_params, false, proxyadd_decl_result);
     REQUIRE(proxyadd_decl != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *proxyadd = kefir_ir_module_new_function(mem, &module, proxyadd_decl->name, NULL, 1024);
+    struct kefir_ir_function *proxyadd = kefir_ir_module_new_function(mem, &module, proxyadd_decl, NULL, 1024);
     REQUIRE(proxyadd != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, proxyadd_decl->name));
 
