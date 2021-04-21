@@ -13,6 +13,9 @@ kefir_result_t kefir_ir_function_decl_alloc(struct kefir_mem *mem,
                                        struct kefir_ir_function_decl *decl) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocation"));
     REQUIRE(decl != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR function declaration pointer"));
+    REQUIRE(name == NULL || strlen(name) > 0,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "IR function declaration identifier cannot be an empty string"));
+
     decl->id = id;
     decl->name = name;
     decl->params = parameters;
@@ -37,7 +40,12 @@ kefir_result_t kefir_ir_function_alloc(struct kefir_mem *mem,
                                   kefir_size_t bodySz,
                                   struct kefir_ir_function *func) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocation"));
+    REQUIRE(decl != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR function declaration"));
     REQUIRE(func != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR function pointer"));
+    REQUIRE(decl->name != NULL && strlen(decl->name) > 0,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid declaratio name"));
+
+    func->name = decl->name;
     func->declaration = decl;
     func->locals = locals;
     kefir_result_t result = kefir_irblock_alloc(mem, bodySz, &func->body);

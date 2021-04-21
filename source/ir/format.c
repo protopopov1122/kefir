@@ -115,15 +115,22 @@ kefir_result_t kefir_ir_format_instr_funcref(struct kefir_json_output *json, con
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid json output"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR module"));
     REQUIRE(instr != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR instruction"));
-    const char *symbol = kefir_ir_module_get_named_symbol(module, (kefir_id_t) instr->arg.u64);
+    const struct kefir_ir_function_decl *decl =
+        kefir_ir_module_get_declaration(module, (kefir_id_t) instr->arg.u64);
     
     REQUIRE_OK(kefir_json_output_object_begin(json));
     REQUIRE_OK(kefir_json_output_object_key(json, "opcode"));
     REQUIRE_OK(kefir_json_output_string(json, kefir_iropcode_mnemonic(instr->opcode)));
     REQUIRE_OK(kefir_json_output_object_key(json, "arg"));
     REQUIRE_OK(kefir_json_output_object_begin(json));
-    REQUIRE_OK(kefir_json_output_object_key(json, "function"));
-    REQUIRE_OK(kefir_json_output_string(json, symbol));
+    REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
+    REQUIRE_OK(kefir_json_output_uinteger(json, decl->id));
+    REQUIRE_OK(kefir_json_output_object_key(json, "name"));
+    if (decl->name != NULL) {
+        REQUIRE_OK(kefir_json_output_string(json, decl->name));
+    } else {
+        REQUIRE_OK(kefir_json_output_null(json));
+    }
     REQUIRE_OK(kefir_json_output_object_end(json));
     REQUIRE_OK(kefir_json_output_object_end(json));
     return KEFIR_OK;
@@ -401,7 +408,7 @@ static kefir_result_t kefir_ir_format_function(struct kefir_json_output *json,
     REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
     REQUIRE_OK(kefir_json_output_uinteger(json, func->declaration->id));
     REQUIRE_OK(kefir_json_output_object_key(json, "name"));
-    REQUIRE_OK(kefir_json_output_string(json, func->declaration->name));
+    REQUIRE_OK(kefir_json_output_string(json, func->name));
     
     if (func->locals != NULL) {
         REQUIRE_OK(kefir_json_output_object_key(json, "locals"));

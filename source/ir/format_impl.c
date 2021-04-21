@@ -13,8 +13,8 @@ kefir_result_t kefir_ir_format_instr(struct kefir_json_output *json, const struc
         case KEFIR_IROPCODE_JMP: return kefir_ir_format_instr_coderef(json, module, instr);
         case KEFIR_IROPCODE_BRANCH: return kefir_ir_format_instr_coderef(json, module, instr);
         case KEFIR_IROPCODE_RET: return kefir_ir_format_instr_none(json, module, instr);
-        case KEFIR_IROPCODE_INVOKE: return kefir_ir_format_instr_u64(json, module, instr);
-        case KEFIR_IROPCODE_INVOKEV: return kefir_ir_format_instr_u64(json, module, instr);
+        case KEFIR_IROPCODE_INVOKE: return kefir_ir_format_instr_funcref(json, module, instr);
+        case KEFIR_IROPCODE_INVOKEV: return kefir_ir_format_instr_funcref(json, module, instr);
         case KEFIR_IROPCODE_PUSHI64: return kefir_ir_format_instr_i64(json, module, instr);
         case KEFIR_IROPCODE_PUSHU64: return kefir_ir_format_instr_u64(json, module, instr);
         case KEFIR_IROPCODE_PUSHSTRING: return kefir_ir_format_instr_string(json, module, instr);

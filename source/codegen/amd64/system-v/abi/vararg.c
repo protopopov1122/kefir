@@ -166,7 +166,7 @@ static kefir_result_t vararg_visit_integer(const struct kefir_ir_type *type,
     ASSIGN_DECL_CAST(struct vararg_getter *, param,
         payload);
     snprintf(buffer, BUF_SIZE - 1, KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_INT_LABEL,
-        param->sysv_func->func->declaration->name);
+        param->sysv_func->func->name);
     kefir_result_t res = kefir_amd64_sysv_function_insert_appendix(param->mem, param->sysv_func,
         vararg_get_int, NULL, NULL, buffer);
     REQUIRE(res == KEFIR_OK || res == KEFIR_ALREADY_EXISTS, res);
@@ -221,7 +221,7 @@ static kefir_result_t vararg_visit_sse(const struct kefir_ir_type *type,
     ASSIGN_DECL_CAST(struct vararg_getter *, param,
         payload);
     snprintf(buffer, BUF_SIZE - 1, KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_SSE_LABEL,
-        param->sysv_func->func->declaration->name);
+        param->sysv_func->func->name);
     kefir_result_t res = kefir_amd64_sysv_function_insert_appendix(param->mem, param->sysv_func,
         vararg_get_sse, NULL, NULL, buffer);
     REQUIRE(res == KEFIR_OK || res == KEFIR_ALREADY_EXISTS, res);
@@ -719,7 +719,7 @@ kefir_result_t kefir_codegen_amd64_sysv_vararg_instruction(struct kefir_mem *mem
     switch (instr->opcode) {
         case KEFIR_IROPCODE_VARARG_START: {
             snprintf(buffer, BUF_SIZE - 1, KEFIR_AMD64_SYSV_FUNCTION_VARARG_START_LABEL,
-                sysv_func->func->declaration->name);
+                sysv_func->func->name);
             kefir_result_t res = kefir_amd64_sysv_function_insert_appendix(mem, sysv_func,
                 vararg_start, NULL, NULL, buffer);
             REQUIRE(res == KEFIR_OK || res == KEFIR_ALREADY_EXISTS, res);
@@ -739,7 +739,7 @@ kefir_result_t kefir_codegen_amd64_sysv_vararg_instruction(struct kefir_mem *mem
 
         case KEFIR_IROPCODE_VARARG_GET: {
             snprintf(buffer, BUF_SIZE - 1, KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_LABEL,
-                sysv_func->func->declaration->name,
+                sysv_func->func->name,
                 instr->arg.u32[0],
                 instr->arg.u32[1]);
 
@@ -769,7 +769,7 @@ kefir_result_t kefir_codegen_amd64_sysv_vararg_instruction(struct kefir_mem *mem
 
         case KEFIR_IROPCODE_VARARG_END: {
             snprintf(buffer, BUF_SIZE - 1, KEFIR_AMD64_SYSV_FUNCTION_VARARG_END_LABEL,
-                sysv_func->func->declaration->name);
+                sysv_func->func->name);
             kefir_result_t res = kefir_amd64_sysv_function_insert_appendix(mem, sysv_func,
                 vararg_end, NULL, NULL, buffer);
             REQUIRE(res == KEFIR_OK || res == KEFIR_ALREADY_EXISTS, res);

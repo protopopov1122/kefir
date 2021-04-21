@@ -101,7 +101,7 @@ proxyadd:
 __proxyadd_body:
     dq __kefirrt_push_impl, 7
     dq __kefirrt_xchg_impl, 1
-    dq __kefirrt_function_vgate1, 0
+    dq __kefirrt_sfunction_addstruct_vgate, 0
     dq __proxyadd_epilogue, 0
 __proxyadd_epilogue:
     pop r12
@@ -112,7 +112,7 @@ __proxyadd_epilogue:
     add rsp, 48
     jmp __kefirrt_restore_state
 
-__kefirrt_function_vgate1:
+__kefirrt_sfunction_addstruct_vgate:
     mov r12, rsp
     and rsp, -16
     mov rdi, [r12 + 8]

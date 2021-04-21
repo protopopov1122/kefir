@@ -246,12 +246,12 @@ kefir_result_t kefir_amd64_sysv_function_prologue(struct kefir_codegen_amd64 *co
                                               const struct kefir_amd64_sysv_function *func) {
     REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 code generator"));
     REQUIRE(func != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR function declaration"));
-    ASMGEN_COMMENT(&codegen->asmgen, "Begin prologue of %s", func->func->declaration->name);
+    ASMGEN_COMMENT(&codegen->asmgen, "Begin prologue of %s", func->func->name);
     REQUIRE_OK(preserve_state(&codegen->asmgen));
     REQUIRE_OK(load_arguments(codegen, func));
     if (func->func->declaration->vararg) {
         REQUIRE_OK(save_registers(codegen, func));
     }
-    ASMGEN_COMMENT(&codegen->asmgen, "End prologue of %s", func->func->declaration->name);
+    ASMGEN_COMMENT(&codegen->asmgen, "End prologue of %s", func->func->name);
     return KEFIR_OK;
 }

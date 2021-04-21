@@ -198,7 +198,7 @@ struct kefir_ir_type *kefir_ir_module_new_type(struct kefir_mem *mem,
 
 struct kefir_ir_function_decl *kefir_ir_module_new_function_declaration(struct kefir_mem *mem,
                                                                     struct kefir_ir_module *module,
-                                                                    const char *identifier,
+                                                                    const char *name,
                                                                     struct kefir_ir_type *parameters,
                                                                     bool vararg,
                                                                     struct kefir_ir_type *returns,
@@ -206,7 +206,7 @@ struct kefir_ir_function_decl *kefir_ir_module_new_function_declaration(struct k
     REQUIRE(mem != NULL, NULL);
     REQUIRE(module != NULL, NULL);
 
-    const char *symbol = kefir_ir_module_symbol(mem, module, identifier, NULL);
+    const char *symbol = kefir_ir_module_symbol(mem, module, name, NULL);
     kefir_id_t func_decl_id = module->next_function_decl_id;
     struct kefir_ir_function_decl *decl = KEFIR_MALLOC(mem, sizeof(struct kefir_ir_function_decl));
     REQUIRE(decl != NULL, NULL);
@@ -245,7 +245,10 @@ struct kefir_ir_function_decl *kefir_ir_module_new_named_function_declaration(st
 
     kefir_result_t res = kefir_hashtree_insert(mem, &module->named_function_declarations,
         (kefir_hashtree_key_t) decl->name, (kefir_hashtree_value_t) decl);
-    REQUIRE(res == KEFIR_OK, NULL);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_hashtree_delete(mem, &module->function_declarations, (kefir_hashtree_key_t) decl->id);
+        return NULL;
+    });
     return decl;
 }
 

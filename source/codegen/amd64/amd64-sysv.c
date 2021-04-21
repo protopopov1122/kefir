@@ -49,14 +49,14 @@ static kefir_result_t cg_module_prologue(struct kefir_codegen_amd64_sysv_module 
 
 static kefir_result_t cg_function_prologue(struct kefir_codegen_amd64 *codegen,
                                          const struct kefir_amd64_sysv_function *func) {
-    ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_LABEL, func->func->declaration->name);
+    ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_LABEL, func->func->name);
     REQUIRE_OK(kefir_amd64_sysv_function_prologue(codegen, func));
     return KEFIR_OK;
 }
 
 static kefir_result_t cg_function_epilogue(struct kefir_codegen_amd64 *codegen,
                                          const struct kefir_amd64_sysv_function *func) {
-    ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_EPILOGUE_LABEL, func->func->declaration->name);
+    ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_EPILOGUE_LABEL, func->func->name);
     REQUIRE_OK(kefir_amd64_sysv_function_epilogue(codegen, func));
     return KEFIR_OK;
 }
@@ -67,10 +67,10 @@ static kefir_result_t cg_function_body(struct kefir_mem *mem,
                                      struct kefir_amd64_sysv_function *sysv_func) {
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_PROGRAM_REG);
-    ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL, sysv_func->func->declaration->name);
+    ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL, sysv_func->func->name);
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_JMP);
     ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_INDIRECT, KEFIR_AMD64_SYSV_ABI_PROGRAM_REG);
-    ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL, sysv_func->func->declaration->name);
+    ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL, sysv_func->func->name);
     const struct kefir_irinstr *instr = NULL;
     for (kefir_size_t pc = 0; pc < kefir_irblock_length(&sysv_func->func->body); pc++) {
         instr = kefir_irblock_at(&sysv_func->func->body, pc);
@@ -80,7 +80,7 @@ static kefir_result_t cg_function_body(struct kefir_mem *mem,
     ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
     ASMGEN_ARG(&codegen->asmgen,
         KEFIR_AMD64_SYSV_PROCEDURE_EPILOGUE_LABEL,
-        sysv_func->func->declaration->name);
+        sysv_func->func->name);
     ASMGEN_ARG0(&codegen->asmgen, "0");
     return KEFIR_OK;
 }
@@ -121,9 +121,17 @@ static kefir_result_t cg_translate_function_gates(struct kefir_codegen_amd64 *co
         ASSIGN_DECL_CAST(struct kefir_amd64_sysv_function_decl *, sysv_decl,
             node->value);
         if (virtualDecl) {
-            ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_FUNCTION_VIRTUAL_GATE_LABEL, sysv_decl->decl->id);
+            if (sysv_decl->decl->name == NULL) {
+                ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_FUNCTION_VIRTUAL_GATE_ID_LABEL, sysv_decl->decl->id);
+            } else {
+                ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_FUNCTION_VIRTUAL_GATE_NAMED_LABEL, sysv_decl->decl->name);
+            }
         } else {
-            ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_FUNCTION_GATE_LABEL, sysv_decl->decl->id);
+            if (sysv_decl->decl->name == NULL) {
+                ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_FUNCTION_GATE_ID_LABEL, sysv_decl->decl->id);
+            } else {
+                ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_FUNCTION_GATE_NAMED_LABEL, sysv_decl->decl->name);
+            }
         }
         REQUIRE_OK(kefir_amd64_sysv_function_invoke(codegen, sysv_decl, virtualDecl));
         ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_ADD);

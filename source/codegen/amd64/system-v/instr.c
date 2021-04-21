@@ -28,7 +28,7 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
             ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
             ASMGEN_ARG(&codegen->asmgen,
                 KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL " + " KEFIR_INT64_FMT,
-                sysv_func->func->declaration->name,
+                sysv_func->func->name,
                 2 * KEFIR_AMD64_SYSV_ABI_QWORD * instr->arg.u64);
         } break;
 
@@ -36,7 +36,7 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
             ASMGEN_ARG(&codegen->asmgen,
                 KEFIR_AMD64_SYSV_PROCEDURE_EPILOGUE_LABEL,
-                sysv_func->func->declaration->name);
+                sysv_func->func->name);
             ASMGEN_ARG0(&codegen->asmgen, "0");
         } break;
 
@@ -44,10 +44,19 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
             kefir_id_t id = (kefir_id_t) instr->arg.u64;
             REQUIRE(kefir_codegen_amd64_sysv_module_function_decl(mem, sysv_module, id, false),
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AMD64 System-V IR module function decaration"));
+
+            const struct kefir_ir_function_decl *decl =
+                kefir_ir_module_get_declaration(sysv_module->module, id);
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
-            ASMGEN_ARG(&codegen->asmgen,
-                KEFIR_AMD64_SYSV_FUNCTION_GATE_LABEL,
-                id);
+            if (decl->name == NULL) {
+                ASMGEN_ARG(&codegen->asmgen,
+                    KEFIR_AMD64_SYSV_FUNCTION_GATE_ID_LABEL,
+                    id);
+            } else {
+                ASMGEN_ARG(&codegen->asmgen,
+                    KEFIR_AMD64_SYSV_FUNCTION_GATE_NAMED_LABEL,
+                    decl->name);
+            }
             ASMGEN_ARG0(&codegen->asmgen, "0");
         } break;
 
@@ -55,10 +64,19 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
             kefir_id_t id = (kefir_id_t) instr->arg.u64;
             REQUIRE(kefir_codegen_amd64_sysv_module_function_decl(mem, sysv_module, id, true),
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AMD64 System-V IR module function decaration"));
+            
+            const struct kefir_ir_function_decl *decl =
+                kefir_ir_module_get_declaration(sysv_module->module, id);
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
-            ASMGEN_ARG(&codegen->asmgen,
-                KEFIR_AMD64_SYSV_FUNCTION_VIRTUAL_GATE_LABEL,
-                id);
+            if (decl->name == NULL) {
+                ASMGEN_ARG(&codegen->asmgen,
+                    KEFIR_AMD64_SYSV_FUNCTION_VIRTUAL_GATE_ID_LABEL,
+                    id);
+            } else {
+                ASMGEN_ARG(&codegen->asmgen,
+                    KEFIR_AMD64_SYSV_FUNCTION_VIRTUAL_GATE_NAMED_LABEL,
+                    decl->name);
+            }
             ASMGEN_ARG0(&codegen->asmgen, "0");
         } break;
 

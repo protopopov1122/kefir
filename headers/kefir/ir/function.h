@@ -16,6 +16,7 @@ typedef struct kefir_ir_function_decl {
 } kefir_ir_function_decl_t;
 
 typedef struct kefir_ir_function {
+    const char *name;
     struct kefir_ir_function_decl *declaration;
     struct kefir_ir_type *locals;
     struct kefir_irblock body;
