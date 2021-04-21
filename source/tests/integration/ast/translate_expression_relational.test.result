@@ -52,13 +52,13 @@
     ],
     "function_declarations": [
         {
-            "identifier": "less_than",
+            "identifier": "equality_arithemtical",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "less_equals",
+            "identifier": "equality_pointer",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -76,7 +76,13 @@
             "returns": []
         },
         {
-            "identifier": "equality_pointer",
+            "identifier": "less_than",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "less_equals",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -88,19 +94,13 @@
             "returns": []
         },
         {
-            "identifier": "ptr_relational",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
-            "identifier": "equality_arithemtical",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
             "identifier": "greater_equal",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "ptr_relational",
             "parameters": [],
             "vararg": false,
             "returns": []

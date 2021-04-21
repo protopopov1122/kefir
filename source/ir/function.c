@@ -5,18 +5,16 @@
 #include "kefir/core/error.h"
 
 kefir_result_t kefir_ir_function_decl_alloc(struct kefir_mem *mem,
+                                       kefir_id_t id,
                                        const char *identifier,
-                                       const char *alias,
                                        struct kefir_ir_type *parameters,
                                        bool vararg,
                                        struct kefir_ir_type *returns,
                                        struct kefir_ir_function_decl *decl) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocation"));
-    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR function identifier"));
-    REQUIRE(strlen(identifier) > 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR function identifier"));
     REQUIRE(decl != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR function declaration pointer"));
+    decl->id = id;
     decl->identifier = identifier;
-    decl->alias = alias;
     decl->params = parameters;
     decl->result = returns;
     decl->vararg = vararg;

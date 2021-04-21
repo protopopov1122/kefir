@@ -18,7 +18,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "bool_and", NULL, decl_params, false, decl_result);
+        kefir_ir_module_new_named_function_declaration(mem, &module, "bool_and",
+            decl_params, false, decl_result, NULL);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *func = kefir_ir_module_new_function(mem, &module, decl->identifier, NULL, 2);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -33,7 +34,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
     REQUIRE(decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(decl_result != NULL, KEFIR_INTERNAL_ERROR);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "bool_or", NULL, decl_params, false, decl_result);
+    decl = kefir_ir_module_new_named_function_declaration(mem, &module, "bool_or",
+        decl_params, false, decl_result, NULL);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl->identifier, NULL, 2);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -48,7 +50,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
     REQUIRE(decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(decl_result != NULL, KEFIR_INTERNAL_ERROR);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "bool_not", NULL, decl_params, false, decl_result);
+    decl = kefir_ir_module_new_named_function_declaration(mem, &module, "bool_not", 
+        decl_params, false, decl_result, NULL);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl->identifier, NULL, 2);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);

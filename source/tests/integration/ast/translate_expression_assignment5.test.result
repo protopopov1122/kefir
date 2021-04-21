@@ -99,7 +99,7 @@
     ],
     "function_declarations": [
         {
-            "identifier": "assign_add_double",
+            "identifier": "assign_add_int",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -111,7 +111,13 @@
             "returns": []
         },
         {
-            "identifier": "assign_add_int",
+            "identifier": "assign_add_float",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_add_double",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -124,12 +130,6 @@
         },
         {
             "identifier": "assign_add_ptr_int",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
-            "identifier": "assign_add_float",
             "parameters": [],
             "vararg": false,
             "returns": []

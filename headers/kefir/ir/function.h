@@ -8,8 +8,8 @@
 #include "kefir/ir/instr.h"
 
 typedef struct kefir_ir_function_decl {
+    kefir_id_t id;
     const char *identifier;
-    const char *alias;
     struct kefir_ir_type *params;
     bool vararg;
     struct kefir_ir_type *result;
@@ -22,7 +22,7 @@ typedef struct kefir_ir_function {
 } kefir_ir_function_t;
 
 kefir_result_t kefir_ir_function_decl_alloc(struct kefir_mem *,
-                                       const char *,
+                                       kefir_id_t,
                                        const char *,
                                        struct kefir_ir_type *,
                                        bool,

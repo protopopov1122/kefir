@@ -68,18 +68,6 @@
     ],
     "function_declarations": [
         {
-            "identifier": "decrement_int1",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
-            "identifier": "decrement_int2",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
             "identifier": "increment_int1",
             "parameters": [],
             "vararg": false,
@@ -92,7 +80,37 @@
             "returns": []
         },
         {
+            "identifier": "decrement_int1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "decrement_int2",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "increment_float",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
             "identifier": "increment_double",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "decrement_float",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "decrement_double",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -110,12 +128,6 @@
             "returns": []
         },
         {
-            "identifier": "decrement_double",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
             "identifier": "decrement_pointer1",
             "parameters": [],
             "vararg": false,
@@ -123,18 +135,6 @@
         },
         {
             "identifier": "decrement_pointer2",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
-            "identifier": "decrement_float",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
-            "identifier": "increment_float",
             "parameters": [],
             "vararg": false,
             "returns": []

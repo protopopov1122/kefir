@@ -20,8 +20,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(unit_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(unit_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *unit_decl =
-        kefir_ir_module_new_function_declaration(mem, &module,
-            kefir_ir_module_symbol(mem, &module, "unit", &unit_id), NULL, unit_decl_params, false, unit_decl_result);
+        kefir_ir_module_new_named_function_declaration(mem, &module,
+            "unit", unit_decl_params, false, unit_decl_result, &unit_id);
     REQUIRE(unit_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *unit = kefir_ir_module_new_function(mem, &module, unit_decl->identifier, NULL, 1024);
     REQUIRE(unit != NULL, KEFIR_INTERNAL_ERROR);
@@ -40,8 +40,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(inttype != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(getint_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *getint_decl =
-        kefir_ir_module_new_function_declaration(mem, &module,
-            kefir_ir_module_symbol(mem, &module, "getint", &getint_id), NULL, getint_decl_params, false, getint_decl_result);
+        kefir_ir_module_new_named_function_declaration(mem, &module,
+            "getint", getint_decl_params, false, getint_decl_result, &getint_id);
     REQUIRE(getint_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *getint = kefir_ir_module_new_function(mem, &module, getint_decl->identifier, getint_locals, 1024);
     REQUIRE(getint != NULL, KEFIR_INTERNAL_ERROR);
@@ -75,7 +75,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(inttype != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(getarg_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *getarg_decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "getarg", NULL, inttype, true, getarg_decl_result);
+        kefir_ir_module_new_named_function_declaration(mem, &module, "getarg",
+            inttype, true, getarg_decl_result, NULL);
     REQUIRE(getarg_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *getarg = kefir_ir_module_new_function(mem, &module, getarg_decl->identifier, getarg_locals, 1024);
     REQUIRE(getarg != NULL, KEFIR_INTERNAL_ERROR);

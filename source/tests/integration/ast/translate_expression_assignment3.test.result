@@ -61,6 +61,30 @@
     ],
     "function_declarations": [
         {
+            "identifier": "assign_multiply_int",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_multiply_ullong",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_multiply_float",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_multiply_double",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
             "identifier": "assign_multiply_int_double",
             "parameters": [],
             "vararg": false,
@@ -73,37 +97,7 @@
             "returns": []
         },
         {
-            "identifier": "assign_divide_double",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
             "identifier": "assign_divide_ullong",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
-            "identifier": "assign_multiply_float",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
-            "identifier": "assign_divide_ullong_double",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
-            "identifier": "assign_multiply_double",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
-            "identifier": "assign_multiply_ullong",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -115,7 +109,13 @@
             "returns": []
         },
         {
-            "identifier": "assign_multiply_int",
+            "identifier": "assign_divide_double",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_divide_ullong_double",
             "parameters": [],
             "vararg": false,
             "returns": []

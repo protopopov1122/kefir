@@ -155,7 +155,7 @@
             "returns": []
         },
         {
-            "identifier": "indirection",
+            "identifier": "array_subscript",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -173,7 +173,7 @@
             "returns": []
         },
         {
-            "identifier": "array_subscript",
+            "identifier": "indirection",
             "parameters": [],
             "vararg": false,
             "returns": []

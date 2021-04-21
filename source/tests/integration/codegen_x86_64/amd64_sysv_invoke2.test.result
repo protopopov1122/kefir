@@ -95,15 +95,15 @@ func1:
     mov rbx, __func1_body
     jmp [rbx]
 __func1_body:
-    dq __func2_gate, 0
-    dq __func3_gate, 0
+    dq __kefirrt_function_gate1, 0
+    dq __kefirrt_function_gate2, 0
     dq __func1_epilogue, 0
 __func1_epilogue:
     mov rsp, r14
     add rsp, 16
     jmp __kefirrt_restore_state
 
-__func2_gate:
+__kefirrt_function_gate1:
     mov r12, rsp
     and rsp, -16
     mov rdi, [r12 + 16]
@@ -116,7 +116,7 @@ __func2_gate:
     add rbx, 16
     jmp [rbx]
 
-__func3_gate:
+__kefirrt_function_gate2:
     mov r12, rsp
     and rsp, -16
     pinsrq xmm0, [r12 + 16], 0

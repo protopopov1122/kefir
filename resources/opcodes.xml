@@ -7,8 +7,8 @@
     <opcode id="jmp"         mnemonic="jmp"         code="0x02" type="coderef" />
     <opcode id="branch"      mnemonic="branch"      code="0x03" type="coderef" />
     <opcode id="ret"         mnemonic="ret"         code="0x04" type="none" />
-    <opcode id="invoke"      mnemonic="invoke"      code="0x05" type="funcref" />
-    <opcode id="invokev"     mnemonic="invokev"     code="0x06" type="funcref" />
+    <opcode id="invoke"      mnemonic="invoke"      code="0x05" type="u64" />
+    <opcode id="invokev"     mnemonic="invokev"     code="0x06" type="u64" />
 
     <!-- Stack control -->
     <opcode id="pushi64"     mnemonic="push"        code="0x10" type="i64" />

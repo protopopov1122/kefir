@@ -378,10 +378,6 @@ static kefir_result_t kefir_ir_format_function_declaration(struct kefir_json_out
     REQUIRE_OK(kefir_json_output_object_begin(json));
     REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
     REQUIRE_OK(kefir_json_output_string(json, decl->identifier));
-    if (decl->alias != NULL) {
-        REQUIRE_OK(kefir_json_output_object_key(json, "alias"));
-        REQUIRE_OK(kefir_json_output_string(json, decl->alias));
-    }
     REQUIRE_OK(kefir_json_output_object_key(json, "parameters"));
     REQUIRE_OK(kefir_ir_format_type_json(json, decl->params));
     REQUIRE_OK(kefir_json_output_object_key(json, "vararg"));

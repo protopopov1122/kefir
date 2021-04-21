@@ -24,24 +24,6 @@
     ],
     "function_declarations": [
         {
-            "identifier": "logical_or1",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
-            "identifier": "logical_or2",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
-            "identifier": "logical_or3",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
             "identifier": "logical_and1",
             "parameters": [],
             "vararg": false,
@@ -55,6 +37,24 @@
         },
         {
             "identifier": "logical_and3",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "logical_or1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "logical_or2",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "logical_or3",
             "parameters": [],
             "vararg": false,
             "returns": []

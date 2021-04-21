@@ -131,13 +131,13 @@
     ],
     "function_declarations": [
         {
-            "identifier": "assign_union",
+            "identifier": "assign_struct",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_struct",
+            "identifier": "assign_union",
             "parameters": [],
             "vararg": false,
             "returns": []

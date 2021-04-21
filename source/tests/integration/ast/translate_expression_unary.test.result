@@ -195,7 +195,7 @@
             "returns": []
         },
         {
-            "identifier": "alignof",
+            "identifier": "logical_negate",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -213,13 +213,13 @@
             "returns": []
         },
         {
-            "identifier": "indirection",
+            "identifier": "alignof",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "logical_negate",
+            "identifier": "indirection",
             "parameters": [],
             "vararg": false,
             "returns": []

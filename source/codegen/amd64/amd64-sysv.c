@@ -121,9 +121,9 @@ static kefir_result_t cg_translate_function_gates(struct kefir_codegen_amd64 *co
         ASSIGN_DECL_CAST(struct kefir_amd64_sysv_function_decl *, sysv_decl,
             node->value);
         if (virtualDecl) {
-            ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_FUNCTION_VIRTUAL_GATE_LABEL, sysv_decl->decl->identifier);
+            ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_FUNCTION_VIRTUAL_GATE_LABEL, sysv_decl->decl->id);
         } else {
-            ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_FUNCTION_GATE_LABEL, sysv_decl->decl->identifier);
+            ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_FUNCTION_GATE_LABEL, sysv_decl->decl->id);
         }
         REQUIRE_OK(kefir_amd64_sysv_function_invoke(codegen, sysv_decl, virtualDecl));
         ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_ADD);

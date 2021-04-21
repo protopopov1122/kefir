@@ -24,6 +24,12 @@
     ],
     "function_declarations": [
         {
+            "identifier": "multiply",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
             "identifier": "divide",
             "parameters": [],
             "vararg": false,
@@ -31,12 +37,6 @@
         },
         {
             "identifier": "modulo",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
-            "identifier": "multiply",
             "parameters": [],
             "vararg": false,
             "returns": []

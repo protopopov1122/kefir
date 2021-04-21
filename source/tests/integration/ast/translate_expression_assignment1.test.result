@@ -174,24 +174,6 @@
     ],
     "function_declarations": [
         {
-            "identifier": "enum",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
-            "identifier": "pointer",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
-            "identifier": "assign_int",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
             "identifier": "assign_bool",
             "parameters": [],
             "vararg": false,
@@ -204,13 +186,19 @@
             "returns": []
         },
         {
-            "identifier": "assign_long",
+            "identifier": "assign_short",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_short",
+            "identifier": "assign_int",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_long",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -223,6 +211,18 @@
         },
         {
             "identifier": "assign_float_double",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "enum",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "pointer",
             "parameters": [],
             "vararg": false,
             "returns": []

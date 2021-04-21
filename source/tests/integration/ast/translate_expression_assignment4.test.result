@@ -43,19 +43,19 @@
     ],
     "function_declarations": [
         {
-            "identifier": "assign_biwise_and_ullong",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
-            "identifier": "assign_biwise_xor_ullong",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
             "identifier": "assign_modulo_int",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_modulo_ullong",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_shl_int",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -67,7 +67,25 @@
             "returns": []
         },
         {
+            "identifier": "assign_shr_int",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
             "identifier": "assign_shr_ullong",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_bitwise_and_int",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_biwise_and_ullong",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -85,31 +103,13 @@
             "returns": []
         },
         {
-            "identifier": "assign_shl_int",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
-            "identifier": "assign_shr_int",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
-            "identifier": "assign_modulo_ullong",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
-            "identifier": "assign_bitwise_and_int",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
             "identifier": "assign_bitwise_xor_int",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "assign_biwise_xor_ullong",
             "parameters": [],
             "vararg": false,
             "returns": []

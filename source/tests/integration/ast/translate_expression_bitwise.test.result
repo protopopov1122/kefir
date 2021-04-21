@@ -24,7 +24,13 @@
     ],
     "function_declarations": [
         {
-            "identifier": "or",
+            "identifier": "left_shift",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "right_shift",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -36,19 +42,13 @@
             "returns": []
         },
         {
+            "identifier": "or",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
             "identifier": "xor",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
-            "identifier": "left_shift",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
-            "identifier": "right_shift",
             "parameters": [],
             "vararg": false,
             "returns": []

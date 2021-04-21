@@ -82,7 +82,7 @@
             "returns": []
         },
         {
-            "identifier": "sub_pointer_integer",
+            "identifier": "add_floating_point",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -100,19 +100,19 @@
             "returns": []
         },
         {
-            "identifier": "sub_pointers",
-            "parameters": [],
-            "vararg": false,
-            "returns": []
-        },
-        {
             "identifier": "sub_floating_point",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "add_floating_point",
+            "identifier": "sub_pointers",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": "sub_pointer_integer",
             "parameters": [],
             "vararg": false,
             "returns": []
