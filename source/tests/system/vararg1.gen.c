@@ -20,7 +20,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(printint_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(printint_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *printint_decl =
-        kefir_ir_module_new_named_function_declaration(mem, &module, "printint",
+        kefir_ir_module_new_function_declaration(mem, &module, "printint",
             printint_decl_params, false, printint_decl_result);
     REQUIRE(printint_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *printint = kefir_ir_module_new_function(mem, &module, printint_decl, NULL, 1024);
@@ -32,7 +32,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(sprintf_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(sprintf_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *sprintf_decl =
-        kefir_ir_module_new_named_function_declaration(mem, &module,
+        kefir_ir_module_new_function_declaration(mem, &module,
             "sprintf", sprintf_decl_params, true, sprintf_decl_result);
     REQUIRE(sprintf_decl != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_external(mem, &module, "sprintf"));

@@ -92,7 +92,6 @@ kefir_result_t kefir_ir_module_alloc(struct kefir_mem *mem, struct kefir_ir_modu
     REQUIRE_OK(kefir_hashtree_init(&module->named_types, &kefir_hashtree_uint_ops));
     REQUIRE_OK(kefir_hashtree_init(&module->named_data, &kefir_hashtree_str_ops));
     REQUIRE_OK(kefir_hashtree_on_removal(&module->named_data, destroy_named_data, NULL));
-    REQUIRE_OK(kefir_hashtree_init(&module->named_function_declarations, &kefir_hashtree_str_ops));
     REQUIRE_OK(kefir_hashtree_init(&module->string_literals, &kefir_hashtree_uint_ops));
     REQUIRE_OK(kefir_hashtree_on_removal(&module->string_literals, destroy_string_literal, NULL));
     module->next_type_id = 0;
@@ -106,7 +105,6 @@ kefir_result_t kefir_ir_module_free(struct kefir_mem *mem,
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module pointer"));
     REQUIRE_OK(kefir_hashtree_free(mem, &module->string_literals));
-    REQUIRE_OK(kefir_hashtree_free(mem, &module->named_function_declarations));
     REQUIRE_OK(kefir_hashtree_free(mem, &module->named_data));
     REQUIRE_OK(kefir_hashtree_free(mem, &module->named_types));
     REQUIRE_OK(kefir_hashtree_free(mem, &module->functions));
@@ -223,29 +221,6 @@ struct kefir_ir_function_decl *kefir_ir_module_new_function_declaration(struct k
     });
 
     module->next_function_decl_id++;
-    return decl;
-}
-
-struct kefir_ir_function_decl *kefir_ir_module_new_named_function_declaration(struct kefir_mem *mem,
-                                                                          struct kefir_ir_module *module,
-                                                                          const char *identifier,
-                                                                          struct kefir_ir_type *parameters,
-                                                                          bool vararg,
-                                                                          struct kefir_ir_type *returns) {
-    REQUIRE(mem != NULL, NULL);
-    REQUIRE(module != NULL, NULL);
-    REQUIRE(identifier != NULL && strlen(identifier) != 0, NULL);
-
-    struct kefir_ir_function_decl *decl = kefir_ir_module_new_function_declaration(mem,
-        module, identifier, parameters, vararg, returns);
-    REQUIRE(decl != NULL, NULL);
-
-    kefir_result_t res = kefir_hashtree_insert(mem, &module->named_function_declarations,
-        (kefir_hashtree_key_t) decl->name, (kefir_hashtree_value_t) decl);
-    REQUIRE_ELSE(res == KEFIR_OK, {
-        kefir_hashtree_delete(mem, &module->function_declarations, (kefir_hashtree_key_t) decl->id);
-        return NULL;
-    });
     return decl;
 }
 
@@ -468,18 +443,6 @@ const struct kefir_ir_function_decl *kefir_ir_module_get_declaration(const struc
     struct kefir_hashtree_node *node = NULL;
     REQUIRE(kefir_hashtree_at(&module->function_declarations, (kefir_hashtree_key_t) id, &node) == KEFIR_OK,
         NULL);
-    REQUIRE(node != NULL, NULL);
-    return (const struct kefir_ir_function_decl *) node->value;
-}
-
-
-const struct kefir_ir_function_decl *kefir_ir_module_get_named_declaration(const struct kefir_ir_module *module,
-                                                                       const char *identifier) {
-    REQUIRE(module != NULL, NULL);
-    REQUIRE(identifier != NULL, NULL);
-    struct kefir_hashtree_node *node = NULL;
-    REQUIRE(kefir_hashtree_at(&module->named_function_declarations,
-        (kefir_hashtree_key_t) identifier, &node) == KEFIR_OK, NULL);
     REQUIRE(node != NULL, NULL);
     return (const struct kefir_ir_function_decl *) node->value;
 }

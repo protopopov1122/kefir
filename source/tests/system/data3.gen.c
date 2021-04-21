@@ -32,7 +32,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(sum_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(sum_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *sum_decl =
-        kefir_ir_module_new_named_function_declaration(mem, &module, "sum",
+        kefir_ir_module_new_function_declaration(mem, &module, "sum",
             sum_decl_params, false, sum_decl_result);
     REQUIRE(sum_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *sum = kefir_ir_module_new_function(mem, &module, sum_decl, NULL, 1024);

@@ -17,7 +17,6 @@ typedef struct kefir_ir_module {
     struct kefir_hashtree functions;
     struct kefir_hashtree named_types;
     struct kefir_hashtree named_data;
-    struct kefir_hashtree named_function_declarations;
     struct kefir_hashtree string_literals;
 
     kefir_id_t next_type_id;
@@ -53,7 +52,7 @@ struct kefir_ir_function_decl *kefir_ir_module_new_function_declaration(struct k
                                                                     bool,
                                                                     struct kefir_ir_type *);
 
-struct kefir_ir_function_decl *kefir_ir_module_new_named_function_declaration(struct kefir_mem *,
+struct kefir_ir_function_decl *kefir_ir_module_new_function_declaration(struct kefir_mem *,
                                                                           struct kefir_ir_module *,
                                                                           const char *,
                                                                           struct kefir_ir_type *,
@@ -84,9 +83,6 @@ const char *kefir_ir_module_get_named_symbol(const struct kefir_ir_module *,
 
 const struct kefir_ir_function_decl *kefir_ir_module_get_declaration(const struct kefir_ir_module *,
                                                                  kefir_id_t);
-
-const struct kefir_ir_function_decl *kefir_ir_module_get_named_declaration(const struct kefir_ir_module *,
-                                                                       const char *);
 
 struct kefir_ir_type *kefir_ir_module_get_named_type(const struct kefir_ir_module *,
                                                  kefir_id_t);
