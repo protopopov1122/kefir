@@ -21,20 +21,19 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(printint_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *printint_decl =
         kefir_ir_module_new_named_function_declaration(mem, &module, "printint",
-            printint_decl_params, false, printint_decl_result, NULL);
+            printint_decl_params, false, printint_decl_result);
     REQUIRE(printint_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *printint = kefir_ir_module_new_function(mem, &module, printint_decl->name, NULL, 1024);
     REQUIRE(printint != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, printint_decl->name));
 
-    kefir_id_t sprintf_id;
     struct kefir_ir_type *sprintf_decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL),
                        *sprintf_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
     REQUIRE(sprintf_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(sprintf_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *sprintf_decl =
         kefir_ir_module_new_named_function_declaration(mem, &module,
-            "sprintf", sprintf_decl_params, true, sprintf_decl_result, &sprintf_id);
+            "sprintf", sprintf_decl_params, true, sprintf_decl_result);
     REQUIRE(sprintf_decl != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_external(mem, &module, "sprintf"));
 
@@ -63,7 +62,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &printint->body, KEFIR_IROPCODE_PICK, 0);                  // 1: [I, R*, R*]
     kefir_irbuilder_block_appendu64(mem, &printint->body, KEFIR_IROPCODE_GETGLOBAL, fmt_id);        // 2: [I, R*, R*, F*]
     kefir_irbuilder_block_appendi64(mem, &printint->body, KEFIR_IROPCODE_PICK, 3);                  // 3: [I, R*, R*, F*, I]
-    kefir_irbuilder_block_appendu64(mem, &printint->body, KEFIR_IROPCODE_INVOKE, sprintf_id);       // 4: [I, R*, O]
+    kefir_irbuilder_block_appendu64(mem, &printint->body, KEFIR_IROPCODE_INVOKE, sprintf_decl->id); // 4: [I, R*, O]
     kefir_irbuilder_block_appendi64(mem, &printint->body, KEFIR_IROPCODE_POP, 0);                   // 5: [I, R*]
 
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, sprintf_decl_params, KEFIR_IR_TYPE_WORD, 0, 0));

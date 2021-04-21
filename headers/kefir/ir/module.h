@@ -51,16 +51,14 @@ struct kefir_ir_function_decl *kefir_ir_module_new_function_declaration(struct k
                                                                     const char *,
                                                                     struct kefir_ir_type *,
                                                                     bool,
-                                                                    struct kefir_ir_type *,
-                                                                    kefir_id_t *);
+                                                                    struct kefir_ir_type *);
 
 struct kefir_ir_function_decl *kefir_ir_module_new_named_function_declaration(struct kefir_mem *,
                                                                           struct kefir_ir_module *,
                                                                           const char *,
                                                                           struct kefir_ir_type *,
                                                                           bool,
-                                                                          struct kefir_ir_type *,
-                                                                          kefir_id_t *);
+                                                                          struct kefir_ir_type *);
 
 kefir_result_t kefir_ir_module_declare_global(struct kefir_mem *,
                                           struct kefir_ir_module *,

@@ -201,8 +201,7 @@ struct kefir_ir_function_decl *kefir_ir_module_new_function_declaration(struct k
                                                                     const char *name,
                                                                     struct kefir_ir_type *parameters,
                                                                     bool vararg,
-                                                                    struct kefir_ir_type *returns,
-                                                                    kefir_id_t *decl_id) {
+                                                                    struct kefir_ir_type *returns) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(module != NULL, NULL);
 
@@ -224,7 +223,6 @@ struct kefir_ir_function_decl *kefir_ir_module_new_function_declaration(struct k
     });
 
     module->next_function_decl_id++;
-    ASSIGN_PTR(decl_id, func_decl_id);
     return decl;
 }
 
@@ -233,14 +231,13 @@ struct kefir_ir_function_decl *kefir_ir_module_new_named_function_declaration(st
                                                                           const char *identifier,
                                                                           struct kefir_ir_type *parameters,
                                                                           bool vararg,
-                                                                          struct kefir_ir_type *returns,
-                                                                          kefir_id_t *decl_id) {
+                                                                          struct kefir_ir_type *returns) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(module != NULL, NULL);
     REQUIRE(identifier != NULL && strlen(identifier) != 0, NULL);
 
     struct kefir_ir_function_decl *decl = kefir_ir_module_new_function_declaration(mem,
-        module, identifier, parameters, vararg, returns, decl_id);
+        module, identifier, parameters, vararg, returns);
     REQUIRE(decl != NULL, NULL);
 
     kefir_result_t res = kefir_hashtree_insert(mem, &module->named_function_declarations,

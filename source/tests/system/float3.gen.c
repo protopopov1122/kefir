@@ -20,7 +20,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(fequals_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *fequals_decl =
         kefir_ir_module_new_named_function_declaration(mem, &module, "fequals",
-            fequals_decl_params, false, fequals_decl_result, NULL);
+            fequals_decl_params, false, fequals_decl_result);
     REQUIRE(fequals_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *fequals = kefir_ir_module_new_function(mem, &module, fequals_decl->name, NULL, 1024);
     REQUIRE(fequals != NULL, KEFIR_INTERNAL_ERROR);
@@ -36,7 +36,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(fgreater_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *fgreater_decl =
         kefir_ir_module_new_named_function_declaration(mem, &module, "fgreater",
-            fgreater_decl_params, false, fgreater_decl_result, NULL);
+            fgreater_decl_params, false, fgreater_decl_result);
     REQUIRE(fgreater_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *fgreater = kefir_ir_module_new_function(mem, &module, fgreater_decl->name, NULL, 1024);
     REQUIRE(fgreater != NULL, KEFIR_INTERNAL_ERROR);
@@ -52,7 +52,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(flesser_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *flesser_decl =
         kefir_ir_module_new_named_function_declaration(mem, &module, "flesser",
-            flesser_decl_params, false, flesser_decl_result, NULL);
+            flesser_decl_params, false, flesser_decl_result);
     REQUIRE(flesser_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *flesser = kefir_ir_module_new_function(mem, &module, flesser_decl->name, NULL, 1024);
     REQUIRE(flesser != NULL, KEFIR_INTERNAL_ERROR);
@@ -68,7 +68,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(dequals_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *dequals_decl =
         kefir_ir_module_new_named_function_declaration(mem, &module, "dequals", 
-            dequals_decl_params, false, dequals_decl_result, NULL);
+            dequals_decl_params, false, dequals_decl_result);
     REQUIRE(dequals_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *dequals = kefir_ir_module_new_function(mem, &module, dequals_decl->name, NULL, 1024);
     REQUIRE(dequals != NULL, KEFIR_INTERNAL_ERROR);
@@ -84,7 +84,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(dgreater_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *dgreater_decl =
         kefir_ir_module_new_named_function_declaration(mem, &module, "dgreater",
-            dgreater_decl_params, false, dgreater_decl_result, NULL);
+            dgreater_decl_params, false, dgreater_decl_result);
     REQUIRE(dgreater_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *dgreater = kefir_ir_module_new_function(mem, &module, dgreater_decl->name, NULL, 1024);
     REQUIRE(dgreater != NULL, KEFIR_INTERNAL_ERROR);
@@ -100,7 +100,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(dlesser_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *dlesser_decl =
         kefir_ir_module_new_named_function_declaration(mem, &module, "dlesser",
-            dlesser_decl_params, false, dlesser_decl_result, NULL);
+            dlesser_decl_params, false, dlesser_decl_result);
     REQUIRE(dlesser_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *dlesser = kefir_ir_module_new_function(mem, &module, dlesser_decl->name, NULL, 1024);
     REQUIRE(dlesser != NULL, KEFIR_INTERNAL_ERROR);

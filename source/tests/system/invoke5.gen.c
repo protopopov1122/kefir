@@ -18,20 +18,19 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(proxyadd_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *proxyadd_decl =
         kefir_ir_module_new_named_function_declaration(mem, &module, "proxyadd",
-            proxyadd_decl_params, false, proxyadd_decl_result, NULL);
+            proxyadd_decl_params, false, proxyadd_decl_result);
     REQUIRE(proxyadd_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *proxyadd = kefir_ir_module_new_function(mem, &module, proxyadd_decl->name, NULL, 1024);
     REQUIRE(proxyadd != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, proxyadd_decl->name));
 
-    kefir_id_t addstruct_id;
     struct kefir_ir_type *addstruct_decl_params = kefir_ir_module_new_type(mem, &module, 4, NULL),
                        *addstruct_decl_result = kefir_ir_module_new_type(mem, &module, 3, NULL);
     REQUIRE(addstruct_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(addstruct_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *addstruct_decl =
         kefir_ir_module_new_named_function_declaration(mem, &module,
-            "addstruct", addstruct_decl_params, false, addstruct_decl_result, &addstruct_id);
+            "addstruct", addstruct_decl_params, false, addstruct_decl_result);
     REQUIRE(addstruct_decl != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_external(mem, &module, addstruct_decl->name));
 
@@ -46,7 +45,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, proxyadd_decl_result, KEFIR_IR_TYPE_FLOAT64, 0, 0));
     kefir_irbuilder_block_appendi64(mem, &proxyadd->body, KEFIR_IROPCODE_PUSHI64, 7);
     kefir_irbuilder_block_appendi64(mem, &proxyadd->body, KEFIR_IROPCODE_XCHG, 1);
-    kefir_irbuilder_block_appendu64(mem, &proxyadd->body, KEFIR_IROPCODE_INVOKE, addstruct_id);
+    kefir_irbuilder_block_appendu64(mem, &proxyadd->body, KEFIR_IROPCODE_INVOKE, addstruct_decl->id);
 
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, addstruct_decl_params, KEFIR_IR_TYPE_INT64, 0, 0));
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, addstruct_decl_params, KEFIR_IR_TYPE_STRUCT, 0, 2));

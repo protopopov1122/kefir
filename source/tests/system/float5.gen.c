@@ -20,7 +20,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(fneg_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *fneg_decl =
         kefir_ir_module_new_named_function_declaration(mem, &module, "fneg",
-            fneg_decl_params, false, fneg_decl_result, NULL);
+            fneg_decl_params, false, fneg_decl_result);
     REQUIRE(fneg_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *fneg = kefir_ir_module_new_function(mem, &module, fneg_decl->name, NULL, 1024);
     REQUIRE(fneg != NULL, KEFIR_INTERNAL_ERROR);
@@ -35,7 +35,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(dneg_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *dneg_decl =
         kefir_ir_module_new_named_function_declaration(mem, &module, "dneg",
-            dneg_decl_params, false, dneg_decl_result, NULL);
+            dneg_decl_params, false, dneg_decl_result);
     REQUIRE(dneg_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *dneg = kefir_ir_module_new_function(mem, &module, dneg_decl->name, NULL, 1024);
     REQUIRE(dneg != NULL, KEFIR_INTERNAL_ERROR);

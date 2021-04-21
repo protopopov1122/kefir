@@ -36,7 +36,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         struct kefir_ir_type *func_params = kefir_ir_module_new_type(mem, &module, 0, NULL); \
         struct kefir_ir_type *func_returns = kefir_ir_module_new_type(mem, &module, 0, NULL); \
         struct kefir_ir_function_decl *func_decl = kefir_ir_module_new_named_function_declaration(mem, &module, \
-            (_id), func_params, false, func_returns, NULL); \
+            (_id), func_params, false, func_returns); \
         REQUIRE(func_decl != NULL, KEFIR_INTERNAL_ERROR); \
         struct kefir_ir_function *func = kefir_ir_module_new_function(mem, &module, (_id), translator_local_scope.local_layout, 0); \
         REQUIRE_OK(kefir_irbuilder_block_init(mem, &builder, &func->body)); \

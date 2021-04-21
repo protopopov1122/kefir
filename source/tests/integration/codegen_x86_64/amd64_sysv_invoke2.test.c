@@ -18,39 +18,37 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(func1_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *func1_decl =
         kefir_ir_module_new_named_function_declaration(mem, &module, "func1",
-            func1_decl_params, false, func1_decl_result, NULL);
+            func1_decl_params, false, func1_decl_result);
     REQUIRE(func1_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *func1 = kefir_ir_module_new_function(mem, &module, func1_decl->name, NULL, 1024);
     REQUIRE(func1 != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, func1_decl->name));
 
-    kefir_id_t func2_id;
     struct kefir_ir_type *func2_decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL),
                        *func2_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
     REQUIRE(func2_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(func2_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *func2_decl =
         kefir_ir_module_new_named_function_declaration(mem, &module,
-            "func2", func2_decl_params, false, func2_decl_result, &func2_id);
+            "func2", func2_decl_params, false, func2_decl_result);
     REQUIRE(func2_decl != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_external(mem, &module, func2_decl->name));
 
-    kefir_id_t func3_id;
     struct kefir_ir_type *func3_decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL),
                        *func3_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
     REQUIRE(func3_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(func3_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *func3_decl =
         kefir_ir_module_new_named_function_declaration(mem, &module,
-            "func3", func3_decl_params, false, func3_decl_result, &func3_id);
+            "func3", func3_decl_params, false, func3_decl_result);
     REQUIRE(func3_decl != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_external(mem, &module, func3_decl->name));
 
     kefir_codegen_amd64_sysv_init(&codegen, stdout);
     codegen.asmgen.settings.enable_comments = false;
 
-    kefir_irbuilder_block_appendu64(mem, &func1->body, KEFIR_IROPCODE_INVOKE, func2_id);
-    kefir_irbuilder_block_appendu64(mem, &func1->body, KEFIR_IROPCODE_INVOKE, func3_id);
+    kefir_irbuilder_block_appendu64(mem, &func1->body, KEFIR_IROPCODE_INVOKE, func2_decl->id);
+    kefir_irbuilder_block_appendu64(mem, &func1->body, KEFIR_IROPCODE_INVOKE, func3_decl->id);
 
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, func2_decl_params, KEFIR_IR_TYPE_INT, 0, 0));
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, func2_decl_params, KEFIR_IR_TYPE_FLOAT32, 0, 0));

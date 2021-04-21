@@ -34,7 +34,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(arrptr_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *arrptr_decl =
         kefir_ir_module_new_named_function_declaration(mem, &module, "arrptr",
-            arrptr_decl_params, false, arrptr_decl_result, NULL);
+            arrptr_decl_params, false, arrptr_decl_result);
     REQUIRE(arrptr_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *arrptr = kefir_ir_module_new_function(mem, &module, arrptr_decl->name, NULL, 5);
     REQUIRE(arrptr != NULL, KEFIR_INTERNAL_ERROR);
