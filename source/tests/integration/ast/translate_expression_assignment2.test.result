@@ -131,13 +131,15 @@
     ],
     "function_declarations": [
         {
-            "identifier": "assign_struct",
+            "identifier": 0,
+            "name": "assign_struct",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_union",
+            "identifier": 1,
+            "name": "assign_union",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -145,7 +147,8 @@
     ],
     "functions": [
         {
-            "identifier": "assign_union",
+            "identifier": 1,
+            "name": "assign_union",
             "locals": [
                 {
                     "type": "struct",
@@ -262,7 +265,8 @@
             ]
         },
         {
-            "identifier": "assign_struct",
+            "identifier": 0,
+            "name": "assign_struct",
             "locals": [
                 {
                     "type": "struct",

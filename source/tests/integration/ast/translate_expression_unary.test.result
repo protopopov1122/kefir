@@ -177,49 +177,57 @@
     ],
     "function_declarations": [
         {
-            "identifier": "plus",
+            "identifier": 0,
+            "name": "plus",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "minus",
+            "identifier": 1,
+            "name": "minus",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "invert",
+            "identifier": 2,
+            "name": "invert",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "logical_negate",
+            "identifier": 3,
+            "name": "logical_negate",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "sizeof1",
+            "identifier": 4,
+            "name": "sizeof1",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "sizeof2",
+            "identifier": 5,
+            "name": "sizeof2",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "alignof",
+            "identifier": 6,
+            "name": "alignof",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "indirection",
+            "identifier": 7,
+            "name": "indirection",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -227,7 +235,8 @@
     ],
     "functions": [
         {
-            "identifier": "plus",
+            "identifier": 0,
+            "name": "plus",
             "locals": [],
             "body": [
                 {
@@ -258,7 +267,8 @@
             ]
         },
         {
-            "identifier": "minus",
+            "identifier": 1,
+            "name": "minus",
             "locals": [],
             "body": [
                 {
@@ -304,7 +314,8 @@
             ]
         },
         {
-            "identifier": "invert",
+            "identifier": 2,
+            "name": "invert",
             "locals": [],
             "body": [
                 {
@@ -343,7 +354,8 @@
             ]
         },
         {
-            "identifier": "alignof",
+            "identifier": 6,
+            "name": "alignof",
             "locals": [],
             "body": [
                 {
@@ -425,7 +437,8 @@
             ]
         },
         {
-            "identifier": "sizeof1",
+            "identifier": 4,
+            "name": "sizeof1",
             "locals": [],
             "body": [
                 {
@@ -507,7 +520,8 @@
             ]
         },
         {
-            "identifier": "sizeof2",
+            "identifier": 5,
+            "name": "sizeof2",
             "locals": [],
             "body": [
                 {
@@ -569,7 +583,8 @@
             ]
         },
         {
-            "identifier": "indirection",
+            "identifier": 7,
+            "name": "indirection",
             "locals": [],
             "body": [
                 {
@@ -632,7 +647,8 @@
             ]
         },
         {
-            "identifier": "logical_negate",
+            "identifier": 3,
+            "name": "logical_negate",
             "locals": [],
             "body": [
                 {

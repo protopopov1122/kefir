@@ -9,7 +9,7 @@
 
 typedef struct kefir_ir_function_decl {
     kefir_id_t id;
-    const char *identifier;
+    const char *name;
     struct kefir_ir_type *params;
     bool vararg;
     struct kefir_ir_type *result;

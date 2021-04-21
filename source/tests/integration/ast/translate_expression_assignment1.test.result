@@ -174,55 +174,64 @@
     ],
     "function_declarations": [
         {
-            "identifier": "assign_bool",
+            "identifier": 0,
+            "name": "assign_bool",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_char",
+            "identifier": 1,
+            "name": "assign_char",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_short",
+            "identifier": 2,
+            "name": "assign_short",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_int",
+            "identifier": 3,
+            "name": "assign_int",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_long",
+            "identifier": 4,
+            "name": "assign_long",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_long_long",
+            "identifier": 5,
+            "name": "assign_long_long",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_float_double",
+            "identifier": 6,
+            "name": "assign_float_double",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "enum",
+            "identifier": 7,
+            "name": "enum",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "pointer",
+            "identifier": 8,
+            "name": "pointer",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -230,7 +239,8 @@
     ],
     "functions": [
         {
-            "identifier": "enum",
+            "identifier": 7,
+            "name": "enum",
             "locals": [
                 {
                     "type": "struct",
@@ -262,7 +272,8 @@
             ]
         },
         {
-            "identifier": "pointer",
+            "identifier": 8,
+            "name": "pointer",
             "locals": [
                 {
                     "type": "struct",
@@ -294,7 +305,8 @@
             ]
         },
         {
-            "identifier": "assign_int",
+            "identifier": 3,
+            "name": "assign_int",
             "locals": [
                 {
                     "type": "struct",
@@ -371,7 +383,8 @@
             ]
         },
         {
-            "identifier": "assign_bool",
+            "identifier": 0,
+            "name": "assign_bool",
             "locals": [
                 {
                     "type": "struct",
@@ -427,7 +440,8 @@
             ]
         },
         {
-            "identifier": "assign_char",
+            "identifier": 1,
+            "name": "assign_char",
             "locals": [
                 {
                     "type": "struct",
@@ -525,7 +539,8 @@
             ]
         },
         {
-            "identifier": "assign_long",
+            "identifier": 4,
+            "name": "assign_long",
             "locals": [
                 {
                     "type": "struct",
@@ -602,7 +617,8 @@
             ]
         },
         {
-            "identifier": "assign_short",
+            "identifier": 2,
+            "name": "assign_short",
             "locals": [
                 {
                     "type": "struct",
@@ -655,7 +671,8 @@
             ]
         },
         {
-            "identifier": "assign_long_long",
+            "identifier": 5,
+            "name": "assign_long_long",
             "locals": [
                 {
                     "type": "struct",
@@ -708,7 +725,8 @@
             ]
         },
         {
-            "identifier": "assign_float_double",
+            "identifier": 6,
+            "name": "assign_float_double",
             "locals": [
                 {
                     "type": "struct",

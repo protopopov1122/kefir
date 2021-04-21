@@ -78,25 +78,29 @@
     ],
     "function_declarations": [
         {
-            "identifier": "compound_literal1",
+            "identifier": 0,
+            "name": "compound_literal1",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "compound_literal2",
+            "identifier": 1,
+            "name": "compound_literal2",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "compound_literal3",
+            "identifier": 2,
+            "name": "compound_literal3",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "compound_literal4",
+            "identifier": 3,
+            "name": "compound_literal4",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -104,7 +108,8 @@
     ],
     "functions": [
         {
-            "identifier": "compound_literal1",
+            "identifier": 0,
+            "name": "compound_literal1",
             "locals": [
                 {
                     "type": "struct",
@@ -203,7 +208,8 @@
             ]
         },
         {
-            "identifier": "compound_literal2",
+            "identifier": 1,
+            "name": "compound_literal2",
             "locals": [
                 {
                     "type": "struct",
@@ -369,7 +375,8 @@
             ]
         },
         {
-            "identifier": "compound_literal3",
+            "identifier": 2,
+            "name": "compound_literal3",
             "locals": [
                 {
                     "type": "struct",
@@ -464,7 +471,8 @@
             ]
         },
         {
-            "identifier": "compound_literal4",
+            "identifier": 3,
+            "name": "compound_literal4",
             "locals": [
                 {
                     "type": "struct",

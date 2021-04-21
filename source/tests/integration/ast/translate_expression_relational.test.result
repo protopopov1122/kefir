@@ -52,55 +52,64 @@
     ],
     "function_declarations": [
         {
-            "identifier": "equality_arithemtical",
+            "identifier": 0,
+            "name": "equality_arithemtical",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "equality_pointer",
+            "identifier": 1,
+            "name": "equality_pointer",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "non_equality_arithemtical",
+            "identifier": 2,
+            "name": "non_equality_arithemtical",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "non_equality_pointer",
+            "identifier": 3,
+            "name": "non_equality_pointer",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "less_than",
+            "identifier": 4,
+            "name": "less_than",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "less_equals",
+            "identifier": 5,
+            "name": "less_equals",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "greater_than",
+            "identifier": 6,
+            "name": "greater_than",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "greater_equal",
+            "identifier": 7,
+            "name": "greater_equal",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "ptr_relational",
+            "identifier": 8,
+            "name": "ptr_relational",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -108,7 +117,8 @@
     ],
     "functions": [
         {
-            "identifier": "less_than",
+            "identifier": 4,
+            "name": "less_than",
             "locals": [
                 {
                     "type": "struct",
@@ -231,7 +241,8 @@
             ]
         },
         {
-            "identifier": "less_equals",
+            "identifier": 5,
+            "name": "less_equals",
             "locals": [
                 {
                     "type": "struct",
@@ -516,7 +527,8 @@
             ]
         },
         {
-            "identifier": "non_equality_arithemtical",
+            "identifier": 2,
+            "name": "non_equality_arithemtical",
             "locals": [
                 {
                     "type": "struct",
@@ -621,7 +633,8 @@
             ]
         },
         {
-            "identifier": "non_equality_pointer",
+            "identifier": 3,
+            "name": "non_equality_pointer",
             "locals": [
                 {
                     "type": "struct",
@@ -720,7 +733,8 @@
             ]
         },
         {
-            "identifier": "equality_pointer",
+            "identifier": 1,
+            "name": "equality_pointer",
             "locals": [
                 {
                     "type": "struct",
@@ -810,7 +824,8 @@
             ]
         },
         {
-            "identifier": "greater_than",
+            "identifier": 6,
+            "name": "greater_than",
             "locals": [
                 {
                     "type": "struct",
@@ -933,7 +948,8 @@
             ]
         },
         {
-            "identifier": "ptr_relational",
+            "identifier": 8,
+            "name": "ptr_relational",
             "locals": [
                 {
                     "type": "struct",
@@ -1220,7 +1236,8 @@
             ]
         },
         {
-            "identifier": "equality_arithemtical",
+            "identifier": 0,
+            "name": "equality_arithemtical",
             "locals": [
                 {
                     "type": "struct",
@@ -1307,7 +1324,8 @@
             ]
         },
         {
-            "identifier": "greater_equal",
+            "identifier": 7,
+            "name": "greater_equal",
             "locals": [
                 {
                     "type": "struct",

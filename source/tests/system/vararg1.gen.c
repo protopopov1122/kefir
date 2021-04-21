@@ -23,9 +23,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ir_module_new_named_function_declaration(mem, &module, "printint",
             printint_decl_params, false, printint_decl_result, NULL);
     REQUIRE(printint_decl != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *printint = kefir_ir_module_new_function(mem, &module, printint_decl->identifier, NULL, 1024);
+    struct kefir_ir_function *printint = kefir_ir_module_new_function(mem, &module, printint_decl->name, NULL, 1024);
     REQUIRE(printint != NULL, KEFIR_INTERNAL_ERROR);
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, printint_decl->identifier));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, printint_decl->name));
 
     kefir_id_t sprintf_id;
     struct kefir_ir_type *sprintf_decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL),

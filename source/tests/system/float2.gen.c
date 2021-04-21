@@ -23,9 +23,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ir_module_new_named_function_declaration(mem, &module, "circle", 
             decl_params, false, decl_result, NULL);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *func = kefir_ir_module_new_function(mem, &module, decl->identifier, func_locals, 1024);
+    struct kefir_ir_function *func = kefir_ir_module_new_function(mem, &module, decl->name, func_locals, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl->identifier));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl->name));
     kefir_irbuilder_type_append_v(mem, func->declaration->params, KEFIR_IR_TYPE_FLOAT64, 0, 0);
     kefir_irbuilder_type_append_v(mem, func->declaration->result, KEFIR_IR_TYPE_STRUCT, 0, 3);
     kefir_irbuilder_type_append_v(mem, func->declaration->result, KEFIR_IR_TYPE_FLOAT64, 0, 0);

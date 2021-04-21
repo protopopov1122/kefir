@@ -28,7 +28,7 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
             ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
             ASMGEN_ARG(&codegen->asmgen,
                 KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL " + " KEFIR_INT64_FMT,
-                sysv_func->func->declaration->identifier,
+                sysv_func->func->declaration->name,
                 2 * KEFIR_AMD64_SYSV_ABI_QWORD * instr->arg.u64);
         } break;
 
@@ -36,7 +36,7 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
             ASMGEN_ARG(&codegen->asmgen,
                 KEFIR_AMD64_SYSV_PROCEDURE_EPILOGUE_LABEL,
-                sysv_func->func->declaration->identifier);
+                sysv_func->func->declaration->name);
             ASMGEN_ARG0(&codegen->asmgen, "0");
         } break;
 

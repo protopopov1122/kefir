@@ -68,73 +68,85 @@
     ],
     "function_declarations": [
         {
-            "identifier": "increment_int1",
+            "identifier": 0,
+            "name": "increment_int1",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "increment_int2",
+            "identifier": 1,
+            "name": "increment_int2",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "decrement_int1",
+            "identifier": 2,
+            "name": "decrement_int1",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "decrement_int2",
+            "identifier": 3,
+            "name": "decrement_int2",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "increment_float",
+            "identifier": 4,
+            "name": "increment_float",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "increment_double",
+            "identifier": 5,
+            "name": "increment_double",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "decrement_float",
+            "identifier": 6,
+            "name": "decrement_float",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "decrement_double",
+            "identifier": 7,
+            "name": "decrement_double",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "increment_pointer1",
+            "identifier": 8,
+            "name": "increment_pointer1",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "increment_pointer2",
+            "identifier": 9,
+            "name": "increment_pointer2",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "decrement_pointer1",
+            "identifier": 10,
+            "name": "decrement_pointer1",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "decrement_pointer2",
+            "identifier": 11,
+            "name": "decrement_pointer2",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -142,7 +154,8 @@
     ],
     "functions": [
         {
-            "identifier": "decrement_int1",
+            "identifier": 2,
+            "name": "decrement_int1",
             "locals": [
                 {
                     "type": "struct",
@@ -204,7 +217,8 @@
             ]
         },
         {
-            "identifier": "decrement_int2",
+            "identifier": 3,
+            "name": "decrement_int2",
             "locals": [
                 {
                     "type": "struct",
@@ -266,7 +280,8 @@
             ]
         },
         {
-            "identifier": "increment_int1",
+            "identifier": 0,
+            "name": "increment_int1",
             "locals": [
                 {
                     "type": "struct",
@@ -328,7 +343,8 @@
             ]
         },
         {
-            "identifier": "increment_int2",
+            "identifier": 1,
+            "name": "increment_int2",
             "locals": [
                 {
                     "type": "struct",
@@ -390,7 +406,8 @@
             ]
         },
         {
-            "identifier": "increment_double",
+            "identifier": 5,
+            "name": "increment_double",
             "locals": [
                 {
                     "type": "struct",
@@ -455,7 +472,8 @@
             ]
         },
         {
-            "identifier": "increment_pointer1",
+            "identifier": 8,
+            "name": "increment_pointer1",
             "locals": [
                 {
                     "type": "struct",
@@ -524,7 +542,8 @@
             ]
         },
         {
-            "identifier": "increment_pointer2",
+            "identifier": 9,
+            "name": "increment_pointer2",
             "locals": [
                 {
                     "type": "struct",
@@ -593,7 +612,8 @@
             ]
         },
         {
-            "identifier": "decrement_double",
+            "identifier": 7,
+            "name": "decrement_double",
             "locals": [
                 {
                     "type": "struct",
@@ -658,7 +678,8 @@
             ]
         },
         {
-            "identifier": "decrement_pointer1",
+            "identifier": 10,
+            "name": "decrement_pointer1",
             "locals": [
                 {
                     "type": "struct",
@@ -727,7 +748,8 @@
             ]
         },
         {
-            "identifier": "decrement_pointer2",
+            "identifier": 11,
+            "name": "decrement_pointer2",
             "locals": [
                 {
                     "type": "struct",
@@ -796,7 +818,8 @@
             ]
         },
         {
-            "identifier": "decrement_float",
+            "identifier": 6,
+            "name": "decrement_float",
             "locals": [
                 {
                     "type": "struct",
@@ -861,7 +884,8 @@
             ]
         },
         {
-            "identifier": "increment_float",
+            "identifier": 4,
+            "name": "increment_float",
             "locals": [
                 {
                     "type": "struct",

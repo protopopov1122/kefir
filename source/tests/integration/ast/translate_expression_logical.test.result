@@ -24,37 +24,43 @@
     ],
     "function_declarations": [
         {
-            "identifier": "logical_and1",
+            "identifier": 0,
+            "name": "logical_and1",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "logical_and2",
+            "identifier": 1,
+            "name": "logical_and2",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "logical_and3",
+            "identifier": 2,
+            "name": "logical_and3",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "logical_or1",
+            "identifier": 3,
+            "name": "logical_or1",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "logical_or2",
+            "identifier": 4,
+            "name": "logical_or2",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "logical_or3",
+            "identifier": 5,
+            "name": "logical_or3",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -62,7 +68,8 @@
     ],
     "functions": [
         {
-            "identifier": "logical_or1",
+            "identifier": 3,
+            "name": "logical_or1",
             "locals": [],
             "body": [
                 {
@@ -93,7 +100,8 @@
             ]
         },
         {
-            "identifier": "logical_or2",
+            "identifier": 4,
+            "name": "logical_or2",
             "locals": [],
             "body": [
                 {
@@ -124,7 +132,8 @@
             ]
         },
         {
-            "identifier": "logical_or3",
+            "identifier": 5,
+            "name": "logical_or3",
             "locals": [],
             "body": [
                 {
@@ -155,7 +164,8 @@
             ]
         },
         {
-            "identifier": "logical_and1",
+            "identifier": 0,
+            "name": "logical_and1",
             "locals": [],
             "body": [
                 {
@@ -189,7 +199,8 @@
             ]
         },
         {
-            "identifier": "logical_and2",
+            "identifier": 1,
+            "name": "logical_and2",
             "locals": [],
             "body": [
                 {
@@ -223,7 +234,8 @@
             ]
         },
         {
-            "identifier": "logical_and3",
+            "identifier": 2,
+            "name": "logical_and3",
             "locals": [],
             "body": [
                 {

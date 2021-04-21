@@ -377,7 +377,13 @@ kefir_result_t kefir_ir_format_type(FILE *fp, const struct kefir_ir_type *type) 
 static kefir_result_t kefir_ir_format_function_declaration(struct kefir_json_output *json, struct kefir_ir_function_decl *decl) {
     REQUIRE_OK(kefir_json_output_object_begin(json));
     REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
-    REQUIRE_OK(kefir_json_output_string(json, decl->identifier));
+    REQUIRE_OK(kefir_json_output_uinteger(json, decl->id));
+    REQUIRE_OK(kefir_json_output_object_key(json, "name"));
+    if (decl->name != NULL) {
+        REQUIRE_OK(kefir_json_output_string(json, decl->name));
+    } else {
+        REQUIRE_OK(kefir_json_output_null(json));
+    }
     REQUIRE_OK(kefir_json_output_object_key(json, "parameters"));
     REQUIRE_OK(kefir_ir_format_type_json(json, decl->params));
     REQUIRE_OK(kefir_json_output_object_key(json, "vararg"));
@@ -393,7 +399,9 @@ static kefir_result_t kefir_ir_format_function(struct kefir_json_output *json,
                                            const struct kefir_ir_function *func)  {
     REQUIRE_OK(kefir_json_output_object_begin(json));
     REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
-    REQUIRE_OK(kefir_json_output_string(json, func->declaration->identifier));
+    REQUIRE_OK(kefir_json_output_uinteger(json, func->declaration->id));
+    REQUIRE_OK(kefir_json_output_object_key(json, "name"));
+    REQUIRE_OK(kefir_json_output_string(json, func->declaration->name));
     
     if (func->locals != NULL) {
         REQUIRE_OK(kefir_json_output_object_key(json, "locals"));

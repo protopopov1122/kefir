@@ -24,19 +24,22 @@
     ],
     "function_declarations": [
         {
-            "identifier": "string_literal1",
+            "identifier": 0,
+            "name": "string_literal1",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "string_literal2",
+            "identifier": 1,
+            "name": "string_literal2",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "string_literal3",
+            "identifier": 2,
+            "name": "string_literal3",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -44,7 +47,8 @@
     ],
     "functions": [
         {
-            "identifier": "string_literal1",
+            "identifier": 0,
+            "name": "string_literal1",
             "locals": [],
             "body": [
                 {
@@ -54,7 +58,8 @@
             ]
         },
         {
-            "identifier": "string_literal2",
+            "identifier": 1,
+            "name": "string_literal2",
             "locals": [],
             "body": [
                 {
@@ -64,7 +69,8 @@
             ]
         },
         {
-            "identifier": "string_literal3",
+            "identifier": 2,
+            "name": "string_literal3",
             "locals": [],
             "body": [
                 {

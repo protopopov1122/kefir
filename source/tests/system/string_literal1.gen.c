@@ -24,9 +24,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ir_module_new_named_function_declaration(mem, &module, "string1",
             decl1_params, false, decl1_result, NULL);
     REQUIRE(decl1 != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *func1 = kefir_ir_module_new_function(mem, &module, decl1->identifier, NULL, 1024);
+    struct kefir_ir_function *func1 = kefir_ir_module_new_function(mem, &module, decl1->name, NULL, 1024);
     REQUIRE(func1 != NULL, KEFIR_INTERNAL_ERROR);
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl1->identifier));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl1->name));
     kefir_irbuilder_type_append_v(mem, func1->declaration->result, KEFIR_IR_TYPE_WORD, 0, 0);
 
     const char *literal = "Hello, world!";
@@ -42,9 +42,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ir_module_new_named_function_declaration(mem, &module, "string2",
             decl2_params, false, decl2_result, NULL);
     REQUIRE(decl2 != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *func2 = kefir_ir_module_new_function(mem, &module, decl2->identifier, NULL, 1024);
+    struct kefir_ir_function *func2 = kefir_ir_module_new_function(mem, &module, decl2->name, NULL, 1024);
     REQUIRE(func2 != NULL, KEFIR_INTERNAL_ERROR);
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl2->identifier));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl2->name));
     kefir_irbuilder_type_append_v(mem, func2->declaration->result, KEFIR_IR_TYPE_WORD, 0, 0);
 
     literal = "\n\n\t\tHey there\'\"!\v\n";
@@ -59,9 +59,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ir_module_new_named_function_declaration(mem, &module, "string3",
             decl3_params, false, decl3_result, NULL);
     REQUIRE(decl3 != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *func3 = kefir_ir_module_new_function(mem, &module, decl3->identifier, NULL, 1024);
+    struct kefir_ir_function *func3 = kefir_ir_module_new_function(mem, &module, decl3->name, NULL, 1024);
     REQUIRE(func3 != NULL, KEFIR_INTERNAL_ERROR);
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl3->identifier));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl3->name));
     kefir_irbuilder_type_append_v(mem, func3->declaration->result, KEFIR_IR_TYPE_WORD, 0, 0);
 
     literal = "\0\0\0";

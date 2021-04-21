@@ -149,31 +149,36 @@
     ],
     "function_declarations": [
         {
-            "identifier": "identifier",
+            "identifier": 0,
+            "name": "identifier",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "array_subscript",
+            "identifier": 1,
+            "name": "array_subscript",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "struct_field",
+            "identifier": 2,
+            "name": "struct_field",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "struct_field_indirect",
+            "identifier": 3,
+            "name": "struct_field_indirect",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "indirection",
+            "identifier": 4,
+            "name": "indirection",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -181,7 +186,8 @@
     ],
     "functions": [
         {
-            "identifier": "identifier",
+            "identifier": 0,
+            "name": "identifier",
             "locals": [
                 {
                     "type": "struct",
@@ -250,7 +256,8 @@
             ]
         },
         {
-            "identifier": "indirection",
+            "identifier": 4,
+            "name": "indirection",
             "locals": [
                 {
                     "type": "struct",
@@ -269,7 +276,8 @@
             ]
         },
         {
-            "identifier": "struct_field",
+            "identifier": 2,
+            "name": "struct_field",
             "locals": [
                 {
                     "type": "struct",
@@ -324,7 +332,8 @@
             ]
         },
         {
-            "identifier": "struct_field_indirect",
+            "identifier": 3,
+            "name": "struct_field_indirect",
             "locals": [
                 {
                     "type": "struct",
@@ -369,7 +378,8 @@
             ]
         },
         {
-            "identifier": "array_subscript",
+            "identifier": 1,
+            "name": "array_subscript",
             "locals": [
                 {
                     "type": "struct",

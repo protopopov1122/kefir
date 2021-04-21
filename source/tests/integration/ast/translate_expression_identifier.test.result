@@ -70,7 +70,8 @@
     ],
     "function_declarations": [
         {
-            "identifier": "func1",
+            "identifier": 0,
+            "name": "func1",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -78,7 +79,8 @@
     ],
     "functions": [
         {
-            "identifier": "func1",
+            "identifier": 0,
+            "name": "func1",
             "locals": [
                 {
                     "type": "struct",

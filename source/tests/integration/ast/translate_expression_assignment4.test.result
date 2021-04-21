@@ -43,73 +43,85 @@
     ],
     "function_declarations": [
         {
-            "identifier": "assign_modulo_int",
+            "identifier": 0,
+            "name": "assign_modulo_int",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_modulo_ullong",
+            "identifier": 1,
+            "name": "assign_modulo_ullong",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_shl_int",
+            "identifier": 2,
+            "name": "assign_shl_int",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_shl_ullong",
+            "identifier": 3,
+            "name": "assign_shl_ullong",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_shr_int",
+            "identifier": 4,
+            "name": "assign_shr_int",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_shr_ullong",
+            "identifier": 5,
+            "name": "assign_shr_ullong",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_bitwise_and_int",
+            "identifier": 6,
+            "name": "assign_bitwise_and_int",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_biwise_and_ullong",
+            "identifier": 7,
+            "name": "assign_biwise_and_ullong",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_bitwise_or_int",
+            "identifier": 8,
+            "name": "assign_bitwise_or_int",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_biwise_or_ullong",
+            "identifier": 9,
+            "name": "assign_biwise_or_ullong",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_bitwise_xor_int",
+            "identifier": 10,
+            "name": "assign_bitwise_xor_int",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_biwise_xor_ullong",
+            "identifier": 11,
+            "name": "assign_biwise_xor_ullong",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -117,7 +129,8 @@
     ],
     "functions": [
         {
-            "identifier": "assign_biwise_and_ullong",
+            "identifier": 7,
+            "name": "assign_biwise_and_ullong",
             "locals": [],
             "body": [
                 {
@@ -154,7 +167,8 @@
             ]
         },
         {
-            "identifier": "assign_biwise_xor_ullong",
+            "identifier": 11,
+            "name": "assign_biwise_xor_ullong",
             "locals": [],
             "body": [
                 {
@@ -191,7 +205,8 @@
             ]
         },
         {
-            "identifier": "assign_modulo_int",
+            "identifier": 0,
+            "name": "assign_modulo_int",
             "locals": [],
             "body": [
                 {
@@ -228,7 +243,8 @@
             ]
         },
         {
-            "identifier": "assign_shl_ullong",
+            "identifier": 3,
+            "name": "assign_shl_ullong",
             "locals": [],
             "body": [
                 {
@@ -265,7 +281,8 @@
             ]
         },
         {
-            "identifier": "assign_shr_ullong",
+            "identifier": 5,
+            "name": "assign_shr_ullong",
             "locals": [],
             "body": [
                 {
@@ -302,7 +319,8 @@
             ]
         },
         {
-            "identifier": "assign_bitwise_or_int",
+            "identifier": 8,
+            "name": "assign_bitwise_or_int",
             "locals": [],
             "body": [
                 {
@@ -339,7 +357,8 @@
             ]
         },
         {
-            "identifier": "assign_biwise_or_ullong",
+            "identifier": 9,
+            "name": "assign_biwise_or_ullong",
             "locals": [],
             "body": [
                 {
@@ -376,7 +395,8 @@
             ]
         },
         {
-            "identifier": "assign_shl_int",
+            "identifier": 2,
+            "name": "assign_shl_int",
             "locals": [],
             "body": [
                 {
@@ -413,7 +433,8 @@
             ]
         },
         {
-            "identifier": "assign_shr_int",
+            "identifier": 4,
+            "name": "assign_shr_int",
             "locals": [],
             "body": [
                 {
@@ -450,7 +471,8 @@
             ]
         },
         {
-            "identifier": "assign_modulo_ullong",
+            "identifier": 1,
+            "name": "assign_modulo_ullong",
             "locals": [],
             "body": [
                 {
@@ -487,7 +509,8 @@
             ]
         },
         {
-            "identifier": "assign_bitwise_and_int",
+            "identifier": 6,
+            "name": "assign_bitwise_and_int",
             "locals": [],
             "body": [
                 {
@@ -524,7 +547,8 @@
             ]
         },
         {
-            "identifier": "assign_bitwise_xor_int",
+            "identifier": 10,
+            "name": "assign_bitwise_xor_int",
             "locals": [],
             "body": [
                 {

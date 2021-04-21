@@ -244,7 +244,7 @@ struct kefir_ir_function_decl *kefir_ir_module_new_named_function_declaration(st
     REQUIRE(decl != NULL, NULL);
 
     kefir_result_t res = kefir_hashtree_insert(mem, &module->named_function_declarations,
-        (kefir_hashtree_key_t) decl->identifier, (kefir_hashtree_value_t) decl);
+        (kefir_hashtree_key_t) decl->name, (kefir_hashtree_value_t) decl);
     REQUIRE(res == KEFIR_OK, NULL);
     return decl;
 }

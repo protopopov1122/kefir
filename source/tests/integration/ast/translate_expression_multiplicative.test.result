@@ -24,19 +24,22 @@
     ],
     "function_declarations": [
         {
-            "identifier": "multiply",
+            "identifier": 0,
+            "name": "multiply",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "divide",
+            "identifier": 1,
+            "name": "divide",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "modulo",
+            "identifier": 2,
+            "name": "modulo",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -44,7 +47,8 @@
     ],
     "functions": [
         {
-            "identifier": "divide",
+            "identifier": 1,
+            "name": "divide",
             "locals": [],
             "body": [
                 {
@@ -189,7 +193,8 @@
             ]
         },
         {
-            "identifier": "modulo",
+            "identifier": 2,
+            "name": "modulo",
             "locals": [],
             "body": [
                 {
@@ -250,7 +255,8 @@
             ]
         },
         {
-            "identifier": "multiply",
+            "identifier": 0,
+            "name": "multiply",
             "locals": [],
             "body": [
                 {

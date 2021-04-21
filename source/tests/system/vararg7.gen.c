@@ -23,9 +23,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ir_module_new_named_function_declaration(mem, &module,
             "unit", unit_decl_params, false, unit_decl_result, &unit_id);
     REQUIRE(unit_decl != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *unit = kefir_ir_module_new_function(mem, &module, unit_decl->identifier, NULL, 1024);
+    struct kefir_ir_function *unit = kefir_ir_module_new_function(mem, &module, unit_decl->name, NULL, 1024);
     REQUIRE(unit != NULL, KEFIR_INTERNAL_ERROR);
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, unit_decl->identifier));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, unit_decl->name));
 
     kefir_codegen_amd64_sysv_init(&codegen, stdout);
     codegen.asmgen.settings.enable_comments = false;
@@ -43,7 +43,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ir_module_new_named_function_declaration(mem, &module,
             "getint", getint_decl_params, false, getint_decl_result, &getint_id);
     REQUIRE(getint_decl != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *getint = kefir_ir_module_new_function(mem, &module, getint_decl->identifier, getint_locals, 1024);
+    struct kefir_ir_function *getint = kefir_ir_module_new_function(mem, &module, getint_decl->name, getint_locals, 1024);
     REQUIRE(getint != NULL, KEFIR_INTERNAL_ERROR);
 
     kefir_codegen_amd64_sysv_init(&codegen, stdout);
@@ -78,9 +78,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ir_module_new_named_function_declaration(mem, &module, "getarg",
             inttype, true, getarg_decl_result, NULL);
     REQUIRE(getarg_decl != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *getarg = kefir_ir_module_new_function(mem, &module, getarg_decl->identifier, getarg_locals, 1024);
+    struct kefir_ir_function *getarg = kefir_ir_module_new_function(mem, &module, getarg_decl->name, getarg_locals, 1024);
     REQUIRE(getarg != NULL, KEFIR_INTERNAL_ERROR);
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, getarg_decl->identifier));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, getarg_decl->name));
 
     kefir_codegen_amd64_sysv_init(&codegen, stdout);
     codegen.asmgen.settings.enable_comments = false;

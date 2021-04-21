@@ -24,31 +24,36 @@
     ],
     "function_declarations": [
         {
-            "identifier": "left_shift",
+            "identifier": 0,
+            "name": "left_shift",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "right_shift",
+            "identifier": 1,
+            "name": "right_shift",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "and",
+            "identifier": 2,
+            "name": "and",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "or",
+            "identifier": 3,
+            "name": "or",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "xor",
+            "identifier": 4,
+            "name": "xor",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -56,7 +61,8 @@
     ],
     "functions": [
         {
-            "identifier": "or",
+            "identifier": 3,
+            "name": "or",
             "locals": [],
             "body": [
                 {
@@ -95,7 +101,8 @@
             ]
         },
         {
-            "identifier": "and",
+            "identifier": 2,
+            "name": "and",
             "locals": [],
             "body": [
                 {
@@ -134,7 +141,8 @@
             ]
         },
         {
-            "identifier": "xor",
+            "identifier": 4,
+            "name": "xor",
             "locals": [],
             "body": [
                 {
@@ -173,7 +181,8 @@
             ]
         },
         {
-            "identifier": "left_shift",
+            "identifier": 0,
+            "name": "left_shift",
             "locals": [],
             "body": [
                 {
@@ -212,7 +221,8 @@
             ]
         },
         {
-            "identifier": "right_shift",
+            "identifier": 1,
+            "name": "right_shift",
             "locals": [],
             "body": [
                 {

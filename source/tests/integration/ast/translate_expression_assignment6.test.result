@@ -99,43 +99,50 @@
     ],
     "function_declarations": [
         {
-            "identifier": "assign_sub_int",
+            "identifier": 0,
+            "name": "assign_sub_int",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_sub_ullong",
+            "identifier": 1,
+            "name": "assign_sub_ullong",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_sub_float",
+            "identifier": 2,
+            "name": "assign_sub_float",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_sub_double",
+            "identifier": 3,
+            "name": "assign_sub_double",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_sub_double_int",
+            "identifier": 4,
+            "name": "assign_sub_double_int",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_sub_ptr_int",
+            "identifier": 5,
+            "name": "assign_sub_ptr_int",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "assign_sub_ptr2_int",
+            "identifier": 6,
+            "name": "assign_sub_ptr2_int",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -143,7 +150,8 @@
     ],
     "functions": [
         {
-            "identifier": "assign_sub_double",
+            "identifier": 3,
+            "name": "assign_sub_double",
             "locals": [],
             "body": [
                 {
@@ -183,7 +191,8 @@
             ]
         },
         {
-            "identifier": "assign_sub_ullong",
+            "identifier": 1,
+            "name": "assign_sub_ullong",
             "locals": [],
             "body": [
                 {
@@ -220,7 +229,8 @@
             ]
         },
         {
-            "identifier": "assign_sub_double_int",
+            "identifier": 4,
+            "name": "assign_sub_double_int",
             "locals": [],
             "body": [
                 {
@@ -263,7 +273,8 @@
             ]
         },
         {
-            "identifier": "assign_sub_int",
+            "identifier": 0,
+            "name": "assign_sub_int",
             "locals": [],
             "body": [
                 {
@@ -300,7 +311,8 @@
             ]
         },
         {
-            "identifier": "assign_sub_ptr_int",
+            "identifier": 5,
+            "name": "assign_sub_ptr_int",
             "locals": [],
             "body": [
                 {
@@ -344,7 +356,8 @@
             ]
         },
         {
-            "identifier": "assign_sub_float",
+            "identifier": 2,
+            "name": "assign_sub_float",
             "locals": [],
             "body": [
                 {
@@ -381,7 +394,8 @@
             ]
         },
         {
-            "identifier": "assign_sub_ptr2_int",
+            "identifier": 6,
+            "name": "assign_sub_ptr2_int",
             "locals": [],
             "body": [
                 {

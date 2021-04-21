@@ -33,19 +33,22 @@
     ],
     "function_declarations": [
         {
-            "identifier": "conditional1",
+            "identifier": 0,
+            "name": "conditional1",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "conditional2",
+            "identifier": 1,
+            "name": "conditional2",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": "conditional3",
+            "identifier": 2,
+            "name": "conditional3",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -53,7 +56,8 @@
     ],
     "functions": [
         {
-            "identifier": "conditional1",
+            "identifier": 0,
+            "name": "conditional1",
             "locals": [
                 {
                     "type": "struct",
@@ -88,7 +92,8 @@
             ]
         },
         {
-            "identifier": "conditional2",
+            "identifier": 1,
+            "name": "conditional2",
             "locals": [
                 {
                     "type": "struct",
@@ -129,7 +134,8 @@
             ]
         },
         {
-            "identifier": "conditional3",
+            "identifier": 2,
+            "name": "conditional3",
             "locals": [
                 {
                     "type": "struct",

@@ -6,7 +6,7 @@
 
 kefir_result_t kefir_ir_function_decl_alloc(struct kefir_mem *mem,
                                        kefir_id_t id,
-                                       const char *identifier,
+                                       const char *name,
                                        struct kefir_ir_type *parameters,
                                        bool vararg,
                                        struct kefir_ir_type *returns,
@@ -14,7 +14,7 @@ kefir_result_t kefir_ir_function_decl_alloc(struct kefir_mem *mem,
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocation"));
     REQUIRE(decl != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR function declaration pointer"));
     decl->id = id;
-    decl->identifier = identifier;
+    decl->name = name;
     decl->params = parameters;
     decl->result = returns;
     decl->vararg = vararg;
@@ -27,7 +27,7 @@ kefir_result_t kefir_ir_function_decl_free(struct kefir_mem *mem,
     REQUIRE(decl != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR function declaration pointer"));
     decl->result = NULL;
     decl->params = NULL;
-    decl->identifier = NULL;
+    decl->name = NULL;
     return KEFIR_OK;
 }
 

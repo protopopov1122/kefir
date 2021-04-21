@@ -22,9 +22,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ir_module_new_named_function_declaration(mem, &module, "func1",
             decl_params, false, decl_result, NULL);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *func = kefir_ir_module_new_function(mem, &module, decl->identifier, NULL, 0);
+    struct kefir_ir_function *func = kefir_ir_module_new_function(mem, &module, decl->name, NULL, 0);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl->identifier));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl->name));
     struct kefir_amd64_sysv_function sysv_func;
     REQUIRE_OK(kefir_codegen_amd64_sysv_init(&codegen, stdout));
     codegen.asmgen.settings.enable_comments = false;

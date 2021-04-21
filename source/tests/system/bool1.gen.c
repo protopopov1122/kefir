@@ -21,9 +21,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ir_module_new_named_function_declaration(mem, &module, "bool_and",
             decl_params, false, decl_result, NULL);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *func = kefir_ir_module_new_function(mem, &module, decl->identifier, NULL, 2);
+    struct kefir_ir_function *func = kefir_ir_module_new_function(mem, &module, decl->name, NULL, 2);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl->identifier));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl->name));
     kefir_irbuilder_type_append_v(mem, func->declaration->params, KEFIR_IR_TYPE_BOOL, 0, 0);
     kefir_irbuilder_type_append_v(mem, func->declaration->params, KEFIR_IR_TYPE_BOOL, 0, 0);
     kefir_irbuilder_type_append_v(mem, func->declaration->result, KEFIR_IR_TYPE_BOOL, 0, 0);
@@ -37,9 +37,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     decl = kefir_ir_module_new_named_function_declaration(mem, &module, "bool_or",
         decl_params, false, decl_result, NULL);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
-    func = kefir_ir_module_new_function(mem, &module, decl->identifier, NULL, 2);
+    func = kefir_ir_module_new_function(mem, &module, decl->name, NULL, 2);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl->identifier));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl->name));
     kefir_irbuilder_type_append_v(mem, func->declaration->params, KEFIR_IR_TYPE_BOOL, 0, 0);
     kefir_irbuilder_type_append_v(mem, func->declaration->params, KEFIR_IR_TYPE_BOOL, 0, 0);
     kefir_irbuilder_type_append_v(mem, func->declaration->result, KEFIR_IR_TYPE_BOOL, 0, 0);
@@ -53,9 +53,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     decl = kefir_ir_module_new_named_function_declaration(mem, &module, "bool_not", 
         decl_params, false, decl_result, NULL);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
-    func = kefir_ir_module_new_function(mem, &module, decl->identifier, NULL, 2);
+    func = kefir_ir_module_new_function(mem, &module, decl->name, NULL, 2);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl->identifier));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl->name));
     kefir_irbuilder_type_append_v(mem, func->declaration->params, KEFIR_IR_TYPE_BOOL, 0, 0);
     kefir_irbuilder_type_append_v(mem, func->declaration->result, KEFIR_IR_TYPE_BOOL, 0, 0);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_BNOT, 0);

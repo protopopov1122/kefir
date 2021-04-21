@@ -430,10 +430,10 @@ kefir_result_t kefir_amd64_sysv_function_invoke(struct kefir_codegen_amd64 *code
             KEFIR_AMD64_SYSV_ABI_DATA_REG,
             info.total_arguments * KEFIR_AMD64_SYSV_ABI_QWORD);
     } else {
-        REQUIRE(decl->decl->identifier != NULL && strlen(decl->decl->identifier) != 0,
+        REQUIRE(decl->decl->name != NULL && strlen(decl->decl->name) != 0,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to translate invocation with no valid identifier"));
         ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_CALL);
-        ASMGEN_ARG0(&codegen->asmgen, decl->decl->identifier);
+        ASMGEN_ARG0(&codegen->asmgen, decl->decl->name);
     }
     REQUIRE_OK(invoke_epilogue(codegen, decl, &info));
     return KEFIR_OK;
