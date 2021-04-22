@@ -69,6 +69,7 @@ struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_constant(s
     scoped_id->enum_constant.value = value;
     memset(scoped_id->payload.content, 0, KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE);
     scoped_id->payload.ptr = scoped_id->payload.content;
+    scoped_id->payload.cleanup = &scoped_id->cleanup;
     return scoped_id;
 }
 
@@ -81,6 +82,7 @@ struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_type_tag(s
     scoped_id->type = type;
     memset(scoped_id->payload.content, 0, KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE);
     scoped_id->payload.ptr = scoped_id->payload.content;
+    scoped_id->payload.cleanup = &scoped_id->cleanup;
     return scoped_id;
 }
 
@@ -93,6 +95,7 @@ struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_type_defin
     scoped_id->type = type;
     memset(scoped_id->payload.content, 0, KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE);
     scoped_id->payload.ptr = scoped_id->payload.content;
+    scoped_id->payload.cleanup = &scoped_id->cleanup;
     return scoped_id;
 }
 
@@ -162,6 +165,7 @@ struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_function_i
     scoped_id->function.external = external;
     memset(scoped_id->payload.content, 0, KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE);
     scoped_id->payload.ptr = scoped_id->payload.content;
+    scoped_id->payload.cleanup = &scoped_id->cleanup;
     return scoped_id;
 }
 

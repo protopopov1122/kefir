@@ -167,6 +167,7 @@ static kefir_result_t translate_global_scoped_identifier_object(struct kefir_mem
                                                               const struct kefir_ast_scoped_identifier *scoped_identifier,
                                                               struct kefir_ast_translator_global_scope_layout *layout,
                                                               const struct kefir_ast_translator_environment *env) {
+    REQUIRE(scoped_identifier->klass == KEFIR_AST_SCOPE_IDENTIFIER_OBJECT, KEFIR_OK);
     switch (scoped_identifier->object.storage) {
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN:
             REQUIRE_OK(translate_extern_identifier(mem, module, type_cache, env, layout, identifier, scoped_identifier));
@@ -253,6 +254,13 @@ kefir_result_t kefir_ast_translator_build_global_scope_layout(struct kefir_mem *
         res == KEFIR_OK;
         res = kefir_ast_identifier_flat_scope_next(&context->object_identifiers, &iter)) {
         REQUIRE_OK(translate_global_scoped_identifier(mem, module, type_cache, iter.identifier, iter.value, layout, env));
+    }
+    REQUIRE(res == KEFIR_ITERATOR_END, res);
+
+    for (res = kefir_ast_identifier_flat_scope_iter(&context->function_identifiers, &iter);
+        res == KEFIR_OK;
+        res = kefir_ast_identifier_flat_scope_next(&context->function_identifiers, &iter)) {
+        REQUIRE_OK(translate_global_scoped_identifier_function(mem, module, type_cache, iter.value, env));
     }
     REQUIRE(res == KEFIR_ITERATOR_END, res);
     return KEFIR_OK;

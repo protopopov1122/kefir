@@ -226,6 +226,14 @@
                     "type": "long"
                 }
             ]
+        },
+        {
+            "identifier": 24,
+            "type": []
+        },
+        {
+            "identifier": 25,
+            "type": []
         }
     ],
     "data": [
@@ -443,11 +451,18 @@
             "parameters": [],
             "vararg": false,
             "returns": []
+        },
+        {
+            "identifier": 1,
+            "name": "func1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
         }
     ],
     "functions": [
         {
-            "identifier": 0,
+            "identifier": 1,
             "name": "func1",
             "locals": [],
             "body": [

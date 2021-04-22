@@ -24,6 +24,7 @@ kefir_result_t kefir_ast_translator_scoped_identifer_payload_free(struct kefir_m
             case KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION: {
                 ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_function *, scoped_identifier_payload,
                     scoped_identifier->payload.ptr);
+                REQUIRE_OK(kefir_ast_translator_function_declaration_free(mem, scoped_identifier_payload->declaration));
                 scoped_identifier_payload->declaration = NULL;
             } break;
 
