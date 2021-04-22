@@ -40,8 +40,10 @@ static kefir_result_t layer_address(struct kefir_mem *mem,
          top_layer = top_layer->parent, type = top_layer->object_type) {}
 
     const struct kefir_ast_translator_cached_type *cached_type = NULL;
-    REQUIRE_OK(kefir_ast_translator_type_cache_generate_owned(mem, type, 0, &context->type_cache, context->environment,
+    REQUIRE_OK(kefir_ast_translator_type_cache_generate_owned_object(mem, type, 0, &context->type_cache, context->environment,
         context->module, &cached_type));
+    REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_CACHED_OBJECT_TYPE,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
 
     struct kefir_ast_designator *designator = current_designator;
 
@@ -52,7 +54,7 @@ static kefir_result_t layer_address(struct kefir_mem *mem,
 
     kefir_size_t offset = 0;
     struct kefir_ast_type_layout *layout = NULL;
-    kefir_result_t res = kefir_ast_type_layout_resolve_offset(cached_type->type_layout, designator, &layout, &offset);
+    kefir_result_t res = kefir_ast_type_layout_resolve_offset(cached_type->object.type_layout, designator, &layout, &offset);
     REQUIRE_ELSE(res == KEFIR_OK, {
         if (current_designator == NULL) {
             kefir_ast_designator_free(mem, designator);
@@ -134,11 +136,13 @@ static kefir_result_t zero_type(struct kefir_mem *mem,
                               struct kefir_irbuilder_block *builder,
                               const struct kefir_ast_type *type) {
     const struct kefir_ast_translator_cached_type *cached_type = NULL;
-    REQUIRE_OK(kefir_ast_translator_type_cache_generate_owned(mem, type, 0, &context->type_cache,
+    REQUIRE_OK(kefir_ast_translator_type_cache_generate_owned_object(mem, type, 0, &context->type_cache,
         context->environment, context->module, &cached_type));
+    REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_CACHED_OBJECT_TYPE,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
 
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 0));
-    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_BZERO, cached_type->ir_type_id, cached_type->type_layout->value));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_BZERO, cached_type->object.ir_type_id, cached_type->object.type_layout->value));
     return KEFIR_OK;
 }
 

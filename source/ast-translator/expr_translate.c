@@ -40,6 +40,7 @@ TRANSLATE_NODE(string_literal, struct kefir_ast_string_literal)
 TRANSLATE_NODE(compound_literal, struct kefir_ast_compound_literal)
 TRANSLATE_NODE(array_subscript, struct kefir_ast_array_subscript)
 TRANSLATE_NODE(struct_member, struct kefir_ast_struct_member)
+TRANSLATE_NODE(function_call, struct kefir_ast_function_call)
 TRANSLATE_NODE(cast_operator, struct kefir_ast_cast_operator)
 TRANSLATE_NODE(unary_operation, struct kefir_ast_unary_operation)
 TRANSLATE_NODE(binary_operation, struct kefir_ast_binary_operation)
@@ -65,6 +66,7 @@ kefir_result_t kefir_ast_translate_expression(struct kefir_mem *mem,
     visitor.array_subscript = translate_array_subscript;
     visitor.struct_member = translate_struct_member;
     visitor.struct_indirect_member = translate_struct_member;
+    visitor.function_call = translate_function_call;
     visitor.cast_operator = translate_cast_operator;
     visitor.unary_operation = translate_unary_operation;
     visitor.binary_operation = translate_binary_operation;

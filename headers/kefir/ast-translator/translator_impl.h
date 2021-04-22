@@ -18,6 +18,7 @@ NODE_TRANSLATOR(string_literal, struct kefir_ast_string_literal);
 NODE_TRANSLATOR(compound_literal, struct kefir_ast_compound_literal);
 NODE_TRANSLATOR(array_subscript, struct kefir_ast_array_subscript);
 NODE_TRANSLATOR(struct_member, struct kefir_ast_struct_member);
+NODE_TRANSLATOR(function_call, struct kefir_ast_function_call);
 NODE_TRANSLATOR(cast_operator, struct kefir_ast_cast_operator);
 NODE_TRANSLATOR(unary_operation, struct kefir_ast_unary_operation);
 NODE_TRANSLATOR(binary_operation, struct kefir_ast_binary_operation);

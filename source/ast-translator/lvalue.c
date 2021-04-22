@@ -32,7 +32,7 @@ kefir_result_t kefir_ast_translator_object_lvalue(struct kefir_mem *mem,
         } break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC: {
-            ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, identifier_data,
+            ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, identifier_data,
                 scoped_identifier->payload.ptr);
             kefir_id_t id;
             REQUIRE(kefir_ir_module_symbol(mem, context->module,
@@ -52,7 +52,7 @@ kefir_result_t kefir_ast_translator_object_lvalue(struct kefir_mem *mem,
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO:
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER: {
-            ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, identifier_data,
+            ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, identifier_data,
                 scoped_identifier->payload.ptr);
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_GETLOCALS, 0));
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_OFFSETPTR,
@@ -91,8 +91,10 @@ kefir_result_t kefir_ast_translate_array_subscript_lvalue(struct kefir_mem *mem,
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST array subscript node"));
 
     const struct kefir_ast_translator_cached_type *cached_type = NULL;
-    REQUIRE_OK(kefir_ast_translator_type_cache_generate_owned(mem, node->base.properties.type, 0,
+    REQUIRE_OK(kefir_ast_translator_type_cache_generate_owned_object(mem, node->base.properties.type, 0,
         &context->type_cache, context->environment, context->module, &cached_type));
+    REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_CACHED_OBJECT_TYPE,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
 
     const struct kefir_ast_type *array_type = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem,
         context->ast_context->type_bundle, node->array->properties.type);
@@ -103,7 +105,7 @@ kefir_result_t kefir_ast_translate_array_subscript_lvalue(struct kefir_mem *mem,
         REQUIRE_OK(kefir_ast_translate_expression(mem, node->subscript, builder, context));
         REQUIRE_OK(kefir_ast_translate_expression(mem, node->array, builder, context));
     }
-    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_ELEMENTPTR, cached_type->ir_type_id, 0));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_ELEMENTPTR, cached_type->object.ir_type_id, 0));
     return KEFIR_OK;
 }
 
@@ -123,8 +125,10 @@ kefir_result_t kefir_ast_translate_struct_member_lvalue(struct kefir_mem *mem,
     }
 
     const struct kefir_ast_translator_cached_type *cached_type = NULL;
-    REQUIRE_OK(kefir_ast_translator_type_cache_generate_owned(mem, structure_type, 0,
+    REQUIRE_OK(kefir_ast_translator_type_cache_generate_owned_object(mem, structure_type, 0,
         &context->type_cache, context->environment, context->module, &cached_type));
+    REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_CACHED_OBJECT_TYPE,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
 
     struct kefir_ast_type_layout *member_layout = NULL;
     struct kefir_ast_designator designator = {
@@ -132,10 +136,10 @@ kefir_result_t kefir_ast_translate_struct_member_lvalue(struct kefir_mem *mem,
         .member = node->member,
         .next = NULL
     };
-    REQUIRE_OK(kefir_ast_type_layout_resolve(cached_type->type_layout, &designator, &member_layout, NULL, NULL));
+    REQUIRE_OK(kefir_ast_type_layout_resolve(cached_type->object.type_layout, &designator, &member_layout, NULL, NULL));
 
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->structure, builder, context));
-    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_OFFSETPTR, cached_type->ir_type_id, member_layout->value));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_OFFSETPTR, cached_type->object.ir_type_id, member_layout->value));
     return KEFIR_OK;
 }
 

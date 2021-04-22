@@ -17,7 +17,7 @@ kefir_result_t kefir_ast_translate_global_scope(struct kefir_mem *mem,
         kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(const struct kefir_ast_translator_scoped_identifier_entry *, scoped_identifier,
             iter->value);
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, identifier_data,
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, identifier_data,
             scoped_identifier->value->payload.ptr);
         if (scoped_identifier->value->object.external) {
             REQUIRE_OK(kefir_ir_module_declare_external(mem, module, scoped_identifier->identifier));

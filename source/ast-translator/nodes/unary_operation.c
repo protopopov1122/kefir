@@ -140,11 +140,14 @@ static kefir_result_t incdec_impl(struct kefir_mem *mem,
     switch (normalized_type->tag) {
         case KEFIR_AST_TYPE_SCALAR_POINTER: {
             const struct kefir_ast_translator_cached_type *cached_type = NULL;
-            REQUIRE_OK(kefir_ast_translator_type_cache_generate_owned(mem, node->base.properties.type->referenced_type, 0,
+            REQUIRE_OK(kefir_ast_translator_type_cache_generate_owned_object(mem, node->base.properties.type->referenced_type, 0,
                 &context->type_cache, context->environment, context->module, &cached_type));
+            REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_CACHED_OBJECT_TYPE,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
+
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHI64, diff));
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_ELEMENTPTR,
-                cached_type->ir_type_id, cached_type->type_layout->value));
+                cached_type->object.ir_type_id, cached_type->object.type_layout->value));
         } break;
 
         case KEFIR_AST_TYPE_SCALAR_FLOAT:

@@ -21,6 +21,15 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_local_context_init(mem, &global_context, &local_context));
     const struct kefir_ast_context *context = &local_context.context;
 
+
+    struct kefir_ast_function_type *func_type1 = NULL;
+    const struct kefir_ast_type *type1 = kefir_ast_type_function(mem, context->type_bundle,
+        kefir_ast_type_signed_int(), "sum", &func_type1);
+    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context->type_bundle, func_type1, NULL, kefir_ast_type_signed_int(), NULL));
+    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context->type_bundle, func_type1, NULL, kefir_ast_type_signed_int(), NULL));
+
+    REQUIRE_OK(kefir_ast_global_context_declare_function(mem, &global_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE, type1));
+
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
 
@@ -38,44 +47,32 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_translate_global_scope(mem, &module, &translator_global_scope));
     struct kefir_irbuilder_block builder;
 
-    FUNC("logical_and1", {
-        BINARY_NODE(KEFIR_AST_OPERATION_LOGICAL_AND,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(mem, false)),
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(mem, false)));
+    FUNC("call1", {
+        struct kefir_ast_function_call *call = kefir_ast_new_function_call(mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "sum")));
+        REQUIRE_OK(kefir_ast_function_call_append(mem, call,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 1))));
+        REQUIRE_OK(kefir_ast_function_call_append(mem, call,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 2))));
+
+        struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(call);
+        REQUIRE_OK(kefir_ast_analyze_node(mem, context, node));
+        REQUIRE_OK(kefir_ast_translate_expression(mem, node, &builder, &translator_context));
+        REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
     });
 
-    FUNC("logical_and2", {
-        BINARY_NODE(KEFIR_AST_OPERATION_LOGICAL_AND,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 0.067f)),
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(mem, 'C')));
-    });
+    FUNC("call2", {
+        struct kefir_ast_function_call *call = kefir_ast_new_function_call(mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "sum")));
+        REQUIRE_OK(kefir_ast_function_call_append(mem, call,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 5.91))));
+        REQUIRE_OK(kefir_ast_function_call_append(mem, call,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(mem, true))));
 
-    FUNC("logical_and3", {
-        BINARY_NODE(KEFIR_AST_OPERATION_LOGICAL_AND,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(mem, 4096)),
-            KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
-                kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_void()),
-                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 1)))));
-    });
-
-    FUNC("logical_or1", {
-        BINARY_NODE(KEFIR_AST_OPERATION_LOGICAL_OR,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(mem, false)),
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(mem, false)));
-    });
-
-    FUNC("logical_or2", {
-        BINARY_NODE(KEFIR_AST_OPERATION_LOGICAL_OR,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 0.4f)),
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(mem, '7')));
-    });
-
-    FUNC("logical_or3", {
-        BINARY_NODE(KEFIR_AST_OPERATION_LOGICAL_OR,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(mem, 8192)),
-            KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
-                kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_void()),
-                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 0)))));
+        struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(call);
+        REQUIRE_OK(kefir_ast_analyze_node(mem, context, node));
+        REQUIRE_OK(kefir_ast_translate_expression(mem, node, &builder, &translator_context));
+        REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
     });
 
     REQUIRE_OK(kefir_ir_format_module(stdout, &module));

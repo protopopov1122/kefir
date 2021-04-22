@@ -11,7 +11,7 @@ static kefir_result_t format_global_scope(struct kefir_json_output *json, struct
         kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_entry *, scoped_identifier,
             iter->value);
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_payload,
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, scoped_identifier_payload,
             scoped_identifier->value->payload.ptr);
 
         REQUIRE_OK(kefir_json_output_object_begin(json));
@@ -36,7 +36,7 @@ static kefir_result_t format_global_scope(struct kefir_json_output *json, struct
         kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_entry *, scoped_identifier,
             iter->value);
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_payload,
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, scoped_identifier_payload,
             scoped_identifier->value->payload.ptr);
         
         REQUIRE_OK(kefir_json_output_object_begin(json));
@@ -65,7 +65,7 @@ static kefir_result_t format_global_scope(struct kefir_json_output *json, struct
         kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_entry *, scoped_identifier,
             iter->value);
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_payload,
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, scoped_identifier_payload,
             scoped_identifier->value->payload.ptr);
 
         REQUIRE_OK(kefir_json_output_object_begin(json));
@@ -89,7 +89,7 @@ static kefir_result_t format_global_scope(struct kefir_json_output *json, struct
         kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_entry *, scoped_identifier,
             iter->value);
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_payload,
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, scoped_identifier_payload,
             scoped_identifier->value->payload.ptr);
 
         REQUIRE_OK(kefir_json_output_object_begin(json));
@@ -113,7 +113,7 @@ static kefir_result_t format_local_scope(struct kefir_json_output *json, struct 
         kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_entry *, scoped_identifier,
             iter->value);
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_payload,
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, scoped_identifier_payload,
             scoped_identifier->value->payload.ptr);
         
         REQUIRE_OK(kefir_json_output_object_begin(json));
@@ -132,7 +132,7 @@ static kefir_result_t format_local_scope(struct kefir_json_output *json, struct 
         kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_entry *, scoped_identifier,
             iter->value);
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_payload,
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, scoped_identifier_payload,
             scoped_identifier->value->payload.ptr);
         
         REQUIRE_OK(kefir_json_output_object_begin(json));
@@ -155,7 +155,7 @@ static kefir_result_t format_local_scope(struct kefir_json_output *json, struct 
         kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_entry *, scoped_identifier,
             iter->value);
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_payload,
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, scoped_identifier_payload,
             scoped_identifier->value->payload.ptr);
         
         REQUIRE_OK(kefir_json_output_object_begin(json));
@@ -256,7 +256,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_translator_type_cache_init(&type_cache));
     REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(mem, &module, &global_context, &env,
         &type_cache, &translator_global_scope));
-    REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(mem, &local_context, &env,
+    REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(mem, &local_context, &env, &module,
         &type_cache, &translator_local_scope));
 
     struct kefir_json_output json;

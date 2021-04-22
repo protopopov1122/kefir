@@ -1,0 +1,127 @@
+{
+    "globals": [],
+    "externals": [],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": []
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": []
+        }
+    ],
+    "function_declarations": [
+        {
+            "identifier": 0,
+            "name": "call1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 1,
+            "name": "sum",
+            "parameters": [
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "int"
+                }
+            ],
+            "vararg": false,
+            "returns": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 2,
+            "name": "call2",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": 0,
+            "name": "call1",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 2
+                },
+                {
+                    "opcode": "invoke",
+                    "arg": {
+                        "identifier": 1,
+                        "name": "sum"
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": 2,
+            "name": "call2",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "pushf32",
+                    "arg": 5.910000
+                },
+                {
+                    "opcode": "f32cint"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "invoke",
+                    "arg": {
+                        "identifier": 1,
+                        "name": "sum"
+                    }
+                }
+            ]
+        }
+    ]
+}

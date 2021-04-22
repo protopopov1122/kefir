@@ -18,7 +18,7 @@ kefir_result_t kefir_ast_translator_fetch_temporary(struct kefir_mem *mem,
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
     REQUIRE_OK(context->ast_context->resolve_ordinary_identifier(context->ast_context,
         KEFIR_AST_TRANSLATOR_TEMPORARIES_IDENTIFIER, &scoped_id));
-    ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_id_layout,
+    ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, scoped_id_layout,
         scoped_id->payload.ptr);
     
 #define BUFFER_LEN 128

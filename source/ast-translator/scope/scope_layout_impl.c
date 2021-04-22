@@ -9,14 +9,30 @@ kefir_result_t kefir_ast_translator_scoped_identifer_payload_free(struct kefir_m
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid memory allocator"));
     REQUIRE(scoped_identifier != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid scoped identifier"));
     if (scoped_identifier->payload.ptr != NULL) {
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_layout *, scoped_identifier_payload,
-            scoped_identifier->payload.ptr);
-        if (scoped_identifier_payload->layout != NULL) {
-            REQUIRE_OK(kefir_ast_type_layout_free(mem, scoped_identifier_payload->layout));
+        switch (scoped_identifier->klass) {
+            case KEFIR_AST_SCOPE_IDENTIFIER_OBJECT: {
+                ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, scoped_identifier_payload,
+                    scoped_identifier->payload.ptr);
+                if (scoped_identifier_payload->layout != NULL) {
+                    REQUIRE_OK(kefir_ast_type_layout_free(mem, scoped_identifier_payload->layout));
+                }
+                scoped_identifier_payload->type = NULL;
+                scoped_identifier_payload->type_id = 0;
+                scoped_identifier_payload->layout = NULL;
+            } break;
+
+            case KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION: {
+                ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_function *, scoped_identifier_payload,
+                    scoped_identifier->payload.ptr);
+                scoped_identifier_payload->declaration = NULL;
+            } break;
+
+            case KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT:
+            case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_TAG:
+            case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION:
+            case KEFIR_AST_SCOPE_IDENTIFIER_LABEL:
+                break;
         }
-        scoped_identifier_payload->type = NULL;
-        scoped_identifier_payload->type_id = 0;
-        scoped_identifier_payload->layout = NULL;
     }
     return KEFIR_OK;
 }
