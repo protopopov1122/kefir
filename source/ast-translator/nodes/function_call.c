@@ -58,7 +58,7 @@ kefir_result_t kefir_ast_translate_function_call_node(struct kefir_mem *mem,
             if (function_type->function_type.ellipsis) {
                 struct kefir_ast_translator_function_declaration *func_decl = NULL;
                 REQUIRE_OK(kefir_ast_translator_function_declaration_init_vararg(mem, context->environment, context->ast_context->type_traits,
-                    context->module, function_type, &node->arguments, &func_decl));
+                    context->module, &context->type_cache, function_type, &node->arguments, &func_decl));
                 ir_decl = func_decl->ir_function_decl;
                 kefir_result_t res = translate_parameters(mem, context, builder, node, func_decl);
                 REQUIRE_ELSE(res == KEFIR_OK, {
