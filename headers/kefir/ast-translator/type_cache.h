@@ -90,6 +90,7 @@ kefir_result_t kefir_ast_translator_type_cache_generate_owned_function(struct ke
                                                                    const struct kefir_ast_type *,
                                                                    struct kefir_ast_translator_type_cache *,
                                                                    const struct kefir_ast_translator_environment *,
+                                                                   const struct kefir_ast_type_traits *,
                                                                    struct kefir_ir_module *,
                                                                    const struct kefir_ast_translator_cached_type **);
 

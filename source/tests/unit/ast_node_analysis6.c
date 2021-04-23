@@ -251,6 +251,42 @@ DEFINE_CASE(ast_node_analysis_function_calls3, "AST node analysis - function cal
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
 
+DEFINE_CASE(ast_node_analysis_function_calls4, "AST node analysis - function calls #4")
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits,
+        &kft_util_get_translator_environment()->target_env, &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    struct kefir_ast_function_type *function1 = NULL;
+    const struct kefir_ast_type *type1 = kefir_ast_type_function(&kft_mem, context->type_bundle,
+        kefir_ast_type_float(), "func1", &function1);
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, function1,
+        NULL, kefir_ast_type_void(), NULL));
+
+    ASSERT_OK(kefir_ast_local_context_declare_function(&kft_mem, &local_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+        type1));
+
+    ASSERT_FUNCTION_CALL(&kft_mem, context, "func1", kefir_ast_type_float(), {
+    });
+    ASSERT_FUNCTION_CALL_NOK(&kft_mem, context, "func1", {
+        ASSERT_OK(kefir_ast_function_call_append(&kft_mem, call1,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0))));
+    });
+    ASSERT_FUNCTION_CALL_NOK(&kft_mem, context, "func1", {
+        ASSERT_OK(kefir_ast_function_call_append(&kft_mem, call1,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0))));
+        ASSERT_OK(kefir_ast_function_call_append(&kft_mem, call1,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 1))));
+    });
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+END_CASE
+
 #define ASSERT_COMPOUND_LITERAL(_mem, _context, _type, _init, _result_type, _constant) \
     do { \
         struct kefir_ast_compound_literal *compound = kefir_ast_new_compound_literal((_mem), (_type));\

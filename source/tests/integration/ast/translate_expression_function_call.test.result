@@ -32,6 +32,82 @@
                     "type": "int"
                 }
             ]
+        },
+        {
+            "identifier": 5,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 6,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 7,
+            "type": [
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 8,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 9,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 10,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 11,
+            "type": [
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "double"
+                }
+            ]
+        },
+        {
+            "identifier": 12,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
         }
     ],
     "data": [
@@ -62,22 +138,115 @@
         },
         {
             "identifier": 1,
+            "name": "sum2",
+            "parameters": [
+                {
+                    "type": "int"
+                }
+            ],
+            "vararg": true,
+            "returns": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 2,
             "name": "call1",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
-            "identifier": 2,
+            "identifier": 3,
             "name": "call2",
             "parameters": [],
             "vararg": false,
             "returns": []
+        },
+        {
+            "identifier": 4,
+            "name": "call3",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 5,
+            "name": "sum2",
+            "parameters": [
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "int"
+                }
+            ],
+            "vararg": true,
+            "returns": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 6,
+            "name": "call4",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 7,
+            "name": "sum2",
+            "parameters": [
+                {
+                    "type": "int"
+                }
+            ],
+            "vararg": true,
+            "returns": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 8,
+            "name": "call5",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 9,
+            "name": "sum2",
+            "parameters": [
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "double"
+                }
+            ],
+            "vararg": true,
+            "returns": [
+                {
+                    "type": "int"
+                }
+            ]
         }
     ],
     "functions": [
         {
-            "identifier": 1,
+            "identifier": 2,
             "name": "call1",
             "locals": [],
             "body": [
@@ -99,7 +268,7 @@
             ]
         },
         {
-            "identifier": 2,
+            "identifier": 3,
             "name": "call2",
             "locals": [],
             "body": [
@@ -119,6 +288,79 @@
                     "arg": {
                         "identifier": 0,
                         "name": "sum"
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "name": "call3",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 2
+                },
+                {
+                    "opcode": "push",
+                    "arg": 3
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4
+                },
+                {
+                    "opcode": "invoke",
+                    "arg": {
+                        "identifier": 5,
+                        "name": "sum2"
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": 6,
+            "name": "call4",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 100
+                },
+                {
+                    "opcode": "invoke",
+                    "arg": {
+                        "identifier": 7,
+                        "name": "sum2"
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": 8,
+            "name": "call5",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 100
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 4.580000
+                },
+                {
+                    "opcode": "f32cf64"
+                },
+                {
+                    "opcode": "invoke",
+                    "arg": {
+                        "identifier": 9,
+                        "name": "sum2"
                     }
                 }
             ]

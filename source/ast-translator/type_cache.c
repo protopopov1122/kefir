@@ -416,6 +416,7 @@ kefir_result_t kefir_ast_translator_type_cache_generate_owned_function(struct ke
                                                                    const struct kefir_ast_type *type,
                                                                    struct kefir_ast_translator_type_cache *cache,
                                                                    const struct kefir_ast_translator_environment *env,
+                                                                   const struct kefir_ast_type_traits *type_traits,
                                                                    struct kefir_ir_module *module,
                                                                    const struct kefir_ast_translator_cached_type **cached_type_ptr) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
@@ -434,7 +435,7 @@ kefir_result_t kefir_ast_translator_type_cache_generate_owned_function(struct ke
             KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST translator cached type"));
         cached_type->klass = KEFIR_AST_TRANSLATOR_CACHED_FUNCTION_TYPE;
 
-        res = kefir_ast_translator_function_declaration_init(mem, env, module, type, &cached_type->function.declaration);
+        res = kefir_ast_translator_function_declaration_init(mem, env, type_traits, module, type, &cached_type->function.declaration);
         REQUIRE_ELSE(res == KEFIR_OK, {
             KEFIR_FREE(mem, cached_type);
             return res;

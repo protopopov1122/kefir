@@ -31,22 +31,27 @@ kefir_result_t kefir_ast_analyze_function_call_node(struct kefir_mem *mem,
     const struct kefir_ast_type *function_type = func_type->referenced_type;
 
     if (function_type->function_type.mode == KEFIR_AST_FUNCTION_TYPE_PARAMETERS) {
-        REQUIRE((!function_type->function_type.ellipsis  &&
-            kefir_ast_type_function_parameter_count(&function_type->function_type) == kefir_list_length(&node->arguments)) ||
-            (function_type->function_type.ellipsis &&
-                kefir_ast_type_function_parameter_count(&function_type->function_type) <= kefir_list_length(&node->arguments)),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
-                "Number of parameters for function invocation shall agree with number of parameters for prototype"));
-
-        const struct kefir_list_entry *call_iter = kefir_list_head(&node->arguments);
-        for (kefir_size_t i = 0; call_iter != NULL && i < kefir_ast_type_function_parameter_count(&function_type->function_type);
-            kefir_list_next(&call_iter), i++) {
+        const struct kefir_list_entry *arg_value_iter = kefir_list_head(&node->arguments);
+        const struct kefir_list_entry *arg_type_iter = kefir_list_head(&function_type->function_type.parameters);
+        for (; arg_value_iter != NULL && arg_type_iter != NULL;
+            kefir_list_next(&arg_type_iter), kefir_list_next(&arg_value_iter)) {
+            ASSIGN_DECL_CAST(struct kefir_ast_function_type_parameter *, parameter,
+                arg_type_iter->value);
             ASSIGN_DECL_CAST(struct kefir_ast_node_base *, arg,
-                call_iter->value);
+                arg_value_iter->value);
             REQUIRE_OK(kefir_ast_analyze_node(mem, context, arg));
-            const struct kefir_ast_function_type_parameter *param = NULL;
-            REQUIRE_OK(kefir_ast_type_function_get_parameter(&function_type->function_type, i, &param));
-            REQUIRE_OK(kefir_ast_node_assignable(mem, context, arg, kefir_ast_unqualified_type(param->adjusted_type)));
+            REQUIRE_OK(kefir_ast_node_assignable(mem, context, arg, kefir_ast_unqualified_type(parameter->adjusted_type)));
+        }
+
+        if (arg_type_iter != NULL) {
+            ASSIGN_DECL_CAST(struct kefir_ast_function_type_parameter *, parameter,
+                arg_type_iter->value);
+            REQUIRE(parameter->adjusted_type->tag == KEFIR_AST_TYPE_VOID &&
+                kefir_ast_type_function_parameter_count(&function_type->function_type) == 1,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Function call parameter count does not match prototype"));
+        } else if (arg_value_iter != NULL) {
+            REQUIRE(function_type->function_type.ellipsis,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Function call parameter count does not match prototype"));
         }
     }
 
