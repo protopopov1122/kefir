@@ -90,10 +90,10 @@ kefir_result_t kefir_ast_translate_array_subscript_lvalue(struct kefir_mem *mem,
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST array subscript node"));
 
-    const struct kefir_ast_translator_cached_type *cached_type = NULL;
-    REQUIRE_OK(kefir_ast_translator_type_cache_generate_owned_object(mem, node->base.properties.type, 0,
-        &context->type_cache, context->environment, context->module, &cached_type));
-    REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_CACHED_OBJECT_TYPE,
+    const struct kefir_ast_translator_resolved_type *cached_type = NULL;
+    REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_resolver.resolver, context->environment, context->module,
+        node->base.properties.type, 0, &cached_type));
+    REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
 
     const struct kefir_ast_type *array_type = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem,
@@ -124,10 +124,10 @@ kefir_result_t kefir_ast_translate_struct_member_lvalue(struct kefir_mem *mem,
         structure_type = kefir_ast_unqualified_type(structure_type->referenced_type);
     }
 
-    const struct kefir_ast_translator_cached_type *cached_type = NULL;
-    REQUIRE_OK(kefir_ast_translator_type_cache_generate_owned_object(mem, structure_type, 0,
-        &context->type_cache, context->environment, context->module, &cached_type));
-    REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_CACHED_OBJECT_TYPE,
+    const struct kefir_ast_translator_resolved_type *cached_type = NULL;
+    REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_resolver.resolver, context->environment, context->module,
+        structure_type, 0, &cached_type));
+    REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
 
     struct kefir_ast_type_layout *member_layout = NULL;
@@ -136,7 +136,7 @@ kefir_result_t kefir_ast_translate_struct_member_lvalue(struct kefir_mem *mem,
         .member = node->member,
         .next = NULL
     };
-    REQUIRE_OK(kefir_ast_type_layout_resolve(cached_type->object.type_layout, &designator, &member_layout, NULL, NULL));
+    REQUIRE_OK(kefir_ast_type_layout_resolve(cached_type->object.layout, &designator, &member_layout, NULL, NULL));
 
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->structure, builder, context));
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_OFFSETPTR, cached_type->object.ir_type_id, member_layout->value));

@@ -2,7 +2,8 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-kefir_result_t kefir_ast_translator_context_init(struct kefir_ast_translator_context *context,
+kefir_result_t kefir_ast_translator_context_init(struct kefir_mem *mem,
+                                             struct kefir_ast_translator_context *context,
                                              const struct kefir_ast_context *ast_context,
                                              const struct kefir_ast_translator_environment *environment,
                                              struct kefir_ir_module *module) {
@@ -11,7 +12,7 @@ kefir_result_t kefir_ast_translator_context_init(struct kefir_ast_translator_con
     REQUIRE(environment != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator environment"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module"));
 
-    REQUIRE_OK(kefir_ast_translator_type_cache_init(&context->type_cache));
+    REQUIRE_OK(kefir_ast_translator_type_resolver_stack_init(mem, &context->type_resolver));
     context->ast_context = ast_context;
     context->environment = environment;
     context->module = module;
@@ -22,9 +23,14 @@ kefir_result_t kefir_ast_translator_context_free(struct kefir_mem *mem,
                                              struct kefir_ast_translator_context *context) {
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected a pointer to valid AST translator context"));
     
-    REQUIRE_OK(kefir_ast_translator_type_cache_free(mem, &context->type_cache));
+    REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_FREE(mem, &context->type_resolver.resolver));
     context->ast_context = NULL;
     context->environment = NULL;
     context->module = NULL;
     return KEFIR_OK;
+}
+
+struct kefir_ast_translator_type_resolver *kefir_ast_translator_context_type_resolver(struct kefir_ast_translator_context *context) {
+    REQUIRE(context != NULL, NULL);
+    return &context->type_resolver.resolver;
 }

@@ -1,4 +1,5 @@
 #include "kefir/ast-translator/scope/local_scope_layout.h"
+#include "kefir/ast-translator/type_cache.h"
 #include "kefir/test/util.h"
 #include "kefir/ir/format.h"
 #include <stdio.h>
@@ -253,11 +254,11 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_translator_local_scope_layout_init(mem, &module, &translator_global_scope, &translator_local_scope));
 
     struct kefir_ast_translator_type_cache type_cache;
-    REQUIRE_OK(kefir_ast_translator_type_cache_init(&type_cache));
+    REQUIRE_OK(kefir_ast_translator_type_cache_init(&type_cache, NULL));
     REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(mem, &module, &global_context, &env,
-        &type_cache, &translator_global_scope));
+        &type_cache.resolver, &translator_global_scope));
     REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(mem, &local_context, &env, &module,
-        &type_cache, &translator_local_scope));
+        &type_cache.resolver, &translator_local_scope));
 
     struct kefir_json_output json;
     REQUIRE_OK(kefir_json_output_init(&json, stdout, 4));
@@ -267,7 +268,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_json_output_object_end(&json));
     REQUIRE_OK(kefir_json_output_finalize(&json));
 
-    REQUIRE_OK(kefir_ast_translator_type_cache_free(mem, &type_cache));
+    REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_FREE(mem, &type_cache.resolver));
     REQUIRE_OK(kefir_ast_translator_local_scope_layout_free(mem, &translator_local_scope));
     REQUIRE_OK(kefir_ast_translator_global_scope_layout_free(mem, &translator_global_scope));
 

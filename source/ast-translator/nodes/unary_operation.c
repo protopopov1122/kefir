@@ -139,15 +139,15 @@ static kefir_result_t incdec_impl(struct kefir_mem *mem,
     kefir_int64_t diff = node->type == KEFIR_AST_OPERATION_POSTFIX_INCREMENT ? 1 : -1;
     switch (normalized_type->tag) {
         case KEFIR_AST_TYPE_SCALAR_POINTER: {
-            const struct kefir_ast_translator_cached_type *cached_type = NULL;
-            REQUIRE_OK(kefir_ast_translator_type_cache_generate_owned_object(mem, node->base.properties.type->referenced_type, 0,
-                &context->type_cache, context->environment, context->module, &cached_type));
-            REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_CACHED_OBJECT_TYPE,
+            const struct kefir_ast_translator_resolved_type *cached_type = NULL;
+            REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_resolver.resolver, context->environment, context->module,
+                node->base.properties.type->referenced_type, 0, &cached_type));
+            REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
 
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHI64, diff));
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_ELEMENTPTR,
-                cached_type->object.ir_type_id, cached_type->object.type_layout->value));
+                cached_type->object.ir_type_id, cached_type->object.layout->value));
         } break;
 
         case KEFIR_AST_TYPE_SCALAR_FLOAT:
