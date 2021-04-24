@@ -139,6 +139,13 @@ kefir_result_t kefir_ast_translator_evaluate_type_layout(struct kefir_mem *mem,
         return res;
     });
 
+    if (layout->type->tag == KEFIR_AST_TYPE_VOID) {
+        layout->properties.valid = true;
+        layout->properties.size = 0;
+        layout->properties.relative_offset = 0;
+        layout->properties.aligned = false;
+        layout->properties.alignment = 0;
+    }
 
     REQUIRE_OK(KEFIR_IR_TARGET_PLATFORM_FREE_TYPE(mem, env->target_platform, param.platform_type));
     REQUIRE_OK(kefir_hashtree_free(mem, &tree));

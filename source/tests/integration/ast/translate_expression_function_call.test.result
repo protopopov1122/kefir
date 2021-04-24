@@ -46,21 +46,21 @@
             "type": [
                 {
                     "type": "int"
-                },
-                {
-                    "type": "int"
-                },
-                {
-                    "type": "int"
-                },
-                {
-                    "type": "int"
                 }
             ]
         },
         {
             "identifier": 7,
             "type": [
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "int"
+                },
                 {
                     "type": "int"
                 }
@@ -71,9 +71,41 @@
             "type": [
                 {
                     "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 9,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 10,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 11,
+            "type": [
+                {
+                    "type": "int"
                 },
                 {
                     "type": "double"
+                }
+            ]
+        },
+        {
+            "identifier": 12,
+            "type": [
+                {
+                    "type": "int"
                 }
             ]
         }

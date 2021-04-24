@@ -1,6 +1,7 @@
 #include "kefir/ast-translator/function_declaration.h"
 #include "kefir/ast-translator/type_resolver.h"
 #include "kefir/ast-translator/translator.h"
+#include "kefir/ast-translator/layout.h"
 #include "kefir/ast-translator/util.h"
 #include "kefir/ast/type_conv.h"
 #include "kefir/ir/builder.h"
@@ -10,6 +11,7 @@
 static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(struct kefir_mem *mem,
                                                                        const struct kefir_ast_translator_environment *env,
                                                                        const struct kefir_ast_type_traits *type_traits,
+                                                                       struct kefir_ast_translator_type_resolver *type_resolver,
                                                                        const struct kefir_ast_type *func_type,
                                                                        const struct kefir_list *parameters,
                                                                        struct kefir_ast_translator_function_declaration *func_decl) {
@@ -32,6 +34,13 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(struc
                     KEFIR_IRBUILDER_TYPE_FREE(&builder);
                     return res;
                 });
+
+                res = kefir_ast_translator_evaluate_type_layout(mem, env, parameter_layout, func_decl->ir_argument_type);
+                REQUIRE_ELSE(res == KEFIR_OK, {
+                    kefir_ast_type_layout_free(mem, parameter_layout);
+                    KEFIR_IRBUILDER_TYPE_FREE(&builder);
+                    return res;
+                });
             } else {
                 continue;
             }
@@ -48,6 +57,15 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(struc
         if (parameter->identifier != NULL) {
             res =  kefir_hashtree_insert(mem, &func_decl->named_argument_layouts,
                 (kefir_hashtree_key_t) parameter->identifier, (kefir_hashtree_value_t) parameter_layout);
+            REQUIRE_ELSE(res == KEFIR_OK, {
+                KEFIR_IRBUILDER_TYPE_FREE(&builder);
+                return res;
+            });
+        }
+
+        if (parameter_layout != NULL) {
+            res = KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_REGISTER_OBJECT(mem, type_resolver, func_decl->ir_return_type_id,
+                func_decl->ir_return_type, parameter_layout);
             REQUIRE_ELSE(res == KEFIR_OK, {
                 KEFIR_IRBUILDER_TYPE_FREE(&builder);
                 return res;
@@ -73,11 +91,25 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(struc
             KEFIR_IRBUILDER_TYPE_FREE(&builder);
             return res;
         });
+    
+        res = kefir_ast_translator_evaluate_type_layout(mem, env, parameter_layout, func_decl->ir_argument_type);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_ast_type_layout_free(mem, parameter_layout);
+            KEFIR_IRBUILDER_TYPE_FREE(&builder);
+            return res;
+        });
 
         res = kefir_list_insert_after(mem, &func_decl->argument_layouts,
             kefir_list_tail(&func_decl->argument_layouts), parameter_layout);
         REQUIRE_ELSE(res == KEFIR_OK, {
             kefir_ast_type_layout_free(mem, parameter_layout);
+            KEFIR_IRBUILDER_TYPE_FREE(&builder);
+            return res;
+        });
+
+        res = KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_REGISTER_OBJECT(mem, type_resolver, func_decl->ir_return_type_id,
+            func_decl->ir_return_type, parameter_layout);
+        REQUIRE_ELSE(res == KEFIR_OK, {
             KEFIR_IRBUILDER_TYPE_FREE(&builder);
             return res;
         });
@@ -90,15 +122,25 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(struc
 static kefir_result_t kefir_ast_translator_function_declaration_alloc_return(struct kefir_mem *mem,
                                                                          const struct kefir_ast_translator_environment *env,
                                                                          struct kefir_ast_translator_type_resolver *type_resolver,
-                                                                         struct kefir_ir_module *module,
                                                                          const struct kefir_ast_type *func_type,
                                                                          struct kefir_ast_translator_function_declaration *func_decl) {
-    const struct kefir_ast_translator_resolved_type *cached_type = NULL;
-    REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, type_resolver, env, module, 
-        func_type->function_type.return_type, 0, &cached_type));
-    func_decl->ir_return_type = cached_type->object.ir_type;
-    func_decl->ir_return_type_id = cached_type->object.ir_type_id;
-    func_decl->return_layout = cached_type->object.layout;
+    struct kefir_irbuilder_type builder;
+    REQUIRE_OK(kefir_irbuilder_type_init(mem, &builder, func_decl->ir_return_type));
+    kefir_result_t res = kefir_ast_translate_object_type(mem, func_type->function_type.return_type, 0, env, &builder, &func_decl->return_layout);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_IRBUILDER_TYPE_FREE(&builder);
+        return res;
+    });
+    REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
+    res = kefir_ast_translator_evaluate_type_layout(mem, env, func_decl->return_layout, func_decl->ir_return_type);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_ast_type_layout_free(mem, func_decl->return_layout);
+        return res;
+    });
+    if (func_type->function_type.return_type->tag != KEFIR_AST_TYPE_VOID) {
+        REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_REGISTER_OBJECT(mem, type_resolver, func_decl->ir_return_type_id,
+            func_decl->ir_return_type, func_decl->return_layout));
+    }
     return KEFIR_OK;
 }
 
@@ -130,14 +172,16 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc(struct kef
     REQUIRE_OK(kefir_list_on_remove(&func_decl->argument_layouts, free_argument_layout, NULL));
     func_decl->ir_argument_type = kefir_ir_module_new_type(mem, module, 0, &func_decl->ir_argument_type_id);
     REQUIRE(func_decl->ir_argument_type != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR type"));
-    kefir_result_t res = kefir_ast_translator_function_declaration_alloc_args(mem, env, type_traits, func_type, parameters, func_decl);
+    func_decl->ir_return_type = kefir_ir_module_new_type(mem, module, 0, &func_decl->ir_return_type_id);
+    REQUIRE(func_decl->ir_return_type != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR type"));
+    kefir_result_t res = kefir_ast_translator_function_declaration_alloc_args(mem, env, type_traits, type_resolver, func_type, parameters, func_decl);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_hashtree_free(mem, &func_decl->named_argument_layouts);
         kefir_list_free(mem, &func_decl->argument_layouts);
         return res;
     });
 
-    res = kefir_ast_translator_function_declaration_alloc_return(mem, env, type_resolver, module, func_type, func_decl);
+    res = kefir_ast_translator_function_declaration_alloc_return(mem, env, type_resolver, func_type, func_decl);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_hashtree_free(mem, &func_decl->named_argument_layouts);
         kefir_list_free(mem, &func_decl->argument_layouts);
@@ -189,6 +233,7 @@ kefir_result_t kefir_ast_translator_function_declaration_free(struct kefir_mem *
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(func_decl != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator function declaration pointer"));
 
+    REQUIRE_OK(kefir_ast_type_layout_free(mem, func_decl->return_layout));
     REQUIRE_OK(kefir_hashtree_free(mem, &func_decl->named_argument_layouts));
     REQUIRE_OK(kefir_list_free(mem, &func_decl->argument_layouts));
     func_decl->ir_argument_type = NULL;

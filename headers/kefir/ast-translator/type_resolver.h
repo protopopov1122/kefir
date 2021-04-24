@@ -29,7 +29,7 @@ typedef struct kefir_ast_translator_resolved_type {
 
 typedef struct kefir_ast_translator_type_resolver {
     kefir_result_t (*resolve)(const struct kefir_ast_translator_type_resolver *,
-                            struct kefir_ast_type *,
+                            const struct kefir_ast_type *,
                             kefir_size_t,
                             const struct kefir_ast_translator_resolved_type **);
 

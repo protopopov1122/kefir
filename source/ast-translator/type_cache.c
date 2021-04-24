@@ -171,7 +171,7 @@ static kefir_result_t cache_on_remove(struct kefir_mem *mem,
 }
 
 static kefir_result_t resolver_resolve(const struct kefir_ast_translator_type_resolver *resolver,
-                                     struct kefir_ast_type *type,
+                                     const struct kefir_ast_type *type,
                                      kefir_size_t alignment,
                                      const struct kefir_ast_translator_resolved_type **resolved_type) {
     REQUIRE(resolver != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator type resolver"));
@@ -239,7 +239,12 @@ static kefir_result_t resolver_build_object(struct kefir_mem *mem,
 
     ASSIGN_DECL_CAST(struct kefir_ast_translator_type_cache *, cache,
         resolver->payload);
-    REQUIRE_OK(kefir_ast_translator_type_cache_generate_owned_object(mem, type, alignment, cache, env, module, resolved_type));
+    kefir_result_t res = KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_RESOLVE(resolver, type, alignment, resolved_type);
+    if (res == KEFIR_NOT_FOUND) {
+        REQUIRE_OK(kefir_ast_translator_type_cache_generate_owned_object(mem, type, alignment, cache, env, module, resolved_type));
+    } else {
+        REQUIRE_OK(res);
+    }
     return KEFIR_OK;
 }
 
@@ -260,7 +265,12 @@ static kefir_result_t resolver_build_function(struct kefir_mem *mem,
 
     ASSIGN_DECL_CAST(struct kefir_ast_translator_type_cache *, cache,
         resolver->payload);
-    REQUIRE_OK(kefir_ast_translator_type_cache_generate_owned_function(mem, type, cache, env, type_traits, module, resolved_type));
+    kefir_result_t res = KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_RESOLVE(resolver, type, 0, resolved_type);
+    if (res == KEFIR_NOT_FOUND) {
+        REQUIRE_OK(kefir_ast_translator_type_cache_generate_owned_function(mem, type, cache, env, type_traits, module, resolved_type));
+    } else {
+        REQUIRE_OK(res);
+    }
     return KEFIR_OK;
 }
 

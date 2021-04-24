@@ -21,7 +21,7 @@ static kefir_result_t stack_layer_free(struct kefir_mem *mem,
 }
 
 static kefir_result_t resolver_resolve(const struct kefir_ast_translator_type_resolver *resolver,
-                                     struct kefir_ast_type *type,
+                                     const struct kefir_ast_type *type,
                                      kefir_size_t alignment,
                                      const struct kefir_ast_translator_resolved_type **resolved_type) {
     REQUIRE(resolver != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator type resolver"));
@@ -120,6 +120,7 @@ struct kefir_ast_translator_type_resolver *kefir_ast_translator_type_resolver_st
     REQUIRE(stack != NULL, NULL);
     void *top = NULL;
     REQUIRE(kefir_linked_stack_peek(&stack->stack, &top) == KEFIR_OK, NULL);
+    REQUIRE(top != NULL, NULL);
     ASSIGN_DECL_CAST(struct kefir_ast_translator_type_cache *, layer,
         top);
     return &layer->resolver;
