@@ -37,7 +37,7 @@ do
     if [[ "x$?" != "x0" ]]; then
         exit 128
     fi
-    TEST_FILE="$DIR/$(basename $SYS_TEST .gen).test.c"
+    TEST_FILE="$DIR/$(basename $(dirname $SYS_TEST))/$(basename $SYS_TEST .gen).test.c"
     $CC $TEST_FILE $ASM_OBJ $LIB_OBJ
     if [[ "x$DISASM" == "xexe" ]]; then
         objdump -d "$TEST_EXE"
