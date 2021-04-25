@@ -17,17 +17,35 @@ kefir_result_t kefir_ast_translate_global_scope(struct kefir_mem *mem,
         kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(const struct kefir_ast_translator_scoped_identifier_entry *, scoped_identifier,
             iter->value);
-        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, identifier_data,
-            scoped_identifier->value->payload.ptr);
-        if (scoped_identifier->value->object.external) {
-            REQUIRE_OK(kefir_ir_module_declare_external(mem, module, scoped_identifier->identifier));
-        } else {
-            struct kefir_ir_data *data = kefir_ir_module_new_named_data(mem, module, scoped_identifier->identifier,
-                identifier_data->type_id);
-            REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate IR named data"));
-            REQUIRE_OK(kefir_ir_data_finalize(data));
+        switch (scoped_identifier->value->klass) {
+            case KEFIR_AST_SCOPE_IDENTIFIER_OBJECT: {
+                ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, identifier_data,
+                    scoped_identifier->value->payload.ptr);
+                if (scoped_identifier->value->object.external) {
+                    REQUIRE_OK(kefir_ir_module_declare_external(mem, module, scoped_identifier->identifier));
+                } else {
+                    struct kefir_ir_data *data = kefir_ir_module_new_named_data(mem, module, scoped_identifier->identifier,
+                        identifier_data->type_id);
+                    REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate IR named data"));
+                    REQUIRE_OK(kefir_ir_data_finalize(data));
 
-            REQUIRE_OK(kefir_ir_module_declare_global(mem, module, scoped_identifier->identifier));
+                    REQUIRE_OK(kefir_ir_module_declare_global(mem, module, scoped_identifier->identifier));
+                }
+            } break;
+
+            case KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION: {
+                if (scoped_identifier->value->function.external) {
+                    REQUIRE_OK(kefir_ir_module_declare_external(mem, module, scoped_identifier->identifier));
+                } else {
+                    REQUIRE_OK(kefir_ir_module_declare_global(mem, module, scoped_identifier->identifier));
+                }
+            } break;
+
+            case KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT:
+            case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_TAG:
+            case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION:
+            case KEFIR_AST_SCOPE_IDENTIFIER_LABEL:
+                return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to translator global scoped identifier");
         }
     }
 

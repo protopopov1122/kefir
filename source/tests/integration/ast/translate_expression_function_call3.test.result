@@ -1,6 +1,10 @@
 {
     "globals": [],
-    "externals": [],
+    "externals": [
+        "sum",
+        "sum2",
+        "sum3"
+    ],
     "types": [
         {
             "identifier": 0,

@@ -1,6 +1,11 @@
 {
     "globals": [],
-    "externals": [],
+    "externals": [
+        "sum",
+        "test",
+        "test2",
+        "test3"
+    ],
     "types": [
         {
             "identifier": 0,

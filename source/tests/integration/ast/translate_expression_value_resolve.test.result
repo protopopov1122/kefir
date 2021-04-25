@@ -22,7 +22,9 @@
         "unsigned_short",
         "unsigned_long_long"
     ],
-    "externals": [],
+    "externals": [
+        "func1"
+    ],
     "types": [
         {
             "identifier": 0,
