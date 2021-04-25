@@ -206,7 +206,7 @@ static kefir_result_t translate_global_scoped_identifier_function(struct kefir_m
         scoped_identifier->payload.ptr);
     KEFIR_AST_SCOPE_SET_CLEANUP(scoped_identifier, kefir_ast_translator_scoped_identifer_payload_free, NULL);
     REQUIRE_OK(kefir_ast_translator_function_declaration_init(mem,
-        env, type_traits, module, type_resolver, scoped_identifier->function.type, &scoped_identifier_func->declaration));
+        env, type_traits, module, type_resolver, scoped_identifier->function.type, NULL, &scoped_identifier_func->declaration));
     REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_REGISTER_FUNCTION(mem, type_resolver, scoped_identifier_func->declaration));
     return KEFIR_OK;
 }

@@ -552,7 +552,8 @@ kefir_result_t kefir_ast_translator_type_cache_generate_owned_function(struct ke
             KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST translator cached type"));
         cached_type->klass = KEFIR_AST_TRANSLATOR_RESOLVED_FUNCTION_TYPE;
 
-        res = kefir_ast_translator_function_declaration_init(mem, env, type_traits, module, &cache->resolver, type, &cached_type->function.declaration);
+        res = kefir_ast_translator_function_declaration_init(mem, env, type_traits, module, &cache->resolver,
+            type, NULL, &cached_type->function.declaration);
         REQUIRE_ELSE(res == KEFIR_OK, {
             KEFIR_FREE(mem, cached_type);
             return res;

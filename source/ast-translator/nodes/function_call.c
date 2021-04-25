@@ -57,7 +57,7 @@ kefir_result_t kefir_ast_translate_function_call_node(struct kefir_mem *mem,
         case KEFIR_AST_FUNCTION_TYPE_PARAMETERS:
             if (function_type->function_type.ellipsis) {
                 struct kefir_ast_translator_function_declaration *func_decl = NULL;
-                REQUIRE_OK(kefir_ast_translator_function_declaration_init_vararg(mem, context->environment, context->ast_context->type_traits,
+                REQUIRE_OK(kefir_ast_translator_function_declaration_init(mem, context->environment, context->ast_context->type_traits,
                     context->module, &context->type_resolver.resolver, function_type, &node->arguments, &func_decl));
                 ir_decl = func_decl->ir_function_decl;
                 kefir_result_t res = translate_parameters(mem, context, builder, node, func_decl);
@@ -74,8 +74,18 @@ kefir_result_t kefir_ast_translate_function_call_node(struct kefir_mem *mem,
             }
             break;
 
-        case KEFIR_AST_FUNCTION_TYPE_PARAM_IDENTIFIERS:
-            return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Function declarations with identifier parameters are not implemented yet");
+        case KEFIR_AST_FUNCTION_TYPE_PARAM_IDENTIFIERS: {
+            struct kefir_ast_translator_function_declaration *func_decl = NULL;
+            REQUIRE_OK(kefir_ast_translator_function_declaration_init(mem, context->environment, context->ast_context->type_traits,
+                context->module, &context->type_resolver.resolver, function_type, &node->arguments, &func_decl));
+            ir_decl = func_decl->ir_function_decl;
+            kefir_result_t res = translate_parameters(mem, context, builder, node, func_decl);
+            REQUIRE_ELSE(res == KEFIR_OK, {
+                kefir_ast_translator_function_declaration_free(mem, func_decl);
+                return res;
+            });
+            REQUIRE_OK(kefir_ast_translator_function_declaration_free(mem, func_decl));
+        } break;
 
         case KEFIR_AST_FUNCTION_TYPE_PARAM_EMPTY: {
             const struct kefir_ast_translator_resolved_type *cached_type = NULL;
