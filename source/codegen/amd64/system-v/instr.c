@@ -21,7 +21,7 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
         case KEFIR_IROPCODE_JMP:
         case KEFIR_IROPCODE_BRANCH: {
             const char *opcode_symbol = NULL;
-            REQUIRE(instr->arg.u64 < kefir_irblock_length(&sysv_func->func->body),
+            REQUIRE(instr->arg.u64 <= kefir_irblock_length(&sysv_func->func->body),
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Jump offset is out of IR block bounds"));
             REQUIRE_OK(cg_symbolic_opcode(instr->opcode, &opcode_symbol));
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
