@@ -33,13 +33,7 @@
             ]
         }
     ],
-    "data": [
-        {
-            "identifier": "__kefirrt_module_static_vars",
-            "type": 0,
-            "value": []
-        }
-    ],
+    "data": [],
     "function_declarations": [
         {
             "identifier": 0,

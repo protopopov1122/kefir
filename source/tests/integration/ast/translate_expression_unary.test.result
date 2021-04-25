@@ -168,11 +168,6 @@
                     "class": "undefined"
                 }
             ]
-        },
-        {
-            "identifier": "__kefirrt_module_static_vars",
-            "type": 0,
-            "value": []
         }
     ],
     "function_declarations": [

@@ -396,11 +396,6 @@
             ]
         },
         {
-            "identifier": "__kefirrt_module_static_vars",
-            "type": 0,
-            "value": []
-        },
-        {
             "identifier": "signed_short",
             "type": 19,
             "value": [
