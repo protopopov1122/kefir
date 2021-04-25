@@ -39,7 +39,6 @@ kefir_result_t kefir_ast_analyze_function_call_node(struct kefir_mem *mem,
                 arg_type_iter->value);
             ASSIGN_DECL_CAST(struct kefir_ast_node_base *, arg,
                 arg_value_iter->value);
-            REQUIRE_OK(kefir_ast_analyze_node(mem, context, arg));
             REQUIRE_OK(kefir_ast_node_assignable(mem, context, arg, kefir_ast_unqualified_type(parameter->adjusted_type)));
         }
 

@@ -20,26 +20,6 @@ kefir_result_t kefir_ast_type_function_get_parameter(const struct kefir_ast_func
     return KEFIR_OK;
 }
 
-static const struct kefir_ast_type *adjust_function_parameter(struct kefir_mem *mem,
-                                                            struct kefir_ast_type_bundle *type_bundle,
-                                                            const struct kefir_ast_type *type) {
-    switch (type->tag) {
-        case KEFIR_AST_TYPE_FUNCTION:
-            return kefir_ast_type_pointer(mem, type_bundle, type);
-
-        case KEFIR_AST_TYPE_ARRAY: {
-            const struct kefir_ast_type *adjusted = kefir_ast_type_pointer(mem, type_bundle, type->array_type.element_type);
-            if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&type->array_type.qualifications)) {
-                adjusted = kefir_ast_type_qualified(mem, type_bundle, adjusted, type->array_type.qualifications);
-            }
-            return adjusted;
-        }
-        
-        default:
-            return type;
-    }
-}
-
 kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem,
                                              struct kefir_ast_type_bundle *type_bundle,
                                              struct kefir_ast_function_type *function_type,
@@ -86,7 +66,7 @@ kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem,
     param->identifier = identifier;
     param->type = type;
     if (type) {
-        param->adjusted_type = adjust_function_parameter(mem, type_bundle, type);
+        param->adjusted_type = kefir_ast_type_conv_adjust_function_parameter(mem, type_bundle, type);
         REQUIRE(param->adjusted_type != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to adjust AST function parameter type"));
     } else {
         param->adjusted_type = NULL;

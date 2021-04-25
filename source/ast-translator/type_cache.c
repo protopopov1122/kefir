@@ -251,6 +251,7 @@ static kefir_result_t resolver_build_object(struct kefir_mem *mem,
 static kefir_result_t resolver_build_function(struct kefir_mem *mem,
                                           struct kefir_ast_translator_type_resolver *resolver,
                                           const struct kefir_ast_translator_environment *env,
+                                          struct kefir_ast_type_bundle *type_bundle,
                                           const struct kefir_ast_type_traits *type_traits,
                                           struct kefir_ir_module *module,
                                           const struct kefir_ast_type *type,
@@ -267,7 +268,7 @@ static kefir_result_t resolver_build_function(struct kefir_mem *mem,
         resolver->payload);
     kefir_result_t res = KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_RESOLVE(resolver, type, 0, resolved_type);
     if (res == KEFIR_NOT_FOUND) {
-        REQUIRE_OK(kefir_ast_translator_type_cache_generate_owned_function(mem, type, cache, env, type_traits, module, resolved_type));
+        REQUIRE_OK(kefir_ast_translator_type_cache_generate_owned_function(mem, type, cache, env, type_bundle, type_traits, module, resolved_type));
     } else {
         REQUIRE_OK(res);
     }
@@ -533,6 +534,7 @@ kefir_result_t kefir_ast_translator_type_cache_generate_owned_function(struct ke
                                                                    const struct kefir_ast_type *type,
                                                                    struct kefir_ast_translator_type_cache *cache,
                                                                    const struct kefir_ast_translator_environment *env,
+                                                                   struct kefir_ast_type_bundle *type_bundle,
                                                                    const struct kefir_ast_type_traits *type_traits,
                                                                    struct kefir_ir_module *module,
                                                                    const struct kefir_ast_translator_resolved_type **cached_type_ptr) {
@@ -552,7 +554,7 @@ kefir_result_t kefir_ast_translator_type_cache_generate_owned_function(struct ke
             KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST translator cached type"));
         cached_type->klass = KEFIR_AST_TRANSLATOR_RESOLVED_FUNCTION_TYPE;
 
-        res = kefir_ast_translator_function_declaration_init(mem, env, type_traits, module, &cache->resolver,
+        res = kefir_ast_translator_function_declaration_init(mem, env, type_bundle, type_traits, module, &cache->resolver,
             type, NULL, &cached_type->function.declaration);
         REQUIRE_ELSE(res == KEFIR_OK, {
             KEFIR_FREE(mem, cached_type);

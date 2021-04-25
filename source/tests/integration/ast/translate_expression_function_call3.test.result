@@ -1,0 +1,598 @@
+{
+    "globals": [],
+    "externals": [],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "array",
+                                            "length": 2,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 5,
+            "type": []
+        },
+        {
+            "identifier": 6,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 7,
+            "type": []
+        },
+        {
+            "identifier": 8,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 9,
+            "type": [
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "double"
+                },
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 10,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 11,
+            "type": [
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "double"
+                }
+            ]
+        },
+        {
+            "identifier": 12,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 13,
+            "type": [
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 14,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 15,
+            "type": [
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "double"
+                },
+                {
+                    "type": "word"
+                }
+            ]
+        },
+        {
+            "identifier": 16,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": []
+        }
+    ],
+    "function_declarations": [
+        {
+            "identifier": 0,
+            "name": "sum",
+            "parameters": [],
+            "vararg": false,
+            "returns": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 1,
+            "name": "sum2",
+            "parameters": [],
+            "vararg": false,
+            "returns": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 2,
+            "name": "sum3",
+            "parameters": [],
+            "vararg": true,
+            "returns": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 3,
+            "name": "call1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 4,
+            "name": "sum",
+            "parameters": [
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "double"
+                },
+                {
+                    "type": "int"
+                }
+            ],
+            "vararg": false,
+            "returns": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 5,
+            "name": "call2",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 6,
+            "name": "sum",
+            "parameters": [
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "double"
+                }
+            ],
+            "vararg": false,
+            "returns": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 7,
+            "name": "call3",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 8,
+            "name": "sum2",
+            "parameters": [
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "int"
+                }
+            ],
+            "vararg": false,
+            "returns": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 9,
+            "name": "call4",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 10,
+            "name": "call5",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 11,
+            "name": "sum3",
+            "parameters": [
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "double"
+                },
+                {
+                    "type": "word"
+                }
+            ],
+            "vararg": true,
+            "returns": [
+                {
+                    "type": "int"
+                }
+            ]
+        }
+    ],
+    "functions": [
+        {
+            "identifier": 3,
+            "name": "call1",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "array",
+                                            "length": 2,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 100
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 4.580000
+                },
+                {
+                    "opcode": "f32cf64"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "invoke",
+                    "arg": {
+                        "identifier": 4,
+                        "name": "sum"
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": 5,
+            "name": "call2",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "array",
+                                            "length": 2,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 100
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 4.580000
+                },
+                {
+                    "opcode": "f32cf64"
+                },
+                {
+                    "opcode": "invoke",
+                    "arg": {
+                        "identifier": 6,
+                        "name": "sum"
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": 7,
+            "name": "call3",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "array",
+                                            "length": 2,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 100
+                },
+                {
+                    "opcode": "push",
+                    "arg": 101
+                },
+                {
+                    "opcode": "push",
+                    "arg": 102
+                },
+                {
+                    "opcode": "invoke",
+                    "arg": {
+                        "identifier": 8,
+                        "name": "sum2"
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": 9,
+            "name": "call4",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "array",
+                                            "length": 2,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "invoke",
+                    "arg": {
+                        "identifier": 1,
+                        "name": "sum2"
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": 10,
+            "name": "call5",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "array",
+                                            "length": 2,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 100
+                },
+                {
+                    "opcode": "push",
+                    "arg": 101
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 9.130000
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 2
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 3
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "bzero",
+                    "arg": {
+                        "type": 2,
+                        "index": 3
+                    }
+                },
+                {
+                    "opcode": "invoke",
+                    "arg": {
+                        "identifier": 11,
+                        "name": "sum3"
+                    }
+                }
+            ]
+        }
+    ]
+}

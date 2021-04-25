@@ -125,3 +125,27 @@ const struct kefir_ast_type *kefir_ast_type_conv_expression_wrapper(struct kefir
     }
     return type;
 }
+
+const struct kefir_ast_type *kefir_ast_type_conv_adjust_function_parameter(struct kefir_mem *mem,
+                                                                       struct kefir_ast_type_bundle *type_bundle,
+                                                                       const struct kefir_ast_type *type) {
+    REQUIRE(mem != NULL, NULL);
+    REQUIRE(type_bundle != NULL, NULL);
+    REQUIRE(type != NULL, NULL);
+
+    switch (type->tag) {
+        case KEFIR_AST_TYPE_FUNCTION:
+            return kefir_ast_type_pointer(mem, type_bundle, type);
+
+        case KEFIR_AST_TYPE_ARRAY: {
+            const struct kefir_ast_type *adjusted = kefir_ast_type_pointer(mem, type_bundle, type->array_type.element_type);
+            if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&type->array_type.qualifications)) {
+                adjusted = kefir_ast_type_qualified(mem, type_bundle, adjusted, type->array_type.qualifications);
+            }
+            return adjusted;
+        }
+        
+        default:
+            return type;
+    }
+}

@@ -25,7 +25,7 @@ kefir_result_t kefir_ast_translator_global_scope_layout_free(struct kefir_mem *,
 
 kefir_result_t kefir_ast_translator_build_global_scope_layout(struct kefir_mem *,
                                                           struct kefir_ir_module *,
-                                                          const struct kefir_ast_global_context *,
+                                                          struct kefir_ast_global_context *,
                                                           const struct kefir_ast_translator_environment *,
                                                           struct kefir_ast_translator_type_resolver *,
                                                           struct kefir_ast_translator_global_scope_layout *);

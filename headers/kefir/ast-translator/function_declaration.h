@@ -24,6 +24,7 @@ typedef struct kefir_ast_translator_function_declaration {
 
 kefir_result_t kefir_ast_translator_function_declaration_init(struct kefir_mem *,
                                                           const struct kefir_ast_translator_environment *,
+                                                          struct kefir_ast_type_bundle *,
                                                           const struct kefir_ast_type_traits *,
                                                           struct kefir_ir_module *,
                                                           struct kefir_ast_translator_type_resolver *,

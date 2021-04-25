@@ -1,6 +1,14 @@
-#ifndef BINARY_EXPRESSION_H_
-#define BINARY_EXPRESSION_H_
+#ifndef EXPRESSION_H_
+#define EXPRESSION_H_
 
+#define UNARY_NODE(_oper, _node) \
+    do { \
+        struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(mem, (_oper), (_node))); \
+        REQUIRE_OK(kefir_ast_analyze_node(mem, context, node)); \
+        REQUIRE_OK(kefir_ast_translate_expression(mem, node, &builder, &translator_context)); \
+        REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node)); \
+    } while (0)
+    
 #define BINARY_NODE(_oper, _node1, _node2) \
     do { \
         struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(kefir_ast_new_binary_operation(mem, (_oper), (_node1), (_node2))); \

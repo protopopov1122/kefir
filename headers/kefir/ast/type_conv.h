@@ -39,4 +39,8 @@ const struct kefir_ast_type *kefir_ast_type_conv_expression_wrapper(struct kefir
     kefir_ast_type_conv_expression_wrapper((mem), (type_bundle), (type), \
         KEFIR_AST_TYPE_CONV_EXPRESSION_WRAPPER_PARAM_ALL)
 
+const struct kefir_ast_type *kefir_ast_type_conv_adjust_function_parameter(struct kefir_mem *,
+                                                                       struct kefir_ast_type_bundle *,
+                                                                       const struct kefir_ast_type *);
+
 #endif

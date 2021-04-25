@@ -54,6 +54,7 @@ typedef struct kefir_ast_translator_type_resolver {
     kefir_result_t (*build_function)(struct kefir_mem *,
                                    struct kefir_ast_translator_type_resolver *,
                                    const struct kefir_ast_translator_environment *,
+                                   struct kefir_ast_type_bundle *,
                                    const struct kefir_ast_type_traits *,
                                    struct kefir_ir_module *,
                                    const struct kefir_ast_type *,
@@ -73,8 +74,8 @@ typedef struct kefir_ast_translator_type_resolver {
     ((_resolver)->register_function((_mem), (_resolver), (_declaration)))
 #define KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(_mem, _resolver, _env, _module, _type, _alignment, _resolved_type) \
     ((_resolver)->build_object((_mem), (_resolver), (_env), (_module), (_type), (_alignment), (_resolved_type)))
-#define KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_FUNCTION(_mem, _resolver, _env, _type_traits, _module, _type, _resolved_type) \
-    ((_resolver)->build_function((_mem), (_resolver), (_env), (_type_traits), (_module), (_type), (_resolved_type)))
+#define KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_FUNCTION(_mem, _resolver, _env, _type_bundle, _type_traits, _module, _type, _resolved_type) \
+    ((_resolver)->build_function((_mem), (_resolver), (_env), (_type_bundle), (_type_traits), (_module), (_type), (_resolved_type)))
 #define KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_FREE(_mem, _resolver) \
     ((_resolver)->free((_mem), (_resolver)))
 

@@ -8,7 +8,7 @@
 #include "kefir/test/util.h"
 #include "kefir/ir/builder.h"
 #include "kefir/ir/format.h"
-#include <stdio.h>
+#include "./expression.h"
 
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ast_translator_environment env;
@@ -27,21 +27,6 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, node)); \
         REQUIRE_OK(kefir_ast_translate_expression(mem, node, &builder, &translator_context)); \
         REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node)); \
-    } while (0)
-
-#define FUNC(_id, _init) \
-    do { \
-        struct kefir_ir_type *func1_params = kefir_ir_module_new_type(mem, &module, 0, NULL); \
-        struct kefir_ir_type *func1_returns = kefir_ir_module_new_type(mem, &module, 0, NULL); \
-        struct kefir_ir_function_decl *func1_decl = kefir_ir_module_new_function_declaration(mem, &module, \
-            (_id), func1_params, false, func1_returns); \
-        REQUIRE(func1_decl != NULL, KEFIR_INTERNAL_ERROR); \
-        struct kefir_ir_function *func1 = kefir_ir_module_new_function(mem, &module, \
-            func1_decl, translator_local_scope.local_layout, 0); \
-        struct kefir_irbuilder_block builder; \
-        REQUIRE_OK(kefir_irbuilder_block_init(mem, &builder, &func1->body)); \
-        _init \
-        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_FREE(&builder)); \
     } while (0)
 
     struct kefir_ast_struct_type *struct_type = NULL;
@@ -87,6 +72,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(mem, &local_context, &env, &module,
         kefir_ast_translator_context_type_resolver(&translator_context), &translator_local_scope));
     REQUIRE_OK(kefir_ast_translate_global_scope(mem, &module, &translator_global_scope));
+    struct kefir_irbuilder_block builder;
 
     FUNC("identifier", {
         LVALUE(KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "variable1")));

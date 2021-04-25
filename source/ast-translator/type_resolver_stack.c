@@ -74,6 +74,7 @@ static kefir_result_t resolver_build_object(struct kefir_mem *mem,
 static kefir_result_t resolver_build_function(struct kefir_mem *mem,
                                           struct kefir_ast_translator_type_resolver *resolver,
                                           const struct kefir_ast_translator_environment *env,
+                                          struct kefir_ast_type_bundle *type_bundle,
                                           const struct kefir_ast_type_traits *type_traits,
                                           struct kefir_ir_module *module,
                                           const struct kefir_ast_type *type,
@@ -82,7 +83,7 @@ static kefir_result_t resolver_build_function(struct kefir_mem *mem,
     ASSIGN_DECL_CAST(struct kefir_ast_translator_type_resolver_stack *, stack,
         resolver->payload);
     REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_FUNCTION(mem, kefir_ast_translator_type_resolver_stack_top(stack),
-        env, type_traits, module, type, resolved_type));
+        env, type_bundle, type_traits, module, type, resolved_type));
     return KEFIR_OK;
 }
 

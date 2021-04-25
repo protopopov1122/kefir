@@ -8,7 +8,7 @@
 #include "kefir/test/util.h"
 #include "kefir/ir/builder.h"
 #include "kefir/ir/format.h"
-#include "./binary_expression.h"
+#include "./expression.h"
 #include <stdio.h>
 
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {

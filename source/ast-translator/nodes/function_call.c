@@ -11,7 +11,7 @@ static kefir_result_t resolve_cached_type(struct kefir_mem *mem,
                                         const struct kefir_ast_type *function_type,
                                         const struct kefir_ast_translator_resolved_type **cached_type) {
     REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_FUNCTION(mem, &context->type_resolver.resolver,
-        context->environment, context->ast_context->type_traits, context->module, function_type, cached_type));
+        context->environment, context->ast_context->type_bundle, context->ast_context->type_traits, context->module, function_type, cached_type));
     REQUIRE((*cached_type)->klass == KEFIR_AST_TRANSLATOR_RESOLVED_FUNCTION_TYPE,
         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached function type"));
     return KEFIR_OK;
@@ -32,7 +32,9 @@ static kefir_result_t translate_parameters(struct kefir_mem *mem,
             arg_value_iter->value);
 
         REQUIRE_OK(kefir_ast_translate_expression(mem, parameter_value, builder, context));
-        REQUIRE_OK(kefir_ast_translate_typeconv(builder, parameter_value->properties.type, parameter_layout->type));
+        if (KEFIR_AST_TYPE_IS_SCALAR_TYPE(parameter_value->properties.type)) {
+            REQUIRE_OK(kefir_ast_translate_typeconv(builder, parameter_value->properties.type, parameter_layout->type));
+        }
     }
     return KEFIR_OK;
 }
@@ -57,8 +59,9 @@ kefir_result_t kefir_ast_translate_function_call_node(struct kefir_mem *mem,
         case KEFIR_AST_FUNCTION_TYPE_PARAMETERS:
             if (function_type->function_type.ellipsis) {
                 struct kefir_ast_translator_function_declaration *func_decl = NULL;
-                REQUIRE_OK(kefir_ast_translator_function_declaration_init(mem, context->environment, context->ast_context->type_traits,
-                    context->module, &context->type_resolver.resolver, function_type, &node->arguments, &func_decl));
+                REQUIRE_OK(kefir_ast_translator_function_declaration_init(mem, context->environment, context->ast_context->type_bundle,
+                    context->ast_context->type_traits, context->module, &context->type_resolver.resolver, function_type,
+                    &node->arguments, &func_decl));
                 ir_decl = func_decl->ir_function_decl;
                 kefir_result_t res = translate_parameters(mem, context, builder, node, func_decl);
                 REQUIRE_ELSE(res == KEFIR_OK, {
@@ -76,8 +79,9 @@ kefir_result_t kefir_ast_translate_function_call_node(struct kefir_mem *mem,
 
         case KEFIR_AST_FUNCTION_TYPE_PARAM_IDENTIFIERS: {
             struct kefir_ast_translator_function_declaration *func_decl = NULL;
-            REQUIRE_OK(kefir_ast_translator_function_declaration_init(mem, context->environment, context->ast_context->type_traits,
-                context->module, &context->type_resolver.resolver, function_type, &node->arguments, &func_decl));
+            REQUIRE_OK(kefir_ast_translator_function_declaration_init(mem, context->environment, context->ast_context->type_bundle,
+                context->ast_context->type_traits, context->module, &context->type_resolver.resolver, function_type,
+                &node->arguments, &func_decl));
             ir_decl = func_decl->ir_function_decl;
             kefir_result_t res = translate_parameters(mem, context, builder, node, func_decl);
             REQUIRE_ELSE(res == KEFIR_OK, {
@@ -88,9 +92,23 @@ kefir_result_t kefir_ast_translate_function_call_node(struct kefir_mem *mem,
         } break;
 
         case KEFIR_AST_FUNCTION_TYPE_PARAM_EMPTY: {
-            const struct kefir_ast_translator_resolved_type *cached_type = NULL;
-            REQUIRE_OK(resolve_cached_type(mem, context, function_type, &cached_type));
-            ir_decl = cached_type->function.declaration->ir_function_decl;
+            if (kefir_list_length(&node->arguments) == 0) {
+                const struct kefir_ast_translator_resolved_type *cached_type = NULL;
+                REQUIRE_OK(resolve_cached_type(mem, context, function_type, &cached_type));
+                ir_decl = cached_type->function.declaration->ir_function_decl;
+            } else {
+                struct kefir_ast_translator_function_declaration *func_decl = NULL;
+                REQUIRE_OK(kefir_ast_translator_function_declaration_init(mem, context->environment, context->ast_context->type_bundle,
+                    context->ast_context->type_traits, context->module, &context->type_resolver.resolver, function_type,
+                    &node->arguments, &func_decl));
+                ir_decl = func_decl->ir_function_decl;
+                kefir_result_t res = translate_parameters(mem, context, builder, node, func_decl);
+                REQUIRE_ELSE(res == KEFIR_OK, {
+                    kefir_ast_translator_function_declaration_free(mem, func_decl);
+                    return res;
+                });
+                REQUIRE_OK(kefir_ast_translator_function_declaration_free(mem, func_decl));
+            }
         } break;
     }
     
