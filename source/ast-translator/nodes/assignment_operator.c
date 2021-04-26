@@ -191,7 +191,7 @@ static kefir_result_t translate_add(struct kefir_mem *mem,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected scalar pointer on the left side, and an integer on the right"));
 
         const struct kefir_ast_translator_resolved_type *cached_type = NULL;
-        REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_resolver.resolver, context->environment, context->module,
+        REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_cache.resolver, context->environment, context->module,
             target_normalized_type->referenced_type, 0, &cached_type));
         REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
@@ -247,7 +247,7 @@ static kefir_result_t translate_subtract(struct kefir_mem *mem,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected scalar pointer on the left side, and an integer on the right"));
 
         const struct kefir_ast_translator_resolved_type *cached_type = NULL;
-        REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_resolver.resolver, context->environment, context->module,
+        REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_cache.resolver, context->environment, context->module,
             target_normalized_type->referenced_type, 0, &cached_type));
         REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));

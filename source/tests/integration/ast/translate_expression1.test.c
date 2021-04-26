@@ -33,7 +33,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_local_context_init(mem, &global_context, &local_context));
 
     struct kefir_ast_translator_context translator_context;
-    REQUIRE_OK(kefir_ast_translator_context_init(mem, &translator_context,
+    REQUIRE_OK(kefir_ast_translator_context_init(&translator_context,
         &local_context.context, kft_util_get_translator_environment(), &module));
 
     struct kefir_irbuilder_block builder;

@@ -10,7 +10,7 @@ static kefir_result_t resolve_cached_type(struct kefir_mem *mem,
                                         struct kefir_ast_translator_context *context,
                                         const struct kefir_ast_type *function_type,
                                         const struct kefir_ast_translator_resolved_type **cached_type) {
-    REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_FUNCTION(mem, &context->type_resolver.resolver,
+    REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_FUNCTION(mem, &context->type_cache.resolver,
         context->environment, context->ast_context->type_bundle, context->ast_context->type_traits, context->module, function_type, cached_type));
     REQUIRE((*cached_type)->klass == KEFIR_AST_TRANSLATOR_RESOLVED_FUNCTION_TYPE,
         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached function type"));
@@ -60,7 +60,7 @@ kefir_result_t kefir_ast_translate_function_call_node(struct kefir_mem *mem,
             if (function_type->function_type.ellipsis) {
                 struct kefir_ast_translator_function_declaration *func_decl = NULL;
                 REQUIRE_OK(kefir_ast_translator_function_declaration_init(mem, context->environment, context->ast_context->type_bundle,
-                    context->ast_context->type_traits, context->module, &context->type_resolver.resolver, function_type,
+                    context->ast_context->type_traits, context->module, &context->type_cache.resolver, function_type,
                     &node->arguments, &func_decl));
                 ir_decl = func_decl->ir_function_decl;
                 kefir_result_t res = translate_parameters(mem, context, builder, node, func_decl);
@@ -80,7 +80,7 @@ kefir_result_t kefir_ast_translate_function_call_node(struct kefir_mem *mem,
         case KEFIR_AST_FUNCTION_TYPE_PARAM_IDENTIFIERS: {
             struct kefir_ast_translator_function_declaration *func_decl = NULL;
             REQUIRE_OK(kefir_ast_translator_function_declaration_init(mem, context->environment, context->ast_context->type_bundle,
-                context->ast_context->type_traits, context->module, &context->type_resolver.resolver, function_type,
+                context->ast_context->type_traits, context->module, &context->type_cache.resolver, function_type,
                 &node->arguments, &func_decl));
             ir_decl = func_decl->ir_function_decl;
             kefir_result_t res = translate_parameters(mem, context, builder, node, func_decl);
@@ -99,7 +99,7 @@ kefir_result_t kefir_ast_translate_function_call_node(struct kefir_mem *mem,
             } else {
                 struct kefir_ast_translator_function_declaration *func_decl = NULL;
                 REQUIRE_OK(kefir_ast_translator_function_declaration_init(mem, context->environment, context->ast_context->type_bundle,
-                    context->ast_context->type_traits, context->module, &context->type_resolver.resolver, function_type,
+                    context->ast_context->type_traits, context->module, &context->type_cache.resolver, function_type,
                     &node->arguments, &func_decl));
                 ir_decl = func_decl->ir_function_decl;
                 kefir_result_t res = translate_parameters(mem, context, builder, node, func_decl);

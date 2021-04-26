@@ -40,7 +40,7 @@ static kefir_result_t layer_address(struct kefir_mem *mem,
          top_layer = top_layer->parent, type = top_layer->object_type) {}
 
     const struct kefir_ast_translator_resolved_type *cached_type = NULL;
-    REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_resolver.resolver, context->environment, context->module,
+    REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_cache.resolver, context->environment, context->module,
         type, 0, &cached_type));
     REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
@@ -136,7 +136,7 @@ static kefir_result_t zero_type(struct kefir_mem *mem,
                               struct kefir_irbuilder_block *builder,
                               const struct kefir_ast_type *type) {
     const struct kefir_ast_translator_resolved_type *cached_type = NULL;
-    REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_resolver.resolver, context->environment, context->module,
+    REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_cache.resolver, context->environment, context->module,
         type, 0, &cached_type));
     REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
