@@ -93,6 +93,310 @@ static kefir_result_t define_sub_function(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+static kefir_result_t define_mul_function(struct kefir_mem *mem,
+                                        struct function *func,
+                                        struct kefir_ast_context_manager *context_manager) {
+    REQUIRE_OK(kefir_list_init(&func->args));
+
+    struct kefir_ast_function_type *func_type = NULL;
+    func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle,
+        kefir_ast_type_signed_int(), "mul", &func_type);
+    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type,
+        NULL, kefir_ast_type_signed_int(), NULL));
+    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type,
+        NULL, kefir_ast_type_signed_int(), NULL));
+
+    REQUIRE_OK(kefir_ast_global_context_define_function(mem, context_manager->global, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+        func->type));
+
+    REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context));
+    REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager));
+
+    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "x", kefir_ast_type_signed_int(),
+        NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "y", kefir_ast_type_signed_int(),
+        NULL, NULL));
+
+    REQUIRE_OK(kefir_list_insert_after(mem, &func->args, kefir_list_tail(&func->args), KEFIR_AST_NODE_BASE(
+        kefir_ast_new_identifier(mem, context_manager->current->symbols, "x"))));
+    REQUIRE_OK(kefir_list_insert_after(mem, &func->args, kefir_list_tail(&func->args), KEFIR_AST_NODE_BASE(
+        kefir_ast_new_identifier(mem, context_manager->current->symbols, "y"))));
+
+    func->body = KEFIR_AST_NODE_BASE(kefir_ast_new_binary_operation(mem,
+        KEFIR_AST_OPERATION_MULTIPLY,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "x")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "y"))));
+ 
+    REQUIRE_OK(kefir_ast_context_manager_detach_local(context_manager));
+    return KEFIR_OK;
+}
+
+static kefir_result_t define_div_function(struct kefir_mem *mem,
+                                        struct function *func,
+                                        struct kefir_ast_context_manager *context_manager) {
+    REQUIRE_OK(kefir_list_init(&func->args));
+
+    struct kefir_ast_function_type *func_type = NULL;
+    func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle,
+        kefir_ast_type_signed_int(), "divide", &func_type);
+    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type,
+        NULL, kefir_ast_type_signed_int(), NULL));
+    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type,
+        NULL, kefir_ast_type_signed_int(), NULL));
+
+    REQUIRE_OK(kefir_ast_global_context_define_function(mem, context_manager->global, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+        func->type));
+
+    REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context));
+    REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager));
+
+    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "x", kefir_ast_type_signed_int(),
+        NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "y", kefir_ast_type_signed_int(),
+        NULL, NULL));
+
+    REQUIRE_OK(kefir_list_insert_after(mem, &func->args, kefir_list_tail(&func->args), KEFIR_AST_NODE_BASE(
+        kefir_ast_new_identifier(mem, context_manager->current->symbols, "x"))));
+    REQUIRE_OK(kefir_list_insert_after(mem, &func->args, kefir_list_tail(&func->args), KEFIR_AST_NODE_BASE(
+        kefir_ast_new_identifier(mem, context_manager->current->symbols, "y"))));
+
+    func->body = KEFIR_AST_NODE_BASE(kefir_ast_new_binary_operation(mem,
+        KEFIR_AST_OPERATION_DIVIDE,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "x")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "y"))));
+ 
+    REQUIRE_OK(kefir_ast_context_manager_detach_local(context_manager));
+    return KEFIR_OK;
+}
+
+static kefir_result_t define_modulo_function(struct kefir_mem *mem,
+                                           struct function *func,
+                                           struct kefir_ast_context_manager *context_manager) {
+    REQUIRE_OK(kefir_list_init(&func->args));
+
+    struct kefir_ast_function_type *func_type = NULL;
+    func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle,
+        kefir_ast_type_signed_int(), "modulo", &func_type);
+    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type,
+        NULL, kefir_ast_type_signed_int(), NULL));
+    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type,
+        NULL, kefir_ast_type_signed_int(), NULL));
+
+    REQUIRE_OK(kefir_ast_global_context_define_function(mem, context_manager->global, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+        func->type));
+
+    REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context));
+    REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager));
+
+    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "x", kefir_ast_type_signed_int(),
+        NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "y", kefir_ast_type_signed_int(),
+        NULL, NULL));
+
+    REQUIRE_OK(kefir_list_insert_after(mem, &func->args, kefir_list_tail(&func->args), KEFIR_AST_NODE_BASE(
+        kefir_ast_new_identifier(mem, context_manager->current->symbols, "x"))));
+    REQUIRE_OK(kefir_list_insert_after(mem, &func->args, kefir_list_tail(&func->args), KEFIR_AST_NODE_BASE(
+        kefir_ast_new_identifier(mem, context_manager->current->symbols, "y"))));
+
+    func->body = KEFIR_AST_NODE_BASE(kefir_ast_new_binary_operation(mem,
+        KEFIR_AST_OPERATION_MODULO,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "x")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "y"))));
+ 
+    REQUIRE_OK(kefir_ast_context_manager_detach_local(context_manager));
+    return KEFIR_OK;
+}
+
+static kefir_result_t define_shl_function(struct kefir_mem *mem,
+                                           struct function *func,
+                                           struct kefir_ast_context_manager *context_manager) {
+    REQUIRE_OK(kefir_list_init(&func->args));
+
+    struct kefir_ast_function_type *func_type = NULL;
+    func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle,
+        kefir_ast_type_signed_int(), "shl", &func_type);
+    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type,
+        NULL, kefir_ast_type_signed_int(), NULL));
+    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type,
+        NULL, kefir_ast_type_signed_int(), NULL));
+
+    REQUIRE_OK(kefir_ast_global_context_define_function(mem, context_manager->global, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+        func->type));
+
+    REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context));
+    REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager));
+
+    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "x", kefir_ast_type_signed_int(),
+        NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "y", kefir_ast_type_signed_int(),
+        NULL, NULL));
+
+    REQUIRE_OK(kefir_list_insert_after(mem, &func->args, kefir_list_tail(&func->args), KEFIR_AST_NODE_BASE(
+        kefir_ast_new_identifier(mem, context_manager->current->symbols, "x"))));
+    REQUIRE_OK(kefir_list_insert_after(mem, &func->args, kefir_list_tail(&func->args), KEFIR_AST_NODE_BASE(
+        kefir_ast_new_identifier(mem, context_manager->current->symbols, "y"))));
+
+    func->body = KEFIR_AST_NODE_BASE(kefir_ast_new_binary_operation(mem,
+        KEFIR_AST_OPERATION_SHIFT_LEFT,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "x")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "y"))));
+ 
+    REQUIRE_OK(kefir_ast_context_manager_detach_local(context_manager));
+    return KEFIR_OK;
+}
+
+static kefir_result_t define_shr_function(struct kefir_mem *mem,
+                                           struct function *func,
+                                           struct kefir_ast_context_manager *context_manager) {
+    REQUIRE_OK(kefir_list_init(&func->args));
+
+    struct kefir_ast_function_type *func_type = NULL;
+    func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle,
+        kefir_ast_type_signed_int(), "shr", &func_type);
+    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type,
+        NULL, kefir_ast_type_signed_int(), NULL));
+    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type,
+        NULL, kefir_ast_type_signed_int(), NULL));
+
+    REQUIRE_OK(kefir_ast_global_context_define_function(mem, context_manager->global, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+        func->type));
+
+    REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context));
+    REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager));
+
+    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "x", kefir_ast_type_signed_int(),
+        NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "y", kefir_ast_type_signed_int(),
+        NULL, NULL));
+
+    REQUIRE_OK(kefir_list_insert_after(mem, &func->args, kefir_list_tail(&func->args), KEFIR_AST_NODE_BASE(
+        kefir_ast_new_identifier(mem, context_manager->current->symbols, "x"))));
+    REQUIRE_OK(kefir_list_insert_after(mem, &func->args, kefir_list_tail(&func->args), KEFIR_AST_NODE_BASE(
+        kefir_ast_new_identifier(mem, context_manager->current->symbols, "y"))));
+
+    func->body = KEFIR_AST_NODE_BASE(kefir_ast_new_binary_operation(mem,
+        KEFIR_AST_OPERATION_SHIFT_RIGHT,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "x")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "y"))));
+ 
+    REQUIRE_OK(kefir_ast_context_manager_detach_local(context_manager));
+    return KEFIR_OK;
+}
+
+static kefir_result_t define_band_function(struct kefir_mem *mem,
+                                           struct function *func,
+                                           struct kefir_ast_context_manager *context_manager) {
+    REQUIRE_OK(kefir_list_init(&func->args));
+
+    struct kefir_ast_function_type *func_type = NULL;
+    func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle,
+        kefir_ast_type_signed_int(), "band", &func_type);
+    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type,
+        NULL, kefir_ast_type_signed_int(), NULL));
+    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type,
+        NULL, kefir_ast_type_signed_int(), NULL));
+
+    REQUIRE_OK(kefir_ast_global_context_define_function(mem, context_manager->global, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+        func->type));
+
+    REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context));
+    REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager));
+
+    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "x", kefir_ast_type_signed_int(),
+        NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "y", kefir_ast_type_signed_int(),
+        NULL, NULL));
+
+    REQUIRE_OK(kefir_list_insert_after(mem, &func->args, kefir_list_tail(&func->args), KEFIR_AST_NODE_BASE(
+        kefir_ast_new_identifier(mem, context_manager->current->symbols, "x"))));
+    REQUIRE_OK(kefir_list_insert_after(mem, &func->args, kefir_list_tail(&func->args), KEFIR_AST_NODE_BASE(
+        kefir_ast_new_identifier(mem, context_manager->current->symbols, "y"))));
+
+    func->body = KEFIR_AST_NODE_BASE(kefir_ast_new_binary_operation(mem,
+        KEFIR_AST_OPERATION_BITWISE_AND,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "x")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "y"))));
+ 
+    REQUIRE_OK(kefir_ast_context_manager_detach_local(context_manager));
+    return KEFIR_OK;
+}
+
+static kefir_result_t define_bor_function(struct kefir_mem *mem,
+                                           struct function *func,
+                                           struct kefir_ast_context_manager *context_manager) {
+    REQUIRE_OK(kefir_list_init(&func->args));
+
+    struct kefir_ast_function_type *func_type = NULL;
+    func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle,
+        kefir_ast_type_signed_int(), "bor", &func_type);
+    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type,
+        NULL, kefir_ast_type_signed_int(), NULL));
+    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type,
+        NULL, kefir_ast_type_signed_int(), NULL));
+
+    REQUIRE_OK(kefir_ast_global_context_define_function(mem, context_manager->global, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+        func->type));
+
+    REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context));
+    REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager));
+
+    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "x", kefir_ast_type_signed_int(),
+        NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "y", kefir_ast_type_signed_int(),
+        NULL, NULL));
+
+    REQUIRE_OK(kefir_list_insert_after(mem, &func->args, kefir_list_tail(&func->args), KEFIR_AST_NODE_BASE(
+        kefir_ast_new_identifier(mem, context_manager->current->symbols, "x"))));
+    REQUIRE_OK(kefir_list_insert_after(mem, &func->args, kefir_list_tail(&func->args), KEFIR_AST_NODE_BASE(
+        kefir_ast_new_identifier(mem, context_manager->current->symbols, "y"))));
+
+    func->body = KEFIR_AST_NODE_BASE(kefir_ast_new_binary_operation(mem,
+        KEFIR_AST_OPERATION_BITWISE_OR,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "x")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "y"))));
+ 
+    REQUIRE_OK(kefir_ast_context_manager_detach_local(context_manager));
+    return KEFIR_OK;
+}
+
+static kefir_result_t define_bxor_function(struct kefir_mem *mem,
+                                           struct function *func,
+                                           struct kefir_ast_context_manager *context_manager) {
+    REQUIRE_OK(kefir_list_init(&func->args));
+
+    struct kefir_ast_function_type *func_type = NULL;
+    func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle,
+        kefir_ast_type_signed_int(), "bxor", &func_type);
+    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type,
+        NULL, kefir_ast_type_signed_int(), NULL));
+    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type,
+        NULL, kefir_ast_type_signed_int(), NULL));
+
+    REQUIRE_OK(kefir_ast_global_context_define_function(mem, context_manager->global, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+        func->type));
+
+    REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context));
+    REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager));
+
+    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "x", kefir_ast_type_signed_int(),
+        NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "y", kefir_ast_type_signed_int(),
+        NULL, NULL));
+
+    REQUIRE_OK(kefir_list_insert_after(mem, &func->args, kefir_list_tail(&func->args), KEFIR_AST_NODE_BASE(
+        kefir_ast_new_identifier(mem, context_manager->current->symbols, "x"))));
+    REQUIRE_OK(kefir_list_insert_after(mem, &func->args, kefir_list_tail(&func->args), KEFIR_AST_NODE_BASE(
+        kefir_ast_new_identifier(mem, context_manager->current->symbols, "y"))));
+
+    func->body = KEFIR_AST_NODE_BASE(kefir_ast_new_binary_operation(mem,
+        KEFIR_AST_OPERATION_BITWISE_XOR,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "x")),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "y"))));
+ 
+    REQUIRE_OK(kefir_ast_context_manager_detach_local(context_manager));
+    return KEFIR_OK;
+}
+
 static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module *module, struct kefir_ir_target_platform *ir_platform) {
     struct kefir_ast_translator_environment env;
     REQUIRE_OK(kefir_ast_translator_environment_init(&env, ir_platform));
@@ -102,12 +406,29 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
     REQUIRE_OK(kefir_ast_global_context_init(mem, kefir_ast_default_type_traits(), &env.target_env, &global_context));
     REQUIRE_OK(kefir_ast_context_manager_init(&global_context, &context_manager));
 
-    struct function sum_func, sub_func;
+    struct function sum_func, sub_func, mul_func, div_func, mod_func,
+                    shl_func, shr_func, band_func, bor_func, bxor_func;
     REQUIRE_OK(define_sum_function(mem, &sum_func, &context_manager));
     REQUIRE_OK(define_sub_function(mem, &sub_func, &context_manager));
+    REQUIRE_OK(define_mul_function(mem, &mul_func, &context_manager));
+    REQUIRE_OK(define_div_function(mem, &div_func, &context_manager));
+    REQUIRE_OK(define_modulo_function(mem, &mod_func, &context_manager));
+    REQUIRE_OK(define_shl_function(mem, &shl_func, &context_manager));
+    REQUIRE_OK(define_shr_function(mem, &shr_func, &context_manager));
+    REQUIRE_OK(define_band_function(mem, &band_func, &context_manager));
+    REQUIRE_OK(define_bor_function(mem, &bor_func, &context_manager));
+    REQUIRE_OK(define_bxor_function(mem, &bxor_func, &context_manager));
 
     REQUIRE_OK(analyze_function(mem, &sum_func, &context_manager));
     REQUIRE_OK(analyze_function(mem, &sub_func, &context_manager));
+    REQUIRE_OK(analyze_function(mem, &mul_func, &context_manager));
+    REQUIRE_OK(analyze_function(mem, &div_func, &context_manager));
+    REQUIRE_OK(analyze_function(mem, &mod_func, &context_manager));
+    REQUIRE_OK(analyze_function(mem, &shl_func, &context_manager));
+    REQUIRE_OK(analyze_function(mem, &shr_func, &context_manager));
+    REQUIRE_OK(analyze_function(mem, &band_func, &context_manager));
+    REQUIRE_OK(analyze_function(mem, &bor_func, &context_manager));
+    REQUIRE_OK(analyze_function(mem, &bxor_func, &context_manager));
 
     struct kefir_ast_translator_context translator_context;
     REQUIRE_OK(kefir_ast_translator_context_init(&translator_context, &global_context.context, &env, module));
@@ -120,11 +441,27 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
 
     REQUIRE_OK(translate_function(mem, &sum_func, &context_manager, &global_scope, &translator_context));
     REQUIRE_OK(translate_function(mem, &sub_func, &context_manager, &global_scope, &translator_context));
+    REQUIRE_OK(translate_function(mem, &mul_func, &context_manager, &global_scope, &translator_context));
+    REQUIRE_OK(translate_function(mem, &div_func, &context_manager, &global_scope, &translator_context));
+    REQUIRE_OK(translate_function(mem, &mod_func, &context_manager, &global_scope, &translator_context));
+    REQUIRE_OK(translate_function(mem, &shl_func, &context_manager, &global_scope, &translator_context));
+    REQUIRE_OK(translate_function(mem, &shr_func, &context_manager, &global_scope, &translator_context));
+    REQUIRE_OK(translate_function(mem, &band_func, &context_manager, &global_scope, &translator_context));
+    REQUIRE_OK(translate_function(mem, &bor_func, &context_manager, &global_scope, &translator_context));
+    REQUIRE_OK(translate_function(mem, &bxor_func, &context_manager, &global_scope, &translator_context));
 
     REQUIRE_OK(kefir_ast_translate_global_scope(mem, module, &global_scope));
     
     REQUIRE_OK(free_function(mem, &sum_func));
     REQUIRE_OK(free_function(mem, &sub_func));
+    REQUIRE_OK(free_function(mem, &mul_func));
+    REQUIRE_OK(free_function(mem, &div_func));
+    REQUIRE_OK(free_function(mem, &mod_func));
+    REQUIRE_OK(free_function(mem, &shl_func));
+    REQUIRE_OK(free_function(mem, &shr_func));
+    REQUIRE_OK(free_function(mem, &band_func));
+    REQUIRE_OK(free_function(mem, &bor_func));
+    REQUIRE_OK(free_function(mem, &bxor_func));
     REQUIRE_OK(kefir_ast_translator_global_scope_layout_free(mem, &global_scope));
     REQUIRE_OK(kefir_ast_translator_context_free(mem, &translator_context));
     REQUIRE_OK(kefir_ast_global_context_free(mem, &global_context));

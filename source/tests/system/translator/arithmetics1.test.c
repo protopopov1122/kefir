@@ -5,6 +5,14 @@
 
 int sum(int, int);
 int sub(int, int);
+int mul(int, int);
+int divide(int, int);
+int modulo(int, int);
+int shl(int, int);
+int shr(int, int);
+int band(int, int);
+int bor(int, int);
+int bxor(int, int);
 
 int main(int argc, const char **argv) {
     UNUSED(argc);
@@ -13,6 +21,19 @@ int main(int argc, const char **argv) {
         for (int j = -100; j < 100; j++) {
             ASSERT(sum(i, j) == i + j);
             ASSERT(sub(i, j) == i - j);
+            ASSERT(mul(i, j) == i * j);
+            if (j != 0) {
+                ASSERT(divide(i, j) == i / j);
+                ASSERT(modulo(i, j) == i % j);
+            }
+
+            if (j >= 0 && j < (int) (sizeof(int) * CHAR_BIT)) {
+                ASSERT(shl(i, j) == i << j);
+                ASSERT(shr(i, j) == i >> j);
+            }
+            ASSERT(band(i, j) == (i & j));
+            ASSERT(bor(i, j) == (i | j));
+            ASSERT(bxor(i, j) == (i ^ j));
         }
     }
     return EXIT_SUCCESS;

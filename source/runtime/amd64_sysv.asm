@@ -258,7 +258,7 @@ define_opcode ior
 define_opcode ixor
     pop DATA2_REG
     pop DATA_REG
-    or DATA_REG, DATA2_REG
+    xor DATA_REG, DATA2_REG
     push DATA_REG
     end_opcode
 
