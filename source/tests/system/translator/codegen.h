@@ -15,4 +15,11 @@
         KEFIR_CODEGEN_CLOSE(&codegen.iface); \
     } while (0)
 
+struct function {
+    const struct kefir_ast_type *type;
+    struct kefir_ast_local_context local_context;
+    struct kefir_list args;
+    struct kefir_ast_node_base *body;
+};
+
 #endif
