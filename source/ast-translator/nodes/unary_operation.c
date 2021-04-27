@@ -136,7 +136,9 @@ static kefir_result_t incdec_impl(struct kefir_mem *mem,
                                 struct kefir_irbuilder_block *builder,
                                 const struct kefir_ast_unary_operation *node,
                                 const struct kefir_ast_type *normalized_type) {
-    kefir_int64_t diff = node->type == KEFIR_AST_OPERATION_POSTFIX_INCREMENT ? 1 : -1;
+    kefir_int64_t diff = node->type == KEFIR_AST_OPERATION_POSTFIX_INCREMENT ||
+        node->type == KEFIR_AST_OPERATION_PREFIX_INCREMENT
+        ? 1 : -1;
     switch (normalized_type->tag) {
         case KEFIR_AST_TYPE_SCALAR_POINTER: {
             const struct kefir_ast_translator_resolved_type *cached_type = NULL;

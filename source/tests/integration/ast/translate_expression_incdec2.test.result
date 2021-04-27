@@ -321,7 +321,7 @@
                 },
                 {
                     "opcode": "iadd1",
-                    "arg": -1
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",
@@ -384,7 +384,7 @@
                 },
                 {
                     "opcode": "iadd1",
-                    "arg": -1
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",
@@ -447,7 +447,7 @@
                 },
                 {
                     "opcode": "pushf64",
-                    "arg": -1.000000
+                    "arg": 1.000000
                 },
                 {
                     "opcode": "f64add"
@@ -513,7 +513,7 @@
                 },
                 {
                     "opcode": "push",
-                    "arg": -1
+                    "arg": 1
                 },
                 {
                     "opcode": "elementptr",
@@ -583,7 +583,7 @@
                 },
                 {
                     "opcode": "push",
-                    "arg": -1
+                    "arg": 1
                 },
                 {
                     "opcode": "elementptr",
@@ -925,7 +925,7 @@
                 },
                 {
                     "opcode": "pushf32",
-                    "arg": -1.000000
+                    "arg": 1.000000
                 },
                 {
                     "opcode": "f32add"
