@@ -13,6 +13,12 @@ int shr(int, int);
 int band(int, int);
 int bor(int, int);
 int bxor(int, int);
+int less(int, int);
+int lesseq(int, int);
+int greater(int, int);
+int greatereq(int, int);
+int equals(int, int);
+int noteq(int, int);
 
 int main(int argc, const char **argv) {
     UNUSED(argc);
@@ -34,6 +40,12 @@ int main(int argc, const char **argv) {
             ASSERT(band(i, j) == (i & j));
             ASSERT(bor(i, j) == (i | j));
             ASSERT(bxor(i, j) == (i ^ j));
+            ASSERT(less(i, j) == (i < j));
+            ASSERT(lesseq(i, j) == (i <= j));
+            ASSERT(greater(i, j) == (i > j));
+            ASSERT(greatereq(i, j) == (i >= j));
+            ASSERT(equals(i, j) == (i == j));
+            ASSERT(noteq(i, j) == (i != j));
         }
     }
     return EXIT_SUCCESS;
