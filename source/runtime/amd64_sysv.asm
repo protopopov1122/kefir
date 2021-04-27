@@ -586,7 +586,8 @@ define_opcode f32equals
     cmpeqss xmm0, xmm1
     movd eax, xmm0
     and eax, 1
-    push rax
+    add rsp, 8
+    mov [rsp], rax
     end_opcode
 
 define_opcode f32greater
@@ -595,7 +596,8 @@ define_opcode f32greater
     comiss xmm0, xmm1
     seta al
     and eax, 1
-    push rax
+    add rsp, 8
+    mov [rsp], rax
     end_opcode
 
 define_opcode f32lesser
@@ -604,7 +606,8 @@ define_opcode f32lesser
     cmpltss xmm0, xmm1
     movd eax, xmm0
     and eax, 1
-    push rax
+    add rsp, 8
+    mov [rsp], rax
     end_opcode
 
 define_opcode f64equals
@@ -613,7 +616,8 @@ define_opcode f64equals
     cmpeqsd xmm0, xmm1
     movd eax, xmm0
     and eax, 1
-    push rax
+    add rsp, 8
+    mov [rsp], rax
     end_opcode
 
 define_opcode f64greater
@@ -622,7 +626,8 @@ define_opcode f64greater
     comisd xmm0, xmm1
     seta al
     and eax, 1
-    push rax
+    add rsp, 8
+    mov [rsp], rax
     end_opcode
 
 define_opcode f64lesser
@@ -631,7 +636,8 @@ define_opcode f64lesser
     cmpltsd xmm0, xmm1
     movd eax, xmm0
     and eax, 1
-    push rax
+    add rsp, 8
+    mov [rsp], rax
     end_opcode
 
 define_opcode f32cint

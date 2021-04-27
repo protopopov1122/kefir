@@ -70,7 +70,21 @@ static kefir_result_t translate_function(struct kefir_mem *mem,
             iter->value);
         REQUIRE_OK(kefir_ast_translate_lvalue(mem, &local_translator_context, &builder, arg));
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(&builder, KEFIR_IROPCODE_XCHG, 1));
-        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(&builder, KEFIR_IROPCODE_STORE32, 0));
+
+        switch (arg->properties.type->tag) {
+            case KEFIR_AST_TYPE_SCALAR_SIGNED_INT:
+            case KEFIR_AST_TYPE_SCALAR_UNSIGNED_INT:
+            case KEFIR_AST_TYPE_SCALAR_FLOAT:
+                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(&builder, KEFIR_IROPCODE_STORE32, 0));
+                break;
+
+            case KEFIR_AST_TYPE_SCALAR_DOUBLE:
+                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(&builder, KEFIR_IROPCODE_STORE64, 0));
+                break;
+
+            default:
+                return KEFIR_INTERNAL_ERROR;
+        }
     }
     REQUIRE_OK(kefir_ast_translate_expression(mem, func->body, &builder, &local_translator_context));
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_FREE(&builder));
