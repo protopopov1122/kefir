@@ -67,7 +67,7 @@
                     "opcode": "elementptr",
                     "arg": {
                         "type": 3,
-                        "index": 0
+                        "index": 1
                     }
                 },
                 {
@@ -101,7 +101,7 @@
                     "opcode": "elementptr",
                     "arg": {
                         "type": 3,
-                        "index": 0
+                        "index": 1
                     }
                 },
                 {

@@ -105,7 +105,8 @@ kefir_result_t kefir_ast_translate_array_subscript_lvalue(struct kefir_mem *mem,
         REQUIRE_OK(kefir_ast_translate_expression(mem, node->subscript, builder, context));
         REQUIRE_OK(kefir_ast_translate_expression(mem, node->array, builder, context));
     }
-    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_ELEMENTPTR, cached_type->object.ir_type_id, 0));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_ELEMENTPTR, cached_type->object.ir_type_id,
+        cached_type->object.layout->value));
     return KEFIR_OK;
 }
 

@@ -412,7 +412,7 @@
                     "opcode": "elementptr",
                     "arg": {
                         "type": 0,
-                        "index": 0
+                        "index": 1
                     }
                 },
                 {

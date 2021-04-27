@@ -72,6 +72,10 @@ static kefir_result_t translate_function(struct kefir_mem *mem,
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(&builder, KEFIR_IROPCODE_XCHG, 1));
 
         switch (arg->properties.type->tag) {
+            case KEFIR_AST_TYPE_SCALAR_CHAR:
+                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(&builder, KEFIR_IROPCODE_STORE8, 0));
+                break;
+
             case KEFIR_AST_TYPE_SCALAR_SIGNED_INT:
             case KEFIR_AST_TYPE_SCALAR_UNSIGNED_INT:
             case KEFIR_AST_TYPE_SCALAR_FLOAT:
