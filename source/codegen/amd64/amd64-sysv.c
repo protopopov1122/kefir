@@ -98,6 +98,11 @@ static kefir_result_t cg_translate_function(struct kefir_mem *mem,
     kefir_result_t res = cg_function_prologue(codegen, &sysv_func);
     REQUIRE_CHAIN(&res, cg_function_body(mem, codegen, sysv_module, &sysv_func));
     REQUIRE_CHAIN(&res, cg_function_epilogue(codegen, &sysv_func));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_amd64_sysv_function_free(mem, &sysv_func);
+        return res;
+    });
+
     struct kefir_hashtree_node_iterator appendix_iter;
     for (const struct kefir_hashtree_node *node = kefir_hashtree_iter(&sysv_func.appendix, &appendix_iter);
         node != NULL;

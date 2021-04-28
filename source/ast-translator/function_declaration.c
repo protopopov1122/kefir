@@ -83,8 +83,8 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(struc
         }
 
         if (parameter_layout != NULL) {
-            res = KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_REGISTER_OBJECT(mem, type_resolver, func_decl->ir_return_type_id,
-                func_decl->ir_return_type, parameter_layout);
+            res = KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_REGISTER_OBJECT(mem, type_resolver, func_decl->ir_argument_type_id,
+                func_decl->ir_argument_type, parameter_layout);
             REQUIRE_ELSE(res == KEFIR_OK, {
                 KEFIR_IRBUILDER_TYPE_FREE(&builder);
                 return res;
@@ -121,8 +121,8 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(struc
             return res;
         });
 
-        res = KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_REGISTER_OBJECT(mem, type_resolver, func_decl->ir_return_type_id,
-            func_decl->ir_return_type, parameter_layout);
+        res = KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_REGISTER_OBJECT(mem, type_resolver, func_decl->ir_argument_type_id,
+            func_decl->ir_argument_type, parameter_layout);
         REQUIRE_ELSE(res == KEFIR_OK, {
             KEFIR_IRBUILDER_TYPE_FREE(&builder);
             return res;
