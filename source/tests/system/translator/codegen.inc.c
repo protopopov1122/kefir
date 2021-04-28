@@ -84,6 +84,7 @@ static kefir_result_t translate_function(struct kefir_mem *mem,
 
             case KEFIR_AST_TYPE_SCALAR_DOUBLE:
             case KEFIR_AST_TYPE_SCALAR_POINTER:
+            case KEFIR_AST_TYPE_SCALAR_SIGNED_LONG:
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(&builder, KEFIR_IROPCODE_STORE64, 0));
                 break;
 
