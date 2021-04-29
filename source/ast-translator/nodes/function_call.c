@@ -63,6 +63,9 @@ kefir_result_t kefir_ast_translate_function_call_node(struct kefir_mem *mem,
                     context->ast_context->type_traits, context->module, &context->type_cache.resolver, function_type,
                     &node->arguments, &func_decl));
                 ir_decl = func_decl->ir_function_decl;
+                if (ir_decl->name == NULL) {
+                    REQUIRE_OK(kefir_ast_translate_expression(mem, node->function, builder, context));
+                }
                 kefir_result_t res = translate_parameters(mem, context, builder, node, func_decl);
                 REQUIRE_ELSE(res == KEFIR_OK, {
                     kefir_ast_translator_function_declaration_free(mem, func_decl);
@@ -73,6 +76,9 @@ kefir_result_t kefir_ast_translate_function_call_node(struct kefir_mem *mem,
                 const struct kefir_ast_translator_resolved_type *cached_type = NULL;
                 REQUIRE_OK(resolve_cached_type(mem, context, function_type, &cached_type));
                 ir_decl = cached_type->function.declaration->ir_function_decl;
+                if (ir_decl->name == NULL) {
+                    REQUIRE_OK(kefir_ast_translate_expression(mem, node->function, builder, context));
+                }
                 REQUIRE_OK(translate_parameters(mem, context, builder, node, cached_type->function.declaration));
             }
             break;
@@ -83,6 +89,9 @@ kefir_result_t kefir_ast_translate_function_call_node(struct kefir_mem *mem,
                 context->ast_context->type_traits, context->module, &context->type_cache.resolver, function_type,
                 &node->arguments, &func_decl));
             ir_decl = func_decl->ir_function_decl;
+                if (ir_decl->name == NULL) {
+                    REQUIRE_OK(kefir_ast_translate_expression(mem, node->function, builder, context));
+                }
             kefir_result_t res = translate_parameters(mem, context, builder, node, func_decl);
             REQUIRE_ELSE(res == KEFIR_OK, {
                 kefir_ast_translator_function_declaration_free(mem, func_decl);
@@ -96,12 +105,18 @@ kefir_result_t kefir_ast_translate_function_call_node(struct kefir_mem *mem,
                 const struct kefir_ast_translator_resolved_type *cached_type = NULL;
                 REQUIRE_OK(resolve_cached_type(mem, context, function_type, &cached_type));
                 ir_decl = cached_type->function.declaration->ir_function_decl;
+                if (ir_decl->name == NULL) {
+                    REQUIRE_OK(kefir_ast_translate_expression(mem, node->function, builder, context));
+                }
             } else {
                 struct kefir_ast_translator_function_declaration *func_decl = NULL;
                 REQUIRE_OK(kefir_ast_translator_function_declaration_init(mem, context->environment, context->ast_context->type_bundle,
                     context->ast_context->type_traits, context->module, &context->type_cache.resolver, function_type,
                     &node->arguments, &func_decl));
                 ir_decl = func_decl->ir_function_decl;
+                if (ir_decl->name == NULL) {
+                    REQUIRE_OK(kefir_ast_translate_expression(mem, node->function, builder, context));
+                }
                 kefir_result_t res = translate_parameters(mem, context, builder, node, func_decl);
                 REQUIRE_ELSE(res == KEFIR_OK, {
                     kefir_ast_translator_function_declaration_free(mem, func_decl);
@@ -113,7 +128,6 @@ kefir_result_t kefir_ast_translate_function_call_node(struct kefir_mem *mem,
     }
     
     if (ir_decl->name == NULL) {
-        REQUIRE_OK(kefir_ast_translate_expression(mem, node->function, builder, context));
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_INVOKEV, ir_decl->id));
     } else {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_INVOKE, ir_decl->id));

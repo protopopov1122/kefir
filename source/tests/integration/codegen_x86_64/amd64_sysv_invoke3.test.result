@@ -121,7 +121,7 @@ __kefirrt_sfunction_addstruct_vgate:
     pinsrq xmm0, [r11 + 8], 0
     call [r12 + 16]
     mov rsp, r12
-    add rsp, 16
+    add rsp, 24
     mov [r14 + 16], rax
     pextrq [r14 + 24], xmm0, 0
     lea r11, [r14 + 16]

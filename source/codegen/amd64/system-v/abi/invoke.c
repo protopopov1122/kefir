@@ -389,14 +389,16 @@ static kefir_result_t builtin_return(const struct kefir_ir_type *type,
 
 kefir_result_t invoke_epilogue(struct kefir_codegen_amd64 *codegen,
                                             const struct kefir_amd64_sysv_function_decl *decl,
-                                            struct invoke_info *info) {
+                                            struct invoke_info *info,
+                                            bool virtualDecl) {
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RSP);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
-    if (info->total_arguments > 0) {
+    if (info->total_arguments > 0 || virtualDecl) {
         ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_ADD);
         ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RSP);
-        ASMGEN_ARG(&codegen->asmgen, KEFIR_INT64_FMT, info->total_arguments * KEFIR_AMD64_SYSV_ABI_QWORD);
+        ASMGEN_ARG(&codegen->asmgen, KEFIR_INT64_FMT,
+            (info->total_arguments + (virtualDecl ? 1 : 0)) * KEFIR_AMD64_SYSV_ABI_QWORD);
     }
     struct kefir_ir_type_visitor visitor;
     REQUIRE_OK(kefir_ir_type_visitor_init(&visitor, visitor_not_supported));
@@ -435,6 +437,6 @@ kefir_result_t kefir_amd64_sysv_function_invoke(struct kefir_codegen_amd64 *code
         ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_CALL);
         ASMGEN_ARG0(&codegen->asmgen, decl->decl->name);
     }
-    REQUIRE_OK(invoke_epilogue(codegen, decl, &info));
+    REQUIRE_OK(invoke_epilogue(codegen, decl, &info, virtualDecl));
     return KEFIR_OK;
 }
