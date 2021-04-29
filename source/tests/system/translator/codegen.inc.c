@@ -13,6 +13,7 @@
 #include "kefir/ast-translator/context.h"
 #include "kefir/ast-translator/scope/translator.h"
 #include "kefir/codegen/amd64-sysv.h"
+#include "kefir/ast-translator/value.h"
 #include "codegen.h"
 
 static kefir_result_t analyze_function(struct kefir_mem *mem,
@@ -70,27 +71,7 @@ static kefir_result_t translate_function(struct kefir_mem *mem,
             iter->value);
         REQUIRE_OK(kefir_ast_translate_lvalue(mem, &local_translator_context, &builder, arg));
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(&builder, KEFIR_IROPCODE_XCHG, 1));
-
-        switch (arg->properties.type->tag) {
-            case KEFIR_AST_TYPE_SCALAR_CHAR:
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(&builder, KEFIR_IROPCODE_STORE8, 0));
-                break;
-
-            case KEFIR_AST_TYPE_SCALAR_SIGNED_INT:
-            case KEFIR_AST_TYPE_SCALAR_UNSIGNED_INT:
-            case KEFIR_AST_TYPE_SCALAR_FLOAT:
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(&builder, KEFIR_IROPCODE_STORE32, 0));
-                break;
-
-            case KEFIR_AST_TYPE_SCALAR_DOUBLE:
-            case KEFIR_AST_TYPE_SCALAR_POINTER:
-            case KEFIR_AST_TYPE_SCALAR_SIGNED_LONG:
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(&builder, KEFIR_IROPCODE_STORE64, 0));
-                break;
-
-            default:
-                return KEFIR_INTERNAL_ERROR;
-        }
+        REQUIRE_OK(kefir_ast_translator_store_value(mem, arg->properties.type, translator_context, &builder));
     }
     REQUIRE_OK(kefir_ast_translate_expression(mem, func->body, &builder, &local_translator_context));
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_FREE(&builder));
