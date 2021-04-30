@@ -19,6 +19,15 @@ double divide_assign_double(double *, double);
 short modulo_assign_short(short *, short);
 unsigned int shl_assign_uint(unsigned int *, unsigned int);
 unsigned int shr_assign_uint(unsigned int *, unsigned int);
+long iand_assign_long(long *, long);
+long ior_assign_long(long *, long);
+long ixor_assign_long(long *, long);
+int add_assign_int(int *, int);
+double add_assign_double(double *, double);
+float *add_assign_floatptr(float **, int);
+long long sub_assign_long_long(long long *, long long);
+float sub_assign_float(float *, float);
+char *sub_assign_charptr(char **, int);
 
 static void simple_assign() {
     long l = 0;
@@ -92,6 +101,68 @@ static void shift_assign() {
     }
 }
 
+static void bitwise_assign() {
+    for (long l = -2048; l < 2048; l++) {
+        long a = 0x6eba1e0c;
+        ASSERT(iand_assign_long(&a, l) == (0x6eba1e0c & l));
+        ASSERT(a == (0x6eba1e0c & l));
+
+        long b = 0x1fec73ed;
+        ASSERT(ior_assign_long(&b, l) == (0x1fec73ed | l));
+        ASSERT(b == (0x1fec73ed | l));
+
+        long c = 0x44be902a;
+        ASSERT(ixor_assign_long(&c, l) == (0x44be902a ^ l));
+        ASSERT(c == (0x44be902a ^ l));
+    }
+}
+
+static void add_assign() {
+    for (int i = -1000; i < 1000; i++) {
+        int a = ~i;
+        ASSERT(add_assign_int(&a, i) == (~i + i));
+        ASSERT(a == (~i + i));
+    }
+
+    for (double d = -10.0; d < 10.0; d += 0.1) {
+        double a = 5.08142;
+        ASSERT(DOUBLE_EQUALS(add_assign_double(&a, d), 5.08142 + d, DOUBLE_EPSILON));
+        ASSERT(DOUBLE_EQUALS(a, 5.08142 + d, DOUBLE_EPSILON));
+    }
+
+#define LEN 128
+    float FLOATS[LEN];
+    for (int i = 0; i < LEN; i++) {
+        float *ptr = &FLOATS[0];
+        ASSERT(add_assign_floatptr(&ptr, i) == &FLOATS[i]);
+        ASSERT(ptr == &FLOATS[i]);
+    }
+#undef LEN
+}
+
+static void sub_assign() {
+    for (long long l = -0xffe; l < 0xffe; l++) {
+        long long a = -0x6efcba3;
+        ASSERT(sub_assign_long_long(&a, l) == (-0x6efcba3 - l));
+        ASSERT(a == (-0x6efcba3 - l));
+    }
+
+    for (float f = -15.0f; f < 15.0f; f += 0.1f) {
+        float a = 105e-5f;
+        ASSERT(FLOAT_EQUALS(sub_assign_float(&a, f), (105e-5f - f), FLOAT_EPSILON));
+        ASSERT(FLOAT_EQUALS(a, (105e-5f - f), FLOAT_EPSILON));
+    }
+
+#define LEN 256
+    char CHARS[LEN];
+    for (int i = 0; i < LEN; i++) {
+        char *ptr = &CHARS[LEN - 1];
+        ASSERT(sub_assign_charptr(&ptr, i) == &CHARS[LEN - 1 - i]);
+        ASSERT(ptr == &CHARS[LEN - 1 - i]);
+    }
+#undef LEN
+}
+
 int main(int argc, const char **argv) {
     UNUSED(argc);
     UNUSED(argv);
@@ -101,5 +172,8 @@ int main(int argc, const char **argv) {
     divide_assign();
     modulo_assign();
     shift_assign();
+    bitwise_assign();
+    add_assign();
+    sub_assign();
     return EXIT_SUCCESS;
 }
