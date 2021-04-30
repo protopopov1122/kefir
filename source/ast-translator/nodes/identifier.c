@@ -14,7 +14,7 @@ static kefir_result_t translate_object_identifier(struct kefir_mem *mem,
                                                 const char *identifier,
                                                 const struct kefir_ast_scoped_identifier *scoped_identifier) {
     REQUIRE_OK(kefir_ast_translator_object_lvalue(mem, context, builder, identifier, scoped_identifier));
-    REQUIRE_OK(kefir_ast_translator_load_value(scoped_identifier->object.type, builder));
+    REQUIRE_OK(kefir_ast_translator_load_value(scoped_identifier->object.type, context->ast_context->type_traits, builder));
     return KEFIR_OK;
 }
 

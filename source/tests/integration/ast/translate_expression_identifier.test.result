@@ -108,7 +108,7 @@
                     }
                 },
                 {
-                    "opcode": "load8u"
+                    "opcode": "load8i"
                 },
                 {
                     "opcode": "getglobal",

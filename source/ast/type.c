@@ -61,6 +61,7 @@ const struct kefir_ast_type_traits *kefir_ast_default_type_traits() {
         .integral_type_fits = default_integral_type_fits,
         .underlying_enumeration_type = NULL,
         .ptrdiff_type = NULL,
+        .character_type_signedness = true,
         .payload = NULL
     };
     DEFAULT_TYPE_TRAITS.underlying_enumeration_type = kefir_ast_type_signed_int();

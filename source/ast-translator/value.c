@@ -5,6 +5,7 @@
 #include "kefir/core/error.h"
 
 kefir_result_t kefir_ast_translator_load_value(const struct kefir_ast_type *type,
+                                           const struct kefir_ast_type_traits *type_traits,
                                            struct kefir_irbuilder_block *builder) {
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
@@ -20,7 +21,11 @@ kefir_result_t kefir_ast_translator_load_value(const struct kefir_ast_type *type
             break;
             
         case KEFIR_AST_TYPE_SCALAR_CHAR:
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD8U, 0));
+            if (type_traits->character_type_signedness) {
+                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD8I, 0));
+            } else {
+                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD8U, 0));
+            }
             break;
             
         case KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR:

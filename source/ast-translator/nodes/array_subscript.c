@@ -16,6 +16,6 @@ kefir_result_t kefir_ast_translate_array_subscript_node(struct kefir_mem *mem,
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST array subscript node"));
 
     REQUIRE_OK(kefir_ast_translate_array_subscript_lvalue(mem, context, builder, node));
-    REQUIRE_OK(kefir_ast_translator_load_value(node->base.properties.type, builder));
+    REQUIRE_OK(kefir_ast_translator_load_value(node->base.properties.type, context->ast_context->type_traits, builder));
     return KEFIR_OK;
 }

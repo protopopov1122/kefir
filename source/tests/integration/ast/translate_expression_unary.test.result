@@ -587,7 +587,7 @@
                     "arg": 0
                 },
                 {
-                    "opcode": "load8u"
+                    "opcode": "load8i"
                 },
                 {
                     "opcode": "push",
