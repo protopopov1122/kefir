@@ -108,7 +108,8 @@ static kefir_bool_t same_function_type(const struct kefir_ast_type *type1, const
         type2->tag == KEFIR_AST_TYPE_FUNCTION, false);
     REQUIRE(KEFIR_AST_TYPE_SAME(type1->function_type.return_type, type2->function_type.return_type), false);
     REQUIRE((type1->function_type.identifier == NULL && type2->function_type.identifier == NULL) ||
-        strcmp(type1->function_type.identifier, type2->function_type.identifier) == 0, false);
+        (type1->function_type.identifier != NULL && type2->function_type.identifier != NULL &&
+        strcmp(type1->function_type.identifier, type2->function_type.identifier) == 0), false);
     REQUIRE(type1->function_type.mode == type2->function_type.mode, false);
     REQUIRE(kefir_list_length(&type1->function_type.parameters) ==
         kefir_list_length(&type2->function_type.parameters), false);
