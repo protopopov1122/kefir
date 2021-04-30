@@ -60,11 +60,24 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
     REQUIRE_OK(kefir_ast_global_context_init(mem, kefir_ast_default_type_traits(), &env.target_env, &global_context));
     REQUIRE_OK(kefir_ast_context_manager_init(&global_context, &context_manager));
 
+    struct kefir_ast_struct_type *struct_type = NULL;
+    const struct kefir_ast_type *type1 = kefir_ast_type_structure(mem, context_manager.current->type_bundle,
+        "", &struct_type);
+    REQUIRE_OK(kefir_ast_struct_type_field(mem, context_manager.current->symbols, struct_type,
+        "array", kefir_ast_type_array(mem, context_manager.current->type_bundle,
+            kefir_ast_type_signed_char(), kefir_ast_constant_expression_integer(mem, 32), NULL), NULL));
+
     struct function char_int_cast, int_char_cast,
                     uchar_int_cast, int_uchar_cast,
                     char_uint_cast, uint_char_cast,
                     uchar_uint_cast, uint_uchar_cast,
-                    long_float_cast, float_long_cast;
+                    long_float_cast, float_long_cast,
+                    short_double_cast, double_short_cast,
+                    uint_double_cast, double_uint_cast,
+                    float_double_cast, double_float_cast,
+                    ulong_voidptr_cast, voidptr_ulong_cast,
+                    int_void_cast, double_void_cast,
+                    voidptr_void_cast, struct_void_cast;
     REQUIRE_OK(define_cast_function(mem, &char_int_cast, &context_manager, "char_int_cast",
         kefir_ast_type_char(), kefir_ast_type_signed_int()));
     REQUIRE_OK(define_cast_function(mem, &int_char_cast, &context_manager, "int_char_cast",
@@ -85,6 +98,33 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
         kefir_ast_type_signed_long(), kefir_ast_type_float()));
     REQUIRE_OK(define_cast_function(mem, &float_long_cast, &context_manager, "float_long_cast",
         kefir_ast_type_float(), kefir_ast_type_signed_long_long()));
+    REQUIRE_OK(define_cast_function(mem, &short_double_cast, &context_manager, "short_double_cast",
+        kefir_ast_type_signed_short(), kefir_ast_type_double()));
+    REQUIRE_OK(define_cast_function(mem, &double_short_cast, &context_manager, "double_short_cast",
+        kefir_ast_type_double(), kefir_ast_type_signed_short()));
+    REQUIRE_OK(define_cast_function(mem, &uint_double_cast, &context_manager, "uint_double_cast",
+        kefir_ast_type_unsigned_int(), kefir_ast_type_double()));
+    REQUIRE_OK(define_cast_function(mem, &double_uint_cast, &context_manager, "double_uint_cast",
+        kefir_ast_type_double(), kefir_ast_type_unsigned_int()));
+    REQUIRE_OK(define_cast_function(mem, &float_double_cast, &context_manager, "float_double_cast",
+        kefir_ast_type_float(), kefir_ast_type_double()));
+    REQUIRE_OK(define_cast_function(mem, &double_float_cast, &context_manager, "double_float_cast",
+        kefir_ast_type_double(), kefir_ast_type_float()));
+    REQUIRE_OK(define_cast_function(mem, &ulong_voidptr_cast, &context_manager, "ulong_voidptr_cast",
+        kefir_ast_type_unsigned_long(), kefir_ast_type_pointer(mem, context_manager.current->type_bundle,
+            kefir_ast_type_void())));
+    REQUIRE_OK(define_cast_function(mem, &voidptr_ulong_cast, &context_manager, "voidptr_ulong_cast",
+        kefir_ast_type_pointer(mem, context_manager.current->type_bundle,
+            kefir_ast_type_void()), kefir_ast_type_unsigned_long()));
+    REQUIRE_OK(define_cast_function(mem, &int_void_cast, &context_manager, "int_void_cast",
+        kefir_ast_type_signed_int(), kefir_ast_type_void()));
+    REQUIRE_OK(define_cast_function(mem, &double_void_cast, &context_manager, "double_void_cast",
+        kefir_ast_type_double(), kefir_ast_type_void()));
+    REQUIRE_OK(define_cast_function(mem, &voidptr_void_cast, &context_manager, "voidptr_void_cast",
+        kefir_ast_type_pointer(mem, context_manager.current->type_bundle,
+            kefir_ast_type_void()), kefir_ast_type_void()));
+    REQUIRE_OK(define_cast_function(mem, &struct_void_cast, &context_manager, "struct_void_cast",
+        type1, kefir_ast_type_void()));
 
     REQUIRE_OK(analyze_function(mem, &char_int_cast, &context_manager));
     REQUIRE_OK(analyze_function(mem, &int_char_cast, &context_manager));
@@ -96,6 +136,18 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
     REQUIRE_OK(analyze_function(mem, &uint_uchar_cast, &context_manager));
     REQUIRE_OK(analyze_function(mem, &long_float_cast, &context_manager));
     REQUIRE_OK(analyze_function(mem, &float_long_cast, &context_manager));
+    REQUIRE_OK(analyze_function(mem, &short_double_cast, &context_manager));
+    REQUIRE_OK(analyze_function(mem, &double_short_cast, &context_manager));
+    REQUIRE_OK(analyze_function(mem, &uint_double_cast, &context_manager));
+    REQUIRE_OK(analyze_function(mem, &double_uint_cast, &context_manager));
+    REQUIRE_OK(analyze_function(mem, &float_double_cast, &context_manager));
+    REQUIRE_OK(analyze_function(mem, &double_float_cast, &context_manager));
+    REQUIRE_OK(analyze_function(mem, &ulong_voidptr_cast, &context_manager));
+    REQUIRE_OK(analyze_function(mem, &voidptr_ulong_cast, &context_manager));
+    REQUIRE_OK(analyze_function(mem, &int_void_cast, &context_manager));
+    REQUIRE_OK(analyze_function(mem, &double_void_cast, &context_manager));
+    REQUIRE_OK(analyze_function(mem, &voidptr_void_cast, &context_manager));
+    REQUIRE_OK(analyze_function(mem, &struct_void_cast, &context_manager));
 
     struct kefir_ast_translator_context translator_context;
     REQUIRE_OK(kefir_ast_translator_context_init(&translator_context, &global_context.context, &env, module));
@@ -116,6 +168,18 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
     REQUIRE_OK(translate_function(mem, &uint_uchar_cast, &context_manager, &global_scope, &translator_context));
     REQUIRE_OK(translate_function(mem, &long_float_cast, &context_manager, &global_scope, &translator_context));
     REQUIRE_OK(translate_function(mem, &float_long_cast, &context_manager, &global_scope, &translator_context));
+    REQUIRE_OK(translate_function(mem, &short_double_cast, &context_manager, &global_scope, &translator_context));
+    REQUIRE_OK(translate_function(mem, &double_short_cast, &context_manager, &global_scope, &translator_context));
+    REQUIRE_OK(translate_function(mem, &uint_double_cast, &context_manager, &global_scope, &translator_context));
+    REQUIRE_OK(translate_function(mem, &double_uint_cast, &context_manager, &global_scope, &translator_context));
+    REQUIRE_OK(translate_function(mem, &float_double_cast, &context_manager, &global_scope, &translator_context));
+    REQUIRE_OK(translate_function(mem, &double_float_cast, &context_manager, &global_scope, &translator_context));
+    REQUIRE_OK(translate_function(mem, &ulong_voidptr_cast, &context_manager, &global_scope, &translator_context));
+    REQUIRE_OK(translate_function(mem, &voidptr_ulong_cast, &context_manager, &global_scope, &translator_context));
+    REQUIRE_OK(translate_function(mem, &int_void_cast, &context_manager, &global_scope, &translator_context));
+    REQUIRE_OK(translate_function(mem, &double_void_cast, &context_manager, &global_scope, &translator_context));
+    REQUIRE_OK(translate_function(mem, &voidptr_void_cast, &context_manager, &global_scope, &translator_context));
+    REQUIRE_OK(translate_function(mem, &struct_void_cast, &context_manager, &global_scope, &translator_context));
 
     REQUIRE_OK(kefir_ast_translate_global_scope(mem, module, &global_scope));
     
@@ -129,6 +193,18 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
     REQUIRE_OK(free_function(mem, &uint_uchar_cast));
     REQUIRE_OK(free_function(mem, &long_float_cast));
     REQUIRE_OK(free_function(mem, &float_long_cast));
+    REQUIRE_OK(free_function(mem, &short_double_cast));
+    REQUIRE_OK(free_function(mem, &double_short_cast));
+    REQUIRE_OK(free_function(mem, &uint_double_cast));
+    REQUIRE_OK(free_function(mem, &double_uint_cast));
+    REQUIRE_OK(free_function(mem, &float_double_cast));
+    REQUIRE_OK(free_function(mem, &double_float_cast));
+    REQUIRE_OK(free_function(mem, &ulong_voidptr_cast));
+    REQUIRE_OK(free_function(mem, &voidptr_ulong_cast));
+    REQUIRE_OK(free_function(mem, &int_void_cast));
+    REQUIRE_OK(free_function(mem, &double_void_cast));
+    REQUIRE_OK(free_function(mem, &voidptr_void_cast));
+    REQUIRE_OK(free_function(mem, &struct_void_cast));
 
     REQUIRE_OK(kefir_ast_translator_global_scope_layout_free(mem, &global_scope));
     REQUIRE_OK(kefir_ast_translator_context_free(mem, &translator_context));
