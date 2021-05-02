@@ -67,7 +67,7 @@ static kefir_result_t traverse_aggregate_union(struct kefir_mem *mem,
             const struct kefir_ast_type *type = NULL;
             REQUIRE_OK(kefir_ast_type_traversal_next(mem, traversal, &type, NULL));
             REQUIRE_OK(kefir_ast_analyze_initializer(mem, context, type, entry->value, NULL));
-        } else if (entry->value->expression->properties.expression_props.string_literal != NULL) {
+        } else if (entry->value->expression->properties.expression_props.string_literal.content != NULL) {
             const struct kefir_ast_type *type = NULL;
             REQUIRE_OK(kefir_ast_type_traversal_next_recursive2(mem, traversal, is_char_array, NULL, &type, NULL));
             if (!is_char_array(type, NULL)) {
@@ -140,9 +140,9 @@ static kefir_result_t analyze_array(struct kefir_mem *mem,
                                  struct kefir_ast_initializer_properties *properties) {
     struct kefir_ast_node_base *head_expr = kefir_ast_initializer_head(initializer);
     kefir_size_t array_length = 0;
-    if (head_expr != NULL && head_expr->properties.expression_props.string_literal != NULL &&
+    if (head_expr != NULL && head_expr->properties.expression_props.string_literal.content != NULL &&
         is_char_array(type, NULL)) {
-        array_length = strlen(head_expr->properties.expression_props.string_literal) + 1;
+        array_length = head_expr->properties.expression_props.string_literal.length;
     } else {
         REQUIRE(initializer->type == KEFIR_AST_INITIALIZER_LIST,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to initialize array by non-string literal expression"));

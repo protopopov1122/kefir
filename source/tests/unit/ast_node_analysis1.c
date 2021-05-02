@@ -67,7 +67,7 @@ END_CASE
             kefir_ast_constant_expression_integer((_mem), strlen((_literal)) + 1), NULL))); \
         ASSERT(literal->base.properties.expression_props.constant_expression); \
         ASSERT(!literal->base.properties.expression_props.lvalue); \
-        ASSERT(strcmp(literal->base.properties.expression_props.string_literal, (_literal)) == 0); \
+        ASSERT(strcmp(literal->base.properties.expression_props.string_literal.content, (_literal)) == 0); \
         KEFIR_AST_NODE_FREE((_mem), KEFIR_AST_NODE_BASE(literal)); \
     } while (0)
 

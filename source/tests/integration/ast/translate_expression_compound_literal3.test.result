@@ -85,6 +85,18 @@
                     ]
                 }
             ]
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 5,
+                    "element_type": {
+                        "type": "char"
+                    }
+                }
+            ]
         }
     ],
     "data": [],
@@ -221,8 +233,8 @@
                 {
                     "opcode": "bcopy",
                     "arg": {
-                        "type": 2,
-                        "index": 6
+                        "type": 3,
+                        "index": 0
                     }
                 },
                 {

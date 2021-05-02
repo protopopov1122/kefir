@@ -299,7 +299,7 @@ END_CASE
         ASSERT(compound->base.properties.expression_props.lvalue); \
         ASSERT(compound->base.properties.expression_props.addressable); \
         ASSERT(!compound->base.properties.expression_props.bitfield); \
-        ASSERT(!compound->base.properties.expression_props.string_literal); \
+        ASSERT(!compound->base.properties.expression_props.string_literal.content); \
         ASSERT_OK(KEFIR_AST_NODE_FREE((_mem), KEFIR_AST_NODE_BASE(compound))); \
     } while (0)
 

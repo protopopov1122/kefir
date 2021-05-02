@@ -73,6 +73,33 @@ static kefir_result_t layer_address(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+static kefir_result_t assign_string(struct kefir_mem *mem,
+                                  struct kefir_ast_translator_context *context,
+                                  struct kefir_irbuilder_block *builder,
+                                  struct kefir_ast_initializer_list_entry *entry,
+                                  struct kefir_ast_type_traversal *traversal) {
+    const struct kefir_ast_type *type = NULL;
+    const struct kefir_ast_type_traversal_layer *layer = NULL;
+
+    REQUIRE_OK(kefir_ast_type_traversal_next_recursive2(mem, traversal, is_char_array, NULL, &type, &layer));
+    REQUIRE_OK(layer_address(mem, context, builder, entry->designator, layer));
+    REQUIRE_OK(kefir_ast_translate_expression(mem, entry->value->expression, builder, context));
+
+    if (is_char_array(type, NULL) &&
+        (type->array_type.boundary == KEFIR_AST_ARRAY_BOUNDED ||
+        type->array_type.boundary == KEFIR_AST_ARRAY_BOUNDED_STATIC)) {
+        kefir_size_t length = MIN((kefir_size_t) type->array_type.const_length->value.integer,
+            entry->value->expression->properties.expression_props.string_literal.length);
+        const struct kefir_ast_type *array_type = kefir_ast_type_array(mem, context->ast_context->type_bundle,
+            type->array_type.element_type, kefir_ast_constant_expression_integer(mem, length),
+            NULL);
+        REQUIRE_OK(kefir_ast_translator_store_value(mem, array_type, context, builder));
+    } else {
+        REQUIRE_OK(kefir_ast_translator_store_value(mem, type, context, builder));
+    }
+    return KEFIR_OK;
+}
+
 static kefir_result_t traverse_aggregate_union(struct kefir_mem *mem,
                                              struct kefir_ast_translator_context *context,
                                              struct kefir_irbuilder_block *builder,
@@ -98,12 +125,8 @@ static kefir_result_t traverse_aggregate_union(struct kefir_mem *mem,
             REQUIRE_OK(layer_address(mem, context, builder, entry->designator, layer));
             REQUIRE_OK(kefir_ast_translate_initializer(mem, context, builder, type, entry->value));
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POP, 0));
-        } else if (entry->value->expression->properties.expression_props.string_literal != NULL) {
-            const struct kefir_ast_type *type = NULL;
-            REQUIRE_OK(kefir_ast_type_traversal_next_recursive2(mem, traversal, is_char_array, NULL, &type, &layer));
-            REQUIRE_OK(layer_address(mem, context, builder, entry->designator, layer));
-            REQUIRE_OK(kefir_ast_translate_expression(mem, entry->value->expression, builder, context));
-            REQUIRE_OK(kefir_ast_translator_store_value(mem, type, context, builder));
+        } else if (entry->value->expression->properties.expression_props.string_literal.content != NULL) {
+            REQUIRE_OK(assign_string(mem, context, builder, entry, traversal));
         } else if (KEFIR_AST_TYPE_IS_SCALAR_TYPE(entry->value->expression->properties.type)) {
             const struct kefir_ast_type *type = NULL;
             REQUIRE_OK(kefir_ast_type_traversal_next_recursive(mem, traversal, &type, &layer));
@@ -174,7 +197,7 @@ static kefir_result_t translate_array(struct kefir_mem *mem,
                                     const struct kefir_ast_type *type,
                                     const struct kefir_ast_initializer *initializer) {
     struct kefir_ast_node_base *head_expr = kefir_ast_initializer_head(initializer);
-    if (head_expr != NULL && head_expr->properties.expression_props.string_literal != NULL &&
+    if (head_expr != NULL && head_expr->properties.expression_props.string_literal.content != NULL &&
         is_char_array(type, NULL)) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 0));
         REQUIRE_OK(kefir_ast_translate_expression(mem, head_expr, builder, context));

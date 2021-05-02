@@ -26,7 +26,10 @@ typedef struct kefir_ast_node_properties {
         kefir_bool_t constant_expression;
         kefir_bool_t addressable;
         kefir_bool_t bitfield;
-        const char *string_literal;
+        struct {
+            const char *content;
+            kefir_size_t length;
+        } string_literal;
         struct kefir_ast_temporary_identifier temporary;
     } expression_props;
 } kefir_ast_node_properties_t;
