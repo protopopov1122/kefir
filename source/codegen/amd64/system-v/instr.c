@@ -48,7 +48,7 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
             const struct kefir_ir_function_decl *decl =
                 kefir_ir_module_get_declaration(sysv_module->module, id);
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
-            if (decl->name == NULL) {
+            if (decl->name == NULL || decl->vararg) {
                 ASMGEN_ARG(&codegen->asmgen,
                     KEFIR_AMD64_SYSV_FUNCTION_GATE_ID_LABEL,
                     id);

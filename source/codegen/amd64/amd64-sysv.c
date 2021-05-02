@@ -132,7 +132,7 @@ static kefir_result_t cg_translate_function_gates(struct kefir_codegen_amd64 *co
                 ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_FUNCTION_VIRTUAL_GATE_NAMED_LABEL, sysv_decl->decl->name);
             }
         } else {
-            if (sysv_decl->decl->name == NULL) {
+            if (sysv_decl->decl->name == NULL || sysv_decl->decl->vararg) {
                 ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_FUNCTION_GATE_ID_LABEL, sysv_decl->decl->id);
             } else {
                 ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_FUNCTION_GATE_NAMED_LABEL, sysv_decl->decl->name);
