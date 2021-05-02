@@ -4,6 +4,7 @@
 #include "kefir/core/basic-types.h"
 #include "kefir/core/mem.h"
 #include "kefir/ir/type.h"
+#include "kefir/ir/bitfields.h"
 
 typedef void *kefir_ir_target_platform_opaque_type_t;
 
@@ -27,6 +28,9 @@ typedef struct kefir_ir_target_platform {
                               kefir_ir_target_platform_opaque_type_t,
                               kefir_size_t,
                               struct kefir_ir_target_type_info *);
+    kefir_result_t (*bitfield_allocator)(struct kefir_mem *,
+                                       struct kefir_ir_target_platform *,
+                                       struct kefir_ir_bitfield_allocator *);
     kefir_result_t (*free)(struct kefir_mem *,
                          struct kefir_ir_target_platform *);
 
@@ -39,6 +43,8 @@ typedef struct kefir_ir_target_platform {
     ((platform)->free_type((mem), (platform), (type_ptr)))
 #define KEFIR_IR_TARGET_PLATFORM_TYPE_INFO(mem, platform, type, index, info) \
     ((platform)->type_info((mem), (platform), (type), (index), (info)))
+#define KEFIR_IR_TARGET_PLATFORM_BITFIELD_ALLOCATOR(mem, platform, allocator) \
+    ((platform)->bitfield_allocator((mem), (platform), (allocator)))
 #define KEFIR_IR_TARGET_PLATFORM_FREE(mem, platform) \
     ((platform)->free((mem), (platform)))
 
