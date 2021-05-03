@@ -25,6 +25,6 @@ typedef struct kefir_ir_bitfield_allocator {
 #define KEFIR_IR_BITFIELD_ALLOCATOR_NEXT(allocator, width, bitfield) \
     ((allocator)->next((allocator), (width), (bitfield)))
 #define KEFIR_IR_BITFIELD_ALLOCATOR_FREE(mem, allocator) \
-    ((allocator)->next((mem), (allocator)))
+    ((allocator)->free((mem), (allocator)))
 
 #endif

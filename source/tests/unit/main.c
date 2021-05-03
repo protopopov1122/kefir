@@ -33,6 +33,9 @@ DECLARE_CASE(amd64_sysv_abi_allocation_test3);
 DECLARE_CASE(amd64_sysv_abi_allocation_test4);
 DECLARE_CASE(amd64_sysv_abi_allocation_test5);
 DECLARE_CASE(amd64_sysv_abi_allocation_test6);
+DECLARE_CASE(amd64_sysv_abi_platform_bitfields1);
+DECLARE_CASE(amd64_sysv_abi_platform_bitfields2);
+DECLARE_CASE(amd64_sysv_abi_platform_bitfields3);
 
 DECLARE_CASE(ast_type_analysis_integer_promotion1);
 DECLARE_CASE(ast_type_analysis_arithmetic_conversion1);
@@ -247,6 +250,10 @@ TEST_SUITE(mainSuite,
     &amd64_sysv_abi_allocation_test4,
     &amd64_sysv_abi_allocation_test5,
     &amd64_sysv_abi_allocation_test6,
+    &amd64_sysv_abi_platform_bitfields1,
+    &amd64_sysv_abi_platform_bitfields2,
+    &amd64_sysv_abi_platform_bitfields3,
+
     &ast_type_analysis_integer_promotion1,
     &ast_type_analysis_arithmetic_conversion1,
     &ast_type_analysis_arithmetic_conversion2,

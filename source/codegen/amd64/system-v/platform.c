@@ -119,6 +119,7 @@ static kefir_result_t amd64_sysv_bitfield_next(struct kefir_ir_bitfield_allocato
     REQUIRE(bitfield != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to IR bitfield"));
     ASSIGN_DECL_CAST(struct bitfield_allocator *, payload,
         allocator->payload);
+    REQUIRE(payload->width != 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected IR bitfield allocator to be initialized"));
 
     REQUIRE(bitfield_width <= payload->width,
         KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Requested bitfield width exceeds underlying type width"));
