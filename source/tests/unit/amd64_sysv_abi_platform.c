@@ -13,7 +13,7 @@ DEFINE_CASE(amd64_sysv_abi_platform_bitfields1, "AMD64 System V ABI - platform b
     ASSERT_NOK(KEFIR_IR_BITFIELD_ALLOCATOR_NEXT(&bitfields, 8, &bitfield));
 
     do {
-        ASSERT_OK(KEFIR_IR_BITFIELD_ALLOCATOR_RESET(&bitfields, KEFIR_IR_TYPE_INT8));
+        ASSERT_OK(KEFIR_IR_BITFIELD_ALLOCATOR_INIT(&bitfields, KEFIR_IR_TYPE_INT8));
         ASSERT(KEFIR_IR_BITFIELD_ALLOCATOR_NEXT(&bitfields, 9, &bitfield) == KEFIR_OUT_OF_BOUNDS);
         ASSERT_NOK(KEFIR_IR_BITFIELD_ALLOCATOR_NEXT(&bitfields, 0, &bitfield));
 
@@ -36,7 +36,7 @@ DEFINE_CASE(amd64_sysv_abi_platform_bitfields1, "AMD64 System V ABI - platform b
     } while (0);
 
     do {
-        ASSERT_OK(KEFIR_IR_BITFIELD_ALLOCATOR_RESET(&bitfields, KEFIR_IR_TYPE_INT32));
+        ASSERT_OK(KEFIR_IR_BITFIELD_ALLOCATOR_INIT(&bitfields, KEFIR_IR_TYPE_INT32));
         ASSERT(KEFIR_IR_BITFIELD_ALLOCATOR_NEXT(&bitfields, 33, &bitfield) == KEFIR_OUT_OF_BOUNDS);
         ASSERT_NOK(KEFIR_IR_BITFIELD_ALLOCATOR_NEXT(&bitfields, 0, &bitfield));
 
@@ -59,7 +59,7 @@ DEFINE_CASE(amd64_sysv_abi_platform_bitfields1, "AMD64 System V ABI - platform b
     } while (0);
     
     do {
-        ASSERT_OK(KEFIR_IR_BITFIELD_ALLOCATOR_RESET(&bitfields, KEFIR_IR_TYPE_INT16));
+        ASSERT_OK(KEFIR_IR_BITFIELD_ALLOCATOR_INIT(&bitfields, KEFIR_IR_TYPE_INT16));
         ASSERT(KEFIR_IR_BITFIELD_ALLOCATOR_NEXT(&bitfields, 17, &bitfield) == KEFIR_OUT_OF_BOUNDS);
         ASSERT_NOK(KEFIR_IR_BITFIELD_ALLOCATOR_NEXT(&bitfields, 0, &bitfield));
 
@@ -71,7 +71,7 @@ DEFINE_CASE(amd64_sysv_abi_platform_bitfields1, "AMD64 System V ABI - platform b
     } while (0);
 
     do {
-        ASSERT_OK(KEFIR_IR_BITFIELD_ALLOCATOR_RESET(&bitfields, KEFIR_IR_TYPE_INT64));
+        ASSERT_OK(KEFIR_IR_BITFIELD_ALLOCATOR_INIT(&bitfields, KEFIR_IR_TYPE_INT64));
         ASSERT(KEFIR_IR_BITFIELD_ALLOCATOR_NEXT(&bitfields, 65, &bitfield) == KEFIR_OUT_OF_BOUNDS);
         ASSERT_NOK(KEFIR_IR_BITFIELD_ALLOCATOR_NEXT(&bitfields, 0, &bitfield));
 
@@ -94,13 +94,13 @@ DEFINE_CASE(amd64_sysv_abi_platform_bitfields2, "AMD64 System V ABI - platform b
     ASSERT_OK(kefir_codegen_amd64_sysv_target_platform(&platform));
     ASSERT_OK(KEFIR_IR_TARGET_PLATFORM_BITFIELD_ALLOCATOR(&kft_mem, &platform, &bitfields));
 
-    ASSERT_NOK(KEFIR_IR_BITFIELD_ALLOCATOR_RESET(&bitfields, KEFIR_IR_TYPE_STRUCT));
-    ASSERT_NOK(KEFIR_IR_BITFIELD_ALLOCATOR_RESET(&bitfields, KEFIR_IR_TYPE_ARRAY));
-    ASSERT_NOK(KEFIR_IR_BITFIELD_ALLOCATOR_RESET(&bitfields, KEFIR_IR_TYPE_UNION));
-    ASSERT_NOK(KEFIR_IR_BITFIELD_ALLOCATOR_RESET(&bitfields, KEFIR_IR_TYPE_MEMORY));
-    ASSERT_NOK(KEFIR_IR_BITFIELD_ALLOCATOR_RESET(&bitfields, KEFIR_IR_TYPE_FLOAT32));
-    ASSERT_NOK(KEFIR_IR_BITFIELD_ALLOCATOR_RESET(&bitfields, KEFIR_IR_TYPE_FLOAT64));
-    ASSERT_NOK(KEFIR_IR_BITFIELD_ALLOCATOR_RESET(&bitfields, KEFIR_IR_TYPE_BUILTIN));
+    ASSERT_NOK(KEFIR_IR_BITFIELD_ALLOCATOR_INIT(&bitfields, KEFIR_IR_TYPE_STRUCT));
+    ASSERT_NOK(KEFIR_IR_BITFIELD_ALLOCATOR_INIT(&bitfields, KEFIR_IR_TYPE_ARRAY));
+    ASSERT_NOK(KEFIR_IR_BITFIELD_ALLOCATOR_INIT(&bitfields, KEFIR_IR_TYPE_UNION));
+    ASSERT_NOK(KEFIR_IR_BITFIELD_ALLOCATOR_INIT(&bitfields, KEFIR_IR_TYPE_MEMORY));
+    ASSERT_NOK(KEFIR_IR_BITFIELD_ALLOCATOR_INIT(&bitfields, KEFIR_IR_TYPE_FLOAT32));
+    ASSERT_NOK(KEFIR_IR_BITFIELD_ALLOCATOR_INIT(&bitfields, KEFIR_IR_TYPE_FLOAT64));
+    ASSERT_NOK(KEFIR_IR_BITFIELD_ALLOCATOR_INIT(&bitfields, KEFIR_IR_TYPE_BUILTIN));
 
     ASSERT_OK(KEFIR_IR_BITFIELD_ALLOCATOR_FREE(&kft_mem, &bitfields));
     ASSERT_OK(KEFIR_IR_TARGET_PLATFORM_FREE(&kft_mem, &platform));
@@ -115,7 +115,7 @@ DEFINE_CASE(amd64_sysv_abi_platform_bitfields3, "AMD64 System V ABI - platform b
 
 #define ASSERT_WIDTH(_typecode, _width) \
     do { \
-        ASSERT_OK(KEFIR_IR_BITFIELD_ALLOCATOR_RESET(&bitfields, (_typecode))); \
+        ASSERT_OK(KEFIR_IR_BITFIELD_ALLOCATOR_INIT(&bitfields, (_typecode))); \
         kefir_result_t res = KEFIR_OK; \
         kefir_size_t counter = 0; \
         while (res == KEFIR_OK) { \

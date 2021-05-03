@@ -63,16 +63,28 @@ static kefir_result_t amd64_sysv_type_info(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-struct bitfield_allocator {
-    kefir_ir_typecode_t typecode;
-    kefir_size_t width;
-    kefir_size_t offset;
-};
+const struct kefir_ir_bitfield *amd64_sysv_bitfield_get_state(struct kefir_ir_bitfield_allocator *allocator) {
+    REQUIRE(allocator != NULL, NULL);
+    ASSIGN_DECL_CAST(struct kefir_ir_bitfield *, payload,
+            allocator->payload);
+    REQUIRE(payload->width != 0, NULL);
+    return payload;
+}
 
-static kefir_result_t amd64_sysv_bitfield_reset(struct kefir_ir_bitfield_allocator *allocator,
-                                              kefir_ir_typecode_t typecode) {
+static kefir_result_t amd64_sysv_bitfield_reset(struct kefir_ir_bitfield_allocator *allocator) {
     REQUIRE(allocator != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR platform bitfield allocator"));
-    ASSIGN_DECL_CAST(struct bitfield_allocator *, payload,
+    ASSIGN_DECL_CAST(struct kefir_ir_bitfield *, payload,
+        allocator->payload);
+    payload->typecode = KEFIR_IR_TYPE_PAD;
+    payload->width = 0;
+    payload->offset = 0;
+    return KEFIR_OK;
+}
+
+static kefir_result_t amd64_sysv_bitfield_init(struct kefir_ir_bitfield_allocator *allocator,
+                                             kefir_ir_typecode_t typecode) {
+    REQUIRE(allocator != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR platform bitfield allocator"));
+    ASSIGN_DECL_CAST(struct kefir_ir_bitfield *, payload,
         allocator->payload);
     switch (typecode) {
         case KEFIR_IR_TYPE_BOOL:
@@ -117,7 +129,7 @@ static kefir_result_t amd64_sysv_bitfield_next(struct kefir_ir_bitfield_allocato
     REQUIRE(allocator != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR platform bitfield allocator"));
     REQUIRE(bitfield_width != 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid bitfield width"));
     REQUIRE(bitfield != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to IR bitfield"));
-    ASSIGN_DECL_CAST(struct bitfield_allocator *, payload,
+    ASSIGN_DECL_CAST(struct kefir_ir_bitfield *, payload,
         allocator->payload);
     REQUIRE(payload->width != 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected IR bitfield allocator to be initialized"));
 
@@ -126,8 +138,9 @@ static kefir_result_t amd64_sysv_bitfield_next(struct kefir_ir_bitfield_allocato
     REQUIRE(payload->offset + bitfield_width <= payload->width,
         KEFIR_SET_ERROR(KEFIR_OUT_OF_SPACE, "Requested bitfield cannot be allocated in the current scalar"));
     
-    bitfield->offset = payload->offset;
+    bitfield->typecode = payload->typecode;
     bitfield->width = bitfield_width;
+    bitfield->offset = payload->offset;
     payload->offset += bitfield_width;
     return KEFIR_OK;
 }
@@ -140,6 +153,8 @@ static kefir_result_t amd64_sysv_bitfield_free(struct kefir_mem *mem,
         allocator->payload);
 
     KEFIR_FREE(mem, payload);
+    allocator->get_state = NULL;
+    allocator->init = NULL;
     allocator->reset = NULL;
     allocator->next = NULL;
     allocator->free = NULL;
@@ -154,14 +169,16 @@ static kefir_result_t amd64_sysv_bitfield_allocator(struct kefir_mem *mem,
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(allocator != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to IR bitfield allocator"));
 
-    struct bitfield_allocator *payload = KEFIR_MALLOC(mem, sizeof(struct bitfield_allocator));
+    struct kefir_ir_bitfield *payload = KEFIR_MALLOC(mem, sizeof(struct kefir_ir_bitfield));
     REQUIRE(payload != NULL,
         KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AMD64 System V bitfield allocator payload"));
     payload->typecode = KEFIR_IR_TYPE_PAD;
     payload->width = 0;
     payload->offset = 0;
 
+    allocator->get_state = amd64_sysv_bitfield_get_state;
     allocator->reset = amd64_sysv_bitfield_reset;
+    allocator->init = amd64_sysv_bitfield_init;
     allocator->next = amd64_sysv_bitfield_next;
     allocator->free = amd64_sysv_bitfield_free;
     allocator->payload = payload;

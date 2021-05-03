@@ -25,6 +25,13 @@ typedef struct kefir_ast_type_layout {
     const struct kefir_ast_type *type;
     kefir_size_t alignment;
     kefir_uptr_t value;
+    kefir_bool_t bitfield;
+
+    struct {
+        kefir_size_t offset;
+        kefir_size_t width;
+    } bitfield_props;
+
     struct {
         kefir_bool_t valid;
         kefir_size_t size;

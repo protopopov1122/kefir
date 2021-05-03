@@ -151,6 +151,10 @@ static kefir_result_t translate_struct_type(struct kefir_mem *mem,
             field->alignment->value, env, builder,
             layout != NULL ? &element_layout : NULL);
         if (res == KEFIR_OK && element_layout != NULL) {
+            layout->bitfield = false; // TODO Implement bit-field allocation
+            layout->bitfield_props.offset = 0;
+            layout->bitfield_props.width = 0;
+
             if (field->identifier == NULL || strlen(field->identifier) == 0) {
                 res = kefir_ast_type_layout_add_structure_anonymous_member(mem, layout, element_layout);
                 REQUIRE_ELSE(res == KEFIR_OK, {
