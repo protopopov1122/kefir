@@ -50,8 +50,10 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ast_constant_expression_integer(mem, 6)));
     REQUIRE_OK(kefir_ast_struct_type_bitfield(mem, &symbols, struct_type2, "h2", kefir_ast_type_signed_short(), NULL,
         kefir_ast_constant_expression_integer(mem, 1)));
-    REQUIRE_OK(kefir_ast_struct_type_bitfield(mem, &symbols, struct_type2, "h10", kefir_ast_type_signed_short(), NULL,
+    REQUIRE_OK(kefir_ast_struct_type_bitfield(mem, &symbols, struct_type2, NULL, kefir_ast_type_signed_short(), NULL,
         kefir_ast_constant_expression_integer(mem, 0)));
+    REQUIRE_OK(kefir_ast_struct_type_bitfield(mem, &symbols, struct_type2, "h10", kefir_ast_type_signed_short(), NULL,
+        kefir_ast_constant_expression_integer(mem, 3)));
     REQUIRE_OK(kefir_ast_translate_object_type(mem, type2, 0, &env, &builder, NULL));
 
     REQUIRE_OK(kefir_ir_format_type(stdout, &ir_type));

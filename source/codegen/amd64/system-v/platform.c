@@ -75,7 +75,6 @@ static kefir_result_t amd64_sysv_bitfield_reset(struct kefir_ir_bitfield_allocat
     REQUIRE(allocator != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR platform bitfield allocator"));
     ASSIGN_DECL_CAST(struct kefir_ir_bitfield *, payload,
         allocator->payload);
-    payload->typecode = KEFIR_IR_TYPE_PAD;
     payload->width = 0;
     payload->offset = 0;
     return KEFIR_OK;
@@ -90,21 +89,18 @@ static kefir_result_t amd64_sysv_bitfield_init(struct kefir_ir_bitfield_allocato
         case KEFIR_IR_TYPE_BOOL:
         case KEFIR_IR_TYPE_CHAR:
         case KEFIR_IR_TYPE_INT8:
-            payload->typecode = typecode;
             payload->width = 8;
             payload->offset = 0;
             break;
 
         case KEFIR_IR_TYPE_SHORT:
         case KEFIR_IR_TYPE_INT16:
-            payload->typecode = typecode;
             payload->width = 16;
             payload->offset = 0;
             break;
 
         case KEFIR_IR_TYPE_INT:
         case KEFIR_IR_TYPE_INT32:
-            payload->typecode = typecode;
             payload->width = 32;
             payload->offset = 0;
             break;
@@ -112,7 +108,6 @@ static kefir_result_t amd64_sysv_bitfield_init(struct kefir_ir_bitfield_allocato
         case KEFIR_IR_TYPE_INT64:
         case KEFIR_IR_TYPE_LONG:
         case KEFIR_IR_TYPE_WORD:
-            payload->typecode = typecode;
             payload->width = 64;
             payload->offset = 0;
             break;
@@ -138,7 +133,6 @@ static kefir_result_t amd64_sysv_bitfield_next(struct kefir_ir_bitfield_allocato
     REQUIRE(payload->offset + bitfield_width <= payload->width,
         KEFIR_SET_ERROR(KEFIR_OUT_OF_SPACE, "Requested bitfield cannot be allocated in the current scalar"));
     
-    bitfield->typecode = payload->typecode;
     bitfield->width = bitfield_width;
     bitfield->offset = payload->offset;
     payload->offset += bitfield_width;
@@ -172,7 +166,6 @@ static kefir_result_t amd64_sysv_bitfield_allocator(struct kefir_mem *mem,
     struct kefir_ir_bitfield *payload = KEFIR_MALLOC(mem, sizeof(struct kefir_ir_bitfield));
     REQUIRE(payload != NULL,
         KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AMD64 System V bitfield allocator payload"));
-    payload->typecode = KEFIR_IR_TYPE_PAD;
     payload->width = 0;
     payload->offset = 0;
 

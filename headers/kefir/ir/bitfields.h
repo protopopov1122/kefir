@@ -5,7 +5,6 @@
 #include "kefir/ir/type.h"
 
 typedef struct kefir_ir_bitfield {
-    kefir_ir_typecode_t typecode;
     kefir_uint8_t offset;
     kefir_uint8_t width;
 } kefir_ir_bitfield_t;

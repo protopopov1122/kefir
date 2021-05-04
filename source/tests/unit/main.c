@@ -218,6 +218,10 @@ DECLARE_CASE(ast_type_analysis_enumerations);
 DECLARE_CASE(ast_type_analysis_arrays);
 DECLARE_CASE(ast_type_analysis_structs);
 DECLARE_CASE(ast_type_analysis_functions);
+DECLARE_CASE(ast_bitfield_translator1);
+DECLARE_CASE(ast_bitfield_translator2);
+DECLARE_CASE(ast_bitfield_translator3);
+DECLARE_CASE(ast_bitfield_translator4);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -434,7 +438,11 @@ TEST_SUITE(mainSuite,
     &ast_type_analysis_enumerations,
     &ast_type_analysis_arrays,
     &ast_type_analysis_structs,
-    &ast_type_analysis_functions
+    &ast_type_analysis_functions,
+    &ast_bitfield_translator1,
+    &ast_bitfield_translator2,
+    &ast_bitfield_translator3,
+    &ast_bitfield_translator4
 );
 
 int main(int argc, const char **argv) {
