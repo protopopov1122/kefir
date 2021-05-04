@@ -19,6 +19,10 @@ typedef struct kefir_ir_bitfield_allocator {
                          struct kefir_ir_bitfield *);
     kefir_result_t (*free)(struct kefir_mem *,
                          struct kefir_ir_bitfield_allocator *);
+
+    kefir_result_t (*update_colocated)(struct kefir_ir_bitfield_allocator *,
+                                     struct kefir_ir_typeentry *,
+                                     const struct kefir_ir_typeentry *);
     void *payload;
 } kefir_ir_bitfield_allocator_t;
 
@@ -32,5 +36,7 @@ typedef struct kefir_ir_bitfield_allocator {
     ((allocator)->next((allocator), (width), (bitfield)))
 #define KEFIR_IR_BITFIELD_ALLOCATOR_FREE(mem, allocator) \
     ((allocator)->free((mem), (allocator)))
+#define KEFIR_IR_BITFIELD_ALLOCATOR_UPDATE_COLOCATED(allocated, typeentry, colocated) \
+    ((allocated)->update_colocated((allocated), (typeentry), (colocated)))
 
 #endif

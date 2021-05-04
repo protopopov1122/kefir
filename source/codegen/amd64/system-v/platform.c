@@ -156,6 +156,20 @@ static kefir_result_t amd64_sysv_bitfield_free(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+static kefir_result_t amd64_sysv_bitfield_update_colocated(struct kefir_ir_bitfield_allocator *allocator,
+                                                         struct kefir_ir_typeentry *typeentry,
+                                                         const struct kefir_ir_typeentry *colocated) {
+    UNUSED(allocator);
+    REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type entry"));
+    REQUIRE(colocated != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid colocated type entry"));
+
+    kefir_size_t new_size = 0, new_alignment = 0;
+    REQUIRE_OK(kefir_amd64_sysv_scalar_type_layout(colocated->typecode, &new_size, &new_alignment));
+    new_alignment = MAX(colocated->alignment, new_alignment);
+    typeentry->alignment = MAX(new_alignment, typeentry->alignment);
+    return KEFIR_OK;
+}
+
 static kefir_result_t amd64_sysv_bitfield_allocator(struct kefir_mem *mem,
                                                   struct kefir_ir_target_platform *platform,
                                                   struct kefir_ir_bitfield_allocator *allocator) {
@@ -174,6 +188,7 @@ static kefir_result_t amd64_sysv_bitfield_allocator(struct kefir_mem *mem,
     allocator->init = amd64_sysv_bitfield_init;
     allocator->next = amd64_sysv_bitfield_next;
     allocator->free = amd64_sysv_bitfield_free;
+    allocator->update_colocated = amd64_sysv_bitfield_update_colocated;
     allocator->payload = payload;
     return KEFIR_OK;
 }

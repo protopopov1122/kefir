@@ -6,6 +6,45 @@
 #include "kefir/codegen/amd64/system-v/abi/data.h"
 #include "kefir/codegen/amd64/system-v/abi/vararg.h"
 
+kefir_result_t kefir_amd64_sysv_scalar_type_layout(kefir_ir_typecode_t typecode,
+                                               kefir_size_t *size_ptr,
+                                               kefir_size_t *alignment_ptr) {
+    REQUIRE(size_ptr != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid size pointer"));
+    REQUIRE(alignment_ptr != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid alignment pointer"));
+    switch (typecode) {
+        case KEFIR_IR_TYPE_BOOL:
+        case KEFIR_IR_TYPE_CHAR:
+        case KEFIR_IR_TYPE_INT8:
+            *size_ptr = 1;
+            *alignment_ptr = 1;
+            break;
+
+        case KEFIR_IR_TYPE_SHORT:
+        case KEFIR_IR_TYPE_INT16:
+            *size_ptr = 2;
+            *alignment_ptr = 2;
+            break;
+
+        case KEFIR_IR_TYPE_INT:
+        case KEFIR_IR_TYPE_INT32:
+            *size_ptr = 4;
+            *alignment_ptr = 4;
+            break;
+
+        case KEFIR_IR_TYPE_LONG:
+        case KEFIR_IR_TYPE_WORD:
+        case KEFIR_IR_TYPE_INT64:
+            *size_ptr = 8;
+            *alignment_ptr = 8;
+            break;
+
+        default:
+            return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR,
+                KEFIR_AMD64_SYSV_ABI_ERROR_PREFIX "Unexpectedly encountered non-integral type");
+    }
+    return KEFIR_OK;
+}
+
 static kefir_result_t visitor_not_supported(const struct kefir_ir_type *type,
                                             kefir_size_t index,
                                             const struct kefir_ir_typeentry *typeentry,
@@ -57,37 +96,7 @@ static kefir_result_t calculate_integer_layout(const struct kefir_ir_type *type,
     struct compound_type_layout *compound_type_layout = (struct compound_type_layout *) payload;
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, data,
         kefir_vector_at(compound_type_layout->vector, index));
-    switch (typeentry->typecode) {
-        case KEFIR_IR_TYPE_BOOL:
-        case KEFIR_IR_TYPE_CHAR:
-        case KEFIR_IR_TYPE_INT8:
-            data->size = 1;
-            data->alignment = 1;
-            break;
-
-        case KEFIR_IR_TYPE_SHORT:
-        case KEFIR_IR_TYPE_INT16:
-            data->size = 2;
-            data->alignment = 2;
-            break;
-
-        case KEFIR_IR_TYPE_INT:
-        case KEFIR_IR_TYPE_INT32:
-            data->size = 4;
-            data->alignment = 4;
-            break;
-
-        case KEFIR_IR_TYPE_LONG:
-        case KEFIR_IR_TYPE_WORD:
-        case KEFIR_IR_TYPE_INT64:
-            data->size = 8;
-            data->alignment = 8;
-            break;
-
-        default:
-            return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR,
-                KEFIR_AMD64_SYSV_ABI_ERROR_PREFIX "Unexpectedly encountered non-integral type");
-    }
+    REQUIRE_OK(kefir_amd64_sysv_scalar_type_layout(typeentry->typecode, &data->size, &data->alignment));
     data->aligned = true;
     return update_compound_type_layout(compound_type_layout, data, typeentry);
 }
