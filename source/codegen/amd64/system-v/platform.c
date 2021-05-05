@@ -163,10 +163,21 @@ static kefir_result_t amd64_sysv_bitfield_update_colocated(struct kefir_ir_bitfi
     REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type entry"));
     REQUIRE(colocated != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid colocated type entry"));
 
-    kefir_size_t new_size = 0, new_alignment = 0;
-    REQUIRE_OK(kefir_amd64_sysv_scalar_type_layout(colocated->typecode, &new_size, &new_alignment));
-    new_alignment = MAX(colocated->alignment, new_alignment);
-    typeentry->alignment = MAX(new_alignment, typeentry->alignment);
+    kefir_size_t size = 0;
+    kefir_size_t original_alignment = typeentry->alignment;
+    kefir_size_t colocated_alignment = colocated->alignment;
+
+    if (original_alignment == 0) {
+        REQUIRE_OK(kefir_amd64_sysv_scalar_type_layout(typeentry->typecode, &size, &original_alignment));
+    }
+    if (colocated_alignment == 0) {
+        REQUIRE_OK(kefir_amd64_sysv_scalar_type_layout(colocated->typecode, &size, &colocated_alignment));
+    }
+    kefir_size_t new_alignment = MAX(original_alignment, colocated_alignment);
+
+    if (original_alignment != new_alignment) {
+        typeentry->alignment = new_alignment;
+    }
     return KEFIR_OK;
 }
 

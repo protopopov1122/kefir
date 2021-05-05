@@ -201,7 +201,7 @@ static kefir_result_t translate_bitfield(struct kefir_mem *mem,
 
     struct kefir_ir_bitfield ir_bitfield;
     kefir_result_t res = KEFIR_IR_BITFIELD_ALLOCATOR_NEXT(&bitfield_mgr->allocator, field->bitwidth->value.integer, &ir_bitfield);
-    if (res == KEFIR_OUT_OF_SPACE) {
+    if (res == KEFIR_OUT_OF_SPACE || res == KEFIR_OUT_OF_BOUNDS) {
         REQUIRE(colocated,
             KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Requested bit-field cannot be fit into field width"));
         bitfield_mgr->last_bitfield_storage = kefir_ir_type_total_length(builder->type);
@@ -222,7 +222,7 @@ static kefir_result_t translate_bitfield(struct kefir_mem *mem,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Bit-field is expected to be a scalar"));
         struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(builder->type, bitfield_mgr->last_bitfield_storage);
         struct kefir_ir_typeentry colocated_typeentry = {0};
-        REQUIRE_OK(scalar_typeentry(field->type, field->bitwidth->value.integer, &colocated_typeentry));
+        REQUIRE_OK(scalar_typeentry(field->type, field->alignment->value, &colocated_typeentry));
         REQUIRE_OK(KEFIR_IR_BITFIELD_ALLOCATOR_UPDATE_COLOCATED(&bitfield_mgr->allocator, typeentry, &colocated_typeentry));
 
         if (layout != NULL) {

@@ -31,8 +31,7 @@
                 "type": "word"
             },
             {
-                "type": "short",
-                "alignment": 2
+                "type": "short"
             },
             {
                 "type": "short"

@@ -222,6 +222,7 @@ DECLARE_CASE(ast_bitfield_translator1);
 DECLARE_CASE(ast_bitfield_translator2);
 DECLARE_CASE(ast_bitfield_translator3);
 DECLARE_CASE(ast_bitfield_translator4);
+DECLARE_CASE(ast_bitfield_translator5);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -442,7 +443,8 @@ TEST_SUITE(mainSuite,
     &ast_bitfield_translator1,
     &ast_bitfield_translator2,
     &ast_bitfield_translator3,
-    &ast_bitfield_translator4
+    &ast_bitfield_translator4,
+    &ast_bitfield_translator5
 );
 
 int main(int argc, const char **argv) {
