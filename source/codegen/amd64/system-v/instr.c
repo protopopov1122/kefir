@@ -108,6 +108,17 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
             ASMGEN_ARG(&codegen->asmgen, KEFIR_INT64_FMT, entry->size);
         } break;
 
+        case KEFIR_IROPCODE_EXTRACTBITS:
+        case KEFIR_IROPCODE_INSERTBITS: {
+            const char *opcode_symbol = NULL;
+            REQUIRE_OK(cg_symbolic_opcode(instr->opcode, &opcode_symbol));
+            ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
+            ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
+            ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_DOUBLE);
+            ASMGEN_ARG(&codegen->asmgen, KEFIR_UINT32_FMT, instr->arg.u32[0]);
+            ASMGEN_ARG(&codegen->asmgen, KEFIR_UINT32_FMT, instr->arg.u32[1]);
+        } break;
+
         case KEFIR_IROPCODE_OFFSETPTR:
         case KEFIR_IROPCODE_ELEMENTPTR: {
             const kefir_id_t type_id = (kefir_id_t) instr->arg.u32[0];
