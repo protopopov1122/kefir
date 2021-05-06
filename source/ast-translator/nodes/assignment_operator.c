@@ -125,7 +125,11 @@ static kefir_result_t translate_modulo_bitwise(struct kefir_mem *mem,
             break;
 
         case KEFIR_AST_ASSIGNMENT_SHIFT_RIGHT:
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IARSHIFT, 0));
+            if (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(value_normalized_type)) {
+                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IARSHIFT, 0));
+            } else {
+                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IRSHIFT, 0));
+            }
             break;
 
         case KEFIR_AST_ASSIGNMENT_BITWISE_AND:
