@@ -108,7 +108,8 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
             ASMGEN_ARG(&codegen->asmgen, KEFIR_INT64_FMT, entry->size);
         } break;
 
-        case KEFIR_IROPCODE_EXTRACTBITS:
+        case KEFIR_IROPCODE_EXTUBITS:
+        case KEFIR_IROPCODE_EXTSBITS:
         case KEFIR_IROPCODE_INSERTBITS: {
             const char *opcode_symbol = NULL;
             REQUIRE_OK(cg_symbolic_opcode(instr->opcode, &opcode_symbol));

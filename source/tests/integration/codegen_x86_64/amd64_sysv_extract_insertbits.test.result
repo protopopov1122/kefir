@@ -51,7 +51,8 @@ extern __kefirrt_store32_impl
 extern __kefirrt_store64_impl
 extern __kefirrt_bzero_impl
 extern __kefirrt_bcopy_impl
-extern __kefirrt_extractbits_impl
+extern __kefirrt_extubits_impl
+extern __kefirrt_extsbits_impl
 extern __kefirrt_insertbits_impl
 extern __kefirrt_getlocals_impl
 extern __kefirrt_f32add_impl
@@ -94,49 +95,49 @@ mov r14, rsp
 mov rbx, __insert_body
 jmp [rbx]
 __insert_body:
-dq __kefirrt_extractbits_impl
+dq __kefirrt_insertbits_impl
 dd 0, 0
-dq __kefirrt_extractbits_impl
+dq __kefirrt_insertbits_impl
 dd 0, 1
-dq __kefirrt_extractbits_impl
+dq __kefirrt_insertbits_impl
 dd 0, 2
-dq __kefirrt_extractbits_impl
+dq __kefirrt_insertbits_impl
 dd 0, 3
-dq __kefirrt_extractbits_impl
+dq __kefirrt_insertbits_impl
 dd 0, 4
-dq __kefirrt_extractbits_impl
+dq __kefirrt_insertbits_impl
 dd 0, 5
-dq __kefirrt_extractbits_impl
+dq __kefirrt_insertbits_impl
 dd 0, 6
-dq __kefirrt_extractbits_impl
+dq __kefirrt_insertbits_impl
 dd 0, 7
-dq __kefirrt_extractbits_impl
+dq __kefirrt_insertbits_impl
 dd 0, 8
-dq __kefirrt_extractbits_impl
+dq __kefirrt_insertbits_impl
 dd 0, 9
-dq __kefirrt_extractbits_impl
+dq __kefirrt_insertbits_impl
 dd 0, 10
-dq __kefirrt_extractbits_impl
+dq __kefirrt_insertbits_impl
 dd 1, 0
-dq __kefirrt_extractbits_impl
+dq __kefirrt_insertbits_impl
 dd 2, 1
-dq __kefirrt_extractbits_impl
+dq __kefirrt_insertbits_impl
 dd 4, 2
-dq __kefirrt_extractbits_impl
+dq __kefirrt_insertbits_impl
 dd 8, 3
-dq __kefirrt_extractbits_impl
+dq __kefirrt_insertbits_impl
 dd 16, 4
-dq __kefirrt_extractbits_impl
+dq __kefirrt_insertbits_impl
 dd 32, 5
-dq __kefirrt_extractbits_impl
+dq __kefirrt_insertbits_impl
 dd 1, 6
-dq __kefirrt_extractbits_impl
+dq __kefirrt_insertbits_impl
 dd 2, 7
-dq __kefirrt_extractbits_impl
+dq __kefirrt_insertbits_impl
 dd 4, 8
-dq __kefirrt_extractbits_impl
+dq __kefirrt_insertbits_impl
 dd 8, 9
-dq __kefirrt_extractbits_impl
+dq __kefirrt_insertbits_impl
 dd 16, 10
 dq __insert_epilogue, 0
 __insert_epilogue:
@@ -144,59 +145,116 @@ mov rsp, r14
 add rsp, 16
 jmp __kefirrt_restore_state
 
-extract:
+extracts:
 call __kefirrt_preserve_state
 sub rsp, 16
 mov r14, rsp
-mov rbx, __extract_body
+mov rbx, __extracts_body
 jmp [rbx]
-__extract_body:
-dq __kefirrt_insertbits_impl
+__extracts_body:
+dq __kefirrt_extsbits_impl
 dd 0, 0
-dq __kefirrt_insertbits_impl
+dq __kefirrt_extsbits_impl
 dd 0, 1
-dq __kefirrt_insertbits_impl
+dq __kefirrt_extsbits_impl
 dd 0, 2
-dq __kefirrt_insertbits_impl
+dq __kefirrt_extsbits_impl
 dd 0, 3
-dq __kefirrt_insertbits_impl
+dq __kefirrt_extsbits_impl
 dd 0, 4
-dq __kefirrt_insertbits_impl
+dq __kefirrt_extsbits_impl
 dd 0, 5
-dq __kefirrt_insertbits_impl
+dq __kefirrt_extsbits_impl
 dd 0, 6
-dq __kefirrt_insertbits_impl
+dq __kefirrt_extsbits_impl
 dd 0, 7
-dq __kefirrt_insertbits_impl
+dq __kefirrt_extsbits_impl
 dd 0, 8
-dq __kefirrt_insertbits_impl
+dq __kefirrt_extsbits_impl
 dd 0, 9
-dq __kefirrt_insertbits_impl
+dq __kefirrt_extsbits_impl
 dd 0, 10
-dq __kefirrt_insertbits_impl
+dq __kefirrt_extsbits_impl
 dd 1, 0
-dq __kefirrt_insertbits_impl
+dq __kefirrt_extsbits_impl
 dd 2, 1
-dq __kefirrt_insertbits_impl
+dq __kefirrt_extsbits_impl
 dd 4, 2
-dq __kefirrt_insertbits_impl
+dq __kefirrt_extsbits_impl
 dd 8, 3
-dq __kefirrt_insertbits_impl
+dq __kefirrt_extsbits_impl
 dd 16, 4
-dq __kefirrt_insertbits_impl
+dq __kefirrt_extsbits_impl
 dd 32, 5
-dq __kefirrt_insertbits_impl
+dq __kefirrt_extsbits_impl
 dd 1, 6
-dq __kefirrt_insertbits_impl
+dq __kefirrt_extsbits_impl
 dd 2, 7
-dq __kefirrt_insertbits_impl
+dq __kefirrt_extsbits_impl
 dd 4, 8
-dq __kefirrt_insertbits_impl
+dq __kefirrt_extsbits_impl
 dd 8, 9
-dq __kefirrt_insertbits_impl
+dq __kefirrt_extsbits_impl
 dd 16, 10
-dq __extract_epilogue, 0
-__extract_epilogue:
+dq __extracts_epilogue, 0
+__extracts_epilogue:
+mov rsp, r14
+add rsp, 16
+jmp __kefirrt_restore_state
+
+extractu:
+call __kefirrt_preserve_state
+sub rsp, 16
+mov r14, rsp
+mov rbx, __extractu_body
+jmp [rbx]
+__extractu_body:
+dq __kefirrt_extubits_impl
+dd 0, 0
+dq __kefirrt_extubits_impl
+dd 0, 1
+dq __kefirrt_extubits_impl
+dd 0, 2
+dq __kefirrt_extubits_impl
+dd 0, 3
+dq __kefirrt_extubits_impl
+dd 0, 4
+dq __kefirrt_extubits_impl
+dd 0, 5
+dq __kefirrt_extubits_impl
+dd 0, 6
+dq __kefirrt_extubits_impl
+dd 0, 7
+dq __kefirrt_extubits_impl
+dd 0, 8
+dq __kefirrt_extubits_impl
+dd 0, 9
+dq __kefirrt_extubits_impl
+dd 0, 10
+dq __kefirrt_extubits_impl
+dd 1, 0
+dq __kefirrt_extubits_impl
+dd 2, 1
+dq __kefirrt_extubits_impl
+dd 4, 2
+dq __kefirrt_extubits_impl
+dd 8, 3
+dq __kefirrt_extubits_impl
+dd 16, 4
+dq __kefirrt_extubits_impl
+dd 32, 5
+dq __kefirrt_extubits_impl
+dd 1, 6
+dq __kefirrt_extubits_impl
+dd 2, 7
+dq __kefirrt_extubits_impl
+dd 4, 8
+dq __kefirrt_extubits_impl
+dd 8, 9
+dq __kefirrt_extubits_impl
+dd 16, 10
+dq __extractu_epilogue, 0
+__extractu_epilogue:
 mov rsp, r14
 add rsp, 16
 jmp __kefirrt_restore_state

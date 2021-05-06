@@ -77,7 +77,8 @@ declare_opcode store32
 declare_opcode store64
 declare_opcode bzero
 declare_opcode bcopy
-declare_opcode extractbits
+declare_opcode extubits
+declare_opcode extsbits
 declare_opcode insertbits
 declare_opcode getlocals
 declare_opcode f32add
@@ -492,15 +493,29 @@ define_opcode bcopy
     rep movsb
     end_opcode
 
-define_opcode extractbits
+define_opcode extubits
     mov edx, dword [INSTR_ARG_PTR]      ; Offset
     mov ecx, dword [INSTR_ARG_PTR + 4]  ; Width
     mov r11, 1                          ; Mask = (1 << Width) - 1
     shlx r11, r11, rcx
     sub r11, 1
     pop rax                             ; Value = (Bitfield >> Offset) & Mask
-    sarx rax, rax, rdx
+    shrx rax, rax, rdx
     and rax, r11
+    push rax
+    end_opcode
+
+define_opcode extsbits
+    mov edx, dword [INSTR_ARG_PTR]      ; Offset
+    mov ecx, dword [INSTR_ARG_PTR + 4]  ; Width
+    add rdx, rcx                        ; rdx = 64 - (Width + Offset)
+    neg rdx,
+    add rdx, 64
+    neg rcx                             ; rcx = 64 - Width
+    add rcx, 64
+    pop rax                             ; Value = (Bitfield << rdx)) >> rcx
+    shlx rax, rax, rdx
+    sarx rax, rax, rcx
     push rax
     end_opcode
 

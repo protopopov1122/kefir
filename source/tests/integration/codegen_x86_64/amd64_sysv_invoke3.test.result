@@ -51,7 +51,8 @@ extern __kefirrt_store32_impl
 extern __kefirrt_store64_impl
 extern __kefirrt_bzero_impl
 extern __kefirrt_bcopy_impl
-extern __kefirrt_extractbits_impl
+extern __kefirrt_extubits_impl
+extern __kefirrt_extsbits_impl
 extern __kefirrt_insertbits_impl
 extern __kefirrt_getlocals_impl
 extern __kefirrt_f32add_impl

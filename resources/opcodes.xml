@@ -71,8 +71,9 @@
     <opcode id="store64"     mnemonic="store64"     code="0x5e" type="none" />
     <opcode id="bzero"       mnemonic="bzero"       code="0x5f" type="typeref" />
     <opcode id="bcopy"       mnemonic="bcopy"       code="0x60" type="typeref" />
-    <opcode id="extractbits" mnemonic="extractbits" code="0x61" type="u32" />
-    <opcode id="insertbits"  mnemonic="insertbits"  code="0x62" type="u32" />
+    <opcode id="extubits"    mnemonic="extubits"    code="0x61" type="u32" />
+    <opcode id="extsbits"    mnemonic="extsbits"    code="0x62" type="u32" />
+    <opcode id="insertbits"  mnemonic="insertbits"  code="0x63" type="u32" />
 
     <!-- Built-ins -->
     <opcode id="vararg_start" mnemonic="startvarg"  code="0x70" type="none" />
