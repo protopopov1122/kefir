@@ -1,0 +1,215 @@
+{
+    "globals": [],
+    "externals": [
+        "structure1",
+        "structure2"
+    ],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": []
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "int"
+                        },
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "char",
+                            "alignment": 8
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "type": [
+                {
+                    "type": "word"
+                }
+            ]
+        }
+    ],
+    "data": [],
+    "function_declarations": [
+        {
+            "identifier": 0,
+            "name": "func1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": 0,
+            "name": "func1",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "structure1"
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "load32i"
+                },
+                {
+                    "opcode": "extsbits",
+                    "arg": [
+                        0,
+                        9
+                    ]
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "structure1"
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "load32i"
+                },
+                {
+                    "opcode": "extsbits",
+                    "arg": [
+                        9,
+                        4
+                    ]
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "structure1"
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "load32u"
+                },
+                {
+                    "opcode": "extubits",
+                    "arg": [
+                        13,
+                        6
+                    ]
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "structure2"
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 3
+                    }
+                },
+                {
+                    "opcode": "load8u"
+                },
+                {
+                    "opcode": "extubits",
+                    "arg": [
+                        0,
+                        3
+                    ]
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "structure2"
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 3
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "extubits",
+                    "arg": [
+                        3,
+                        1
+                    ]
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "structure2"
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 3
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "extubits",
+                    "arg": [
+                        4,
+                        33
+                    ]
+                }
+            ]
+        }
+    ]
+}

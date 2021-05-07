@@ -14,8 +14,29 @@ struct eval_param {
 static kefir_result_t traverse_layout(struct kefir_mem *mem,
                                     struct kefir_ast_type_layout *layout,
                                     struct eval_param *param) {
-    REQUIRE_OK(kefir_hashtree_insert(mem, param->tree,
-        (kefir_hashtree_key_t) layout->value, (kefir_hashtree_value_t) layout));
+    struct kefir_list *list = NULL;
+    struct kefir_hashtree_node *list_node = NULL;
+    kefir_result_t res = kefir_hashtree_at(param->tree, (kefir_hashtree_key_t) layout->value, &list_node);
+    if (res == KEFIR_NOT_FOUND) {
+        list = KEFIR_MALLOC(mem, sizeof(struct kefir_list));
+        REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate type layout list"));
+        res = kefir_list_init(list);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            KEFIR_FREE(mem, list);
+            return res;
+        });
+        res = kefir_hashtree_insert(mem, param->tree, (kefir_hashtree_key_t) layout->value, (kefir_hashtree_value_t) list);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_list_free(mem, list);
+            KEFIR_FREE(mem, list);
+            return res;
+        });
+    } else {
+        REQUIRE_OK(res);
+        list = (struct kefir_list *) list_node->value;
+    }
+
+    REQUIRE_OK(kefir_list_insert_after(mem, list, kefir_list_tail(list), layout));
     switch (layout->type->tag) {
         case KEFIR_AST_TYPE_STRUCTURE:
         case KEFIR_AST_TYPE_UNION: {
@@ -49,16 +70,22 @@ static kefir_result_t type_visit(const struct kefir_ir_type *type,
     REQUIRE_OK(KEFIR_IR_TARGET_PLATFORM_TYPE_INFO(param->mem, param->env->target_platform,
         param->platform_type, index, &type_info));
 
-    struct kefir_hashtree_node *node = NULL;
-    kefir_result_t res = kefir_hashtree_at(param->tree, (kefir_hashtree_key_t) index, &node);
+    struct kefir_hashtree_node *list_node = NULL;
+    kefir_result_t res = kefir_hashtree_at(param->tree, (kefir_hashtree_key_t) index, &list_node);
     if (res == KEFIR_OK) {
-        ASSIGN_DECL_CAST(struct kefir_ast_type_layout *, layout,
-            node->value);
-        layout->properties.valid = true;
-        layout->properties.size = type_info.size;
-        layout->properties.alignment = type_info.alignment;
-        layout->properties.aligned = type_info.aligned;
-        layout->properties.relative_offset = type_info.relative_offset;
+        ASSIGN_DECL_CAST(struct kefir_list *, list,
+            list_node->value);
+        for (const struct kefir_list_entry *iter = kefir_list_head(list);
+             iter != NULL;
+             kefir_list_next(&iter)) {
+            ASSIGN_DECL_CAST(struct kefir_ast_type_layout *, layout,
+                iter->value);
+            layout->properties.valid = true;
+            layout->properties.size = type_info.size;
+            layout->properties.alignment = type_info.alignment;
+            layout->properties.aligned = type_info.aligned;
+            layout->properties.relative_offset = type_info.relative_offset;
+        }
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
     }
@@ -93,6 +120,23 @@ static kefir_result_t type_visit(const struct kefir_ir_type *type,
     return KEFIR_OK;
 }
 
+static kefir_result_t tree_node_free(struct kefir_mem *mem,
+                                   struct kefir_hashtree *tree,
+                                   kefir_hashtree_key_t key,
+                                   kefir_hashtree_value_t value,
+                                   void *payload) {
+    UNUSED(tree);
+    UNUSED(key);
+    UNUSED(payload);
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid memory allocator"));
+    ASSIGN_DECL_CAST(struct kefir_list *, list,
+        value);
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid list"));
+    REQUIRE_OK(kefir_list_free(mem, list));
+    KEFIR_FREE(mem, list);
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_translator_evaluate_type_layout(struct kefir_mem *mem,
                                                      const struct kefir_ast_translator_environment *env,
                                                      struct kefir_ast_type_layout *layout,
@@ -113,6 +157,7 @@ kefir_result_t kefir_ast_translator_evaluate_type_layout(struct kefir_mem *mem,
     };
 
     REQUIRE_OK(kefir_hashtree_init(&tree, &kefir_hashtree_uint_ops));
+    REQUIRE_OK(kefir_hashtree_on_removal(&tree, tree_node_free, NULL));
     kefir_result_t res = traverse_layout(mem, layout, &param);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_hashtree_free(mem, &tree);

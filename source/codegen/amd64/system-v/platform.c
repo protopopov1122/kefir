@@ -143,7 +143,7 @@ static kefir_result_t amd64_sysv_bitfield_free(struct kefir_mem *mem,
                                              struct kefir_ir_bitfield_allocator *allocator) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(allocator != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR platform bitfield allocator"));
-    ASSIGN_DECL_CAST(struct bitfield_allocator *, payload,
+    ASSIGN_DECL_CAST(struct kefir_ir_bitfield *, payload,
         allocator->payload);
 
     KEFIR_FREE(mem, payload);
@@ -159,25 +159,35 @@ static kefir_result_t amd64_sysv_bitfield_free(struct kefir_mem *mem,
 static kefir_result_t amd64_sysv_bitfield_update_colocated(struct kefir_ir_bitfield_allocator *allocator,
                                                          struct kefir_ir_typeentry *typeentry,
                                                          const struct kefir_ir_typeentry *colocated) {
-    UNUSED(allocator);
+    REQUIRE(allocator != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR platform bitfield allocator"));
+     ASSIGN_DECL_CAST(struct kefir_ir_bitfield *, payload,
+        allocator->payload);
     REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type entry"));
     REQUIRE(colocated != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid colocated type entry"));
 
-    kefir_size_t size = 0;
+    kefir_size_t original_size = 0;
+    kefir_size_t colocated_size = 0;
     kefir_size_t original_alignment = typeentry->alignment;
     kefir_size_t colocated_alignment = colocated->alignment;
 
-    if (original_alignment == 0) {
-        REQUIRE_OK(kefir_amd64_sysv_scalar_type_layout(typeentry->typecode, &size, &original_alignment));
+    REQUIRE_OK(kefir_amd64_sysv_scalar_type_layout(typeentry->typecode, &original_size, &original_alignment));
+    if (typeentry->alignment != 0) {
+        original_alignment = typeentry->alignment;
     }
-    if (colocated_alignment == 0) {
-        REQUIRE_OK(kefir_amd64_sysv_scalar_type_layout(colocated->typecode, &size, &colocated_alignment));
+    
+    REQUIRE_OK(kefir_amd64_sysv_scalar_type_layout(colocated->typecode, &colocated_size, &colocated_alignment));
+    if (colocated->alignment != 0) {
+        colocated_alignment = colocated->alignment;
     }
+
     kefir_size_t new_alignment = MAX(original_alignment, colocated_alignment);
+    kefir_size_t new_size = MAX(original_size, colocated_size);
 
     if (original_alignment != new_alignment) {
         typeentry->alignment = new_alignment;
     }
+    payload->width = MAX(payload->width, new_size * CHAR_BIT);
+
     return KEFIR_OK;
 }
 
