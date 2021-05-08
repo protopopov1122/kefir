@@ -90,6 +90,8 @@ static kefir_result_t analyze_structure(struct kefir_mem *mem,
                     KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Structure/union bitfield width shall be non-negative"));
                 REQUIRE(field->bitwidth->value.integer > 0 || field->identifier == NULL,
                     KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Named bit-field with zero width is not permitted"));
+                REQUIRE(field->alignment->klass == KEFIR_AST_ALIGNMENT_DEFAULT,
+                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Bit-field shall not have alignment attribute"));
             }
 
             if (field->type->tag == KEFIR_AST_TYPE_ARRAY) {

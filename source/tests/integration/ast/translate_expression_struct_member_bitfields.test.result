@@ -30,8 +30,7 @@
                             "type": "char"
                         },
                         {
-                            "type": "char",
-                            "alignment": 8
+                            "type": "long"
                         }
                     ]
                 }
@@ -76,7 +75,7 @@
                     }
                 },
                 {
-                    "opcode": "load32i"
+                    "opcode": "load32u"
                 },
                 {
                     "opcode": "extsbits",
@@ -99,7 +98,7 @@
                     }
                 },
                 {
-                    "opcode": "load32i"
+                    "opcode": "load32u"
                 },
                 {
                     "opcode": "extsbits",
@@ -148,7 +147,7 @@
                     }
                 },
                 {
-                    "opcode": "load8u"
+                    "opcode": "load64"
                 },
                 {
                     "opcode": "extubits",

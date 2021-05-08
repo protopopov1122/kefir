@@ -58,33 +58,34 @@ DEFINE_CASE(ast_bitfield_translator1, "AST translator - bitfields #1")
     ASSERT_OK(kefir_irbuilder_type_init(&kft_mem, &type_builder, &ir_type1));
     ASSERT_OK(kefir_ast_translate_object_type(&kft_mem, type1, 0, &env, &type_builder, &layout1));
 
-#define ASSERT_MEMBER(_id, _pos, _alignment, _width, _offset) \
+#define ASSERT_MEMBER(_id, _pos, _typecode, _alignment, _width, _offset) \
     do { \
         designator.member = (_id); \
         ASSERT_OK(kefir_ast_type_layout_resolve(layout1, &designator, &member_layout, NULL, NULL)); \
         ASSERT(member_layout->value == (_pos)); \
         struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(&ir_type1, member_layout->value); \
+        ASSERT(typeentry->typecode == (_typecode)); \
         ASSERT(typeentry->alignment == (_alignment)); \
         ASSERT(member_layout->bitfield); \
         ASSERT(member_layout->bitfield_props.width == (_width)); \
         ASSERT(member_layout->bitfield_props.offset == (_offset)); \
     } while (0)
 
-    ASSERT_MEMBER("field1", 1, 0, 2, 0);
-    ASSERT_MEMBER("field2", 1, 0, 3, 2);
-    ASSERT_MEMBER("field3", 1, 0, 10, 5);
-    ASSERT_MEMBER("field4", 1, 0, 1, 15);
-    ASSERT_MEMBER("field5", 1, 0, 8, 16);
-    ASSERT_MEMBER("field6", 2, 0, 10, 0);
-    ASSERT_MEMBER("field7", 2, 0, 22, 10);
-    ASSERT_MEMBER("field8", 3, 0, 32, 0);
-    ASSERT_MEMBER("field9", 4, 0, 1, 0);
-    ASSERT_MEMBER("field10", 4, 0, 2, 2);
-    ASSERT_MEMBER("field11", 5, 0, 1, 0);
+    ASSERT_MEMBER("field1", 1, KEFIR_IR_TYPE_LONG, 4, 2, 0);
+    ASSERT_MEMBER("field2", 1, KEFIR_IR_TYPE_LONG, 4, 3, 2);
+    ASSERT_MEMBER("field3", 1, KEFIR_IR_TYPE_LONG, 4, 10, 5);
+    ASSERT_MEMBER("field4", 1, KEFIR_IR_TYPE_LONG, 4, 1, 15);
+    ASSERT_MEMBER("field5", 1, KEFIR_IR_TYPE_LONG, 4, 8, 16);
+    ASSERT_MEMBER("field6", 1, KEFIR_IR_TYPE_LONG, 4, 10, 24);
+    ASSERT_MEMBER("field7", 1, KEFIR_IR_TYPE_LONG, 4, 22, 34);
+    ASSERT_MEMBER("field8", 2, KEFIR_IR_TYPE_LONG, 4, 32, 0);
+    ASSERT_MEMBER("field9", 2, KEFIR_IR_TYPE_LONG, 4, 1, 32);
+    ASSERT_MEMBER("field10", 2, KEFIR_IR_TYPE_LONG, 4, 2, 34);
+    ASSERT_MEMBER("field11", 3, KEFIR_IR_TYPE_INT, 0, 1, 0);
 
 #undef ASSERT_MEMBER
 
-    ASSERT(kefir_ir_type_total_length(&ir_type1) == 6);
+    ASSERT(kefir_ir_type_total_length(&ir_type1) == 4);
 
     ASSERT_OK(kefir_ast_type_layout_free(&kft_mem, layout1));
     ASSERT_OK(KEFIR_IRBUILDER_TYPE_FREE(&type_builder));
@@ -207,22 +208,23 @@ DEFINE_CASE(ast_bitfield_translator3, "AST translator - bitfields #3")
     ASSERT_OK(kefir_irbuilder_type_init(&kft_mem, &type_builder, &ir_type1));
     ASSERT_OK(kefir_ast_translate_object_type(&kft_mem, type1, 0, &env, &type_builder, &layout1));
 
-#define ASSERT_MEMBER(_id, _pos, _alignment, _width, _offset) \
+#define ASSERT_MEMBER(_id, _pos, _typecode, _alignment, _width, _offset) \
     do { \
         designator.member = (_id); \
         ASSERT_OK(kefir_ast_type_layout_resolve(layout1, &designator, &member_layout, NULL, NULL)); \
         ASSERT(member_layout->value == (_pos)); \
         struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(&ir_type1, member_layout->value); \
+        ASSERT(typeentry->typecode == (_typecode)); \
         ASSERT(typeentry->alignment == (_alignment)); \
         ASSERT(member_layout->bitfield); \
         ASSERT(member_layout->bitfield_props.width == (_width)); \
         ASSERT(member_layout->bitfield_props.offset == (_offset)); \
     } while (0)
 
-    ASSERT_MEMBER("field1", 1, 0, 16, 0);
-    ASSERT_MEMBER("field3", 3, 4, 3, 0);
-    ASSERT_MEMBER("field4", 3, 4, 4, 3);
-    ASSERT_MEMBER("field6", 5, 0, 1, 0);
+    ASSERT_MEMBER("field1", 1, KEFIR_IR_TYPE_INT, 0, 16, 0);
+    ASSERT_MEMBER("field3", 3, KEFIR_IR_TYPE_CHAR, 4, 3, 0);
+    ASSERT_MEMBER("field4", 3, KEFIR_IR_TYPE_CHAR, 4, 4, 3);
+    ASSERT_MEMBER("field6", 5, KEFIR_IR_TYPE_SHORT, 0, 1, 0);
 
 #undef ASSERT_MEMBER
 
@@ -366,20 +368,20 @@ DEFINE_CASE(ast_bitfield_translator5, "AST translator - bitfields alignments #1"
         ASSERT(member_layout->bitfield_props.offset == (_offset)); \
     } while (0)
 
-    // ASSERT_MEMBER("field1", 1, KEFIR_IR_TYPE_CHAR, 0, 7, 0);
-    // ASSERT_MEMBER("field2", 2, KEFIR_IR_TYPE_CHAR, 2, 3, 0);
-    // ASSERT_MEMBER("field3", 2, KEFIR_IR_TYPE_CHAR, 2, 2, 3);
-    // ASSERT_MEMBER("field4", 3, KEFIR_IR_TYPE_SHORT, 4, 8, 0);
-    // ASSERT_MEMBER("field5", 3, KEFIR_IR_TYPE_SHORT, 4, 6, 8);
-    // ASSERT_MEMBER("field6", 4, KEFIR_IR_TYPE_CHAR, 8, 3, 0);
-    // ASSERT_MEMBER("field7", 4, KEFIR_IR_TYPE_CHAR, 8, 1, 3);
-    // ASSERT_MEMBER("field8", 4, KEFIR_IR_TYPE_CHAR, 8, 1, 4);
-    // ASSERT_MEMBER("field9", 5, KEFIR_IR_TYPE_LONG, 0, 20, 0);
-    // ASSERT_MEMBER("field10", 5, KEFIR_IR_TYPE_LONG, 0, 2, 20);
+    ASSERT_MEMBER("field1", 1, KEFIR_IR_TYPE_LONG, 0, 7, 0);
+    ASSERT_MEMBER("field2", 1, KEFIR_IR_TYPE_LONG, 0, 3, 7);
+    ASSERT_MEMBER("field3", 1, KEFIR_IR_TYPE_LONG, 0, 2, 10);
+    ASSERT_MEMBER("field4", 1, KEFIR_IR_TYPE_LONG, 0, 8, 12);
+    ASSERT_MEMBER("field5", 1, KEFIR_IR_TYPE_LONG, 0, 6, 20);
+    ASSERT_MEMBER("field6", 1, KEFIR_IR_TYPE_LONG, 0, 3, 26);
+    ASSERT_MEMBER("field7", 1, KEFIR_IR_TYPE_LONG, 0, 1, 29);
+    ASSERT_MEMBER("field8", 1, KEFIR_IR_TYPE_LONG, 0, 1, 30);
+    ASSERT_MEMBER("field9", 1, KEFIR_IR_TYPE_LONG, 0, 20, 31);
+    ASSERT_MEMBER("field10", 1, KEFIR_IR_TYPE_LONG, 0, 2, 51);
 
 #undef ASSERT_MEMBER
 
-    // ASSERT(kefir_ir_type_total_length(&ir_type1) == 6);
+    ASSERT(kefir_ir_type_total_length(&ir_type1) == 2);
 
     ASSERT_OK(kefir_ast_type_layout_free(&kft_mem, layout1));
     ASSERT_OK(KEFIR_IRBUILDER_TYPE_FREE(&type_builder));
