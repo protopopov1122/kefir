@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 TESTDIR="$(dirname $0)"
 OUTPUT_FILE="$(mktemp)"

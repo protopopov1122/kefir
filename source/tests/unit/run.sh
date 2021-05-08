@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 VALGRIND="valgrind --trace-children=yes --leak-check=full --error-exitcode=127"
 
