@@ -1,0 +1,32 @@
+name: Build & Test
+
+on: [push]
+
+jobs:
+  test_gcc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: sudo apt install build-essential gcc-10
+      - name: Checkout ${{ github.ref }}
+        uses: actions/checkout@master
+        with:
+          ref: ${{ github.ref }}
+      - name: Test
+        run: CC=gcc-10 make test
+      - name: Build
+        run: CC=gcc-10 make all
+        
+  test_clang:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: sudo apt install build-essential clang-10
+      - name: Checkout ${{ github.ref }}
+        uses: actions/checkout@master
+        with:
+          ref: ${{ github.ref }}
+      - name: Test
+        run: CC=clang-10 make test
+      - name: Build
+        run: CC=clang-10 make all
