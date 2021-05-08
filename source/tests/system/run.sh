@@ -7,9 +7,13 @@ ASM_OBJ="$TMPDIR/gen.o"
 LIB_OBJ="$TMPDIR/lib.o"
 TEST_EXE="$TMPDIR/test"
 VALGRIND_FILE="$TMPDIR/gen.log"
-VALGRIND="valgrind --trace-children=yes --leak-check=full --error-exitcode=127 --log-file=$VALGRIND_FILE"
+VALGRIND="valgrind --trace-children=yes --track-origins=yes --leak-check=full --error-exitcode=127 --log-file=$VALGRIND_FILE"
 NASM="nasm -f elf64 -o $ASM_OBJ"
-CC="gcc -std=c11 -Wall -Wextra -pedantic -O0 -ggdb -no-pie -I$DIR/../../../headers -o $TEST_EXE"
+COMPILE="$CC -std=c11 -Wall -Wextra -Wno-newline-eof -pedantic -O0 -ggdb -no-pie -I$DIR/../../../headers -o $TEST_EXE"
+
+if [[ "x$SANITIZE" == "xundefined" ]]; then
+    COMPILE="$COMPILE -fsanitize=undefined -fno-sanitize-recover=all"
+fi
 
 function cleanup {
     rm -rf "$TMPDIR"
@@ -38,7 +42,7 @@ do
         exit 128
     fi
     TEST_FILE="$DIR/$(basename $(dirname $SYS_TEST))/$(basename $SYS_TEST .gen).test.c"
-    $CC $TEST_FILE $ASM_OBJ $LIB_OBJ
+    $COMPILE $TEST_FILE $ASM_OBJ $LIB_OBJ
     if [[ "x$DISASM" == "xexe" ]]; then
         objdump -d "$TEST_EXE"
     fi

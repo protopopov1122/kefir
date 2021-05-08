@@ -8,6 +8,11 @@ KEFIR_INTEGRATION_TEST_BINS := $(KEFIR_INTEGRATION_TESTS_SOURCES:$(SOURCE_DIR)/t
 KEFIR_INTEGRATION_TESTS := $(KEFIR_INTEGRATION_TESTS_SOURCES:$(SOURCE_DIR)/tests/integration/$(INT_TEST_SUBDIR)/%.test.c=integration_test_$(INT_TEST_SUBDIR)_%)
 KEFIR_REBUILD_INTEGRATION_TESTS := $(KEFIR_INTEGRATION_TESTS_SOURCES:$(SOURCE_DIR)/tests/integration/$(INT_TEST_SUBDIR)/%.test.c=rebuild_integration_test_$(INT_TEST_SUBDIR)_%)
 
+KEFIR_INTEGRATION_TEST_LIBS=
+ifeq ($(SANITIZE),undefined)
+KEFIR_INTEGRATION_TEST_LIBS=-fsanitize=undefined
+endif
+
 DEPS += $(KEFIR_INTEGRATION_TEST_DEPS)
 OBJS += $(KEFIR_INTEGRATION_TEST_OBJS)
 BINS += $(KEFIR_INTEGRATION_TEST_BINS)
@@ -21,7 +26,8 @@ $(BIN_DIR)/tests/integration/$(INT_TEST_SUBDIR)/%: $(DEPS) $(KEFIR_LIB_OBJS) \
 	@echo "Linking $@"
 	@$(CC) -o $@ $(KEFIR_LIB_OBJS) $(BIN_DIR)/tests/int_test.o \
 	                             $(BIN_DIR)/tests/util/util.o \
-								 $(BIN_DIR)/tests/integration/$(INT_TEST_SUBDIR)/$(@F).o
+								 $(BIN_DIR)/tests/integration/$(INT_TEST_SUBDIR)/$(@F).o \
+								 $(KEFIR_INTEGRATION_TEST_LIBS)
 
 integration_test_$(INT_TEST_SUBDIR)_%: $(BIN_DIR)/tests/integration/$(INT_TEST_SUBDIR)/%.test
 	@$(SOURCE_DIR)/tests/integration/run.sh $^

@@ -31,7 +31,7 @@ int main(int argc, const char **argv) {
         };
         struct param_struct2 param2 = {
             .ptr = &param1,
-            .arg = (i << 2) & 0xff
+            .arg = (i * 4) & 0xff
         };
 
         ASSERT(DOUBLE_EQUALS(sum(param2), param1.field1 + param1.field2 + param1.field3 + param1.field4 + param2.arg,

@@ -243,16 +243,19 @@ DEFINE_CASE(ast_constant_expression_binary_operations1, "AST constant expression
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, i + 17)),
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 13))),
             (i + 17) % 13);
-        ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
-            kefir_ast_new_binary_operation(&kft_mem, KEFIR_AST_OPERATION_SHIFT_LEFT,
-                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, i)),
-                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 3))),
-            i << 3);
-        ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
-            kefir_ast_new_binary_operation(&kft_mem, KEFIR_AST_OPERATION_SHIFT_RIGHT,
-                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, ~0)),
-                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, i))),
-            ~0 >> i);
+
+        if (i >= 0) {
+            ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
+                kefir_ast_new_binary_operation(&kft_mem, KEFIR_AST_OPERATION_SHIFT_LEFT,
+                    KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, i)),
+                    KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 3))),
+                i << 3);
+            ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
+                kefir_ast_new_binary_operation(&kft_mem, KEFIR_AST_OPERATION_SHIFT_RIGHT,
+                    KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, ~0)),
+                    KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, i))),
+                ~0 >> i);
+        }
 
         for (kefir_int64_t j = -10; j < 10; j++) {
             ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,

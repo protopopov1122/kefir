@@ -72,7 +72,9 @@ static void floating_point_casts() {
 
     for (double d = -50.0; d < 50.0; d += 0.25) {
         ASSERT(double_short_cast(d) == ((short) d));
-        ASSERT(uint_double_cast(d) == ((unsigned int) d));
+        if (d >= 0.0) {
+            ASSERT(uint_double_cast(d) == ((unsigned int) d));
+        }
         ASSERT(FLOAT_EQUALS(double_float_cast(d), ((float) d), FLOAT_EPSILON));
     }
 }

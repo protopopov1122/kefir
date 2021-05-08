@@ -10,7 +10,7 @@ int main(int argc, const char **argv) {
     UNUSED(argv);
     for (int i = -10; i < 10; i++) {
         for (int j = -10; j < 10; j++) {
-            for (int k = -100; k < 100; k++) {
+            for (int k = -100; k < 0; k++) {
                 ASSERT(arith2(i, j, k) == (i & ((j | ((~k << 3) ^ 5)) >> 2)));
             }
         }

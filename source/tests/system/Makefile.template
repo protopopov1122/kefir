@@ -8,6 +8,11 @@ KEFIR_SYSTEM_TESTS_GEN_OBJS := $(KEFIR_SYSTEM_TESTS_GEN_SRC:$(SOURCE_DIR)/%.c=$(
 KEFIR_SYSTEM_TESTS_GENS := $(KEFIR_SYSTEM_TESTS_GEN_SOURCES:$(SOURCE_DIR)/tests/system/%.gen.c=$(BIN_DIR)/tests/system/%.gen)
 KEFIR_SYSTEM_TESTS := $(KEFIR_SYSTEM_TESTS_GEN_SOURCES:$(SOURCE_DIR)/tests/system/$(SYSTEM_TEST_SUBDIR)/%.gen.c=system_test_$(SYSTEM_TEST_SUBDIR)_%)
 
+KEFIR_SYSTEM_TEST_LIBS=
+ifeq ($(SANITIZE),undefined)
+KEFIR_SYSTEM_TEST_LIBS=-fsanitize=undefined
+endif
+
 DEPS += $(KEFIR_SYSTEM_TESTS_GEN_DEPS)
 OBJS += $(KEFIR_SYSTEM_TESTS_GEN_OBJS)
 BINS += $(KEFIR_SYSTEM_TESTS_GENS)
@@ -16,10 +21,10 @@ $(BIN_DIR)/tests/system/$(SYSTEM_TEST_SUBDIR)/%.gen: SYSTEM_TEST_SUBDIR:=$(SYSTE
 $(BIN_DIR)/tests/system/$(SYSTEM_TEST_SUBDIR)/%.gen: $(DEPS) $(KEFIR_LIB_OBJS) $(BIN_DIR)/tests/int_test.o $(BIN_DIR)/tests/system/$(SYSTEM_TEST_SUBDIR)/%.gen.o
 	@mkdir -p $(@D)
 	@echo "Linking $@"
-	@$(CC) -o $@ $(KEFIR_LIB_OBJS) $(BIN_DIR)/tests/int_test.o $(BIN_DIR)/tests/system/$(SYSTEM_TEST_SUBDIR)/$(@F).o
+	@$(CC) -o $@ $(KEFIR_LIB_OBJS) $(BIN_DIR)/tests/int_test.o $(BIN_DIR)/tests/system/$(SYSTEM_TEST_SUBDIR)/$(@F).o $(KEFIR_SYSTEM_TEST_LIBS)
 
 system_test_$(SYSTEM_TEST_SUBDIR)_%: $(BIN_DIR)/tests/system/$(SYSTEM_TEST_SUBDIR)/%.gen
-	@$(SOURCE_DIR)/tests/system/run.sh $^
+	@CC=$(CC) SANITIZE=$(SANITIZE) $(SOURCE_DIR)/tests/system/run.sh $^
 
 system_tests: $(KEFIR_SYSTEM_TESTS)
 

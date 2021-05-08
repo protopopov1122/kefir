@@ -33,8 +33,10 @@ int main(int argc, const char **argv) {
                 ASSERT(modulo(i, j) == i % j);
             }
 
-            if (j >= 0 && j < (int) (sizeof(int) * CHAR_BIT)) {
-                ASSERT(shl(i, j) == i << j);
+            if (j >= 0 && j < (int) (sizeof(int) * CHAR_BIT) - 8) {
+                if (i >= 0) {
+                    ASSERT(shl(i, j) == i << j);
+                }
                 ASSERT(shr(i, j) == i >> j);
             }
             ASSERT(band(i, j) == (i & j));

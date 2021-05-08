@@ -13,9 +13,9 @@ jobs:
         with:
           ref: ${{ github.ref }}
       - name: Test
-        run: CC=gcc-10 make test  MEMCHECK=yes
+        run: make test  MEMCHECK=yes SANITIZE=undefined CC=gcc-10
       - name: Build
-        run: CC=gcc-10 make all
+        run: make all SANITIZE=undefined CC=gcc-10
         
   test_clang:
     runs-on: ubuntu-latest
@@ -27,6 +27,6 @@ jobs:
         with:
           ref: ${{ github.ref }}
       - name: Test
-        run: CC=clang-10 make test MEMCHECK=yes
+        run: make test MEMCHECK=yes SANITIZE=undefined CC=clang-10
       - name: Build
-        run: CC=clang-10 make all
+        run: make all SANITIZE=undefined CC=clang-10

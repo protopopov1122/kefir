@@ -32,11 +32,49 @@ static kefir_result_t visitor_not_supported(const struct kefir_ir_type *type,
     return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Unsupported function parameter type");
 }
 
+static kefir_result_t mask_argument(struct kefir_codegen_amd64 *codegen,
+                                  const struct kefir_ir_typeentry *typeentry) {
+    switch (typeentry->typecode) {
+        case KEFIR_IR_TYPE_BOOL:
+        case KEFIR_IR_TYPE_CHAR:
+        case KEFIR_IR_TYPE_INT8:
+            ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_AND);
+            ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
+            ASMGEN_ARG(&codegen->asmgen, KEFIR_INT64_FMT, 0xff);
+            break;
+
+        case KEFIR_IR_TYPE_SHORT:
+        case KEFIR_IR_TYPE_INT16:
+            ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_AND);
+            ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
+            ASMGEN_ARG(&codegen->asmgen, KEFIR_INT64_FMT, 0xffff);
+            break;
+
+        case KEFIR_IR_TYPE_INT:
+        case KEFIR_IR_TYPE_FLOAT32:
+        case KEFIR_IR_TYPE_INT32:
+            ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_AND);
+            ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
+            ASMGEN_ARG(&codegen->asmgen, KEFIR_INT64_FMT, 0xffffffff);
+            break;
+
+        case KEFIR_IR_TYPE_INT64:
+        case KEFIR_IR_TYPE_FLOAT64:
+        case KEFIR_IR_TYPE_LONG:
+        case KEFIR_IR_TYPE_WORD:
+            // Do nothing
+            break;
+
+        default:
+            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected argument type");
+    }
+    return KEFIR_OK;
+}
+
 static kefir_result_t load_integer_argument(const struct kefir_ir_type *type,
                                           kefir_size_t index,
                                           const struct kefir_ir_typeentry *typeentry,
                                           void *payload) {
-    UNUSED(typeentry);
     struct argument_load *param =
         (struct argument_load *) payload;
     struct kefir_ir_type_iterator iter;
@@ -53,6 +91,7 @@ static kefir_result_t load_integer_argument(const struct kefir_ir_type *type,
         ASMGEN_ARG(&param->codegen->asmgen, KEFIR_AMD64_INDIRECT_OFFSET,
             KEFIR_AMD64_RBP,
             alloc->location.stack_offset + 2 * KEFIR_AMD64_SYSV_ABI_QWORD);
+        REQUIRE_OK(mask_argument(param->codegen, typeentry));
         ASMGEN_INSTR(&param->codegen->asmgen, KEFIR_AMD64_PUSH);
         ASMGEN_ARG0(&param->codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
     }
@@ -83,6 +122,7 @@ static kefir_result_t load_sse_argument(const struct kefir_ir_type *type,
         ASMGEN_ARG(&param->codegen->asmgen, KEFIR_AMD64_INDIRECT_OFFSET,
             KEFIR_AMD64_RBP,
             alloc->location.stack_offset + 2 * KEFIR_AMD64_SYSV_ABI_QWORD);
+        REQUIRE_OK(mask_argument(param->codegen, typeentry));
     }
     ASMGEN_INSTR(&param->codegen->asmgen, KEFIR_AMD64_PUSH);
     ASMGEN_ARG0(&param->codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
