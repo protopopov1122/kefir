@@ -20,7 +20,7 @@ static kefir_result_t vararg_start(struct kefir_codegen_amd64 *codegen,
 
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
     ASMGEN_ARG(&codegen->asmgen,
-        KEFIR_AMD64_DWORD KEFIR_AMD64_QWORD KEFIR_AMD64_INDIRECT,
+        KEFIR_AMD64_QWORD KEFIR_AMD64_INDIRECT,
         KEFIR_AMD64_SYSV_ABI_DATA_REG);
     ASMGEN_ARG(&codegen->asmgen,
         KEFIR_INT64_FMT,
@@ -122,6 +122,71 @@ static kefir_result_t visitor_not_supported(const struct kefir_ir_type *type,
     return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, KEFIR_AMD64_SYSV_ABI_ERROR_PREFIX "Encountered not supported type code while traversing type");
 }
 
+struct vararg_scalar_type {
+    kefir_ir_typecode_t typecode;
+};
+
+static kefir_result_t free_vararg_scalar_type(struct kefir_mem *mem, void *payload) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct vararg_scalar_type *, type,
+        payload);
+    KEFIR_FREE(mem, type);
+    return KEFIR_OK;
+}
+
+static kefir_result_t mask_argument(struct kefir_codegen_amd64 *codegen,
+                                  kefir_ir_typecode_t typecode,
+                                  const char *reg) {
+    switch (typecode) {
+        case KEFIR_IR_TYPE_BOOL:
+        case KEFIR_IR_TYPE_CHAR:
+        case KEFIR_IR_TYPE_INT8:
+            ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
+            ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_EAX);
+            ASMGEN_ARG0(&codegen->asmgen, "0xff");
+
+            ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_AND);
+            ASMGEN_ARG0(&codegen->asmgen, reg);
+            ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RAX);
+            break;
+
+        case KEFIR_IR_TYPE_SHORT:
+        case KEFIR_IR_TYPE_INT16:
+            ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
+            ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_EAX);
+            ASMGEN_ARG0(&codegen->asmgen, "0xffff");
+
+            ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_AND);
+            ASMGEN_ARG0(&codegen->asmgen, reg);
+            ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RAX);
+            break;
+
+        case KEFIR_IR_TYPE_INT:
+        case KEFIR_IR_TYPE_FLOAT32:
+        case KEFIR_IR_TYPE_INT32:
+            ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
+            ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_EAX);
+            ASMGEN_ARG0(&codegen->asmgen, "-1");
+
+            ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_AND);
+            ASMGEN_ARG0(&codegen->asmgen, reg);
+            ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RAX);
+            break;
+
+        case KEFIR_IR_TYPE_INT64:
+        case KEFIR_IR_TYPE_FLOAT64:
+        case KEFIR_IR_TYPE_LONG:
+        case KEFIR_IR_TYPE_WORD:
+            // Do nothing
+            break;
+
+        default:
+            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected argument type");
+    }
+    return KEFIR_OK;
+}
+
 static kefir_result_t vararg_get_int(struct kefir_codegen_amd64 *codegen,
                                  struct kefir_codegen_amd64_sysv_module *sysv_module,
                                  const struct kefir_amd64_sysv_function *sysv_func,
@@ -129,7 +194,12 @@ static kefir_result_t vararg_get_int(struct kefir_codegen_amd64 *codegen,
                                  void *payload) {
     UNUSED(sysv_module);
     UNUSED(sysv_func);
-    UNUSED(payload);
+    REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 codegen"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+
+    ASSIGN_DECL_CAST(struct vararg_scalar_type *, scalar_type,
+        payload);
     ASMGEN_LABEL(&codegen->asmgen, "%s",
         identifier);
 
@@ -138,6 +208,8 @@ static kefir_result_t vararg_get_int(struct kefir_codegen_amd64 *codegen,
 
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_CALL);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_VARARG_INT);
+
+    REQUIRE_OK(mask_argument(codegen, scalar_type->typecode, KEFIR_AMD64_SYSV_ABI_DATA2_REG));
 
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_PUSH);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA2_REG);
@@ -159,17 +231,24 @@ static kefir_result_t vararg_visit_integer(const struct kefir_ir_type *type,
                                           void *payload) {
     UNUSED(type);
     UNUSED(index);
-    UNUSED(typeentry);
     const kefir_size_t BUF_SIZE = 256;
     char buffer[BUF_SIZE];
 
     ASSIGN_DECL_CAST(struct vararg_getter *, param,
         payload);
-    snprintf(buffer, BUF_SIZE - 1, KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_INT_LABEL,
-        param->sysv_func->func->name);
+    snprintf(buffer, BUF_SIZE - 1, KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_SCALAR_LABEL,
+        param->sysv_func->func->name, (kefir_int_t) typeentry->typecode);
+
+    struct vararg_scalar_type *scalar_type = KEFIR_MALLOC(param->mem, sizeof(struct vararg_scalar_type));
+    REQUIRE(scalar_type != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate vararg scalar type"));
+    scalar_type->typecode = typeentry->typecode;
+
     kefir_result_t res = kefir_amd64_sysv_function_insert_appendix(param->mem, param->sysv_func,
-        vararg_get_int, NULL, NULL, buffer);
-    REQUIRE(res == KEFIR_OK || res == KEFIR_ALREADY_EXISTS, res);
+        vararg_get_int, free_vararg_scalar_type, scalar_type, buffer);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(param->mem, scalar_type);
+        REQUIRE(res == KEFIR_ALREADY_EXISTS, res);
+    });
     ASMGEN_RAW(&param->codegen->asmgen, KEFIR_AMD64_QUAD);
     ASMGEN_ARG0(&param->codegen->asmgen,
         buffer);
@@ -184,7 +263,12 @@ static kefir_result_t vararg_get_sse(struct kefir_codegen_amd64 *codegen,
                                  void *payload) {
     UNUSED(sysv_module);
     UNUSED(sysv_func);
-    UNUSED(payload);
+    REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 codegen"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+
+    ASSIGN_DECL_CAST(struct vararg_scalar_type *, scalar_type,
+        payload);
     ASMGEN_LABEL(&codegen->asmgen, "%s",
         identifier);
 
@@ -193,6 +277,8 @@ static kefir_result_t vararg_get_sse(struct kefir_codegen_amd64 *codegen,
 
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_CALL);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_VARARG_SSE);
+
+    REQUIRE_OK(mask_argument(codegen, scalar_type->typecode, KEFIR_AMD64_SYSV_ABI_DATA2_REG));
 
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_PUSH);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA2_REG);
@@ -220,11 +306,20 @@ static kefir_result_t vararg_visit_sse(const struct kefir_ir_type *type,
 
     ASSIGN_DECL_CAST(struct vararg_getter *, param,
         payload);
-    snprintf(buffer, BUF_SIZE - 1, KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_SSE_LABEL,
-        param->sysv_func->func->name);
+    snprintf(buffer, BUF_SIZE - 1, KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_SCALAR_LABEL,
+        param->sysv_func->func->name, (kefir_int_t) typeentry->typecode);
+
+    struct vararg_scalar_type *scalar_type = KEFIR_MALLOC(param->mem, sizeof(struct vararg_scalar_type));
+    REQUIRE(scalar_type != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate vararg scalar type"));
+    scalar_type->typecode = typeentry->typecode;
+
     kefir_result_t res = kefir_amd64_sysv_function_insert_appendix(param->mem, param->sysv_func,
-        vararg_get_sse, NULL, NULL, buffer);
-    REQUIRE(res == KEFIR_OK || res == KEFIR_ALREADY_EXISTS, res);
+        vararg_get_sse, free_vararg_scalar_type, scalar_type, buffer);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(param->mem, scalar_type);
+        REQUIRE(res == KEFIR_ALREADY_EXISTS, res);
+    });
+    
     ASMGEN_RAW(&param->codegen->asmgen, KEFIR_AMD64_QUAD);
     ASMGEN_ARG0(&param->codegen->asmgen,
         buffer);

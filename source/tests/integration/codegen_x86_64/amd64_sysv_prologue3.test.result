@@ -24,8 +24,10 @@ push r12
 pextrq r12, xmm7, 0
 push r12
 mov r12, [rbp + 16]
-and r12, 4294967295
+mov eax, -1
+and r12, rax
 push r12
 mov r12, [rbp + 24]
-and r12, 4294967295
+mov eax, -1
+and r12, rax
 push r12
