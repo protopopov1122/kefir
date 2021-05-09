@@ -208,6 +208,12 @@ static kefir_result_t format_type_default(const struct kefir_ir_type *type,
             REQUIRE_OK(kefir_json_output_integer(param->json, typeentry->param));
             break;
 
+        case KEFIR_IR_TYPE_ALIGN:
+            REQUIRE_OK(kefir_json_output_string(param->json, "align"));
+            REQUIRE_OK(kefir_json_output_object_key(param->json, "as"));
+            REQUIRE_OK(kefir_json_output_integer(param->json, typeentry->param));
+            break;
+
         case KEFIR_IR_TYPE_MEMORY:
             REQUIRE_OK(kefir_json_output_string(param->json, "memory"));
             REQUIRE_OK(kefir_json_output_object_key(param->json, "length"));

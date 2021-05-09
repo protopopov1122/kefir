@@ -30,7 +30,14 @@
                             "type": "char"
                         },
                         {
+                            "type": "char"
+                        },
+                        {
                             "type": "long"
+                        },
+                        {
+                            "type": "align",
+                            "as": 8
                         }
                     ]
                 }
@@ -147,7 +154,7 @@
                     }
                 },
                 {
-                    "opcode": "load64"
+                    "opcode": "load8u"
                 },
                 {
                     "opcode": "extubits",
@@ -173,7 +180,7 @@
                     }
                 },
                 {
-                    "opcode": "load64"
+                    "opcode": "load8u"
                 },
                 {
                     "opcode": "extubits",
@@ -195,7 +202,7 @@
                     "opcode": "offsetptr",
                     "arg": {
                         "type": 3,
-                        "index": 3
+                        "index": 4
                     }
                 },
                 {
@@ -204,7 +211,7 @@
                 {
                     "opcode": "extubits",
                     "arg": [
-                        4,
+                        0,
                         33
                     ]
                 }

@@ -31,10 +31,14 @@
                 "type": "word"
             },
             {
-                "type": "short"
+                "type": "char"
             },
             {
-                "type": "short"
+                "type": "char"
+            },
+            {
+                "type": "align",
+                "as": 2
             }
         ]
     }
