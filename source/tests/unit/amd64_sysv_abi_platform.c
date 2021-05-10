@@ -179,43 +179,43 @@ END_CASE
 
 DEFINE_CASE(amd64_sysv_abi_platform_bitfields3, "AMD64 System V ABI - platform bitfields #3")
     struct kefir_ir_target_platform platform;
-    struct kefir_ir_bitfield_allocator bitfields;
-    struct kefir_ir_bitfield bitfield;
     ASSERT_OK(kefir_codegen_amd64_sysv_target_platform(&platform));
-    
-    struct kefir_ir_type type;
-    struct kefir_irbuilder_type builder;
-    ASSERT_OK(kefir_ir_type_alloc(&kft_mem, 0, &type));
-    ASSERT_OK(kefir_irbuilder_type_init(&kft_mem, &builder, &type));
 
-    ASSERT_OK(KEFIR_IR_TARGET_PLATFORM_BITFIELD_ALLOCATOR(&kft_mem, &platform, &type, &bitfields));
+#define ASSERT_WIDTH(_typecode, _width) \
+    do { \
+        struct kefir_ir_bitfield_allocator bitfields; \
+        struct kefir_ir_bitfield bitfield; \
+        struct kefir_ir_type type; \
+        struct kefir_irbuilder_type builder; \
+        ASSERT_OK(KEFIR_IR_TARGET_PLATFORM_BITFIELD_ALLOCATOR(&kft_mem, &platform, &type, &bitfields)); \
+         \
+        ASSERT_OK(kefir_ir_type_alloc(&kft_mem, 0, &type)); \
+        ASSERT_OK(kefir_irbuilder_type_init(&kft_mem, &builder, &type)); \
+ \
+        ASSERT_OK(KEFIR_IRBUILDER_TYPE_APPEND_V(&builder, (_typecode), 0, 0)); \
+        struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(&type, 0); \
+        struct kefir_ir_typeentry colocated = *typeentry; \
+ \
+        ASSERT_OK(KEFIR_IR_BITFIELD_ALLOCATOR_NEXT(&kft_mem, &bitfields, 0, typeentry, (_width), &bitfield)); \
+        ASSERT(KEFIR_IR_BITFIELD_ALLOCATOR_NEXT_COLOCATED(&kft_mem, &bitfields, &colocated, 1, &bitfield) == KEFIR_OUT_OF_SPACE); \
+ \
+        ASSERT_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder)); \
+        ASSERT_OK(kefir_ir_type_free(&kft_mem, &type)); \
+        ASSERT_OK(KEFIR_IR_BITFIELD_ALLOCATOR_FREE(&kft_mem, &bitfields)); \
+    } while (0);
 
-// #define ASSERT_WIDTH(_typecode, _width) \
-//     do { \
-        // struct kefir_ir_typeentry typeentry = { \
-        //     .typecode = (_typecode), \
-        //     .alignment = 0, \
-        //     .param = 0 \
-        // }; \
-        // ASSERT_OK(KEFIR_IR_BITFIELD_ALLOCATOR_NEXT(&bitfields, &typeentry, (_width), &bitfield)); \
-        // ASSERT(KEFIR_IR_BITFIELD_ALLOCATOR_NEXT(&bitfields, &typeentry, (_width) + 1, &bitfield) == KEFIR_OUT_OF_BOUNDS); \
-    // } while (0)
+    ASSERT_WIDTH(KEFIR_IR_TYPE_INT8, 8);
+    ASSERT_WIDTH(KEFIR_IR_TYPE_CHAR, 8);
+    ASSERT_WIDTH(KEFIR_IR_TYPE_BOOL, 8);
+    ASSERT_WIDTH(KEFIR_IR_TYPE_INT16, 16);
+    ASSERT_WIDTH(KEFIR_IR_TYPE_SHORT, 16);
+    ASSERT_WIDTH(KEFIR_IR_TYPE_INT32, 32);
+    ASSERT_WIDTH(KEFIR_IR_TYPE_INT, 32);
+    ASSERT_WIDTH(KEFIR_IR_TYPE_INT64, 64);
+    ASSERT_WIDTH(KEFIR_IR_TYPE_LONG, 64);
+    ASSERT_WIDTH(KEFIR_IR_TYPE_WORD, 64);
 
-//     ASSERT_WIDTH(KEFIR_IR_TYPE_INT8, 8);
-//     ASSERT_WIDTH(KEFIR_IR_TYPE_CHAR, 8);
-//     ASSERT_WIDTH(KEFIR_IR_TYPE_BOOL, 8);
-//     ASSERT_WIDTH(KEFIR_IR_TYPE_INT16, 16);
-//     ASSERT_WIDTH(KEFIR_IR_TYPE_SHORT, 16);
-//     ASSERT_WIDTH(KEFIR_IR_TYPE_INT32, 32);
-//     ASSERT_WIDTH(KEFIR_IR_TYPE_INT, 32);
-//     ASSERT_WIDTH(KEFIR_IR_TYPE_INT64, 64);
-//     ASSERT_WIDTH(KEFIR_IR_TYPE_LONG, 64);
-//     ASSERT_WIDTH(KEFIR_IR_TYPE_WORD, 64);
+#undef ASSERT_WIDTH
 
-// #undef ASSERT_WIDTH
-
-    ASSERT_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
-    ASSERT_OK(kefir_ir_type_free(&kft_mem, &type));
-    ASSERT_OK(KEFIR_IR_BITFIELD_ALLOCATOR_FREE(&kft_mem, &bitfields));
     ASSERT_OK(KEFIR_IR_TARGET_PLATFORM_FREE(&kft_mem, &platform));
 END_CASE
