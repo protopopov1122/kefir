@@ -171,28 +171,33 @@ static kefir_result_t amd64_sysv_bitfield_props(const struct kefir_ir_typeentry 
 
 static kefir_result_t bitfield_typecode(kefir_uint8_t width,
                                       struct kefir_ir_typeentry *typeentry,
+                                      kefir_size_t max_alignment,
                                       kefir_size_t *alignment,
                                       kefir_uint8_t *rounded_width) {
+    kefir_size_t current_alignment = 0;
     if (width <= 8) {
         typeentry->typecode = KEFIR_IR_TYPE_CHAR;
-        ASSIGN_PTR(alignment, 1);
+        current_alignment = 1;
         ASSIGN_PTR(rounded_width, 8);
     } else if (width <= 16) {
         typeentry->typecode = KEFIR_IR_TYPE_SHORT;
-        ASSIGN_PTR(alignment, 2);
+        current_alignment = 2;
         ASSIGN_PTR(rounded_width, 16);
     } else if (width <= 32) {
         typeentry->typecode = KEFIR_IR_TYPE_INT;
-        ASSIGN_PTR(alignment, 4);
+        current_alignment = 4;
         ASSIGN_PTR(rounded_width, 32);
     } else if (width <= 64) {
         typeentry->typecode = KEFIR_IR_TYPE_LONG;
-        ASSIGN_PTR(alignment, 8);
+        current_alignment = 8;
         ASSIGN_PTR(rounded_width, 64);
     } else {
-        return KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Requested bit-field width exceeds storage type width");
+        return KEFIR_SET_ERROR(KEFIR_OUT_OF_SPACE, "Requested bit-field width exceeds storage type width");
     }
-    typeentry->alignment = 0;
+    
+    kefir_size_t final_alignment = MIN(current_alignment, max_alignment);
+    ASSIGN_PTR(alignment, final_alignment);
+    typeentry->alignment = final_alignment != current_alignment ? final_alignment : 0;
     typeentry->param = 0;
     return KEFIR_OK;
 }
@@ -218,7 +223,7 @@ static kefir_result_t amd64_sysv_bitfield_next(struct kefir_mem *mem,
         KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Requested bit-field width exceeds storage type width"));
 
     kefir_uint8_t rounded_width;
-    REQUIRE_OK(bitfield_typecode(bitwidth, typeentry, NULL, &rounded_width));
+    REQUIRE_OK(bitfield_typecode(bitwidth, typeentry, type_alignment, NULL, &rounded_width));
 
     payload->has_last_bitfield = true;
     payload->last_bitfield.location = index;
@@ -260,19 +265,24 @@ static kefir_result_t amd64_sysv_bitfield_next_colocated(struct kefir_mem *mem,
     
     kefir_size_t required_width = payload->last_bitfield.offset + bitwidth;
     kefir_size_t max_width = MAX(type_width, payload->last_bitfield.width);
-    REQUIRE(required_width <= max_width,
-        KEFIR_SET_ERROR(KEFIR_OUT_OF_SPACE, "Requested bit-field exceeds storage unit width"));
+
+    kefir_bool_t pad_offset = required_width > max_width;
+    // REQUIRE(required_width <= max_width,
+    //     KEFIR_SET_ERROR(KEFIR_OUT_OF_SPACE, "Requested bit-field exceeds storage unit width"));
     
     kefir_size_t new_alignment = 0;
     kefir_uint8_t new_width = 0;
     struct kefir_ir_typeentry new_typeentry;
-    REQUIRE_OK(bitfield_typecode(required_width, &new_typeentry, &new_alignment, &new_width));
+    REQUIRE_OK(bitfield_typecode(required_width, &new_typeentry, MAX(original_alignment, type_alignment), &new_alignment, &new_width));
 
     kefir_size_t last_bitfield_offset = 0;
     REQUIRE_OK(type_props(mem, payload->ir_type, payload->last_bitfield.location, &last_bitfield_offset, NULL));
     REQUIRE(last_bitfield_offset % new_alignment == 0,
         KEFIR_SET_ERROR(KEFIR_OUT_OF_SPACE, "Unable to allocate requested storage unit due to alignment requirements"));
 
+    if (pad_offset) {
+        payload->last_bitfield.offset = max_width;
+    }
     *original = new_typeentry;
     bitfield->offset = payload->last_bitfield.offset;
     bitfield->width = bitwidth;
