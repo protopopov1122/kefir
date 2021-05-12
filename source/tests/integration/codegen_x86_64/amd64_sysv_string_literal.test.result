@@ -54,6 +54,10 @@ extern __kefirrt_bcopy_impl
 extern __kefirrt_extubits_impl
 extern __kefirrt_extsbits_impl
 extern __kefirrt_insertbits_impl
+extern __kefirrt_load24u_impl
+extern __kefirrt_load40u_impl
+extern __kefirrt_load48u_impl
+extern __kefirrt_load56u_impl
 extern __kefirrt_getlocals_impl
 extern __kefirrt_f32add_impl
 extern __kefirrt_f32sub_impl

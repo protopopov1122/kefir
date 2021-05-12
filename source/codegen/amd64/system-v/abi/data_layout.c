@@ -107,6 +107,8 @@ static kefir_result_t calculate_integer_layout(const struct kefir_ir_type *type,
         kefir_ir_typecode_t base = (kefir_ir_typecode_t) ((typeentry->param >> 16) & 0xffff);
         kefir_size_t bits = (kefir_size_t) (typeentry->param & 0xffff);
 
+        kefir_size_t size = bits / 8 + (bits % 8 != 0 ? 1 : 0);
+
         kefir_size_t base_size = 0;
         kefir_size_t base_alignment = 0;
         REQUIRE_OK(kefir_amd64_sysv_scalar_type_layout(base, &base_size, &base_alignment));
@@ -116,13 +118,13 @@ static kefir_result_t calculate_integer_layout(const struct kefir_ir_type *type,
         kefir_size_t unit_end = current_offset + base_size;
         unit_end -= unit_end % base_alignment;
 
-        if (bits <= (unit_end - current_offset) * 8) {
+        data->size = size;
+        if (size <= unit_end - current_offset) {
             // Bitfield fits into current unit
-            data->size = unit_end - current_offset;
             data->alignment = 1;
+            compound_type_layout->max_alignment = MAX(compound_type_layout->max_alignment, base_alignment);
         } else {
             // New unit shall be allocated
-            data->size = base_size;
             data->alignment = base_alignment;
         }
     }

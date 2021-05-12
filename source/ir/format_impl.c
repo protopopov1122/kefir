@@ -70,6 +70,10 @@ kefir_result_t kefir_ir_format_instr(struct kefir_json_output *json, const struc
         case KEFIR_IROPCODE_EXTUBITS: return kefir_ir_format_instr_u32(json, module, instr);
         case KEFIR_IROPCODE_EXTSBITS: return kefir_ir_format_instr_u32(json, module, instr);
         case KEFIR_IROPCODE_INSERTBITS: return kefir_ir_format_instr_u32(json, module, instr);
+        case KEFIR_IROPCODE_LOAD24U: return kefir_ir_format_instr_none(json, module, instr);
+        case KEFIR_IROPCODE_LOAD40U: return kefir_ir_format_instr_none(json, module, instr);
+        case KEFIR_IROPCODE_LOAD48U: return kefir_ir_format_instr_none(json, module, instr);
+        case KEFIR_IROPCODE_LOAD56U: return kefir_ir_format_instr_none(json, module, instr);
         case KEFIR_IROPCODE_VARARG_START: return kefir_ir_format_instr_none(json, module, instr);
         case KEFIR_IROPCODE_VARARG_COPY: return kefir_ir_format_instr_none(json, module, instr);
         case KEFIR_IROPCODE_VARARG_GET: return kefir_ir_format_instr_typeref(json, module, instr);

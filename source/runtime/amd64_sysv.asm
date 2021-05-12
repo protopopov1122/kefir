@@ -80,6 +80,10 @@ declare_opcode bcopy
 declare_opcode extubits
 declare_opcode extsbits
 declare_opcode insertbits
+declare_opcode load24u
+declare_opcode load40u
+declare_opcode load48u
+declare_opcode load56u
 declare_opcode getlocals
 declare_opcode f32add
 declare_opcode f32sub
@@ -533,6 +537,45 @@ define_opcode insertbits
     and rdi, r11
     or rdi, rsi
     push rdi
+    end_opcode
+
+define_opcode load24u
+    pop TMP_REG
+    movzx DATA_REG, word [TMP_REG]
+    movzx DATA2_REG, byte [TMP_REG + 2]
+    shl DATA2_REG, 16
+    or DATA_REG, DATA2_REG
+    push DATA_REG
+    end_opcode
+
+define_opcode load40u
+    pop TMP_REG
+    mov eax, dword [TMP_REG]
+    movzx DATA2_REG, byte [TMP_REG + 4]
+    shl DATA2_REG, 32
+    or rax, DATA2_REG
+    push rax
+    end_opcode
+
+define_opcode load48u
+    pop TMP_REG
+    mov eax, dword [TMP_REG]
+    movzx DATA2_REG, word [TMP_REG + 4]
+    shl DATA2_REG, 32
+    or rax, DATA2_REG
+    push rax
+    end_opcode
+
+define_opcode load56u
+    pop TMP_REG
+    mov eax, dword [TMP_REG]
+    movzx DATA2_REG, word [TMP_REG + 4]
+    shl DATA2_REG, 32
+    or rax, DATA2_REG
+    movzx DATA2_REG, byte [TMP_REG + 6]
+    shl DATA2_REG, 48
+    or rax, DATA2_REG
+    push rax
     end_opcode
 
 define_opcode getlocals

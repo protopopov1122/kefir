@@ -74,6 +74,10 @@
     <opcode id="extubits"    mnemonic="extubits"    code="0x61" type="u32" />
     <opcode id="extsbits"    mnemonic="extsbits"    code="0x62" type="u32" />
     <opcode id="insertbits"  mnemonic="insertbits"  code="0x63" type="u32" />
+    <opcode id="load24u"     mnemonic="load24u"     code="0x64" type="none" />
+    <opcode id="load40u"     mnemonic="load40u"     code="0x65" type="none" />
+    <opcode id="load48u"     mnemonic="load48u"     code="0x66" type="none" />
+    <opcode id="load56u"     mnemonic="load56u"     code="0x67" type="none" />
 
     <!-- Built-ins -->
     <opcode id="vararg_start" mnemonic="startvarg"  code="0x70" type="none" />

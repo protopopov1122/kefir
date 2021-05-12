@@ -236,16 +236,20 @@ DEFINE_CASE(amd64_sysv_abi_data_test10, "AMD64 System V ABI - bit-fields")
     ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_BITS, 0, KEFIR_IR_BITS_PARAM(KEFIR_IR_TYPE_SHORT, 10)));
     ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_BITS, 0, KEFIR_IR_BITS_PARAM(KEFIR_IR_TYPE_CHAR, 1)));
     ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_BITS, 0, KEFIR_IR_BITS_PARAM(KEFIR_IR_TYPE_LONG, 1)));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_BITS, 0, KEFIR_IR_BITS_PARAM(KEFIR_IR_TYPE_CHAR, 1)));
+    ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_BITS, 0, KEFIR_IR_BITS_PARAM(KEFIR_IR_TYPE_INT, 30)));
     ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_BITS, 0, KEFIR_IR_BITS_PARAM(KEFIR_IR_TYPE_INT, 30)));
     ASSERT_OK(kefir_irbuilder_type_append_v(&kft_mem, &type, KEFIR_IR_TYPE_BITS, 0, KEFIR_IR_BITS_PARAM(KEFIR_IR_TYPE_LONG, 35)));
     ASSERT_OK(kefir_amd64_sysv_type_layout(&type, &kft_mem, &vector));
-    ASSERT_DATA_ALLOC(&vector, 0, 4, 1, 0);
-    ASSERT_DATA_ALLOC(&vector, 1, 1, 1, 4);
-    ASSERT_DATA_ALLOC(&vector, 2, 2, 2, 6);
-    ASSERT_DATA_ALLOC(&vector, 3, 1, 1, 8);
-    ASSERT_DATA_ALLOC(&vector, 4, 7, 1, 9);
-    ASSERT_DATA_ALLOC(&vector, 5, 4, 1, 16);
-    ASSERT_DATA_ALLOC(&vector, 6, 8, 8, 24);
+    ASSERT_DATA_ALLOC(&vector, 0, 2, 1, 0);
+    ASSERT_DATA_ALLOC(&vector, 1, 1, 1, 2);
+    ASSERT_DATA_ALLOC(&vector, 2, 2, 2, 4);
+    ASSERT_DATA_ALLOC(&vector, 3, 1, 1, 6);
+    ASSERT_DATA_ALLOC(&vector, 4, 1, 1, 7);
+    ASSERT_DATA_ALLOC(&vector, 5, 1, 1, 8);
+    ASSERT_DATA_ALLOC(&vector, 6, 4, 4, 12);
+    ASSERT_DATA_ALLOC(&vector, 7, 4, 1, 16);
+    ASSERT_DATA_ALLOC(&vector, 8, 5, 8, 24);
     ASSERT_OK(kefir_vector_free(&kft_mem, &vector));
     ASSERT_OK(kefir_ir_type_free(&kft_mem, &type));
 END_CASE
