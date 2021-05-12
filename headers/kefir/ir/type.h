@@ -28,11 +28,16 @@ typedef enum kefir_ir_typecode {
     KEFIR_IR_TYPE_INT,
     KEFIR_IR_TYPE_LONG,
     KEFIR_IR_TYPE_WORD,
+    KEFIR_IR_TYPE_BITS,
     // Built-ins
     KEFIR_IR_TYPE_BUILTIN,
     // > 64-bit scalars are not supported yet
     KEFIR_IR_TYPE_COUNT, // Auxilary
 } kefir_ir_typecode_t;
+
+#define KEFIR_IR_BITS_PARAM(base, width) \
+    (((((kefir_uint32_t) base) & 0xffff) << 16) | \
+      (((kefir_uint32_t) width) & 0xffff))
 
 typedef struct kefir_ir_typeentry {
     kefir_ir_typecode_t typecode;
@@ -98,6 +103,7 @@ kefir_result_t kefir_ir_type_visitor_list_nodes(const struct kefir_ir_type *,
         (visitor)->visit[KEFIR_IR_TYPE_INT] = (callback); \
         (visitor)->visit[KEFIR_IR_TYPE_LONG] = (callback); \
         (visitor)->visit[KEFIR_IR_TYPE_WORD] = (callback); \
+        (visitor)->visit[KEFIR_IR_TYPE_BITS] = (callback); \
     } while (0)
 #define KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS(visitor, callback) \
     do { \

@@ -12,6 +12,7 @@ DECLARE_CASE(amd64_sysv_abi_data_test6);
 DECLARE_CASE(amd64_sysv_abi_data_test7);
 DECLARE_CASE(amd64_sysv_abi_data_test8);
 DECLARE_CASE(amd64_sysv_abi_data_test9);
+DECLARE_CASE(amd64_sysv_abi_data_test10);
 DECLARE_CASE(amd64_sysv_abi_classification_test1);
 DECLARE_CASE(amd64_sysv_abi_classification_test2);
 DECLARE_CASE(amd64_sysv_abi_classification_test3);
@@ -234,6 +235,7 @@ TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test7,
     &amd64_sysv_abi_data_test8,
     &amd64_sysv_abi_data_test9,
+    &amd64_sysv_abi_data_test10,
     &amd64_sysv_abi_classification_test1,
     &amd64_sysv_abi_classification_test2,
     &amd64_sysv_abi_classification_test3,

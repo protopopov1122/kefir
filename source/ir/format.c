@@ -268,6 +268,14 @@ static kefir_result_t format_type_default(const struct kefir_ir_type *type,
             REQUIRE_OK(kefir_json_output_string(param->json, "word"));
             break;
 
+        case KEFIR_IR_TYPE_BITS:
+            REQUIRE_OK(kefir_json_output_string(param->json, "bits"));
+            REQUIRE_OK(kefir_json_output_object_key(param->json, "base")); // TODO Proper base output
+            REQUIRE_OK(kefir_json_output_integer(param->json, (typeentry->param >> 16) & 0xff));
+            REQUIRE_OK(kefir_json_output_object_key(param->json, "width"));
+            REQUIRE_OK(kefir_json_output_integer(param->json, typeentry->param & 0xff));
+            break;
+
         default:
             return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid type code");
     }

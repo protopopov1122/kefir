@@ -11,6 +11,7 @@ kefir_result_t kefir_amd64_sysv_scalar_type_layout(kefir_ir_typecode_t typecode,
                                                kefir_size_t *alignment_ptr) {
     REQUIRE(size_ptr != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid size pointer"));
     REQUIRE(alignment_ptr != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid alignment pointer"));
+
     switch (typecode) {
         case KEFIR_IR_TYPE_BOOL:
         case KEFIR_IR_TYPE_CHAR:
@@ -37,6 +38,9 @@ kefir_result_t kefir_amd64_sysv_scalar_type_layout(kefir_ir_typecode_t typecode,
             *size_ptr = 8;
             *alignment_ptr = 8;
             break;
+
+        case KEFIR_IR_TYPE_BITS:
+            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "IR bits type has variable width and alignment");
 
         default:
             return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR,
@@ -96,7 +100,32 @@ static kefir_result_t calculate_integer_layout(const struct kefir_ir_type *type,
     struct compound_type_layout *compound_type_layout = (struct compound_type_layout *) payload;
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, data,
         kefir_vector_at(compound_type_layout->vector, index));
-    REQUIRE_OK(kefir_amd64_sysv_scalar_type_layout(typeentry->typecode, &data->size, &data->alignment));
+    
+    if (typeentry->typecode != KEFIR_IR_TYPE_BITS) {
+        REQUIRE_OK(kefir_amd64_sysv_scalar_type_layout(typeentry->typecode, &data->size, &data->alignment));
+    } else {
+        kefir_ir_typecode_t base = (kefir_ir_typecode_t) ((typeentry->param >> 16) & 0xffff);
+        kefir_size_t bits = (kefir_size_t) (typeentry->param & 0xffff);
+
+        kefir_size_t base_size = 0;
+        kefir_size_t base_alignment = 0;
+        REQUIRE_OK(kefir_amd64_sysv_scalar_type_layout(base, &base_size, &base_alignment));
+        REQUIRE(bits <= base_size * 8, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "IR bits field width exceeds base type"));
+
+        kefir_size_t current_offset = compound_type_layout->offset;
+        kefir_size_t unit_end = current_offset + base_size;
+        unit_end -= unit_end % base_alignment;
+
+        if (bits <= (unit_end - current_offset) * 8) {
+            // Bitfield fits into current unit
+            data->size = unit_end - current_offset;
+            data->alignment = 1;
+        } else {
+            // New unit shall be allocated
+            data->size = base_size;
+            data->alignment = base_alignment;
+        }
+    }
     data->aligned = true;
     return update_compound_type_layout(compound_type_layout, data, typeentry);
 }

@@ -78,6 +78,19 @@ static kefir_result_t mask_argument(struct kefir_codegen_amd64 *codegen,
             // Do nothing
             break;
 
+        case KEFIR_IR_TYPE_BITS: {
+            kefir_size_t bits = (kefir_size_t) (typeentry->param & 0xffff);
+            if (bits > 0) {
+                ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_SHL);
+                ASMGEN_ARG0(&codegen->asmgen, reg);
+                ASMGEN_ARG(&codegen->asmgen, KEFIR_INT64_FMT, 64 - bits);
+
+                ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_SHR);
+                ASMGEN_ARG0(&codegen->asmgen, reg);
+                ASMGEN_ARG(&codegen->asmgen, KEFIR_INT64_FMT, 64 - bits);
+            }
+        } break;
+
         default:
             return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected argument type");
     }
