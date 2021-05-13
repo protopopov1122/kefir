@@ -24,20 +24,25 @@
                     "type": "struct",
                     "fields": [
                         {
-                            "type": "int"
+                            "type": "bits",
+                            "base": 15,
+                            "width": 19,
+                            "pad": 0
                         },
                         {
                             "type": "char"
                         },
                         {
-                            "type": "char"
+                            "type": "bits",
+                            "base": 16,
+                            "width": 4,
+                            "pad": 0
                         },
                         {
-                            "type": "long"
-                        },
-                        {
-                            "type": "align",
-                            "as": 8
+                            "type": "bits",
+                            "base": 16,
+                            "width": 33,
+                            "pad": 0
                         }
                     ]
                 }
@@ -82,7 +87,7 @@
                     }
                 },
                 {
-                    "opcode": "load32u"
+                    "opcode": "load24u"
                 },
                 {
                     "opcode": "extsbits",
@@ -105,7 +110,7 @@
                     }
                 },
                 {
-                    "opcode": "load32u"
+                    "opcode": "load24u"
                 },
                 {
                     "opcode": "extsbits",
@@ -128,7 +133,7 @@
                     }
                 },
                 {
-                    "opcode": "load32u"
+                    "opcode": "load24u"
                 },
                 {
                     "opcode": "extubits",
@@ -206,7 +211,7 @@
                     }
                 },
                 {
-                    "opcode": "load64"
+                    "opcode": "load40u"
                 },
                 {
                     "opcode": "extubits",

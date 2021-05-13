@@ -14,9 +14,11 @@ typedef struct kefir_amd64_sysv_data_layout {
     kefir_size_t relative_offset;
 } kefir_amd64_sysv_data_layout_t;
 
-kefir_result_t kefir_amd64_sysv_scalar_type_layout(kefir_ir_typecode_t,
-                                               kefir_size_t *,
-                                               kefir_size_t *);
+kefir_result_t kefir_amd64_sysv_type_layout_of(struct kefir_mem *,
+                                           const struct kefir_ir_type *,
+                                           kefir_size_t,
+                                           kefir_size_t,
+                                           struct kefir_vector *);
 
 kefir_result_t kefir_amd64_sysv_type_layout(const struct kefir_ir_type *,
                                         struct kefir_mem *,

@@ -109,7 +109,9 @@ static kefir_result_t integral_static_data(const struct kefir_ir_type *type,
             break;
 
         case KEFIR_IR_TYPE_BITS: {
-            kefir_size_t bits = (kefir_size_t) (typeentry->param & 0xffff);
+            kefir_size_t bits = 0;
+            kefir_size_t pad = 0;
+            KEFIR_IR_BITS_PARAM_GET(typeentry->param, NULL, &bits, &pad);
             kefir_size_t bytes = bits / 8;
             if (bits % 8 != 0) {
                 bytes += 1;

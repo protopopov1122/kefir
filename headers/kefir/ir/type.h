@@ -35,9 +35,17 @@ typedef enum kefir_ir_typecode {
     KEFIR_IR_TYPE_COUNT, // Auxilary
 } kefir_ir_typecode_t;
 
-#define KEFIR_IR_BITS_PARAM(base, width) \
-    (((((kefir_uint32_t) base) & 0xffff) << 16) | \
-      (((kefir_uint32_t) width) & 0xffff))
+#define KEFIR_IR_BITS_PARAM(base, width, pad) \
+    (((((kefir_uint32_t) base) & 0xff) << 16) | \
+      ((((kefir_uint32_t) width) & 0xff) << 8)| \
+      (((kefir_uint32_t) pad) & 0xff))
+
+#define KEFIR_IR_BITS_PARAM_GET(param, base, width, pad) \
+    do { \
+        ASSIGN_PTR((kefir_ir_typecode_t *) (base), (kefir_ir_typecode_t) ((param) >> 16) & 0xff); \
+        ASSIGN_PTR((kefir_size_t *) (width), (kefir_size_t) ((param) >> 8) & 0xff); \
+        ASSIGN_PTR((kefir_size_t *) (pad), (param) & 0xff); \
+    } while (0);
 
 typedef struct kefir_ir_typeentry {
     kefir_ir_typecode_t typecode;

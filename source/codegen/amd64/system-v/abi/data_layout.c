@@ -6,9 +6,9 @@
 #include "kefir/codegen/amd64/system-v/abi/data.h"
 #include "kefir/codegen/amd64/system-v/abi/vararg.h"
 
-kefir_result_t kefir_amd64_sysv_scalar_type_layout(kefir_ir_typecode_t typecode,
-                                               kefir_size_t *size_ptr,
-                                               kefir_size_t *alignment_ptr) {
+static kefir_result_t kefir_amd64_sysv_scalar_type_layout(kefir_ir_typecode_t typecode,
+                                                      kefir_size_t *size_ptr,
+                                                      kefir_size_t *alignment_ptr) {
     REQUIRE(size_ptr != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid size pointer"));
     REQUIRE(alignment_ptr != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid alignment pointer"));
 
@@ -104,8 +104,9 @@ static kefir_result_t calculate_integer_layout(const struct kefir_ir_type *type,
     if (typeentry->typecode != KEFIR_IR_TYPE_BITS) {
         REQUIRE_OK(kefir_amd64_sysv_scalar_type_layout(typeentry->typecode, &data->size, &data->alignment));
     } else {
-        kefir_ir_typecode_t base = (kefir_ir_typecode_t) ((typeentry->param >> 16) & 0xffff);
-        kefir_size_t bits = (kefir_size_t) (typeentry->param & 0xffff);
+        kefir_ir_typecode_t base;
+        kefir_size_t bits = 0;
+        KEFIR_IR_BITS_PARAM_GET(typeentry->param, &base, &bits, NULL);
 
         kefir_size_t size = bits / 8 + (bits % 8 != 0 ? 1 : 0);
 
@@ -264,7 +265,9 @@ static kefir_result_t calculate_builtin_layout(const struct kefir_ir_type *type,
 }
 
 static kefir_result_t calculate_layout(const struct kefir_ir_type *type,
-                                   struct kefir_vector *vector) {
+                                     kefir_size_t index,
+                                     kefir_size_t count,
+                                     struct kefir_vector *vector) {
     struct kefir_ir_type_visitor visitor;
     struct compound_type_layout compound_type_layout = {
         .visitor = &visitor,
@@ -286,15 +289,18 @@ static kefir_result_t calculate_layout(const struct kefir_ir_type *type,
     visitor.visit[KEFIR_IR_TYPE_ARRAY] = calculate_array_layout;
     visitor.visit[KEFIR_IR_TYPE_BUILTIN] = calculate_builtin_layout;
     return kefir_ir_type_visitor_list_nodes(type, &visitor,
-        (void *) &compound_type_layout, 0, kefir_ir_type_nodes(type));
+        (void *) &compound_type_layout, index, count);
 }
 
-kefir_result_t kefir_amd64_sysv_type_layout(const struct kefir_ir_type *type,
-                                          struct kefir_mem *mem,
-                                          struct kefir_vector *layout) {
+kefir_result_t kefir_amd64_sysv_type_layout_of(struct kefir_mem *mem,
+                                           const struct kefir_ir_type *type,
+                                           kefir_size_t index,
+                                           kefir_size_t count,
+                                           struct kefir_vector *layout) {
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type"));
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid layout vector"));
+
     const kefir_size_t length = kefir_ir_type_total_length(type);
     REQUIRE_OK(kefir_vector_alloc(mem,
                                 sizeof(struct kefir_amd64_sysv_data_layout),
@@ -305,10 +311,21 @@ kefir_result_t kefir_amd64_sysv_type_layout(const struct kefir_ir_type *type,
         kefir_vector_free(mem, layout);
         return res;
     });
-    res = calculate_layout(type, layout);
+    res = calculate_layout(type, index, count, layout);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_vector_free(mem, layout);
         return res;
     });
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_amd64_sysv_type_layout(const struct kefir_ir_type *type,
+                                        struct kefir_mem *mem,
+                                        struct kefir_vector *layout) {
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid layout vector"));
+    
+    REQUIRE_OK(kefir_amd64_sysv_type_layout_of(mem, type, 0, kefir_ir_type_nodes(type), layout));
     return KEFIR_OK;
 }
