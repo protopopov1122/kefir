@@ -75,7 +75,8 @@ static kefir_result_t resolve_bitfield(struct kefir_mem *mem,
                 return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Bit-field exceeds storage unit width");
             }
             if (pad > 0) {
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_IRSHIFT, pad));
+                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_PUSHU64, pad));
+                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_IRSHIFT, 0));
             }
         } break;
 
