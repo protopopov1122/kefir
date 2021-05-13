@@ -18,10 +18,8 @@ typedef struct kefir_ir_bitfield_allocator {
     kefir_result_t (*next)(struct kefir_mem *,
                          struct kefir_ir_bitfield_allocator *,
                          kefir_size_t,
-                         kefir_ir_typecode_t,
-                         uint8_t,
                          kefir_size_t,
-                         struct kefir_ir_typeentry *,
+                         uint8_t,
                          struct kefir_ir_bitfield *);
     kefir_result_t (*next_colocated)(struct kefir_mem *,
                                    struct kefir_ir_bitfield_allocator *,
@@ -38,8 +36,8 @@ typedef struct kefir_ir_bitfield_allocator {
     ((allocator)->get_last_bitfield((allocator), (bitfield_p)))
 #define KEFIR_IR_BITFIELD_ALLOCATOR_RESET(allocator) \
     ((allocator)->reset((allocator)))
-#define KEFIR_IR_BITFIELD_ALLOCATOR_NEXT(mem, allocator, struct_index, base_type, width, location, typeentry, bitfield) \
-    ((allocator)->next((mem), (allocator), (struct_index), (base_type), (width), (location), (typeentry), (bitfield)))
+#define KEFIR_IR_BITFIELD_ALLOCATOR_NEXT(mem, allocator, struct_index, location, width, bitfield) \
+    ((allocator)->next((mem), (allocator), (struct_index), (location), (width), (bitfield)))
 #define KEFIR_IR_BITFIELD_ALLOCATOR_NEXT_COLOCATED(mem, allocator, colocated_type, width, bitfield) \
     ((allocator)->next_colocated((mem), (allocator), (colocated_type), (width), (bitfield)))
 #define KEFIR_IR_BITFIELD_ALLOCATOR_FREE(mem, allocator) \

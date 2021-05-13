@@ -125,14 +125,11 @@ static kefir_result_t struct_current_offset(struct kefir_mem *mem,
 static kefir_result_t amd64_sysv_bitfield_next(struct kefir_mem *mem,
                                              struct kefir_ir_bitfield_allocator *allocator,
                                              kefir_size_t struct_index,
-                                             kefir_ir_typecode_t base_typecode,
-                                             uint8_t bitwidth,
                                              kefir_size_t location,
-                                             struct kefir_ir_typeentry *typeentry,
+                                             uint8_t bitwidth,
                                              struct kefir_ir_bitfield *bitfield) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(allocator != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR platform bitfield allocator"));
-    REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type entry"));
     REQUIRE(bitwidth != 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-zero bit-field width"));
     REQUIRE(bitfield != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR bitfield"));
     ASSIGN_DECL_CAST(struct bitfield_allocator_payload *, payload,
@@ -140,6 +137,10 @@ static kefir_result_t amd64_sysv_bitfield_next(struct kefir_mem *mem,
 
     const struct kefir_ir_typeentry *struct_typeentry = kefir_ir_type_at(payload->ir_type, struct_index);
     REQUIRE(struct_typeentry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR structure type index"));
+
+    struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(payload->ir_type, location);
+    REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type entry"));
+    kefir_ir_typecode_t base_typecode = typeentry->typecode;
 
     kefir_size_t current_offset = 0;
     REQUIRE_OK(struct_current_offset(mem, payload->ir_type, struct_index, &current_offset));
@@ -208,6 +209,9 @@ static kefir_result_t amd64_sysv_bitfield_next_colocated(struct kefir_mem *mem,
     kefir_size_t colocated_alignment = 0;
     REQUIRE_OK(amd64_sysv_bitfield_props(base_typecode, &original_size, NULL));
     REQUIRE_OK(amd64_sysv_bitfield_props(colocated_base, &colocated_size, &colocated_alignment));
+
+    REQUIRE(bitwidth <= colocated_size * 8,
+        KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Colocated bit-field exceeds storage unit width"));
     
     if (colocated_size <= original_size) {
         REQUIRE(pad + payload->last_bitfield.offset + bitwidth <= payload->last_bitfield.width,

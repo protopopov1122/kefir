@@ -2,8 +2,12 @@ CC=gcc
 OPT=-O0
 DBG=-g3 -ggdb -DKFT_NOFORK
 EXTRAFLAGS=
-CFLAGS=-std=c11 -Wall -Wextra -Wno-newline-eof -pedantic $(OPT) $(DBG) $(EXTRAFLAGS)
+CFLAGS=-std=c11 -Wall -Wextra -pedantic $(OPT) $(DBG) $(EXTRAFLAGS)
 INCLUDES=-Iheaders
+
+ifeq ($(CC),clang)
+CFLAGS+=-Wno-newline-eof
+endif
 
 ifeq ($(SANITIZE),undefined)
 CFLAGS+=-fsanitize=undefined -fno-sanitize-recover=all

@@ -218,9 +218,8 @@ static kefir_result_t translate_bitfield(struct kefir_mem *mem,
             field->alignment->value, env, builder,
             layout != NULL ? &element_layout : NULL));
         bitfield_mgr->last_bitfield_layout = element_layout;
-        struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(builder->type, bitfield_mgr->last_bitfield_storage);
         REQUIRE_OK(KEFIR_IR_BITFIELD_ALLOCATOR_NEXT(mem, &bitfield_mgr->allocator, type_index,
-            typeentry->typecode, field->bitwidth->value.integer, kefir_ir_type_total_length(builder->type) - 1 , typeentry, &ir_bitfield));
+            bitfield_mgr->last_bitfield_storage, field->bitwidth->value.integer, &ir_bitfield));
         kefir_ir_type_at(builder->type, type_index)->param++;
     }
 
