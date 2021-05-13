@@ -210,7 +210,7 @@ static kefir_result_t amd64_sysv_bitfield_next_colocated(struct kefir_mem *mem,
     REQUIRE_OK(amd64_sysv_bitfield_props(colocated_base, &colocated_size, &colocated_alignment));
     
     if (colocated_size <= original_size) {
-        REQUIRE(payload->last_bitfield.offset + bitwidth <= payload->last_bitfield.width,
+        REQUIRE(pad + payload->last_bitfield.offset + bitwidth <= payload->last_bitfield.width,
             KEFIR_SET_ERROR(KEFIR_OUT_OF_SPACE, "Colocated bit-field exceeds storage unit width"));
         bitfield->location = payload->last_bitfield.location;
         bitfield->offset = payload->last_bitfield.offset;
@@ -251,7 +251,7 @@ static kefir_result_t amd64_sysv_bitfield_next_colocated(struct kefir_mem *mem,
 
         original->typecode = KEFIR_IR_TYPE_BITS;
         original->alignment = 0;
-        original->param = KEFIR_IR_BITS_PARAM(colocated_base, total_bitwidth, pad);
+        original->param = KEFIR_IR_BITS_PARAM(colocated_base, payload->last_bitfield.offset, pad);
     }
     return KEFIR_OK;
 }

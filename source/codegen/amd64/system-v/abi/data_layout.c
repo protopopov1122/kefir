@@ -106,14 +106,16 @@ static kefir_result_t calculate_integer_layout(const struct kefir_ir_type *type,
     } else {
         kefir_ir_typecode_t base;
         kefir_size_t bits = 0;
-        KEFIR_IR_BITS_PARAM_GET(typeentry->param, &base, &bits, NULL);
+        kefir_size_t pad = 0;
+        KEFIR_IR_BITS_PARAM_GET(typeentry->param, &base, &bits, &pad);
 
-        kefir_size_t size = bits / 8 + (bits % 8 != 0 ? 1 : 0);
+        kefir_size_t bitwidth = pad + bits;
+        kefir_size_t size = bitwidth / 8 + (bitwidth % 8 != 0 ? 1 : 0);
 
         kefir_size_t base_size = 0;
         kefir_size_t base_alignment = 0;
         REQUIRE_OK(kefir_amd64_sysv_scalar_type_layout(base, &base_size, &base_alignment));
-        REQUIRE(bits <= base_size * 8, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "IR bits field width exceeds base type"));
+        REQUIRE(bitwidth <= base_size * 8, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "IR bits field width exceeds base type"));
 
         kefir_size_t current_offset = compound_type_layout->offset;
         kefir_size_t unit_end = current_offset + base_size;

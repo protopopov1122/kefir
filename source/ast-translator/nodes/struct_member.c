@@ -53,23 +53,26 @@ static kefir_result_t resolve_bitfield(struct kefir_mem *mem,
             break;
 
         case KEFIR_IR_TYPE_BITS: {
-            kefir_size_t bits = (typeentry->param >> 8) & 0xff;
-            kefir_size_t pad = typeentry->param & 0xff;
-            if (bits <= 8) {
+            kefir_size_t bits = 0;
+            kefir_size_t pad = 0;
+            KEFIR_IR_BITS_PARAM_GET(typeentry->param, NULL, &bits, &pad)
+
+            kefir_size_t bitwidth = bits + pad;
+            if (bitwidth <= 8) {
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD8U, 0));
-            } else if  (bits <= 16) {
+            } else if  (bitwidth <= 16) {
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD16U, 0));
-            } else if  (bits <= 24) {
+            } else if  (bitwidth <= 24) {
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD24U, 0));
-            } else if  (bits <= 32) {
+            } else if  (bitwidth <= 32) {
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD32U, 0));
-            } else if  (bits <= 40) {
+            } else if  (bitwidth <= 40) {
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD40U, 0));
-            } else if  (bits <= 48) {
+            } else if  (bitwidth <= 48) {
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD48U, 0));
-            } else if  (bits <= 56) {
+            } else if  (bitwidth <= 56) {
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD56U, 0));
-            } else if  (bits <= 64) {
+            } else if  (bitwidth <= 64) {
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD64, 0));
             } else {
                 return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Bit-field exceeds storage unit width");
