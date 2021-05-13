@@ -85,7 +85,7 @@ static kefir_result_t mask_argument(struct kefir_codegen_amd64 *codegen,
             if (bits > 0) {
                 ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_SHL);
                 ASMGEN_ARG0(&codegen->asmgen, reg);
-                ASMGEN_ARG(&codegen->asmgen, KEFIR_INT64_FMT, 64 - bits);
+                ASMGEN_ARG(&codegen->asmgen, KEFIR_INT64_FMT, 64 - (bits + pad));
 
                 ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_SHR);
                 ASMGEN_ARG0(&codegen->asmgen, reg);

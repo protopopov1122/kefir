@@ -182,12 +182,6 @@ static kefir_result_t calculate_amorphous_layout(const struct kefir_ir_type *typ
             data->alignment = 1;
             break;
 
-        case KEFIR_IR_TYPE_ALIGN:
-            data->size = 0;
-            data->alignment = 1;
-            compound_type_layout->max_alignment = MAX(compound_type_layout->max_alignment, (kefir_size_t) typeentry->param);
-            break;
-
         default:
             return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR,
                 KEFIR_AMD64_SYSV_ABI_ERROR_PREFIX "Unexpectedly encountered structured type");
@@ -284,7 +278,6 @@ static kefir_result_t calculate_layout(const struct kefir_ir_type *type,
     KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS(&visitor, calculate_integer_layout);
     KEFIR_IR_TYPE_VISITOR_INIT_FIXED_FP(&visitor, calculate_sse_layout);
     visitor.visit[KEFIR_IR_TYPE_PAD] = calculate_amorphous_layout;
-    visitor.visit[KEFIR_IR_TYPE_ALIGN] = calculate_amorphous_layout;
     visitor.visit[KEFIR_IR_TYPE_MEMORY] = calculate_amorphous_layout;
     visitor.visit[KEFIR_IR_TYPE_STRUCT] = calculate_struct_union_layout;
     visitor.visit[KEFIR_IR_TYPE_UNION] = calculate_struct_union_layout;

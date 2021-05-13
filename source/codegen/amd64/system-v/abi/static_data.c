@@ -118,7 +118,7 @@ static kefir_result_t integral_static_data(const struct kefir_ir_type *type,
             }
             for (kefir_size_t i = 0; i < bytes; i++) {
                 ASMGEN_RAW(&param->codegen->asmgen, KEFIR_AMD64_BYTE);
-                ASMGEN_ARG(&param->codegen->asmgen, "0x%02x", (value >> (i << 3)) & 0xff);
+                ASMGEN_ARG(&param->codegen->asmgen, "0x%02x", ((value << pad) >> (i << 3)) & 0xff);
             }
         } break;
 

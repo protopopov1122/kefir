@@ -25,7 +25,7 @@
                     "fields": [
                         {
                             "type": "bits",
-                            "base": 15,
+                            "base": "int",
                             "width": 19,
                             "pad": 0
                         },
@@ -34,13 +34,13 @@
                         },
                         {
                             "type": "bits",
-                            "base": 16,
+                            "base": "long",
                             "width": 4,
                             "pad": 0
                         },
                         {
                             "type": "bits",
-                            "base": 16,
+                            "base": "long",
                             "width": 33,
                             "pad": 0
                         }

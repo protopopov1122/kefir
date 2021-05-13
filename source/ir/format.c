@@ -189,6 +189,70 @@ struct format_param {
     struct kefir_ir_type_visitor *visitor;
 };
 
+static const char *typecode_to_string(kefir_ir_typecode_t typecode) {
+    switch (typecode) {
+        case KEFIR_IR_TYPE_PAD:
+            return "pad";
+
+        case KEFIR_IR_TYPE_STRUCT:
+            return "struct";
+
+        case KEFIR_IR_TYPE_ARRAY:
+            return "array";
+
+        case KEFIR_IR_TYPE_UNION:
+            return "union";
+
+        case KEFIR_IR_TYPE_MEMORY:
+            return "memory";
+
+        case KEFIR_IR_TYPE_INT8:
+            return "int8";
+
+        case KEFIR_IR_TYPE_INT16:
+            return "int16";
+
+        case KEFIR_IR_TYPE_INT32:
+            return "int32";
+
+        case KEFIR_IR_TYPE_INT64:
+            return "int64";
+
+        case KEFIR_IR_TYPE_FLOAT32:
+            return "float";
+
+        case KEFIR_IR_TYPE_FLOAT64:
+            return "double";
+
+        case KEFIR_IR_TYPE_BOOL:
+            return "bool";
+
+        case KEFIR_IR_TYPE_CHAR:
+            return "char";
+
+        case KEFIR_IR_TYPE_SHORT:
+            return "short";
+
+        case KEFIR_IR_TYPE_INT:
+            return "int";
+
+        case KEFIR_IR_TYPE_LONG:
+            return "long";
+
+        case KEFIR_IR_TYPE_WORD:
+            return "word";
+
+        case KEFIR_IR_TYPE_BITS:
+            return "bits";
+
+        case KEFIR_IR_TYPE_BUILTIN:
+            return "builtin";
+
+        default:
+            return NULL;
+    }
+}
+
 static kefir_result_t format_type_default(const struct kefir_ir_type *type,
                                         kefir_size_t index,
                                         const struct kefir_ir_typeentry *typeentry,
@@ -201,71 +265,34 @@ static kefir_result_t format_type_default(const struct kefir_ir_type *type,
         payload);
         
     REQUIRE_OK(kefir_json_output_object_key(param->json, "type"));
+
+    const char *type_literal = typecode_to_string(typeentry->typecode);
+    REQUIRE(type_literal != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unknown IR type code"));
+    REQUIRE_OK(kefir_json_output_string(param->json, type_literal));
+
     switch (typeentry->typecode) {
         case KEFIR_IR_TYPE_PAD:
-            REQUIRE_OK(kefir_json_output_string(param->json, "pad"));
             REQUIRE_OK(kefir_json_output_object_key(param->json, "length"));
             REQUIRE_OK(kefir_json_output_integer(param->json, typeentry->param));
             break;
 
-        case KEFIR_IR_TYPE_ALIGN:
-            REQUIRE_OK(kefir_json_output_string(param->json, "align"));
-            REQUIRE_OK(kefir_json_output_object_key(param->json, "as"));
-            REQUIRE_OK(kefir_json_output_integer(param->json, typeentry->param));
-            break;
-
         case KEFIR_IR_TYPE_MEMORY:
-            REQUIRE_OK(kefir_json_output_string(param->json, "memory"));
             REQUIRE_OK(kefir_json_output_object_key(param->json, "length"));
             REQUIRE_OK(kefir_json_output_integer(param->json, typeentry->param));
             break;
 
         case KEFIR_IR_TYPE_INT8:
-            REQUIRE_OK(kefir_json_output_string(param->json, "int8"));
-            break;
-
         case KEFIR_IR_TYPE_INT16:
-            REQUIRE_OK(kefir_json_output_string(param->json, "int16"));
-            break;
-
         case KEFIR_IR_TYPE_INT32:
-            REQUIRE_OK(kefir_json_output_string(param->json, "int32"));
-            break;
-
         case KEFIR_IR_TYPE_INT64:
-            REQUIRE_OK(kefir_json_output_string(param->json, "int64"));
-            break;
-
         case KEFIR_IR_TYPE_BOOL:
-            REQUIRE_OK(kefir_json_output_string(param->json, "bool"));
-            break;
-
         case KEFIR_IR_TYPE_CHAR:
-            REQUIRE_OK(kefir_json_output_string(param->json, "char"));
-            break;
-
         case KEFIR_IR_TYPE_SHORT:
-            REQUIRE_OK(kefir_json_output_string(param->json, "short"));
-            break;
-
         case KEFIR_IR_TYPE_INT:
-            REQUIRE_OK(kefir_json_output_string(param->json, "int"));
-            break;
-
         case KEFIR_IR_TYPE_LONG:
-            REQUIRE_OK(kefir_json_output_string(param->json, "long"));
-            break;
-
         case KEFIR_IR_TYPE_FLOAT32:
-            REQUIRE_OK(kefir_json_output_string(param->json, "float"));
-            break;
-
         case KEFIR_IR_TYPE_FLOAT64:
-            REQUIRE_OK(kefir_json_output_string(param->json, "double"));
-            break;
-
         case KEFIR_IR_TYPE_WORD:
-            REQUIRE_OK(kefir_json_output_string(param->json, "word"));
             break;
 
         case KEFIR_IR_TYPE_BITS: {
@@ -273,9 +300,12 @@ static kefir_result_t format_type_default(const struct kefir_ir_type *type,
             kefir_size_t bits = 0;
             kefir_size_t pad = 0;
             KEFIR_IR_BITS_PARAM_GET(typeentry->param, &base, &bits, &pad);
-            REQUIRE_OK(kefir_json_output_string(param->json, "bits"));
-            REQUIRE_OK(kefir_json_output_object_key(param->json, "base")); // TODO Proper base output
-            REQUIRE_OK(kefir_json_output_integer(param->json, (kefir_size_t) base));
+
+            const char *base_literal = typecode_to_string(base);
+            REQUIRE(base_literal != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unknwon IR type code"));
+            
+            REQUIRE_OK(kefir_json_output_object_key(param->json, "base"));
+            REQUIRE_OK(kefir_json_output_string(param->json, base_literal));
             REQUIRE_OK(kefir_json_output_object_key(param->json, "width"));
             REQUIRE_OK(kefir_json_output_integer(param->json, bits));
             REQUIRE_OK(kefir_json_output_object_key(param->json, "pad"));

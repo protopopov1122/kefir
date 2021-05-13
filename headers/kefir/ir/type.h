@@ -8,7 +8,6 @@
 typedef enum kefir_ir_typecode {
     // Padding
     KEFIR_IR_TYPE_PAD = 0x0,
-    KEFIR_IR_TYPE_ALIGN,
     // Aggregate types
     KEFIR_IR_TYPE_STRUCT,
     KEFIR_IR_TYPE_ARRAY,
