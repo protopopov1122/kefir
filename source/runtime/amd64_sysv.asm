@@ -603,15 +603,25 @@ define_opcode extsbits
 define_opcode insertbits
     mov edx, dword [INSTR_ARG_PTR]      ; Offset
     mov ecx, dword [INSTR_ARG_PTR + 4]  ; Width
-    mov r11, 1                          ; Mask = ~(((1 << Width) - 1) << Offset)
-    shlx r11, r11, rcx
-    sub r11, 1
-    shlx r11, r11, rdx
-    not r11
     pop rsi                             ; Value
-    pop rdi                             ; Bitfield
-    shlx rsi, rsi, rdx                        ; Bitfield = (Bitfield & Mask) | (Value << Offset)
-    and rdi, r11
+    pop rdi                             ; Bit-field
+
+    ; Mask value: Value = Value << (64 - Width) >> (64 - Width - Offset)
+    mov rax, 64                        ; RAX = 64 - Width
+    sub rax, rcx
+    shlx rsi, rsi, rax
+    sub rax, rdx                        ; RAX = 64 - Width - Offset
+    shrx rsi, rsi, rax
+
+    ; Mask bit-field: Bit-field = Bit-field & ~(((1 << Width) - 1) << Offset)
+    mov rax, 1
+    shlx rax, rax, rcx
+    sub rax, 1
+    shlx rax, rax, rdx
+    not rax
+    and rdi, rax
+
+    ; Bit-field = Bit-field | Value
     or rdi, rsi
     push rdi
     end_opcode

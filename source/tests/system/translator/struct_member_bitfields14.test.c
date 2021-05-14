@@ -5,11 +5,11 @@
 #include "kefir/test/unit_test.h"
 
 struct param {
-    char a : 7;
-    char b : 7;
-    int c : 17;
-    char d : 6;
-    long e : 40;
+    long a : 3;
+    char b : 3;
+    short c : 3;
+    long d : 9;
+    int e : 17;
 };
 
 int sum(struct param *);
@@ -18,14 +18,14 @@ int main(int argc, const char **argv) {
     UNUSED(argc);
     UNUSED(argv);
 
-    for (int i = -5000; i < 5000; i++) {
+    for (int i = -2000; i < 2000; i++) {
         ASSERT(sum(&(struct param){
-            .a = -64,
-            .b = 57,
-            .c = i % 1000,
-            .d = -10,
+            .a = 3,
+            .b = 2,
+            .c = 3,
+            .d = 60,
             .e = i
-        }) == (int) (-64 + 57 + (i % 1000) - 10 + i + sizeof(struct param) + _Alignof(struct param)));
+        }) == (int) (3 + 2 +3 + 60 + i + sizeof(struct param) + _Alignof(struct param)));
     }
     return EXIT_SUCCESS;
 }

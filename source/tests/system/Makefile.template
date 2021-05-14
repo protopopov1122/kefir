@@ -26,6 +26,7 @@ $(BIN_DIR)/tests/system/$(SYSTEM_TEST_SUBDIR)/%.gen: $(DEPS) $(KEFIR_LIB_OBJS) $
 system_test_$(SYSTEM_TEST_SUBDIR)_%: $(BIN_DIR)/tests/system/$(SYSTEM_TEST_SUBDIR)/%.gen
 	@CC=$(CC) SANITIZE=$(SANITIZE) $(SOURCE_DIR)/tests/system/run.sh $^
 
+system_test_$(SYSTEM_TEST_SUBDIR): $(KEFIR_SYSTEM_TESTS)
 system_tests: $(KEFIR_SYSTEM_TESTS)
 
 test: system_tests

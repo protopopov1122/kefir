@@ -157,13 +157,13 @@ DEFINE_CASE(ast_bitfield_translator2, "AST translator - bitfields #2")
     ASSERT_MEMBER("field1", 1, 5, 0);
     ASSERT_MEMBER("field2", 1, 10, 5);
     ASSERT_MEMBER("field3", 1, 11, 15);
-    ASSERT_MEMBER("field4", 1, 8, 26);
-    ASSERT_MEMBER("field5", 1, 13, 34);
-    ASSERT_MEMBER("field6", 1, 12, 47);
+    ASSERT_MEMBER("field4", 2, 8, 0);
+    ASSERT_MEMBER("field5", 2, 13, 8);
+    ASSERT_MEMBER("field6", 3, 12, 0);
 
 #undef ASSERT_MEMBER
 
-    ASSERT(kefir_ir_type_total_length(&ir_type1) == 2);
+    ASSERT(kefir_ir_type_total_length(&ir_type1) == 4);
 
     ASSERT_OK(kefir_ast_type_layout_free(&kft_mem, layout1));
     ASSERT_OK(KEFIR_IRBUILDER_TYPE_FREE(&type_builder));
