@@ -12,8 +12,7 @@ typedef struct kefir_ir_bitfield {
 } kefir_ir_bitfield_t;
 
 typedef struct kefir_ir_bitfield_allocator {
-    kefir_result_t (*get_last_bitfield)(struct kefir_ir_bitfield_allocator *,
-                                      const struct kefir_ir_bitfield **);
+    kefir_bool_t (*has_bitfield_run)(struct kefir_ir_bitfield_allocator *);
     kefir_result_t (*reset)(struct kefir_ir_bitfield_allocator *);
     kefir_result_t (*next)(struct kefir_mem *,
                          struct kefir_ir_bitfield_allocator *,
@@ -32,8 +31,8 @@ typedef struct kefir_ir_bitfield_allocator {
     void *payload;
 } kefir_ir_bitfield_allocator_t;
 
-#define KEFIR_IR_BITFIELD_ALLOCATOR_GET_LAST_BITFIELD(allocator, bitfield_p) \
-    ((allocator)->get_last_bitfield((allocator), (bitfield_p)))
+#define KEFIR_IR_BITFIELD_ALLOCATOR_HAS_BITFIELD_RUN(allocator) \
+    ((allocator)->has_bitfield_run((allocator)))
 #define KEFIR_IR_BITFIELD_ALLOCATOR_RESET(allocator) \
     ((allocator)->reset((allocator)))
 #define KEFIR_IR_BITFIELD_ALLOCATOR_NEXT(mem, allocator, struct_index, location, width, bitfield) \

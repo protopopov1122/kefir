@@ -32,15 +32,13 @@
             },
             {
                 "type": "bits",
-                "base": "short",
                 "width": 7,
-                "pad": 0
+                "alignment": 2
             },
             {
                 "type": "bits",
-                "base": "short",
                 "width": 3,
-                "pad": 0
+                "alignment": 2
             }
         ]
     }

@@ -190,13 +190,10 @@ static kefir_result_t translate_bitfield(struct kefir_mem *mem,
         return KEFIR_OK;
     }
 
-    const struct kefir_ir_bitfield *last_bitfield = NULL;
-    REQUIRE_OK(KEFIR_IR_BITFIELD_ALLOCATOR_GET_LAST_BITFIELD(&bitfield_mgr->allocator, &last_bitfield));
-
     kefir_bool_t allocated = false;
     struct kefir_ir_bitfield ir_bitfield;
     struct kefir_ast_type_layout *element_layout = NULL;        
-    if (last_bitfield != NULL) {
+    if (KEFIR_IR_BITFIELD_ALLOCATOR_HAS_BITFIELD_RUN(&bitfield_mgr->allocator)) {
         struct kefir_ir_typeentry colocated_typeentry = {0};
         REQUIRE_OK(scalar_typeentry(field->type, field->alignment->value, &colocated_typeentry));
         kefir_result_t res = KEFIR_IR_BITFIELD_ALLOCATOR_NEXT_COLOCATED(mem, &bitfield_mgr->allocator,

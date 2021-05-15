@@ -69,7 +69,6 @@ DEFINE_CASE(ast_bitfield_translator1, "AST translator - bitfields #1")
         ASSERT(member_layout->value == (_pos)); \
         struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(&ir_type1, member_layout->value); \
         ASSERT(typeentry->typecode == KEFIR_IR_TYPE_BITS); \
-        ASSERT(typeentry->alignment == 0); \
         ASSERT(member_layout->bitfield); \
         ASSERT(member_layout->bitfield_props.width == (_width)); \
         ASSERT(member_layout->bitfield_props.offset == (_offset)); \
@@ -80,17 +79,17 @@ DEFINE_CASE(ast_bitfield_translator1, "AST translator - bitfields #1")
     ASSERT_MEMBER("field3", 1, 10, 5);
     ASSERT_MEMBER("field4", 1, 1, 15);
     ASSERT_MEMBER("field5", 1, 8, 16);
-    ASSERT_MEMBER("field6", 2, 10, 0);
-    ASSERT_MEMBER("field7", 2, 22, 10);
-    ASSERT_MEMBER("field8", 3, 32, 0);
-    ASSERT_MEMBER("field9", 4, 1, 0);
-    ASSERT_MEMBER("field10", 4, 2, 2);
-    ASSERT_MEMBER("field11", 5, 1, 0);
-    ASSERT_MEMBER("field12", 6, 1, 0);
+    ASSERT_MEMBER("field6", 2, 10, 8);
+    ASSERT_MEMBER("field7", 2, 22, 18);
+    ASSERT_MEMBER("field8", 2, 32, 40);
+    ASSERT_MEMBER("field9", 2, 1, 72);
+    ASSERT_MEMBER("field10", 2, 2, 74);
+    ASSERT_MEMBER("field11", 3, 1, 0);
+    ASSERT_MEMBER("field12", 4, 1, 0);
 
 #undef ASSERT_MEMBER
 
-    ASSERT(kefir_ir_type_total_length(&ir_type1) == 7);
+    ASSERT(kefir_ir_type_total_length(&ir_type1) == 5);
 
     ASSERT_OK(kefir_ast_type_layout_free(&kft_mem, layout1));
     ASSERT_OK(KEFIR_IRBUILDER_TYPE_FREE(&type_builder));
@@ -148,7 +147,6 @@ DEFINE_CASE(ast_bitfield_translator2, "AST translator - bitfields #2")
         ASSERT(member_layout->value == (_pos)); \
         struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(&ir_type1, member_layout->value); \
         ASSERT(typeentry->typecode == KEFIR_IR_TYPE_BITS); \
-        ASSERT(typeentry->alignment == 0); \
         ASSERT(member_layout->bitfield); \
         ASSERT(member_layout->bitfield_props.width == (_width)); \
         ASSERT(member_layout->bitfield_props.offset == (_offset)); \
@@ -159,7 +157,7 @@ DEFINE_CASE(ast_bitfield_translator2, "AST translator - bitfields #2")
     ASSERT_MEMBER("field3", 1, 11, 15);
     ASSERT_MEMBER("field4", 2, 8, 0);
     ASSERT_MEMBER("field5", 2, 13, 8);
-    ASSERT_MEMBER("field6", 3, 12, 0);
+    ASSERT_MEMBER("field6", 3, 12, 8);
 
 #undef ASSERT_MEMBER
 
@@ -221,7 +219,6 @@ DEFINE_CASE(ast_bitfield_translator3, "AST translator - bitfields #3")
         ASSERT(member_layout->value == (_pos)); \
         struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(&ir_type1, member_layout->value); \
         ASSERT(typeentry->typecode == KEFIR_IR_TYPE_BITS); \
-        ASSERT(typeentry->alignment == 0); \
         ASSERT(member_layout->bitfield); \
         ASSERT(member_layout->bitfield_props.width == (_width)); \
         ASSERT(member_layout->bitfield_props.offset == (_offset)); \
@@ -289,7 +286,6 @@ DEFINE_CASE(ast_bitfield_translator4, "AST translator - union bitfields #1")
         ASSERT_OK(kefir_ast_type_layout_resolve(layout1, &designator, &member_layout, NULL, NULL)); \
         ASSERT(member_layout->value == (_pos)); \
         struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(&ir_type1, member_layout->value); \
-        ASSERT(typeentry->alignment == 0); \
         ASSERT(member_layout->bitfield); \
         ASSERT(member_layout->bitfield_props.width == (_width)); \
         ASSERT(member_layout->bitfield_props.offset == (_offset)); \
@@ -368,7 +364,6 @@ DEFINE_CASE(ast_bitfield_translator5, "AST translator - bitfields alignments #1"
         ASSERT(member_layout->value == (_pos)); \
         struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(&ir_type1, member_layout->value); \
         ASSERT(typeentry->typecode == KEFIR_IR_TYPE_BITS); \
-        ASSERT(typeentry->alignment == 0); \
         ASSERT(member_layout->bitfield); \
         ASSERT(member_layout->bitfield_props.width == (_width)); \
         ASSERT(member_layout->bitfield_props.offset == (_offset)); \

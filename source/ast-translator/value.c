@@ -33,61 +33,34 @@ static kefir_result_t load_bitfield(struct kefir_mem *mem,
     ASSIGN_PTR(layout, member_layout);
 
     struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(cached_type->object.ir_type, member_layout->value);
+    REQUIRE(typeentry->typecode == KEFIR_IR_TYPE_BITS,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected a bit-field"));
     ASSIGN_PTR(typeentry_ptr, typeentry);
-    switch (typeentry->typecode) {
-        case KEFIR_IR_TYPE_CHAR:
-        case KEFIR_IR_TYPE_INT8:
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD8U, 0));
-            break;
 
-        case KEFIR_IR_TYPE_SHORT:
-        case KEFIR_IR_TYPE_INT16:
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD16U, 0));
-            break;
+    kefir_size_t byte_offset = member_layout->bitfield_props.offset / 8;
+    kefir_size_t bit_offset = member_layout->bitfield_props.offset % 8;
 
-        case KEFIR_IR_TYPE_INT:
-        case KEFIR_IR_TYPE_INT32:
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD32U, 0));
-            break;
-
-        case KEFIR_IR_TYPE_LONG:
-        case KEFIR_IR_TYPE_INT64:
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD64, 0));
-            break;
-
-        case KEFIR_IR_TYPE_BITS: {
-            kefir_size_t bits = 0;
-            kefir_size_t pad = 0;
-            KEFIR_IR_BITS_PARAM_GET(typeentry->param, NULL, &bits, &pad)
-
-            kefir_size_t bitwidth = bits + pad;
-            if (bitwidth <= 8) {
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD8U, 0));
-            } else if  (bitwidth <= 16) {
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD16U, 0));
-            } else if  (bitwidth <= 24) {
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD24U, 0));
-            } else if  (bitwidth <= 32) {
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD32U, 0));
-            } else if  (bitwidth <= 40) {
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD40U, 0));
-            } else if  (bitwidth <= 48) {
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD48U, 0));
-            } else if  (bitwidth <= 56) {
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD56U, 0));
-            } else if  (bitwidth <= 64) {
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD64, 0));
-            } else {
-                return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Bit-field exceeds storage unit width");
-            }
-            if (pad > 0) {
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_PUSHU64, pad));
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_IRSHIFT, 0));
-            }
-        } break;
-
-        default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected bit-field storage unit type");
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_IADD1, byte_offset));
+    
+    kefir_size_t bits = bit_offset + member_layout->bitfield_props.width;
+    if (bits <= 8) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD8U, 0));
+    } else if  (bits <= 16) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD16U, 0));
+    } else if  (bits <= 24) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD24U, 0));
+    } else if  (bits <= 32) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD32U, 0));
+    } else if  (bits <= 40) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD40U, 0));
+    } else if  (bits <= 48) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD48U, 0));
+    } else if  (bits <= 56) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD56U, 0));
+    } else if  (bits <= 64) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD64, 0));
+    } else {
+        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Bit-field exceeds storage unit width");
     }
     return KEFIR_OK;
 }
@@ -99,14 +72,13 @@ static kefir_result_t resolve_bitfield(struct kefir_mem *mem,
     struct kefir_ast_type_layout *member_layout = NULL;
     REQUIRE_OK(load_bitfield(mem, context, builder, node, &member_layout, NULL));
 
+    kefir_size_t bit_offset = member_layout->bitfield_props.offset % 8;
     if (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(member_layout->type)) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_EXTSBITS,
-            member_layout->bitfield_props.offset, member_layout->bitfield_props.width));
-    } else if (KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(member_layout->type)) {
-        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_EXTUBITS,
-            member_layout->bitfield_props.offset, member_layout->bitfield_props.width));
+            bit_offset, member_layout->bitfield_props.width));
     } else {
-        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected bit-field type");
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_EXTUBITS,
+            bit_offset, member_layout->bitfield_props.width));
     }
     return KEFIR_OK;
 }
@@ -120,65 +92,37 @@ static kefir_result_t store_bitfield(struct kefir_mem *mem,
 
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_PICK, 1));
     REQUIRE_OK(load_bitfield(mem, context, builder, node, &member_layout, &typeentry));
+
+    kefir_size_t byte_offset = member_layout->bitfield_props.offset / 8;
+    kefir_size_t bit_offset = member_layout->bitfield_props.offset % 8;
+
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_XCHG, 1));
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_INSERTBITS,
-        member_layout->bitfield_props.offset, member_layout->bitfield_props.width));
+        bit_offset, member_layout->bitfield_props.width));
+
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_XCHG, 1));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_IADD1, byte_offset));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_XCHG, 1));
     
-    switch (typeentry->typecode) {
-        case KEFIR_IR_TYPE_CHAR:
-        case KEFIR_IR_TYPE_INT8:
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE8, 0));
-            break;
-
-        case KEFIR_IR_TYPE_SHORT:
-        case KEFIR_IR_TYPE_INT16:
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE16, 0));
-            break;
-
-        case KEFIR_IR_TYPE_INT:
-        case KEFIR_IR_TYPE_INT32:
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE32, 0));
-            break;
-
-        case KEFIR_IR_TYPE_LONG:
-        case KEFIR_IR_TYPE_INT64:
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE64, 0));
-            break;
-
-        case KEFIR_IR_TYPE_BITS: {
-            kefir_size_t bits = 0;
-            kefir_size_t pad = 0;
-            KEFIR_IR_BITS_PARAM_GET(typeentry->param, NULL, &bits, &pad)
-
-            if (pad > 0) {
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_PUSHU64, pad));
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_ILSHIFT, 0));
-            }
-
-            kefir_size_t bitwidth = bits + pad;
-            if (bitwidth <= 8) {
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE8, 0));
-            } else if  (bitwidth <= 16) {
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE16, 0));
-            } else if  (bitwidth <= 24) {
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE24, 0));
-            } else if  (bitwidth <= 32) {
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE32, 0));
-            } else if  (bitwidth <= 40) {
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE40, 0));
-            } else if  (bitwidth <= 48) {
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE48, 0));
-            } else if  (bitwidth <= 56) {
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE56, 0));
-            } else if  (bitwidth <= 64) {
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE64, 0));
-            } else {
-                return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Bit-field exceeds storage unit width");
-            }
-        } break;
-
-        default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected bit-field storage unit type");
+    kefir_size_t bits = bit_offset + member_layout->bitfield_props.width;
+    if (bits <= 8) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE8, 0));
+    } else if (bits <= 16) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE16, 0));
+    } else if (bits <= 24) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE24, 0));
+    } else if (bits <= 32) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE32, 0));
+    } else if (bits <= 40) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE40, 0));
+    } else if (bits <= 48) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE48, 0));
+    } else if (bits <= 56) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE56, 0));
+    } else if (bits <= 64) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE64, 0));
+    } else {
+        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Bit-field exceeds storage unit width");
     }
     return KEFIR_OK;
 }

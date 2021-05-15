@@ -25,24 +25,21 @@
                     "fields": [
                         {
                             "type": "bits",
-                            "base": "int",
                             "width": 19,
-                            "pad": 0
+                            "alignment": 4
                         },
                         {
                             "type": "char"
                         },
                         {
                             "type": "bits",
-                            "base": "long",
                             "width": 4,
-                            "pad": 0
+                            "alignment": 8
                         },
                         {
                             "type": "bits",
-                            "base": "long",
-                            "width": 33,
-                            "pad": 0
+                            "width": 57,
+                            "alignment": 8
                         }
                     ]
                 }
@@ -87,7 +84,11 @@
                     }
                 },
                 {
-                    "opcode": "load24u"
+                    "opcode": "iadd1",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load16u"
                 },
                 {
                     "opcode": "extsbits",
@@ -110,12 +111,16 @@
                     }
                 },
                 {
-                    "opcode": "load24u"
+                    "opcode": "iadd1",
+                    "arg": 1
+                },
+                {
+                    "opcode": "load8u"
                 },
                 {
                     "opcode": "extsbits",
                     "arg": [
-                        9,
+                        1,
                         4
                     ]
                 },
@@ -133,12 +138,16 @@
                     }
                 },
                 {
-                    "opcode": "load24u"
+                    "opcode": "iadd1",
+                    "arg": 1
+                },
+                {
+                    "opcode": "load16u"
                 },
                 {
                     "opcode": "extubits",
                     "arg": [
-                        13,
+                        5,
                         6
                     ]
                 },
@@ -157,6 +166,10 @@
                         "type": 3,
                         "index": 3
                     }
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 0
                 },
                 {
                     "opcode": "load8u"
@@ -185,6 +198,10 @@
                     }
                 },
                 {
+                    "opcode": "iadd1",
+                    "arg": 0
+                },
+                {
                     "opcode": "load8u"
                 },
                 {
@@ -209,6 +226,10 @@
                         "type": 3,
                         "index": 4
                     }
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 3
                 },
                 {
                     "opcode": "load40u"

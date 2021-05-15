@@ -296,20 +296,10 @@ static kefir_result_t format_type_default(const struct kefir_ir_type *type,
             break;
 
         case KEFIR_IR_TYPE_BITS: {
-            kefir_ir_typecode_t base;
-            kefir_size_t bits = 0;
-            kefir_size_t pad = 0;
-            KEFIR_IR_BITS_PARAM_GET(typeentry->param, &base, &bits, &pad);
-
-            const char *base_literal = typecode_to_string(base);
-            REQUIRE(base_literal != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unknwon IR type code"));
+            kefir_size_t bits = typeentry->param;
             
-            REQUIRE_OK(kefir_json_output_object_key(param->json, "base"));
-            REQUIRE_OK(kefir_json_output_string(param->json, base_literal));
             REQUIRE_OK(kefir_json_output_object_key(param->json, "width"));
             REQUIRE_OK(kefir_json_output_integer(param->json, bits));
-            REQUIRE_OK(kefir_json_output_object_key(param->json, "pad"));
-            REQUIRE_OK(kefir_json_output_integer(param->json, pad));
         } break;
 
         default:
