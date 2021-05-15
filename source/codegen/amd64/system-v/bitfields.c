@@ -9,8 +9,8 @@ struct bitfield_allocator_payload {
     kefir_bool_t has_last_bitfield;
     struct kefir_ir_bitfield last_bitfield;
     struct {
-        kefir_size_t unit_start;
-        kefir_size_t initial_offset;
+        kefir_size_t unit_bit_start;
+        kefir_size_t initial_bit_offset;
     } props;
 };
 
@@ -45,27 +45,27 @@ static kefir_result_t amd64_sysv_bitfield_props(kefir_ir_typecode_t typecode,
         case KEFIR_IR_TYPE_CHAR:
         case KEFIR_IR_TYPE_BOOL:
         case KEFIR_IR_TYPE_INT8:
-            ASSIGN_PTR(size, 1);
-            ASSIGN_PTR(alignment, 1);
+            ASSIGN_PTR(size, 8);
+            ASSIGN_PTR(alignment, 8);
             break;
 
         case KEFIR_IR_TYPE_SHORT:
         case KEFIR_IR_TYPE_INT16:
-            ASSIGN_PTR(size, 2);
-            ASSIGN_PTR(alignment, 2);
+            ASSIGN_PTR(size, 16);
+            ASSIGN_PTR(alignment, 16);
             break;
 
         case KEFIR_IR_TYPE_INT:
         case KEFIR_IR_TYPE_INT32:
-            ASSIGN_PTR(size, 4);
-            ASSIGN_PTR(alignment, 4);
+            ASSIGN_PTR(size, 32);
+            ASSIGN_PTR(alignment, 32);
             break;
 
         case KEFIR_IR_TYPE_LONG:
         case KEFIR_IR_TYPE_WORD:
         case KEFIR_IR_TYPE_INT64:
-            ASSIGN_PTR(size, 8);
-            ASSIGN_PTR(alignment, 8);
+            ASSIGN_PTR(size, 64);
+            ASSIGN_PTR(alignment, 64);
             break;
 
         default:
@@ -122,27 +122,6 @@ static kefir_result_t struct_current_offset(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-static kefir_result_t round_bitwidth(kefir_size_t bitwidth, kefir_uint8_t *result) {
-    if (bitwidth <= 8) {
-        ASSIGN_PTR(result, 8);
-    } else if (bitwidth <= 16) {
-        ASSIGN_PTR(result, 16);
-    } else if (bitwidth <= 32) {
-        ASSIGN_PTR(result, 32);
-    } else if (bitwidth <= 40) {
-        ASSIGN_PTR(result, 40);
-    } else if (bitwidth <= 48) {
-        ASSIGN_PTR(result, 48);
-    } else if (bitwidth <= 56) {
-        ASSIGN_PTR(result, 56);
-    } else if (bitwidth <= 64) {
-        ASSIGN_PTR(result, 64);
-    } else {
-        return KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Bit-field width exceeds storage unit width");
-    }
-    return KEFIR_OK;
-}
-
 static kefir_result_t amd64_sysv_bitfield_next(struct kefir_mem *mem,
                                              struct kefir_ir_bitfield_allocator *allocator,
                                              kefir_size_t struct_index,
@@ -163,34 +142,35 @@ static kefir_result_t amd64_sysv_bitfield_next(struct kefir_mem *mem,
     REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type entry"));
     kefir_ir_typecode_t base_typecode = typeentry->typecode;
 
-    kefir_size_t current_offset = 0;
-    REQUIRE_OK(struct_current_offset(mem, payload->ir_type, struct_index, &current_offset));
+    kefir_size_t current_bit_offset = 0;
+    REQUIRE_OK(struct_current_offset(mem, payload->ir_type, struct_index, &current_bit_offset));
+    current_bit_offset *= 8;
 
-    kefir_size_t size = bitwidth / 8 + (bitwidth % 8 != 0 ? 1 : 0);
+    kefir_size_t base_bit_size = 0;
+    kefir_size_t base_bit_alignment = 0;
+    REQUIRE_OK(amd64_sysv_bitfield_props(base_typecode, &base_bit_size, &base_bit_alignment));
 
-    kefir_size_t base_size = 0;
-    kefir_size_t base_alignment = 0;
-    REQUIRE_OK(amd64_sysv_bitfield_props(base_typecode, &base_size, &base_alignment));
-    REQUIRE(bitwidth <= base_size * 8, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Bit-field width exceeds storage unit width"));
+    REQUIRE(bitwidth <= base_bit_size, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Bit-field width exceeds storage unit width"));
 
-    kefir_size_t unit_end = current_offset + base_size;
-    unit_end -= unit_end % base_alignment;
+    kefir_size_t unit_bit_end = current_bit_offset + base_bit_size;
+    unit_bit_end -= unit_bit_end % base_bit_alignment;
 
-    kefir_size_t unit_start = 0;
-    if (size <= unit_end - current_offset) {
+    kefir_size_t unit_bit_start = 0;
+    if (bitwidth <= unit_bit_end - current_bit_offset) {
         // Bit-field fits into current storage unit
-        unit_start = unit_end - base_size;
+        unit_bit_start = unit_bit_end - base_bit_size;
     } else {
         // New storage unit shall be allocated
-        unit_start = kefir_codegen_pad_aligned(current_offset, base_alignment);
+        unit_bit_start = kefir_codegen_pad_aligned(current_bit_offset, base_bit_alignment);
+        unit_bit_end = unit_bit_start + base_bit_size;
     }
-    REQUIRE_OK(round_bitwidth(bitwidth, &payload->last_bitfield.width));
+    payload->last_bitfield.width = unit_bit_end - unit_bit_start;
     payload->last_bitfield.location = location;
     payload->last_bitfield.offset = bitwidth;
     payload->has_last_bitfield = true;
 
-    payload->props.initial_offset = current_offset;
-    payload->props.unit_start = unit_start;
+    payload->props.initial_bit_offset = current_bit_offset;
+    payload->props.unit_bit_start = unit_bit_start;
 
     typeentry->typecode = KEFIR_IR_TYPE_BITS;
     typeentry->alignment = 0;
@@ -224,59 +204,61 @@ static kefir_result_t amd64_sysv_bitfield_next_colocated(struct kefir_mem *mem,
     kefir_size_t pad = 0;
     KEFIR_IR_BITS_PARAM_GET(original->param, &base_typecode, NULL, &pad);
 
-    kefir_size_t original_size = 0;
-    kefir_size_t colocated_size = 0;
-    kefir_size_t colocated_alignment = 0;
-    REQUIRE_OK(amd64_sysv_bitfield_props(base_typecode, &original_size, NULL));
-    REQUIRE_OK(amd64_sysv_bitfield_props(colocated_base, &colocated_size, &colocated_alignment));
+    kefir_size_t original_bit_size = 0;
+    kefir_size_t colocated_bit_size = 0;
+    kefir_size_t colocated_bit_alignment = 0;
+    REQUIRE_OK(amd64_sysv_bitfield_props(base_typecode, &original_bit_size, NULL));
+    REQUIRE_OK(amd64_sysv_bitfield_props(colocated_base, &colocated_bit_size, &colocated_bit_alignment));
 
-    REQUIRE(bitwidth <= colocated_size * 8,
+    REQUIRE(bitwidth <= colocated_bit_size,
         KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Colocated bit-field exceeds storage unit width"));
-    
-    kefir_size_t current_offset = payload->props.unit_start;
-    kefir_size_t unit_end = current_offset + colocated_size;
-    unit_end -= unit_end % colocated_size;
 
-    kefir_size_t unit_start = unit_end - colocated_size;
-    REQUIRE(unit_start % colocated_alignment == 0, 
+    kefir_size_t bit_offset = payload->props.unit_bit_start + pad + payload->last_bitfield.offset;
+    REQUIRE((bit_offset & (colocated_bit_alignment - 1)) + bitwidth <= colocated_bit_size,
+        KEFIR_SET_ERROR(KEFIR_OUT_OF_SPACE, "Colocated bit-field exceeds storage unit width"));
+    
+    kefir_size_t current_bit_offset = bit_offset;
+    kefir_size_t unit_bit_end = current_bit_offset + colocated_bit_size;
+    unit_bit_end -= unit_bit_end % colocated_bit_size;
+
+    kefir_size_t unit_bit_start = unit_bit_end - colocated_bit_size;
+    REQUIRE(unit_bit_start % colocated_bit_alignment == 0, 
         KEFIR_SET_ERROR(KEFIR_OUT_OF_SPACE, "Unable to colocate bit-field in current storage unit"));
 
     kefir_size_t unit_pad = pad;
-    if (unit_start < payload->props.unit_start) {
-        unit_pad += (payload->props.unit_start - MAX(payload->props.initial_offset, unit_start)) * 8;
+    if (unit_bit_start < payload->props.unit_bit_start) {
+        unit_pad += payload->props.unit_bit_start - MAX(payload->props.initial_bit_offset, unit_bit_start);
     }
 
-    kefir_size_t available_width = (unit_end - MAX(unit_start, payload->props.initial_offset)) * 8;
+    kefir_size_t available_width = unit_bit_end - MAX(MAX(unit_bit_start, payload->props.unit_bit_start),
+        payload->props.initial_bit_offset);
 
-    kefir_ir_typecode_t new_base = colocated_size > original_size ? colocated_base : base_typecode;
     if (available_width < payload->last_bitfield.width) {
         REQUIRE(payload->last_bitfield.offset + bitwidth <= payload->last_bitfield.width,
             KEFIR_SET_ERROR(KEFIR_OUT_OF_SPACE, "Colocated bit-field exceeds storage unit width"));
+
         bitfield->location = payload->last_bitfield.location;
         bitfield->offset = payload->last_bitfield.offset;
         bitfield->width = bitwidth;
 
         payload->last_bitfield.offset += bitwidth;
-        original->param = KEFIR_IR_BITS_PARAM(new_base, payload->last_bitfield.offset, pad);
+        original->param = KEFIR_IR_BITS_PARAM(base_typecode, payload->last_bitfield.offset, pad);
     } else {
-        kefir_size_t total_bitwidth = unit_pad + payload->last_bitfield.offset + bitwidth;
+        kefir_size_t total_bitwidth = payload->last_bitfield.offset + bitwidth;
         REQUIRE(total_bitwidth <= available_width,
             KEFIR_SET_ERROR(KEFIR_OUT_OF_SPACE, "Colocated bit-field exceeds storage unit width"));
+
         bitfield->location = payload->last_bitfield.location;
         bitfield->offset = payload->last_bitfield.offset;
         bitfield->width = bitwidth;
 
-        kefir_uint8_t rounded_width = 0;
-        REQUIRE_OK(round_bitwidth(payload->last_bitfield.offset + bitwidth, &rounded_width));
-        payload->last_bitfield.width = MIN(rounded_width, available_width);
+        payload->last_bitfield.width = available_width;
         payload->last_bitfield.offset += bitwidth;
+        payload->props.unit_bit_start = MIN(unit_bit_start, payload->props.unit_bit_start);
 
-        if (payload->props.initial_offset < payload->props.unit_start) {
-            payload->props.unit_start = MIN(unit_start, payload->props.unit_start);
-        }
         original->typecode = KEFIR_IR_TYPE_BITS;
         original->alignment = 0;
-        original->param = KEFIR_IR_BITS_PARAM(new_base, payload->last_bitfield.offset, unit_pad);
+        original->param = KEFIR_IR_BITS_PARAM(colocated_base, payload->last_bitfield.offset, unit_pad);
     }
     return KEFIR_OK;
 }
@@ -312,8 +294,8 @@ kefir_result_t kefir_codegen_amd64_sysv_bitfield_allocator(struct kefir_mem *mem
     payload->ir_type = type;
     payload->has_last_bitfield = false;
     payload->last_bitfield = (struct kefir_ir_bitfield){0};
-    payload->props.initial_offset = 0;
-    payload->props.unit_start = 0;
+    payload->props.initial_bit_offset = 0;
+    payload->props.unit_bit_start = 0;
 
     allocator->get_last_bitfield = amd64_sysv_bitfield_get_last_bitfield;
     allocator->reset = amd64_sysv_bitfield_reset;
