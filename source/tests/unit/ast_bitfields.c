@@ -285,7 +285,6 @@ DEFINE_CASE(ast_bitfield_translator4, "AST translator - union bitfields #1")
         designator.member = (_id); \
         ASSERT_OK(kefir_ast_type_layout_resolve(layout1, &designator, &member_layout, NULL, NULL)); \
         ASSERT(member_layout->value == (_pos)); \
-        struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(&ir_type1, member_layout->value); \
         ASSERT(member_layout->bitfield); \
         ASSERT(member_layout->bitfield_props.width == (_width)); \
         ASSERT(member_layout->bitfield_props.offset == (_offset)); \

@@ -178,7 +178,6 @@ struct bitfield_manager {
 
 static kefir_result_t translate_bitfield(struct kefir_mem *mem,
                                        struct kefir_ast_struct_field *field,
-                                       const struct kefir_ast_translator_environment *env,
                                        struct kefir_ast_type_layout *layout,
                                        struct kefir_irbuilder_type *builder,
                                        kefir_size_t type_index,
@@ -196,8 +195,9 @@ static kefir_result_t translate_bitfield(struct kefir_mem *mem,
     if (KEFIR_IR_BITFIELD_ALLOCATOR_HAS_BITFIELD_RUN(&bitfield_mgr->allocator)) {
         struct kefir_ir_typeentry colocated_typeentry = {0};
         REQUIRE_OK(scalar_typeentry(field->type, field->alignment->value, &colocated_typeentry));
-        kefir_result_t res = KEFIR_IR_BITFIELD_ALLOCATOR_NEXT_COLOCATED(mem, &bitfield_mgr->allocator,
-            colocated_typeentry.typecode, field->bitwidth->value.integer, &ir_bitfield);
+        kefir_result_t res = KEFIR_IR_BITFIELD_ALLOCATOR_NEXT_COLOCATED(mem, &bitfield_mgr->allocator, field->identifier != NULL,
+            colocated_typeentry.typecode, field->bitwidth->value.integer,
+            kefir_ir_type_at(builder->type, bitfield_mgr->last_bitfield_storage), &ir_bitfield);
         if (res != KEFIR_OUT_OF_SPACE) {
             REQUIRE_OK(res);
             if (layout != NULL) {
@@ -210,13 +210,18 @@ static kefir_result_t translate_bitfield(struct kefir_mem *mem,
     }
     
     if (!allocated) {
+        struct kefir_ir_typeentry typeentry = {0};
+        REQUIRE_OK(scalar_typeentry(field->type, field->alignment->value, &typeentry));
+        REQUIRE_OK(KEFIR_IR_BITFIELD_ALLOCATOR_NEXT(mem, &bitfield_mgr->allocator, type_index, field->identifier != NULL,
+            typeentry.typecode, field->bitwidth->value.integer, &typeentry, &ir_bitfield));
         bitfield_mgr->last_bitfield_storage = kefir_ir_type_total_length(builder->type);
-        REQUIRE_OK(kefir_ast_translate_object_type(mem, field->type,
-            field->alignment->value, env, builder,
-            layout != NULL ? &element_layout : NULL));
+        REQUIRE_OK(KEFIR_IRBUILDER_TYPE_APPEND(builder, &typeentry));
+        if (layout != NULL) {
+            element_layout = kefir_ast_new_type_layout(mem, field->type, field->alignment->value,
+                bitfield_mgr->last_bitfield_storage);
+            REQUIRE(element_layout != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST type layout"));
+        }
         bitfield_mgr->last_bitfield_layout = element_layout;
-        REQUIRE_OK(KEFIR_IR_BITFIELD_ALLOCATOR_NEXT(mem, &bitfield_mgr->allocator, type_index,
-            bitfield_mgr->last_bitfield_storage, field->bitwidth->value.integer, &ir_bitfield));
         kefir_ir_type_at(builder->type, type_index)->param++;
     }
 
@@ -273,7 +278,7 @@ static kefir_result_t translate_struct_type(struct kefir_mem *mem,
             iter->value);
 
         if (field->bitfield && type->tag == KEFIR_AST_TYPE_STRUCTURE) {
-            res = translate_bitfield(mem, field, env, layout, builder, type_index, &bitfield_mgr);
+            res = translate_bitfield(mem, field, layout, builder, type_index, &bitfield_mgr);
         } else {
             REQUIRE_OK(KEFIR_IR_BITFIELD_ALLOCATOR_RESET(&bitfield_mgr.allocator));
             bitfield_mgr.last_bitfield_layout = NULL;
