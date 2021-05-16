@@ -81,3 +81,4 @@ kefir_result_t kefir_ast_translate_expression(struct kefir_mem *mem,
     };
     return KEFIR_AST_NODE_VISIT(&visitor, base, &param);
 }
+

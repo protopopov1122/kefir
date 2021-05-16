@@ -147,3 +147,4 @@ kefir_result_t kefir_ast_translator_environment_init(struct kefir_ast_translator
     env->target_env.payload = env;
     return KEFIR_OK;
 }
+

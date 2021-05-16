@@ -226,3 +226,4 @@ DEFINE_CASE(amd64_sysv_abi_data_test9, "AMD64 System V ABI - external structure 
     ASSERT_OK(kefir_ir_type_free(&kft_mem, &type2));
     ASSERT_OK(kefir_ir_type_free(&kft_mem, &type1));
 END_CASE
+

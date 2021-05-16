@@ -5,10 +5,6 @@ EXTRAFLAGS=
 CFLAGS=-std=c11 -Wall -Wextra -pedantic $(OPT) $(DBG) $(EXTRAFLAGS)
 INCLUDES=-Iheaders
 
-ifeq ($(CC),clang)
-CFLAGS+=-Wno-newline-eof
-endif
-
 ifeq ($(SANITIZE),undefined)
 CFLAGS+=-fsanitize=undefined -fno-sanitize-recover=all
 endif

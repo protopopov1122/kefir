@@ -383,3 +383,4 @@ DEFINE_CASE(ast_nodes_compound_literals, "AST nodes - compound literals")
     ASSERT_OK(kefir_ast_type_bundle_free(&kft_mem, &type_bundle));
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
 END_CASE
+

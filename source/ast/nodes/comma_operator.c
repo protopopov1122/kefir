@@ -127,3 +127,4 @@ kefir_result_t kefir_ast_comma_append(struct kefir_mem *mem,
     REQUIRE_OK(kefir_list_insert_after(mem, &comma->expressions, kefir_list_tail(&comma->expressions), base));
     return KEFIR_OK;
 }
+

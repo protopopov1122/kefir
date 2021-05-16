@@ -64,3 +64,4 @@ kefir_result_t kefir_ir_function_free(struct kefir_mem *mem, struct kefir_ir_fun
     func->declaration = NULL;
     return KEFIR_OK;
 }
+

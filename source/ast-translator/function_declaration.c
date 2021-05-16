@@ -263,3 +263,4 @@ kefir_result_t kefir_ast_translator_function_declaration_free(struct kefir_mem *
     KEFIR_FREE(mem, func_decl);
     return KEFIR_OK;   
 }
+

@@ -110,3 +110,4 @@ kefir_result_t kefir_ast_type_bundle_free(struct kefir_mem *mem, struct kefir_as
     REQUIRE_OK(kefir_list_free(mem, &type_bundle->types));
     return KEFIR_OK;
 }
+

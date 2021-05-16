@@ -11,10 +11,6 @@ VALGRIND="valgrind --trace-children=yes --track-origins=yes --leak-check=full --
 NASM="nasm -f elf64 -o $ASM_OBJ"
 COMPILE="$CC -std=c11 -Wall -Wextra -pedantic -O0 -ggdb -no-pie -I$DIR/../../../headers -o $TEST_EXE"
 
-if [[ "x$CC" == "xclang" ]]; then
-    COMPILE="$COMPILE -Wno-newline-eof"
-fi
-
 if [[ "x$SANITIZE" == "xundefined" ]]; then
     COMPILE="$COMPILE -fsanitize=undefined -fno-sanitize-recover=all"
 fi

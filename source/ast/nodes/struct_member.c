@@ -103,3 +103,4 @@ struct kefir_ast_struct_member *kefir_ast_new_struct_indirect_member(struct kefi
     struct_member->member = member_copy;
     return struct_member;
 }
+

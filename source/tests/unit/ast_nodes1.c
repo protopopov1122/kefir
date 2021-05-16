@@ -305,3 +305,4 @@ DEFINE_CASE(ast_nodes_binary_operations, "AST nodes - binary operations")
     }
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
 END_CASE
+

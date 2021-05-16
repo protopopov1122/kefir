@@ -62,3 +62,4 @@ struct kefir_ast_identifier *kefir_ast_new_identifier(struct kefir_mem *mem,
     id->identifier = id_copy;
     return id;
 }
+

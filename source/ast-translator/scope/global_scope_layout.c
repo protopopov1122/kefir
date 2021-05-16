@@ -289,3 +289,4 @@ kefir_result_t kefir_ast_translator_build_global_scope_layout(struct kefir_mem *
     REQUIRE(res == KEFIR_ITERATOR_END, res);
     return KEFIR_OK;
 }
+

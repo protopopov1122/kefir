@@ -271,3 +271,4 @@ const struct kefir_ast_type *kefir_ast_type_enumeration(struct kefir_mem *mem,
     *enum_type = &type->enumeration_type;
     return type;
 }
+
