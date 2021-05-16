@@ -3,7 +3,7 @@ name: Build & Test
 on: [push]
 
 jobs:
-  test_gcc:
+  optimized_build_gcc:
     runs-on: ubuntu-latest
     steps:
       - name: Install dependencies
@@ -13,11 +13,11 @@ jobs:
         with:
           ref: ${{ github.ref }}
       - name: Test
-        run: make test  MEMCHECK=yes SANITIZE=undefined CC=gcc-10 -j$(nproc)
+        run: make test MEMCHECK=yes OPT=-O3 SANITIZE=undefined CC=gcc-10 -j$(nproc)
       - name: Build
-        run: make all SANITIZE=undefined CC=gcc-10
+        run: make all OPT=-O3 SANITIZE=undefined CC=gcc-10
         
-  test_clang:
+  optimized_build_clang:
     runs-on: ubuntu-latest
     steps:
       - name: Install dependencies
@@ -27,6 +27,6 @@ jobs:
         with:
           ref: ${{ github.ref }}
       - name: Test
-        run: make test MEMCHECK=yes SANITIZE=undefined CC=clang-10 -j$(nproc)
+        run: make test MEMCHECK=yes OPT=-O3 SANITIZE=undefined CC=clang-10 -j$(nproc)
       - name: Build
-        run: make all SANITIZE=undefined CC=clang-10
+        run: make all OPT=-O3 SANITIZE=undefined CC=clang-10

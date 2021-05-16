@@ -3,4 +3,13 @@
 set -e
 ROOT="$(git rev-parse --show-toplevel)"
 
-cd "$ROOT" && make generate -B && make clean && make test MEMCHECK=yes SANITIZE=undefined -j$(nproc) && make clean
+function cleanup {
+    make clean
+}
+
+cd "$ROOT"
+trap cleanup EXIT
+
+make generate -B
+make clean
+make test MEMCHECK=yes OPT=-O3 SANITIZE=undefined -j$(nproc)

@@ -24,7 +24,7 @@ $(BIN_DIR)/tests/system/$(SYSTEM_TEST_SUBDIR)/%.gen: $(DEPS) $(KEFIR_LIB_OBJS) $
 	@$(CC) -o $@ $(KEFIR_LIB_OBJS) $(BIN_DIR)/tests/int_test.o $(BIN_DIR)/tests/system/$(SYSTEM_TEST_SUBDIR)/$(@F).o $(KEFIR_SYSTEM_TEST_LIBS)
 
 system_test_$(SYSTEM_TEST_SUBDIR)_%: $(BIN_DIR)/tests/system/$(SYSTEM_TEST_SUBDIR)/%.gen
-	@CC=$(CC) SANITIZE=$(SANITIZE) $(SOURCE_DIR)/tests/system/run.sh $^
+	@CC="$(CC)" SANITIZE="$(SANITIZE)" OPT="$(OPT)" DBG="$(DBG)" "$(SOURCE_DIR)/tests/system/run.sh" $^
 
 system_test_$(SYSTEM_TEST_SUBDIR): $(KEFIR_SYSTEM_TESTS)
 system_tests: $(KEFIR_SYSTEM_TESTS)
