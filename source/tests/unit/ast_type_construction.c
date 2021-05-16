@@ -5,6 +5,16 @@
 #include "kefir/ast/local_context.h"
 #include "kefir/test/util.h"
 
+static kefir_bool_t is_signed(const struct kefir_ast_type *type) {
+    kefir_bool_t signedness;
+    ASSERT_OK(kefir_ast_type_is_signed(kefir_ast_default_type_traits(), type, &signedness));
+    return signedness;
+}
+
+static kefir_bool_t is_unsigned(const struct kefir_ast_type *type) {
+    return !is_signed(type);
+}
+
 DEFINE_CASE(ast_type_construction1, "AST Types - basic types")
     const struct kefir_ast_type *BASIC_TYPES[] = {
         kefir_ast_type_void(),
@@ -53,37 +63,47 @@ DEFINE_CASE(ast_type_construction1, "AST Types - basic types")
     ASSERT(!KEFIR_AST_TYPE_IS_CHARACTER(kefir_ast_type_float()));
     ASSERT(!KEFIR_AST_TYPE_IS_CHARACTER(kefir_ast_type_double()));
 
-    ASSERT(!KEFIR_AST_TYPE_IS_SIGNED_INTEGER(kefir_ast_type_char()));
-    ASSERT(!KEFIR_AST_TYPE_IS_SIGNED_INTEGER(kefir_ast_type_unsigned_char()));
-    ASSERT(KEFIR_AST_TYPE_IS_SIGNED_INTEGER(kefir_ast_type_signed_char()));
-    ASSERT(!KEFIR_AST_TYPE_IS_SIGNED_INTEGER(kefir_ast_type_unsigned_short()));
-    ASSERT(KEFIR_AST_TYPE_IS_SIGNED_INTEGER(kefir_ast_type_signed_short()));
-    ASSERT(!KEFIR_AST_TYPE_IS_SIGNED_INTEGER(kefir_ast_type_unsigned_int()));
-    ASSERT(KEFIR_AST_TYPE_IS_SIGNED_INTEGER(kefir_ast_type_signed_int()));
-    ASSERT(!KEFIR_AST_TYPE_IS_SIGNED_INTEGER(kefir_ast_type_unsigned_long()));
-    ASSERT(KEFIR_AST_TYPE_IS_SIGNED_INTEGER(kefir_ast_type_signed_long()));
-    ASSERT(!KEFIR_AST_TYPE_IS_SIGNED_INTEGER(kefir_ast_type_unsigned_long_long()));
-    ASSERT(KEFIR_AST_TYPE_IS_SIGNED_INTEGER(kefir_ast_type_signed_long_long()));
-    ASSERT(!KEFIR_AST_TYPE_IS_SIGNED_INTEGER(kefir_ast_type_void()));
-    ASSERT(!KEFIR_AST_TYPE_IS_SIGNED_INTEGER(kefir_ast_type_bool()));
-    ASSERT(!KEFIR_AST_TYPE_IS_SIGNED_INTEGER(kefir_ast_type_float()));
-    ASSERT(!KEFIR_AST_TYPE_IS_SIGNED_INTEGER(kefir_ast_type_double()));
+    ASSERT(is_signed(kefir_ast_type_char()) == kefir_ast_default_type_traits()->character_type_signedness);
+    ASSERT(!is_signed(kefir_ast_type_unsigned_char()));
+    ASSERT(is_signed(kefir_ast_type_signed_char()));
+    ASSERT(!is_signed(kefir_ast_type_unsigned_short()));
+    ASSERT(is_signed(kefir_ast_type_signed_short()));
+    ASSERT(!is_signed(kefir_ast_type_unsigned_int()));
+    ASSERT(is_signed(kefir_ast_type_signed_int()));
+    ASSERT(!is_signed(kefir_ast_type_unsigned_long()));
+    ASSERT(is_signed(kefir_ast_type_signed_long()));
+    ASSERT(!is_signed(kefir_ast_type_unsigned_long_long()));
+    ASSERT(is_signed(kefir_ast_type_signed_long_long()));
+    ASSERT(!is_signed(kefir_ast_type_bool()));
 
-    ASSERT(KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(kefir_ast_type_char()));
-    ASSERT(KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(kefir_ast_type_unsigned_char()));
-    ASSERT(!KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(kefir_ast_type_signed_char()));
-    ASSERT(KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(kefir_ast_type_unsigned_short()));
-    ASSERT(!KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(kefir_ast_type_signed_short()));
-    ASSERT(KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(kefir_ast_type_unsigned_int()));
-    ASSERT(!KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(kefir_ast_type_signed_int()));
-    ASSERT(KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(kefir_ast_type_unsigned_long()));
-    ASSERT(!KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(kefir_ast_type_signed_long()));
-    ASSERT(KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(kefir_ast_type_unsigned_long_long()));
-    ASSERT(!KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(kefir_ast_type_signed_long_long()));
-    ASSERT(!KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(kefir_ast_type_void()));
-    ASSERT(KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(kefir_ast_type_bool()));
-    ASSERT(!KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(kefir_ast_type_float()));
-    ASSERT(!KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(kefir_ast_type_double()));
+    ASSERT(is_unsigned(kefir_ast_type_char()) == !kefir_ast_default_type_traits()->character_type_signedness);
+    ASSERT(is_unsigned(kefir_ast_type_unsigned_char()));
+    ASSERT(!is_unsigned(kefir_ast_type_signed_char()));
+    ASSERT(is_unsigned(kefir_ast_type_unsigned_short()));
+    ASSERT(!is_unsigned(kefir_ast_type_signed_short()));
+    ASSERT(is_unsigned(kefir_ast_type_unsigned_int()));
+    ASSERT(!is_unsigned(kefir_ast_type_signed_int()));
+    ASSERT(is_unsigned(kefir_ast_type_unsigned_long()));
+    ASSERT(!is_unsigned(kefir_ast_type_signed_long()));
+    ASSERT(is_unsigned(kefir_ast_type_unsigned_long_long()));
+    ASSERT(!is_unsigned(kefir_ast_type_signed_long_long()));
+    ASSERT(is_unsigned(kefir_ast_type_bool()));
+
+    ASSERT(KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(kefir_ast_type_char()));
+    ASSERT(KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(kefir_ast_type_unsigned_char()));
+    ASSERT(KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(kefir_ast_type_signed_char()));
+    ASSERT(KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(kefir_ast_type_unsigned_short()));
+    ASSERT(KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(kefir_ast_type_signed_short()));
+    ASSERT(KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(kefir_ast_type_unsigned_int()));
+    ASSERT(KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(kefir_ast_type_signed_int()));
+    ASSERT(KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(kefir_ast_type_unsigned_long()));
+    ASSERT(KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(kefir_ast_type_signed_long()));
+    ASSERT(KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(kefir_ast_type_unsigned_long_long()));
+    ASSERT(KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(kefir_ast_type_signed_long_long()));
+    ASSERT(!KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(kefir_ast_type_void()));
+    ASSERT(KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(kefir_ast_type_bool()));
+    ASSERT(!KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(kefir_ast_type_float()));
+    ASSERT(!KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(kefir_ast_type_double()));
 
     ASSERT(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(kefir_ast_type_char()));
     ASSERT(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(kefir_ast_type_unsigned_char()));

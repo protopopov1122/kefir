@@ -4,11 +4,17 @@
 #include "kefir/core/error.h"
 
 static kefir_result_t cast_to_float32(struct kefir_irbuilder_block *builder,
+                                    const struct kefir_ast_type_traits *type_traits,
                                     const struct kefir_ast_type *origin) {
-    if (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(origin)) {
-        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_INTCF32, 0));
-    } else if (KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(origin)) {
-        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_UINTCF32, 0));
+    if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(origin)) {
+        kefir_bool_t origin_sign;
+        REQUIRE_OK(kefir_ast_type_is_signed(type_traits, kefir_ast_translator_normalize_type(origin), &origin_sign));
+
+        if (origin_sign) {
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_INTCF32, 0));
+        } else {
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_UINTCF32, 0));
+        } 
     } else if (origin->tag == KEFIR_AST_TYPE_SCALAR_DOUBLE) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64CF32, 0));
     } else {
@@ -18,11 +24,17 @@ static kefir_result_t cast_to_float32(struct kefir_irbuilder_block *builder,
 }
 
 static kefir_result_t cast_to_float64(struct kefir_irbuilder_block *builder,
+                                    const struct kefir_ast_type_traits *type_traits,
                                     const struct kefir_ast_type *origin) {
-    if (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(origin)) {
-        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_INTCF64, 0));
-    } else if (KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(origin)) {
-        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_UINTCF64, 0));
+    if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(origin)) {
+        kefir_bool_t origin_sign;
+        REQUIRE_OK(kefir_ast_type_is_signed(type_traits, origin, &origin_sign));
+
+        if (origin_sign) {
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_INTCF64, 0));
+        } else {
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_UINTCF64, 0));
+        } 
     } else if (origin->tag == KEFIR_AST_TYPE_SCALAR_FLOAT) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32CF64, 0));
     } else {
@@ -46,9 +58,11 @@ static kefir_result_t cast_to_integer(struct kefir_irbuilder_block *builder,
 }
 
 kefir_result_t kefir_ast_translate_typeconv(struct kefir_irbuilder_block *builder,
+                                        const struct kefir_ast_type_traits *type_traits,
                                         const struct kefir_ast_type *origin,
                                         const struct kefir_ast_type *destination) {
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
+    REQUIRE(type_traits != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid origin AST type traits"));
     REQUIRE(origin != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid origin AST type"));
     REQUIRE(destination != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid destination AST type"));
 
@@ -73,11 +87,11 @@ kefir_result_t kefir_ast_translate_typeconv(struct kefir_irbuilder_block *builde
             break;
 
         case KEFIR_AST_TYPE_SCALAR_FLOAT:
-            REQUIRE_OK(cast_to_float32(builder, normalized_origin));
+            REQUIRE_OK(cast_to_float32(builder, type_traits, normalized_origin));
             break;
 
         case KEFIR_AST_TYPE_SCALAR_DOUBLE:
-            REQUIRE_OK(cast_to_float64(builder, normalized_origin));
+            REQUIRE_OK(cast_to_float64(builder, type_traits, normalized_origin));
             break;
 
         default:

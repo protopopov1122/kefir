@@ -45,10 +45,15 @@ static kefir_result_t default_integral_type_fits(const struct kefir_ast_type_tra
     kefir_size_t dest_fit = default_integral_type_fit_rank(dest);
     REQUIRE(source_fit != 0 && dest_fit != 0,
         KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected integral type"));
-    if (source->basic_type.signedness == dest->basic_type.signedness ||
-        (source->basic_type.signedness && !dest->basic_type.signedness)) {
+
+    kefir_bool_t src_sign, dst_sign;
+    REQUIRE_OK(kefir_ast_type_is_signed(type_traits, source, &src_sign));
+    REQUIRE_OK(kefir_ast_type_is_signed(type_traits, dest, &dst_sign));
+
+    if (src_sign == dst_sign ||
+        (src_sign && !dst_sign)) {
         *result = source_fit <= dest_fit;
-    } else if (!source->basic_type.signedness && dest->basic_type.signedness) {
+    } else if (!src_sign && dst_sign) {
         *result = source_fit < dest_fit;
     } else {
         *result = false;

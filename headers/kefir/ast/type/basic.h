@@ -4,7 +4,6 @@
 #include "kefir/ast/type/base.h"
 
 typedef struct kefir_ast_basic_type_properties {
-    kefir_bool_t signedness;
     kefir_size_t rank;
 } kefir_ast_basic_type_properties_t;
 
@@ -31,23 +30,25 @@ SCALAR_TYPE(double);
     ((base)->tag == KEFIR_AST_TYPE_SCALAR_CHAR || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_CHAR || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR)
-#define KEFIR_AST_TYPE_IS_SIGNED_INTEGER(base) \
+#define KEFIR_INTERNAL_AST_TYPE_IS_SIGNED_INTEGER(base) \
     ((base)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_CHAR || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_SHORT || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_INT || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_LONG || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_LONG_LONG)
-#define KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(base) \
+#define KEFIR_INTERNAL_AST_TYPE_IS_UNSIGNED_INTEGER(base) \
     ((base)->tag == KEFIR_AST_TYPE_SCALAR_BOOL || \
-        (base)->tag == KEFIR_AST_TYPE_SCALAR_CHAR || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_UNSIGNED_SHORT || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_UNSIGNED_INT || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG_LONG)
+#define KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(base) \
+    (KEFIR_AST_TYPE_IS_CHARACTER(base) || \
+        KEFIR_INTERNAL_AST_TYPE_IS_SIGNED_INTEGER(base) || \
+        KEFIR_INTERNAL_AST_TYPE_IS_UNSIGNED_INTEGER(base))
 #define KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(base) \
-    (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(base) || \
-        KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(base) || \
+    (KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(base) || \
         (base)->tag == KEFIR_AST_TYPE_ENUMERATION)
 #define KEFIR_AST_TYPE_IS_FLOATING_POINT(base) \
     ((base)->tag == KEFIR_AST_TYPE_SCALAR_FLOAT || \
@@ -62,6 +63,11 @@ SCALAR_TYPE(double);
     (KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(base) || \
         (base)->tag == KEFIR_AST_TYPE_SCALAR_POINTER)
 
-const struct kefir_ast_type *kefir_ast_type_flip_integer_singedness(const struct kefir_ast_type *);
+const struct kefir_ast_type *kefir_ast_type_flip_integer_singedness(const struct kefir_ast_type_traits *,
+                                                                const struct kefir_ast_type *);
+
+kefir_result_t kefir_ast_type_is_signed(const struct kefir_ast_type_traits *,
+                                    const struct kefir_ast_type *,
+                                    kefir_bool_t *);
 
 #endif

@@ -132,7 +132,8 @@ static kefir_result_t traverse_aggregate_union(struct kefir_mem *mem,
             REQUIRE_OK(kefir_ast_type_traversal_next_recursive(mem, traversal, &type, &layer));
             REQUIRE_OK(layer_address(mem, context, builder, entry->designator, layer));
             REQUIRE_OK(kefir_ast_translate_expression(mem, entry->value->expression, builder, context));
-            REQUIRE_OK(kefir_ast_translate_typeconv(builder, entry->value->expression->properties.type, type));
+            REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits,
+                entry->value->expression->properties.type, type));
             REQUIRE_OK(kefir_ast_translator_store_value(mem, type, context, builder));
         } else {
             const struct kefir_ast_type *type = NULL;

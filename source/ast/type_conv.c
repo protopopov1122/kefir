@@ -2,15 +2,11 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-#define IS_INTEGER(type) \
-    (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(type)|| \
-        KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(type) || \
-        (type)->tag == KEFIR_AST_TYPE_SCALAR_BOOL)
-
 const struct kefir_ast_type *kefir_ast_type_int_promotion(const struct kefir_ast_type_traits *type_traits,
                                                       const struct kefir_ast_type *type) {
     REQUIRE(type != NULL, NULL);
-    REQUIRE(IS_INTEGER(type), NULL);
+    REQUIRE(KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(type), NULL);
+
     const struct kefir_ast_type *SIGNED_INT = kefir_ast_type_signed_int();
     const struct kefir_ast_type *UNSIGNED_INT = kefir_ast_type_unsigned_int();
     if (type->basic_type.rank < SIGNED_INT->basic_type.rank) {
@@ -45,7 +41,12 @@ const struct kefir_ast_type *kefir_ast_type_common_arithmetic(const struct kefir
     if (KEFIR_AST_TYPE_SAME(type1, type2)) {
         return type1;
     }
-    if (type1->basic_type.signedness == type2->basic_type.signedness) {
+
+    kefir_bool_t type1_sign, type2_sign;
+    REQUIRE(kefir_ast_type_is_signed(type_traits, type1, &type1_sign) == KEFIR_OK, NULL);
+    REQUIRE(kefir_ast_type_is_signed(type_traits, type2, &type2_sign) == KEFIR_OK, NULL);
+
+    if (type1_sign == type2_sign) {
         if (type1->basic_type.rank > type2->basic_type.rank) {
             return type1;
         } else {
@@ -53,30 +54,30 @@ const struct kefir_ast_type *kefir_ast_type_common_arithmetic(const struct kefir
         }
     } 
     kefir_bool_t fits = false;
-    if (!type1->basic_type.signedness) {
+    if (!type1_sign) {
         if (type1->basic_type.rank >= type2->basic_type.rank) {
             return type1;
         }
     } else if (type2->basic_type.rank >= type1->basic_type.rank) {
         return type2;
     }
-    if (type1->basic_type.signedness) {
+    if (type1_sign) {
         if (type_traits->integral_type_fits(type_traits, type2, type1, &fits) == KEFIR_OK && fits) {
             return type1;
         }
     } else if (type_traits->integral_type_fits(type_traits, type1, type2, &fits) == KEFIR_OK && fits) {
         return type2;
     }
-    if (type1->basic_type.signedness) {
-        return kefir_ast_type_flip_integer_singedness(type1);
+    if (type1_sign) {
+        return kefir_ast_type_flip_integer_singedness(type_traits, type1);
     } else {
-        return kefir_ast_type_flip_integer_singedness(type2);
+        return kefir_ast_type_flip_integer_singedness(type_traits, type2);
     }
 }
 
 const struct kefir_ast_type *kefir_ast_type_function_default_argument_promotion(const struct kefir_ast_type_traits *type_traits,
                                                                             const struct kefir_ast_type *type) {
-    if (IS_INTEGER(type)) {
+    if (KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(type)) {
         return kefir_ast_type_int_promotion(type_traits, type);
     } else if (type->tag == KEFIR_AST_TYPE_SCALAR_FLOAT) {
         return kefir_ast_type_double();

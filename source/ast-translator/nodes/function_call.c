@@ -33,7 +33,7 @@ static kefir_result_t translate_parameters(struct kefir_mem *mem,
 
         REQUIRE_OK(kefir_ast_translate_expression(mem, parameter_value, builder, context));
         if (KEFIR_AST_TYPE_IS_SCALAR_TYPE(parameter_value->properties.type)) {
-            REQUIRE_OK(kefir_ast_translate_typeconv(builder, parameter_value->properties.type, parameter_layout->type));
+            REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits, parameter_value->properties.type, parameter_layout->type));
         }
     }
     return KEFIR_OK;

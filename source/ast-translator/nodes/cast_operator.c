@@ -14,6 +14,6 @@ kefir_result_t kefir_ast_translate_cast_operator_node(struct kefir_mem *mem,
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST cast operator node"));
 
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->expr, builder, context));
-    REQUIRE_OK(kefir_ast_translate_typeconv(builder, node->expr->properties.type, node->type));
+    REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits, node->expr->properties.type, node->type));
     return KEFIR_OK;
 }

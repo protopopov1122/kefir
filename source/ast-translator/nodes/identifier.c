@@ -19,15 +19,20 @@ static kefir_result_t translate_object_identifier(struct kefir_mem *mem,
 }
 
 static kefir_result_t translate_enum_constant(struct kefir_irbuilder_block *builder,
+                                            const struct kefir_ast_type_traits *type_traits,
                                             const struct kefir_ast_scoped_identifier *scoped_identifier) {
-    if (KEFIR_AST_TYPE_IS_UNSIGNED_INTEGER(scoped_identifier->enum_constant.type)) {
+    REQUIRE(KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(scoped_identifier->enum_constant.type),
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Enum constant cannot have non-integral type"));
+    
+    kefir_bool_t signedness;
+    REQUIRE_OK(kefir_ast_type_is_signed(type_traits, scoped_identifier->enum_constant.type, &signedness));
+
+    if (!signedness) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_PUSHU64,
             (kefir_uint64_t) scoped_identifier->enum_constant.value->value.integer));
-    } else if (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(scoped_identifier->enum_constant.type)) {
+    } else {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_PUSHI64,
             (kefir_int64_t) scoped_identifier->enum_constant.value->value.integer));
-    } else {
-        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Enum constant cannon have non-integral type");
     }
     return KEFIR_OK;
 }
@@ -58,7 +63,7 @@ kefir_result_t kefir_ast_translate_identifier_node(struct kefir_mem *mem,
             break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT:
-            REQUIRE_OK(translate_enum_constant(builder, scoped_identifier));
+            REQUIRE_OK(translate_enum_constant(builder, context->ast_context->type_traits, scoped_identifier));
             break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION:

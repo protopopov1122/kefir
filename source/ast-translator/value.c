@@ -72,8 +72,11 @@ static kefir_result_t resolve_bitfield(struct kefir_mem *mem,
     struct kefir_ast_type_layout *member_layout = NULL;
     REQUIRE_OK(load_bitfield(mem, context, builder, node, &member_layout, NULL));
 
+    kefir_bool_t signedness;
+    REQUIRE_OK(kefir_ast_type_is_signed(context->ast_context->type_traits, member_layout->type, &signedness));
+
     kefir_size_t bit_offset = member_layout->bitfield_props.offset % 8;
-    if (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(member_layout->type)) {
+    if (signedness) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_EXTSBITS,
             bit_offset, member_layout->bitfield_props.width));
     } else {

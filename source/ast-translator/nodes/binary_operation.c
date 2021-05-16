@@ -15,9 +15,9 @@ static kefir_result_t binary_prologue(struct kefir_mem *mem,
     const struct kefir_ast_type *result_normalized_type = kefir_ast_translator_normalize_type(node->base.properties.type);
 
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg1, builder, context));
-    REQUIRE_OK(kefir_ast_translate_typeconv(builder, arg1_normalized_type, result_normalized_type));
+    REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits, arg1_normalized_type, result_normalized_type));
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg2, builder, context));
-    REQUIRE_OK(kefir_ast_translate_typeconv(builder, arg2_normalized_type, result_normalized_type));
+    REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits, arg2_normalized_type, result_normalized_type));
     return KEFIR_OK;
 }
 
@@ -186,13 +186,16 @@ static kefir_result_t translate_bitwise(struct kefir_mem *mem,
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_ILSHIFT, 0));
             break;
 
-        case KEFIR_AST_OPERATION_SHIFT_RIGHT:
-            if (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(arg1_normalized_type)) {
+        case KEFIR_AST_OPERATION_SHIFT_RIGHT: {
+            kefir_bool_t signedness;
+            REQUIRE_OK(kefir_ast_type_is_signed(context->ast_context->type_traits, arg1_normalized_type, &signedness));
+
+            if (signedness) {
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IARSHIFT, 0));
             } else {
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IRSHIFT, 0));
             }
-            break;
+        } break;
 
         case KEFIR_AST_OPERATION_BITWISE_AND:
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IAND, 0));
@@ -249,7 +252,8 @@ static kefir_result_t translate_relational_not_equals(const struct kefir_ast_typ
     return KEFIR_OK;
 }
 
-static kefir_result_t translate_relational_less(const struct kefir_ast_type *common_type,
+static kefir_result_t translate_relational_less(const struct kefir_ast_type_traits *type_traits,
+                                              const struct kefir_ast_type *common_type,
                                               struct kefir_irbuilder_block *builder) {
     switch (common_type->tag) {
         case KEFIR_AST_TYPE_SCALAR_DOUBLE:
@@ -260,18 +264,26 @@ static kefir_result_t translate_relational_less(const struct kefir_ast_type *com
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32LESSER, 0));
             break;
 
-        default:
-            if (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(common_type)) {
+        case KEFIR_AST_TYPE_SCALAR_POINTER:
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IBELOW, 0));
+            break;
+
+        default: {
+            kefir_bool_t signedness;
+            REQUIRE_OK(kefir_ast_type_is_signed(type_traits, common_type, &signedness));
+
+            if (signedness) {
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_ILESSER, 0));
             } else {
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IBELOW, 0));
             }
-            break;
+        } break;
     }
     return KEFIR_OK;
 }
 
-static kefir_result_t translate_relational_greater(const struct kefir_ast_type *common_type,
+static kefir_result_t translate_relational_greater(const struct kefir_ast_type_traits *type_traits,
+                                                 const struct kefir_ast_type *common_type,
                                                  struct kefir_irbuilder_block *builder) {
     switch (common_type->tag) {
         case KEFIR_AST_TYPE_SCALAR_DOUBLE:
@@ -282,13 +294,20 @@ static kefir_result_t translate_relational_greater(const struct kefir_ast_type *
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32GREATER, 0));
             break;
 
-        default:
-            if (KEFIR_AST_TYPE_IS_SIGNED_INTEGER(common_type)) {
+        case KEFIR_AST_TYPE_SCALAR_POINTER:
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IABOVE, 0));
+            break;
+
+        default: {
+            kefir_bool_t signedness;
+            REQUIRE_OK(kefir_ast_type_is_signed(type_traits, common_type, &signedness));
+
+            if (signedness) {
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IGREATER, 0));
             } else {
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IABOVE, 0));
             }
-            break;
+        } break;
     }
     return KEFIR_OK;
 }
@@ -306,9 +325,9 @@ static kefir_result_t translate_relational_equality(struct kefir_mem *mem,
         common_type = kefir_ast_type_common_arithmetic(
             context->ast_context->type_traits, arg1_normalized_type, arg2_normalized_type);
         REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg1, builder, context));
-        REQUIRE_OK(kefir_ast_translate_typeconv(builder, arg1_normalized_type, common_type));
+        REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits, arg1_normalized_type, common_type));
         REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg2, builder, context));
-        REQUIRE_OK(kefir_ast_translate_typeconv(builder, arg2_normalized_type, common_type));
+        REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits, arg2_normalized_type, common_type));
     } else {
         REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg1, builder, context));
         REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg2, builder, context));
@@ -325,17 +344,17 @@ static kefir_result_t translate_relational_equality(struct kefir_mem *mem,
             break;
 
         case KEFIR_AST_OPERATION_LESS:
-            REQUIRE_OK(translate_relational_less(common_type, builder));
+            REQUIRE_OK(translate_relational_less(context->ast_context->type_traits, common_type, builder));
             break;
 
         case KEFIR_AST_OPERATION_GREATER:
-            REQUIRE_OK(translate_relational_greater(common_type, builder));
+            REQUIRE_OK(translate_relational_greater(context->ast_context->type_traits, common_type, builder));
             break;
 
         case KEFIR_AST_OPERATION_LESS_EQUAL:
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 1));
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 1));
-            REQUIRE_OK(translate_relational_less(common_type, builder));
+            REQUIRE_OK(translate_relational_less(context->ast_context->type_traits, common_type, builder));
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_XCHG, 2));
             REQUIRE_OK(translate_relational_equals(common_type, builder));
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_BOR, 2));
@@ -344,7 +363,7 @@ static kefir_result_t translate_relational_equality(struct kefir_mem *mem,
         case KEFIR_AST_OPERATION_GREATER_EQUAL:
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 1));
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 1));
-            REQUIRE_OK(translate_relational_greater(common_type, builder));
+            REQUIRE_OK(translate_relational_greater(context->ast_context->type_traits, common_type, builder));
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_XCHG, 2));
             REQUIRE_OK(translate_relational_equals(common_type, builder));
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_BOR, 2));
