@@ -3,6 +3,7 @@
 
 #include "kefir/core/mem.h"
 #include "kefir/core/symbol_table.h"
+#include "kefir/core/list.h"
 #include "kefir/ast/constants.h"
 #include "kefir/ast/base.h"
 
@@ -72,5 +73,42 @@ struct kefir_ast_declarator_specifier *kefir_ast_function_specifier_noreturn(str
 struct kefir_ast_declarator_specifier *kefir_ast_alignment_specifier(struct kefir_mem *, struct kefir_ast_node_base *);
 
 kefir_result_t kefir_ast_declarator_specifier_free(struct kefir_mem *, struct kefir_ast_declarator_specifier *);
+
+typedef struct kefir_ast_declarator kefir_ast_declarator_t; // Forward declaration
+
+typedef struct kefir_ast_declarator_pointer {
+    struct kefir_list type_qualifiers;
+    struct kefir_ast_declarator *declarator;
+} kefir_ast_declarator_pointer_t;
+
+typedef struct kefir_ast_declarator_array {
+    struct kefir_list type_qualifiers;
+    kefir_bool_t static_array;
+    struct kefir_ast_node_base *length;
+    struct kefir_ast_declarator *declarator;
+} kefir_ast_declarator_array_t;
+
+typedef struct kefir_ast_declarator_function {
+    struct kefir_list parameters;
+    struct kefir_ast_declarator *declarator;
+} kefir_ast_declarator_function_t;
+
+typedef struct kefir_ast_declarator {
+    kefir_ast_declarator_class_t klass;
+    union {
+        const char *identifier;
+        struct kefir_ast_declarator_pointer pointer;
+        struct kefir_ast_declarator_array array;
+        struct kefir_ast_declarator_function function;
+    };
+} kefir_ast_declarator_t;
+
+struct kefir_ast_declarator *kefir_ast_declarator_identifier(struct kefir_mem *, struct kefir_symbol_table *, const char *);
+struct kefir_ast_declarator *kefir_ast_declarator_pointer(struct kefir_mem *, struct kefir_ast_declarator *);
+struct kefir_ast_declarator *kefir_ast_declarator_array(struct kefir_mem *, struct kefir_ast_node_base *, struct kefir_ast_declarator *);
+struct kefir_ast_declarator *kefir_ast_declarator_function(struct kefir_mem *, struct kefir_ast_declarator *);
+kefir_result_t kefir_ast_declarator_free(struct kefir_mem *, struct kefir_ast_declarator *);
+
+kefir_result_t kefir_ast_declarator_is_abstract(struct kefir_ast_declarator *, kefir_bool_t *);
 
 #endif 
