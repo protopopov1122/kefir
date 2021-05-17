@@ -2,6 +2,7 @@
 #define KEFIR_AST_CONSTANTS_H_
 
 #include "kefir/core/basic-types.h"
+#include <limits.h>
 
 typedef enum kefir_ast_node_type {
     // Primary expressions
@@ -23,7 +24,10 @@ typedef enum kefir_ast_node_type {
 
     KEFIR_AST_TYPE_NAME,
     KEFIR_AST_CAST_OPERATOR,
-    KEFIR_AST_COMMA_OPERATOR
+    KEFIR_AST_COMMA_OPERATOR,
+
+    KEFIR_AST_DECLARATOR,
+    KEFIR_AST_DECLARATOR_SPECIFIER
 } kefir_ast_node_type_t;
 
 typedef enum kefir_ast_node_category {
@@ -126,11 +130,87 @@ typedef enum kefir_ast_scoped_identifier_storage {
     KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO,
     KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER
 } kefir_ast_scoped_identifier_storage_t;
+
 typedef enum kefir_ast_function_specifier {
     KEFIR_AST_FUNCTION_SPECIFIER_NONE,
     KEFIR_AST_FUNCTION_SPECIFIER_NORETURN,
     KEFIR_AST_FUNCTION_SPECIFIER_INLINE,
     KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN,
 } kefir_ast_function_specifier_t;
+
+typedef enum kefir_ast_type_specifier_type {
+    KEFIR_AST_TYPE_SPECIFIER_VOID = 0,
+    KEFIR_AST_TYPE_SPECIFIER_CHAR,
+    KEFIR_AST_TYPE_SPECIFIER_SHORT,
+    KEFIR_AST_TYPE_SPECIFIER_INT,
+    KEFIR_AST_TYPE_SPECIFIER_LONG,
+    KEFIR_AST_TYPE_SPECIFIER_LONG_LONG, // Virtual specifier needed for implementation purposes
+    KEFIR_AST_TYPE_SPECIFIER_FLOAT,
+    KEFIR_AST_TYPE_SPECIFIER_DOUBLE,
+    KEFIR_AST_TYPE_SPECIFIER_SIGNED,
+    KEFIR_AST_TYPE_SPECIFIER_UNSIGNED,
+    KEFIR_AST_TYPE_SPECIFIER_BOOL,
+    KEFIR_AST_TYPE_SPECIFIER_COMPLEX,
+    KEFIR_AST_TYPE_SPECIFIER_ATOMIC,
+    KEFIR_AST_TYPE_SPECIFIER_STRUCT,
+    KEFIR_AST_TYPE_SPECIFIER_UNION,
+    KEFIR_AST_TYPE_SPECIFIER_ENUM,
+    KEFIR_AST_TYPE_SPECIFIER_TYPEDEF,
+    // Special value
+    KEFIR_AST_TYPE_SPECIFIER_COUNT
+} kefir_ast_type_specifier_type_t;
+
+_Static_assert(KEFIR_AST_TYPE_SPECIFIER_COUNT <= sizeof(kefir_uint64_t) * CHAR_BIT,
+    "Number of type specifiers exceeds the largest bit map size");
+
+typedef enum kefir_ast_storage_class_specifier_type {
+    KEFIR_AST_STORAGE_SPECIFIER_TYPEDEF = 0,
+    KEFIR_AST_STORAGE_SPECIFIER_EXTERN,
+    KEFIR_AST_STORAGE_SPECIFIER_STATIC,
+    KEFIR_AST_STORAGE_SPECIFIER_THREAD_LOCAL,
+    KEFIR_AST_STORAGE_SPECIFIER_AUTO,
+    KEFIR_AST_STORAGE_SPECIFIER_REGISTER,
+    // Special value
+    KEFIR_AST_STORAGE_SPECIFIER_COUNT
+} kefir_ast_storage_class_specifier_type_t;
+
+_Static_assert(KEFIR_AST_STORAGE_SPECIFIER_COUNT <= sizeof(kefir_uint64_t) * CHAR_BIT,
+    "Number of storage specifiers exceeds the largest bit map size");
+
+typedef enum kefir_ast_type_qualifier_type {
+    KEFIR_AST_TYPE_QUALIFIER_CONST = 0,
+    KEFIR_AST_TYPE_QUALIFIER_RESTRICT,
+    KEFIR_AST_TYPE_QUALIFIER_VOLATILE,
+    KEFIR_AST_TYPE_QUALIFIER_ATOMIC,
+    // Special value
+    KEFIR_AST_TYPE_QUALIFIER_COUNT
+} kefir_ast_type_qualifier_type_t;
+
+_Static_assert(KEFIR_AST_TYPE_QUALIFIER_CONST <= sizeof(kefir_uint64_t) * CHAR_BIT,
+    "Number of storage specifiers exceeds the largest bit map size");
+typedef enum kefir_ast_function_specifier_type {
+    KEFIR_AST_FUNCTION_SPECIFIER_TYPE_NORETURN = 0,
+    KEFIR_AST_FUNCTION_SPECIFIER_TYPE_INLINE,
+    // Special value
+    KEFIR_AST_FUNCTION_SPECIFIER_TYPE_COUNT
+} kefir_ast_function_specifier_type_t;
+
+_Static_assert(KEFIR_AST_FUNCTION_SPECIFIER_TYPE_COUNT <= sizeof(kefir_uint64_t) * CHAR_BIT,
+    "Number of function specifiers exceeds the largest bit map size");
+
+typedef enum kefir_ast_declarator_specifier_class {
+    KEFIR_AST_TYPE_SPECIFIER,
+    KEFIR_AST_TYPE_QUALIFIER,
+    KEFIR_AST_STORAGE_CLASS_SPECIFIER,
+    KEFIR_AST_FUNCTION_SPECIFIER,
+    KEFIR_AST_ALIGNMENT_SPECIFIER
+} kefir_ast_declarator_specifier_class_t;
+
+typedef enum kefir_ast_declarator_class {
+    KEFIR_AST_DECLARATOR_IDENTIFIER,
+    KEFIR_AST_DECLARATOR_POINTER,
+    KEFIR_AST_DECLARATOR_ARRAY,
+    KEFIR_AST_DECLARATOR_FUNCTION
+} kefir_ast_declarator_class_t;
 
 #endif

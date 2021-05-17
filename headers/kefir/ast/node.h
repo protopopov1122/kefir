@@ -4,6 +4,7 @@
 #include "kefir/ast/node_base.h"
 #include "kefir/core/symbol_table.h"
 #include "kefir/ast/initializer.h"
+#include "kefir/ast/declarator.h"
 
 KEFIR_AST_NODE_STRUCT(kefir_ast_constant, {
     kefir_ast_constant_type_t type;

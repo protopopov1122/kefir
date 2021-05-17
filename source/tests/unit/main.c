@@ -220,6 +220,17 @@ DECLARE_CASE(ast_bitfield_translator2);
 DECLARE_CASE(ast_bitfield_translator3);
 DECLARE_CASE(ast_bitfield_translator4);
 DECLARE_CASE(ast_bitfield_translator5);
+DECLARE_CASE(ast_declarator_specifier_construction1);
+DECLARE_CASE(ast_declarator_specifier_construction2);
+DECLARE_CASE(ast_declarator_specifier_construction3);
+DECLARE_CASE(ast_declarator_specifier_construction4);
+DECLARE_CASE(ast_declarator_specifier_construction5);
+DECLARE_CASE(ast_declarator_specifier_construction6);
+DECLARE_CASE(ast_declarator_specifier_construction7);
+DECLARE_CASE(ast_declarator_specifier_construction8);
+DECLARE_CASE(ast_declarator_specifier_construction9);
+DECLARE_CASE(ast_declarator_specifier_construction10);
+DECLARE_CASE(ast_declarator_specifier_construction11);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -438,7 +449,18 @@ TEST_SUITE(mainSuite,
     &ast_bitfield_translator2,
     &ast_bitfield_translator3,
     &ast_bitfield_translator4,
-    &ast_bitfield_translator5
+    &ast_bitfield_translator5,
+    &ast_declarator_specifier_construction1,
+    &ast_declarator_specifier_construction2,
+    &ast_declarator_specifier_construction3,
+    &ast_declarator_specifier_construction4,
+    &ast_declarator_specifier_construction5,
+    &ast_declarator_specifier_construction6,
+    &ast_declarator_specifier_construction7,
+    &ast_declarator_specifier_construction8,
+    &ast_declarator_specifier_construction9,
+    &ast_declarator_specifier_construction10,
+    &ast_declarator_specifier_construction11
 );
 
 int main(int argc, const char **argv) {
