@@ -209,10 +209,71 @@ kefir_result_t kefir_ast_declarator_specifier_free(struct kefir_mem *mem, struct
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_ast_type_qualifier_list_init(struct kefir_ast_type_qualifier_list *list) {
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type qualifier list"));
+
+    REQUIRE_OK(kefir_list_init(&list->list));
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_ast_type_qualifier_list_free(struct kefir_mem *mem,
+                                              struct kefir_ast_type_qualifier_list *list) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type qualifier list"));
+
+    REQUIRE_OK(kefir_list_free(mem, &list->list));
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_ast_type_qualifier_list_append(struct kefir_mem *mem,
+                                                struct kefir_ast_type_qualifier_list *list,
+                                                kefir_ast_type_qualifier_type_t qualifier) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type qualifier list"));
+
+    REQUIRE_OK(kefir_list_insert_after(mem, &list->list, kefir_list_tail(&list->list), (void *) ((kefir_uptr_t) qualifier)));
+    return KEFIR_OK;
+}
+
+struct kefir_list_entry *kefir_ast_type_qualifier_list_iter(struct kefir_ast_type_qualifier_list *list,
+                                                              kefir_ast_type_qualifier_type_t *value) {
+    REQUIRE(list != NULL, NULL);
+
+    struct kefir_list_entry *iter = kefir_list_head(&list->list);
+    if (iter != NULL) {
+        ASSIGN_PTR(value, (kefir_ast_type_qualifier_type_t) ((kefir_uptr_t) iter->value));
+    }
+    return iter;
+}
+
+kefir_result_t kefir_ast_type_qualifier_list_next(struct kefir_list_entry **iter,
+                                              kefir_ast_type_qualifier_type_t *value) {
+    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to list entry iterator"));
+    REQUIRE(*iter != NULL, KEFIR_OK);
+    
+    *iter = (*iter)->next;
+    if (*iter != NULL) {
+        ASSIGN_PTR(value, (kefir_ast_type_qualifier_type_t) ((kefir_uptr_t) (*iter)->value));
+    }
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_ast_type_qualifier_list_remove(struct kefir_mem *mem,
+                                                struct kefir_ast_type_qualifier_list *list,
+                                                struct kefir_list_entry *iter) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type qualifier list"));
+    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to list entry iterator"));
+    
+    REQUIRE_OK(kefir_list_pop(mem, &list->list, iter));
+    return KEFIR_OK;
+}
+
 struct kefir_ast_declarator *kefir_ast_declarator_identifier(struct kefir_mem *mem,
                                                          struct kefir_symbol_table *symbols,
                                                          const char *identifier) {
     REQUIRE(mem != NULL, NULL);
+    REQUIRE(symbols == NULL || identifier != NULL, NULL);
 
     if (symbols != NULL && identifier != NULL) {
         identifier = kefir_symbol_table_insert(mem, symbols, identifier, NULL);
@@ -234,7 +295,7 @@ struct kefir_ast_declarator *kefir_ast_declarator_pointer(struct kefir_mem *mem,
     REQUIRE(decl != NULL, NULL);
     decl->klass = KEFIR_AST_DECLARATOR_POINTER;
 
-    kefir_result_t res = kefir_list_init(&decl->pointer.type_qualifiers);
+    kefir_result_t res = kefir_ast_type_qualifier_list_init(&decl->pointer.type_qualifiers);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, decl);
         return NULL;
@@ -254,7 +315,7 @@ struct kefir_ast_declarator *kefir_ast_declarator_array(struct kefir_mem *mem,
     REQUIRE(decl != NULL, NULL);
     decl->klass = KEFIR_AST_DECLARATOR_ARRAY;
 
-    kefir_result_t res = kefir_list_init(&decl->array.type_qualifiers);
+    kefir_result_t res = kefir_ast_type_qualifier_list_init(&decl->array.type_qualifiers);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, decl);
         return NULL;
@@ -301,6 +362,7 @@ struct kefir_ast_declarator *kefir_ast_declarator_function(struct kefir_mem *mem
         return NULL;
     });
     
+    decl->function.ellipsis = false;
     decl->function.declarator = direct;
     return decl;
 }
@@ -315,15 +377,17 @@ kefir_result_t kefir_ast_declarator_free(struct kefir_mem *mem, struct kefir_ast
             break;
 
         case KEFIR_AST_DECLARATOR_POINTER:
-            REQUIRE_OK(kefir_list_free(mem, &decl->pointer.type_qualifiers));
+            REQUIRE_OK(kefir_ast_type_qualifier_list_free(mem, &decl->pointer.type_qualifiers));
             REQUIRE_OK(kefir_ast_declarator_free(mem, decl->pointer.declarator));
             decl->pointer.declarator = NULL;
             break;
 
         case KEFIR_AST_DECLARATOR_ARRAY:
-            REQUIRE_OK(kefir_list_free(mem, &decl->array.type_qualifiers));
-            REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, decl->array.length));
-            decl->array.length = NULL;
+            REQUIRE_OK(kefir_ast_type_qualifier_list_free(mem, &decl->array.type_qualifiers));
+            if (decl->array.length != NULL) {
+                REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, decl->array.length));
+                decl->array.length = NULL;
+            }
             decl->array.static_array = false;
             REQUIRE_OK(kefir_ast_declarator_free(mem, decl->array.declarator));
             decl->array.declarator = NULL;
@@ -346,7 +410,7 @@ kefir_result_t kefir_ast_declarator_is_abstract(struct kefir_ast_declarator *dec
 
     switch (decl->klass) {
         case KEFIR_AST_DECLARATOR_IDENTIFIER:
-            *result = decl->identifier != NULL;
+            *result = decl->identifier == NULL;
             break;
 
         case KEFIR_AST_DECLARATOR_POINTER:

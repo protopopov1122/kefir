@@ -38,6 +38,7 @@ typedef struct kefir_ast_declarator_specifier {
     };
 } kefir_ast_declarator_specifier_t;
 
+
 struct kefir_ast_declarator_specifier *kefir_ast_type_specifier_void(struct kefir_mem *);
 struct kefir_ast_declarator_specifier *kefir_ast_type_specifier_char(struct kefir_mem *);
 struct kefir_ast_declarator_specifier *kefir_ast_type_specifier_short(struct kefir_mem *);
@@ -74,15 +75,32 @@ struct kefir_ast_declarator_specifier *kefir_ast_alignment_specifier(struct kefi
 
 kefir_result_t kefir_ast_declarator_specifier_free(struct kefir_mem *, struct kefir_ast_declarator_specifier *);
 
+typedef struct kefir_ast_type_qualifier_list {
+    struct kefir_list list;
+} kefir_ast_type_qualifier_list_t;
+
+kefir_result_t kefir_ast_type_qualifier_list_init(struct kefir_ast_type_qualifier_list *);
+kefir_result_t kefir_ast_type_qualifier_list_free(struct kefir_mem *, struct kefir_ast_type_qualifier_list *);
+kefir_result_t kefir_ast_type_qualifier_list_append(struct kefir_mem *,
+                                                struct kefir_ast_type_qualifier_list *,
+                                                kefir_ast_type_qualifier_type_t);
+struct kefir_list_entry *kefir_ast_type_qualifier_list_iter(struct kefir_ast_type_qualifier_list *,
+                                                        kefir_ast_type_qualifier_type_t *);
+kefir_result_t kefir_ast_type_qualifier_list_next(struct kefir_list_entry **,
+                                              kefir_ast_type_qualifier_type_t *);
+kefir_result_t kefir_ast_type_qualifier_list_remove(struct kefir_mem *,
+                                                struct kefir_ast_type_qualifier_list *,
+                                                struct kefir_list_entry *);
+
 typedef struct kefir_ast_declarator kefir_ast_declarator_t; // Forward declaration
 
 typedef struct kefir_ast_declarator_pointer {
-    struct kefir_list type_qualifiers;
+    struct kefir_ast_type_qualifier_list type_qualifiers;
     struct kefir_ast_declarator *declarator;
 } kefir_ast_declarator_pointer_t;
 
 typedef struct kefir_ast_declarator_array {
-    struct kefir_list type_qualifiers;
+    struct kefir_ast_type_qualifier_list type_qualifiers;
     kefir_bool_t static_array;
     struct kefir_ast_node_base *length;
     struct kefir_ast_declarator *declarator;
@@ -90,6 +108,7 @@ typedef struct kefir_ast_declarator_array {
 
 typedef struct kefir_ast_declarator_function {
     struct kefir_list parameters;
+    kefir_bool_t ellipsis;
     struct kefir_ast_declarator *declarator;
 } kefir_ast_declarator_function_t;
 
@@ -111,4 +130,4 @@ kefir_result_t kefir_ast_declarator_free(struct kefir_mem *, struct kefir_ast_de
 
 kefir_result_t kefir_ast_declarator_is_abstract(struct kefir_ast_declarator *, kefir_bool_t *);
 
-#endif 
+#endif
