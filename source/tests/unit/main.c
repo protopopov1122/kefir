@@ -242,6 +242,10 @@ DECLARE_CASE(ast_declarator_construction8);
 DECLARE_CASE(ast_declarator_construction9);
 DECLARE_CASE(ast_declarator_construction10);
 DECLARE_CASE(ast_declarator_construction11);
+DECLARE_CASE(ast_structure_declaration1);
+DECLARE_CASE(ast_structure_declaration2);
+DECLARE_CASE(ast_enum_declaration1);
+DECLARE_CASE(ast_enum_declaration2);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -482,7 +486,11 @@ TEST_SUITE(mainSuite,
     &ast_declarator_construction8,
     &ast_declarator_construction9,
     &ast_declarator_construction10,
-    &ast_declarator_construction11
+    &ast_declarator_construction11,
+    &ast_structure_declaration1,
+    &ast_structure_declaration2,
+    &ast_enum_declaration1,
+    &ast_enum_declaration2
 );
 
 int main(int argc, const char **argv) {

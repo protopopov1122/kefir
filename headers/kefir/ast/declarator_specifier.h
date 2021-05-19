@@ -75,10 +75,31 @@ kefir_result_t kefir_ast_structure_declaration_entry_append(struct kefir_mem *,
                                                         struct kefir_ast_declarator *,
                                                         struct kefir_ast_node_base *);
 
+typedef struct kefir_ast_enum_specifier_entry {
+    const char *constant;
+    struct kefir_ast_node_base *value;
+} kefir_ast_enum_specifier_entry_t;
+
 typedef struct kefir_ast_enum_specifier {
-    // TODO Define structure specifier
-    int dummy_member;
+    const char *identifier;
+    kefir_bool_t complete;
+    struct kefir_list entries;
 } kefir_ast_enum_specifier_t;
+
+kefir_result_t kefir_ast_enum_specifier_init(struct kefir_mem *,
+                                         struct kefir_ast_enum_specifier *,
+                                         struct kefir_symbol_table *,
+                                         const char *,
+                                         kefir_bool_t);
+
+kefir_result_t kefir_ast_enum_specifier_free(struct kefir_mem *,
+                                         struct kefir_ast_enum_specifier *);
+
+kefir_result_t kefir_ast_enum_specifier_append(struct kefir_mem *,
+                                           struct kefir_ast_enum_specifier *,
+                                           struct kefir_symbol_table *,
+                                           const char *,
+                                           struct kefir_ast_node_base *);
 
 typedef struct kefir_ast_type_specifier {
     kefir_ast_type_specifier_type_t specifier;
