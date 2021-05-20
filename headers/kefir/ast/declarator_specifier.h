@@ -49,11 +49,10 @@ typedef struct kefir_ast_structure_specifier {
     struct kefir_list entries;
 } kefir_ast_structure_specifier_t;
 
-kefir_result_t kefir_ast_structure_specifier_init(struct kefir_mem *,
-                                              struct kefir_ast_structure_specifier *,
-                                              struct kefir_symbol_table *,
-                                              const char *,
-                                              kefir_bool_t);
+struct kefir_ast_structure_specifier *kefir_ast_structure_specifier_init(struct kefir_mem *,
+                                                                     struct kefir_symbol_table *,
+                                                                     const char *,
+                                                                     kefir_bool_t);
 
 kefir_result_t kefir_ast_structure_specifier_free(struct kefir_mem *,
                                               struct kefir_ast_structure_specifier *);
@@ -86,11 +85,10 @@ typedef struct kefir_ast_enum_specifier {
     struct kefir_list entries;
 } kefir_ast_enum_specifier_t;
 
-kefir_result_t kefir_ast_enum_specifier_init(struct kefir_mem *,
-                                         struct kefir_ast_enum_specifier *,
-                                         struct kefir_symbol_table *,
-                                         const char *,
-                                         kefir_bool_t);
+struct kefir_ast_enum_specifier *kefir_ast_enum_specifier_init(struct kefir_mem *,
+                                                           struct kefir_symbol_table *,
+                                                           const char *,
+                                                           kefir_bool_t);
 
 kefir_result_t kefir_ast_enum_specifier_free(struct kefir_mem *,
                                          struct kefir_ast_enum_specifier *);

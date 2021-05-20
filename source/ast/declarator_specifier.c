@@ -96,29 +96,29 @@ static kefir_result_t struct_entry_remove(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_structure_specifier_init(struct kefir_mem *mem,
-                                              struct kefir_ast_structure_specifier *specifier,
-                                              struct kefir_symbol_table *symbols,
-                                              const char *identifier,
-                                              kefir_bool_t complete) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(specifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST structure specifier"));
-    REQUIRE(symbols == NULL || identifier != NULL,
-        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid literal for non-NULL symbol table"));
+struct kefir_ast_structure_specifier *kefir_ast_structure_specifier_init(struct kefir_mem *mem,
+                                                                     struct kefir_symbol_table *symbols,
+                                                                     const char *identifier,
+                                                                     kefir_bool_t complete) {
+    REQUIRE(mem != NULL, NULL);
+    REQUIRE(symbols == NULL || identifier != NULL, NULL);
 
     if (symbols != NULL && identifier != NULL) {
         identifier = kefir_symbol_table_insert(mem, symbols, identifier, NULL);
-        REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to insert literal into symbol table"));
+        REQUIRE(identifier != NULL, NULL);
     }
 
+    struct kefir_ast_structure_specifier *specifier = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_structure_specifier));
+    REQUIRE(specifier != NULL, NULL);
+
     if (complete) {
-        REQUIRE_OK(kefir_list_init(&specifier->entries));
-        REQUIRE_OK(kefir_list_on_remove(&specifier->entries, struct_entry_remove, NULL));
+        REQUIRE(kefir_list_init(&specifier->entries) == KEFIR_OK, NULL);
+        REQUIRE(kefir_list_on_remove(&specifier->entries, struct_entry_remove, NULL) == KEFIR_OK, NULL);
     }
 
     specifier->identifier = identifier;
     specifier->complete = complete;
-    return KEFIR_OK;
+    return specifier;
 }
 
 kefir_result_t kefir_ast_structure_specifier_free(struct kefir_mem *mem,
@@ -131,6 +131,7 @@ kefir_result_t kefir_ast_structure_specifier_free(struct kefir_mem *mem,
     }
     specifier->complete = false;
     specifier->identifier = NULL;
+    KEFIR_FREE(mem, specifier);
     return KEFIR_OK;
 }
 
@@ -273,29 +274,29 @@ static kefir_result_t remove_enum_entry(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_enum_specifier_init(struct kefir_mem *mem,
-                                         struct kefir_ast_enum_specifier *specifier,
-                                         struct kefir_symbol_table *symbols,
-                                         const char *identifier,
-                                         kefir_bool_t complete) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(specifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST enum specifier"));
-    REQUIRE(symbols == NULL || identifier != NULL,
-        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier for non-NULL symbol table"));
+struct kefir_ast_enum_specifier *kefir_ast_enum_specifier_init(struct kefir_mem *mem,
+                                                           struct kefir_symbol_table *symbols,
+                                                           const char *identifier,
+                                                           kefir_bool_t complete) {
+    REQUIRE(mem != NULL, NULL);
+    REQUIRE(symbols == NULL || identifier != NULL, NULL);
     
     if (symbols != NULL && identifier != NULL) {
         identifier = kefir_symbol_table_insert(mem, symbols, identifier, NULL);
-        REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to insert identifier into symbol table"));
+        REQUIRE(identifier != NULL, NULL);
     }
+
+    struct kefir_ast_enum_specifier *specifier = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_enum_specifier));
+    REQUIRE(specifier != NULL, NULL);
 
     specifier->identifier = identifier;
     specifier->complete = complete;
     if (complete) {
-        REQUIRE_OK(kefir_list_init(&specifier->entries));
-        REQUIRE_OK(kefir_list_on_remove(&specifier->entries, remove_enum_entry, NULL));
+        REQUIRE(kefir_list_init(&specifier->entries) == KEFIR_OK, NULL);
+        REQUIRE(kefir_list_on_remove(&specifier->entries, remove_enum_entry, NULL) == KEFIR_OK, NULL);
     }
 
-    return KEFIR_OK;
+    return specifier;
 }
 
 kefir_result_t kefir_ast_enum_specifier_free(struct kefir_mem *mem,
@@ -308,6 +309,7 @@ kefir_result_t kefir_ast_enum_specifier_free(struct kefir_mem *mem,
     }
     specifier->complete = false;
     specifier->identifier = NULL;
+    KEFIR_FREE(mem, specifier);
     return KEFIR_OK;
 }
 
@@ -516,11 +518,13 @@ kefir_result_t kefir_ast_declarator_specifier_free(struct kefir_mem *mem, struct
 
                 case KEFIR_AST_TYPE_SPECIFIER_STRUCT:
                 case KEFIR_AST_TYPE_SPECIFIER_UNION:
-                    // TODO Implement structure specifier freeing
+                    REQUIRE_OK(kefir_ast_structure_specifier_free(mem, specifier->type_specifier.value.structure));
+                    specifier->type_specifier.value.structure = NULL;
                     break;
 
                 case KEFIR_AST_TYPE_SPECIFIER_ENUM:
-                    // TODO Implement structure specifier freeing
+                    REQUIRE_OK(kefir_ast_enum_specifier_free(mem, specifier->type_specifier.value.enumeration));
+                    specifier->type_specifier.value.enumeration = NULL;
                     break;
 
                 default:

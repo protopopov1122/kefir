@@ -44,33 +44,52 @@ DEFINE_CASE(ast_declarator_specifier_construction2, "AST declarator specifiers -
 END_CASE
 
 DEFINE_CASE(ast_declarator_specifier_construction3, "AST declarator specifiers - structure type specifier construction")
-    struct kefir_ast_structure_specifier structure_specifier;
-    struct kefir_ast_declarator_specifier *specifier = kefir_ast_type_specifier_struct(&kft_mem, &structure_specifier);
+    struct kefir_symbol_table symbols;
+    ASSERT_OK(kefir_symbol_table_init(&symbols));
+
+    struct kefir_ast_structure_specifier *structure_specifier = kefir_ast_structure_specifier_init(&kft_mem,
+        &symbols, "struct1", false);
+    struct kefir_ast_declarator_specifier *specifier = kefir_ast_type_specifier_struct(&kft_mem, structure_specifier);
     ASSERT(specifier != NULL);
     ASSERT(specifier->klass == KEFIR_AST_TYPE_SPECIFIER);
     ASSERT(specifier->type_specifier.specifier == KEFIR_AST_TYPE_SPECIFIER_STRUCT);
-    ASSERT(specifier->type_specifier.value.structure == &structure_specifier);
+    ASSERT(specifier->type_specifier.value.structure == structure_specifier);
     ASSERT_OK(kefir_ast_declarator_specifier_free(&kft_mem, specifier));
+
+    ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
 END_CASE
 
 DEFINE_CASE(ast_declarator_specifier_construction4, "AST declarator specifiers - union type specifier construction")
-    struct kefir_ast_structure_specifier structure_specifier;
-    struct kefir_ast_declarator_specifier *specifier = kefir_ast_type_specifier_union(&kft_mem, &structure_specifier);
+    struct kefir_symbol_table symbols;
+    ASSERT_OK(kefir_symbol_table_init(&symbols));
+
+    struct kefir_ast_structure_specifier *structure_specifier = kefir_ast_structure_specifier_init(&kft_mem,
+        &symbols, "union1", false);
+
+    struct kefir_ast_declarator_specifier *specifier = kefir_ast_type_specifier_union(&kft_mem, structure_specifier);
     ASSERT(specifier != NULL);
     ASSERT(specifier->klass == KEFIR_AST_TYPE_SPECIFIER);
     ASSERT(specifier->type_specifier.specifier == KEFIR_AST_TYPE_SPECIFIER_UNION);
-    ASSERT(specifier->type_specifier.value.structure == &structure_specifier);
+    ASSERT(specifier->type_specifier.value.structure == structure_specifier);
     ASSERT_OK(kefir_ast_declarator_specifier_free(&kft_mem, specifier));
+
+    ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
 END_CASE
 
 DEFINE_CASE(ast_declarator_specifier_construction5, "AST declarator specifiers - enumeration type specifier construction")
-    struct kefir_ast_enum_specifier enum_specifier;
-    struct kefir_ast_declarator_specifier *specifier = kefir_ast_type_specifier_enum(&kft_mem, &enum_specifier);
+    struct kefir_symbol_table symbols;
+    ASSERT_OK(kefir_symbol_table_init(&symbols));
+
+    struct kefir_ast_enum_specifier *enum_specifier = kefir_ast_enum_specifier_init(&kft_mem,
+        &symbols, "enum1", false);
+    struct kefir_ast_declarator_specifier *specifier = kefir_ast_type_specifier_enum(&kft_mem, enum_specifier);
     ASSERT(specifier != NULL);
     ASSERT(specifier->klass == KEFIR_AST_TYPE_SPECIFIER);
     ASSERT(specifier->type_specifier.specifier == KEFIR_AST_TYPE_SPECIFIER_ENUM);
-    ASSERT(specifier->type_specifier.value.enumeration == &enum_specifier);
+    ASSERT(specifier->type_specifier.value.enumeration == enum_specifier);
     ASSERT_OK(kefir_ast_declarator_specifier_free(&kft_mem, specifier));
+
+    ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
 END_CASE
 
 DEFINE_CASE(ast_declarator_specifier_construction6, "AST declarator specifiers - typedef type specifier construction #1")
