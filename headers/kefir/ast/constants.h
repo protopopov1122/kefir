@@ -122,6 +122,7 @@ typedef enum kefir_ast_scoped_identifier_linkage {
 } kefir_ast_scoped_identifier_linkage_t;
 
 typedef enum kefir_ast_scoped_identifier_storage {
+    KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF,
     KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
     KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC,
     KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL,
@@ -131,20 +132,12 @@ typedef enum kefir_ast_scoped_identifier_storage {
     KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER
 } kefir_ast_scoped_identifier_storage_t;
 
-typedef enum kefir_ast_function_specifier {
-    KEFIR_AST_FUNCTION_SPECIFIER_NONE,
-    KEFIR_AST_FUNCTION_SPECIFIER_NORETURN,
-    KEFIR_AST_FUNCTION_SPECIFIER_INLINE,
-    KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN,
-} kefir_ast_function_specifier_t;
-
 typedef enum kefir_ast_type_specifier_type {
     KEFIR_AST_TYPE_SPECIFIER_VOID = 0,
     KEFIR_AST_TYPE_SPECIFIER_CHAR,
     KEFIR_AST_TYPE_SPECIFIER_SHORT,
     KEFIR_AST_TYPE_SPECIFIER_INT,
     KEFIR_AST_TYPE_SPECIFIER_LONG,
-    KEFIR_AST_TYPE_SPECIFIER_LONG_LONG, // Virtual specifier needed for implementation purposes
     KEFIR_AST_TYPE_SPECIFIER_FLOAT,
     KEFIR_AST_TYPE_SPECIFIER_DOUBLE,
     KEFIR_AST_TYPE_SPECIFIER_SIGNED,

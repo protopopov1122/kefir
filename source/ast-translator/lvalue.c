@@ -58,6 +58,9 @@ kefir_result_t kefir_ast_translator_object_lvalue(struct kefir_mem *mem,
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_OFFSETPTR,
                 identifier_data->type_id, identifier_data->layout->value));
         } break;
+
+        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
+            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected storage class for lvalue");
     }
 
     return KEFIR_OK;

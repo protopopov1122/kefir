@@ -34,12 +34,12 @@ kefir_result_t kefir_ast_context_update_existing_scoped_type_tag(struct kefir_as
 
 struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_function_identifier(struct kefir_mem *,
                                                                                       const struct kefir_ast_type *,
-                                                                                      kefir_ast_function_specifier_t,
+                                                                                      struct kefir_ast_function_specifier,
                                                                                       kefir_ast_scoped_identifier_storage_t,
                                                                                       kefir_bool_t);
 
-kefir_ast_function_specifier_t kefir_ast_context_merge_function_specifiers(kefir_ast_function_specifier_t,
-                                                                       kefir_ast_function_specifier_t);
+struct kefir_ast_function_specifier kefir_ast_context_merge_function_specifiers(struct kefir_ast_function_specifier,
+                                                                            struct kefir_ast_function_specifier);
 
 kefir_result_t kefir_ast_context_merge_alignment(struct kefir_mem *,
                                              struct kefir_ast_alignment **,

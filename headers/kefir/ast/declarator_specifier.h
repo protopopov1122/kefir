@@ -19,7 +19,7 @@ kefir_result_t kefir_ast_declarator_specifier_list_free(struct kefir_mem *, stru
 kefir_result_t kefir_ast_declarator_specifier_list_append(struct kefir_mem *,
                                                       struct kefir_ast_declarator_specifier_list *,
                                                       struct kefir_ast_declarator_specifier *);
-struct kefir_list_entry *kefir_ast_declarator_specifier_list_iter(struct kefir_ast_declarator_specifier_list *,
+struct kefir_list_entry *kefir_ast_declarator_specifier_list_iter(const struct kefir_ast_declarator_specifier_list *,
                                                               struct kefir_ast_declarator_specifier **);
 kefir_result_t kefir_ast_declarator_specifier_list_next(struct kefir_list_entry **,
                                                     struct kefir_ast_declarator_specifier **);

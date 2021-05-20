@@ -47,7 +47,7 @@ kefir_result_t kefir_ast_declarator_specifier_list_append(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-struct kefir_list_entry *kefir_ast_declarator_specifier_list_iter(struct kefir_ast_declarator_specifier_list *list,
+struct kefir_list_entry *kefir_ast_declarator_specifier_list_iter(const struct kefir_ast_declarator_specifier_list *list,
                                                               struct kefir_ast_declarator_specifier **specifier_ptr) {
     REQUIRE(list != NULL, NULL);
     

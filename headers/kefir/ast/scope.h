@@ -11,6 +11,7 @@
 #include "kefir/ast/initializer.h"
 #include "kefir/core/util.h"
 #include "kefir/ast/type_layout.h"
+#include "kefir/ast/specifiers.h"
 
 #define KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE (sizeof(kefir_uptr_t) * 4)
 
@@ -36,7 +37,7 @@ typedef struct kefir_ast_scoped_identifier {
 
         struct {
             const struct kefir_ast_type *type;
-            kefir_ast_function_specifier_t specifier;
+            struct kefir_ast_function_specifier specifier;
             kefir_ast_scoped_identifier_storage_t storage;
             kefir_bool_t external;
         } function;

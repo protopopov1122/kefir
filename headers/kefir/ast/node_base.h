@@ -7,6 +7,7 @@
 #include "kefir/ast/constants.h"
 #include "kefir/ast/type.h"
 #include "kefir/ast/temporaries.h"
+#include "kefir/ast/specifiers.h"
 
 typedef struct kefir_ast_visitor kefir_ast_visitor_t;
 typedef struct kefir_ast_visitor kefir_ast_visitor_t;
@@ -32,6 +33,10 @@ typedef struct kefir_ast_node_properties {
         } string_literal;
         struct kefir_ast_temporary_identifier temporary;
     } expression_props;
+    struct {
+        kefir_ast_scoped_identifier_storage_t storage;
+        struct kefir_ast_function_specifier function;
+    } declaration_props;
 } kefir_ast_node_properties_t;
 
 typedef struct kefir_ast_node_base {

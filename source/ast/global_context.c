@@ -570,7 +570,7 @@ kefir_result_t kefir_ast_global_context_define_type(struct kefir_mem *mem,
 
 kefir_result_t kefir_ast_global_context_declare_function(struct kefir_mem *mem,
                                                      struct kefir_ast_global_context *context,
-                                                     kefir_ast_function_specifier_t specifier,
+                                                     struct kefir_ast_function_specifier specifier,
                                                      const struct kefir_ast_type *function) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
@@ -615,7 +615,7 @@ kefir_result_t kefir_ast_global_context_declare_function(struct kefir_mem *mem,
 
 kefir_result_t kefir_ast_global_context_define_function(struct kefir_mem *mem,
                                                     struct kefir_ast_global_context *context,
-                                                    kefir_ast_function_specifier_t specifier,
+                                                    struct kefir_ast_function_specifier specifier,
                                                     const struct kefir_ast_type *function) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
@@ -661,7 +661,7 @@ kefir_result_t kefir_ast_global_context_define_function(struct kefir_mem *mem,
 
 kefir_result_t kefir_ast_global_context_define_static_function(struct kefir_mem *mem,
                                                            struct kefir_ast_global_context *context,
-                                                           kefir_ast_function_specifier_t specifier,
+                                                           struct kefir_ast_function_specifier specifier,
                                                            const struct kefir_ast_type *function) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));

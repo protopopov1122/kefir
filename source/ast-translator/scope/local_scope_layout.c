@@ -148,6 +148,9 @@ static kefir_result_t translate_local_scoped_identifier_object(struct kefir_mem 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER:
             REQUIRE_OK(translate_auto_register_identifier(mem, builder, env, type_resolver, local_layout, identifier, scoped_identifier));
             break;
+
+        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
+            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected storage class of local-scope variable");
     }
     return KEFIR_OK;
 }
