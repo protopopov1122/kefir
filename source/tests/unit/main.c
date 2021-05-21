@@ -248,6 +248,7 @@ DECLARE_CASE(ast_enum_declaration1);
 DECLARE_CASE(ast_enum_declaration2);
 DECLARE_CASE(ast_declarator_analysis1);
 DECLARE_CASE(ast_declarator_analysis2);
+DECLARE_CASE(ast_declarator_analysis3);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -494,7 +495,8 @@ TEST_SUITE(mainSuite,
     &ast_enum_declaration1,
     &ast_enum_declaration2,
     &ast_declarator_analysis1,
-    &ast_declarator_analysis2
+    &ast_declarator_analysis2,
+    &ast_declarator_analysis3
 );
 
 int main(int argc, const char **argv) {

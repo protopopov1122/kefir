@@ -228,6 +228,65 @@ static kefir_result_t resolve_qualification(kefir_ast_type_qualifier_type_t qual
     return KEFIR_OK;
 }
 
+static kefir_result_t resolve_storage_class(kefir_ast_storage_class_specifier_type_t specifier,
+                                          kefir_ast_scoped_identifier_storage_t *storage_class) {
+    switch (specifier) {
+        case KEFIR_AST_STORAGE_SPECIFIER_TYPEDEF:
+            REQUIRE(*storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Typedef storage class cannot be combined with others"));
+            *storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF;
+            break;
+        
+        case KEFIR_AST_STORAGE_SPECIFIER_EXTERN:
+            if (*storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN) {
+                *storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN;
+            } else {
+                REQUIRE(*storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL,
+                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Extern storage class can only be colocated with thread_local"));
+                *storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL;
+            }
+            break;
+        
+        case KEFIR_AST_STORAGE_SPECIFIER_STATIC:
+            if (*storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN) {
+                *storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC;
+            } else {
+                REQUIRE(*storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL,
+                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Static storage class can only be colocated with thread_local"));
+                *storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL;
+            }
+            break;
+        
+        case KEFIR_AST_STORAGE_SPECIFIER_THREAD_LOCAL:
+            if (*storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN) {
+                *storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL;
+            } else if (*storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC) {
+                *storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL;
+            } else {
+                REQUIRE(*storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
+                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Thread_local storage class can only be colocated with extern or static"));
+                *storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL;
+            }
+            break;
+        
+        case KEFIR_AST_STORAGE_SPECIFIER_AUTO:
+            REQUIRE(*storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Auto storage class cannot be combined with others"));
+            *storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO;
+            break;
+        
+        case KEFIR_AST_STORAGE_SPECIFIER_REGISTER:
+            REQUIRE(*storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Register storage class cannot be combined with others"));
+            *storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER;
+            break;
+        
+        default:
+            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Invalid storage-class specifier");
+    }
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
                                          struct kefir_ast_type_bundle *type_bundle,
                                          const struct kefir_ast_declarator_specifier_list *specifiers,
@@ -245,6 +304,7 @@ kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
     const struct kefir_ast_type *base_type = NULL;
     kefir_bool_t qualified = false;
     struct kefir_ast_type_qualification qualification = {false};
+    kefir_ast_scoped_identifier_storage_t storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN;
 
     struct kefir_ast_declarator_specifier *declatator_specifier;
     for (struct kefir_list_entry *iter = kefir_ast_declarator_specifier_list_iter(specifiers, &declatator_specifier);
@@ -261,6 +321,9 @@ kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
                 break;
 
             case KEFIR_AST_STORAGE_CLASS_SPECIFIER:
+                REQUIRE_OK(resolve_storage_class(declatator_specifier->storage_class, &storage_class));
+                break;
+
             case KEFIR_AST_FUNCTION_SPECIFIER:
             case KEFIR_AST_ALIGNMENT_SPECIFIER:
                 return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Other types of declarator specifiers are not implemented yet");
@@ -272,5 +335,6 @@ kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
     }
 
     ASSIGN_PTR(type, base_type);
+    ASSIGN_PTR(storage, storage_class);
     return KEFIR_OK;
 }

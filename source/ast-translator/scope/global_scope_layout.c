@@ -194,6 +194,7 @@ static kefir_result_t translate_global_scoped_identifier_object(struct kefir_mem
             return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "File-scope variable cannot have auto/register storage");
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
+        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
             return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected storage class of file-scope variable");
     }
     return KEFIR_OK;
