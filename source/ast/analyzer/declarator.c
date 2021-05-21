@@ -4,9 +4,9 @@
 #include "kefir/core/error.h"
 
 enum signedness {
-    SIGNESS_DEFAULT,
-    SIGNESS_SIGNED,
-    SIGNESS_UNSIGNED
+    SIGNEDNESS_DEFAULT,
+    SIGNEDNESS_SIGNED,
+    SIGNEDNESS_UNSIGNED
 };
 
 static kefir_result_t resolve_type(struct kefir_mem *mem,
@@ -35,20 +35,21 @@ static kefir_result_t resolve_type(struct kefir_mem *mem,
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_INT:
-            if (*base_type == NULL || (*base_type)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_SHORT) {
+            if (*base_type == NULL) {
                 *base_type = kefir_ast_type_signed_int();
             } else {
-                REQUIRE((*base_type)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_LONG ||
+                REQUIRE((*base_type)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_SHORT ||
+                    (*base_type)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_LONG ||
                     (*base_type)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_LONG_LONG,
                     KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Int type specifier can only be combined with short or long"));
             }
             break;
             
         case KEFIR_AST_TYPE_SPECIFIER_LONG:
-            if (*base_type != NULL || (*base_type)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_LONG) {
+            if (*base_type != NULL && (*base_type)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_LONG) {
                 *base_type = kefir_ast_type_signed_long_long();
             } else {
-                REQUIRE((*base_type)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_INT,
+                REQUIRE((*base_type) == NULL || (*base_type)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_INT,
                     KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Long type specifier can only be combined with int or long"));
                 *base_type = kefir_ast_type_signed_long();
             }
@@ -60,20 +61,25 @@ static kefir_result_t resolve_type(struct kefir_mem *mem,
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_DOUBLE:
-            REQUIRE(*base_type == NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Double type specifier cannot be combined with others"));
-            *base_type = kefir_ast_type_double();
+            if ((*base_type) == NULL) {
+                *base_type = kefir_ast_type_double();
+            } else {
+                REQUIRE((*base_type)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_LONG,
+                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Double type specifier can only be combined with complex and long"));
+                return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Long and complex doubles are not supported yet");
+            }
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_SIGNED:
-            REQUIRE(*signedness == SIGNESS_DEFAULT,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Signed type specifier cannot be combined with other sigedness specifiers"));
-            *signedness = SIGNESS_SIGNED;
+            REQUIRE(*signedness == SIGNEDNESS_DEFAULT,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Signed type specifier cannot be combined with other signedness specifiers"));
+            *signedness = SIGNEDNESS_SIGNED;
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_UNSIGNED:
-            REQUIRE(*signedness == SIGNESS_DEFAULT,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unsigned type specifier cannot be combined with other sigedness specifiers"));
-            *signedness = SIGNESS_UNSIGNED;
+            REQUIRE(*signedness == SIGNEDNESS_DEFAULT,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unsigned type specifier cannot be combined with other signedness specifiers"));
+            *signedness = SIGNEDNESS_UNSIGNED;
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_BOOL:
@@ -99,17 +105,17 @@ static kefir_result_t resolve_type(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-static kefir_result_t apply_type_sigedness(struct kefir_mem *mem,
+static kefir_result_t apply_type_signedness(struct kefir_mem *mem,
                                          struct kefir_ast_type_bundle *type_bundle,
                                          enum signedness signedness,
                                          const struct kefir_ast_type **base_type) {
     UNUSED(mem);
     UNUSED(type_bundle);
-    if (signedness == SIGNESS_DEFAULT) {
+    if (signedness == SIGNEDNESS_DEFAULT) {
         if ((*base_type) == NULL) {
             (*base_type) = kefir_ast_type_signed_int();
         }
-    } else if (signedness == SIGNESS_SIGNED) {
+    } else if (signedness == SIGNEDNESS_SIGNED) {
         if ((*base_type) == NULL) {
             (*base_type) = kefir_ast_type_signed_int();
         } else {
@@ -198,6 +204,30 @@ static kefir_result_t apply_type_sigedness(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+static kefir_result_t resolve_qualification(kefir_ast_type_qualifier_type_t qualifier,
+                                          struct kefir_ast_type_qualification *qualifiers) {
+    switch (qualifier) {
+        case KEFIR_AST_TYPE_QUALIFIER_CONST:
+            qualifiers->constant = true;
+            break;
+        
+        case KEFIR_AST_TYPE_QUALIFIER_RESTRICT:
+            qualifiers->restricted = true;
+            break;
+        
+        case KEFIR_AST_TYPE_QUALIFIER_VOLATILE:
+            qualifiers->volatile_type = true;
+            break;
+        
+        case KEFIR_AST_TYPE_QUALIFIER_ATOMIC:
+            return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Atomic types are not supported yet");
+        
+        default:
+            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected type qualifier");
+    }
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
                                          struct kefir_ast_type_bundle *type_bundle,
                                          const struct kefir_ast_declarator_specifier_list *specifiers,
@@ -211,8 +241,10 @@ kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
     REQUIRE(specifiers != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declarator specifier list"));
     REQUIRE(declarator != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declarator"));
 
-    enum signedness signedness = SIGNESS_DEFAULT;
+    enum signedness signedness = SIGNEDNESS_DEFAULT;
     const struct kefir_ast_type *base_type = NULL;
+    kefir_bool_t qualified = false;
+    struct kefir_ast_type_qualification qualification = {false};
 
     struct kefir_ast_declarator_specifier *declatator_specifier;
     for (struct kefir_list_entry *iter = kefir_ast_declarator_specifier_list_iter(specifiers, &declatator_specifier);
@@ -224,13 +256,21 @@ kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
                 break;
             
             case KEFIR_AST_TYPE_QUALIFIER:
+                REQUIRE_OK(resolve_qualification(declatator_specifier->type_qualifier, &qualification));
+                qualified = true;
+                break;
+
             case KEFIR_AST_STORAGE_CLASS_SPECIFIER:
             case KEFIR_AST_FUNCTION_SPECIFIER:
             case KEFIR_AST_ALIGNMENT_SPECIFIER:
                 return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Other types of declarator specifiers are not implemented yet");
         }
     }
-    REQUIRE_OK(apply_type_sigedness(mem, type_bundle, signedness, &base_type));
+    REQUIRE_OK(apply_type_signedness(mem, type_bundle, signedness, &base_type));
+    if (qualified) {
+        base_type = kefir_ast_type_qualified(mem, type_bundle, base_type, qualification);
+    }
+
     ASSIGN_PTR(type, base_type);
     return KEFIR_OK;
 }
