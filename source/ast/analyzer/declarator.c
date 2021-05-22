@@ -1,7 +1,10 @@
 #include "kefir/ast/declarator.h"
+#include "kefir/ast/analyzer/declarator.h"
+#include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/ast/type.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/ast/constant_expression.h"
 
 enum signedness {
     SIGNEDNESS_DEFAULT,
@@ -306,16 +309,57 @@ static kefir_result_t resolve_function_specifier(kefir_ast_function_specifier_ty
     return KEFIR_OK;
 }
 
+static kefir_result_t type_alignment(struct kefir_mem *mem,
+                                   struct kefir_ast_context *context,
+                                   const struct kefir_ast_type *type,
+                                   kefir_size_t *alignment) {
+
+    kefir_ast_target_environment_opaque_type_t target_type;
+    struct kefir_ast_target_environment_object_info object_info;
+    REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_GET_TYPE(mem, context->target_env, type,
+        &target_type));
+    kefir_result_t res = KEFIR_AST_TARGET_ENVIRONMENT_OBJECT_INFO(mem, context->target_env,
+        target_type, NULL, &object_info);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(mem, context->target_env, target_type);
+        return res;
+    });
+    REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(mem, context->target_env, target_type));
+    *alignment = object_info.alignment;
+    return KEFIR_OK;
+}
+
+static kefir_result_t evaluate_alignment(struct kefir_mem *mem,
+                                       struct kefir_ast_context *context,
+                                       struct kefir_ast_node_base *node,
+                                       kefir_size_t *alignment) {
+    REQUIRE_OK(kefir_ast_analyze_node(mem, context, node));
+    if (node->klass->type == KEFIR_AST_TYPE_NAME) {
+        kefir_size_t new_alignment = 0;
+        REQUIRE_OK(type_alignment(mem, context, node->properties.type, &new_alignment));
+        *alignment = MAX(*alignment, new_alignment);
+    } else {
+        struct kefir_ast_constant_expression_value value;
+        REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node, &value));
+        REQUIRE(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected alignment specifier to produce"));
+        *alignment = MAX(*alignment, (kefir_size_t) value.integer);
+    }
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
-                                         struct kefir_ast_type_bundle *type_bundle,
+                                         struct kefir_ast_context *context,
                                          const struct kefir_ast_declarator_specifier_list *specifiers,
                                          const struct kefir_ast_declarator *declarator,
                                          const struct kefir_ast_type **type,
                                          kefir_ast_scoped_identifier_storage_t *storage,
-                                         kefir_ast_function_specifier_t *function) {
+                                         kefir_ast_function_specifier_t *function,
+                                         struct kefir_ast_alignment **alignment) {
     UNUSED(storage);
     UNUSED(function);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
     REQUIRE(specifiers != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declarator specifier list"));
     REQUIRE(declarator != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declarator"));
 
@@ -325,6 +369,7 @@ kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
     struct kefir_ast_type_qualification qualification = {false};
     kefir_ast_scoped_identifier_storage_t storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN;
     kefir_ast_function_specifier_t function_specifier = KEFIR_AST_FUNCTION_SPECIFIER_NONE;
+    kefir_size_t alignment_specifier = 0;
 
     struct kefir_ast_declarator_specifier *declatator_specifier;
     for (struct kefir_list_entry *iter = kefir_ast_declarator_specifier_list_iter(specifiers, &declatator_specifier);
@@ -332,7 +377,7 @@ kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
         kefir_ast_declarator_specifier_list_next(&iter, &declatator_specifier)) {
         switch (declatator_specifier->klass) {
             case KEFIR_AST_TYPE_SPECIFIER:
-                REQUIRE_OK(resolve_type(mem, type_bundle, &signedness, &base_type, &declatator_specifier->type_specifier));
+                REQUIRE_OK(resolve_type(mem, context->type_bundle, &signedness, &base_type, &declatator_specifier->type_specifier));
                 break;
             
             case KEFIR_AST_TYPE_QUALIFIER:
@@ -349,16 +394,30 @@ kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
                 break;
 
             case KEFIR_AST_ALIGNMENT_SPECIFIER:
-                return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Other types of declarator specifiers are not implemented yet");
+                REQUIRE_OK(evaluate_alignment(mem, context, declatator_specifier->alignment_specifier, &alignment_specifier));
+                break;
         }
     }
-    REQUIRE_OK(apply_type_signedness(mem, type_bundle, signedness, &base_type));
+    REQUIRE_OK(apply_type_signedness(mem, context->type_bundle, signedness, &base_type));
     if (qualified) {
-        base_type = kefir_ast_type_qualified(mem, type_bundle, base_type, qualification);
+        base_type = kefir_ast_type_qualified(mem, context->type_bundle, base_type, qualification);
     }
 
     ASSIGN_PTR(type, base_type);
     ASSIGN_PTR(storage, storage_class);
     ASSIGN_PTR(function, function_specifier);
+
+    if (alignment != NULL) {
+        if (alignment_specifier > 0) {
+            kefir_size_t natural_alignment = 0;
+            REQUIRE_OK(type_alignment(mem, context, base_type, &natural_alignment));
+            REQUIRE(natural_alignment <= alignment_specifier,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Specified alignment shall be at least as strict as natural"));
+            *alignment = kefir_ast_alignment_const_expression(mem,
+                kefir_ast_constant_expression_integer(mem, alignment_specifier));
+        } else {
+            *alignment = NULL;
+        }
+    }
     return KEFIR_OK;
 }

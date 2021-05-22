@@ -11,7 +11,6 @@
 #include "kefir/ast/initializer.h"
 #include "kefir/core/util.h"
 #include "kefir/ast/type_layout.h"
-#include "kefir/ast/specifiers.h"
 
 #define KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE (sizeof(kefir_uptr_t) * 4)
 

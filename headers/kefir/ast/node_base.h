@@ -7,7 +7,6 @@
 #include "kefir/ast/constants.h"
 #include "kefir/ast/type.h"
 #include "kefir/ast/temporaries.h"
-#include "kefir/ast/specifiers.h"
 
 typedef struct kefir_ast_visitor kefir_ast_visitor_t;
 typedef struct kefir_ast_visitor kefir_ast_visitor_t;
