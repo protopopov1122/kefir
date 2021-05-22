@@ -87,15 +87,15 @@ kefir_result_t kefir_ast_global_context_define_type(struct kefir_mem *,
                                                 const struct kefir_ast_type *);
 kefir_result_t kefir_ast_global_context_declare_function(struct kefir_mem *,
                                                      struct kefir_ast_global_context *,
-                                                     struct kefir_ast_function_specifier,
+                                                     kefir_ast_function_specifier_t,
                                                      const struct kefir_ast_type *);
 kefir_result_t kefir_ast_global_context_define_function(struct kefir_mem *,
                                                      struct kefir_ast_global_context *,
-                                                     struct kefir_ast_function_specifier,
+                                                     kefir_ast_function_specifier_t,
                                                      const struct kefir_ast_type *);
 kefir_result_t kefir_ast_global_context_define_static_function(struct kefir_mem *,
                                                            struct kefir_ast_global_context *,
-                                                           struct kefir_ast_function_specifier,
+                                                           kefir_ast_function_specifier_t,
                                                            const struct kefir_ast_type *);
 
 #endif

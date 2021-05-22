@@ -133,6 +133,13 @@ typedef enum kefir_ast_scoped_identifier_storage {
     KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN
 } kefir_ast_scoped_identifier_storage_t;
 
+typedef enum kefir_ast_function_specifier {
+    KEFIR_AST_FUNCTION_SPECIFIER_NONE = 0,
+    KEFIR_AST_FUNCTION_SPECIFIER_NORETURN,
+    KEFIR_AST_FUNCTION_SPECIFIER_INLINE,
+    KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN
+} kefir_ast_function_specifier_t;
+
 typedef enum kefir_ast_type_specifier_type {
     KEFIR_AST_TYPE_SPECIFIER_VOID = 0,
     KEFIR_AST_TYPE_SPECIFIER_CHAR,

@@ -37,7 +37,7 @@ typedef struct kefir_ast_scoped_identifier {
 
         struct {
             const struct kefir_ast_type *type;
-            struct kefir_ast_function_specifier specifier;
+            kefir_ast_function_specifier_t specifier;
             kefir_ast_scoped_identifier_storage_t storage;
             kefir_bool_t external;
         } function;

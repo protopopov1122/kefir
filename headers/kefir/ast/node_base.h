@@ -35,7 +35,7 @@ typedef struct kefir_ast_node_properties {
     } expression_props;
     struct {
         kefir_ast_scoped_identifier_storage_t storage;
-        struct kefir_ast_function_specifier function;
+        kefir_ast_function_specifier_t function;
     } declaration_props;
 } kefir_ast_node_properties_t;
 

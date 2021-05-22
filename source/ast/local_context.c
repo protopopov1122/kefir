@@ -550,7 +550,7 @@ static kefir_result_t require_global_ordinary_function(struct kefir_ast_global_c
 
 kefir_result_t kefir_ast_local_context_declare_function(struct kefir_mem *mem,
                                                     struct kefir_ast_local_context *context,
-                                                    struct kefir_ast_function_specifier specifier,
+                                                    kefir_ast_function_specifier_t specifier,
                                                     const struct kefir_ast_type *function) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));

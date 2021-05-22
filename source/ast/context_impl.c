@@ -152,7 +152,7 @@ kefir_result_t kefir_ast_context_update_existing_scoped_type_tag(struct kefir_as
 
 struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_function_identifier(struct kefir_mem *mem,
                                                                                       const struct kefir_ast_type *type,
-                                                                                      struct kefir_ast_function_specifier specifier,
+                                                                                      kefir_ast_function_specifier_t specifier,
                                                                                       kefir_ast_scoped_identifier_storage_t storage,
                                                                                       kefir_bool_t external) {
     struct kefir_ast_scoped_identifier *scoped_id = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_scoped_identifier));
@@ -167,14 +167,6 @@ struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_function_i
     scoped_id->payload.ptr = scoped_id->payload.content;
     scoped_id->payload.cleanup = &scoped_id->cleanup;
     return scoped_id;
-}
-
-struct kefir_ast_function_specifier kefir_ast_context_merge_function_specifiers(struct kefir_ast_function_specifier s1,
-                                                                            struct kefir_ast_function_specifier s2) {
-    return (struct kefir_ast_function_specifier) {
-        .inline_function = s1.inline_function || s2.inline_function,
-        .noreturn_function = s1.noreturn_function || s2.noreturn_function
-    };
 }
 
 kefir_result_t kefir_ast_context_merge_alignment(struct kefir_mem *mem,

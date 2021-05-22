@@ -66,6 +66,9 @@ kefir_bool_t kefir_ast_type_is_complete(const struct kefir_ast_type *);
 kefir_result_t kefir_ast_type_bundle_init(struct kefir_ast_type_bundle *, struct kefir_symbol_table *);
 kefir_result_t kefir_ast_type_bundle_free(struct kefir_mem *, struct kefir_ast_type_bundle *);
 
+kefir_ast_function_specifier_t kefir_ast_context_merge_function_specifiers(kefir_ast_function_specifier_t,
+                                                                       kefir_ast_function_specifier_t);
+
 #define KEFIR_AST_TYPE_SAME(type1, type2) ((type1)->ops.same((type1), (type2)))
 #define KEFIR_AST_TYPE_COMPATIBLE(type_traits, type1, type2) \
     (KEFIR_AST_TYPE_SAME((type1), (kefir_ast_zero_unqualified_type(type2))) || \

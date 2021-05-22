@@ -287,13 +287,32 @@ static kefir_result_t resolve_storage_class(kefir_ast_storage_class_specifier_ty
     return KEFIR_OK;
 }
 
+static kefir_result_t resolve_function_specifier(kefir_ast_function_specifier_type_t specifier,
+                                               kefir_ast_function_specifier_t *function_specifier) {
+    switch (specifier) {
+        case KEFIR_AST_FUNCTION_SPECIFIER_TYPE_NORETURN:
+            *function_specifier = kefir_ast_context_merge_function_specifiers(*function_specifier,
+                KEFIR_AST_FUNCTION_SPECIFIER_NORETURN);
+            break;
+        
+        case KEFIR_AST_FUNCTION_SPECIFIER_TYPE_INLINE:
+            *function_specifier = kefir_ast_context_merge_function_specifiers(*function_specifier,
+                KEFIR_AST_FUNCTION_SPECIFIER_INLINE);
+            break;
+
+        default:
+            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Invalid storage-class specifier");
+    }
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
                                          struct kefir_ast_type_bundle *type_bundle,
                                          const struct kefir_ast_declarator_specifier_list *specifiers,
                                          const struct kefir_ast_declarator *declarator,
                                          const struct kefir_ast_type **type,
                                          kefir_ast_scoped_identifier_storage_t *storage,
-                                         struct kefir_ast_function_specifier *function) {
+                                         kefir_ast_function_specifier_t *function) {
     UNUSED(storage);
     UNUSED(function);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
@@ -305,6 +324,7 @@ kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
     kefir_bool_t qualified = false;
     struct kefir_ast_type_qualification qualification = {false};
     kefir_ast_scoped_identifier_storage_t storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN;
+    kefir_ast_function_specifier_t function_specifier = KEFIR_AST_FUNCTION_SPECIFIER_NONE;
 
     struct kefir_ast_declarator_specifier *declatator_specifier;
     for (struct kefir_list_entry *iter = kefir_ast_declarator_specifier_list_iter(specifiers, &declatator_specifier);
@@ -325,6 +345,9 @@ kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
                 break;
 
             case KEFIR_AST_FUNCTION_SPECIFIER:
+                REQUIRE_OK(resolve_function_specifier(declatator_specifier->function_specifier, &function_specifier));
+                break;
+
             case KEFIR_AST_ALIGNMENT_SPECIFIER:
                 return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Other types of declarator specifiers are not implemented yet");
         }
@@ -336,5 +359,6 @@ kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
 
     ASSIGN_PTR(type, base_type);
     ASSIGN_PTR(storage, storage_class);
+    ASSIGN_PTR(function, function_specifier);
     return KEFIR_OK;
 }
