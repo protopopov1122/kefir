@@ -24,7 +24,7 @@ static kefir_bool_t same_structure_type(const struct kefir_ast_type *type1, cons
                 strcmp(field1->identifier, field2->identifier) == 0, false);
             REQUIRE(field1->alignment->value == field2->alignment->value, false);
             REQUIRE((!field1->bitfield && !field2->bitfield) ||
-                (field1->bitwidth == field2->bitwidth), false);
+                (field1->bitwidth->value.integer == field2->bitwidth->value.integer), false);
             REQUIRE(KEFIR_AST_TYPE_SAME(field1->type, field2->type), false);
         }
     }

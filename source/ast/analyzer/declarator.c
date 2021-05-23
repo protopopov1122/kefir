@@ -12,13 +12,90 @@ enum signedness {
     SIGNEDNESS_UNSIGNED
 };
 
+static kefir_result_t process_struct_declaration_entry(struct kefir_mem *mem,
+                                                     struct kefir_ast_context *context,
+                                                     struct kefir_ast_struct_type *struct_type,
+                                                     struct kefir_ast_structure_declaration_entry *entry) {
+    for (const struct kefir_list_entry *iter = kefir_list_head(&entry->declaration.declarators);
+        iter != NULL;
+        kefir_list_next(&iter)) {
+        ASSIGN_DECL_CAST(struct kefir_ast_structure_entry_declarator *, entry_declarator,
+            iter->value);
+
+        const struct kefir_ast_type *field_type = NULL;
+        kefir_ast_scoped_identifier_storage_t storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN;
+        struct kefir_ast_alignment *alignment = NULL;
+        const char *identifier = NULL;
+        REQUIRE_OK(kefir_ast_analyze_declaration(mem, context, &entry->declaration.specifiers,
+            entry_declarator->declarator, &identifier, &field_type, &storage_class, NULL, &alignment));
+        REQUIRE(storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Structure/union field cannot have storage class specified"));
+        
+        if (entry_declarator->bitwidth == NULL) {
+            REQUIRE_OK(kefir_ast_struct_type_field(mem, context->symbols, struct_type, identifier, field_type, alignment));
+        } else {
+            struct kefir_ast_constant_expression_value value;
+            REQUIRE_OK(kefir_ast_analyze_node(mem, context, entry_declarator->bitwidth));
+            REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, entry_declarator->bitwidth, &value));
+            REQUIRE(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Bit-field width shall be integral constant expression"));
+            REQUIRE_OK(kefir_ast_struct_type_bitfield(mem, context->symbols, struct_type, identifier, field_type, alignment,
+                kefir_ast_constant_expression_integer(mem, value.integer)));
+        }
+    }
+    if (kefir_list_head(&entry->declaration.declarators) == NULL) {
+        kefir_ast_scoped_identifier_storage_t storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN;
+        REQUIRE_OK(kefir_ast_analyze_declaration(mem, context, &entry->declaration.specifiers,
+            NULL, NULL, NULL, &storage_class, NULL, NULL));
+        REQUIRE(storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Structure/union field cannot have storage class specified"));
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t resolve_struct_type(struct kefir_mem *mem,
+                                        struct kefir_ast_context *context,
+                                        kefir_ast_type_specifier_type_t specifier_type,
+                                        const struct kefir_ast_structure_specifier *specifier,
+                                        const struct kefir_ast_type **base_type) {
+    const struct kefir_ast_type *type = NULL;
+    if (specifier->complete) {
+        struct kefir_ast_struct_type *struct_type = NULL;
+        type = specifier_type == KEFIR_AST_TYPE_SPECIFIER_STRUCT
+            ? kefir_ast_type_structure(mem, context->type_bundle, specifier->identifier, &struct_type)
+            : kefir_ast_type_union(mem, context->type_bundle, specifier->identifier, &struct_type);
+        REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to allocate AST struct/union type"));
+
+        for (const struct kefir_list_entry *iter = kefir_list_head(&specifier->entries);
+            iter != NULL;
+            kefir_list_next(&iter)) {
+            ASSIGN_DECL_CAST(struct kefir_ast_structure_declaration_entry *, entry,
+                iter->value);
+            if (entry->is_static_assertion) {
+                // TODO Static declaration support
+            } else {
+                REQUIRE_OK(process_struct_declaration_entry(mem, context, struct_type, entry));
+            }
+        }
+    } else {
+        type = specifier_type == KEFIR_AST_TYPE_SPECIFIER_STRUCT
+            ? kefir_ast_type_incomplete_structure(mem, context->type_bundle, specifier->identifier)
+            : kefir_ast_type_incomplete_union(mem, context->type_bundle, specifier->identifier);
+        REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to allocate AST struct/union type"));
+    }
+
+    if (specifier->identifier != NULL) {
+        // TODO Declare struct/union tag
+    }
+    ASSIGN_PTR(base_type, type);
+    return KEFIR_OK;
+}
+
 static kefir_result_t resolve_type(struct kefir_mem *mem,
-                                 struct kefir_ast_type_bundle *type_bundle,
+                                 struct kefir_ast_context *context,
                                  enum signedness *signedness,
                                  const struct kefir_ast_type **base_type,
                                  const struct kefir_ast_type_specifier *specifier) {
-    UNUSED(mem);
-    UNUSED(type_bundle);
     switch (specifier->specifier) {
         case KEFIR_AST_TYPE_SPECIFIER_VOID:
             REQUIRE(*base_type == NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Void type specifier cannot be combined with others"));
@@ -98,6 +175,9 @@ static kefir_result_t resolve_type(struct kefir_mem *mem,
             
         case KEFIR_AST_TYPE_SPECIFIER_STRUCT:
         case KEFIR_AST_TYPE_SPECIFIER_UNION:
+            REQUIRE_OK(resolve_struct_type(mem, context, specifier->specifier, specifier->value.structure, base_type));
+            break;
+
         case KEFIR_AST_TYPE_SPECIFIER_ENUM:
         case KEFIR_AST_TYPE_SPECIFIER_TYPEDEF:
             return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Complex type specifiers are not implemented yet");
@@ -348,20 +428,42 @@ static kefir_result_t evaluate_alignment(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+static kefir_result_t resolve_identifier(const struct kefir_ast_declarator *declarator,
+                                       const char **identifier) {
+    ASSIGN_PTR(identifier, NULL);
+    REQUIRE(declarator != NULL, KEFIR_OK);
+    switch (declarator->klass) {
+        case KEFIR_AST_DECLARATOR_IDENTIFIER:
+            ASSIGN_PTR(identifier, declarator->identifier);
+            break;
+
+        case KEFIR_AST_DECLARATOR_POINTER:
+            REQUIRE_OK(resolve_identifier(declarator->pointer.declarator, identifier));
+            break;
+
+        case KEFIR_AST_DECLARATOR_ARRAY:
+            REQUIRE_OK(resolve_identifier(declarator->array.declarator, identifier));
+            break;
+
+        case KEFIR_AST_DECLARATOR_FUNCTION:
+            REQUIRE_OK(resolve_identifier(declarator->function.declarator, identifier));
+            break;
+    }
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
                                          struct kefir_ast_context *context,
                                          const struct kefir_ast_declarator_specifier_list *specifiers,
                                          const struct kefir_ast_declarator *declarator,
+                                         const char **identifier,
                                          const struct kefir_ast_type **type,
                                          kefir_ast_scoped_identifier_storage_t *storage,
                                          kefir_ast_function_specifier_t *function,
                                          struct kefir_ast_alignment **alignment) {
-    UNUSED(storage);
-    UNUSED(function);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
     REQUIRE(specifiers != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declarator specifier list"));
-    REQUIRE(declarator != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declarator"));
 
     enum signedness signedness = SIGNEDNESS_DEFAULT;
     const struct kefir_ast_type *base_type = NULL;
@@ -377,7 +479,7 @@ kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
         kefir_ast_declarator_specifier_list_next(&iter, &declatator_specifier)) {
         switch (declatator_specifier->klass) {
             case KEFIR_AST_TYPE_SPECIFIER:
-                REQUIRE_OK(resolve_type(mem, context->type_bundle, &signedness, &base_type, &declatator_specifier->type_specifier));
+                REQUIRE_OK(resolve_type(mem, context, &signedness, &base_type, &declatator_specifier->type_specifier));
                 break;
             
             case KEFIR_AST_TYPE_QUALIFIER:
@@ -403,6 +505,7 @@ kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
         base_type = kefir_ast_type_qualified(mem, context->type_bundle, base_type, qualification);
     }
 
+    REQUIRE_OK(resolve_identifier(declarator, identifier));
     ASSIGN_PTR(type, base_type);
     ASSIGN_PTR(storage, storage_class);
     ASSIGN_PTR(function, function_specifier);
