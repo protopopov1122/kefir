@@ -573,8 +573,8 @@ kefir_result_t kefir_ast_type_qualifier_list_append(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-struct kefir_list_entry *kefir_ast_type_qualifier_list_iter(struct kefir_ast_type_qualifier_list *list,
-                                                              kefir_ast_type_qualifier_type_t *value) {
+struct kefir_list_entry *kefir_ast_type_qualifier_list_iter(const struct kefir_ast_type_qualifier_list *list,
+                                                        kefir_ast_type_qualifier_type_t *value) {
     REQUIRE(list != NULL, NULL);
 
     struct kefir_list_entry *iter = kefir_list_head(&list->list);
@@ -584,7 +584,7 @@ struct kefir_list_entry *kefir_ast_type_qualifier_list_iter(struct kefir_ast_typ
     return iter;
 }
 
-kefir_result_t kefir_ast_type_qualifier_list_next(struct kefir_list_entry **iter,
+kefir_result_t kefir_ast_type_qualifier_list_next(const struct kefir_list_entry **iter,
                                               kefir_ast_type_qualifier_type_t *value) {
     REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to list entry iterator"));
     REQUIRE(*iter != NULL, KEFIR_OK);

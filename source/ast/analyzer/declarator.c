@@ -486,8 +486,31 @@ static kefir_result_t evaluate_alignment(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-static kefir_result_t resolve_identifier(const struct kefir_ast_declarator *declarator,
-                                       const char **identifier) {
+static kefir_result_t resolve_pointer_declarator(struct kefir_mem *mem,
+                                               struct kefir_ast_context *context,
+                                               const struct kefir_ast_declarator *declarator,
+                                               const struct kefir_ast_type **base_type) {
+    *base_type = kefir_ast_type_pointer(mem, context->type_bundle, *base_type);
+    struct kefir_ast_type_qualification qualification = {false};
+    kefir_ast_type_qualifier_type_t qualifier;
+    for (const struct kefir_list_entry *iter = 
+            kefir_ast_type_qualifier_list_iter(&declarator->pointer.type_qualifiers, &qualifier);
+        iter != NULL;
+        kefir_ast_type_qualifier_list_next(&iter, &qualifier)) {
+        REQUIRE_OK(resolve_qualification(qualifier, &qualification));
+    }
+    if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualification)) {
+        *base_type = kefir_ast_type_qualified(mem, context->type_bundle, *base_type,
+            qualification);
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t resolve_declarator(struct kefir_mem *mem,
+                                       struct kefir_ast_context *context,
+                                       const struct kefir_ast_declarator *declarator,
+                                       const char **identifier,
+                                       const struct kefir_ast_type **base_type) {
     ASSIGN_PTR(identifier, NULL);
     REQUIRE(declarator != NULL, KEFIR_OK);
     switch (declarator->klass) {
@@ -496,15 +519,16 @@ static kefir_result_t resolve_identifier(const struct kefir_ast_declarator *decl
             break;
 
         case KEFIR_AST_DECLARATOR_POINTER:
-            REQUIRE_OK(resolve_identifier(declarator->pointer.declarator, identifier));
+            REQUIRE_OK(resolve_pointer_declarator(mem, context, declarator, base_type));
+            REQUIRE_OK(resolve_declarator(mem, context, declarator->pointer.declarator, identifier, base_type));
             break;
 
         case KEFIR_AST_DECLARATOR_ARRAY:
-            REQUIRE_OK(resolve_identifier(declarator->array.declarator, identifier));
+            REQUIRE_OK(resolve_declarator(mem, context, declarator->array.declarator, identifier, base_type));
             break;
 
         case KEFIR_AST_DECLARATOR_FUNCTION:
-            REQUIRE_OK(resolve_identifier(declarator->function.declarator, identifier));
+            REQUIRE_OK(resolve_declarator(mem, context, declarator->function.declarator, identifier, base_type));
             break;
     }
     return KEFIR_OK;
@@ -525,7 +549,6 @@ kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
 
     enum signedness signedness = SIGNEDNESS_DEFAULT;
     const struct kefir_ast_type *base_type = NULL;
-    kefir_bool_t qualified = false;
     struct kefir_ast_type_qualification qualification = {false};
     kefir_ast_scoped_identifier_storage_t storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN;
     kefir_ast_function_specifier_t function_specifier = KEFIR_AST_FUNCTION_SPECIFIER_NONE;
@@ -542,7 +565,6 @@ kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
             
             case KEFIR_AST_TYPE_QUALIFIER:
                 REQUIRE_OK(resolve_qualification(declatator_specifier->type_qualifier, &qualification));
-                qualified = true;
                 break;
 
             case KEFIR_AST_STORAGE_CLASS_SPECIFIER:
@@ -559,11 +581,11 @@ kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
         }
     }
     REQUIRE_OK(apply_type_signedness(mem, context->type_bundle, signedness, &base_type));
-    if (qualified) {
+    if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualification)) {
         base_type = kefir_ast_type_qualified(mem, context->type_bundle, base_type, qualification);
     }
 
-    REQUIRE_OK(resolve_identifier(declarator, identifier));
+    REQUIRE_OK(resolve_declarator(mem, context, declarator, identifier, &base_type));
     ASSIGN_PTR(type, base_type);
     ASSIGN_PTR(storage, storage_class);
     ASSIGN_PTR(function, function_specifier);

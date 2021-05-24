@@ -255,6 +255,8 @@ DECLARE_CASE(ast_declarator_analysis6);
 DECLARE_CASE(ast_declarator_analysis7);
 DECLARE_CASE(ast_declarator_analysis8);
 DECLARE_CASE(ast_declarator_analysis9);
+DECLARE_CASE(ast_declarator_analysis10);
+DECLARE_CASE(ast_declarator_analysis11);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -508,7 +510,9 @@ TEST_SUITE(mainSuite,
     &ast_declarator_analysis6,
     &ast_declarator_analysis7,
     &ast_declarator_analysis8,
-    &ast_declarator_analysis9
+    &ast_declarator_analysis9,
+    &ast_declarator_analysis10,
+    &ast_declarator_analysis11
 );
 
 int main(int argc, const char **argv) {

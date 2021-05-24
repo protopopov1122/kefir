@@ -166,9 +166,9 @@ kefir_result_t kefir_ast_type_qualifier_list_free(struct kefir_mem *, struct kef
 kefir_result_t kefir_ast_type_qualifier_list_append(struct kefir_mem *,
                                                 struct kefir_ast_type_qualifier_list *,
                                                 kefir_ast_type_qualifier_type_t);
-struct kefir_list_entry *kefir_ast_type_qualifier_list_iter(struct kefir_ast_type_qualifier_list *,
+struct kefir_list_entry *kefir_ast_type_qualifier_list_iter(const struct kefir_ast_type_qualifier_list *,
                                                         kefir_ast_type_qualifier_type_t *);
-kefir_result_t kefir_ast_type_qualifier_list_next(struct kefir_list_entry **,
+kefir_result_t kefir_ast_type_qualifier_list_next(const struct kefir_list_entry **,
                                               kefir_ast_type_qualifier_type_t *);
 kefir_result_t kefir_ast_type_qualifier_list_remove(struct kefir_mem *,
                                                 struct kefir_ast_type_qualifier_list *,
