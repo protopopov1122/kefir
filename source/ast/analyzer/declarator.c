@@ -85,6 +85,7 @@ static kefir_result_t resolve_struct_type(struct kefir_mem *mem,
             }
         }
     } else {
+        // TODO Resolve existing structure/union
         type = specifier_type == KEFIR_AST_TYPE_SPECIFIER_STRUCT
             ? kefir_ast_type_incomplete_structure(mem, context->type_bundle, specifier->identifier)
             : kefir_ast_type_incomplete_union(mem, context->type_bundle, specifier->identifier);
@@ -93,6 +94,53 @@ static kefir_result_t resolve_struct_type(struct kefir_mem *mem,
 
     if (specifier->identifier != NULL) {
         // TODO Declare struct/union tag
+    }
+    ASSIGN_PTR(base_type, type);
+    return KEFIR_OK;
+}
+
+
+static kefir_result_t resolve_enum_type(struct kefir_mem *mem,
+                                      struct kefir_ast_context *context,
+                                      const struct kefir_ast_enum_specifier *specifier,
+                                      const struct kefir_ast_type **base_type) {
+    const struct kefir_ast_type *type = NULL;
+    if (specifier->complete) {
+        struct kefir_ast_enum_type *enum_type = NULL;
+        type = kefir_ast_type_enumeration(mem, context->type_bundle, specifier->identifier,
+            context->type_traits->underlying_enumeration_type, &enum_type);
+        REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to allocate AST enum type"));
+
+        for (const struct kefir_list_entry *iter = kefir_list_head(&specifier->entries);
+            iter != NULL;
+            kefir_list_next(&iter)) {
+            ASSIGN_DECL_CAST(struct kefir_ast_enum_specifier_entry *, entry,
+                iter->value);
+        
+            if (entry->value != NULL) {
+                struct kefir_ast_constant_expression_value value;
+                REQUIRE_OK(kefir_ast_analyze_node(mem, context, entry->value));
+                REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context,
+                    entry->value, &value));
+                REQUIRE(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
+                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Enumeration constant valud shall be an integer constant expression"));
+                REQUIRE_OK(kefir_ast_enumeration_type_constant(mem, context->symbols, enum_type,
+                    entry->constant, kefir_ast_constant_expression_integer(mem, value.integer)));
+            } else {
+                REQUIRE_OK(kefir_ast_enumeration_type_constant_auto(mem, context->symbols, enum_type,
+                    entry->constant));
+            }
+            // TODO Define named constant
+        }
+    } else {
+        // TODO Resolve existing enum
+        type = kefir_ast_type_incomplete_enumeration(mem, context->type_bundle, specifier->identifier,
+            context->type_traits->underlying_enumeration_type);
+        REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to allocate AST enum type"));
+    }
+
+    if (specifier->identifier != NULL) {
+        // TODO Declare enum tag
     }
     ASSIGN_PTR(base_type, type);
     return KEFIR_OK;
@@ -186,6 +234,9 @@ static kefir_result_t resolve_type(struct kefir_mem *mem,
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_ENUM:
+            REQUIRE_OK(resolve_enum_type(mem, context, specifier->value.enumeration, base_type));
+            break;
+        
         case KEFIR_AST_TYPE_SPECIFIER_TYPEDEF:
             return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Complex type specifiers are not implemented yet");
 
