@@ -132,7 +132,7 @@ static kefir_bool_t same_union_type(const struct kefir_ast_type *type1, const st
             REQUIRE((field1->identifier == NULL && field2->identifier == NULL) ||
                 strcmp(field1->identifier, field2->identifier) == 0, false);
             REQUIRE((!field1->bitfield && !field2->bitfield) ||
-                (field1->bitwidth == field2->bitwidth), false);
+                (field1->bitwidth->value.integer == field2->bitwidth->value.integer), false);
             REQUIRE(KEFIR_AST_TYPE_SAME(field1->type, field2->type), false);
         }
         for (const struct kefir_hashtree_node *node2 = kefir_hashtree_iter(&type2->structure_type.field_index, &iter);

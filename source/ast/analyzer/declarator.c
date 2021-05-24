@@ -44,11 +44,18 @@ static kefir_result_t process_struct_declaration_entry(struct kefir_mem *mem,
         }
     }
     if (kefir_list_head(&entry->declaration.declarators) == NULL) {
+        const struct kefir_ast_type *field_type = NULL;
         kefir_ast_scoped_identifier_storage_t storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN;
+        struct kefir_ast_alignment *alignment = NULL;
         REQUIRE_OK(kefir_ast_analyze_declaration(mem, context, &entry->declaration.specifiers,
-            NULL, NULL, NULL, &storage_class, NULL, NULL));
+            NULL, NULL, &field_type, &storage_class, NULL, &alignment));
         REQUIRE(storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Structure/union field cannot have storage class specified"));
+        REQUIRE((field_type->tag == KEFIR_AST_TYPE_STRUCTURE ||
+            field_type->tag == KEFIR_AST_TYPE_UNION) &&
+            field_type->structure_type.identifier == NULL,
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Anonymous member shall be a structure/union without a tag"));
+        REQUIRE_OK(kefir_ast_struct_type_field(mem, context->symbols, struct_type, NULL, field_type, alignment));
     }
     return KEFIR_OK;
 }

@@ -101,7 +101,6 @@ struct kefir_ast_structure_specifier *kefir_ast_structure_specifier_init(struct 
                                                                      const char *identifier,
                                                                      kefir_bool_t complete) {
     REQUIRE(mem != NULL, NULL);
-    REQUIRE(symbols == NULL || identifier != NULL, NULL);
 
     if (symbols != NULL && identifier != NULL) {
         identifier = kefir_symbol_table_insert(mem, symbols, identifier, NULL);
@@ -279,7 +278,6 @@ struct kefir_ast_enum_specifier *kefir_ast_enum_specifier_init(struct kefir_mem 
                                                            const char *identifier,
                                                            kefir_bool_t complete) {
     REQUIRE(mem != NULL, NULL);
-    REQUIRE(symbols == NULL || identifier != NULL, NULL);
     
     if (symbols != NULL && identifier != NULL) {
         identifier = kefir_symbol_table_insert(mem, symbols, identifier, NULL);

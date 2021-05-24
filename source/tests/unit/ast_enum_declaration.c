@@ -7,7 +7,6 @@ DEFINE_CASE(ast_enum_declaration1, "AST Declarations - enum declaration #1")
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
 
-    ASSERT(kefir_ast_enum_specifier_init(&kft_mem, &symbols, NULL, false) == NULL);
     struct kefir_ast_enum_specifier *specifier = kefir_ast_enum_specifier_init(&kft_mem, &symbols, "test123", false);
     ASSERT(specifier != NULL);
 
@@ -30,7 +29,6 @@ DEFINE_CASE(ast_enum_declaration2, "AST Declarations - enum declaration #2")
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
 
-    ASSERT(kefir_ast_enum_specifier_init(&kft_mem, &symbols, NULL, true) == NULL);
     struct kefir_ast_enum_specifier *specifier = kefir_ast_enum_specifier_init(&kft_mem, &symbols, "some_enum", true);
     ASSERT(specifier != NULL);
 
