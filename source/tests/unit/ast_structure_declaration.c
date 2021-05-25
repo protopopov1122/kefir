@@ -96,7 +96,8 @@ DEFINE_CASE(ast_structure_declaration2, "AST Declarations - structure declaratio
         ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &entry4->declaration.specifiers,
             kefir_ast_type_specifier_float(&kft_mem)));
         ASSERT_OK(kefir_ast_structure_declaration_entry_append(&kft_mem, entry4,
-            kefir_ast_declarator_array(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 5)),
+            kefir_ast_declarator_array(&kft_mem, KEFIR_AST_DECLARATOR_ARRAY_BOUNDED,
+                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 5)),
                 kefir_ast_declarator_identifier(&kft_mem, &symbols, "last")), NULL));
         ASSERT_OK(kefir_ast_structure_specifier_append_entry(&kft_mem, specifier1, entry4));
     } while (0);

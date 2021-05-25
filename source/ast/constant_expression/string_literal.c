@@ -10,9 +10,10 @@ kefir_result_t kefir_ast_evaluate_string_literal_node(struct kefir_mem *mem,
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST string literalnode"));
     REQUIRE(value != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST constant expression value pointer"));
-    REQUIRE(node->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION &&
-        node->base.properties.expression_props.constant_expression,
+    REQUIRE(node->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected constant expression AST node"));
+    REQUIRE(node->base.properties.expression_props.constant_expression,
+        KEFIR_SET_ERROR(KEFIR_NOT_CONSTANT, "Expected constant expression AST node"));
 
     value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS;
     value->pointer.type = KEFIR_AST_CONSTANT_EXPRESSION_POINTER_LITERAL;

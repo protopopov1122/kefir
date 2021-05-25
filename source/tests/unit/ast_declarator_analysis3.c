@@ -130,3 +130,293 @@ DEFINE_CASE(ast_declarator_analysis11, "AST declarator analysis - pointer declar
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
+
+DEFINE_CASE(ast_declarator_analysis12, "AST declarator analysis - array declarators #1")
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits,
+        &kft_util_get_translator_environment()->target_env, &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    struct kefir_ast_declarator_specifier_list specifiers;
+    ASSERT_OK(kefir_ast_declarator_specifier_list_init(&specifiers));
+    ASSERT_OK(append_specifiers(&kft_mem, &specifiers, 3,
+        kefir_ast_type_qualifier_const(&kft_mem),
+        kefir_ast_type_specifier_char(&kft_mem),
+        kefir_ast_storage_class_specifier_auto(&kft_mem)));
+
+    struct kefir_ast_declarator *declarator = kefir_ast_declarator_array(&kft_mem,
+        KEFIR_AST_DECLARATOR_ARRAY_UNBOUNDED, NULL,
+        kefir_ast_declarator_identifier(&kft_mem, context->symbols, "array1"));
+    ASSERT_OK(kefir_ast_type_qualifier_list_append(&kft_mem, &declarator->array.type_qualifiers,
+        KEFIR_AST_TYPE_QUALIFIER_VOLATILE));
+
+    const struct kefir_ast_type *type = NULL;
+    kefir_ast_scoped_identifier_storage_t storage;
+    kefir_ast_function_specifier_t function_specifier;
+    struct kefir_ast_alignment *alignment = NULL;
+    const char *identifier = NULL;
+    ASSERT_OK(kefir_ast_analyze_declaration(&kft_mem, context, &specifiers,
+        declarator, &identifier, &type, &storage, &function_specifier, &alignment));
+
+    const struct kefir_ast_type *type1 = kefir_ast_type_unbounded_array(&kft_mem, context->type_bundle,
+        kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_char(),
+            (struct kefir_ast_type_qualification){
+                .constant = true
+            }), &(struct kefir_ast_type_qualification){
+                .volatile_type = true
+            });
+
+    ASSERT(strcmp(identifier, "array1") == 0);
+    ASSERT(type != NULL);
+    ASSERT(KEFIR_AST_TYPE_SAME(type, type1));
+    ASSERT(storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO);
+    ASSERT(function_specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
+    ASSERT(alignment == NULL);
+
+    ASSERT_OK(kefir_ast_declarator_free(&kft_mem, declarator));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_free(&kft_mem, &specifiers));
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+END_CASE
+
+DEFINE_CASE(ast_declarator_analysis13, "AST declarator analysis - array declarators #2")
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits,
+        &kft_util_get_translator_environment()->target_env, &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    struct kefir_ast_declarator_specifier_list specifiers;
+    ASSERT_OK(kefir_ast_declarator_specifier_list_init(&specifiers));
+    ASSERT_OK(append_specifiers(&kft_mem, &specifiers, 3,
+        kefir_ast_type_qualifier_const(&kft_mem),
+        kefir_ast_type_specifier_signed(&kft_mem),
+        kefir_ast_storage_class_specifier_extern(&kft_mem)));
+
+    struct kefir_ast_declarator *declarator1 = kefir_ast_declarator_array(&kft_mem,
+        KEFIR_AST_DECLARATOR_ARRAY_VLA_UNSPECIFIED, NULL,
+        kefir_ast_declarator_identifier(&kft_mem, context->symbols, "array_one"));
+    ASSERT_OK(kefir_ast_type_qualifier_list_append(&kft_mem, &declarator1->array.type_qualifiers,
+        KEFIR_AST_TYPE_QUALIFIER_RESTRICT));
+
+    struct kefir_ast_declarator *declarator2 = kefir_ast_declarator_array(&kft_mem,
+        KEFIR_AST_DECLARATOR_ARRAY_VLA_UNSPECIFIED, NULL,
+        kefir_ast_declarator_identifier(&kft_mem, context->symbols, NULL));
+    declarator2->array.static_array = true;
+    ASSERT_OK(kefir_ast_type_qualifier_list_append(&kft_mem, &declarator2->array.type_qualifiers,
+        KEFIR_AST_TYPE_QUALIFIER_RESTRICT));
+    ASSERT_OK(kefir_ast_type_qualifier_list_append(&kft_mem, &declarator2->array.type_qualifiers,
+        KEFIR_AST_TYPE_QUALIFIER_CONST));
+
+    const struct kefir_ast_type *type = NULL;
+    kefir_ast_scoped_identifier_storage_t storage;
+    kefir_ast_function_specifier_t function_specifier;
+    struct kefir_ast_alignment *alignment = NULL;
+    const char *identifier = NULL;
+
+    ASSERT_OK(kefir_ast_analyze_declaration(&kft_mem, context, &specifiers,
+        declarator1, &identifier, &type, &storage, &function_specifier, &alignment));
+    const struct kefir_ast_type *type1 = kefir_ast_type_vlen_array(&kft_mem, context->type_bundle,
+        kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_signed_int(),
+            (struct kefir_ast_type_qualification){
+                .constant = true
+            }), NULL, &(struct kefir_ast_type_qualification){
+                .restricted = true
+            });
+
+    ASSERT(strcmp(identifier, "array_one") == 0);
+    ASSERT(type != NULL);
+    ASSERT(KEFIR_AST_TYPE_SAME(type, type1));
+    ASSERT(storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);
+    ASSERT(function_specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
+    ASSERT(alignment == NULL);
+
+    ASSERT_OK(kefir_ast_analyze_declaration(&kft_mem, context, &specifiers,
+        declarator2, &identifier, &type, &storage, &function_specifier, &alignment));
+    const struct kefir_ast_type *type2 = kefir_ast_type_vlen_array_static(&kft_mem, context->type_bundle,
+        kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_signed_int(),
+            (struct kefir_ast_type_qualification){
+                .constant = true
+            }), NULL, &(struct kefir_ast_type_qualification){
+                .restricted = true,
+                .constant = true
+            });
+
+    ASSERT(identifier == NULL);
+    ASSERT(type != NULL);
+    ASSERT(KEFIR_AST_TYPE_SAME(type, type2));
+    ASSERT(storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);
+    ASSERT(function_specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
+    ASSERT(alignment == NULL);
+
+    ASSERT_OK(kefir_ast_declarator_free(&kft_mem, declarator1));
+    ASSERT_OK(kefir_ast_declarator_free(&kft_mem, declarator2));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_free(&kft_mem, &specifiers));
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+END_CASE
+
+DEFINE_CASE(ast_declarator_analysis14, "AST declarator analysis - array declarators #3")
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits,
+        &kft_util_get_translator_environment()->target_env, &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    struct kefir_ast_declarator_specifier_list specifiers;
+    ASSERT_OK(kefir_ast_declarator_specifier_list_init(&specifiers));
+    ASSERT_OK(append_specifiers(&kft_mem, &specifiers, 4,
+        kefir_ast_type_qualifier_const(&kft_mem),
+        kefir_ast_type_specifier_signed(&kft_mem),
+        kefir_ast_storage_class_specifier_extern(&kft_mem),
+        kefir_ast_alignment_specifier(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 32)))));
+
+    struct kefir_ast_declarator *declarator1 = kefir_ast_declarator_array(&kft_mem,
+        KEFIR_AST_DECLARATOR_ARRAY_BOUNDED, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 10)),
+        kefir_ast_declarator_identifier(&kft_mem, context->symbols, NULL));
+    ASSERT_OK(kefir_ast_type_qualifier_list_append(&kft_mem, &declarator1->array.type_qualifiers,
+        KEFIR_AST_TYPE_QUALIFIER_CONST));
+
+    struct kefir_ast_declarator *declarator2 = kefir_ast_declarator_array(&kft_mem,
+        KEFIR_AST_DECLARATOR_ARRAY_BOUNDED, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 20)),
+        kefir_ast_declarator_identifier(&kft_mem, context->symbols, "another_array"));
+    declarator2->array.static_array = true;
+    ASSERT_OK(kefir_ast_type_qualifier_list_append(&kft_mem, &declarator2->array.type_qualifiers,
+        KEFIR_AST_TYPE_QUALIFIER_VOLATILE));
+    ASSERT_OK(kefir_ast_type_qualifier_list_append(&kft_mem, &declarator2->array.type_qualifiers,
+        KEFIR_AST_TYPE_QUALIFIER_CONST));
+
+    const struct kefir_ast_type *type = NULL;
+    kefir_ast_scoped_identifier_storage_t storage;
+    kefir_ast_function_specifier_t function_specifier;
+    struct kefir_ast_alignment *alignment = NULL;
+    const char *identifier = NULL;
+
+    ASSERT_OK(kefir_ast_analyze_declaration(&kft_mem, context, &specifiers,
+        declarator1, &identifier, &type, &storage, &function_specifier, &alignment));
+    const struct kefir_ast_type *type1 = kefir_ast_type_array(&kft_mem, context->type_bundle,
+        kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_signed_int(),
+            (struct kefir_ast_type_qualification){
+                .constant = true
+            }), kefir_ast_constant_expression_integer(&kft_mem, 10), &(struct kefir_ast_type_qualification){
+                .restricted = true
+            });
+
+    ASSERT(identifier == NULL);
+    ASSERT(type != NULL);
+    ASSERT(KEFIR_AST_TYPE_SAME(type, type1));
+    ASSERT(storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);
+    ASSERT(function_specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
+    ASSERT(alignment != NULL);
+    ASSERT(alignment->value == 32);
+    ASSERT_OK(kefir_ast_alignment_free(&kft_mem, alignment));
+
+    ASSERT_OK(kefir_ast_declarator_free(&kft_mem, declarator1));
+    ASSERT_OK(kefir_ast_declarator_free(&kft_mem, declarator2));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_free(&kft_mem, &specifiers));
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+END_CASE
+
+DEFINE_CASE(ast_declarator_analysis15, "AST declarator analysis - array declarators #4")
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits,
+        &kft_util_get_translator_environment()->target_env, &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    REQUIRE_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "variable",
+        kefir_ast_type_signed_int(), NULL));
+
+    struct kefir_ast_declarator_specifier_list specifiers;
+    ASSERT_OK(kefir_ast_declarator_specifier_list_init(&specifiers));
+    ASSERT_OK(append_specifiers(&kft_mem, &specifiers, 3,
+        kefir_ast_type_qualifier_const(&kft_mem),
+        kefir_ast_type_specifier_signed(&kft_mem),
+        kefir_ast_storage_class_specifier_extern(&kft_mem)));
+
+    struct kefir_ast_declarator *declarator1 = kefir_ast_declarator_array(&kft_mem,
+        KEFIR_AST_DECLARATOR_ARRAY_BOUNDED,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "variable")),
+        kefir_ast_declarator_identifier(&kft_mem, context->symbols, NULL));
+    ASSERT_OK(kefir_ast_type_qualifier_list_append(&kft_mem, &declarator1->array.type_qualifiers,
+        KEFIR_AST_TYPE_QUALIFIER_CONST));
+
+    struct kefir_ast_declarator *declarator2 = kefir_ast_declarator_array(&kft_mem,
+        KEFIR_AST_DECLARATOR_ARRAY_BOUNDED,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "variable")),
+        kefir_ast_declarator_identifier(&kft_mem, context->symbols, "another_array"));
+    declarator2->array.static_array = true;
+    ASSERT_OK(kefir_ast_type_qualifier_list_append(&kft_mem, &declarator2->array.type_qualifiers,
+        KEFIR_AST_TYPE_QUALIFIER_VOLATILE));
+    ASSERT_OK(kefir_ast_type_qualifier_list_append(&kft_mem, &declarator2->array.type_qualifiers,
+        KEFIR_AST_TYPE_QUALIFIER_CONST));
+
+    const struct kefir_ast_type *type = NULL;
+    kefir_ast_scoped_identifier_storage_t storage;
+    kefir_ast_function_specifier_t function_specifier;
+    struct kefir_ast_alignment *alignment = NULL;
+    const char *identifier = NULL;
+
+    ASSERT_OK(kefir_ast_analyze_declaration(&kft_mem, context, &specifiers,
+        declarator1, &identifier, &type, &storage, &function_specifier, &alignment));
+    const struct kefir_ast_type *type1 = kefir_ast_type_vlen_array(&kft_mem, context->type_bundle,
+        kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_signed_int(),
+            (struct kefir_ast_type_qualification){
+                .constant = true
+            }),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "variable")),
+            &(struct kefir_ast_type_qualification){
+                .restricted = true
+            });
+
+    ASSERT(identifier == NULL);
+    ASSERT(type != NULL);
+    ASSERT(KEFIR_AST_TYPE_SAME(type, type1));
+    ASSERT(storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);
+    ASSERT(function_specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
+    ASSERT(alignment == NULL);
+
+    ASSERT_OK(kefir_ast_analyze_declaration(&kft_mem, context, &specifiers,
+        declarator2, &identifier, &type, &storage, &function_specifier, &alignment));
+    const struct kefir_ast_type *type2 = kefir_ast_type_vlen_array_static(&kft_mem, context->type_bundle,
+        kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_signed_int(),
+            (struct kefir_ast_type_qualification){
+                .constant = true
+            }),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "variable")),
+            &(struct kefir_ast_type_qualification){
+                .volatile_type = true,
+                .constant = true
+            });
+
+    ASSERT(strcmp(identifier, "another_array") == 0);
+    ASSERT(type != NULL);
+    ASSERT(KEFIR_AST_TYPE_SAME(type, type2));
+    ASSERT(storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);
+    ASSERT(function_specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
+    ASSERT(alignment == NULL);
+
+    ASSERT_OK(kefir_ast_declarator_free(&kft_mem, declarator1));
+    ASSERT_OK(kefir_ast_declarator_free(&kft_mem, declarator2));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_free(&kft_mem, &specifiers));
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+END_CASE

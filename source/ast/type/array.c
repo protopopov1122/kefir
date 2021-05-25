@@ -11,8 +11,12 @@ static kefir_bool_t same_array_type(const struct kefir_ast_type *type1, const st
     REQUIRE(type1->array_type.boundary == type2->array_type.boundary, false);
     switch (type1->array_type.boundary) {
         case KEFIR_AST_ARRAY_UNBOUNDED:
+            break;
+
         case KEFIR_AST_ARRAY_VLA:
         case KEFIR_AST_ARRAY_VLA_STATIC:
+            REQUIRE((type1->array_type.vla_length == NULL && type2->array_type.vla_length == NULL) ||
+                (type1->array_type.vla_length != NULL && type2->array_type.vla_length != NULL), false);
             break;
 
         case KEFIR_AST_ARRAY_BOUNDED:

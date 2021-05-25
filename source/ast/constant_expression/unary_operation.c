@@ -10,9 +10,10 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem,
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST unary operation node"));
     REQUIRE(value != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST constant expression value pointer"));
-    REQUIRE(node->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION &&
-        node->base.properties.expression_props.constant_expression,
+    REQUIRE(node->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected constant expression AST node"));
+    REQUIRE(node->base.properties.expression_props.constant_expression,
+        KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Expected constant expression AST node"));
 
     struct kefir_ast_constant_expression_value arg_value;
     switch (node->type) {
@@ -77,7 +78,7 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem,
             case KEFIR_AST_OPERATION_POSTFIX_DECREMENT:
             case KEFIR_AST_OPERATION_PREFIX_INCREMENT:
             case KEFIR_AST_OPERATION_PREFIX_DECREMENT:
-                return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
+                return KEFIR_SET_ERROR(KEFIR_NOT_CONSTANT,
                     "Constant expressions shall not contain increment/decrement operators");
                 
             case KEFIR_AST_OPERATION_ADDRESS:
@@ -87,7 +88,7 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem,
                 break;
                 
             case KEFIR_AST_OPERATION_INDIRECTION:
-                return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
+                return KEFIR_SET_ERROR(KEFIR_NOT_CONSTANT,
                     "Constant expression cannot contain indirection operator");
                 
             case KEFIR_AST_OPERATION_SIZEOF: {

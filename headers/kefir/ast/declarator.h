@@ -10,9 +10,16 @@ typedef struct kefir_ast_declarator_pointer {
     struct kefir_ast_declarator *declarator;
 } kefir_ast_declarator_pointer_t;
 
+typedef enum kefir_ast_declarator_array_type {
+    KEFIR_AST_DECLARATOR_ARRAY_UNBOUNDED,
+    KEFIR_AST_DECLARATOR_ARRAY_VLA_UNSPECIFIED,
+    KEFIR_AST_DECLARATOR_ARRAY_BOUNDED
+} kefir_ast_declarator_array_type_t;
+
 typedef struct kefir_ast_declarator_array {
     struct kefir_ast_type_qualifier_list type_qualifiers;
     kefir_bool_t static_array;
+    kefir_ast_declarator_array_type_t type;
     struct kefir_ast_node_base *length;
     struct kefir_ast_declarator *declarator;
 } kefir_ast_declarator_array_t;
@@ -35,7 +42,10 @@ typedef struct kefir_ast_declarator {
 
 struct kefir_ast_declarator *kefir_ast_declarator_identifier(struct kefir_mem *, struct kefir_symbol_table *, const char *);
 struct kefir_ast_declarator *kefir_ast_declarator_pointer(struct kefir_mem *, struct kefir_ast_declarator *);
-struct kefir_ast_declarator *kefir_ast_declarator_array(struct kefir_mem *, struct kefir_ast_node_base *, struct kefir_ast_declarator *);
+struct kefir_ast_declarator *kefir_ast_declarator_array(struct kefir_mem *,
+                                                    kefir_ast_declarator_array_type_t,
+                                                    struct kefir_ast_node_base *,
+                                                    struct kefir_ast_declarator *);
 struct kefir_ast_declarator *kefir_ast_declarator_function(struct kefir_mem *, struct kefir_ast_declarator *);
 kefir_result_t kefir_ast_declarator_free(struct kefir_mem *, struct kefir_ast_declarator *);
 

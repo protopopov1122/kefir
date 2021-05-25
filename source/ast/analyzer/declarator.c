@@ -491,6 +491,9 @@ static kefir_result_t resolve_pointer_declarator(struct kefir_mem *mem,
                                                const struct kefir_ast_declarator *declarator,
                                                const struct kefir_ast_type **base_type) {
     *base_type = kefir_ast_type_pointer(mem, context->type_bundle, *base_type);
+    REQUIRE(*base_type != NULL,
+        KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST pointer type"));
+
     struct kefir_ast_type_qualification qualification = {false};
     kefir_ast_type_qualifier_type_t qualifier;
     for (const struct kefir_list_entry *iter = 
@@ -502,6 +505,75 @@ static kefir_result_t resolve_pointer_declarator(struct kefir_mem *mem,
     if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualification)) {
         *base_type = kefir_ast_type_qualified(mem, context->type_bundle, *base_type,
             qualification);
+        REQUIRE(*base_type != NULL,
+            KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST qualified type"));
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t resolve_array_declarator(struct kefir_mem *mem,
+                                             struct kefir_ast_context *context,
+                                             const struct kefir_ast_declarator *declarator,
+                                             const struct kefir_ast_type **base_type) {
+    struct kefir_ast_type_qualification qualification = {false};
+    kefir_ast_type_qualifier_type_t qualifier;
+    for (const struct kefir_list_entry *iter = 
+            kefir_ast_type_qualifier_list_iter(&declarator->array.type_qualifiers, &qualifier);
+        iter != NULL;
+        kefir_ast_type_qualifier_list_next(&iter, &qualifier)) {
+        REQUIRE_OK(resolve_qualification(qualifier, &qualification));
+    }
+
+    switch (declarator->array.type) {
+        case KEFIR_AST_DECLARATOR_ARRAY_UNBOUNDED:
+            *base_type = kefir_ast_type_unbounded_array(mem, context->type_bundle, *base_type,
+                &qualification);
+            REQUIRE(*base_type != NULL,
+                KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST unbounded array type"));
+            break;
+
+        case KEFIR_AST_DECLARATOR_ARRAY_VLA_UNSPECIFIED:
+            if (declarator->array.static_array) {
+                *base_type = kefir_ast_type_vlen_array_static(mem, context->type_bundle, *base_type, NULL,
+                    &qualification);
+            } else {
+                *base_type = kefir_ast_type_vlen_array(mem, context->type_bundle, *base_type, NULL,
+                    &qualification);
+            }
+            REQUIRE(*base_type != NULL,
+                KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST unbounded array type"));
+            break;
+
+        case KEFIR_AST_DECLARATOR_ARRAY_BOUNDED: {
+            struct kefir_ast_constant_expression_value value;
+            REQUIRE_OK(kefir_ast_analyze_node(mem, context, declarator->array.length));
+            kefir_result_t res = kefir_ast_constant_expression_value_evaluate(mem, context, declarator->array.length,
+                &value);
+            if (res == KEFIR_NOT_CONSTANT) {
+                if (declarator->array.static_array) {
+                    *base_type = kefir_ast_type_vlen_array_static(mem, context->type_bundle, *base_type,
+                        KEFIR_AST_NODE_CLONE(mem, declarator->array.length),
+                        &qualification);
+                } else {
+                    *base_type = kefir_ast_type_vlen_array(mem, context->type_bundle, *base_type,
+                        KEFIR_AST_NODE_CLONE(mem, declarator->array.length),
+                        &qualification);
+                }
+            } else {
+                REQUIRE_OK(res);
+                REQUIRE(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
+                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Constant length of AST array declaration shall have integral type"));
+                if (declarator->array.static_array) {
+                    *base_type = kefir_ast_type_array_static(mem, context->type_bundle, *base_type,
+                        kefir_ast_constant_expression_integer(mem, value.integer),
+                        &qualification);
+                } else {
+                    *base_type = kefir_ast_type_array(mem, context->type_bundle, *base_type,
+                        kefir_ast_constant_expression_integer(mem, value.integer),
+                        &qualification);
+                }
+            }
+        } break;
     }
     return KEFIR_OK;
 }
@@ -524,6 +596,7 @@ static kefir_result_t resolve_declarator(struct kefir_mem *mem,
             break;
 
         case KEFIR_AST_DECLARATOR_ARRAY:
+            REQUIRE_OK(resolve_array_declarator(mem, context, declarator, base_type));
             REQUIRE_OK(resolve_declarator(mem, context, declarator->array.declarator, identifier, base_type));
             break;
 

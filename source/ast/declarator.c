@@ -39,10 +39,16 @@ struct kefir_ast_declarator *kefir_ast_declarator_pointer(struct kefir_mem *mem,
 }
 
 struct kefir_ast_declarator *kefir_ast_declarator_array(struct kefir_mem *mem,
+                                                    kefir_ast_declarator_array_type_t type,
                                                     struct kefir_ast_node_base *length,
                                                     struct kefir_ast_declarator *direct) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(direct != NULL, NULL);
+    if (type == KEFIR_AST_DECLARATOR_ARRAY_BOUNDED) {
+        REQUIRE(length != NULL, NULL);
+    } else {
+        REQUIRE(length == NULL, NULL);
+    }
 
     struct kefir_ast_declarator *decl = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_declarator));
     REQUIRE(decl != NULL, NULL);
@@ -54,6 +60,7 @@ struct kefir_ast_declarator *kefir_ast_declarator_array(struct kefir_mem *mem,
         return NULL;
     });
     
+    decl->array.type = type;
     decl->array.length = length;
     decl->array.static_array = false;
     decl->array.declarator = direct;
