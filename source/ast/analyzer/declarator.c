@@ -115,7 +115,6 @@ static kefir_result_t resolve_struct_type(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-
 static kefir_result_t resolve_enum_type(struct kefir_mem *mem,
                                       struct kefir_ast_context *context,
                                       const struct kefir_ast_enum_specifier *specifier,
@@ -181,30 +180,54 @@ static kefir_result_t resolve_enum_type(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+static kefir_result_t resolve_typedef(struct kefir_ast_context *context,
+                                    const char *type_name,
+                                    const struct kefir_ast_type **base_type) {
+    const struct kefir_ast_scoped_identifier *scoped_identifier = NULL;
+    REQUIRE_OK(context->resolve_ordinary_identifier(context, type_name, &scoped_identifier));
+    REQUIRE(scoped_identifier->klass == KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION,
+        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Referenced identifier is not a type definition"));
+    *base_type = scoped_identifier->type;
+    return KEFIR_OK;
+}
+
+enum type_specifier_sequence_state {
+    TYPE_SPECIFIER_SEQUENCE_EMPTY,
+    TYPE_SPECIFIER_SEQUENCE_TYPEDEF,
+    TYPE_SPECIFIER_SEQUENCE_SPECIFIERS
+} type_specifier_sequence_state_t;
+
 static kefir_result_t resolve_type(struct kefir_mem *mem,
                                  struct kefir_ast_context *context,
                                  enum signedness *signedness,
+                                 enum type_specifier_sequence_state *seq_state,
                                  const struct kefir_ast_type **base_type,
                                  const struct kefir_ast_type_specifier *specifier) {
     switch (specifier->specifier) {
         case KEFIR_AST_TYPE_SPECIFIER_VOID:
             REQUIRE(*base_type == NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Void type specifier cannot be combined with others"));
             *base_type = kefir_ast_type_void();
+            *seq_state =TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_CHAR:
             REQUIRE(*base_type == NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Char type specifier cannot be combined with others"));
             *base_type = kefir_ast_type_char();
+            *seq_state =TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
             
         case KEFIR_AST_TYPE_SPECIFIER_SHORT:
             REQUIRE(*base_type == NULL ||
                 (*base_type)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_INT,
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Short type specifier can only be combined with int"));
+            REQUIRE(*seq_state != TYPE_SPECIFIER_SEQUENCE_TYPEDEF,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot combine type specifiers with referenced type definition"));
             *base_type = kefir_ast_type_signed_short();
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_INT:
+            REQUIRE(*seq_state != TYPE_SPECIFIER_SEQUENCE_TYPEDEF,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot combine type specifiers with referenced type definition"));
             if (*base_type == NULL) {
                 *base_type = kefir_ast_type_signed_int();
             } else {
@@ -213,9 +236,12 @@ static kefir_result_t resolve_type(struct kefir_mem *mem,
                     (*base_type)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_LONG_LONG,
                     KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Int type specifier can only be combined with short or long"));
             }
+            *seq_state =TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
             
         case KEFIR_AST_TYPE_SPECIFIER_LONG:
+            REQUIRE(*seq_state != TYPE_SPECIFIER_SEQUENCE_TYPEDEF,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot combine type specifiers with referenced type definition"));
             if (*base_type != NULL && (*base_type)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_LONG) {
                 *base_type = kefir_ast_type_signed_long_long();
             } else {
@@ -223,14 +249,20 @@ static kefir_result_t resolve_type(struct kefir_mem *mem,
                     KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Long type specifier can only be combined with int or long"));
                 *base_type = kefir_ast_type_signed_long();
             }
+            *seq_state =TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_FLOAT:
             REQUIRE(*base_type == NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Float type specifier cannot be combined with others"));
+            REQUIRE(*seq_state != TYPE_SPECIFIER_SEQUENCE_TYPEDEF,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot combine type specifiers with referenced type definition"));
             *base_type = kefir_ast_type_float();
+            *seq_state =TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_DOUBLE:
+            REQUIRE(*seq_state != TYPE_SPECIFIER_SEQUENCE_TYPEDEF,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot combine type specifiers with referenced type definition"));
             if ((*base_type) == NULL) {
                 *base_type = kefir_ast_type_double();
             } else {
@@ -238,23 +270,33 @@ static kefir_result_t resolve_type(struct kefir_mem *mem,
                     KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Double type specifier can only be combined with complex and long"));
                 return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Long and complex doubles are not supported yet");
             }
+            *seq_state =TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_SIGNED:
+            REQUIRE(*seq_state != TYPE_SPECIFIER_SEQUENCE_TYPEDEF,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot combine type specifiers with referenced type definition"));
             REQUIRE(*signedness == SIGNEDNESS_DEFAULT,
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Signed type specifier cannot be combined with other signedness specifiers"));
             *signedness = SIGNEDNESS_SIGNED;
+            *seq_state =TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_UNSIGNED:
+            REQUIRE(*seq_state != TYPE_SPECIFIER_SEQUENCE_TYPEDEF,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot combine type specifiers with referenced type definition"));
             REQUIRE(*signedness == SIGNEDNESS_DEFAULT,
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unsigned type specifier cannot be combined with other signedness specifiers"));
             *signedness = SIGNEDNESS_UNSIGNED;
+            *seq_state =TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_BOOL:
+            REQUIRE(*seq_state != TYPE_SPECIFIER_SEQUENCE_TYPEDEF,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot combine type specifiers with referenced type definition"));
             REQUIRE(*base_type == NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Boolean type specifier cannot be combined with others"));
             *base_type = kefir_ast_type_bool();
+            *seq_state =TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_COMPLEX:
@@ -265,15 +307,25 @@ static kefir_result_t resolve_type(struct kefir_mem *mem,
             
         case KEFIR_AST_TYPE_SPECIFIER_STRUCT:
         case KEFIR_AST_TYPE_SPECIFIER_UNION:
+            REQUIRE(*seq_state == TYPE_SPECIFIER_SEQUENCE_EMPTY,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot combine struct/union type specifier with others"));
             REQUIRE_OK(resolve_struct_type(mem, context, specifier->specifier, specifier->value.structure, base_type));
+            *seq_state =TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_ENUM:
+            REQUIRE(*seq_state == TYPE_SPECIFIER_SEQUENCE_EMPTY,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot combine struct/union type specifier with others"));
             REQUIRE_OK(resolve_enum_type(mem, context, specifier->value.enumeration, base_type));
+            *seq_state =TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
         
         case KEFIR_AST_TYPE_SPECIFIER_TYPEDEF:
-            return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Complex type specifiers are not implemented yet");
+            REQUIRE(*seq_state == TYPE_SPECIFIER_SEQUENCE_EMPTY,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot combine referenced type definition with others"));
+            REQUIRE_OK(resolve_typedef(context, specifier->value.type_name, base_type));
+            *seq_state =TYPE_SPECIFIER_SEQUENCE_TYPEDEF;
+            break;
 
         default:
             return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected type specifier");
@@ -656,6 +708,7 @@ kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
     REQUIRE(specifiers != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declarator specifier list"));
 
     enum signedness signedness = SIGNEDNESS_DEFAULT;
+    enum type_specifier_sequence_state seq_state =TYPE_SPECIFIER_SEQUENCE_EMPTY;
     const struct kefir_ast_type *base_type = NULL;
     struct kefir_ast_type_qualification qualification = {false};
     kefir_ast_scoped_identifier_storage_t storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN;
@@ -668,7 +721,7 @@ kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
         kefir_ast_declarator_specifier_list_next(&iter, &declatator_specifier)) {
         switch (declatator_specifier->klass) {
             case KEFIR_AST_TYPE_SPECIFIER:
-                REQUIRE_OK(resolve_type(mem, context, &signedness, &base_type, &declatator_specifier->type_specifier));
+                REQUIRE_OK(resolve_type(mem, context, &signedness, &seq_state, &base_type, &declatator_specifier->type_specifier));
                 break;
             
             case KEFIR_AST_TYPE_QUALIFIER:

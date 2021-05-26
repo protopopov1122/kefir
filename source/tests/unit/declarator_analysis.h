@@ -10,6 +10,22 @@ kefir_result_t append_specifiers(struct kefir_mem *,
                                int,
                                ...);
 
+#define ASSERT_NODECL_TYPE(_mem, _context, _type, _spec_count, ...) \
+    do { \
+        struct kefir_ast_declarator_specifier_list specifiers; \
+        ASSERT_OK(kefir_ast_declarator_specifier_list_init(&specifiers)); \
+        ASSERT_OK(append_specifiers((_mem), &specifiers, (_spec_count), __VA_ARGS__)); \
+         \
+        const struct kefir_ast_type *type = NULL; \
+        ASSERT_OK(kefir_ast_analyze_declaration((_mem), (_context), &specifiers, \
+            NULL, NULL, &type, NULL, NULL, NULL)); \
+     \
+        ASSERT(type != NULL); \
+        ASSERT(KEFIR_AST_TYPE_SAME(type, (_type))); \
+     \
+        ASSERT_OK(kefir_ast_declarator_specifier_list_free((_mem), &specifiers)); \
+    } while (0)
+
 #define ASSERT_IDENTIFIER_TYPE(_mem, _context, _type, _storage_class, _function_spec, _alignment, _spec_count, ...) \
     do { \
         struct kefir_ast_declarator_specifier_list specifiers; \
