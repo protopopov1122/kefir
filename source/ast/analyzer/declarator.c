@@ -65,6 +65,7 @@ static kefir_result_t resolve_struct_type(struct kefir_mem *mem,
                                         kefir_ast_type_specifier_type_t specifier_type,
                                         const struct kefir_ast_structure_specifier *specifier,
                                         const struct kefir_ast_type **base_type) {
+    kefir_bool_t resolved = false;
     const struct kefir_ast_type *type = NULL;
     if (specifier->complete) {
         struct kefir_ast_struct_type *struct_type = NULL;
@@ -85,15 +86,30 @@ static kefir_result_t resolve_struct_type(struct kefir_mem *mem,
             }
         }
     } else {
-        // TODO Resolve existing structure/union
-        type = specifier_type == KEFIR_AST_TYPE_SPECIFIER_STRUCT
-            ? kefir_ast_type_incomplete_structure(mem, context->type_bundle, specifier->identifier)
-            : kefir_ast_type_incomplete_union(mem, context->type_bundle, specifier->identifier);
-        REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to allocate AST struct/union type"));
+        if (specifier->identifier != NULL) {
+            const struct kefir_ast_scoped_identifier *scoped_identifier = NULL;
+            kefir_result_t res = context->resolve_tag_identifier(context, specifier->identifier, &scoped_identifier);
+            if (res == KEFIR_OK) {
+                REQUIRE((specifier_type == KEFIR_AST_TYPE_SPECIFIER_STRUCT && scoped_identifier->type->tag == KEFIR_AST_TYPE_STRUCTURE) ||
+                    (specifier_type == KEFIR_AST_TYPE_SPECIFIER_UNION && scoped_identifier->type->tag == KEFIR_AST_TYPE_UNION),
+                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Tagged type declaration mismatch"));
+                type = scoped_identifier->type;
+                resolved = true;
+            } else {
+                REQUIRE(res == KEFIR_NOT_FOUND, res);
+            }
+        }
+
+        if (!resolved) {
+            type = specifier_type == KEFIR_AST_TYPE_SPECIFIER_STRUCT
+                ? kefir_ast_type_incomplete_structure(mem, context->type_bundle, specifier->identifier)
+                : kefir_ast_type_incomplete_union(mem, context->type_bundle, specifier->identifier);
+            REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to allocate AST struct/union type"));
+        }
     }
 
-    if (specifier->identifier != NULL) {
-        // TODO Declare struct/union tag
+    if (specifier->identifier != NULL && !resolved) {
+        REQUIRE_OK(context->define_tag(mem, context, type));
     }
     ASSIGN_PTR(base_type, type);
     return KEFIR_OK;
@@ -104,6 +120,7 @@ static kefir_result_t resolve_enum_type(struct kefir_mem *mem,
                                       struct kefir_ast_context *context,
                                       const struct kefir_ast_enum_specifier *specifier,
                                       const struct kefir_ast_type **base_type) {
+    kefir_bool_t resolved = false;
     const struct kefir_ast_type *type = NULL;
     if (specifier->complete) {
         struct kefir_ast_enum_type *enum_type = NULL;
@@ -111,6 +128,7 @@ static kefir_result_t resolve_enum_type(struct kefir_mem *mem,
             context->type_traits->underlying_enumeration_type, &enum_type);
         REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to allocate AST enum type"));
 
+        kefir_ast_constant_expression_int_t constant_value = 0;
         for (const struct kefir_list_entry *iter = kefir_list_head(&specifier->entries);
             iter != NULL;
             kefir_list_next(&iter)) {
@@ -124,23 +142,40 @@ static kefir_result_t resolve_enum_type(struct kefir_mem *mem,
                     entry->value, &value));
                 REQUIRE(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
                     KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Enumeration constant valud shall be an integer constant expression"));
+                constant_value = value.integer;
                 REQUIRE_OK(kefir_ast_enumeration_type_constant(mem, context->symbols, enum_type,
-                    entry->constant, kefir_ast_constant_expression_integer(mem, value.integer)));
+                    entry->constant, kefir_ast_constant_expression_integer(mem, constant_value)));
             } else {
                 REQUIRE_OK(kefir_ast_enumeration_type_constant_auto(mem, context->symbols, enum_type,
                     entry->constant));
             }
-            // TODO Define named constant
+            REQUIRE_OK(context->define_constant(mem, context, entry->constant,
+                kefir_ast_constant_expression_integer(mem, constant_value++),
+                context->type_traits->underlying_enumeration_type));
         }
     } else {
-        // TODO Resolve existing enum
-        type = kefir_ast_type_incomplete_enumeration(mem, context->type_bundle, specifier->identifier,
-            context->type_traits->underlying_enumeration_type);
-        REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to allocate AST enum type"));
+        if (specifier->identifier != NULL) {
+            const struct kefir_ast_scoped_identifier *scoped_identifier = NULL;
+            kefir_result_t res = context->resolve_tag_identifier(context, specifier->identifier, &scoped_identifier);
+            if (res == KEFIR_OK) {
+                REQUIRE(scoped_identifier->type->tag == KEFIR_AST_TYPE_ENUMERATION,
+                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Tagged type declaration mismatch"));
+                type = scoped_identifier->type;
+                resolved = true;
+            } else {
+                REQUIRE(res == KEFIR_NOT_FOUND, res);
+            }
+        }
+
+        if (!resolved) {
+            type = kefir_ast_type_incomplete_enumeration(mem, context->type_bundle, specifier->identifier,
+                context->type_traits->underlying_enumeration_type);
+            REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to allocate AST enum type"));
+        }
     }
 
-    if (specifier->identifier != NULL) {
-        // TODO Declare enum tag
+    if (specifier->identifier != NULL && !resolved) {
+        REQUIRE_OK(context->define_tag(mem, context, type));
     }
     ASSIGN_PTR(base_type, type);
     return KEFIR_OK;

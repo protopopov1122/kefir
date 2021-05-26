@@ -58,6 +58,35 @@ static kefir_result_t context_allocate_temporary_value(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+static kefir_result_t context_define_tag(struct kefir_mem *mem,
+                                       const struct kefir_ast_context *context,
+                                       const struct kefir_ast_type *type) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
+    
+    ASSIGN_DECL_CAST(struct kefir_ast_local_context *, local_ctx,
+        context->payload);
+    REQUIRE_OK(kefir_ast_local_context_define_tag(mem, local_ctx, type));
+    return KEFIR_OK;
+}
+
+static kefir_result_t context_define_constant(struct kefir_mem *mem, 
+                                            struct kefir_ast_context *context,
+                                            const char *identifier,
+                                            struct kefir_ast_constant_expression *value,
+                                            const struct kefir_ast_type *type) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
+    REQUIRE(value != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST constant expression"));
+    
+    ASSIGN_DECL_CAST(struct kefir_ast_local_context *, local_ctx,
+        context->payload);
+    REQUIRE_OK(kefir_ast_local_context_define_constant(mem, local_ctx, identifier, value, type));
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_local_context_init(struct kefir_mem *mem,
                                   struct kefir_ast_global_context *global,
                                   struct kefir_ast_local_context *context) {
@@ -75,6 +104,8 @@ kefir_result_t kefir_ast_local_context_init(struct kefir_mem *mem,
     context->context.resolve_ordinary_identifier = context_resolve_ordinary_identifier;
     context->context.resolve_tag_identifier = context_resolve_tag_identifier;
     context->context.allocate_temporary_value = context_allocate_temporary_value;
+    context->context.define_tag = context_define_tag;
+    context->context.define_constant = context_define_constant;
     context->context.symbols = &context->global->symbols;
     context->context.type_bundle = &context->global->type_bundle;
     context->context.type_traits = context->global->type_traits;

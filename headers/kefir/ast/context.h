@@ -17,6 +17,15 @@ typedef struct kefir_ast_context {
                                              const struct kefir_ast_context *,
                                              const struct kefir_ast_type *,
                                              struct kefir_ast_temporary_identifier *);
+    
+    kefir_result_t (*define_tag)(struct kefir_mem *,
+                               const struct kefir_ast_context *,
+                               const struct kefir_ast_type *);
+    kefir_result_t (*define_constant)(struct kefir_mem *,
+                                    struct kefir_ast_context *,
+                                    const char *,
+                                    struct kefir_ast_constant_expression *,
+                                    const struct kefir_ast_type *);
 
     struct kefir_symbol_table *symbols;
     const struct kefir_ast_type_traits *type_traits;

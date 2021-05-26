@@ -10,5 +10,6 @@ typedef struct kefir_ast_node_base kefir_ast_node_base_t;
 typedef struct kefir_ast_scoped_identifier kefir_ast_scoped_identifier_t;
 typedef struct kefir_ast_context kefir_ast_context_t;
 typedef struct kefir_ast_type_bundle kefir_ast_type_bundle_t;
+typedef struct kefir_ast_constant_expression kefir_ast_constant_expression_t;
 
 #endif
