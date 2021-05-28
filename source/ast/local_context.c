@@ -72,7 +72,7 @@ static kefir_result_t context_define_tag(struct kefir_mem *mem,
 }
 
 static kefir_result_t context_define_constant(struct kefir_mem *mem, 
-                                            struct kefir_ast_context *context,
+                                            const struct kefir_ast_context *context,
                                             const char *identifier,
                                             struct kefir_ast_constant_expression *value,
                                             const struct kefir_ast_type *type) {

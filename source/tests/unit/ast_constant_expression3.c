@@ -5,6 +5,7 @@
 #include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/test/util.h"
 #include "constant_expression.h"
+#include "declarator_analysis.h"
 
 DEFINE_CASE(ast_constant_expression_unary_operations1, "AST constant expressions - unary operations #1")
     const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
@@ -64,107 +65,119 @@ DEFINE_CASE(ast_constant_expression_unary_operations2, "AST constant expressions
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
+#define MAKE_TYPENAME(_id, _spec_count, ...) \
+    struct kefir_ast_type_name *_id = kefir_ast_new_type_name(&kft_mem,   \
+        kefir_ast_declarator_identifier(&kft_mem, NULL, NULL)); \
+    ASSERT_OK(append_specifiers(&kft_mem, &_id->type_decl.specifiers, (_spec_count), __VA_ARGS__));
+
+    MAKE_TYPENAME(type_name1, 1, kefir_ast_type_specifier_bool(&kft_mem));
+    MAKE_TYPENAME(type_name2, 1, kefir_ast_type_specifier_char(&kft_mem));
+    MAKE_TYPENAME(type_name3, 2, kefir_ast_type_specifier_signed(&kft_mem), kefir_ast_type_specifier_char(&kft_mem));
+    MAKE_TYPENAME(type_name4, 2, kefir_ast_type_specifier_unsigned(&kft_mem), kefir_ast_type_specifier_char(&kft_mem));
+    MAKE_TYPENAME(type_name5, 1, kefir_ast_type_specifier_short(&kft_mem));
+    MAKE_TYPENAME(type_name6, 2, kefir_ast_type_specifier_unsigned(&kft_mem), kefir_ast_type_specifier_short(&kft_mem));
+    MAKE_TYPENAME(type_name7, 1, kefir_ast_type_specifier_signed(&kft_mem));
+    MAKE_TYPENAME(type_name8, 1, kefir_ast_type_specifier_unsigned(&kft_mem));
+    MAKE_TYPENAME(type_name9, 1, kefir_ast_type_specifier_long(&kft_mem));
+    MAKE_TYPENAME(type_name10, 2, kefir_ast_type_specifier_unsigned(&kft_mem), kefir_ast_type_specifier_long(&kft_mem));
+    MAKE_TYPENAME(type_name11, 2, kefir_ast_type_specifier_long(&kft_mem), kefir_ast_type_specifier_long(&kft_mem));
+    MAKE_TYPENAME(type_name12, 3, kefir_ast_type_specifier_unsigned(&kft_mem),
+        kefir_ast_type_specifier_long(&kft_mem), kefir_ast_type_specifier_long(&kft_mem));
+    MAKE_TYPENAME(type_name13, 1, kefir_ast_type_specifier_float(&kft_mem));
+    MAKE_TYPENAME(type_name14, 1, kefir_ast_type_specifier_double(&kft_mem));
+#undef MAKE_TYPENAME
+
+    struct kefir_ast_type_name *type_name15 = kefir_ast_new_type_name(&kft_mem,
+        kefir_ast_declarator_pointer(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL)));
+    ASSERT_OK(append_specifiers(&kft_mem, &type_name15->type_decl.specifiers, 1,
+        kefir_ast_type_specifier_void(&kft_mem)));
+
+    struct kefir_ast_type_name *type_name16 = kefir_ast_new_type_name(&kft_mem,
+        kefir_ast_declarator_array(&kft_mem, KEFIR_AST_DECLARATOR_ARRAY_BOUNDED,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 8)),
+            kefir_ast_declarator_identifier(&kft_mem, NULL, NULL)));
+    ASSERT_OK(append_specifiers(&kft_mem, &type_name16->type_decl.specifiers, 1,
+        kefir_ast_type_specifier_char(&kft_mem)));
+
+
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_SIZEOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_bool()))),
+            KEFIR_AST_NODE_BASE(type_name1)),
         1);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_SIZEOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_char()))),
+            KEFIR_AST_NODE_BASE(type_name2)),
         1);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_SIZEOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_signed_char()))),
+            KEFIR_AST_NODE_BASE(type_name3)),
         1);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_SIZEOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_unsigned_char()))),
+            KEFIR_AST_NODE_BASE(type_name4)),
         1);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_SIZEOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_signed_short()))),
+            KEFIR_AST_NODE_BASE(type_name5)),
         2);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_SIZEOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_unsigned_short()))),
+            KEFIR_AST_NODE_BASE(type_name6)),
         2);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_SIZEOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_signed_int()))),
+            KEFIR_AST_NODE_BASE(type_name7)),
         4);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_SIZEOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_unsigned_int()))),
+            KEFIR_AST_NODE_BASE(type_name8)),
         4);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_SIZEOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_signed_long()))),
+            KEFIR_AST_NODE_BASE(type_name9)),
         8);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_SIZEOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_unsigned_long()))),
+            KEFIR_AST_NODE_BASE(type_name10)),
         8);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_SIZEOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_signed_long_long()))),
+            KEFIR_AST_NODE_BASE(type_name11)),
         8);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_SIZEOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_unsigned_long_long()))),
+            KEFIR_AST_NODE_BASE(type_name12)),
         8);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_SIZEOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_float()))),
+            KEFIR_AST_NODE_BASE(type_name13)),
         4);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_SIZEOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_double()))),
+            KEFIR_AST_NODE_BASE(type_name14)),
         8);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_SIZEOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_signed_long()))),
+            KEFIR_AST_NODE_BASE(type_name15)),
         8);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_SIZEOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void())))),
-        8);
-
-    ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
-        kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_SIZEOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_array(&kft_mem, context->type_bundle, kefir_ast_type_char(),
-                    kefir_ast_constant_expression_integer(&kft_mem, 8), NULL)))),
+            KEFIR_AST_NODE_BASE(type_name16)),
         8);
 
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
@@ -257,101 +270,118 @@ DEFINE_CASE(ast_constant_expression_unary_operations4, "AST constant expressions
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
+#define MAKE_TYPENAME(_id, _spec_count, ...) \
+    struct kefir_ast_type_name *_id = kefir_ast_new_type_name(&kft_mem,   \
+        kefir_ast_declarator_identifier(&kft_mem, NULL, NULL)); \
+    ASSERT_OK(append_specifiers(&kft_mem, &_id->type_decl.specifiers, (_spec_count), __VA_ARGS__));
+
+    MAKE_TYPENAME(type_name1, 1, kefir_ast_type_specifier_bool(&kft_mem));
+    MAKE_TYPENAME(type_name2, 1, kefir_ast_type_specifier_char(&kft_mem));
+    MAKE_TYPENAME(type_name3, 2, kefir_ast_type_specifier_unsigned(&kft_mem), kefir_ast_type_specifier_char(&kft_mem));
+    MAKE_TYPENAME(type_name4, 2, kefir_ast_type_specifier_signed(&kft_mem), kefir_ast_type_specifier_char(&kft_mem));
+    MAKE_TYPENAME(type_name5, 2, kefir_ast_type_specifier_unsigned(&kft_mem), kefir_ast_type_specifier_short(&kft_mem));
+    MAKE_TYPENAME(type_name6, 1, kefir_ast_type_specifier_short(&kft_mem));
+    MAKE_TYPENAME(type_name7, 1, kefir_ast_type_specifier_unsigned(&kft_mem));
+    MAKE_TYPENAME(type_name8, 1, kefir_ast_type_specifier_signed(&kft_mem));
+    MAKE_TYPENAME(type_name9, 2, kefir_ast_type_specifier_unsigned(&kft_mem), kefir_ast_type_specifier_long(&kft_mem));
+    MAKE_TYPENAME(type_name10, 1, kefir_ast_type_specifier_long(&kft_mem));
+    MAKE_TYPENAME(type_name11, 3, kefir_ast_type_specifier_unsigned(&kft_mem),
+        kefir_ast_type_specifier_long(&kft_mem), kefir_ast_type_specifier_long(&kft_mem));
+    MAKE_TYPENAME(type_name12, 2, kefir_ast_type_specifier_long(&kft_mem), kefir_ast_type_specifier_long(&kft_mem));
+    MAKE_TYPENAME(type_name13, 1, kefir_ast_type_specifier_float(&kft_mem));
+    MAKE_TYPENAME(type_name14, 1, kefir_ast_type_specifier_double(&kft_mem));
+#undef MAKE_TYPENAME
+
+    struct kefir_ast_type_name *type_name15 = kefir_ast_new_type_name(&kft_mem,
+        kefir_ast_declarator_pointer(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL)));
+    ASSERT_OK(append_specifiers(&kft_mem, &type_name15->type_decl.specifiers, 1,
+        kefir_ast_type_specifier_short(&kft_mem)));
+
+    struct kefir_ast_type_name *type_name16 = kefir_ast_new_type_name(&kft_mem,
+        kefir_ast_declarator_array(&kft_mem, KEFIR_AST_DECLARATOR_ARRAY_BOUNDED,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 5)),
+            kefir_ast_declarator_identifier(&kft_mem, NULL, NULL)));
+    ASSERT_OK(append_specifiers(&kft_mem, &type_name16->type_decl.specifiers, 1,
+        kefir_ast_type_specifier_signed(&kft_mem)));
+
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ALIGNOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_bool()))),
+            KEFIR_AST_NODE_BASE(type_name1)),
         1);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ALIGNOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_char()))),
+            KEFIR_AST_NODE_BASE(type_name2)),
         1);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ALIGNOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_unsigned_char()))),
+            KEFIR_AST_NODE_BASE(type_name3)),
         1);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ALIGNOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_signed_char()))),
+            KEFIR_AST_NODE_BASE(type_name4)),
         1);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ALIGNOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_unsigned_short()))),
+            KEFIR_AST_NODE_BASE(type_name5)),
         2);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ALIGNOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_signed_short()))),
+            KEFIR_AST_NODE_BASE(type_name6)),
         2);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ALIGNOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_unsigned_int()))),
+            KEFIR_AST_NODE_BASE(type_name7)),
         4);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ALIGNOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_signed_int()))),
+            KEFIR_AST_NODE_BASE(type_name8)),
         4);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ALIGNOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_unsigned_long()))),
+            KEFIR_AST_NODE_BASE(type_name9)),
         8);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ALIGNOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_signed_long()))),
+            KEFIR_AST_NODE_BASE(type_name10)),
         8);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ALIGNOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_unsigned_long_long()))),
+            KEFIR_AST_NODE_BASE(type_name11)),
         8);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ALIGNOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_signed_long_long()))),
+            KEFIR_AST_NODE_BASE(type_name12)),
         8);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ALIGNOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_float()))),
+            KEFIR_AST_NODE_BASE(type_name13)),
         4);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ALIGNOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_double()))),
+            KEFIR_AST_NODE_BASE(type_name14)),
         8);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ALIGNOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_signed_short())))),
+            KEFIR_AST_NODE_BASE(type_name15)),
         8);
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ALIGNOF,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_type_name(&kft_mem,
-                kefir_ast_type_array(&kft_mem, context->type_bundle, kefir_ast_type_signed_int(),
-                    kefir_ast_constant_expression_integer(&kft_mem, 5), NULL)))),
+            KEFIR_AST_NODE_BASE(type_name16)),
         4);
 
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));

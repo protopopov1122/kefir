@@ -135,30 +135,59 @@ DEFINE_CASE(ast_nodes_type_name, "AST nodes - type name")
     struct kefir_ast_type_bundle type_bundle;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
     ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
+
     struct kefir_ast_type_name *type1 = kefir_ast_new_type_name(&kft_mem,
-        kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_void()));
+        kefir_ast_declarator_pointer(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL)));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type1->type_decl.specifiers,
+        kefir_ast_type_specifier_void(&kft_mem)));
+
     struct kefir_ast_type_name *type2 = kefir_ast_new_type_name(&kft_mem,
-        kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_pointer(&kft_mem, &type_bundle,
-            kefir_ast_type_qualified(&kft_mem, &type_bundle, kefir_ast_type_char(), (struct kefir_ast_type_qualification){
-                .constant = true,
-                .restricted = false,
-                .volatile_type = false
-            })), kefir_ast_constant_expression_integer(&kft_mem, 256), NULL));
+        kefir_ast_declarator_pointer(&kft_mem, kefir_ast_declarator_array(&kft_mem, KEFIR_AST_DECLARATOR_ARRAY_BOUNDED,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 256)),
+            kefir_ast_declarator_identifier(&kft_mem, NULL, NULL))));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type2->type_decl.specifiers,
+        kefir_ast_type_specifier_char(&kft_mem)));
+
     ASSERT(type1 != NULL);
     ASSERT(type2 != NULL);
     ASSERT(type1->base.klass->type == KEFIR_AST_TYPE_NAME);
     ASSERT(type2->base.klass->type == KEFIR_AST_TYPE_NAME);
     ASSERT(type1->base.self == type1);
     ASSERT(type2->base.self == type2);
-    ASSERT(KEFIR_AST_TYPE_SAME(type1->type,
-        kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_void())));
-    ASSERT(KEFIR_AST_TYPE_SAME(type2->type,
-        kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_pointer(&kft_mem, &type_bundle,
-            kefir_ast_type_qualified(&kft_mem, &type_bundle, kefir_ast_type_char(), (struct kefir_ast_type_qualification){
-                .constant = true,
-                .restricted = false,
-                .volatile_type = false
-            })), kefir_ast_constant_expression_integer(&kft_mem, 256), NULL)));
+
+    struct kefir_ast_declarator_specifier *specifier1 = NULL;
+    struct kefir_list_entry *iter = kefir_ast_declarator_specifier_list_iter(&type1->type_decl.specifiers, &specifier1);
+    ASSERT(iter != NULL);
+    ASSERT(specifier1->klass == KEFIR_AST_TYPE_SPECIFIER);
+    ASSERT(specifier1->type_specifier.specifier == KEFIR_AST_TYPE_SPECIFIER_VOID);
+    ASSERT_OK(kefir_ast_declarator_specifier_list_next(&iter, &specifier1));
+    ASSERT(iter == NULL);
+    ASSERT(type1->type_decl.declarator != NULL);
+    ASSERT(type1->type_decl.declarator->klass == KEFIR_AST_DECLARATOR_POINTER);
+    ASSERT(kefir_ast_type_qualifier_list_iter(&type1->type_decl.declarator->pointer.type_qualifiers, NULL) == NULL);
+    ASSERT(type1->type_decl.declarator->pointer.declarator != NULL);
+    ASSERT(type1->type_decl.declarator->pointer.declarator->klass == KEFIR_AST_DECLARATOR_IDENTIFIER);
+    ASSERT(type1->type_decl.declarator->pointer.declarator->identifier == NULL);
+
+    iter = kefir_ast_declarator_specifier_list_iter(&type2->type_decl.specifiers, &specifier1);
+    ASSERT(iter != NULL);
+    ASSERT(specifier1->klass == KEFIR_AST_TYPE_SPECIFIER);
+    ASSERT(specifier1->type_specifier.specifier == KEFIR_AST_TYPE_SPECIFIER_CHAR);
+    ASSERT_OK(kefir_ast_declarator_specifier_list_next(&iter, &specifier1));
+    ASSERT(iter == NULL);
+    ASSERT(type2->type_decl.declarator != NULL);
+    ASSERT(type2->type_decl.declarator->klass == KEFIR_AST_DECLARATOR_POINTER);
+    ASSERT(kefir_ast_type_qualifier_list_iter(&type2->type_decl.declarator->pointer.type_qualifiers, NULL) == NULL);
+    ASSERT(type2->type_decl.declarator->pointer.declarator != NULL);
+    ASSERT(type2->type_decl.declarator->pointer.declarator->klass == KEFIR_AST_DECLARATOR_ARRAY);
+    ASSERT(type2->type_decl.declarator->pointer.declarator->array.type == KEFIR_AST_DECLARATOR_ARRAY_BOUNDED);
+    ASSERT(!type2->type_decl.declarator->pointer.declarator->array.static_array);
+    ASSERT(kefir_ast_type_qualifier_list_iter(&type2->type_decl.declarator->pointer.declarator->array.type_qualifiers, NULL) == NULL);
+    ASSERT(type2->type_decl.declarator->pointer.declarator->array.length->klass->type == KEFIR_AST_CONSTANT);
+    ASSERT(type2->type_decl.declarator->pointer.declarator->array.declarator != NULL);
+    ASSERT(type2->type_decl.declarator->pointer.declarator->array.declarator->klass == KEFIR_AST_DECLARATOR_IDENTIFIER);
+    ASSERT(type2->type_decl.declarator->pointer.declarator->array.declarator->identifier == NULL);
+
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(type1)));
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(type2)));
     ASSERT_OK(kefir_ast_type_bundle_free(&kft_mem, &type_bundle));

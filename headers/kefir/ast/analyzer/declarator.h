@@ -7,7 +7,7 @@
 #include "kefir/ast/alignment.h"
 
 kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *,
-                                         struct kefir_ast_context *,
+                                         const struct kefir_ast_context *,
                                          const struct kefir_ast_declarator_specifier_list *,
                                          const struct kefir_ast_declarator *,
                                          const char **,

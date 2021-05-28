@@ -13,7 +13,7 @@ enum signedness {
 };
 
 static kefir_result_t process_struct_declaration_entry(struct kefir_mem *mem,
-                                                     struct kefir_ast_context *context,
+                                                     const struct kefir_ast_context *context,
                                                      struct kefir_ast_struct_type *struct_type,
                                                      struct kefir_ast_structure_declaration_entry *entry) {
     for (const struct kefir_list_entry *iter = kefir_list_head(&entry->declaration.declarators);
@@ -61,7 +61,7 @@ static kefir_result_t process_struct_declaration_entry(struct kefir_mem *mem,
 }
 
 static kefir_result_t resolve_struct_type(struct kefir_mem *mem,
-                                        struct kefir_ast_context *context,
+                                        const struct kefir_ast_context *context,
                                         kefir_ast_type_specifier_type_t specifier_type,
                                         const struct kefir_ast_structure_specifier *specifier,
                                         const struct kefir_ast_type **base_type) {
@@ -116,7 +116,7 @@ static kefir_result_t resolve_struct_type(struct kefir_mem *mem,
 }
 
 static kefir_result_t resolve_enum_type(struct kefir_mem *mem,
-                                      struct kefir_ast_context *context,
+                                      const struct kefir_ast_context *context,
                                       const struct kefir_ast_enum_specifier *specifier,
                                       const struct kefir_ast_type **base_type) {
     kefir_bool_t resolved = false;
@@ -180,7 +180,7 @@ static kefir_result_t resolve_enum_type(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-static kefir_result_t resolve_typedef(struct kefir_ast_context *context,
+static kefir_result_t resolve_typedef(const struct kefir_ast_context *context,
                                     const char *type_name,
                                     const struct kefir_ast_type **base_type) {
     const struct kefir_ast_scoped_identifier *scoped_identifier = NULL;
@@ -198,7 +198,7 @@ enum type_specifier_sequence_state {
 } type_specifier_sequence_state_t;
 
 static kefir_result_t resolve_type(struct kefir_mem *mem,
-                                 struct kefir_ast_context *context,
+                                 const struct kefir_ast_context *context,
                                  enum signedness *signedness,
                                  enum type_specifier_sequence_state *seq_state,
                                  const struct kefir_ast_type **base_type,
@@ -535,7 +535,7 @@ static kefir_result_t resolve_function_specifier(kefir_ast_function_specifier_ty
 }
 
 static kefir_result_t type_alignment(struct kefir_mem *mem,
-                                   struct kefir_ast_context *context,
+                                   const struct kefir_ast_context *context,
                                    const struct kefir_ast_type *type,
                                    kefir_size_t *alignment) {
 
@@ -555,7 +555,7 @@ static kefir_result_t type_alignment(struct kefir_mem *mem,
 }
 
 static kefir_result_t evaluate_alignment(struct kefir_mem *mem,
-                                       struct kefir_ast_context *context,
+                                       const struct kefir_ast_context *context,
                                        struct kefir_ast_node_base *node,
                                        kefir_size_t *alignment) {
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node));
@@ -574,7 +574,7 @@ static kefir_result_t evaluate_alignment(struct kefir_mem *mem,
 }
 
 static kefir_result_t resolve_pointer_declarator(struct kefir_mem *mem,
-                                               struct kefir_ast_context *context,
+                                               const struct kefir_ast_context *context,
                                                const struct kefir_ast_declarator *declarator,
                                                const struct kefir_ast_type **base_type) {
     *base_type = kefir_ast_type_pointer(mem, context->type_bundle, *base_type);
@@ -599,7 +599,7 @@ static kefir_result_t resolve_pointer_declarator(struct kefir_mem *mem,
 }
 
 static kefir_result_t resolve_array_declarator(struct kefir_mem *mem,
-                                             struct kefir_ast_context *context,
+                                             const struct kefir_ast_context *context,
                                              const struct kefir_ast_declarator *declarator,
                                              const struct kefir_ast_type **base_type) {
     struct kefir_ast_type_qualification qualification = {false};
@@ -666,7 +666,7 @@ static kefir_result_t resolve_array_declarator(struct kefir_mem *mem,
 }
 
 static kefir_result_t resolve_declarator(struct kefir_mem *mem,
-                                       struct kefir_ast_context *context,
+                                       const struct kefir_ast_context *context,
                                        const struct kefir_ast_declarator *declarator,
                                        const char **identifier,
                                        const struct kefir_ast_type **base_type) {
@@ -695,7 +695,7 @@ static kefir_result_t resolve_declarator(struct kefir_mem *mem,
 }
 
 kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
-                                         struct kefir_ast_context *context,
+                                         const struct kefir_ast_context *context,
                                          const struct kefir_ast_declarator_specifier_list *specifiers,
                                          const struct kefir_ast_declarator *declarator,
                                          const char **identifier,

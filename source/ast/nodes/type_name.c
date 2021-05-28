@@ -12,6 +12,9 @@ kefir_result_t ast_type_name_free(struct kefir_mem *mem, struct kefir_ast_node_b
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
     ASSIGN_DECL_CAST(struct kefir_ast_type_name *, node,
         base->self);
+    REQUIRE_OK(kefir_ast_declarator_specifier_list_free(mem, &node->type_decl.specifiers));
+    REQUIRE_OK(kefir_ast_declarator_free(mem, node->type_decl.declarator));
+    node->type_decl.declarator = NULL;
     KEFIR_FREE(mem, node);
     return KEFIR_OK;
 }
@@ -38,14 +41,38 @@ struct kefir_ast_node_base *ast_type_name_clone(struct kefir_mem *mem,
         KEFIR_FREE(mem, clone);
         return NULL;
     });
-    clone->type = node->type;
+    
+    clone->type_decl.declarator = kefir_ast_declarator_clone(mem, node->type_decl.declarator);
+    REQUIRE_ELSE(clone->type_decl.declarator != NULL, {
+        KEFIR_FREE(mem, clone);
+        return NULL;
+    });
+
+    res = kefir_ast_declarator_specifier_list_init(&clone->type_decl.specifiers);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_ast_declarator_free(mem, clone->type_decl.declarator);
+        KEFIR_FREE(mem, clone);
+        return NULL;
+    });
+
+    res = kefir_ast_declarator_specifier_list_clone(mem, &clone->type_decl.specifiers, &node->type_decl.specifiers);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_ast_declarator_specifier_list_free(mem, &clone->type_decl.specifiers);
+        kefir_ast_declarator_free(mem, clone->type_decl.declarator);
+        KEFIR_FREE(mem, clone);
+        return NULL;
+    });
     return KEFIR_AST_NODE_BASE(clone);
 }
 
 struct kefir_ast_type_name *kefir_ast_new_type_name(struct kefir_mem *mem,
-                                                const struct kefir_ast_type *type) {
+                                                struct kefir_ast_declarator *decl) {
     REQUIRE(mem != NULL, NULL);
-    REQUIRE(type != NULL, NULL);
+    REQUIRE(decl != NULL, NULL);
+
+    kefir_bool_t abstract = false;
+    REQUIRE(kefir_ast_declarator_is_abstract(decl, &abstract) == KEFIR_OK && abstract, NULL);
+
     struct kefir_ast_type_name *type_name = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type_name));
     REQUIRE(type_name != NULL, NULL);
     type_name->base.klass = &AST_TYPE_NAME_CLASS;
@@ -55,6 +82,12 @@ struct kefir_ast_type_name *kefir_ast_new_type_name(struct kefir_mem *mem,
         KEFIR_FREE(mem, type_name);
         return NULL;
     });
-    type_name->type = type;
+
+    res = kefir_ast_declarator_specifier_list_init(&type_name->type_decl.specifiers);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, type_name);
+        return NULL;
+    });
+    type_name->type_decl.declarator = decl;
     return type_name;
 }

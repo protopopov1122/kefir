@@ -22,7 +22,7 @@ typedef struct kefir_ast_context {
                                const struct kefir_ast_context *,
                                const struct kefir_ast_type *);
     kefir_result_t (*define_constant)(struct kefir_mem *,
-                                    struct kefir_ast_context *,
+                                    const struct kefir_ast_context *,
                                     const char *,
                                     struct kefir_ast_constant_expression *,
                                     const struct kefir_ast_type *);

@@ -47,6 +47,8 @@ struct kefir_ast_declarator *kefir_ast_declarator_array(struct kefir_mem *,
                                                     struct kefir_ast_node_base *,
                                                     struct kefir_ast_declarator *);
 struct kefir_ast_declarator *kefir_ast_declarator_function(struct kefir_mem *, struct kefir_ast_declarator *);
+struct kefir_ast_declarator *kefir_ast_declarator_clone(struct kefir_mem *,
+                                                    const struct kefir_ast_declarator *);
 kefir_result_t kefir_ast_declarator_free(struct kefir_mem *, struct kefir_ast_declarator *);
 
 kefir_result_t kefir_ast_declarator_is_abstract(struct kefir_ast_declarator *, kefir_bool_t *);
