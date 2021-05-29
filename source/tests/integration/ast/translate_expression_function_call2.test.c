@@ -27,15 +27,34 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_type_function_parameter(mem, context->type_bundle, func_type1, NULL, kefir_ast_type_signed_int(), NULL));
     REQUIRE_OK(kefir_ast_type_function_ellipsis(func_type1, true));
 
-    struct kefir_ast_struct_type *struct_type2 = NULL;
-    const struct kefir_ast_type *type2 = kefir_ast_type_structure(mem, context->type_bundle, "", &struct_type2);
-    REQUIRE_OK(kefir_ast_struct_type_field(mem, context->symbols, struct_type2,
-        "x", kefir_ast_type_signed_int(), NULL));
-    REQUIRE_OK(kefir_ast_struct_type_field(mem, context->symbols, struct_type2,
-        "y", kefir_ast_type_double(), NULL));
-    REQUIRE_OK(kefir_ast_struct_type_field(mem, context->symbols, struct_type2,
-        "z", kefir_ast_type_array(mem, context->type_bundle, kefir_ast_type_char(),
-            kefir_ast_constant_expression_integer(mem, 16), NULL), NULL));
+    struct kefir_ast_structure_specifier *specifier1 = kefir_ast_structure_specifier_init(mem, NULL, NULL, true);
+    struct kefir_ast_structure_declaration_entry *entry1 = kefir_ast_structure_declaration_entry_alloc(mem);
+    REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &entry1->declaration.specifiers,
+        kefir_ast_type_specifier_int(mem)));
+    REQUIRE_OK(kefir_ast_structure_declaration_entry_append(mem, entry1,
+        kefir_ast_declarator_identifier(mem, context->symbols, "x"), NULL));
+    REQUIRE_OK(kefir_ast_structure_specifier_append_entry(mem, specifier1, entry1));
+
+    struct kefir_ast_structure_declaration_entry *entry2 = kefir_ast_structure_declaration_entry_alloc(mem);
+    REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &entry2->declaration.specifiers,
+        kefir_ast_type_specifier_double(mem)));
+    REQUIRE_OK(kefir_ast_structure_declaration_entry_append(mem, entry2,
+        kefir_ast_declarator_identifier(mem, context->symbols, "y"), NULL));
+    REQUIRE_OK(kefir_ast_structure_specifier_append_entry(mem, specifier1, entry2));
+
+    struct kefir_ast_structure_declaration_entry *entry3 = kefir_ast_structure_declaration_entry_alloc(mem);
+    REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &entry3->declaration.specifiers,
+        kefir_ast_type_specifier_char(mem)));
+    REQUIRE_OK(kefir_ast_structure_declaration_entry_append(mem, entry3,
+        kefir_ast_declarator_array(mem, KEFIR_AST_DECLARATOR_ARRAY_BOUNDED,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 16)),
+            kefir_ast_declarator_identifier(mem, context->symbols, "z")),
+        NULL));
+    REQUIRE_OK(kefir_ast_structure_specifier_append_entry(mem, specifier1, entry3));
+
+    struct kefir_ast_type_name *type_name2 = kefir_ast_new_type_name(mem, kefir_ast_declarator_identifier(mem, NULL, NULL));
+    REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name2->type_decl.specifiers,
+        kefir_ast_type_specifier_struct(mem, specifier1)));
 
     REQUIRE_OK(kefir_ast_global_context_declare_function(mem, &global_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE, type1));
 
@@ -44,7 +63,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_function_call_append(mem, call4,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 100))));
     REQUIRE_OK(kefir_ast_function_call_append(mem, call4,
-        KEFIR_AST_NODE_BASE(kefir_ast_new_compound_literal(mem, type2))));
+        KEFIR_AST_NODE_BASE(kefir_ast_new_compound_literal(mem, type_name2))));
 
     struct kefir_ast_node_base *node4 = KEFIR_AST_NODE_BASE(call4);
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node4));

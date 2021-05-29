@@ -38,8 +38,12 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_type_function_parameter(mem, context->type_bundle, func_type3, "x", NULL, NULL));
     REQUIRE_OK(kefir_ast_type_function_ellipsis(func_type3, true));
 
-    const struct kefir_ast_type *type4 = kefir_ast_type_array(mem, context->type_bundle,
-        kefir_ast_type_char(), kefir_ast_constant_expression_integer(mem, 2), NULL);
+    struct kefir_ast_type_name *type_name4 = kefir_ast_new_type_name(mem,
+        kefir_ast_declarator_array(mem, KEFIR_AST_DECLARATOR_ARRAY_BOUNDED,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 2)),
+            kefir_ast_declarator_identifier(mem, NULL, NULL)));
+    REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name4->type_decl.specifiers,
+        kefir_ast_type_specifier_char(mem)));
 
     REQUIRE_OK(kefir_ast_global_context_declare_function(mem, &global_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE, type1));
     REQUIRE_OK(kefir_ast_global_context_declare_function(mem, &global_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE, type2));
@@ -54,7 +58,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_function_call_append(mem, call5,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 9.13))));
     REQUIRE_OK(kefir_ast_function_call_append(mem, call5,
-        KEFIR_AST_NODE_BASE(kefir_ast_new_compound_literal(mem, type4))));
+        KEFIR_AST_NODE_BASE(kefir_ast_new_compound_literal(mem, type_name4))));
 
     struct kefir_ast_node_base *node5 = KEFIR_AST_NODE_BASE(call5);
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node5));

@@ -90,9 +90,19 @@ struct kefir_ast_node_base *ast_generic_selection_clone(struct kefir_mem *mem,
             KEFIR_FREE(mem, clone);
             return NULL;
         });
-        clone_assoc->type_name = (struct kefir_ast_type_name *) KEFIR_AST_NODE_CLONE(mem, KEFIR_AST_NODE_BASE(assoc->type_name))->self;
+
+        struct kefir_ast_node_base *clone_type_name = KEFIR_AST_NODE_CLONE(mem, KEFIR_AST_NODE_BASE(assoc->type_name));
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_list_free(mem, &clone->associations);
+            KEFIR_AST_NODE_FREE(mem, clone->control);
+            KEFIR_FREE(mem, clone);
+            return NULL;
+        });
+
+        clone_assoc->type_name = (struct kefir_ast_type_name *) clone_type_name->self;
         clone_assoc->expr = KEFIR_AST_NODE_CLONE(mem, assoc->expr);
         REQUIRE_ELSE(clone_assoc->expr != NULL, {
+            KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(clone_assoc->type_name));
             KEFIR_FREE(mem, clone_assoc);
             kefir_list_free(mem, &clone->associations);
             KEFIR_AST_NODE_FREE(mem, clone->control);
@@ -101,6 +111,7 @@ struct kefir_ast_node_base *ast_generic_selection_clone(struct kefir_mem *mem,
         });
         res = kefir_list_insert_after(mem, &clone->associations, kefir_list_tail(&clone->associations), clone_assoc);
         REQUIRE_ELSE(clone_assoc->expr != NULL, {
+            KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(clone_assoc->type_name));
             KEFIR_FREE(mem, clone_assoc);
             kefir_list_free(mem, &clone->associations);
             KEFIR_AST_NODE_FREE(mem, clone->control);

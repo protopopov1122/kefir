@@ -52,7 +52,7 @@ KEFIR_AST_NODE_STRUCT(kefir_ast_generic_selection, {
 });
 
 KEFIR_AST_NODE_STRUCT(kefir_ast_compound_literal, {
-    const struct kefir_ast_type *type;
+    struct kefir_ast_type_name *type_name;
     struct kefir_ast_initializer *initializer;
 });
 
@@ -131,7 +131,7 @@ struct kefir_ast_type_name *kefir_ast_new_type_name(struct kefir_mem *,
                                                 struct kefir_ast_declarator *);
 
 struct kefir_ast_compound_literal *kefir_ast_new_compound_literal(struct kefir_mem *,
-                                                              const struct kefir_ast_type *);
+                                                              struct kefir_ast_type_name *);
 
 struct kefir_ast_cast_operator *kefir_ast_new_cast_operator(struct kefir_mem *,
                                                         const struct kefir_ast_type *,

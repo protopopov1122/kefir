@@ -12,6 +12,7 @@ kefir_result_t ast_compound_literal_free(struct kefir_mem *mem, struct kefir_ast
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
     ASSIGN_DECL_CAST(struct kefir_ast_compound_literal *, node,
         base->self);
+    REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(node->type_name)));
     REQUIRE_OK(kefir_ast_initializer_free(mem, node->initializer));
     KEFIR_FREE(mem, node);
     return KEFIR_OK;
@@ -39,9 +40,16 @@ struct kefir_ast_node_base *ast_compound_literal_clone(struct kefir_mem *mem,
         KEFIR_FREE(mem, clone);
         return NULL;
     });
-    clone->type = node->type;
+
+    struct kefir_ast_node_base *type_name_clone = KEFIR_AST_NODE_CLONE(mem, KEFIR_AST_NODE_BASE(node->type_name));
+    REQUIRE_ELSE(type_name_clone != NULL, {
+        KEFIR_FREE(mem, clone);
+        return NULL;  
+    });
+    clone->type_name = (struct kefir_ast_type_name *) type_name_clone->self;
     clone->initializer = kefir_ast_initializer_clone(mem, node->initializer);
     REQUIRE_ELSE(clone->initializer != NULL, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(clone->type_name));
         KEFIR_FREE(mem, clone);
         return NULL;
     });
@@ -49,9 +57,10 @@ struct kefir_ast_node_base *ast_compound_literal_clone(struct kefir_mem *mem,
 }
 
 struct kefir_ast_compound_literal *kefir_ast_new_compound_literal(struct kefir_mem *mem,
-                                                              const struct kefir_ast_type *type) {
+                                                              struct kefir_ast_type_name *type_name) {
     REQUIRE(mem != NULL, NULL);
-    REQUIRE(type != NULL, NULL);
+    REQUIRE(type_name != NULL, NULL);
+
     struct kefir_ast_compound_literal *literal = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_compound_literal));
     REQUIRE(literal != NULL, NULL);
     literal->base.klass = &AST_COMPOUND_LITERAL_CLASS;
@@ -61,7 +70,7 @@ struct kefir_ast_compound_literal *kefir_ast_new_compound_literal(struct kefir_m
         KEFIR_FREE(mem, literal);
         return NULL;
     });
-    literal->type = type;
+    literal->type_name = type_name;
     literal->initializer = kefir_ast_new_list_initializer(mem);
     REQUIRE_ELSE(literal->initializer != NULL, {
         KEFIR_FREE(mem, literal);

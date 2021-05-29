@@ -244,8 +244,15 @@ DEFINE_CASE(ast_constant_expression_unary_operations3, "AST constant expressions
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(&kft_mem, 3.14159))),
         8);
 
-    struct kefir_ast_compound_literal *compound1 = kefir_ast_new_compound_literal(&kft_mem,
-        kefir_ast_type_unbounded_array(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_int(), NULL));
+    struct kefir_ast_type_name *type_name1 = kefir_ast_new_type_name(&kft_mem,
+        kefir_ast_declarator_array(&kft_mem, KEFIR_AST_DECLARATOR_ARRAY_UNBOUNDED, NULL,
+            kefir_ast_declarator_identifier(&kft_mem, NULL, NULL)));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name1->type_decl.specifiers,
+        kefir_ast_type_specifier_unsigned(&kft_mem)));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name1->type_decl.specifiers,
+        kefir_ast_type_specifier_int(&kft_mem)));
+
+    struct kefir_ast_compound_literal *compound1 = kefir_ast_new_compound_literal(&kft_mem, type_name1);
     ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &compound1->initializer->list,
         kefir_ast_new_index_desginator(&kft_mem, 9, NULL),
         kefir_ast_new_expression_initializer(&kft_mem,

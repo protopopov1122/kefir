@@ -355,8 +355,8 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 4,
-                        "index": 0
+                        "type": 2,
+                        "index": 3
                     }
                 },
                 {
