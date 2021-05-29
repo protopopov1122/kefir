@@ -2,17 +2,16 @@
 #include "kefir/test/unit_test.h"
 #include "kefir/ast/node.h"
 
-#define ASSERT_ASSOC(_selection, _index, _type, _expr) \
+#define ASSERT_ASSOC(_selection, _index, _type_name, _expr) \
     do { \
         ASSIGN_DECL_CAST(struct kefir_ast_generic_selection_assoc *, assoc, \
             kefir_list_at(&(_selection)->associations, (_index))->value); \
         ASSERT(assoc != NULL); \
-        ASSERT(KEFIR_AST_TYPE_SAME((_type), assoc->type)); \
+        ASSERT(assoc->type_name == (_type_name)); \
         _expr; \
     } while (0)
 
 DEFINE_CASE(ast_nodes_generic_selections, "AST nodes - generic selections")
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
     struct kefir_symbol_table symbols;
     struct kefir_ast_type_bundle type_bundle;
 
@@ -31,77 +30,86 @@ DEFINE_CASE(ast_nodes_generic_selections, "AST nodes - generic selections")
     ASSERT(kefir_list_length(&selection1->associations) == 0);
     ASSERT(selection1->default_assoc == NULL);
 
-    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection1, type_traits,
-        kefir_ast_type_signed_int(),
+    struct kefir_ast_type_name *type_name1 = kefir_ast_new_type_name(&kft_mem, kefir_ast_declarator_identifier(&kft_mem,
+        NULL, NULL));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name1->type_decl.specifiers,
+        kefir_ast_type_specifier_int(&kft_mem)));
+
+    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection1,
+        type_name1,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(&kft_mem, true))));
     ASSERT(kefir_list_length(&selection1->associations) == 1);
-    ASSERT_ASSOC(selection1, 0, kefir_ast_type_signed_int(), {
+    ASSERT_ASSOC(selection1, 0, type_name1, {
         ASSERT(assoc->expr->klass->type == KEFIR_AST_CONSTANT);
         ASSERT(((struct kefir_ast_constant *) assoc->expr->self)->type == KEFIR_AST_BOOL_CONSTANT);
         ASSERT(((struct kefir_ast_constant *) assoc->expr->self)->value.boolean == true);
     });
     ASSERT(selection1->default_assoc == NULL);
 
-    struct kefir_ast_constant *cnst1 = kefir_ast_new_constant_bool(&kft_mem, true);
-    ASSERT_NOK(kefir_ast_generic_selection_append(&kft_mem, selection1, type_traits,
-        kefir_ast_type_signed_int(),
-        KEFIR_AST_NODE_BASE(cnst1)));        
-    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(cnst1)));
-    ASSERT(kefir_list_length(&selection1->associations) == 1);
-    ASSERT(selection1->default_assoc == NULL);
+    struct kefir_ast_type_name *type_name3 = kefir_ast_new_type_name(&kft_mem, kefir_ast_declarator_identifier(&kft_mem,
+        NULL, NULL));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name3->type_decl.specifiers,
+        kefir_ast_type_specifier_long(&kft_mem)));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name3->type_decl.specifiers,
+        kefir_ast_type_specifier_long(&kft_mem)));
 
-    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection1, type_traits,
-        kefir_ast_type_signed_long_long(),
+    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection1,
+        type_name3,
         KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, &symbols, "true"))));
     ASSERT(kefir_list_length(&selection1->associations) == 2);
-    ASSERT_ASSOC(selection1, 0, kefir_ast_type_signed_int(), {
+    ASSERT_ASSOC(selection1, 0, type_name1, {
         ASSERT(assoc->expr->klass->type == KEFIR_AST_CONSTANT);
         ASSERT(((struct kefir_ast_constant *) assoc->expr->self)->type == KEFIR_AST_BOOL_CONSTANT);
         ASSERT(((struct kefir_ast_constant *) assoc->expr->self)->value.boolean == true);
     });
-    ASSERT_ASSOC(selection1, 1, kefir_ast_type_signed_long_long(), {
+    ASSERT_ASSOC(selection1, 1, type_name3, {
         ASSERT(assoc->expr->klass->type == KEFIR_AST_IDENTIFIER);
         ASSERT(((struct kefir_ast_identifier *) assoc->expr->self)->identifier != NULL);
         ASSERT(strcmp(((struct kefir_ast_identifier *) assoc->expr->self)->identifier, "true") == 0);
     });
     ASSERT(selection1->default_assoc == NULL);
 
-    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection1, type_traits,
-        kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_char()),
+    struct kefir_ast_type_name *type_name4 = kefir_ast_new_type_name(&kft_mem, 
+        kefir_ast_declarator_pointer(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL)));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name4->type_decl.specifiers,
+        kefir_ast_type_specifier_char(&kft_mem)));
+
+    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection1,
+        type_name4,
         KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!"))));
     ASSERT(kefir_list_length(&selection1->associations) == 3);
-    ASSERT_ASSOC(selection1, 0, kefir_ast_type_signed_int(), {
+    ASSERT_ASSOC(selection1, 0, type_name1, {
         ASSERT(assoc->expr->klass->type == KEFIR_AST_CONSTANT);
         ASSERT(((struct kefir_ast_constant *) assoc->expr->self)->type == KEFIR_AST_BOOL_CONSTANT);
         ASSERT(((struct kefir_ast_constant *) assoc->expr->self)->value.boolean == true);
     });
-    ASSERT_ASSOC(selection1, 1, kefir_ast_type_signed_long_long(), {
+    ASSERT_ASSOC(selection1, 1, type_name3, {
         ASSERT(assoc->expr->klass->type == KEFIR_AST_IDENTIFIER);
         ASSERT(((struct kefir_ast_identifier *) assoc->expr->self)->identifier != NULL);
         ASSERT(strcmp(((struct kefir_ast_identifier *) assoc->expr->self)->identifier, "true") == 0);
     });
-    ASSERT_ASSOC(selection1, 2, kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_char()), {
+    ASSERT_ASSOC(selection1, 2, type_name4, {
         ASSERT(assoc->expr->klass->type == KEFIR_AST_STRING_LITERAL);
         ASSERT(((struct kefir_ast_string_literal *) assoc->expr->self)->literal != NULL);
         ASSERT(strcmp(((struct kefir_ast_string_literal *) assoc->expr->self)->literal, "Hello, world!") == 0);
     });
     ASSERT(selection1->default_assoc == NULL);
 
-    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection1, type_traits,
+    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection1,
         NULL,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'H'))));
     ASSERT(kefir_list_length(&selection1->associations) == 3);
-    ASSERT_ASSOC(selection1, 0, kefir_ast_type_signed_int(), {
+    ASSERT_ASSOC(selection1, 0, type_name1, {
         ASSERT(assoc->expr->klass->type == KEFIR_AST_CONSTANT);
         ASSERT(((struct kefir_ast_constant *) assoc->expr->self)->type == KEFIR_AST_BOOL_CONSTANT);
         ASSERT(((struct kefir_ast_constant *) assoc->expr->self)->value.boolean == true);
     });
-    ASSERT_ASSOC(selection1, 1, kefir_ast_type_signed_long_long(), {
+    ASSERT_ASSOC(selection1, 1, type_name3, {
         ASSERT(assoc->expr->klass->type == KEFIR_AST_IDENTIFIER);
         ASSERT(((struct kefir_ast_identifier *) assoc->expr->self)->identifier != NULL);
         ASSERT(strcmp(((struct kefir_ast_identifier *) assoc->expr->self)->identifier, "true") == 0);
     });
-    ASSERT_ASSOC(selection1, 2, kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_char()), {
+    ASSERT_ASSOC(selection1, 2, type_name4, {
         ASSERT(assoc->expr->klass->type == KEFIR_AST_STRING_LITERAL);
         ASSERT(((struct kefir_ast_string_literal *) assoc->expr->self)->literal != NULL);
         ASSERT(strcmp(((struct kefir_ast_string_literal *) assoc->expr->self)->literal, "Hello, world!") == 0);
@@ -112,7 +120,7 @@ DEFINE_CASE(ast_nodes_generic_selections, "AST nodes - generic selections")
     ASSERT(((struct kefir_ast_constant *) selection1->default_assoc->self)->value.character == 'H');
 
     struct kefir_ast_constant *cnst2 = kefir_ast_new_constant_char(&kft_mem, 'H');
-    ASSERT_NOK(kefir_ast_generic_selection_append(&kft_mem, selection1, type_traits,
+    ASSERT_NOK(kefir_ast_generic_selection_append(&kft_mem, selection1,
         NULL,
         KEFIR_AST_NODE_BASE(cnst2)));
     ASSERT(kefir_list_length(&selection1->associations) == 3);

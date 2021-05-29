@@ -21,7 +21,7 @@ kefir_result_t kefir_ast_translate_generic_selection_node(struct kefir_mem *mem,
         kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_generic_selection_assoc *, assoc,
             iter->value);
-        if (KEFIR_AST_TYPE_COMPATIBLE(context->ast_context->type_traits, control_type, assoc->type)) {
+        if (KEFIR_AST_TYPE_COMPATIBLE(context->ast_context->type_traits, control_type, assoc->type_name->base.properties.type)) {
             return kefir_ast_translate_expression(mem, assoc->expr, builder, context);
         }
     }

@@ -7,21 +7,34 @@
 
 #define ASSERT_GENERIC_SELECTION(_mem, _context, _id, _type, _lvalue, _const, _addressable) \
     do { \
+        struct kefir_ast_type_name *type_name1 = kefir_ast_new_type_name((_mem), kefir_ast_declarator_identifier((_mem), NULL, NULL)); \
+        ASSERT_OK(kefir_ast_declarator_specifier_list_append((_mem), &type_name1->type_decl.specifiers, \
+            kefir_ast_type_specifier_char((_mem)))); \
+        struct kefir_ast_type_name *type_name2 = kefir_ast_new_type_name((_mem), kefir_ast_declarator_identifier((_mem), NULL, NULL)); \
+        ASSERT_OK(kefir_ast_declarator_specifier_list_append((_mem), &type_name2->type_decl.specifiers, \
+            kefir_ast_type_specifier_unsigned((_mem)))); \
+        struct kefir_ast_type_name *type_name3 = kefir_ast_new_type_name((_mem), kefir_ast_declarator_identifier((_mem), NULL, NULL)); \
+        ASSERT_OK(kefir_ast_declarator_specifier_list_append((_mem), &type_name3->type_decl.specifiers, \
+            kefir_ast_type_specifier_double((_mem)))); \
+        struct kefir_ast_type_name *type_name4 = kefir_ast_new_type_name((_mem), \
+            kefir_ast_declarator_pointer((_mem), kefir_ast_declarator_identifier((_mem), NULL, NULL))); \
+        ASSERT_OK(kefir_ast_declarator_specifier_list_append((_mem), &type_name4->type_decl.specifiers, \
+            kefir_ast_type_specifier_void((_mem)))); \
         struct kefir_ast_generic_selection *selection1 = kefir_ast_new_generic_selection((_mem), \
             KEFIR_AST_NODE_BASE(kefir_ast_new_identifier((_mem), (_context)->symbols, (_id)))); \
-        ASSERT_OK(kefir_ast_generic_selection_append((_mem), selection1, (_context)->type_traits, \
-            kefir_ast_type_char(), \
+        ASSERT_OK(kefir_ast_generic_selection_append((_mem), selection1, \
+            type_name1, \
             KEFIR_AST_NODE_BASE(kefir_ast_new_identifier((_mem), (_context)->symbols, "bool")))); \
-        ASSERT_OK(kefir_ast_generic_selection_append((_mem), selection1, (_context)->type_traits, \
-            kefir_ast_type_unsigned_int(), \
+        ASSERT_OK(kefir_ast_generic_selection_append((_mem), selection1, \
+            type_name2, \
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float((_mem), 3.14f)))); \
-        ASSERT_OK(kefir_ast_generic_selection_append((_mem), selection1, (_context)->type_traits, \
-            kefir_ast_type_double(), \
+        ASSERT_OK(kefir_ast_generic_selection_append((_mem), selection1, \
+            type_name3, \
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char((_mem), 'H')))); \
-        ASSERT_OK(kefir_ast_generic_selection_append((_mem), selection1, (_context)->type_traits, \
-            kefir_ast_type_pointer((_mem), (_context)->type_bundle, kefir_ast_type_void()), \
+        ASSERT_OK(kefir_ast_generic_selection_append((_mem), selection1, \
+            type_name4, \
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_uint((_mem), 1556)))); \
-        ASSERT_OK(kefir_ast_generic_selection_append((_mem), selection1, (_context)->type_traits, \
+        ASSERT_OK(kefir_ast_generic_selection_append((_mem), selection1, \
             NULL, \
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double((_mem), 2.71)))); \
         ASSERT_OK(kefir_ast_analyze_node((_mem), (_context), KEFIR_AST_NODE_BASE(selection1))); \

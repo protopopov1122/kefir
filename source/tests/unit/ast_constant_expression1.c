@@ -140,16 +140,33 @@ DEFINE_CASE(ast_constant_expression_generic_selection1, "AST constant expression
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
+    struct kefir_ast_type_name *type_name1 = kefir_ast_new_type_name(&kft_mem,
+        kefir_ast_declarator_identifier(&kft_mem, NULL, NULL));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name1->type_decl.specifiers,
+        kefir_ast_type_specifier_unsigned(&kft_mem)));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name1->type_decl.specifiers,
+        kefir_ast_type_specifier_char(&kft_mem)));
+
+    struct kefir_ast_type_name *type_name2 = kefir_ast_new_type_name(&kft_mem,
+        kefir_ast_declarator_identifier(&kft_mem, NULL, NULL));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name2->type_decl.specifiers,
+        kefir_ast_type_specifier_int(&kft_mem)));
+
+    struct kefir_ast_type_name *type_name3 = kefir_ast_new_type_name(&kft_mem,
+        kefir_ast_declarator_identifier(&kft_mem, NULL, NULL));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name3->type_decl.specifiers,
+        kefir_ast_type_specifier_float(&kft_mem)));
+
     struct kefir_ast_generic_selection *selection1 = kefir_ast_new_generic_selection(&kft_mem,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0)));
-    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection1, context->type_traits,
-        kefir_ast_type_unsigned_char(),
+    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection1,
+        (struct kefir_ast_type_name *) KEFIR_AST_NODE_CLONE(&kft_mem, KEFIR_AST_NODE_BASE(type_name1))->self,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0))));
-    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection1, context->type_traits,
-        kefir_ast_type_signed_int(),
+    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection1,
+        (struct kefir_ast_type_name *) KEFIR_AST_NODE_CLONE(&kft_mem, KEFIR_AST_NODE_BASE(type_name2))->self,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 1))));
-    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection1, context->type_traits,
-        kefir_ast_type_float(),
+    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection1,
+        (struct kefir_ast_type_name *) KEFIR_AST_NODE_CLONE(&kft_mem, KEFIR_AST_NODE_BASE(type_name3))->self,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 2))));
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
@@ -157,14 +174,14 @@ DEFINE_CASE(ast_constant_expression_generic_selection1, "AST constant expression
 
     struct kefir_ast_generic_selection *selection2 = kefir_ast_new_generic_selection(&kft_mem,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(&kft_mem, 0)));
-    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection2, context->type_traits,
-        kefir_ast_type_unsigned_char(),
+    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection2,
+        (struct kefir_ast_type_name *) KEFIR_AST_NODE_CLONE(&kft_mem, KEFIR_AST_NODE_BASE(type_name1))->self,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0))));
-    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection2, context->type_traits,
-        kefir_ast_type_signed_int(),
+    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection2,
+        (struct kefir_ast_type_name *) KEFIR_AST_NODE_CLONE(&kft_mem, KEFIR_AST_NODE_BASE(type_name2))->self,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 1))));
-    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection2, context->type_traits,
-        kefir_ast_type_float(),
+    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection2,
+        (struct kefir_ast_type_name *) KEFIR_AST_NODE_CLONE(&kft_mem, KEFIR_AST_NODE_BASE(type_name3))->self,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 2))));
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
@@ -172,14 +189,14 @@ DEFINE_CASE(ast_constant_expression_generic_selection1, "AST constant expression
 
     struct kefir_ast_generic_selection *selection3 = kefir_ast_new_generic_selection(&kft_mem,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'A')));
-    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection3, context->type_traits,
-        kefir_ast_type_unsigned_char(),
+    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection3,
+        (struct kefir_ast_type_name *) KEFIR_AST_NODE_CLONE(&kft_mem, KEFIR_AST_NODE_BASE(type_name1))->self,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0))));
-    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection3, context->type_traits,
-        kefir_ast_type_signed_int(),
+    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection3,
+        (struct kefir_ast_type_name *) KEFIR_AST_NODE_CLONE(&kft_mem, KEFIR_AST_NODE_BASE(type_name2))->self,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 1))));
-    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection3, context->type_traits,
-        kefir_ast_type_float(),
+    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection3,
+        (struct kefir_ast_type_name *) KEFIR_AST_NODE_CLONE(&kft_mem, KEFIR_AST_NODE_BASE(type_name3))->self,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 2))));
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
@@ -187,17 +204,17 @@ DEFINE_CASE(ast_constant_expression_generic_selection1, "AST constant expression
 
     struct kefir_ast_generic_selection *selection4 = kefir_ast_new_generic_selection(&kft_mem,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(&kft_mem, 2.71)));
-    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection4, context->type_traits,
-        kefir_ast_type_unsigned_char(),
+    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection4,
+        type_name1,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0))));
-    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection4, context->type_traits,
-        kefir_ast_type_signed_int(),
+    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection4,
+        type_name2,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 1))));
-    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection4, context->type_traits,
+    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection4,
         NULL,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 100))));
-    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection4, context->type_traits,
-        kefir_ast_type_float(),
+    ASSERT_OK(kefir_ast_generic_selection_append(&kft_mem, selection4,
+        type_name3,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 2))));
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,

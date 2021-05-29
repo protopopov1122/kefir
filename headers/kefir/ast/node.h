@@ -36,8 +36,12 @@ typedef struct kefir_ast_type_declaration {
     struct kefir_ast_declarator *declarator;
 } kefir_ast_type_declaration_t;
 
+KEFIR_AST_NODE_STRUCT(kefir_ast_type_name, {
+    struct kefir_ast_type_declaration type_decl;
+});
+
 typedef struct kefir_ast_generic_selection_assoc {
-    const struct kefir_ast_type *type;
+    struct kefir_ast_type_name *type_name;
     struct kefir_ast_node_base *expr;
 } kefir_ast_generic_selection_assoc_t;
 
@@ -45,10 +49,6 @@ KEFIR_AST_NODE_STRUCT(kefir_ast_generic_selection, {
     struct kefir_ast_node_base *control;
     struct kefir_list associations;
     struct kefir_ast_node_base *default_assoc;
-});
-
-KEFIR_AST_NODE_STRUCT(kefir_ast_type_name, {
-    struct kefir_ast_type_declaration type_decl;
 });
 
 KEFIR_AST_NODE_STRUCT(kefir_ast_compound_literal, {

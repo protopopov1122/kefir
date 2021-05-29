@@ -24,8 +24,9 @@ kefir_result_t kefir_ast_analyze_generic_selection_node(struct kefir_mem *mem,
         kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_generic_selection_assoc *, assoc,
             iter->value);
+        REQUIRE_OK(kefir_ast_analyze_node(mem, context, KEFIR_AST_NODE_BASE(assoc->type_name)));
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, assoc->expr));
-        if (!matched && KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, control_type, assoc->type)) {
+        if (!matched && KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, control_type, assoc->type_name->base.properties.type)) {
             REQUIRE_OK(kefir_ast_node_properties_clone(&base->properties, &assoc->expr->properties));
             matched = true;
         }
