@@ -19,7 +19,7 @@ kefir_result_t kefir_ast_evaluate_cast_operator_node(struct kefir_mem *mem,
     struct kefir_ast_constant_expression_value arg_value;
     REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->expr, &arg_value));
 
-    const struct kefir_ast_type *unqualified = kefir_ast_unqualified_type(node->type);
+    const struct kefir_ast_type *unqualified = kefir_ast_unqualified_type(node->type_name->base.properties.type);
     if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(unqualified)) {
         value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
         switch (arg_value.klass) {

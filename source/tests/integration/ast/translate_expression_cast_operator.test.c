@@ -9,6 +9,21 @@
 #include "kefir/ir/builder.h"
 #include "kefir/ir/format.h"
 #include <stdio.h>
+#include <stdarg.h>
+
+static kefir_result_t append_specifiers(struct kefir_mem *mem,
+                              struct kefir_ast_declarator_specifier_list *list,
+                              int count,
+                              ...) {
+    va_list args;
+    va_start(args, count);
+    while (count--) {
+        struct kefir_ast_declarator_specifier *specifier = va_arg(args, struct kefir_ast_declarator_specifier *);
+        REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, list, specifier));
+    }
+    va_end(args);
+    return KEFIR_OK;
+}
 
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ast_translator_environment env;
@@ -20,10 +35,10 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_local_context_init(mem, &global_context, &local_context));
     const struct kefir_ast_context *context = &local_context.context;
 
-    #define CAST_NODE(_type, _node) \
+    #define CAST_NODE(_type_name, _node) \
         do { \
             struct kefir_ast_node_base *node1 = KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem, \
-                (_type), (_node))); \
+                (_type_name), (_node))); \
             REQUIRE_OK(kefir_ast_analyze_node(mem, context, node1)); \
             REQUIRE_OK(kefir_ast_translate_expression(mem, node1, &builder, &translator_context)); \
             REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node1)); \
@@ -67,43 +82,92 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_irbuilder_block builder;
     REQUIRE_OK(kefir_irbuilder_block_init(mem, &builder, &func1->body));
 
-    CAST_NODE(kefir_ast_type_bool(), KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(mem, -150)));
-    CAST_NODE(kefir_ast_type_signed_int(), KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, -100)));
-    CAST_NODE(kefir_ast_type_signed_int(), KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(mem, true)));
-    CAST_NODE(kefir_ast_type_signed_short(), KEFIR_AST_NODE_BASE(kefir_ast_new_constant_ulong(mem, 100)));
-    CAST_NODE(kefir_ast_type_signed_long(), KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 3.14f)));
-    CAST_NODE(kefir_ast_type_signed_long(), KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 3.14)));
-    CAST_NODE(kefir_ast_type_signed_long_long(), KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "ptr")));
+#define MAKE_TYPENAME(_id, _spec_count, ...) \
+    struct kefir_ast_type_name *_id = kefir_ast_new_type_name(mem,   \
+        kefir_ast_declarator_identifier(mem, NULL, NULL)); \
+    REQUIRE_OK(append_specifiers(mem, &_id->type_decl.specifiers, (_spec_count), __VA_ARGS__));
 
-    CAST_NODE(kefir_ast_type_unsigned_int(), KEFIR_AST_NODE_BASE(kefir_ast_new_constant_ulong(mem, 1234)));
-    CAST_NODE(kefir_ast_type_unsigned_short(), KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 101)));
-    CAST_NODE(kefir_ast_type_unsigned_long(), KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 2.71f)));
-    CAST_NODE(kefir_ast_type_unsigned_long(), KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 2.71)));
-    CAST_NODE(kefir_ast_type_unsigned_long_long(), KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "ptr")));
+    MAKE_TYPENAME(type_name1, 1, kefir_ast_type_specifier_bool(mem));
+    MAKE_TYPENAME(type_name2, 1, kefir_ast_type_specifier_int(mem));
+    MAKE_TYPENAME(type_name3, 1, kefir_ast_type_specifier_int(mem));
+    MAKE_TYPENAME(type_name4, 1, kefir_ast_type_specifier_short(mem));
+    MAKE_TYPENAME(type_name5, 1, kefir_ast_type_specifier_long(mem));
+    MAKE_TYPENAME(type_name6, 1, kefir_ast_type_specifier_long(mem));
+    MAKE_TYPENAME(type_name7, 2, kefir_ast_type_specifier_long(mem), kefir_ast_type_specifier_long(mem));
+    MAKE_TYPENAME(type_name8, 2, kefir_ast_type_specifier_unsigned(mem), kefir_ast_type_specifier_int(mem));
+    MAKE_TYPENAME(type_name9, 2, kefir_ast_type_specifier_unsigned(mem), kefir_ast_type_specifier_short(mem));
+    MAKE_TYPENAME(type_name10, 2, kefir_ast_type_specifier_unsigned(mem), kefir_ast_type_specifier_long(mem));
+    MAKE_TYPENAME(type_name11, 2, kefir_ast_type_specifier_unsigned(mem), kefir_ast_type_specifier_long(mem));
+    MAKE_TYPENAME(type_name12, 3, kefir_ast_type_specifier_unsigned(mem), kefir_ast_type_specifier_long(mem),
+        kefir_ast_type_specifier_long(mem));
+    MAKE_TYPENAME(type_name13, 1, kefir_ast_type_specifier_float(mem));
+    MAKE_TYPENAME(type_name14, 1, kefir_ast_type_specifier_float(mem));
+    MAKE_TYPENAME(type_name15, 1, kefir_ast_type_specifier_float(mem));
+    MAKE_TYPENAME(type_name16, 1, kefir_ast_type_specifier_float(mem));
+    MAKE_TYPENAME(type_name17, 1, kefir_ast_type_specifier_double(mem));
+    MAKE_TYPENAME(type_name18, 1, kefir_ast_type_specifier_double(mem));
+    MAKE_TYPENAME(type_name19, 1, kefir_ast_type_specifier_double(mem));
+    MAKE_TYPENAME(type_name20, 1, kefir_ast_type_specifier_double(mem));
+    MAKE_TYPENAME(type_name21, 1, kefir_ast_type_specifier_void(mem));
+    MAKE_TYPENAME(type_name22, 1, kefir_ast_type_specifier_void(mem));
+    MAKE_TYPENAME(type_name23, 1, kefir_ast_type_specifier_void(mem));
+    MAKE_TYPENAME(type_name24, 1, kefir_ast_type_specifier_void(mem));
+    MAKE_TYPENAME(type_name25, 1, kefir_ast_type_specifier_void(mem));
+    MAKE_TYPENAME(type_name26, 1, kefir_ast_type_specifier_void(mem));
+#undef MAKE_TYPENAME
 
-    CAST_NODE(kefir_ast_type_float(), KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, -67)));
-    CAST_NODE(kefir_ast_type_float(), KEFIR_AST_NODE_BASE(kefir_ast_new_constant_ulong(mem, 67)));
-    CAST_NODE(kefir_ast_type_float(), KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 0.069f)));
-    CAST_NODE(kefir_ast_type_float(), KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 42.0)));
+    CAST_NODE(type_name1, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(mem, -150)));
+    CAST_NODE(type_name2, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, -100)));
+    CAST_NODE(type_name3, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(mem, true)));
+    CAST_NODE(type_name4, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_ulong(mem, 100)));
+    CAST_NODE(type_name5, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 3.14f)));
+    CAST_NODE(type_name6, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 3.14)));
+    CAST_NODE(type_name7, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "ptr")));
 
-    CAST_NODE(kefir_ast_type_double(), KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, -100500)));
-    CAST_NODE(kefir_ast_type_double(), KEFIR_AST_NODE_BASE(kefir_ast_new_constant_ulong(mem, 1597)));
-    CAST_NODE(kefir_ast_type_double(), KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 0.0112f)));
-    CAST_NODE(kefir_ast_type_double(), KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 42.1)));
+    CAST_NODE(type_name8, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_ulong(mem, 1234)));
+    CAST_NODE(type_name9, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 101)));
+    CAST_NODE(type_name10, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 2.71f)));
+    CAST_NODE(type_name11, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 2.71)));
+    CAST_NODE(type_name12, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "ptr")));
 
-    CAST_NODE(kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_signed_short()),
+    CAST_NODE(type_name13, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, -67)));
+    CAST_NODE(type_name14, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_ulong(mem, 67)));
+    CAST_NODE(type_name15, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 0.069f)));
+    CAST_NODE(type_name16, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 42.0)));
+
+    CAST_NODE(type_name17, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, -100500)));
+    CAST_NODE(type_name18, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_ulong(mem, 1597)));
+    CAST_NODE(type_name19, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 0.0112f)));
+    CAST_NODE(type_name20, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 42.1)));
+
+    struct kefir_ast_type_name *type_name27 = kefir_ast_new_type_name(mem,
+        kefir_ast_declarator_pointer(mem, kefir_ast_declarator_identifier(mem, NULL, NULL)));
+    REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name27->type_decl.specifiers,
+        kefir_ast_type_specifier_short(mem)));
+        
+    struct kefir_ast_type_name *type_name28 = kefir_ast_new_type_name(mem,
+        kefir_ast_declarator_pointer(mem, kefir_ast_declarator_identifier(mem, NULL, NULL)));
+    REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name28->type_decl.specifiers,
+        kefir_ast_type_specifier_bool(mem)));
+
+    struct kefir_ast_type_name *type_name29 = kefir_ast_new_type_name(mem,
+        kefir_ast_declarator_pointer(mem, kefir_ast_declarator_identifier(mem, NULL, NULL)));
+    REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name29->type_decl.specifiers,
+        kefir_ast_type_specifier_float(mem)));
+
+    CAST_NODE(type_name27,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, -0xfee)));
-    CAST_NODE(kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_bool()),
+    CAST_NODE(type_name28,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_uint(mem, 0xcade)));
-    CAST_NODE(kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_float()),
+    CAST_NODE(type_name29,
         KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "ptr")));
 
-    CAST_NODE(kefir_ast_type_void(), KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 10000)));
-    CAST_NODE(kefir_ast_type_void(), KEFIR_AST_NODE_BASE(kefir_ast_new_constant_uint(mem, 10001)));
-    CAST_NODE(kefir_ast_type_void(), KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 16.7f)));
-    CAST_NODE(kefir_ast_type_void(), KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 982.0001)));
-    CAST_NODE(kefir_ast_type_void(), KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "ptr")));
-    CAST_NODE(kefir_ast_type_void(), KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "structure")));
+    CAST_NODE(type_name21, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 10000)));
+    CAST_NODE(type_name22, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_uint(mem, 10001)));
+    CAST_NODE(type_name23, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 16.7f)));
+    CAST_NODE(type_name24, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 982.0001)));
+    CAST_NODE(type_name25, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "ptr")));
+    CAST_NODE(type_name26, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "structure")));
 
 #undef CAST_NODE
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_FREE(&builder));

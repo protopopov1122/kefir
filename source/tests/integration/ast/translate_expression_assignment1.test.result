@@ -29,12 +29,7 @@
         },
         {
             "identifier": 2,
-            "type": [
-                {
-                    "type": "struct",
-                    "fields": []
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 3,
@@ -235,12 +230,7 @@
         {
             "identifier": 7,
             "name": "enum",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": []
-                }
-            ],
+            "locals": [],
             "body": [
                 {
                     "opcode": "getglobal",
@@ -268,12 +258,7 @@
         {
             "identifier": 8,
             "name": "pointer",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": []
-                }
-            ],
+            "locals": [],
             "body": [
                 {
                     "opcode": "getglobal",
@@ -301,12 +286,7 @@
         {
             "identifier": 3,
             "name": "assign_int",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": []
-                }
-            ],
+            "locals": [],
             "body": [
                 {
                     "opcode": "getglobal",
@@ -379,12 +359,7 @@
         {
             "identifier": 0,
             "name": "assign_bool",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": []
-                }
-            ],
+            "locals": [],
             "body": [
                 {
                     "opcode": "getglobal",
@@ -436,12 +411,7 @@
         {
             "identifier": 1,
             "name": "assign_char",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": []
-                }
-            ],
+            "locals": [],
             "body": [
                 {
                     "opcode": "getglobal",
@@ -535,12 +505,7 @@
         {
             "identifier": 4,
             "name": "assign_long",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": []
-                }
-            ],
+            "locals": [],
             "body": [
                 {
                     "opcode": "getglobal",
@@ -613,12 +578,7 @@
         {
             "identifier": 2,
             "name": "assign_short",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": []
-                }
-            ],
+            "locals": [],
             "body": [
                 {
                     "opcode": "getglobal",
@@ -667,12 +627,7 @@
         {
             "identifier": 5,
             "name": "assign_long_long",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": []
-                }
-            ],
+            "locals": [],
             "body": [
                 {
                     "opcode": "getglobal",
@@ -721,12 +676,7 @@
         {
             "identifier": 6,
             "name": "assign_float_double",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": []
-                }
-            ],
+            "locals": [],
             "body": [
                 {
                     "opcode": "getglobal",

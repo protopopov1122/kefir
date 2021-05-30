@@ -134,15 +134,15 @@ END_CASE
 
 #undef ASSERT_ASSOC
 
-#define ASSERT_CAST(_mem, _type, _expr, _checker) \
+#define ASSERT_CAST(_mem, _type_name, _expr, _checker) \
     do { \
         struct kefir_ast_cast_operator *cast = kefir_ast_new_cast_operator((_mem), \
-            (_type), \
+            (_type_name), \
             (_expr)); \
         ASSERT(cast != NULL); \
         ASSERT(cast->base.klass->type == KEFIR_AST_CAST_OPERATOR); \
         ASSERT(cast->base.self == cast); \
-        ASSERT(KEFIR_AST_TYPE_SAME(cast->type, (_type))); \
+        ASSERT(cast->type_name == (_type_name)); \
         _checker \
         ASSERT_OK(KEFIR_AST_NODE_FREE((_mem), KEFIR_AST_NODE_BASE(cast))); \
     } while (0)
@@ -154,25 +154,50 @@ DEFINE_CASE(ast_nodes_cast_operators, "AST nodes - cast operators")
     ASSERT_OK(kefir_symbol_table_init(&symbols));
     ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
 
-    ASSERT_CAST(&kft_mem, kefir_ast_type_unsigned_char(),
+    struct kefir_ast_type_name *type_name1 = kefir_ast_new_type_name(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name1->type_decl.specifiers,
+        kefir_ast_type_specifier_unsigned(&kft_mem)));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name1->type_decl.specifiers,
+        kefir_ast_type_specifier_char(&kft_mem)));
+
+    ASSERT_CAST(&kft_mem, type_name1,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_uint(&kft_mem, 100)), {
         ASSERT(cast->expr->klass->type == KEFIR_AST_CONSTANT); \
         ASSERT(((struct kefir_ast_constant *) cast->expr->self)->type == KEFIR_AST_UINT_CONSTANT); \
         ASSERT(((struct kefir_ast_constant *) cast->expr->self)->value.uinteger == 100); \
     });
-    ASSERT_CAST(&kft_mem, kefir_ast_type_float(),
+
+    struct kefir_ast_type_name *type_name2 = kefir_ast_new_type_name(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name2->type_decl.specifiers,
+        kefir_ast_type_specifier_float(&kft_mem)));
+
+    ASSERT_CAST(&kft_mem, type_name2,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long_long(&kft_mem, 1234)), {
         ASSERT(cast->expr->klass->type == KEFIR_AST_CONSTANT); \
         ASSERT(((struct kefir_ast_constant *) cast->expr->self)->type == KEFIR_AST_LONG_LONG_CONSTANT); \
         ASSERT(((struct kefir_ast_constant *) cast->expr->self)->value.long_long == 1234); \
     });
-    ASSERT_CAST(&kft_mem, kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_void()),
+
+    struct kefir_ast_type_name *type_name3 = kefir_ast_new_type_name(&kft_mem,
+        kefir_ast_declarator_pointer(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL)));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name3->type_decl.specifiers,
+        kefir_ast_type_specifier_void(&kft_mem)));
+
+    ASSERT_CAST(&kft_mem, type_name3,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(&kft_mem, 0)), {
         ASSERT(cast->expr->klass->type == KEFIR_AST_CONSTANT); \
         ASSERT(((struct kefir_ast_constant *) cast->expr->self)->type == KEFIR_AST_LONG_CONSTANT); \
         ASSERT(((struct kefir_ast_constant *) cast->expr->self)->value.long_integer == 0); \
     });
-    ASSERT_CAST(&kft_mem, kefir_ast_type_unsigned_long(),
+
+    struct kefir_ast_type_name *type_name4 = kefir_ast_new_type_name(&kft_mem,
+        kefir_ast_declarator_identifier(&kft_mem, NULL, NULL));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name4->type_decl.specifiers,
+        kefir_ast_type_specifier_unsigned(&kft_mem)));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name4->type_decl.specifiers,
+        kefir_ast_type_specifier_long(&kft_mem)));
+
+    ASSERT_CAST(&kft_mem, type_name4,
         KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ADDRESS, 
             KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, &symbols, "x")))), {
         ASSERT(cast->expr->klass->type == KEFIR_AST_UNARY_OPERATION); \

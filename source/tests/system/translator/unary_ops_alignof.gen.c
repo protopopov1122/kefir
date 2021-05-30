@@ -32,7 +32,6 @@ static kefir_result_t append_specifiers(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-
 static kefir_result_t define_get_alignof_function(struct kefir_mem *mem,
                                            struct function *func,
                                            struct kefir_ast_context_manager *context_manager,

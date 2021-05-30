@@ -77,11 +77,16 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
     });
 
+    struct kefir_ast_type_name *type_name1 = kefir_ast_new_type_name(mem,
+        kefir_ast_declarator_identifier(mem, NULL, NULL));
+    REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name1->type_decl.specifiers,
+        kefir_ast_type_specifier_void(mem)));
+
     FUNC("comma4", {
         struct kefir_ast_comma_operator *comma = kefir_ast_new_comma_operator(mem);
         REQUIRE_OK(kefir_ast_comma_append(mem, comma,
             KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
-                kefir_ast_type_void(),
+                (struct kefir_ast_type_name *) KEFIR_AST_NODE_CLONE(mem, KEFIR_AST_NODE_BASE(type_name1))->self,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(mem, true))))));
         REQUIRE_OK(kefir_ast_comma_append(mem, comma,
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 21e4))));
@@ -100,7 +105,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(mem, 'x'))));
         REQUIRE_OK(kefir_ast_comma_append(mem, comma,
             KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
-                kefir_ast_type_void(),
+                (struct kefir_ast_type_name *) KEFIR_AST_NODE_CLONE(mem, KEFIR_AST_NODE_BASE(type_name1))->self,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 3e-1))))));
         REQUIRE_OK(kefir_ast_comma_append(mem, comma,
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 1 << 4))));
@@ -119,7 +124,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 0.00056))));
         REQUIRE_OK(kefir_ast_comma_append(mem, comma,
             KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
-                kefir_ast_type_void(),
+                type_name1,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_uint(mem, 0xfffe))))));
 
         struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(comma);

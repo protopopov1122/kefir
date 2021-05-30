@@ -202,6 +202,37 @@ static kefir_result_t translate_local_scoped_identifier(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+static kefir_result_t local_scope_empty(struct kefir_mem *mem,
+                                      const struct kefir_tree_node *root,
+                                      kefir_bool_t *empty) {
+    *empty = true;
+    ASSIGN_DECL_CAST(struct kefir_ast_identifier_flat_scope *, scope,
+        root->value);
+    struct kefir_ast_identifier_flat_scope_iterator iter;
+    kefir_result_t res;
+    for (res = kefir_ast_identifier_flat_scope_iter(scope, &iter);
+        res == KEFIR_OK;
+        res = kefir_ast_identifier_flat_scope_next(scope, &iter)) {
+        if (iter.value->klass == KEFIR_AST_SCOPE_IDENTIFIER_OBJECT) {
+            if (iter.value->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO ||
+                iter.value->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER) {
+                *empty = false;
+                return KEFIR_OK;
+            }
+        }
+    }
+    REQUIRE(res == KEFIR_ITERATOR_END, res);
+    if (kefir_tree_first_child(root) != NULL) {
+        for (struct kefir_tree_node *child = kefir_tree_first_child(root);
+            child != NULL;
+            child = kefir_tree_next_sibling(child)) {
+            REQUIRE_OK(local_scope_empty(mem, child, empty));
+            REQUIRE(*empty, KEFIR_OK);
+        }
+    }
+    return KEFIR_OK;
+}
+
 static kefir_result_t traverse_local_scope(struct kefir_mem *mem,
                                          const struct kefir_tree_node *root,
                                          struct kefir_irbuilder_type *builder,
@@ -213,20 +244,33 @@ static kefir_result_t traverse_local_scope(struct kefir_mem *mem,
                                          struct kefir_ast_translator_local_scope_layout *local_layout) {
     ASSIGN_DECL_CAST(struct kefir_ast_identifier_flat_scope *, scope,
         root->value);
-    REQUIRE_OK(KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_STRUCT, 0, 0));
+    kefir_bool_t empty_scope = true;
+    REQUIRE_OK(local_scope_empty(mem, root, &empty_scope));
+    if (!empty_scope) {
+        REQUIRE_OK(KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_STRUCT, 0, 0));
+    }
     const kefir_size_t begin = kefir_ir_type_total_length(builder->type) - 1;
     struct kefir_ast_identifier_flat_scope_iterator iter;
     kefir_result_t res;
     for (res = kefir_ast_identifier_flat_scope_iter(scope, &iter);
         res == KEFIR_OK;
         res = kefir_ast_identifier_flat_scope_next(scope, &iter)) {
-        struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(builder->type, begin);
-        typeentry->param++;
+        if (!empty_scope) {
+            struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(builder->type, begin);
+            typeentry->param++;
+        }
         REQUIRE_OK(translate_local_scoped_identifier(mem, builder, iter.identifier, iter.value, env, type_bundle, type_traits,
             module, type_resolver, local_layout));
     }
     REQUIRE(res == KEFIR_ITERATOR_END, res);
-    if (kefir_tree_first_child(root) != NULL) {
+
+    kefir_bool_t empty_children = true;
+    for (struct kefir_tree_node *child = kefir_tree_first_child(root);
+        child != NULL && !empty_children;
+        child = kefir_tree_next_sibling(child)) {
+        REQUIRE_OK(local_scope_empty(mem, child, &empty_children));
+    }
+    if (!empty_children) {
         REQUIRE_OK(KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_UNION, 0, 0));
         const kefir_size_t child_begin = kefir_ir_type_total_length(builder->type) - 1;
         for (struct kefir_tree_node *child = kefir_tree_first_child(root);

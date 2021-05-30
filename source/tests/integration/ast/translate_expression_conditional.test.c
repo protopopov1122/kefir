@@ -54,13 +54,17 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
     });
 
+    struct kefir_ast_type_name *type_name1 = kefir_ast_new_type_name(mem,
+        kefir_ast_declarator_pointer(mem, kefir_ast_declarator_identifier(mem, NULL, NULL)));
+    REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name1->type_decl.specifiers,
+        kefir_ast_type_specifier_void(mem)));
+
     FUNC("conditional2", {
         struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(kefir_ast_new_conditional_operator(mem,
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 7.45)),
             KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(mem, KEFIR_AST_OPERATION_ADDRESS,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "var1")))),
-            KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
-                kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_void()),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem, type_name1,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 0))))));
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, node));
         REQUIRE_OK(kefir_ast_translate_expression(mem, node, &builder, &translator_context));

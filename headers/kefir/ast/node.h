@@ -57,7 +57,7 @@ KEFIR_AST_NODE_STRUCT(kefir_ast_compound_literal, {
 });
 
 KEFIR_AST_NODE_STRUCT(kefir_ast_cast_operator, {
-    const struct kefir_ast_type *type;
+    struct kefir_ast_type_name *type_name;
     struct kefir_ast_node_base *expr;
 });
 
@@ -134,7 +134,7 @@ struct kefir_ast_compound_literal *kefir_ast_new_compound_literal(struct kefir_m
                                                               struct kefir_ast_type_name *);
 
 struct kefir_ast_cast_operator *kefir_ast_new_cast_operator(struct kefir_mem *,
-                                                        const struct kefir_ast_type *,
+                                                        struct kefir_ast_type_name *,
                                                         struct kefir_ast_node_base *);
 
 struct kefir_ast_array_subscript *kefir_ast_new_array_subscript(struct kefir_mem *,

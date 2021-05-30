@@ -12,6 +12,7 @@ kefir_result_t ast_cast_operator_free(struct kefir_mem *mem, struct kefir_ast_no
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
     ASSIGN_DECL_CAST(struct kefir_ast_cast_operator *, node,
         base->self);
+    REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(node->type_name)));
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node->expr));
     KEFIR_FREE(mem, node);
     return KEFIR_OK;
@@ -39,9 +40,17 @@ struct kefir_ast_node_base *ast_cast_operator_clone(struct kefir_mem *mem,
         KEFIR_FREE(mem, clone);
         return NULL;
     });
-    clone->type = node->type;
+
+    struct kefir_ast_node_base *clone_type_name = KEFIR_AST_NODE_CLONE(mem, KEFIR_AST_NODE_BASE(node->type_name));
+    REQUIRE_ELSE(clone_type_name != NULL, {
+        KEFIR_FREE(mem, clone);
+        return NULL;
+    });
+
+    clone->type_name = (struct kefir_ast_type_name *) clone_type_name->self;
     clone->expr = KEFIR_AST_NODE_CLONE(mem, node->expr);
     REQUIRE_ELSE(clone->expr != NULL, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(clone->type_name));
         KEFIR_FREE(mem, clone);
         return NULL;
     });
@@ -49,10 +58,10 @@ struct kefir_ast_node_base *ast_cast_operator_clone(struct kefir_mem *mem,
 }
 
 struct kefir_ast_cast_operator *kefir_ast_new_cast_operator(struct kefir_mem *mem,
-                                                        const struct kefir_ast_type *type,
+                                                        struct kefir_ast_type_name *type_name,
                                                         struct kefir_ast_node_base *expr) {
     REQUIRE(mem != NULL, NULL);
-    REQUIRE(type != NULL, NULL);
+    REQUIRE(type_name != NULL, NULL);
     REQUIRE(expr != NULL, NULL);
     struct kefir_ast_cast_operator *cast = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_cast_operator));
     REQUIRE(cast != NULL, NULL);
@@ -63,7 +72,7 @@ struct kefir_ast_cast_operator *kefir_ast_new_cast_operator(struct kefir_mem *me
         KEFIR_FREE(mem, cast);
         return NULL;
     });
-    cast->type = type;
+    cast->type_name = type_name;
     cast->expr = expr;
     return cast;
 }

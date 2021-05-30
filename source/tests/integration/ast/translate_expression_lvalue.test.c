@@ -108,10 +108,14 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
             "fiel2")));
     });
 
+    struct kefir_ast_type_name *type_name1 = kefir_ast_new_type_name(mem,
+        kefir_ast_declarator_pointer(mem, kefir_ast_declarator_identifier(mem, NULL, NULL)));
+    REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name1->type_decl.specifiers,
+        kefir_ast_type_specifier_int(mem)));
+
     FUNC("indirection", {
         LVALUE(KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(mem, KEFIR_AST_OPERATION_INDIRECTION,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
-                kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_signed_int()),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem, type_name1,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 0)))))));
     });
 

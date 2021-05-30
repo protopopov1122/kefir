@@ -74,31 +74,47 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 92.315)));
     });
 
+    struct kefir_ast_type_name *type_name1 = kefir_ast_new_type_name(mem,
+        kefir_ast_declarator_pointer(mem, kefir_ast_declarator_identifier(mem, NULL, NULL)));
+    REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name1->type_decl.specifiers,
+        kefir_ast_type_specifier_short(mem)));
+
+    struct kefir_ast_type_name *type_name2 = kefir_ast_new_type_name(mem,
+        kefir_ast_declarator_pointer(mem, kefir_ast_declarator_identifier(mem, NULL, NULL)));
+    REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name2->type_decl.specifiers,
+        kefir_ast_type_specifier_double(mem)));
+
+    struct kefir_ast_type_name *type_name3 = kefir_ast_new_type_name(mem,
+        kefir_ast_declarator_array(mem, KEFIR_AST_DECLARATOR_ARRAY_BOUNDED,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 4)),
+            kefir_ast_declarator_pointer(mem, kefir_ast_declarator_identifier(mem, NULL, NULL))));
+    REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name3->type_decl.specifiers,
+        kefir_ast_type_specifier_char(mem)));
+
+    struct kefir_ast_type_name *type_name4 = kefir_ast_new_type_name(mem,
+        kefir_ast_declarator_pointer(mem, 
+            kefir_ast_declarator_pointer(mem, kefir_ast_declarator_identifier(mem, NULL, NULL))));
+    REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name4->type_decl.specifiers,
+        kefir_ast_type_specifier_void(mem)));
+
     FUNC("add_pointer_int", {
         BINARY_NODE(KEFIR_AST_OPERATION_ADD,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
-                kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_signed_short()),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem, type_name1,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 0)))),
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 67)));
         BINARY_NODE(KEFIR_AST_OPERATION_ADD,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
-                kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_double()),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem, type_name2,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 1)))),
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, -5)));
 
 
         BINARY_NODE(KEFIR_AST_OPERATION_ADD,
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 100)),
-            KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
-                kefir_ast_type_pointer(mem, context->type_bundle,
-                    kefir_ast_type_array(mem, context->type_bundle, kefir_ast_type_char(),
-                        kefir_ast_constant_expression_integer(mem, 4), NULL)),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem, type_name3,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 101)))));
 
         BINARY_NODE(KEFIR_AST_OPERATION_ADD,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
-                kefir_ast_type_pointer(mem, context->type_bundle,
-                    kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_void())),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem, type_name4,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, -1)))),
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 0)));
     });
@@ -142,67 +158,92 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 0.004)));
     });
 
+        struct kefir_ast_type_name *type_name5 = kefir_ast_new_type_name(mem,
+            kefir_ast_declarator_pointer(mem, kefir_ast_declarator_identifier(mem, NULL, NULL)));
+        REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name5->type_decl.specifiers,
+            kefir_ast_type_specifier_char(mem)));
+
+        struct kefir_ast_type_name *type_name6 = kefir_ast_new_type_name(mem,
+            kefir_ast_declarator_pointer(mem, kefir_ast_declarator_identifier(mem, NULL, NULL)));
+        REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name6->type_decl.specifiers,
+            kefir_ast_type_specifier_unsigned(mem)));
+        REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name6->type_decl.specifiers,
+            kefir_ast_type_specifier_short(mem)));
+
+        struct kefir_ast_type_name *type_name7 = kefir_ast_new_type_name(mem,
+            kefir_ast_declarator_pointer(mem, kefir_ast_declarator_identifier(mem, NULL, NULL)));
+        REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name7->type_decl.specifiers,
+            kefir_ast_type_specifier_int(mem)));
+
+        struct kefir_ast_type_name *type_name8 = kefir_ast_new_type_name(mem,
+            kefir_ast_declarator_pointer(mem, kefir_ast_declarator_identifier(mem, NULL, NULL)));
+        REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name8->type_decl.specifiers,
+            kefir_ast_type_specifier_double(mem)));
+
+        struct kefir_ast_type_name *type_name9 = kefir_ast_new_type_name(mem,
+            kefir_ast_declarator_pointer(mem, kefir_ast_declarator_identifier(mem, NULL, NULL)));
+        REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name9->type_decl.specifiers,
+            kefir_ast_type_specifier_float(mem)));
+
     FUNC("sub_pointers", {
-        const struct kefir_ast_type *type1 = kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_char());
-        const struct kefir_ast_type *type2 = kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_unsigned_short());
-        const struct kefir_ast_type *type3 = kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_signed_int());
-        const struct kefir_ast_type *type4 = kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_double());
 
         BINARY_NODE(KEFIR_AST_OPERATION_SUBTRACT,
             KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
-                type1,
+                (struct kefir_ast_type_name *) KEFIR_AST_NODE_CLONE(mem, KEFIR_AST_NODE_BASE(type_name5))->self,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 128)))),
             KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
-                type1,
+                (struct kefir_ast_type_name *) KEFIR_AST_NODE_CLONE(mem, KEFIR_AST_NODE_BASE(type_name5))->self,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 64)))));
 
         BINARY_NODE(KEFIR_AST_OPERATION_SUBTRACT,
             KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
-                type2,
+                (struct kefir_ast_type_name *) KEFIR_AST_NODE_CLONE(mem, KEFIR_AST_NODE_BASE(type_name6))->self,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 1024)))),
             KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
-                type2,
+                (struct kefir_ast_type_name *) KEFIR_AST_NODE_CLONE(mem, KEFIR_AST_NODE_BASE(type_name6))->self,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 32)))));
 
         BINARY_NODE(KEFIR_AST_OPERATION_SUBTRACT,
             KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
-                type3,
+                (struct kefir_ast_type_name *) KEFIR_AST_NODE_CLONE(mem, KEFIR_AST_NODE_BASE(type_name7))->self,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 256)))),
             KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
-                type3,
+                (struct kefir_ast_type_name *) KEFIR_AST_NODE_CLONE(mem, KEFIR_AST_NODE_BASE(type_name7))->self,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 8)))));
 
         BINARY_NODE(KEFIR_AST_OPERATION_SUBTRACT,
             KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
-                type4,
+                (struct kefir_ast_type_name *) KEFIR_AST_NODE_CLONE(mem, KEFIR_AST_NODE_BASE(type_name8))->self,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 1)))),
             KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
-                type4,
+                (struct kefir_ast_type_name *) KEFIR_AST_NODE_CLONE(mem, KEFIR_AST_NODE_BASE(type_name8))->self,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 0)))));
     });
 
     FUNC("sub_pointer_integer", {
         BINARY_NODE(KEFIR_AST_OPERATION_SUBTRACT,
             KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
-                kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_char()),
+                type_name5,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 100)))),
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(mem, 16)));
         BINARY_NODE(KEFIR_AST_OPERATION_SUBTRACT,
             KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
-                kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_unsigned_short()),
+                type_name6,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 200)))),
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(mem, '\t')));
         BINARY_NODE(KEFIR_AST_OPERATION_SUBTRACT,
             KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
-                kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_float()),
+                type_name9,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 2)))),
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(mem, true)));
         BINARY_NODE(KEFIR_AST_OPERATION_SUBTRACT,
             KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem,
-                kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_double()),
+                type_name8,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 42)))),
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_uint(mem, 0)));
     });
+
+    REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(type_name7)));
 
     REQUIRE_OK(kefir_ir_format_module(stdout, &module));
 
