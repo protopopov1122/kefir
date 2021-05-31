@@ -3,6 +3,7 @@
 
 #include "kefir/core/basic-types.h"
 #include "kefir/core/mem.h"
+#include "kefir/core/list.h"
 #include "kefir/ast/base.h"
 #include "kefir/ast/constants.h"
 #include "kefir/ast/type.h"
@@ -35,6 +36,7 @@ typedef struct kefir_ast_node_properties {
     struct {
         kefir_ast_scoped_identifier_storage_t storage;
         kefir_ast_function_specifier_t function;
+        const char *identifier;
     } declaration_props;
 } kefir_ast_node_properties_t;
 

@@ -437,3 +437,56 @@ DEFINE_CASE(ast_nodes_compound_literals, "AST nodes - compound literals")
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
 END_CASE
 
+
+DEFINE_CASE(ast_nodes_declarations1, "AST nodes - declarations #1")
+    struct kefir_symbol_table symbols;
+    struct kefir_ast_type_bundle type_bundle;
+
+    ASSERT_OK(kefir_symbol_table_init(&symbols));
+    ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
+
+    struct kefir_ast_declaration *decl1 = kefir_ast_new_declaration(&kft_mem,
+        kefir_ast_declarator_identifier(&kft_mem, NULL, NULL));
+    ASSERT(decl1 != NULL);
+    ASSERT(decl1->declarator->klass == KEFIR_AST_DECLARATOR_IDENTIFIER);
+    ASSERT(decl1->declarator->identifier == NULL);
+    ASSERT(kefir_ast_declarator_specifier_list_iter(&decl1->specifiers, NULL) == NULL);
+
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &decl1->specifiers,
+        kefir_ast_type_specifier_unsigned(&kft_mem)));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &decl1->specifiers,
+        kefir_ast_type_specifier_long(&kft_mem)));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &decl1->specifiers,
+        kefir_ast_type_qualifier_const(&kft_mem)));
+
+    struct kefir_ast_declarator_specifier *specifier = NULL;
+    struct kefir_list_entry *iter = kefir_ast_declarator_specifier_list_iter(&decl1->specifiers, &specifier);
+    ASSERT(iter != NULL);
+    ASSERT(specifier->klass == KEFIR_AST_TYPE_SPECIFIER);
+    ASSERT(specifier->type_specifier.specifier == KEFIR_AST_TYPE_SPECIFIER_UNSIGNED);
+    ASSERT_OK(kefir_ast_declarator_specifier_list_next(&iter, &specifier));
+    ASSERT(iter != NULL);
+    ASSERT(specifier->type_specifier.specifier == KEFIR_AST_TYPE_SPECIFIER_LONG);
+    ASSERT_OK(kefir_ast_declarator_specifier_list_next(&iter, &specifier));
+    ASSERT(iter != NULL);
+    ASSERT(specifier->type_qualifier == KEFIR_AST_TYPE_QUALIFIER_CONST);
+    ASSERT_OK(kefir_ast_declarator_specifier_list_next(&iter, &specifier));
+    ASSERT(iter == NULL);
+
+    struct kefir_ast_declaration *decl2 = kefir_ast_new_declaration(&kft_mem,
+        kefir_ast_declarator_pointer(&kft_mem,
+            kefir_ast_declarator_pointer(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL))));
+    ASSERT(decl2 != NULL);
+    ASSERT(decl2->declarator->klass == KEFIR_AST_DECLARATOR_POINTER);
+    ASSERT(kefir_ast_type_qualifier_list_iter(&decl2->declarator->pointer.type_qualifiers, NULL) == NULL);
+    ASSERT(decl2->declarator->pointer.declarator->klass == KEFIR_AST_DECLARATOR_POINTER);
+    ASSERT(kefir_ast_type_qualifier_list_iter(&decl2->declarator->pointer.declarator->pointer.type_qualifiers, NULL) == NULL);
+    ASSERT(decl2->declarator->pointer.declarator->pointer.declarator->klass == KEFIR_AST_DECLARATOR_IDENTIFIER);
+    ASSERT(decl2->declarator->pointer.declarator->pointer.declarator->identifier == NULL);
+    ASSERT(kefir_ast_declarator_specifier_list_iter(&decl2->specifiers, NULL) == NULL);
+
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(decl1)));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(decl2)));
+    ASSERT_OK(kefir_ast_type_bundle_free(&kft_mem, &type_bundle));
+    ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
+END_CASE

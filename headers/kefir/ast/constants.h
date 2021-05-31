@@ -22,6 +22,7 @@ typedef enum kefir_ast_node_type {
     KEFIR_AST_CONDITIONAL_OPERATION,
     KEFIR_AST_ASSIGNMENT_OPERATOR,
 
+    KEFIR_AST_DECLARATION,
     KEFIR_AST_TYPE_NAME,
     KEFIR_AST_CAST_OPERATOR,
     KEFIR_AST_COMMA_OPERATOR,
@@ -33,7 +34,8 @@ typedef enum kefir_ast_node_type {
 typedef enum kefir_ast_node_category {
     KEFIR_AST_NODE_CATEGORY_UNKNOWN,
     KEFIR_AST_NODE_CATEGORY_EXPRESSION,
-    KEFIR_AST_NODE_CATEGORY_TYPE
+    KEFIR_AST_NODE_CATEGORY_TYPE,
+    KEFIR_AST_NODE_CATEGORY_DECLARATION
 } kefir_ast_node_category_t;
 
 typedef enum kefir_ast_constant_type {
