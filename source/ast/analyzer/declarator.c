@@ -12,6 +12,14 @@ enum signedness {
     SIGNEDNESS_UNSIGNED
 };
 
+static struct kefir_ast_alignment *wrap_alignment(struct kefir_mem *mem, kefir_size_t alignment) {
+    if (alignment > 0) {
+        return kefir_ast_alignment_const_expression(mem, kefir_ast_constant_expression_integer(mem, alignment));
+    } else {
+        return NULL;
+    }
+}
+
 static kefir_result_t process_struct_declaration_entry(struct kefir_mem *mem,
                                                      const struct kefir_ast_context *context,
                                                      struct kefir_ast_struct_type *struct_type,
@@ -24,7 +32,7 @@ static kefir_result_t process_struct_declaration_entry(struct kefir_mem *mem,
 
         const struct kefir_ast_type *field_type = NULL;
         kefir_ast_scoped_identifier_storage_t storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN;
-        struct kefir_ast_alignment *alignment = NULL;
+        kefir_size_t alignment = 0;
         const char *identifier = NULL;
         REQUIRE_OK(kefir_ast_analyze_declaration(mem, context, &entry->declaration.specifiers,
             entry_declarator->declarator, &identifier, &field_type, &storage_class, NULL, &alignment));
@@ -32,21 +40,41 @@ static kefir_result_t process_struct_declaration_entry(struct kefir_mem *mem,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Structure/union field cannot have storage class specified"));
         
         if (entry_declarator->bitwidth == NULL) {
-            REQUIRE_OK(kefir_ast_struct_type_field(mem, context->symbols, struct_type, identifier, field_type, alignment));
+            struct kefir_ast_alignment *ast_alignment = wrap_alignment(mem, alignment);
+            REQUIRE(alignment == 0 || ast_alignment != NULL,
+                KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST alignment"));
+            kefir_result_t res = kefir_ast_struct_type_field(mem, context->symbols, struct_type, identifier, field_type, ast_alignment);
+            REQUIRE_ELSE(res == KEFIR_OK, {
+                kefir_ast_alignment_free(mem, ast_alignment);
+                return res;
+            });
         } else {
             struct kefir_ast_constant_expression_value value;
             REQUIRE_OK(kefir_ast_analyze_node(mem, context, entry_declarator->bitwidth));
             REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, entry_declarator->bitwidth, &value));
             REQUIRE(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Bit-field width shall be integral constant expression"));
-            REQUIRE_OK(kefir_ast_struct_type_bitfield(mem, context->symbols, struct_type, identifier, field_type, alignment,
-                kefir_ast_constant_expression_integer(mem, value.integer)));
+            struct kefir_ast_alignment *ast_alignment = wrap_alignment(mem, alignment);
+            REQUIRE(alignment == 0 || ast_alignment != NULL,
+                KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST alignment"));
+            struct kefir_ast_constant_expression *ast_bitwidth = kefir_ast_constant_expression_integer(mem, value.integer);
+            REQUIRE_ELSE(ast_bitwidth != NULL, {
+                kefir_ast_alignment_free(mem, ast_alignment);
+                return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST constant expression");
+            });
+            kefir_result_t res = kefir_ast_struct_type_bitfield(mem, context->symbols, struct_type, identifier, field_type, ast_alignment,
+                ast_bitwidth);
+            REQUIRE_ELSE(res == KEFIR_OK, {
+                kefir_ast_constant_expression_free(mem, ast_bitwidth);
+                kefir_ast_alignment_free(mem, ast_alignment);
+                return res;
+            });
         }
     }
     if (kefir_list_head(&entry->declaration.declarators) == NULL) {
         const struct kefir_ast_type *field_type = NULL;
         kefir_ast_scoped_identifier_storage_t storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN;
-        struct kefir_ast_alignment *alignment = NULL;
+        kefir_size_t alignment = 0;
         REQUIRE_OK(kefir_ast_analyze_declaration(mem, context, &entry->declaration.specifiers,
             NULL, NULL, &field_type, &storage_class, NULL, &alignment));
         REQUIRE(storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
@@ -55,7 +83,14 @@ static kefir_result_t process_struct_declaration_entry(struct kefir_mem *mem,
             field_type->tag == KEFIR_AST_TYPE_UNION) &&
             field_type->structure_type.identifier == NULL,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Anonymous member shall be a structure/union without a tag"));
-        REQUIRE_OK(kefir_ast_struct_type_field(mem, context->symbols, struct_type, NULL, field_type, alignment));
+        struct kefir_ast_alignment *ast_alignment = wrap_alignment(mem, alignment);
+        REQUIRE(alignment == 0 || ast_alignment != NULL,
+            KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST alignment"));
+        kefir_result_t res = kefir_ast_struct_type_field(mem, context->symbols, struct_type, NULL, field_type, ast_alignment);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_ast_alignment_free(mem, ast_alignment);
+            return res;
+        });
     }
     return KEFIR_OK;
 }
@@ -702,7 +737,7 @@ kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
                                          const struct kefir_ast_type **type,
                                          kefir_ast_scoped_identifier_storage_t *storage,
                                          kefir_ast_function_specifier_t *function,
-                                         struct kefir_ast_alignment **alignment) {
+                                         kefir_size_t *alignment) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
     REQUIRE(specifiers != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declarator specifier list"));
@@ -757,10 +792,9 @@ kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem,
             REQUIRE_OK(type_alignment(mem, context, base_type, &natural_alignment));
             REQUIRE(natural_alignment <= alignment_specifier,
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Specified alignment shall be at least as strict as natural"));
-            *alignment = kefir_ast_alignment_const_expression(mem,
-                kefir_ast_constant_expression_integer(mem, alignment_specifier));
+            *alignment = alignment_specifier;
         } else {
-            *alignment = NULL;
+            *alignment = 0;
         }
     }
     return KEFIR_OK;

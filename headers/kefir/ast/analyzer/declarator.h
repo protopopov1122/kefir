@@ -14,7 +14,7 @@ kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *,
                                          const struct kefir_ast_type **,
                                          kefir_ast_scoped_identifier_storage_t *,
                                          kefir_ast_function_specifier_t *,
-                                         struct kefir_ast_alignment **);
+                                         kefir_size_t *);
 
 
 #endif

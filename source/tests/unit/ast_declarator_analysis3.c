@@ -30,7 +30,7 @@ DEFINE_CASE(ast_declarator_analysis10, "AST declarator analysis - pointer declar
     const struct kefir_ast_type *type = NULL;
     kefir_ast_scoped_identifier_storage_t storage;
     kefir_ast_function_specifier_t function_specifier;
-    struct kefir_ast_alignment *alignment = NULL;
+    kefir_size_t alignment = 0;
     const char *identifier = NULL;
     ASSERT_OK(kefir_ast_analyze_declaration(&kft_mem, context, &specifiers,
         declarator, &identifier, &type, &storage, &function_specifier, &alignment));
@@ -44,7 +44,7 @@ DEFINE_CASE(ast_declarator_analysis10, "AST declarator analysis - pointer declar
         (struct kefir_ast_type_qualification) {.volatile_type = true})));
     ASSERT(storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER);
     ASSERT(function_specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
-    ASSERT(alignment == NULL);
+    ASSERT(alignment == 0);
 
     ASSERT_OK(kefir_ast_declarator_free(&kft_mem, declarator));
     ASSERT_OK(kefir_ast_declarator_specifier_list_free(&kft_mem, &specifiers));
@@ -106,7 +106,7 @@ DEFINE_CASE(ast_declarator_analysis11, "AST declarator analysis - pointer declar
     const struct kefir_ast_type *type = NULL;
     kefir_ast_scoped_identifier_storage_t storage;
     kefir_ast_function_specifier_t function_specifier;
-    struct kefir_ast_alignment *alignment = NULL;
+    kefir_size_t alignment = 0;
     const char *identifier = NULL;
     ASSERT_OK(kefir_ast_analyze_declaration(&kft_mem, context, &specifiers,
         declarator, &identifier, &type, &storage, &function_specifier, &alignment));
@@ -120,9 +120,7 @@ DEFINE_CASE(ast_declarator_analysis11, "AST declarator analysis - pointer declar
         (struct kefir_ast_type_qualification) {.restricted = true, .constant = true})));
     ASSERT(storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL);
     ASSERT(function_specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
-    ASSERT(alignment != NULL);
-    ASSERT(alignment->value == 16);
-    ASSERT_OK(kefir_ast_alignment_free(&kft_mem, alignment));
+    ASSERT(alignment == 16);
 
     ASSERT_OK(kefir_ast_declarator_free(&kft_mem, declarator));
     ASSERT_OK(kefir_ast_declarator_specifier_list_free(&kft_mem, &specifiers));
@@ -157,7 +155,7 @@ DEFINE_CASE(ast_declarator_analysis12, "AST declarator analysis - array declarat
     const struct kefir_ast_type *type = NULL;
     kefir_ast_scoped_identifier_storage_t storage;
     kefir_ast_function_specifier_t function_specifier;
-    struct kefir_ast_alignment *alignment = NULL;
+    kefir_size_t alignment = 0;
     const char *identifier = NULL;
     ASSERT_OK(kefir_ast_analyze_declaration(&kft_mem, context, &specifiers,
         declarator, &identifier, &type, &storage, &function_specifier, &alignment));
@@ -175,7 +173,7 @@ DEFINE_CASE(ast_declarator_analysis12, "AST declarator analysis - array declarat
     ASSERT(KEFIR_AST_TYPE_SAME(type, type1));
     ASSERT(storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO);
     ASSERT(function_specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
-    ASSERT(alignment == NULL);
+    ASSERT(alignment == 0);
 
     ASSERT_OK(kefir_ast_declarator_free(&kft_mem, declarator));
     ASSERT_OK(kefir_ast_declarator_specifier_list_free(&kft_mem, &specifiers));
@@ -219,7 +217,7 @@ DEFINE_CASE(ast_declarator_analysis13, "AST declarator analysis - array declarat
     const struct kefir_ast_type *type = NULL;
     kefir_ast_scoped_identifier_storage_t storage;
     kefir_ast_function_specifier_t function_specifier;
-    struct kefir_ast_alignment *alignment = NULL;
+    kefir_size_t alignment = 0;
     const char *identifier = NULL;
 
     ASSERT_OK(kefir_ast_analyze_declaration(&kft_mem, context, &specifiers,
@@ -237,7 +235,7 @@ DEFINE_CASE(ast_declarator_analysis13, "AST declarator analysis - array declarat
     ASSERT(KEFIR_AST_TYPE_SAME(type, type1));
     ASSERT(storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);
     ASSERT(function_specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
-    ASSERT(alignment == NULL);
+    ASSERT(alignment == 0);
 
     ASSERT_OK(kefir_ast_analyze_declaration(&kft_mem, context, &specifiers,
         declarator2, &identifier, &type, &storage, &function_specifier, &alignment));
@@ -255,7 +253,7 @@ DEFINE_CASE(ast_declarator_analysis13, "AST declarator analysis - array declarat
     ASSERT(KEFIR_AST_TYPE_SAME(type, type2));
     ASSERT(storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);
     ASSERT(function_specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
-    ASSERT(alignment == NULL);
+    ASSERT(alignment == 0);
 
     ASSERT_OK(kefir_ast_declarator_free(&kft_mem, declarator1));
     ASSERT_OK(kefir_ast_declarator_free(&kft_mem, declarator2));
@@ -301,7 +299,7 @@ DEFINE_CASE(ast_declarator_analysis14, "AST declarator analysis - array declarat
     const struct kefir_ast_type *type = NULL;
     kefir_ast_scoped_identifier_storage_t storage;
     kefir_ast_function_specifier_t function_specifier;
-    struct kefir_ast_alignment *alignment = NULL;
+    kefir_size_t alignment = 0;
     const char *identifier = NULL;
 
     ASSERT_OK(kefir_ast_analyze_declaration(&kft_mem, context, &specifiers,
@@ -319,9 +317,7 @@ DEFINE_CASE(ast_declarator_analysis14, "AST declarator analysis - array declarat
     ASSERT(KEFIR_AST_TYPE_SAME(type, type1));
     ASSERT(storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);
     ASSERT(function_specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
-    ASSERT(alignment != NULL);
-    ASSERT(alignment->value == 32);
-    ASSERT_OK(kefir_ast_alignment_free(&kft_mem, alignment));
+    ASSERT(alignment == 32);
 
     ASSERT_OK(kefir_ast_declarator_free(&kft_mem, declarator1));
     ASSERT_OK(kefir_ast_declarator_free(&kft_mem, declarator2));
@@ -371,7 +367,7 @@ DEFINE_CASE(ast_declarator_analysis15, "AST declarator analysis - array declarat
     const struct kefir_ast_type *type = NULL;
     kefir_ast_scoped_identifier_storage_t storage;
     kefir_ast_function_specifier_t function_specifier;
-    struct kefir_ast_alignment *alignment = NULL;
+    kefir_size_t alignment = 0;
     const char *identifier = NULL;
 
     ASSERT_OK(kefir_ast_analyze_declaration(&kft_mem, context, &specifiers,
@@ -391,7 +387,7 @@ DEFINE_CASE(ast_declarator_analysis15, "AST declarator analysis - array declarat
     ASSERT(KEFIR_AST_TYPE_SAME(type, type1));
     ASSERT(storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);
     ASSERT(function_specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
-    ASSERT(alignment == NULL);
+    ASSERT(alignment == 0);
 
     ASSERT_OK(kefir_ast_analyze_declaration(&kft_mem, context, &specifiers,
         declarator2, &identifier, &type, &storage, &function_specifier, &alignment));
@@ -411,7 +407,7 @@ DEFINE_CASE(ast_declarator_analysis15, "AST declarator analysis - array declarat
     ASSERT(KEFIR_AST_TYPE_SAME(type, type2));
     ASSERT(storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);
     ASSERT(function_specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
-    ASSERT(alignment == NULL);
+    ASSERT(alignment == 0);
 
     ASSERT_OK(kefir_ast_declarator_free(&kft_mem, declarator1));
     ASSERT_OK(kefir_ast_declarator_free(&kft_mem, declarator2));

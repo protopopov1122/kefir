@@ -74,6 +74,109 @@ static kefir_result_t context_define_constant(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+static kefir_result_t context_define_identifier(struct kefir_mem *mem,
+                                                const struct kefir_ast_context *context,
+                                                kefir_bool_t declaration,
+                                                const char *identifier,
+                                                const struct kefir_ast_type *type,
+                                                kefir_ast_scoped_identifier_storage_t storage_class,
+                                                kefir_ast_function_specifier_t function_specifier,
+                                                struct kefir_ast_alignment *alignment) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Empty identifiers are not permitted in the global scope"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
+
+    ASSIGN_DECL_CAST(struct kefir_ast_global_context *, global_ctx,
+        context->payload);
+
+    kefir_bool_t is_function = type->tag == KEFIR_AST_TYPE_FUNCTION;
+    if (is_function) {
+        REQUIRE(strcmp(identifier, type->function_type.identifier) == 0,
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Provided identifier does not much identifier from function type"));
+        REQUIRE(alignment == NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Alignment specifier is not permitted in the declaration of function"));
+        switch (storage_class) {
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
+                REQUIRE(function_specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Functin specifiers may only be used in function declarations"));
+                REQUIRE(declaration, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Typedef specifier cannot be used for function definition"));
+                REQUIRE_OK(kefir_ast_global_context_define_type(mem, global_ctx, identifier, type));
+                break;
+
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN:
+                if (declaration) {
+                    REQUIRE_OK(kefir_ast_global_context_declare_function(mem, global_ctx, function_specifier, type));
+                } else {
+                    REQUIRE_OK(kefir_ast_global_context_define_function(mem, global_ctx, function_specifier, type));
+                }
+                break;
+
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC:
+                REQUIRE_OK(kefir_ast_global_context_define_static_function(mem, global_ctx, function_specifier, type));
+                break;
+
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
+                REQUIRE_OK(kefir_ast_global_context_define_function(mem, global_ctx, function_specifier, type));
+                break;
+
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL:
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL:
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL:
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO:
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER:
+                return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Illegal function storage-class specifier");
+        }
+    } else {
+        REQUIRE(function_specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Function specifiers cannot be used for non-function types"));
+        switch (storage_class) {
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
+                REQUIRE(alignment == NULL,
+                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Alignment cannot be specifier to type definitions"));
+                REQUIRE_OK(kefir_ast_global_context_define_type(mem, global_ctx, identifier, type));
+                break;
+
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN:
+                if (declaration) {
+                    REQUIRE_OK(kefir_ast_global_context_declare_external(mem, global_ctx, identifier, type, alignment));
+                } else {
+                    REQUIRE_OK(kefir_ast_global_context_define_external(mem, global_ctx, identifier, type, alignment, NULL)); // TODO Initializer support
+                }
+                break;
+
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC:
+                REQUIRE_OK(kefir_ast_global_context_define_static(mem, global_ctx, identifier, type, alignment, NULL));
+                break;
+
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL:
+                REQUIRE_OK(kefir_ast_global_context_define_external_thread_local(mem, global_ctx, identifier, type, alignment, NULL));
+                break;
+
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL:
+                if (declaration) {
+                    REQUIRE_OK(kefir_ast_global_context_declare_external_thread_local(mem, global_ctx, identifier, type, alignment));
+                } else {
+                    REQUIRE_OK(kefir_ast_global_context_define_external_thread_local(mem, global_ctx, identifier, type, alignment, NULL));
+                }
+                break;
+
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL:
+                REQUIRE_OK(kefir_ast_global_context_define_static_thread_local(mem, global_ctx, identifier, type, alignment, NULL));
+                break;
+
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
+                REQUIRE_OK(kefir_ast_global_context_define_external(mem, global_ctx, identifier, type, alignment, NULL));
+                break;
+
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO:
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER:
+                return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Illegal file-scope identifier storage class");
+        }
+    }
+
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem,
                                          const struct kefir_ast_type_traits *type_traits,
                                          const struct kefir_ast_target_environment *target_env,
@@ -109,6 +212,7 @@ kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem,
     context->context.allocate_temporary_value = context_allocate_temporary_value;
     context->context.define_tag = context_define_tag;
     context->context.define_constant = context_define_constant;
+    context->context.define_identifier = context_define_identifier;
     context->context.symbols = &context->symbols;
     context->context.type_bundle = &context->type_bundle;
     context->context.type_traits = context->type_traits;

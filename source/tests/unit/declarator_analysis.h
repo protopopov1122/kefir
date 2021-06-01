@@ -38,7 +38,7 @@ kefir_result_t append_specifiers(struct kefir_mem *,
         const struct kefir_ast_type *type = NULL; \
         kefir_ast_scoped_identifier_storage_t storage; \
         kefir_ast_function_specifier_t function_specifier; \
-        struct kefir_ast_alignment *alignment = NULL; \
+        kefir_size_t alignment = 0; \
         const char *identifier = NULL; \
         ASSERT_OK(kefir_ast_analyze_declaration((_mem), (_context), &specifiers, \
             declarator, &identifier, &type, &storage, &function_specifier, &alignment)); \
@@ -48,12 +48,7 @@ kefir_result_t append_specifiers(struct kefir_mem *,
         ASSERT(KEFIR_AST_TYPE_SAME(type, (_type))); \
         ASSERT(storage == (_storage_class)); \
         ASSERT(function_specifier == (_function_spec)); \
-        if (alignment == NULL) { \
-            ASSERT((_alignment) == 0); \
-        } else { \
-            ASSERT(alignment->value == (_alignment)); \
-            ASSERT_OK(kefir_ast_alignment_free((_mem), alignment)); \
-        } \
+        ASSERT(alignment == (_alignment)); \
      \
         ASSERT_OK(kefir_ast_declarator_free((_mem), declarator)); \
         ASSERT_OK(kefir_ast_declarator_specifier_list_free((_mem), &specifiers)); \
