@@ -39,6 +39,7 @@ typedef struct kefir_ast_type_declaration {
 KEFIR_AST_NODE_STRUCT(kefir_ast_declaration, {
     struct kefir_ast_declarator_specifier_list specifiers;
     struct kefir_ast_declarator *declarator;
+    struct kefir_ast_initializer *initializer;
 });
 
 KEFIR_AST_NODE_STRUCT(kefir_ast_type_name, {
@@ -133,7 +134,8 @@ struct kefir_ast_generic_selection *kefir_ast_new_generic_selection(struct kefir
                                                                 struct kefir_ast_node_base *);
 
 struct kefir_ast_declaration *kefir_ast_new_declaration(struct kefir_mem *,
-                                                        struct kefir_ast_declarator *);
+                                                        struct kefir_ast_declarator *,
+                                                        struct kefir_ast_initializer *);
 
 struct kefir_ast_type_name *kefir_ast_new_type_name(struct kefir_mem *,
                                                 struct kefir_ast_declarator *);

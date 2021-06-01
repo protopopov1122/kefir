@@ -30,12 +30,14 @@ kefir_result_t kefir_ast_analyze_declaration_node(struct kefir_mem *mem,
         REQUIRE(alignment != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST alignment"));
     }
 
-    kefir_result_t res = context->define_identifier(mem, context, true /* TODO Initializer support */,
+    kefir_result_t res = context->define_identifier(mem, context,
+        node->initializer == NULL,
         base->properties.declaration_props.identifier,
         base->properties.type,
         base->properties.declaration_props.storage,
         base->properties.declaration_props.function,
-        alignment);
+        alignment,
+        node->initializer);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_ast_alignment_free(mem, alignment);
         return res;

@@ -94,7 +94,8 @@ static kefir_result_t context_define_identifier(struct kefir_mem *mem,
                                                 const struct kefir_ast_type *type,
                                                 kefir_ast_scoped_identifier_storage_t storage_class,
                                                 kefir_ast_function_specifier_t function_specifier,
-                                                struct kefir_ast_alignment *alignment) {
+                                                struct kefir_ast_alignment *alignment,
+                                                struct kefir_ast_initializer *initializer) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Empty identifiers are not permitted in the global scope"));
@@ -108,6 +109,7 @@ static kefir_result_t context_define_identifier(struct kefir_mem *mem,
         REQUIRE(strcmp(identifier, type->function_type.identifier) == 0,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Provided identifier does not much identifier from function type"));
         REQUIRE(alignment == NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Alignment specifier is not permitted in the declaration of function"));
+        REQUIRE(initializer == NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Function cannot be defined with initializer"));
         switch (storage_class) {
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
                 REQUIRE(function_specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE,
@@ -133,6 +135,8 @@ static kefir_result_t context_define_identifier(struct kefir_mem *mem,
     } else {
         REQUIRE(function_specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Function specifiers cannot be used for non-function types"));
+        REQUIRE(declaration || initializer != NULL,
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Initializer must be provided to for identifier definition"));
         switch (storage_class) {
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
                 REQUIRE(alignment == NULL,
@@ -147,7 +151,7 @@ static kefir_result_t context_define_identifier(struct kefir_mem *mem,
                 break;
                 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC:
-                REQUIRE_OK(kefir_ast_local_context_define_static(mem, local_ctx, identifier, type, alignment, NULL)); // TODO Initializer support
+                REQUIRE_OK(kefir_ast_local_context_define_static(mem, local_ctx, identifier, type, alignment, initializer));
                 break;
                 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL:
@@ -157,16 +161,16 @@ static kefir_result_t context_define_identifier(struct kefir_mem *mem,
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL:
-                REQUIRE_OK(kefir_ast_local_context_define_static_thread_local(mem, local_ctx, identifier, type, alignment, NULL));
+                REQUIRE_OK(kefir_ast_local_context_define_static_thread_local(mem, local_ctx, identifier, type, alignment, initializer));
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO:
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
-                REQUIRE_OK(kefir_ast_local_context_define_auto(mem, local_ctx, identifier, type, alignment, NULL));
+                REQUIRE_OK(kefir_ast_local_context_define_auto(mem, local_ctx, identifier, type, alignment, initializer));
                 break;
             
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER:
-                REQUIRE_OK(kefir_ast_local_context_define_register(mem, local_ctx, identifier, type, alignment, NULL));
+                REQUIRE_OK(kefir_ast_local_context_define_register(mem, local_ctx, identifier, type, alignment, initializer));
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL:
@@ -396,9 +400,15 @@ kefir_result_t kefir_ast_local_context_define_static(struct kefir_mem *mem,
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
 
     if (initializer != NULL) {
+        struct kefir_ast_type_qualification qualifications;
+        REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications, type));
         struct kefir_ast_initializer_properties props;
         REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
         type = props.type;
+
+        if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
+            type = kefir_ast_type_qualified(mem, &context->global->type_bundle, type, qualifications);
+        }
     }
     
     REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
@@ -439,9 +449,15 @@ kefir_result_t kefir_ast_local_context_define_static_thread_local(struct kefir_m
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
     
     if (initializer != NULL) {
+        struct kefir_ast_type_qualification qualifications;
+        REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications, type));
         struct kefir_ast_initializer_properties props;
         REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
         type = props.type;
+
+        if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
+            type = kefir_ast_type_qualified(mem, &context->global->type_bundle, type, qualifications);
+        }
     }
     
     REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
@@ -482,9 +498,15 @@ kefir_result_t kefir_ast_local_context_define_auto(struct kefir_mem *mem,
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
 
     if (initializer != NULL) {
+        struct kefir_ast_type_qualification qualifications;
+        REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications, type));
         struct kefir_ast_initializer_properties props;
         REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
         type = props.type;
+
+        if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
+            type = kefir_ast_type_qualified(mem, &context->global->type_bundle, type, qualifications);
+        }
     }
     
     REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
@@ -525,9 +547,15 @@ kefir_result_t kefir_ast_local_context_define_register(struct kefir_mem *mem,
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
     
     if (initializer != NULL) {
+        struct kefir_ast_type_qualification qualifications;
+        REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications, type));
         struct kefir_ast_initializer_properties props;
         REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
         type = props.type;
+
+        if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
+            type = kefir_ast_type_qualified(mem, &context->global->type_bundle, type, qualifications);
+        }
     }
     
     REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),

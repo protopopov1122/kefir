@@ -446,7 +446,7 @@ DEFINE_CASE(ast_nodes_declarations1, "AST nodes - declarations #1")
     ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
 
     struct kefir_ast_declaration *decl1 = kefir_ast_new_declaration(&kft_mem,
-        kefir_ast_declarator_identifier(&kft_mem, NULL, NULL));
+        kefir_ast_declarator_identifier(&kft_mem, NULL, NULL), NULL);
     ASSERT(decl1 != NULL);
     ASSERT(decl1->declarator->klass == KEFIR_AST_DECLARATOR_IDENTIFIER);
     ASSERT(decl1->declarator->identifier == NULL);
@@ -472,10 +472,14 @@ DEFINE_CASE(ast_nodes_declarations1, "AST nodes - declarations #1")
     ASSERT(specifier->type_qualifier == KEFIR_AST_TYPE_QUALIFIER_CONST);
     ASSERT_OK(kefir_ast_declarator_specifier_list_next(&iter, &specifier));
     ASSERT(iter == NULL);
+    ASSERT(decl1->initializer == NULL);
+
+    struct kefir_ast_initializer *initializer2 = kefir_ast_new_expression_initializer(&kft_mem,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0)));
 
     struct kefir_ast_declaration *decl2 = kefir_ast_new_declaration(&kft_mem,
         kefir_ast_declarator_pointer(&kft_mem,
-            kefir_ast_declarator_pointer(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL))));
+            kefir_ast_declarator_pointer(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL))), initializer2);
     ASSERT(decl2 != NULL);
     ASSERT(decl2->declarator->klass == KEFIR_AST_DECLARATOR_POINTER);
     ASSERT(kefir_ast_type_qualifier_list_iter(&decl2->declarator->pointer.type_qualifiers, NULL) == NULL);
@@ -484,6 +488,7 @@ DEFINE_CASE(ast_nodes_declarations1, "AST nodes - declarations #1")
     ASSERT(decl2->declarator->pointer.declarator->pointer.declarator->klass == KEFIR_AST_DECLARATOR_IDENTIFIER);
     ASSERT(decl2->declarator->pointer.declarator->pointer.declarator->identifier == NULL);
     ASSERT(kefir_ast_declarator_specifier_list_iter(&decl2->specifiers, NULL) == NULL);
+    ASSERT(decl2->initializer == initializer2);
 
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(decl1)));
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(decl2)));

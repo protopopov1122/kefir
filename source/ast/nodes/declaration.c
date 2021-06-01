@@ -15,6 +15,10 @@ kefir_result_t ast_declaration_free(struct kefir_mem *mem, struct kefir_ast_node
     REQUIRE_OK(kefir_ast_declarator_specifier_list_free(mem, &node->specifiers));
     REQUIRE_OK(kefir_ast_declarator_free(mem, node->declarator));
     node->declarator = NULL;
+    if (node->initializer != NULL) {
+        REQUIRE_OK(kefir_ast_initializer_free(mem, node->initializer));
+        node->initializer = NULL;
+    }
     KEFIR_FREE(mem, node);
     return KEFIR_OK;
 }
@@ -57,16 +61,28 @@ struct kefir_ast_node_base *ast_declaration_clone(struct kefir_mem *mem,
 
     res = kefir_ast_declarator_specifier_list_clone(mem, &clone->specifiers, &node->specifiers);
     REQUIRE_ELSE(res == KEFIR_OK, {
-        kefir_ast_declarator_specifier_list_free(mem, &clone->specifiers);
         kefir_ast_declarator_free(mem, clone->declarator);
         KEFIR_FREE(mem, clone);
         return NULL;
     });
+
+    if (node->initializer != NULL) {
+        node->initializer = kefir_ast_initializer_clone(mem, node->initializer);
+        REQUIRE_ELSE(node->initializer != NULL, {
+            kefir_ast_declarator_specifier_list_free(mem, &clone->specifiers);
+            kefir_ast_declarator_free(mem, clone->declarator);
+            KEFIR_FREE(mem, clone);
+            return NULL;
+        });
+    } else {
+        node->initializer = NULL;
+    }
     return KEFIR_AST_NODE_BASE(clone);
 }
 
 struct kefir_ast_declaration *kefir_ast_new_declaration(struct kefir_mem *mem,
-                                                struct kefir_ast_declarator *decl) {
+                                                        struct kefir_ast_declarator *decl,
+                                                        struct kefir_ast_initializer *initializer) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(decl != NULL, NULL);
 
@@ -86,5 +102,6 @@ struct kefir_ast_declaration *kefir_ast_new_declaration(struct kefir_mem *mem,
         return NULL;
     });
     declaration->declarator = decl;
+    declaration->initializer = initializer;
     return declaration;
 }
