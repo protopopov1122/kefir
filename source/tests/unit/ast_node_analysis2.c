@@ -56,19 +56,19 @@ DEFINE_CASE(ast_node_analysis_generic_selections, "AST node analysis - generic s
     struct kefir_ast_context *context = &local_context.context;
 
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "x",
-        kefir_ast_type_char(), NULL));
+        kefir_ast_type_char(), NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_constant(&kft_mem, &local_context, "y",
-        kefir_ast_constant_expression_integer(&kft_mem, 100), kefir_ast_type_unsigned_int()));
+        kefir_ast_constant_expression_integer(&kft_mem, 100), kefir_ast_type_unsigned_int(), NULL));
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "z",
-        kefir_ast_type_double(), NULL));
+        kefir_ast_type_double(), NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "w",
-        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()), NULL));
+        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()), NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "q",
-        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_char()), NULL));
+        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_char()), NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "r",
-        kefir_ast_type_signed_long_long(), NULL));
+        kefir_ast_type_signed_long_long(), NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "bool",
-        kefir_ast_type_bool(), NULL));
+        kefir_ast_type_bool(), NULL, NULL));
 
     ASSERT_GENERIC_SELECTION(&kft_mem, context, "x", kefir_ast_type_bool(), true, false, true);
     ASSERT_GENERIC_SELECTION(&kft_mem, context, "y", kefir_ast_type_float(), false, true, false);
@@ -111,9 +111,9 @@ DEFINE_CASE(ast_node_analysis_cast_operators, "AST node analysis - cast operator
         "", &structure1);
 
     ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context, "x",
-        kefir_ast_type_float(), NULL, NULL));
+        kefir_ast_type_float(), NULL, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context, "y",
-        structure1_type, NULL, NULL));
+        structure1_type, NULL, NULL, NULL));
 
     struct kefir_ast_type_name *type_name1 = kefir_ast_new_type_name(&kft_mem,
         kefir_ast_declarator_identifier(&kft_mem, NULL, NULL));
@@ -239,9 +239,9 @@ DEFINE_CASE(ast_node_analysis_multiplicative_operators, "AST node analysis - mul
     struct kefir_ast_context *context = &local_context.context;
 
     ASSERT_OK(kefir_ast_global_context_define_static(&kft_mem, &global_context, "x",
-        kefir_ast_type_signed_int(), NULL, NULL));
+        kefir_ast_type_signed_int(), NULL, NULL, NULL));
     ASSERT_OK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "y",
-        kefir_ast_constant_expression_integer(&kft_mem, 100), type_traits->underlying_enumeration_type));
+        kefir_ast_constant_expression_integer(&kft_mem, 100), type_traits->underlying_enumeration_type, NULL));
 
     #define MULDIV(_oper) \
         ASSERT_BINARY(&kft_mem, context, (_oper), \
@@ -362,11 +362,11 @@ DEFINE_CASE(ast_node_analysis_add_operator, "AST node analysis - add operator")
     struct kefir_ast_context *context = &local_context.context;
 
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "x",
-        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_short()), NULL));
+        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_short()), NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "y",
-        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()), NULL));
+        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()), NULL, NULL));
     ASSERT_OK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "X",
-        kefir_ast_constant_expression_integer(&kft_mem, 100), type_traits->underlying_enumeration_type));
+        kefir_ast_constant_expression_integer(&kft_mem, 100), type_traits->underlying_enumeration_type, NULL));
 
     const struct kefir_ast_type *TYPES[] = {
         kefir_ast_type_bool(),
@@ -441,11 +441,11 @@ DEFINE_CASE(ast_node_analysis_subtract_operator, "AST node analysis - subtractio
     struct kefir_ast_context *context = &local_context.context;
 
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "x",
-        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_short()), NULL));
+        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_short()), NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "y",
-        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()), NULL));
+        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()), NULL, NULL));
     ASSERT_OK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "X",
-        kefir_ast_constant_expression_integer(&kft_mem, 100), type_traits->underlying_enumeration_type));
+        kefir_ast_constant_expression_integer(&kft_mem, 100), type_traits->underlying_enumeration_type, NULL));
 
     const struct kefir_ast_type *TYPES[] = {
         kefir_ast_type_bool(),
@@ -538,9 +538,9 @@ DEFINE_CASE(ast_node_analysis_shift_operator, "AST node analysis - shift operato
     struct kefir_ast_context *context = &local_context.context;
 
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "x",
-        kefir_ast_type_signed_short(), NULL));
+        kefir_ast_type_signed_short(), NULL, NULL));
     ASSERT_OK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "X",
-        kefir_ast_constant_expression_integer(&kft_mem, 100), type_traits->underlying_enumeration_type));
+        kefir_ast_constant_expression_integer(&kft_mem, 100), type_traits->underlying_enumeration_type, NULL));
 
     const struct kefir_ast_type *TYPES[] = {
         kefir_ast_type_bool(),
@@ -647,13 +647,13 @@ DEFINE_CASE(ast_node_analysis_relational_operators, "AST node analysis - relatio
     struct kefir_ast_context *context = &local_context.context;
 
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "x",
-        kefir_ast_type_signed_int(), NULL));
+        kefir_ast_type_signed_int(), NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "y",
-        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_int()), NULL));
+        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_int()), NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "z",
-        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()), NULL));
+        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()), NULL, NULL));
     ASSERT_OK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "X",
-        kefir_ast_constant_expression_integer(&kft_mem, 100), type_traits->underlying_enumeration_type));
+        kefir_ast_constant_expression_integer(&kft_mem, 100), type_traits->underlying_enumeration_type, NULL));
 
     const struct kefir_ast_type *TYPES[] = {
         kefir_ast_type_bool(),
@@ -834,11 +834,11 @@ DEFINE_CASE(ast_node_analysis_equality_operators, "AST node analysis - equality 
     struct kefir_ast_context *context = &local_context.context;
 
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "x",
-        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_signed_int()), NULL));
+        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_signed_int()), NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "y",
-        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_int()), NULL));
+        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_int()), NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "z",
-        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()), NULL));
+        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()), NULL, NULL));
 
     const struct kefir_ast_type *TYPES[] = {
         kefir_ast_type_bool(),
@@ -996,11 +996,11 @@ DEFINE_CASE(ast_node_analysis_bitwise_operators, "AST node analysis - bitwise op
     struct kefir_ast_context *context = &local_context.context;
 
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "x",
-        kefir_ast_type_signed_int(), NULL));
+        kefir_ast_type_signed_int(), NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "y",
-        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_signed_int()), NULL));
+        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_signed_int()), NULL, NULL));
     ASSERT_OK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "X",
-        kefir_ast_constant_expression_integer(&kft_mem, 100), type_traits->underlying_enumeration_type));
+        kefir_ast_constant_expression_integer(&kft_mem, 100), type_traits->underlying_enumeration_type, NULL));
 
     const struct kefir_ast_type *TYPES[] = {
         kefir_ast_type_bool(),
@@ -1167,11 +1167,11 @@ DEFINE_CASE(ast_node_analysis_logical_operators, "AST node analysis - logical op
     struct kefir_ast_context *context = &local_context.context;
 
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "x",
-        kefir_ast_type_signed_int(), NULL));
+        kefir_ast_type_signed_int(), NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "y",
-        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_signed_int()), NULL));
+        kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_signed_int()), NULL, NULL));
     ASSERT_OK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "X",
-        kefir_ast_constant_expression_integer(&kft_mem, 100), type_traits->underlying_enumeration_type));
+        kefir_ast_constant_expression_integer(&kft_mem, 100), type_traits->underlying_enumeration_type, NULL));
 
     const struct kefir_ast_type *TYPES[] = {
         kefir_ast_type_bool(),

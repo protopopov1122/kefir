@@ -39,13 +39,13 @@ static kefir_result_t define_sum_function(struct kefir_mem *mem,
         NULL, param_type, NULL));
 
     REQUIRE_OK(kefir_ast_global_context_define_function(mem, context_manager->global, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
-        func->type));
+        func->type, NULL));
 
     REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context));
     REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager));
 
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "param",
-        param_type, NULL, NULL));
+        param_type, NULL, NULL, NULL));
 
     REQUIRE_OK(kefir_list_insert_after(mem, &func->args, kefir_list_tail(&func->args), KEFIR_AST_NODE_BASE(
         kefir_ast_new_identifier(mem, context_manager->current->symbols, "param"))));

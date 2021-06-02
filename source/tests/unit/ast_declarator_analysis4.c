@@ -337,11 +337,11 @@ DEFINE_CASE(ast_declarator_analysis19, "AST declarator analysis - typedefs #1")
     struct kefir_ast_context *context = &local_context.context;
 
     ASSERT_OK(kefir_ast_global_context_define_type(&kft_mem, &global_context, "someint_t",
-        kefir_ast_type_signed_long()));
+        kefir_ast_type_signed_long(), NULL));
     ASSERT_OK(kefir_ast_global_context_define_type(&kft_mem, &global_context, "someint2_t",
-        kefir_ast_type_signed_int()));
+        kefir_ast_type_signed_int(), NULL));
     ASSERT_OK(kefir_ast_global_context_define_type(&kft_mem, &global_context, "somenonint_t",
-        kefir_ast_type_double()));
+        kefir_ast_type_double(), NULL));
 
     ASSERT_IDENTIFIER_TYPE(&kft_mem, context,
         kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_signed_long(),
@@ -459,7 +459,7 @@ DEFINE_CASE(ast_declarator_analysis20, "AST declarator analysis - typedefs #2")
     ASSERT_NODECL_TYPE(&kft_mem, context, type1, 1,
         kefir_ast_type_specifier_struct(&kft_mem, specifier1));
     ASSERT_OK(kefir_ast_local_context_define_type(&kft_mem, &local_context, "structure_one_t",
-        type1));
+        type1, NULL));
 
     ASSERT_IDENTIFIER_TYPE(&kft_mem, context,
         kefir_ast_type_qualified(&kft_mem, context->type_bundle, type1,

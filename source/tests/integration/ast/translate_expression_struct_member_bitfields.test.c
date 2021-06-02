@@ -38,9 +38,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         "value6", kefir_ast_type_unsigned_long(), NULL, kefir_ast_constant_expression_integer(mem, 33)));
 
     REQUIRE_OK(kefir_ast_global_context_declare_external(mem, &global_context,
-        "structure1", type1, NULL));
+        "structure1", type1, NULL, NULL));
     REQUIRE_OK(kefir_ast_global_context_declare_external(mem, &global_context,
-        "structure2", kefir_ast_type_pointer(mem, context->type_bundle, type1), NULL));
+        "structure2", kefir_ast_type_pointer(mem, context->type_bundle, type1), NULL, NULL));
 
     struct kefir_ast_node_base *node1 = KEFIR_AST_NODE_BASE(kefir_ast_new_struct_member(mem, context->symbols,
         KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "structure1")),

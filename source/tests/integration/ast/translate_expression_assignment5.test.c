@@ -22,19 +22,19 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     const struct kefir_ast_context *context = &local_context.context;
 
     REQUIRE_OK(kefir_ast_global_context_declare_external(mem, &global_context,
-        "int", kefir_ast_type_signed_int(), NULL));
+        "int", kefir_ast_type_signed_int(), NULL, NULL));
     REQUIRE_OK(kefir_ast_global_context_declare_external(mem, &global_context,
-        "ullong", kefir_ast_type_unsigned_long_long(), NULL));
+        "ullong", kefir_ast_type_unsigned_long_long(), NULL, NULL));
     REQUIRE_OK(kefir_ast_global_context_declare_external(mem, &global_context,
-        "float", kefir_ast_type_float(), NULL));
+        "float", kefir_ast_type_float(), NULL, NULL));
     REQUIRE_OK(kefir_ast_global_context_declare_external(mem, &global_context,
-        "double", kefir_ast_type_double(), NULL));
+        "double", kefir_ast_type_double(), NULL, NULL));
     REQUIRE_OK(kefir_ast_global_context_declare_external(mem, &global_context,
-        "ptr", kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_char()), NULL));
+        "ptr", kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_char()), NULL, NULL));
     REQUIRE_OK(kefir_ast_global_context_declare_external(mem, &global_context,
         "ptr2", kefir_ast_type_pointer(mem, context->type_bundle,
             kefir_ast_type_array(mem, context->type_bundle, kefir_ast_type_float(),
-                kefir_ast_constant_expression_integer(mem, 16), NULL)), NULL));
+                kefir_ast_constant_expression_integer(mem, 16), NULL)), NULL, NULL));
 
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));

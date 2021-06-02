@@ -272,6 +272,9 @@ DECLARE_CASE(ast_node_analysis_declarations2);
 DECLARE_CASE(ast_node_analysis_declarations3);
 DECLARE_CASE(ast_node_analysis_declarations4);
 DECLARE_CASE(ast_node_analysis_declarations5);
+DECLARE_CASE(ast_node_analysis_declarations6);
+DECLARE_CASE(ast_node_analysis_declarations7);
+DECLARE_CASE(ast_node_analysis_declarations8);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -542,7 +545,10 @@ TEST_SUITE(mainSuite,
     &ast_node_analysis_declarations2,
     &ast_node_analysis_declarations3,
     &ast_node_analysis_declarations4,
-    &ast_node_analysis_declarations5
+    &ast_node_analysis_declarations5,
+    &ast_node_analysis_declarations6,
+    &ast_node_analysis_declarations7,
+    &ast_node_analysis_declarations8
 );
 
 int main(int argc, const char **argv) {

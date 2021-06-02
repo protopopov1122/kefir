@@ -49,7 +49,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     const struct kefir_ast_type *type7 = kefir_ast_type_function(mem, context->type_bundle,
         kefir_ast_type_void(), "func1", &function_type);
     REQUIRE_OK(kefir_ast_global_context_declare_function(mem, &global_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
-        type7));
+        type7, NULL));
 
     struct {
         const char *identifier;
@@ -81,7 +81,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     for (kefir_size_t i = 0; i < VAR_LENGTH; i++) {
         REQUIRE_OK(kefir_ast_global_context_define_external(mem, &global_context,
-            VARS[i].identifier, VARS[i].type, NULL, NULL));
+            VARS[i].identifier, VARS[i].type, NULL, NULL, NULL));
     }
 
     struct kefir_ir_module module;

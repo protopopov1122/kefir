@@ -85,14 +85,14 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         "X", kefir_ast_type_qualified(mem, context->type_bundle, type_A,
             (struct kefir_ast_type_qualification){
                 .constant = true
-            }), NULL, NULL));
+            }), NULL, NULL, NULL));
 
     REQUIRE_OK(kefir_ast_global_context_define_external(mem, &global_context,
-        "Y", type_B, NULL, NULL));
+        "Y", type_B, NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_global_context_define_external(mem, &global_context,
-        "Z", type_C, NULL, NULL));
+        "Z", type_C, NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_global_context_define_external(mem, &global_context,
-        "W", type_D, NULL, NULL));
+        "W", type_D, NULL, NULL, NULL));
 
     struct kefir_ast_translator_global_scope_layout translator_global_scope;
     struct kefir_ast_translator_local_scope_layout translator_local_scope;

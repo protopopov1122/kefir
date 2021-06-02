@@ -338,7 +338,7 @@ DEFINE_CASE(ast_declarator_analysis15, "AST declarator analysis - array declarat
     struct kefir_ast_context *context = &local_context.context;
 
     REQUIRE_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "variable",
-        kefir_ast_type_signed_int(), NULL));
+        kefir_ast_type_signed_int(), NULL, NULL));
 
     struct kefir_ast_declarator_specifier_list specifiers;
     ASSERT_OK(kefir_ast_declarator_specifier_list_init(&specifiers));

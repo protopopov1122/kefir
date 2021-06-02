@@ -31,13 +31,13 @@ static kefir_result_t define_sum_vararg_function(struct kefir_mem *mem,
         NULL, kefir_ast_type_signed_long(), NULL));
 
     REQUIRE_OK(kefir_ast_global_context_define_function(mem, context_manager->global, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
-        func->type));
+        func->type, NULL));
 
     REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context));
     REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager));
 
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "param",
-        kefir_ast_type_signed_long(), NULL, NULL));
+        kefir_ast_type_signed_long(), NULL, NULL, NULL));
 
     REQUIRE_OK(kefir_list_insert_after(mem, &func->args, kefir_list_tail(&func->args), KEFIR_AST_NODE_BASE(
         kefir_ast_new_identifier(mem, context_manager->current->symbols, "param"))));
@@ -77,7 +77,7 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
         function_type1, NULL, kefir_ast_type_signed_int(), NULL));
 
     REQUIRE_OK(kefir_ast_global_context_declare_function(mem, context_manager.global, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
-        type1));
+        type1, NULL));
     
     struct function sum1, sum3, sum5, sum10;
     REQUIRE_OK(define_sum_vararg_function(mem, &sum1, &context_manager, "sum1", 1));

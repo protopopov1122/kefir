@@ -421,13 +421,13 @@ DEFINE_CASE(ast_constant_expression_unary_operations5, "AST constant expressions
         "var1", kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_signed_int(),
             (struct kefir_ast_type_qualification){
                 .constant = true
-            }), NULL));
+            }), NULL, NULL));
 
     ASSERT_OK(kefir_ast_global_context_declare_external(&kft_mem, &global_context,
         "var2", kefir_ast_type_qualified(&kft_mem, context->type_bundle, type1,
             (struct kefir_ast_type_qualification){
                 .constant = true
-            }), NULL));
+            }), NULL, NULL));
 
     ASSERT_IDENTIFIER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ADDRESS,
@@ -510,7 +510,7 @@ DEFINE_CASE(ast_constant_expression_unary_operations6, "AST constant expressions
         "var1", kefir_ast_type_qualified(&kft_mem, context->type_bundle, type1,
             (struct kefir_ast_type_qualification){
                 .constant = true
-            }), NULL));
+            }), NULL, NULL));
 
     ASSERT_IDENTIFIER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_ADDRESS,
@@ -574,7 +574,7 @@ DEFINE_CASE(ast_constant_expression_unary_operations7, "AST constant expressions
     struct kefir_ast_context *context = &local_context.context;
 
     ASSERT_OK(kefir_ast_global_context_declare_external(&kft_mem, &global_context,
-        "variableX", kefir_ast_type_signed_int(), NULL));
+        "variableX", kefir_ast_type_signed_int(), NULL, NULL));
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_LOGICAL_NEGATE,

@@ -22,9 +22,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     const struct kefir_ast_context *context = &local_context.context;
 
     REQUIRE_OK(kefir_ast_global_context_declare_external(mem, &global_context,
-        "int", kefir_ast_type_signed_int(), NULL));
+        "int", kefir_ast_type_signed_int(), NULL, NULL));
     REQUIRE_OK(kefir_ast_global_context_declare_external(mem, &global_context,
-        "ullong", kefir_ast_type_unsigned_long_long(), NULL));
+        "ullong", kefir_ast_type_unsigned_long_long(), NULL, NULL));
 
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));

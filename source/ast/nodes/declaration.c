@@ -13,8 +13,10 @@ kefir_result_t ast_declaration_free(struct kefir_mem *mem, struct kefir_ast_node
     ASSIGN_DECL_CAST(struct kefir_ast_declaration *, node,
         base->self);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_free(mem, &node->specifiers));
-    REQUIRE_OK(kefir_ast_declarator_free(mem, node->declarator));
-    node->declarator = NULL;
+    if (node->declarator != NULL) {
+        REQUIRE_OK(kefir_ast_declarator_free(mem, node->declarator));
+        node->declarator = NULL;
+    }
     if (node->initializer != NULL) {
         REQUIRE_OK(kefir_ast_initializer_free(mem, node->initializer));
         node->initializer = NULL;
@@ -46,11 +48,15 @@ struct kefir_ast_node_base *ast_declaration_clone(struct kefir_mem *mem,
         return NULL;
     });
     
-    clone->declarator = kefir_ast_declarator_clone(mem, node->declarator);
-    REQUIRE_ELSE(clone->declarator != NULL, {
-        KEFIR_FREE(mem, clone);
-        return NULL;
-    });
+    if (node->declarator != NULL) {
+        clone->declarator = kefir_ast_declarator_clone(mem, node->declarator);
+        REQUIRE_ELSE(clone->declarator != NULL, {
+            KEFIR_FREE(mem, clone);
+            return NULL;
+        });
+    } else {
+        clone->declarator = NULL;
+    }
 
     res = kefir_ast_declarator_specifier_list_init(&clone->specifiers);
     REQUIRE_ELSE(res == KEFIR_OK, {
@@ -84,7 +90,6 @@ struct kefir_ast_declaration *kefir_ast_new_declaration(struct kefir_mem *mem,
                                                         struct kefir_ast_declarator *decl,
                                                         struct kefir_ast_initializer *initializer) {
     REQUIRE(mem != NULL, NULL);
-    REQUIRE(decl != NULL, NULL);
 
     struct kefir_ast_declaration *declaration = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_declaration));
     REQUIRE(declaration != NULL, NULL);

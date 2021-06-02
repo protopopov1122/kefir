@@ -32,13 +32,13 @@ static kefir_result_t define_##_id##_function(struct kefir_mem *mem, \
         NULL, kefir_ast_type_signed_int(), NULL)); \
  \
     REQUIRE_OK(kefir_ast_global_context_define_function(mem, context_manager->global, KEFIR_AST_FUNCTION_SPECIFIER_NONE, \
-        func->type)); \
+        func->type, NULL)); \
  \
     REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context)); \
     REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager)); \
  \
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "x", kefir_ast_type_signed_int(), \
-        NULL, NULL)); \
+        NULL, NULL, NULL)); \
  \
     REQUIRE_OK(kefir_list_insert_after(mem, &func->args, kefir_list_tail(&func->args), KEFIR_AST_NODE_BASE( \
         kefir_ast_new_identifier(mem, context_manager->current->symbols, "x")))); \
@@ -68,13 +68,13 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
 
     REQUIRE_OK(kefir_ast_global_context_declare_external(mem, context_manager.global,
         "INTS", kefir_ast_type_unbounded_array(mem, context_manager.current->type_bundle,
-            kefir_ast_type_signed_int(), NULL), NULL));
+            kefir_ast_type_signed_int(), NULL), NULL, NULL));
     REQUIRE_OK(kefir_ast_global_context_declare_external(mem, context_manager.global,
         "CHARS", kefir_ast_type_unbounded_array(mem, context_manager.current->type_bundle,
-            kefir_ast_type_char(), NULL), NULL));
+            kefir_ast_type_char(), NULL), NULL, NULL));
     REQUIRE_OK(kefir_ast_global_context_declare_external(mem, context_manager.global,
         "DOUBLES", kefir_ast_type_unbounded_array(mem, context_manager.current->type_bundle,
-            kefir_ast_type_double(), NULL), NULL));
+            kefir_ast_type_double(), NULL), NULL, NULL));
 
     struct function int_offset, char_offset, double_offset;
     REQUIRE_OK(define_int_offset_function(mem, &int_offset, &context_manager));

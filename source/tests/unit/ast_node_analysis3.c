@@ -48,11 +48,11 @@ DEFINE_CASE(ast_node_analysis_conditional_operator1, "AST node analysis - condit
         context->type_bundle, "", &struct_type1);
 
     ASSERT_OK(kefir_ast_global_context_declare_external(&kft_mem, &global_context,
-        "x", type1, NULL));
+        "x", type1, NULL, NULL));
     ASSERT_OK(kefir_ast_global_context_declare_external(&kft_mem, &global_context,
-        "y", kefir_ast_type_unsigned_int(), NULL));
+        "y", kefir_ast_type_unsigned_int(), NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_constant(&kft_mem, &local_context, "X",
-        kefir_ast_constant_expression_integer(&kft_mem, 101), type_traits->underlying_enumeration_type));
+        kefir_ast_constant_expression_integer(&kft_mem, 101), type_traits->underlying_enumeration_type, NULL));
 
     struct kefir_ast_type_name *TYPES[] = {
         kefir_ast_new_type_name(&kft_mem,
@@ -166,9 +166,9 @@ DEFINE_CASE(ast_node_analysis_conditional_operator2, "AST node analysis - condit
     struct kefir_ast_context *context = &local_context.context;
 
     ASSERT_OK(kefir_ast_global_context_declare_external(&kft_mem, &global_context,
-        "x", kefir_ast_type_signed_int(), NULL));
+        "x", kefir_ast_type_signed_int(), NULL, NULL));
     ASSERT_OK(kefir_ast_global_context_define_constant(&kft_mem, &global_context,
-        "X", kefir_ast_constant_expression_integer(&kft_mem, 54), type_traits->underlying_enumeration_type));
+        "X", kefir_ast_constant_expression_integer(&kft_mem, 54), type_traits->underlying_enumeration_type, NULL));
 
     const struct kefir_ast_type *TYPES[] = {
         kefir_ast_type_bool(),
@@ -282,21 +282,21 @@ DEFINE_CASE(ast_node_analysis_conditional_operator3, "AST node analysis - condit
         "z", kefir_ast_type_double(), NULL));
 
     ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context,
-        "a1", type1, NULL, NULL));
+        "a1", type1, NULL, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_static(&kft_mem, &local_context,
-        "a2", type1, NULL, NULL));
+        "a2", type1, NULL, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context,
-        "b1", type2, NULL, NULL));
+        "b1", type2, NULL, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_static(&kft_mem, &local_context,
-        "b2", type2, NULL, NULL));
+        "b2", type2, NULL, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context,
-        "c1", type3, NULL, NULL));
+        "c1", type3, NULL, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_static(&kft_mem, &local_context,
-        "c2", type3, NULL, NULL));
+        "c2", type3, NULL, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context,
-        "d1", type4, NULL, NULL));
+        "d1", type4, NULL, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_static(&kft_mem, &local_context,
-        "d2", type4, NULL, NULL));
+        "d2", type4, NULL, NULL, NULL));
 
     ASSERT_CONDITIONAL(&kft_mem, context,
         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(&kft_mem, true)),

@@ -21,19 +21,19 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     const struct kefir_ast_context *context = &local_context.context;
 
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, &local_context,
-        "int", kefir_ast_type_signed_int(), NULL, NULL));
+        "int", kefir_ast_type_signed_int(), NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, &local_context,
-        "short", kefir_ast_type_unsigned_short(), NULL, NULL));
+        "short", kefir_ast_type_unsigned_short(), NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, &local_context,
-        "float", kefir_ast_type_float(), NULL, NULL));
+        "float", kefir_ast_type_float(), NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, &local_context,
-        "double", kefir_ast_type_double(), NULL, NULL));
+        "double", kefir_ast_type_double(), NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, &local_context,
-        "ptr1", kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_bool()), NULL, NULL));
+        "ptr1", kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_bool()), NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, &local_context,
         "ptr2", kefir_ast_type_pointer(mem, context->type_bundle,
             kefir_ast_type_array(mem, context->type_bundle, kefir_ast_type_signed_long(),
-                kefir_ast_constant_expression_integer(mem, 4), NULL)), NULL, NULL));
+                kefir_ast_constant_expression_integer(mem, 4), NULL)), NULL, NULL, NULL));
 
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
