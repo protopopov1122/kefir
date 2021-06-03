@@ -234,7 +234,7 @@ DEFINE_CASE(ast_node_analysis_declarations4, "AST node analysis - declarations #
     ASSERT(decl1->base.properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION);
     ASSERT(KEFIR_AST_TYPE_SAME(decl1->base.properties.type, type1));
     ASSERT(decl1->base.properties.declaration_props.function == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
-    ASSERT(decl1->base.properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL);
+    ASSERT(decl1->base.properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL);
     ASSERT(decl1->base.properties.declaration_props.identifier != NULL);
     ASSERT(strcmp(decl1->base.properties.declaration_props.identifier, "globalVariable") == 0);
     ASSERT(decl1->base.properties.declaration_props.alignment == 0);
@@ -367,7 +367,7 @@ DEFINE_CASE(ast_node_analysis_declarations6, "AST node analysis - declarations #
     ASSERT(decl1->base.properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION);
     ASSERT(KEFIR_AST_TYPE_SAME(decl1->base.properties.type, type1));
     ASSERT(decl1->base.properties.declaration_props.function == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
-    ASSERT(decl1->base.properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN);
+    ASSERT(decl1->base.properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);
     ASSERT(decl1->base.properties.declaration_props.identifier != NULL);
     ASSERT(strcmp(decl1->base.properties.declaration_props.identifier, "arr") == 0);
     ASSERT(decl1->base.properties.declaration_props.alignment == 0);
@@ -462,7 +462,7 @@ DEFINE_CASE(ast_node_analysis_declarations7, "AST node analysis - declarations #
     ASSERT(decl2->base.properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION);
     ASSERT(KEFIR_AST_TYPE_SAME(decl2->base.properties.type, type2));
     ASSERT(decl2->base.properties.declaration_props.function == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
-    ASSERT(decl2->base.properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN);
+    ASSERT(decl2->base.properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO);
     ASSERT(decl2->base.properties.declaration_props.identifier != NULL);
     ASSERT(strcmp(decl2->base.properties.declaration_props.identifier, "some_struct") == 0);
     ASSERT(decl2->base.properties.declaration_props.alignment == 0);

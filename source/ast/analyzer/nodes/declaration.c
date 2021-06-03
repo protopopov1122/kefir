@@ -16,11 +16,12 @@ kefir_result_t kefir_ast_analyze_declaration_node(struct kefir_mem *mem,
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST base node"));
 
     const struct kefir_ast_type *type = NULL;
+    kefir_ast_scoped_identifier_storage_t storage = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN;
     REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
     base->properties.category = KEFIR_AST_NODE_CATEGORY_DECLARATION;
     REQUIRE_OK(kefir_ast_analyze_declaration(mem, context, &node->specifiers, node->declarator,
         &base->properties.declaration_props.identifier, &type,
-        &base->properties.declaration_props.storage,
+        &storage,
         &base->properties.declaration_props.function,
         &base->properties.declaration_props.alignment));
 
@@ -37,7 +38,7 @@ kefir_result_t kefir_ast_analyze_declaration_node(struct kefir_mem *mem,
             node->initializer == NULL,
             base->properties.declaration_props.identifier,
             type,
-            base->properties.declaration_props.storage,
+            storage,
             base->properties.declaration_props.function,
             alignment,
             node->initializer,
@@ -51,14 +52,17 @@ kefir_result_t kefir_ast_analyze_declaration_node(struct kefir_mem *mem,
         switch (scoped_id->klass) {
             case KEFIR_AST_SCOPE_IDENTIFIER_OBJECT:
                 base->properties.type = scoped_id->object.type;
+                base->properties.declaration_props.storage = scoped_id->object.storage;
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION:
                 base->properties.type = scoped_id->function.type;
+                base->properties.declaration_props.storage = scoped_id->function.storage;
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION: 
                 base->properties.type = scoped_id->type;
+                base->properties.declaration_props.storage = storage;
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT:
