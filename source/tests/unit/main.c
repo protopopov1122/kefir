@@ -267,6 +267,7 @@ DECLARE_CASE(ast_declarator_analysis17);
 DECLARE_CASE(ast_declarator_analysis18);
 DECLARE_CASE(ast_declarator_analysis19);
 DECLARE_CASE(ast_declarator_analysis20);
+DECLARE_CASE(ast_declarator_analysis21);
 DECLARE_CASE(ast_node_analysis_declarations1);
 DECLARE_CASE(ast_node_analysis_declarations2);
 DECLARE_CASE(ast_node_analysis_declarations3);
@@ -541,6 +542,7 @@ TEST_SUITE(mainSuite,
     &ast_declarator_analysis18,
     &ast_declarator_analysis19,
     &ast_declarator_analysis20,
+    &ast_declarator_analysis21,
     &ast_node_analysis_declarations1,
     &ast_node_analysis_declarations2,
     &ast_node_analysis_declarations3,

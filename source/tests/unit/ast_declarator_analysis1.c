@@ -350,53 +350,73 @@ DEFINE_CASE(ast_declarator_analysis4, "AST declarator analysis - function declar
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
+    struct kefir_ast_function_type *func_type1 = NULL;
+    const struct kefir_ast_type *type1 = kefir_ast_type_function(&kft_mem, context->type_bundle,
+        kefir_ast_type_char(), "func", &func_type1);
+
+    struct kefir_ast_function_type *func_type2 = NULL;
+    const struct kefir_ast_type *type2 = kefir_ast_type_function(&kft_mem, context->type_bundle,
+        kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_signed_int(),
+            (struct kefir_ast_type_qualification){
+                .constant = true
+            }), "func", &func_type2);
+
+    struct kefir_ast_function_type *func_type3 = NULL;
+    const struct kefir_ast_type *type3 = kefir_ast_type_function(&kft_mem, context->type_bundle,
+        kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_float(),
+            (struct kefir_ast_type_qualification){
+                .volatile_type = true
+            }), "func", &func_type3);
+
+    struct kefir_ast_function_type *func_type4 = NULL;
+    const struct kefir_ast_type *type4 = kefir_ast_type_function(&kft_mem, context->type_bundle,
+        kefir_ast_type_unsigned_short(), "func", &func_type4);
+
+    struct kefir_ast_function_type *func_type5 = NULL;
+    const struct kefir_ast_type *type5 = kefir_ast_type_function(&kft_mem, context->type_bundle,
+        kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_long_long(),
+            (struct kefir_ast_type_qualification){
+                .restricted = true,
+                .constant = true
+            }), "func", &func_type5);
+
     ASSERT_FUNCTION_TYPE(&kft_mem, context,
-        kefir_ast_type_char(), KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN, 
+        type1, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN, 
         KEFIR_AST_FUNCTION_SPECIFIER_NONE, 1,
         kefir_ast_type_specifier_char(&kft_mem));
 
     ASSERT_FUNCTION_TYPE(&kft_mem, context,
-        kefir_ast_type_char(), KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN, 
+        type1, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN, 
         KEFIR_AST_FUNCTION_SPECIFIER_INLINE, 2,
         kefir_ast_type_specifier_char(&kft_mem), kefir_ast_function_specifier_inline(&kft_mem));
 
     ASSERT_FUNCTION_TYPE(&kft_mem, context,
-        kefir_ast_type_char(), KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC, 
+        type1, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC, 
         KEFIR_AST_FUNCTION_SPECIFIER_INLINE, 4,
         kefir_ast_function_specifier_inline(&kft_mem), kefir_ast_type_specifier_char(&kft_mem),
         kefir_ast_storage_class_specifier_static(&kft_mem), kefir_ast_function_specifier_inline(&kft_mem));
 
     ASSERT_FUNCTION_TYPE(&kft_mem, context,
-        kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_signed_int(),
-            (struct kefir_ast_type_qualification){
-                .constant = true
-            }), KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN, 
+        type2, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN, 
         KEFIR_AST_FUNCTION_SPECIFIER_NORETURN, 3,
         kefir_ast_type_specifier_int(&kft_mem), kefir_ast_type_qualifier_const(&kft_mem),
         kefir_ast_function_specifier_noreturn(&kft_mem));
 
     ASSERT_FUNCTION_TYPE(&kft_mem, context,
-        kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_float(),
-            (struct kefir_ast_type_qualification){
-                .volatile_type = true
-            }), KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN, 
+        type3, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN, 
         KEFIR_AST_FUNCTION_SPECIFIER_NORETURN, 5,
         kefir_ast_storage_class_specifier_extern(&kft_mem), kefir_ast_function_specifier_noreturn(&kft_mem),
         kefir_ast_type_specifier_float(&kft_mem), kefir_ast_type_qualifier_volatile(&kft_mem),
         kefir_ast_function_specifier_noreturn(&kft_mem));
 
     ASSERT_FUNCTION_TYPE(&kft_mem, context,
-        kefir_ast_type_unsigned_short(), KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
+        type4, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
         KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN, 4,
         kefir_ast_type_specifier_short(&kft_mem), kefir_ast_function_specifier_noreturn(&kft_mem),
         kefir_ast_type_specifier_unsigned(&kft_mem), kefir_ast_function_specifier_inline(&kft_mem));
 
     ASSERT_FUNCTION_TYPE(&kft_mem, context,
-        kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_long_long(),
-            (struct kefir_ast_type_qualification){
-                .restricted = true,
-                .constant = true
-            }), KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
+        type5, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
         KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN, 11,
         kefir_ast_type_specifier_int(&kft_mem), kefir_ast_function_specifier_inline(&kft_mem),
         kefir_ast_type_specifier_unsigned(&kft_mem), kefir_ast_storage_class_specifier_extern(&kft_mem),

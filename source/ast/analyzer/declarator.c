@@ -5,6 +5,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/ast/constant_expression.h"
+#include "kefir/ast/function_declaration_context.h"
 
 enum signedness {
     SIGNEDNESS_DEFAULT,
@@ -700,6 +701,71 @@ static kefir_result_t resolve_array_declarator(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+static kefir_result_t resolve_function_declarator(struct kefir_mem *mem,
+                                                  const struct kefir_ast_context *context,
+                                                  const struct kefir_ast_declarator *declarator,
+                                                  const struct kefir_ast_type **base_type) {
+    const char *identifier = NULL;
+    if (declarator->function.declarator != NULL &&
+        declarator->function.declarator->klass == KEFIR_AST_DECLARATOR_IDENTIFIER) {
+        identifier = declarator->function.declarator->identifier;
+    }
+
+    struct kefir_ast_function_type *func_type = NULL;
+    const struct kefir_ast_type *type = kefir_ast_type_function(mem, context->type_bundle,
+        *base_type, identifier, &func_type);
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocated AST type"));
+
+    struct kefir_ast_function_declaration_context decl_context;
+    REQUIRE_OK(kefir_ast_function_declaration_context_init(mem, context, &decl_context));
+    
+    kefir_result_t res = KEFIR_OK;
+    for (const struct kefir_list_entry *iter = kefir_list_head(&declarator->function.parameters);
+        iter != NULL && res == KEFIR_OK;
+        kefir_list_next(&iter)) {
+        ASSIGN_DECL_CAST(struct kefir_ast_node_base *, node,
+            iter->value);
+        
+        if (node->klass->type == KEFIR_AST_DECLARATION) {
+            res = kefir_ast_analyze_node(mem, &decl_context.context, node);
+            REQUIRE_CHAIN(&res, kefir_ast_type_function_parameter(mem, context->type_bundle, func_type,
+                node->properties.declaration_props.identifier,
+                node->properties.type,
+                &node->properties.declaration_props.storage));
+        } else if (node->klass->type == KEFIR_AST_IDENTIFIER) {
+            res = kefir_ast_analyze_node(mem, &decl_context.context, node);
+            if (res == KEFIR_OK) {
+                if (node->properties.category != KEFIR_AST_NODE_CATEGORY_TYPE) {
+                    res = KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Function declaration parameter shall be either declaration, or identifier");
+                }
+                REQUIRE_CHAIN(&res, kefir_ast_type_function_parameter(mem, context->type_bundle, func_type,
+                    NULL,
+                    node->properties.type,
+                    NULL));
+            } else if (res == KEFIR_NOT_FOUND) {
+                res = KEFIR_OK;
+                ASSIGN_DECL_CAST(struct kefir_ast_identifier *, ident,
+                    node->self);
+                res = kefir_ast_type_function_parameter(mem, context->type_bundle, func_type,
+                    ident->identifier, NULL, NULL);
+            }
+        } else {
+            res = KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Function declaration parameter shall be either declaration, or identifier");
+        }
+    }
+
+    REQUIRE_CHAIN(&res, kefir_ast_type_function_ellipsis(func_type, declarator->function.ellipsis));
+
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_ast_function_declaration_context_free(mem, &decl_context);
+        return res;
+    });
+
+    REQUIRE_OK(kefir_ast_function_declaration_context_free(mem, &decl_context));
+    *base_type = type;
+    return KEFIR_OK;
+}
+
 static kefir_result_t resolve_declarator(struct kefir_mem *mem,
                                        const struct kefir_ast_context *context,
                                        const struct kefir_ast_declarator *declarator,
@@ -723,6 +789,7 @@ static kefir_result_t resolve_declarator(struct kefir_mem *mem,
             break;
 
         case KEFIR_AST_DECLARATOR_FUNCTION:
+            REQUIRE_OK(resolve_function_declarator(mem, context, declarator, base_type));
             REQUIRE_OK(resolve_declarator(mem, context, declarator->function.declarator, identifier, base_type));
             break;
     }

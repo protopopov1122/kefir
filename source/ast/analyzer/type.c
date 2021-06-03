@@ -137,7 +137,8 @@ static kefir_result_t analyze_function(struct kefir_mem *mem,
                 REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(param->adjusted_type),
                     KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Function parameters shall not have incomplete type"));
                 REQUIRE(KEFIR_OPTIONAL_EMPTY(&param->storage) ||
-                    *KEFIR_OPTIONAL_VALUE(&param->storage) == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER,
+                    *KEFIR_OPTIONAL_VALUE(&param->storage) == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER ||
+                    *KEFIR_OPTIONAL_VALUE(&param->storage) == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
                     KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Function parameter might only have register storage class"));
             }
         }

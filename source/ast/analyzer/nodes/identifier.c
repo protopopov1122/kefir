@@ -36,6 +36,12 @@ kefir_result_t kefir_ast_analyze_identifier_node(struct kefir_mem *mem,
             base->properties.type = scoped_id->enum_constant.type;
             base->properties.expression_props.constant_expression = true;
             return KEFIR_OK;
+
+        case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION:
+            REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
+            base->properties.category = KEFIR_AST_NODE_CATEGORY_TYPE;
+            base->properties.type = scoped_id->type;
+            return KEFIR_OK;
         
         default:
             return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Non-object identifiers are not supported yet");
