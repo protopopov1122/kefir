@@ -73,15 +73,15 @@ struct kefir_ast_node_base *ast_declaration_clone(struct kefir_mem *mem,
     });
 
     if (node->initializer != NULL) {
-        node->initializer = kefir_ast_initializer_clone(mem, node->initializer);
-        REQUIRE_ELSE(node->initializer != NULL, {
+        clone->initializer = kefir_ast_initializer_clone(mem, node->initializer);
+        REQUIRE_ELSE(clone->initializer != NULL, {
             kefir_ast_declarator_specifier_list_free(mem, &clone->specifiers);
             kefir_ast_declarator_free(mem, clone->declarator);
             KEFIR_FREE(mem, clone);
             return NULL;
         });
     } else {
-        node->initializer = NULL;
+        clone->initializer = NULL;
     }
     return KEFIR_AST_NODE_BASE(clone);
 }

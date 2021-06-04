@@ -597,4 +597,59 @@ DEFINE_CASE(ast_node_analysis_declarations8, "AST node analysis - declarations #
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
 
+DEFINE_CASE(ast_node_analysis_declarations9, "AST node analysis - declarations #9")
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits,
+        &kft_util_get_translator_environment()->target_env, &global_context));
+    struct kefir_ast_context *context = &global_context.context;
+
+    struct kefir_ast_declaration *param1 = kefir_ast_new_declaration(&kft_mem,
+        kefir_ast_declarator_identifier(&kft_mem, NULL, NULL), NULL);
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &param1->specifiers,
+        kefir_ast_type_specifier_float(&kft_mem)));
+
+    ASSIGN_DECL_CAST(struct kefir_ast_declaration *, param2,
+        KEFIR_AST_NODE_CLONE(&kft_mem, KEFIR_AST_NODE_BASE(param1))->self);
+
+    struct kefir_ast_declaration *decl = kefir_ast_new_declaration(&kft_mem,
+        kefir_ast_declarator_function(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, context->symbols, "func1")),
+        NULL);
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &decl->specifiers,
+        kefir_ast_storage_class_specifier_static(&kft_mem)));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &decl->specifiers,
+        kefir_ast_type_specifier_float(&kft_mem)));
+    
+    ASSERT_OK(kefir_list_insert_after(&kft_mem, &decl->declarator->function.parameters,
+        kefir_list_tail(&decl->declarator->function.parameters),
+        param1));
+    ASSERT_OK(kefir_list_insert_after(&kft_mem, &decl->declarator->function.parameters,
+        kefir_list_tail(&decl->declarator->function.parameters),
+        param2));
+
+    ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(decl)));
+
+    const struct kefir_ast_scoped_identifier *scoped_id = NULL;
+    ASSERT_OK(context->resolve_ordinary_identifier(context, "func1", &scoped_id));
+    ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION);
+    ASSERT(!scoped_id->function.external);
+    ASSERT(scoped_id->function.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC);
+
+    struct kefir_ast_function_type *func_type1 = NULL;
+    const struct kefir_ast_type *type1 = kefir_ast_type_function(&kft_mem, context->type_bundle,
+        kefir_ast_type_float(), "func1", &func_type1);
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle,
+        func_type1, NULL, kefir_ast_type_float(),
+        &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN}));
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle,
+        func_type1, NULL, kefir_ast_type_float(),
+        &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN}));
+
+    ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->function.type, type1));
+
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(decl)));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+END_CASE
+
 // TODO Implement more declaration analysis tests

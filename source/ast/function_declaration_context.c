@@ -140,6 +140,7 @@ static kefir_result_t scoped_context_define_tag(struct kefir_mem *mem,
 static kefir_result_t scoped_context_declare_function(struct kefir_mem *mem,
                                                     struct kefir_ast_function_declaration_context *context,
                                                     kefir_ast_function_specifier_t specifier,
+                                                    kefir_ast_scoped_identifier_storage_t storage_class,
                                                     const struct kefir_ast_type *function,
                                                     const struct kefir_ast_scoped_identifier **scoped_id_ptr) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
@@ -160,7 +161,7 @@ static kefir_result_t scoped_context_declare_function(struct kefir_mem *mem,
         REQUIRE(res == KEFIR_NOT_FOUND, res);
         struct kefir_ast_scoped_identifier *ordinary_id =
             kefir_ast_context_allocate_scoped_function_identifier(mem, function, specifier,
-                KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN, true);
+                storage_class, true);
         REQUIRE(ordinary_id != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
         
         REQUIRE_OK(kefir_ast_identifier_flat_scope_insert(mem, &context->ordinary_scope, identifier, ordinary_id));
@@ -262,7 +263,7 @@ static kefir_result_t context_define_identifier(struct kefir_mem *mem,
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
                 REQUIRE(declaration, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Function cannot be define in local scope"));
                 if (type->function_type.identifier != NULL) {
-                    REQUIRE_OK(scoped_context_declare_function(mem, fn_ctx, function_specifier, type, scoped_id));
+                    REQUIRE_OK(scoped_context_declare_function(mem, fn_ctx, function_specifier, storage_class, type, scoped_id));
                 }
                 break;
 
@@ -280,14 +281,9 @@ static kefir_result_t context_define_identifier(struct kefir_mem *mem,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Function specifiers cannot be used for non-function types"));
         switch (storage_class) {
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
-                if (identifier != NULL) {
-                    REQUIRE_OK(scoped_context_define_identifier(mem, fn_ctx, identifier, type, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN, scoped_id));
-                }
-                break;
-
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER:
                 if (identifier != NULL) {
-                    REQUIRE_OK(scoped_context_define_identifier(mem, fn_ctx, identifier, type, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER, scoped_id));
+                    REQUIRE_OK(scoped_context_define_identifier(mem, fn_ctx, identifier, type, storage_class, scoped_id));
                 }
                 break;
 
