@@ -652,4 +652,102 @@ DEFINE_CASE(ast_node_analysis_declarations9, "AST node analysis - declarations #
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
 
+DEFINE_CASE(ast_node_analysis_declarations10, "AST node analysis - declarations #10")
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits,
+        &kft_util_get_translator_environment()->target_env, &global_context));
+    struct kefir_ast_context *context = &global_context.context;
+
+    struct kefir_ast_structure_specifier *specifier1 = kefir_ast_structure_specifier_init(&kft_mem, context->symbols,
+        "param", true);
+    struct kefir_ast_structure_declaration_entry *entry1 = kefir_ast_structure_declaration_entry_alloc(&kft_mem);
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &entry1->declaration.specifiers,
+        kefir_ast_type_specifier_long(&kft_mem)));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &entry1->declaration.specifiers,
+        kefir_ast_type_specifier_long(&kft_mem)));
+    ASSERT_OK(kefir_ast_structure_declaration_entry_append(&kft_mem, entry1,
+        kefir_ast_declarator_identifier(&kft_mem, context->symbols, "field"),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 6))));
+    ASSERT_OK(kefir_ast_structure_declaration_entry_append(&kft_mem, entry1,
+        kefir_ast_declarator_identifier(&kft_mem, context->symbols, "another_field"),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 2))));
+    ASSERT_OK(kefir_ast_structure_specifier_append_entry(&kft_mem, specifier1,
+        entry1));
+
+    struct kefir_ast_structure_declaration_entry *entry2 = kefir_ast_structure_declaration_entry_alloc(&kft_mem);
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &entry2->declaration.specifiers,
+        kefir_ast_type_specifier_bool(&kft_mem)));
+    ASSERT_OK(kefir_ast_structure_declaration_entry_append(&kft_mem, entry2,
+        kefir_ast_declarator_identifier(&kft_mem, context->symbols, "payload"),
+        NULL));
+    ASSERT_OK(kefir_ast_structure_specifier_append_entry(&kft_mem, specifier1,
+        entry2));
+    
+
+    struct kefir_ast_declaration *param1 = kefir_ast_new_declaration(&kft_mem,
+        kefir_ast_declarator_identifier(&kft_mem, NULL, NULL), NULL);
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &param1->specifiers,
+        kefir_ast_type_specifier_float(&kft_mem)));
+
+    struct kefir_ast_declaration *param2 = kefir_ast_new_declaration(&kft_mem,
+        kefir_ast_declarator_pointer(&kft_mem,
+            kefir_ast_declarator_identifier(&kft_mem, context->symbols, "the_param")), NULL);
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &param2->specifiers,
+        kefir_ast_type_specifier_struct(&kft_mem, specifier1)));
+
+    struct kefir_ast_declarator *decl1 = kefir_ast_declarator_function(&kft_mem,
+        kefir_ast_declarator_identifier(&kft_mem, context->symbols, "function"));
+    ASSERT_OK(kefir_list_insert_after(&kft_mem, &decl1->function.parameters, kefir_list_tail(&decl1->function.parameters),
+        param1));
+    ASSERT_OK(kefir_list_insert_after(&kft_mem, &decl1->function.parameters, kefir_list_tail(&decl1->function.parameters),
+        param2));
+
+    struct kefir_ast_declaration *func1 = kefir_ast_new_declaration(&kft_mem,
+        decl1, NULL);
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &func1->specifiers,
+        kefir_ast_storage_class_specifier_extern(&kft_mem)));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &func1->specifiers,
+        kefir_ast_type_specifier_void(&kft_mem)));
+    
+    ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(func1)));
+
+    const struct kefir_ast_scoped_identifier *scoped_id1 = NULL;
+    ASSERT_OK(context->resolve_ordinary_identifier(context, "function", &scoped_id1));
+
+    struct kefir_ast_struct_type *struct_type1 = NULL;
+    const struct kefir_ast_type *type1 = kefir_ast_type_structure(&kft_mem, context->type_bundle,
+        "param", &struct_type1);
+    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, context->symbols, struct_type1,
+        "field", kefir_ast_type_signed_long_long(), NULL,
+        kefir_ast_constant_expression_integer(&kft_mem, 6)));
+    ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, context->symbols, struct_type1,
+        "another_field", kefir_ast_type_signed_long_long(), NULL,
+        kefir_ast_constant_expression_integer(&kft_mem, 2)));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type1,
+        "payload", kefir_ast_type_bool(), NULL));
+
+    struct kefir_ast_function_type *func_type2 = NULL;
+    const struct kefir_ast_type *type2 = kefir_ast_type_function(&kft_mem, context->type_bundle,
+        kefir_ast_type_void(), "function", &func_type2);
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, func_type2,
+        NULL, kefir_ast_type_float(),
+        &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN}));
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, func_type2,
+        "the_param", kefir_ast_type_pointer(&kft_mem, context->type_bundle, type1),
+        &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN}));
+
+    ASSERT(scoped_id1->function.external);
+    ASSERT(scoped_id1->function.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);
+    // TODO Implement function specifier support
+    ASSERT(KEFIR_AST_TYPE_SAME(scoped_id1->function.type, type2));
+
+    const struct kefir_ast_scoped_identifier *scoped_id2 = NULL;
+    ASSERT(context->resolve_ordinary_identifier(context, "param", &scoped_id2) == KEFIR_NOT_FOUND);
+
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(func1)));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+END_CASE
+
 // TODO Implement more declaration analysis tests
