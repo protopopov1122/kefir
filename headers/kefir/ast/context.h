@@ -42,6 +42,7 @@ typedef struct kefir_ast_context {
     struct kefir_ast_type_bundle *type_bundle;
     const struct kefir_ast_target_environment *target_env;
     struct kefir_ast_context_temporaries *temporaries;
+    kefir_ast_type_analysis_context_t type_analysis_context;
 
     void *payload;
 } kefir_ast_context_t;

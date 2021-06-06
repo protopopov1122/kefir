@@ -216,4 +216,9 @@ typedef enum kefir_ast_declarator_class {
     KEFIR_AST_DECLARATOR_FUNCTION
 } kefir_ast_declarator_class_t;
 
+typedef enum kefir_ast_type_analysis_context {
+    KEFIR_AST_TYPE_ANALYSIS_DEFAULT,
+    KEFIR_AST_TYPE_ANALYSIS_FUNCTION_PARAMETER
+} kefir_ast_type_analysis_context_t;
+
 #endif

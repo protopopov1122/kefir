@@ -24,6 +24,7 @@ kefir_result_t kefir_ast_analyze_declaration_node(struct kefir_mem *mem,
         &storage,
         &base->properties.declaration_props.function,
         &base->properties.declaration_props.alignment));
+    REQUIRE_OK(kefir_ast_analyze_type(mem, context, context->type_analysis_context, type));
 
     if (base->properties.declaration_props.identifier != NULL) {
         struct kefir_ast_alignment *alignment = NULL;

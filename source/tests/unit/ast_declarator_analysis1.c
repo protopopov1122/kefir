@@ -1,5 +1,6 @@
 #include "kefir/test/unit_test.h"
 #include "kefir/ast/analyzer/declarator.h"
+#include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/ast/constants.h"
 #include "kefir/ast/global_context.h"
 #include "kefir/ast/local_context.h"

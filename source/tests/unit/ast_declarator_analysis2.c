@@ -3,6 +3,7 @@
 #include "kefir/ast/constants.h"
 #include "kefir/ast/global_context.h"
 #include "kefir/ast/local_context.h"
+#include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/test/util.h"
 #include "declarator_analysis.h"
 
@@ -269,6 +270,7 @@ DEFINE_CASE(ast_declarator_analysis9, "AST declarator analysis - enum declarator
     ASSERT_OK(kefir_ast_enumeration_type_constant_auto(&kft_mem, context->symbols, enum_type2, "D"));
     ASSERT_OK(kefir_ast_enumeration_type_constant(&kft_mem, context->symbols, enum_type2, "CONST1",
         kefir_ast_constant_expression_integer(&kft_mem, 200)));
+    ASSERT_OK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type2));
 
     ASSERT_IDENTIFIER_TYPE(&kft_mem, context,
         kefir_ast_type_qualified(&kft_mem, context->type_bundle,
@@ -303,6 +305,7 @@ DEFINE_CASE(ast_declarator_analysis9, "AST declarator analysis - enum declarator
     ASSERT_OK(kefir_ast_enumeration_type_constant_auto(&kft_mem, context->symbols, enum_type3, "THREE"));
     ASSERT_OK(kefir_ast_enumeration_type_constant(&kft_mem, context->symbols, enum_type3, "TEN",
             kefir_ast_constant_expression_integer(&kft_mem, 10)));
+    ASSERT_OK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type3));
 
     ASSERT_IDENTIFIER_TYPE(&kft_mem, context,
         kefir_ast_type_qualified(&kft_mem, context->type_bundle,

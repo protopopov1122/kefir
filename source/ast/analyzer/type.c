@@ -82,9 +82,11 @@ static kefir_result_t analyze_structure(struct kefir_mem *mem,
             REQUIRE_OK(kefir_ast_analyze_alignment(mem, context, field->alignment));
             REQUIRE_OK(kefir_ast_alignment_evaluate(mem, context, field->alignment));
             if (field->bitfield) {
-                REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(field->type),
-                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Bit-field shall have integral type"));
                 REQUIRE_OK(kefir_ast_analyze_constant_expression(mem, context, field->bitwidth));
+                if (field->bitwidth->expression != NULL) {
+                    REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(field->bitwidth->expression->properties.type),
+                        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Bit-field shall have integral type"));
+                }
                 REQUIRE_OK(kefir_ast_constant_expression_evaluate(mem, context, field->bitwidth));
                 REQUIRE(field->bitwidth->value.integer >= 0,
                     KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Structure/union bitfield width shall be non-negative"));
