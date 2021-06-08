@@ -437,7 +437,6 @@ DEFINE_CASE(ast_nodes_compound_literals, "AST nodes - compound literals")
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
 END_CASE
 
-
 DEFINE_CASE(ast_nodes_declarations1, "AST nodes - declarations #1")
     struct kefir_symbol_table symbols;
     struct kefir_ast_type_bundle type_bundle;

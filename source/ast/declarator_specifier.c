@@ -173,7 +173,17 @@ struct kefir_ast_structure_specifier *kefir_ast_structure_specifier_clone(struct
             
             struct kefir_ast_structure_declaration_entry *entry_clone = NULL;
             if (entry->is_static_assertion) {
-                entry_clone = kefir_ast_structure_declaration_entry_alloc_assert(mem, KEFIR_AST_NODE_CLONE(mem, entry->static_assertion));
+                struct kefir_ast_node_base *assertion_clone = KEFIR_AST_NODE_CLONE(mem, KEFIR_AST_NODE_BASE(entry->static_assertion));
+                REQUIRE_ELSE(assertion_clone != NULL, {
+                    kefir_ast_structure_specifier_free(mem, clone);
+                    return NULL;
+                });
+                entry_clone = kefir_ast_structure_declaration_entry_alloc_assert(mem, (struct kefir_ast_static_assertion *) assertion_clone->self);
+                REQUIRE_ELSE(entry_clone != NULL, {
+                    KEFIR_AST_NODE_FREE(mem, assertion_clone);
+                    kefir_ast_structure_specifier_free(mem, clone);
+                    return NULL;
+                });
             } else {
                 entry_clone = kefir_ast_structure_declaration_entry_alloc(mem);
                 
@@ -297,7 +307,7 @@ struct kefir_ast_structure_declaration_entry *kefir_ast_structure_declaration_en
 }
 
 struct kefir_ast_structure_declaration_entry *kefir_ast_structure_declaration_entry_alloc_assert(struct kefir_mem *mem,
-                                                                                             struct kefir_ast_node_base *static_assertion) {
+                                                                                             struct kefir_ast_static_assertion *static_assertion) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(static_assertion != NULL, NULL);
 
@@ -315,7 +325,7 @@ kefir_result_t kefir_ast_structure_declaration_entry_free(struct kefir_mem *mem,
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST structure declaration entry"));
 
     if (entry->is_static_assertion) {
-        REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, entry->static_assertion));
+        REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(entry->static_assertion)));
         entry->static_assertion = NULL;
         entry->is_static_assertion = false;
     } else {

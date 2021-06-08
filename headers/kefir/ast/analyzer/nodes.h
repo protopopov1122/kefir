@@ -26,6 +26,7 @@ ANALYZE_NODE(conditional_operator, struct kefir_ast_conditional_operator);
 ANALYZE_NODE(assignment_operator, struct kefir_ast_assignment_operator);
 ANALYZE_NODE(comma_operator, struct kefir_ast_comma_operator);
 ANALYZE_NODE(compound_literal, struct kefir_ast_compound_literal);
+ANALYZE_NODE(static_assertion, struct kefir_ast_static_assertion);
 
 #undef ANALYZE_NODE
 

@@ -38,7 +38,7 @@ typedef struct kefir_ast_structure_entry_declarator {
 typedef struct kefir_ast_structure_declaration_entry {
     kefir_bool_t is_static_assertion;
     union {
-        struct kefir_ast_node_base *static_assertion;
+        struct kefir_ast_static_assertion *static_assertion;
         struct {
             struct kefir_ast_declarator_specifier_list specifiers;
             struct kefir_list declarators;
@@ -70,7 +70,7 @@ kefir_result_t kefir_ast_structure_specifier_append_entry(struct kefir_mem *,
 struct kefir_ast_structure_declaration_entry *kefir_ast_structure_declaration_entry_alloc(struct kefir_mem *);
 
 struct kefir_ast_structure_declaration_entry *kefir_ast_structure_declaration_entry_alloc_assert(struct kefir_mem *,
-                                                                                             struct kefir_ast_node_base *);
+                                                                                             struct kefir_ast_static_assertion *);
 
 kefir_result_t kefir_ast_structure_declaration_entry_free(struct kefir_mem *,
                                                       struct kefir_ast_structure_declaration_entry *);

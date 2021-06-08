@@ -46,6 +46,7 @@ VISITOR(conditional_operator, struct kefir_ast_conditional_operator)
 VISITOR(assignment_operator, struct kefir_ast_assignment_operator)
 VISITOR(comma_operator, struct kefir_ast_comma_operator)
 VISITOR(compound_literal, struct kefir_ast_compound_literal)
+VISITOR(static_assertion, struct kefir_ast_static_assertion)
 
 #undef VISITOR
 
@@ -79,5 +80,6 @@ kefir_result_t kefir_ast_analyze_node(struct kefir_mem *mem,
     visitor.assignment_operator = visit_assignment_operator;
     visitor.comma_operator = visit_comma_operator;
     visitor.compound_literal = visit_compound_literal;
+    visitor.static_assertion = visit_static_assertion;
     return KEFIR_AST_NODE_VISIT(&visitor, base, &param);
 }

@@ -116,7 +116,7 @@ static kefir_result_t resolve_struct_type(struct kefir_mem *mem,
             ASSIGN_DECL_CAST(struct kefir_ast_structure_declaration_entry *, entry,
                 iter->value);
             if (entry->is_static_assertion) {
-                // TODO Static declaration support
+                REQUIRE_OK(kefir_ast_analyze_node(mem, context, KEFIR_AST_NODE_BASE(entry->static_assertion)));
             } else {
                 REQUIRE_OK(process_struct_declaration_entry(mem, context, struct_type, entry));
             }

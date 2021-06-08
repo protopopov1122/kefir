@@ -82,7 +82,9 @@ DEFINE_CASE(ast_structure_declaration2, "AST Declarations - structure declaratio
 
     do {
         struct kefir_ast_structure_declaration_entry *entry3 = kefir_ast_structure_declaration_entry_alloc_assert(&kft_mem,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 100)));
+            kefir_ast_new_static_assertion(&kft_mem,
+                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(&kft_mem, true)),
+                KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Not going to happend")));
         ASSERT(entry3 != NULL);
         ASSERT(entry3->is_static_assertion);
         ASSERT_OK(kefir_ast_structure_specifier_append_entry(&kft_mem, specifier1, entry3));
@@ -174,9 +176,10 @@ DEFINE_CASE(ast_structure_declaration2, "AST Declarations - structure declaratio
         ASSIGN_DECL_CAST(struct kefir_ast_structure_declaration_entry *, entry,
             entry_iter->value);
         ASSERT(entry->is_static_assertion);
-        ASSERT(entry->static_assertion->klass->type == KEFIR_AST_CONSTANT);
-        ASSERT(((struct kefir_ast_constant *) entry->static_assertion->self)->type == KEFIR_AST_CHAR_CONSTANT);
-        ASSERT(((struct kefir_ast_constant *) entry->static_assertion->self)->value.character == 100);
+        ASSERT(entry->static_assertion != NULL);
+        ASSERT(entry->static_assertion->condition->klass->type == KEFIR_AST_CONSTANT);
+        ASSERT(((struct kefir_ast_constant *) entry->static_assertion->condition->self)->type == KEFIR_AST_BOOL_CONSTANT);
+        ASSERT(((struct kefir_ast_constant *) entry->static_assertion->condition->self)->value.boolean);
     } while (0);
 
     do {
