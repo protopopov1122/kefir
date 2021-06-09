@@ -100,6 +100,8 @@ static kefir_result_t analyze_structure(struct kefir_mem *mem,
                 if (field->type->array_type.boundary == KEFIR_AST_ARRAY_UNBOUNDED) {
                     REQUIRE(iter->next == NULL && type->tag == KEFIR_AST_TYPE_STRUCTURE,
                         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Flexible member should be the last member of structure"));
+                    REQUIRE(iter->prev != NULL,
+                        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Flexible member is not allowed in otherwise empty structure"));
                 } else {
                     REQUIRE(!KEFIR_AST_TYPE_IS_VARIABLY_MODIFIED(field->type),
                         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Structure/union cannot have variably modified members"));

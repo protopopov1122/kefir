@@ -513,3 +513,66 @@ DEFINE_CASE(ast_type_analysis_functions, "AST type analysis - functions")
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
+
+DEFINE_CASE(ast_type_analysis_flexible_arrays, "AST type analysis - flexible array members")
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits,
+        &kft_util_get_translator_environment()->target_env, &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    struct kefir_ast_struct_type *struct_type1 = NULL;
+    const struct kefir_ast_type *type1 = kefir_ast_type_structure(&kft_mem, context->type_bundle, "struct1", &struct_type1);
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type1,
+        "field1", kefir_ast_type_signed_short(), NULL));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type1,
+        "field2", kefir_ast_type_unbounded_array(&kft_mem, context->type_bundle, kefir_ast_type_char(), NULL), NULL));
+    ASSERT_OK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type1));
+
+    struct kefir_ast_struct_type *struct_type2 = NULL;
+    const struct kefir_ast_type *type2 = kefir_ast_type_structure(&kft_mem, context->type_bundle, "struct2", &struct_type2);
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type2,
+        "field1", kefir_ast_type_unbounded_array(&kft_mem, context->type_bundle, kefir_ast_type_char(), NULL), NULL));
+    ASSERT_NOK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type2));
+
+    struct kefir_ast_struct_type *struct_type3 = NULL;
+    const struct kefir_ast_type *type3 = kefir_ast_type_structure(&kft_mem, context->type_bundle, "struct3", &struct_type3);
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type3,
+        "field1", kefir_ast_type_unbounded_array(&kft_mem, context->type_bundle, kefir_ast_type_char(), NULL), NULL));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type3,
+        "field2", kefir_ast_type_double(), NULL));
+    ASSERT_NOK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type3));
+
+    struct kefir_ast_struct_type *union_type4 = NULL;
+    const struct kefir_ast_type *type4 = kefir_ast_type_union(&kft_mem, context->type_bundle, "union4", &union_type4);
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, union_type4,
+        "field1", kefir_ast_type_unsigned_int(), NULL));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, union_type4,
+        "field2", kefir_ast_type_unbounded_array(&kft_mem, context->type_bundle, kefir_ast_type_signed_short(), NULL), NULL));
+    ASSERT_NOK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type4));
+
+    struct kefir_ast_struct_type *struct_type5 = NULL;
+    const struct kefir_ast_type *type5 = kefir_ast_type_structure(&kft_mem, context->type_bundle, "struct5", &struct_type5);
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type5,
+        "inner1", kefir_ast_type_signed_short(), NULL));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type5,
+        "inner2", kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()), NULL));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type5,
+        "inner3", kefir_ast_type_unbounded_array(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_long(), NULL), NULL));
+
+    struct kefir_ast_struct_type *struct_type6 = NULL;
+    const struct kefir_ast_type *type6 = kefir_ast_type_structure(&kft_mem, context->type_bundle, "struct6", &struct_type6);
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type6,
+        "outer1", kefir_ast_type_signed_int(), NULL));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type6,
+        "inner2", type5, NULL));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type6,
+        "inner3", kefir_ast_type_unbounded_array(&kft_mem, context->type_bundle, type1, NULL), NULL));
+    ASSERT_OK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type6));
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+END_CASE

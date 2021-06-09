@@ -1,0 +1,166 @@
+[
+    {
+        "index": 0,
+        "size": 4,
+        "alignment": 4,
+        "relative_offset": 0,
+        "type": "struct",
+        "fields": [
+            {
+                "identifier": "x",
+                "layout": {
+                    "index": 1,
+                    "size": 1,
+                    "alignment": 1,
+                    "relative_offset": 0,
+                    "type": "scalar"
+                }
+            },
+            {
+                "identifier": "y",
+                "layout": {
+                    "index": 2,
+                    "size": 1,
+                    "alignment": 1,
+                    "relative_offset": 1,
+                    "type": "array",
+                    "element": {
+                        "index": 3,
+                        "size": 1,
+                        "alignment": 1,
+                        "relative_offset": 0,
+                        "type": "scalar"
+                    }
+                }
+            },
+            {
+                "identifier": "z",
+                "layout": {
+                    "index": 4,
+                    "size": 0,
+                    "alignment": 4,
+                    "relative_offset": 4,
+                    "type": "array",
+                    "element": {
+                        "index": 5,
+                        "size": 4,
+                        "alignment": 4,
+                        "relative_offset": 0,
+                        "type": "scalar"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "index": 0,
+        "size": 8,
+        "alignment": 8,
+        "relative_offset": 0,
+        "type": "struct",
+        "fields": [
+            {
+                "identifier": "a",
+                "layout": {
+                    "index": 1,
+                    "size": 1,
+                    "alignment": 1,
+                    "relative_offset": 0,
+                    "type": "scalar"
+                }
+            },
+            {
+                "identifier": "z",
+                "layout": {
+                    "index": 2,
+                    "size": 0,
+                    "alignment": 8,
+                    "relative_offset": 8,
+                    "type": "array",
+                    "element": {
+                        "index": 3,
+                        "size": 2,
+                        "alignment": 2,
+                        "relative_offset": 0,
+                        "type": "scalar"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "index": 0,
+        "size": 8,
+        "alignment": 4,
+        "relative_offset": 0,
+        "type": "struct",
+        "fields": [
+            {
+                "identifier": "outer1",
+                "layout": {
+                    "index": 1,
+                    "size": 4,
+                    "alignment": 4,
+                    "relative_offset": 0,
+                    "type": "scalar"
+                }
+            },
+            {
+                "identifier": null,
+                "layout": {
+                    "index": 2,
+                    "size": 4,
+                    "alignment": 4,
+                    "relative_offset": 4,
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "identifier": "internal1",
+                            "layout": {
+                                "index": 3,
+                                "size": 1,
+                                "alignment": 1,
+                                "relative_offset": 0,
+                                "type": "scalar"
+                            }
+                        },
+                        {
+                            "identifier": "internal2",
+                            "layout": {
+                                "index": 4,
+                                "size": 0,
+                                "alignment": 4,
+                                "relative_offset": 4,
+                                "type": "array",
+                                "element": {
+                                    "index": 5,
+                                    "size": 4,
+                                    "alignment": 4,
+                                    "relative_offset": 0,
+                                    "type": "scalar"
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "identifier": "outer2",
+                "layout": {
+                    "index": 6,
+                    "size": 0,
+                    "alignment": 1,
+                    "relative_offset": 8,
+                    "type": "array",
+                    "element": {
+                        "index": 7,
+                        "size": 1,
+                        "alignment": 1,
+                        "relative_offset": 0,
+                        "type": "scalar"
+                    }
+                }
+            }
+        ]
+    }
+]
