@@ -57,19 +57,13 @@ typedef struct kefir_amd64_sysv_parameter_allocation {
     struct kefir_amd64_sysv_parameter_location location;
 } kefir_amd64_sysv_parameter_allocation_t;
 
-kefir_result_t kefir_amd64_sysv_parameter_classify(struct kefir_mem *,
-                                                     const struct kefir_ir_type *,
-                                                     const struct kefir_vector *,
-                                                     struct kefir_vector *);
+kefir_result_t kefir_amd64_sysv_parameter_classify(struct kefir_mem *, const struct kefir_ir_type *,
+                                                   const struct kefir_vector *, struct kefir_vector *);
 
-kefir_result_t kefir_amd64_sysv_parameter_free(struct kefir_mem *,
-                                                 struct kefir_vector *);
+kefir_result_t kefir_amd64_sysv_parameter_free(struct kefir_mem *, struct kefir_vector *);
 
-
-kefir_result_t kefir_amd64_sysv_parameter_allocate(struct kefir_mem *,
-                                               const struct kefir_ir_type *,
-                                               const struct kefir_vector *,
-                                               struct kefir_vector *,
-                                               struct kefir_amd64_sysv_parameter_location *);
+kefir_result_t kefir_amd64_sysv_parameter_allocate(struct kefir_mem *, const struct kefir_ir_type *,
+                                                   const struct kefir_vector *, struct kefir_vector *,
+                                                   struct kefir_amd64_sysv_parameter_location *);
 
 #endif

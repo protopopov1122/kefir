@@ -19,37 +19,17 @@ int main(int argc, const char **argv) {
     UNUSED(argv);
 
     for (int i = -100; i <= 100; i++) {
-        ASSERT(sum(&(struct param){
-            .a = 54,
-            .b = i,
-            .c = -5,
-            .d = 0,
-            .e = -1
-        }) == (int) (54 + i - 5 - 1 + sizeof(struct param) + _Alignof(struct param)));
+        ASSERT(sum(&(struct param){.a = 54, .b = i, .c = -5, .d = 0, .e = -1}) ==
+               (int) (54 + i - 5 - 1 + sizeof(struct param) + _Alignof(struct param)));
 
-        ASSERT(sum(&(struct param){
-            .a = 54,
-            .b = i,
-            .c = -5,
-            .d = 0,
-            .e = 0
-        }) == (int) (54 + i - 5 + sizeof(struct param) + _Alignof(struct param)));
-        
-        ASSERT(sum(&(struct param){
-            .a = 54,
-            .b = i,
-            .c = -5,
-            .d = -1,
-            .e = 0
-        }) == (int) (54 + i - 5 - 1 + sizeof(struct param) + _Alignof(struct param)));
+        ASSERT(sum(&(struct param){.a = 54, .b = i, .c = -5, .d = 0, .e = 0}) ==
+               (int) (54 + i - 5 + sizeof(struct param) + _Alignof(struct param)));
 
-        ASSERT(sum(&(struct param){
-            .a = 54,
-            .b = i,
-            .c = -5,
-            .d = -1,
-            .e = -1
-        }) == (int) (54 + i - 5 - 1 - 1 + sizeof(struct param) + _Alignof(struct param)));
+        ASSERT(sum(&(struct param){.a = 54, .b = i, .c = -5, .d = -1, .e = 0}) ==
+               (int) (54 + i - 5 - 1 + sizeof(struct param) + _Alignof(struct param)));
+
+        ASSERT(sum(&(struct param){.a = 54, .b = i, .c = -5, .d = -1, .e = -1}) ==
+               (int) (54 + i - 5 - 1 - 1 + sizeof(struct param) + _Alignof(struct param)));
     }
     return EXIT_SUCCESS;
 }

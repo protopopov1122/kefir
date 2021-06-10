@@ -4,9 +4,7 @@
 #include "kefir/ast/type.h"
 #include "kefir/ir/builder.h"
 
-kefir_result_t kefir_ast_translate_typeconv(struct kefir_irbuilder_block *,
-                                        const struct kefir_ast_type_traits *,
-                                        const struct kefir_ast_type *,
-                                        const struct kefir_ast_type *);
+kefir_result_t kefir_ast_translate_typeconv(struct kefir_irbuilder_block *, const struct kefir_ast_type_traits *,
+                                            const struct kefir_ast_type *, const struct kefir_ast_type *);
 
 #endif

@@ -10,27 +10,22 @@ struct kefir_ast_node_base *ast_binary_operation_clone(struct kefir_mem *, struc
 kefir_result_t ast_binary_operation_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
-    ASSIGN_DECL_CAST(struct kefir_ast_binary_operation *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_binary_operation *, node, base->self);
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node->arg1));
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node->arg2));
     KEFIR_FREE(mem, node);
     return KEFIR_OK;
 }
 
-const struct kefir_ast_node_class AST_BINARY_OPERATION_CLASS = {
-    .type = KEFIR_AST_BINARY_OPERATION,
-    .visit = ast_binary_operation_visit,
-    .clone = ast_binary_operation_clone,
-    .free = ast_binary_operation_free
-};
+const struct kefir_ast_node_class AST_BINARY_OPERATION_CLASS = {.type = KEFIR_AST_BINARY_OPERATION,
+                                                                .visit = ast_binary_operation_visit,
+                                                                .clone = ast_binary_operation_clone,
+                                                                .free = ast_binary_operation_free};
 
-struct kefir_ast_node_base *ast_binary_operation_clone(struct kefir_mem *mem,
-                                                     struct kefir_ast_node_base *base) {
+struct kefir_ast_node_base *ast_binary_operation_clone(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(base != NULL, NULL);
-    ASSIGN_DECL_CAST(struct kefir_ast_binary_operation *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_binary_operation *, node, base->self);
     struct kefir_ast_binary_operation *clone = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_binary_operation));
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_BINARY_OPERATION_CLASS;
@@ -56,9 +51,9 @@ struct kefir_ast_node_base *ast_binary_operation_clone(struct kefir_mem *mem,
 }
 
 struct kefir_ast_binary_operation *kefir_ast_new_binary_operation(struct kefir_mem *mem,
-                                                              kefir_ast_binary_operation_type_t type,
-                                                              struct kefir_ast_node_base *arg1,
-                                                              struct kefir_ast_node_base *arg2) {
+                                                                  kefir_ast_binary_operation_type_t type,
+                                                                  struct kefir_ast_node_base *arg1,
+                                                                  struct kefir_ast_node_base *arg2) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(arg1 != NULL, NULL);
     REQUIRE(arg2 != NULL, NULL);

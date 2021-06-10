@@ -12,14 +12,7 @@ struct test {
 struct test getarg(int, ...);
 
 struct test maketest(long base) {
-    struct test val = {
-        .arr = {
-            base,
-            base + 1,
-            base + 10,
-            base + 100
-        }
-    };
+    struct test val = {.arr = {base, base + 1, base + 10, base + 100}};
     return val;
 }
 

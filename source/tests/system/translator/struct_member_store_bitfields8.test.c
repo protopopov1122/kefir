@@ -29,17 +29,7 @@ int main(int argc, const char **argv) {
 
     for (unsigned int i = 0; i < 0xffe; i++) {
         struct param val = {
-            .a = 100,
-            .b = 1000,
-            .c = 10000,
-            .d = 100000,
-            .e = 20000,
-            .f = 2000,
-            .g = 50,
-            .h = 3000,
-            .i = 300,
-            .j = 30
-        };
+            .a = 100, .b = 1000, .c = 10000, .d = 100000, .e = 20000, .f = 2000, .g = 50, .h = 3000, .i = 300, .j = 30};
 
         unsigned long cnst = 0xcafebabeu ^ i;
 

@@ -19,43 +19,29 @@ typedef struct kefir_ast_struct_type {
     struct kefir_hashtree field_index;
 } kefir_ast_struct_type_t;
 
-const struct kefir_ast_type *kefir_ast_type_incomplete_structure(struct kefir_mem *,
-                                                             struct kefir_ast_type_bundle *,
+const struct kefir_ast_type *kefir_ast_type_incomplete_structure(struct kefir_mem *, struct kefir_ast_type_bundle *,
+                                                                 const char *);
+const struct kefir_ast_type *kefir_ast_type_incomplete_union(struct kefir_mem *, struct kefir_ast_type_bundle *,
                                                              const char *);
-const struct kefir_ast_type *kefir_ast_type_incomplete_union(struct kefir_mem *,
-                                                         struct kefir_ast_type_bundle *,
-                                                         const char *);
 
-kefir_result_t kefir_ast_struct_type_get_field(const struct kefir_ast_struct_type *,
-                                           const char *,
-                                           const struct kefir_ast_struct_field **);
-
-kefir_result_t kefir_ast_struct_type_resolve_field(const struct kefir_ast_struct_type *,
-                                               const char *,
+kefir_result_t kefir_ast_struct_type_get_field(const struct kefir_ast_struct_type *, const char *,
                                                const struct kefir_ast_struct_field **);
 
-kefir_result_t kefir_ast_struct_type_field(struct kefir_mem *,
-                                       struct kefir_symbol_table *,
-                                       struct kefir_ast_struct_type *,
-                                       const char *,
-                                       const struct kefir_ast_type *,
-                                       struct kefir_ast_alignment *);
+kefir_result_t kefir_ast_struct_type_resolve_field(const struct kefir_ast_struct_type *, const char *,
+                                                   const struct kefir_ast_struct_field **);
 
-kefir_result_t kefir_ast_struct_type_bitfield(struct kefir_mem *,
-                                          struct kefir_symbol_table *,
-                                          struct kefir_ast_struct_type *,
-                                          const char *,
-                                          const struct kefir_ast_type *,
-                                          struct kefir_ast_alignment *,
-                                          struct kefir_ast_constant_expression *);
-                                    
-const struct kefir_ast_type *kefir_ast_type_structure(struct kefir_mem *,
-                                                  struct kefir_ast_type_bundle *,
-                                                  const char *,
+kefir_result_t kefir_ast_struct_type_field(struct kefir_mem *, struct kefir_symbol_table *,
+                                           struct kefir_ast_struct_type *, const char *, const struct kefir_ast_type *,
+                                           struct kefir_ast_alignment *);
+
+kefir_result_t kefir_ast_struct_type_bitfield(struct kefir_mem *, struct kefir_symbol_table *,
+                                              struct kefir_ast_struct_type *, const char *,
+                                              const struct kefir_ast_type *, struct kefir_ast_alignment *,
+                                              struct kefir_ast_constant_expression *);
+
+const struct kefir_ast_type *kefir_ast_type_structure(struct kefir_mem *, struct kefir_ast_type_bundle *, const char *,
+                                                      struct kefir_ast_struct_type **);
+const struct kefir_ast_type *kefir_ast_type_union(struct kefir_mem *, struct kefir_ast_type_bundle *, const char *,
                                                   struct kefir_ast_struct_type **);
-const struct kefir_ast_type *kefir_ast_type_union(struct kefir_mem *,
-                                              struct kefir_ast_type_bundle *,
-                                              const char *,
-                                              struct kefir_ast_struct_type **);
 
 #endif

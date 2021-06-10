@@ -27,11 +27,7 @@ int main(int argc, const char **argv) {
     for (unsigned int i = 0; i < LEN; i++) {
         set_int(INTS, i, ~i);
         set_double(DOUBLES, i, 4.12 + i - 1e5 * i);
-        set_struct(STRUCTS, i, (struct structure){
-            .array = {
-                i, i + 1, i + 2, 'H', 'e', 'y', '\0'
-            }
-        });
+        set_struct(STRUCTS, i, (struct structure){.array = {i, i + 1, i + 2, 'H', 'e', 'y', '\0'}});
     }
 
     for (unsigned int i = 0; i < LEN; i++) {

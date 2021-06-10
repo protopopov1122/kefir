@@ -15,12 +15,11 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
     REQUIRE_OK(kefir_codegen_amd64_sysv_module_alloc(mem, &sysv_module, &module));
     struct kefir_ir_type *decl_params = kefir_ir_module_new_type(mem, &module, 0, NULL),
-                       *decl_result = kefir_ir_module_new_type(mem, &module, 0, NULL);
+                         *decl_result = kefir_ir_module_new_type(mem, &module, 0, NULL);
     REQUIRE(decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "func1",
-            decl_params, false, decl_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "func1", decl_params, false, decl_result);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *func = kefir_ir_module_new_function(mem, &module, decl, NULL, 0);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);

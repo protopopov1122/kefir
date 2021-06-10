@@ -14,7 +14,6 @@ const struct kefir_error *kefir_current_error();
 void kefir_clear_error();
 kefir_result_t kefir_set_error(kefir_result_t, const char *, const char *, unsigned int);
 
-#define KEFIR_SET_ERROR(code, message) \
-    kefir_set_error((code), (message), __FILE__, __LINE__)
+#define KEFIR_SET_ERROR(code, message) kefir_set_error((code), (message), __FILE__, __LINE__)
 
 #endif

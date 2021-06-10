@@ -18,11 +18,7 @@ int main(int argc, const char **argv) {
 
     for (char i = CHAR_MIN; i < CHAR_MAX; i++) {
         for (char j = CHAR_MIN; j < CHAR_MAX; j++) {
-            struct param val = {
-                .arg1 = i,
-                .arg2 = j,
-                .result = 0
-            };
+            struct param val = {.arg1 = i, .arg2 = j, .result = 0};
             char_sum(&val);
             ASSERT(val.result == i + j);
         }

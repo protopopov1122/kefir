@@ -13,11 +13,7 @@ typedef struct kefir_symbol_table {
 
 kefir_result_t kefir_symbol_table_init(struct kefir_symbol_table *);
 kefir_result_t kefir_symbol_table_free(struct kefir_mem *, struct kefir_symbol_table *);
-const char *kefir_symbol_table_insert(struct kefir_mem *,
-                                    struct kefir_symbol_table *,
-                                    const char *,
-                                    kefir_id_t *);
-const char *kefir_symbol_table_get(const struct kefir_symbol_table *,
-                                 kefir_id_t);
+const char *kefir_symbol_table_insert(struct kefir_mem *, struct kefir_symbol_table *, const char *, kefir_id_t *);
+const char *kefir_symbol_table_get(const struct kefir_symbol_table *, kefir_id_t);
 
 #endif

@@ -3,7 +3,7 @@
 #include "kefir/core/error.h"
 
 const struct kefir_ast_type *kefir_ast_type_int_promotion(const struct kefir_ast_type_traits *type_traits,
-                                                      const struct kefir_ast_type *type) {
+                                                          const struct kefir_ast_type *type) {
     REQUIRE(type != NULL, NULL);
     REQUIRE(KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(type), NULL);
 
@@ -25,8 +25,8 @@ const struct kefir_ast_type *kefir_ast_type_int_promotion(const struct kefir_ast
 #define ANY_OF(x, y, z) (KEFIR_AST_TYPE_SAME((x), (z)) || KEFIR_AST_TYPE_SAME((y), (z)))
 
 const struct kefir_ast_type *kefir_ast_type_common_arithmetic(const struct kefir_ast_type_traits *type_traits,
-                                                          const struct kefir_ast_type *type1,
-                                                          const struct kefir_ast_type *type2) {
+                                                              const struct kefir_ast_type *type1,
+                                                              const struct kefir_ast_type *type2) {
     REQUIRE(type1->basic && type2->basic, NULL);
     if (ANY_OF(type1, type2, kefir_ast_type_double())) {
         return kefir_ast_type_double();
@@ -52,7 +52,7 @@ const struct kefir_ast_type *kefir_ast_type_common_arithmetic(const struct kefir
         } else {
             return type2;
         }
-    } 
+    }
     kefir_bool_t fits = false;
     if (!type1_sign) {
         if (type1->basic_type.rank >= type2->basic_type.rank) {
@@ -75,8 +75,8 @@ const struct kefir_ast_type *kefir_ast_type_common_arithmetic(const struct kefir
     }
 }
 
-const struct kefir_ast_type *kefir_ast_type_function_default_argument_promotion(const struct kefir_ast_type_traits *type_traits,
-                                                                            const struct kefir_ast_type *type) {
+const struct kefir_ast_type *kefir_ast_type_function_default_argument_promotion(
+    const struct kefir_ast_type_traits *type_traits, const struct kefir_ast_type *type) {
     if (KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(type)) {
         return kefir_ast_type_int_promotion(type_traits, type);
     } else if (type->tag == KEFIR_AST_TYPE_SCALAR_FLOAT) {
@@ -92,8 +92,8 @@ const struct kefir_ast_type *kefir_ast_type_lvalue_conversion(const struct kefir
 }
 
 const struct kefir_ast_type *kefir_ast_type_array_conversion(struct kefir_mem *mem,
-                                                         struct kefir_ast_type_bundle *type_bundle,
-                                                         const struct kefir_ast_type *type) {
+                                                             struct kefir_ast_type_bundle *type_bundle,
+                                                             const struct kefir_ast_type *type) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(type != NULL, NULL);
     REQUIRE(type->tag == KEFIR_AST_TYPE_ARRAY, type);
@@ -101,8 +101,8 @@ const struct kefir_ast_type *kefir_ast_type_array_conversion(struct kefir_mem *m
 }
 
 const struct kefir_ast_type *kefir_ast_type_function_conversion(struct kefir_mem *mem,
-                                                            struct kefir_ast_type_bundle *type_bundle,
-                                                            const struct kefir_ast_type *type) {
+                                                                struct kefir_ast_type_bundle *type_bundle,
+                                                                const struct kefir_ast_type *type) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(type != NULL, NULL);
     REQUIRE(type->tag == KEFIR_AST_TYPE_FUNCTION, type);
@@ -110,9 +110,9 @@ const struct kefir_ast_type *kefir_ast_type_function_conversion(struct kefir_mem
 }
 
 const struct kefir_ast_type *kefir_ast_type_conv_expression_wrapper(struct kefir_mem *mem,
-                                                                struct kefir_ast_type_bundle *type_bundle,
-                                                                const struct kefir_ast_type *type,
-                                                                kefir_int_t param) {
+                                                                    struct kefir_ast_type_bundle *type_bundle,
+                                                                    const struct kefir_ast_type *type,
+                                                                    kefir_int_t param) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(type != NULL, NULL);
     if ((param & KEFIR_AST_TYPE_CONV_EXPRESSION_WRAPPER_PARAM_LVALUE) != 0) {
@@ -128,8 +128,8 @@ const struct kefir_ast_type *kefir_ast_type_conv_expression_wrapper(struct kefir
 }
 
 const struct kefir_ast_type *kefir_ast_type_conv_adjust_function_parameter(struct kefir_mem *mem,
-                                                                       struct kefir_ast_type_bundle *type_bundle,
-                                                                       const struct kefir_ast_type *type) {
+                                                                           struct kefir_ast_type_bundle *type_bundle,
+                                                                           const struct kefir_ast_type *type) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(type_bundle != NULL, NULL);
     REQUIRE(type != NULL, NULL);
@@ -139,13 +139,14 @@ const struct kefir_ast_type *kefir_ast_type_conv_adjust_function_parameter(struc
             return kefir_ast_type_pointer(mem, type_bundle, type);
 
         case KEFIR_AST_TYPE_ARRAY: {
-            const struct kefir_ast_type *adjusted = kefir_ast_type_pointer(mem, type_bundle, type->array_type.element_type);
+            const struct kefir_ast_type *adjusted =
+                kefir_ast_type_pointer(mem, type_bundle, type->array_type.element_type);
             if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&type->array_type.qualifications)) {
                 adjusted = kefir_ast_type_qualified(mem, type_bundle, adjusted, type->array_type.qualifications);
             }
             return adjusted;
         }
-        
+
         default:
             return type;
     }

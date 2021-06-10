@@ -14,17 +14,10 @@ void makecopy(const struct structure *, struct structure *);
 int main(int argc, const char **argv) {
     UNUSED(argc);
     UNUSED(argv);
-    
-    const struct structure S1 = {
-        .a = 100,
-        .b = {
-            80, 70, 60, 50,
-            40, 30, 20, 10
-        },
-        .c = 3.14159
-    };
+
+    const struct structure S1 = {.a = 100, .b = {80, 70, 60, 50, 40, 30, 20, 10}, .c = 3.14159};
     struct structure S2 = {0};
-    
+
     makecopy(&S1, &S2);
     REQUIRE(S2.a == 100, KEFIR_INTERNAL_ERROR);
     REQUIRE(S2.b[0] == 80, KEFIR_INTERNAL_ERROR);

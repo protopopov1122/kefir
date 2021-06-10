@@ -29,7 +29,7 @@ struct sizes get_sizeof();
 int main(int argc, const char **argv) {
     UNUSED(argc);
     UNUSED(argv);
-    
+
     struct sizes sz = get_sizeof();
     ASSERT(sz.tboolean == sizeof(bool));
     ASSERT(sz.tchar == sizeof(char));

@@ -3,7 +3,7 @@
 
 #include "kefir/ast/declarator_specifier.h"
 
-typedef struct kefir_ast_declarator kefir_ast_declarator_t; // Forward declaration
+typedef struct kefir_ast_declarator kefir_ast_declarator_t;  // Forward declaration
 
 typedef struct kefir_ast_declarator_pointer {
     struct kefir_ast_type_qualifier_list type_qualifiers;
@@ -40,15 +40,13 @@ typedef struct kefir_ast_declarator {
     };
 } kefir_ast_declarator_t;
 
-struct kefir_ast_declarator *kefir_ast_declarator_identifier(struct kefir_mem *, struct kefir_symbol_table *, const char *);
+struct kefir_ast_declarator *kefir_ast_declarator_identifier(struct kefir_mem *, struct kefir_symbol_table *,
+                                                             const char *);
 struct kefir_ast_declarator *kefir_ast_declarator_pointer(struct kefir_mem *, struct kefir_ast_declarator *);
-struct kefir_ast_declarator *kefir_ast_declarator_array(struct kefir_mem *,
-                                                    kefir_ast_declarator_array_type_t,
-                                                    struct kefir_ast_node_base *,
-                                                    struct kefir_ast_declarator *);
+struct kefir_ast_declarator *kefir_ast_declarator_array(struct kefir_mem *, kefir_ast_declarator_array_type_t,
+                                                        struct kefir_ast_node_base *, struct kefir_ast_declarator *);
 struct kefir_ast_declarator *kefir_ast_declarator_function(struct kefir_mem *, struct kefir_ast_declarator *);
-struct kefir_ast_declarator *kefir_ast_declarator_clone(struct kefir_mem *,
-                                                    const struct kefir_ast_declarator *);
+struct kefir_ast_declarator *kefir_ast_declarator_clone(struct kefir_mem *, const struct kefir_ast_declarator *);
 kefir_result_t kefir_ast_declarator_free(struct kefir_mem *, struct kefir_ast_declarator *);
 
 kefir_result_t kefir_ast_declarator_is_abstract(struct kefir_ast_declarator *, kefir_bool_t *);

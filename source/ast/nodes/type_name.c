@@ -10,8 +10,7 @@ struct kefir_ast_node_base *ast_type_name_clone(struct kefir_mem *, struct kefir
 kefir_result_t ast_type_name_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
-    ASSIGN_DECL_CAST(struct kefir_ast_type_name *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_type_name *, node, base->self);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_free(mem, &node->type_decl.specifiers));
     REQUIRE_OK(kefir_ast_declarator_free(mem, node->type_decl.declarator));
     node->type_decl.declarator = NULL;
@@ -19,19 +18,15 @@ kefir_result_t ast_type_name_free(struct kefir_mem *mem, struct kefir_ast_node_b
     return KEFIR_OK;
 }
 
-const struct kefir_ast_node_class AST_TYPE_NAME_CLASS = {
-    .type = KEFIR_AST_TYPE_NAME,
-    .visit = ast_type_name_visit,
-    .clone = ast_type_name_clone,
-    .free = ast_type_name_free
-};
+const struct kefir_ast_node_class AST_TYPE_NAME_CLASS = {.type = KEFIR_AST_TYPE_NAME,
+                                                         .visit = ast_type_name_visit,
+                                                         .clone = ast_type_name_clone,
+                                                         .free = ast_type_name_free};
 
-struct kefir_ast_node_base *ast_type_name_clone(struct kefir_mem *mem,
-                                              struct kefir_ast_node_base *base) {
+struct kefir_ast_node_base *ast_type_name_clone(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(base != NULL, NULL);
-    ASSIGN_DECL_CAST(struct kefir_ast_type_name *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_type_name *, node, base->self);
     struct kefir_ast_type_name *clone = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type_name));
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_TYPE_NAME_CLASS;
@@ -41,7 +36,7 @@ struct kefir_ast_node_base *ast_type_name_clone(struct kefir_mem *mem,
         KEFIR_FREE(mem, clone);
         return NULL;
     });
-    
+
     clone->type_decl.declarator = kefir_ast_declarator_clone(mem, node->type_decl.declarator);
     REQUIRE_ELSE(clone->type_decl.declarator != NULL, {
         KEFIR_FREE(mem, clone);
@@ -65,8 +60,7 @@ struct kefir_ast_node_base *ast_type_name_clone(struct kefir_mem *mem,
     return KEFIR_AST_NODE_BASE(clone);
 }
 
-struct kefir_ast_type_name *kefir_ast_new_type_name(struct kefir_mem *mem,
-                                                struct kefir_ast_declarator *decl) {
+struct kefir_ast_type_name *kefir_ast_new_type_name(struct kefir_mem *mem, struct kefir_ast_declarator *decl) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(decl != NULL, NULL);
 

@@ -72,31 +72,26 @@ typedef struct kefir_ast_identifier_flat_scope {
 } kefir_ast_identifier_flat_scope_t;
 
 #define KEFIR_AST_SCOPE_SET_CLEANUP(_scope, _callback, _payload) \
-    do { \
-        (_scope)->payload.cleanup->callback = (_callback); \
-        (_scope)->payload.cleanup->payload = (_payload); \
+    do {                                                         \
+        (_scope)->payload.cleanup->callback = (_callback);       \
+        (_scope)->payload.cleanup->payload = (_payload);         \
     } while (0)
 
 kefir_result_t kefir_ast_identifier_flat_scope_init(struct kefir_ast_identifier_flat_scope *);
-kefir_result_t kefir_ast_identifier_flat_scope_free(struct kefir_mem *,
-                                                struct kefir_ast_identifier_flat_scope *);
-kefir_result_t kefir_ast_identifier_flat_scope_on_removal(struct kefir_ast_identifier_flat_scope *,
-                                                      kefir_result_t (*)(struct kefir_mem *, struct kefir_ast_scoped_identifier *, void *),
-                                                      void *);
-kefir_result_t kefir_ast_identifier_flat_scope_insert(struct kefir_mem *,
-                                                  struct kefir_ast_identifier_flat_scope *,
-                                                  const char *,
-                                                  struct kefir_ast_scoped_identifier *);
-kefir_result_t kefir_ast_identifier_flat_scope_at(const struct kefir_ast_identifier_flat_scope *,
-                                              const char *,
-                                              struct kefir_ast_scoped_identifier **);
-kefir_bool_t kefir_ast_identifier_flat_scope_has(const struct kefir_ast_identifier_flat_scope *,
-                                             const char *);
+kefir_result_t kefir_ast_identifier_flat_scope_free(struct kefir_mem *, struct kefir_ast_identifier_flat_scope *);
+kefir_result_t kefir_ast_identifier_flat_scope_on_removal(
+    struct kefir_ast_identifier_flat_scope *,
+    kefir_result_t (*)(struct kefir_mem *, struct kefir_ast_scoped_identifier *, void *), void *);
+kefir_result_t kefir_ast_identifier_flat_scope_insert(struct kefir_mem *, struct kefir_ast_identifier_flat_scope *,
+                                                      const char *, struct kefir_ast_scoped_identifier *);
+kefir_result_t kefir_ast_identifier_flat_scope_at(const struct kefir_ast_identifier_flat_scope *, const char *,
+                                                  struct kefir_ast_scoped_identifier **);
+kefir_bool_t kefir_ast_identifier_flat_scope_has(const struct kefir_ast_identifier_flat_scope *, const char *);
 kefir_bool_t kefir_ast_identifier_flat_scope_empty(const struct kefir_ast_identifier_flat_scope *);
 kefir_result_t kefir_ast_identifier_flat_scope_iter(const struct kefir_ast_identifier_flat_scope *,
-                                                struct kefir_ast_identifier_flat_scope_iterator *);
+                                                    struct kefir_ast_identifier_flat_scope_iterator *);
 kefir_result_t kefir_ast_identifier_flat_scope_next(const struct kefir_ast_identifier_flat_scope *,
-                                                struct kefir_ast_identifier_flat_scope_iterator *);
+                                                    struct kefir_ast_identifier_flat_scope_iterator *);
 
 typedef struct kefir_ast_identifier_block_scope {
     struct kefir_tree_node root;
@@ -106,26 +101,21 @@ typedef struct kefir_ast_identifier_block_scope {
     void *remove_payload;
 } kefir_ast_identifier_block_scope_t;
 
-kefir_result_t kefir_ast_identifier_block_scope_init(struct kefir_mem *,
-                                                 struct kefir_ast_identifier_block_scope *);
-kefir_result_t kefir_ast_identifier_block_scope_free(struct kefir_mem *,
-                                                 struct kefir_ast_identifier_block_scope *);
-kefir_result_t kefir_ast_identifier_block_scope_on_removal(struct kefir_ast_identifier_block_scope *,
-                                                       kefir_result_t (*)(struct kefir_mem *, struct kefir_ast_scoped_identifier *, void *),
-                                                       void *);
-struct kefir_ast_identifier_flat_scope *kefir_ast_identifier_block_scope_top(const struct kefir_ast_identifier_block_scope *);
-kefir_result_t kefir_ast_identifier_block_scope_push(struct kefir_mem *,
-                                                 struct kefir_ast_identifier_block_scope *);
+kefir_result_t kefir_ast_identifier_block_scope_init(struct kefir_mem *, struct kefir_ast_identifier_block_scope *);
+kefir_result_t kefir_ast_identifier_block_scope_free(struct kefir_mem *, struct kefir_ast_identifier_block_scope *);
+kefir_result_t kefir_ast_identifier_block_scope_on_removal(
+    struct kefir_ast_identifier_block_scope *,
+    kefir_result_t (*)(struct kefir_mem *, struct kefir_ast_scoped_identifier *, void *), void *);
+struct kefir_ast_identifier_flat_scope *kefir_ast_identifier_block_scope_top(
+    const struct kefir_ast_identifier_block_scope *);
+kefir_result_t kefir_ast_identifier_block_scope_push(struct kefir_mem *, struct kefir_ast_identifier_block_scope *);
 kefir_result_t kefir_ast_identifier_block_scope_pop(struct kefir_ast_identifier_block_scope *);
 
 kefir_result_t kefir_ast_identifier_block_scope_insert(struct kefir_mem *,
-                                                   const struct kefir_ast_identifier_block_scope *,
-                                                   const char *,
-                                                   struct kefir_ast_scoped_identifier *);
-kefir_result_t kefir_ast_identifier_block_scope_at(const struct kefir_ast_identifier_block_scope *,
-                                               const char *,
-                                               struct kefir_ast_scoped_identifier **);
+                                                       const struct kefir_ast_identifier_block_scope *, const char *,
+                                                       struct kefir_ast_scoped_identifier *);
+kefir_result_t kefir_ast_identifier_block_scope_at(const struct kefir_ast_identifier_block_scope *, const char *,
+                                                   struct kefir_ast_scoped_identifier **);
 kefir_bool_t kefir_ast_identifier_block_scope_empty(const struct kefir_ast_identifier_block_scope *);
-
 
 #endif

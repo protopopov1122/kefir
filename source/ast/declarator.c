@@ -3,9 +3,8 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-struct kefir_ast_declarator *kefir_ast_declarator_identifier(struct kefir_mem *mem,
-                                                         struct kefir_symbol_table *symbols,
-                                                         const char *identifier) {
+struct kefir_ast_declarator *kefir_ast_declarator_identifier(struct kefir_mem *mem, struct kefir_symbol_table *symbols,
+                                                             const char *identifier) {
     REQUIRE(mem != NULL, NULL);
 
     if (symbols != NULL && identifier != NULL) {
@@ -38,10 +37,9 @@ struct kefir_ast_declarator *kefir_ast_declarator_pointer(struct kefir_mem *mem,
     return decl;
 }
 
-struct kefir_ast_declarator *kefir_ast_declarator_array(struct kefir_mem *mem,
-                                                    kefir_ast_declarator_array_type_t type,
-                                                    struct kefir_ast_node_base *length,
-                                                    struct kefir_ast_declarator *direct) {
+struct kefir_ast_declarator *kefir_ast_declarator_array(struct kefir_mem *mem, kefir_ast_declarator_array_type_t type,
+                                                        struct kefir_ast_node_base *length,
+                                                        struct kefir_ast_declarator *direct) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(direct != NULL, NULL);
     if (type == KEFIR_AST_DECLARATOR_ARRAY_BOUNDED) {
@@ -59,7 +57,7 @@ struct kefir_ast_declarator *kefir_ast_declarator_array(struct kefir_mem *mem,
         KEFIR_FREE(mem, decl);
         return NULL;
     });
-    
+
     decl->array.type = type;
     decl->array.length = length;
     decl->array.static_array = false;
@@ -67,16 +65,13 @@ struct kefir_ast_declarator *kefir_ast_declarator_array(struct kefir_mem *mem,
     return decl;
 }
 
-static kefir_result_t free_function_param(struct kefir_mem *mem,
-                                        struct kefir_list *list,
-                                        struct kefir_list_entry *entry,
-                                        void *payload) {
+static kefir_result_t free_function_param(struct kefir_mem *mem, struct kefir_list *list,
+                                          struct kefir_list_entry *entry, void *payload) {
     UNUSED(list);
     UNUSED(payload);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid list entry"));
-    ASSIGN_DECL_CAST(struct kefir_ast_node_base *, param,
-        entry->value);
+    ASSIGN_DECL_CAST(struct kefir_ast_node_base *, param, entry->value);
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, param));
     return KEFIR_OK;
 }
@@ -101,70 +96,68 @@ struct kefir_ast_declarator *kefir_ast_declarator_function(struct kefir_mem *mem
         KEFIR_FREE(mem, decl);
         return NULL;
     });
-    
+
     decl->function.ellipsis = false;
     decl->function.declarator = direct;
     return decl;
 }
 
 struct kefir_ast_declarator *kefir_ast_declarator_clone(struct kefir_mem *mem,
-                                                    const struct kefir_ast_declarator *declarator) {
+                                                        const struct kefir_ast_declarator *declarator) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(declarator != NULL, NULL);
 
     switch (declarator->klass) {
         case KEFIR_AST_DECLARATOR_IDENTIFIER:
             return kefir_ast_declarator_identifier(mem, NULL, declarator->identifier);
-        
+
         case KEFIR_AST_DECLARATOR_POINTER: {
-            struct kefir_ast_declarator *decl = kefir_ast_declarator_pointer(mem,
-                kefir_ast_declarator_clone(mem, declarator->pointer.declarator));
+            struct kefir_ast_declarator *decl =
+                kefir_ast_declarator_pointer(mem, kefir_ast_declarator_clone(mem, declarator->pointer.declarator));
             REQUIRE(decl != NULL, NULL);
 
             kefir_result_t res = kefir_ast_type_qualifier_list_clone(mem, &decl->pointer.type_qualifiers,
-                &declarator->pointer.type_qualifiers);
-            REQUIRE_ELSE(res == KEFIR_OK, {
-                kefir_ast_declarator_free(mem, decl);
-                return NULL;
-            });
-            return decl;
-        } 
-        
-        case KEFIR_AST_DECLARATOR_ARRAY: {
-            struct kefir_ast_declarator *decl = kefir_ast_declarator_array(mem, declarator->array.type,
-                KEFIR_AST_NODE_CLONE(mem, declarator->array.length),
-               kefir_ast_declarator_clone(mem, declarator->array.declarator));
-            REQUIRE(decl != NULL, NULL);
-
-            decl->array.static_array = declarator->array.static_array;
-            kefir_result_t res = kefir_ast_type_qualifier_list_clone(mem, &decl->array.type_qualifiers,
-                &declarator->array.type_qualifiers);
+                                                                     &declarator->pointer.type_qualifiers);
             REQUIRE_ELSE(res == KEFIR_OK, {
                 kefir_ast_declarator_free(mem, decl);
                 return NULL;
             });
             return decl;
         }
-        
-        case KEFIR_AST_DECLARATOR_FUNCTION: {
-            struct kefir_ast_declarator *decl = kefir_ast_declarator_function(mem,
-                kefir_ast_declarator_clone(mem, declarator->function.declarator));
+
+        case KEFIR_AST_DECLARATOR_ARRAY: {
+            struct kefir_ast_declarator *decl = kefir_ast_declarator_array(
+                mem, declarator->array.type, KEFIR_AST_NODE_CLONE(mem, declarator->array.length),
+                kefir_ast_declarator_clone(mem, declarator->array.declarator));
             REQUIRE(decl != NULL, NULL);
-            
+
+            decl->array.static_array = declarator->array.static_array;
+            kefir_result_t res = kefir_ast_type_qualifier_list_clone(mem, &decl->array.type_qualifiers,
+                                                                     &declarator->array.type_qualifiers);
+            REQUIRE_ELSE(res == KEFIR_OK, {
+                kefir_ast_declarator_free(mem, decl);
+                return NULL;
+            });
+            return decl;
+        }
+
+        case KEFIR_AST_DECLARATOR_FUNCTION: {
+            struct kefir_ast_declarator *decl =
+                kefir_ast_declarator_function(mem, kefir_ast_declarator_clone(mem, declarator->function.declarator));
+            REQUIRE(decl != NULL, NULL);
+
             decl->function.ellipsis = declarator->function.ellipsis;
-            for (const struct kefir_list_entry *iter = kefir_list_head(&declarator->function.parameters);
-                iter != NULL;
-                kefir_list_next(&iter)) {
-                ASSIGN_DECL_CAST(struct kefir_ast_node_base *, param,
-                    iter->value);
+            for (const struct kefir_list_entry *iter = kefir_list_head(&declarator->function.parameters); iter != NULL;
+                 kefir_list_next(&iter)) {
+                ASSIGN_DECL_CAST(struct kefir_ast_node_base *, param, iter->value);
                 struct kefir_ast_node_base *param_clone = KEFIR_AST_NODE_CLONE(mem, param);
                 REQUIRE_ELSE(param_clone != NULL, {
                     kefir_ast_declarator_free(mem, decl);
                     return NULL;
                 });
 
-                kefir_result_t res = kefir_list_insert_after(mem, &decl->function.parameters, kefir_list_tail(&decl->function.parameters),
-                    param_clone);
+                kefir_result_t res = kefir_list_insert_after(mem, &decl->function.parameters,
+                                                             kefir_list_tail(&decl->function.parameters), param_clone);
                 REQUIRE_ELSE(res == KEFIR_OK, {
                     KEFIR_AST_NODE_FREE(mem, param_clone);
                     kefir_ast_declarator_free(mem, decl);
@@ -208,7 +201,6 @@ kefir_result_t kefir_ast_declarator_free(struct kefir_mem *mem, struct kefir_ast
             REQUIRE_OK(kefir_ast_declarator_free(mem, decl->function.declarator));
             decl->function.declarator = NULL;
             break;
-
     }
     KEFIR_FREE(mem, decl);
     return KEFIR_OK;

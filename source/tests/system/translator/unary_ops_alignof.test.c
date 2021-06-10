@@ -28,7 +28,7 @@ struct aligns get_alignof();
 int main(int argc, const char **argv) {
     UNUSED(argc);
     UNUSED(argv);
-    
+
     struct aligns sz = get_alignof();
     ASSERT(sz.tboolean == _Alignof(bool));
     ASSERT(sz.tchar == _Alignof(char));

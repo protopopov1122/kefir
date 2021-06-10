@@ -10,26 +10,21 @@ struct kefir_ast_node_base *ast_labeled_statement_clone(struct kefir_mem *, stru
 kefir_result_t ast_labeled_statement_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
-    ASSIGN_DECL_CAST(struct kefir_ast_labeled_statement *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_labeled_statement *, node, base->self);
     KEFIR_AST_NODE_FREE(mem, node->statement);
     KEFIR_FREE(mem, node);
     return KEFIR_OK;
 }
 
-const struct kefir_ast_node_class AST_LABELED_STATEMENT_CLASS = {
-    .type = KEFIR_AST_LABELED_STATEMENT,
-    .visit = ast_labeled_statement_visit,
-    .clone = ast_labeled_statement_clone,
-    .free = ast_labeled_statement_free
-};
+const struct kefir_ast_node_class AST_LABELED_STATEMENT_CLASS = {.type = KEFIR_AST_LABELED_STATEMENT,
+                                                                 .visit = ast_labeled_statement_visit,
+                                                                 .clone = ast_labeled_statement_clone,
+                                                                 .free = ast_labeled_statement_free};
 
-struct kefir_ast_node_base *ast_labeled_statement_clone(struct kefir_mem *mem,
-                                               struct kefir_ast_node_base *base) {
+struct kefir_ast_node_base *ast_labeled_statement_clone(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(base != NULL, NULL);
-    ASSIGN_DECL_CAST(struct kefir_ast_labeled_statement *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_labeled_statement *, node, base->self);
     struct kefir_ast_labeled_statement *clone = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_labeled_statement));
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_LABELED_STATEMENT_CLASS;
@@ -50,9 +45,9 @@ struct kefir_ast_node_base *ast_labeled_statement_clone(struct kefir_mem *mem,
 }
 
 struct kefir_ast_labeled_statement *kefir_ast_new_labeled_statement(struct kefir_mem *mem,
-                                                  struct kefir_symbol_table *symbols,
-                                                  const char *label,
-                                                  struct kefir_ast_node_base *statement) {
+                                                                    struct kefir_symbol_table *symbols,
+                                                                    const char *label,
+                                                                    struct kefir_ast_node_base *statement) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(symbols != NULL, NULL);
     REQUIRE(label != NULL, NULL);
@@ -73,4 +68,3 @@ struct kefir_ast_labeled_statement *kefir_ast_new_labeled_statement(struct kefir
     id->statement = statement;
     return id;
 }
-

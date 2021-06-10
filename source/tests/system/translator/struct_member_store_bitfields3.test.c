@@ -22,13 +22,7 @@ int main(int argc, const char **argv) {
 
     for (int i = -10; i < 10; i++) {
         for (int j = -5; j < 5; j++) {
-            struct param val = {
-                .field1 = i * 2,
-                .field2 = i,
-                .field3 = i,
-                .field4 = i * 10,
-                .field5 = i * 7
-            };
+            struct param val = {.field1 = i * 2, .field2 = i, .field3 = i, .field4 = i * 10, .field5 = i * 7};
             modify(&val, j);
             ASSERT(val.field1 == i * j * 2);
             ASSERT(val.field2 == i * j);

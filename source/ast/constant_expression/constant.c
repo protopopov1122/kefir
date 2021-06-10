@@ -2,18 +2,18 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-kefir_result_t kefir_ast_evaluate_scalar_node(struct kefir_mem *mem,
-                                          const struct kefir_ast_context *context,
-                                          const struct kefir_ast_constant *node,
-                                          struct kefir_ast_constant_expression_value *value) {
+kefir_result_t kefir_ast_evaluate_scalar_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
+                                              const struct kefir_ast_constant *node,
+                                              struct kefir_ast_constant_expression_value *value) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST constant node"));
-    REQUIRE(value != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST constant expression value pointer"));
+    REQUIRE(value != NULL,
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST constant expression value pointer"));
     REQUIRE(node->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
-        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected constant expression AST node"));
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected constant expression AST node"));
     REQUIRE(node->base.properties.expression_props.constant_expression,
-        KEFIR_SET_ERROR(KEFIR_NOT_CONSTANT, "Expected constant expression AST node"));
+            KEFIR_SET_ERROR(KEFIR_NOT_CONSTANT, "Expected constant expression AST node"));
 
     switch (node->type) {
         case KEFIR_AST_BOOL_CONSTANT:

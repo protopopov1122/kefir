@@ -4,7 +4,6 @@
 #include "kefir/core/util.h"
 #include "kefir/test/unit_test.h"
 
-
 struct structure {
     const char string[32];
     unsigned int length;

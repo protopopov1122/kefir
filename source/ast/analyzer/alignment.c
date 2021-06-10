@@ -2,9 +2,8 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-kefir_result_t kefir_ast_analyze_alignment(struct kefir_mem *mem,
-                                       const struct kefir_ast_context *context,
-                                       struct kefir_ast_alignment *alignment) {
+kefir_result_t kefir_ast_analyze_alignment(struct kefir_mem *mem, const struct kefir_ast_context *context,
+                                           struct kefir_ast_alignment *alignment) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
     REQUIRE(alignment != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST alignment"));

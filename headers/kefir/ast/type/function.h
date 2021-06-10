@@ -31,24 +31,18 @@ typedef struct kefir_ast_function_type {
 
 kefir_size_t kefir_ast_type_function_parameter_count(const struct kefir_ast_function_type *);
 
-kefir_result_t kefir_ast_type_function_get_parameter(const struct kefir_ast_function_type *,
-                                                 kefir_size_t,
-                                                 const struct kefir_ast_function_type_parameter **);
+kefir_result_t kefir_ast_type_function_get_parameter(const struct kefir_ast_function_type *, kefir_size_t,
+                                                     const struct kefir_ast_function_type_parameter **);
 
-kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *,
-                                             struct kefir_ast_type_bundle *,
-                                             struct kefir_ast_function_type *,
-                                             const char *,
-                                             const struct kefir_ast_type *,
-                                             const kefir_ast_scoped_identifier_storage_t *);
-
-kefir_result_t kefir_ast_type_function_ellipsis(struct kefir_ast_function_type *,
-                                            kefir_bool_t);
-
-const struct kefir_ast_type *kefir_ast_type_function(struct kefir_mem *,
-                                                 struct kefir_ast_type_bundle *,
+kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *, struct kefir_ast_type_bundle *,
+                                                 struct kefir_ast_function_type *, const char *,
                                                  const struct kefir_ast_type *,
-                                                 const char *,
-                                                 struct kefir_ast_function_type **);
+                                                 const kefir_ast_scoped_identifier_storage_t *);
+
+kefir_result_t kefir_ast_type_function_ellipsis(struct kefir_ast_function_type *, kefir_bool_t);
+
+const struct kefir_ast_type *kefir_ast_type_function(struct kefir_mem *, struct kefir_ast_type_bundle *,
+                                                     const struct kefir_ast_type *, const char *,
+                                                     struct kefir_ast_function_type **);
 
 #endif

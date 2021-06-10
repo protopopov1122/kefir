@@ -25,17 +25,15 @@ int main(int argc, const char **argv) {
 
     for (int i = -100; i < 100; i++) {
         for (int j = 1; j < 100; j++) {
-            struct param val = {
-                .a = i * 10,
-                .b = i,
-                .c = i + 1,
-                .d = i / 2,
-                .e = i * 20,
-                .f = i * 25,
-                .g = i * 15,
-                .h = i / 2,
-                .i = i - 1
-            };
+            struct param val = {.a = i * 10,
+                                .b = i,
+                                .c = i + 1,
+                                .d = i / 2,
+                                .e = i * 20,
+                                .f = i * 25,
+                                .g = i * 15,
+                                .h = i / 2,
+                                .i = i - 1};
             modify(&val, j);
             ASSERT(val.a == (i * 10) % j);
             ASSERT(val.b == i % j);

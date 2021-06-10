@@ -10,8 +10,7 @@ struct kefir_ast_node_base *ast_generic_selection_clone(struct kefir_mem *, stru
 kefir_result_t ast_generic_selection_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
-    ASSIGN_DECL_CAST(struct kefir_ast_generic_selection *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_generic_selection *, node, base->self);
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node->control));
     REQUIRE_OK(kefir_list_free(mem, &node->associations));
     if (node->default_assoc != NULL) {
@@ -21,35 +20,28 @@ kefir_result_t ast_generic_selection_free(struct kefir_mem *mem, struct kefir_as
     return KEFIR_OK;
 }
 
-const struct kefir_ast_node_class AST_GENERIC_SELECTION_CLASS = {
-    .type = KEFIR_AST_GENERIC_SELECTION,
-    .visit = ast_generic_selection_visit,
-    .clone = ast_generic_selection_clone,
-    .free = ast_generic_selection_free
-};
+const struct kefir_ast_node_class AST_GENERIC_SELECTION_CLASS = {.type = KEFIR_AST_GENERIC_SELECTION,
+                                                                 .visit = ast_generic_selection_visit,
+                                                                 .clone = ast_generic_selection_clone,
+                                                                 .free = ast_generic_selection_free};
 
-static kefir_result_t assoc_free(struct kefir_mem *mem,
-                               struct kefir_list *list,
-                               struct kefir_list_entry *entry,
-                               void *payload) {
+static kefir_result_t assoc_free(struct kefir_mem *mem, struct kefir_list *list, struct kefir_list_entry *entry,
+                                 void *payload) {
     UNUSED(list);
     UNUSED(payload);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid memory allocator"));
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid list entry"));
-    ASSIGN_DECL_CAST(struct kefir_ast_generic_selection_assoc *, assoc,
-            entry->value);
+    ASSIGN_DECL_CAST(struct kefir_ast_generic_selection_assoc *, assoc, entry->value);
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(assoc->type_name)));
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, assoc->expr));
     KEFIR_FREE(mem, assoc);
     return KEFIR_OK;
 }
 
-struct kefir_ast_node_base *ast_generic_selection_clone(struct kefir_mem *mem,
-                                                      struct kefir_ast_node_base *base) {
+struct kefir_ast_node_base *ast_generic_selection_clone(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(base != NULL, NULL);
-    ASSIGN_DECL_CAST(struct kefir_ast_generic_selection *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_generic_selection *, node, base->self);
     struct kefir_ast_generic_selection *clone = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_generic_selection));
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_GENERIC_SELECTION_CLASS;
@@ -77,13 +69,11 @@ struct kefir_ast_node_base *ast_generic_selection_clone(struct kefir_mem *mem,
         KEFIR_FREE(mem, clone);
         return NULL;
     });
-    for (const struct kefir_list_entry *iter = kefir_list_head(&node->associations);
-        iter != NULL;
-        kefir_list_next(&iter)) {
-        ASSIGN_DECL_CAST(struct kefir_ast_generic_selection_assoc *, assoc,
-            iter->value);
-        struct kefir_ast_generic_selection_assoc *clone_assoc = KEFIR_MALLOC(mem,
-            sizeof(struct kefir_ast_generic_selection_assoc *));
+    for (const struct kefir_list_entry *iter = kefir_list_head(&node->associations); iter != NULL;
+         kefir_list_next(&iter)) {
+        ASSIGN_DECL_CAST(struct kefir_ast_generic_selection_assoc *, assoc, iter->value);
+        struct kefir_ast_generic_selection_assoc *clone_assoc =
+            KEFIR_MALLOC(mem, sizeof(struct kefir_ast_generic_selection_assoc *));
         REQUIRE_ELSE(res == KEFIR_OK, {
             kefir_list_free(mem, &clone->associations);
             KEFIR_AST_NODE_FREE(mem, clone->control);
@@ -134,7 +124,7 @@ struct kefir_ast_node_base *ast_generic_selection_clone(struct kefir_mem *mem,
 }
 
 struct kefir_ast_generic_selection *kefir_ast_new_generic_selection(struct kefir_mem *mem,
-                                                                struct kefir_ast_node_base *control) {
+                                                                    struct kefir_ast_node_base *control) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(control != NULL, NULL);
 
@@ -163,10 +153,9 @@ struct kefir_ast_generic_selection *kefir_ast_new_generic_selection(struct kefir
     return selection;
 }
 
-kefir_result_t kefir_ast_generic_selection_append(struct kefir_mem *mem,
-                                              struct kefir_ast_generic_selection *selection,
-                                              struct kefir_ast_type_name *type_name,
-                                              struct kefir_ast_node_base *expr) {
+kefir_result_t kefir_ast_generic_selection_append(struct kefir_mem *mem, struct kefir_ast_generic_selection *selection,
+                                                  struct kefir_ast_type_name *type_name,
+                                                  struct kefir_ast_node_base *expr) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(selection != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST generic selection"));
     REQUIRE(expr != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST expression"));
@@ -174,17 +163,19 @@ kefir_result_t kefir_ast_generic_selection_append(struct kefir_mem *mem,
     if (type_name != NULL) {
         struct kefir_ast_generic_selection_assoc *assoc =
             KEFIR_MALLOC(mem, sizeof(struct kefir_ast_generic_selection_assoc));
-        REQUIRE(assoc != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST generic selection association"));
+        REQUIRE(assoc != NULL,
+                KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST generic selection association"));
         assoc->type_name = type_name;
         assoc->expr = expr;
-        kefir_result_t res = kefir_list_insert_after(mem, &selection->associations,
-            kefir_list_tail(&selection->associations), assoc);
+        kefir_result_t res =
+            kefir_list_insert_after(mem, &selection->associations, kefir_list_tail(&selection->associations), assoc);
         REQUIRE_ELSE(res == KEFIR_OK, {
             KEFIR_FREE(mem, assoc);
             return res;
         });
     } else {
-        REQUIRE(selection->default_assoc == NULL,
+        REQUIRE(
+            selection->default_assoc == NULL,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "AST generic selection cannot have multiple default associations"));
         selection->default_assoc = expr;
     }

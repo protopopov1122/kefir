@@ -7,7 +7,8 @@
 #include "kefir/ir/format_impl.h"
 #include "kefir/util/json.h"
 
-kefir_result_t kefir_ir_format_instr_none(struct kefir_json_output *json, const struct kefir_ir_module *module, const struct kefir_irinstr *instr) {
+kefir_result_t kefir_ir_format_instr_none(struct kefir_json_output *json, const struct kefir_ir_module *module,
+                                          const struct kefir_irinstr *instr) {
     UNUSED(module);
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid json output"));
     REQUIRE(instr != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR instruction"));
@@ -19,7 +20,8 @@ kefir_result_t kefir_ir_format_instr_none(struct kefir_json_output *json, const 
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ir_format_instr_i64(struct kefir_json_output *json, const struct kefir_ir_module *module, const struct kefir_irinstr *instr) {
+kefir_result_t kefir_ir_format_instr_i64(struct kefir_json_output *json, const struct kefir_ir_module *module,
+                                         const struct kefir_irinstr *instr) {
     UNUSED(module);
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid json output"));
     REQUIRE(instr != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR instruction"));
@@ -33,7 +35,8 @@ kefir_result_t kefir_ir_format_instr_i64(struct kefir_json_output *json, const s
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ir_format_instr_u64(struct kefir_json_output *json, const struct kefir_ir_module *module, const struct kefir_irinstr *instr) {
+kefir_result_t kefir_ir_format_instr_u64(struct kefir_json_output *json, const struct kefir_ir_module *module,
+                                         const struct kefir_irinstr *instr) {
     UNUSED(module);
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid json output"));
     REQUIRE(instr != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR instruction"));
@@ -47,7 +50,8 @@ kefir_result_t kefir_ir_format_instr_u64(struct kefir_json_output *json, const s
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ir_format_instr_u32(struct kefir_json_output *json, const struct kefir_ir_module *module, const struct kefir_irinstr *instr) {
+kefir_result_t kefir_ir_format_instr_u32(struct kefir_json_output *json, const struct kefir_ir_module *module,
+                                         const struct kefir_irinstr *instr) {
     UNUSED(module);
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid json output"));
     REQUIRE(instr != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR instruction"));
@@ -64,11 +68,12 @@ kefir_result_t kefir_ir_format_instr_u32(struct kefir_json_output *json, const s
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ir_format_instr_f32(struct kefir_json_output *json, const struct kefir_ir_module *module, const struct kefir_irinstr *instr) {
+kefir_result_t kefir_ir_format_instr_f32(struct kefir_json_output *json, const struct kefir_ir_module *module,
+                                         const struct kefir_irinstr *instr) {
     UNUSED(module);
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid json output"));
     REQUIRE(instr != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR instruction"));
-    
+
     REQUIRE_OK(kefir_json_output_object_begin(json));
     REQUIRE_OK(kefir_json_output_object_key(json, "opcode"));
     REQUIRE_OK(kefir_json_output_string(json, kefir_iropcode_mnemonic(instr->opcode)));
@@ -78,7 +83,8 @@ kefir_result_t kefir_ir_format_instr_f32(struct kefir_json_output *json, const s
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ir_format_instr_f64(struct kefir_json_output *json, const struct kefir_ir_module *module, const struct kefir_irinstr *instr) {
+kefir_result_t kefir_ir_format_instr_f64(struct kefir_json_output *json, const struct kefir_ir_module *module,
+                                         const struct kefir_irinstr *instr) {
     UNUSED(module);
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid json output"));
     REQUIRE(instr != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR instruction"));
@@ -92,7 +98,8 @@ kefir_result_t kefir_ir_format_instr_f64(struct kefir_json_output *json, const s
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ir_format_instr_typeref(struct kefir_json_output *json, const struct kefir_ir_module *module, const struct kefir_irinstr *instr) {
+kefir_result_t kefir_ir_format_instr_typeref(struct kefir_json_output *json, const struct kefir_ir_module *module,
+                                             const struct kefir_irinstr *instr) {
     UNUSED(module);
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid json output"));
     REQUIRE(instr != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR instruction"));
@@ -111,7 +118,8 @@ kefir_result_t kefir_ir_format_instr_typeref(struct kefir_json_output *json, con
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ir_format_instr_identifier(struct kefir_json_output *json, const struct kefir_ir_module *module, const struct kefir_irinstr *instr) {
+kefir_result_t kefir_ir_format_instr_identifier(struct kefir_json_output *json, const struct kefir_ir_module *module,
+                                                const struct kefir_irinstr *instr) {
     UNUSED(module);
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid json output"));
     REQUIRE(instr != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR instruction"));
@@ -128,13 +136,13 @@ kefir_result_t kefir_ir_format_instr_identifier(struct kefir_json_output *json, 
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ir_format_instr_funcref(struct kefir_json_output *json, const struct kefir_ir_module *module, const struct kefir_irinstr *instr) {
+kefir_result_t kefir_ir_format_instr_funcref(struct kefir_json_output *json, const struct kefir_ir_module *module,
+                                             const struct kefir_irinstr *instr) {
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid json output"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR module"));
     REQUIRE(instr != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR instruction"));
-    const struct kefir_ir_function_decl *decl =
-        kefir_ir_module_get_declaration(module, (kefir_id_t) instr->arg.u64);
-    
+    const struct kefir_ir_function_decl *decl = kefir_ir_module_get_declaration(module, (kefir_id_t) instr->arg.u64);
+
     REQUIRE_OK(kefir_json_output_object_begin(json));
     REQUIRE_OK(kefir_json_output_object_key(json, "opcode"));
     REQUIRE_OK(kefir_json_output_string(json, kefir_iropcode_mnemonic(instr->opcode)));
@@ -153,7 +161,8 @@ kefir_result_t kefir_ir_format_instr_funcref(struct kefir_json_output *json, con
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ir_format_instr_coderef(struct kefir_json_output *json, const struct kefir_ir_module *module, const struct kefir_irinstr *instr) {
+kefir_result_t kefir_ir_format_instr_coderef(struct kefir_json_output *json, const struct kefir_ir_module *module,
+                                             const struct kefir_irinstr *instr) {
     UNUSED(module);
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid json output"));
     REQUIRE(instr != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR instruction"));
@@ -167,7 +176,8 @@ kefir_result_t kefir_ir_format_instr_coderef(struct kefir_json_output *json, con
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ir_format_instr_string(struct kefir_json_output *json, const struct kefir_ir_module *module, const struct kefir_irinstr *instr) {
+kefir_result_t kefir_ir_format_instr_string(struct kefir_json_output *json, const struct kefir_ir_module *module,
+                                            const struct kefir_irinstr *instr) {
     UNUSED(module);
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid json output"));
     REQUIRE(instr != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR instruction"));
@@ -253,17 +263,14 @@ static const char *typecode_to_string(kefir_ir_typecode_t typecode) {
     }
 }
 
-static kefir_result_t format_type_default(const struct kefir_ir_type *type,
-                                        kefir_size_t index,
-                                        const struct kefir_ir_typeentry *typeentry,
-                                        void *payload) {
+static kefir_result_t format_type_default(const struct kefir_ir_type *type, kefir_size_t index,
+                                          const struct kefir_ir_typeentry *typeentry, void *payload) {
     UNUSED(type);
     UNUSED(index);
     REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type entry"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
-    ASSIGN_DECL_CAST(struct format_param *, param,
-        payload);
-        
+    ASSIGN_DECL_CAST(struct format_param *, param, payload);
+
     REQUIRE_OK(kefir_json_output_object_key(param->json, "type"));
 
     const char *type_literal = typecode_to_string(typeentry->typecode);
@@ -297,7 +304,7 @@ static kefir_result_t format_type_default(const struct kefir_ir_type *type,
 
         case KEFIR_IR_TYPE_BITS: {
             kefir_size_t bits = typeentry->param;
-            
+
             REQUIRE_OK(kefir_json_output_object_key(param->json, "width"));
             REQUIRE_OK(kefir_json_output_integer(param->json, bits));
         } break;
@@ -308,20 +315,15 @@ static kefir_result_t format_type_default(const struct kefir_ir_type *type,
     return KEFIR_OK;
 }
 
-static kefir_result_t format_type_struct_union(const struct kefir_ir_type *type,
-                                             kefir_size_t index,
-                                             const struct kefir_ir_typeentry *typeentry,
-                                             void *payload) {
+static kefir_result_t format_type_struct_union(const struct kefir_ir_type *type, kefir_size_t index,
+                                               const struct kefir_ir_typeentry *typeentry, void *payload) {
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type"));
     REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type entry"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
-    ASSIGN_DECL_CAST(struct format_param *, param,
-        payload);
+    ASSIGN_DECL_CAST(struct format_param *, param, payload);
 
     REQUIRE_OK(kefir_json_output_object_key(param->json, "type"));
-    REQUIRE_OK(kefir_json_output_string(param->json, typeentry->typecode == KEFIR_IR_TYPE_STRUCT
-        ? "struct"
-        : "union"));
+    REQUIRE_OK(kefir_json_output_string(param->json, typeentry->typecode == KEFIR_IR_TYPE_STRUCT ? "struct" : "union"));
     REQUIRE_OK(kefir_json_output_object_key(param->json, "fields"));
     REQUIRE_OK(kefir_json_output_array_begin(param->json));
     REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type, param->visitor, payload, index + 1, typeentry->param));
@@ -329,15 +331,12 @@ static kefir_result_t format_type_struct_union(const struct kefir_ir_type *type,
     return KEFIR_OK;
 }
 
-static kefir_result_t format_type_array(const struct kefir_ir_type *type,
-                                      kefir_size_t index,
-                                      const struct kefir_ir_typeentry *typeentry,
-                                      void *payload) {
+static kefir_result_t format_type_array(const struct kefir_ir_type *type, kefir_size_t index,
+                                        const struct kefir_ir_typeentry *typeentry, void *payload) {
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type"));
     REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type entry"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
-    ASSIGN_DECL_CAST(struct format_param *, param,
-        payload);
+    ASSIGN_DECL_CAST(struct format_param *, param, payload);
 
     REQUIRE_OK(kefir_json_output_object_key(param->json, "type"));
     REQUIRE_OK(kefir_json_output_string(param->json, "array"));
@@ -348,16 +347,13 @@ static kefir_result_t format_type_array(const struct kefir_ir_type *type,
     return KEFIR_OK;
 }
 
-static kefir_result_t format_type_builtin(const struct kefir_ir_type *type,
-                                        kefir_size_t index,
-                                        const struct kefir_ir_typeentry *typeentry,
-                                        void *payload) {
+static kefir_result_t format_type_builtin(const struct kefir_ir_type *type, kefir_size_t index,
+                                          const struct kefir_ir_typeentry *typeentry, void *payload) {
     UNUSED(type);
     UNUSED(index);
     REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type entry"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
-    ASSIGN_DECL_CAST(struct format_param *, param,
-        payload);
+    ASSIGN_DECL_CAST(struct format_param *, param, payload);
 
     REQUIRE_OK(kefir_json_output_object_key(param->json, "type"));
     REQUIRE_OK(kefir_json_output_string(param->json, "builtin"));
@@ -373,31 +369,25 @@ static kefir_result_t format_type_builtin(const struct kefir_ir_type *type,
     return KEFIR_OK;
 }
 
-static kefir_result_t format_type_prehook(const struct kefir_ir_type *type,
-                                         kefir_size_t index,
-                                         const struct kefir_ir_typeentry *typeentry,
-                                         void *payload) {
+static kefir_result_t format_type_prehook(const struct kefir_ir_type *type, kefir_size_t index,
+                                          const struct kefir_ir_typeentry *typeentry, void *payload) {
     UNUSED(type);
     UNUSED(index);
     REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type entry"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
-    ASSIGN_DECL_CAST(struct format_param *, param,
-        payload);
+    ASSIGN_DECL_CAST(struct format_param *, param, payload);
 
     REQUIRE_OK(kefir_json_output_object_begin(param->json));
     return KEFIR_OK;
 }
 
-static kefir_result_t format_type_posthook(const struct kefir_ir_type *type,
-                                         kefir_size_t index,
-                                         const struct kefir_ir_typeentry *typeentry,
-                                         void *payload) {
+static kefir_result_t format_type_posthook(const struct kefir_ir_type *type, kefir_size_t index,
+                                           const struct kefir_ir_typeentry *typeentry, void *payload) {
     UNUSED(type);
     UNUSED(index);
     REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type entry"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
-    ASSIGN_DECL_CAST(struct format_param *, param,
-        payload);
+    ASSIGN_DECL_CAST(struct format_param *, param, payload);
 
     if (typeentry->alignment > 0) {
         REQUIRE_OK(kefir_json_output_object_key(param->json, "alignment"));
@@ -417,10 +407,7 @@ kefir_result_t kefir_ir_format_type_json(struct kefir_json_output *json, const s
     visitor.prehook = format_type_prehook;
     visitor.posthook = format_type_posthook;
 
-    struct format_param param = {
-        .json = json,
-        .visitor = &visitor
-    };
+    struct format_param param = {.json = json, .visitor = &visitor};
     REQUIRE_OK(kefir_json_output_array_begin(json));
     REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type, &visitor, &param, 0, kefir_ir_type_total_length(type)));
     REQUIRE_OK(kefir_json_output_array_end(json));
@@ -438,7 +425,8 @@ kefir_result_t kefir_ir_format_type(FILE *fp, const struct kefir_ir_type *type) 
     return KEFIR_OK;
 }
 
-static kefir_result_t kefir_ir_format_function_declaration(struct kefir_json_output *json, struct kefir_ir_function_decl *decl) {
+static kefir_result_t kefir_ir_format_function_declaration(struct kefir_json_output *json,
+                                                           struct kefir_ir_function_decl *decl) {
     REQUIRE_OK(kefir_json_output_object_begin(json));
     REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
     REQUIRE_OK(kefir_json_output_uinteger(json, decl->id));
@@ -458,15 +446,14 @@ static kefir_result_t kefir_ir_format_function_declaration(struct kefir_json_out
     return KEFIR_OK;
 }
 
-static kefir_result_t kefir_ir_format_function(struct kefir_json_output *json,
-                                           const struct kefir_ir_module *module,
-                                           const struct kefir_ir_function *func)  {
+static kefir_result_t kefir_ir_format_function(struct kefir_json_output *json, const struct kefir_ir_module *module,
+                                               const struct kefir_ir_function *func) {
     REQUIRE_OK(kefir_json_output_object_begin(json));
     REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
     REQUIRE_OK(kefir_json_output_uinteger(json, func->declaration->id));
     REQUIRE_OK(kefir_json_output_object_key(json, "name"));
     REQUIRE_OK(kefir_json_output_string(json, func->name));
-    
+
     if (func->locals != NULL) {
         REQUIRE_OK(kefir_json_output_object_key(json, "locals"));
         REQUIRE_OK(kefir_ir_format_type_json(json, func->locals));
@@ -487,9 +474,8 @@ static kefir_result_t kefir_ir_format_function(struct kefir_json_output *json,
 static kefir_result_t format_globals(struct kefir_json_output *json, const struct kefir_ir_module *module) {
     REQUIRE_OK(kefir_json_output_array_begin(json));
     const struct kefir_list_entry *entry = NULL;
-    for (const char *global = kefir_ir_module_globals_iter(module, &entry);
-        global != NULL;
-        global = kefir_ir_module_symbol_iter_next(&entry)) {
+    for (const char *global = kefir_ir_module_globals_iter(module, &entry); global != NULL;
+         global = kefir_ir_module_symbol_iter_next(&entry)) {
         REQUIRE_OK(kefir_json_output_string(json, global));
     }
     REQUIRE_OK(kefir_json_output_array_end(json));
@@ -499,9 +485,8 @@ static kefir_result_t format_globals(struct kefir_json_output *json, const struc
 static kefir_result_t format_externals(struct kefir_json_output *json, const struct kefir_ir_module *module) {
     REQUIRE_OK(kefir_json_output_array_begin(json));
     const struct kefir_list_entry *entry = NULL;
-    for (const char *external = kefir_ir_module_externals_iter(module, &entry);
-        external != NULL;
-        external = kefir_ir_module_symbol_iter_next(&entry)) {
+    for (const char *external = kefir_ir_module_externals_iter(module, &entry); external != NULL;
+         external = kefir_ir_module_symbol_iter_next(&entry)) {
         REQUIRE_OK(kefir_json_output_string(json, external));
     }
     REQUIRE_OK(kefir_json_output_array_end(json));
@@ -511,11 +496,9 @@ static kefir_result_t format_externals(struct kefir_json_output *json, const str
 static kefir_result_t format_types(struct kefir_json_output *json, const struct kefir_ir_module *module) {
     REQUIRE_OK(kefir_json_output_array_begin(json));
     struct kefir_hashtree_node_iterator iter;
-    for (const struct kefir_hashtree_node *node = kefir_hashtree_iter(&module->named_types, &iter);
-        node != NULL;
-        node = kefir_hashtree_next(&iter)) {
-        ASSIGN_DECL_CAST(struct kefir_ir_type *, type,
-            node->value);
+    for (const struct kefir_hashtree_node *node = kefir_hashtree_iter(&module->named_types, &iter); node != NULL;
+         node = kefir_hashtree_next(&iter)) {
+        ASSIGN_DECL_CAST(struct kefir_ir_type *, type, node->value);
         REQUIRE_OK(kefir_json_output_object_begin(json));
         REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
         REQUIRE_OK(kefir_json_output_uinteger(json, node->key));
@@ -527,12 +510,10 @@ static kefir_result_t format_types(struct kefir_json_output *json, const struct 
     return KEFIR_OK;
 }
 
-static kefir_result_t format_datum(struct kefir_json_output *json,
-                                 const struct kefir_ir_data *data) {
+static kefir_result_t format_datum(struct kefir_json_output *json, const struct kefir_ir_data *data) {
     REQUIRE_OK(kefir_json_output_array_begin(json));
     for (kefir_size_t i = 0; i < kefir_vector_length(&data->value); i++) {
-        ASSIGN_DECL_CAST(struct kefir_ir_data_value *, value,
-            kefir_vector_at(&data->value, i));
+        ASSIGN_DECL_CAST(struct kefir_ir_data_value *, value, kefir_vector_at(&data->value, i));
         REQUIRE_OK(kefir_json_output_object_begin(json));
         REQUIRE_OK(kefir_json_output_object_key(json, "class"));
         switch (value->type) {
@@ -585,7 +566,6 @@ static kefir_result_t format_datum(struct kefir_json_output *json,
             case KEFIR_IR_DATA_VALUE_AGGREGATE:
                 REQUIRE_OK(kefir_json_output_string(json, "aggregate"));
                 break;
-
         }
         REQUIRE_OK(kefir_json_output_object_end(json));
     }
@@ -597,10 +577,9 @@ static kefir_result_t format_data(struct kefir_json_output *json, const struct k
     REQUIRE_OK(kefir_json_output_array_begin(json));
     struct kefir_hashtree_node_iterator iter;
     const char *identifier;
-    for (const struct kefir_ir_data *data = kefir_ir_module_named_data_iter(module, &iter, &identifier);
-        data != NULL;
-        data = kefir_ir_module_named_data_next(&iter, &identifier)) {
-        
+    for (const struct kefir_ir_data *data = kefir_ir_module_named_data_iter(module, &iter, &identifier); data != NULL;
+         data = kefir_ir_module_named_data_next(&iter, &identifier)) {
+
         REQUIRE_OK(kefir_json_output_object_begin(json));
         REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
         REQUIRE_OK(kefir_json_output_string(json, identifier));
@@ -614,12 +593,12 @@ static kefir_result_t format_data(struct kefir_json_output *json, const struct k
     return KEFIR_OK;
 }
 
-static kefir_result_t format_function_declarations(struct kefir_json_output *json, const struct kefir_ir_module *module) {
+static kefir_result_t format_function_declarations(struct kefir_json_output *json,
+                                                   const struct kefir_ir_module *module) {
     REQUIRE_OK(kefir_json_output_array_begin(json));
     struct kefir_hashtree_node_iterator iter;
     for (const struct kefir_hashtree_node *node = kefir_hashtree_iter(&module->function_declarations, &iter);
-        node != NULL;
-        node = kefir_hashtree_next(&iter)) {
+         node != NULL; node = kefir_hashtree_next(&iter)) {
         REQUIRE_OK(kefir_ir_format_function_declaration(json, (struct kefir_ir_function_decl *) node->value));
     }
     REQUIRE_OK(kefir_json_output_array_end(json));
@@ -629,9 +608,8 @@ static kefir_result_t format_function_declarations(struct kefir_json_output *jso
 static kefir_result_t format_functions(struct kefir_json_output *json, const struct kefir_ir_module *module) {
     REQUIRE_OK(kefir_json_output_array_begin(json));
     struct kefir_hashtree_node_iterator iter;
-    for (const struct kefir_ir_function *func = kefir_ir_module_function_iter(module, &iter);
-        func != NULL;
-        func = kefir_ir_module_function_next(&iter)) {
+    for (const struct kefir_ir_function *func = kefir_ir_module_function_iter(module, &iter); func != NULL;
+         func = kefir_ir_module_function_next(&iter)) {
         REQUIRE_OK(kefir_ir_format_function(json, module, func));
     }
     REQUIRE_OK(kefir_json_output_array_end(json));
@@ -652,7 +630,7 @@ kefir_result_t kefir_ir_format_module_json(struct kefir_json_output *json, const
     REQUIRE_OK(kefir_json_output_object_key(json, "function_declarations"));
     REQUIRE_OK(format_function_declarations(json, module));
     REQUIRE_OK(kefir_json_output_object_key(json, "functions"));
-    REQUIRE_OK(format_functions(json, module));    
+    REQUIRE_OK(format_functions(json, module));
 
     REQUIRE_OK(kefir_json_output_object_end(json));
     REQUIRE_OK(kefir_json_output_finalize(json));

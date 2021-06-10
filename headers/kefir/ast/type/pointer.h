@@ -3,9 +3,8 @@
 
 #include "kefir/ast/type/base.h"
 
-const struct kefir_ast_type *kefir_ast_type_pointer(struct kefir_mem *,
-                                                struct kefir_ast_type_bundle *,
-                                                const struct kefir_ast_type *);
+const struct kefir_ast_type *kefir_ast_type_pointer(struct kefir_mem *, struct kefir_ast_type_bundle *,
+                                                    const struct kefir_ast_type *);
 
 const struct kefir_ast_type *kefir_ast_pointer_referenced_type(const struct kefir_ast_type *);
 

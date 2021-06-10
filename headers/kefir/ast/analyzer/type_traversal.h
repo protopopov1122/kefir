@@ -6,7 +6,7 @@
 #include "kefir/ast/type.h"
 #include "kefir/ast/designator.h"
 
-typedef struct kefir_ast_type_traversal kefir_ast_type_traversal_t; // Forward declaration
+typedef struct kefir_ast_type_traversal kefir_ast_type_traversal_t;  // Forward declaration
 
 typedef enum kefir_ast_type_traversal_layer_type {
     KEFIR_AST_TYPE_TRAVERSAL_STRUCTURE,
@@ -36,14 +36,11 @@ typedef struct kefir_ast_type_traversal_layer {
 
 typedef struct kefir_ast_type_traversal_events {
     kefir_result_t (*layer_begin)(const struct kefir_ast_type_traversal *,
-                                const struct kefir_ast_type_traversal_layer *,
+                                  const struct kefir_ast_type_traversal_layer *, void *);
+    kefir_result_t (*layer_next)(const struct kefir_ast_type_traversal *, const struct kefir_ast_type_traversal_layer *,
+                                 void *);
+    kefir_result_t (*layer_end)(const struct kefir_ast_type_traversal *, const struct kefir_ast_type_traversal_layer *,
                                 void *);
-    kefir_result_t (*layer_next)(const struct kefir_ast_type_traversal *,
-                               const struct kefir_ast_type_traversal_layer *,
-                               void *);
-    kefir_result_t (*layer_end)(const struct kefir_ast_type_traversal *,
-                              const struct kefir_ast_type_traversal_layer *,
-                              void *);
     void *payload;
 } kefir_ast_type_traversal_events_t;
 
@@ -53,41 +50,32 @@ typedef struct kefir_ast_type_traversal {
     struct kefir_ast_type_traversal_events events;
 } kefir_ast_type_traversal_t;
 
-kefir_result_t kefir_ast_type_traversal_init(struct kefir_mem *,
-                                         struct kefir_ast_type_traversal *,
-                                         const struct kefir_ast_type *);
+kefir_result_t kefir_ast_type_traversal_init(struct kefir_mem *, struct kefir_ast_type_traversal *,
+                                             const struct kefir_ast_type *);
 
-kefir_result_t kefir_ast_type_traversal_free(struct kefir_mem *,
-                                         struct kefir_ast_type_traversal *);
+kefir_result_t kefir_ast_type_traversal_free(struct kefir_mem *, struct kefir_ast_type_traversal *);
 
-kefir_result_t kefir_ast_type_traversal_next(struct kefir_mem *,
-                                         struct kefir_ast_type_traversal *,
-                                         const struct kefir_ast_type **,
-                                         const struct kefir_ast_type_traversal_layer **);
+kefir_result_t kefir_ast_type_traversal_next(struct kefir_mem *, struct kefir_ast_type_traversal *,
+                                             const struct kefir_ast_type **,
+                                             const struct kefir_ast_type_traversal_layer **);
 
-kefir_result_t kefir_ast_type_traversal_next_recursive(struct kefir_mem *,
-                                                   struct kefir_ast_type_traversal *,
-                                                   const struct kefir_ast_type **,
-                                                   const struct kefir_ast_type_traversal_layer **);
+kefir_result_t kefir_ast_type_traversal_next_recursive(struct kefir_mem *, struct kefir_ast_type_traversal *,
+                                                       const struct kefir_ast_type **,
+                                                       const struct kefir_ast_type_traversal_layer **);
 
-kefir_result_t kefir_ast_type_traversal_next_recursive2(struct kefir_mem *,
-                                                    struct kefir_ast_type_traversal *,
-                                                    kefir_bool_t (*)(const struct kefir_ast_type *, void *),
-                                                    void *,
-                                                    const struct kefir_ast_type **,
-                                                    const struct kefir_ast_type_traversal_layer **);
+kefir_result_t kefir_ast_type_traversal_next_recursive2(struct kefir_mem *, struct kefir_ast_type_traversal *,
+                                                        kefir_bool_t (*)(const struct kefir_ast_type *, void *), void *,
+                                                        const struct kefir_ast_type **,
+                                                        const struct kefir_ast_type_traversal_layer **);
 
-kefir_result_t kefir_ast_type_traversal_step(struct kefir_mem *,
-                                         struct kefir_ast_type_traversal *);
+kefir_result_t kefir_ast_type_traversal_step(struct kefir_mem *, struct kefir_ast_type_traversal *);
 
-kefir_result_t kefir_ast_type_traversal_navigate(struct kefir_mem *,
-                                             struct kefir_ast_type_traversal *,
-                                             const struct kefir_ast_designator *);
+kefir_result_t kefir_ast_type_traversal_navigate(struct kefir_mem *, struct kefir_ast_type_traversal *,
+                                                 const struct kefir_ast_designator *);
 
 kefir_bool_t kefir_ast_type_traversal_empty(struct kefir_ast_type_traversal *);
 
-struct kefir_ast_designator *kefir_ast_type_traversal_layer_designator(struct kefir_mem *,
-                                                                   struct kefir_symbol_table *,
-                                                                   const struct kefir_ast_type_traversal_layer *);
+struct kefir_ast_designator *kefir_ast_type_traversal_layer_designator(struct kefir_mem *, struct kefir_symbol_table *,
+                                                                       const struct kefir_ast_type_traversal_layer *);
 
 #endif

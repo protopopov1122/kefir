@@ -15,7 +15,7 @@ int main(int argc, const char **argv) {
     int INTS[LEN];
     char CHARS[] = "Hello, cruel world!";
     double DOUBLES[LEN];
-    for (int  i = 0; i < LEN; i++) {
+    for (int i = 0; i < LEN; i++) {
         INTS[i] = ~i;
         DOUBLES[i] = 1.6549e8 * i;
     }

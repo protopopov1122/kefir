@@ -24,99 +24,62 @@ typedef struct kefir_ir_module {
     kefir_id_t next_function_decl_id;
 } kefir_ir_module_t;
 
-kefir_result_t kefir_ir_module_alloc(struct kefir_mem *,
-                                 struct kefir_ir_module *);
+kefir_result_t kefir_ir_module_alloc(struct kefir_mem *, struct kefir_ir_module *);
 
-kefir_result_t kefir_ir_module_free(struct kefir_mem *,
-                                struct kefir_ir_module *);
+kefir_result_t kefir_ir_module_free(struct kefir_mem *, struct kefir_ir_module *);
 
-const char *kefir_ir_module_symbol(struct kefir_mem *,
-                                 struct kefir_ir_module *,
-                                 const char *,
-                                 kefir_id_t *);
+const char *kefir_ir_module_symbol(struct kefir_mem *, struct kefir_ir_module *, const char *, kefir_id_t *);
 
-kefir_result_t kefir_ir_module_string_literal(struct kefir_mem *,
-                                          struct kefir_ir_module *,
-                                          const char *,
-                                          kefir_size_t,
-                                          kefir_id_t *);
-struct kefir_ir_type *kefir_ir_module_new_type(struct kefir_mem *,
-                                           struct kefir_ir_module *,
-                                           kefir_size_t,
-                                           kefir_id_t *);
+kefir_result_t kefir_ir_module_string_literal(struct kefir_mem *, struct kefir_ir_module *, const char *, kefir_size_t,
+                                              kefir_id_t *);
+struct kefir_ir_type *kefir_ir_module_new_type(struct kefir_mem *, struct kefir_ir_module *, kefir_size_t,
+                                               kefir_id_t *);
 
-struct kefir_ir_function_decl *kefir_ir_module_new_function_declaration(struct kefir_mem *,
-                                                                    struct kefir_ir_module *,
-                                                                    const char *,
-                                                                    struct kefir_ir_type *,
-                                                                    bool,
-                                                                    struct kefir_ir_type *);
+struct kefir_ir_function_decl *kefir_ir_module_new_function_declaration(struct kefir_mem *, struct kefir_ir_module *,
+                                                                        const char *, struct kefir_ir_type *, bool,
+                                                                        struct kefir_ir_type *);
 
-struct kefir_ir_function_decl *kefir_ir_module_new_function_declaration(struct kefir_mem *,
-                                                                          struct kefir_ir_module *,
-                                                                          const char *,
-                                                                          struct kefir_ir_type *,
-                                                                          bool,
-                                                                          struct kefir_ir_type *);
+struct kefir_ir_function_decl *kefir_ir_module_new_function_declaration(struct kefir_mem *, struct kefir_ir_module *,
+                                                                        const char *, struct kefir_ir_type *, bool,
+                                                                        struct kefir_ir_type *);
 
-kefir_result_t kefir_ir_module_declare_global(struct kefir_mem *,
-                                          struct kefir_ir_module *,
-                                          const char *);
+kefir_result_t kefir_ir_module_declare_global(struct kefir_mem *, struct kefir_ir_module *, const char *);
 
-kefir_result_t kefir_ir_module_declare_external(struct kefir_mem *,
-                                            struct kefir_ir_module *,
-                                            const char *);
+kefir_result_t kefir_ir_module_declare_external(struct kefir_mem *, struct kefir_ir_module *, const char *);
 
-struct kefir_ir_function *kefir_ir_module_new_function(struct kefir_mem *,
-                                                   struct kefir_ir_module *,
-                                                   struct kefir_ir_function_decl *,
-                                                   struct kefir_ir_type *,
-                                                   kefir_size_t);
+struct kefir_ir_function *kefir_ir_module_new_function(struct kefir_mem *, struct kefir_ir_module *,
+                                                       struct kefir_ir_function_decl *, struct kefir_ir_type *,
+                                                       kefir_size_t);
 
-struct kefir_ir_data * kefir_ir_module_new_named_data(struct kefir_mem *,
-                                                  struct kefir_ir_module *,
-                                                  const char *,
-                                                  kefir_id_t);
+struct kefir_ir_data *kefir_ir_module_new_named_data(struct kefir_mem *, struct kefir_ir_module *, const char *,
+                                                     kefir_id_t);
 
-const char *kefir_ir_module_get_named_symbol(const struct kefir_ir_module *,
-                                           kefir_id_t);
+const char *kefir_ir_module_get_named_symbol(const struct kefir_ir_module *, kefir_id_t);
 
-const struct kefir_ir_function_decl *kefir_ir_module_get_declaration(const struct kefir_ir_module *,
-                                                                 kefir_id_t);
+const struct kefir_ir_function_decl *kefir_ir_module_get_declaration(const struct kefir_ir_module *, kefir_id_t);
 
-struct kefir_ir_type *kefir_ir_module_get_named_type(const struct kefir_ir_module *,
-                                                 kefir_id_t);
+struct kefir_ir_type *kefir_ir_module_get_named_type(const struct kefir_ir_module *, kefir_id_t);
 
 const struct kefir_ir_function *kefir_ir_module_function_iter(const struct kefir_ir_module *,
-                                                          struct kefir_hashtree_node_iterator *);
+                                                              struct kefir_hashtree_node_iterator *);
 const struct kefir_ir_function *kefir_ir_module_function_next(struct kefir_hashtree_node_iterator *);
 
-const char *kefir_ir_module_globals_iter(const struct kefir_ir_module *,
-                                       const struct kefir_list_entry **);
-const char *kefir_ir_module_externals_iter(const struct kefir_ir_module *,
-                                         const struct kefir_list_entry **);
+const char *kefir_ir_module_globals_iter(const struct kefir_ir_module *, const struct kefir_list_entry **);
+const char *kefir_ir_module_externals_iter(const struct kefir_ir_module *, const struct kefir_list_entry **);
 const char *kefir_ir_module_symbol_iter_next(const struct kefir_list_entry **);
 
-kefir_result_t kefir_ir_module_get_string_literal(const struct kefir_ir_module *,
-                                              kefir_id_t,
-                                              const char **,
-                                              kefir_size_t *);
+kefir_result_t kefir_ir_module_get_string_literal(const struct kefir_ir_module *, kefir_id_t, const char **,
+                                                  kefir_size_t *);
 
 kefir_result_t kefir_ir_module_string_literal_iter(const struct kefir_ir_module *,
-                                               struct kefir_hashtree_node_iterator *,
-                                               kefir_id_t *,
-                                               const char **,
-                                               kefir_size_t *);
+                                                   struct kefir_hashtree_node_iterator *, kefir_id_t *, const char **,
+                                                   kefir_size_t *);
 
-kefir_result_t kefir_ir_module_string_literal_next(struct kefir_hashtree_node_iterator *,
-                                               kefir_id_t *,
-                                               const char **,
-                                               kefir_size_t *);
+kefir_result_t kefir_ir_module_string_literal_next(struct kefir_hashtree_node_iterator *, kefir_id_t *, const char **,
+                                                   kefir_size_t *);
 
 const struct kefir_ir_data *kefir_ir_module_named_data_iter(const struct kefir_ir_module *,
-                                                        struct kefir_hashtree_node_iterator *,
-                                                        const char **);
-const struct kefir_ir_data *kefir_ir_module_named_data_next(struct kefir_hashtree_node_iterator *,
-                                                        const char **);
+                                                            struct kefir_hashtree_node_iterator *, const char **);
+const struct kefir_ir_data *kefir_ir_module_named_data_next(struct kefir_hashtree_node_iterator *, const char **);
 
 #endif

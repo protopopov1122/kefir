@@ -8,7 +8,7 @@ void copybool(const bool *, bool *);
 int main(int argc, const char **argv) {
     UNUSED(argc);
     UNUSED(argv);
-    
+
     bool b1 = false, b2 = true;
 
     REQUIRE(b1 == false, KEFIR_INTERNAL_ERROR);

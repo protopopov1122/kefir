@@ -26,9 +26,10 @@ typedef struct kefir_ast_translator_scoped_identifier_function {
 } kefir_ast_translator_scoped_identifier_function_t;
 
 _Static_assert(sizeof(struct kefir_ast_translator_scoped_identifier_object) <= KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE,
-    "Unable to fit scoped identifier object into payload field");
+               "Unable to fit scoped identifier object into payload field");
 
-_Static_assert(sizeof(struct kefir_ast_translator_scoped_identifier_function) <= KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE,
-    "Unable to fit scoped identifier function into payload field");
+_Static_assert(sizeof(struct kefir_ast_translator_scoped_identifier_function) <=
+                   KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE,
+               "Unable to fit scoped identifier function into payload field");
 
 #endif

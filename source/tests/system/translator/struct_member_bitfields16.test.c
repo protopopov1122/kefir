@@ -18,10 +18,7 @@ int main(int argc, const char **argv) {
 
     for (int i = -256; i <= 256; i++) {
         for (int j = -256; j <= 256; j++) {
-            struct param val = {
-                .a = i,
-                .b = j
-            };
+            struct param val = {.a = i, .b = j};
             ASSERT(sum(&val) == (int) (i + j + sizeof(struct param) + _Alignof(struct param)));
         }
     }

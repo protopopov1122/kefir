@@ -9,11 +9,7 @@ int main(int argc, const char **argv) {
     UNUSED(argc);
     UNUSED(argv);
 
-    float FLOATS[] = {
-        1.0f, 2.0f, 3.0f,
-        4.0f, 5.0f, 6.0f,
-        7.0f, 8.0f, 9.0f
-    };
+    float FLOATS[] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
     unsigned int LEN = sizeof(FLOATS) / sizeof(FLOATS[0]);
 
     ASSERT(FLOAT_EQUALS(array_sum(FLOATS, 0), 0.0f, FLOAT_EPSILON));

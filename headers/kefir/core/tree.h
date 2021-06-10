@@ -22,7 +22,8 @@ typedef struct kefir_tree_node_iterator {
 
 kefir_result_t kefir_tree_init(struct kefir_tree_node *, void *);
 kefir_result_t kefir_tree_free(struct kefir_mem *, struct kefir_tree_node *);
-kefir_result_t kefir_tree_on_removal(struct kefir_tree_node *, kefir_result_t (*)(struct kefir_mem *, void *, void *), void *);
+kefir_result_t kefir_tree_on_removal(struct kefir_tree_node *, kefir_result_t (*)(struct kefir_mem *, void *, void *),
+                                     void *);
 kefir_result_t kefir_tree_insert_child(struct kefir_mem *, struct kefir_tree_node *, void *, struct kefir_tree_node **);
 struct kefir_tree_node *kefir_tree_first_child(const struct kefir_tree_node *);
 struct kefir_tree_node *kefir_tree_next_sibling(const struct kefir_tree_node *);

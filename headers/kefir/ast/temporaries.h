@@ -16,13 +16,11 @@ typedef struct kefir_ast_context_temporaries {
     struct kefir_ast_temporary_identifier current;
 } kefir_ast_context_temporaries_t;
 
-kefir_bool_t kefir_ast_temporaries_init(struct kefir_mem *,
-                                    struct kefir_ast_type_bundle *,
-                                    struct kefir_ast_context_temporaries *);
+kefir_bool_t kefir_ast_temporaries_init(struct kefir_mem *, struct kefir_ast_type_bundle *,
+                                        struct kefir_ast_context_temporaries *);
 kefir_result_t kefir_ast_temporaries_next_block(struct kefir_ast_context_temporaries *);
-kefir_result_t kefir_ast_temporaries_new_temporary(struct kefir_mem *,
-                                               const struct kefir_ast_context *,
-                                               const struct kefir_ast_type *,
-                                               struct kefir_ast_temporary_identifier *);
+kefir_result_t kefir_ast_temporaries_new_temporary(struct kefir_mem *, const struct kefir_ast_context *,
+                                                   const struct kefir_ast_type *,
+                                                   struct kefir_ast_temporary_identifier *);
 
 #endif

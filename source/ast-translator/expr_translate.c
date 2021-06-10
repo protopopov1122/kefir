@@ -12,25 +12,21 @@ struct translator_param {
 };
 
 static kefir_result_t translate_not_impl(const struct kefir_ast_visitor *visitor,
-                                       const struct kefir_ast_node_base *base,
-                                       void *payload) {
+                                         const struct kefir_ast_node_base *base, void *payload) {
     UNUSED(visitor);
     UNUSED(base);
     UNUSED(payload);
     return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot translate non-expression AST node");
 }
 
-#define TRANSLATE_NODE(_id, _type) \
-    static kefir_result_t translate_##_id(const struct kefir_ast_visitor *visitor, \
-                                        const _type *node, \
-                                        void *payload) { \
-        REQUIRE(visitor != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST visitor")); \
-        REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST node")); \
-        REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload")); \
-        ASSIGN_DECL_CAST(struct translator_param *, param, \
-            payload); \
-        REQUIRE_OK(kefir_ast_translate_##_id##_node(param->mem, param->context, param->builder, node)); \
-        return KEFIR_OK; \
+#define TRANSLATE_NODE(_id, _type)                                                                                     \
+    static kefir_result_t translate_##_id(const struct kefir_ast_visitor *visitor, const _type *node, void *payload) { \
+        REQUIRE(visitor != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST visitor"));                 \
+        REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST node"));                       \
+        REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));                      \
+        ASSIGN_DECL_CAST(struct translator_param *, param, payload);                                                   \
+        REQUIRE_OK(kefir_ast_translate_##_id##_node(param->mem, param->context, param->builder, node));                \
+        return KEFIR_OK;                                                                                               \
     }
 
 TRANSLATE_NODE(constant, struct kefir_ast_constant)
@@ -49,10 +45,9 @@ TRANSLATE_NODE(conditional_operator, struct kefir_ast_conditional_operator)
 TRANSLATE_NODE(assignment_operator, struct kefir_ast_assignment_operator)
 #undef TRANSLATE_NODE
 
-kefir_result_t kefir_ast_translate_expression(struct kefir_mem *mem,
-                                          const struct kefir_ast_node_base *base,
-                                          struct kefir_irbuilder_block *builder,
-                                          struct kefir_ast_translator_context *context) {
+kefir_result_t kefir_ast_translate_expression(struct kefir_mem *mem, const struct kefir_ast_node_base *base,
+                                              struct kefir_irbuilder_block *builder,
+                                              struct kefir_ast_translator_context *context) {
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator context"));
@@ -74,11 +69,6 @@ kefir_result_t kefir_ast_translate_expression(struct kefir_mem *mem,
     visitor.conditional_operator = translate_conditional_operator;
     visitor.assignment_operator = translate_assignment_operator;
 
-    struct translator_param param = {
-        .mem = mem,
-        .builder = builder,
-        .context = context
-    };
+    struct translator_param param = {.mem = mem, .builder = builder, .context = context};
     return KEFIR_AST_NODE_VISIT(&visitor, base, &param);
 }
-

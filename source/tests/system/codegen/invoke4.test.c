@@ -22,11 +22,7 @@ int main(int argc, const char **argv) {
     UNUSED(argc);
     UNUSED(argv);
     for (int64_t i = -100; i < 100; i++) {
-        struct aggregate agg = {
-            .array = {
-                i, i * 10, -i, i * (-10)
-            }
-        };
+        struct aggregate agg = {.array = {i, i * 10, -i, i * (-10)}};
         struct aggregate res = proxyadd(agg);
         ASSERT(res.array[0] == i + 3);
         ASSERT(res.array[1] == i * 10 + 3);

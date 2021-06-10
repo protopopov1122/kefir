@@ -7,10 +7,9 @@
 #include "kefir/codegen/amd64/system-v/abi.h"
 #include "kefir/codegen/amd64-sysv.h"
 
-kefir_result_t kefir_codegen_amd64_sysv_vararg_instruction(struct kefir_mem *,
-                                                struct kefir_codegen_amd64 *,
-                                                struct kefir_codegen_amd64_sysv_module *,
-                                                struct kefir_amd64_sysv_function *,
-                                                const struct kefir_irinstr *);
+kefir_result_t kefir_codegen_amd64_sysv_vararg_instruction(struct kefir_mem *, struct kefir_codegen_amd64 *,
+                                                           struct kefir_codegen_amd64_sysv_module *,
+                                                           struct kefir_amd64_sysv_function *,
+                                                           const struct kefir_irinstr *);
 
 #endif

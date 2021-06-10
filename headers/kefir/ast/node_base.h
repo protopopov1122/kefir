@@ -55,10 +55,10 @@ typedef struct kefir_ast_node_base {
 } kefir_ast_node_base_t;
 
 #define KEFIR_AST_NODE_STRUCT(id, content) \
-    typedef struct id { \
-        struct kefir_ast_node_base base; \
-        struct content; \
-    } id ## _t
+    typedef struct id {                    \
+        struct kefir_ast_node_base base;   \
+        struct content;                    \
+    } id##_t
 
 #define KEFIR_AST_NODE_BASE(node) (&node->base)
 #define KEFIR_AST_NODE_VISIT(visitor, base, payload) ((base)->klass->visit((base), (visitor), (payload)))
@@ -69,11 +69,11 @@ typedef struct kefir_ast_node_base {
     kefir_result_t (*id)(const struct kefir_ast_visitor *, const struct type *, void *)
 
 kefir_result_t kefir_ast_visitor_init(struct kefir_ast_visitor *,
-                                  KEFIR_AST_VISITOR_METHOD(method, kefir_ast_node_base));
+                                      KEFIR_AST_VISITOR_METHOD(method, kefir_ast_node_base));
 
 kefir_result_t kefir_ast_node_properties_init(struct kefir_ast_node_properties *);
 
 kefir_result_t kefir_ast_node_properties_clone(struct kefir_ast_node_properties *,
-                                           const struct kefir_ast_node_properties *);
+                                               const struct kefir_ast_node_properties *);
 
 #endif

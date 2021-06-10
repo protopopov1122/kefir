@@ -21,11 +21,11 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_local_context_init(mem, &global_context, &local_context));
     const struct kefir_ast_context *context = &local_context.context;
 
-    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, &local_context,
-        "var1", kefir_ast_type_qualified(mem, context->type_bundle, kefir_ast_type_signed_int(),
-            (struct kefir_ast_type_qualification){
-                .constant = true
-            }), NULL, NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_define_auto(
+        mem, &local_context, "var1",
+        kefir_ast_type_qualified(mem, context->type_bundle, kefir_ast_type_signed_int(),
+                                 (struct kefir_ast_type_qualification){.constant = true}),
+        NULL, NULL, NULL));
 
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
@@ -33,52 +33,58 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ast_translator_global_scope_layout translator_global_scope;
     struct kefir_ast_translator_local_scope_layout translator_local_scope;
     REQUIRE_OK(kefir_ast_translator_global_scope_layout_init(mem, &module, &translator_global_scope));
-    REQUIRE_OK(kefir_ast_translator_local_scope_layout_init(mem, &module, &translator_global_scope, &translator_local_scope));
+    REQUIRE_OK(
+        kefir_ast_translator_local_scope_layout_init(mem, &module, &translator_global_scope, &translator_local_scope));
 
     struct kefir_ast_translator_context translator_context;
     REQUIRE_OK(kefir_ast_translator_context_init(&translator_context, context, &env, &module));
-    REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(mem, &module, &global_context, &env,
-        kefir_ast_translator_context_type_resolver(&translator_context), &translator_global_scope));
-    REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(mem, &local_context, &env, &module,
-        kefir_ast_translator_context_type_resolver(&translator_context), &translator_local_scope));
+    REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(
+        mem, &module, &global_context, &env, kefir_ast_translator_context_type_resolver(&translator_context),
+        &translator_global_scope));
+    REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(
+        mem, &local_context, &env, &module, kefir_ast_translator_context_type_resolver(&translator_context),
+        &translator_local_scope));
     REQUIRE_OK(kefir_ast_translate_global_scope(mem, &module, &translator_global_scope));
     struct kefir_irbuilder_block builder;
 
     FUNC("conditional1", {
-        struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(kefir_ast_new_conditional_operator(mem,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(mem, true)),
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 1)),
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 2))));
+        struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(
+            kefir_ast_new_conditional_operator(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(mem, true)),
+                                               KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 1)),
+                                               KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 2))));
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, node));
         REQUIRE_OK(kefir_ast_translate_expression(mem, node, &builder, &translator_context));
         REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
     });
 
-    struct kefir_ast_type_name *type_name1 = kefir_ast_new_type_name(mem,
-        kefir_ast_declarator_pointer(mem, kefir_ast_declarator_identifier(mem, NULL, NULL)));
+    struct kefir_ast_type_name *type_name1 = kefir_ast_new_type_name(
+        mem, kefir_ast_declarator_pointer(mem, kefir_ast_declarator_identifier(mem, NULL, NULL)));
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name1->type_decl.specifiers,
-        kefir_ast_type_specifier_void(mem)));
+                                                          kefir_ast_type_specifier_void(mem)));
 
     FUNC("conditional2", {
-        struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(kefir_ast_new_conditional_operator(mem,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 7.45)),
-            KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(mem, KEFIR_AST_OPERATION_ADDRESS,
+        struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(kefir_ast_new_conditional_operator(
+            mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 7.45)),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(
+                mem, KEFIR_AST_OPERATION_ADDRESS,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "var1")))),
             KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem, type_name1,
-                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 0))))));
+                                                            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 0))))));
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, node));
         REQUIRE_OK(kefir_ast_translate_expression(mem, node, &builder, &translator_context));
         REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
     });
 
     FUNC("conditional3", {
-        struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(kefir_ast_new_conditional_operator(mem,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(mem, KEFIR_AST_OPERATION_ADDRESS,
+        struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(kefir_ast_new_conditional_operator(
+            mem,
+            KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(
+                mem, KEFIR_AST_OPERATION_ADDRESS,
                 KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "var1")))),
-            KEFIR_AST_NODE_BASE(kefir_ast_new_conditional_operator(mem,
-                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(mem, 'a')),
-                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 4.51f)),
-                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 0.1)))),
+            KEFIR_AST_NODE_BASE(
+                kefir_ast_new_conditional_operator(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(mem, 'a')),
+                                                   KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 4.51f)),
+                                                   KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 0.1)))),
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 0))));
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, node));
         REQUIRE_OK(kefir_ast_translate_expression(mem, node, &builder, &translator_context));

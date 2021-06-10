@@ -10,41 +10,33 @@ struct kefir_ast_node_base *ast_comma_operator_clone(struct kefir_mem *, struct 
 kefir_result_t ast_comma_operator_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
-    ASSIGN_DECL_CAST(struct kefir_ast_comma_operator *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_comma_operator *, node, base->self);
     REQUIRE_OK(kefir_list_free(mem, &node->expressions));
     KEFIR_FREE(mem, node);
     return KEFIR_OK;
 }
 
-const struct kefir_ast_node_class AST_COMMA_OPERATOR_CLASS = {
-    .type = KEFIR_AST_COMMA_OPERATOR,
-    .visit = ast_comma_operator_visit,
-    .clone = ast_comma_operator_clone,
-    .free = ast_comma_operator_free
-};
+const struct kefir_ast_node_class AST_COMMA_OPERATOR_CLASS = {.type = KEFIR_AST_COMMA_OPERATOR,
+                                                              .visit = ast_comma_operator_visit,
+                                                              .clone = ast_comma_operator_clone,
+                                                              .free = ast_comma_operator_free};
 
-static kefir_result_t comma_on_removal(struct kefir_mem *mem,
-                                     struct kefir_list *list,
-                                     struct kefir_list_entry *entry,
-                                     void *payload) {
+static kefir_result_t comma_on_removal(struct kefir_mem *mem, struct kefir_list *list, struct kefir_list_entry *entry,
+                                       void *payload) {
     UNUSED(list);
     UNUSED(payload);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid list entry"));
 
-    ASSIGN_DECL_CAST(struct kefir_ast_node_base *, node,
-        entry->value);
+    ASSIGN_DECL_CAST(struct kefir_ast_node_base *, node, entry->value);
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
     return KEFIR_OK;
 }
 
-struct kefir_ast_node_base *ast_comma_operator_clone(struct kefir_mem *mem,
-                                                     struct kefir_ast_node_base *base) {
+struct kefir_ast_node_base *ast_comma_operator_clone(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(base != NULL, NULL);
-    ASSIGN_DECL_CAST(struct kefir_ast_comma_operator *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_comma_operator *, node, base->self);
     struct kefir_ast_comma_operator *clone = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_comma_operator));
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_COMMA_OPERATOR_CLASS;
@@ -54,7 +46,7 @@ struct kefir_ast_node_base *ast_comma_operator_clone(struct kefir_mem *mem,
         KEFIR_FREE(mem, clone);
         return NULL;
     });
-    
+
     res = kefir_list_init(&clone->expressions);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, clone);
@@ -67,12 +59,10 @@ struct kefir_ast_node_base *ast_comma_operator_clone(struct kefir_mem *mem,
         return NULL;
     });
 
-    for (const struct kefir_list_entry *iter = kefir_list_head(&node->expressions);
-        iter != NULL;
-        kefir_list_next(&iter)) {
-        ASSIGN_DECL_CAST(struct kefir_ast_node_base *, expr,
-            iter->value);
-        
+    for (const struct kefir_list_entry *iter = kefir_list_head(&node->expressions); iter != NULL;
+         kefir_list_next(&iter)) {
+        ASSIGN_DECL_CAST(struct kefir_ast_node_base *, expr, iter->value);
+
         struct kefir_ast_node_base *expr_clone = KEFIR_AST_NODE_CLONE(mem, expr);
         REQUIRE_ELSE(expr_clone != NULL, {
             kefir_list_free(mem, &clone->expressions);
@@ -117,9 +107,8 @@ struct kefir_ast_comma_operator *kefir_ast_new_comma_operator(struct kefir_mem *
     return comma;
 }
 
-kefir_result_t kefir_ast_comma_append(struct kefir_mem *mem,
-                                  struct kefir_ast_comma_operator *comma,
-                                  struct kefir_ast_node_base *base) {
+kefir_result_t kefir_ast_comma_append(struct kefir_mem *mem, struct kefir_ast_comma_operator *comma,
+                                      struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(comma != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST comma operator"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node"));
@@ -127,4 +116,3 @@ kefir_result_t kefir_ast_comma_append(struct kefir_mem *mem,
     REQUIRE_OK(kefir_list_insert_after(mem, &comma->expressions, kefir_list_tail(&comma->expressions), base));
     return KEFIR_OK;
 }
-

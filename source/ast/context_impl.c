@@ -3,8 +3,7 @@
 #include "kefir/core/error.h"
 
 kefir_result_t kefir_ast_context_free_scoped_identifier(struct kefir_mem *mem,
-                                                    struct kefir_ast_scoped_identifier *scoped_id,
-                                                    void *payload) {
+                                                        struct kefir_ast_scoped_identifier *scoped_id, void *payload) {
     UNUSED(payload);
     if (scoped_id->cleanup.callback != NULL) {
         REQUIRE_OK(scoped_id->cleanup.callback(mem, scoped_id, scoped_id->cleanup.payload));
@@ -27,13 +26,10 @@ kefir_result_t kefir_ast_context_free_scoped_identifier(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_object_identifier(struct kefir_mem *mem,
-                                                                                    const struct kefir_ast_type *type,
-                                                                                    kefir_ast_scoped_identifier_storage_t storage,
-                                                                                    struct kefir_ast_alignment *alignment,
-                                                                                    kefir_ast_scoped_identifier_linkage_t linkage,
-                                                                                    kefir_bool_t external,
-                                                                                    struct kefir_ast_initializer *initializer) {
+struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_object_identifier(
+    struct kefir_mem *mem, const struct kefir_ast_type *type, kefir_ast_scoped_identifier_storage_t storage,
+    struct kefir_ast_alignment *alignment, kefir_ast_scoped_identifier_linkage_t linkage, kefir_bool_t external,
+    struct kefir_ast_initializer *initializer) {
     struct kefir_ast_scoped_identifier *scoped_id = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_scoped_identifier));
     scoped_id->klass = KEFIR_AST_SCOPE_IDENTIFIER_OBJECT;
     scoped_id->cleanup.callback = NULL;
@@ -58,9 +54,8 @@ struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_object_ide
     return scoped_id;
 }
 
-struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_constant(struct kefir_mem *mem,
-                                                                           struct kefir_ast_constant_expression *value,
-                                                                           const struct kefir_ast_type *type) {
+struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_constant(
+    struct kefir_mem *mem, struct kefir_ast_constant_expression *value, const struct kefir_ast_type *type) {
     struct kefir_ast_scoped_identifier *scoped_id = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_scoped_identifier));
     scoped_id->klass = KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT;
     scoped_id->cleanup.callback = NULL;
@@ -74,7 +69,7 @@ struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_constant(s
 }
 
 struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_type_tag(struct kefir_mem *mem,
-                                                                           const struct kefir_ast_type *type) {
+                                                                               const struct kefir_ast_type *type) {
     struct kefir_ast_scoped_identifier *scoped_id = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_scoped_identifier));
     scoped_id->klass = KEFIR_AST_SCOPE_IDENTIFIER_TYPE_TAG;
     scoped_id->cleanup.callback = NULL;
@@ -86,8 +81,8 @@ struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_type_tag(s
     return scoped_id;
 }
 
-struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_type_definition(struct kefir_mem *mem,
-                                                                                  const struct kefir_ast_type *type) {
+struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_type_definition(
+    struct kefir_mem *mem, const struct kefir_ast_type *type) {
     struct kefir_ast_scoped_identifier *scoped_id = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_scoped_identifier));
     scoped_id->klass = KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION;
     scoped_id->cleanup.callback = NULL;
@@ -99,62 +94,58 @@ struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_type_defin
     return scoped_id;
 }
 
-kefir_result_t kefir_ast_context_type_retrieve_tag(const struct kefir_ast_type *type,
-                                               const char **identifier) {
+kefir_result_t kefir_ast_context_type_retrieve_tag(const struct kefir_ast_type *type, const char **identifier) {
     switch (type->tag) {
         case KEFIR_AST_TYPE_STRUCTURE:
         case KEFIR_AST_TYPE_UNION:
             REQUIRE(type->structure_type.identifier != NULL,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected struct/union with a tag"));
+                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected struct/union with a tag"));
             *identifier = type->structure_type.identifier;
             return KEFIR_OK;
 
         case KEFIR_AST_TYPE_ENUMERATION:
             REQUIRE(type->enumeration_type.identifier != NULL,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected enum with a tag"));
+                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected enum with a tag"));
             *identifier = type->enumeration_type.identifier;
             return KEFIR_OK;
-        
+
         default:
             return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected AST structure, union or enum type");
     }
 }
 
 kefir_result_t kefir_ast_context_update_existing_scoped_type_tag(struct kefir_ast_scoped_identifier *scoped_id,
-                                                             const struct kefir_ast_type *type) {
+                                                                 const struct kefir_ast_type *type) {
     REQUIRE(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_TYPE_TAG,
-        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot redefine with different kind of symbol"));
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot redefine with different kind of symbol"));
     REQUIRE(scoped_id->type->tag == type->tag,
-        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot redefine tag with different type"));
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot redefine tag with different type"));
     switch (scoped_id->type->tag) {
         case KEFIR_AST_TYPE_STRUCTURE:
         case KEFIR_AST_TYPE_UNION:
             if (type->structure_type.complete) {
                 REQUIRE(!scoped_id->type->structure_type.complete,
-                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot redefine complete struct/union"));
-                scoped_id->type = type;   
+                        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot redefine complete struct/union"));
+                scoped_id->type = type;
             }
             return KEFIR_OK;
 
         case KEFIR_AST_TYPE_ENUMERATION:
             if (type->enumeration_type.complete) {
                 REQUIRE(!scoped_id->type->enumeration_type.complete,
-                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot redefine complete enumeration"));
-                scoped_id->type = type;   
+                        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot redefine complete enumeration"));
+                scoped_id->type = type;
             }
             return KEFIR_OK;
-        
+
         default:
             return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected AST type");
     }
 }
 
-
-struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_function_identifier(struct kefir_mem *mem,
-                                                                                      const struct kefir_ast_type *type,
-                                                                                      kefir_ast_function_specifier_t specifier,
-                                                                                      kefir_ast_scoped_identifier_storage_t storage,
-                                                                                      kefir_bool_t external) {
+struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_function_identifier(
+    struct kefir_mem *mem, const struct kefir_ast_type *type, kefir_ast_function_specifier_t specifier,
+    kefir_ast_scoped_identifier_storage_t storage, kefir_bool_t external) {
     struct kefir_ast_scoped_identifier *scoped_id = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_scoped_identifier));
     scoped_id->klass = KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION;
     scoped_id->cleanup.callback = NULL;
@@ -169,9 +160,8 @@ struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_function_i
     return scoped_id;
 }
 
-kefir_result_t kefir_ast_context_merge_alignment(struct kefir_mem *mem,
-                                             struct kefir_ast_alignment **original,
-                                             struct kefir_ast_alignment *alignment) {
+kefir_result_t kefir_ast_context_merge_alignment(struct kefir_mem *mem, struct kefir_ast_alignment **original,
+                                                 struct kefir_ast_alignment *alignment) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(original != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid original alignment pointer"));
     REQUIRE(alignment != NULL, KEFIR_OK);

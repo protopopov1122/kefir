@@ -19,16 +19,23 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         unsigned int alignment = 1 << i;
         REQUIRE_OK(kefir_ast_translate_object_type(mem, kefir_ast_type_void(), alignment, &env, &builder, NULL));
         REQUIRE_OK(kefir_ast_translate_object_type(mem, kefir_ast_type_bool(), alignment, &env, &builder, NULL));
-        REQUIRE_OK(kefir_ast_translate_object_type(mem, kefir_ast_type_unsigned_char(), alignment, &env, &builder, NULL));
+        REQUIRE_OK(
+            kefir_ast_translate_object_type(mem, kefir_ast_type_unsigned_char(), alignment, &env, &builder, NULL));
         REQUIRE_OK(kefir_ast_translate_object_type(mem, kefir_ast_type_signed_char(), alignment, &env, &builder, NULL));
-        REQUIRE_OK(kefir_ast_translate_object_type(mem, kefir_ast_type_unsigned_short(), alignment, &env, &builder, NULL));
-        REQUIRE_OK(kefir_ast_translate_object_type(mem, kefir_ast_type_signed_short(), alignment, &env, &builder, NULL));
-        REQUIRE_OK(kefir_ast_translate_object_type(mem, kefir_ast_type_unsigned_int(), alignment, &env, &builder, NULL));
+        REQUIRE_OK(
+            kefir_ast_translate_object_type(mem, kefir_ast_type_unsigned_short(), alignment, &env, &builder, NULL));
+        REQUIRE_OK(
+            kefir_ast_translate_object_type(mem, kefir_ast_type_signed_short(), alignment, &env, &builder, NULL));
+        REQUIRE_OK(
+            kefir_ast_translate_object_type(mem, kefir_ast_type_unsigned_int(), alignment, &env, &builder, NULL));
         REQUIRE_OK(kefir_ast_translate_object_type(mem, kefir_ast_type_signed_int(), alignment, &env, &builder, NULL));
-        REQUIRE_OK(kefir_ast_translate_object_type(mem, kefir_ast_type_unsigned_long(), alignment, &env, &builder, NULL));
+        REQUIRE_OK(
+            kefir_ast_translate_object_type(mem, kefir_ast_type_unsigned_long(), alignment, &env, &builder, NULL));
         REQUIRE_OK(kefir_ast_translate_object_type(mem, kefir_ast_type_signed_long(), alignment, &env, &builder, NULL));
-        REQUIRE_OK(kefir_ast_translate_object_type(mem, kefir_ast_type_unsigned_long_long(), alignment, &env, &builder, NULL));
-        REQUIRE_OK(kefir_ast_translate_object_type(mem, kefir_ast_type_signed_long_long(), alignment, &env, &builder, NULL));
+        REQUIRE_OK(
+            kefir_ast_translate_object_type(mem, kefir_ast_type_unsigned_long_long(), alignment, &env, &builder, NULL));
+        REQUIRE_OK(
+            kefir_ast_translate_object_type(mem, kefir_ast_type_signed_long_long(), alignment, &env, &builder, NULL));
         REQUIRE_OK(kefir_ast_translate_object_type(mem, kefir_ast_type_float(), alignment, &env, &builder, NULL));
         REQUIRE_OK(kefir_ast_translate_object_type(mem, kefir_ast_type_double(), alignment, &env, &builder, NULL));
     }

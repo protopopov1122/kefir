@@ -9,8 +9,7 @@ static kefir_bool_t same_basic_type(const struct kefir_ast_type *type1, const st
 }
 
 static kefir_bool_t compatible_basic_types(const struct kefir_ast_type_traits *type_traits,
-                                         const struct kefir_ast_type *type1, 
-                                         const struct kefir_ast_type *type2) {
+                                           const struct kefir_ast_type *type1, const struct kefir_ast_type *type2) {
     UNUSED(type_traits);
     REQUIRE(type1 != NULL, false);
     REQUIRE(type2 != NULL, false);
@@ -22,11 +21,10 @@ static kefir_bool_t compatible_basic_types(const struct kefir_ast_type_traits *t
     return type1->tag == type2->tag;
 }
 
-const struct kefir_ast_type *composite_basic_types(struct kefir_mem *mem,
-                                           struct kefir_ast_type_bundle *type_bundle,
-                                           const struct kefir_ast_type_traits *type_traits,
-                                           const struct kefir_ast_type *type1,
-                                           const struct kefir_ast_type *type2) {
+const struct kefir_ast_type *composite_basic_types(struct kefir_mem *mem, struct kefir_ast_type_bundle *type_bundle,
+                                                   const struct kefir_ast_type_traits *type_traits,
+                                                   const struct kefir_ast_type *type1,
+                                                   const struct kefir_ast_type *type2) {
     UNUSED(mem);
     UNUSED(type_bundle);
     REQUIRE(type_traits != NULL, NULL);
@@ -46,39 +44,29 @@ static kefir_result_t free_nothing(struct kefir_mem *mem, const struct kefir_ast
     return KEFIR_OK;
 }
 
-static const struct kefir_ast_type SCALAR_VOID = {
-    .tag = KEFIR_AST_TYPE_VOID,
-    .basic = false,
-    .ops = {
-        .same = same_basic_type,
-        .compatible = compatible_basic_types,
-        .composite = composite_basic_types,
-        .free = free_nothing
-    }
-};
+static const struct kefir_ast_type SCALAR_VOID = {.tag = KEFIR_AST_TYPE_VOID,
+                                                  .basic = false,
+                                                  .ops = {.same = same_basic_type,
+                                                          .compatible = compatible_basic_types,
+                                                          .composite = composite_basic_types,
+                                                          .free = free_nothing}};
 
 const struct kefir_ast_type *kefir_ast_type_void() {
     return &SCALAR_VOID;
 }
 
-#define SCALAR_TYPE(id, _tag, _rank) \
-static const struct kefir_ast_type DEFAULT_SCALAR_##id = { \
-    .tag = (_tag), \
-    .basic = true, \
-    .ops = { \
-        .same = same_basic_type, \
-        .compatible = compatible_basic_types, \
-        .composite = composite_basic_types, \
-        .free = free_nothing \
-    }, \
-    .basic_type = { \
-        .rank = (_rank) \
-    } \
-}; \
-\
-const struct kefir_ast_type *kefir_ast_type_##id() { \
-    return &DEFAULT_SCALAR_##id; \
-}
+#define SCALAR_TYPE(id, _tag, _rank)                                                                        \
+    static const struct kefir_ast_type DEFAULT_SCALAR_##id = {.tag = (_tag),                                \
+                                                              .basic = true,                                \
+                                                              .ops = {.same = same_basic_type,              \
+                                                                      .compatible = compatible_basic_types, \
+                                                                      .composite = composite_basic_types,   \
+                                                                      .free = free_nothing},                \
+                                                              .basic_type = {.rank = (_rank)}};             \
+                                                                                                            \
+    const struct kefir_ast_type *kefir_ast_type_##id() {                                                    \
+        return &DEFAULT_SCALAR_##id;                                                                        \
+    }
 
 SCALAR_TYPE(bool, KEFIR_AST_TYPE_SCALAR_BOOL, 0)
 SCALAR_TYPE(char, KEFIR_AST_TYPE_SCALAR_CHAR, 1)
@@ -98,7 +86,7 @@ SCALAR_TYPE(double, KEFIR_AST_TYPE_SCALAR_DOUBLE, 6)
 #undef SCALAR_TYPE
 
 const struct kefir_ast_type *kefir_ast_type_flip_integer_singedness(const struct kefir_ast_type_traits *type_traits,
-                                                                const struct kefir_ast_type *type) {
+                                                                    const struct kefir_ast_type *type) {
     REQUIRE(type_traits != NULL, NULL);
     REQUIRE(type != NULL, NULL);
 
@@ -142,19 +130,18 @@ const struct kefir_ast_type *kefir_ast_type_flip_integer_singedness(const struct
 
         case KEFIR_AST_TYPE_SCALAR_SIGNED_LONG_LONG:
             return kefir_ast_type_unsigned_long_long();
-        
+
         default:
             return NULL;
     }
 }
 
 kefir_result_t kefir_ast_type_is_signed(const struct kefir_ast_type_traits *type_traits,
-                                    const struct kefir_ast_type *type,
-                                    kefir_bool_t *signedness) {
+                                        const struct kefir_ast_type *type, kefir_bool_t *signedness) {
     REQUIRE(type_traits != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type traits"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
     REQUIRE(signedness != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to boolean"));
-    
+
     switch (type->tag) {
         case KEFIR_AST_TYPE_SCALAR_BOOL:
         case KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR:

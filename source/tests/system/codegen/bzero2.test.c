@@ -8,7 +8,7 @@ void fillzeros(long *);
 int main(int argc, const char **argv) {
     UNUSED(argc);
     UNUSED(argv);
-    
+
     for (kefir_size_t i = 1; i < 1000; i++) {
         long l = i;
         fillzeros(&l);

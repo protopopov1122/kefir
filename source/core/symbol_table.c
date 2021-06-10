@@ -3,11 +3,8 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-static kefir_result_t destroy_string(struct kefir_mem *mem,
-                                   struct kefir_hashtree *tree,
-                                   kefir_hashtree_key_t key,
-                                   kefir_hashtree_value_t value,
-                                   void *data) {
+static kefir_result_t destroy_string(struct kefir_mem *mem, struct kefir_hashtree *tree, kefir_hashtree_key_t key,
+                                     kefir_hashtree_value_t value, void *data) {
     UNUSED(tree);
     UNUSED(value);
     UNUSED(data);
@@ -32,10 +29,8 @@ kefir_result_t kefir_symbol_table_free(struct kefir_mem *mem, struct kefir_symbo
     return KEFIR_OK;
 }
 
-const char *kefir_symbol_table_insert(struct kefir_mem *mem,
-                                    struct kefir_symbol_table *table,
-                                    const char *symbol,
-                                    kefir_id_t *id) {
+const char *kefir_symbol_table_insert(struct kefir_mem *mem, struct kefir_symbol_table *table, const char *symbol,
+                                      kefir_id_t *id) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(table != NULL, NULL);
     REQUIRE(symbol != NULL, NULL);
@@ -51,13 +46,14 @@ const char *kefir_symbol_table_insert(struct kefir_mem *mem,
         REQUIRE(symbol_copy != NULL, NULL);
         strcpy(symbol_copy, symbol);
         kefir_id_t symbol_id = table->next_id;
-        res = kefir_hashtree_insert(mem, &table->symbols, (kefir_hashtree_key_t) symbol_copy, (kefir_hashtree_value_t) symbol_id);
+        res = kefir_hashtree_insert(mem, &table->symbols, (kefir_hashtree_key_t) symbol_copy,
+                                    (kefir_hashtree_value_t) symbol_id);
         REQUIRE_ELSE(res == KEFIR_OK, {
             KEFIR_FREE(mem, symbol_copy);
             return NULL;
         });
-        res = kefir_hashtree_insert(
-            mem, &table->symbol_identifiers, (kefir_hashtree_key_t) symbol_id, (kefir_hashtree_value_t) symbol_copy);
+        res = kefir_hashtree_insert(mem, &table->symbol_identifiers, (kefir_hashtree_key_t) symbol_id,
+                                    (kefir_hashtree_value_t) symbol_copy);
         REQUIRE_ELSE(res == KEFIR_OK, {
             kefir_hashtree_delete(mem, &table->symbols, (kefir_hashtree_key_t) symbol_copy);
             return NULL;
@@ -68,12 +64,10 @@ const char *kefir_symbol_table_insert(struct kefir_mem *mem,
     }
 }
 
-const char *kefir_symbol_table_get(const struct kefir_symbol_table *table,
-                                 kefir_id_t id) {
+const char *kefir_symbol_table_get(const struct kefir_symbol_table *table, kefir_id_t id) {
     REQUIRE(table != NULL, NULL);
     struct kefir_hashtree_node *node = NULL;
-    REQUIRE_ELSE(kefir_hashtree_at(&table->symbol_identifiers, (kefir_hashtree_key_t) id, &node) == KEFIR_OK, {
-        return NULL;
-    });
-    return (const char *) node->value;   
+    REQUIRE_ELSE(kefir_hashtree_at(&table->symbol_identifiers, (kefir_hashtree_key_t) id, &node) == KEFIR_OK,
+                 { return NULL; });
+    return (const char *) node->value;
 }

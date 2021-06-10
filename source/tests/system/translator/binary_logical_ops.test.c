@@ -29,12 +29,12 @@ int main(int argc, const char **argv) {
     UNUSED(argc);
     UNUSED(argv);
 
-#define ASSERT_AND(_fn1, _fn2, _res, _true, _false) \
-    do { \
-        struct param p = {0}; \
+#define ASSERT_AND(_fn1, _fn2, _res, _true, _false)        \
+    do {                                                   \
+        struct param p = {0};                              \
         ASSERT(logical_and((_fn1), (_fn2), &p) == (_res)); \
-        ASSERT(p.fn_true == (_true)); \
-        ASSERT(p.fn_false == (_false)); \
+        ASSERT(p.fn_true == (_true));                      \
+        ASSERT(p.fn_false == (_false));                    \
     } while (0)
 
     ASSERT_AND(fn_false, fn_false, false, 0, 1);
@@ -42,12 +42,12 @@ int main(int argc, const char **argv) {
     ASSERT_AND(fn_true, fn_false, false, 1, 1);
     ASSERT_AND(fn_true, fn_true, true, 2, 0);
 
-#define ASSERT_OR(_fn1, _fn2, _res, _true, _false) \
-    do { \
-        struct param p = {0}; \
+#define ASSERT_OR(_fn1, _fn2, _res, _true, _false)        \
+    do {                                                  \
+        struct param p = {0};                             \
         ASSERT(logical_or((_fn1), (_fn2), &p) == (_res)); \
-        ASSERT(p.fn_true == (_true)); \
-        ASSERT(p.fn_false == (_false)); \
+        ASSERT(p.fn_true == (_true));                     \
+        ASSERT(p.fn_false == (_false));                   \
     } while (0)
 
     ASSERT_OR(fn_false, fn_false, false, 0, 2);

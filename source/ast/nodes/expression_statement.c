@@ -10,8 +10,7 @@ struct kefir_ast_node_base *ast_expression_statement_clone(struct kefir_mem *, s
 kefir_result_t ast_expression_statement_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
-    ASSIGN_DECL_CAST(struct kefir_ast_expression_statement *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_expression_statement *, node, base->self);
     if (node->expression != NULL) {
         KEFIR_AST_NODE_FREE(mem, node->expression);
     }
@@ -19,19 +18,15 @@ kefir_result_t ast_expression_statement_free(struct kefir_mem *mem, struct kefir
     return KEFIR_OK;
 }
 
-const struct kefir_ast_node_class AST_EXPRESSION_STATEMENT_CLASS = {
-    .type = KEFIR_AST_EXPRESSION_STATEMENT,
-    .visit = ast_expression_statement_visit,
-    .clone = ast_expression_statement_clone,
-    .free = ast_expression_statement_free
-};
+const struct kefir_ast_node_class AST_EXPRESSION_STATEMENT_CLASS = {.type = KEFIR_AST_EXPRESSION_STATEMENT,
+                                                                    .visit = ast_expression_statement_visit,
+                                                                    .clone = ast_expression_statement_clone,
+                                                                    .free = ast_expression_statement_free};
 
-struct kefir_ast_node_base *ast_expression_statement_clone(struct kefir_mem *mem,
-                                               struct kefir_ast_node_base *base) {
+struct kefir_ast_node_base *ast_expression_statement_clone(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(base != NULL, NULL);
-    ASSIGN_DECL_CAST(struct kefir_ast_expression_statement *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_expression_statement *, node, base->self);
     struct kefir_ast_expression_statement *clone = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_expression_statement));
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_EXPRESSION_STATEMENT_CLASS;
@@ -55,7 +50,7 @@ struct kefir_ast_node_base *ast_expression_statement_clone(struct kefir_mem *mem
 }
 
 struct kefir_ast_expression_statement *kefir_ast_new_expression_statement(struct kefir_mem *mem,
-                                                  struct kefir_ast_node_base *expression) {
+                                                                          struct kefir_ast_node_base *expression) {
     REQUIRE(mem != NULL, NULL);
 
     struct kefir_ast_expression_statement *id = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_expression_statement));
@@ -70,4 +65,3 @@ struct kefir_ast_expression_statement *kefir_ast_new_expression_statement(struct
     id->expression = expression;
     return id;
 }
-

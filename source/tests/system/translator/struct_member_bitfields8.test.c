@@ -19,13 +19,8 @@ int main(int argc, const char **argv) {
     UNUSED(argv);
 
     for (int i = -4096; i <= 4096; i++) {
-        ASSERT(sum(&(struct param){
-            .a = -100,
-            .b = 11,
-            .c = 2,
-            .d = -i,
-            .e = (~i) & 0xffffff
-        }) == (int) (-100 + 11 + 2 - i + ((~i) & 0xffffff) + sizeof(struct param) + _Alignof(struct param)));
+        ASSERT(sum(&(struct param){.a = -100, .b = 11, .c = 2, .d = -i, .e = (~i) & 0xffffff}) ==
+               (int) (-100 + 11 + 2 - i + ((~i) & 0xffffff) + sizeof(struct param) + _Alignof(struct param)));
     }
     return EXIT_SUCCESS;
 }

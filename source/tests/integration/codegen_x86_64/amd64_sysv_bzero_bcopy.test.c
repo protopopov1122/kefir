@@ -18,12 +18,11 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     codegen.asmgen.settings.enable_identation = false;
 
     struct kefir_ir_type *decl_params = kefir_ir_module_new_type(mem, &module, 0, NULL),
-                       *decl_result = kefir_ir_module_new_type(mem, &module, 0, NULL);
+                         *decl_result = kefir_ir_module_new_type(mem, &module, 0, NULL);
     REQUIRE(decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "func1", 
-            decl_params, false, decl_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "func1", decl_params, false, decl_result);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);

@@ -3,9 +3,8 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-static kefir_result_t scalar_typeentry(const struct kefir_ast_type *type,
-                                     kefir_size_t alignment,
-                                     struct kefir_ir_typeentry *typeentry) {
+static kefir_result_t scalar_typeentry(const struct kefir_ast_type *type, kefir_size_t alignment,
+                                       struct kefir_ir_typeentry *typeentry) {
     typeentry->alignment = alignment;
     typeentry->param = 0;
     switch (type->tag) {
@@ -58,11 +57,9 @@ static kefir_result_t scalar_typeentry(const struct kefir_ast_type *type,
     return KEFIR_OK;
 }
 
-static kefir_result_t translate_scalar_type(struct kefir_mem *mem,
-                                          const struct kefir_ast_type *type,
-                                          kefir_size_t alignment,
-                                          struct kefir_irbuilder_type *builder,
-                                          struct kefir_ast_type_layout **layout_ptr) {
+static kefir_result_t translate_scalar_type(struct kefir_mem *mem, const struct kefir_ast_type *type,
+                                            kefir_size_t alignment, struct kefir_irbuilder_type *builder,
+                                            struct kefir_ast_type_layout **layout_ptr) {
     kefir_size_t type_index = kefir_ir_type_total_length(builder->type);
 
     if (type->tag != KEFIR_AST_TYPE_VOID) {
@@ -78,40 +75,35 @@ static kefir_result_t translate_scalar_type(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-static kefir_result_t translate_array_type(struct kefir_mem *mem,
-                                          const struct kefir_ast_type *type,
-                                          kefir_size_t alignment,
-                                          const struct kefir_ast_translator_environment *env,
-                                          struct kefir_irbuilder_type *builder,
-                                          struct kefir_ast_type_layout **layout_ptr) {
+static kefir_result_t translate_array_type(struct kefir_mem *mem, const struct kefir_ast_type *type,
+                                           kefir_size_t alignment, const struct kefir_ast_translator_environment *env,
+                                           struct kefir_irbuilder_type *builder,
+                                           struct kefir_ast_type_layout **layout_ptr) {
     kefir_size_t type_index = kefir_ir_type_total_length(builder->type);
     struct kefir_ast_type_layout *element_layout = NULL;
 
     switch (type->array_type.boundary) {
         case KEFIR_AST_ARRAY_UNBOUNDED: {
-            REQUIRE_OK(KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_ARRAY, alignment,
-                0));
-            REQUIRE_OK(kefir_ast_translate_object_type(mem,
-                type->array_type.element_type, KEFIR_AST_DEFAULT_ALIGNMENT, env, builder,
-                layout_ptr != NULL ? &element_layout : NULL));
+            REQUIRE_OK(KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_ARRAY, alignment, 0));
+            REQUIRE_OK(kefir_ast_translate_object_type(mem, type->array_type.element_type, KEFIR_AST_DEFAULT_ALIGNMENT,
+                                                       env, builder, layout_ptr != NULL ? &element_layout : NULL));
             if (layout_ptr != NULL) {
                 *layout_ptr = kefir_ast_new_type_layout(mem, type, alignment, type_index);
                 REQUIRE(*layout_ptr != NULL,
-                    KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST type layout"));
+                        KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST type layout"));
                 (*layout_ptr)->array_layout.element_type = element_layout;
             }
         } break;
 
         case KEFIR_AST_ARRAY_BOUNDED:
             REQUIRE_OK(KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_ARRAY, alignment,
-                kefir_ast_type_array_const_length(&type->array_type)));
-            REQUIRE_OK(kefir_ast_translate_object_type(mem,
-                type->array_type.element_type, KEFIR_AST_DEFAULT_ALIGNMENT, env, builder,
-                layout_ptr != NULL ? &element_layout : NULL));
+                                                     kefir_ast_type_array_const_length(&type->array_type)));
+            REQUIRE_OK(kefir_ast_translate_object_type(mem, type->array_type.element_type, KEFIR_AST_DEFAULT_ALIGNMENT,
+                                                       env, builder, layout_ptr != NULL ? &element_layout : NULL));
             if (layout_ptr != NULL) {
                 *layout_ptr = kefir_ast_new_type_layout(mem, type, alignment, type_index);
                 REQUIRE(*layout_ptr != NULL,
-                    KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST type layout"));
+                        KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST type layout"));
                 (*layout_ptr)->array_layout.element_type = element_layout;
             }
             break;
@@ -126,10 +118,9 @@ static kefir_result_t translate_array_type(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-static kefir_result_t insert_struct_field(struct kefir_mem *mem,
-                                        struct kefir_ast_struct_field *field,
-                                        struct kefir_ast_type_layout *layout,
-                                        struct kefir_ast_type_layout *element_layout) {
+static kefir_result_t insert_struct_field(struct kefir_mem *mem, struct kefir_ast_struct_field *field,
+                                          struct kefir_ast_type_layout *layout,
+                                          struct kefir_ast_type_layout *element_layout) {
 
     if (field->identifier == NULL || strlen(field->identifier) == 0) {
         REQUIRE_OK(kefir_ast_type_layout_add_structure_anonymous_member(mem, layout, element_layout));
@@ -139,16 +130,13 @@ static kefir_result_t insert_struct_field(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-static kefir_result_t translate_normal_struct_field(struct kefir_mem *mem,
-                                                  struct kefir_ast_struct_field *field,
-                                                  const struct kefir_ast_translator_environment *env,
-                                                  struct kefir_ast_type_layout *layout,
-                                                  kefir_size_t type_index,
-                                                  struct kefir_irbuilder_type *builder) {
-    struct kefir_ast_type_layout *element_layout = NULL;        
-    REQUIRE_OK(kefir_ast_translate_object_type(mem, field->type,
-        field->alignment->value, env, builder,
-        layout != NULL ? &element_layout : NULL));
+static kefir_result_t translate_normal_struct_field(struct kefir_mem *mem, struct kefir_ast_struct_field *field,
+                                                    const struct kefir_ast_translator_environment *env,
+                                                    struct kefir_ast_type_layout *layout, kefir_size_t type_index,
+                                                    struct kefir_irbuilder_type *builder) {
+    struct kefir_ast_type_layout *element_layout = NULL;
+    REQUIRE_OK(kefir_ast_translate_object_type(mem, field->type, field->alignment->value, env, builder,
+                                               layout != NULL ? &element_layout : NULL));
     if (element_layout != NULL) {
         element_layout->bitfield = field->bitfield;
         element_layout->bitfield_props.offset = 0;
@@ -175,13 +163,9 @@ struct bitfield_manager {
     kefir_size_t last_bitfield_storage;
 };
 
-
-static kefir_result_t translate_bitfield(struct kefir_mem *mem,
-                                       struct kefir_ast_struct_field *field,
-                                       struct kefir_ast_type_layout *layout,
-                                       struct kefir_irbuilder_type *builder,
-                                       kefir_size_t type_index,
-                                       struct bitfield_manager *bitfield_mgr) {
+static kefir_result_t translate_bitfield(struct kefir_mem *mem, struct kefir_ast_struct_field *field,
+                                         struct kefir_ast_type_layout *layout, struct kefir_irbuilder_type *builder,
+                                         kefir_size_t type_index, struct bitfield_manager *bitfield_mgr) {
     if (field->bitwidth->value.integer == 0) {
         REQUIRE_OK(KEFIR_IR_BITFIELD_ALLOCATOR_RESET(&bitfield_mgr->allocator));
         bitfield_mgr->last_bitfield_storage = 0;
@@ -191,35 +175,39 @@ static kefir_result_t translate_bitfield(struct kefir_mem *mem,
 
     kefir_bool_t allocated = false;
     struct kefir_ir_bitfield ir_bitfield;
-    struct kefir_ast_type_layout *element_layout = NULL;        
+    struct kefir_ast_type_layout *element_layout = NULL;
     if (KEFIR_IR_BITFIELD_ALLOCATOR_HAS_BITFIELD_RUN(&bitfield_mgr->allocator)) {
         struct kefir_ir_typeentry colocated_typeentry = {0};
         REQUIRE_OK(scalar_typeentry(field->type, field->alignment->value, &colocated_typeentry));
-        kefir_result_t res = KEFIR_IR_BITFIELD_ALLOCATOR_NEXT_COLOCATED(mem, &bitfield_mgr->allocator, field->identifier != NULL,
-            colocated_typeentry.typecode, field->bitwidth->value.integer,
-            kefir_ir_type_at(builder->type, bitfield_mgr->last_bitfield_storage), &ir_bitfield);
+        kefir_result_t res = KEFIR_IR_BITFIELD_ALLOCATOR_NEXT_COLOCATED(
+            mem, &bitfield_mgr->allocator, field->identifier != NULL, colocated_typeentry.typecode,
+            field->bitwidth->value.integer, kefir_ir_type_at(builder->type, bitfield_mgr->last_bitfield_storage),
+            &ir_bitfield);
         if (res != KEFIR_OUT_OF_SPACE) {
             REQUIRE_OK(res);
             if (layout != NULL) {
                 element_layout = kefir_ast_new_type_layout(mem, field->type, field->alignment->value,
-                    bitfield_mgr->last_bitfield_storage);
-                REQUIRE(element_layout != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST type layout"));
+                                                           bitfield_mgr->last_bitfield_storage);
+                REQUIRE(element_layout != NULL,
+                        KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST type layout"));
             }
             allocated = true;
         }
     }
-    
+
     if (!allocated) {
         struct kefir_ir_typeentry typeentry = {0};
         REQUIRE_OK(scalar_typeentry(field->type, field->alignment->value, &typeentry));
-        REQUIRE_OK(KEFIR_IR_BITFIELD_ALLOCATOR_NEXT(mem, &bitfield_mgr->allocator, type_index, field->identifier != NULL,
-            typeentry.typecode, field->bitwidth->value.integer, &typeentry, &ir_bitfield));
+        REQUIRE_OK(KEFIR_IR_BITFIELD_ALLOCATOR_NEXT(mem, &bitfield_mgr->allocator, type_index,
+                                                    field->identifier != NULL, typeentry.typecode,
+                                                    field->bitwidth->value.integer, &typeentry, &ir_bitfield));
         bitfield_mgr->last_bitfield_storage = kefir_ir_type_total_length(builder->type);
         REQUIRE_OK(KEFIR_IRBUILDER_TYPE_APPEND(builder, &typeentry));
         if (layout != NULL) {
             element_layout = kefir_ast_new_type_layout(mem, field->type, field->alignment->value,
-                bitfield_mgr->last_bitfield_storage);
-            REQUIRE(element_layout != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST type layout"));
+                                                       bitfield_mgr->last_bitfield_storage);
+            REQUIRE(element_layout != NULL,
+                    KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST type layout"));
         }
         bitfield_mgr->last_bitfield_layout = element_layout;
         kefir_ir_type_at(builder->type, type_index)->param++;
@@ -239,43 +227,36 @@ static kefir_result_t translate_bitfield(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-static kefir_result_t translate_struct_type(struct kefir_mem *mem,
-                                          const struct kefir_ast_type *type,
-                                          kefir_size_t alignment,
-                                          const struct kefir_ast_translator_environment *env,
-                                          struct kefir_irbuilder_type *builder,
-                                          struct kefir_ast_type_layout **layout_ptr) {
+static kefir_result_t translate_struct_type(struct kefir_mem *mem, const struct kefir_ast_type *type,
+                                            kefir_size_t alignment, const struct kefir_ast_translator_environment *env,
+                                            struct kefir_irbuilder_type *builder,
+                                            struct kefir_ast_type_layout **layout_ptr) {
     REQUIRE(type->structure_type.complete,
-        KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Non-complete structure/union definitions are not supported yet"));
+            KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Non-complete structure/union definitions are not supported yet"));
 
     kefir_size_t type_index = kefir_ir_type_total_length(builder->type);
-    REQUIRE_OK(KEFIR_IRBUILDER_TYPE_APPEND_V(builder,
-        type->tag == KEFIR_AST_TYPE_STRUCTURE
-            ? KEFIR_IR_TYPE_STRUCT
-            : KEFIR_IR_TYPE_UNION,
-        alignment, 0));
+    REQUIRE_OK(KEFIR_IRBUILDER_TYPE_APPEND_V(
+        builder, type->tag == KEFIR_AST_TYPE_STRUCTURE ? KEFIR_IR_TYPE_STRUCT : KEFIR_IR_TYPE_UNION, alignment, 0));
 
     kefir_bool_t allocated = false;
     struct kefir_ast_type_layout *layout = NULL;
     if (layout_ptr != NULL) {
         layout = kefir_ast_new_type_layout(mem, type, alignment, type_index);
-        REQUIRE(layout != NULL,
-            KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST type layout"));
+        REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST type layout"));
         allocated = true;
         *layout_ptr = layout;
     }
-    
+
     struct bitfield_manager bitfield_mgr;
-    REQUIRE_OK(KEFIR_IR_TARGET_PLATFORM_BITFIELD_ALLOCATOR(mem, env->target_platform, builder->type, &bitfield_mgr.allocator));
+    REQUIRE_OK(
+        KEFIR_IR_TARGET_PLATFORM_BITFIELD_ALLOCATOR(mem, env->target_platform, builder->type, &bitfield_mgr.allocator));
     bitfield_mgr.last_bitfield_layout = NULL;
     bitfield_mgr.last_bitfield_storage = 0;
 
     kefir_result_t res = KEFIR_OK;
     for (const struct kefir_list_entry *iter = kefir_list_head(&type->structure_type.fields);
-        iter != NULL && res == KEFIR_OK;
-        kefir_list_next(&iter)) {
-        ASSIGN_DECL_CAST(struct kefir_ast_struct_field *, field,
-            iter->value);
+         iter != NULL && res == KEFIR_OK; kefir_list_next(&iter)) {
+        ASSIGN_DECL_CAST(struct kefir_ast_struct_field *, field, iter->value);
 
         if (field->bitfield && type->tag == KEFIR_AST_TYPE_STRUCTURE) {
             res = translate_bitfield(mem, field, layout, builder, type_index, &bitfield_mgr);
@@ -286,7 +267,7 @@ static kefir_result_t translate_struct_type(struct kefir_mem *mem,
             res = translate_normal_struct_field(mem, field, env, layout, type_index, builder);
         }
     }
-    
+
     REQUIRE_ELSE(res == KEFIR_OK, {
         if (allocated) {
             kefir_ast_type_layout_free(mem, layout);
@@ -300,12 +281,11 @@ static kefir_result_t translate_struct_type(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_translate_object_type(struct kefir_mem *mem,
-                                           const struct kefir_ast_type *type,
-                                           kefir_size_t alignment,
-                                           const struct kefir_ast_translator_environment *env,
-                                           struct kefir_irbuilder_type *builder,
-                                           struct kefir_ast_type_layout **layout_ptr) {
+kefir_result_t kefir_ast_translate_object_type(struct kefir_mem *mem, const struct kefir_ast_type *type,
+                                               kefir_size_t alignment,
+                                               const struct kefir_ast_translator_environment *env,
+                                               struct kefir_irbuilder_type *builder,
+                                               struct kefir_ast_type_layout **layout_ptr) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
     REQUIRE(env != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator environment"));
@@ -332,8 +312,8 @@ kefir_result_t kefir_ast_translate_object_type(struct kefir_mem *mem,
             break;
 
         case KEFIR_AST_TYPE_ENUMERATION:
-            REQUIRE_OK(kefir_ast_translate_object_type(mem, type->enumeration_type.underlying_type,
-                alignment, env, builder, layout_ptr));
+            REQUIRE_OK(kefir_ast_translate_object_type(mem, type->enumeration_type.underlying_type, alignment, env,
+                                                       builder, layout_ptr));
             break;
 
         case KEFIR_AST_TYPE_STRUCTURE:
@@ -349,8 +329,8 @@ kefir_result_t kefir_ast_translate_object_type(struct kefir_mem *mem,
             return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot translate AST function type into IR type");
 
         case KEFIR_AST_TYPE_QUALIFIED:
-            REQUIRE_OK(kefir_ast_translate_object_type(mem, type->qualified_type.type,
-                alignment, env, builder, layout_ptr));
+            REQUIRE_OK(
+                kefir_ast_translate_object_type(mem, type->qualified_type.type, alignment, env, builder, layout_ptr));
             break;
 
         default:

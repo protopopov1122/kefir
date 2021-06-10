@@ -11,26 +11,24 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_codegen_amd64 codegen;
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
-    
+
     struct kefir_ir_type *proxyadd_decl_params = kefir_ir_module_new_type(mem, &module, 4, NULL),
-                       *proxyadd_decl_result = kefir_ir_module_new_type(mem, &module, 3, NULL);
+                         *proxyadd_decl_result = kefir_ir_module_new_type(mem, &module, 3, NULL);
     REQUIRE(proxyadd_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(proxyadd_decl_result != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function_decl *proxyadd_decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "proxyadd",
-            proxyadd_decl_params, false, proxyadd_decl_result);
+    struct kefir_ir_function_decl *proxyadd_decl = kefir_ir_module_new_function_declaration(
+        mem, &module, "proxyadd", proxyadd_decl_params, false, proxyadd_decl_result);
     REQUIRE(proxyadd_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *proxyadd = kefir_ir_module_new_function(mem, &module, proxyadd_decl, NULL, 1024);
     REQUIRE(proxyadd != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, proxyadd_decl->name));
 
     struct kefir_ir_type *addstruct_decl_params = kefir_ir_module_new_type(mem, &module, 4, NULL),
-                       *addstruct_decl_result = kefir_ir_module_new_type(mem, &module, 3, NULL);
+                         *addstruct_decl_result = kefir_ir_module_new_type(mem, &module, 3, NULL);
     REQUIRE(addstruct_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(addstruct_decl_result != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function_decl *addstruct_decl =
-        kefir_ir_module_new_function_declaration(mem, &module,
-            "addstruct", addstruct_decl_params, false, addstruct_decl_result);
+    struct kefir_ir_function_decl *addstruct_decl = kefir_ir_module_new_function_declaration(
+        mem, &module, "addstruct", addstruct_decl_params, false, addstruct_decl_result);
     REQUIRE(addstruct_decl != NULL, KEFIR_INTERNAL_ERROR);
 
     kefir_codegen_amd64_sysv_init(&codegen, stdout);

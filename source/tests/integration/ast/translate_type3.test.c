@@ -21,52 +21,48 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     const struct kefir_ast_type *type1 = kefir_ast_type_signed_long();
     REQUIRE_OK(dump_type(mem, &json, type1));
 
-    const struct kefir_ast_type *type2 = kefir_ast_type_array(mem, &type_bundle,
-        kefir_ast_type_char(), kefir_ast_constant_expression_integer(mem, 10), NULL);
+    const struct kefir_ast_type *type2 = kefir_ast_type_array(mem, &type_bundle, kefir_ast_type_char(),
+                                                              kefir_ast_constant_expression_integer(mem, 10), NULL);
     REQUIRE_OK(dump_type(mem, &json, type2));
 
-    const struct kefir_ast_type *type3 = kefir_ast_type_array(mem, &type_bundle,
-        kefir_ast_type_array(mem, &type_bundle, kefir_ast_type_char(),
-            kefir_ast_constant_expression_integer(mem, 5), NULL),
-        kefir_ast_constant_expression_integer(mem, 10), NULL);
+    const struct kefir_ast_type *type3 =
+        kefir_ast_type_array(mem, &type_bundle,
+                             kefir_ast_type_array(mem, &type_bundle, kefir_ast_type_char(),
+                                                  kefir_ast_constant_expression_integer(mem, 5), NULL),
+                             kefir_ast_constant_expression_integer(mem, 10), NULL);
     REQUIRE_OK(dump_type(mem, &json, type3));
 
     struct kefir_ast_enum_type *enum_type_4_0 = NULL;
-    const struct kefir_ast_type *type4_0 = kefir_ast_type_enumeration(mem, &type_bundle,
-        "", kefir_ast_type_signed_int(), &enum_type_4_0);
+    const struct kefir_ast_type *type4_0 =
+        kefir_ast_type_enumeration(mem, &type_bundle, "", kefir_ast_type_signed_int(), &enum_type_4_0);
 
     struct kefir_ast_struct_type *struct_type4_1 = NULL;
-    const struct kefir_ast_type *type4_1 = kefir_ast_type_structure(mem, &type_bundle,
-        "", &struct_type4_1);
-    REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, struct_type4_1,
-        "field1", kefir_ast_type_char(), NULL));
-    REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, struct_type4_1,
-        "field2", kefir_ast_type_qualified(mem, &type_bundle,
-            kefir_ast_type_unsigned_long(), (struct kefir_ast_type_qualification){
-                .constant = true
-            }), NULL));
-    REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, struct_type4_1,
-        "field3", kefir_ast_type_array(mem, &type_bundle, type4_0,
-            kefir_ast_constant_expression_integer(mem, 15), NULL), NULL));
+    const struct kefir_ast_type *type4_1 = kefir_ast_type_structure(mem, &type_bundle, "", &struct_type4_1);
+    REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, struct_type4_1, "field1", kefir_ast_type_char(), NULL));
+    REQUIRE_OK(
+        kefir_ast_struct_type_field(mem, &symbols, struct_type4_1, "field2",
+                                    kefir_ast_type_qualified(mem, &type_bundle, kefir_ast_type_unsigned_long(),
+                                                             (struct kefir_ast_type_qualification){.constant = true}),
+                                    NULL));
+    REQUIRE_OK(kefir_ast_struct_type_field(
+        mem, &symbols, struct_type4_1, "field3",
+        kefir_ast_type_array(mem, &type_bundle, type4_0, kefir_ast_constant_expression_integer(mem, 15), NULL), NULL));
 
     struct kefir_ast_struct_type *struct_type4 = NULL;
-    const struct kefir_ast_type *type4 = kefir_ast_type_structure(mem, &type_bundle,
-        "", &struct_type4);
+    const struct kefir_ast_type *type4 = kefir_ast_type_structure(mem, &type_bundle, "", &struct_type4);
     REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, struct_type4, "x", kefir_ast_type_float(), NULL));
     REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, struct_type4, "y",
-        kefir_ast_type_pointer(mem, &type_bundle, kefir_ast_type_double()), NULL));
-    REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, struct_type4, "z",
-        kefir_ast_type_signed_short(), NULL));
+                                           kefir_ast_type_pointer(mem, &type_bundle, kefir_ast_type_double()), NULL));
+    REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, struct_type4, "z", kefir_ast_type_signed_short(), NULL));
     REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, struct_type4, "a",
-        kefir_ast_type_array(mem, &type_bundle,
-            kefir_ast_type_signed_int(), kefir_ast_constant_expression_integer(mem, 1), NULL), NULL));
-    REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, struct_type4, "b",
-        type4_1, NULL));
-    REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, struct_type4, NULL,
-        type4_1, NULL));
-    REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, struct_type4, "c",
-        kefir_ast_type_array(mem, &type_bundle,
-            type4_1, kefir_ast_constant_expression_integer(mem, 10), NULL), NULL));
+                                           kefir_ast_type_array(mem, &type_bundle, kefir_ast_type_signed_int(),
+                                                                kefir_ast_constant_expression_integer(mem, 1), NULL),
+                                           NULL));
+    REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, struct_type4, "b", type4_1, NULL));
+    REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, struct_type4, NULL, type4_1, NULL));
+    REQUIRE_OK(kefir_ast_struct_type_field(
+        mem, &symbols, struct_type4, "c",
+        kefir_ast_type_array(mem, &type_bundle, type4_1, kefir_ast_constant_expression_integer(mem, 10), NULL), NULL));
     REQUIRE_OK(dump_type(mem, &json, type4));
 
     REQUIRE_OK(kefir_json_output_array_end(&json));

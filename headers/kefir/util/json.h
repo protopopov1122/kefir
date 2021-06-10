@@ -38,5 +38,4 @@ kefir_result_t kefir_json_output_string(struct kefir_json_output *, const char *
 kefir_result_t kefir_json_output_boolean(struct kefir_json_output *, kefir_bool_t);
 kefir_result_t kefir_json_output_null(struct kefir_json_output *);
 
-
 #endif

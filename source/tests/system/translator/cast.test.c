@@ -106,9 +106,7 @@ static void void_casts() {
     }
 #undef LEN
 
-    struct test tst = {
-        "Hello, world!"
-    };
+    struct test tst = {"Hello, world!"};
     struct_void_cast(tst);
 }
 

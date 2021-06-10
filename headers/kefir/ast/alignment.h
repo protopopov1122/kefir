@@ -29,17 +29,14 @@ typedef struct kefir_ast_alignment {
 
 struct kefir_ast_alignment *kefir_ast_alignment_default(struct kefir_mem *);
 
-struct kefir_ast_alignment *kefir_ast_alignment_as_type(struct kefir_mem *,
-                                                    const struct kefir_ast_type *);
+struct kefir_ast_alignment *kefir_ast_alignment_as_type(struct kefir_mem *, const struct kefir_ast_type *);
 
 struct kefir_ast_alignment *kefir_ast_alignment_const_expression(struct kefir_mem *,
-                                                             struct kefir_ast_constant_expression *);
+                                                                 struct kefir_ast_constant_expression *);
 
-kefir_result_t kefir_ast_alignment_free(struct kefir_mem *,
-                                    struct kefir_ast_alignment *);
+kefir_result_t kefir_ast_alignment_free(struct kefir_mem *, struct kefir_ast_alignment *);
 
-kefir_result_t kefir_ast_alignment_evaluate(struct kefir_mem *,
-                                        const struct kefir_ast_context *,
-                                        struct kefir_ast_alignment *);
+kefir_result_t kefir_ast_alignment_evaluate(struct kefir_mem *, const struct kefir_ast_context *,
+                                            struct kefir_ast_alignment *);
 
 #endif

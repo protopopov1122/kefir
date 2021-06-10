@@ -5,9 +5,9 @@
 #include "kefir/core/error.h"
 
 kefir_result_t kefir_ast_translate_cast_operator_node(struct kefir_mem *mem,
-                                             struct kefir_ast_translator_context *context,
-                                             struct kefir_irbuilder_block *builder,
-                                             const struct kefir_ast_cast_operator *node) {
+                                                      struct kefir_ast_translator_context *context,
+                                                      struct kefir_irbuilder_block *builder,
+                                                      const struct kefir_ast_cast_operator *node) {
     UNUSED(mem);
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translation context"));
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
@@ -15,6 +15,6 @@ kefir_result_t kefir_ast_translate_cast_operator_node(struct kefir_mem *mem,
 
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->expr, builder, context));
     REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits, node->expr->properties.type,
-        node->type_name->base.properties.type));
+                                            node->type_name->base.properties.type));
     return KEFIR_OK;
 }

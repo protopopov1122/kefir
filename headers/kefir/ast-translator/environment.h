@@ -19,6 +19,6 @@ typedef struct kefir_ast_translator_environment {
 } kefir_ast_translator_environment_t;
 
 kefir_result_t kefir_ast_translator_environment_init(struct kefir_ast_translator_environment *,
-                                                 struct kefir_ir_target_platform *);
+                                                     struct kefir_ir_target_platform *);
 
 #endif

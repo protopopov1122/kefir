@@ -10,27 +10,22 @@ struct kefir_ast_node_base *ast_cast_operator_clone(struct kefir_mem *, struct k
 kefir_result_t ast_cast_operator_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
-    ASSIGN_DECL_CAST(struct kefir_ast_cast_operator *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_cast_operator *, node, base->self);
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(node->type_name)));
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node->expr));
     KEFIR_FREE(mem, node);
     return KEFIR_OK;
 }
 
-const struct kefir_ast_node_class AST_CAST_OPERATOR_CLASS = {
-    .type = KEFIR_AST_CAST_OPERATOR,
-    .visit = ast_cast_operator_visit,
-    .clone = ast_cast_operator_clone,
-    .free = ast_cast_operator_free
-};
+const struct kefir_ast_node_class AST_CAST_OPERATOR_CLASS = {.type = KEFIR_AST_CAST_OPERATOR,
+                                                             .visit = ast_cast_operator_visit,
+                                                             .clone = ast_cast_operator_clone,
+                                                             .free = ast_cast_operator_free};
 
-struct kefir_ast_node_base *ast_cast_operator_clone(struct kefir_mem *mem,
-                                                  struct kefir_ast_node_base *base) {
+struct kefir_ast_node_base *ast_cast_operator_clone(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(base != NULL, NULL);
-    ASSIGN_DECL_CAST(struct kefir_ast_cast_operator *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_cast_operator *, node, base->self);
     struct kefir_ast_cast_operator *clone = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_cast_operator));
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_CAST_OPERATOR_CLASS;
@@ -58,8 +53,8 @@ struct kefir_ast_node_base *ast_cast_operator_clone(struct kefir_mem *mem,
 }
 
 struct kefir_ast_cast_operator *kefir_ast_new_cast_operator(struct kefir_mem *mem,
-                                                        struct kefir_ast_type_name *type_name,
-                                                        struct kefir_ast_node_base *expr) {
+                                                            struct kefir_ast_type_name *type_name,
+                                                            struct kefir_ast_node_base *expr) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(type_name != NULL, NULL);
     REQUIRE(expr != NULL, NULL);

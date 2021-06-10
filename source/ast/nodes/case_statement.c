@@ -10,8 +10,7 @@ struct kefir_ast_node_base *ast_case_statement_clone(struct kefir_mem *, struct 
 kefir_result_t ast_case_statement_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
-    ASSIGN_DECL_CAST(struct kefir_ast_case_statement *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_case_statement *, node, base->self);
     if (node->expression != NULL) {
         KEFIR_AST_NODE_FREE(mem, node->expression);
     }
@@ -20,19 +19,15 @@ kefir_result_t ast_case_statement_free(struct kefir_mem *mem, struct kefir_ast_n
     return KEFIR_OK;
 }
 
-const struct kefir_ast_node_class AST_CASE_STATEMENT_CLASS = {
-    .type = KEFIR_AST_CASE_STATEMENT,
-    .visit = ast_case_statement_visit,
-    .clone = ast_case_statement_clone,
-    .free = ast_case_statement_free
-};
+const struct kefir_ast_node_class AST_CASE_STATEMENT_CLASS = {.type = KEFIR_AST_CASE_STATEMENT,
+                                                              .visit = ast_case_statement_visit,
+                                                              .clone = ast_case_statement_clone,
+                                                              .free = ast_case_statement_free};
 
-struct kefir_ast_node_base *ast_case_statement_clone(struct kefir_mem *mem,
-                                               struct kefir_ast_node_base *base) {
+struct kefir_ast_node_base *ast_case_statement_clone(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(base != NULL, NULL);
-    ASSIGN_DECL_CAST(struct kefir_ast_case_statement *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_case_statement *, node, base->self);
     struct kefir_ast_case_statement *clone = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_case_statement));
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_CASE_STATEMENT_CLASS;
@@ -42,7 +37,7 @@ struct kefir_ast_node_base *ast_case_statement_clone(struct kefir_mem *mem,
         KEFIR_FREE(mem, clone);
         return NULL;
     });
-    
+
     clone->statement = KEFIR_AST_NODE_CLONE(mem, node->statement);
     REQUIRE_ELSE(clone->statement != NULL, {
         KEFIR_FREE(mem, clone);
@@ -63,8 +58,8 @@ struct kefir_ast_node_base *ast_case_statement_clone(struct kefir_mem *mem,
 }
 
 struct kefir_ast_case_statement *kefir_ast_new_case_statement(struct kefir_mem *mem,
-                                                  struct kefir_ast_node_base *expression,
-                                                  struct kefir_ast_node_base *statement) {
+                                                              struct kefir_ast_node_base *expression,
+                                                              struct kefir_ast_node_base *statement) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(statement != NULL, NULL);
 
@@ -81,4 +76,3 @@ struct kefir_ast_case_statement *kefir_ast_new_case_statement(struct kefir_mem *
     id->statement = statement;
     return id;
 }
-

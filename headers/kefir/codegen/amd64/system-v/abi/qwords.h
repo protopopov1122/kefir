@@ -31,36 +31,28 @@ typedef struct kefir_amd64_sysv_abi_qword_position {
     kefir_size_t offset;
 } kefir_amd64_sysv_abi_qword_position_t;
 
-kefir_result_t kefir_amd64_sysv_abi_qwords_count(const struct kefir_ir_type *,
-                                             const struct kefir_vector *,
-                                             kefir_size_t *);
+kefir_result_t kefir_amd64_sysv_abi_qwords_count(const struct kefir_ir_type *, const struct kefir_vector *,
+                                                 kefir_size_t *);
 
-kefir_result_t kefir_amd64_sysv_abi_qwords_alloc(struct kefir_amd64_sysv_abi_qwords *,
-                                             struct kefir_mem *, 
-                                             kefir_size_t);
+kefir_result_t kefir_amd64_sysv_abi_qwords_alloc(struct kefir_amd64_sysv_abi_qwords *, struct kefir_mem *,
+                                                 kefir_size_t);
 
-kefir_result_t kefir_amd64_sysv_abi_qwords_free(struct kefir_amd64_sysv_abi_qwords *,
-                                            struct kefir_mem *);
+kefir_result_t kefir_amd64_sysv_abi_qwords_free(struct kefir_amd64_sysv_abi_qwords *, struct kefir_mem *);
 
-kefir_result_t kefir_amd64_sysv_abi_qwords_next(struct kefir_amd64_sysv_abi_qwords *,
-                                            kefir_amd64_sysv_data_class_t,
-                                            kefir_size_t,
-                                            kefir_size_t,
-                                            struct kefir_amd64_sysv_abi_qword_ref *);
+kefir_result_t kefir_amd64_sysv_abi_qwords_next(struct kefir_amd64_sysv_abi_qwords *, kefir_amd64_sysv_data_class_t,
+                                                kefir_size_t, kefir_size_t, struct kefir_amd64_sysv_abi_qword_ref *);
 
 kefir_result_t kefir_amd64_sysv_abi_qwords_reset_class(struct kefir_amd64_sysv_abi_qwords *,
-                                                    kefir_amd64_sysv_data_class_t,
-                                                    kefir_size_t,
-                                                    kefir_size_t);
+                                                       kefir_amd64_sysv_data_class_t, kefir_size_t, kefir_size_t);
 
 kefir_result_t kefir_amd64_sysv_abi_qwords_save_position(const struct kefir_amd64_sysv_abi_qwords *,
-                                                     struct kefir_amd64_sysv_abi_qword_position *);
+                                                         struct kefir_amd64_sysv_abi_qword_position *);
 
 kefir_result_t kefir_amd64_sysv_abi_qwords_restore_position(struct kefir_amd64_sysv_abi_qwords *,
-                                                        const struct kefir_amd64_sysv_abi_qword_position *);
+                                                            const struct kefir_amd64_sysv_abi_qword_position *);
 
 kefir_result_t kefir_amd64_sysv_abi_qwords_max_position(const struct kefir_amd64_sysv_abi_qword_position *,
-                                                    const struct kefir_amd64_sysv_abi_qword_position *,
-                                                    struct kefir_amd64_sysv_abi_qword_position *);
+                                                        const struct kefir_amd64_sysv_abi_qword_position *,
+                                                        struct kefir_amd64_sysv_abi_qword_position *);
 
 #endif

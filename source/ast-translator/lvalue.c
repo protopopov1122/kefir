@@ -8,40 +8,36 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-kefir_result_t kefir_ast_translator_object_lvalue(struct kefir_mem *mem,
-                                              struct kefir_ast_translator_context *context,
-                                              struct kefir_irbuilder_block *builder,
-                                              const char *identifier,
-                                              const struct kefir_ast_scoped_identifier *scoped_identifier) {
+kefir_result_t kefir_ast_translator_object_lvalue(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
+                                                  struct kefir_irbuilder_block *builder, const char *identifier,
+                                                  const struct kefir_ast_scoped_identifier *scoped_identifier) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator context"));
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
     REQUIRE(identifier != NULL && strlen(identifier) > 0,
-        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid object identifier"));
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid object identifier"));
     REQUIRE(scoped_identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid scope identifier"));
     REQUIRE(scoped_identifier->klass == KEFIR_AST_SCOPE_IDENTIFIER_OBJECT,
-        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected object scoped identifier"));
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected object scoped identifier"));
 
     switch (scoped_identifier->object.storage) {
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN: {
             kefir_id_t id;
             REQUIRE(kefir_ir_module_symbol(mem, context->module, identifier, &id) != NULL,
-                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR module symbol"));
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_GETGLOBAL,
-                id));
+                    KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR module symbol"));
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_GETGLOBAL, id));
         } break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC: {
             ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, identifier_data,
-                scoped_identifier->payload.ptr);
+                             scoped_identifier->payload.ptr);
             kefir_id_t id;
-            REQUIRE(kefir_ir_module_symbol(mem, context->module,
-                KEFIR_AST_TRANSLATOR_STATIC_VARIABLES_IDENTIFIER, &id) != NULL,
-                KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR module symbol"));
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_GETGLOBAL,
-                id));
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_OFFSETPTR,
-                identifier_data->type_id, identifier_data->layout->value));
+            REQUIRE(kefir_ir_module_symbol(mem, context->module, KEFIR_AST_TRANSLATOR_STATIC_VARIABLES_IDENTIFIER,
+                                           &id) != NULL,
+                    KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR module symbol"));
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_GETGLOBAL, id));
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_OFFSETPTR, identifier_data->type_id,
+                                                       identifier_data->layout->value));
 
         } break;
 
@@ -53,10 +49,10 @@ kefir_result_t kefir_ast_translator_object_lvalue(struct kefir_mem *mem,
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO:
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER: {
             ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, identifier_data,
-                scoped_identifier->payload.ptr);
+                             scoped_identifier->payload.ptr);
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_GETLOCALS, 0));
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_OFFSETPTR,
-                identifier_data->type_id, identifier_data->layout->value));
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_OFFSETPTR, identifier_data->type_id,
+                                                       identifier_data->layout->value));
         } break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
@@ -67,41 +63,39 @@ kefir_result_t kefir_ast_translator_object_lvalue(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_translator_function_lvalue(struct kefir_mem *mem,
-                                                struct kefir_ast_translator_context *context,
-                                                struct kefir_irbuilder_block *builder,
-                                                const char *identifier) {
+kefir_result_t kefir_ast_translator_function_lvalue(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
+                                                    struct kefir_irbuilder_block *builder, const char *identifier) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator context"));
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
     REQUIRE(identifier != NULL && strlen(identifier) > 0,
-        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid function identifier"));
-        
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid function identifier"));
+
     kefir_id_t id;
     REQUIRE(kefir_ir_module_symbol(mem, context->module, identifier, &id) != NULL,
-        KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR module symbol"));
-    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_GETGLOBAL,
-        id));
+            KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR module symbol"));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_GETGLOBAL, id));
     return KEFIR_OK;
 }
 
 kefir_result_t kefir_ast_translate_array_subscript_lvalue(struct kefir_mem *mem,
-                                                      struct kefir_ast_translator_context *context,
-                                                      struct kefir_irbuilder_block *builder,
-                                                      const struct kefir_ast_array_subscript *node) {
+                                                          struct kefir_ast_translator_context *context,
+                                                          struct kefir_irbuilder_block *builder,
+                                                          const struct kefir_ast_array_subscript *node) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translation context"));
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST array subscript node"));
 
     const struct kefir_ast_translator_resolved_type *cached_type = NULL;
-    REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_cache.resolver, context->environment, context->module,
-        node->base.properties.type, 0, &cached_type));
+    REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_cache.resolver, context->environment,
+                                                               context->module, node->base.properties.type, 0,
+                                                               &cached_type));
     REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
-        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
 
-    const struct kefir_ast_type *array_type = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem,
-        context->ast_context->type_bundle, node->array->properties.type);
+    const struct kefir_ast_type *array_type =
+        KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, node->array->properties.type);
     if (array_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
         REQUIRE_OK(kefir_ast_translate_expression(mem, node->array, builder, context));
         REQUIRE_OK(kefir_ast_translate_expression(mem, node->subscript, builder, context));
@@ -110,55 +104,53 @@ kefir_result_t kefir_ast_translate_array_subscript_lvalue(struct kefir_mem *mem,
         REQUIRE_OK(kefir_ast_translate_expression(mem, node->array, builder, context));
     }
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_ELEMENTPTR, cached_type->object.ir_type_id,
-        cached_type->object.layout->value));
+                                               cached_type->object.layout->value));
     return KEFIR_OK;
 }
 
 kefir_result_t kefir_ast_translate_struct_member_lvalue(struct kefir_mem *mem,
-                                                    struct kefir_ast_translator_context *context,
-                                                    struct kefir_irbuilder_block *builder,
-                                                    const struct kefir_ast_struct_member *node) {
+                                                        struct kefir_ast_translator_context *context,
+                                                        struct kefir_irbuilder_block *builder,
+                                                        const struct kefir_ast_struct_member *node) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translation context"));
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST struct member node"));
 
-    const struct kefir_ast_type *structure_type = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle,
-        node->structure->properties.type);
+    const struct kefir_ast_type *structure_type =
+        KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, node->structure->properties.type);
     if (structure_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
         structure_type = kefir_ast_unqualified_type(structure_type->referenced_type);
     }
 
     const struct kefir_ast_translator_resolved_type *cached_type = NULL;
-    REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_cache.resolver, context->environment, context->module,
-        structure_type, 0, &cached_type));
+    REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_cache.resolver, context->environment,
+                                                               context->module, structure_type, 0, &cached_type));
     REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
-        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
 
     struct kefir_ast_type_layout *member_layout = NULL;
     struct kefir_ast_designator designator = {
-        .type = KEFIR_AST_DESIGNATOR_MEMBER,
-        .member = node->member,
-        .next = NULL
-    };
+        .type = KEFIR_AST_DESIGNATOR_MEMBER, .member = node->member, .next = NULL};
     REQUIRE_OK(kefir_ast_type_layout_resolve(cached_type->object.layout, &designator, &member_layout, NULL, NULL));
 
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->structure, builder, context));
-    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_OFFSETPTR, cached_type->object.ir_type_id, member_layout->value));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_OFFSETPTR, cached_type->object.ir_type_id,
+                                               member_layout->value));
     return KEFIR_OK;
 }
 
 kefir_result_t kefir_ast_translate_compound_literal_lvalue(struct kefir_mem *mem,
-                                                       struct kefir_ast_translator_context *context,
-                                                       struct kefir_irbuilder_block *builder,
-                                                       const struct kefir_ast_compound_literal *node) {
+                                                           struct kefir_ast_translator_context *context,
+                                                           struct kefir_irbuilder_block *builder,
+                                                           const struct kefir_ast_compound_literal *node) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translation context"));
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST compound literal node"));
-    
-    REQUIRE_OK(kefir_ast_translator_fetch_temporary(mem, context, builder,
-        &node->base.properties.expression_props.temporary));
+
+    REQUIRE_OK(
+        kefir_ast_translator_fetch_temporary(mem, context, builder, &node->base.properties.expression_props.temporary));
     REQUIRE_OK(kefir_ast_translate_initializer(mem, context, builder, node->base.properties.type, node->initializer));
     return KEFIR_OK;
 }
@@ -170,8 +162,7 @@ struct translator_param {
 };
 
 static kefir_result_t translate_not_impl(const struct kefir_ast_visitor *visitor,
-                                       const struct kefir_ast_node_base *base,
-                                       void *payload) {
+                                         const struct kefir_ast_node_base *base, void *payload) {
     UNUSED(visitor);
     UNUSED(base);
     UNUSED(payload);
@@ -179,28 +170,27 @@ static kefir_result_t translate_not_impl(const struct kefir_ast_visitor *visitor
 }
 
 static kefir_result_t translate_identifier_node(const struct kefir_ast_visitor *visitor,
-                                              const struct kefir_ast_identifier *node,
-                                              void *payload) {
+                                                const struct kefir_ast_identifier *node, void *payload) {
     REQUIRE(visitor != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST visitor"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST node"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
-    ASSIGN_DECL_CAST(struct translator_param *, param,
-        payload);
+    ASSIGN_DECL_CAST(struct translator_param *, param, payload);
 
     const struct kefir_ast_scoped_identifier *scoped_identifier = NULL;
     REQUIRE_OK(param->context->ast_context->resolve_ordinary_identifier(param->context->ast_context, node->identifier,
-        &scoped_identifier));
+                                                                        &scoped_identifier));
     switch (scoped_identifier->klass) {
         case KEFIR_AST_SCOPE_IDENTIFIER_OBJECT:
-            REQUIRE_OK(kefir_ast_translator_object_lvalue(param->mem, param->context,
-                param->builder, node->identifier, scoped_identifier));
+            REQUIRE_OK(kefir_ast_translator_object_lvalue(param->mem, param->context, param->builder, node->identifier,
+                                                          scoped_identifier));
             break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT:
 
         case KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION:
-            REQUIRE_OK(kefir_ast_translator_function_lvalue(param->mem, param->context, param->builder,
-                scoped_identifier->function.type->function_type.identifier));
+            REQUIRE_OK(
+                kefir_ast_translator_function_lvalue(param->mem, param->context, param->builder,
+                                                     scoped_identifier->function.type->function_type.identifier));
             break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_TAG:
@@ -209,46 +199,39 @@ static kefir_result_t translate_identifier_node(const struct kefir_ast_visitor *
 
         case KEFIR_AST_SCOPE_IDENTIFIER_LABEL:
             return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Label is not an lvalue");
-
     }
     return KEFIR_OK;
     return KEFIR_OK;
 }
 
 static kefir_result_t translate_array_subscript_node(const struct kefir_ast_visitor *visitor,
-                                                   const struct kefir_ast_array_subscript *node,
-                                                   void *payload) {
+                                                     const struct kefir_ast_array_subscript *node, void *payload) {
     REQUIRE(visitor != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST visitor"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST node"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
-    ASSIGN_DECL_CAST(struct translator_param *, param,
-        payload);
+    ASSIGN_DECL_CAST(struct translator_param *, param, payload);
 
     REQUIRE_OK(kefir_ast_translate_array_subscript_lvalue(param->mem, param->context, param->builder, node));
     return KEFIR_OK;
 }
 
 static kefir_result_t translate_struct_member_node(const struct kefir_ast_visitor *visitor,
-                                                 const struct kefir_ast_struct_member *node,
-                                                 void *payload) {
+                                                   const struct kefir_ast_struct_member *node, void *payload) {
     REQUIRE(visitor != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST visitor"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST node"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
-    ASSIGN_DECL_CAST(struct translator_param *, param,
-        payload);
+    ASSIGN_DECL_CAST(struct translator_param *, param, payload);
 
     REQUIRE_OK(kefir_ast_translate_struct_member_lvalue(param->mem, param->context, param->builder, node));
     return KEFIR_OK;
 }
 
 static kefir_result_t translate_unary_operation_node(const struct kefir_ast_visitor *visitor,
-                                                   const struct kefir_ast_unary_operation *node,
-                                                   void *payload) {
+                                                     const struct kefir_ast_unary_operation *node, void *payload) {
     REQUIRE(visitor != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST visitor"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST node"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
-    ASSIGN_DECL_CAST(struct translator_param *, param,
-        payload);
+    ASSIGN_DECL_CAST(struct translator_param *, param, payload);
 
     switch (node->type) {
         case KEFIR_AST_OPERATION_INDIRECTION:
@@ -262,22 +245,19 @@ static kefir_result_t translate_unary_operation_node(const struct kefir_ast_visi
 }
 
 static kefir_result_t translate_compound_literal_node(const struct kefir_ast_visitor *visitor,
-                                                    const struct kefir_ast_compound_literal *node,
-                                                    void *payload) {
+                                                      const struct kefir_ast_compound_literal *node, void *payload) {
     REQUIRE(visitor != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST visitor"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST node"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
-    ASSIGN_DECL_CAST(struct translator_param *, param,
-        payload);
+    ASSIGN_DECL_CAST(struct translator_param *, param, payload);
 
     REQUIRE_OK(kefir_ast_translate_compound_literal_lvalue(param->mem, param->context, param->builder, node));
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_translate_lvalue(struct kefir_mem *mem,
-                                      struct kefir_ast_translator_context *context,
-                                      struct kefir_irbuilder_block *builder,
-                                      const struct kefir_ast_node_base *node) {
+kefir_result_t kefir_ast_translate_lvalue(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
+                                          struct kefir_irbuilder_block *builder,
+                                          const struct kefir_ast_node_base *node) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator context"));
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
@@ -291,10 +271,6 @@ kefir_result_t kefir_ast_translate_lvalue(struct kefir_mem *mem,
     visitor.struct_indirect_member = translate_struct_member_node;
     visitor.unary_operation = translate_unary_operation_node;
     visitor.compound_literal = translate_compound_literal_node;
-    struct translator_param param = {
-        .mem = mem,
-        .builder = builder,
-        .context = context
-    };
+    struct translator_param param = {.mem = mem, .builder = builder, .context = context};
     return KEFIR_AST_NODE_VISIT(&visitor, node, &param);
 }

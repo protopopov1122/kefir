@@ -12,50 +12,41 @@ static kefir_result_t cg_symbolic_opcode(kefir_iropcode_t opcode, const char **s
     return *symbolic != NULL ? KEFIR_OK : KEFIR_MALFORMED_ARG;
 }
 
-kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
-                                        struct kefir_codegen_amd64 *codegen,
-                                        struct kefir_amd64_sysv_function *sysv_func,
-                                        struct kefir_codegen_amd64_sysv_module *sysv_module,
-                                        const struct kefir_irinstr *instr) {
+kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem, struct kefir_codegen_amd64 *codegen,
+                                            struct kefir_amd64_sysv_function *sysv_func,
+                                            struct kefir_codegen_amd64_sysv_module *sysv_module,
+                                            const struct kefir_irinstr *instr) {
     switch (instr->opcode) {
         case KEFIR_IROPCODE_JMP:
         case KEFIR_IROPCODE_BRANCH: {
             const char *opcode_symbol = NULL;
             REQUIRE(instr->arg.u64 <= kefir_irblock_length(&sysv_func->func->body),
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Jump offset is out of IR block bounds"));
+                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Jump offset is out of IR block bounds"));
             REQUIRE_OK(cg_symbolic_opcode(instr->opcode, &opcode_symbol));
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
             ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
-            ASMGEN_ARG(&codegen->asmgen,
-                KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL " + " KEFIR_INT64_FMT,
-                sysv_func->func->name,
-                2 * KEFIR_AMD64_SYSV_ABI_QWORD * instr->arg.u64);
+            ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL " + " KEFIR_INT64_FMT,
+                       sysv_func->func->name, 2 * KEFIR_AMD64_SYSV_ABI_QWORD * instr->arg.u64);
         } break;
 
         case KEFIR_IROPCODE_RET: {
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
-            ASMGEN_ARG(&codegen->asmgen,
-                KEFIR_AMD64_SYSV_PROCEDURE_EPILOGUE_LABEL,
-                sysv_func->func->name);
+            ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_EPILOGUE_LABEL, sysv_func->func->name);
             ASMGEN_ARG0(&codegen->asmgen, "0");
         } break;
 
         case KEFIR_IROPCODE_INVOKE: {
             kefir_id_t id = (kefir_id_t) instr->arg.u64;
             REQUIRE(kefir_codegen_amd64_sysv_module_function_decl(mem, sysv_module, id, false),
-                KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AMD64 System-V IR module function decaration"));
+                    KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE,
+                                    "Failed to allocate AMD64 System-V IR module function decaration"));
 
-            const struct kefir_ir_function_decl *decl =
-                kefir_ir_module_get_declaration(sysv_module->module, id);
+            const struct kefir_ir_function_decl *decl = kefir_ir_module_get_declaration(sysv_module->module, id);
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
             if (decl->name == NULL || decl->vararg) {
-                ASMGEN_ARG(&codegen->asmgen,
-                    KEFIR_AMD64_SYSV_FUNCTION_GATE_ID_LABEL,
-                    id);
+                ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_SYSV_FUNCTION_GATE_ID_LABEL, id);
             } else {
-                ASMGEN_ARG(&codegen->asmgen,
-                    KEFIR_AMD64_SYSV_FUNCTION_GATE_NAMED_LABEL,
-                    decl->name);
+                ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_SYSV_FUNCTION_GATE_NAMED_LABEL, decl->name);
             }
             ASMGEN_ARG0(&codegen->asmgen, "0");
         } break;
@@ -63,19 +54,15 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
         case KEFIR_IROPCODE_INVOKEV: {
             kefir_id_t id = (kefir_id_t) instr->arg.u64;
             REQUIRE(kefir_codegen_amd64_sysv_module_function_decl(mem, sysv_module, id, true),
-                KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AMD64 System-V IR module function decaration"));
-            
-            const struct kefir_ir_function_decl *decl =
-                kefir_ir_module_get_declaration(sysv_module->module, id);
+                    KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE,
+                                    "Failed to allocate AMD64 System-V IR module function decaration"));
+
+            const struct kefir_ir_function_decl *decl = kefir_ir_module_get_declaration(sysv_module->module, id);
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
             if (decl->name == NULL) {
-                ASMGEN_ARG(&codegen->asmgen,
-                    KEFIR_AMD64_SYSV_FUNCTION_VIRTUAL_GATE_ID_LABEL,
-                    id);
+                ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_SYSV_FUNCTION_VIRTUAL_GATE_ID_LABEL, id);
             } else {
-                ASMGEN_ARG(&codegen->asmgen,
-                    KEFIR_AMD64_SYSV_FUNCTION_VIRTUAL_GATE_NAMED_LABEL,
-                    decl->name);
+                ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_SYSV_FUNCTION_VIRTUAL_GATE_NAMED_LABEL, decl->name);
             }
             ASMGEN_ARG0(&codegen->asmgen, "0");
         } break;
@@ -94,11 +81,9 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
         case KEFIR_IROPCODE_BCOPY: {
             const kefir_id_t type_id = (kefir_id_t) instr->arg.u32[0];
             const kefir_size_t type_index = (kefir_size_t) instr->arg.u32[1];
-            struct kefir_vector *layout =
-                kefir_codegen_amd64_sysv_module_type_layout(mem, sysv_module, type_id);
+            struct kefir_vector *layout = kefir_codegen_amd64_sysv_module_type_layout(mem, sysv_module, type_id);
             REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unknown named type"));
-            ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, entry,
-                kefir_vector_at(layout, type_index));
+            ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, entry, kefir_vector_at(layout, type_index));
             REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to retrieve type node at index"));
 
             const char *opcode_symbol = NULL;
@@ -124,11 +109,9 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem,
         case KEFIR_IROPCODE_ELEMENTPTR: {
             const kefir_id_t type_id = (kefir_id_t) instr->arg.u32[0];
             const kefir_size_t type_index = (kefir_size_t) instr->arg.u32[1];
-            struct kefir_vector *layout =
-                kefir_codegen_amd64_sysv_module_type_layout(mem, sysv_module, type_id);
+            struct kefir_vector *layout = kefir_codegen_amd64_sysv_module_type_layout(mem, sysv_module, type_id);
             REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unknown named type"));
-            ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, entry,
-                kefir_vector_at(layout, type_index));
+            ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, entry, kefir_vector_at(layout, type_index));
             REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to retrieve type node at index"));
             const char *opcode_symbol = NULL;
             if (instr->opcode == KEFIR_IROPCODE_OFFSETPTR) {

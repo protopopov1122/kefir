@@ -23,34 +23,27 @@ typedef struct kefir_ast_array_type {
     };
 } kefir_ast_array_type_t;
 
-const struct kefir_ast_type *kefir_ast_type_unbounded_array(struct kefir_mem *,
-                                                        struct kefir_ast_type_bundle *,
-                                                        const struct kefir_ast_type *,
-                                                        const struct kefir_ast_type_qualification *);
+const struct kefir_ast_type *kefir_ast_type_unbounded_array(struct kefir_mem *, struct kefir_ast_type_bundle *,
+                                                            const struct kefir_ast_type *,
+                                                            const struct kefir_ast_type_qualification *);
 
-const struct kefir_ast_type *kefir_ast_type_array(struct kefir_mem *,
-                                              struct kefir_ast_type_bundle *,
-                                              const struct kefir_ast_type *,
-                                              struct kefir_ast_constant_expression *,
-                                              const struct kefir_ast_type_qualification *);
-                                              
-const struct kefir_ast_type *kefir_ast_type_array_static(struct kefir_mem *,
-                                              struct kefir_ast_type_bundle *,
-                                              const struct kefir_ast_type *,
-                                              struct kefir_ast_constant_expression *,
-                                              const struct kefir_ast_type_qualification *);
+const struct kefir_ast_type *kefir_ast_type_array(struct kefir_mem *, struct kefir_ast_type_bundle *,
+                                                  const struct kefir_ast_type *, struct kefir_ast_constant_expression *,
+                                                  const struct kefir_ast_type_qualification *);
 
-const struct kefir_ast_type *kefir_ast_type_vlen_array(struct kefir_mem *,
-                                                   struct kefir_ast_type_bundle *,
-                                                   const struct kefir_ast_type *,
-                                                   struct kefir_ast_node_base *,
-                                                   const struct kefir_ast_type_qualification *);
-                                              
-const struct kefir_ast_type *kefir_ast_type_vlen_array_static(struct kefir_mem *,
-                                                          struct kefir_ast_type_bundle *,
-                                                          const struct kefir_ast_type *,
-                                                          struct kefir_ast_node_base *,
-                                                          const struct kefir_ast_type_qualification *);
+const struct kefir_ast_type *kefir_ast_type_array_static(struct kefir_mem *, struct kefir_ast_type_bundle *,
+                                                         const struct kefir_ast_type *,
+                                                         struct kefir_ast_constant_expression *,
+                                                         const struct kefir_ast_type_qualification *);
+
+const struct kefir_ast_type *kefir_ast_type_vlen_array(struct kefir_mem *, struct kefir_ast_type_bundle *,
+                                                       const struct kefir_ast_type *, struct kefir_ast_node_base *,
+                                                       const struct kefir_ast_type_qualification *);
+
+const struct kefir_ast_type *kefir_ast_type_vlen_array_static(struct kefir_mem *, struct kefir_ast_type_bundle *,
+                                                              const struct kefir_ast_type *,
+                                                              struct kefir_ast_node_base *,
+                                                              const struct kefir_ast_type_qualification *);
 
 kefir_size_t kefir_ast_type_array_const_length(const struct kefir_ast_array_type *);
 

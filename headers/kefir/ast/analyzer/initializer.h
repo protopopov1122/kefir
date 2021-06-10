@@ -10,10 +10,8 @@ typedef struct kefir_ast_initializer_properties {
     kefir_bool_t constant;
 } kefir_ast_initializer_properties_t;
 
-kefir_result_t kefir_ast_analyze_initializer(struct kefir_mem *,
-                                         const struct kefir_ast_context *,
-                                         const struct kefir_ast_type *,
-                                         const struct kefir_ast_initializer *,
-                                         struct kefir_ast_initializer_properties *);
+kefir_result_t kefir_ast_analyze_initializer(struct kefir_mem *, const struct kefir_ast_context *,
+                                             const struct kefir_ast_type *, const struct kefir_ast_initializer *,
+                                             struct kefir_ast_initializer_properties *);
 
 #endif

@@ -17,46 +17,49 @@
 
 #include "codegen.inc.c"
 
-#define DEFFUN(_id, _name, _oper, _type) \
-static kefir_result_t define_##_id##_function(struct kefir_mem *mem, \
-                                            struct function *func, \
-                                            struct kefir_ast_context_manager *context_manager) { \
-    REQUIRE_OK(kefir_list_init(&func->args)); \
- \
-    const struct kefir_ast_type *pointer_type = kefir_ast_type_pointer(mem, context_manager->current->type_bundle, (_type)); \
-    struct kefir_ast_function_type *func_type = NULL; \
-    func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle, \
-        pointer_type->referenced_type, (_name), &func_type); \
-    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, \
-        NULL, pointer_type, NULL)); \
- \
-    REQUIRE_OK(kefir_ast_global_context_define_function(mem, context_manager->global, KEFIR_AST_FUNCTION_SPECIFIER_NONE, \
-        func->type, NULL)); \
- \
-    REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context)); \
-    REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager)); \
- \
-    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "x", pointer_type, \
-        NULL, NULL, NULL)); \
- \
-    REQUIRE_OK(kefir_list_insert_after(mem, &func->args, kefir_list_tail(&func->args), KEFIR_AST_NODE_BASE( \
-        kefir_ast_new_identifier(mem, context_manager->current->symbols, "x")))); \
- \
-    func->body = KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(mem, \
-        (_oper), \
-        KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(mem, KEFIR_AST_OPERATION_INDIRECTION, \
-            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "x")))))); \
-  \
-    REQUIRE_OK(kefir_ast_context_manager_detach_local(context_manager)); \
-    return KEFIR_OK; \
-}
+#define DEFFUN(_id, _name, _oper, _type)                                                                            \
+    static kefir_result_t define_##_id##_function(struct kefir_mem *mem, struct function *func,                     \
+                                                  struct kefir_ast_context_manager *context_manager) {              \
+        REQUIRE_OK(kefir_list_init(&func->args));                                                                   \
+                                                                                                                    \
+        const struct kefir_ast_type *pointer_type =                                                                 \
+            kefir_ast_type_pointer(mem, context_manager->current->type_bundle, (_type));                            \
+        struct kefir_ast_function_type *func_type = NULL;                                                           \
+        func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle,                            \
+                                             pointer_type->referenced_type, (_name), &func_type);                   \
+        REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, NULL,   \
+                                                     pointer_type, NULL));                                          \
+                                                                                                                    \
+        REQUIRE_OK(kefir_ast_global_context_define_function(mem, context_manager->global,                           \
+                                                            KEFIR_AST_FUNCTION_SPECIFIER_NONE, func->type, NULL));  \
+                                                                                                                    \
+        REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context));               \
+        REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager));                  \
+                                                                                                                    \
+        REQUIRE_OK(                                                                                                 \
+            kefir_ast_local_context_define_auto(mem, context_manager->local, "x", pointer_type, NULL, NULL, NULL)); \
+                                                                                                                    \
+        REQUIRE_OK(kefir_list_insert_after(                                                                         \
+            mem, &func->args, kefir_list_tail(&func->args),                                                         \
+            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "x"))));           \
+                                                                                                                    \
+        func->body = KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(                                             \
+            mem, (_oper),                                                                                           \
+            KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(                                                      \
+                mem, KEFIR_AST_OPERATION_INDIRECTION,                                                               \
+                KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "x"))))));     \
+                                                                                                                    \
+        REQUIRE_OK(kefir_ast_context_manager_detach_local(context_manager));                                        \
+        return KEFIR_OK;                                                                                            \
+    }
 
 DEFFUN(preinc, "preinc", KEFIR_AST_OPERATION_PREFIX_INCREMENT, kefir_ast_type_signed_int())
 DEFFUN(postinc, "postinc", KEFIR_AST_OPERATION_POSTFIX_INCREMENT, kefir_ast_type_signed_int())
 DEFFUN(predec, "predec", KEFIR_AST_OPERATION_PREFIX_DECREMENT, kefir_ast_type_signed_int())
 DEFFUN(postdec, "postdec", KEFIR_AST_OPERATION_POSTFIX_DECREMENT, kefir_ast_type_signed_int())
 
-static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module *module, struct kefir_ir_target_platform *ir_platform) {
+static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module *module,
+                                  struct kefir_ir_target_platform *ir_platform) {
     struct kefir_ast_translator_environment env;
     REQUIRE_OK(kefir_ast_translator_environment_init(&env, ir_platform));
 
@@ -78,12 +81,12 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
 
     struct kefir_ast_translator_context translator_context;
     REQUIRE_OK(kefir_ast_translator_context_init(&translator_context, &global_context.context, &env, module));
-    
+
     struct kefir_ast_translator_global_scope_layout global_scope;
     REQUIRE_OK(kefir_ast_translator_global_scope_layout_init(mem, module, &global_scope));
-    REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(mem, module,
-        &global_context, translator_context.environment, &translator_context.type_cache.resolver,
-        &global_scope));
+    REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(mem, module, &global_context,
+                                                              translator_context.environment,
+                                                              &translator_context.type_cache.resolver, &global_scope));
 
     REQUIRE_OK(translate_function(mem, &preinc, &context_manager, &global_scope, &translator_context));
     REQUIRE_OK(translate_function(mem, &postinc, &context_manager, &global_scope, &translator_context));
@@ -91,7 +94,7 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
     REQUIRE_OK(translate_function(mem, &postdec, &context_manager, &global_scope, &translator_context));
 
     REQUIRE_OK(kefir_ast_translate_global_scope(mem, module, &global_scope));
-    
+
     REQUIRE_OK(free_function(mem, &preinc));
     REQUIRE_OK(free_function(mem, &postinc));
     REQUIRE_OK(free_function(mem, &predec));

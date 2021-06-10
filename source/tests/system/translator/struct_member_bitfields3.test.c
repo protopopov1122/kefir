@@ -21,19 +21,11 @@ int main(int argc, const char **argv) {
         for (int j = -4; j < 3; j++) {
             for (int k = -256; k < 256; k++) {
                 int kval = k < 0 ? -(-k << 3) : (k << 3);
-                ASSERT(sum(&(struct param) {
-                    .f1 = i,
-                    .f2 = j,
-                    .f3 = 0,
-                    .f4 = kval
-                }) == (int) (i + j + kval + sizeof(struct param) + _Alignof(struct param)));
+                ASSERT(sum(&(struct param){.f1 = i, .f2 = j, .f3 = 0, .f4 = kval}) ==
+                       (int) (i + j + kval + sizeof(struct param) + _Alignof(struct param)));
 
-                ASSERT(sum(&(struct param) {
-                    .f1 = i,
-                    .f2 = j,
-                    .f3 = 1,
-                    .f4 = kval
-                }) == (int) (i + j + kval + 1 + sizeof(struct param) + _Alignof(struct param)));
+                ASSERT(sum(&(struct param){.f1 = i, .f2 = j, .f3 = 1, .f4 = kval}) ==
+                       (int) (i + j + kval + 1 + sizeof(struct param) + _Alignof(struct param)));
             }
         }
     }

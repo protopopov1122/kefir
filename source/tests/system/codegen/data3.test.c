@@ -22,15 +22,13 @@ int main(int argc, const char **argv) {
     UNUSED(argc);
     UNUSED(argv);
     for (int64_t i = -100; i < 100; i++) {
-        struct type1 val = {
-            .u8 = (uint8_t) (i + 100),
-            .i8 = i,
-            .u16 = (uint16_t) (i + 1000),
-            .i16 = (int16_t) (-i * 10),
-            .u32 = (uint32_t) (i + 0xffff),
-            .i32 = i * 1000,
-            .i64 = i + 0xffffffffl
-        };
+        struct type1 val = {.u8 = (uint8_t) (i + 100),
+                            .i8 = i,
+                            .u16 = (uint16_t) (i + 1000),
+                            .i16 = (int16_t) (-i * 10),
+                            .u32 = (uint32_t) (i + 0xffff),
+                            .i32 = i * 1000,
+                            .i64 = i + 0xffffffffl};
         const int64_t *res = sum(&val);
         ASSERT(*res == i + 100 + i + i + 1000 + (-i * 10) + i + 0xffff + i * 1000 + i + 0xffffffffl);
         ASSERT(*res == val.result);

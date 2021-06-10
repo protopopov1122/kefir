@@ -13,11 +13,7 @@ int main(int argc, const char **argv) {
     UNUSED(argc);
     UNUSED(argv);
 
-    const char *STRINGS[] = {
-        "Test123, one two three...",
-        "Hello, world!",
-        "\t\t\n\t\tHell \vwrld!\n\t\0"
-    };
+    const char *STRINGS[] = {"Test123, one two three...", "Hello, world!", "\t\t\n\t\tHell \vwrld!\n\t\0"};
     for (unsigned int i = 0; i < strlen(STRINGS[0]); i++) {
         ASSERT(strcmp(STRINGS[0] + i, literal1(i)) == 0);
     }

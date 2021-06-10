@@ -26,12 +26,7 @@ int main(int argc, const char **argv) {
                 continue;
             }
             struct param val = {
-                .field1 = 100 + i,
-                .field2 = 321 + i,
-                .field3 = 786 + i,
-                .field4 = 912 + i,
-                .field5 = 542018 + i
-            };
+                .field1 = 100 + i, .field2 = 321 + i, .field3 = 786 + i, .field4 = 912 + i, .field5 = 542018 + i};
             modify(&val, j);
             ASSERT(val.field1 == (100 + i) / j);
             ASSERT(val.field2 == (321 + i) / j);

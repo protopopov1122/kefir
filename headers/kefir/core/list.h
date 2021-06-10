@@ -24,8 +24,9 @@ typedef struct kefir_list {
 kefir_result_t kefir_list_init(struct kefir_list *);
 kefir_result_t kefir_list_free(struct kefir_mem *, struct kefir_list *);
 kefir_result_t kefir_list_on_remove(struct kefir_list *,
-                                kefir_result_t (*)(struct kefir_mem *, struct kefir_list *, struct kefir_list_entry *, void *),
-                                void *);
+                                    kefir_result_t (*)(struct kefir_mem *, struct kefir_list *,
+                                                       struct kefir_list_entry *, void *),
+                                    void *);
 kefir_size_t kefir_list_length(const struct kefir_list *);
 kefir_result_t kefir_list_insert_after(struct kefir_mem *, struct kefir_list *, struct kefir_list_entry *, void *);
 kefir_result_t kefir_list_pop(struct kefir_mem *, struct kefir_list *, struct kefir_list_entry *);

@@ -26,12 +26,7 @@ static void kft_free(struct kefir_mem *mem, void *ptr) {
 }
 
 struct kefir_mem kft_mem = {
-    .malloc = kft_malloc,
-    .calloc = kft_calloc,
-    .realloc = kft_realloc,
-    .free = kft_free,
-    .data = NULL
-};
+    .malloc = kft_malloc, .calloc = kft_calloc, .realloc = kft_realloc, .free = kft_free, .data = NULL};
 
 #ifndef KFT_NOFORK
 kefir_result_t kft_run_test_case(const struct kft_test_case *testCase, void *testContext) {
@@ -84,7 +79,8 @@ kefir_result_t kft_run_test_case(const struct kft_test_case *testCase, void *tes
 }
 #endif
 
-kefir_size_t kft_run_test_suite(const struct kft_test_case **testSuite, kefir_size_t testSuiteLength, void *testContext) {
+kefir_size_t kft_run_test_suite(const struct kft_test_case **testSuite, kefir_size_t testSuiteLength,
+                                void *testContext) {
     printf("Running suite of %zu test(s)\n", testSuiteLength);
     kefir_size_t success = 0;
     for (kefir_size_t i = 0; i < testSuiteLength; i++) {

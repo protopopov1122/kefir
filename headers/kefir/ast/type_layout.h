@@ -46,36 +46,25 @@ typedef struct kefir_ast_type_layout {
     };
 } kefir_ast_type_layout_t;
 
-struct kefir_ast_type_layout *kefir_ast_new_type_layout(struct kefir_mem *,
-                                                    const struct kefir_ast_type *,
-                                                    kefir_size_t,
-                                                    kefir_uptr_t);
+struct kefir_ast_type_layout *kefir_ast_new_type_layout(struct kefir_mem *, const struct kefir_ast_type *, kefir_size_t,
+                                                        kefir_uptr_t);
 
-kefir_result_t kefir_ast_type_layout_free(struct kefir_mem *,
-                                      struct kefir_ast_type_layout *);
+kefir_result_t kefir_ast_type_layout_free(struct kefir_mem *, struct kefir_ast_type_layout *);
 
-kefir_result_t kefir_ast_type_layout_insert_structure_member(struct kefir_mem *,
-                                                         struct kefir_ast_type_layout *,
-                                                         const char *,
-                                                         struct kefir_ast_type_layout *);
+kefir_result_t kefir_ast_type_layout_insert_structure_member(struct kefir_mem *, struct kefir_ast_type_layout *,
+                                                             const char *, struct kefir_ast_type_layout *);
 
-kefir_result_t kefir_ast_type_layout_add_structure_anonymous_member(struct kefir_mem *,
-                                                                struct kefir_ast_type_layout *,
-                                                                struct kefir_ast_type_layout *);
+kefir_result_t kefir_ast_type_layout_add_structure_anonymous_member(struct kefir_mem *, struct kefir_ast_type_layout *,
+                                                                    struct kefir_ast_type_layout *);
 
 typedef kefir_result_t (*kefir_ast_type_layout_resolver_callback_t)(struct kefir_ast_type_layout *,
-                                                                const struct kefir_ast_designator *,
-                                                                void *);
+                                                                    const struct kefir_ast_designator *, void *);
 
-kefir_result_t kefir_ast_type_layout_resolve(struct kefir_ast_type_layout *,
-                                         const struct kefir_ast_designator *,
-                                         struct kefir_ast_type_layout **,
-                                         kefir_ast_type_layout_resolver_callback_t,
-                                         void *);
+kefir_result_t kefir_ast_type_layout_resolve(struct kefir_ast_type_layout *, const struct kefir_ast_designator *,
+                                             struct kefir_ast_type_layout **, kefir_ast_type_layout_resolver_callback_t,
+                                             void *);
 
-kefir_result_t kefir_ast_type_layout_resolve_offset(struct kefir_ast_type_layout *,
-                                                const struct kefir_ast_designator *,
-                                                struct kefir_ast_type_layout **,
-                                                kefir_size_t *);
+kefir_result_t kefir_ast_type_layout_resolve_offset(struct kefir_ast_type_layout *, const struct kefir_ast_designator *,
+                                                    struct kefir_ast_type_layout **, kefir_size_t *);
 
 #endif

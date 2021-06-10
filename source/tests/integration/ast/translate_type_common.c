@@ -1,8 +1,7 @@
 #include "kefir/util/json.h"
 #include "kefir/ast-translator/layout.h"
 
-static kefir_result_t dump_type_layout(struct kefir_json_output *json,
-                                     const struct kefir_ast_type_layout *layout) {
+static kefir_result_t dump_type_layout(struct kefir_json_output *json, const struct kefir_ast_type_layout *layout) {
     REQUIRE_OK(kefir_json_output_object_begin(json));
     REQUIRE_OK(kefir_json_output_object_key(json, "index"));
     REQUIRE_OK(kefir_json_output_uinteger(json, layout->value));
@@ -16,17 +15,14 @@ static kefir_result_t dump_type_layout(struct kefir_json_output *json,
     switch (layout->type->tag) {
         case KEFIR_AST_TYPE_STRUCTURE:
         case KEFIR_AST_TYPE_UNION: {
-            REQUIRE_OK(kefir_json_output_string(json, layout->type->tag == KEFIR_AST_TYPE_STRUCTURE
-                ? "struct"
-                : "union"));
+            REQUIRE_OK(
+                kefir_json_output_string(json, layout->type->tag == KEFIR_AST_TYPE_STRUCTURE ? "struct" : "union"));
             REQUIRE_OK(kefir_json_output_object_key(json, "fields"));
             REQUIRE_OK(kefir_json_output_array_begin(json));
 
             for (const struct kefir_list_entry *iter = kefir_list_head(&layout->structure_layout.member_list);
-                iter != NULL;
-                kefir_list_next(&iter)) {
-                ASSIGN_DECL_CAST(const struct kefir_ast_type_layout_structure_member *, member,
-                    iter->value);
+                 iter != NULL; kefir_list_next(&iter)) {
+                ASSIGN_DECL_CAST(const struct kefir_ast_type_layout_structure_member *, member, iter->value);
                 REQUIRE_OK(kefir_json_output_object_begin(json));
                 REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
                 if (member->identifier != NULL) {
@@ -55,9 +51,8 @@ static kefir_result_t dump_type_layout(struct kefir_json_output *json,
     return KEFIR_OK;
 }
 
-static kefir_result_t dump_type(struct kefir_mem *mem,
-                       struct kefir_json_output *json,
-                       const struct kefir_ast_type *type) {
+static kefir_result_t dump_type(struct kefir_mem *mem, struct kefir_json_output *json,
+                                const struct kefir_ast_type *type) {
     struct kefir_ir_type ir_type;
     struct kefir_irbuilder_type builder;
     struct kefir_ast_translator_environment env;
@@ -65,7 +60,7 @@ static kefir_result_t dump_type(struct kefir_mem *mem,
     REQUIRE_OK(kefir_ir_type_alloc(mem, 0, &ir_type));
     REQUIRE_OK(kefir_irbuilder_type_init(mem, &builder, &ir_type));
     REQUIRE_OK(kefir_ast_translator_environment_init(&env, kft_util_get_ir_target_platform()));
-    
+
     struct kefir_ast_type_layout *layout1 = NULL;
     REQUIRE_OK(kefir_ast_translate_object_type(mem, type, 0, &env, &builder, &layout1));
     REQUIRE_OK(kefir_ast_translator_evaluate_type_layout(mem, &env, layout1, &ir_type));

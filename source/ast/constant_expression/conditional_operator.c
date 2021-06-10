@@ -3,17 +3,18 @@
 #include "kefir/core/error.h"
 
 kefir_result_t kefir_ast_evaluate_conditional_operator_node(struct kefir_mem *mem,
-                                                        const struct kefir_ast_context *context,
-                                                        const struct kefir_ast_conditional_operator *node,
-                                                        struct kefir_ast_constant_expression_value *value) {
+                                                            const struct kefir_ast_context *context,
+                                                            const struct kefir_ast_conditional_operator *node,
+                                                            struct kefir_ast_constant_expression_value *value) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST conditional operator node"));
-    REQUIRE(value != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST constant expression value pointer"));
+    REQUIRE(value != NULL,
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST constant expression value pointer"));
     REQUIRE(node->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
-        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected constant expression AST node"));
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected constant expression AST node"));
     REQUIRE(node->base.properties.expression_props.constant_expression,
-        KEFIR_SET_ERROR(KEFIR_NOT_CONSTANT, "Expected constant expression AST node"));
+            KEFIR_SET_ERROR(KEFIR_NOT_CONSTANT, "Expected constant expression AST node"));
 
     struct kefir_ast_constant_expression_value cond_value, arg1_value, arg2_value;
     REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->condition, &cond_value));
@@ -42,7 +43,7 @@ kefir_result_t kefir_ast_evaluate_conditional_operator_node(struct kefir_mem *me
                     break;
             }
             break;
-            
+
         case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_NONE:
             return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Non-evaluated constant expression");
     }

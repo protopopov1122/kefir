@@ -19,7 +19,6 @@ typedef enum kefir_amd64_sysv_data_class {
     KEFIR_AMD64_SYSV_PARAM_MEMORY
 } kefir_amd64_sysv_data_class_t;
 
-
 #define KEFIR_AMD64_SYSV_ABI_ERROR_PREFIX "AMD64 System-V ABI: "
 
 #endif

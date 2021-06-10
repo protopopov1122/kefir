@@ -13,20 +13,13 @@ struct test {
 struct test getarg(int, ...);
 
 struct test maketest(long base) {
-    struct test val = {
-        .f1 = (double) base,
-        .f2 = base
-    };
+    struct test val = {.f1 = (double) base, .f2 = base};
     return val;
 }
 
 struct test getter(int idx) {
-    return getarg(idx,
-        maketest(0), maketest(10),
-        maketest(20), maketest(30),
-        maketest(40), maketest(50),
-        maketest(60), maketest(70),
-        maketest(80), maketest(90));
+    return getarg(idx, maketest(0), maketest(10), maketest(20), maketest(30), maketest(40), maketest(50), maketest(60),
+                  maketest(70), maketest(80), maketest(90));
 }
 
 int main(int argc, const char **argv) {

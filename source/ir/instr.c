@@ -6,7 +6,7 @@
 kefir_result_t kefir_irblock_init(struct kefir_irblock *bcblock, void *area, kefir_size_t capacity) {
     REQUIRE(bcblock != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block pointer"));
     REQUIRE((area != NULL && capacity != 0) || (area == NULL && capacity == 0),
-        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL content pointer for non-zero capacity IR block"));
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL content pointer for non-zero capacity IR block"));
     REQUIRE_OK(kefir_vector_init(&bcblock->content, sizeof(struct kefir_irinstr), area, capacity));
     return KEFIR_OK;
 }
@@ -28,73 +28,40 @@ struct kefir_irinstr *kefir_irblock_at(const struct kefir_irblock *bcblock, kefi
 
 kefir_result_t kefir_irblock_appendi64(struct kefir_irblock *bcblock, kefir_iropcode_t opcode, kefir_int64_t arg) {
     REQUIRE(bcblock != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block"));
-    struct kefir_irinstr instr = {
-        .opcode = opcode,
-        .arg = {
-            .i64 = arg
-        }
-    };
+    struct kefir_irinstr instr = {.opcode = opcode, .arg = {.i64 = arg}};
     return kefir_vector_append(&bcblock->content, &instr);
 }
 
 kefir_result_t kefir_irblock_appendu64(struct kefir_irblock *bcblock, kefir_iropcode_t opcode, kefir_uint64_t arg) {
     REQUIRE(bcblock != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block"));
-    struct kefir_irinstr instr = {
-        .opcode = opcode,
-        .arg = {
-            .u64 = arg
-        }
-    };
+    struct kefir_irinstr instr = {.opcode = opcode, .arg = {.u64 = arg}};
     return kefir_vector_append(&bcblock->content, &instr);
 }
 
-kefir_result_t kefir_irblock_appendi32(struct kefir_irblock *bcblock, kefir_iropcode_t opcode, kefir_int32_t arg1, kefir_int32_t arg2) {
+kefir_result_t kefir_irblock_appendi32(struct kefir_irblock *bcblock, kefir_iropcode_t opcode, kefir_int32_t arg1,
+                                       kefir_int32_t arg2) {
     REQUIRE(bcblock != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block"));
-    struct kefir_irinstr instr = {
-        .opcode = opcode,
-        .arg = {
-            .i32 = {
-                arg1, arg2
-            }
-        }
-    };
+    struct kefir_irinstr instr = {.opcode = opcode, .arg = {.i32 = {arg1, arg2}}};
     return kefir_vector_append(&bcblock->content, &instr);
 }
 
-kefir_result_t kefir_irblock_appendu32(struct kefir_irblock *bcblock, kefir_iropcode_t opcode, kefir_uint32_t arg1, kefir_uint32_t arg2) {
+kefir_result_t kefir_irblock_appendu32(struct kefir_irblock *bcblock, kefir_iropcode_t opcode, kefir_uint32_t arg1,
+                                       kefir_uint32_t arg2) {
     REQUIRE(bcblock != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block"));
-    struct kefir_irinstr instr = {
-        .opcode = opcode,
-        .arg = {
-            .u32 = {
-                arg1, arg2
-            }
-        }
-    };
+    struct kefir_irinstr instr = {.opcode = opcode, .arg = {.u32 = {arg1, arg2}}};
     return kefir_vector_append(&bcblock->content, &instr);
 }
 
 kefir_result_t kefir_irblock_appendf64(struct kefir_irblock *bcblock, kefir_iropcode_t opcode, kefir_float64_t arg) {
     REQUIRE(bcblock != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block"));
-    struct kefir_irinstr instr = {
-        .opcode = opcode,
-        .arg = {
-            .f64 = arg
-        }
-    };
+    struct kefir_irinstr instr = {.opcode = opcode, .arg = {.f64 = arg}};
     return kefir_vector_append(&bcblock->content, &instr);
 }
 
-kefir_result_t kefir_irblock_appendf32(struct kefir_irblock *bcblock, kefir_iropcode_t opcode, kefir_float32_t arg1, kefir_float32_t arg2) {
+kefir_result_t kefir_irblock_appendf32(struct kefir_irblock *bcblock, kefir_iropcode_t opcode, kefir_float32_t arg1,
+                                       kefir_float32_t arg2) {
     REQUIRE(bcblock != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block"));
-    struct kefir_irinstr instr = {
-        .opcode = opcode,
-        .arg = {
-            .f32 = {
-                arg1, arg2
-            }
-        }
-    };
+    struct kefir_irinstr instr = {.opcode = opcode, .arg = {.f32 = {arg1, arg2}}};
     return kefir_vector_append(&bcblock->content, &instr);
 }
 

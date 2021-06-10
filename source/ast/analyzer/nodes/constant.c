@@ -2,10 +2,9 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-kefir_result_t kefir_ast_analyze_constant_node(struct kefir_mem *mem,
-                                           const struct kefir_ast_context *context,
-                                           const struct kefir_ast_constant *node,
-                                           struct kefir_ast_node_base *base) {
+kefir_result_t kefir_ast_analyze_constant_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
+                                               const struct kefir_ast_constant *node,
+                                               struct kefir_ast_node_base *base) {
     UNUSED(mem);
     UNUSED(context);
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST constant"));

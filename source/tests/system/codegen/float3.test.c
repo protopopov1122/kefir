@@ -19,7 +19,7 @@ int main(int argc, const char **argv) {
         ASSERT(!fequals(i, i * 2));
         ASSERT(!fequals(i, i + 1));
         ASSERT(!fequals(i, i + FLOAT_EPSILON));
-        
+
         ASSERT(fgreater(i + FLOAT_EPSILON, i));
         ASSERT(fgreater(fabs(i) * 2, fabs(i)));
         ASSERT(!fgreater(i, i));
@@ -36,7 +36,7 @@ int main(int argc, const char **argv) {
         ASSERT(!dequals(i, i * 2));
         ASSERT(!dequals(i, i + 1));
         ASSERT(!dequals(i, i + DOUBLE_EPSILON));
-        
+
         ASSERT(dgreater(i + DOUBLE_EPSILON, i));
         ASSERT(dgreater(fabs(i) * 2, fabs(i)));
         ASSERT(!dgreater(i, i));

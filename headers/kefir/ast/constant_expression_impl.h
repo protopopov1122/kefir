@@ -4,11 +4,9 @@
 #include "kefir/ast/constant_expression.h"
 #include "kefir/ast/context.h"
 
-#define EVAL(_id, _type) \
-    kefir_result_t kefir_ast_evaluate_##_id##_node(struct kefir_mem *, \
-                                               const struct kefir_ast_context *, \
-                                               const _type *, \
-                                               struct kefir_ast_constant_expression_value *)
+#define EVAL(_id, _type)                                                                                 \
+    kefir_result_t kefir_ast_evaluate_##_id##_node(struct kefir_mem *, const struct kefir_ast_context *, \
+                                                   const _type *, struct kefir_ast_constant_expression_value *)
 
 EVAL(scalar, struct kefir_ast_constant);
 EVAL(identifier, struct kefir_ast_identifier);
@@ -20,9 +18,8 @@ EVAL(conditional_operator, struct kefir_ast_conditional_operator);
 EVAL(cast_operator, struct kefir_ast_cast_operator);
 #undef EVAL
 
-kefir_result_t kefir_ast_constant_expression_value_evaluate_lvalue_reference(struct kefir_mem *,
-                                                                 const struct kefir_ast_context *,
-                                                                 const struct kefir_ast_node_base *,
-                                                                 struct kefir_ast_constant_expression_pointer *);
+kefir_result_t kefir_ast_constant_expression_value_evaluate_lvalue_reference(
+    struct kefir_mem *, const struct kefir_ast_context *, const struct kefir_ast_node_base *,
+    struct kefir_ast_constant_expression_pointer *);
 
 #endif

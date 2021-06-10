@@ -10,25 +10,20 @@ struct kefir_ast_node_base *ast_identifier_clone(struct kefir_mem *, struct kefi
 kefir_result_t ast_identifier_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
-    ASSIGN_DECL_CAST(struct kefir_ast_identifier *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_identifier *, node, base->self);
     KEFIR_FREE(mem, node);
     return KEFIR_OK;
 }
 
-const struct kefir_ast_node_class AST_IDENTIFIER_CLASS = {
-    .type = KEFIR_AST_IDENTIFIER,
-    .visit = ast_identifier_visit,
-    .clone = ast_identifier_clone,
-    .free = ast_identifier_free
-};
+const struct kefir_ast_node_class AST_IDENTIFIER_CLASS = {.type = KEFIR_AST_IDENTIFIER,
+                                                          .visit = ast_identifier_visit,
+                                                          .clone = ast_identifier_clone,
+                                                          .free = ast_identifier_free};
 
-struct kefir_ast_node_base *ast_identifier_clone(struct kefir_mem *mem,
-                                               struct kefir_ast_node_base *base) {
+struct kefir_ast_node_base *ast_identifier_clone(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(base != NULL, NULL);
-    ASSIGN_DECL_CAST(struct kefir_ast_identifier *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_identifier *, node, base->self);
     struct kefir_ast_identifier *clone = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_identifier));
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_IDENTIFIER_CLASS;
@@ -42,9 +37,8 @@ struct kefir_ast_node_base *ast_identifier_clone(struct kefir_mem *mem,
     return KEFIR_AST_NODE_BASE(clone);
 }
 
-struct kefir_ast_identifier *kefir_ast_new_identifier(struct kefir_mem *mem,
-                                                  struct kefir_symbol_table *symbols,
-                                                  const char *identifier) {
+struct kefir_ast_identifier *kefir_ast_new_identifier(struct kefir_mem *mem, struct kefir_symbol_table *symbols,
+                                                      const char *identifier) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(symbols != NULL, NULL);
     REQUIRE(identifier != NULL, NULL);
@@ -62,4 +56,3 @@ struct kefir_ast_identifier *kefir_ast_new_identifier(struct kefir_mem *mem,
     id->identifier = id_copy;
     return id;
 }
-

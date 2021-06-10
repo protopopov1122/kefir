@@ -10,27 +10,22 @@ struct kefir_ast_node_base *ast_array_subscript_clone(struct kefir_mem *, struct
 kefir_result_t ast_array_subscript_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
-    ASSIGN_DECL_CAST(struct kefir_ast_array_subscript *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_array_subscript *, node, base->self);
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node->array));
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node->subscript));
     KEFIR_FREE(mem, node);
     return KEFIR_OK;
 }
 
-const struct kefir_ast_node_class AST_ARRAY_SUBSCRIPT_CLASS = {
-    .type = KEFIR_AST_ARRAY_SUBSCRIPT,
-    .visit = ast_array_subscript_visit,
-    .clone = ast_array_subscript_clone,
-    .free = ast_array_subscript_free
-};
+const struct kefir_ast_node_class AST_ARRAY_SUBSCRIPT_CLASS = {.type = KEFIR_AST_ARRAY_SUBSCRIPT,
+                                                               .visit = ast_array_subscript_visit,
+                                                               .clone = ast_array_subscript_clone,
+                                                               .free = ast_array_subscript_free};
 
-struct kefir_ast_node_base *ast_array_subscript_clone(struct kefir_mem *mem,
-                                                     struct kefir_ast_node_base *base) {
+struct kefir_ast_node_base *ast_array_subscript_clone(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(base != NULL, NULL);
-    ASSIGN_DECL_CAST(struct kefir_ast_array_subscript *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_array_subscript *, node, base->self);
     struct kefir_ast_array_subscript *clone = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_array_subscript));
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_ARRAY_SUBSCRIPT_CLASS;
@@ -55,8 +50,8 @@ struct kefir_ast_node_base *ast_array_subscript_clone(struct kefir_mem *mem,
 }
 
 struct kefir_ast_array_subscript *kefir_ast_new_array_subscript(struct kefir_mem *mem,
-                                                            struct kefir_ast_node_base *array,
-                                                            struct kefir_ast_node_base *subscript) {
+                                                                struct kefir_ast_node_base *array,
+                                                                struct kefir_ast_node_base *subscript) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(array != NULL, NULL);
     REQUIRE(subscript != NULL, NULL);

@@ -7,9 +7,9 @@
 #include "kefir/core/error.h"
 
 kefir_result_t kefir_ast_analyze_expression_statement_node(struct kefir_mem *mem,
-                                            const struct kefir_ast_context *context,
-                                            const struct kefir_ast_expression_statement *node,
-                                            struct kefir_ast_node_base *base) {
+                                                           const struct kefir_ast_context *context,
+                                                           const struct kefir_ast_expression_statement *node,
+                                                           struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST expression statement"));
@@ -21,7 +21,7 @@ kefir_result_t kefir_ast_analyze_expression_statement_node(struct kefir_mem *mem
     if (node->expression != NULL) {
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->expression));
         REQUIRE(node->expression->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected AST expression node as part of expression statement"));
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected AST expression node as part of expression statement"));
     }
     return KEFIR_OK;
 }

@@ -10,26 +10,21 @@ struct kefir_ast_node_base *ast_string_literal_clone(struct kefir_mem *, struct 
 kefir_result_t ast_string_literal_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
-    ASSIGN_DECL_CAST(struct kefir_ast_string_literal *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_string_literal *, node, base->self);
     KEFIR_FREE(mem, node->literal);
     KEFIR_FREE(mem, node);
     return KEFIR_OK;
 }
 
-const struct kefir_ast_node_class AST_STRING_LITERAL_CLASS = {
-    .type = KEFIR_AST_STRING_LITERAL,
-    .visit = ast_string_literal_visit,
-    .clone = ast_string_literal_clone,
-    .free = ast_string_literal_free
-};
+const struct kefir_ast_node_class AST_STRING_LITERAL_CLASS = {.type = KEFIR_AST_STRING_LITERAL,
+                                                              .visit = ast_string_literal_visit,
+                                                              .clone = ast_string_literal_clone,
+                                                              .free = ast_string_literal_free};
 
-struct kefir_ast_node_base *ast_string_literal_clone(struct kefir_mem *mem,
-                                               struct kefir_ast_node_base *base) {
+struct kefir_ast_node_base *ast_string_literal_clone(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(base != NULL, NULL);
-    ASSIGN_DECL_CAST(struct kefir_ast_string_literal *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_string_literal *, node, base->self);
 
     struct kefir_ast_string_literal *clone = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_string_literal));
     REQUIRE(clone != NULL, NULL);
@@ -51,9 +46,8 @@ struct kefir_ast_node_base *ast_string_literal_clone(struct kefir_mem *mem,
     return KEFIR_AST_NODE_BASE(clone);
 }
 
-struct kefir_ast_string_literal *kefir_ast_new_string_literal(struct kefir_mem *mem,
-                                                          const char *literal,
-                                                          kefir_size_t length) {
+struct kefir_ast_string_literal *kefir_ast_new_string_literal(struct kefir_mem *mem, const char *literal,
+                                                              kefir_size_t length) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(literal != NULL, NULL);
 

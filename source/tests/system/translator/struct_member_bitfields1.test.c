@@ -19,11 +19,7 @@ int main(int argc, const char **argv) {
     for (int i = -512; i < 512; i++) {
         for (int j = -8; j < 8; j++) {
             for (int k = 0; k < 4; k++) {
-                struct param p = {
-                    .field1 = j,
-                    .field2 = k,
-                    .field3 = i
-                };
+                struct param p = {.field1 = j, .field2 = k, .field3 = i};
                 ASSERT(sum(&p) == j + k + i);
             }
         }

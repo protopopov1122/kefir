@@ -124,7 +124,8 @@ static kefir_result_t amd64_rawdata(struct kefir_amd64_asmgen *asmgen, kefir_amd
     return KEFIR_OK;
 }
 
-static kefir_result_t amd64_multrawdata(struct kefir_amd64_asmgen *asmgen, kefir_size_t times, kefir_amd64_asmgen_datawidth_t width) {
+static kefir_result_t amd64_multrawdata(struct kefir_amd64_asmgen *asmgen, kefir_size_t times,
+                                        kefir_amd64_asmgen_datawidth_t width) {
     REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 assembly generator"));
     FILE *out = (FILE *) asmgen->data;
     REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid output file for AMD64 assembly"));

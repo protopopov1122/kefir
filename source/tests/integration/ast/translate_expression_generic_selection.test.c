@@ -10,48 +10,58 @@
 #include "kefir/ir/format.h"
 #include <stdio.h>
 
-static struct kefir_ast_node_base *make_gen_selection(struct kefir_mem *mem,
-                                                    struct kefir_ast_node_base *arg) {
-    struct kefir_ast_type_name *type_name1 = kefir_ast_new_type_name(mem, kefir_ast_declarator_identifier(mem, NULL, NULL));
+static struct kefir_ast_node_base *make_gen_selection(struct kefir_mem *mem, struct kefir_ast_node_base *arg) {
+    struct kefir_ast_type_name *type_name1 =
+        kefir_ast_new_type_name(mem, kefir_ast_declarator_identifier(mem, NULL, NULL));
     REQUIRE(kefir_ast_declarator_specifier_list_append(mem, &type_name1->type_decl.specifiers,
-        kefir_ast_type_specifier_char(mem)) == KEFIR_OK, NULL);
+                                                       kefir_ast_type_specifier_char(mem)) == KEFIR_OK,
+            NULL);
 
-    struct kefir_ast_type_name *type_name2 = kefir_ast_new_type_name(mem, kefir_ast_declarator_identifier(mem, NULL, NULL));
+    struct kefir_ast_type_name *type_name2 =
+        kefir_ast_new_type_name(mem, kefir_ast_declarator_identifier(mem, NULL, NULL));
     REQUIRE(kefir_ast_declarator_specifier_list_append(mem, &type_name2->type_decl.specifiers,
-        kefir_ast_type_specifier_short(mem)) == KEFIR_OK, NULL);
+                                                       kefir_ast_type_specifier_short(mem)) == KEFIR_OK,
+            NULL);
 
-    struct kefir_ast_type_name *type_name3 = kefir_ast_new_type_name(mem, kefir_ast_declarator_identifier(mem, NULL, NULL));
+    struct kefir_ast_type_name *type_name3 =
+        kefir_ast_new_type_name(mem, kefir_ast_declarator_identifier(mem, NULL, NULL));
     REQUIRE(kefir_ast_declarator_specifier_list_append(mem, &type_name3->type_decl.specifiers,
-        kefir_ast_type_specifier_unsigned(mem)) == KEFIR_OK, NULL);
+                                                       kefir_ast_type_specifier_unsigned(mem)) == KEFIR_OK,
+            NULL);
 
-    struct kefir_ast_type_name *type_name4 = kefir_ast_new_type_name(mem, kefir_ast_declarator_identifier(mem, NULL, NULL));
+    struct kefir_ast_type_name *type_name4 =
+        kefir_ast_new_type_name(mem, kefir_ast_declarator_identifier(mem, NULL, NULL));
     REQUIRE(kefir_ast_declarator_specifier_list_append(mem, &type_name4->type_decl.specifiers,
-        kefir_ast_type_specifier_float(mem)) == KEFIR_OK, NULL);
+                                                       kefir_ast_type_specifier_float(mem)) == KEFIR_OK,
+            NULL);
 
-    struct kefir_ast_type_name *type_name5 = kefir_ast_new_type_name(mem, kefir_ast_declarator_identifier(mem, NULL, NULL));
+    struct kefir_ast_type_name *type_name5 =
+        kefir_ast_new_type_name(mem, kefir_ast_declarator_identifier(mem, NULL, NULL));
     REQUIRE(kefir_ast_declarator_specifier_list_append(mem, &type_name5->type_decl.specifiers,
-        kefir_ast_type_specifier_double(mem)) == KEFIR_OK, NULL);
+                                                       kefir_ast_type_specifier_double(mem)) == KEFIR_OK,
+            NULL);
 
-    struct kefir_ast_type_name *type_name6 = kefir_ast_new_type_name(mem, kefir_ast_declarator_identifier(mem, NULL, NULL));
+    struct kefir_ast_type_name *type_name6 =
+        kefir_ast_new_type_name(mem, kefir_ast_declarator_identifier(mem, NULL, NULL));
     REQUIRE(kefir_ast_declarator_specifier_list_append(mem, &type_name6->type_decl.specifiers,
-        kefir_ast_type_specifier_void(mem)) == KEFIR_OK, NULL);
+                                                       kefir_ast_type_specifier_void(mem)) == KEFIR_OK,
+            NULL);
 
-    struct kefir_ast_generic_selection *generic_selection1 = kefir_ast_new_generic_selection(mem,
-        arg);
-    kefir_ast_generic_selection_append(mem, generic_selection1,
-        type_name1, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 1)));
-    kefir_ast_generic_selection_append(mem, generic_selection1,
-        type_name2, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 2)));
-    kefir_ast_generic_selection_append(mem, generic_selection1,
-        type_name3, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 3)));
-    kefir_ast_generic_selection_append(mem, generic_selection1,
-        type_name4, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 4)));
-    kefir_ast_generic_selection_append(mem, generic_selection1,
-        type_name5, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 5)));
-    kefir_ast_generic_selection_append(mem, generic_selection1,
-        type_name6, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 6)));
-    kefir_ast_generic_selection_append(mem, generic_selection1,
-        NULL, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 7)));
+    struct kefir_ast_generic_selection *generic_selection1 = kefir_ast_new_generic_selection(mem, arg);
+    kefir_ast_generic_selection_append(mem, generic_selection1, type_name1,
+                                       KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 1)));
+    kefir_ast_generic_selection_append(mem, generic_selection1, type_name2,
+                                       KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 2)));
+    kefir_ast_generic_selection_append(mem, generic_selection1, type_name3,
+                                       KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 3)));
+    kefir_ast_generic_selection_append(mem, generic_selection1, type_name4,
+                                       KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 4)));
+    kefir_ast_generic_selection_append(mem, generic_selection1, type_name5,
+                                       KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 5)));
+    kefir_ast_generic_selection_append(mem, generic_selection1, type_name6,
+                                       KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 6)));
+    kefir_ast_generic_selection_append(mem, generic_selection1, NULL,
+                                       KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 7)));
     return KEFIR_AST_NODE_BASE(generic_selection1);
 }
 
@@ -65,40 +75,40 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_local_context_init(mem, &global_context, &local_context));
     const struct kefir_ast_context *context = &local_context.context;
 
-    struct kefir_ast_node_base *node1 = make_gen_selection(mem,
-        KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 3.14)));
+    struct kefir_ast_node_base *node1 =
+        make_gen_selection(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 3.14)));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node1));
 
-    struct kefir_ast_type_name *type_name1 = kefir_ast_new_type_name(mem,
-        kefir_ast_declarator_identifier(mem, NULL, NULL));
+    struct kefir_ast_type_name *type_name1 =
+        kefir_ast_new_type_name(mem, kefir_ast_declarator_identifier(mem, NULL, NULL));
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name1->type_decl.specifiers,
-        kefir_ast_type_specifier_char(mem)));
+                                                          kefir_ast_type_specifier_char(mem)));
 
-    struct kefir_ast_node_base *node2 = make_gen_selection(mem,
-        KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem, type_name1,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(mem, 'A')))));
+    struct kefir_ast_node_base *node2 =
+        make_gen_selection(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(
+                                    mem, type_name1, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(mem, 'A')))));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node2));
 
-    struct kefir_ast_type_name *type_name2 = kefir_ast_new_type_name(mem,
-        kefir_ast_declarator_identifier(mem, NULL, NULL));
+    struct kefir_ast_type_name *type_name2 =
+        kefir_ast_new_type_name(mem, kefir_ast_declarator_identifier(mem, NULL, NULL));
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name2->type_decl.specifiers,
-        kefir_ast_type_specifier_short(mem)));
+                                                          kefir_ast_type_specifier_short(mem)));
 
-    struct kefir_ast_node_base *node3 = make_gen_selection(mem,
-        KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(mem, type_name2,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 54)))));
+    struct kefir_ast_node_base *node3 =
+        make_gen_selection(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(
+                                    mem, type_name2, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 54)))));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node3));
 
-    struct kefir_ast_node_base *node4 = make_gen_selection(mem,
-        KEFIR_AST_NODE_BASE(kefir_ast_new_constant_uint(mem, 3)));
+    struct kefir_ast_node_base *node4 =
+        make_gen_selection(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_uint(mem, 3)));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node4));
 
-    struct kefir_ast_node_base *node5 = make_gen_selection(mem,
-        KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 2.71)));
+    struct kefir_ast_node_base *node5 =
+        make_gen_selection(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 2.71)));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node5));
 
-    struct kefir_ast_node_base *node6 = make_gen_selection(mem,
-        KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(mem, 'B')));
+    struct kefir_ast_node_base *node6 =
+        make_gen_selection(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(mem, 'B')));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node6));
 
     struct kefir_ir_module module;
@@ -107,24 +117,27 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ast_translator_global_scope_layout translator_global_scope;
     struct kefir_ast_translator_local_scope_layout translator_local_scope;
     REQUIRE_OK(kefir_ast_translator_global_scope_layout_init(mem, &module, &translator_global_scope));
-    REQUIRE_OK(kefir_ast_translator_local_scope_layout_init(mem, &module, &translator_global_scope, &translator_local_scope));
+    REQUIRE_OK(
+        kefir_ast_translator_local_scope_layout_init(mem, &module, &translator_global_scope, &translator_local_scope));
 
     struct kefir_ast_translator_context translator_context;
     REQUIRE_OK(kefir_ast_translator_context_init(&translator_context, context, &env, &module));
-    REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(mem, &module, &global_context, &env,
-        kefir_ast_translator_context_type_resolver(&translator_context), &translator_global_scope));
-    REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(mem, &local_context, &env, &module,
-        kefir_ast_translator_context_type_resolver(&translator_context), &translator_local_scope));
+    REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(
+        mem, &module, &global_context, &env, kefir_ast_translator_context_type_resolver(&translator_context),
+        &translator_global_scope));
+    REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(
+        mem, &local_context, &env, &module, kefir_ast_translator_context_type_resolver(&translator_context),
+        &translator_local_scope));
     REQUIRE_OK(kefir_ast_translate_global_scope(mem, &module, &translator_global_scope));
 
     struct kefir_ir_type *func1_params = kefir_ir_module_new_type(mem, &module, 0, NULL);
     struct kefir_ir_type *func1_returns = kefir_ir_module_new_type(mem, &module, 0, NULL);
 
-    struct kefir_ir_function_decl *func1_decl = kefir_ir_module_new_function_declaration(mem, &module,
-        "func1", func1_params, false, func1_returns);
+    struct kefir_ir_function_decl *func1_decl =
+        kefir_ir_module_new_function_declaration(mem, &module, "func1", func1_params, false, func1_returns);
     REQUIRE(func1_decl != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *func1 = kefir_ir_module_new_function(mem, &module, func1_decl,
-        translator_local_scope.local_layout, 0);
+    struct kefir_ir_function *func1 =
+        kefir_ir_module_new_function(mem, &module, func1_decl, translator_local_scope.local_layout, 0);
     struct kefir_irbuilder_block builder;
     REQUIRE_OK(kefir_irbuilder_block_init(mem, &builder, &func1->body));
     REQUIRE_OK(kefir_ast_translate_expression(mem, node1, &builder, &translator_context));

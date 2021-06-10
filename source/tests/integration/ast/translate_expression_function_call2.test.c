@@ -22,48 +22,51 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     const struct kefir_ast_context *context = &local_context.context;
 
     struct kefir_ast_function_type *func_type1 = NULL;
-    const struct kefir_ast_type *type1 = kefir_ast_type_function(mem, context->type_bundle,
-        kefir_ast_type_signed_int(), "sum", &func_type1);
-    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context->type_bundle, func_type1, NULL, kefir_ast_type_signed_int(), NULL));
+    const struct kefir_ast_type *type1 =
+        kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_int(), "sum", &func_type1);
+    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context->type_bundle, func_type1, NULL,
+                                                 kefir_ast_type_signed_int(), NULL));
     REQUIRE_OK(kefir_ast_type_function_ellipsis(func_type1, true));
 
     struct kefir_ast_structure_specifier *specifier1 = kefir_ast_structure_specifier_init(mem, NULL, NULL, true);
     struct kefir_ast_structure_declaration_entry *entry1 = kefir_ast_structure_declaration_entry_alloc(mem);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &entry1->declaration.specifiers,
-        kefir_ast_type_specifier_int(mem)));
-    REQUIRE_OK(kefir_ast_structure_declaration_entry_append(mem, entry1,
-        kefir_ast_declarator_identifier(mem, context->symbols, "x"), NULL));
+                                                          kefir_ast_type_specifier_int(mem)));
+    REQUIRE_OK(kefir_ast_structure_declaration_entry_append(
+        mem, entry1, kefir_ast_declarator_identifier(mem, context->symbols, "x"), NULL));
     REQUIRE_OK(kefir_ast_structure_specifier_append_entry(mem, specifier1, entry1));
 
     struct kefir_ast_structure_declaration_entry *entry2 = kefir_ast_structure_declaration_entry_alloc(mem);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &entry2->declaration.specifiers,
-        kefir_ast_type_specifier_double(mem)));
-    REQUIRE_OK(kefir_ast_structure_declaration_entry_append(mem, entry2,
-        kefir_ast_declarator_identifier(mem, context->symbols, "y"), NULL));
+                                                          kefir_ast_type_specifier_double(mem)));
+    REQUIRE_OK(kefir_ast_structure_declaration_entry_append(
+        mem, entry2, kefir_ast_declarator_identifier(mem, context->symbols, "y"), NULL));
     REQUIRE_OK(kefir_ast_structure_specifier_append_entry(mem, specifier1, entry2));
 
     struct kefir_ast_structure_declaration_entry *entry3 = kefir_ast_structure_declaration_entry_alloc(mem);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &entry3->declaration.specifiers,
-        kefir_ast_type_specifier_char(mem)));
-    REQUIRE_OK(kefir_ast_structure_declaration_entry_append(mem, entry3,
+                                                          kefir_ast_type_specifier_char(mem)));
+    REQUIRE_OK(kefir_ast_structure_declaration_entry_append(
+        mem, entry3,
         kefir_ast_declarator_array(mem, KEFIR_AST_DECLARATOR_ARRAY_BOUNDED,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 16)),
-            kefir_ast_declarator_identifier(mem, context->symbols, "z")),
+                                   KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 16)),
+                                   kefir_ast_declarator_identifier(mem, context->symbols, "z")),
         NULL));
     REQUIRE_OK(kefir_ast_structure_specifier_append_entry(mem, specifier1, entry3));
 
-    struct kefir_ast_type_name *type_name2 = kefir_ast_new_type_name(mem, kefir_ast_declarator_identifier(mem, NULL, NULL));
+    struct kefir_ast_type_name *type_name2 =
+        kefir_ast_new_type_name(mem, kefir_ast_declarator_identifier(mem, NULL, NULL));
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name2->type_decl.specifiers,
-        kefir_ast_type_specifier_struct(mem, specifier1)));
+                                                          kefir_ast_type_specifier_struct(mem, specifier1)));
 
-    REQUIRE_OK(kefir_ast_global_context_declare_function(mem, &global_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE, type1, NULL));
+    REQUIRE_OK(kefir_ast_global_context_declare_function(mem, &global_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE, type1,
+                                                         NULL));
 
-    struct kefir_ast_function_call *call4 = kefir_ast_new_function_call(mem,
-        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "sum")));
+    struct kefir_ast_function_call *call4 =
+        kefir_ast_new_function_call(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "sum")));
+    REQUIRE_OK(kefir_ast_function_call_append(mem, call4, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 100))));
     REQUIRE_OK(kefir_ast_function_call_append(mem, call4,
-        KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 100))));
-    REQUIRE_OK(kefir_ast_function_call_append(mem, call4,
-        KEFIR_AST_NODE_BASE(kefir_ast_new_compound_literal(mem, type_name2))));
+                                              KEFIR_AST_NODE_BASE(kefir_ast_new_compound_literal(mem, type_name2))));
 
     struct kefir_ast_node_base *node4 = KEFIR_AST_NODE_BASE(call4);
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node4));
@@ -74,28 +77,27 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ast_translator_global_scope_layout translator_global_scope;
     struct kefir_ast_translator_local_scope_layout translator_local_scope;
     REQUIRE_OK(kefir_ast_translator_global_scope_layout_init(mem, &module, &translator_global_scope));
-    REQUIRE_OK(kefir_ast_translator_local_scope_layout_init(mem, &module, &translator_global_scope, &translator_local_scope));
+    REQUIRE_OK(
+        kefir_ast_translator_local_scope_layout_init(mem, &module, &translator_global_scope, &translator_local_scope));
 
     struct kefir_ast_translator_context translator_context;
     REQUIRE_OK(kefir_ast_translator_context_init(&translator_context, context, &env, &module));
-    REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(mem, &module, &global_context, &env,
-        kefir_ast_translator_context_type_resolver(&translator_context), &translator_global_scope));
-    REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(mem, &local_context, &env, &module,
-        kefir_ast_translator_context_type_resolver(&translator_context), &translator_local_scope));
+    REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(
+        mem, &module, &global_context, &env, kefir_ast_translator_context_type_resolver(&translator_context),
+        &translator_global_scope));
+    REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(
+        mem, &local_context, &env, &module, kefir_ast_translator_context_type_resolver(&translator_context),
+        &translator_local_scope));
     REQUIRE_OK(kefir_ast_translate_global_scope(mem, &module, &translator_global_scope));
     struct kefir_irbuilder_block builder;
 
     FUNC("call1", {
-        struct kefir_ast_function_call *call = kefir_ast_new_function_call(mem,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "sum")));
-        REQUIRE_OK(kefir_ast_function_call_append(mem, call,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 1))));
-        REQUIRE_OK(kefir_ast_function_call_append(mem, call,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 2))));
-        REQUIRE_OK(kefir_ast_function_call_append(mem, call,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 3))));
-        REQUIRE_OK(kefir_ast_function_call_append(mem, call,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 4))));
+        struct kefir_ast_function_call *call = kefir_ast_new_function_call(
+            mem, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "sum")));
+        REQUIRE_OK(kefir_ast_function_call_append(mem, call, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 1))));
+        REQUIRE_OK(kefir_ast_function_call_append(mem, call, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 2))));
+        REQUIRE_OK(kefir_ast_function_call_append(mem, call, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 3))));
+        REQUIRE_OK(kefir_ast_function_call_append(mem, call, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 4))));
 
         struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(call);
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, node));
@@ -104,10 +106,10 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     });
 
     FUNC("call2", {
-        struct kefir_ast_function_call *call = kefir_ast_new_function_call(mem,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "sum")));
-        REQUIRE_OK(kefir_ast_function_call_append(mem, call,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 100))));
+        struct kefir_ast_function_call *call = kefir_ast_new_function_call(
+            mem, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "sum")));
+        REQUIRE_OK(
+            kefir_ast_function_call_append(mem, call, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 100))));
 
         struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(call);
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, node));
@@ -116,12 +118,12 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     });
 
     FUNC("call3", {
-        struct kefir_ast_function_call *call = kefir_ast_new_function_call(mem,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "sum")));
-        REQUIRE_OK(kefir_ast_function_call_append(mem, call,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 100))));
-        REQUIRE_OK(kefir_ast_function_call_append(mem, call,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 4.58f))));
+        struct kefir_ast_function_call *call = kefir_ast_new_function_call(
+            mem, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "sum")));
+        REQUIRE_OK(
+            kefir_ast_function_call_append(mem, call, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 100))));
+        REQUIRE_OK(
+            kefir_ast_function_call_append(mem, call, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 4.58f))));
 
         struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(call);
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, node));
@@ -133,7 +135,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         REQUIRE_OK(kefir_ast_translate_expression(mem, node4, &builder, &translator_context));
         REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node4));
     });
-    
+
     REQUIRE_OK(kefir_ir_format_module(stdout, &module));
 
     REQUIRE_OK(kefir_ast_translator_context_free(mem, &translator_context));

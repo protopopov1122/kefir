@@ -22,53 +22,58 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     struct kefir_ast_struct_type *struct_type1 = NULL;
     const struct kefir_ast_type *type1 = kefir_ast_type_structure(mem, context->type_bundle, "", &struct_type1);
-    REQUIRE_OK(kefir_ast_struct_type_bitfield(mem, context->symbols, struct_type1,
-        "value1", kefir_ast_type_signed_int(), NULL, kefir_ast_constant_expression_integer(mem, 9)));
-    REQUIRE_OK(kefir_ast_struct_type_bitfield(mem, context->symbols, struct_type1,
-        "value2", kefir_ast_type_signed_int(), NULL, kefir_ast_constant_expression_integer(mem, 4)));
-    REQUIRE_OK(kefir_ast_struct_type_bitfield(mem, context->symbols, struct_type1,
-        "value3", kefir_ast_type_unsigned_int(), NULL, kefir_ast_constant_expression_integer(mem, 6)));
-    REQUIRE_OK(kefir_ast_struct_type_field(mem, context->symbols, struct_type1,
-        "payload", kefir_ast_type_char(), NULL));
-    REQUIRE_OK(kefir_ast_struct_type_bitfield(mem, context->symbols, struct_type1,
-        "value4", kefir_ast_type_unsigned_char(), NULL, kefir_ast_constant_expression_integer(mem, 3)));
-    REQUIRE_OK(kefir_ast_struct_type_bitfield(mem, context->symbols, struct_type1,
-        "value5", kefir_ast_type_unsigned_long_long(), NULL, kefir_ast_constant_expression_integer(mem, 1)));
-    REQUIRE_OK(kefir_ast_struct_type_bitfield(mem, context->symbols, struct_type1,
-        "value6", kefir_ast_type_unsigned_long(), NULL, kefir_ast_constant_expression_integer(mem, 33)));
+    REQUIRE_OK(kefir_ast_struct_type_bitfield(mem, context->symbols, struct_type1, "value1",
+                                              kefir_ast_type_signed_int(), NULL,
+                                              kefir_ast_constant_expression_integer(mem, 9)));
+    REQUIRE_OK(kefir_ast_struct_type_bitfield(mem, context->symbols, struct_type1, "value2",
+                                              kefir_ast_type_signed_int(), NULL,
+                                              kefir_ast_constant_expression_integer(mem, 4)));
+    REQUIRE_OK(kefir_ast_struct_type_bitfield(mem, context->symbols, struct_type1, "value3",
+                                              kefir_ast_type_unsigned_int(), NULL,
+                                              kefir_ast_constant_expression_integer(mem, 6)));
+    REQUIRE_OK(
+        kefir_ast_struct_type_field(mem, context->symbols, struct_type1, "payload", kefir_ast_type_char(), NULL));
+    REQUIRE_OK(kefir_ast_struct_type_bitfield(mem, context->symbols, struct_type1, "value4",
+                                              kefir_ast_type_unsigned_char(), NULL,
+                                              kefir_ast_constant_expression_integer(mem, 3)));
+    REQUIRE_OK(kefir_ast_struct_type_bitfield(mem, context->symbols, struct_type1, "value5",
+                                              kefir_ast_type_unsigned_long_long(), NULL,
+                                              kefir_ast_constant_expression_integer(mem, 1)));
+    REQUIRE_OK(kefir_ast_struct_type_bitfield(mem, context->symbols, struct_type1, "value6",
+                                              kefir_ast_type_unsigned_long(), NULL,
+                                              kefir_ast_constant_expression_integer(mem, 33)));
 
-    REQUIRE_OK(kefir_ast_global_context_declare_external(mem, &global_context,
-        "structure1", type1, NULL, NULL));
-    REQUIRE_OK(kefir_ast_global_context_declare_external(mem, &global_context,
-        "structure2", kefir_ast_type_pointer(mem, context->type_bundle, type1), NULL, NULL));
+    REQUIRE_OK(kefir_ast_global_context_declare_external(mem, &global_context, "structure1", type1, NULL, NULL));
+    REQUIRE_OK(kefir_ast_global_context_declare_external(
+        mem, &global_context, "structure2", kefir_ast_type_pointer(mem, context->type_bundle, type1), NULL, NULL));
 
-    struct kefir_ast_node_base *node1 = KEFIR_AST_NODE_BASE(kefir_ast_new_struct_member(mem, context->symbols,
-        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "structure1")),
+    struct kefir_ast_node_base *node1 = KEFIR_AST_NODE_BASE(kefir_ast_new_struct_member(
+        mem, context->symbols, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "structure1")),
         "value1"));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node1));
 
-    struct kefir_ast_node_base *node2 = KEFIR_AST_NODE_BASE(kefir_ast_new_struct_member(mem, context->symbols,
-        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "structure1")),
+    struct kefir_ast_node_base *node2 = KEFIR_AST_NODE_BASE(kefir_ast_new_struct_member(
+        mem, context->symbols, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "structure1")),
         "value2"));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node2));
 
-    struct kefir_ast_node_base *node3 = KEFIR_AST_NODE_BASE(kefir_ast_new_struct_member(mem, context->symbols,
-        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "structure1")),
+    struct kefir_ast_node_base *node3 = KEFIR_AST_NODE_BASE(kefir_ast_new_struct_member(
+        mem, context->symbols, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "structure1")),
         "value3"));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node3));
 
-    struct kefir_ast_node_base *node4 = KEFIR_AST_NODE_BASE(kefir_ast_new_struct_indirect_member(mem, context->symbols,
-        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "structure2")),
+    struct kefir_ast_node_base *node4 = KEFIR_AST_NODE_BASE(kefir_ast_new_struct_indirect_member(
+        mem, context->symbols, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "structure2")),
         "value4"));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node4));
 
-    struct kefir_ast_node_base *node5 = KEFIR_AST_NODE_BASE(kefir_ast_new_struct_indirect_member(mem, context->symbols,
-        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "structure2")),
+    struct kefir_ast_node_base *node5 = KEFIR_AST_NODE_BASE(kefir_ast_new_struct_indirect_member(
+        mem, context->symbols, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "structure2")),
         "value5"));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node5));
 
-    struct kefir_ast_node_base *node6 = KEFIR_AST_NODE_BASE(kefir_ast_new_struct_indirect_member(mem, context->symbols,
-        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "structure2")),
+    struct kefir_ast_node_base *node6 = KEFIR_AST_NODE_BASE(kefir_ast_new_struct_indirect_member(
+        mem, context->symbols, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "structure2")),
         "value6"));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node6));
 
@@ -78,24 +83,27 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ast_translator_global_scope_layout translator_global_scope;
     struct kefir_ast_translator_local_scope_layout translator_local_scope;
     REQUIRE_OK(kefir_ast_translator_global_scope_layout_init(mem, &module, &translator_global_scope));
-    REQUIRE_OK(kefir_ast_translator_local_scope_layout_init(mem, &module, &translator_global_scope, &translator_local_scope));
+    REQUIRE_OK(
+        kefir_ast_translator_local_scope_layout_init(mem, &module, &translator_global_scope, &translator_local_scope));
 
     struct kefir_ast_translator_context translator_context;
     REQUIRE_OK(kefir_ast_translator_context_init(&translator_context, context, &env, &module));
-    REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(mem, &module, &global_context, &env,
-        kefir_ast_translator_context_type_resolver(&translator_context), &translator_global_scope));
-    REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(mem, &local_context, &env, &module,
-        kefir_ast_translator_context_type_resolver(&translator_context), &translator_local_scope));
+    REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(
+        mem, &module, &global_context, &env, kefir_ast_translator_context_type_resolver(&translator_context),
+        &translator_global_scope));
+    REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(
+        mem, &local_context, &env, &module, kefir_ast_translator_context_type_resolver(&translator_context),
+        &translator_local_scope));
     REQUIRE_OK(kefir_ast_translate_global_scope(mem, &module, &translator_global_scope));
 
     struct kefir_ir_type *func1_params = kefir_ir_module_new_type(mem, &module, 0, NULL);
     struct kefir_ir_type *func1_returns = kefir_ir_module_new_type(mem, &module, 0, NULL);
 
-    struct kefir_ir_function_decl *func1_decl = kefir_ir_module_new_function_declaration(mem, &module,
-        "func1", func1_params, false, func1_returns);
+    struct kefir_ir_function_decl *func1_decl =
+        kefir_ir_module_new_function_declaration(mem, &module, "func1", func1_params, false, func1_returns);
     REQUIRE(func1_decl != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *func1 = kefir_ir_module_new_function(mem, &module, func1_decl,
-        translator_local_scope.local_layout, 0);
+    struct kefir_ir_function *func1 =
+        kefir_ir_module_new_function(mem, &module, func1_decl, translator_local_scope.local_layout, 0);
     struct kefir_irbuilder_block builder;
     REQUIRE_OK(kefir_irbuilder_block_init(mem, &builder, &func1->body));
     REQUIRE_OK(kefir_ast_translate_expression(mem, node1, &builder, &translator_context));

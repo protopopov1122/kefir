@@ -171,7 +171,7 @@ typedef enum kefir_ast_type_specifier_type {
 } kefir_ast_type_specifier_type_t;
 
 _Static_assert(KEFIR_AST_TYPE_SPECIFIER_COUNT <= sizeof(kefir_uint64_t) * CHAR_BIT,
-    "Number of type specifiers exceeds the largest bit map size");
+               "Number of type specifiers exceeds the largest bit map size");
 
 typedef enum kefir_ast_storage_class_specifier_type {
     KEFIR_AST_STORAGE_SPECIFIER_TYPEDEF = 0,
@@ -185,7 +185,7 @@ typedef enum kefir_ast_storage_class_specifier_type {
 } kefir_ast_storage_class_specifier_type_t;
 
 _Static_assert(KEFIR_AST_STORAGE_SPECIFIER_COUNT <= sizeof(kefir_uint64_t) * CHAR_BIT,
-    "Number of storage specifiers exceeds the largest bit map size");
+               "Number of storage specifiers exceeds the largest bit map size");
 
 typedef enum kefir_ast_type_qualifier_type {
     KEFIR_AST_TYPE_QUALIFIER_CONST = 0,
@@ -197,7 +197,7 @@ typedef enum kefir_ast_type_qualifier_type {
 } kefir_ast_type_qualifier_type_t;
 
 _Static_assert(KEFIR_AST_TYPE_QUALIFIER_CONST <= sizeof(kefir_uint64_t) * CHAR_BIT,
-    "Number of storage specifiers exceeds the largest bit map size");
+               "Number of storage specifiers exceeds the largest bit map size");
 typedef enum kefir_ast_function_specifier_type {
     KEFIR_AST_FUNCTION_SPECIFIER_TYPE_NORETURN = 0,
     KEFIR_AST_FUNCTION_SPECIFIER_TYPE_INLINE,
@@ -206,7 +206,7 @@ typedef enum kefir_ast_function_specifier_type {
 } kefir_ast_function_specifier_type_t;
 
 _Static_assert(KEFIR_AST_FUNCTION_SPECIFIER_TYPE_COUNT <= sizeof(kefir_uint64_t) * CHAR_BIT,
-    "Number of function specifiers exceeds the largest bit map size");
+               "Number of function specifiers exceeds the largest bit map size");
 
 typedef enum kefir_ast_declarator_specifier_class {
     KEFIR_AST_TYPE_SPECIFIER,

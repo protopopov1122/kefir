@@ -31,22 +31,16 @@ int main(int argc, const char **argv) {
     UNUSED(argc);
     UNUSED(argv);
     struct kefir_mem mem = {
-        .malloc = kefir_malloc,
-        .calloc = kefir_calloc,
-        .realloc = kefir_realloc,
-        .free = kefir_free,
-        .data = NULL
-    };
+        .malloc = kefir_malloc, .calloc = kefir_calloc, .realloc = kefir_realloc, .free = kefir_free, .data = NULL};
     struct kefir_codegen_amd64 codegen;
     kefir_codegen_amd64_sysv_init(&codegen, stdout);
 
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(&mem, &module));
     struct kefir_ir_type *decl_params = kefir_ir_module_new_type(&mem, &module, 3, NULL),
-                       *decl_result = kefir_ir_module_new_type(&mem, &module, 3, NULL);
+                         *decl_result = kefir_ir_module_new_type(&mem, &module, 3, NULL);
     struct kefir_ir_function_decl *decl =
-        kefir_ir_module_new_function_declaration(&mem, &module, "func1",
-            decl_params, false, decl_result);
+        kefir_ir_module_new_function_declaration(&mem, &module, "func1", decl_params, false, decl_result);
     struct kefir_ir_function *func = kefir_ir_module_new_function(&mem, &module, decl, NULL, 1024);
     kefir_ir_module_declare_global(&mem, &module, decl->name);
     kefir_irbuilder_type_append_v(&mem, func->declaration->params, KEFIR_IR_TYPE_STRUCT, 0, 2);

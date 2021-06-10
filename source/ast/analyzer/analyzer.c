@@ -11,23 +11,19 @@ struct assign_param {
 };
 
 static kefir_result_t visit_non_expression(const struct kefir_ast_visitor *visitor,
-                                         const struct kefir_ast_node_base *base,
-                                         void *payload) {
+                                           const struct kefir_ast_node_base *base, void *payload) {
     UNUSED(visitor);
     UNUSED(base);
     UNUSED(payload);
     return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to assign type to non-expression AST node");
 }
 
-#define VISITOR(id, type) \
-    static kefir_result_t visit_##id(const struct kefir_ast_visitor *visitor, \
-                                   const type *node, \
-                                   void *payload) { \
-        UNUSED(visitor); \
-        REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST analyzer payload")); \
-        ASSIGN_DECL_CAST(struct assign_param *, param, \
-            payload); \
-        return kefir_ast_analyze_##id##_node(param->mem, param->context, node, param->base); \
+#define VISITOR(id, type)                                                                                        \
+    static kefir_result_t visit_##id(const struct kefir_ast_visitor *visitor, const type *node, void *payload) { \
+        UNUSED(visitor);                                                                                         \
+        REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST analyzer payload"));   \
+        ASSIGN_DECL_CAST(struct assign_param *, param, payload);                                                 \
+        return kefir_ast_analyze_##id##_node(param->mem, param->context, node, param->base);                     \
     }
 
 VISITOR(constant, struct kefir_ast_constant)
@@ -53,17 +49,12 @@ VISITOR(expression_statement, struct kefir_ast_expression_statement)
 
 #undef VISITOR
 
-kefir_result_t kefir_ast_analyze_node(struct kefir_mem *mem,
-                                  const struct kefir_ast_context *context,
-                                  struct kefir_ast_node_base *base) {
+kefir_result_t kefir_ast_analyze_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
+                                      struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translaction_context"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
-    struct assign_param param = {
-        .mem = mem,
-        .context = context,
-        .base = base
-    };
+    struct assign_param param = {.mem = mem, .context = context, .base = base};
     struct kefir_ast_visitor visitor;
     REQUIRE_OK(kefir_ast_visitor_init(&visitor, visit_non_expression));
     visitor.constant = visit_constant;

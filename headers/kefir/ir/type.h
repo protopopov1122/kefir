@@ -31,7 +31,7 @@ typedef enum kefir_ir_typecode {
     // Built-ins
     KEFIR_IR_TYPE_BUILTIN,
     // > 64-bit scalars are not supported yet
-    KEFIR_IR_TYPE_COUNT, // Auxilary
+    KEFIR_IR_TYPE_COUNT,  // Auxilary
 } kefir_ir_typecode_t;
 
 typedef struct kefir_ir_typeentry {
@@ -63,10 +63,8 @@ kefir_size_t kefir_ir_type_node_total_length(const struct kefir_ir_type *, kefir
 kefir_size_t kefir_ir_type_node_slots(const struct kefir_ir_type *, kefir_size_t);
 kefir_size_t kefir_ir_type_total_slots(const struct kefir_ir_type *);
 
-typedef kefir_result_t (*kefir_ir_type_visitor_callback_t)(const struct kefir_ir_type *,
-                                                       kefir_size_t,
-                                                       const struct kefir_ir_typeentry *,
-                                                       void *);
+typedef kefir_result_t (*kefir_ir_type_visitor_callback_t)(const struct kefir_ir_type *, kefir_size_t,
+                                                           const struct kefir_ir_typeentry *, void *);
 
 typedef kefir_ir_type_visitor_callback_t kefir_ir_type_visitor_hook_t;
 
@@ -77,41 +75,38 @@ typedef struct kefir_ir_type_visitor {
 } kefir_ir_type_visitor_t;
 
 kefir_result_t kefir_ir_type_visitor_init(struct kefir_ir_type_visitor *, kefir_ir_type_visitor_callback_t);
-kefir_result_t kefir_ir_type_visitor_list_nodes(const struct kefir_ir_type *,
-                                          const struct kefir_ir_type_visitor *,
-                                          void *,
-                                          kefir_size_t,
-                                          kefir_size_t);
+kefir_result_t kefir_ir_type_visitor_list_nodes(const struct kefir_ir_type *, const struct kefir_ir_type_visitor *,
+                                                void *, kefir_size_t, kefir_size_t);
 
 #define KEFIR_IR_TYPE_VISITOR_INIT_FIXED_INTEGERS(visitor, callback) \
-    do { \
-        (visitor)->visit[KEFIR_IR_TYPE_INT8] = (callback); \
-        (visitor)->visit[KEFIR_IR_TYPE_INT16] = (callback); \
-        (visitor)->visit[KEFIR_IR_TYPE_INT32] = (callback); \
-        (visitor)->visit[KEFIR_IR_TYPE_INT64] = (callback); \
+    do {                                                             \
+        (visitor)->visit[KEFIR_IR_TYPE_INT8] = (callback);           \
+        (visitor)->visit[KEFIR_IR_TYPE_INT16] = (callback);          \
+        (visitor)->visit[KEFIR_IR_TYPE_INT32] = (callback);          \
+        (visitor)->visit[KEFIR_IR_TYPE_INT64] = (callback);          \
     } while (0)
 #define KEFIR_IR_TYPE_VISITOR_INIT_ALIASED_INTEGERS(visitor, callback) \
-    do { \
-        (visitor)->visit[KEFIR_IR_TYPE_BOOL] = (callback); \
-        (visitor)->visit[KEFIR_IR_TYPE_CHAR] = (callback); \
-        (visitor)->visit[KEFIR_IR_TYPE_SHORT] = (callback); \
-        (visitor)->visit[KEFIR_IR_TYPE_INT] = (callback); \
-        (visitor)->visit[KEFIR_IR_TYPE_LONG] = (callback); \
-        (visitor)->visit[KEFIR_IR_TYPE_WORD] = (callback); \
-        (visitor)->visit[KEFIR_IR_TYPE_BITS] = (callback); \
+    do {                                                               \
+        (visitor)->visit[KEFIR_IR_TYPE_BOOL] = (callback);             \
+        (visitor)->visit[KEFIR_IR_TYPE_CHAR] = (callback);             \
+        (visitor)->visit[KEFIR_IR_TYPE_SHORT] = (callback);            \
+        (visitor)->visit[KEFIR_IR_TYPE_INT] = (callback);              \
+        (visitor)->visit[KEFIR_IR_TYPE_LONG] = (callback);             \
+        (visitor)->visit[KEFIR_IR_TYPE_WORD] = (callback);             \
+        (visitor)->visit[KEFIR_IR_TYPE_BITS] = (callback);             \
     } while (0)
-#define KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS(visitor, callback) \
-    do { \
-        KEFIR_IR_TYPE_VISITOR_INIT_FIXED_INTEGERS((visitor), (callback)); \
+#define KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS(visitor, callback)              \
+    do {                                                                    \
+        KEFIR_IR_TYPE_VISITOR_INIT_FIXED_INTEGERS((visitor), (callback));   \
         KEFIR_IR_TYPE_VISITOR_INIT_ALIASED_INTEGERS((visitor), (callback)); \
     } while (0)
 #define KEFIR_IR_TYPE_VISITOR_INIT_FIXED_FP(visitor, callback) \
-    do { \
-        (visitor)->visit[KEFIR_IR_TYPE_FLOAT32] = (callback); \
-        (visitor)->visit[KEFIR_IR_TYPE_FLOAT64] = (callback); \
+    do {                                                       \
+        (visitor)->visit[KEFIR_IR_TYPE_FLOAT32] = (callback);  \
+        (visitor)->visit[KEFIR_IR_TYPE_FLOAT64] = (callback);  \
     } while (0)
-#define KEFIR_IR_TYPE_VISITOR_INIT_SCALARS(visitor, callback) \
-    do { \
+#define KEFIR_IR_TYPE_VISITOR_INIT_SCALARS(visitor, callback)       \
+    do {                                                            \
         KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS((visitor), (callback)); \
         KEFIR_IR_TYPE_VISITOR_INIT_FIXED_FP((visitor), (callback)); \
     } while (0)

@@ -4,55 +4,54 @@
 #include <limits.h>
 #include "kefir/core/basic-types.h"
 
-#define UNUSED(x) (void)(x)
+#define UNUSED(x) (void) (x)
 #define UNOWNED(x) x
 #define BITSIZE_OF(x) (sizeof(x) * CHAR_BIT)
 #define ASSIGN_CAST(type, dest, expr) \
-    do { \
-        *(dest) = ((type) (expr)); \
+    do {                              \
+        *(dest) = ((type) (expr));    \
     } while (0)
-#define ASSIGN_DECL_CAST(type, ident, expr) \
-    type ident = ((type) (expr));
+#define ASSIGN_DECL_CAST(type, ident, expr) type ident = ((type) (expr));
 #define ASSIGN_PTR(ptr, value) \
-    do { \
-        if ((ptr) != NULL) { \
-            *(ptr) = (value); \
-        } \
+    do {                       \
+        if ((ptr) != NULL) {   \
+            *(ptr) = (value);  \
+        }                      \
     } while (0)
 
 #define REQUIRE(condition, value) \
-    do { \
-        if (!(condition)) { \
-            return value; \
-        } \
+    do {                          \
+        if (!(condition)) {       \
+            return value;         \
+        }                         \
     } while (0)
 #define REQUIRE_ELSE(condition, block) \
-    do { \
-        if (!(condition)) { \
-            block; \
-        } \
+    do {                               \
+        if (!(condition)) {            \
+            block;                     \
+        }                              \
     } while (0)
-#define REQUIRE_CHAIN(result, expr) \
-    do { \
+#define REQUIRE_CHAIN(result, expr)  \
+    do {                             \
         if (*(result) == KEFIR_OK) { \
-            *(result) = (expr); \
-        } \
+            *(result) = (expr);      \
+        }                            \
     } while (0)
-#define REQUIRE_OK(expr) \
-    do { \
+#define REQUIRE_OK(expr)                      \
+    do {                                      \
         kefir_result_t _expr_result = (expr); \
-        if (_expr_result != KEFIR_OK) { \
-            return _expr_result; \
-        } \
+        if (_expr_result != KEFIR_OK) {       \
+            return _expr_result;              \
+        }                                     \
     } while (0)
-#define REQUIRE_YIELD(expr, defReturn) \
-    do { \
-        kefir_result_t _expr_result = (expr); \
-        if (_expr_result == KEFIR_OK) { \
-            return defReturn; \
+#define REQUIRE_YIELD(expr, defReturn)            \
+    do {                                          \
+        kefir_result_t _expr_result = (expr);     \
+        if (_expr_result == KEFIR_OK) {           \
+            return defReturn;                     \
         } else if (_expr_result != KEFIR_YIELD) { \
-            return _expr_result; \
-        } \
+            return _expr_result;                  \
+        }                                         \
     } while (0)
 
 // Evaluates twice

@@ -10,27 +10,22 @@ struct kefir_ast_node_base *ast_assignment_operator_clone(struct kefir_mem *, st
 kefir_result_t ast_assignment_operator_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
-    ASSIGN_DECL_CAST(struct kefir_ast_assignment_operator *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_assignment_operator *, node, base->self);
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node->target));
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node->value));
     KEFIR_FREE(mem, node);
     return KEFIR_OK;
 }
 
-const struct kefir_ast_node_class AST_ASSIGNMENT_OPERATOR_CLASS = {
-    .type = KEFIR_AST_ASSIGNMENT_OPERATOR,
-    .visit = ast_assignment_operator_visit,
-    .clone = ast_assignment_operator_clone,
-    .free = ast_assignment_operator_free
-};
+const struct kefir_ast_node_class AST_ASSIGNMENT_OPERATOR_CLASS = {.type = KEFIR_AST_ASSIGNMENT_OPERATOR,
+                                                                   .visit = ast_assignment_operator_visit,
+                                                                   .clone = ast_assignment_operator_clone,
+                                                                   .free = ast_assignment_operator_free};
 
-struct kefir_ast_node_base *ast_assignment_operator_clone(struct kefir_mem *mem,
-                                                     struct kefir_ast_node_base *base) {
+struct kefir_ast_node_base *ast_assignment_operator_clone(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(base != NULL, NULL);
-    ASSIGN_DECL_CAST(struct kefir_ast_assignment_operator *, node,
-        base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_assignment_operator *, node, base->self);
     struct kefir_ast_assignment_operator *clone = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_assignment_operator));
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_ASSIGNMENT_OPERATOR_CLASS;
@@ -56,15 +51,15 @@ struct kefir_ast_node_base *ast_assignment_operator_clone(struct kefir_mem *mem,
 }
 
 struct kefir_ast_assignment_operator *kefir_ast_new_simple_assignment(struct kefir_mem *mem,
-                                                               struct kefir_ast_node_base *target,
-                                                               struct kefir_ast_node_base *value) {
+                                                                      struct kefir_ast_node_base *target,
+                                                                      struct kefir_ast_node_base *value) {
     return kefir_ast_new_compound_assignment(mem, KEFIR_AST_ASSIGNMENT_SIMPLE, target, value);
 }
 
 struct kefir_ast_assignment_operator *kefir_ast_new_compound_assignment(struct kefir_mem *mem,
-                                                                    kefir_ast_assignment_operation_t oper,
-                                                                    struct kefir_ast_node_base *target,
-                                                                    struct kefir_ast_node_base *value) {
+                                                                        kefir_ast_assignment_operation_t oper,
+                                                                        struct kefir_ast_node_base *target,
+                                                                        struct kefir_ast_node_base *value) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(target != NULL, NULL);
     REQUIRE(value != NULL, NULL);

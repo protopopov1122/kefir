@@ -17,7 +17,7 @@ int main(int argc, const char **argv) {
     UNUSED(argc);
     UNUSED(argv);
     for (int i = 0; i < LEN; i++) {
-        INTS[i] =  i * 2;
+        INTS[i] = i * 2;
         DOUBLES[i] = 5.107 * i;
     }
 

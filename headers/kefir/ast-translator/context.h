@@ -15,17 +15,17 @@ typedef struct kefir_ast_translator_context {
 } kefir_ast_translator_context_t;
 
 kefir_result_t kefir_ast_translator_context_init(struct kefir_ast_translator_context *,
-                                             const struct kefir_ast_context *,
-                                             const struct kefir_ast_translator_environment *,
-                                             struct kefir_ir_module *);
+                                                 const struct kefir_ast_context *,
+                                                 const struct kefir_ast_translator_environment *,
+                                                 struct kefir_ir_module *);
 
 kefir_result_t kefir_ast_translator_context_init_local(struct kefir_ast_translator_context *,
-                                                   const struct kefir_ast_context *,
-                                                   struct kefir_ast_translator_context *);
+                                                       const struct kefir_ast_context *,
+                                                       struct kefir_ast_translator_context *);
 
-kefir_result_t kefir_ast_translator_context_free(struct kefir_mem *,
-                                             struct kefir_ast_translator_context *);
+kefir_result_t kefir_ast_translator_context_free(struct kefir_mem *, struct kefir_ast_translator_context *);
 
-struct kefir_ast_translator_type_resolver *kefir_ast_translator_context_type_resolver(struct kefir_ast_translator_context *);
+struct kefir_ast_translator_type_resolver *kefir_ast_translator_context_type_resolver(
+    struct kefir_ast_translator_context *);
 
 #endif

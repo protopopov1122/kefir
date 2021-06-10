@@ -8,7 +8,7 @@ long extractbits(long);
 int main(int argc, const char **argv) {
     UNUSED(argc);
     UNUSED(argv);
-    
+
     ASSERT(extractbits(0x89abcdef) == -1 + -2 + -3 + -4 + -5 + -6 + -7 + -8);
     for (int i = 0; i <= 0xf; i++) {
         int ix = i < 8 ? i : (~0xf | i);
@@ -21,7 +21,7 @@ int main(int argc, const char **argv) {
                     ASSERT(extractbits((i << 12) | (j << 8) | (k << 4) | a) == ix + jx + kx + ax);
                 }
             }
-        }    
+        }
     }
     return EXIT_SUCCESS;
 }

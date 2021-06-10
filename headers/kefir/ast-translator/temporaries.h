@@ -5,9 +5,8 @@
 #include "kefir/ast-translator/context.h"
 #include "kefir/ir/builder.h"
 
-kefir_result_t kefir_ast_translator_fetch_temporary(struct kefir_mem *,
-                                                struct kefir_ast_translator_context *,
-                                                struct kefir_irbuilder_block *,
-                                                const struct kefir_ast_temporary_identifier *);
+kefir_result_t kefir_ast_translator_fetch_temporary(struct kefir_mem *, struct kefir_ast_translator_context *,
+                                                    struct kefir_irbuilder_block *,
+                                                    const struct kefir_ast_temporary_identifier *);
 
 #endif

@@ -24,34 +24,31 @@ static kefir_size_t default_integral_type_fit_rank(const struct kefir_ast_type *
         case KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG_LONG:
         case KEFIR_AST_TYPE_SCALAR_SIGNED_LONG_LONG:
             return 8;
-        
+
         default:
             return 0;
     }
 }
 
 static kefir_result_t default_integral_type_fits(const struct kefir_ast_type_traits *type_traits,
-                                               const struct kefir_ast_type *source,
-                                               const struct kefir_ast_type *dest,
-                                               kefir_bool_t *result) {
+                                                 const struct kefir_ast_type *source, const struct kefir_ast_type *dest,
+                                                 kefir_bool_t *result) {
     UNUSED(type_traits);
     REQUIRE(source != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid source AST type"));
     REQUIRE(dest != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid destination AST type"));
     REQUIRE(result != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid result pointer"));
     REQUIRE((KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(source) || source->tag == KEFIR_AST_TYPE_SCALAR_BOOL) &&
-        (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(dest) || dest->tag == KEFIR_AST_TYPE_SCALAR_BOOL),
-        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected both source and destination to be basic types"));
+                (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(dest) || dest->tag == KEFIR_AST_TYPE_SCALAR_BOOL),
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected both source and destination to be basic types"));
     kefir_size_t source_fit = default_integral_type_fit_rank(source);
     kefir_size_t dest_fit = default_integral_type_fit_rank(dest);
-    REQUIRE(source_fit != 0 && dest_fit != 0,
-        KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected integral type"));
+    REQUIRE(source_fit != 0 && dest_fit != 0, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected integral type"));
 
     kefir_bool_t src_sign, dst_sign;
     REQUIRE_OK(kefir_ast_type_is_signed(type_traits, source, &src_sign));
     REQUIRE_OK(kefir_ast_type_is_signed(type_traits, dest, &dst_sign));
 
-    if (src_sign == dst_sign ||
-        (src_sign && !dst_sign)) {
+    if (src_sign == dst_sign || (src_sign && !dst_sign)) {
         *result = source_fit <= dest_fit;
     } else if (!src_sign && dst_sign) {
         *result = source_fit < dest_fit;
@@ -62,13 +59,11 @@ static kefir_result_t default_integral_type_fits(const struct kefir_ast_type_tra
 }
 
 const struct kefir_ast_type_traits *kefir_ast_default_type_traits() {
-    static struct kefir_ast_type_traits DEFAULT_TYPE_TRAITS = {
-        .integral_type_fits = default_integral_type_fits,
-        .underlying_enumeration_type = NULL,
-        .ptrdiff_type = NULL,
-        .character_type_signedness = true,
-        .payload = NULL
-    };
+    static struct kefir_ast_type_traits DEFAULT_TYPE_TRAITS = {.integral_type_fits = default_integral_type_fits,
+                                                               .underlying_enumeration_type = NULL,
+                                                               .ptrdiff_type = NULL,
+                                                               .character_type_signedness = true,
+                                                               .payload = NULL};
     DEFAULT_TYPE_TRAITS.underlying_enumeration_type = kefir_ast_type_signed_int();
     DEFAULT_TYPE_TRAITS.ptrdiff_type = kefir_ast_type_signed_long();
     return &DEFAULT_TYPE_TRAITS;
@@ -82,16 +77,14 @@ kefir_bool_t kefir_ast_type_is_complete(const struct kefir_ast_type *type) {
 
         case KEFIR_AST_TYPE_ENUMERATION:
             return type->enumeration_type.complete;
-        
+
         default:
             return true;
     }
 }
 
-static kefir_result_t free_type_bundle(struct kefir_mem *mem,
-                                   struct kefir_list *list,
-                                   struct kefir_list_entry *entry,
-                                   void *payload) {
+static kefir_result_t free_type_bundle(struct kefir_mem *mem, struct kefir_list *list, struct kefir_list_entry *entry,
+                                       void *payload) {
     UNUSED(list);
     UNUSED(payload);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid memory allocator"));
@@ -117,40 +110,35 @@ kefir_result_t kefir_ast_type_bundle_free(struct kefir_mem *mem, struct kefir_as
 }
 
 kefir_ast_function_specifier_t kefir_ast_context_merge_function_specifiers(kefir_ast_function_specifier_t s1,
-                                                                       kefir_ast_function_specifier_t s2) {
+                                                                           kefir_ast_function_specifier_t s2) {
     _Static_assert(KEFIR_AST_FUNCTION_SPECIFIER_NONE < 4,
-        "AST function specifier is expected to fit into conversion matrix");
+                   "AST function specifier is expected to fit into conversion matrix");
     _Static_assert(KEFIR_AST_FUNCTION_SPECIFIER_INLINE < 4,
-        "AST function specifier is expected to fit into conversion matrix");
+                   "AST function specifier is expected to fit into conversion matrix");
     _Static_assert(KEFIR_AST_FUNCTION_SPECIFIER_NORETURN < 4,
-        "AST function specifier is expected to fit into conversion matrix");
+                   "AST function specifier is expected to fit into conversion matrix");
     _Static_assert(KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN < 4,
-        "AST function specifier is expected to fit into conversion matrix");
+                   "AST function specifier is expected to fit into conversion matrix");
     kefir_ast_function_specifier_t MATRIX[4][4] = {
-        [KEFIR_AST_FUNCTION_SPECIFIER_NONE] = {
-            [KEFIR_AST_FUNCTION_SPECIFIER_NONE] = KEFIR_AST_FUNCTION_SPECIFIER_NONE,
-            [KEFIR_AST_FUNCTION_SPECIFIER_INLINE] = KEFIR_AST_FUNCTION_SPECIFIER_INLINE,
-            [KEFIR_AST_FUNCTION_SPECIFIER_NORETURN] = KEFIR_AST_FUNCTION_SPECIFIER_NORETURN,
-            [KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN] = KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN
-        },
-        [KEFIR_AST_FUNCTION_SPECIFIER_INLINE] = {
-            [KEFIR_AST_FUNCTION_SPECIFIER_NONE] = KEFIR_AST_FUNCTION_SPECIFIER_INLINE,
-            [KEFIR_AST_FUNCTION_SPECIFIER_INLINE] = KEFIR_AST_FUNCTION_SPECIFIER_INLINE,
-            [KEFIR_AST_FUNCTION_SPECIFIER_NORETURN] = KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN,
-            [KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN] = KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN
-        },
-        [KEFIR_AST_FUNCTION_SPECIFIER_NORETURN] = {
-            [KEFIR_AST_FUNCTION_SPECIFIER_NONE] = KEFIR_AST_FUNCTION_SPECIFIER_NORETURN,
-            [KEFIR_AST_FUNCTION_SPECIFIER_INLINE] = KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN,
-            [KEFIR_AST_FUNCTION_SPECIFIER_NORETURN] = KEFIR_AST_FUNCTION_SPECIFIER_NORETURN,
-            [KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN] = KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN
-        },
+        [KEFIR_AST_FUNCTION_SPECIFIER_NONE] =
+            {[KEFIR_AST_FUNCTION_SPECIFIER_NONE] = KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+             [KEFIR_AST_FUNCTION_SPECIFIER_INLINE] = KEFIR_AST_FUNCTION_SPECIFIER_INLINE,
+             [KEFIR_AST_FUNCTION_SPECIFIER_NORETURN] = KEFIR_AST_FUNCTION_SPECIFIER_NORETURN,
+             [KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN] = KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN},
+        [KEFIR_AST_FUNCTION_SPECIFIER_INLINE] =
+            {[KEFIR_AST_FUNCTION_SPECIFIER_NONE] = KEFIR_AST_FUNCTION_SPECIFIER_INLINE,
+             [KEFIR_AST_FUNCTION_SPECIFIER_INLINE] = KEFIR_AST_FUNCTION_SPECIFIER_INLINE,
+             [KEFIR_AST_FUNCTION_SPECIFIER_NORETURN] = KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN,
+             [KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN] = KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN},
+        [KEFIR_AST_FUNCTION_SPECIFIER_NORETURN] =
+            {[KEFIR_AST_FUNCTION_SPECIFIER_NONE] = KEFIR_AST_FUNCTION_SPECIFIER_NORETURN,
+             [KEFIR_AST_FUNCTION_SPECIFIER_INLINE] = KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN,
+             [KEFIR_AST_FUNCTION_SPECIFIER_NORETURN] = KEFIR_AST_FUNCTION_SPECIFIER_NORETURN,
+             [KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN] = KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN},
         [KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN] = {
             [KEFIR_AST_FUNCTION_SPECIFIER_NONE] = KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN,
             [KEFIR_AST_FUNCTION_SPECIFIER_INLINE] = KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN,
             [KEFIR_AST_FUNCTION_SPECIFIER_NORETURN] = KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN,
-            [KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN] = KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN
-        }
-    };
+            [KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN] = KEFIR_AST_FUNCTION_SPECIFIER_INLINE_NORETURN}};
     return MATRIX[s1][s2];
 }

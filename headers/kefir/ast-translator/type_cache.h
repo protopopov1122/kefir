@@ -11,6 +11,6 @@ typedef struct kefir_ast_translator_type_cache {
 } kefir_ast_translator_type_cache_t;
 
 kefir_result_t kefir_ast_translator_type_cache_init(struct kefir_ast_translator_type_cache *,
-                                                const struct kefir_ast_translator_type_resolver *);
+                                                    const struct kefir_ast_translator_type_resolver *);
 
 #endif

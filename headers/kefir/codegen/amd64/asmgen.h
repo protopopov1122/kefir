@@ -40,30 +40,19 @@ typedef struct kefir_amd64_asmgen {
 
 kefir_result_t kefir_amd64_nasm_gen_init(struct kefir_amd64_asmgen *, FILE *);
 
-#define KEFIR_AMD64_ASMGEN_NEWLINE(asmgen, count) \
-    ((asmgen)->newline((asmgen), (count)))
-#define KEFIR_AMD64_ASMGEN_COMMENT(asmgen, format, ...) \
-    ((asmgen)->comment((asmgen), (format), __VA_ARGS__))
-#define KEFIR_AMD64_ASMGEN_LABEL(asmgen, format, ...) \
-    ((asmgen)->label((asmgen), (format), __VA_ARGS__))
-#define KEFIR_AMD64_ASMGEN_GLOBAL(asmgen, format, ...) \
-    ((asmgen)->global((asmgen), (format), __VA_ARGS__))
-#define KEFIR_AMD64_ASMGEN_EXTERNAL(asmgen, identifier) \
-    ((asmgen)->external((asmgen), (identifier)))
-#define KEFIR_AMD64_ASMGEN_SECTION(asmgen, identifier) \
-    ((asmgen)->section((asmgen), (identifier)))
-#define KEFIR_AMD64_ASMGEN_INSTR(asmgen, opcode) \
-    ((asmgen)->instr((asmgen), (opcode)))
-#define KEFIR_AMD64_ASMGEN_ARG(asmgen, format, ...) \
-    ((asmgen)->argument((asmgen), (format), __VA_ARGS__))
-#define KEFIR_AMD64_ASMGEN_RAWDATA(asmgen, width) \
-    ((asmgen)->rawdata((asmgen), (width)))
+#define KEFIR_AMD64_ASMGEN_NEWLINE(asmgen, count) ((asmgen)->newline((asmgen), (count)))
+#define KEFIR_AMD64_ASMGEN_COMMENT(asmgen, format, ...) ((asmgen)->comment((asmgen), (format), __VA_ARGS__))
+#define KEFIR_AMD64_ASMGEN_LABEL(asmgen, format, ...) ((asmgen)->label((asmgen), (format), __VA_ARGS__))
+#define KEFIR_AMD64_ASMGEN_GLOBAL(asmgen, format, ...) ((asmgen)->global((asmgen), (format), __VA_ARGS__))
+#define KEFIR_AMD64_ASMGEN_EXTERNAL(asmgen, identifier) ((asmgen)->external((asmgen), (identifier)))
+#define KEFIR_AMD64_ASMGEN_SECTION(asmgen, identifier) ((asmgen)->section((asmgen), (identifier)))
+#define KEFIR_AMD64_ASMGEN_INSTR(asmgen, opcode) ((asmgen)->instr((asmgen), (opcode)))
+#define KEFIR_AMD64_ASMGEN_ARG(asmgen, format, ...) ((asmgen)->argument((asmgen), (format), __VA_ARGS__))
+#define KEFIR_AMD64_ASMGEN_RAWDATA(asmgen, width) ((asmgen)->rawdata((asmgen), (width)))
 #define KEFIR_AMD64_ASMGEN_STRING_LITERAL(asmgen, literal, length) \
     ((asmgen)->string_literal((asmgen), (literal), (length)))
-#define KEFIR_AMD64_ASMGEN_MULRAWDATA(asmgen, times, width) \
-    ((asmgen)->mulrawdata((asmgen), (times), (width)))
-#define KEFIR_AMD64_ASMGEN_CLOSE(asmgen) \
-    ((asmgen)->close((asmgen)))
+#define KEFIR_AMD64_ASMGEN_MULRAWDATA(asmgen, times, width) ((asmgen)->mulrawdata((asmgen), (times), (width)))
+#define KEFIR_AMD64_ASMGEN_CLOSE(asmgen) ((asmgen)->close((asmgen)))
 
 #define KEFIR_AMD64_EAX "eax"
 
@@ -75,8 +64,8 @@ kefir_result_t kefir_amd64_nasm_gen_init(struct kefir_amd64_asmgen *, FILE *);
 #define KEFIR_AMD64_RDI "rdi"
 #define KEFIR_AMD64_RSP "rsp"
 #define KEFIR_AMD64_RBP "rbp"
-#define KEFIR_AMD64_R8  "r8"
-#define KEFIR_AMD64_R9  "r9"
+#define KEFIR_AMD64_R8 "r8"
+#define KEFIR_AMD64_R9 "r9"
 #define KEFIR_AMD64_R10 "r10"
 #define KEFIR_AMD64_R11 "r11"
 #define KEFIR_AMD64_R12 "r12"
@@ -93,27 +82,27 @@ kefir_result_t kefir_amd64_nasm_gen_init(struct kefir_amd64_asmgen *, FILE *);
 #define KEFIR_AMD64_XMM6 "xmm6"
 #define KEFIR_AMD64_XMM7 "xmm7"
 
-#define KEFIR_AMD64_PUSH  "push"
-#define KEFIR_AMD64_POP   "pop"
-#define KEFIR_AMD64_MOV   "mov"
-#define KEFIR_AMD64_OR    "or"
-#define KEFIR_AMD64_LEA   "lea"
-#define KEFIR_AMD64_MOVQ  "movq"
+#define KEFIR_AMD64_PUSH "push"
+#define KEFIR_AMD64_POP "pop"
+#define KEFIR_AMD64_MOV "mov"
+#define KEFIR_AMD64_OR "or"
+#define KEFIR_AMD64_LEA "lea"
+#define KEFIR_AMD64_MOVQ "movq"
 #define KEFIR_AMD64_MOVSB "movsb"
-#define KEFIR_AMD64_JMP   "jmp"
-#define KEFIR_AMD64_JA    "ja"
-#define KEFIR_AMD64_RET   "ret"
+#define KEFIR_AMD64_JMP "jmp"
+#define KEFIR_AMD64_JA "ja"
+#define KEFIR_AMD64_RET "ret"
 #define KEFIR_AMD64_FSTCW "fstcw"
-#define KEFIR_AMD64_CALL  "call"
-#define KEFIR_AMD64_PEXTRQ  "pextrq"
-#define KEFIR_AMD64_PINSRQ  "pinsrq"
-#define KEFIR_AMD64_ADD  "add"
-#define KEFIR_AMD64_CMP  "cmp"
-#define KEFIR_AMD64_SUB  "sub"
-#define KEFIR_AMD64_CLD  "cld"
-#define KEFIR_AMD64_AND  "and"
-#define KEFIR_AMD64_SHL  "shl"
-#define KEFIR_AMD64_SHR  "shr"
+#define KEFIR_AMD64_CALL "call"
+#define KEFIR_AMD64_PEXTRQ "pextrq"
+#define KEFIR_AMD64_PINSRQ "pinsrq"
+#define KEFIR_AMD64_ADD "add"
+#define KEFIR_AMD64_CMP "cmp"
+#define KEFIR_AMD64_SUB "sub"
+#define KEFIR_AMD64_CLD "cld"
+#define KEFIR_AMD64_AND "and"
+#define KEFIR_AMD64_SHL "shl"
+#define KEFIR_AMD64_SHR "shr"
 
 #define KEFIR_AMD64_REP "rep "
 #define KEFIR_AMD64_INDIRECT "[%s]"

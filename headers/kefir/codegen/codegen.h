@@ -13,9 +13,7 @@ typedef struct kefir_codegen {
     void *data;
 } kefir_codegen_t;
 
-#define KEFIR_CODEGEN_TRANSLATE(mem, codegen, module) \
-    ((codegen)->translate((mem), (codegen), (module)))
-#define KEFIR_CODEGEN_CLOSE(codegen) \
-    ((codegen)->close((codegen)))
+#define KEFIR_CODEGEN_TRANSLATE(mem, codegen, module) ((codegen)->translate((mem), (codegen), (module)))
+#define KEFIR_CODEGEN_CLOSE(codegen) ((codegen)->close((codegen)))
 
 #endif

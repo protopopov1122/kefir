@@ -7,11 +7,9 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-static kefir_result_t translate_scalar(struct kefir_mem *mem,
-                                     struct kefir_ast_translator_context *context,
-                                     struct kefir_irbuilder_block *builder,
-                                     const struct kefir_ast_type *type,
-                                     const struct kefir_ast_initializer *initializer) {
+static kefir_result_t translate_scalar(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
+                                       struct kefir_irbuilder_block *builder, const struct kefir_ast_type *type,
+                                       const struct kefir_ast_initializer *initializer) {
     struct kefir_ast_node_base *expr = kefir_ast_initializer_head(initializer);
     if (expr != NULL) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 0));
@@ -26,24 +24,22 @@ static kefir_result_t translate_scalar(struct kefir_mem *mem,
 static kefir_bool_t is_char_array(const struct kefir_ast_type *type, void *payload) {
     UNUSED(payload);
     return type->tag == KEFIR_AST_TYPE_ARRAY &&
-        KEFIR_AST_TYPE_IS_CHARACTER(kefir_ast_unqualified_type(type->array_type.element_type));
+           KEFIR_AST_TYPE_IS_CHARACTER(kefir_ast_unqualified_type(type->array_type.element_type));
 }
 
-static kefir_result_t layer_address(struct kefir_mem *mem,
-                                  struct kefir_ast_translator_context *context,
-                                  struct kefir_irbuilder_block *builder,
-                                  struct kefir_ast_designator *current_designator,
-                                  const struct kefir_ast_type_traversal_layer *layer) {
+static kefir_result_t layer_address(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
+                                    struct kefir_irbuilder_block *builder,
+                                    struct kefir_ast_designator *current_designator,
+                                    const struct kefir_ast_type_traversal_layer *layer) {
     const struct kefir_ast_type *type = layer->object_type;
-    for (const struct kefir_ast_type_traversal_layer *top_layer = layer;
-         top_layer->parent != NULL;
+    for (const struct kefir_ast_type_traversal_layer *top_layer = layer; top_layer->parent != NULL;
          top_layer = top_layer->parent, type = top_layer->object_type) {}
 
     const struct kefir_ast_translator_resolved_type *cached_type = NULL;
-    REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_cache.resolver, context->environment, context->module,
-        type, 0, &cached_type));
+    REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_cache.resolver, context->environment,
+                                                               context->module, type, 0, &cached_type));
     REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
-        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
 
     struct kefir_ast_designator *designator = current_designator;
 
@@ -73,11 +69,10 @@ static kefir_result_t layer_address(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-static kefir_result_t assign_string(struct kefir_mem *mem,
-                                  struct kefir_ast_translator_context *context,
-                                  struct kefir_irbuilder_block *builder,
-                                  struct kefir_ast_initializer_list_entry *entry,
-                                  struct kefir_ast_type_traversal *traversal) {
+static kefir_result_t assign_string(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
+                                    struct kefir_irbuilder_block *builder,
+                                    struct kefir_ast_initializer_list_entry *entry,
+                                    struct kefir_ast_type_traversal *traversal) {
     const struct kefir_ast_type *type = NULL;
     const struct kefir_ast_type_traversal_layer *layer = NULL;
 
@@ -85,14 +80,13 @@ static kefir_result_t assign_string(struct kefir_mem *mem,
     REQUIRE_OK(layer_address(mem, context, builder, entry->designator, layer));
     REQUIRE_OK(kefir_ast_translate_expression(mem, entry->value->expression, builder, context));
 
-    if (is_char_array(type, NULL) &&
-        (type->array_type.boundary == KEFIR_AST_ARRAY_BOUNDED ||
-        type->array_type.boundary == KEFIR_AST_ARRAY_BOUNDED_STATIC)) {
+    if (is_char_array(type, NULL) && (type->array_type.boundary == KEFIR_AST_ARRAY_BOUNDED ||
+                                      type->array_type.boundary == KEFIR_AST_ARRAY_BOUNDED_STATIC)) {
         kefir_size_t length = MIN((kefir_size_t) type->array_type.const_length->value.integer,
-            entry->value->expression->properties.expression_props.string_literal.length);
-        const struct kefir_ast_type *array_type = kefir_ast_type_array(mem, context->ast_context->type_bundle,
-            type->array_type.element_type, kefir_ast_constant_expression_integer(mem, length),
-            NULL);
+                                  entry->value->expression->properties.expression_props.string_literal.length);
+        const struct kefir_ast_type *array_type =
+            kefir_ast_type_array(mem, context->ast_context->type_bundle, type->array_type.element_type,
+                                 kefir_ast_constant_expression_integer(mem, length), NULL);
         REQUIRE_OK(kefir_ast_translator_store_value(mem, array_type, context, builder));
     } else {
         REQUIRE_OK(kefir_ast_translator_store_value(mem, type, context, builder));
@@ -100,23 +94,20 @@ static kefir_result_t assign_string(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-static kefir_result_t traverse_aggregate_union(struct kefir_mem *mem,
-                                             struct kefir_ast_translator_context *context,
-                                             struct kefir_irbuilder_block *builder,
-                                             const struct kefir_ast_type *type,
-                                             const struct kefir_ast_initializer *initializer,
-                                             struct kefir_ast_type_traversal *traversal) {
+static kefir_result_t traverse_aggregate_union(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
+                                               struct kefir_irbuilder_block *builder, const struct kefir_ast_type *type,
+                                               const struct kefir_ast_initializer *initializer,
+                                               struct kefir_ast_type_traversal *traversal) {
     UNUSED(type);
     const struct kefir_list_entry *init_iter = kefir_list_head(&initializer->list.initializers);
     for (; init_iter != NULL; kefir_list_next(&init_iter)) {
-        ASSIGN_DECL_CAST(struct kefir_ast_initializer_list_entry *, entry,
-            init_iter->value);
+        ASSIGN_DECL_CAST(struct kefir_ast_initializer_list_entry *, entry, init_iter->value);
         if (entry->designator != NULL) {
             REQUIRE_OK(kefir_ast_type_traversal_navigate(mem, traversal, entry->designator));
         } else if (kefir_ast_type_traversal_empty(traversal)) {
             continue;
         }
-        
+
         const struct kefir_ast_type_traversal_layer *layer = NULL;
 
         if (entry->value->type == KEFIR_AST_INITIALIZER_LIST) {
@@ -133,18 +124,18 @@ static kefir_result_t traverse_aggregate_union(struct kefir_mem *mem,
             REQUIRE_OK(layer_address(mem, context, builder, entry->designator, layer));
             REQUIRE_OK(kefir_ast_translate_expression(mem, entry->value->expression, builder, context));
             REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits,
-                entry->value->expression->properties.type, type));
+                                                    entry->value->expression->properties.type, type));
             REQUIRE_OK(kefir_ast_translator_store_value(mem, type, context, builder));
         } else {
             const struct kefir_ast_type *type = NULL;
             REQUIRE_OK(kefir_ast_type_traversal_next(mem, traversal, &type, &layer));
-            kefir_result_t res = kefir_ast_node_assignable(mem, context->ast_context,
-                entry->value->expression, kefir_ast_unqualified_type(type));
+            kefir_result_t res = kefir_ast_node_assignable(mem, context->ast_context, entry->value->expression,
+                                                           kefir_ast_unqualified_type(type));
             while (res == KEFIR_NO_MATCH) {
                 REQUIRE_OK(kefir_ast_type_traversal_step(mem, traversal));
                 REQUIRE_OK(kefir_ast_type_traversal_next(mem, traversal, &type, &layer));
-                res = kefir_ast_node_assignable(mem, context->ast_context,
-                    entry->value->expression, kefir_ast_unqualified_type(type));
+                res = kefir_ast_node_assignable(mem, context->ast_context, entry->value->expression,
+                                                kefir_ast_unqualified_type(type));
             }
             REQUIRE_OK(res);
             REQUIRE_OK(layer_address(mem, context, builder, entry->designator, layer));
@@ -155,28 +146,25 @@ static kefir_result_t traverse_aggregate_union(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-static kefir_result_t zero_type(struct kefir_mem *mem,
-                              struct kefir_ast_translator_context *context,
-                              struct kefir_irbuilder_block *builder,
-                              const struct kefir_ast_type *type) {
+static kefir_result_t zero_type(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
+                                struct kefir_irbuilder_block *builder, const struct kefir_ast_type *type) {
     const struct kefir_ast_translator_resolved_type *cached_type = NULL;
-    REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_cache.resolver, context->environment, context->module,
-        type, 0, &cached_type));
+    REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_cache.resolver, context->environment,
+                                                               context->module, type, 0, &cached_type));
     REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
-        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
 
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 0));
-    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_BZERO, cached_type->object.ir_type_id, cached_type->object.layout->value));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_BZERO, cached_type->object.ir_type_id,
+                                               cached_type->object.layout->value));
     return KEFIR_OK;
 }
 
-static kefir_result_t translate_struct_union(struct kefir_mem *mem,
-                                           struct kefir_ast_translator_context *context,
-                                           struct kefir_irbuilder_block *builder,
-                                           const struct kefir_ast_type *type,
-                                           const struct kefir_ast_initializer *initializer) {
+static kefir_result_t translate_struct_union(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
+                                             struct kefir_irbuilder_block *builder, const struct kefir_ast_type *type,
+                                             const struct kefir_ast_initializer *initializer) {
     REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
-        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot initialize incomplete object type"));
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot initialize incomplete object type"));
     if (initializer->type == KEFIR_AST_INITIALIZER_EXPRESSION) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 0));
         REQUIRE_OK(kefir_ast_translate_expression(mem, initializer->expression, builder, context));
@@ -192,11 +180,9 @@ static kefir_result_t translate_struct_union(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-static kefir_result_t translate_array(struct kefir_mem *mem,
-                                    struct kefir_ast_translator_context *context,
-                                    struct kefir_irbuilder_block *builder,
-                                    const struct kefir_ast_type *type,
-                                    const struct kefir_ast_initializer *initializer) {
+static kefir_result_t translate_array(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
+                                      struct kefir_irbuilder_block *builder, const struct kefir_ast_type *type,
+                                      const struct kefir_ast_initializer *initializer) {
     struct kefir_ast_node_base *head_expr = kefir_ast_initializer_head(initializer);
     if (head_expr != NULL && head_expr->properties.expression_props.string_literal.content != NULL &&
         is_char_array(type, NULL)) {
@@ -205,7 +191,7 @@ static kefir_result_t translate_array(struct kefir_mem *mem,
         REQUIRE_OK(kefir_ast_translator_store_value(mem, type, context, builder));
     } else {
         REQUIRE(initializer->type == KEFIR_AST_INITIALIZER_LIST,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to initialize array by non-string literal expression"));
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to initialize array by non-string literal expression"));
 
         REQUIRE_OK(zero_type(mem, context, builder, type));
         struct kefir_ast_type_traversal traversal;
@@ -217,11 +203,9 @@ static kefir_result_t translate_array(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_translate_initializer(struct kefir_mem *mem,
-                                           struct kefir_ast_translator_context *context,
-                                           struct kefir_irbuilder_block *builder,
-                                           const struct kefir_ast_type *type,
-                                           const struct kefir_ast_initializer *initializer) {
+kefir_result_t kefir_ast_translate_initializer(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
+                                               struct kefir_irbuilder_block *builder, const struct kefir_ast_type *type,
+                                               const struct kefir_ast_initializer *initializer) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator context"));
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
@@ -234,8 +218,7 @@ kefir_result_t kefir_ast_translate_initializer(struct kefir_mem *mem,
         REQUIRE_OK(translate_scalar(mem, context, builder, type, initializer));
     } else if (type->tag == KEFIR_AST_TYPE_ARRAY) {
         REQUIRE_OK(translate_array(mem, context, builder, type, initializer));
-    } else if (type->tag == KEFIR_AST_TYPE_STRUCTURE ||
-               type->tag == KEFIR_AST_TYPE_UNION) {
+    } else if (type->tag == KEFIR_AST_TYPE_STRUCTURE || type->tag == KEFIR_AST_TYPE_UNION) {
         REQUIRE_OK(translate_struct_union(mem, context, builder, type, initializer));
     } else {
         return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot initialize incomplete object type");

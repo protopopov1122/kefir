@@ -28,12 +28,7 @@ int main(int argc, const char **argv) {
     UNUSED(argc);
     UNUSED(argv);
     struct kefir_mem mem = {
-        .malloc = kefir_malloc,
-        .calloc = kefir_calloc,
-        .realloc = kefir_realloc,
-        .free = kefir_free,
-        .data = NULL
-    };
+        .malloc = kefir_malloc, .calloc = kefir_calloc, .realloc = kefir_realloc, .free = kefir_free, .data = NULL};
     if (kefir_int_test(&mem) != KEFIR_OK) {
         return EXIT_FAILURE;
     }

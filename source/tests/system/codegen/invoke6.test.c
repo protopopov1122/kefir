@@ -21,10 +21,7 @@ int main(int argc, const char **argv) {
     UNUSED(argc);
     UNUSED(argv);
     for (int64_t i = -100; i < 100; i++) {
-        struct aggregate agg = {
-            .f1 = i,
-            .f2 = i * 35.46 + 0.05
-        };
+        struct aggregate agg = {.f1 = i, .f2 = i * 35.46 + 0.05};
         struct aggregate res = proxyadd(addstruct, agg);
         ASSERT(res.f1 == i + 7);
         ASSERT(DOUBLE_EQUALS((i * 35.46 + 0.05) * 7, res.f2, DOUBLE_EPSILON));

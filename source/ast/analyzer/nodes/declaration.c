@@ -6,8 +6,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-kefir_result_t kefir_ast_analyze_declaration_node(struct kefir_mem *mem,
-                                                  const struct kefir_ast_context *context,
+kefir_result_t kefir_ast_analyze_declaration_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                   const struct kefir_ast_declaration *node,
                                                   struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
@@ -19,31 +18,23 @@ kefir_result_t kefir_ast_analyze_declaration_node(struct kefir_mem *mem,
     kefir_ast_scoped_identifier_storage_t storage = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN;
     REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
     base->properties.category = KEFIR_AST_NODE_CATEGORY_DECLARATION;
-    REQUIRE_OK(kefir_ast_analyze_declaration(mem, context, &node->specifiers, node->declarator,
-        &base->properties.declaration_props.identifier, &type,
-        &storage,
-        &base->properties.declaration_props.function,
-        &base->properties.declaration_props.alignment));
+    REQUIRE_OK(kefir_ast_analyze_declaration(
+        mem, context, &node->specifiers, node->declarator, &base->properties.declaration_props.identifier, &type,
+        &storage, &base->properties.declaration_props.function, &base->properties.declaration_props.alignment));
     REQUIRE_OK(kefir_ast_analyze_type(mem, context, context->type_analysis_context, type));
 
     if (base->properties.declaration_props.identifier != NULL) {
         struct kefir_ast_alignment *alignment = NULL;
         if (base->properties.declaration_props.alignment != 0) {
-            alignment = kefir_ast_alignment_const_expression(mem, kefir_ast_constant_expression_integer(mem,
-                base->properties.declaration_props.alignment));
+            alignment = kefir_ast_alignment_const_expression(
+                mem, kefir_ast_constant_expression_integer(mem, base->properties.declaration_props.alignment));
             REQUIRE(alignment != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST alignment"));
         }
 
         const struct kefir_ast_scoped_identifier *scoped_id = NULL;
-        kefir_result_t res = context->define_identifier(mem, context,
-            node->initializer == NULL,
-            base->properties.declaration_props.identifier,
-            type,
-            storage,
-            base->properties.declaration_props.function,
-            alignment,
-            node->initializer,
-            &scoped_id);
+        kefir_result_t res = context->define_identifier(
+            mem, context, node->initializer == NULL, base->properties.declaration_props.identifier, type, storage,
+            base->properties.declaration_props.function, alignment, node->initializer, &scoped_id);
         REQUIRE_ELSE(res == KEFIR_OK, {
             kefir_ast_alignment_free(mem, alignment);
             return res;
@@ -61,7 +52,7 @@ kefir_result_t kefir_ast_analyze_declaration_node(struct kefir_mem *mem,
                 base->properties.declaration_props.storage = scoped_id->function.storage;
                 break;
 
-            case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION: 
+            case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION:
                 base->properties.type = scoped_id->type;
                 base->properties.declaration_props.storage = storage;
                 break;

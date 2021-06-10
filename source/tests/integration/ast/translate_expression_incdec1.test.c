@@ -20,20 +20,23 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_local_context_init(mem, &global_context, &local_context));
     const struct kefir_ast_context *context = &local_context.context;
 
-    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, &local_context,
-        "int", kefir_ast_type_signed_int(), NULL, NULL, NULL));
-    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, &local_context,
-        "short", kefir_ast_type_unsigned_short(), NULL, NULL, NULL));
-    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, &local_context,
-        "float", kefir_ast_type_float(), NULL, NULL, NULL));
-    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, &local_context,
-        "double", kefir_ast_type_double(), NULL, NULL, NULL));
-    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, &local_context,
-        "ptr1", kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_bool()), NULL, NULL, NULL));
-    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, &local_context,
-        "ptr2", kefir_ast_type_pointer(mem, context->type_bundle,
-            kefir_ast_type_array(mem, context->type_bundle, kefir_ast_type_signed_long(),
-                kefir_ast_constant_expression_integer(mem, 4), NULL)), NULL, NULL, NULL));
+    REQUIRE_OK(
+        kefir_ast_local_context_define_auto(mem, &local_context, "int", kefir_ast_type_signed_int(), NULL, NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, &local_context, "short", kefir_ast_type_unsigned_short(), NULL,
+                                                   NULL, NULL));
+    REQUIRE_OK(
+        kefir_ast_local_context_define_auto(mem, &local_context, "float", kefir_ast_type_float(), NULL, NULL, NULL));
+    REQUIRE_OK(
+        kefir_ast_local_context_define_auto(mem, &local_context, "double", kefir_ast_type_double(), NULL, NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_define_auto(
+        mem, &local_context, "ptr1", kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_bool()), NULL,
+        NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_define_auto(
+        mem, &local_context, "ptr2",
+        kefir_ast_type_pointer(mem, context->type_bundle,
+                               kefir_ast_type_array(mem, context->type_bundle, kefir_ast_type_signed_long(),
+                                                    kefir_ast_constant_expression_integer(mem, 4), NULL)),
+        NULL, NULL, NULL));
 
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
@@ -41,75 +44,78 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ast_translator_global_scope_layout translator_global_scope;
     struct kefir_ast_translator_local_scope_layout translator_local_scope;
     REQUIRE_OK(kefir_ast_translator_global_scope_layout_init(mem, &module, &translator_global_scope));
-    REQUIRE_OK(kefir_ast_translator_local_scope_layout_init(mem, &module, &translator_global_scope, &translator_local_scope));
+    REQUIRE_OK(
+        kefir_ast_translator_local_scope_layout_init(mem, &module, &translator_global_scope, &translator_local_scope));
 
     struct kefir_ast_translator_context translator_context;
     REQUIRE_OK(kefir_ast_translator_context_init(&translator_context, context, &env, &module));
-    REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(mem, &module, &global_context, &env,
-        kefir_ast_translator_context_type_resolver(&translator_context), &translator_global_scope));
-    REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(mem, &local_context, &env, &module,
-        kefir_ast_translator_context_type_resolver(&translator_context), &translator_local_scope));
+    REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(
+        mem, &module, &global_context, &env, kefir_ast_translator_context_type_resolver(&translator_context),
+        &translator_global_scope));
+    REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(
+        mem, &local_context, &env, &module, kefir_ast_translator_context_type_resolver(&translator_context),
+        &translator_local_scope));
     REQUIRE_OK(kefir_ast_translate_global_scope(mem, &module, &translator_global_scope));
     struct kefir_irbuilder_block builder;
 
     FUNC("increment_int1", {
         UNARY_NODE(KEFIR_AST_OPERATION_POSTFIX_INCREMENT,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "int")));
+                   KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "int")));
     });
 
     FUNC("increment_int2", {
         UNARY_NODE(KEFIR_AST_OPERATION_POSTFIX_INCREMENT,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "short")));
+                   KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "short")));
     });
 
     FUNC("decrement_int1", {
         UNARY_NODE(KEFIR_AST_OPERATION_POSTFIX_DECREMENT,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "int")));
+                   KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "int")));
     });
 
     FUNC("decrement_int2", {
         UNARY_NODE(KEFIR_AST_OPERATION_POSTFIX_DECREMENT,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "short")));
+                   KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "short")));
     });
 
     FUNC("increment_float", {
         UNARY_NODE(KEFIR_AST_OPERATION_POSTFIX_INCREMENT,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "float")));
+                   KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "float")));
     });
 
     FUNC("increment_double", {
         UNARY_NODE(KEFIR_AST_OPERATION_POSTFIX_INCREMENT,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "double")));
+                   KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "double")));
     });
 
     FUNC("decrement_float", {
         UNARY_NODE(KEFIR_AST_OPERATION_POSTFIX_DECREMENT,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "float")));
+                   KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "float")));
     });
 
     FUNC("decrement_double", {
         UNARY_NODE(KEFIR_AST_OPERATION_POSTFIX_DECREMENT,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "double")));
+                   KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "double")));
     });
 
     FUNC("increment_pointer1", {
         UNARY_NODE(KEFIR_AST_OPERATION_POSTFIX_INCREMENT,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "ptr1")));
+                   KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "ptr1")));
     });
 
     FUNC("increment_pointer2", {
         UNARY_NODE(KEFIR_AST_OPERATION_POSTFIX_INCREMENT,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "ptr2")));
+                   KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "ptr2")));
     });
 
     FUNC("decrement_pointer1", {
         UNARY_NODE(KEFIR_AST_OPERATION_POSTFIX_DECREMENT,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "ptr1")));
+                   KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "ptr1")));
     });
 
     FUNC("decrement_pointer2", {
         UNARY_NODE(KEFIR_AST_OPERATION_POSTFIX_DECREMENT,
-            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "ptr2")));
+                   KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "ptr2")));
     });
 
     REQUIRE_OK(kefir_ir_format_module(stdout, &module));

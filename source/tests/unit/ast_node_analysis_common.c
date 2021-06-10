@@ -11,7 +11,7 @@ struct kefir_ast_constant *make_constant(struct kefir_mem *mem, const struct kef
         case KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR:
         case KEFIR_AST_TYPE_SCALAR_SIGNED_CHAR:
             return kefir_ast_new_constant_char(mem, 'A');
-        
+
         case KEFIR_AST_TYPE_SCALAR_UNSIGNED_SHORT:
         case KEFIR_AST_TYPE_SCALAR_UNSIGNED_INT:
             return kefir_ast_new_constant_uint(mem, 1234);

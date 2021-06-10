@@ -18,16 +18,15 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     codegen.asmgen.settings.enable_identation = false;
 
     struct kefir_ir_type *extractu_decl_params = kefir_ir_module_new_type(mem, &module, 0, NULL),
-                       *extractu_decl_result = kefir_ir_module_new_type(mem, &module, 0, NULL);
+                         *extractu_decl_result = kefir_ir_module_new_type(mem, &module, 0, NULL);
     REQUIRE(extractu_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(extractu_decl_result != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function_decl *extractu_decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "extractu", 
-            extractu_decl_params, false, extractu_decl_result);
+    struct kefir_ir_function_decl *extractu_decl = kefir_ir_module_new_function_declaration(
+        mem, &module, "extractu", extractu_decl_params, false, extractu_decl_result);
     REQUIRE(extractu_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *extractu_func = kefir_ir_module_new_function(mem, &module, extractu_decl, NULL, 1024);
     REQUIRE(extractu_func != NULL, KEFIR_INTERNAL_ERROR);
-    
+
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extractu_func->body, KEFIR_IROPCODE_EXTUBITS, 0, 0));
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extractu_func->body, KEFIR_IROPCODE_EXTUBITS, 0, 1));
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extractu_func->body, KEFIR_IROPCODE_EXTUBITS, 0, 2));
@@ -39,7 +38,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extractu_func->body, KEFIR_IROPCODE_EXTUBITS, 0, 8));
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extractu_func->body, KEFIR_IROPCODE_EXTUBITS, 0, 9));
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extractu_func->body, KEFIR_IROPCODE_EXTUBITS, 0, 10));
-    
+
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extractu_func->body, KEFIR_IROPCODE_EXTUBITS, 1, 0));
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extractu_func->body, KEFIR_IROPCODE_EXTUBITS, 2, 1));
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extractu_func->body, KEFIR_IROPCODE_EXTUBITS, 4, 2));
@@ -53,16 +52,15 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extractu_func->body, KEFIR_IROPCODE_EXTUBITS, 16, 10));
 
     struct kefir_ir_type *extracts_decl_params = kefir_ir_module_new_type(mem, &module, 0, NULL),
-                       *extracts_decl_result = kefir_ir_module_new_type(mem, &module, 0, NULL);
+                         *extracts_decl_result = kefir_ir_module_new_type(mem, &module, 0, NULL);
     REQUIRE(extracts_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(extracts_decl_result != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function_decl *extracts_decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "extracts", 
-            extracts_decl_params, false, extracts_decl_result);
+    struct kefir_ir_function_decl *extracts_decl = kefir_ir_module_new_function_declaration(
+        mem, &module, "extracts", extracts_decl_params, false, extracts_decl_result);
     REQUIRE(extracts_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *extracts_func = kefir_ir_module_new_function(mem, &module, extracts_decl, NULL, 1024);
     REQUIRE(extracts_func != NULL, KEFIR_INTERNAL_ERROR);
-    
+
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extracts_func->body, KEFIR_IROPCODE_EXTSBITS, 0, 0));
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extracts_func->body, KEFIR_IROPCODE_EXTSBITS, 0, 1));
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extracts_func->body, KEFIR_IROPCODE_EXTSBITS, 0, 2));
@@ -74,7 +72,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extracts_func->body, KEFIR_IROPCODE_EXTSBITS, 0, 8));
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extracts_func->body, KEFIR_IROPCODE_EXTSBITS, 0, 9));
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extracts_func->body, KEFIR_IROPCODE_EXTSBITS, 0, 10));
-    
+
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extracts_func->body, KEFIR_IROPCODE_EXTSBITS, 1, 0));
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extracts_func->body, KEFIR_IROPCODE_EXTSBITS, 2, 1));
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extracts_func->body, KEFIR_IROPCODE_EXTSBITS, 4, 2));
@@ -87,18 +85,16 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extracts_func->body, KEFIR_IROPCODE_EXTSBITS, 8, 9));
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extracts_func->body, KEFIR_IROPCODE_EXTSBITS, 16, 10));
 
-
     struct kefir_ir_type *insert_decl_params = kefir_ir_module_new_type(mem, &module, 0, NULL),
-                       *insert_decl_result = kefir_ir_module_new_type(mem, &module, 0, NULL);
+                         *insert_decl_result = kefir_ir_module_new_type(mem, &module, 0, NULL);
     REQUIRE(insert_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(insert_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *insert_decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "insert", 
-            insert_decl_params, false, insert_decl_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "insert", insert_decl_params, false, insert_decl_result);
     REQUIRE(insert_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *insert_func = kefir_ir_module_new_function(mem, &module, insert_decl, NULL, 1024);
     REQUIRE(insert_func != NULL, KEFIR_INTERNAL_ERROR);
-    
+
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &insert_func->body, KEFIR_IROPCODE_INSERTBITS, 0, 0));
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &insert_func->body, KEFIR_IROPCODE_INSERTBITS, 0, 1));
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &insert_func->body, KEFIR_IROPCODE_INSERTBITS, 0, 2));
@@ -110,7 +106,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &insert_func->body, KEFIR_IROPCODE_INSERTBITS, 0, 8));
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &insert_func->body, KEFIR_IROPCODE_INSERTBITS, 0, 9));
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &insert_func->body, KEFIR_IROPCODE_INSERTBITS, 0, 10));
-    
+
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &insert_func->body, KEFIR_IROPCODE_INSERTBITS, 1, 0));
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &insert_func->body, KEFIR_IROPCODE_INSERTBITS, 2, 1));
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &insert_func->body, KEFIR_IROPCODE_INSERTBITS, 4, 2));

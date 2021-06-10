@@ -20,19 +20,11 @@ void modify(struct param *, long);
 int main(int argc, const char **argv) {
     UNUSED(argc);
     UNUSED(argv);
-    
+
     for (int i = -10; i < 10; i++) {
         for (int j = -10; j < 10; j++) {
             struct param val = {
-                .a = j,
-                .b = (j + 1) & 15,
-                .c = j + 2,
-                .d = j + 3,
-                .e = j + 4,
-                .f = j + 5,
-                .g = j + 6,
-                .h = j + 7
-            };
+                .a = j, .b = (j + 1) & 15, .c = j + 2, .d = j + 3, .e = j + 4, .f = j + 5, .g = j + 6, .h = j + 7};
             modify(&val, i);
             ASSERT(val.a == j - i);
             ASSERT((val.b & 15) == ((((j + 1) & 15) - i) & 15));

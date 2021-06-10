@@ -23,19 +23,11 @@ int main(int argc, const char **argv) {
     UNUSED(argv);
 
     for (int i = -100; i < 100; i++) {
-        struct param_struct param1 = {
-            .field1 = i * 10,
-            .field2 = i * 20,
-            .field3 = i & 1,
-            .field4 = i * 1e2 + 0.01
-        };
-        struct param_struct2 param2 = {
-            .ptr = &param1,
-            .arg = (i * 4) & 0xff
-        };
+        struct param_struct param1 = {.field1 = i * 10, .field2 = i * 20, .field3 = i & 1, .field4 = i * 1e2 + 0.01};
+        struct param_struct2 param2 = {.ptr = &param1, .arg = (i * 4) & 0xff};
 
         ASSERT(DOUBLE_EQUALS(sum(param2), param1.field1 + param1.field2 + param1.field3 + param1.field4 + param2.arg,
-            DOUBLE_EPSILON));
+                             DOUBLE_EPSILON));
     }
     return EXIT_SUCCESS;
 }
