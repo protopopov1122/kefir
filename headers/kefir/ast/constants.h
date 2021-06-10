@@ -29,7 +29,11 @@ typedef enum kefir_ast_node_type {
 
     KEFIR_AST_DECLARATOR,
     KEFIR_AST_DECLARATOR_SPECIFIER,
-    KEFIR_AST_STATIC_ASSERTION
+    KEFIR_AST_STATIC_ASSERTION,
+
+    KEFIR_AST_LABELED_STATEMENT,
+    KEFIR_AST_CASE_STATEMENT,
+    KEFIR_AST_EXPRESSION_STATEMENT
 } kefir_ast_node_type_t;
 
 typedef enum kefir_ast_node_category {
@@ -37,7 +41,8 @@ typedef enum kefir_ast_node_category {
     KEFIR_AST_NODE_CATEGORY_EXPRESSION,
     KEFIR_AST_NODE_CATEGORY_TYPE,
     KEFIR_AST_NODE_CATEGORY_DECLARATION,
-    KEFIR_AST_NODE_CATEGORY_STATIC_ASSERTION
+    KEFIR_AST_NODE_CATEGORY_STATIC_ASSERTION,
+    KEFIR_AST_NODE_CATEGORY_STATEMENT
 } kefir_ast_node_category_t;
 
 typedef enum kefir_ast_constant_type {

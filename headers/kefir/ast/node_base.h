@@ -39,6 +39,13 @@ typedef struct kefir_ast_node_properties {
         const char *identifier;
         kefir_size_t alignment;
     } declaration_props;
+
+    struct {
+        union {
+            const char *string;
+            kefir_int64_t integer;
+        } label;
+    } statement_props;
 } kefir_ast_node_properties_t;
 
 typedef struct kefir_ast_node_base {

@@ -114,6 +114,20 @@ KEFIR_AST_NODE_STRUCT(kefir_ast_static_assertion, {
     struct kefir_ast_string_literal *string;
 });
 
+KEFIR_AST_NODE_STRUCT(kefir_ast_labeled_statement, {
+    const char *label;
+    struct kefir_ast_node_base *statement;
+});
+
+KEFIR_AST_NODE_STRUCT(kefir_ast_case_statement, {
+    struct kefir_ast_node_base *expression;
+    struct kefir_ast_node_base *statement;
+});
+
+KEFIR_AST_NODE_STRUCT(kefir_ast_expression_statement, {
+    struct kefir_ast_node_base *expression;
+});
+
 struct kefir_ast_constant *kefir_ast_new_constant_bool(struct kefir_mem *, kefir_bool_t);
 struct kefir_ast_constant *kefir_ast_new_constant_char(struct kefir_mem *, kefir_char_t);
 struct kefir_ast_constant *kefir_ast_new_constant_int(struct kefir_mem *, kefir_int_t);
@@ -195,6 +209,19 @@ struct kefir_ast_static_assertion *kefir_ast_new_static_assertion(struct kefir_m
                                                                   struct kefir_ast_node_base *,
                                                                   struct kefir_ast_string_literal *);
 
+struct kefir_ast_labeled_statement *kefir_ast_new_labeled_statement(struct kefir_mem *,
+                                                                    struct kefir_symbol_table *,
+                                                                    const char *,
+                                                                    struct kefir_ast_node_base *);
+
+struct kefir_ast_case_statement *kefir_ast_new_case_statement(struct kefir_mem *,
+                                                              struct kefir_ast_node_base *,
+                                                              struct kefir_ast_node_base *);
+
+struct kefir_ast_expression_statement *kefir_ast_new_expression_statement(struct kefir_mem *,
+                                                                          struct kefir_ast_node_base *);
+
+
 typedef struct kefir_ast_visitor {
     KEFIR_AST_VISITOR_METHOD(generic_handler, kefir_ast_node_base);
     KEFIR_AST_VISITOR_METHOD(constant, kefir_ast_constant);
@@ -215,6 +242,9 @@ typedef struct kefir_ast_visitor {
     KEFIR_AST_VISITOR_METHOD(comma_operator, kefir_ast_comma_operator);
     KEFIR_AST_VISITOR_METHOD(compound_literal, kefir_ast_compound_literal);
     KEFIR_AST_VISITOR_METHOD(static_assertion, kefir_ast_static_assertion);
+    KEFIR_AST_VISITOR_METHOD(labeled_statement, kefir_ast_labeled_statement);
+    KEFIR_AST_VISITOR_METHOD(case_statement, kefir_ast_case_statement);
+    KEFIR_AST_VISITOR_METHOD(expression_statement, kefir_ast_expression_statement);
 } kefir_ast_visitor_t;
 
 #define KEFIR_AST_NODE_INTERNAL_DEF

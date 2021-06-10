@@ -78,6 +78,9 @@ DECLARE_CASE(ast_nodes_comma_operators);
 DECLARE_CASE(ast_nodes_compound_literals);
 DECLARE_CASE(ast_nodes_declarations1);
 DECLARE_CASE(ast_nodes_static_assertions1);
+DECLARE_CASE(ast_nodes_labeled_statements1);
+DECLARE_CASE(ast_nodes_case_statements1);
+DECLARE_CASE(ast_nodes_expression_statements1);
 DECLARE_CASE(ast_type_compatibility1);
 DECLARE_CASE(ast_type_basic_compatibility);
 DECLARE_CASE(ast_type_enum_compatibility);
@@ -288,6 +291,9 @@ DECLARE_CASE(ast_node_analysis_declarations11);
 DECLARE_CASE(ast_node_analysis_declarations12);
 DECLARE_CASE(ast_node_analysis_declarations13);
 DECLARE_CASE(ast_node_analysis_static_assertions1);
+DECLARE_CASE(ast_node_analysis_expression_statements1);
+DECLARE_CASE(ast_node_analysis_labeled_statements1);
+DECLARE_CASE(ast_node_analysis_case_statements1);
 
 TEST_SUITE(mainSuite,
     &amd64_sysv_abi_data_test1,
@@ -365,6 +371,9 @@ TEST_SUITE(mainSuite,
     &ast_nodes_compound_literals,
     &ast_nodes_declarations1,
     &ast_nodes_static_assertions1,
+    &ast_nodes_labeled_statements1,
+    &ast_nodes_case_statements1,
+    &ast_nodes_expression_statements1,
     &ast_type_compatibility1,
     &ast_type_basic_compatibility,
     &ast_type_enum_compatibility,
@@ -574,7 +583,10 @@ TEST_SUITE(mainSuite,
     &ast_node_analysis_declarations11,
     &ast_node_analysis_declarations12,
     &ast_node_analysis_declarations13,
-    &ast_node_analysis_static_assertions1
+    &ast_node_analysis_static_assertions1,
+    &ast_node_analysis_expression_statements1,
+    &ast_node_analysis_labeled_statements1,
+    &ast_node_analysis_case_statements1
 );
 
 int main(int argc, const char **argv) {
