@@ -25,9 +25,12 @@ kefir_size_t kft_run_test_suite(const struct kft_test_case **, kefir_size_t, voi
     const struct kft_test_case case_name = {.run = run_test_##case_name, .description = case_description}; \
     kefir_result_t run_test_##case_name(const struct kft_test_case *testCase, void *testContext) {         \
         UNUSED(testCase);                                                                                  \
-        UNUSED(testContext);
+        UNUSED(testContext);                                                                               \
+        do
 
 #define END_CASE     \
+    while (0)        \
+        ;            \
     return KEFIR_OK; \
     }
 
