@@ -77,6 +77,11 @@ ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_tra
                                         &global_context));
 ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
+const struct kefir_ast_scoped_identifier *scoped_id = NULL;
+ASSERT(context.context.resolve_label_identifier(&context.context, "label1", &scoped_id) == KEFIR_NOT_FOUND);
+ASSERT(context.context.resolve_label_identifier(&context.context, "label2", &scoped_id) == KEFIR_NOT_FOUND);
+ASSERT(context.context.resolve_label_identifier(&context.context, "label3", &scoped_id) == KEFIR_NOT_FOUND);
+
 ASSERT_LABEL(&kft_mem, &context.context, "label1", false, false);
 ASSERT_LABEL(&kft_mem, &context.context, "label1", false, false);
 ASSERT_LABEL(&kft_mem, &context.context, "label1", false, false);
@@ -98,6 +103,18 @@ ASSERT_LABEL(&kft_mem, &context.context, "label1", false, true);
 ASSERT_LABEL(&kft_mem, &context.context, "label2", false, true);
 ASSERT_LABEL(&kft_mem, &context.context, "label3", false, true);
 
+ASSERT_OK(context.context.resolve_label_identifier(&context.context, "label1", &scoped_id));
+ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL);
+ASSERT(scoped_id->label.defined);
+
+ASSERT_OK(context.context.resolve_label_identifier(&context.context, "label2", &scoped_id));
+ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL);
+ASSERT(scoped_id->label.defined);
+
+ASSERT_OK(context.context.resolve_label_identifier(&context.context, "label3", &scoped_id));
+ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL);
+ASSERT(scoped_id->label.defined);
+
 ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &context));
 ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 ASSERT_OK(kefir_ast_type_bundle_free(&kft_mem, &type_bundle));
@@ -116,6 +133,12 @@ ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
 ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
                                         &global_context));
 ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
+
+const struct kefir_ast_scoped_identifier *scoped_id = NULL;
+ASSERT(context.context.resolve_label_identifier(&context.context, "label1", &scoped_id) == KEFIR_NOT_FOUND);
+ASSERT(context.context.resolve_label_identifier(&context.context, "label2", &scoped_id) == KEFIR_NOT_FOUND);
+ASSERT(context.context.resolve_label_identifier(&context.context, "label3", &scoped_id) == KEFIR_NOT_FOUND);
+ASSERT(context.context.resolve_label_identifier(&context.context, "label4", &scoped_id) == KEFIR_NOT_FOUND);
 
 ASSERT_LABEL(&kft_mem, &context.context, "label1", false, false);
 
@@ -147,6 +170,22 @@ ASSERT_LABEL_NOK(&kft_mem, &context.context, "label2", true);
 ASSERT_LABEL(&kft_mem, &context.context, "label3", false, false);
 ASSERT_LABEL(&kft_mem, &context.context, "label4", false, true);
 ASSERT_LABEL_NOK(&kft_mem, &context.context, "label4", true);
+
+ASSERT_OK(context.context.resolve_label_identifier(&context.context, "label1", &scoped_id));
+ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL);
+ASSERT(scoped_id->label.defined);
+
+ASSERT_OK(context.context.resolve_label_identifier(&context.context, "label2", &scoped_id));
+ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL);
+ASSERT(scoped_id->label.defined);
+
+ASSERT_OK(context.context.resolve_label_identifier(&context.context, "label3", &scoped_id));
+ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL);
+ASSERT(!scoped_id->label.defined);
+
+ASSERT_OK(context.context.resolve_label_identifier(&context.context, "label4", &scoped_id));
+ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL);
+ASSERT(scoped_id->label.defined);
 
 ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &context));
 ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));

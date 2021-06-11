@@ -268,3 +268,93 @@ KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(stmt8));
 ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
 ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 END_CASE
+
+DEFINE_CASE(ast_node_analysis_labeled_statements2, "AST node analysis - labeled statements #2")
+const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+struct kefir_ast_global_context global_context;
+struct kefir_ast_local_context local_context;
+
+ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
+                                        &global_context));
+ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+struct kefir_ast_context *context = &local_context.context;
+
+const struct kefir_ast_scoped_identifier *scoped_id = NULL;
+ASSERT(context->resolve_label_identifier(context, "label1", &scoped_id) == KEFIR_NOT_FOUND);
+ASSERT(context->resolve_label_identifier(context, "label2", &scoped_id) == KEFIR_NOT_FOUND);
+ASSERT(context->resolve_label_identifier(context, "label3", &scoped_id) == KEFIR_NOT_FOUND);
+ASSERT(context->resolve_label_identifier(context, "label4", &scoped_id) == KEFIR_NOT_FOUND);
+
+struct kefir_ast_labeled_statement *stmt1 =
+    kefir_ast_new_labeled_statement(&kft_mem, context->symbols, "label1",
+                                    KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(
+                                        &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'a')))));
+ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(stmt1)));
+
+ASSERT_OK(context->resolve_label_identifier(context, "label1", &scoped_id));
+ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL);
+ASSERT(scoped_id->label.defined);
+
+struct kefir_ast_labeled_statement *stmt2 =
+    kefir_ast_new_labeled_statement(&kft_mem, context->symbols, "label1",
+                                    KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(
+                                        &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'b')))));
+ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(stmt2)));
+
+struct kefir_ast_labeled_statement *stmt3 =
+    kefir_ast_new_labeled_statement(&kft_mem, context->symbols, "label2",
+                                    KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(
+                                        &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'c')))));
+ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(stmt3)));
+
+ASSERT_OK(context->resolve_label_identifier(context, "label2", &scoped_id));
+ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL);
+ASSERT(scoped_id->label.defined);
+
+struct kefir_ast_labeled_statement *stmt4;
+struct kefir_ast_labeled_statement *stmt5;
+struct kefir_ast_labeled_statement *stmt6;
+do {
+    ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &local_context));
+    stmt4 = kefir_ast_new_labeled_statement(
+        &kft_mem, context->symbols, "label3",
+        KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(
+            &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'd')))));
+    ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(stmt4)));
+
+    do {
+        ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &local_context));
+        stmt5 = kefir_ast_new_labeled_statement(
+            &kft_mem, context->symbols, "label4",
+            KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(
+                &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'e')))));
+        ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(stmt5)));
+
+        stmt6 = kefir_ast_new_labeled_statement(
+            &kft_mem, context->symbols, "label2",
+            KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(
+                &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'f')))));
+        ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(stmt6)));
+        ASSERT_OK(kefir_ast_local_context_pop_block_scope(&local_context));
+    } while (0);
+
+    ASSERT_OK(kefir_ast_local_context_pop_block_scope(&local_context));
+} while (0);
+
+ASSERT_OK(context->resolve_label_identifier(context, "label3", &scoped_id));
+ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL);
+ASSERT(scoped_id->label.defined);
+
+ASSERT_OK(context->resolve_label_identifier(context, "label4", &scoped_id));
+ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL);
+ASSERT(scoped_id->label.defined);
+
+KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(stmt1));
+KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(stmt2));
+KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(stmt3));
+KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(stmt4));
+KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(stmt5));
+KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(stmt6));
+ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+END_CASE

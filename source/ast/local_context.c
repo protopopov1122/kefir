@@ -31,6 +31,19 @@ static kefir_result_t context_resolve_tag_identifier(const struct kefir_ast_cont
     return kefir_ast_local_context_resolve_scoped_tag_identifier(local_ctx, identifier, scoped_id);
 }
 
+static kefir_result_t context_resolve_label_identifier(const struct kefir_ast_context *context, const char *identifier,
+                                                       const struct kefir_ast_scoped_identifier **scoped_id) {
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid label"));
+    REQUIRE(scoped_id != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST scoped identifier"));
+    ASSIGN_DECL_CAST(struct kefir_ast_local_context *, local_ctx, context->payload);
+
+    struct kefir_ast_scoped_identifier *label_id = NULL;
+    REQUIRE_OK(kefir_ast_identifier_flat_scope_at(&local_ctx->label_scope, identifier, &label_id));
+    *scoped_id = label_id;
+    return KEFIR_OK;
+}
+
 static kefir_result_t context_allocate_temporary_value(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                        const struct kefir_ast_type *type,
                                                        struct kefir_ast_temporary_identifier *temp_id) {
@@ -213,6 +226,7 @@ kefir_result_t kefir_ast_local_context_init(struct kefir_mem *mem, struct kefir_
 
     context->context.resolve_ordinary_identifier = context_resolve_ordinary_identifier;
     context->context.resolve_tag_identifier = context_resolve_tag_identifier;
+    context->context.resolve_label_identifier = context_resolve_label_identifier;
     context->context.allocate_temporary_value = context_allocate_temporary_value;
     context->context.define_tag = context_define_tag;
     context->context.define_constant = context_define_constant;

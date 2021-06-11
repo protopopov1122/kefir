@@ -21,6 +21,14 @@ static kefir_result_t context_resolve_tag_identifier(const struct kefir_ast_cont
     return kefir_ast_global_context_resolve_scoped_tag_identifier(global_ctx, identifier, scoped_id);
 }
 
+static kefir_result_t context_resolve_label_identifier(const struct kefir_ast_context *context, const char *identifier,
+                                                       const struct kefir_ast_scoped_identifier **scoped_id) {
+    UNUSED(context);
+    UNUSED(identifier);
+    UNUSED(scoped_id);
+    return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Label resolving is not possible in the global scope");
+}
+
 static kefir_result_t context_allocate_temporary_value(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                        const struct kefir_ast_type *type,
                                                        struct kefir_ast_temporary_identifier *temp_id) {
@@ -229,6 +237,7 @@ kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem, const struct
 
     context->context.resolve_ordinary_identifier = context_resolve_ordinary_identifier;
     context->context.resolve_tag_identifier = context_resolve_tag_identifier;
+    context->context.resolve_label_identifier = context_resolve_label_identifier;
     context->context.allocate_temporary_value = context_allocate_temporary_value;
     context->context.define_tag = context_define_tag;
     context->context.define_constant = context_define_constant;
