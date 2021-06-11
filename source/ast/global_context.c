@@ -185,6 +185,18 @@ static kefir_result_t context_define_identifier(
     return KEFIR_OK;
 }
 
+static kefir_result_t context_reference_label(struct kefir_mem *mem, const struct kefir_ast_context *context,
+                                              const char *label, kefir_bool_t definition,
+                                              const struct kefir_ast_scoped_identifier **scoped_id) {
+    UNUSED(mem);
+    UNUSED(context);
+    UNUSED(label);
+    UNUSED(definition);
+    UNUSED(scoped_id);
+
+    return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Labels cannot be defined or referenced in a global context");
+}
+
 kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem, const struct kefir_ast_type_traits *type_traits,
                                              const struct kefir_ast_target_environment *target_env,
                                              struct kefir_ast_global_context *context) {
@@ -221,6 +233,7 @@ kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem, const struct
     context->context.define_tag = context_define_tag;
     context->context.define_constant = context_define_constant;
     context->context.define_identifier = context_define_identifier;
+    context->context.reference_label = context_reference_label;
     context->context.symbols = &context->symbols;
     context->context.type_bundle = &context->type_bundle;
     context->context.type_traits = context->type_traits;

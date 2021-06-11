@@ -160,6 +160,19 @@ struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_function_i
     return scoped_id;
 }
 
+struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_label(struct kefir_mem *mem,
+                                                                            kefir_bool_t defined) {
+    struct kefir_ast_scoped_identifier *scoped_id = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_scoped_identifier));
+    scoped_id->klass = KEFIR_AST_SCOPE_IDENTIFIER_LABEL;
+    scoped_id->cleanup.callback = NULL;
+    scoped_id->cleanup.payload = NULL;
+    scoped_id->label.defined = defined;
+    memset(scoped_id->payload.content, 0, KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE);
+    scoped_id->payload.ptr = scoped_id->payload.content;
+    scoped_id->payload.cleanup = &scoped_id->cleanup;
+    return scoped_id;
+}
+
 kefir_result_t kefir_ast_context_merge_alignment(struct kefir_mem *mem, struct kefir_ast_alignment **original,
                                                  struct kefir_ast_alignment *alignment) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));

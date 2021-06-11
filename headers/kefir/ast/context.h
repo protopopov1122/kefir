@@ -22,6 +22,8 @@ typedef struct kefir_ast_context {
                                         kefir_ast_scoped_identifier_storage_t, kefir_ast_function_specifier_t,
                                         struct kefir_ast_alignment *, struct kefir_ast_initializer *,
                                         const struct kefir_ast_scoped_identifier **);
+    kefir_result_t (*reference_label)(struct kefir_mem *, const struct kefir_ast_context *, const char *, kefir_bool_t,
+                                      const struct kefir_ast_scoped_identifier **);
 
     struct kefir_symbol_table *symbols;
     const struct kefir_ast_type_traits *type_traits;

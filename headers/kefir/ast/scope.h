@@ -48,7 +48,9 @@ typedef struct kefir_ast_scoped_identifier {
 
         const struct kefir_ast_type *type;
 
-        // TODO: Define scoped identifier payload for labels
+        struct {
+            kefir_bool_t defined;
+        } label;
     };
     struct {
         unsigned char content[KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE];
