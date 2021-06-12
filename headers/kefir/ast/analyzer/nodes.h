@@ -29,6 +29,7 @@ ANALYZE_NODE(labeled_statement, struct kefir_ast_labeled_statement);
 ANALYZE_NODE(case_statement, struct kefir_ast_case_statement);
 ANALYZE_NODE(expression_statement, struct kefir_ast_expression_statement);
 ANALYZE_NODE(compound_statement, struct kefir_ast_compound_statement);
+ANALYZE_NODE(conditional_statement, struct kefir_ast_conditional_statement);
 
 #undef ANALYZE_NODE
 

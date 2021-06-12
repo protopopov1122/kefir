@@ -34,7 +34,8 @@ typedef enum kefir_ast_node_type {
     KEFIR_AST_LABELED_STATEMENT,
     KEFIR_AST_CASE_STATEMENT,
     KEFIR_AST_EXPRESSION_STATEMENT,
-    KEFIR_AST_COMPOUND_STATEMENT
+    KEFIR_AST_COMPOUND_STATEMENT,
+    KEFIR_AST_CONDITIONAL_STATEMENT
 } kefir_ast_node_type_t;
 
 typedef enum kefir_ast_node_category {

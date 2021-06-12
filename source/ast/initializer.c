@@ -169,7 +169,8 @@ kefir_result_t kefir_ast_initializer_list_clone(struct kefir_mem *mem, struct ke
             kefir_list_free(mem, &dst->initializers);
             return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to clone AST initializer");
         });
-        kefir_result_t res = kefir_list_insert_after(mem, &dst->initializers, kefir_list_tail(&dst->initializers), dst);
+        kefir_result_t res =
+            kefir_list_insert_after(mem, &dst->initializers, kefir_list_tail(&dst->initializers), clone);
         REQUIRE_ELSE(res == KEFIR_OK, {
             kefir_ast_initializer_free(mem, clone->value);
             if (clone->designator != NULL) {

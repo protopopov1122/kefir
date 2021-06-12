@@ -218,3 +218,56 @@ DEFINE_CASE(ast_nodes_compound_statements1, "AST nodes - compound statements #1"
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
 }
 END_CASE
+
+DEFINE_CASE(ast_nodes_conditional_statements1, "AST nodes - conditional statements #1") {
+    struct kefir_symbol_table symbols;
+    struct kefir_ast_type_bundle type_bundle;
+
+    ASSERT_OK(kefir_symbol_table_init(&symbols));
+    ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
+
+    struct kefir_ast_conditional_statement *stmt1 =
+        kefir_ast_new_conditional_statement(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(&kft_mem, true)),
+                                            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 1)),
+                                            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(&kft_mem, 1.0)));
+    ASSERT(stmt1 != NULL);
+    ASSERT(stmt1->base.klass->type == KEFIR_AST_CONDITIONAL_STATEMENT);
+    ASSERT(stmt1->base.self == stmt1);
+    ASSERT(stmt1->condition != NULL);
+    ASSERT(stmt1->condition->klass->type == KEFIR_AST_CONSTANT);
+    ASSERT(((struct kefir_ast_constant *) stmt1->condition->self)->type == KEFIR_AST_BOOL_CONSTANT);
+    ASSERT(stmt1->thenBranch != NULL);
+    ASSERT(stmt1->thenBranch->klass->type == KEFIR_AST_CONSTANT);
+    ASSERT(((struct kefir_ast_constant *) stmt1->thenBranch->self)->type == KEFIR_AST_INT_CONSTANT);
+    ASSERT(stmt1->elseBranch != NULL);
+    ASSERT(stmt1->elseBranch->klass->type == KEFIR_AST_CONSTANT);
+    ASSERT(((struct kefir_ast_constant *) stmt1->elseBranch->self)->type == KEFIR_AST_DOUBLE_CONSTANT);
+
+    struct kefir_ast_conditional_statement *stmt2 =
+        kefir_ast_new_conditional_statement(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(&kft_mem, 1.0f)),
+                                            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(&kft_mem, 10)), NULL);
+    ASSERT(stmt2 != NULL);
+    ASSERT(stmt2->base.klass->type == KEFIR_AST_CONDITIONAL_STATEMENT);
+    ASSERT(stmt2->base.self == stmt2);
+    ASSERT(stmt2->condition != NULL);
+    ASSERT(stmt2->condition->klass->type == KEFIR_AST_CONSTANT);
+    ASSERT(((struct kefir_ast_constant *) stmt2->condition->self)->type == KEFIR_AST_FLOAT_CONSTANT);
+    ASSERT(stmt2->thenBranch != NULL);
+    ASSERT(stmt2->thenBranch->klass->type == KEFIR_AST_CONSTANT);
+    ASSERT(((struct kefir_ast_constant *) stmt2->thenBranch->self)->type == KEFIR_AST_LONG_CONSTANT);
+    ASSERT(stmt2->elseBranch == NULL);
+
+    struct kefir_ast_node_base *node1 = KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, ' '));
+    struct kefir_ast_conditional_statement *stmt3 = kefir_ast_new_conditional_statement(&kft_mem, node1, NULL, NULL);
+    ASSERT(stmt3 == NULL);
+
+    struct kefir_ast_conditional_statement *stmt4 = kefir_ast_new_conditional_statement(&kft_mem, NULL, node1, NULL);
+    ASSERT(stmt4 == NULL);
+
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, node1));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(stmt1)));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(stmt2)));
+    ASSERT_OK(kefir_ast_type_bundle_free(&kft_mem, &type_bundle));
+    ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
+}
+END_CASE
