@@ -265,6 +265,7 @@ kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem, const struct
     context->context.target_env = context->target_env;
     context->context.temporaries = &context->temporaries;
     context->context.type_analysis_context = KEFIR_AST_TYPE_ANALYSIS_DEFAULT;
+    context->context.flow_control_tree = NULL;
     context->context.payload = context;
     return KEFIR_OK;
 }

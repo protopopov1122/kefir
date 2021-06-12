@@ -241,6 +241,7 @@ kefir_result_t kefir_ast_local_context_init(struct kefir_mem *mem, struct kefir_
     REQUIRE_OK(kefir_ast_identifier_flat_scope_init(&context->label_scope));
     REQUIRE_OK(kefir_ast_identifier_flat_scope_on_removal(&context->label_scope,
                                                           kefir_ast_context_free_scoped_identifier, NULL));
+    REQUIRE_OK(kefir_ast_flow_control_tree_init(&context->flow_control_tree));
 
     context->context.resolve_ordinary_identifier = context_resolve_ordinary_identifier;
     context->context.resolve_tag_identifier = context_resolve_tag_identifier;
@@ -258,6 +259,7 @@ kefir_result_t kefir_ast_local_context_init(struct kefir_mem *mem, struct kefir_
     context->context.target_env = context->global->target_env;
     context->context.temporaries = &context->temporaries;
     context->context.type_analysis_context = KEFIR_AST_TYPE_ANALYSIS_DEFAULT;
+    context->context.flow_control_tree = &context->flow_control_tree;
     context->context.payload = context;
     return KEFIR_OK;
 }
@@ -265,6 +267,7 @@ kefir_result_t kefir_ast_local_context_init(struct kefir_mem *mem, struct kefir_
 kefir_result_t kefir_ast_local_context_free(struct kefir_mem *mem, struct kefir_ast_local_context *context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
+    REQUIRE_OK(kefir_ast_flow_control_tree_free(mem, &context->flow_control_tree));
     REQUIRE_OK(kefir_ast_identifier_flat_scope_free(mem, &context->label_scope));
     REQUIRE_OK(kefir_ast_identifier_block_scope_free(mem, &context->tag_scope));
     REQUIRE_OK(kefir_ast_identifier_block_scope_free(mem, &context->ordinary_scope));

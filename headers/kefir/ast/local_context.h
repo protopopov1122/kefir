@@ -20,6 +20,7 @@ typedef struct kefir_ast_local_context {
     struct kefir_ast_identifier_flat_scope label_scope;
 
     struct kefir_ast_context_temporaries temporaries;
+    struct kefir_ast_flow_control_tree flow_control_tree;
 } kefir_ast_local_context_t;
 
 kefir_result_t kefir_ast_local_context_init(struct kefir_mem *, struct kefir_ast_global_context *,

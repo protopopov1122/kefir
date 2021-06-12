@@ -5,6 +5,7 @@
 #include "kefir/ast/scope.h"
 #include "kefir/ast/target_environment.h"
 #include "kefir/ast/temporaries.h"
+#include "kefir/ast/flow_control.h"
 
 typedef struct kefir_ast_context {
     kefir_result_t (*resolve_ordinary_identifier)(const struct kefir_ast_context *, const char *,
@@ -35,6 +36,7 @@ typedef struct kefir_ast_context {
     const struct kefir_ast_target_environment *target_env;
     struct kefir_ast_context_temporaries *temporaries;
     kefir_ast_type_analysis_context_t type_analysis_context;
+    struct kefir_ast_flow_control_tree *flow_control_tree;
 
     void *payload;
 } kefir_ast_context_t;

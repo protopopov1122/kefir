@@ -357,6 +357,7 @@ kefir_result_t kefir_ast_function_declaration_context_init(struct kefir_mem *mem
     context->context.target_env = parent->target_env;
     context->context.temporaries = NULL;
     context->context.type_analysis_context = KEFIR_AST_TYPE_ANALYSIS_FUNCTION_PARAMETER;
+    context->context.flow_control_tree = NULL;
     context->context.payload = context;
     return KEFIR_OK;
 }
