@@ -46,6 +46,7 @@ VISITOR(static_assertion, struct kefir_ast_static_assertion)
 VISITOR(labeled_statement, struct kefir_ast_labeled_statement)
 VISITOR(case_statement, struct kefir_ast_case_statement)
 VISITOR(expression_statement, struct kefir_ast_expression_statement)
+VISITOR(compound_statement, struct kefir_ast_compound_statement)
 
 #undef VISITOR
 
@@ -78,5 +79,6 @@ kefir_result_t kefir_ast_analyze_node(struct kefir_mem *mem, const struct kefir_
     visitor.labeled_statement = visit_labeled_statement;
     visitor.case_statement = visit_case_statement;
     visitor.expression_statement = visit_expression_statement;
+    visitor.compound_statement = visit_compound_statement;
     return KEFIR_AST_NODE_VISIT(&visitor, base, &param);
 }

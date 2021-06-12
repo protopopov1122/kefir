@@ -294,11 +294,16 @@ DECLARE_CASE(ast_node_analysis_static_assertions1);
 DECLARE_CASE(ast_node_analysis_expression_statements1);
 DECLARE_CASE(ast_node_analysis_labeled_statements1);
 DECLARE_CASE(ast_node_analysis_case_statements1);
+DECLARE_CASE(ast_nodes_compound_statements1);
 DECLARE_CASE(ast_label_scope1);
 DECLARE_CASE(ast_label_scope2);
 DECLARE_CASE(ast_label_scope3);
 DECLARE_CASE(ast_label_scope4);
 DECLARE_CASE(ast_node_analysis_labeled_statements2);
+DECLARE_CASE(ast_node_analysis_compound_statements1);
+DECLARE_CASE(ast_node_analysis_compound_statements2);
+DECLARE_CASE(ast_node_analysis_compound_statements3);
+DECLARE_CASE(ast_node_analysis_compound_statements4);
 
 TEST_SUITE(
     mainSuite, &amd64_sysv_abi_data_test1, &amd64_sysv_abi_data_test2, &amd64_sysv_abi_data_test3,
@@ -403,7 +408,9 @@ TEST_SUITE(
     &ast_node_analysis_declarations11, &ast_node_analysis_declarations12, &ast_node_analysis_declarations13,
     &ast_node_analysis_static_assertions1, &ast_node_analysis_expression_statements1,
     &ast_node_analysis_labeled_statements1, &ast_node_analysis_case_statements1, &ast_label_scope1, &ast_label_scope2,
-    &ast_label_scope3, &ast_label_scope4, &ast_node_analysis_labeled_statements2);
+    &ast_label_scope3, &ast_label_scope4, &ast_node_analysis_labeled_statements2, &ast_nodes_compound_statements1,
+    &ast_node_analysis_compound_statements1, &ast_node_analysis_compound_statements2,
+    &ast_node_analysis_compound_statements3, &ast_node_analysis_compound_statements4);
 
 int main(int argc, const char **argv) {
     UNUSED(argc);

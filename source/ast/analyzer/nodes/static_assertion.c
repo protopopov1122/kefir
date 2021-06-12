@@ -13,7 +13,8 @@ kefir_result_t kefir_ast_analyze_static_assertion_node(struct kefir_mem *mem, co
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST base node"));
 
     REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
-    base->properties.category = KEFIR_AST_NODE_CATEGORY_STATIC_ASSERTION;
+    base->properties.category = KEFIR_AST_NODE_CATEGORY_DECLARATION;
+    base->properties.declaration_props.static_assertion = true;
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->condition));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, KEFIR_AST_NODE_BASE(node->string)));
 

@@ -207,6 +207,24 @@ kefir_result_t context_reference_label(struct kefir_mem *mem, const struct kefir
     return KEFIR_OK;
 }
 
+static kefir_result_t context_push_block(struct kefir_mem *mem, const struct kefir_ast_context *context) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
+
+    ASSIGN_DECL_CAST(struct kefir_ast_local_context *, local_ctx, context->payload);
+    REQUIRE_OK(kefir_ast_local_context_push_block_scope(mem, local_ctx));
+    return KEFIR_OK;
+}
+
+static kefir_result_t context_pop_block(struct kefir_mem *mem, const struct kefir_ast_context *context) {
+    UNUSED(mem);
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
+
+    ASSIGN_DECL_CAST(struct kefir_ast_local_context *, local_ctx, context->payload);
+    REQUIRE_OK(kefir_ast_local_context_pop_block_scope(local_ctx));
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_local_context_init(struct kefir_mem *mem, struct kefir_ast_global_context *global,
                                             struct kefir_ast_local_context *context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
@@ -232,6 +250,8 @@ kefir_result_t kefir_ast_local_context_init(struct kefir_mem *mem, struct kefir_
     context->context.define_constant = context_define_constant;
     context->context.define_identifier = context_define_identifier;
     context->context.reference_label = context_reference_label;
+    context->context.push_block = context_push_block;
+    context->context.pop_block = context_pop_block;
     context->context.symbols = &context->global->symbols;
     context->context.type_bundle = &context->global->type_bundle;
     context->context.type_traits = context->global->type_traits;

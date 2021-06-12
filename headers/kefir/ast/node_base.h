@@ -38,6 +38,7 @@ typedef struct kefir_ast_node_properties {
         kefir_ast_function_specifier_t function;
         const char *identifier;
         kefir_size_t alignment;
+        kefir_bool_t static_assertion;
     } declaration_props;
 
     struct {

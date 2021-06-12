@@ -205,6 +205,20 @@ static kefir_result_t context_reference_label(struct kefir_mem *mem, const struc
     return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Labels cannot be defined or referenced in a global context");
 }
 
+static kefir_result_t context_push_block(struct kefir_mem *mem, const struct kefir_ast_context *context) {
+    UNUSED(mem);
+    UNUSED(context);
+
+    return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Blocks cannot be pushed in a global context");
+}
+
+static kefir_result_t context_pop_block(struct kefir_mem *mem, const struct kefir_ast_context *context) {
+    UNUSED(mem);
+    UNUSED(context);
+
+    return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Blocks cannot be popped in a global context");
+}
+
 kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem, const struct kefir_ast_type_traits *type_traits,
                                              const struct kefir_ast_target_environment *target_env,
                                              struct kefir_ast_global_context *context) {
@@ -243,6 +257,8 @@ kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem, const struct
     context->context.define_constant = context_define_constant;
     context->context.define_identifier = context_define_identifier;
     context->context.reference_label = context_reference_label;
+    context->context.push_block = context_push_block;
+    context->context.pop_block = context_pop_block;
     context->context.symbols = &context->symbols;
     context->context.type_bundle = &context->type_bundle;
     context->context.type_traits = context->type_traits;
