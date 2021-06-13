@@ -45,8 +45,8 @@ DEFINE_CASE(ast_flow_control_tree3, "AST Flow control tree - local context #1") 
 
     ASSERT(context->flow_control_tree != NULL);
 
-    const struct kefir_ast_flow_control_statement *stmt = NULL;
-    const struct kefir_ast_flow_control_statement *stmt2 = NULL;
+    struct kefir_ast_flow_control_statement *stmt = NULL;
+    struct kefir_ast_flow_control_statement *stmt2 = NULL;
     ASSERT_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree, &stmt2));
     ASSERT(stmt2 == NULL);
 
@@ -191,21 +191,21 @@ DEFINE_CASE(ast_flow_control_tree4, "AST Flow control tree - local context #2") 
 
     ASSERT(context->flow_control_tree != NULL);
 
-    const struct kefir_ast_flow_control_statement *stmt = NULL;
+    struct kefir_ast_flow_control_statement *stmt = NULL;
     ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
                                                KEFIR_AST_FLOW_CONTROL_STATEMENT_DO, &stmt));
     *((void **) stmt->payload.ptr) = KEFIR_MALLOC(&kft_mem, 100);
-    KEFIR_AST_FLOW_CONTROL_STATEMENT_SET_CLEANUP(stmt, test_free, NULL);
+    KEFIR_AST_FLOW_CONTROL_SET_CLEANUP(stmt, test_free, NULL);
 
     ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
                                                KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH, &stmt));
     *((void **) stmt->payload.ptr) = KEFIR_MALLOC(&kft_mem, 101);
-    KEFIR_AST_FLOW_CONTROL_STATEMENT_SET_CLEANUP(stmt, test_free, NULL);
+    KEFIR_AST_FLOW_CONTROL_SET_CLEANUP(stmt, test_free, NULL);
 
     ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
                                                KEFIR_AST_FLOW_CONTROL_STATEMENT_IF, &stmt));
     *((void **) stmt->payload.ptr) = KEFIR_MALLOC(&kft_mem, 99);
-    KEFIR_AST_FLOW_CONTROL_STATEMENT_SET_CLEANUP(stmt, test_free, NULL);
+    KEFIR_AST_FLOW_CONTROL_SET_CLEANUP(stmt, test_free, NULL);
 
     ASSERT_OK(kefir_ast_flow_control_tree_pop(context->flow_control_tree));
     ASSERT_OK(kefir_ast_flow_control_tree_pop(context->flow_control_tree));
@@ -213,12 +213,12 @@ DEFINE_CASE(ast_flow_control_tree4, "AST Flow control tree - local context #2") 
     ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
                                                KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH, &stmt));
     *((void **) stmt->payload.ptr) = KEFIR_MALLOC(&kft_mem, 98);
-    KEFIR_AST_FLOW_CONTROL_STATEMENT_SET_CLEANUP(stmt, test_free, NULL);
+    KEFIR_AST_FLOW_CONTROL_SET_CLEANUP(stmt, test_free, NULL);
 
     ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
                                                KEFIR_AST_FLOW_CONTROL_STATEMENT_FOR, &stmt));
     *((void **) stmt->payload.ptr) = KEFIR_MALLOC(&kft_mem, 200);
-    KEFIR_AST_FLOW_CONTROL_STATEMENT_SET_CLEANUP(stmt, test_free, NULL);
+    KEFIR_AST_FLOW_CONTROL_SET_CLEANUP(stmt, test_free, NULL);
 
     ASSERT_OK(kefir_ast_flow_control_tree_pop(context->flow_control_tree));
 
@@ -259,7 +259,7 @@ DEFINE_CASE(ast_flow_control_tree5, "AST Flow control tree - local context #3") 
 
     ASSERT(context->flow_control_tree != NULL);
 
-    const struct kefir_ast_flow_control_statement *stmt = NULL;
+    struct kefir_ast_flow_control_statement *stmt = NULL;
     ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
                                                KEFIR_AST_FLOW_CONTROL_STATEMENT_DO, &stmt));
     ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
@@ -267,7 +267,7 @@ DEFINE_CASE(ast_flow_control_tree5, "AST Flow control tree - local context #3") 
     ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
                                                KEFIR_AST_FLOW_CONTROL_STATEMENT_IF, &stmt));
 
-    const struct kefir_ast_flow_control_statement *stmt2 = NULL;
+    struct kefir_ast_flow_control_statement *stmt2 = NULL;
     ASSERT_OK(kefir_ast_flow_control_tree_traverse(
         context->flow_control_tree, find_statement,
         &(kefir_ast_flow_control_statement_type_t){KEFIR_AST_FLOW_CONTROL_STATEMENT_IF}, &stmt2));
@@ -343,6 +343,56 @@ DEFINE_CASE(ast_flow_control_tree5, "AST Flow control tree - local context #3") 
 
     ASSERT(kefir_ast_flow_control_tree_traverse(context->flow_control_tree, find_statement2, NULL, &stmt2) ==
            KEFIR_NOT_FOUND);
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+}
+END_CASE
+
+DEFINE_CASE(ast_flow_control_tree6, "AST Flow control tree - flow control points #1") {
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
+                                            &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    struct kefir_ast_flow_control_statement *stmt1 = NULL;
+    ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
+                                               KEFIR_AST_FLOW_CONTROL_STATEMENT_FOR, &stmt1));
+    stmt1->points.loop.begin = kefir_ast_flow_control_point_alloc(&kft_mem);
+    stmt1->points.loop.end = kefir_ast_flow_control_point_alloc(&kft_mem);
+    ASSERT_OK(kefir_ast_flow_control_tree_pop(context->flow_control_tree));
+
+    struct kefir_ast_flow_control_statement *stmt2 = NULL;
+    ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
+                                               KEFIR_AST_FLOW_CONTROL_STATEMENT_DO, &stmt2));
+    stmt2->points.loop.begin = kefir_ast_flow_control_point_alloc(&kft_mem);
+    stmt2->points.loop.end = kefir_ast_flow_control_point_alloc(&kft_mem);
+    ASSERT_OK(kefir_ast_flow_control_tree_pop(context->flow_control_tree));
+
+    struct kefir_ast_flow_control_statement *stmt3 = NULL;
+    ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
+                                               KEFIR_AST_FLOW_CONTROL_STATEMENT_WHILE, &stmt3));
+    stmt3->points.loop.begin = kefir_ast_flow_control_point_alloc(&kft_mem);
+    stmt3->points.loop.end = kefir_ast_flow_control_point_alloc(&kft_mem);
+    ASSERT_OK(kefir_ast_flow_control_tree_pop(context->flow_control_tree));
+
+    struct kefir_ast_flow_control_statement *stmt4 = NULL;
+    ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
+                                               KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH, &stmt4));
+    ASSERT_OK(kefir_hashtree_insert(&kft_mem, &stmt4->points.switchStatement.cases, (kefir_hashtree_key_t) -1,
+                                    (kefir_hashtree_value_t) kefir_ast_flow_control_point_alloc(&kft_mem)));
+    ASSERT_OK(kefir_hashtree_insert(&kft_mem, &stmt4->points.switchStatement.cases, (kefir_hashtree_key_t) 0,
+                                    (kefir_hashtree_value_t) kefir_ast_flow_control_point_alloc(&kft_mem)));
+    ASSERT_OK(kefir_hashtree_insert(&kft_mem, &stmt4->points.switchStatement.cases, (kefir_hashtree_key_t) 1,
+                                    (kefir_hashtree_value_t) kefir_ast_flow_control_point_alloc(&kft_mem)));
+    ASSERT_OK(kefir_hashtree_insert(&kft_mem, &stmt4->points.switchStatement.cases, (kefir_hashtree_key_t) 0xfff,
+                                    (kefir_hashtree_value_t) kefir_ast_flow_control_point_alloc(&kft_mem)));
+    stmt4->points.switchStatement.defaultCase = kefir_ast_flow_control_point_alloc(&kft_mem);
+    ASSERT_OK(kefir_ast_flow_control_tree_pop(context->flow_control_tree));
 
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));

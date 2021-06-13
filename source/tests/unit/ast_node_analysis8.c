@@ -302,7 +302,8 @@ DEFINE_CASE(ast_node_analysis_labeled_statements2, "AST node analysis - labeled 
 
     ASSERT_OK(context->resolve_label_identifier(context, "label1", &scoped_id));
     ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL);
-    ASSERT(scoped_id->label.defined);
+    ASSERT(scoped_id->label.point != NULL);
+    ASSERT(stmt1->base.properties.statement_props.flow_control_point == scoped_id->label.point);
 
     struct kefir_ast_labeled_statement *stmt2 = kefir_ast_new_labeled_statement(
         &kft_mem, context->symbols, "label1",
@@ -318,7 +319,8 @@ DEFINE_CASE(ast_node_analysis_labeled_statements2, "AST node analysis - labeled 
 
     ASSERT_OK(context->resolve_label_identifier(context, "label2", &scoped_id));
     ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL);
-    ASSERT(scoped_id->label.defined);
+    ASSERT(scoped_id->label.point != NULL);
+    ASSERT(stmt3->base.properties.statement_props.flow_control_point == scoped_id->label.point);
 
     struct kefir_ast_labeled_statement *stmt4;
     struct kefir_ast_labeled_statement *stmt5;
@@ -352,11 +354,13 @@ DEFINE_CASE(ast_node_analysis_labeled_statements2, "AST node analysis - labeled 
 
     ASSERT_OK(context->resolve_label_identifier(context, "label3", &scoped_id));
     ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL);
-    ASSERT(scoped_id->label.defined);
+    ASSERT(scoped_id->label.point != NULL);
+    ASSERT(stmt4->base.properties.statement_props.flow_control_point == scoped_id->label.point);
 
     ASSERT_OK(context->resolve_label_identifier(context, "label4", &scoped_id));
     ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL);
-    ASSERT(scoped_id->label.defined);
+    ASSERT(scoped_id->label.point != NULL);
+    ASSERT(stmt5->base.properties.statement_props.flow_control_point == scoped_id->label.point);
 
     KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(stmt1));
     KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(stmt2));

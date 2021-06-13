@@ -11,6 +11,7 @@
 #include "kefir/ast/initializer.h"
 #include "kefir/core/util.h"
 #include "kefir/ast/type_layout.h"
+#include "kefir/ast/flow_control.h"
 
 #define KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE (sizeof(kefir_uptr_t) * 4)
 
@@ -49,7 +50,7 @@ typedef struct kefir_ast_scoped_identifier {
         const struct kefir_ast_type *type;
 
         struct {
-            kefir_bool_t defined;
+            struct kefir_ast_flow_control_point *point;
         } label;
     };
     struct {
