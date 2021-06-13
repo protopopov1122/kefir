@@ -24,7 +24,6 @@ kefir_result_t kefir_ast_analyze_case_statement_node(struct kefir_mem *mem, cons
         REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->expression, &value));
         REQUIRE(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected AST case label to be an integral constant expression"));
-        base->properties.statement_props.label.integer = value.integer;
     }
 
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->statement));

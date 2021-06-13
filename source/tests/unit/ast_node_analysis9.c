@@ -22,6 +22,8 @@ DEFINE_CASE(ast_node_analysis_conditinal_statements1, "AST node analysis - condi
         KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(&kft_mem, NULL)), NULL);
     ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(stmt1)));
     ASSERT(stmt1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
+    ASSERT(stmt1->base.properties.statement_props.flow_control_statement != NULL);
+    ASSERT(stmt1->base.properties.statement_props.flow_control_statement->type == KEFIR_AST_FLOW_CONTROL_STATEMENT_IF);
     ASSERT(stmt1->condition->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);
     ASSERT(KEFIR_AST_TYPE_SAME(stmt1->condition->properties.type, kefir_ast_type_bool()));
     ASSERT(stmt1->thenBranch->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
@@ -35,6 +37,8 @@ DEFINE_CASE(ast_node_analysis_conditinal_statements1, "AST node analysis - condi
             &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, -1)))));
     ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(stmt2)));
     ASSERT(stmt2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
+    ASSERT(stmt2->base.properties.statement_props.flow_control_statement != NULL);
+    ASSERT(stmt2->base.properties.statement_props.flow_control_statement->type == KEFIR_AST_FLOW_CONTROL_STATEMENT_IF);
     ASSERT(stmt2->condition->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);
     ASSERT(KEFIR_AST_TYPE_SAME(stmt2->condition->properties.type, kefir_ast_type_bool()));
     ASSERT(stmt2->thenBranch->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
@@ -89,6 +93,8 @@ DEFINE_CASE(ast_node_analysis_conditinal_statements2, "AST node analysis - condi
     ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(stmt1)));
 
     ASSERT(stmt1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
+    ASSERT(stmt1->base.properties.statement_props.flow_control_statement != NULL);
+    ASSERT(stmt1->base.properties.statement_props.flow_control_statement->type == KEFIR_AST_FLOW_CONTROL_STATEMENT_IF);
     ASSERT(stmt1->condition->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);
     ASSERT(KEFIR_AST_TYPE_SAME(stmt1->condition->properties.type,
                                kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void())));
@@ -146,6 +152,8 @@ DEFINE_CASE(ast_node_analysis_conditinal_statements3, "AST node analysis - condi
                                             KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(&kft_mem, NULL)));
     ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(stmt3)));
     ASSERT(stmt3->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
+    ASSERT(stmt3->base.properties.statement_props.flow_control_statement != NULL);
+    ASSERT(stmt3->base.properties.statement_props.flow_control_statement->type == KEFIR_AST_FLOW_CONTROL_STATEMENT_IF);
     ASSERT(stmt3->condition->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);
     ASSERT(KEFIR_AST_TYPE_SAME(stmt3->condition->properties.type, kefir_ast_type_signed_int()));
     ASSERT(stmt3->thenBranch->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
@@ -155,11 +163,13 @@ DEFINE_CASE(ast_node_analysis_conditinal_statements3, "AST node analysis - condi
         kefir_ast_new_conditional_statement(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(&kft_mem, true)),
                                             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'a')),
                                             KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(&kft_mem, NULL)));
+    ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(stmt4)));
 
     struct kefir_ast_conditional_statement *stmt5 =
         kefir_ast_new_conditional_statement(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(&kft_mem, false)),
                                             KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(&kft_mem, NULL)),
                                             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'b')));
+    ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(stmt5)));
 
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(stmt1)));
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(stmt2)));

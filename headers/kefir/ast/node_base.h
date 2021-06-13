@@ -42,12 +42,8 @@ typedef struct kefir_ast_node_properties {
     } declaration_props;
 
     struct {
-        union {
-            const char *string;
-            kefir_int64_t integer;
-        } label;
-
         struct kefir_ast_flow_control_point *flow_control_point;
+        struct kefir_ast_flow_control_statement *flow_control_statement;
     } statement_props;
 } kefir_ast_node_properties_t;
 
