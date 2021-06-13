@@ -98,7 +98,7 @@ kefir_result_t kefir_ast_flow_control_tree_traverse(
     const struct kefir_ast_flow_control_statement *current = NULL;
     REQUIRE_OK(kefir_ast_flow_control_tree_top(tree, &current));
 
-    do {
+    while (current != NULL) {
         kefir_bool_t match = false;
         REQUIRE_OK(callback(current, payload, &match));
         if (match) {
@@ -107,7 +107,7 @@ kefir_result_t kefir_ast_flow_control_tree_traverse(
         } else {
             current = current->parent;
         }
-    } while (current != NULL);
+    }
 
     return KEFIR_NOT_FOUND;
 }
