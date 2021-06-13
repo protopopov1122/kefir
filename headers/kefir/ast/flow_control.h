@@ -4,6 +4,7 @@
 #include "kefir/ast/base.h"
 #include "kefir/core/tree.h"
 #include "kefir/core/hashtree.h"
+#include "kefir/ast/type.h"
 
 typedef struct kefir_ast_flow_control_statement kefir_ast_flow_control_statement_t;
 typedef struct kefir_ast_flow_control_point kefir_ast_flow_control_point_t;
@@ -50,13 +51,14 @@ typedef struct kefir_ast_flow_control_statement {
         struct {
             struct kefir_hashtree cases;
             struct kefir_ast_flow_control_point *defaultCase;
+            const struct kefir_ast_type *controlling_expression_type;
         } switchStatement;
 
         struct {
             struct kefir_ast_flow_control_point *begin;
             struct kefir_ast_flow_control_point *end;
         } loop;
-    } points;
+    } value;
 } kefir_ast_flow_control_statement_t;
 
 typedef struct kefir_ast_flow_control_tree {

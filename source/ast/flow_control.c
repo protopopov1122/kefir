@@ -49,24 +49,24 @@ static kefir_result_t flow_control_statement_free(struct kefir_mem *mem, void *n
             break;
 
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH:
-            REQUIRE_OK(kefir_hashtree_free(mem, &statement->points.switchStatement.cases));
-            if (statement->points.switchStatement.defaultCase != NULL) {
-                REQUIRE_OK(kefir_ast_flow_control_point_free(mem, statement->points.switchStatement.defaultCase));
-                statement->points.switchStatement.defaultCase = NULL;
+            REQUIRE_OK(kefir_hashtree_free(mem, &statement->value.switchStatement.cases));
+            if (statement->value.switchStatement.defaultCase != NULL) {
+                REQUIRE_OK(kefir_ast_flow_control_point_free(mem, statement->value.switchStatement.defaultCase));
+                statement->value.switchStatement.defaultCase = NULL;
             }
             break;
 
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_FOR:
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_WHILE:
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_DO:
-            if (statement->points.loop.begin != NULL) {
-                REQUIRE_OK(kefir_ast_flow_control_point_free(mem, statement->points.loop.begin));
-                statement->points.loop.begin = NULL;
+            if (statement->value.loop.begin != NULL) {
+                REQUIRE_OK(kefir_ast_flow_control_point_free(mem, statement->value.loop.begin));
+                statement->value.loop.begin = NULL;
             }
 
-            if (statement->points.loop.end != NULL) {
-                REQUIRE_OK(kefir_ast_flow_control_point_free(mem, statement->points.loop.end));
-                statement->points.loop.end = NULL;
+            if (statement->value.loop.end != NULL) {
+                REQUIRE_OK(kefir_ast_flow_control_point_free(mem, statement->value.loop.end));
+                statement->value.loop.end = NULL;
             }
             break;
     }
@@ -126,34 +126,35 @@ kefir_result_t kefir_ast_flow_control_tree_push(struct kefir_mem *mem, struct ke
             break;
 
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH: {
-            kefir_result_t res = kefir_hashtree_init(&stmt->points.switchStatement.cases, &kefir_hashtree_uint_ops);
+            kefir_result_t res = kefir_hashtree_init(&stmt->value.switchStatement.cases, &kefir_hashtree_uint_ops);
             REQUIRE_ELSE(res == KEFIR_OK, {
                 KEFIR_FREE(mem, stmt);
                 return res;
             });
 
-            res = kefir_hashtree_on_removal(&stmt->points.switchStatement.cases, point_tree_free, NULL);
+            res = kefir_hashtree_on_removal(&stmt->value.switchStatement.cases, point_tree_free, NULL);
             REQUIRE_ELSE(res == KEFIR_OK, {
-                kefir_hashtree_free(mem, &stmt->points.switchStatement.cases);
+                kefir_hashtree_free(mem, &stmt->value.switchStatement.cases);
                 KEFIR_FREE(mem, stmt);
                 return res;
             });
 
-            stmt->points.switchStatement.defaultCase = NULL;
+            stmt->value.switchStatement.defaultCase = NULL;
+            stmt->value.switchStatement.controlling_expression_type = NULL;
         } break;
 
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_FOR:
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_WHILE:
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_DO:
-            stmt->points.loop.begin = NULL;
-            stmt->points.loop.end = NULL;
+            stmt->value.loop.begin = NULL;
+            stmt->value.loop.end = NULL;
             break;
     }
 
     kefir_result_t res = kefir_tree_insert_child(mem, tree->current, stmt, &tree->current);
     REQUIRE_ELSE(res == KEFIR_OK, {
         if (type == KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH) {
-            kefir_hashtree_free(mem, &stmt->points.switchStatement.cases);
+            kefir_hashtree_free(mem, &stmt->value.switchStatement.cases);
         }
         KEFIR_FREE(mem, stmt);
         return res;

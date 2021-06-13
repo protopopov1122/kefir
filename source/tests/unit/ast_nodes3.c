@@ -271,3 +271,43 @@ DEFINE_CASE(ast_nodes_conditional_statements1, "AST nodes - conditional statemen
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
 }
 END_CASE
+
+DEFINE_CASE(ast_nodes_switch_statements1, "AST nodes - switch statements #1") {
+    struct kefir_symbol_table symbols;
+    struct kefir_ast_type_bundle type_bundle;
+
+    ASSERT_OK(kefir_symbol_table_init(&symbols));
+    ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
+
+    struct kefir_ast_switch_statement *stmt1 =
+        kefir_ast_new_switch_statement(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 1)),
+                                       KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(&kft_mem, NULL)));
+    ASSERT(stmt1 != NULL);
+    ASSERT(stmt1->base.klass->type == KEFIR_AST_SWITCH_STATEMENT);
+    ASSERT(stmt1->base.self == stmt1);
+    ASSERT(stmt1->expression != NULL);
+    ASSERT(stmt1->expression->klass->type == KEFIR_AST_CONSTANT);
+    ASSERT(((struct kefir_ast_constant *) stmt1->expression->self)->type == KEFIR_AST_INT_CONSTANT);
+    ASSERT(((struct kefir_ast_constant *) stmt1->expression->self)->value.integer == 1);
+    ASSERT(stmt1->statement != NULL);
+    ASSERT(stmt1->statement->klass->type == KEFIR_AST_EXPRESSION_STATEMENT);
+    ASSERT(((struct kefir_ast_expression_statement *) stmt1->statement->self)->expression == NULL);
+
+    struct kefir_ast_node_base *node1 = KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 1));
+    ASSERT(node1 != NULL);
+    struct kefir_ast_node_base *node2 = KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(&kft_mem, NULL));
+    ASSERT(node2 != NULL);
+
+    struct kefir_ast_switch_statement *stmt2 = kefir_ast_new_switch_statement(&kft_mem, node1, NULL);
+    ASSERT(stmt2 == NULL);
+
+    struct kefir_ast_switch_statement *stmt3 = kefir_ast_new_switch_statement(&kft_mem, NULL, node2);
+    ASSERT(stmt3 == NULL);
+
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, node1));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, node2));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(stmt1)));
+    ASSERT_OK(kefir_ast_type_bundle_free(&kft_mem, &type_bundle));
+    ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
+}
+END_CASE
