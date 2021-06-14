@@ -49,6 +49,9 @@ VISITOR(expression_statement, struct kefir_ast_expression_statement)
 VISITOR(compound_statement, struct kefir_ast_compound_statement)
 VISITOR(conditional_statement, struct kefir_ast_conditional_statement)
 VISITOR(switch_statement, struct kefir_ast_switch_statement)
+VISITOR(while_statement, struct kefir_ast_while_statement)
+VISITOR(do_while_statement, struct kefir_ast_do_while_statement)
+VISITOR(for_statement, struct kefir_ast_for_statement)
 
 #undef VISITOR
 
@@ -84,5 +87,8 @@ kefir_result_t kefir_ast_analyze_node(struct kefir_mem *mem, const struct kefir_
     visitor.compound_statement = visit_compound_statement;
     visitor.conditional_statement = visit_conditional_statement;
     visitor.switch_statement = visit_switch_statement;
+    visitor.while_statement = visit_while_statement;
+    visitor.do_while_statement = visit_do_while_statement;
+    visitor.for_statement = visit_for_statement;
     return KEFIR_AST_NODE_VISIT(&visitor, base, &param);
 }

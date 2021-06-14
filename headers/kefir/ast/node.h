@@ -133,6 +133,23 @@ KEFIR_AST_NODE_STRUCT(kefir_ast_switch_statement, {
     struct kefir_ast_node_base *statement;
 });
 
+KEFIR_AST_NODE_STRUCT(kefir_ast_while_statement, {
+    struct kefir_ast_node_base *controlling_expr;
+    struct kefir_ast_node_base *body;
+});
+
+KEFIR_AST_NODE_STRUCT(kefir_ast_do_while_statement, {
+    struct kefir_ast_node_base *controlling_expr;
+    struct kefir_ast_node_base *body;
+});
+
+KEFIR_AST_NODE_STRUCT(kefir_ast_for_statement, {
+    struct kefir_ast_node_base *init;
+    struct kefir_ast_node_base *controlling_expr;
+    struct kefir_ast_node_base *tail;
+    struct kefir_ast_node_base *body;
+});
+
 struct kefir_ast_constant *kefir_ast_new_constant_bool(struct kefir_mem *, kefir_bool_t);
 struct kefir_ast_constant *kefir_ast_new_constant_char(struct kefir_mem *, kefir_char_t);
 struct kefir_ast_constant *kefir_ast_new_constant_int(struct kefir_mem *, kefir_int_t);
@@ -214,6 +231,16 @@ struct kefir_ast_conditional_statement *kefir_ast_new_conditional_statement(stru
 struct kefir_ast_switch_statement *kefir_ast_new_switch_statement(struct kefir_mem *, struct kefir_ast_node_base *,
                                                                   struct kefir_ast_node_base *);
 
+struct kefir_ast_while_statement *kefir_ast_new_while_statement(struct kefir_mem *, struct kefir_ast_node_base *,
+                                                                struct kefir_ast_node_base *);
+
+struct kefir_ast_do_while_statement *kefir_ast_new_do_while_statement(struct kefir_mem *, struct kefir_ast_node_base *,
+                                                                      struct kefir_ast_node_base *);
+
+struct kefir_ast_for_statement *kefir_ast_new_for_statement(struct kefir_mem *, struct kefir_ast_node_base *,
+                                                            struct kefir_ast_node_base *, struct kefir_ast_node_base *,
+                                                            struct kefir_ast_node_base *);
+
 typedef struct kefir_ast_visitor {
     KEFIR_AST_VISITOR_METHOD(generic_handler, kefir_ast_node_base);
     KEFIR_AST_VISITOR_METHOD(constant, kefir_ast_constant);
@@ -240,6 +267,9 @@ typedef struct kefir_ast_visitor {
     KEFIR_AST_VISITOR_METHOD(compound_statement, kefir_ast_compound_statement);
     KEFIR_AST_VISITOR_METHOD(conditional_statement, kefir_ast_conditional_statement);
     KEFIR_AST_VISITOR_METHOD(switch_statement, kefir_ast_switch_statement);
+    KEFIR_AST_VISITOR_METHOD(while_statement, kefir_ast_while_statement);
+    KEFIR_AST_VISITOR_METHOD(do_while_statement, kefir_ast_do_while_statement);
+    KEFIR_AST_VISITOR_METHOD(for_statement, kefir_ast_for_statement);
 } kefir_ast_visitor_t;
 
 #define KEFIR_AST_NODE_INTERNAL_DEF

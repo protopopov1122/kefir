@@ -7,7 +7,7 @@
 #include "kefir/ast/type_conv.h"
 #include "kefir/test/util.h"
 
-DEFINE_CASE(ast_node_analysis_conditinal_statements1, "AST node analysis - conditional statements #1") {
+DEFINE_CASE(valueast_node_analysis_conditional_statements1, "AST node analysis - conditional statements #1") {
     const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;

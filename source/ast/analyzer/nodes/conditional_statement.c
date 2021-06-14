@@ -23,6 +23,8 @@ kefir_result_t kefir_ast_analyze_conditional_statement_node(struct kefir_mem *me
     REQUIRE_OK(kefir_ast_flow_control_tree_push(mem, context->flow_control_tree, KEFIR_AST_FLOW_CONTROL_STATEMENT_IF,
                                                 &base->properties.statement_props.flow_control_statement));
 
+    REQUIRE_OK(context->push_block(mem, context));
+
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->condition));
     REQUIRE(node->condition->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected if statement condition to be scalar expression"));
@@ -39,6 +41,7 @@ kefir_result_t kefir_ast_analyze_conditional_statement_node(struct kefir_mem *me
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected the second if branch to be a statement"));
     }
 
+    REQUIRE_OK(context->pop_block(mem, context));
     REQUIRE_OK(kefir_ast_flow_control_tree_pop(context->flow_control_tree));
     return KEFIR_OK;
 }

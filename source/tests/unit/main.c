@@ -305,7 +305,7 @@ DECLARE_CASE(ast_node_analysis_compound_statements1);
 DECLARE_CASE(ast_node_analysis_compound_statements2);
 DECLARE_CASE(ast_node_analysis_compound_statements3);
 DECLARE_CASE(ast_node_analysis_compound_statements4);
-DECLARE_CASE(ast_node_analysis_conditinal_statements1);
+DECLARE_CASE(valueast_node_analysis_conditional_statements1);
 DECLARE_CASE(ast_node_analysis_conditinal_statements2);
 DECLARE_CASE(ast_node_analysis_conditinal_statements3);
 DECLARE_CASE(ast_flow_control_tree1);
@@ -320,6 +320,22 @@ DECLARE_CASE(ast_node_analysis_switch_statements2);
 DECLARE_CASE(ast_node_analysis_switch_statements3);
 DECLARE_CASE(ast_node_analysis_switch_statements4);
 DECLARE_CASE(ast_node_analysis_switch_statements5);
+DECLARE_CASE(ast_nodes_while_statements1);
+DECLARE_CASE(ast_nodes_while_statements2);
+DECLARE_CASE(ast_nodes_do_while_statements1);
+DECLARE_CASE(ast_nodes_do_while_statements2);
+DECLARE_CASE(ast_nodes_for_statements1);
+DECLARE_CASE(ast_nodes_for_statements2);
+DECLARE_CASE(ast_nodes_for_statements3);
+DECLARE_CASE(ast_nodes_for_statements4);
+DECLARE_CASE(ast_nodes_for_statements5);
+DECLARE_CASE(ast_node_analysis_while_statements1);
+DECLARE_CASE(ast_node_analysis_while_statements2);
+DECLARE_CASE(ast_node_analysis_do_while_statements1);
+DECLARE_CASE(ast_node_analysis_do_while_statements2);
+DECLARE_CASE(ast_node_analysis_for_statements1);
+DECLARE_CASE(ast_node_analysis_for_statements2);
+DECLARE_CASE(ast_node_analysis_for_statements3);
 
 TEST_SUITE(
     mainSuite, &amd64_sysv_abi_data_test1, &amd64_sysv_abi_data_test2, &amd64_sysv_abi_data_test3,
@@ -427,12 +443,17 @@ TEST_SUITE(
     &ast_label_scope3, &ast_label_scope4, &ast_node_analysis_labeled_statements2, &ast_nodes_compound_statements1,
     &ast_node_analysis_compound_statements1, &ast_node_analysis_compound_statements2,
     &ast_node_analysis_compound_statements3, &ast_node_analysis_compound_statements4,
-    &ast_nodes_conditional_statements1, &ast_node_analysis_conditinal_statements1,
+    &ast_nodes_conditional_statements1, &valueast_node_analysis_conditional_statements1,
     &ast_node_analysis_conditinal_statements2, &ast_node_analysis_conditinal_statements3, &ast_flow_control_tree1,
     &ast_flow_control_tree2, &ast_flow_control_tree3, &ast_flow_control_tree4, &ast_flow_control_tree5,
     &ast_flow_control_tree6, &ast_nodes_switch_statements1, &ast_node_analysis_switch_statements1,
     &ast_node_analysis_switch_statements2, &ast_node_analysis_switch_statements3, &ast_node_analysis_switch_statements4,
-    &ast_node_analysis_switch_statements5);
+    &ast_node_analysis_switch_statements5, &ast_nodes_while_statements1, &ast_nodes_while_statements2,
+    &ast_nodes_do_while_statements1, &ast_nodes_do_while_statements2, &ast_nodes_for_statements1,
+    &ast_nodes_for_statements2, &ast_nodes_for_statements3, &ast_nodes_for_statements4, &ast_nodes_for_statements5,
+    &ast_node_analysis_while_statements1, &ast_node_analysis_while_statements2, &ast_node_analysis_do_while_statements1,
+    &ast_node_analysis_do_while_statements2, &ast_node_analysis_for_statements1, &ast_node_analysis_for_statements2,
+    &ast_node_analysis_for_statements3);
 
 int main(int argc, const char **argv) {
     UNUSED(argc);

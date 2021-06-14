@@ -20,6 +20,7 @@ kefir_result_t kefir_ast_analyze_switch_statement_node(struct kefir_mem *mem, co
 
     REQUIRE(context->flow_control_tree != NULL,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to use switch statement in current context"));
+    REQUIRE_OK(context->push_block(mem, context));
 
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->expression));
     REQUIRE(
@@ -45,5 +46,6 @@ kefir_result_t kefir_ast_analyze_switch_statement_node(struct kefir_mem *mem, co
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected switch body to be a statement"));
 
     REQUIRE_OK(kefir_ast_flow_control_tree_pop(context->flow_control_tree));
+    REQUIRE_OK(context->pop_block(mem, context));
     return KEFIR_OK;
 }
