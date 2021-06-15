@@ -150,6 +150,18 @@ KEFIR_AST_NODE_STRUCT(kefir_ast_for_statement, {
     struct kefir_ast_node_base *body;
 });
 
+KEFIR_AST_NODE_STRUCT(kefir_ast_goto_statement, { const char *identifier; });
+
+KEFIR_AST_NODE_STRUCT(kefir_ast_continue_statement, {
+    int payload;  // Dummy payload for non-empty struct
+});
+
+KEFIR_AST_NODE_STRUCT(kefir_ast_break_statement, {
+    int payload;  // Dummy payload for non-empty struct
+});
+
+KEFIR_AST_NODE_STRUCT(kefir_ast_return_statement, { struct kefir_ast_node_base *expression; });
+
 struct kefir_ast_constant *kefir_ast_new_constant_bool(struct kefir_mem *, kefir_bool_t);
 struct kefir_ast_constant *kefir_ast_new_constant_char(struct kefir_mem *, kefir_char_t);
 struct kefir_ast_constant *kefir_ast_new_constant_int(struct kefir_mem *, kefir_int_t);
@@ -241,6 +253,15 @@ struct kefir_ast_for_statement *kefir_ast_new_for_statement(struct kefir_mem *, 
                                                             struct kefir_ast_node_base *, struct kefir_ast_node_base *,
                                                             struct kefir_ast_node_base *);
 
+struct kefir_ast_goto_statement *kefir_ast_new_goto_statement(struct kefir_mem *, struct kefir_symbol_table *,
+                                                              const char *);
+
+struct kefir_ast_continue_statement *kefir_ast_new_continue_statement(struct kefir_mem *);
+
+struct kefir_ast_break_statement *kefir_ast_new_break_statement(struct kefir_mem *);
+
+struct kefir_ast_return_statement *kefir_ast_new_return_statement(struct kefir_mem *, struct kefir_ast_node_base *);
+
 typedef struct kefir_ast_visitor {
     KEFIR_AST_VISITOR_METHOD(generic_handler, kefir_ast_node_base);
     KEFIR_AST_VISITOR_METHOD(constant, kefir_ast_constant);
@@ -270,6 +291,10 @@ typedef struct kefir_ast_visitor {
     KEFIR_AST_VISITOR_METHOD(while_statement, kefir_ast_while_statement);
     KEFIR_AST_VISITOR_METHOD(do_while_statement, kefir_ast_do_while_statement);
     KEFIR_AST_VISITOR_METHOD(for_statement, kefir_ast_for_statement);
+    KEFIR_AST_VISITOR_METHOD(goto_statement, kefir_ast_goto_statement);
+    KEFIR_AST_VISITOR_METHOD(continue_statement, kefir_ast_continue_statement);
+    KEFIR_AST_VISITOR_METHOD(break_statement, kefir_ast_break_statement);
+    KEFIR_AST_VISITOR_METHOD(return_statement, kefir_ast_return_statement);
 } kefir_ast_visitor_t;
 
 #define KEFIR_AST_NODE_INTERNAL_DEF

@@ -336,6 +336,10 @@ DECLARE_CASE(ast_node_analysis_do_while_statements2);
 DECLARE_CASE(ast_node_analysis_for_statements1);
 DECLARE_CASE(ast_node_analysis_for_statements2);
 DECLARE_CASE(ast_node_analysis_for_statements3);
+DECLARE_CASE(ast_nodes_goto_statements1);
+DECLARE_CASE(ast_nodes_continue_statements);
+DECLARE_CASE(ast_nodes_break_statements);
+DECLARE_CASE(ast_nodes_return_statements1);
 
 TEST_SUITE(
     mainSuite, &amd64_sysv_abi_data_test1, &amd64_sysv_abi_data_test2, &amd64_sysv_abi_data_test3,
@@ -453,7 +457,8 @@ TEST_SUITE(
     &ast_nodes_for_statements2, &ast_nodes_for_statements3, &ast_nodes_for_statements4, &ast_nodes_for_statements5,
     &ast_node_analysis_while_statements1, &ast_node_analysis_while_statements2, &ast_node_analysis_do_while_statements1,
     &ast_node_analysis_do_while_statements2, &ast_node_analysis_for_statements1, &ast_node_analysis_for_statements2,
-    &ast_node_analysis_for_statements3);
+    &ast_node_analysis_for_statements3, &ast_nodes_goto_statements1, &ast_nodes_continue_statements,
+    &ast_nodes_break_statements, &ast_nodes_return_statements1);
 
 int main(int argc, const char **argv) {
     UNUSED(argc);
