@@ -34,6 +34,10 @@ ANALYZE_NODE(switch_statement, struct kefir_ast_switch_statement);
 ANALYZE_NODE(while_statement, struct kefir_ast_while_statement);
 ANALYZE_NODE(do_while_statement, struct kefir_ast_do_while_statement);
 ANALYZE_NODE(for_statement, struct kefir_ast_for_statement);
+ANALYZE_NODE(goto_statement, struct kefir_ast_goto_statement);
+ANALYZE_NODE(continue_statement, struct kefir_ast_continue_statement);
+ANALYZE_NODE(break_statement, struct kefir_ast_break_statement);
+ANALYZE_NODE(return_statement, struct kefir_ast_return_statement);
 
 #undef ANALYZE_NODE
 

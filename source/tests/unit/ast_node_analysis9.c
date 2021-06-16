@@ -268,6 +268,8 @@ DEFINE_CASE(ast_node_analysis_switch_statements1, "AST node analysis - switch st
     ASSERT(switch1_statement->value.switchStatement.defaultCase ==
            case4->properties.statement_props.flow_control_point);
 
+    ASSERT(switch1_statement->value.switchStatement.end != NULL);
+
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(decl1)));
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(switch1)));
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
@@ -412,6 +414,8 @@ DEFINE_CASE(ast_node_analysis_switch_statements3, "AST node analysis - switch st
     ASSERT_OK(kefir_hashtree_at(&switch1_statement->value.switchStatement.cases, (kefir_hashtree_key_t) 2, &tree_node));
     ASSERT((void *) tree_node->value == case3->properties.statement_props.flow_control_point);
 
+    ASSERT(switch1_statement->value.switchStatement.end != NULL);
+
     ASSERT(switch2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(switch2->base.properties.statement_props.flow_control_point == NULL);
     ASSERT(switch2->base.properties.statement_props.flow_control_statement != NULL);
@@ -432,6 +436,8 @@ DEFINE_CASE(ast_node_analysis_switch_statements3, "AST node analysis - switch st
     ASSERT(case6->properties.statement_props.flow_control_statement == switch2_statement);
     ASSERT_OK(kefir_hashtree_at(&switch2_statement->value.switchStatement.cases, (kefir_hashtree_key_t) 3, &tree_node));
     ASSERT((void *) tree_node->value == case6->properties.statement_props.flow_control_point);
+
+    ASSERT(switch2_statement->value.switchStatement.end != NULL);
 
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(switch1)));
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(switch2)));
@@ -518,6 +524,8 @@ DEFINE_CASE(ast_node_analysis_switch_statements4, "AST node analysis - switch st
     ASSERT_OK(kefir_hashtree_at(&switch1_statement->value.switchStatement.cases, (kefir_hashtree_key_t) 2, &tree_node));
     ASSERT((void *) tree_node->value == case3->properties.statement_props.flow_control_point);
 
+    ASSERT(switch1_statement->value.switchStatement.end != NULL);
+
     ASSERT(switch2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(switch2->base.properties.statement_props.flow_control_point == NULL);
     ASSERT(switch2->base.properties.statement_props.flow_control_statement != NULL);
@@ -539,6 +547,7 @@ DEFINE_CASE(ast_node_analysis_switch_statements4, "AST node analysis - switch st
     ASSERT_OK(kefir_hashtree_at(&switch2_statement->value.switchStatement.cases, (kefir_hashtree_key_t) 3, &tree_node));
     ASSERT((void *) tree_node->value == case6->properties.statement_props.flow_control_point);
 
+    ASSERT(switch2_statement->value.switchStatement.end != NULL);
     ASSERT(switch1_statement->parent == switch2_statement);
 
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(switch2)));
@@ -610,6 +619,8 @@ DEFINE_CASE(ast_node_analysis_switch_statements5, "AST node analysis - switch st
     ASSERT(case3->properties.statement_props.flow_control_statement == switch1_statement);
     ASSERT_OK(kefir_hashtree_at(&switch1_statement->value.switchStatement.cases, (kefir_hashtree_key_t) 2, &tree_node));
     ASSERT((void *) tree_node->value == case3->properties.statement_props.flow_control_point);
+
+    ASSERT(switch1_statement->value.switchStatement.end != NULL);
 
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(switch1)));
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));

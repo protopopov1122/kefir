@@ -340,6 +340,19 @@ DECLARE_CASE(ast_nodes_goto_statements1);
 DECLARE_CASE(ast_nodes_continue_statements);
 DECLARE_CASE(ast_nodes_break_statements);
 DECLARE_CASE(ast_nodes_return_statements1);
+DECLARE_CASE(ast_node_analysis_goto_statements1);
+DECLARE_CASE(ast_node_analysis_break_statements1);
+DECLARE_CASE(ast_node_analysis_break_statements2);
+DECLARE_CASE(ast_node_analysis_break_statements3);
+DECLARE_CASE(ast_node_analysis_break_statements4);
+DECLARE_CASE(ast_node_analysis_break_statements5);
+DECLARE_CASE(ast_node_analysis_break_statements6);
+DECLARE_CASE(ast_node_analysis_continue_statements1);
+DECLARE_CASE(ast_node_analysis_continue_statements2);
+DECLARE_CASE(ast_node_analysis_continue_statements3);
+DECLARE_CASE(ast_node_analysis_continue_statements4);
+DECLARE_CASE(ast_node_analysis_continue_statements5);
+DECLARE_CASE(ast_node_analysis_return_statements1);
 
 TEST_SUITE(
     mainSuite, &amd64_sysv_abi_data_test1, &amd64_sysv_abi_data_test2, &amd64_sysv_abi_data_test3,
@@ -458,7 +471,12 @@ TEST_SUITE(
     &ast_node_analysis_while_statements1, &ast_node_analysis_while_statements2, &ast_node_analysis_do_while_statements1,
     &ast_node_analysis_do_while_statements2, &ast_node_analysis_for_statements1, &ast_node_analysis_for_statements2,
     &ast_node_analysis_for_statements3, &ast_nodes_goto_statements1, &ast_nodes_continue_statements,
-    &ast_nodes_break_statements, &ast_nodes_return_statements1);
+    &ast_nodes_break_statements, &ast_nodes_return_statements1, &ast_node_analysis_goto_statements1,
+    &ast_node_analysis_break_statements1, &ast_node_analysis_break_statements2, &ast_node_analysis_break_statements3,
+    &ast_node_analysis_break_statements4, &ast_node_analysis_break_statements5, &ast_node_analysis_break_statements6,
+    &ast_node_analysis_continue_statements1, &ast_node_analysis_continue_statements2,
+    &ast_node_analysis_continue_statements3, &ast_node_analysis_continue_statements4,
+    &ast_node_analysis_continue_statements5, &ast_node_analysis_return_statements1);
 
 int main(int argc, const char **argv) {
     UNUSED(argc);

@@ -52,6 +52,10 @@ VISITOR(switch_statement, struct kefir_ast_switch_statement)
 VISITOR(while_statement, struct kefir_ast_while_statement)
 VISITOR(do_while_statement, struct kefir_ast_do_while_statement)
 VISITOR(for_statement, struct kefir_ast_for_statement)
+VISITOR(goto_statement, struct kefir_ast_goto_statement)
+VISITOR(continue_statement, struct kefir_ast_continue_statement)
+VISITOR(break_statement, struct kefir_ast_break_statement)
+VISITOR(return_statement, struct kefir_ast_return_statement)
 
 #undef VISITOR
 
@@ -90,5 +94,9 @@ kefir_result_t kefir_ast_analyze_node(struct kefir_mem *mem, const struct kefir_
     visitor.while_statement = visit_while_statement;
     visitor.do_while_statement = visit_do_while_statement;
     visitor.for_statement = visit_for_statement;
+    visitor.goto_statement = visit_goto_statement;
+    visitor.continue_statement = visit_continue_statement;
+    visitor.break_statement = visit_break_statement;
+    visitor.return_statement = visit_return_statement;
     return KEFIR_AST_NODE_VISIT(&visitor, base, &param);
 }

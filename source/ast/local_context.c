@@ -880,10 +880,8 @@ kefir_result_t kefir_ast_local_context_define_label(struct kefir_mem *mem, struc
         });
     } else {
         REQUIRE_OK(res);
-        REQUIRE(label_id->label.point == NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot redefine a label"));
-        label_id->label.point = kefir_ast_flow_control_point_alloc(mem);
-        REQUIRE(label_id->label.point != NULL,
-                KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST flow control point"));
+        REQUIRE(!label_id->label.defined, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot redefine a label"));
+        label_id->label.defined = true;
     }
 
     ASSIGN_PTR(scoped_id, label_id);

@@ -54,6 +54,11 @@ static kefir_result_t flow_control_statement_free(struct kefir_mem *mem, void *n
                 REQUIRE_OK(kefir_ast_flow_control_point_free(mem, statement->value.switchStatement.defaultCase));
                 statement->value.switchStatement.defaultCase = NULL;
             }
+
+            if (statement->value.switchStatement.end != NULL) {
+                REQUIRE_OK(kefir_ast_flow_control_point_free(mem, statement->value.switchStatement.end));
+                statement->value.switchStatement.end = NULL;
+            }
             break;
 
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_FOR:
@@ -141,6 +146,7 @@ kefir_result_t kefir_ast_flow_control_tree_push(struct kefir_mem *mem, struct ke
 
             stmt->value.switchStatement.defaultCase = NULL;
             stmt->value.switchStatement.controlling_expression_type = NULL;
+            stmt->value.switchStatement.end = NULL;
         } break;
 
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_FOR:
