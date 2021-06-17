@@ -256,8 +256,10 @@ static kefir_result_t translate_global_scoped_identifier(
         case KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT:
         case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_TAG:
         case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION:
-        case KEFIR_AST_SCOPE_IDENTIFIER_LABEL:
             break;
+
+        case KEFIR_AST_SCOPE_IDENTIFIER_LABEL:
+            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "No labels are allowed in the global scope");
     }
     return KEFIR_OK;
 }

@@ -4,6 +4,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/ast-translator/scope/scope_layout_impl.h"
+#include "kefir/ast-translator/flow_control.h"
 
 kefir_result_t kefir_ast_translator_local_scope_layout_init(struct kefir_mem *mem, struct kefir_ir_module *module,
                                                             struct kefir_ast_translator_global_scope_layout *global,
@@ -201,7 +202,12 @@ static kefir_result_t translate_local_scoped_identifier(
         case KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT:
         case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_TAG:
         case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION:
+            break;
+
         case KEFIR_AST_SCOPE_IDENTIFIER_LABEL:
+            REQUIRE(scoped_identifier->label.defined,
+                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot translate undefined label"));
+            REQUIRE_OK(kefir_ast_translator_flow_control_point_init(mem, scoped_identifier->label.point, NULL));
             break;
     }
     return KEFIR_OK;
