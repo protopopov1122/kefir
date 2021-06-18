@@ -17,6 +17,10 @@ static kefir_result_t preanalyze_initializer(struct kefir_mem *mem, const struct
         for (const struct kefir_list_entry *iter = kefir_list_head(&initializer->list.initializers); iter != NULL;
              kefir_list_next(&iter)) {
             ASSIGN_DECL_CAST(struct kefir_ast_initializer_list_entry *, entry, iter->value);
+            if (entry->designation != NULL && entry->designator == NULL) {
+                REQUIRE_OK(
+                    kefir_ast_evaluate_initializer_designation(mem, context, entry->designation, &entry->designator));
+            }
             REQUIRE_OK(preanalyze_initializer(mem, context, entry->value, properties));
         }
     }

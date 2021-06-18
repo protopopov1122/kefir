@@ -361,10 +361,11 @@ DEFINE_CASE(ast_nodes_compound_literals, "AST nodes - compound literals") {
 
     ASSERT_OK(kefir_ast_initializer_list_append(
         &kft_mem, &compound->initializer->list,
-        kefir_ast_new_member_desginator(
+        kefir_ast_new_initializer_member_designation(
             &kft_mem, &symbols, "hello",
-            kefir_ast_new_index_desginator(&kft_mem, 100,
-                                           kefir_ast_new_member_desginator(&kft_mem, &symbols, "world", NULL))),
+            kefir_ast_new_initializer_index_designation(
+                &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long_long(&kft_mem, 100)),
+                kefir_ast_new_initializer_member_designation(&kft_mem, &symbols, "world", NULL))),
         kefir_ast_new_expression_initializer(&kft_mem,
                                              KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(&kft_mem, true)))));
     ASSERT(kefir_list_length(&compound->initializer->list.initializers) == 1);

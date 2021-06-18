@@ -55,7 +55,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         mem, &literal2->initializer->list, NULL,
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(mem, 'l')))));
     REQUIRE_OK(kefir_ast_initializer_list_append(
-        mem, &literal2->initializer->list, kefir_ast_new_index_desginator(mem, 1, NULL),
+        mem, &literal2->initializer->list,
+        kefir_ast_new_initializer_index_designation(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 1)), NULL),
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(mem, 'o')))));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, KEFIR_AST_NODE_BASE(literal2)));
 

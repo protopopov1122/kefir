@@ -106,17 +106,19 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(mem, "WTF?")))));
     REQUIRE_OK(kefir_ast_initializer_list_append(
         mem, &literal1->initializer->list,
-        kefir_ast_new_member_desginator(
+        kefir_ast_new_initializer_member_designation(
             mem, context->symbols, "field3",
-            kefir_ast_new_member_desginator(mem, context->symbols, "X",
-                                            kefir_ast_new_member_desginator(mem, context->symbols, "hello", NULL))),
+            kefir_ast_new_initializer_member_designation(
+                mem, context->symbols, "X",
+                kefir_ast_new_initializer_member_designation(mem, context->symbols, "hello", NULL))),
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 1)))));
     REQUIRE_OK(kefir_ast_initializer_list_append(
         mem, &literal1->initializer->list,
-        kefir_ast_new_index_desginator(
-            mem, 1,
-            kefir_ast_new_member_desginator(mem, context->symbols, "Y",
-                                            kefir_ast_new_member_desginator(mem, context->symbols, "hello", NULL))),
+        kefir_ast_new_initializer_index_designation(
+            mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(mem, 1)),
+            kefir_ast_new_initializer_member_designation(
+                mem, context->symbols, "Y",
+                kefir_ast_new_initializer_member_designation(mem, context->symbols, "hello", NULL))),
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 2)))));
     REQUIRE_OK(kefir_ast_initializer_list_append(
         mem, &literal1->initializer->list, NULL,
@@ -130,15 +132,17 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         mem, &init1->list, NULL,
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(mem, 'A')))));
     REQUIRE_OK(kefir_ast_initializer_list_append(
-        mem, &init1->list, kefir_ast_new_index_desginator(mem, 8, NULL),
+        mem, &init1->list,
+        kefir_ast_new_initializer_index_designation(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 8)), NULL),
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(mem, 'B')))));
     REQUIRE_OK(kefir_ast_initializer_list_append(
         mem, &init1->list, NULL,
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(mem, 'B')))));
     REQUIRE_OK(kefir_ast_initializer_list_append(
         mem, &literal1->initializer->list,
-        kefir_ast_new_member_desginator(mem, context->symbols, "field1",
-                                        kefir_ast_new_member_desginator(mem, context->symbols, "world", NULL)),
+        kefir_ast_new_initializer_member_designation(
+            mem, context->symbols, "field1",
+            kefir_ast_new_initializer_member_designation(mem, context->symbols, "world", NULL)),
         init1));
     REQUIRE_OK(kefir_ast_initializer_list_append(
         mem, &literal1->initializer->list, NULL,
@@ -152,10 +156,11 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     REQUIRE_OK(kefir_ast_initializer_list_append(
         mem, &literal1->initializer->list,
-        kefir_ast_new_member_desginator(
+        kefir_ast_new_initializer_member_designation(
             mem, context->symbols, "field3",
-            kefir_ast_new_member_desginator(mem, context->symbols, "X",
-                                            kefir_ast_new_member_desginator(mem, context->symbols, "hello", NULL))),
+            kefir_ast_new_initializer_member_designation(
+                mem, context->symbols, "X",
+                kefir_ast_new_initializer_member_designation(mem, context->symbols, "hello", NULL))),
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 8)))));
     REQUIRE_OK(kefir_ast_initializer_list_append(
         mem, &literal1->initializer->list, NULL,

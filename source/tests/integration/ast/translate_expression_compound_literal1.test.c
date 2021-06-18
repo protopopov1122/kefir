@@ -95,13 +95,15 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         mem, &literal2->initializer->list, NULL,
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(mem, false)))));
     REQUIRE_OK(kefir_ast_initializer_list_append(
-        mem, &literal2->initializer->list, kefir_ast_new_member_desginator(mem, context->symbols, "c", NULL),
+        mem, &literal2->initializer->list,
+        kefir_ast_new_initializer_member_designation(mem, context->symbols, "c", NULL),
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 1.0f)))));
     REQUIRE_OK(kefir_ast_initializer_list_append(
         mem, &literal2->initializer->list, NULL,
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 2)))));
     REQUIRE_OK(kefir_ast_initializer_list_append(
-        mem, &literal2->initializer->list, kefir_ast_new_member_desginator(mem, context->symbols, "b", NULL),
+        mem, &literal2->initializer->list,
+        kefir_ast_new_initializer_member_designation(mem, context->symbols, "b", NULL),
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 3)))));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, KEFIR_AST_NODE_BASE(literal2)));
 
@@ -111,8 +113,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(mem, true)))));
     REQUIRE_OK(kefir_ast_initializer_list_append(
         mem, &literal3->initializer->list,
-        kefir_ast_new_member_desginator(mem, context->symbols, "c",
-                                        kefir_ast_new_member_desginator(mem, context->symbols, "x", NULL)),
+        kefir_ast_new_initializer_member_designation(
+            mem, context->symbols, "c", kefir_ast_new_initializer_member_designation(mem, context->symbols, "x", NULL)),
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 2)))));
     REQUIRE_OK(kefir_ast_initializer_list_append(
         mem, &literal3->initializer->list, NULL,
@@ -125,8 +127,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 5)))));
     REQUIRE_OK(kefir_ast_initializer_list_append(
         mem, &literal3->initializer->list,
-        kefir_ast_new_member_desginator(mem, context->symbols, "b",
-                                        kefir_ast_new_member_desginator(mem, context->symbols, "x", NULL)),
+        kefir_ast_new_initializer_member_designation(
+            mem, context->symbols, "b", kefir_ast_new_initializer_member_designation(mem, context->symbols, "x", NULL)),
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 6)))));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, KEFIR_AST_NODE_BASE(literal3)));
 

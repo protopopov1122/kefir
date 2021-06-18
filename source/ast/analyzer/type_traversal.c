@@ -410,12 +410,12 @@ struct kefir_ast_designator *kefir_ast_type_traversal_layer_designator(
         case KEFIR_AST_TYPE_TRAVERSAL_UNION: {
             ASSIGN_DECL_CAST(struct kefir_ast_struct_field *, field, layer->structure.iterator->value);
             if (field != NULL) {
-                designator = kefir_ast_new_member_desginator(mem, symbols, field->identifier, base);
+                designator = kefir_ast_new_member_designator(mem, symbols, field->identifier, base);
             }
         } break;
 
         case KEFIR_AST_TYPE_TRAVERSAL_ARRAY:
-            designator = kefir_ast_new_index_desginator(mem, layer->array.index, base);
+            designator = kefir_ast_new_index_designator(mem, layer->array.index, base);
             break;
 
         case KEFIR_AST_TYPE_TRAVERSAL_SCALAR:

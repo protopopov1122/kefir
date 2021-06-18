@@ -350,10 +350,10 @@ DEFINE_CASE(ast_type_traversal4, "AST Type analysis - type traversal #4") {
     struct kefir_ast_type_traversal traversal;
     ASSERT_OK(kefir_ast_type_traversal_init(&kft_mem, &traversal, type3));
 
-    struct kefir_ast_designator *designator1 = kefir_ast_new_member_desginator(
+    struct kefir_ast_designator *designator1 = kefir_ast_new_member_designator(
         &kft_mem, context->symbols, "c",
-        kefir_ast_new_index_desginator(&kft_mem, 97,
-                                       kefir_ast_new_member_desginator(&kft_mem, context->symbols, "y", NULL)));
+        kefir_ast_new_index_designator(&kft_mem, 97,
+                                       kefir_ast_new_member_designator(&kft_mem, context->symbols, "y", NULL)));
     ASSERT(designator1 != NULL);
     ASSERT(designator1->next != NULL);
     ASSERT(designator1->next->next != NULL);
@@ -372,10 +372,10 @@ DEFINE_CASE(ast_type_traversal4, "AST Type analysis - type traversal #4") {
     ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long(), 2);
     ASSERT_NEXT_REC(&kft_mem, &traversal, NULL, 0);
 
-    designator1 = kefir_ast_new_member_desginator(
+    designator1 = kefir_ast_new_member_designator(
         &kft_mem, context->symbols, "c",
-        kefir_ast_new_index_desginator(&kft_mem, 98,
-                                       kefir_ast_new_member_desginator(&kft_mem, context->symbols, "y", NULL)));
+        kefir_ast_new_index_designator(&kft_mem, 98,
+                                       kefir_ast_new_member_designator(&kft_mem, context->symbols, "y", NULL)));
     ASSERT(designator1 != NULL);
     ASSERT(designator1->next != NULL);
     ASSERT(designator1->next->next != NULL);
@@ -391,10 +391,10 @@ DEFINE_CASE(ast_type_traversal4, "AST Type analysis - type traversal #4") {
     ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long(), 2);
     ASSERT_NEXT_REC(&kft_mem, &traversal, NULL, 0);
 
-    designator1 = kefir_ast_new_member_desginator(
+    designator1 = kefir_ast_new_member_designator(
         &kft_mem, context->symbols, "c",
-        kefir_ast_new_index_desginator(&kft_mem, 99,
-                                       kefir_ast_new_member_desginator(&kft_mem, context->symbols, "y", NULL)));
+        kefir_ast_new_index_designator(&kft_mem, 99,
+                                       kefir_ast_new_member_designator(&kft_mem, context->symbols, "y", NULL)));
     ASSERT(designator1 != NULL);
     ASSERT(designator1->next != NULL);
     ASSERT(designator1->next->next != NULL);
@@ -407,7 +407,7 @@ DEFINE_CASE(ast_type_traversal4, "AST Type analysis - type traversal #4") {
     ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long(), 2);
     ASSERT_NEXT_REC(&kft_mem, &traversal, NULL, 0);
 
-    designator1 = kefir_ast_new_member_desginator(&kft_mem, context->symbols, "z", NULL);
+    designator1 = kefir_ast_new_member_designator(&kft_mem, context->symbols, "z", NULL);
     ASSERT(designator1 != NULL);
     ASSERT(designator1->next == NULL);
     ASSERT_OK(kefir_ast_type_traversal_navigate(&kft_mem, &traversal, designator1));
@@ -417,7 +417,7 @@ DEFINE_CASE(ast_type_traversal4, "AST Type analysis - type traversal #4") {
     ASSERT_NEXT_REC(&kft_mem, &traversal, kefir_ast_type_signed_long_long(), 2);
     ASSERT_NEXT_REC(&kft_mem, &traversal, NULL, 0);
 
-    designator1 = kefir_ast_new_member_desginator(&kft_mem, context->symbols, "x", NULL);
+    designator1 = kefir_ast_new_member_designator(&kft_mem, context->symbols, "x", NULL);
     ASSERT(designator1 != NULL);
     ASSERT(designator1->next == NULL);
     ASSERT_OK(kefir_ast_type_traversal_navigate(&kft_mem, &traversal, designator1));

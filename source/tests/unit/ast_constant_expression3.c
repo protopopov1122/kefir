@@ -256,7 +256,9 @@ DEFINE_CASE(ast_constant_expression_unary_operations3, "AST constant expressions
 
     struct kefir_ast_compound_literal *compound1 = kefir_ast_new_compound_literal(&kft_mem, type_name1);
     ASSERT_OK(kefir_ast_initializer_list_append(
-        &kft_mem, &compound1->initializer->list, kefir_ast_new_index_desginator(&kft_mem, 9, NULL),
+        &kft_mem, &compound1->initializer->list,
+        kefir_ast_new_initializer_index_designation(&kft_mem,
+                                                    KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 9)), NULL),
         kefir_ast_new_expression_initializer(&kft_mem,
                                              KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'H')))));
 

@@ -66,7 +66,9 @@ DEFINE_CASE(ast_ordinary_scope_objects_local_init1, "AST Declaration initializer
 
     struct kefir_ast_initializer *init4 = kefir_ast_new_list_initializer(&kft_mem);
     ASSERT_OK(kefir_ast_initializer_list_append(
-        &kft_mem, &init4->list, kefir_ast_new_index_desginator(&kft_mem, 2, NULL),
+        &kft_mem, &init4->list,
+        kefir_ast_new_initializer_index_designation(&kft_mem,
+                                                    KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 2)), NULL),
         kefir_ast_new_expression_initializer(&kft_mem,
                                              KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(&kft_mem, 3.14f)))));
     ASSERT_OK(kefir_ast_local_context_define_static(&kft_mem, &context, "var4", type1, NULL, init4, NULL));
@@ -134,7 +136,9 @@ DEFINE_CASE(ast_ordinary_scope_objects_local_init2, "AST Declaration initializer
 
     struct kefir_ast_initializer *init4 = kefir_ast_new_list_initializer(&kft_mem);
     ASSERT_OK(kefir_ast_initializer_list_append(
-        &kft_mem, &init4->list, kefir_ast_new_index_desginator(&kft_mem, 2, NULL),
+        &kft_mem, &init4->list,
+        kefir_ast_new_initializer_index_designation(&kft_mem,
+                                                    KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 2)), NULL),
         kefir_ast_new_expression_initializer(&kft_mem,
                                              KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(&kft_mem, 3.14f)))));
     ASSERT_OK(kefir_ast_local_context_define_static_thread_local(&kft_mem, &context, "var4", type1, NULL, init4, NULL));

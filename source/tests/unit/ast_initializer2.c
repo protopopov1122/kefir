@@ -180,7 +180,7 @@ DEFINE_CASE(ast_initializer_analysis3, "AST initializer - analysis #3") {
 
     struct kefir_ast_initializer *init2 = kefir_ast_new_list_initializer(&kft_mem);
     ASSERT_OK(kefir_ast_initializer_list_append(
-        &kft_mem, &init2->list, kefir_ast_new_member_desginator(&kft_mem, context->symbols, "f2", NULL),
+        &kft_mem, &init2->list, kefir_ast_new_initializer_member_designation(&kft_mem, context->symbols, "f2", NULL),
         kefir_ast_new_expression_initializer(&kft_mem,
                                              KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(&kft_mem, 10.0f)))));
 
@@ -208,10 +208,11 @@ DEFINE_CASE(ast_initializer_analysis3, "AST initializer - analysis #3") {
 
     ASSERT_OK(kefir_ast_initializer_list_append(
         &kft_mem, &init_final->list,
-        kefir_ast_new_member_desginator(
+        kefir_ast_new_initializer_member_designation(
             &kft_mem, context->symbols, "x",
-            kefir_ast_new_member_desginator(&kft_mem, context->symbols, "f1",
-                                            kefir_ast_new_member_desginator(&kft_mem, context->symbols, "a", NULL))),
+            kefir_ast_new_initializer_member_designation(
+                &kft_mem, context->symbols, "f1",
+                kefir_ast_new_initializer_member_designation(&kft_mem, context->symbols, "a", NULL))),
         kefir_ast_new_expression_initializer(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0)))));
 
     ASSERT_OK(kefir_ast_initializer_list_append(
@@ -220,23 +221,26 @@ DEFINE_CASE(ast_initializer_analysis3, "AST initializer - analysis #3") {
 
     ASSERT_OK(kefir_ast_initializer_list_append(
         &kft_mem, &init_final->list,
-        kefir_ast_new_index_desginator(
-            &kft_mem, 4,
-            kefir_ast_new_member_desginator(
+        kefir_ast_new_initializer_index_designation(
+            &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 4)),
+            kefir_ast_new_initializer_member_designation(
                 &kft_mem, context->symbols, "y",
-                kefir_ast_new_member_desginator(
+                kefir_ast_new_initializer_member_designation(
                     &kft_mem, context->symbols, "f1",
-                    kefir_ast_new_member_desginator(&kft_mem, context->symbols, "a", NULL)))),
+                    kefir_ast_new_initializer_member_designation(&kft_mem, context->symbols, "a", NULL)))),
         kefir_ast_new_expression_initializer(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 4)))));
 
     ASSERT_OK(kefir_ast_initializer_list_append(
-        &kft_mem, &init_final->list, kefir_ast_new_member_desginator(&kft_mem, context->symbols, "c", NULL), init3));
+        &kft_mem, &init_final->list,
+        kefir_ast_new_initializer_member_designation(&kft_mem, context->symbols, "c", NULL), init3));
 
     ASSERT_OK(kefir_ast_initializer_list_append(
-        &kft_mem, &init_final->list, kefir_ast_new_member_desginator(&kft_mem, context->symbols, "d", NULL), init4));
+        &kft_mem, &init_final->list,
+        kefir_ast_new_initializer_member_designation(&kft_mem, context->symbols, "d", NULL), init4));
 
     ASSERT_OK(kefir_ast_initializer_list_append(
-        &kft_mem, &init_final->list, kefir_ast_new_member_desginator(&kft_mem, context->symbols, "d", NULL), init5));
+        &kft_mem, &init_final->list,
+        kefir_ast_new_initializer_member_designation(&kft_mem, context->symbols, "d", NULL), init5));
 
     ASSERT_OK(kefir_ast_analyze_initializer(&kft_mem, context, type3, init_final, &traversal_props));
     ASSERT(traversal_props.constant);
@@ -339,7 +343,9 @@ DEFINE_CASE(ast_initializer_analysis4, "AST initializer - analysis #4") {
         kefir_ast_new_expression_initializer(&kft_mem,
                                              KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'l')))));
     ASSERT_OK(kefir_ast_initializer_list_append(
-        &kft_mem, &init6->list, kefir_ast_new_index_desginator(&kft_mem, 0, NULL),
+        &kft_mem, &init6->list,
+        kefir_ast_new_initializer_index_designation(&kft_mem,
+                                                    KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0)), NULL),
         kefir_ast_new_expression_initializer(&kft_mem,
                                              KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'l')))));
     ASSERT_OK(kefir_ast_analyze_initializer(&kft_mem, context, type1, init6, &traversal_props));

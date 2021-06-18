@@ -3,7 +3,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-struct kefir_ast_designator *kefir_ast_new_member_desginator(struct kefir_mem *mem, struct kefir_symbol_table *symbols,
+struct kefir_ast_designator *kefir_ast_new_member_designator(struct kefir_mem *mem, struct kefir_symbol_table *symbols,
                                                              const char *member, struct kefir_ast_designator *child) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(member != NULL && strlen(member) > 0, NULL);
@@ -21,7 +21,7 @@ struct kefir_ast_designator *kefir_ast_new_member_desginator(struct kefir_mem *m
     return designator;
 }
 
-struct kefir_ast_designator *kefir_ast_new_index_desginator(struct kefir_mem *mem, kefir_size_t index,
+struct kefir_ast_designator *kefir_ast_new_index_designator(struct kefir_mem *mem, kefir_size_t index,
                                                             struct kefir_ast_designator *child) {
     REQUIRE(mem != NULL, NULL);
 
