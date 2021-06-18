@@ -48,6 +48,7 @@ TRANSLATE_NODE(assignment_operator, struct kefir_ast_assignment_operator)
 kefir_result_t kefir_ast_translate_expression(struct kefir_mem *mem, const struct kefir_ast_node_base *base,
                                               struct kefir_irbuilder_block *builder,
                                               struct kefir_ast_translator_context *context) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator context"));
