@@ -50,9 +50,7 @@ kefir_result_t kefir_ast_translate_identifier_node(struct kefir_mem *mem, struct
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier node"));
 
-    const struct kefir_ast_scoped_identifier *scoped_identifier = NULL;
-    REQUIRE_OK(
-        context->ast_context->resolve_ordinary_identifier(context->ast_context, node->identifier, &scoped_identifier));
+    const struct kefir_ast_scoped_identifier *scoped_identifier = node->base.properties.expression_props.scoped_id;
     switch (scoped_identifier->klass) {
         case KEFIR_AST_SCOPE_IDENTIFIER_OBJECT:
             REQUIRE_OK(translate_object_identifier(mem, context, builder, node->identifier, scoped_identifier));

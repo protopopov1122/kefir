@@ -269,7 +269,7 @@ static kefir_bool_t block_tree_empty(const struct kefir_tree_node *node) {
     }
     for (struct kefir_tree_node *child = kefir_tree_first_child(node); child != NULL;
          child = kefir_tree_next_sibling(child)) {
-        if (!block_tree_empty(node)) {
+        if (!block_tree_empty(child)) {
             return false;
         }
     }

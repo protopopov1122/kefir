@@ -176,9 +176,7 @@ static kefir_result_t translate_identifier_node(const struct kefir_ast_visitor *
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct translator_param *, param, payload);
 
-    const struct kefir_ast_scoped_identifier *scoped_identifier = NULL;
-    REQUIRE_OK(param->context->ast_context->resolve_ordinary_identifier(param->context->ast_context, node->identifier,
-                                                                        &scoped_identifier));
+    const struct kefir_ast_scoped_identifier *scoped_identifier = node->base.properties.expression_props.scoped_id;
     switch (scoped_identifier->klass) {
         case KEFIR_AST_SCOPE_IDENTIFIER_OBJECT:
             REQUIRE_OK(kefir_ast_translator_object_lvalue(param->mem, param->context, param->builder, node->identifier,

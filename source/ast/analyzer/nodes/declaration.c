@@ -62,6 +62,8 @@ kefir_result_t kefir_ast_analyze_declaration_node(struct kefir_mem *mem, const s
             case KEFIR_AST_SCOPE_IDENTIFIER_LABEL:
                 return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected AST scoped identifier class");
         }
+
+        base->properties.declaration_props.scoped_id = scoped_id;
     } else {
         base->properties.type = type;
         base->properties.declaration_props.storage = storage;

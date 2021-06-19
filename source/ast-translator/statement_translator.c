@@ -28,6 +28,7 @@ static kefir_result_t translate_not_impl(const struct kefir_ast_visitor *visitor
     }
 
 TRANSLATE_NODE(expression_statement, struct kefir_ast_expression_statement)
+TRANSLATE_NODE(compound_statement, struct kefir_ast_compound_statement)
 #undef TRANSLATE_NODE
 
 kefir_result_t kefir_ast_translate_statement(struct kefir_mem *mem, const struct kefir_ast_node_base *base,
@@ -41,6 +42,7 @@ kefir_result_t kefir_ast_translate_statement(struct kefir_mem *mem, const struct
     struct kefir_ast_visitor visitor;
     REQUIRE_OK(kefir_ast_visitor_init(&visitor, translate_not_impl));
     visitor.expression_statement = translate_expression_statement;
+    visitor.compound_statement = translate_compound_statement;
 
     struct translator_param param = {.mem = mem, .builder = builder, .context = context};
     return KEFIR_AST_NODE_VISIT(&visitor, base, &param);

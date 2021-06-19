@@ -32,6 +32,7 @@ typedef struct kefir_ast_node_properties {
             kefir_size_t length;
         } string_literal;
         struct kefir_ast_temporary_identifier temporary;
+        const struct kefir_ast_scoped_identifier *scoped_id;
     } expression_props;
     struct {
         kefir_ast_scoped_identifier_storage_t storage;
@@ -39,6 +40,7 @@ typedef struct kefir_ast_node_properties {
         const char *identifier;
         kefir_size_t alignment;
         kefir_bool_t static_assertion;
+        const struct kefir_ast_scoped_identifier *scoped_id;
     } declaration_props;
 
     struct {

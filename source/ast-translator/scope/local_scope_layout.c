@@ -269,11 +269,13 @@ static kefir_result_t traverse_local_scope(struct kefir_mem *mem, const struct k
     REQUIRE(res == KEFIR_ITERATOR_END, res);
 
     kefir_bool_t empty_children = true;
-    for (struct kefir_tree_node *child = kefir_tree_first_child(root); child != NULL && !empty_children;
+    for (struct kefir_tree_node *child = kefir_tree_first_child(root); child != NULL && empty_children;
          child = kefir_tree_next_sibling(child)) {
         REQUIRE_OK(local_scope_empty(mem, child, &empty_children));
     }
     if (!empty_children) {
+        struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(builder->type, begin);
+        typeentry->param++;
         REQUIRE_OK(KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_UNION, 0, 0));
         const kefir_size_t child_begin = kefir_ir_type_total_length(builder->type) - 1;
         for (struct kefir_tree_node *child = kefir_tree_first_child(root); child != NULL;
