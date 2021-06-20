@@ -111,6 +111,61 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
     });
 
+    FUNC2("compound3", {
+        struct kefir_ast_declaration *decl1 =
+            kefir_ast_new_declaration(mem, kefir_ast_declarator_identifier(mem, context->symbols, "something"), NULL);
+        REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl1->specifiers,
+                                                              kefir_ast_storage_class_specifier_extern(mem)));
+        REQUIRE_OK(
+            kefir_ast_declarator_specifier_list_append(mem, &decl1->specifiers, kefir_ast_type_specifier_int(mem)));
+
+        struct kefir_ast_expression_statement *assign1 = kefir_ast_new_expression_statement(
+            mem, KEFIR_AST_NODE_BASE(kefir_ast_new_simple_assignment(
+                     mem, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "something")),
+                     KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 10)))));
+
+        struct kefir_ast_declaration *decl2 =
+            kefir_ast_new_declaration(mem, kefir_ast_declarator_identifier(mem, context->symbols, "something"), NULL);
+        REQUIRE_OK(
+            kefir_ast_declarator_specifier_list_append(mem, &decl2->specifiers, kefir_ast_type_specifier_float(mem)));
+
+        struct kefir_ast_expression_statement *assign2 = kefir_ast_new_expression_statement(
+            mem, KEFIR_AST_NODE_BASE(kefir_ast_new_simple_assignment(
+                     mem, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "something")),
+                     KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 10.1f)))));
+
+        struct kefir_ast_expression_statement *assign3 = kefir_ast_new_expression_statement(
+            mem, KEFIR_AST_NODE_BASE(kefir_ast_new_simple_assignment(
+                     mem, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "something")),
+                     KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 12.1f)))));
+
+        struct kefir_ast_compound_statement *compound1 = kefir_ast_new_compound_statement(mem);
+        REQUIRE_OK(kefir_list_insert_after(mem, &compound1->block_items, kefir_list_tail(&compound1->block_items),
+                                           KEFIR_AST_NODE_BASE(decl2)));
+        REQUIRE_OK(kefir_list_insert_after(mem, &compound1->block_items, kefir_list_tail(&compound1->block_items),
+                                           KEFIR_AST_NODE_BASE(assign2)));
+
+        struct kefir_ast_compound_statement *compound2 = kefir_ast_new_compound_statement(mem);
+        REQUIRE_OK(kefir_list_insert_after(mem, &compound2->block_items, kefir_list_tail(&compound2->block_items),
+                                           KEFIR_AST_NODE_BASE(decl1)));
+        REQUIRE_OK(kefir_list_insert_after(mem, &compound2->block_items, kefir_list_tail(&compound2->block_items),
+                                           KEFIR_AST_NODE_BASE(assign1)));
+        REQUIRE_OK(kefir_list_insert_after(mem, &compound2->block_items, kefir_list_tail(&compound2->block_items),
+                                           KEFIR_AST_NODE_BASE(compound1)));
+        REQUIRE_OK(kefir_list_insert_after(mem, &compound2->block_items, kefir_list_tail(&compound2->block_items),
+                                           KEFIR_AST_NODE_BASE(assign3)));
+
+        struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(compound2);
+        REQUIRE_OK(kefir_ast_analyze_node(mem, context, node));
+
+        REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(
+            mem, &local_context, &env, &module, kefir_ast_translator_context_type_resolver(&local_translator_context),
+            &translator_local_scope));
+
+        REQUIRE_OK(kefir_ast_translate_statement(mem, node, &builder, &local_translator_context));
+        REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
+    });
+
     REQUIRE_OK(kefir_ir_format_module(stdout, &module));
 
     REQUIRE_OK(kefir_ast_translator_context_free(mem, &global_translator_context));

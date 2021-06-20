@@ -52,6 +52,39 @@
                     ]
                 }
             ]
+        },
+        {
+            "identifier": 5,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "union",
+                                            "fields": [
+                                                {
+                                                    "type": "struct",
+                                                    "fields": [
+                                                        {
+                                                            "type": "float"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "data": [],
@@ -66,6 +99,13 @@
         {
             "identifier": 1,
             "name": "compound2",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 2,
+            "name": "compound3",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -503,6 +543,156 @@
                 },
                 {
                     "opcode": "store64"
+                },
+                {
+                    "opcode": "pop"
+                }
+            ]
+        },
+        {
+            "identifier": 2,
+            "name": "compound3",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "union",
+                                            "fields": [
+                                                {
+                                                    "type": "struct",
+                                                    "fields": [
+                                                        {
+                                                            "type": "float"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "something"
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": 10
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store32"
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 5,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 5,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 5,
+                        "index": 2
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 5,
+                        "index": 3
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 5,
+                        "index": 4
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 5,
+                        "index": 5
+                    }
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 10.100000
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store32"
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "something"
+                    }
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 12.100000
+                },
+                {
+                    "opcode": "f32cint"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store32"
                 },
                 {
                     "opcode": "pop"
