@@ -1,0 +1,325 @@
+{
+    "globals": [],
+    "externals": [
+        "variable"
+    ],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "int"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "type": [
+                {
+                    "type": "char"
+                }
+            ]
+        },
+        {
+            "identifier": 5,
+            "type": []
+        }
+    ],
+    "data": [],
+    "function_declarations": [
+        {
+            "identifier": 0,
+            "name": "while1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 1,
+            "name": "while2",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": 0,
+            "name": "while1",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "int"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 2
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 3
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "store32"
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "str"
+                    }
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 2
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 3
+                    }
+                },
+                {
+                    "opcode": "load32u"
+                },
+                {
+                    "opcode": "elementptr",
+                    "arg": {
+                        "type": 4,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "load8i"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "iequals"
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "branch",
+                    "arg": 36
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 2
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 3
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load32u"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store32"
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "jmp",
+                    "arg": 9
+                }
+            ]
+        },
+        {
+            "identifier": 1,
+            "name": "while2",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "branch",
+                    "arg": 11
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "flag"
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "load8u"
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "branch",
+                    "arg": 9
+                },
+                {
+                    "opcode": "jmp",
+                    "arg": 0
+                },
+                {
+                    "opcode": "jmp",
+                    "arg": 11
+                },
+                {
+                    "opcode": "jmp",
+                    "arg": 0
+                }
+            ]
+        }
+    ]
+}

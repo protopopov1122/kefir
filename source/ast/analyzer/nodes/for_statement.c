@@ -54,6 +54,10 @@ kefir_result_t kefir_ast_analyze_for_statement_node(struct kefir_mem *mem, const
         REQUIRE(node->controlling_expr->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
                                 "Expected the second expression of for statement to be an expression"));
+        const struct kefir_ast_type *condition_type =
+            KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->controlling_expr->properties.type);
+        REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(condition_type),
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected while statement condition to be scalar expression"));
     }
 
     if (node->tail != NULL) {

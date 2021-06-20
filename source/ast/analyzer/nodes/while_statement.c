@@ -3,6 +3,7 @@
 #include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/ast/analyzer/declarator.h"
 #include "kefir/ast/type_conv.h"
+#include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -37,7 +38,10 @@ kefir_result_t kefir_ast_analyze_while_statement_node(struct kefir_mem *mem, con
     REQUIRE(node->controlling_expr->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
                             "Expected while statement controlling expression to be scalar expression"));
-    REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(node->controlling_expr->properties.type),
+
+    const struct kefir_ast_type *condition_type =
+        KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->controlling_expr->properties.type);
+    REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(condition_type),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected while statement condition to be scalar expression"));
 
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->body));
