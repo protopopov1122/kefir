@@ -164,7 +164,7 @@ static kefir_result_t flow_control_tree_init(struct kefir_mem *mem, struct kefir
             case KEFIR_AST_FLOW_CONTROL_STATEMENT_FOR:
             case KEFIR_AST_FLOW_CONTROL_STATEMENT_WHILE:
             case KEFIR_AST_FLOW_CONTROL_STATEMENT_DO:
-                REQUIRE_OK(kefir_ast_translator_flow_control_point_init(mem, stmt->value.loop.begin, NULL));
+                REQUIRE_OK(kefir_ast_translator_flow_control_point_init(mem, stmt->value.loop.continuation, NULL));
                 REQUIRE_OK(kefir_ast_translator_flow_control_point_init(mem, stmt->value.loop.end, NULL));
                 break;
         }

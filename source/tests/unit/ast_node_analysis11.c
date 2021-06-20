@@ -390,7 +390,7 @@ DEFINE_CASE(ast_node_analysis_continue_statements1, "AST node analysis - continu
     ASSERT(continue1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(while1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(continue1->base.properties.statement_props.flow_control_point ==
-           while1->base.properties.statement_props.flow_control_statement->value.loop.begin);
+           while1->base.properties.statement_props.flow_control_statement->value.loop.continuation);
     ASSERT(continue1->base.properties.statement_props.flow_control_statement ==
            while1->base.properties.statement_props.flow_control_statement);
 
@@ -405,11 +405,11 @@ DEFINE_CASE(ast_node_analysis_continue_statements1, "AST node analysis - continu
     ASSERT(continue2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(while2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(continue2->base.properties.statement_props.flow_control_point ==
-           while2->base.properties.statement_props.flow_control_statement->value.loop.begin);
+           while2->base.properties.statement_props.flow_control_statement->value.loop.continuation);
     ASSERT(continue2->base.properties.statement_props.flow_control_statement ==
            while2->base.properties.statement_props.flow_control_statement);
     ASSERT(continue2->base.properties.statement_props.flow_control_point !=
-           for3->base.properties.statement_props.flow_control_statement->value.loop.begin);
+           for3->base.properties.statement_props.flow_control_statement->value.loop.continuation);
     ASSERT(continue2->base.properties.statement_props.flow_control_statement !=
            for3->base.properties.statement_props.flow_control_statement);
 
@@ -438,7 +438,7 @@ DEFINE_CASE(ast_node_analysis_continue_statements2, "AST node analysis - continu
     ASSERT(continue1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(do_while1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(continue1->base.properties.statement_props.flow_control_point ==
-           do_while1->base.properties.statement_props.flow_control_statement->value.loop.begin);
+           do_while1->base.properties.statement_props.flow_control_statement->value.loop.continuation);
     ASSERT(continue1->base.properties.statement_props.flow_control_statement ==
            do_while1->base.properties.statement_props.flow_control_statement);
 
@@ -452,11 +452,11 @@ DEFINE_CASE(ast_node_analysis_continue_statements2, "AST node analysis - continu
     ASSERT(continue2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(do_while2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(continue2->base.properties.statement_props.flow_control_point ==
-           do_while2->base.properties.statement_props.flow_control_statement->value.loop.begin);
+           do_while2->base.properties.statement_props.flow_control_statement->value.loop.continuation);
     ASSERT(continue2->base.properties.statement_props.flow_control_statement ==
            do_while2->base.properties.statement_props.flow_control_statement);
     ASSERT(continue2->base.properties.statement_props.flow_control_point !=
-           while3->base.properties.statement_props.flow_control_statement->value.loop.begin);
+           while3->base.properties.statement_props.flow_control_statement->value.loop.continuation);
     ASSERT(continue2->base.properties.statement_props.flow_control_statement !=
            while3->base.properties.statement_props.flow_control_statement);
 
@@ -486,7 +486,7 @@ DEFINE_CASE(ast_node_analysis_continue_statements3, "AST node analysis - continu
     ASSERT(continue1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(for1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(continue1->base.properties.statement_props.flow_control_point ==
-           for1->base.properties.statement_props.flow_control_statement->value.loop.begin);
+           for1->base.properties.statement_props.flow_control_statement->value.loop.continuation);
     ASSERT(continue1->base.properties.statement_props.flow_control_statement ==
            for1->base.properties.statement_props.flow_control_statement);
 
@@ -501,11 +501,11 @@ DEFINE_CASE(ast_node_analysis_continue_statements3, "AST node analysis - continu
     ASSERT(continue2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(for2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(continue2->base.properties.statement_props.flow_control_point ==
-           for2->base.properties.statement_props.flow_control_statement->value.loop.begin);
+           for2->base.properties.statement_props.flow_control_statement->value.loop.continuation);
     ASSERT(continue2->base.properties.statement_props.flow_control_statement ==
            for2->base.properties.statement_props.flow_control_statement);
     ASSERT(continue2->base.properties.statement_props.flow_control_point !=
-           do_while3->base.properties.statement_props.flow_control_statement->value.loop.begin);
+           do_while3->base.properties.statement_props.flow_control_statement->value.loop.continuation);
     ASSERT(continue2->base.properties.statement_props.flow_control_statement !=
            do_while3->base.properties.statement_props.flow_control_statement);
 

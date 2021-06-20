@@ -61,7 +61,7 @@ typedef struct kefir_ast_flow_control_statement {
         } switchStatement;
 
         struct {
-            struct kefir_ast_flow_control_point *begin;
+            struct kefir_ast_flow_control_point *continuation;
             struct kefir_ast_flow_control_point *end;
         } loop;
     } value;

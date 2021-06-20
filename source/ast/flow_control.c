@@ -71,9 +71,9 @@ static kefir_result_t flow_control_statement_free(struct kefir_mem *mem, void *n
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_FOR:
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_WHILE:
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_DO:
-            if (statement->value.loop.begin != NULL) {
-                REQUIRE_OK(kefir_ast_flow_control_point_free(mem, statement->value.loop.begin));
-                statement->value.loop.begin = NULL;
+            if (statement->value.loop.continuation != NULL) {
+                REQUIRE_OK(kefir_ast_flow_control_point_free(mem, statement->value.loop.continuation));
+                statement->value.loop.continuation = NULL;
             }
 
             if (statement->value.loop.end != NULL) {
@@ -160,7 +160,7 @@ kefir_result_t kefir_ast_flow_control_tree_push(struct kefir_mem *mem, struct ke
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_FOR:
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_WHILE:
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_DO:
-            stmt->value.loop.begin = NULL;
+            stmt->value.loop.continuation = NULL;
             stmt->value.loop.end = NULL;
             break;
     }

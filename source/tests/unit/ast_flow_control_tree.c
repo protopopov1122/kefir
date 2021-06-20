@@ -362,21 +362,21 @@ DEFINE_CASE(ast_flow_control_tree6, "AST Flow control tree - flow control value 
     struct kefir_ast_flow_control_statement *stmt1 = NULL;
     ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
                                                KEFIR_AST_FLOW_CONTROL_STATEMENT_FOR, &stmt1));
-    stmt1->value.loop.begin = kefir_ast_flow_control_point_alloc(&kft_mem);
+    stmt1->value.loop.continuation = kefir_ast_flow_control_point_alloc(&kft_mem);
     stmt1->value.loop.end = kefir_ast_flow_control_point_alloc(&kft_mem);
     ASSERT_OK(kefir_ast_flow_control_tree_pop(context->flow_control_tree));
 
     struct kefir_ast_flow_control_statement *stmt2 = NULL;
     ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
                                                KEFIR_AST_FLOW_CONTROL_STATEMENT_DO, &stmt2));
-    stmt2->value.loop.begin = kefir_ast_flow_control_point_alloc(&kft_mem);
+    stmt2->value.loop.continuation = kefir_ast_flow_control_point_alloc(&kft_mem);
     stmt2->value.loop.end = kefir_ast_flow_control_point_alloc(&kft_mem);
     ASSERT_OK(kefir_ast_flow_control_tree_pop(context->flow_control_tree));
 
     struct kefir_ast_flow_control_statement *stmt3 = NULL;
     ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
                                                KEFIR_AST_FLOW_CONTROL_STATEMENT_WHILE, &stmt3));
-    stmt3->value.loop.begin = kefir_ast_flow_control_point_alloc(&kft_mem);
+    stmt3->value.loop.continuation = kefir_ast_flow_control_point_alloc(&kft_mem);
     stmt3->value.loop.end = kefir_ast_flow_control_point_alloc(&kft_mem);
     ASSERT_OK(kefir_ast_flow_control_tree_pop(context->flow_control_tree));
 
