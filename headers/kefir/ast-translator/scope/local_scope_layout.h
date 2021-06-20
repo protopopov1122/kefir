@@ -9,6 +9,7 @@ typedef struct kefir_ast_translator_local_scope_layout {
     struct kefir_ast_translator_global_scope_layout *global;
     struct kefir_ir_type *local_layout;
     kefir_id_t local_layout_id;
+    struct kefir_ast_type_layout *local_type_layout;
 
     struct kefir_list local_objects;
     struct kefir_list static_objects;

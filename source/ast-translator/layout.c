@@ -37,22 +37,30 @@ static kefir_result_t traverse_layout(struct kefir_mem *mem, struct kefir_ast_ty
     }
 
     REQUIRE_OK(kefir_list_insert_after(mem, list, kefir_list_tail(list), layout));
-    switch (layout->type->tag) {
-        case KEFIR_AST_TYPE_STRUCTURE:
-        case KEFIR_AST_TYPE_UNION: {
-            for (const struct kefir_list_entry *iter = kefir_list_head(&layout->structure_layout.member_list);
-                 iter != NULL; kefir_list_next(&iter)) {
-                ASSIGN_DECL_CAST(struct kefir_ast_type_layout_structure_member *, member, iter->value);
-                REQUIRE_OK(traverse_layout(mem, member->layout, param));
-            }
-        } break;
+    if (layout->type == NULL) {
+        for (const struct kefir_list_entry *iter = kefir_list_head(&layout->custom_layout.sublayouts); iter != NULL;
+             kefir_list_next(&iter)) {
+            ASSIGN_DECL_CAST(struct kefir_ast_type_layout *, sublayout, iter->value);
+            REQUIRE_OK(traverse_layout(mem, sublayout, param));
+        }
+    } else {
+        switch (layout->type->tag) {
+            case KEFIR_AST_TYPE_STRUCTURE:
+            case KEFIR_AST_TYPE_UNION: {
+                for (const struct kefir_list_entry *iter = kefir_list_head(&layout->structure_layout.member_list);
+                     iter != NULL; kefir_list_next(&iter)) {
+                    ASSIGN_DECL_CAST(struct kefir_ast_type_layout_structure_member *, member, iter->value);
+                    REQUIRE_OK(traverse_layout(mem, member->layout, param));
+                }
+            } break;
 
-        case KEFIR_AST_TYPE_ARRAY:
-            REQUIRE_OK(traverse_layout(mem, layout->array_layout.element_type, param));
-            break;
+            case KEFIR_AST_TYPE_ARRAY:
+                REQUIRE_OK(traverse_layout(mem, layout->array_layout.element_type, param));
+                break;
 
-        default:
-            break;
+            default:
+                break;
+        }
     }
     return KEFIR_OK;
 }
@@ -161,7 +169,7 @@ kefir_result_t kefir_ast_translator_evaluate_type_layout(struct kefir_mem *mem,
         return res;
     });
 
-    if (layout->type->tag == KEFIR_AST_TYPE_VOID) {
+    if (layout->type != NULL && layout->type->tag == KEFIR_AST_TYPE_VOID) {
         layout->properties.valid = true;
         layout->properties.size = 0;
         layout->properties.relative_offset = 0;

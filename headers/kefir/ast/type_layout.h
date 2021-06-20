@@ -21,7 +21,12 @@ typedef struct kefir_ast_array_type_layout {
     struct kefir_ast_type_layout *element_type;
 } kefir_ast_array_type_layout_t;
 
+typedef struct kefir_ast_custom_type_layout {
+    struct kefir_list sublayouts;
+} kefir_ast_custom_type_layout_t;
+
 typedef struct kefir_ast_type_layout {
+    const struct kefir_ast_type_layout *parent;
     const struct kefir_ast_type *type;
     kefir_size_t alignment;
     kefir_uptr_t value;
@@ -43,6 +48,7 @@ typedef struct kefir_ast_type_layout {
     union {
         struct kefir_ast_struct_type_layout structure_layout;
         struct kefir_ast_array_type_layout array_layout;
+        struct kefir_ast_custom_type_layout custom_layout;
     };
 } kefir_ast_type_layout_t;
 

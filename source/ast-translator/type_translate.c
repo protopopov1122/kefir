@@ -115,6 +115,10 @@ static kefir_result_t translate_array_type(struct kefir_mem *mem, const struct k
         case KEFIR_AST_ARRAY_VLA:
             return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Variable-length arrays are not supported yet");
     }
+
+    if (layout_ptr != NULL && element_layout != NULL) {
+        element_layout->parent = *layout_ptr;
+    }
     return KEFIR_OK;
 }
 
@@ -122,6 +126,7 @@ static kefir_result_t insert_struct_field(struct kefir_mem *mem, struct kefir_as
                                           struct kefir_ast_type_layout *layout,
                                           struct kefir_ast_type_layout *element_layout) {
 
+    element_layout->parent = layout;
     if (field->identifier == NULL || strlen(field->identifier) == 0) {
         REQUIRE_OK(kefir_ast_type_layout_add_structure_anonymous_member(mem, layout, element_layout));
     } else {

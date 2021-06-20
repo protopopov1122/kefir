@@ -8,6 +8,15 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
+static kefir_result_t resolve_type_layout(struct kefir_irbuilder_block *builder, kefir_id_t type_id,
+                                          const struct kefir_ast_type_layout *layout) {
+    if (layout->parent != NULL) {
+        REQUIRE_OK(resolve_type_layout(builder, type_id, layout->parent));
+    }
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_OFFSETPTR, type_id, layout->value));
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_translator_object_lvalue(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
                                                   struct kefir_irbuilder_block *builder, const char *identifier,
                                                   const struct kefir_ast_scoped_identifier *scoped_identifier) {
@@ -36,8 +45,7 @@ kefir_result_t kefir_ast_translator_object_lvalue(struct kefir_mem *mem, struct 
                                            &id) != NULL,
                     KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR module symbol"));
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_GETGLOBAL, id));
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_OFFSETPTR, identifier_data->type_id,
-                                                       identifier_data->layout->value));
+            REQUIRE_OK(resolve_type_layout(builder, identifier_data->type_id, identifier_data->layout));
 
         } break;
 
@@ -51,8 +59,7 @@ kefir_result_t kefir_ast_translator_object_lvalue(struct kefir_mem *mem, struct 
             ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, identifier_data,
                              scoped_identifier->payload.ptr);
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_GETLOCALS, 0));
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_OFFSETPTR, identifier_data->type_id,
-                                                       identifier_data->layout->value));
+            REQUIRE_OK(resolve_type_layout(builder, identifier_data->type_id, identifier_data->layout));
         } break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:

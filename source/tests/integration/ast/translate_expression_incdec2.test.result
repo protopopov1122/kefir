@@ -183,6 +183,13 @@
                     "opcode": "offsetptr",
                     "arg": {
                         "type": 2,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
                         "index": 1
                     }
                 },
@@ -241,6 +248,13 @@
             "body": [
                 {
                     "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 0
+                    }
                 },
                 {
                     "opcode": "offsetptr",
@@ -309,6 +323,13 @@
                     "opcode": "offsetptr",
                     "arg": {
                         "type": 2,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
                         "index": 1
                     }
                 },
@@ -367,6 +388,13 @@
             "body": [
                 {
                     "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 0
+                    }
                 },
                 {
                     "opcode": "offsetptr",
@@ -435,6 +463,13 @@
                     "opcode": "offsetptr",
                     "arg": {
                         "type": 2,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
                         "index": 6
                     }
                 },
@@ -496,6 +531,13 @@
             "body": [
                 {
                     "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 0
+                    }
                 },
                 {
                     "opcode": "offsetptr",
@@ -571,6 +613,13 @@
                     "opcode": "offsetptr",
                     "arg": {
                         "type": 2,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
                         "index": 3
                     }
                 },
@@ -641,6 +690,13 @@
                     "opcode": "offsetptr",
                     "arg": {
                         "type": 2,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
                         "index": 6
                     }
                 },
@@ -702,6 +758,13 @@
             "body": [
                 {
                     "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 0
+                    }
                 },
                 {
                     "opcode": "offsetptr",
@@ -777,6 +840,13 @@
                     "opcode": "offsetptr",
                     "arg": {
                         "type": 2,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
                         "index": 3
                     }
                 },
@@ -847,6 +917,13 @@
                     "opcode": "offsetptr",
                     "arg": {
                         "type": 2,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
                         "index": 4
                     }
                 },
@@ -908,6 +985,13 @@
             "body": [
                 {
                     "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
+                        "index": 0
+                    }
                 },
                 {
                     "opcode": "offsetptr",

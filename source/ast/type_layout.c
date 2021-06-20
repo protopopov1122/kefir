@@ -15,45 +15,71 @@ static kefir_result_t on_structure_member_remove(struct kefir_mem *mem, struct k
     return KEFIR_OK;
 }
 
+static kefir_result_t on_sublayout_remove(struct kefir_mem *mem, struct kefir_list *list,
+                                          struct kefir_list_entry *entry, void *payload) {
+    UNUSED(list);
+    UNUSED(payload);
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    ASSIGN_DECL_CAST(struct kefir_ast_type_layout *, sublayout, entry->value);
+    REQUIRE(sublayout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type layout"));
+    REQUIRE_OK(kefir_ast_type_layout_free(mem, sublayout));
+    return KEFIR_OK;
+}
+
 struct kefir_ast_type_layout *kefir_ast_new_type_layout(struct kefir_mem *mem, const struct kefir_ast_type *type,
                                                         kefir_size_t alignment, kefir_uptr_t value) {
     REQUIRE(mem != NULL, NULL);
-    REQUIRE(type != NULL, NULL);
 
     struct kefir_ast_type_layout *layout = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type_layout));
     REQUIRE(layout != NULL, NULL);
+    layout->parent = NULL;
     layout->type = type;
     layout->alignment = alignment;
     layout->value = value;
     layout->properties.valid = false;
-    switch (type->tag) {
-        case KEFIR_AST_TYPE_STRUCTURE:
-        case KEFIR_AST_TYPE_UNION: {
-            kefir_result_t res = kefir_list_init(&layout->structure_layout.member_list);
-            REQUIRE_ELSE(res == KEFIR_OK, {
-                KEFIR_FREE(mem, layout);
-                return NULL;
-            });
-            res = kefir_list_on_remove(&layout->structure_layout.member_list, on_structure_member_remove, NULL);
-            REQUIRE_ELSE(res == KEFIR_OK, {
-                kefir_list_free(mem, &layout->structure_layout.member_list);
-                KEFIR_FREE(mem, layout);
-                return NULL;
-            });
-            res = kefir_hashtree_init(&layout->structure_layout.named_members, &kefir_hashtree_str_ops);
-            REQUIRE_ELSE(res == KEFIR_OK, {
-                kefir_list_free(mem, &layout->structure_layout.member_list);
-                KEFIR_FREE(mem, layout);
-                return NULL;
-            });
-        } break;
+    if (type == NULL) {
+        kefir_result_t res = kefir_list_init(&layout->custom_layout.sublayouts);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            KEFIR_FREE(mem, layout);
+            return NULL;
+        });
 
-        case KEFIR_AST_TYPE_ARRAY:
-            layout->array_layout.element_type = NULL;
-            break;
+        res = kefir_list_on_remove(&layout->custom_layout.sublayouts, on_sublayout_remove, NULL);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_list_free(mem, &layout->custom_layout.sublayouts);
+            KEFIR_FREE(mem, layout);
+            return NULL;
+        });
+    } else {
+        switch (type->tag) {
+            case KEFIR_AST_TYPE_STRUCTURE:
+            case KEFIR_AST_TYPE_UNION: {
+                kefir_result_t res = kefir_list_init(&layout->structure_layout.member_list);
+                REQUIRE_ELSE(res == KEFIR_OK, {
+                    KEFIR_FREE(mem, layout);
+                    return NULL;
+                });
+                res = kefir_list_on_remove(&layout->structure_layout.member_list, on_structure_member_remove, NULL);
+                REQUIRE_ELSE(res == KEFIR_OK, {
+                    kefir_list_free(mem, &layout->structure_layout.member_list);
+                    KEFIR_FREE(mem, layout);
+                    return NULL;
+                });
+                res = kefir_hashtree_init(&layout->structure_layout.named_members, &kefir_hashtree_str_ops);
+                REQUIRE_ELSE(res == KEFIR_OK, {
+                    kefir_list_free(mem, &layout->structure_layout.member_list);
+                    KEFIR_FREE(mem, layout);
+                    return NULL;
+                });
+            } break;
 
-        default:
-            break;
+            case KEFIR_AST_TYPE_ARRAY:
+                layout->array_layout.element_type = NULL;
+                break;
+
+            default:
+                break;
+        }
     }
     return layout;
 }
@@ -62,19 +88,23 @@ kefir_result_t kefir_ast_type_layout_free(struct kefir_mem *mem, struct kefir_as
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(type_layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type layout"));
 
-    switch (type_layout->type->tag) {
-        case KEFIR_AST_TYPE_STRUCTURE:
-        case KEFIR_AST_TYPE_UNION:
-            REQUIRE_OK(kefir_hashtree_free(mem, &type_layout->structure_layout.named_members));
-            REQUIRE_OK(kefir_list_free(mem, &type_layout->structure_layout.member_list));
-            break;
+    if (type_layout->type == NULL) {
+        REQUIRE_OK(kefir_list_free(mem, &type_layout->custom_layout.sublayouts));
+    } else {
+        switch (type_layout->type->tag) {
+            case KEFIR_AST_TYPE_STRUCTURE:
+            case KEFIR_AST_TYPE_UNION:
+                REQUIRE_OK(kefir_hashtree_free(mem, &type_layout->structure_layout.named_members));
+                REQUIRE_OK(kefir_list_free(mem, &type_layout->structure_layout.member_list));
+                break;
 
-        case KEFIR_AST_TYPE_ARRAY:
-            REQUIRE_OK(kefir_ast_type_layout_free(mem, type_layout->array_layout.element_type));
-            break;
+            case KEFIR_AST_TYPE_ARRAY:
+                REQUIRE_OK(kefir_ast_type_layout_free(mem, type_layout->array_layout.element_type));
+                break;
 
-        default:
-            break;
+            default:
+                break;
+        }
     }
     KEFIR_FREE(mem, type_layout);
     return KEFIR_OK;
@@ -89,7 +119,8 @@ kefir_result_t kefir_ast_type_layout_insert_structure_member(struct kefir_mem *m
     REQUIRE(identifier != NULL && strlen(identifier) > 0,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid member AST type layout"));
     REQUIRE(member != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid member AST type layout"));
-    REQUIRE(root_layout->type->tag == KEFIR_AST_TYPE_STRUCTURE || root_layout->type->tag == KEFIR_AST_TYPE_UNION,
+    REQUIRE(root_layout->type != NULL &&
+                (root_layout->type->tag == KEFIR_AST_TYPE_STRUCTURE || root_layout->type->tag == KEFIR_AST_TYPE_UNION),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Root AST type layout should have struct/union type"));
 
     struct kefir_ast_type_layout_structure_member *struct_member =
@@ -122,7 +153,8 @@ kefir_result_t kefir_ast_type_layout_add_structure_anonymous_member(struct kefir
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(root_layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid root AST type layout"));
     REQUIRE(member != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid member AST type layout"));
-    REQUIRE(root_layout->type->tag == KEFIR_AST_TYPE_STRUCTURE || root_layout->type->tag == KEFIR_AST_TYPE_UNION,
+    REQUIRE(root_layout->type != NULL &&
+                (root_layout->type->tag == KEFIR_AST_TYPE_STRUCTURE || root_layout->type->tag == KEFIR_AST_TYPE_UNION),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Root AST type layout should have struct/union type"));
 
     struct kefir_ast_type_layout_structure_member *struct_member =
@@ -146,7 +178,8 @@ static kefir_result_t resolve_member(struct kefir_ast_type_layout *current_layou
                                      const struct kefir_ast_designator *designator,
                                      struct kefir_ast_type_layout **layout,
                                      kefir_ast_type_layout_resolver_callback_t callback, void *payload) {
-    REQUIRE(current_layout->type->tag == KEFIR_AST_TYPE_STRUCTURE || current_layout->type->tag == KEFIR_AST_TYPE_UNION,
+    REQUIRE(current_layout->type != NULL && (current_layout->type->tag == KEFIR_AST_TYPE_STRUCTURE ||
+                                             current_layout->type->tag == KEFIR_AST_TYPE_UNION),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected struct/union type to correspond to member designator"));
 
     struct kefir_hashtree_node *node = NULL;
@@ -178,7 +211,7 @@ static kefir_result_t resolve_subscript(struct kefir_ast_type_layout *current_la
                                         const struct kefir_ast_designator *designator,
                                         struct kefir_ast_type_layout **layout,
                                         kefir_ast_type_layout_resolver_callback_t callback, void *payload) {
-    REQUIRE(current_layout->type->tag == KEFIR_AST_TYPE_ARRAY,
+    REQUIRE(current_layout->type != NULL && current_layout->type->tag == KEFIR_AST_TYPE_ARRAY,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected array type to resolve subscript"));
     struct kefir_ast_type_layout *next_layout = current_layout->array_layout.element_type;
     *layout = next_layout;

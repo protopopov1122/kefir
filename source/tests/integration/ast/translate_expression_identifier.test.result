@@ -133,6 +133,13 @@
                     "opcode": "offsetptr",
                     "arg": {
                         "type": 2,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 2,
                         "index": 1
                     }
                 },
