@@ -25,6 +25,7 @@ NODE_TRANSLATOR(conditional_operator, struct kefir_ast_conditional_operator);
 NODE_TRANSLATOR(assignment_operator, struct kefir_ast_assignment_operator);
 NODE_TRANSLATOR(expression_statement, struct kefir_ast_expression_statement);
 NODE_TRANSLATOR(compound_statement, struct kefir_ast_compound_statement);
+NODE_TRANSLATOR(conditional_statement, struct kefir_ast_conditional_statement);
 #undef NODE_TRANSLATOR
 
 #endif

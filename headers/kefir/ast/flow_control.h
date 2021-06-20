@@ -49,6 +49,11 @@ typedef struct kefir_ast_flow_control_statement {
 
     union {
         struct {
+            struct kefir_ast_flow_control_point *thenBranchEnd;
+            struct kefir_ast_flow_control_point *elseBranchEnd;
+        } conditional;
+
+        struct {
             struct kefir_hashtree cases;
             struct kefir_ast_flow_control_point *defaultCase;
             const struct kefir_ast_type *controlling_expression_type;

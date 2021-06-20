@@ -45,7 +45,14 @@ static kefir_result_t flow_control_statement_free(struct kefir_mem *mem, void *n
 
     switch (statement->type) {
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_IF:
-            // Intentionally left blank
+            if (statement->value.conditional.thenBranchEnd != NULL) {
+                REQUIRE_OK(kefir_ast_flow_control_point_free(mem, statement->value.conditional.thenBranchEnd));
+                statement->value.conditional.thenBranchEnd = NULL;
+            }
+            if (statement->value.conditional.elseBranchEnd != NULL) {
+                REQUIRE_OK(kefir_ast_flow_control_point_free(mem, statement->value.conditional.elseBranchEnd));
+                statement->value.conditional.elseBranchEnd = NULL;
+            }
             break;
 
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH:
@@ -127,7 +134,8 @@ kefir_result_t kefir_ast_flow_control_tree_push(struct kefir_mem *mem, struct ke
 
     switch (type) {
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_IF:
-            // Intentionally left blank
+            stmt->value.conditional.thenBranchEnd = NULL;
+            stmt->value.conditional.elseBranchEnd = NULL;
             break;
 
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH: {

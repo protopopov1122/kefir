@@ -138,7 +138,12 @@ static kefir_result_t flow_control_tree_init(struct kefir_mem *mem, struct kefir
         ASSIGN_DECL_CAST(struct kefir_ast_flow_control_statement *, stmt, node->value);
         switch (stmt->type) {
             case KEFIR_AST_FLOW_CONTROL_STATEMENT_IF:
-                // Intentionally left blank
+                REQUIRE_OK(
+                    kefir_ast_translator_flow_control_point_init(mem, stmt->value.conditional.thenBranchEnd, NULL));
+                if (stmt->value.conditional.elseBranchEnd != NULL) {
+                    REQUIRE_OK(
+                        kefir_ast_translator_flow_control_point_init(mem, stmt->value.conditional.elseBranchEnd, NULL));
+                }
                 break;
 
             case KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH: {
