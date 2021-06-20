@@ -13,6 +13,7 @@ kefir_result_t kefir_ast_translator_local_scope_layout_init(struct kefir_mem *me
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module"));
     REQUIRE(global != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST global scope layout"));
     REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST local scope layout"));
+    layout->local_context = NULL;
     REQUIRE_OK(kefir_list_init(&layout->local_objects));
     REQUIRE_OK(kefir_list_init(&layout->static_objects));
     REQUIRE_OK(kefir_list_init(&layout->static_thread_local_objects));
@@ -30,6 +31,10 @@ kefir_result_t kefir_ast_translator_local_scope_layout_init(struct kefir_mem *me
 kefir_result_t kefir_ast_translator_local_scope_layout_free(struct kefir_mem *mem,
                                                             struct kefir_ast_translator_local_scope_layout *layout) {
     REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST local scope layout"));
+    if (layout->local_context != NULL) {
+        REQUIRE_OK(kefir_ast_identifier_block_scope_cleanup_payload(mem, &layout->local_context->ordinary_scope));
+        layout->local_context = NULL;
+    }
     if (layout->local_type_layout != NULL) {
         REQUIRE_OK(kefir_ast_type_layout_free(mem, layout->local_type_layout));
         layout->local_type_layout = NULL;
@@ -60,7 +65,6 @@ static kefir_result_t translate_static_identifier(struct kefir_mem *mem,
         KEFIR_IRBUILDER_TYPE_FREE(&global_builder);
         return res;
     });
-    scoped_identifier_layout->layout_owner = true;
     REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&global_builder));
     scoped_identifier_layout->type_id = local_layout->global->static_layout_id;
     scoped_identifier_layout->type = local_layout->global->static_layout;
@@ -93,7 +97,6 @@ static kefir_result_t translate_static_thread_local_identifier(
         KEFIR_IRBUILDER_TYPE_FREE(&global_builder);
         return res;
     });
-    scoped_identifier_layout->layout_owner = true;
     REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&global_builder));
     scoped_identifier_layout->type_id = local_layout->global->static_thread_local_layout_id;
     scoped_identifier_layout->type = local_layout->global->static_thread_local_layout;
@@ -128,7 +131,6 @@ static kefir_result_t translate_auto_register_identifier(struct kefir_mem *mem, 
                                        kefir_list_tail(&scope_type_layout->custom_layout.sublayouts),
                                        scoped_identifier_layout->layout));
     scoped_identifier_layout->layout->parent = scope_type_layout;
-    scoped_identifier_layout->layout_owner = false;
 
     REQUIRE_OK(kefir_ast_translator_evaluate_type_layout(mem, env, scoped_identifier_layout->layout,
                                                          scoped_identifier_layout->type));
@@ -325,6 +327,10 @@ kefir_result_t kefir_ast_translator_build_local_scope_layout(struct kefir_mem *m
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
     REQUIRE(type_resolver != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator type cache"));
     REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST local scope layout"));
+    REQUIRE(layout->local_context == NULL,
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected empty AST translator local scope layout"));
+
+    layout->local_context = context;
 
     if (!kefir_ast_identifier_block_scope_empty(&context->ordinary_scope)) {
         struct kefir_irbuilder_type builder;

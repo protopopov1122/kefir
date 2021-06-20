@@ -5,6 +5,7 @@
 #include "kefir/ast-translator/type_resolver.h"
 
 typedef struct kefir_ast_translator_global_scope_layout {
+    struct kefir_ast_global_context *global_context;
     struct kefir_list external_objects;
     struct kefir_list external_thread_local_objects;
     struct kefir_list static_objects;

@@ -6,6 +6,7 @@
 #include "kefir/core/list.h"
 
 typedef struct kefir_ast_translator_local_scope_layout {
+    const struct kefir_ast_local_context *local_context;
     struct kefir_ast_translator_global_scope_layout *global;
     struct kefir_ir_type *local_layout;
     kefir_id_t local_layout_id;

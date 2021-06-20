@@ -18,7 +18,6 @@ typedef struct kefir_ast_translator_scoped_identifier_entry {
 typedef struct kefir_ast_translator_scoped_identifier_object {
     kefir_id_t type_id;
     struct kefir_ir_type *type;
-    kefir_bool_t layout_owner;
     struct kefir_ast_type_layout *layout;
 } kefir_ast_translator_scoped_identifier_object_t;
 

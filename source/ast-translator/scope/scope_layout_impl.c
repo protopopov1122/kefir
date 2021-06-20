@@ -13,7 +13,7 @@ kefir_result_t kefir_ast_translator_scoped_identifer_payload_free(struct kefir_m
             case KEFIR_AST_SCOPE_IDENTIFIER_OBJECT: {
                 ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, scoped_identifier_payload,
                                  scoped_identifier->payload.ptr);
-                if (scoped_identifier_payload->layout_owner) {
+                if (scoped_identifier_payload->layout != NULL && scoped_identifier_payload->layout->parent == NULL) {
                     REQUIRE_OK(kefir_ast_type_layout_free(mem, scoped_identifier_payload->layout));
                 }
                 scoped_identifier_payload->type = NULL;

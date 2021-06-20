@@ -33,6 +33,26 @@ kefir_result_t kefir_ast_identifier_flat_scope_free(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_ast_identifier_flat_scope_cleanup_payload(struct kefir_mem *mem,
+                                                               const struct kefir_ast_identifier_flat_scope *scope) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier scope"));
+
+    struct kefir_ast_identifier_flat_scope_iterator iter;
+    kefir_result_t res = KEFIR_OK;
+    for (res = kefir_ast_identifier_flat_scope_iter(scope, &iter); res == KEFIR_OK;
+         res = kefir_ast_identifier_flat_scope_next(scope, &iter)) {
+
+        if (iter.value->cleanup.callback != NULL) {
+            REQUIRE_OK(iter.value->cleanup.callback(mem, iter.value, iter.value->cleanup.payload));
+            iter.value->cleanup.callback = NULL;
+            iter.value->cleanup.payload = NULL;
+        }
+    }
+    REQUIRE(res == KEFIR_ITERATOR_END, res);
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_identifier_flat_scope_on_removal(
     struct kefir_ast_identifier_flat_scope *scope,
     kefir_result_t (*callback)(struct kefir_mem *, struct kefir_ast_scoped_identifier *, void *), void *payload) {
@@ -156,6 +176,25 @@ kefir_result_t kefir_ast_identifier_block_scope_free(struct kefir_mem *mem,
     REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid multi scope"));
     REQUIRE_OK(kefir_tree_free(mem, &scope->root));
     scope->top_scope = NULL;
+    return KEFIR_OK;
+}
+
+static kefir_result_t invoke_cleanup_callbacks(struct kefir_mem *mem, const struct kefir_tree_node *root) {
+    REQUIRE(root != NULL, KEFIR_OK);
+    ASSIGN_DECL_CAST(struct kefir_ast_identifier_flat_scope *, flat_scope, root->value);
+    REQUIRE_OK(kefir_ast_identifier_flat_scope_cleanup_payload(mem, flat_scope));
+    for (struct kefir_tree_node *child = kefir_tree_first_child(root); child != NULL;
+         child = kefir_tree_next_sibling(child)) {
+        REQUIRE_OK(invoke_cleanup_callbacks(mem, child));
+    }
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_ast_identifier_block_scope_cleanup_payload(struct kefir_mem *mem,
+                                                                const struct kefir_ast_identifier_block_scope *scope) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid multi scope"));
+    REQUIRE_OK(invoke_cleanup_callbacks(mem, &scope->root));
     return KEFIR_OK;
 }
 

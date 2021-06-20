@@ -83,6 +83,8 @@ typedef struct kefir_ast_identifier_flat_scope {
 
 kefir_result_t kefir_ast_identifier_flat_scope_init(struct kefir_ast_identifier_flat_scope *);
 kefir_result_t kefir_ast_identifier_flat_scope_free(struct kefir_mem *, struct kefir_ast_identifier_flat_scope *);
+kefir_result_t kefir_ast_identifier_flat_scope_cleanup_payload(struct kefir_mem *,
+                                                               const struct kefir_ast_identifier_flat_scope *);
 kefir_result_t kefir_ast_identifier_flat_scope_on_removal(
     struct kefir_ast_identifier_flat_scope *,
     kefir_result_t (*)(struct kefir_mem *, struct kefir_ast_scoped_identifier *, void *), void *);
@@ -107,6 +109,8 @@ typedef struct kefir_ast_identifier_block_scope {
 
 kefir_result_t kefir_ast_identifier_block_scope_init(struct kefir_mem *, struct kefir_ast_identifier_block_scope *);
 kefir_result_t kefir_ast_identifier_block_scope_free(struct kefir_mem *, struct kefir_ast_identifier_block_scope *);
+kefir_result_t kefir_ast_identifier_block_scope_cleanup_payload(struct kefir_mem *,
+                                                                const struct kefir_ast_identifier_block_scope *);
 kefir_result_t kefir_ast_identifier_block_scope_on_removal(
     struct kefir_ast_identifier_block_scope *,
     kefir_result_t (*)(struct kefir_mem *, struct kefir_ast_scoped_identifier *, void *), void *);

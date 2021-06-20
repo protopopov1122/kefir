@@ -10,6 +10,7 @@ kefir_result_t kefir_ast_translator_global_scope_layout_init(struct kefir_mem *m
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module"));
     REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST global scope layout"));
+    layout->global_context = NULL;
     REQUIRE_OK(kefir_list_init(&layout->external_objects));
     REQUIRE_OK(kefir_list_init(&layout->external_thread_local_objects));
     REQUIRE_OK(kefir_list_init(&layout->static_objects));
@@ -35,6 +36,11 @@ kefir_result_t kefir_ast_translator_global_scope_layout_free(struct kefir_mem *m
                                                              struct kefir_ast_translator_global_scope_layout *layout) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST global scope layout"));
+    if (layout->global_context != NULL) {
+        REQUIRE_OK(kefir_ast_identifier_flat_scope_free(mem, &layout->global_context->object_identifiers));
+        REQUIRE_OK(kefir_ast_identifier_flat_scope_free(mem, &layout->global_context->function_identifiers));
+        layout->global_context = NULL;
+    }
     REQUIRE_OK(kefir_list_free(mem, &layout->external_objects));
     REQUIRE_OK(kefir_list_free(mem, &layout->external_thread_local_objects));
     REQUIRE_OK(kefir_list_free(mem, &layout->static_objects));
@@ -60,7 +66,6 @@ static kefir_result_t translate_scoped_identifier_type(struct kefir_mem *mem, st
     REQUIRE_OK(kefir_ast_translate_object_type(mem, scoped_identifier->object.type,
                                                scoped_identifier->object.alignment->value, env, &builder,
                                                &scoped_identifier_layout->layout));
-    scoped_identifier_layout->layout_owner = true;
     REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
 
     REQUIRE_OK(kefir_ast_translator_evaluate_type_layout(mem, env, scoped_identifier_layout->layout,
@@ -124,7 +129,6 @@ static kefir_result_t translate_static_identifier(struct kefir_mem *mem,
     REQUIRE_OK(kefir_ast_translate_object_type(mem, scoped_identifier->object.type,
                                                scoped_identifier->object.alignment->value, env, &builder,
                                                &scoped_identifier_layout->layout));
-    scoped_identifier_layout->layout_owner = true;
     REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
     scoped_identifier_layout->type_id = layout->static_layout_id;
     scoped_identifier_layout->type = layout->static_layout;
@@ -152,7 +156,6 @@ static kefir_result_t translate_static_thread_local_identifier(
     REQUIRE_OK(kefir_ast_translate_object_type(mem, scoped_identifier->object.type,
                                                scoped_identifier->object.alignment->value, env, &builder,
                                                &scoped_identifier_layout->layout));
-    scoped_identifier_layout->layout_owner = true;
     REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
     scoped_identifier_layout->type_id = layout->static_thread_local_layout_id;
     scoped_identifier_layout->type = layout->static_thread_local_layout;
@@ -278,6 +281,11 @@ kefir_result_t kefir_ast_translator_build_global_scope_layout(struct kefir_mem *
     REQUIRE(env != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator environment"));
     REQUIRE(type_resolver != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator type resolver"));
     REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST global scope layout"));
+    REQUIRE(layout->global_context == NULL,
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected empty AST translator global scope"));
+
+    layout->global_context = context;
+
     struct kefir_ast_identifier_flat_scope_iterator iter;
     kefir_result_t res;
     for (res = kefir_ast_identifier_flat_scope_iter(&context->object_identifiers, &iter); res == KEFIR_OK;
