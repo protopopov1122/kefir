@@ -1,0 +1,299 @@
+{
+    "globals": [],
+    "externals": [
+        "variable"
+    ],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "bool"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "type": []
+        },
+        {
+            "identifier": 5,
+            "type": [
+                {
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "identifier": 6,
+            "type": []
+        }
+    ],
+    "data": [],
+    "function_declarations": [
+        {
+            "identifier": 0,
+            "name": "do_while1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 1,
+            "name": "eval",
+            "parameters": [],
+            "vararg": false,
+            "returns": [
+                {
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "identifier": 2,
+            "name": "do_while2",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": 0,
+            "name": "do_while1",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "bool"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 2
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 3
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store8"
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 2
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 3
+                    }
+                },
+                {
+                    "opcode": "invoke",
+                    "arg": {
+                        "identifier": 1,
+                        "name": "eval"
+                    }
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store8"
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 2
+                    }
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 3,
+                        "index": 3
+                    }
+                },
+                {
+                    "opcode": "load8u"
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "branch",
+                    "arg": 9
+                }
+            ]
+        },
+        {
+            "identifier": 2,
+            "name": "do_while2",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "flag"
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "load8u"
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "branch",
+                    "arg": 6
+                },
+                {
+                    "opcode": "jmp",
+                    "arg": 7
+                },
+                {
+                    "opcode": "jmp",
+                    "arg": 9
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "branch",
+                    "arg": 0
+                }
+            ]
+        }
+    ]
+}

@@ -28,6 +28,7 @@ NODE_TRANSLATOR(compound_statement, struct kefir_ast_compound_statement);
 NODE_TRANSLATOR(conditional_statement, struct kefir_ast_conditional_statement);
 NODE_TRANSLATOR(switch_statement, struct kefir_ast_switch_statement);
 NODE_TRANSLATOR(while_statement, struct kefir_ast_while_statement);
+NODE_TRANSLATOR(do_while_statement, struct kefir_ast_do_while_statement);
 NODE_TRANSLATOR(case_statement, struct kefir_ast_case_statement);
 NODE_TRANSLATOR(continue_statement, struct kefir_ast_continue_statement);
 NODE_TRANSLATOR(break_statement, struct kefir_ast_break_statement);

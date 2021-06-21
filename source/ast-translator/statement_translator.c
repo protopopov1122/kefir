@@ -32,6 +32,7 @@ TRANSLATE_NODE(compound_statement, struct kefir_ast_compound_statement)
 TRANSLATE_NODE(conditional_statement, struct kefir_ast_conditional_statement)
 TRANSLATE_NODE(switch_statement, struct kefir_ast_switch_statement)
 TRANSLATE_NODE(while_statement, struct kefir_ast_while_statement)
+TRANSLATE_NODE(do_while_statement, struct kefir_ast_do_while_statement)
 TRANSLATE_NODE(case_statement, struct kefir_ast_case_statement)
 TRANSLATE_NODE(continue_statement, struct kefir_ast_continue_statement)
 TRANSLATE_NODE(break_statement, struct kefir_ast_break_statement)
@@ -52,6 +53,7 @@ kefir_result_t kefir_ast_translate_statement(struct kefir_mem *mem, const struct
     visitor.conditional_statement = translate_conditional_statement;
     visitor.switch_statement = translate_switch_statement;
     visitor.while_statement = translate_while_statement;
+    visitor.do_while_statement = translate_do_while_statement;
     visitor.case_statement = translate_case_statement;
     visitor.continue_statement = translate_continue_statement;
     visitor.break_statement = translate_break_statement;
