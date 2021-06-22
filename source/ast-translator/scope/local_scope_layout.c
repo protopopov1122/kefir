@@ -242,6 +242,9 @@ static kefir_result_t local_scope_empty(struct kefir_mem *mem, const struct kefi
                 *empty = false;
                 return KEFIR_OK;
             }
+        } else if (iter.value->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL) {
+            *empty = false;
+            return KEFIR_OK;
         }
     }
     REQUIRE(res == KEFIR_ITERATOR_END, res);
@@ -344,6 +347,17 @@ kefir_result_t kefir_ast_translator_build_local_scope_layout(struct kefir_mem *m
             REQUIRE_OK(
                 kefir_ast_translator_evaluate_type_layout(mem, env, layout->local_type_layout, layout->local_layout));
         }
+    }
+
+    struct kefir_ast_identifier_flat_scope_iterator iter;
+    kefir_result_t res;
+    for (res = kefir_ast_identifier_flat_scope_iter(&context->label_scope, &iter); res == KEFIR_OK;
+         res = kefir_ast_identifier_flat_scope_next(&context->label_scope, &iter)) {
+
+        REQUIRE(iter.value->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected label scope to contain only labels"));
+        REQUIRE(iter.value->label.defined, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot translate undefined label"));
+        REQUIRE_OK(kefir_ast_translator_flow_control_point_init(mem, iter.value->label.point, NULL));
     }
     return KEFIR_OK;
 }
