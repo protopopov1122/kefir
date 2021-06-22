@@ -39,6 +39,7 @@ TRANSLATE_NODE(case_statement, struct kefir_ast_case_statement)
 TRANSLATE_NODE(goto_statement, struct kefir_ast_goto_statement)
 TRANSLATE_NODE(continue_statement, struct kefir_ast_continue_statement)
 TRANSLATE_NODE(break_statement, struct kefir_ast_break_statement)
+TRANSLATE_NODE(return_statement, struct kefir_ast_return_statement)
 #undef TRANSLATE_NODE
 
 kefir_result_t kefir_ast_translate_statement(struct kefir_mem *mem, const struct kefir_ast_node_base *base,
@@ -63,6 +64,7 @@ kefir_result_t kefir_ast_translate_statement(struct kefir_mem *mem, const struct
     visitor.goto_statement = translate_goto_statement;
     visitor.continue_statement = translate_continue_statement;
     visitor.break_statement = translate_break_statement;
+    visitor.return_statement = translate_return_statement;
 
     struct translator_param param = {.mem = mem, .builder = builder, .context = context};
     return KEFIR_AST_NODE_VISIT(&visitor, base, &param);

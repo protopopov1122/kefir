@@ -35,6 +35,7 @@ NODE_TRANSLATOR(case_statement, struct kefir_ast_case_statement);
 NODE_TRANSLATOR(goto_statement, struct kefir_ast_goto_statement);
 NODE_TRANSLATOR(continue_statement, struct kefir_ast_continue_statement);
 NODE_TRANSLATOR(break_statement, struct kefir_ast_break_statement);
+NODE_TRANSLATOR(return_statement, struct kefir_ast_return_statement);
 #undef NODE_TRANSLATOR
 
 #endif

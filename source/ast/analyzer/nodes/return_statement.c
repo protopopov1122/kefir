@@ -22,5 +22,7 @@ kefir_result_t kefir_ast_analyze_return_statement_node(struct kefir_mem *mem, co
         REQUIRE(node->expression->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Return statement should return an expression"));
     }
+
+    // TODO Check function return type
     return KEFIR_OK;
 }

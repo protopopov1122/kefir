@@ -44,6 +44,43 @@ static kefir_result_t context_resolve_label_identifier(const struct kefir_ast_co
     return KEFIR_OK;
 }
 
+static kefir_result_t define_temporaries(struct kefir_mem *mem, struct kefir_ast_local_context *context,
+                                         const struct kefir_ast_type *type,
+                                         const struct kefir_ast_scoped_identifier **scoped_id_ptr) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translatation context"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
+
+    REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Identifier with no linkage shall have complete type"));
+
+    ASSIGN_DECL_CAST(struct kefir_ast_identifier_flat_scope *, root_scope, context->ordinary_scope.root.value);
+    const char *identifier = KEFIR_AST_TRANSLATOR_TEMPORARIES_IDENTIFIER;
+
+    struct kefir_ast_scoped_identifier *scoped_id = NULL;
+    kefir_result_t res = kefir_ast_identifier_flat_scope_at(root_scope, identifier, &scoped_id);
+    if (res == KEFIR_OK) {
+        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
+                               "Redeclaration of the same identifier with no linkage is not permitted");
+    } else {
+        REQUIRE(res == KEFIR_NOT_FOUND, res);
+        scoped_id = kefir_ast_context_allocate_scoped_object_identifier(
+            mem, type, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO, NULL, KEFIR_AST_SCOPED_IDENTIFIER_NONE_LINKAGE, false,
+            NULL);
+        REQUIRE(scoped_id != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
+        res = kefir_list_insert_after(mem, &context->identifiers, kefir_list_tail(&context->identifiers), scoped_id);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_ast_context_free_scoped_identifier(mem, scoped_id, NULL);
+            return res;
+        });
+        const char *id = kefir_symbol_table_insert(mem, &context->global->symbols, identifier, NULL);
+        REQUIRE(id != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate identifier"));
+        REQUIRE_OK(kefir_ast_identifier_flat_scope_insert(mem, root_scope, id, scoped_id));
+    }
+    ASSIGN_PTR(scoped_id_ptr, scoped_id);
+    return KEFIR_OK;
+}
+
 static kefir_result_t context_allocate_temporary_value(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                        const struct kefir_ast_type *type,
                                                        struct kefir_ast_temporary_identifier *temp_id) {
@@ -56,8 +93,7 @@ static kefir_result_t context_allocate_temporary_value(struct kefir_mem *mem, co
     if (kefir_ast_temporaries_init(mem, context->type_bundle, context->temporaries)) {
         REQUIRE(context->temporaries->type != NULL,
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to initialize a temporary type"));
-        REQUIRE_OK(kefir_ast_local_context_define_auto(mem, local_ctx, KEFIR_AST_TRANSLATOR_TEMPORARIES_IDENTIFIER,
-                                                       context->temporaries->type, NULL, NULL, NULL));
+        REQUIRE_OK(define_temporaries(mem, local_ctx, context->temporaries->type, NULL));
     }
     REQUIRE_OK(kefir_ast_temporaries_new_temporary(mem, context, type, temp_id));
     return KEFIR_OK;
