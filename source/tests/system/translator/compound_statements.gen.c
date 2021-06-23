@@ -17,8 +17,8 @@
 
 #include "codegen.inc.c"
 
-static kefir_result_t define_factorial_function(struct kefir_mem *mem, struct function *func,
-                                                struct kefir_ast_context_manager *context_manager) {
+static kefir_result_t define_compound_function(struct kefir_mem *mem, struct function *func,
+                                               struct kefir_ast_context_manager *context_manager) {
     REQUIRE_OK(kefir_list_init(&func->args));
 
     struct kefir_ast_function_type *func_type = NULL;
@@ -155,7 +155,7 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
     REQUIRE_OK(kefir_ast_context_manager_init(&global_context, &context_manager));
 
     struct function func;
-    REQUIRE_OK(define_factorial_function(mem, &func, &context_manager));
+    REQUIRE_OK(define_compound_function(mem, &func, &context_manager));
     REQUIRE_OK(analyze_function(mem, &func, &context_manager));
 
     struct kefir_ast_translator_context translator_context;
