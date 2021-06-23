@@ -8,6 +8,7 @@
 #include "kefir/ast-translator/translator.h"
 #include "kefir/ast-translator/scope/global_scope_layout.h"
 #include "kefir/ast-translator/scope/local_scope_layout.h"
+#include "kefir/ast-translator/flow_control.h"
 #include "kefir/ast/context_manager.h"
 #include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/ast-translator/context.h"
@@ -50,6 +51,7 @@ static kefir_result_t translate_function(struct kefir_mem *mem, struct function 
     REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(
         mem, &func->local_context, local_translator_context.environment, local_translator_context.module,
         &local_translator_context.type_cache.resolver, &local_scope));
+    REQUIRE_OK(kefir_ast_translator_flow_control_tree_init(mem, func->local_context.context.flow_control_tree));
 
     struct kefir_ir_function *ir_func = kefir_ir_module_new_function(
         mem, local_translator_context.module, function_type->function.declaration->ir_function_decl,
@@ -63,7 +65,12 @@ static kefir_result_t translate_function(struct kefir_mem *mem, struct function 
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(&builder, KEFIR_IROPCODE_XCHG, 1));
         REQUIRE_OK(kefir_ast_translator_store_value(mem, arg->properties.type, translator_context, &builder));
     }
-    REQUIRE_OK(kefir_ast_translate_expression(mem, func->body, &builder, &local_translator_context));
+
+    if (func->body->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION) {
+        REQUIRE_OK(kefir_ast_translate_expression(mem, func->body, &builder, &local_translator_context));
+    } else {
+        REQUIRE_OK(kefir_ast_translate_statement(mem, func->body, &builder, &local_translator_context));
+    }
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_FREE(&builder));
 
     REQUIRE_OK(kefir_ast_translator_local_scope_layout_free(mem, &local_scope));
