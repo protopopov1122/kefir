@@ -14,6 +14,7 @@ typedef enum kefir_ast_translator_resolved_type_class {
 typedef struct kefir_ast_translator_resolved_type {
     kefir_ast_translator_resolved_type_class_t klass;
     kefir_bool_t owner;
+    const struct kefir_ast_type *type;
     union {
         struct {
             kefir_id_t ir_type_id;

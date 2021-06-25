@@ -35,10 +35,12 @@ static kefir_result_t clone_cached_type(struct kefir_mem *mem,
             (*result)->object.ir_type_id = original->object.ir_type_id;
             (*result)->object.ir_type = original->object.ir_type;
             (*result)->object.layout = layout;
+            (*result)->type = layout->type;
         } break;
 
         case KEFIR_AST_TRANSLATOR_RESOLVED_FUNCTION_TYPE: {
             (*result)->function.declaration = original->function.declaration;
+            (*result)->type = original->function.declaration->function_type;
         } break;
     }
     return KEFIR_OK;
@@ -123,8 +125,7 @@ kefir_result_t kefir_ast_translator_aligned_type_layout_insert(struct kefir_mem 
             REQUIRE(cached_type->object.layout->alignment == cache->alignment,
                     KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Provided layout alignment does not correspond to cache"));
 
-            REQUIRE_OK(kefir_hashtree_insert(mem, &cache->cache,
-                                             (kefir_hashtree_key_t) cached_type->object.layout->type,
+            REQUIRE_OK(kefir_hashtree_insert(mem, &cache->cache, (kefir_hashtree_key_t) cached_type->type,
                                              (kefir_hashtree_value_t) cached_type));
         } break;
 
@@ -133,8 +134,7 @@ kefir_result_t kefir_ast_translator_aligned_type_layout_insert(struct kefir_mem 
                 cache->alignment == 0,
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Function type cannot be inserted into non-zero aligned cache"));
 
-            REQUIRE_OK(kefir_hashtree_insert(mem, &cache->cache,
-                                             (kefir_hashtree_key_t) cached_type->function.declaration->function_type,
+            REQUIRE_OK(kefir_hashtree_insert(mem, &cache->cache, (kefir_hashtree_key_t) cached_type->type,
                                              (kefir_hashtree_value_t) cached_type));
         } break;
     }
@@ -404,6 +404,7 @@ kefir_result_t kefir_ast_translator_type_cache_insert_unowned_object(struct kefi
             KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST translator cached type"));
 
     cached_type->klass = KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE;
+    cached_type->type = type_layout->type;
     cached_type->object.ir_type_id = ir_type_id;
     cached_type->object.ir_type = ir_type;
     cached_type->object.layout = type_layout;
@@ -430,6 +431,7 @@ kefir_result_t kefir_ast_translator_type_cache_insert_unowned_function(
             KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST translator cached type"));
 
     cached_type->klass = KEFIR_AST_TRANSLATOR_RESOLVED_FUNCTION_TYPE;
+    cached_type->type = decl->function_type;
     cached_type->function.declaration = decl;
     cached_type->owner = false;
 
@@ -460,6 +462,7 @@ kefir_result_t kefir_ast_translator_type_cache_generate_owned_object(
         REQUIRE(cached_type != NULL,
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST translator cached type"));
         cached_type->klass = KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE;
+        cached_type->type = type;
 
         cached_type->object.ir_type = kefir_ir_module_new_type(mem, module, 0, &cached_type->object.ir_type_id);
         struct kefir_irbuilder_type type_builder;
@@ -527,6 +530,7 @@ kefir_result_t kefir_ast_translator_type_cache_generate_owned_function(
         REQUIRE(cached_type != NULL,
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST translator cached type"));
         cached_type->klass = KEFIR_AST_TRANSLATOR_RESOLVED_FUNCTION_TYPE;
+        cached_type->type = type;
 
         res =
             kefir_ast_translator_function_declaration_init(mem, env, type_bundle, type_traits, module, &cache->resolver,
