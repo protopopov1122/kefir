@@ -215,48 +215,6 @@
                     "opcode": "getlocals"
                 },
                 {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 6,
-                        "index": 0
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 6,
-                        "index": 1
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 6,
-                        "index": 2
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 6,
-                        "index": 3
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 6,
-                        "index": 4
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 6,
-                        "index": 5
-                    }
-                },
-                {
                     "opcode": "pick",
                     "arg": 0
                 },
@@ -274,48 +232,6 @@
                     "opcode": "getlocals"
                 },
                 {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 6,
-                        "index": 0
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 6,
-                        "index": 1
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 6,
-                        "index": 2
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 6,
-                        "index": 3
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 6,
-                        "index": 4
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 6,
-                        "index": 5
-                    }
-                },
-                {
                     "opcode": "load32i"
                 },
                 {
@@ -330,7 +246,7 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 39
+                    "arg": 21
                 },
                 {
                     "opcode": "invoke",
@@ -341,48 +257,6 @@
                 },
                 {
                     "opcode": "getlocals"
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 6,
-                        "index": 0
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 6,
-                        "index": 1
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 6,
-                        "index": 2
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 6,
-                        "index": 3
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 6,
-                        "index": 4
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 6,
-                        "index": 5
-                    }
                 },
                 {
                     "opcode": "pick",
@@ -411,7 +285,7 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 11
+                    "arg": 5
                 }
             ]
         },
@@ -443,34 +317,6 @@
                     "opcode": "getlocals"
                 },
                 {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 9,
-                        "index": 0
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 9,
-                        "index": 1
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 9,
-                        "index": 2
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 9,
-                        "index": 3
-                    }
-                },
-                {
                     "opcode": "push",
                     "arg": 0
                 },
@@ -492,34 +338,6 @@
                     "opcode": "getlocals"
                 },
                 {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 9,
-                        "index": 0
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 9,
-                        "index": 1
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 9,
-                        "index": 2
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 9,
-                        "index": 3
-                    }
-                },
-                {
                     "opcode": "load32i"
                 },
                 {
@@ -534,7 +352,7 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 39
+                    "arg": 27
                 },
                 {
                     "opcode": "invoke",
@@ -548,50 +366,22 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 25
+                    "arg": 17
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 26
+                    "arg": 18
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 26
+                    "arg": 18
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 39
+                    "arg": 27
                 },
                 {
                     "opcode": "getlocals"
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 9,
-                        "index": 0
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 9,
-                        "index": 1
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 9,
-                        "index": 2
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 9,
-                        "index": 3
-                    }
                 },
                 {
                     "opcode": "pick",
@@ -620,7 +410,7 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 10
+                    "arg": 6
                 }
             ]
         }

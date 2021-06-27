@@ -13,7 +13,10 @@ static kefir_result_t resolve_type_layout(struct kefir_irbuilder_block *builder,
     if (layout->parent != NULL) {
         REQUIRE_OK(resolve_type_layout(builder, type_id, layout->parent));
     }
-    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_OFFSETPTR, type_id, layout->value));
+
+    if (layout->properties.relative_offset != 0) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_OFFSETPTR, type_id, layout->value));
+    }
     return KEFIR_OK;
 }
 

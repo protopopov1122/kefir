@@ -113,24 +113,10 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 7
+                    "arg": 5
                 },
                 {
                     "opcode": "getlocals"
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 2,
-                        "index": 0
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 2,
-                        "index": 1
-                    }
                 }
             ]
         },
@@ -152,22 +138,8 @@
                     "opcode": "getlocals"
                 },
                 {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 2,
-                        "index": 0
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 2,
-                        "index": 1
-                    }
-                },
-                {
                     "opcode": "branch",
-                    "arg": 6
+                    "arg": 4
                 },
                 {
                     "opcode": "push",
@@ -175,7 +147,7 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 11
+                    "arg": 9
                 },
                 {
                     "opcode": "push",
@@ -183,7 +155,7 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 10
+                    "arg": 8
                 },
                 {
                     "opcode": "pushf64",
@@ -191,7 +163,7 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 11
+                    "arg": 9
                 },
                 {
                     "opcode": "pushf32",

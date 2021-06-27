@@ -218,13 +218,6 @@
                     }
                 },
                 {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 0,
-                        "index": 0
-                    }
-                },
-                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "variable4"
@@ -245,20 +238,6 @@
                 },
                 {
                     "opcode": "getlocals"
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 2,
-                        "index": 0
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 2,
-                        "index": 1
-                    }
                 }
             ]
         },
@@ -356,20 +335,6 @@
                     "opcode": "getlocals"
                 },
                 {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 2,
-                        "index": 0
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 2,
-                        "index": 1
-                    }
-                },
-                {
                     "opcode": "load64"
                 },
                 {
@@ -409,13 +374,6 @@
                     "opcode": "getglobal",
                     "arg": {
                         "data": "__kefirrt_module_static_vars"
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 0,
-                        "index": 0
                     }
                 },
                 {

@@ -102,34 +102,6 @@
                     "opcode": "getlocals"
                 },
                 {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 0
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 1
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 2
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 3
-                    }
-                },
-                {
                     "opcode": "pick",
                     "arg": 0
                 },
@@ -151,34 +123,6 @@
                 },
                 {
                     "opcode": "getlocals"
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 0
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 1
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 2
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 3
-                    }
                 },
                 {
                     "opcode": "load32u"
@@ -208,38 +152,10 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 36
+                    "arg": 24
                 },
                 {
                     "opcode": "getlocals"
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 0
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 1
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 2
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 3
-                    }
                 },
                 {
                     "opcode": "pick",
@@ -268,7 +184,7 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 9
+                    "arg": 5
                 }
             ]
         },

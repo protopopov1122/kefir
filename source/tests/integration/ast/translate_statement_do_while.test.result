@@ -117,34 +117,6 @@
                     "opcode": "getlocals"
                 },
                 {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 0
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 1
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 2
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 3
-                    }
-                },
-                {
                     "opcode": "pick",
                     "arg": 0
                 },
@@ -160,34 +132,6 @@
                 },
                 {
                     "opcode": "getlocals"
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 0
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 1
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 2
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 3
-                    }
                 },
                 {
                     "opcode": "invoke",
@@ -214,34 +158,6 @@
                     "opcode": "getlocals"
                 },
                 {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 0
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 1
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 2
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 3
-                    }
-                },
-                {
                     "opcode": "load8u"
                 },
                 {
@@ -249,7 +165,7 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 9
+                    "arg": 5
                 }
             ]
         },
