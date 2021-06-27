@@ -552,7 +552,7 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 10
+                    "arg": 26
                 },
                 {
                     "opcode": "jmp",
