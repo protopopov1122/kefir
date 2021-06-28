@@ -162,6 +162,15 @@ KEFIR_AST_NODE_STRUCT(kefir_ast_break_statement, {
 
 KEFIR_AST_NODE_STRUCT(kefir_ast_return_statement, { struct kefir_ast_node_base *expression; });
 
+KEFIR_AST_NODE_STRUCT(kefir_ast_function_definition, {
+    struct kefir_ast_declarator_specifier_list specifiers;
+    struct kefir_ast_declarator *declarator;
+    struct kefir_list declarations;
+    struct kefir_ast_compound_statement *body;
+});
+
+KEFIR_AST_NODE_STRUCT(kefir_ast_translation_unit, { struct kefir_list external_definitions; });
+
 struct kefir_ast_constant *kefir_ast_new_constant_bool(struct kefir_mem *, kefir_bool_t);
 struct kefir_ast_constant *kefir_ast_new_constant_char(struct kefir_mem *, kefir_char_t);
 struct kefir_ast_constant *kefir_ast_new_constant_int(struct kefir_mem *, kefir_int_t);
@@ -262,6 +271,12 @@ struct kefir_ast_break_statement *kefir_ast_new_break_statement(struct kefir_mem
 
 struct kefir_ast_return_statement *kefir_ast_new_return_statement(struct kefir_mem *, struct kefir_ast_node_base *);
 
+struct kefir_ast_function_definition *kefir_ast_new_function_definition(struct kefir_mem *,
+                                                                        struct kefir_ast_declarator *,
+                                                                        struct kefir_ast_compound_statement *);
+
+struct kefir_ast_translation_unit *kefir_ast_new_translation_unit(struct kefir_mem *);
+
 typedef struct kefir_ast_visitor {
     KEFIR_AST_VISITOR_METHOD(generic_handler, kefir_ast_node_base);
     KEFIR_AST_VISITOR_METHOD(constant, kefir_ast_constant);
@@ -295,6 +310,8 @@ typedef struct kefir_ast_visitor {
     KEFIR_AST_VISITOR_METHOD(continue_statement, kefir_ast_continue_statement);
     KEFIR_AST_VISITOR_METHOD(break_statement, kefir_ast_break_statement);
     KEFIR_AST_VISITOR_METHOD(return_statement, kefir_ast_return_statement);
+    KEFIR_AST_VISITOR_METHOD(function_definition, kefir_ast_function_definition);
+    KEFIR_AST_VISITOR_METHOD(translation_unit, kefir_ast_translation_unit);
 } kefir_ast_visitor_t;
 
 #define KEFIR_AST_NODE_INTERNAL_DEF

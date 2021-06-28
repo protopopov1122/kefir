@@ -43,7 +43,10 @@ typedef enum kefir_ast_node_type {
     KEFIR_AST_GOTO_STATEMENT,
     KEFIR_AST_CONTINUE_STATEMENT,
     KEFIR_AST_BREAK_STATEMENT,
-    KEFIR_AST_RETURN_STATEMENT
+    KEFIR_AST_RETURN_STATEMENT,
+
+    KEFIR_AST_FUNCTION_DEFINITION,
+    KEFIR_AST_TRANSLATION_UNIT
 } kefir_ast_node_type_t;
 
 typedef enum kefir_ast_node_category {
