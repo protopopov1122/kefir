@@ -47,6 +47,13 @@ typedef struct kefir_ast_node_properties {
         struct kefir_ast_flow_control_point *flow_control_point;
         struct kefir_ast_flow_control_statement *flow_control_statement;
     } statement_props;
+
+    struct {
+        kefir_ast_scoped_identifier_storage_t storage;
+        kefir_ast_function_specifier_t function;
+        const char *identifier;
+        const struct kefir_ast_scoped_identifier *scoped_id;
+    } function_definition;
 } kefir_ast_node_properties_t;
 
 typedef struct kefir_ast_node_base {

@@ -38,6 +38,7 @@ ANALYZE_NODE(goto_statement, struct kefir_ast_goto_statement);
 ANALYZE_NODE(continue_statement, struct kefir_ast_continue_statement);
 ANALYZE_NODE(break_statement, struct kefir_ast_break_statement);
 ANALYZE_NODE(return_statement, struct kefir_ast_return_statement);
+ANALYZE_NODE(function_definition, struct kefir_ast_function_definition);
 
 #undef ANALYZE_NODE
 
