@@ -2,6 +2,7 @@
 #define KEFIR_AST_CONTEXT_H_
 
 #include "kefir/core/mem.h"
+#include "kefir/ast/base.h"
 #include "kefir/ast/scope.h"
 #include "kefir/ast/target_environment.h"
 #include "kefir/ast/temporaries.h"
@@ -37,6 +38,7 @@ typedef struct kefir_ast_context {
     struct kefir_ast_context_temporaries *temporaries;
     kefir_ast_type_analysis_context_t type_analysis_context;
     struct kefir_ast_flow_control_tree *flow_control_tree;
+    struct kefir_ast_global_context *global_context;
 
     void *payload;
 } kefir_ast_context_t;

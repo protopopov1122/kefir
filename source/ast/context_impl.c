@@ -1,4 +1,5 @@
 #include "kefir/ast/context_impl.h"
+#include "kefir/ast/local_context.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -13,6 +14,14 @@ kefir_result_t kefir_ast_context_free_scoped_identifier(struct kefir_mem *mem,
     switch (scoped_id->klass) {
         case KEFIR_AST_SCOPE_IDENTIFIER_OBJECT:
             REQUIRE_OK(kefir_ast_alignment_free(mem, scoped_id->object.alignment));
+            break;
+
+        case KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION:
+            if (scoped_id->function.local_context != NULL) {
+                REQUIRE_OK(kefir_ast_local_context_free(mem, scoped_id->function.local_context));
+                KEFIR_FREE(mem, scoped_id->function.local_context);
+                scoped_id->function.local_context = NULL;
+            }
             break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT:
@@ -161,6 +170,8 @@ struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_function_i
     scoped_id->function.specifier = specifier;
     scoped_id->function.storage = storage;
     scoped_id->function.external = external;
+    scoped_id->function.local_context = NULL;
+    scoped_id->function.local_context_ptr = &scoped_id->function.local_context;
     memset(scoped_id->payload.content, 0, KEFIR_AST_SCOPED_IDENTIFIER_PAYLOAD_SIZE);
     scoped_id->payload.ptr = scoped_id->payload.content;
     scoped_id->payload.cleanup = &scoped_id->cleanup;
