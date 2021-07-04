@@ -22,8 +22,6 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
     const struct kefir_ast_type *type = NULL;
     kefir_ast_scoped_identifier_storage_t storage = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN;
     kefir_size_t alignment = 0;
-    REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
-    base->properties.category = KEFIR_AST_NODE_CATEGORY_DECLARATION;
     REQUIRE_OK(kefir_ast_analyze_declaration(mem, context, &node->specifiers, node->declarator,
                                              &base->properties.function_definition.identifier, &type, &storage,
                                              &base->properties.function_definition.function, &alignment));
@@ -59,7 +57,7 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
 
     base->properties.type = scoped_id->function.type;
     base->properties.function_definition.storage = scoped_id->function.storage;
-    base->properties.declaration_props.scoped_id = scoped_id;
+    base->properties.function_definition.scoped_id = scoped_id;
 
     struct kefir_ast_local_context *local_context = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_local_context));
     REQUIRE(local_context != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST local context"));
@@ -125,9 +123,11 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
                         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
                                         "Function definition declaration list shall not contain alignment specifiers"));
 
+                const struct kefir_ast_scoped_identifier *param_scoped_id = NULL;
                 REQUIRE_OK(local_context->context.define_identifier(mem, &local_context->context, false, identifier,
                                                                     type, storage, function_specifier, NULL, NULL,
-                                                                    NULL));
+                                                                    &param_scoped_id));
+                decl->base.properties.declaration_props.scoped_id = param_scoped_id;
             }
 
             for (const struct kefir_list_entry *iter =
@@ -151,6 +151,9 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
                                 "Function definition with empty parameter list shall not contain any declarations"));
             break;
     }
+
+    REQUIRE_OK(kefir_ast_node_properties_init(&node->body->base.properties));
+    node->body->base.properties.category = KEFIR_AST_NODE_CATEGORY_STATEMENT;
 
     for (const struct kefir_list_entry *iter = kefir_list_head(&node->body->block_items); iter != NULL;
          kefir_list_next(&iter)) {

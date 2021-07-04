@@ -356,6 +356,7 @@ DECLARE_CASE(ast_node_analysis_return_statements1);
 DECLARE_CASE(ast_translator_flow_control_point1);
 DECLARE_CASE(ast_nodes_function_definitions1);
 DECLARE_CASE(ast_nodes_translation_units1);
+DECLARE_CASE(ast_node_analysis_function_definitions1);
 
 TEST_SUITE(
     mainSuite, &amd64_sysv_abi_data_test1, &amd64_sysv_abi_data_test2, &amd64_sysv_abi_data_test3,
@@ -480,7 +481,7 @@ TEST_SUITE(
     &ast_node_analysis_continue_statements1, &ast_node_analysis_continue_statements2,
     &ast_node_analysis_continue_statements3, &ast_node_analysis_continue_statements4,
     &ast_node_analysis_continue_statements5, &ast_node_analysis_return_statements1, &ast_translator_flow_control_point1,
-    &ast_nodes_function_definitions1, &ast_nodes_translation_units1);
+    &ast_nodes_function_definitions1, &ast_nodes_translation_units1, &ast_node_analysis_function_definitions1);
 
 int main(int argc, const char **argv) {
     UNUSED(argc);

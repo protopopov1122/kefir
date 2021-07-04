@@ -13,6 +13,7 @@ typedef struct kefir_ast_global_context {
     const struct kefir_ast_type_traits *type_traits;
     struct kefir_ast_type_bundle type_bundle;
     const struct kefir_ast_target_environment *target_env;
+    struct kefir_list function_decl_contexts;
 
     struct kefir_ast_identifier_flat_scope object_identifiers;
     struct kefir_ast_identifier_flat_scope constant_identifiers;

@@ -709,21 +709,28 @@ static kefir_result_t resolve_function_declarator(struct kefir_mem *mem, const s
         kefir_ast_type_function(mem, context->type_bundle, *base_type, identifier, &func_type);
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocated AST type"));
 
-    struct kefir_ast_function_declaration_context decl_context;
-    REQUIRE_OK(kefir_ast_function_declaration_context_init(mem, context, &decl_context));
+    struct kefir_ast_function_declaration_context *decl_context =
+        KEFIR_MALLOC(mem, sizeof(struct kefir_ast_function_declaration_context));
+    REQUIRE(decl_context != NULL,
+            KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST function declaration context"));
+    kefir_result_t res = kefir_ast_function_declaration_context_init(mem, context, decl_context);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, decl_context);
+        return res;
+    });
 
-    kefir_result_t res = KEFIR_OK;
+    res = KEFIR_OK;
     for (const struct kefir_list_entry *iter = kefir_list_head(&declarator->function.parameters);
          iter != NULL && res == KEFIR_OK; kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, node, iter->value);
 
         if (node->klass->type == KEFIR_AST_DECLARATION) {
-            res = kefir_ast_analyze_node(mem, &decl_context.context, node);
+            res = kefir_ast_analyze_node(mem, &decl_context->context, node);
             REQUIRE_CHAIN(&res, kefir_ast_type_function_parameter(
                                     mem, context->type_bundle, func_type, node->properties.declaration_props.identifier,
                                     node->properties.type, &node->properties.declaration_props.storage));
         } else if (node->klass->type == KEFIR_AST_IDENTIFIER) {
-            res = kefir_ast_analyze_node(mem, &decl_context.context, node);
+            res = kefir_ast_analyze_node(mem, &decl_context->context, node);
             if (res == KEFIR_OK) {
                 if (node->properties.category != KEFIR_AST_NODE_CATEGORY_TYPE) {
                     res = KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
@@ -746,11 +753,19 @@ static kefir_result_t resolve_function_declarator(struct kefir_mem *mem, const s
     REQUIRE_CHAIN(&res, kefir_ast_type_function_ellipsis(func_type, declarator->function.ellipsis));
 
     REQUIRE_ELSE(res == KEFIR_OK, {
-        kefir_ast_function_declaration_context_free(mem, &decl_context);
+        kefir_ast_function_declaration_context_free(mem, decl_context);
+        KEFIR_FREE(mem, decl_context);
         return res;
     });
 
-    REQUIRE_OK(kefir_ast_function_declaration_context_free(mem, &decl_context));
+    res = kefir_list_insert_after(mem, context->function_decl_contexts,
+                                  kefir_list_tail(context->function_decl_contexts), decl_context);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_ast_function_declaration_context_free(mem, decl_context);
+        KEFIR_FREE(mem, decl_context);
+        return res;
+    });
+
     *base_type = type;
     return KEFIR_OK;
 }

@@ -14,5 +14,6 @@ typedef struct kefir_ast_constant_expression kefir_ast_constant_expression_t;
 typedef struct kefir_ast_alignment kefir_ast_alignment_t;
 typedef struct kefir_ast_global_context kefir_ast_global_context_t;
 typedef struct kefir_ast_local_context kefir_ast_local_context_t;
+typedef struct kefir_ast_function_declaration_context kefir_ast_function_declaration_context_t;
 
 #endif

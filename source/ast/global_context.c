@@ -5,6 +5,7 @@
 #include "kefir/ast/analyzer/initializer.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/ast/function_declaration_context.h"
 
 static kefir_result_t context_resolve_ordinary_identifier(const struct kefir_ast_context *context,
                                                           const char *identifier,
@@ -219,6 +220,19 @@ static kefir_result_t context_pop_block(struct kefir_mem *mem, const struct kefi
     return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Blocks cannot be popped in a global context");
 }
 
+static kefir_result_t free_func_decl_context(struct kefir_mem *mem, struct kefir_list *list,
+                                             struct kefir_list_entry *entry, void *payload) {
+    UNUSED(list);
+    UNUSED(payload);
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid list entry"));
+
+    ASSIGN_DECL_CAST(struct kefir_ast_function_declaration_context *, context, entry->value);
+    REQUIRE_OK(kefir_ast_function_declaration_context_free(mem, context));
+    KEFIR_FREE(mem, context);
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem, const struct kefir_ast_type_traits *type_traits,
                                              const struct kefir_ast_target_environment *target_env,
                                              struct kefir_ast_global_context *context) {
@@ -234,6 +248,8 @@ kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem, const struct
     REQUIRE_OK(kefir_ast_identifier_flat_scope_init(&context->tag_scope));
     REQUIRE_OK(kefir_ast_identifier_flat_scope_on_removal(&context->tag_scope, kefir_ast_context_free_scoped_identifier,
                                                           NULL));
+    REQUIRE_OK(kefir_list_init(&context->function_decl_contexts));
+    REQUIRE_OK(kefir_list_on_remove(&context->function_decl_contexts, free_func_decl_context, NULL));
 
     REQUIRE_OK(kefir_ast_identifier_flat_scope_init(&context->object_identifiers));
     REQUIRE_OK(kefir_ast_identifier_flat_scope_on_removal(&context->object_identifiers,
@@ -267,6 +283,7 @@ kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem, const struct
     context->context.type_analysis_context = KEFIR_AST_TYPE_ANALYSIS_DEFAULT;
     context->context.flow_control_tree = NULL;
     context->context.global_context = context;
+    context->context.function_decl_contexts = &context->function_decl_contexts;
     context->context.payload = context;
     return KEFIR_OK;
 }
@@ -280,6 +297,7 @@ kefir_result_t kefir_ast_global_context_free(struct kefir_mem *mem, struct kefir
     REQUIRE_OK(kefir_ast_identifier_flat_scope_free(mem, &context->type_identifiers));
     REQUIRE_OK(kefir_ast_identifier_flat_scope_free(mem, &context->function_identifiers));
     REQUIRE_OK(kefir_ast_identifier_flat_scope_free(mem, &context->object_identifiers));
+    REQUIRE_OK(kefir_list_free(mem, &context->function_decl_contexts));
     REQUIRE_OK(kefir_ast_type_bundle_free(mem, &context->type_bundle));
     REQUIRE_OK(kefir_symbol_table_free(mem, &context->symbols));
     return KEFIR_OK;

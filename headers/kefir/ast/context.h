@@ -39,6 +39,7 @@ typedef struct kefir_ast_context {
     kefir_ast_type_analysis_context_t type_analysis_context;
     struct kefir_ast_flow_control_tree *flow_control_tree;
     struct kefir_ast_global_context *global_context;
+    struct kefir_list *function_decl_contexts;
 
     void *payload;
 } kefir_ast_context_t;
