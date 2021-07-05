@@ -101,6 +101,16 @@ kefir_result_t kefir_ast_declarator_specifier_list_clone(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_ast_declarator_specifier_list_move_all(struct kefir_ast_declarator_specifier_list *dst,
+                                                            struct kefir_ast_declarator_specifier_list *src) {
+    REQUIRE(dst != NULL,
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid destination AST declarator specifier list"));
+    REQUIRE(src != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid source AST declarator specifier list"));
+
+    REQUIRE_OK(kefir_list_move_all(&dst->list, &src->list));
+    return KEFIR_OK;
+}
+
 static kefir_result_t struct_entry_remove(struct kefir_mem *mem, struct kefir_list *list,
                                           struct kefir_list_entry *entry, void *payload) {
     UNUSED(list);

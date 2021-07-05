@@ -147,3 +147,28 @@ void *kefir_list_next(const struct kefir_list_entry **current) {
     *current = (*current)->next;
     return value;
 }
+
+kefir_result_t kefir_list_move_all(struct kefir_list *dst, struct kefir_list *src) {
+    REQUIRE(dst != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid destination list"));
+    REQUIRE(src != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid source list"));
+
+    struct kefir_list_entry *src_head = src->head;
+    struct kefir_list_entry *src_tail = src->tail;
+    kefir_size_t src_length = src->length;
+    if (src_head != NULL) {
+        src->head = NULL;
+        src->tail = NULL;
+        src->length = 0;
+
+        if (dst->tail != NULL) {
+            dst->tail->next = src_head;
+            src_head->prev = dst->tail;
+            dst->tail = src_tail;
+        } else {
+            dst->head = src_head;
+            dst->tail = src_tail;
+        }
+        dst->length += src_length;
+    }
+    return KEFIR_OK;
+}

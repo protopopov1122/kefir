@@ -124,7 +124,7 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
                                         "Function definition declaration list shall not contain alignment specifiers"));
 
                 const struct kefir_ast_scoped_identifier *param_scoped_id = NULL;
-                REQUIRE_OK(local_context->context.define_identifier(mem, &local_context->context, false, identifier,
+                REQUIRE_OK(local_context->context.define_identifier(mem, &local_context->context, true, identifier,
                                                                     type, storage, function_specifier, NULL, NULL,
                                                                     &param_scoped_id));
                 decl->base.properties.declaration_props.scoped_id = param_scoped_id;
