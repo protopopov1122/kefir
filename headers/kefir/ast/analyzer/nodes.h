@@ -39,6 +39,7 @@ ANALYZE_NODE(continue_statement, struct kefir_ast_continue_statement);
 ANALYZE_NODE(break_statement, struct kefir_ast_break_statement);
 ANALYZE_NODE(return_statement, struct kefir_ast_return_statement);
 ANALYZE_NODE(function_definition, struct kefir_ast_function_definition);
+ANALYZE_NODE(translation_unit, struct kefir_ast_translation_unit);
 
 #undef ANALYZE_NODE
 
