@@ -368,3 +368,33 @@ DEFINE_CASE(ast_node_analysis_translation_unit1, "AST node analysis - translatio
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 }
 END_CASE
+
+DEFINE_CASE(ast_node_analysis_translation_unit2, "AST node analysis - translation unit #2") {
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
+                                            &global_context));
+
+    struct kefir_ast_translation_unit *unit1 = kefir_ast_new_translation_unit(&kft_mem);
+    ASSERT_OK(kefir_ast_analyze_node(&kft_mem, &global_context.context, KEFIR_AST_NODE_BASE(unit1)));
+    ASSERT(unit1->base.properties.category == KEFIR_AST_NODE_CATEGORY_TRANSLATION_UNIT);
+
+    struct kefir_ast_translation_unit *unit2 = kefir_ast_new_translation_unit(&kft_mem);
+    ASSERT_OK(kefir_list_insert_after(&kft_mem, &unit2->external_definitions,
+                                      kefir_list_tail(&unit2->external_definitions),
+                                      KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0))));
+    ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, &global_context.context, KEFIR_AST_NODE_BASE(unit2)));
+
+    struct kefir_ast_translation_unit *unit3 = kefir_ast_new_translation_unit(&kft_mem);
+    ASSERT_OK(kefir_list_insert_after(&kft_mem, &unit3->external_definitions,
+                                      kefir_list_tail(&unit3->external_definitions),
+                                      KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(&kft_mem, NULL))));
+    ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, &global_context.context, KEFIR_AST_NODE_BASE(unit3)));
+
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(unit1)));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(unit2)));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(unit3)));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+}
+END_CASE
