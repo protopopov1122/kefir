@@ -17,6 +17,8 @@ kefir_result_t kefir_ast_translator_context_init(struct kefir_ast_translator_con
     context->ast_context = ast_context;
     context->environment = environment;
     context->module = module;
+    context->global_scope_layout = NULL;
+    context->local_scope_layout = NULL;
     return KEFIR_OK;
 }
 
@@ -33,6 +35,8 @@ kefir_result_t kefir_ast_translator_context_init_local(struct kefir_ast_translat
     context->ast_context = ast_context;
     context->environment = base_context->environment;
     context->module = base_context->module;
+    context->global_scope_layout = NULL;
+    context->local_scope_layout = NULL;
     return KEFIR_OK;
 }
 
@@ -45,6 +49,8 @@ kefir_result_t kefir_ast_translator_context_free(struct kefir_mem *mem, struct k
     context->ast_context = NULL;
     context->environment = NULL;
     context->module = NULL;
+    context->global_scope_layout = NULL;
+    context->local_scope_layout = NULL;
     return KEFIR_OK;
 }
 

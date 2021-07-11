@@ -28,6 +28,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     struct kefir_ast_translator_context global_translator_context;
     REQUIRE_OK(kefir_ast_translator_context_init(&global_translator_context, &global_context.context, &env, &module));
+    global_translator_context.global_scope_layout = &translator_global_scope;
 
     struct kefir_ast_declarator *function1_decl =
         kefir_ast_declarator_function(mem, kefir_ast_declarator_identifier(mem, global_context.context.symbols, "sum"));
@@ -66,8 +67,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         mem, &module, &global_context, &env, kefir_ast_translator_context_type_resolver(&global_translator_context),
         &translator_global_scope));
 
-    REQUIRE_OK(kefir_ast_translate_function(mem, KEFIR_AST_NODE_BASE(function1), &global_translator_context,
-                                            &translator_global_scope));
+    REQUIRE_OK(kefir_ast_translate_function(mem, KEFIR_AST_NODE_BASE(function1), &global_translator_context));
     REQUIRE_OK(kefir_ast_translate_global_scope(mem, &module, &translator_global_scope));
 
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(function1)));

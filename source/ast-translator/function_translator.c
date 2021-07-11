@@ -46,12 +46,11 @@ static kefir_result_t translate_function_impl(struct kefir_mem *mem, struct kefi
 }
 
 kefir_result_t kefir_ast_translate_function(struct kefir_mem *mem, const struct kefir_ast_node_base *node,
-                                            struct kefir_ast_translator_context *context,
-                                            struct kefir_ast_translator_global_scope_layout *global_scope_layout) {
+                                            struct kefir_ast_translator_context *context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator context"));
-    REQUIRE(global_scope_layout != NULL,
+    REQUIRE(context->global_scope_layout != NULL,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator global scope layout"));
     REQUIRE(node->properties.category == KEFIR_AST_NODE_CATEGORY_FUNCTION_DEFINITION &&
                 node->klass->type == KEFIR_AST_FUNCTION_DEFINITION,
@@ -71,8 +70,8 @@ kefir_result_t kefir_ast_translate_function(struct kefir_mem *mem, const struct 
     REQUIRE_OK(kefir_ast_translator_context_init_local(&local_translator_context, &local_context->context, context));
 
     struct kefir_ast_translator_local_scope_layout local_scope_layout;
-    kefir_result_t res =
-        kefir_ast_translator_local_scope_layout_init(mem, context->module, global_scope_layout, &local_scope_layout);
+    kefir_result_t res = kefir_ast_translator_local_scope_layout_init(
+        mem, context->module, context->global_scope_layout, &local_scope_layout);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_ast_translator_context_free(mem, &local_translator_context);
         return res;

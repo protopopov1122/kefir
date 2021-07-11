@@ -4,6 +4,8 @@
 #include "kefir/ast/context.h"
 #include "kefir/ast-translator/environment.h"
 #include "kefir/ast-translator/type_cache.h"
+#include "kefir/ast-translator/scope/global_scope_layout.h"
+#include "kefir/ast-translator/scope/local_scope_layout.h"
 #include "kefir/ir/module.h"
 
 typedef struct kefir_ast_translator_context {
@@ -12,6 +14,9 @@ typedef struct kefir_ast_translator_context {
     const struct kefir_ast_translator_environment *environment;
     struct kefir_ir_module *module;
     struct kefir_ast_translator_type_cache type_cache;
+
+    struct kefir_ast_translator_global_scope_layout *global_scope_layout;
+    struct kefir_ast_translator_local_scope_layout *local_scope_layout;
 } kefir_ast_translator_context_t;
 
 kefir_result_t kefir_ast_translator_context_init(struct kefir_ast_translator_context *,

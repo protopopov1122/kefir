@@ -6,7 +6,6 @@
 #include "kefir/ast/type_layout.h"
 #include "kefir/ast-translator/context.h"
 #include "kefir/ir/builder.h"
-#include "kefir/ast-translator/scope/global_scope_layout.h"
 
 kefir_result_t kefir_ast_translate_object_type(struct kefir_mem *, const struct kefir_ast_type *, kefir_size_t,
                                                const struct kefir_ast_translator_environment *,
@@ -25,7 +24,6 @@ kefir_result_t kefir_ast_translate_declaration(struct kefir_mem *, const struct 
                                                struct kefir_irbuilder_block *, struct kefir_ast_translator_context *);
 
 kefir_result_t kefir_ast_translate_function(struct kefir_mem *, const struct kefir_ast_node_base *,
-                                            struct kefir_ast_translator_context *,
-                                            struct kefir_ast_translator_global_scope_layout *);
+                                            struct kefir_ast_translator_context *);
 
 #endif
