@@ -1,0 +1,174 @@
+{
+    "globals": [
+        "sum"
+    ],
+    "externals": [
+        "variable"
+    ],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "word"
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "type": []
+        },
+        {
+            "identifier": 5,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 6,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "double"
+                        },
+                        {
+                            "type": "double"
+                        },
+                        {
+                            "type": "double"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "data": [],
+    "function_declarations": [
+        {
+            "identifier": 0,
+            "name": "sum",
+            "parameters": [
+                {
+                    "type": "word"
+                }
+            ],
+            "vararg": false,
+            "returns": []
+        }
+    ],
+    "functions": [
+        {
+            "identifier": 0,
+            "name": "sum",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store64"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 6,
+                        "index": 3
+                    }
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 6,
+                        "index": 1
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 6,
+                        "index": 2
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "f64add"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store64"
+                },
+                {
+                    "opcode": "pop"
+                }
+            ]
+        }
+    ]
+}
