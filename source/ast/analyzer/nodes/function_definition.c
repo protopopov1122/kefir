@@ -110,6 +110,8 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
                                                          decl->declarator, &identifier, &type, &storage,
                                                          &function_specifier, &alignment));
 
+                type = kefir_ast_type_conv_adjust_function_parameter(mem, context->type_bundle, type);
+
                 REQUIRE(kefir_hashtree_has(&scoped_id->function.type->function_type.parameter_index,
                                            (kefir_hashtree_key_t) identifier),
                         KEFIR_SET_ERROR(
@@ -127,7 +129,15 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
                 REQUIRE_OK(local_context->context.define_identifier(mem, &local_context->context, true, identifier,
                                                                     type, storage, function_specifier, NULL, NULL,
                                                                     &param_scoped_id));
+
+                decl->base.properties.category = KEFIR_AST_NODE_CATEGORY_DECLARATION;
+                decl->base.properties.declaration_props.alignment = 0;
+                decl->base.properties.declaration_props.function = KEFIR_AST_FUNCTION_SPECIFIER_NONE;
+                decl->base.properties.declaration_props.identifier = identifier;
                 decl->base.properties.declaration_props.scoped_id = param_scoped_id;
+                decl->base.properties.declaration_props.static_assertion = false;
+                decl->base.properties.declaration_props.storage = storage;
+                decl->base.properties.type = type;
             }
 
             for (const struct kefir_list_entry *iter =
