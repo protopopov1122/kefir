@@ -96,6 +96,7 @@ static kefir_result_t visit_typeentry(const struct kefir_ir_type *type, kefir_si
             break;
     }
 
+    param->slot += node->slot_width;
     return KEFIR_OK;
 }
 

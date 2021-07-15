@@ -1,0 +1,78 @@
+{
+    "globals": [],
+    "externals": [
+        "variable"
+    ],
+    "types": [
+        {
+            "identifier": 0,
+            "type": [
+                {
+                    "type": "word"
+                },
+                {
+                    "type": "word"
+                },
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "char"
+                },
+                {
+                    "type": "double"
+                },
+                {
+                    "type": "float"
+                }
+            ]
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": [
+                {
+                    "class": "pointer",
+                    "reference": "integer",
+                    "offset": 4
+                },
+                {
+                    "class": "integer",
+                    "value": 20
+                },
+                {
+                    "class": "integer",
+                    "value": 10
+                },
+                {
+                    "class": "integer",
+                    "value": 97
+                },
+                {
+                    "class": "float64",
+                    "value": 0.001000
+                },
+                {
+                    "class": "float32",
+                    "value": 13.140000
+                }
+            ]
+        }
+    ],
+    "function_declarations": [],
+    "functions": []
+}
