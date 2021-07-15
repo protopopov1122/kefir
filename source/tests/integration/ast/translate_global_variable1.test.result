@@ -1,0 +1,144 @@
+{
+    "globals": [
+        "ptr1",
+        "ptr2",
+        "integer",
+        "character",
+        "floatingPoint2",
+        "floatingPoint"
+    ],
+    "externals": [
+        "variable"
+    ],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": [
+                {
+                    "type": "word"
+                }
+            ]
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "word"
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 5,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 6,
+            "type": [
+                {
+                    "type": "char"
+                }
+            ]
+        },
+        {
+            "identifier": 7,
+            "type": [
+                {
+                    "type": "double"
+                }
+            ]
+        },
+        {
+            "identifier": 8,
+            "type": [
+                {
+                    "type": "float"
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "identifier": "ptr1",
+            "type": 2,
+            "value": [
+                {
+                    "class": "pointer",
+                    "reference": "integer",
+                    "offset": 4
+                }
+            ]
+        },
+        {
+            "identifier": "ptr2",
+            "type": 3,
+            "value": [
+                {
+                    "class": "integer",
+                    "value": 20
+                }
+            ]
+        },
+        {
+            "identifier": "integer",
+            "type": 4,
+            "value": [
+                {
+                    "class": "integer",
+                    "value": 10
+                }
+            ]
+        },
+        {
+            "identifier": "character",
+            "type": 6,
+            "value": [
+                {
+                    "class": "integer",
+                    "value": 97
+                }
+            ]
+        },
+        {
+            "identifier": "floatingPoint2",
+            "type": 7,
+            "value": [
+                {
+                    "class": "float64",
+                    "value": 0.001000
+                }
+            ]
+        },
+        {
+            "identifier": "floatingPoint",
+            "type": 8,
+            "value": [
+                {
+                    "class": "float32",
+                    "value": 13.140000
+                }
+            ]
+        }
+    ],
+    "function_declarations": [],
+    "functions": []
+}

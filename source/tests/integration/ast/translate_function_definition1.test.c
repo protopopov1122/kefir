@@ -68,7 +68,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         &translator_global_scope));
 
     REQUIRE_OK(kefir_ast_translate_function(mem, KEFIR_AST_NODE_BASE(function1), &global_translator_context));
-    REQUIRE_OK(kefir_ast_translate_global_scope(mem, &module, &translator_global_scope));
+    REQUIRE_OK(kefir_ast_translate_global_scope(mem, &global_context.context, &module, &translator_global_scope));
 
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(function1)));
 

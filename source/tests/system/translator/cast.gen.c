@@ -221,7 +221,7 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
     REQUIRE_OK(translate_function(mem, &voidptr_void_cast, &context_manager, &global_scope, &translator_context));
     REQUIRE_OK(translate_function(mem, &struct_void_cast, &context_manager, &global_scope, &translator_context));
 
-    REQUIRE_OK(kefir_ast_translate_global_scope(mem, module, &global_scope));
+    REQUIRE_OK(kefir_ast_translate_global_scope(mem, &global_context.context, module, &global_scope));
 
     REQUIRE_OK(free_function(mem, &char_int_cast));
     REQUIRE_OK(free_function(mem, &int_char_cast));

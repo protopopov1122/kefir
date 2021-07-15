@@ -32,7 +32,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(
         mem, &module, &global_context, &env, kefir_ast_translator_context_type_resolver(&global_translator_context),
         &translator_global_scope));
-    REQUIRE_OK(kefir_ast_translate_global_scope(mem, &module, &translator_global_scope));
+    REQUIRE_OK(kefir_ast_translate_global_scope(mem, &global_context.context, &module, &translator_global_scope));
     struct kefir_irbuilder_block builder;
 
     FUNC2("switch1", {
