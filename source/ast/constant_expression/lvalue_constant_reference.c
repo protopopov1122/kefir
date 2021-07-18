@@ -47,6 +47,7 @@ static kefir_result_t visit_identifier(const struct kefir_ast_visitor *visitor, 
     param->pointer->base.literal = node->identifier;
     param->pointer->offset = 0;
     param->pointer->pointer_node = KEFIR_AST_NODE_BASE(node);
+    param->pointer->scoped_id = scoped_id;
     return KEFIR_OK;
 }
 

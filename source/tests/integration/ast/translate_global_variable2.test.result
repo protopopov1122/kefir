@@ -47,8 +47,8 @@
             "value": [
                 {
                     "class": "pointer",
-                    "reference": "integer",
-                    "offset": 4
+                    "reference": "__kefirrt_module_static_vars",
+                    "offset": 20
                 },
                 {
                     "class": "integer",
