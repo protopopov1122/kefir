@@ -1,0 +1,219 @@
+{
+    "globals": [
+        "str1"
+    ],
+    "externals": [
+        "variable"
+    ],
+    "types": [
+        {
+            "identifier": 0,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 16,
+                    "element_type": {
+                        "type": "char"
+                    }
+                },
+                {
+                    "type": "array",
+                    "length": 15,
+                    "element_type": {
+                        "type": "char"
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 14,
+                    "element_type": {
+                        "type": "char"
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "identifier": "str1",
+            "type": 2,
+            "value": [
+                {
+                    "class": "string",
+                    "content": "Hello, world!",
+                    "length": 14
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": [
+                {
+                    "class": "string",
+                    "content": "Goodbye, world!",
+                    "length": 16
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "string",
+                    "content": "WTF world?",
+                    "length": 11
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                }
+            ]
+        }
+    ],
+    "function_declarations": [],
+    "functions": []
+}

@@ -11,7 +11,8 @@ static kefir_size_t resolve_base_slot(const struct kefir_ir_type_tree_node *node
 }
 
 static kefir_result_t initialize_data(struct kefir_mem *mem, const struct kefir_ast_context *context,
-                                      const struct kefir_ir_type *type, struct kefir_ast_type_layout *type_layout,
+                                      struct kefir_ir_module *module, const struct kefir_ir_type *type,
+                                      struct kefir_ast_type_layout *type_layout,
                                       struct kefir_ast_initializer *initializer, struct kefir_ir_data *data) {
 
     struct kefir_ir_type_tree type_tree;
@@ -24,7 +25,7 @@ static kefir_result_t initialize_data(struct kefir_mem *mem, const struct kefir_
         return res;
     });
 
-    res = kefir_ast_translate_data_initializer(mem, context, type_layout, type, initializer, data,
+    res = kefir_ast_translate_data_initializer(mem, context, module, type_layout, type, initializer, data,
                                                resolve_base_slot(tree_node));
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_ir_type_tree_free(mem, &type_tree);
@@ -52,7 +53,7 @@ static kefir_result_t translate_externals(struct kefir_mem *mem, const struct ke
                         mem, module, scoped_identifier->identifier, identifier_data->type_id);
                     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate IR named data"));
                     if (scoped_identifier->value->object.initializer != NULL) {
-                        REQUIRE_OK(initialize_data(mem, context, identifier_data->type, identifier_data->layout,
+                        REQUIRE_OK(initialize_data(mem, context, module, identifier_data->type, identifier_data->layout,
                                                    scoped_identifier->value->object.initializer, data));
                     }
                     REQUIRE_OK(kefir_ir_data_finalize(data));
@@ -95,7 +96,7 @@ static kefir_result_t translate_static(struct kefir_mem *mem, const struct kefir
                 ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, identifier_data,
                                  scoped_identifier->value->payload.ptr);
                 if (scoped_identifier->value->object.initializer != NULL) {
-                    REQUIRE_OK(initialize_data(mem, context, identifier_data->type, identifier_data->layout,
+                    REQUIRE_OK(initialize_data(mem, context, module, identifier_data->type, identifier_data->layout,
                                                scoped_identifier->value->object.initializer, static_data));
                 }
             } break;

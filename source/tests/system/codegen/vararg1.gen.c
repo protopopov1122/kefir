@@ -41,7 +41,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, string_type, KEFIR_IR_TYPE_CHAR, 0, 0));
     struct kefir_ir_data *fmt_data1 =
         kefir_ir_module_new_named_data(mem, &module, kefir_ir_module_symbol(mem, &module, "fmt", &fmt_id), fmt_type_id);
-    REQUIRE_OK(kefir_ir_data_set_string(fmt_data1, 0, FMT));
+    REQUIRE_OK(kefir_ir_data_set_string(fmt_data1, 0, FMT, strlen(FMT)));
     REQUIRE_OK(kefir_ir_data_finalize(fmt_data1));
 
     kefir_id_t result_id, result_type_id;

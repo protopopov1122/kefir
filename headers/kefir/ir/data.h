@@ -30,7 +30,10 @@ typedef struct kefir_ir_data_value {
         kefir_int64_t integer;
         kefir_float32_t float32;
         kefir_float64_t float64;
-        const char *string;
+        struct {
+            const char *content;
+            kefir_size_t length;
+        } string;
         struct {
             const char *reference;
             kefir_int64_t offset;
@@ -53,7 +56,7 @@ kefir_result_t kefir_ir_data_set_float32(struct kefir_ir_data *, kefir_size_t, k
 
 kefir_result_t kefir_ir_data_set_float64(struct kefir_ir_data *, kefir_size_t, kefir_float64_t);
 
-kefir_result_t kefir_ir_data_set_string(struct kefir_ir_data *, kefir_size_t, const char *);
+kefir_result_t kefir_ir_data_set_string(struct kefir_ir_data *, kefir_size_t, const char *, kefir_size_t);
 
 kefir_result_t kefir_ir_data_set_pointer(struct kefir_ir_data *, kefir_size_t, const char *, kefir_size_t);
 

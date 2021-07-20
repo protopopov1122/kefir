@@ -316,7 +316,7 @@ static kefir_result_t array_static_data(const struct kefir_ir_type *type, kefir_
             break;
 
         case KEFIR_IR_DATA_VALUE_STRING:
-            REQUIRE_OK(dump_binary(param, entry->value.string, strlen(entry->value.string)));
+            REQUIRE_OK(dump_binary(param, entry->value.string.content, entry->value.string.length));
             break;
 
         case KEFIR_IR_DATA_VALUE_RAW: {
@@ -350,7 +350,7 @@ static kefir_result_t memory_static_data(const struct kefir_ir_type *type, kefir
             break;
 
         case KEFIR_IR_DATA_VALUE_STRING:
-            REQUIRE_OK(dump_binary(param, entry->value.string, strlen(entry->value.string)));
+            REQUIRE_OK(dump_binary(param, entry->value.string.content, entry->value.string.length));
             break;
 
         case KEFIR_IR_DATA_VALUE_RAW: {
