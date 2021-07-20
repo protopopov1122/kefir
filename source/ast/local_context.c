@@ -508,20 +508,10 @@ kefir_result_t kefir_ast_local_context_define_static(struct kefir_mem *mem, stru
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
 
-    if (initializer != NULL) {
-        struct kefir_ast_type_qualification qualifications;
-        REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications, type));
-        struct kefir_ast_initializer_properties props;
-        REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
-        type = props.type;
-
-        if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
-            type = kefir_ast_type_qualified(mem, &context->global->type_bundle, type, qualifications);
-        }
+    if (initializer == NULL) {
+        REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Identifier with no linkage shall have complete type"));
     }
-
-    REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Identifier with no linkage shall have complete type"));
 
     struct kefir_ast_scoped_identifier *scoped_id = NULL;
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(
@@ -544,6 +534,22 @@ kefir_result_t kefir_ast_local_context_define_static(struct kefir_mem *mem, stru
         REQUIRE(id != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate identifier"));
         REQUIRE_OK(kefir_ast_identifier_block_scope_insert(mem, &context->ordinary_scope, id, scoped_id));
     }
+
+    if (initializer != NULL) {
+        struct kefir_ast_type_qualification qualifications;
+        REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications, type));
+        struct kefir_ast_initializer_properties props;
+        REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
+        type = props.type;
+
+        if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
+            type = kefir_ast_type_qualified(mem, &context->global->type_bundle, type, qualifications);
+        }
+
+        REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Identifier with no linkage shall have complete type"));
+        scoped_id->type = type;
+    }
     ASSIGN_PTR(scoped_id_ptr, scoped_id);
     return KEFIR_OK;
 }
@@ -557,20 +563,10 @@ kefir_result_t kefir_ast_local_context_define_static_thread_local(
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
 
-    if (initializer != NULL) {
-        struct kefir_ast_type_qualification qualifications;
-        REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications, type));
-        struct kefir_ast_initializer_properties props;
-        REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
-        type = props.type;
-
-        if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
-            type = kefir_ast_type_qualified(mem, &context->global->type_bundle, type, qualifications);
-        }
+    if (initializer == NULL) {
+        REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Identifier with no linkage shall have complete type"));
     }
-
-    REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Identifier with no linkage shall have complete type"));
 
     struct kefir_ast_scoped_identifier *scoped_id = NULL;
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(
@@ -593,6 +589,22 @@ kefir_result_t kefir_ast_local_context_define_static_thread_local(
         REQUIRE(id != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate identifier"));
         REQUIRE_OK(kefir_ast_identifier_block_scope_insert(mem, &context->ordinary_scope, id, scoped_id));
     }
+
+    if (initializer != NULL) {
+        struct kefir_ast_type_qualification qualifications;
+        REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications, type));
+        struct kefir_ast_initializer_properties props;
+        REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
+        type = props.type;
+
+        if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
+            type = kefir_ast_type_qualified(mem, &context->global->type_bundle, type, qualifications);
+        }
+
+        REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Identifier with no linkage shall have complete type"));
+        scoped_id->type = type;
+    }
     ASSIGN_PTR(scoped_id_ptr, scoped_id);
     return KEFIR_OK;
 }
@@ -607,20 +619,10 @@ kefir_result_t kefir_ast_local_context_define_auto(struct kefir_mem *mem, struct
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
 
-    if (initializer != NULL) {
-        struct kefir_ast_type_qualification qualifications;
-        REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications, type));
-        struct kefir_ast_initializer_properties props;
-        REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
-        type = props.type;
-
-        if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
-            type = kefir_ast_type_qualified(mem, &context->global->type_bundle, type, qualifications);
-        }
+    if (initializer == NULL) {
+        REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Identifier with no linkage shall have complete type"));
     }
-
-    REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Identifier with no linkage shall have complete type"));
 
     struct kefir_ast_scoped_identifier *scoped_id = NULL;
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(
@@ -643,6 +645,21 @@ kefir_result_t kefir_ast_local_context_define_auto(struct kefir_mem *mem, struct
         REQUIRE(id != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate identifier"));
         REQUIRE_OK(kefir_ast_identifier_block_scope_insert(mem, &context->ordinary_scope, id, scoped_id));
     }
+
+    if (initializer != NULL) {
+        struct kefir_ast_type_qualification qualifications;
+        REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications, type));
+        struct kefir_ast_initializer_properties props;
+        REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
+        type = props.type;
+
+        if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
+            type = kefir_ast_type_qualified(mem, &context->global->type_bundle, type, qualifications);
+        }
+        REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Identifier with no linkage shall have complete type"));
+        scoped_id->type = type;
+    }
     ASSIGN_PTR(scoped_id_ptr, scoped_id);
     return KEFIR_OK;
 }
@@ -657,20 +674,10 @@ kefir_result_t kefir_ast_local_context_define_register(struct kefir_mem *mem, st
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
 
-    if (initializer != NULL) {
-        struct kefir_ast_type_qualification qualifications;
-        REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications, type));
-        struct kefir_ast_initializer_properties props;
-        REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
-        type = props.type;
-
-        if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
-            type = kefir_ast_type_qualified(mem, &context->global->type_bundle, type, qualifications);
-        }
+    if (initializer == NULL) {
+        REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Identifier with no linkage shall have complete type"));
     }
-
-    REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Identifier with no linkage shall have complete type"));
 
     struct kefir_ast_scoped_identifier *scoped_id = NULL;
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(
@@ -692,6 +699,21 @@ kefir_result_t kefir_ast_local_context_define_register(struct kefir_mem *mem, st
         const char *id = kefir_symbol_table_insert(mem, &context->global->symbols, identifier, NULL);
         REQUIRE(id != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate identifier"));
         REQUIRE_OK(kefir_ast_identifier_block_scope_insert(mem, &context->ordinary_scope, id, scoped_id));
+    }
+
+    if (initializer != NULL) {
+        struct kefir_ast_type_qualification qualifications;
+        REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications, type));
+        struct kefir_ast_initializer_properties props;
+        REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
+        type = props.type;
+
+        if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
+            type = kefir_ast_type_qualified(mem, &context->global->type_bundle, type, qualifications);
+        }
+        REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Identifier with no linkage shall have complete type"));
+        scoped_id->type = type;
     }
     ASSIGN_PTR(scoped_id_ptr, scoped_id);
     return KEFIR_OK;

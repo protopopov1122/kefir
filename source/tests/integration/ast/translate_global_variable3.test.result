@@ -1,0 +1,207 @@
+{
+    "globals": [
+        "array1",
+        "array2",
+        "structure"
+    ],
+    "externals": [
+        "variable"
+    ],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 8,
+                    "element_type": {
+                        "type": "long"
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 6,
+                    "element_type": {
+                        "type": "float"
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 5,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "int"
+                        },
+                        {
+                            "type": "float"
+                        },
+                        {
+                            "type": "word"
+                        },
+                        {
+                            "type": "array",
+                            "length": 7,
+                            "element_type": {
+                                "type": "char"
+                            }
+                        },
+                        {
+                            "type": "long"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "identifier": "array1",
+            "type": 2,
+            "value": [
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "integer",
+                    "value": 1
+                },
+                {
+                    "class": "pointer",
+                    "reference": "array1",
+                    "offset": 8
+                },
+                {
+                    "class": "integer",
+                    "value": 3
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "integer",
+                    "value": -1
+                }
+            ]
+        },
+        {
+            "identifier": "array2",
+            "type": 3,
+            "value": [
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "float32",
+                    "value": 10.000000
+                },
+                {
+                    "class": "float32",
+                    "value": 20.020000
+                },
+                {
+                    "class": "float32",
+                    "value": 20.020000
+                },
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "structure",
+            "type": 5,
+            "value": [
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "integer",
+                    "value": 11
+                },
+                {
+                    "class": "float32",
+                    "value": 4.350000
+                },
+                {
+                    "class": "pointer",
+                    "reference": "structure",
+                    "offset": 4
+                },
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "integer",
+                    "value": 48
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "integer",
+                    "value": 97
+                },
+                {
+                    "class": "integer",
+                    "value": 98
+                },
+                {
+                    "class": "integer",
+                    "value": 99
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "integer",
+                    "value": 32
+                }
+            ]
+        }
+    ],
+    "function_declarations": [],
+    "functions": []
+}

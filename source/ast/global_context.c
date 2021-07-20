@@ -455,21 +455,6 @@ kefir_result_t kefir_ast_global_context_define_external(struct kefir_mem *mem, s
     identifier = kefir_symbol_table_insert(mem, &context->symbols, identifier, NULL);
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate identifier"));
 
-    if (initializer != NULL) {
-        struct kefir_ast_type_qualification qualifications;
-        REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications, type));
-        struct kefir_ast_initializer_properties props;
-        REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
-        type = props.type;
-        REQUIRE(props.constant,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
-                                "Initializers of object with static storage duration shall be constant"));
-
-        if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
-            type = kefir_ast_type_qualified(mem, &context->type_bundle, type, qualifications);
-        }
-    }
-
     struct kefir_ast_scoped_identifier *ordinary_id = NULL;
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->object_identifiers, identifier, &ordinary_id);
     if (res == KEFIR_OK) {
@@ -485,9 +470,6 @@ kefir_result_t kefir_ast_global_context_define_external(struct kefir_mem *mem, s
         ordinary_id->object.type =
             KEFIR_AST_TYPE_COMPOSITE(mem, &context->type_bundle, context->type_traits, ordinary_id->object.type, type);
         ordinary_id->object.external = false;
-        if (initializer != NULL) {
-            ordinary_id->object.initializer = initializer;
-        }
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
         ordinary_id = kefir_ast_context_allocate_scoped_object_identifier(
@@ -501,6 +483,24 @@ kefir_result_t kefir_ast_global_context_define_external(struct kefir_mem *mem, s
     }
 
     REQUIRE_OK(insert_ordinary_identifier(mem, context, identifier, ordinary_id));
+
+    if (initializer != NULL) {
+        struct kefir_ast_type_qualification qualifications;
+        REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications, type));
+        struct kefir_ast_initializer_properties props;
+        REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
+        type = props.type;
+        REQUIRE(props.constant,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
+                                "Initializers of object with static storage duration shall be constant"));
+
+        if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
+            type = kefir_ast_type_qualified(mem, &context->type_bundle, type, qualifications);
+        }
+
+        ordinary_id->type = type;
+        ordinary_id->object.initializer = initializer;
+    }
     ASSIGN_PTR(scoped_id, ordinary_id);
     return KEFIR_OK;
 }
@@ -519,21 +519,6 @@ kefir_result_t kefir_ast_global_context_define_external_thread_local(
     identifier = kefir_symbol_table_insert(mem, &context->symbols, identifier, NULL);
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate identifier"));
 
-    if (initializer != NULL) {
-        struct kefir_ast_type_qualification qualifications;
-        REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications, type));
-        struct kefir_ast_initializer_properties props;
-        REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
-        type = props.type;
-        REQUIRE(props.constant,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
-                                "Initializers of object with thread local storage duration shall be constant"));
-
-        if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
-            type = kefir_ast_type_qualified(mem, &context->type_bundle, type, qualifications);
-        }
-    }
-
     struct kefir_ast_scoped_identifier *ordinary_id = NULL;
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->object_identifiers, identifier, &ordinary_id);
     if (res == KEFIR_OK) {
@@ -549,9 +534,6 @@ kefir_result_t kefir_ast_global_context_define_external_thread_local(
         ordinary_id->object.type =
             KEFIR_AST_TYPE_COMPOSITE(mem, &context->type_bundle, context->type_traits, ordinary_id->object.type, type);
         ordinary_id->object.external = false;
-        if (initializer != NULL) {
-            ordinary_id->object.initializer = initializer;
-        }
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
         ordinary_id = kefir_ast_context_allocate_scoped_object_identifier(
@@ -565,6 +547,23 @@ kefir_result_t kefir_ast_global_context_define_external_thread_local(
     }
 
     REQUIRE_OK(insert_ordinary_identifier(mem, context, identifier, ordinary_id));
+
+    if (initializer != NULL) {
+        struct kefir_ast_type_qualification qualifications;
+        REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications, type));
+        struct kefir_ast_initializer_properties props;
+        REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
+        type = props.type;
+        REQUIRE(props.constant,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
+                                "Initializers of object with thread local storage duration shall be constant"));
+
+        if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
+            type = kefir_ast_type_qualified(mem, &context->type_bundle, type, qualifications);
+        }
+        ordinary_id->type = type;
+        ordinary_id->object.initializer = initializer;
+    }
     ASSIGN_PTR(scoped_id, ordinary_id);
     return KEFIR_OK;
 }
@@ -584,21 +583,6 @@ kefir_result_t kefir_ast_global_context_define_static(struct kefir_mem *mem, str
     identifier = kefir_symbol_table_insert(mem, &context->symbols, identifier, NULL);
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate identifier"));
 
-    if (initializer != NULL) {
-        struct kefir_ast_type_qualification qualifications;
-        REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications, type));
-        struct kefir_ast_initializer_properties props;
-        REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
-        type = props.type;
-        REQUIRE(props.constant,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
-                                "Initializers of object with static storage duration shall be constant"));
-
-        if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
-            type = kefir_ast_type_qualified(mem, &context->type_bundle, type, qualifications);
-        }
-    }
-
     struct kefir_ast_scoped_identifier *ordinary_id = NULL;
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->object_identifiers, identifier, &ordinary_id);
     if (res == KEFIR_OK) {
@@ -615,9 +599,6 @@ kefir_result_t kefir_ast_global_context_define_static(struct kefir_mem *mem, str
         REQUIRE_OK(kefir_ast_context_merge_alignment(mem, &ordinary_id->object.alignment, alignment));
         ordinary_id->object.type =
             KEFIR_AST_TYPE_COMPOSITE(mem, &context->type_bundle, context->type_traits, ordinary_id->object.type, type);
-        if (initializer != NULL) {
-            ordinary_id->object.initializer = initializer;
-        }
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
         if (initializer == NULL) {
@@ -636,6 +617,23 @@ kefir_result_t kefir_ast_global_context_define_static(struct kefir_mem *mem, str
     }
 
     REQUIRE_OK(insert_ordinary_identifier(mem, context, identifier, ordinary_id));
+
+    if (initializer != NULL) {
+        struct kefir_ast_type_qualification qualifications;
+        REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications, type));
+        struct kefir_ast_initializer_properties props;
+        REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
+        type = props.type;
+        REQUIRE(props.constant,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
+                                "Initializers of object with static storage duration shall be constant"));
+
+        if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
+            type = kefir_ast_type_qualified(mem, &context->type_bundle, type, qualifications);
+        }
+        ordinary_id->type = type;
+        ordinary_id->object.initializer = initializer;
+    }
     ASSIGN_PTR(scoped_id, ordinary_id);
     return KEFIR_OK;
 }
@@ -654,21 +652,6 @@ kefir_result_t kefir_ast_global_context_define_static_thread_local(
     identifier = kefir_symbol_table_insert(mem, &context->symbols, identifier, NULL);
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate identifier"));
 
-    if (initializer != NULL) {
-        struct kefir_ast_type_qualification qualifications;
-        REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications, type));
-        struct kefir_ast_initializer_properties props;
-        REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
-        type = props.type;
-        REQUIRE(props.constant,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
-                                "Initializers of object with thread local storage duration shall be constant"));
-
-        if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
-            type = kefir_ast_type_qualified(mem, &context->type_bundle, type, qualifications);
-        }
-    }
-
     struct kefir_ast_scoped_identifier *ordinary_id = NULL;
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->object_identifiers, identifier, &ordinary_id);
     if (res == KEFIR_OK) {
@@ -685,9 +668,6 @@ kefir_result_t kefir_ast_global_context_define_static_thread_local(
         REQUIRE_OK(kefir_ast_context_merge_alignment(mem, &ordinary_id->object.alignment, alignment));
         ordinary_id->object.type =
             KEFIR_AST_TYPE_COMPOSITE(mem, &context->type_bundle, context->type_traits, ordinary_id->object.type, type);
-        if (initializer != NULL) {
-            ordinary_id->object.initializer = initializer;
-        }
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
         if (initializer == NULL) {
@@ -706,6 +686,23 @@ kefir_result_t kefir_ast_global_context_define_static_thread_local(
     }
 
     REQUIRE_OK(insert_ordinary_identifier(mem, context, identifier, ordinary_id));
+
+    if (initializer != NULL) {
+        struct kefir_ast_type_qualification qualifications;
+        REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications, type));
+        struct kefir_ast_initializer_properties props;
+        REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
+        type = props.type;
+        REQUIRE(props.constant,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
+                                "Initializers of object with thread local storage duration shall be constant"));
+
+        if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
+            type = kefir_ast_type_qualified(mem, &context->type_bundle, type, qualifications);
+        }
+        ordinary_id->type = type;
+        ordinary_id->object.initializer = initializer;
+    }
     ASSIGN_PTR(scoped_id, ordinary_id);
     return KEFIR_OK;
 }

@@ -4,17 +4,18 @@
 #include "kefir/ir/type_tree.h"
 #include "kefir/ast/constant_expression.h"
 #include "kefir/ast/runtime.h"
+#include "kefir/ast/initializer_traversal.h"
 
-static kefir_size_t resolve_type_layout_offset(const struct kefir_ast_type_layout *layout) {
+static kefir_size_t resolve_identifier_offset(const struct kefir_ast_type_layout *layout) {
     if (layout->parent != NULL) {
-        return resolve_type_layout_offset(layout->parent) + layout->properties.relative_offset;
+        return resolve_identifier_offset(layout->parent) + layout->properties.relative_offset;
     } else {
         return layout->properties.relative_offset;
     }
 }
 
-static kefir_result_t translate_identifier_offset(struct kefir_ast_constant_expression_value *value,
-                                                  struct kefir_ir_data *data, kefir_size_t base_slot) {
+static kefir_result_t translate_pointer_to_identifier(struct kefir_ast_constant_expression_value *value,
+                                                      struct kefir_ir_data *data, kefir_size_t base_slot) {
     switch (value->pointer.scoped_id->object.storage) {
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN:
             REQUIRE_OK(kefir_ir_data_set_pointer(data, base_slot, value->pointer.base.literal, value->pointer.offset));
@@ -25,7 +26,7 @@ static kefir_result_t translate_identifier_offset(struct kefir_ast_constant_expr
                              value->pointer.scoped_id->payload.ptr);
             REQUIRE_OK(
                 kefir_ir_data_set_pointer(data, base_slot, KEFIR_AST_TRANSLATOR_STATIC_VARIABLES_IDENTIFIER,
-                                          resolve_type_layout_offset(identifier_data->layout) + value->pointer.offset));
+                                          resolve_identifier_offset(identifier_data->layout) + value->pointer.offset));
         } break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL:
@@ -42,50 +43,148 @@ static kefir_result_t translate_identifier_offset(struct kefir_ast_constant_expr
     return KEFIR_OK;
 }
 
-static kefir_result_t translate_scalar(struct kefir_mem *mem, const struct kefir_ast_context *context,
-                                       struct kefir_ast_type_layout *type_layout, const struct kefir_ir_type *type,
-                                       struct kefir_ast_initializer *initializer, struct kefir_ir_data *data,
-                                       kefir_size_t base_slot) {
-    struct kefir_ast_node_base *expr = kefir_ast_initializer_head(initializer);
-    if (expr != NULL) {
-        struct kefir_ast_constant_expression_value value;
-        REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, expr, &value));
-        switch (value.klass) {
-            case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_NONE:
-                return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected constant expression value type");
+struct designator_resolve_param {
+    struct kefir_ir_type_tree *ir_type_tree;
+    kefir_size_t *slot;
+};
 
-            case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER:
-                REQUIRE_OK(kefir_ir_data_set_integer(data, base_slot, value.integer));
-                break;
+static kefir_result_t add_designated_slot(struct kefir_ast_type_layout *layout,
+                                          const struct kefir_ast_designator *designator, void *payload) {
+    REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST type layout"));
+    REQUIRE(designator != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid designator"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
 
-            case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT:
-                if (kefir_ir_type_at(type, type_layout->value)->typecode == KEFIR_IR_TYPE_FLOAT32) {
-                    REQUIRE_OK(kefir_ir_data_set_float32(data, base_slot, value.floating_point));
-                } else {
-                    REQUIRE_OK(kefir_ir_data_set_float64(data, base_slot, value.floating_point));
-                }
-                break;
+    ASSIGN_DECL_CAST(struct designator_resolve_param *, param, payload);
 
-            case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS:
-                switch (value.pointer.type) {
-                    case KEFIR_AST_CONSTANT_EXPRESSION_POINTER_IDENTIFER:
-                        REQUIRE_OK(translate_identifier_offset(&value, data, base_slot));
-                        break;
+    const struct kefir_ir_type_tree_node *tree_node;
+    REQUIRE_OK(kefir_ir_type_tree_at(param->ir_type_tree, layout->value, &tree_node));
 
-                    case KEFIR_AST_CONSTANT_EXPRESSION_POINTER_INTEGER:
-                        REQUIRE_OK(kefir_ir_data_set_integer(data, base_slot,
-                                                             value.pointer.base.integral + value.pointer.offset));
-                        break;
-
-                    case KEFIR_AST_CONSTANT_EXPRESSION_POINTER_LITERAL:
-                        return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED,
-                                               "String literal initializers are not supported yet");
-                }
-                break;
-        }
+    if (designator->type == KEFIR_AST_DESIGNATOR_MEMBER) {
+        *param->slot += tree_node->relative_slot;
+    } else if (designator->type == KEFIR_AST_DESIGNATOR_SUBSCRIPT) {
+        *param->slot += tree_node->relative_slot + designator->index * tree_node->slot_width;
     } else {
-        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Scalar initializer list cannot be empty");
+        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected designator type");
     }
+    return KEFIR_OK;
+}
+
+static kefir_result_t resolve_designated_slot(struct kefir_ast_type_layout *root,
+                                              const struct kefir_ast_designator *designator,
+                                              struct kefir_ir_type_tree *ir_type_tree, kefir_size_t base_slot,
+                                              struct kefir_ast_type_layout **resolved_layout, kefir_size_t *slot) {
+    *resolved_layout = root;
+    *slot = base_slot;
+    if (designator != NULL) {
+        struct designator_resolve_param param = {.ir_type_tree = ir_type_tree, .slot = slot};
+        REQUIRE_OK(kefir_ast_type_layout_resolve(root, designator, resolved_layout, add_designated_slot, &param));
+    }
+    return KEFIR_OK;
+}
+
+struct traversal_param {
+    struct kefir_mem *mem;
+    const struct kefir_ast_context *context;
+    struct kefir_ast_type_layout *type_layout;
+    const struct kefir_ir_type *type;
+    struct kefir_ir_data *data;
+    kefir_size_t base_slot;
+    struct kefir_ir_type_tree ir_type_tree;
+};
+
+static kefir_result_t visit_value(const struct kefir_ast_designator *designator, struct kefir_ast_node_base *expression,
+                                  void *payload) {
+    UNUSED(designator);
+    REQUIRE(expression != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST expression node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct traversal_param *, param, payload);
+
+    struct kefir_ast_type_layout *resolved_layout = NULL;
+    kefir_size_t slot = 0;
+    REQUIRE_OK(resolve_designated_slot(param->type_layout, designator, &param->ir_type_tree, param->base_slot,
+                                       &resolved_layout, &slot));
+
+    struct kefir_ast_constant_expression_value value;
+    REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(param->mem, param->context, expression, &value));
+    struct kefir_ir_typeentry *target_typeentry = kefir_ir_type_at(param->type, resolved_layout->value);
+    REQUIRE(target_typeentry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot obtain target IR type entry"));
+    switch (value.klass) {
+        case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_NONE:
+            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected constant expression value type");
+
+        case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER:
+            switch (target_typeentry->typecode) {
+                case KEFIR_IR_TYPE_INT8:
+                case KEFIR_IR_TYPE_INT16:
+                case KEFIR_IR_TYPE_INT32:
+                case KEFIR_IR_TYPE_INT64:
+                case KEFIR_IR_TYPE_BOOL:
+                case KEFIR_IR_TYPE_CHAR:
+                case KEFIR_IR_TYPE_SHORT:
+                case KEFIR_IR_TYPE_INT:
+                case KEFIR_IR_TYPE_LONG:
+                case KEFIR_IR_TYPE_WORD:
+                    REQUIRE_OK(kefir_ir_data_set_integer(param->data, slot, value.integer));
+                    break;
+
+                case KEFIR_IR_TYPE_FLOAT32:
+                    REQUIRE_OK(kefir_ir_data_set_float32(param->data, slot, (kefir_float32_t) value.integer));
+                    break;
+
+                case KEFIR_IR_TYPE_FLOAT64:
+                    REQUIRE_OK(kefir_ir_data_set_float64(param->data, slot, (kefir_float64_t) value.integer));
+                    break;
+
+                default:
+                    return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected target IR type entry code");
+            }
+            break;
+
+        case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT:
+            switch (target_typeentry->typecode) {
+                case KEFIR_IR_TYPE_INT8:
+                case KEFIR_IR_TYPE_INT16:
+                case KEFIR_IR_TYPE_INT32:
+                case KEFIR_IR_TYPE_INT64:
+                case KEFIR_IR_TYPE_BOOL:
+                case KEFIR_IR_TYPE_CHAR:
+                case KEFIR_IR_TYPE_SHORT:
+                case KEFIR_IR_TYPE_INT:
+                case KEFIR_IR_TYPE_LONG:
+                case KEFIR_IR_TYPE_WORD:
+                    REQUIRE_OK(kefir_ir_data_set_integer(param->data, slot, (kefir_int64_t) value.floating_point));
+                    break;
+
+                case KEFIR_IR_TYPE_FLOAT32:
+                    REQUIRE_OK(kefir_ir_data_set_float32(param->data, slot, value.floating_point));
+                    break;
+
+                case KEFIR_IR_TYPE_FLOAT64:
+                    REQUIRE_OK(kefir_ir_data_set_float64(param->data, slot, value.floating_point));
+                    break;
+
+                default:
+                    return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected target IR type entry code");
+            }
+            break;
+
+        case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS:
+            switch (value.pointer.type) {
+                case KEFIR_AST_CONSTANT_EXPRESSION_POINTER_IDENTIFER:
+                    REQUIRE_OK(translate_pointer_to_identifier(&value, param->data, slot));
+                    break;
+
+                case KEFIR_AST_CONSTANT_EXPRESSION_POINTER_INTEGER:
+                    REQUIRE_OK(kefir_ir_data_set_integer(param->data, slot,
+                                                         value.pointer.base.integral + value.pointer.offset));
+                    break;
+
+                case KEFIR_AST_CONSTANT_EXPRESSION_POINTER_LITERAL:
+                    return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "String literal initializers are not supported yet");
+            }
+            break;
+    }
+
     return KEFIR_OK;
 }
 
@@ -101,12 +200,21 @@ kefir_result_t kefir_ast_translate_data_initializer(struct kefir_mem *mem, const
     REQUIRE(initializer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST initializer"));
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR data"));
 
-    const struct kefir_ast_type *ast_type = kefir_ast_unqualified_type(type_layout->type);
+    struct traversal_param param = {
+        .mem = mem, .context = context, .type_layout = type_layout, .type = type, .data = data, .base_slot = base_slot};
 
-    if (KEFIR_AST_TYPE_IS_SCALAR_TYPE(ast_type)) {
-        REQUIRE_OK(translate_scalar(mem, context, type_layout, type, initializer, data, base_slot));
-    } else {
-        return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Non-scalar globals are currently not supported");
-    }
+    struct kefir_ast_initializer_traversal initializer_traversal;
+    KEFIR_AST_INITIALIZER_TRAVERSAL_INIT(&initializer_traversal);
+    initializer_traversal.visit_value = visit_value;
+    initializer_traversal.payload = &param;
+
+    REQUIRE_OK(kefir_ir_type_tree_init(mem, type, &param.ir_type_tree));
+    kefir_result_t res =
+        kefi_ast_traverse_initializer(mem, context, initializer, type_layout->type, &initializer_traversal);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_ir_type_tree_free(mem, &param.ir_type_tree);
+        return res;
+    });
+    REQUIRE_OK(kefir_ir_type_tree_free(mem, &param.ir_type_tree));
     return KEFIR_OK;
 }

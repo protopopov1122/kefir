@@ -121,14 +121,12 @@ static kefir_result_t traverse_aggregate_union(struct kefir_mem *mem, const stru
             REQUIRE_OK(kefir_ast_type_traversal_next_recursive(mem, traversal, &type, &layer));
             REQUIRE_OK(layer_designator(mem, context->symbols, entry->designator, layer, &designator_layer));
 
-            kefir_result_t res = KEFIR_OK;
             INVOKE_TRAVERSAL_CHAIN(&res, initializer_traversal, visit_value, designator_layer,
                                    entry->value->expression);
         } else {
             const struct kefir_ast_type *type = NULL;
             REQUIRE_OK(kefir_ast_type_traversal_next(mem, traversal, &type, &layer));
-            kefir_result_t res =
-                kefir_ast_node_assignable(mem, context, entry->value->expression, kefir_ast_unqualified_type(type));
+            res = kefir_ast_node_assignable(mem, context, entry->value->expression, kefir_ast_unqualified_type(type));
             while (res == KEFIR_NO_MATCH) {
                 REQUIRE_OK(kefir_ast_type_traversal_step(mem, traversal));
                 REQUIRE_OK(kefir_ast_type_traversal_next(mem, traversal, &type, &layer));

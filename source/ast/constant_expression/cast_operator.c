@@ -31,7 +31,10 @@ kefir_result_t kefir_ast_evaluate_cast_operator_node(struct kefir_mem *mem, cons
                 break;
 
             case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS:
-                return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Address to integer cast is not a constant expression");
+                value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS;
+                value->pointer = arg_value.pointer;
+                value->pointer.pointer_node = KEFIR_AST_NODE_BASE(node);
+                break;
 
             case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_NONE:
                 return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Non-evaluated constant expression");
