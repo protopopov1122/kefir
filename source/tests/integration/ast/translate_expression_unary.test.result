@@ -78,13 +78,8 @@
             "type": 3,
             "value": [
                 {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
+                    "class": "undefined",
+                    "count": 3
                 }
             ]
         },
@@ -102,55 +97,8 @@
             "type": 5,
             "value": [
                 {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
+                    "class": "undefined",
+                    "count": 17
                 }
             ]
         },
@@ -159,13 +107,8 @@
             "type": 6,
             "value": [
                 {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
+                    "class": "undefined",
+                    "count": 3
                 }
             ]
         }

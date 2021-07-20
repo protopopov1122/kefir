@@ -61,46 +61,8 @@
                     "length": 14
                 },
                 {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
+                    "class": "undefined",
+                    "count": 14
                 }
             ]
         },
@@ -114,52 +76,8 @@
                     "length": 16
                 },
                 {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
+                    "class": "undefined",
+                    "count": 16
                 },
                 {
                     "class": "string",
@@ -167,49 +85,8 @@
                     "length": 11
                 },
                 {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
+                    "class": "undefined",
+                    "count": 15
                 }
             ]
         }

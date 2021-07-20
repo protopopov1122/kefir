@@ -100,16 +100,8 @@
                     "value": 3
                 },
                 {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
+                    "class": "undefined",
+                    "count": 4
                 },
                 {
                     "class": "integer",
@@ -125,10 +117,8 @@
                     "class": "aggregate"
                 },
                 {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
+                    "class": "undefined",
+                    "count": 2
                 },
                 {
                     "class": "float32",
@@ -190,10 +180,8 @@
                     "value": 99
                 },
                 {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
+                    "class": "undefined",
+                    "count": 2
                 },
                 {
                     "class": "integer",

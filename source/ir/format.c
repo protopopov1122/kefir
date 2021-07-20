@@ -512,13 +512,29 @@ static kefir_result_t format_types(struct kefir_json_output *json, const struct 
 
 static kefir_result_t format_datum(struct kefir_json_output *json, const struct kefir_ir_data *data) {
     REQUIRE_OK(kefir_json_output_array_begin(json));
+    kefir_size_t undefined_count = 0;
     for (kefir_size_t i = 0; i < kefir_vector_length(&data->value); i++) {
         ASSIGN_DECL_CAST(struct kefir_ir_data_value *, value, kefir_vector_at(&data->value, i));
-        REQUIRE_OK(kefir_json_output_object_begin(json));
-        REQUIRE_OK(kefir_json_output_object_key(json, "class"));
+
+        if (value->type != KEFIR_IR_DATA_VALUE_UNDEFINED) {
+            if (undefined_count > 0) {
+                REQUIRE_OK(kefir_json_output_object_begin(json));
+                REQUIRE_OK(kefir_json_output_object_key(json, "class"));
+                REQUIRE_OK(kefir_json_output_string(json, "undefined"));
+                if (undefined_count > 1) {
+                    REQUIRE_OK(kefir_json_output_object_key(json, "count"));
+                    REQUIRE_OK(kefir_json_output_uinteger(json, undefined_count));
+                }
+                REQUIRE_OK(kefir_json_output_object_end(json));
+                undefined_count = 0;
+            }
+            REQUIRE_OK(kefir_json_output_object_begin(json));
+            REQUIRE_OK(kefir_json_output_object_key(json, "class"));
+        }
+
         switch (value->type) {
             case KEFIR_IR_DATA_VALUE_UNDEFINED:
-                REQUIRE_OK(kefir_json_output_string(json, "undefined"));
+                undefined_count++;
                 break;
 
             case KEFIR_IR_DATA_VALUE_INTEGER:
@@ -569,7 +585,21 @@ static kefir_result_t format_datum(struct kefir_json_output *json, const struct 
                 REQUIRE_OK(kefir_json_output_string(json, "aggregate"));
                 break;
         }
+        if (value->type != KEFIR_IR_DATA_VALUE_UNDEFINED) {
+            REQUIRE_OK(kefir_json_output_object_end(json));
+        }
+    }
+
+    if (undefined_count > 0) {
+        REQUIRE_OK(kefir_json_output_object_begin(json));
+        REQUIRE_OK(kefir_json_output_object_key(json, "class"));
+        REQUIRE_OK(kefir_json_output_string(json, "undefined"));
+        if (undefined_count > 1) {
+            REQUIRE_OK(kefir_json_output_object_key(json, "count"));
+            REQUIRE_OK(kefir_json_output_uinteger(json, undefined_count));
+        }
         REQUIRE_OK(kefir_json_output_object_end(json));
+        undefined_count = 0;
     }
     REQUIRE_OK(kefir_json_output_array_end(json));
     return KEFIR_OK;

@@ -112,37 +112,8 @@
             "type": 0,
             "value": [
                 {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
-                },
-                {
-                    "class": "undefined"
+                    "class": "undefined",
+                    "count": 11
                 }
             ]
         }
