@@ -1,0 +1,225 @@
+{
+    "globals": [],
+    "externals": [
+        "variable"
+    ],
+    "types": [
+        {
+            "identifier": 0,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 4,
+                    "element_type": {
+                        "type": "struct",
+                        "fields": [
+                            {
+                                "type": "array",
+                                "length": 5,
+                                "element_type": {
+                                    "type": "int"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "type": "array",
+                    "length": 3,
+                    "element_type": {
+                        "type": "struct",
+                        "fields": [
+                            {
+                                "type": "array",
+                                "length": 5,
+                                "element_type": {
+                                    "type": "int"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": [
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "integer",
+                    "value": 1
+                },
+                {
+                    "class": "integer",
+                    "value": 2
+                },
+                {
+                    "class": "integer",
+                    "value": 3
+                },
+                {
+                    "class": "integer",
+                    "value": 4
+                },
+                {
+                    "class": "integer",
+                    "value": 5
+                },
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "integer",
+                    "value": 6
+                },
+                {
+                    "class": "integer",
+                    "value": -1
+                },
+                {
+                    "class": "undefined",
+                    "count": 3
+                },
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "undefined",
+                    "count": 2
+                },
+                {
+                    "class": "integer",
+                    "value": 11
+                },
+                {
+                    "class": "integer",
+                    "value": 12
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "integer",
+                    "value": 16
+                },
+                {
+                    "class": "integer",
+                    "value": 17
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "integer",
+                    "value": 19
+                },
+                {
+                    "class": "integer",
+                    "value": 20
+                },
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "undefined",
+                    "count": 3
+                },
+                {
+                    "class": "integer",
+                    "value": 1
+                },
+                {
+                    "class": "integer",
+                    "value": 2
+                },
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "integer",
+                    "value": 3
+                },
+                {
+                    "class": "integer",
+                    "value": 4
+                },
+                {
+                    "class": "integer",
+                    "value": 5
+                },
+                {
+                    "class": "integer",
+                    "value": 6
+                },
+                {
+                    "class": "integer",
+                    "value": 7
+                },
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "integer",
+                    "value": 8
+                },
+                {
+                    "class": "integer",
+                    "value": 9
+                },
+                {
+                    "class": "undefined",
+                    "count": 3
+                }
+            ]
+        }
+    ],
+    "function_declarations": [],
+    "functions": []
+}

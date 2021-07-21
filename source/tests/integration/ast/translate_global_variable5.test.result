@@ -1,0 +1,149 @@
+{
+    "globals": [
+        "arr1"
+    ],
+    "externals": [
+        "variable"
+    ],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 5,
+                    "element_type": {
+                        "type": "struct",
+                        "fields": [
+                            {
+                                "type": "int"
+                            },
+                            {
+                                "type": "float"
+                            },
+                            {
+                                "type": "array",
+                                "length": 10,
+                                "element_type": {
+                                    "type": "char"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "identifier": "arr1",
+            "type": 2,
+            "value": [
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "undefined",
+                    "count": 2
+                },
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "integer",
+                    "value": 48
+                },
+                {
+                    "class": "integer",
+                    "value": 97
+                },
+                {
+                    "class": "integer",
+                    "value": 98
+                },
+                {
+                    "class": "integer",
+                    "value": 99
+                },
+                {
+                    "class": "undefined",
+                    "count": 3
+                },
+                {
+                    "class": "integer",
+                    "value": 88
+                },
+                {
+                    "class": "undefined",
+                    "count": 16
+                },
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "integer",
+                    "value": 1
+                },
+                {
+                    "class": "float32",
+                    "value": 0.100000
+                },
+                {
+                    "class": "string",
+                    "content": "hey ho",
+                    "length": 7
+                },
+                {
+                    "class": "undefined",
+                    "count": 10
+                },
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "integer",
+                    "value": 0
+                },
+                {
+                    "class": "undefined",
+                    "count": 12
+                },
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "float32",
+                    "value": 10.000000
+                },
+                {
+                    "class": "undefined",
+                    "count": 11
+                }
+            ]
+        }
+    ],
+    "function_declarations": [],
+    "functions": []
+}

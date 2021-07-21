@@ -128,6 +128,20 @@ static kefir_result_t array_layer_next(const struct kefir_ast_type_traversal *tr
     return KEFIR_OK;
 }
 
+static kefir_result_t array_layer_end(const struct kefir_ast_type_traversal *traversal,
+                                      const struct kefir_ast_type_traversal_layer *layer, void *payload) {
+    UNUSED(traversal);
+    REQUIRE(layer != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid type traversal layer"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid type traversal listener payload"));
+    ASSIGN_DECL_CAST(kefir_size_t *, array_length, payload)
+    if (layer->parent == NULL) {
+        REQUIRE(layer->type == KEFIR_AST_TYPE_TRAVERSAL_ARRAY,
+                KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected top traversal level type to be array"));
+        *array_length = MAX(*array_length, layer->array.index + (layer->init ? 0 : 1));
+    }
+    return KEFIR_OK;
+}
+
 static kefir_result_t analyze_array(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                     const struct kefir_ast_type *type, const struct kefir_ast_initializer *initializer,
                                     struct kefir_ast_initializer_properties *properties) {
@@ -142,6 +156,7 @@ static kefir_result_t analyze_array(struct kefir_mem *mem, const struct kefir_as
         struct kefir_ast_type_traversal traversal;
         REQUIRE_OK(kefir_ast_type_traversal_init(mem, &traversal, type));
         traversal.events.layer_next = array_layer_next;
+        traversal.events.layer_end = array_layer_end;
         traversal.events.payload = &array_length;
         kefir_result_t res = traverse_aggregate_union(mem, context, initializer, &traversal);
         REQUIRE_OK(kefir_ast_type_traversal_free(mem, &traversal));

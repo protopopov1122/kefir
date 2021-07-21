@@ -11,7 +11,7 @@ kefir_result_t kefir_ast_translate_global_scope(struct kefir_mem *, const struct
 
 kefir_result_t kefir_ast_translate_data_initializer(struct kefir_mem *, const struct kefir_ast_context *,
                                                     struct kefir_ir_module *, struct kefir_ast_type_layout *,
-                                                    const struct kefir_ir_type *, struct kefir_ast_initializer *,
+                                                    const struct kefir_ir_type *, const struct kefir_ast_initializer *,
                                                     struct kefir_ir_data *, kefir_size_t);
 
 #endif

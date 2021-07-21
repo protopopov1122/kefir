@@ -210,11 +210,27 @@ static kefir_result_t visit_string_literal(const struct kefir_ast_designator *de
     return KEFIR_OK;
 }
 
+static kefir_result_t visit_initializer_list(const struct kefir_ast_designator *designator,
+                                             const struct kefir_ast_initializer *initializer, void *payload) {
+    REQUIRE(initializer != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST initializer"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct traversal_param *, param, payload);
+
+    struct kefir_ast_type_layout *resolved_layout = NULL;
+    kefir_size_t slot = 0;
+    REQUIRE_OK(resolve_designated_slot(param->type_layout, designator, &param->ir_type_tree, param->base_slot,
+                                       &resolved_layout, &slot));
+
+    REQUIRE_OK(kefir_ast_translate_data_initializer(param->mem, param->context, param->module, resolved_layout,
+                                                    param->type, initializer, param->data, slot));
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_translate_data_initializer(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                     struct kefir_ir_module *module,
                                                     struct kefir_ast_type_layout *type_layout,
                                                     const struct kefir_ir_type *type,
-                                                    struct kefir_ast_initializer *initializer,
+                                                    const struct kefir_ast_initializer *initializer,
                                                     struct kefir_ir_data *data, kefir_size_t base_slot) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
@@ -236,6 +252,7 @@ kefir_result_t kefir_ast_translate_data_initializer(struct kefir_mem *mem, const
     KEFIR_AST_INITIALIZER_TRAVERSAL_INIT(&initializer_traversal);
     initializer_traversal.visit_value = visit_value;
     initializer_traversal.visit_string_literal = visit_string_literal;
+    initializer_traversal.visit_initializer_list = visit_initializer_list;
     initializer_traversal.payload = &param;
 
     REQUIRE_OK(kefir_ir_type_tree_init(mem, type, &param.ir_type_tree));
