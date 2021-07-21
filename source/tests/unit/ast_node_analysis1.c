@@ -156,8 +156,8 @@ DEFINE_CASE(ast_node_analysis_identifiers, "AST node analysis - identifiers") {
 
     ASSERT_IDENTIFIER_LITERAL(&kft_mem, context, "var1", kefir_ast_type_signed_int(), false, true);
     ASSERT_IDENTIFIER_LITERAL(&kft_mem, context, "var2", kefir_ast_type_float(), false, true);
-    ASSERT_IDENTIFIER_LITERAL(&kft_mem, context, "func1", function1_type, false, false);
-    ASSERT_IDENTIFIER_LITERAL(&kft_mem, context, "func2", function2_type, false, false);
+    ASSERT_IDENTIFIER_LITERAL(&kft_mem, context, "func1", function1_type, true, false);
+    ASSERT_IDENTIFIER_LITERAL(&kft_mem, context, "func2", function2_type, true, false);
     ASSERT_IDENTIFIER_LITERAL(&kft_mem, context, "X", context->type_traits->underlying_enumeration_type, true, false);
     ASSERT_IDENTIFIER_LITERAL(&kft_mem, context, "Y", context->type_traits->underlying_enumeration_type, true, false);
 

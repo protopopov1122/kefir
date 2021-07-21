@@ -14,31 +14,44 @@ static kefir_size_t resolve_identifier_offset(const struct kefir_ast_type_layout
     }
 }
 
-static kefir_result_t translate_pointer_to_identifier(struct kefir_ast_constant_expression_value *value,
-                                                      struct kefir_ir_data *data, kefir_size_t base_slot) {
-    switch (value->pointer.scoped_id->object.storage) {
-        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN:
-            REQUIRE_OK(kefir_ir_data_set_pointer(data, base_slot, value->pointer.base.literal, value->pointer.offset));
-            break;
+static kefir_result_t translate_pointer_to_identifier(struct kefir_mem *mem,
+                                                      struct kefir_ast_constant_expression_value *value,
+                                                      struct kefir_ir_module *module, struct kefir_ir_data *data,
+                                                      kefir_size_t base_slot) {
+    if (value->pointer.scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_OBJECT) {
+        switch (value->pointer.scoped_id->object.storage) {
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN: {
+                const char *literal = kefir_ir_module_symbol(mem, module, value->pointer.base.literal, NULL);
+                REQUIRE(literal != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR symbol"));
+                REQUIRE_OK(kefir_ir_data_set_pointer(data, base_slot, literal, value->pointer.offset));
+            } break;
 
-        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC: {
-            ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, identifier_data,
-                             value->pointer.scoped_id->payload.ptr);
-            REQUIRE_OK(
-                kefir_ir_data_set_pointer(data, base_slot, KEFIR_AST_TRANSLATOR_STATIC_VARIABLES_IDENTIFIER,
-                                          resolve_identifier_offset(identifier_data->layout) + value->pointer.offset));
-        } break;
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC: {
+                ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, identifier_data,
+                                 value->pointer.scoped_id->payload.ptr);
+                REQUIRE_OK(kefir_ir_data_set_pointer(
+                    data, base_slot, KEFIR_AST_TRANSLATOR_STATIC_VARIABLES_IDENTIFIER,
+                    resolve_identifier_offset(identifier_data->layout) + value->pointer.offset));
+            } break;
 
-        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL:
-        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL:
-        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL:
-            return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Addressing thread-local variables is not supported yet");
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL:
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL:
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL:
+                return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Addressing thread-local variables is not supported yet");
 
-        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
-        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO:
-        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER:
-        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected storage class of addressed variable");
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO:
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER:
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
+                return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected storage class of addressed variable");
+        }
+    } else {
+        REQUIRE(value->pointer.scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
+                                "Global variables can be initialized by pointer either to an object or to a function"));
+        const char *literal = kefir_ir_module_symbol(mem, module, value->pointer.base.literal, NULL);
+        REQUIRE(literal != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR symbol"));
+        REQUIRE_OK(kefir_ir_data_set_pointer(data, base_slot, literal, value->pointer.offset));
     }
     return KEFIR_OK;
 }
@@ -171,7 +184,7 @@ static kefir_result_t visit_value(const struct kefir_ast_designator *designator,
         case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS:
             switch (value.pointer.type) {
                 case KEFIR_AST_CONSTANT_EXPRESSION_POINTER_IDENTIFER:
-                    REQUIRE_OK(translate_pointer_to_identifier(&value, param->data, slot));
+                    REQUIRE_OK(translate_pointer_to_identifier(param->mem, &value, param->module, param->data, slot));
                     break;
 
                 case KEFIR_AST_CONSTANT_EXPRESSION_POINTER_INTEGER:

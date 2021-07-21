@@ -577,7 +577,7 @@ DEFINE_CASE(ast_node_analysis_compound_literal2, "AST node analysis - compound l
                 kefir_ast_new_expression_initializer(
                     &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")))));
         },
-        type2, false);
+        type2, true);
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(type_name2)));
 
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));

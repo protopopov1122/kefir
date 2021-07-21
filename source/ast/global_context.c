@@ -106,6 +106,7 @@ static kefir_result_t context_define_identifier(
                 REQUIRE_OK(kefir_ast_global_context_define_type(mem, global_ctx, identifier, type, scoped_id));
                 break;
 
+            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN:
                 if (declaration) {
                     REQUIRE_OK(kefir_ast_global_context_declare_function(mem, global_ctx, function_specifier, type,
@@ -119,11 +120,6 @@ static kefir_result_t context_define_identifier(
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC:
                 REQUIRE_OK(kefir_ast_global_context_define_static_function(mem, global_ctx, function_specifier, type,
                                                                            scoped_id));
-                break;
-
-            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
-                REQUIRE_OK(
-                    kefir_ast_global_context_define_function(mem, global_ctx, function_specifier, type, scoped_id));
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL:
