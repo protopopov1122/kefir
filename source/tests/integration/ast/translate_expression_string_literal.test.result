@@ -16,6 +16,23 @@
         }
     ],
     "data": [],
+    "string_literals": [
+        {
+            "id": 0,
+            "literal": "Hello, cruel world!",
+            "length": 20
+        },
+        {
+            "id": 1,
+            "literal": "\n\n\t\n\\'\"```T   E\nST",
+            "length": 19
+        },
+        {
+            "id": 2,
+            "literal": "",
+            "length": 1
+        }
+    ],
     "function_declarations": [
         {
             "identifier": 0,

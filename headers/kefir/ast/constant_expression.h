@@ -28,6 +28,10 @@ typedef struct kefir_ast_constant_expression_pointer {
     union {
         const char *literal;
         kefir_size_t integral;
+        struct {
+            const char *content;
+            kefir_size_t length;
+        } string;
     } base;
 
     const struct kefir_ast_scoped_identifier *scoped_id;

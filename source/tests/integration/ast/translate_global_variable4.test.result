@@ -91,6 +91,23 @@
             ]
         }
     ],
+    "string_literals": [
+        {
+            "id": 0,
+            "literal": "Hello, world!",
+            "length": 14
+        },
+        {
+            "id": 1,
+            "literal": "Goodbye, world!",
+            "length": 16
+        },
+        {
+            "id": 2,
+            "literal": "WTF world?",
+            "length": 11
+        }
+    ],
     "function_declarations": [],
     "functions": []
 }

@@ -20,6 +20,7 @@ typedef enum kefir_ir_data_value_type {
     KEFIR_IR_DATA_VALUE_FLOAT64,
     KEFIR_IR_DATA_VALUE_STRING,
     KEFIR_IR_DATA_VALUE_POINTER,
+    KEFIR_IR_DATA_VALUE_STRING_POINTER,
     KEFIR_IR_DATA_VALUE_RAW,
     KEFIR_IR_DATA_VALUE_AGGREGATE
 } kefir_ir_data_value_type_t;
@@ -31,10 +32,6 @@ typedef struct kefir_ir_data_value {
         kefir_float32_t float32;
         kefir_float64_t float64;
         struct {
-            const char *content;
-            kefir_size_t length;
-        } string;
-        struct {
             const char *reference;
             kefir_int64_t offset;
         } pointer;
@@ -42,6 +39,10 @@ typedef struct kefir_ir_data_value {
             const void *data;
             kefir_size_t length;
         } raw;
+        struct {
+            kefir_id_t id;
+            kefir_int64_t offset;
+        } string_ptr;
     } value;
 } kefir_ir_data_value_t;
 
@@ -59,6 +60,8 @@ kefir_result_t kefir_ir_data_set_float64(struct kefir_ir_data *, kefir_size_t, k
 kefir_result_t kefir_ir_data_set_string(struct kefir_ir_data *, kefir_size_t, const char *, kefir_size_t);
 
 kefir_result_t kefir_ir_data_set_pointer(struct kefir_ir_data *, kefir_size_t, const char *, kefir_size_t);
+
+kefir_result_t kefir_ir_data_set_string_pointer(struct kefir_ir_data *, kefir_size_t, kefir_id_t, kefir_int64_t);
 
 kefir_result_t kefir_ir_data_set_raw(struct kefir_ir_data *, kefir_size_t, const void *, kefir_size_t);
 

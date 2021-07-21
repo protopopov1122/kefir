@@ -33,6 +33,7 @@ extern union union1 union1_1;
 extern const char memory1_1[];
 extern const char pad1_1[];
 extern const char *pointer1_1;
+extern const char *strpointer1_1;
 
 int main(int argc, const char **argv) {
     UNUSED(argc);
@@ -76,5 +77,6 @@ int main(int argc, const char **argv) {
         ASSERT(pad1_1[i] == 0);
     }
     ASSERT(strcmp(pointer1_1, "llo, cruel world!") == 0);
+    ASSERT(strcmp(strpointer1_1, ", cruel world!") == 0);
     return EXIT_SUCCESS;
 }

@@ -82,12 +82,33 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(
         kefir_ast_declarator_specifier_list_append(mem, &decl6->specifiers, kefir_ast_type_specifier_short(mem)));
 
+    struct kefir_ast_declaration *decl7 = kefir_ast_new_declaration(
+        mem,
+        kefir_ast_declarator_pointer(mem,
+                                     kefir_ast_declarator_identifier(mem, global_context.context.symbols, "string1")),
+        kefir_ast_new_expression_initializer(
+            mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(mem, "Some ordinary string"))));
+    REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl7->specifiers, kefir_ast_type_specifier_char(mem)));
+
+    struct kefir_ast_declaration *decl8 = kefir_ast_new_declaration(
+        mem,
+        kefir_ast_declarator_pointer(mem,
+                                     kefir_ast_declarator_identifier(mem, global_context.context.symbols, "string2")),
+        kefir_ast_new_expression_initializer(
+            mem, KEFIR_AST_NODE_BASE(kefir_ast_new_binary_operation(
+                     mem, KEFIR_AST_OPERATION_ADD,
+                     KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(mem, "Another ordinary string")),
+                     KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 4))))));
+    REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl8->specifiers, kefir_ast_type_specifier_char(mem)));
+
     REQUIRE_OK(kefir_ast_analyze_node(mem, &global_context.context, KEFIR_AST_NODE_BASE(decl1)));
     REQUIRE_OK(kefir_ast_analyze_node(mem, &global_context.context, KEFIR_AST_NODE_BASE(decl2)));
     REQUIRE_OK(kefir_ast_analyze_node(mem, &global_context.context, KEFIR_AST_NODE_BASE(decl3)));
     REQUIRE_OK(kefir_ast_analyze_node(mem, &global_context.context, KEFIR_AST_NODE_BASE(decl4)));
     REQUIRE_OK(kefir_ast_analyze_node(mem, &global_context.context, KEFIR_AST_NODE_BASE(decl5)));
     REQUIRE_OK(kefir_ast_analyze_node(mem, &global_context.context, KEFIR_AST_NODE_BASE(decl6)));
+    REQUIRE_OK(kefir_ast_analyze_node(mem, &global_context.context, KEFIR_AST_NODE_BASE(decl7)));
+    REQUIRE_OK(kefir_ast_analyze_node(mem, &global_context.context, KEFIR_AST_NODE_BASE(decl8)));
 
     REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(
         mem, &module, &global_context, &env, kefir_ast_translator_context_type_resolver(&global_translator_context),
@@ -100,6 +121,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(decl4)));
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(decl5)));
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(decl6)));
+    REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(decl7)));
+    REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(decl8)));
 
     REQUIRE_OK(kefir_ir_format_module(stdout, &module));
 

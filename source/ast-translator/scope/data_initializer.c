@@ -179,8 +179,13 @@ static kefir_result_t visit_value(const struct kefir_ast_designator *designator,
                                                          value.pointer.base.integral + value.pointer.offset));
                     break;
 
-                case KEFIR_AST_CONSTANT_EXPRESSION_POINTER_LITERAL:
-                    return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "String literal initializers are not supported yet");
+                case KEFIR_AST_CONSTANT_EXPRESSION_POINTER_LITERAL: {
+                    kefir_id_t id;
+                    REQUIRE_OK(kefir_ir_module_string_literal(param->mem, param->module,
+                                                              value.pointer.base.string.content,
+                                                              value.pointer.base.string.length, &id));
+                    REQUIRE_OK(kefir_ir_data_set_string_pointer(param->data, slot, id, value.pointer.offset));
+                } break;
             }
             break;
     }

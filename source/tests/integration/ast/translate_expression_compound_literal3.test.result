@@ -100,6 +100,13 @@
         }
     ],
     "data": [],
+    "string_literals": [
+        {
+            "id": 0,
+            "literal": "WTF?",
+            "length": 5
+        }
+    ],
     "function_declarations": [
         {
             "identifier": 0,

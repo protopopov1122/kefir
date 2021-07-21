@@ -70,6 +70,13 @@
         }
     ],
     "data": [],
+    "string_literals": [
+        {
+            "id": 0,
+            "literal": "Hey ho!",
+            "length": 8
+        }
+    ],
     "function_declarations": [
         {
             "identifier": 0,

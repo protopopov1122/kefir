@@ -66,8 +66,8 @@ kefir_result_t kefir_ir_data_set_string(struct kefir_ir_data *data, kefir_size_t
     ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&data->value, index));
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to find specified index"));
     entry->type = KEFIR_IR_DATA_VALUE_STRING;
-    entry->value.string.content = value;
-    entry->value.string.length = length;
+    entry->value.raw.data = value;
+    entry->value.raw.length = length;
     return KEFIR_OK;
 }
 
@@ -80,6 +80,18 @@ kefir_result_t kefir_ir_data_set_pointer(struct kefir_ir_data *data, kefir_size_
     entry->type = KEFIR_IR_DATA_VALUE_POINTER;
     entry->value.pointer.reference = reference;
     entry->value.pointer.offset = offset;
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_ir_data_set_string_pointer(struct kefir_ir_data *data, kefir_size_t index, kefir_id_t id,
+                                                kefir_int64_t offset) {
+    REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR data pointer"));
+    REQUIRE(!data->finalized, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot modify finalized data"));
+    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&data->value, index));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to find specified index"));
+    entry->type = KEFIR_IR_DATA_VALUE_STRING_POINTER;
+    entry->value.string_ptr.id = id;
+    entry->value.string_ptr.offset = offset;
     return KEFIR_OK;
 }
 

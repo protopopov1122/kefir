@@ -70,6 +70,18 @@
         }
     ],
     "data": [],
+    "string_literals": [
+        {
+            "id": 0,
+            "literal": "Hello, world!",
+            "length": 14
+        },
+        {
+            "id": 1,
+            "literal": "test...",
+            "length": 8
+        }
+    ],
     "function_declarations": [
         {
             "identifier": 0,

@@ -3,6 +3,8 @@
         "ptr1",
         "ptr2",
         "integer",
+        "string1",
+        "string2",
         "character",
         "floatingPoint2",
         "floatingPoint"
@@ -47,7 +49,7 @@
             "identifier": 5,
             "type": [
                 {
-                    "type": "int"
+                    "type": "word"
                 }
             ]
         },
@@ -55,7 +57,7 @@
             "identifier": 6,
             "type": [
                 {
-                    "type": "char"
+                    "type": "word"
                 }
             ]
         },
@@ -63,12 +65,28 @@
             "identifier": 7,
             "type": [
                 {
-                    "type": "double"
+                    "type": "int"
                 }
             ]
         },
         {
             "identifier": 8,
+            "type": [
+                {
+                    "type": "char"
+                }
+            ]
+        },
+        {
+            "identifier": 9,
+            "type": [
+                {
+                    "type": "double"
+                }
+            ]
+        },
+        {
+            "identifier": 10,
             "type": [
                 {
                     "type": "float"
@@ -109,8 +127,30 @@
             ]
         },
         {
-            "identifier": "character",
+            "identifier": "string1",
+            "type": 5,
+            "value": [
+                {
+                    "class": "string_pointer",
+                    "string": 0,
+                    "offset": 0
+                }
+            ]
+        },
+        {
+            "identifier": "string2",
             "type": 6,
+            "value": [
+                {
+                    "class": "string_pointer",
+                    "string": 1,
+                    "offset": 4
+                }
+            ]
+        },
+        {
+            "identifier": "character",
+            "type": 8,
             "value": [
                 {
                     "class": "integer",
@@ -120,7 +160,7 @@
         },
         {
             "identifier": "floatingPoint2",
-            "type": 7,
+            "type": 9,
             "value": [
                 {
                     "class": "float64",
@@ -130,13 +170,25 @@
         },
         {
             "identifier": "floatingPoint",
-            "type": 8,
+            "type": 10,
             "value": [
                 {
                     "class": "float32",
                     "value": 13.140000
                 }
             ]
+        }
+    ],
+    "string_literals": [
+        {
+            "id": 0,
+            "literal": "Some ordinary string",
+            "length": 21
+        },
+        {
+            "id": 1,
+            "literal": "Another ordinary string",
+            "length": 24
         }
     ],
     "function_declarations": [],

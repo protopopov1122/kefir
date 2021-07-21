@@ -144,6 +144,13 @@
             ]
         }
     ],
+    "string_literals": [
+        {
+            "id": 0,
+            "literal": "hey ho",
+            "length": 7
+        }
+    ],
     "function_declarations": [],
     "functions": []
 }

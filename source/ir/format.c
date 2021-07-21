@@ -558,9 +558,9 @@ static kefir_result_t format_datum(struct kefir_json_output *json, const struct 
             case KEFIR_IR_DATA_VALUE_STRING:
                 REQUIRE_OK(kefir_json_output_string(json, "string"));
                 REQUIRE_OK(kefir_json_output_object_key(json, "content"));
-                REQUIRE_OK(kefir_json_output_string(json, value->value.string.content));
+                REQUIRE_OK(kefir_json_output_string(json, (const char *) value->value.raw.data));
                 REQUIRE_OK(kefir_json_output_object_key(json, "length"));
-                REQUIRE_OK(kefir_json_output_uinteger(json, value->value.string.length));
+                REQUIRE_OK(kefir_json_output_uinteger(json, value->value.raw.length));
                 break;
 
             case KEFIR_IR_DATA_VALUE_POINTER:
@@ -570,6 +570,14 @@ static kefir_result_t format_datum(struct kefir_json_output *json, const struct 
                 REQUIRE_OK(kefir_json_output_object_key(json, "offset"));
                 REQUIRE_OK(kefir_json_output_integer(json, value->value.pointer.offset));
                 break;
+
+            case KEFIR_IR_DATA_VALUE_STRING_POINTER: {
+                REQUIRE_OK(kefir_json_output_string(json, "string_pointer"));
+                REQUIRE_OK(kefir_json_output_object_key(json, "string"));
+                REQUIRE_OK(kefir_json_output_integer(json, value->value.string_ptr.id));
+                REQUIRE_OK(kefir_json_output_object_key(json, "offset"));
+                REQUIRE_OK(kefir_json_output_integer(json, value->value.pointer.offset));
+            } break;
 
             case KEFIR_IR_DATA_VALUE_RAW:
                 REQUIRE_OK(kefir_json_output_string(json, "raw"));
@@ -625,6 +633,29 @@ static kefir_result_t format_data(struct kefir_json_output *json, const struct k
     return KEFIR_OK;
 }
 
+static kefir_result_t format_string_literal(struct kefir_json_output *json, const struct kefir_ir_module *module) {
+    REQUIRE_OK(kefir_json_output_array_begin(json));
+    struct kefir_hashtree_node_iterator iter;
+    kefir_id_t id;
+    const char *literal;
+    kefir_size_t length;
+    kefir_result_t res = KEFIR_OK;
+    for (res = kefir_ir_module_string_literal_iter(module, &iter, &id, &literal, &length); res == KEFIR_OK;
+         res = kefir_ir_module_string_literal_next(&iter, &id, &literal, &length)) {
+        REQUIRE_OK(kefir_json_output_object_begin(json));
+        REQUIRE_OK(kefir_json_output_object_key(json, "id"));
+        REQUIRE_OK(kefir_json_output_integer(json, id));
+        REQUIRE_OK(kefir_json_output_object_key(json, "literal"));
+        REQUIRE_OK(kefir_json_output_string(json, literal));
+        REQUIRE_OK(kefir_json_output_object_key(json, "length"));
+        REQUIRE_OK(kefir_json_output_uinteger(json, length));
+        REQUIRE_OK(kefir_json_output_object_end(json));
+    }
+    REQUIRE(res == KEFIR_ITERATOR_END, res);
+    REQUIRE_OK(kefir_json_output_array_end(json));
+    return KEFIR_OK;
+}
+
 static kefir_result_t format_function_declarations(struct kefir_json_output *json,
                                                    const struct kefir_ir_module *module) {
     REQUIRE_OK(kefir_json_output_array_begin(json));
@@ -659,6 +690,8 @@ kefir_result_t kefir_ir_format_module_json(struct kefir_json_output *json, const
     REQUIRE_OK(format_types(json, module));
     REQUIRE_OK(kefir_json_output_object_key(json, "data"));
     REQUIRE_OK(format_data(json, module));
+    REQUIRE_OK(kefir_json_output_object_key(json, "string_literals"));
+    REQUIRE_OK(format_string_literal(json, module));
     REQUIRE_OK(kefir_json_output_object_key(json, "function_declarations"));
     REQUIRE_OK(format_function_declarations(json, module));
     REQUIRE_OK(kefir_json_output_object_key(json, "functions"));

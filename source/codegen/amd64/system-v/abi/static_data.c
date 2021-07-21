@@ -2,6 +2,7 @@
 #include "kefir/codegen/amd64/system-v/abi.h"
 #include "kefir/codegen/amd64/shortcuts.h"
 #include "kefir/codegen/amd64/system-v/abi/data_layout.h"
+#include "kefir/codegen/amd64/system-v/runtime.h"
 #include "kefir/codegen/util.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
@@ -151,6 +152,19 @@ static kefir_result_t word_static_data(const struct kefir_ir_type *type, kefir_s
                            entry->value.pointer.offset);
             } else {
                 ASMGEN_ARG(&param->codegen->asmgen, "%s", entry->value.pointer.reference);
+            }
+            break;
+
+        case KEFIR_IR_DATA_VALUE_STRING_POINTER:
+            if (entry->value.pointer.offset > 0) {
+                ASMGEN_ARG(&param->codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_STRING_LITERAL " + " KEFIR_INT64_FMT,
+                           entry->value.string_ptr.id, entry->value.string_ptr.offset);
+            } else if (entry->value.pointer.offset < 0) {
+                ASMGEN_ARG(&param->codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_STRING_LITERAL " " KEFIR_INT64_FMT,
+                           entry->value.string_ptr.id, entry->value.string_ptr.offset);
+            } else {
+                ASMGEN_ARG(&param->codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_STRING_LITERAL,
+                           entry->value.string_ptr.id);
             }
             break;
 
@@ -316,7 +330,7 @@ static kefir_result_t array_static_data(const struct kefir_ir_type *type, kefir_
             break;
 
         case KEFIR_IR_DATA_VALUE_STRING:
-            REQUIRE_OK(dump_binary(param, entry->value.string.content, entry->value.string.length));
+            REQUIRE_OK(dump_binary(param, entry->value.raw.data, entry->value.raw.length));
             break;
 
         case KEFIR_IR_DATA_VALUE_RAW: {
@@ -350,7 +364,7 @@ static kefir_result_t memory_static_data(const struct kefir_ir_type *type, kefir
             break;
 
         case KEFIR_IR_DATA_VALUE_STRING:
-            REQUIRE_OK(dump_binary(param, entry->value.string.content, entry->value.string.length));
+            REQUIRE_OK(dump_binary(param, entry->value.raw.data, entry->value.raw.length));
             break;
 
         case KEFIR_IR_DATA_VALUE_RAW: {

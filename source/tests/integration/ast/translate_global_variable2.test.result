@@ -73,6 +73,7 @@
             ]
         }
     ],
+    "string_literals": [],
     "function_declarations": [],
     "functions": []
 }

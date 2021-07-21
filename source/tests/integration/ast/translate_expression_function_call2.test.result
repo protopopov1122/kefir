@@ -162,6 +162,7 @@
         }
     ],
     "data": [],
+    "string_literals": [],
     "function_declarations": [
         {
             "identifier": 0,
