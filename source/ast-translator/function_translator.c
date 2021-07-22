@@ -240,7 +240,7 @@ kefir_result_t kefir_ast_translate_function(struct kefir_mem *mem, const struct 
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator global scope layout"));
     REQUIRE(node->properties.category == KEFIR_AST_NODE_CATEGORY_FUNCTION_DEFINITION &&
                 node->klass->type == KEFIR_AST_FUNCTION_DEFINITION,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected declaration AST node"));
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected function definition AST node"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_function_definition *, function, node->self);
 

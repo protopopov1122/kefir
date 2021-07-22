@@ -284,11 +284,12 @@ static kefir_result_t union_static_data(const struct kefir_ir_type *type, kefir_
     kefir_size_t start_offset = param->offset;
 
     kefir_size_t subindex = index + 1;
+    kefir_bool_t defined = false;
     for (kefir_size_t i = 0; i < (kefir_size_t) typeentry->param; i++) {
         ASSIGN_DECL_CAST(struct kefir_ir_data_value *, subentry, kefir_vector_at(&param->data->value, param->slot));
-        if (subentry->type != KEFIR_IR_DATA_VALUE_UNDEFINED) {
+        if (subentry->type != KEFIR_IR_DATA_VALUE_UNDEFINED && !defined) {
             REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type, param->visitor, payload, subindex, 1));
-            break;
+            defined = true;
         } else {
             param->slot += kefir_ir_type_node_slots(type, subindex);
             subindex += kefir_ir_type_subnodes(type, subindex);
@@ -331,11 +332,13 @@ static kefir_result_t array_static_data(const struct kefir_ir_type *type, kefir_
 
         case KEFIR_IR_DATA_VALUE_STRING:
             REQUIRE_OK(dump_binary(param, entry->value.raw.data, entry->value.raw.length));
+            param->slot += kefir_ir_type_node_slots(type, index) - 1;
             break;
 
         case KEFIR_IR_DATA_VALUE_RAW: {
             ASSIGN_DECL_CAST(const char *, raw, entry->value.raw.data);
             REQUIRE_OK(dump_binary(param, raw, entry->value.raw.length));
+            param->slot += kefir_ir_type_node_slots(type, index) - 1;
         } break;
 
         default:
