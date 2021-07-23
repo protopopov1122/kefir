@@ -24,8 +24,8 @@ $(BIN_DIR)/tests/integration/%: $(BIN_DIR)/tests/integration/%.o $(GENERATED_SOU
 								 $< \
 								 $(KEFIR_INTEGRATION_TEST_LINKED_LIBS)
 
-$(BIN_DIR)/tests/integration/%.done: $(BIN_DIR)/tests/integration/%
-	@$(SOURCE_DIR)/tests/integration/run.sh $^
+$(BIN_DIR)/tests/integration/%.done: $(BIN_DIR)/tests/integration/% $(SOURCE_DIR)/tests/integration/%.result
+	@$(SOURCE_DIR)/tests/integration/run.sh $<
 	@touch $@
 
 $(SOURCE_DIR)/tests/integration/%.test.result: $(BIN_DIR)/tests/integration/%.test

@@ -4,7 +4,7 @@ KEFIR_MAIN_OBJECT_FILES := $(BIN_DIR)/main/main.o
 
 KEFIR_MAIN_LINKED_LIBS=
 ifeq ($(SANITIZE),undefined)
-KEFIR_MAIN_OBJECT_FILES=-fsanitize=undefined
+KEFIR_MAIN_LINKED_LIBS=-fsanitize=undefined
 endif
 
 $(BIN_DIR)/kefir: $(KEFIR_LIB_OBJECT_FILES) $(KEFIR_MAIN_OBJECT_FILES)

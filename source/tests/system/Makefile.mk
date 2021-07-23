@@ -24,6 +24,7 @@ $(BIN_DIR)/tests/system/%.gen: $(BIN_DIR)/tests/system/%.gen.o \
 
 $(BIN_DIR)/tests/system/%.test.done: $(BIN_DIR)/tests/system/%.gen
 	@CC="$(CC)" SANITIZE="$(SANITIZE)" OPT="$(OPT)" DBG="$(DBG)" "$(SOURCE_DIR)/tests/system/run.sh" $^
+	@touch $@
 
 DEPENDENCIES += $(KEFIR_SYSTEM_TESTS_DEPENDENCIES)
 OBJECT_FILES += $(KEFIR_SYSTEM_TESTS_OBJECT_FILES)
