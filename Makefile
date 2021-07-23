@@ -1,21 +1,24 @@
-include Makefile.inc
-include resources/Makefile.inc
-include source/Makefile.inc
-include source/tests/Makefile.inc
-include source/main/Makefile.inc
+include Makefile.mk
+include resources/Makefile.mk
+include source/Makefile.mk
+include source/tests/Makefile.mk
+include source/main/Makefile.mk
 
-.OBJS: $(OBJS)
-.BINS: $(BINS)
+.GENERATED_SOURCES: $(GENERATED_SOURCES)
+.DEPENDENCIES: $(DEPENDENCIES)
+.OBJECT_FILES: $(OBJECT_FILES)
+.BINARIES: $(BINARIES)
+.TESTS: $(TESTS)
 
-all: $(ALL)
+all: .BINARIES
 
-deps: $(DEPS)
-
-test:
+test: .TESTS
 	@echo "Tests succeeded"
 
 clean:
 	@echo "Removing $(BIN_DIR)"
 	@rm -rf $(BIN_DIR)
 
-.PHONY: all deps clean .OBJS .BINS
+generate: .GENERATED_SOURCES
+
+.PHONY: all test clean generate .GENERATED_SOURCES .DEPENDENCIES .OBJECT_FILES .BINARIES .ALL

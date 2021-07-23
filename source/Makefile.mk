@@ -1,4 +1,4 @@
-KEFIR_LIB := $(wildcard \
+KEFIR_LIB_SOURCE := $(wildcard \
 	$(SOURCE_DIR)/ast/*.c \
 	$(SOURCE_DIR)/ast/analyzer/*.c \
 	$(SOURCE_DIR)/ast/analyzer/nodes/*.c \
@@ -16,8 +16,9 @@ KEFIR_LIB := $(wildcard \
 	$(SOURCE_DIR)/codegen/amd64/system-v/abi/builtins/*.c \
 	$(SOURCE_DIR)/ir/*.c \
 	$(SOURCE_DIR)/util/*.c)
-KEFIR_LIB_DEPS := $(KEFIR_LIB:$(SOURCE_DIR)/%.c=$(BIN_DIR)/%.d)
-KEFIR_LIB_OBJS := $(KEFIR_LIB:$(SOURCE_DIR)/%.c=$(BIN_DIR)/%.o)
 
-DEPS += $(KEFIR_LIB_DEPS)
-OBJS += $(KEFIR_LIB_OBJS)
+KEFIR_LIB_DEPENDENCIES := $(KEFIR_LIB_SOURCE:$(SOURCE_DIR)/%.c=$(BIN_DIR)/%.d)
+KEFIR_LIB_OBJECT_FILES := $(KEFIR_LIB_SOURCE:$(SOURCE_DIR)/%.c=$(BIN_DIR)/%.o)
+
+DEPENDENCIES += $(KEFIR_LIB_DEPENDENCIES)
+OBJECT_FILES += $(KEFIR_LIB_OBJECT_FILES)
