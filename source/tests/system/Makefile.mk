@@ -15,15 +15,14 @@ KEFIR_SYSTEM_TEST_LINKED_LIBS=-fsanitize=undefined
 endif
 
 $(BIN_DIR)/tests/system/%.gen: $(BIN_DIR)/tests/system/%.gen.o \
-                               $(GENERATED_SOURCES) \
-							   $(KEFIR_LIB_OBJECT_FILES) \
+							   $(LIBKEFIR_SO) \
 							   $(BIN_DIR)/tests/int_test.o
 	@mkdir -p $(@D)
 	@echo "Linking $@"
-	@$(CC) -o $@ $(KEFIR_LIB_OBJECT_FILES) $(BIN_DIR)/tests/int_test.o $< $(KEFIR_SYSTEM_TEST_LINKED_LIBS)
+	@$(CC) -o $@ $(BIN_DIR)/tests/int_test.o $< $(KEFIR_SYSTEM_TEST_LINKED_LIBS) -L $(LIB_DIR) -lkefir
 
 $(BIN_DIR)/tests/system/%.test.done: $(BIN_DIR)/tests/system/%.gen
-	@CC="$(CC)" SANITIZE="$(SANITIZE)" OPT="$(OPT)" DBG="$(DBG)" "$(SOURCE_DIR)/tests/system/run.sh" $^
+	@CC="$(CC)" LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(LIB_DIR) SANITIZE="$(SANITIZE)" OPT="$(OPT)" DBG="$(DBG)" "$(SOURCE_DIR)/tests/system/run.sh" $^
 	@touch $@
 
 DEPENDENCIES += $(KEFIR_SYSTEM_TESTS_DEPENDENCIES)
