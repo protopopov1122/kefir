@@ -26,4 +26,7 @@ kefir_result_t kefir_ast_translate_declaration(struct kefir_mem *, const struct 
 kefir_result_t kefir_ast_translate_function(struct kefir_mem *, const struct kefir_ast_node_base *,
                                             struct kefir_ast_translator_context *);
 
+kefir_result_t kefir_ast_translate_unit(struct kefir_mem *, const struct kefir_ast_node_base *,
+                                        struct kefir_ast_translator_context *);
+
 #endif

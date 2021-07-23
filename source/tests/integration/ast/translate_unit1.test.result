@@ -1,0 +1,343 @@
+{
+    "globals": [
+        "add_value",
+        "get_value",
+        "set_value",
+        "invoke_callback"
+    ],
+    "externals": [
+        "variable",
+        "value_to_add",
+        "value_callback"
+    ],
+    "types": [
+        {
+            "identifier": 0,
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "type": []
+        },
+        {
+            "identifier": 5,
+            "type": []
+        },
+        {
+            "identifier": 6,
+            "type": []
+        },
+        {
+            "identifier": 7,
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 8,
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 9,
+            "type": []
+        },
+        {
+            "identifier": 10,
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 11,
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 12,
+            "type": []
+        },
+        {
+            "identifier": 13,
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 14,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "long"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 15,
+            "type": []
+        },
+        {
+            "identifier": 16,
+            "type": []
+        },
+        {
+            "identifier": 17,
+            "type": []
+        }
+    ],
+    "data": [
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": [
+                {
+                    "class": "integer",
+                    "value": 0
+                }
+            ]
+        }
+    ],
+    "string_literals": [],
+    "function_declarations": [
+        {
+            "identifier": 0,
+            "name": "add_value",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 1,
+            "name": "get_value",
+            "parameters": [],
+            "vararg": false,
+            "returns": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 2,
+            "name": "set_value",
+            "parameters": [
+                {
+                    "type": "long"
+                }
+            ],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 3,
+            "name": "value_callback",
+            "parameters": [
+                {
+                    "type": "long"
+                }
+            ],
+            "vararg": false,
+            "returns": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "name": "invoke_callback",
+            "parameters": [],
+            "vararg": false,
+            "returns": [
+                {
+                    "type": "long"
+                }
+            ]
+        }
+    ],
+    "functions": [
+        {
+            "identifier": 0,
+            "name": "add_value",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "__kefirrt_module_static_vars"
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "value_to_add"
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "iadd"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store64"
+                },
+                {
+                    "opcode": "pop"
+                }
+            ]
+        },
+        {
+            "identifier": 1,
+            "name": "get_value",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "__kefirrt_module_static_vars"
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "ret"
+                }
+            ]
+        },
+        {
+            "identifier": 2,
+            "name": "set_value",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "long"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store64"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "__kefirrt_module_static_vars"
+                    }
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store64"
+                },
+                {
+                    "opcode": "pop"
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "name": "invoke_callback",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "__kefirrt_module_static_vars"
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "invoke",
+                    "arg": {
+                        "identifier": 3,
+                        "name": "value_callback"
+                    }
+                },
+                {
+                    "opcode": "ret"
+                }
+            ]
+        }
+    ]
+}
