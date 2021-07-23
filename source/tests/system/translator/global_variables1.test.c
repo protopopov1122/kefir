@@ -16,6 +16,7 @@ extern char *str2;
 extern char *str3;
 extern unsigned *int1ptr;
 extern void *fn1ptr;
+extern void *null_ptr;
 
 int main(int argc, const char **argv) {
     UNUSED(argc);
@@ -33,5 +34,6 @@ int main(int argc, const char **argv) {
     ASSERT(*int1ptr == 0x4efd);
     void (*someptr)() = &fn1;
     ASSERT(fn1ptr == *(void **) &someptr);
+    ASSERT(null_ptr == NULL);
     return EXIT_SUCCESS;
 }

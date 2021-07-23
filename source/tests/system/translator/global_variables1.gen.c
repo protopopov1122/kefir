@@ -118,6 +118,15 @@ static kefir_result_t define_variables(struct kefir_mem *mem, const struct kefir
         kefir_ast_declarator_specifier_list_append(mem, &decl11->specifiers, kefir_ast_type_specifier_void(mem)));
     REQUIRE_OK(kefir_list_insert_after(mem, variables, kefir_list_tail(variables), KEFIR_AST_NODE_BASE(decl11)));
 
+    struct kefir_ast_declaration *decl12 = kefir_ast_new_declaration(
+        mem, kefir_ast_declarator_pointer(mem, kefir_ast_declarator_identifier(mem, context->symbols, "null_ptr")),
+        kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 0))));
+    REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl12->specifiers,
+                                                          kefir_ast_storage_class_specifier_extern(mem)));
+    REQUIRE_OK(
+        kefir_ast_declarator_specifier_list_append(mem, &decl12->specifiers, kefir_ast_type_specifier_void(mem)));
+    REQUIRE_OK(kefir_list_insert_after(mem, variables, kefir_list_tail(variables), KEFIR_AST_NODE_BASE(decl12)));
+
     return KEFIR_OK;
 }
 

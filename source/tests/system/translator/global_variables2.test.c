@@ -14,6 +14,7 @@ char **get_str2();
 char **get_str3();
 unsigned **get_int1ptr();
 void **get_fnptr();
+void **get_null_ptr();
 
 int main(int argc, const char **argv) {
     UNUSED(argc);
@@ -31,5 +32,6 @@ int main(int argc, const char **argv) {
     ASSERT(**get_int1ptr() == 0xfefea6);
     unsigned *(*someptr)() = get_integer1;
     ASSERT(*get_fnptr() == *(void **) &someptr);
+    ASSERT(*get_null_ptr() == NULL);
     return EXIT_SUCCESS;
 }
