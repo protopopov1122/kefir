@@ -26,6 +26,7 @@
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <uchar.h>
 #include "kefir/core/base.h"
 
 typedef bool kefir_bool_t;
@@ -33,12 +34,16 @@ typedef char kefir_char_t;
 #define KEFIR_CHAR_MIN CHAR_MIN
 #define KEFIR_CHAR_MAX CHAR_MAX
 
+typedef char32_t kefir_char32_t;
+#define KEFIR_CHAR32_MIN 0
+#define KEFIR_CHAR32_MAX UINT_LEAST32_MIN
+
 typedef int kefir_int_t;
 typedef unsigned int kefir_uint_t;
 #define KEFIR_INT_MIN INT_MIN
 #define KEFIR_INT_MAX INT_MAX
 #define KEFIR_INT_FMT "%i"
-#define KEFIR_UINT_MIN UINT_MAX
+#define KEFIR_UINT_MIN 0
 #define KEFIR_UINT_MAX UINT_MAX
 #define KEFIR_UINT_FMT "%u"
 
@@ -47,7 +52,7 @@ typedef unsigned long kefir_ulong_t;
 #define KEFIR_LONG_MIN LONG_MIN
 #define KEFIR_LONG_MAX LONG_MAX
 #define KEFIR_LONG_FMT "%li"
-#define KEFIR_ULONG_MIN ULONG_MAX
+#define KEFIR_ULONG_MIN 0
 #define KEFIR_ULONG_MAX ULONG_MAX
 #define KEFIR_ULONG_FMT "%lu"
 
@@ -56,7 +61,7 @@ typedef unsigned long long kefir_ulong_long_t;
 #define KEFIR_LONG_LONG_MIN LONG_LONG_MIN
 #define KEFIR_LONG_LONG_MAX LONG_LONG_MAX
 #define KEFIR_LONG_LONG_FMT "%lli"
-#define KEFIR_ULONG_LONG_MIN ULONG_LONG_MAX
+#define KEFIR_ULONG_LONG_MIN 0
 #define KEFIR_ULONG_LONG_MAX ULONG_LONG_MAX
 #define KEFIR_ULONG_LONG_FMT "%llu"
 
@@ -65,7 +70,7 @@ typedef uint8_t kefir_uint8_t;
 #define KEFIR_INT8_MIN INT8_MIN
 #define KEFIR_INT8_MAX INT8_MAX
 #define KEFIR_INT8_FMT "%" PRId8
-#define KEFIR_UINT8_MIN UINT8_MAX
+#define KEFIR_UINT8_MIN 0
 #define KEFIR_UINT8_MAX UINT8_MAX
 #define KEFIR_UINT8_FMT "%" PRIu8
 
@@ -74,7 +79,7 @@ typedef uint16_t kefir_uint16_t;
 #define KEFIR_INT16_MIN INT16_MIN
 #define KEFIR_INT16_MAX INT16_MAX
 #define KEFIR_INT16_FMT "%" PRId16
-#define KEFIR_UINT16_MIN UINT16_MAX
+#define KEFIR_UINT16_MIN 0
 #define KEFIR_UINT16_MAX UINT16_MAX
 #define KEFIR_UINT16_FMT "%" PRIu16
 
@@ -83,7 +88,7 @@ typedef uint32_t kefir_uint32_t;
 #define KEFIR_INT32_MIN INT32_MIN
 #define KEFIR_INT32_MAX INT32_MAX
 #define KEFIR_INT32_FMT "%" PRId32
-#define KEFIR_UINT32_MIN UINT32_MAX
+#define KEFIR_UINT32_MIN 0
 #define KEFIR_UINT32_MAX UINT32_MAX
 #define KEFIR_UINT32_FMT "%" PRIu32
 
@@ -92,7 +97,7 @@ typedef uint64_t kefir_uint64_t;
 #define KEFIR_INT64_MIN INT64_MIN
 #define KEFIR_INT64_MAX INT64_MAX
 #define KEFIR_INT64_FMT "%" PRId64
-#define KEFIR_UINT64_MIN UINT64_MAX
+#define KEFIR_UINT64_MIN 0
 #define KEFIR_UINT64_MAX UINT64_MAX
 #define KEFIR_UINT64_FMT "%" PRIu64
 

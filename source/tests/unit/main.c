@@ -382,6 +382,12 @@ DECLARE_CASE(ast_node_analysis_function_definitions2);
 DECLARE_CASE(ast_node_analysis_function_definitions3);
 DECLARE_CASE(ast_node_analysis_translation_unit1);
 DECLARE_CASE(ast_node_analysis_translation_unit2);
+DECLARE_CASE(parser_lexem_construction_keyword);
+DECLARE_CASE(parser_lexem_construction_identifier);
+DECLARE_CASE(parser_lexem_construction_constants);
+DECLARE_CASE(parser_lexem_construction_string_literals);
+DECLARE_CASE(parser_lexem_construction_punctuator);
+DECLARE_CASE(parser_lexem_move);
 
 TEST_SUITE(
     mainSuite, &amd64_sysv_abi_data_test1, &amd64_sysv_abi_data_test2, &amd64_sysv_abi_data_test3,
@@ -508,7 +514,10 @@ TEST_SUITE(
     &ast_node_analysis_continue_statements5, &ast_node_analysis_return_statements1, &ast_translator_flow_control_point1,
     &ast_nodes_function_definitions1, &ast_nodes_translation_units1, &ast_node_analysis_function_definitions1,
     &ast_node_analysis_function_definitions2, &ast_node_analysis_function_definitions3,
-    &ast_node_analysis_translation_unit1, &ast_node_analysis_translation_unit2);
+    &ast_node_analysis_translation_unit1, &ast_node_analysis_translation_unit2,
+
+    &parser_lexem_construction_keyword, &parser_lexem_construction_identifier, &parser_lexem_construction_constants,
+    &parser_lexem_construction_string_literals, &parser_lexem_construction_punctuator, &parser_lexem_move);
 
 int main(int argc, const char **argv) {
     UNUSED(argc);
