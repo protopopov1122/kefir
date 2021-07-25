@@ -66,3 +66,9 @@ Author: Jevgenijs Protopopovs \
 License:
 * Main body of the compiler - GNU GPLv3
 * Runtime library - BSD 3-clause
+  
+## Useful links
+* [C11 standard final working draft](http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf)
+* [System-V AMD64 ABI](https://gitlab.com/x86-psABIs/x86-64-ABI)
+* [Compiler explorer](https://godbolt.org/)
+* [C reference](https://en.cppreference.com/w/c)
