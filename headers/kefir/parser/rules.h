@@ -1,0 +1,16 @@
+#ifndef KEFIR_PARSER_RULES_H_
+#define KEFIR_PARSER_RULES_H_
+
+#include "kefir/parser/ruleset.h"
+
+#define DECLARE_RULE(_id) extern const struct kefir_parser_rule KEFIR_PARSER_RULE_##_id
+
+DECLARE_RULE(IDENTIFIER);
+DECLARE_RULE(CONSTANT);
+DECLARE_RULE(STRING_LITERAL);
+DECLARE_RULE(GENERIC_SELECTION);
+DECLARE_RULE(PRIMARY_EXPRESSION);
+
+#undef DECLARE_RULE
+
+#endif

@@ -1,0 +1,16 @@
+[
+    {
+        "class": "identifier",
+        "identifier": "X"
+    },
+    {
+        "class": "constant",
+        "type": "integer",
+        "value": 100
+    },
+    {
+        "class": "string_literal",
+        "content": "HELLO, WORLD!\n\n",
+        "length": 17
+    }
+]
