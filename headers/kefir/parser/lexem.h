@@ -28,6 +28,7 @@
 #include "kefir/core/symbol_table.h"
 
 typedef enum kefir_token_class {
+    KEFIR_TOKEN_SENTINEL,
     KEFIR_TOKEN_KEYWORD,
     KEFIR_TOKEN_IDENTIFIER,
     KEFIR_TOKEN_CONSTANT,
@@ -179,6 +180,7 @@ typedef struct kefir_token {
     };
 } kefir_token_t;
 
+kefir_result_t kefir_token_new_sentinel(struct kefir_token *);
 kefir_result_t kefir_token_new_keyword(kefir_keyword_token_t, struct kefir_token *);
 kefir_result_t kefir_token_new_identifier(struct kefir_mem *, struct kefir_symbol_table *, const char *,
                                           struct kefir_token *);
@@ -196,6 +198,7 @@ kefir_result_t kefir_token_new_string_literal(struct kefir_mem *, const char *, 
 kefir_result_t kefir_token_new_punctuator(kefir_punctuator_token_t, struct kefir_token *);
 
 kefir_result_t kefir_token_move(struct kefir_token *, struct kefir_token *);
+kefir_result_t kefir_token_copy(struct kefir_mem *, struct kefir_token *, const struct kefir_token *);
 kefir_result_t kefir_token_free(struct kefir_mem *, struct kefir_token *);
 
 #endif

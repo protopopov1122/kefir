@@ -23,6 +23,13 @@
 #include "kefir/test/unit_test.h"
 #include "kefir/test/util.h"
 
+DEFINE_CASE(parser_lexem_construction_sentinel, "Parser - sentinel tokens") {
+    struct kefir_token token;
+    ASSERT_OK(kefir_token_new_sentinel(&token));
+    ASSERT(token.klass == KEFIR_TOKEN_SENTINEL);
+}
+END_CASE
+
 DEFINE_CASE(parser_lexem_construction_keyword, "Parser - keyword tokens") {
 #define ASSERT_KEYWORD(_keyword)                                 \
     do {                                                         \
@@ -273,6 +280,11 @@ DEFINE_CASE(parser_lexem_move, "Parser - moving tokens") {
     ASSERT_NOK(kefir_token_move(&dst, NULL));
     ASSERT_NOK(kefir_token_move(NULL, &src));
 
+    ASSERT_OK(kefir_token_new_sentinel(&src));
+    ASSERT_OK(kefir_token_move(&dst, &src));
+    ASSERT(dst.klass == KEFIR_TOKEN_SENTINEL);
+    ASSERT_OK(kefir_token_free(&kft_mem, &dst));
+
     ASSERT_OK(kefir_token_new_keyword(KEFIR_KEYWORD_DO, &src));
     ASSERT_OK(kefir_token_move(&dst, &src));
     ASSERT(dst.klass == KEFIR_TOKEN_KEYWORD);
@@ -298,6 +310,70 @@ DEFINE_CASE(parser_lexem_move, "Parser - moving tokens") {
     ASSERT(dst.klass == KEFIR_TOKEN_STRING_LITERAL);
     ASSERT(dst.string_literal.length == sizeof(MSG));
     ASSERT(memcmp(MSG, dst.string_literal.content, sizeof(MSG)) == 0);
+    ASSERT_OK(kefir_token_free(&kft_mem, &dst));
+
+    ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
+}
+END_CASE
+
+DEFINE_CASE(parser_lexem_copy, "Parser - copying tokens") {
+    struct kefir_symbol_table symbols;
+    ASSERT_OK(kefir_symbol_table_init(&symbols));
+
+    struct kefir_token src, dst;
+    ASSERT_NOK(kefir_token_copy(&kft_mem, NULL, NULL));
+    ASSERT_NOK(kefir_token_copy(&kft_mem, &dst, NULL));
+    ASSERT_NOK(kefir_token_copy(&kft_mem, NULL, &src));
+    ASSERT_NOK(kefir_token_copy(NULL, &dst, &src));
+
+    ASSERT_OK(kefir_token_new_sentinel(&src));
+    ASSERT_OK(kefir_token_copy(&kft_mem, &dst, &src));
+    ASSERT(src.klass == KEFIR_TOKEN_SENTINEL);
+    ASSERT(dst.klass == KEFIR_TOKEN_SENTINEL);
+    ASSERT_OK(kefir_token_free(&kft_mem, &src));
+    ASSERT_OK(kefir_token_free(&kft_mem, &dst));
+
+    ASSERT_OK(kefir_token_new_keyword(KEFIR_KEYWORD_DO, &src));
+    ASSERT_OK(kefir_token_copy(&kft_mem, &dst, &src));
+    ASSERT(src.klass == KEFIR_TOKEN_KEYWORD);
+    ASSERT(src.keyword == KEFIR_KEYWORD_DO);
+    ASSERT(dst.klass == KEFIR_TOKEN_KEYWORD);
+    ASSERT(dst.keyword == KEFIR_KEYWORD_DO);
+    ASSERT_OK(kefir_token_free(&kft_mem, &src));
+    ASSERT_OK(kefir_token_free(&kft_mem, &dst));
+
+    ASSERT_OK(kefir_token_new_identifier(&kft_mem, &symbols, "testTEST", &src));
+    ASSERT_OK(kefir_token_copy(&kft_mem, &dst, &src));
+    ASSERT(src.klass == KEFIR_TOKEN_IDENTIFIER);
+    ASSERT(strcmp(src.identifier, "testTEST") == 0);
+    ASSERT(dst.klass == KEFIR_TOKEN_IDENTIFIER);
+    ASSERT(strcmp(dst.identifier, "testTEST") == 0);
+    ASSERT_OK(kefir_token_free(&kft_mem, &src));
+    ASSERT_OK(kefir_token_free(&kft_mem, &dst));
+
+    ASSERT_OK(kefir_token_new_constant_double(7.5926, &src));
+    ASSERT_OK(kefir_token_copy(&kft_mem, &dst, &src));
+    ASSERT(src.klass == KEFIR_TOKEN_CONSTANT);
+    ASSERT(src.constant.type == KEFIR_CONSTANT_TOKEN_DOUBLE);
+    ASSERT(DOUBLE_EQUALS(src.constant.float64, 7.5926, DOUBLE_EPSILON));
+    ASSERT(dst.klass == KEFIR_TOKEN_CONSTANT);
+    ASSERT(dst.constant.type == KEFIR_CONSTANT_TOKEN_DOUBLE);
+    ASSERT(DOUBLE_EQUALS(dst.constant.float64, 7.5926, DOUBLE_EPSILON));
+    ASSERT_OK(kefir_token_free(&kft_mem, &src));
+    ASSERT_OK(kefir_token_free(&kft_mem, &dst));
+
+    const char MSG[] = "\0\0\0TEST...TEST...TEST...HELLO!!!!\0";
+    ASSERT_OK(kefir_token_new_string_literal(&kft_mem, MSG, sizeof(MSG), &src));
+    ASSERT_OK(kefir_token_copy(&kft_mem, &dst, &src));
+    ASSERT(src.klass == KEFIR_TOKEN_STRING_LITERAL);
+    ASSERT(src.string_literal.length == sizeof(MSG));
+    ASSERT(memcmp(MSG, src.string_literal.content, sizeof(MSG)) == 0);
+    ASSERT(src.string_literal.content != MSG);
+    ASSERT(dst.klass == KEFIR_TOKEN_STRING_LITERAL);
+    ASSERT(dst.string_literal.length == sizeof(MSG));
+    ASSERT(memcmp(MSG, dst.string_literal.content, sizeof(MSG)) == 0);
+    ASSERT(dst.string_literal.content != MSG);
+    ASSERT_OK(kefir_token_free(&kft_mem, &src));
     ASSERT_OK(kefir_token_free(&kft_mem, &dst));
 
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));

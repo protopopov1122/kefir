@@ -24,6 +24,12 @@
 #include "kefir/core/error.h"
 #include <string.h>
 
+kefir_result_t kefir_token_new_sentinel(struct kefir_token *token) {
+    REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+    token->klass = KEFIR_TOKEN_SENTINEL;
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_token_new_keyword(kefir_keyword_token_t keyword, struct kefir_token *token) {
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
     token->klass = KEFIR_TOKEN_KEYWORD;
@@ -136,7 +142,7 @@ kefir_result_t kefir_token_new_string_literal(struct kefir_mem *mem, const char 
     REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string literal"));
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
 
-    char *dest_content = KEFIR_MALLOC(mem, length + 1);
+    char *dest_content = KEFIR_MALLOC(mem, length);
     REQUIRE(dest_content != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate string literal"));
     memcpy(dest_content, content, length);
     token->klass = KEFIR_TOKEN_STRING_LITERAL;
@@ -163,6 +169,22 @@ kefir_result_t kefir_token_move(struct kefir_token *dst, struct kefir_token *src
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_token_copy(struct kefir_mem *mem, struct kefir_token *dst, const struct kefir_token *src) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(dst != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to destination token"));
+    REQUIRE(src != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to source token"));
+
+    *dst = *src;
+    if (src->klass == KEFIR_TOKEN_STRING_LITERAL) {
+        char *content = KEFIR_MALLOC(mem, src->string_literal.length);
+        REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate string literal"));
+        memcpy(content, src->string_literal.content, src->string_literal.length);
+        dst->string_literal.content = content;
+        dst->string_literal.length = src->string_literal.length;
+    }
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_token_free(struct kefir_mem *mem, struct kefir_token *token) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
@@ -173,6 +195,7 @@ kefir_result_t kefir_token_free(struct kefir_mem *mem, struct kefir_token *token
             token->string_literal.length = 0;
             break;
 
+        case KEFIR_TOKEN_SENTINEL:
         case KEFIR_TOKEN_KEYWORD:
         case KEFIR_TOKEN_IDENTIFIER:
         case KEFIR_TOKEN_CONSTANT:
