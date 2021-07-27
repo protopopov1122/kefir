@@ -21,7 +21,6 @@
 
 #include "kefir/core/mem.h"
 #include "kefir/parser/parser.h"
-#include "kefir/parser/ruleset.h"
 #include "kefir/ast/format.h"
 #include <stdio.h>
 
@@ -39,7 +38,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "X", &TOKENS[0]));
     REQUIRE_OK(kefir_token_new_constant_int(100, &TOKENS[1]));
     REQUIRE_OK(kefir_token_new_string_literal(mem, MSG, sizeof(MSG), &TOKENS[2]));
-    REQUIRE_OK(kefir_parser_init(mem, &parser, &KEFIR_PARSER_DEFAULT_RULESET, &symbols, &array_stream.stream));
+    REQUIRE_OK(kefir_parser_init(mem, &parser, &symbols, &array_stream.stream));
 
     struct kefir_json_output json;
     REQUIRE_OK(kefir_json_output_init(&json, stdout, 4));
