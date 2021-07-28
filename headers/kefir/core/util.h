@@ -74,6 +74,12 @@
             return _expr_result;                  \
         }                                         \
     } while (0)
+#define REQUIRE_CHAIN_SET(result, condition, expr)   \
+    do {                                             \
+        if (*(result) == KEFIR_OK && !(condition)) { \
+            *(result) = (expr);                      \
+        }                                            \
+    } while (0)
 
 // Evaluates twice
 #define MIN(a, b) ((a) < (b) ? (a) : (b))

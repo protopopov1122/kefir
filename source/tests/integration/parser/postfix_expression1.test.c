@@ -26,7 +26,7 @@
 #include <stdio.h>
 
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
-#define COUNT 5
+#define COUNT 17
     struct kefir_symbol_table symbols;
     struct kefir_token TOKENS[COUNT];
     struct kefir_parser_token_cursor cursor;
@@ -35,12 +35,23 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_symbol_table_init(&symbols));
     REQUIRE_OK(kefir_parser_token_cursor_init(&cursor, TOKENS, COUNT));
 
-    const char MSG[] = "HELLO, WORLD!\n\n\0";
-    REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "X", &TOKENS[0]));
-    REQUIRE_OK(kefir_token_new_constant_int(100, &TOKENS[1]));
-    REQUIRE_OK(kefir_token_new_string_literal(mem, MSG, sizeof(MSG), &TOKENS[2]));
-    REQUIRE_OK(kefir_token_new_constant_float(6.28f, &TOKENS[3]));
-    REQUIRE_OK(kefir_token_new_constant_char('B', &TOKENS[4]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_LEFT_PARENTHESE, &TOKENS[0]));
+    REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "X", &TOKENS[1]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_LEFT_BRACKET, &TOKENS[2]));
+    REQUIRE_OK(kefir_token_new_constant_int(10, &TOKENS[3]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_RIGHT_BRACKET, &TOKENS[4]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_RIGHT_PARENTHESE, &TOKENS[5]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_LEFT_PARENTHESE, &TOKENS[6]));
+    REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "Y", &TOKENS[7]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_DOT, &TOKENS[8]));
+    REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "Z", &TOKENS[9]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_MINUS_MINUS, &TOKENS[10]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_COMMA, &TOKENS[11]));
+    REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "W", &TOKENS[12]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_RIGHT_ARROW, &TOKENS[13]));
+    REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "A", &TOKENS[14]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_PLUS_PLUS, &TOKENS[15]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_RIGHT_PARENTHESE, &TOKENS[16]));
     REQUIRE_OK(kefir_parser_init(mem, &parser, &symbols, &cursor));
 
     struct kefir_json_output json;
@@ -48,11 +59,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_json_output_array_begin(&json));
 
     struct kefir_ast_node_base *node = NULL;
-    for (kefir_size_t i = 0; i < COUNT; i++) {
-        REQUIRE_OK(KEFIR_PARSER_NEXT_EXPRESSION(mem, &parser, &node));
-        REQUIRE_OK(kefir_ast_format(&json, node));
-        REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
-    }
+    REQUIRE_OK(KEFIR_PARSER_NEXT_EXPRESSION(mem, &parser, &node));
+    REQUIRE_OK(kefir_ast_format(&json, node));
+    REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
 
     REQUIRE_OK(kefir_json_output_array_end(&json));
     REQUIRE_OK(kefir_json_output_finalize(&json));

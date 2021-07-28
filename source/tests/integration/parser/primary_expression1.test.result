@@ -12,5 +12,15 @@
         "class": "string_literal",
         "content": "HELLO, WORLD!\n\n",
         "length": 17
+    },
+    {
+        "class": "constant",
+        "type": "float",
+        "value": 6.280000
+    },
+    {
+        "class": "constant",
+        "type": "character",
+        "value": 66
     }
 ]

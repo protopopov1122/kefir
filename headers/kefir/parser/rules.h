@@ -11,7 +11,11 @@ DECLARE_RULE(identifier);
 DECLARE_RULE(constant);
 DECLARE_RULE(string_literal);
 DECLARE_RULE(generic_selection);
+DECLARE_RULE(compound_literal);
 DECLARE_RULE(primary_expression);
+DECLARE_RULE(postfix_expression);
+DECLARE_RULE(expression);
+DECLARE_RULE(assignment_expression);
 
 #undef DECLARE_RULE
 
