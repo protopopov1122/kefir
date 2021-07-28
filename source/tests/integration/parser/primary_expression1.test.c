@@ -21,6 +21,7 @@
 
 #include "kefir/core/mem.h"
 #include "kefir/parser/parser.h"
+#include "kefir/parser/rules.h"
 #include "kefir/ast/format.h"
 #include <stdio.h>
 
@@ -28,17 +29,17 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 #define COUNT 3
     struct kefir_symbol_table symbols;
     struct kefir_token TOKENS[COUNT];
-    struct kefir_token_array_stream array_stream;
+    struct kefir_parser_token_cursor cursor;
     struct kefir_parser parser;
 
     REQUIRE_OK(kefir_symbol_table_init(&symbols));
-    REQUIRE_OK(kefir_token_array_stream_init(&array_stream, TOKENS, COUNT));
+    REQUIRE_OK(kefir_parser_token_cursor_init(&cursor, TOKENS, COUNT));
 
     const char MSG[] = "HELLO, WORLD!\n\n\0";
     REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "X", &TOKENS[0]));
     REQUIRE_OK(kefir_token_new_constant_int(100, &TOKENS[1]));
     REQUIRE_OK(kefir_token_new_string_literal(mem, MSG, sizeof(MSG), &TOKENS[2]));
-    REQUIRE_OK(kefir_parser_init(mem, &parser, &symbols, &array_stream.stream));
+    REQUIRE_OK(kefir_parser_init(mem, &parser, &symbols, &cursor));
 
     struct kefir_json_output json;
     REQUIRE_OK(kefir_json_output_init(&json, stdout, 4));
@@ -46,7 +47,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     struct kefir_ast_node_base *node = NULL;
     for (kefir_size_t i = 0; i < COUNT; i++) {
-        REQUIRE_OK(kefir_parser_next(mem, &parser, &node));
+        REQUIRE_OK(KEFIR_PARSER_RULE_APPLY(mem, &parser, primary_expression, &node));
         REQUIRE_OK(kefir_ast_format(&json, node));
         REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
     }
@@ -55,7 +56,6 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_json_output_finalize(&json));
 
     REQUIRE_OK(kefir_parser_free(mem, &parser));
-    REQUIRE_OK(array_stream.stream.free(mem, &array_stream.stream));
     for (kefir_size_t i = 0; i < COUNT; i++) {
         REQUIRE_OK(kefir_token_free(mem, &TOKENS[i]));
     }

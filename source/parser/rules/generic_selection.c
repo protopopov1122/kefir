@@ -2,13 +2,9 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-kefir_bool_t kefir_parser_match_rule_generic_selection(const struct kefir_parser *parser) {
-    REQUIRE(parser != NULL, false);
-    return false;
-}
-
-kefir_result_t kefir_parser_reduce_rule_generic_selection(struct kefir_mem *mem, struct kefir_parser *parser,
-                                                          struct kefir_ast_node_base **result) {
-    REDUCE_PROLOGUE(mem, parser, result, generic_selection);
-    return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Generic selection parser is not implemented yet");
+kefir_result_t kefir_parser_apply_rule_generic_selection(struct kefir_mem *mem, struct kefir_parser *parser,
+                                                         struct kefir_ast_node_base **result, void *payload) {
+    APPLY_PROLOGUE(mem, parser, result, payload);
+    // TODO Implement generic selection parser
+    return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Generic selection parser is not implemented yet");
 }

@@ -3,10 +3,9 @@
 
 #include "kefir/parser/parser.h"
 
-#define DECLARE_RULE(_id)                                                                    \
-    kefir_bool_t kefir_parser_match_rule_##_id(const struct kefir_parser *);                 \
-    kefir_result_t kefir_parser_reduce_rule_##_id(struct kefir_mem *, struct kefir_parser *, \
-                                                  struct kefir_ast_node_base **)
+#define DECLARE_RULE(_id)                                                                   \
+    kefir_result_t kefir_parser_apply_rule_##_id(struct kefir_mem *, struct kefir_parser *, \
+                                                 struct kefir_ast_node_base **, void *)
 
 DECLARE_RULE(identifier);
 DECLARE_RULE(constant);

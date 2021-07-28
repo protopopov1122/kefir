@@ -19,26 +19,23 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef KEFIR_PARSER_LEXEM_STREAM_H_
-#define KEFIR_PARSER_LEXEM_STREAM_H_
+#ifndef KEFIR_PARSER_CURSOR_H_
+#define KEFIR_PARSER_CURSOR_H_
 
-#include "kefir/core/mem.h"
 #include "kefir/parser/lexem.h"
 
-typedef struct kefir_token_stream {
-    kefir_result_t (*next)(struct kefir_mem *, struct kefir_token_stream *, struct kefir_token *);
-    kefir_result_t (*free)(struct kefir_mem *, struct kefir_token_stream *);
-    void *payload;
-} kefir_token_stream_t;
-
-typedef struct kefir_token_array_stream {
-    struct kefir_token_stream stream;
-    const struct kefir_token *tokens;
-    kefir_size_t index;
+typedef struct kefir_parser_token_cursor {
+    struct kefir_token *tokens;
     kefir_size_t length;
-} kefir_token_array_stream_t;
+    kefir_size_t index;
+    struct kefir_token sentinel;
+} kefir_parser_token_cursor_t;
 
-kefir_result_t kefir_token_array_stream_init(struct kefir_token_array_stream *, const struct kefir_token *,
-                                             kefir_size_t);
+kefir_result_t kefir_parser_token_cursor_init(struct kefir_parser_token_cursor *, struct kefir_token *, kefir_size_t);
+const struct kefir_token *kefir_parser_token_cursor_at(const struct kefir_parser_token_cursor *, kefir_size_t);
+kefir_result_t kefir_parser_token_cursor_reset(struct kefir_parser_token_cursor *);
+kefir_result_t kefir_parser_token_cursor_next(struct kefir_parser_token_cursor *);
+kefir_result_t kefir_parser_token_cursor_save(struct kefir_parser_token_cursor *, kefir_size_t *);
+kefir_result_t kefir_parser_token_cursor_restore(struct kefir_parser_token_cursor *, kefir_size_t);
 
 #endif
