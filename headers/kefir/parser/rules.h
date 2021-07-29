@@ -16,6 +16,8 @@ DECLARE_RULE(primary_expression);
 DECLARE_RULE(postfix_expression);
 DECLARE_RULE(unary_expression);
 DECLARE_RULE(cast_expression);
+DECLARE_RULE(multiplicative_expression);
+DECLARE_RULE(additive_expression);
 DECLARE_RULE(expression);
 DECLARE_RULE(assignment_expression);
 DECLARE_RULE(type_name);

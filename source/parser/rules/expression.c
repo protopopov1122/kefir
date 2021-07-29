@@ -5,6 +5,6 @@
 kefir_result_t KEFIR_PARSER_RULE_FN(expression)(struct kefir_mem *mem, struct kefir_parser *parser,
                                                 struct kefir_ast_node_base **result, void *payload) {
     APPLY_PROLOGUE(mem, parser, result, payload);
-    REQUIRE_OK(KEFIR_PARSER_RULE_APPLY(mem, parser, cast_expression, result));
+    REQUIRE_OK(KEFIR_PARSER_RULE_APPLY(mem, parser, assignment_expression, result));
     return KEFIR_OK;
 }

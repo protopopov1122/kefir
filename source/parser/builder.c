@@ -260,6 +260,35 @@ kefir_result_t kefir_parser_ast_builder_unary_operation(struct kefir_mem *mem, s
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_parser_ast_builder_binary_operation(struct kefir_mem *mem,
+                                                         struct kefir_parser_ast_builder *builder,
+                                                         kefir_ast_binary_operation_type_t operation) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+
+    struct kefir_ast_node_base *right = NULL, *left = NULL;
+    REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &right));
+    kefir_result_t res = kefir_parser_ast_builder_pop(mem, builder, &left);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, right);
+        return res;
+    });
+
+    struct kefir_ast_binary_operation *binary = kefir_ast_new_binary_operation(mem, operation, left, right);
+    REQUIRE_ELSE(binary != NULL, {
+        KEFIR_AST_NODE_FREE(mem, left);
+        KEFIR_AST_NODE_FREE(mem, right);
+        return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate binary operation");
+    });
+
+    res = kefir_parser_ast_builder_push(mem, builder, KEFIR_AST_NODE_BASE(binary));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(binary));
+        return res;
+    });
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_parser_ast_builder_cast(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));

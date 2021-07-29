@@ -1,0 +1,87 @@
+{
+    "class": "binary_operation",
+    "type": "add",
+    "left": {
+        "class": "binary_operation",
+        "type": "subtract",
+        "left": {
+            "class": "binary_operation",
+            "type": "add",
+            "left": {
+                "class": "identifier",
+                "identifier": "a"
+            },
+            "right": {
+                "class": "binary_operation",
+                "type": "multiply",
+                "left": {
+                    "class": "identifier",
+                    "identifier": "b"
+                },
+                "right": {
+                    "class": "identifier",
+                    "identifier": "c"
+                }
+            }
+        },
+        "right": {
+            "class": "binary_operation",
+            "type": "multiply",
+            "left": {
+                "class": "binary_operation",
+                "type": "divide",
+                "left": {
+                    "class": "identifier",
+                    "identifier": "d"
+                },
+                "right": {
+                    "class": "identifier",
+                    "identifier": "e"
+                }
+            },
+            "right": {
+                "class": "binary_operation",
+                "type": "add",
+                "left": {
+                    "class": "unary_operation",
+                    "type": "negate",
+                    "argument": {
+                        "class": "identifier",
+                        "identifier": "a"
+                    }
+                },
+                "right": {
+                    "class": "constant",
+                    "type": "float",
+                    "value": 6.400000
+                }
+            }
+        }
+    },
+    "right": {
+        "class": "function_call",
+        "function": {
+            "class": "identifier",
+            "identifier": "func"
+        },
+        "arguments": [
+            {
+                "class": "binary_operation",
+                "type": "subtract",
+                "left": {
+                    "class": "unary_operation",
+                    "type": "postfix_decrement",
+                    "argument": {
+                        "class": "identifier",
+                        "identifier": "param1"
+                    }
+                },
+                "right": {
+                    "class": "constant",
+                    "type": "unsigned_long",
+                    "value": 1
+                }
+            }
+        ]
+    }
+}

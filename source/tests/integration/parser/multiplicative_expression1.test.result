@@ -1,0 +1,102 @@
+{
+    "class": "binary_operation",
+    "type": "multiply",
+    "left": {
+        "class": "binary_operation",
+        "type": "divide",
+        "left": {
+            "class": "binary_operation",
+            "type": "modulo",
+            "left": {
+                "class": "binary_operation",
+                "type": "divide",
+                "left": {
+                    "class": "binary_operation",
+                    "type": "multiply",
+                    "left": {
+                        "class": "binary_operation",
+                        "type": "multiply",
+                        "left": {
+                            "class": "identifier",
+                            "identifier": "a"
+                        },
+                        "right": {
+                            "class": "identifier",
+                            "identifier": "b"
+                        }
+                    },
+                    "right": {
+                        "class": "identifier",
+                        "identifier": "c"
+                    }
+                },
+                "right": {
+                    "class": "binary_operation",
+                    "type": "modulo",
+                    "left": {
+                        "class": "identifier",
+                        "identifier": "d"
+                    },
+                    "right": {
+                        "class": "identifier",
+                        "identifier": "e"
+                    }
+                }
+            },
+            "right": {
+                "class": "unary_operation",
+                "type": "negate",
+                "argument": {
+                    "class": "constant",
+                    "type": "unsigned_long",
+                    "value": 3
+                }
+            }
+        },
+        "right": {
+            "class": "unary_operation",
+            "type": "prefix_increment",
+            "argument": {
+                "class": "identifier",
+                "identifier": "XYZ"
+            }
+        }
+    },
+    "right": {
+        "class": "unary_operation",
+        "type": "indirection",
+        "argument": {
+            "class": "array_subscript",
+            "array": {
+                "class": "function_call",
+                "function": {
+                    "class": "identifier",
+                    "identifier": "function"
+                },
+                "arguments": [
+                    {
+                        "class": "binary_operation",
+                        "type": "modulo",
+                        "left": {
+                            "class": "unary_operation",
+                            "type": "postfix_increment",
+                            "argument": {
+                                "class": "identifier",
+                                "identifier": "param"
+                            }
+                        },
+                        "right": {
+                            "class": "identifier",
+                            "identifier": "a"
+                        }
+                    }
+                ]
+            },
+            "subscript": {
+                "class": "constant",
+                "type": "integer",
+                "value": 0
+            }
+        }
+    }
+}

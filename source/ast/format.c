@@ -271,6 +271,98 @@ static kefir_result_t visit_unary_operation(const struct kefir_ast_visitor *visi
     return KEFIR_OK;
 }
 
+static kefir_result_t visit_binary_operation(const struct kefir_ast_visitor *visitor,
+                                             const struct kefir_ast_binary_operation *node, void *payload) {
+    UNUSED(visitor);
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST binary operation node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct kefir_json_output *, json, payload);
+
+    REQUIRE_OK(kefir_json_output_object_begin(json));
+    REQUIRE_OK(kefir_json_output_object_key(json, "class"));
+    REQUIRE_OK(kefir_json_output_string(json, "binary_operation"));
+    REQUIRE_OK(kefir_json_output_object_key(json, "type"));
+    switch (node->type) {
+        case KEFIR_AST_OPERATION_ADD:
+            REQUIRE_OK(kefir_json_output_string(json, "add"));
+            break;
+
+        case KEFIR_AST_OPERATION_SUBTRACT:
+            REQUIRE_OK(kefir_json_output_string(json, "subtract"));
+            break;
+
+        case KEFIR_AST_OPERATION_MULTIPLY:
+            REQUIRE_OK(kefir_json_output_string(json, "multiply"));
+            break;
+
+        case KEFIR_AST_OPERATION_DIVIDE:
+            REQUIRE_OK(kefir_json_output_string(json, "divide"));
+            break;
+
+        case KEFIR_AST_OPERATION_MODULO:
+            REQUIRE_OK(kefir_json_output_string(json, "modulo"));
+            break;
+
+        case KEFIR_AST_OPERATION_SHIFT_LEFT:
+            REQUIRE_OK(kefir_json_output_string(json, "shift_left"));
+            break;
+
+        case KEFIR_AST_OPERATION_SHIFT_RIGHT:
+            REQUIRE_OK(kefir_json_output_string(json, "shift_right"));
+            break;
+
+        case KEFIR_AST_OPERATION_LESS:
+            REQUIRE_OK(kefir_json_output_string(json, "less"));
+            break;
+
+        case KEFIR_AST_OPERATION_LESS_EQUAL:
+            REQUIRE_OK(kefir_json_output_string(json, "less_equal"));
+            break;
+
+        case KEFIR_AST_OPERATION_GREATER:
+            REQUIRE_OK(kefir_json_output_string(json, "greater"));
+            break;
+
+        case KEFIR_AST_OPERATION_GREATER_EQUAL:
+            REQUIRE_OK(kefir_json_output_string(json, "greater_equal"));
+            break;
+
+        case KEFIR_AST_OPERATION_EQUAL:
+            REQUIRE_OK(kefir_json_output_string(json, "equal"));
+            break;
+
+        case KEFIR_AST_OPERATION_NOT_EQUAL:
+            REQUIRE_OK(kefir_json_output_string(json, "not_equal"));
+            break;
+
+        case KEFIR_AST_OPERATION_BITWISE_AND:
+            REQUIRE_OK(kefir_json_output_string(json, "bitwise_and"));
+            break;
+
+        case KEFIR_AST_OPERATION_BITWISE_OR:
+            REQUIRE_OK(kefir_json_output_string(json, "bitwise_or"));
+            break;
+
+        case KEFIR_AST_OPERATION_BITWISE_XOR:
+            REQUIRE_OK(kefir_json_output_string(json, "bitwise_xor"));
+            break;
+
+        case KEFIR_AST_OPERATION_LOGICAL_AND:
+            REQUIRE_OK(kefir_json_output_string(json, "and"));
+            break;
+
+        case KEFIR_AST_OPERATION_LOGICAL_OR:
+            REQUIRE_OK(kefir_json_output_string(json, "or"));
+            break;
+    }
+    REQUIRE_OK(kefir_json_output_object_key(json, "left"));
+    REQUIRE_OK(kefir_ast_format(json, node->arg1));
+    REQUIRE_OK(kefir_json_output_object_key(json, "right"));
+    REQUIRE_OK(kefir_ast_format(json, node->arg2));
+    REQUIRE_OK(kefir_json_output_object_end(json));
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_format(struct kefir_json_output *json, const struct kefir_ast_node_base *node) {
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid JSON output"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node"));
@@ -285,6 +377,7 @@ kefir_result_t kefir_ast_format(struct kefir_json_output *json, const struct kef
     visitor.struct_member = visit_struct_member;
     visitor.struct_indirect_member = visit_struct_member;
     visitor.unary_operation = visit_unary_operation;
+    visitor.binary_operation = visit_binary_operation;
     REQUIRE_OK(node->klass->visit(node, &visitor, json));
     return KEFIR_OK;
 }
