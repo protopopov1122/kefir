@@ -1,0 +1,75 @@
+{
+    "class": "binary_operation",
+    "type": "shift_left",
+    "left": {
+        "class": "array_subscript",
+        "array": {
+            "class": "identifier",
+            "identifier": "arr"
+        },
+        "subscript": {
+            "class": "identifier",
+            "identifier": "idx"
+        }
+    },
+    "right": {
+        "class": "binary_operation",
+        "type": "add",
+        "left": {
+            "class": "binary_operation",
+            "type": "shift_right",
+            "left": {
+                "class": "binary_operation",
+                "type": "shift_right",
+                "left": {
+                    "class": "binary_operation",
+                    "type": "shift_left",
+                    "left": {
+                        "class": "binary_operation",
+                        "type": "add",
+                        "left": {
+                            "class": "identifier",
+                            "identifier": "value1"
+                        },
+                        "right": {
+                            "class": "constant",
+                            "type": "integer",
+                            "value": 10
+                        }
+                    },
+                    "right": {
+                        "class": "identifier",
+                        "identifier": "value2"
+                    }
+                },
+                "right": {
+                    "class": "binary_operation",
+                    "type": "multiply",
+                    "left": {
+                        "class": "constant",
+                        "type": "integer",
+                        "value": 1
+                    },
+                    "right": {
+                        "class": "function_call",
+                        "function": {
+                            "class": "identifier",
+                            "identifier": "callback"
+                        },
+                        "arguments": []
+                    }
+                }
+            },
+            "right": {
+                "class": "constant",
+                "type": "integer",
+                "value": 2
+            }
+        },
+        "right": {
+            "class": "constant",
+            "type": "integer",
+            "value": 11
+        }
+    }
+}

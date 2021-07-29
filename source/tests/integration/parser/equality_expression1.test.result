@@ -1,0 +1,102 @@
+{
+    "class": "binary_operation",
+    "type": "equal",
+    "left": {
+        "class": "binary_operation",
+        "type": "less",
+        "left": {
+            "class": "binary_operation",
+            "type": "multiply",
+            "left": {
+                "class": "identifier",
+                "identifier": "left"
+            },
+            "right": {
+                "class": "identifier",
+                "identifier": "x"
+            }
+        },
+        "right": {
+            "class": "constant",
+            "type": "integer",
+            "value": 1
+        }
+    },
+    "right": {
+        "class": "binary_operation",
+        "type": "greater_equal",
+        "left": {
+            "class": "identifier",
+            "identifier": "right"
+        },
+        "right": {
+            "class": "binary_operation",
+            "type": "not_equal",
+            "left": {
+                "class": "function_call",
+                "function": {
+                    "class": "identifier",
+                    "identifier": "fn"
+                },
+                "arguments": [
+                    {
+                        "class": "binary_operation",
+                        "type": "equal",
+                        "left": {
+                            "class": "array_subscript",
+                            "array": {
+                                "class": "identifier",
+                                "identifier": "arr"
+                            },
+                            "subscript": {
+                                "class": "binary_operation",
+                                "type": "not_equal",
+                                "left": {
+                                    "class": "unary_operation",
+                                    "type": "indirection",
+                                    "argument": {
+                                        "class": "identifier",
+                                        "identifier": "idx"
+                                    }
+                                },
+                                "right": {
+                                    "class": "binary_operation",
+                                    "type": "greater",
+                                    "left": {
+                                        "class": "binary_operation",
+                                        "type": "shift_left",
+                                        "left": {
+                                            "class": "identifier",
+                                            "identifier": "test"
+                                        },
+                                        "right": {
+                                            "class": "identifier",
+                                            "identifier": "temp"
+                                        }
+                                    },
+                                    "right": {
+                                        "class": "struct_member",
+                                        "structure": {
+                                            "class": "identifier",
+                                            "identifier": "str"
+                                        },
+                                        "member": "fld"
+                                    }
+                                }
+                            }
+                        },
+                        "right": {
+                            "class": "constant",
+                            "type": "integer",
+                            "value": 0
+                        }
+                    }
+                ]
+            },
+            "right": {
+                "class": "identifier",
+                "identifier": "x"
+            }
+        }
+    }
+}
