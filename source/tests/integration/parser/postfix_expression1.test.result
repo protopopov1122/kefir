@@ -1,43 +1,41 @@
-[
-    {
-        "class": "function_call",
-        "function": {
-            "class": "array_subscript",
-            "array": {
-                "class": "identifier",
-                "identifier": "X"
-            },
-            "subscript": {
-                "class": "constant",
-                "type": "integer",
-                "value": 10
+{
+    "class": "function_call",
+    "function": {
+        "class": "array_subscript",
+        "array": {
+            "class": "identifier",
+            "identifier": "X"
+        },
+        "subscript": {
+            "class": "constant",
+            "type": "integer",
+            "value": 10
+        }
+    },
+    "arguments": [
+        {
+            "class": "unary_operation",
+            "type": "postfix_decrement",
+            "argument": {
+                "class": "struct_member",
+                "structure": {
+                    "class": "identifier",
+                    "identifier": "Y"
+                },
+                "member": "Z"
             }
         },
-        "arguments": [
-            {
-                "class": "unary_operation",
-                "type": "postfix_decrement",
-                "argument": {
-                    "class": "struct_member",
-                    "structure": {
-                        "class": "identifier",
-                        "identifier": "Y"
-                    },
-                    "member": "Z"
-                }
-            },
-            {
-                "class": "unary_operation",
-                "type": "postfix_increment",
-                "argument": {
-                    "class": "indirect_struct_member",
-                    "structure": {
-                        "class": "identifier",
-                        "identifier": "W"
-                    },
-                    "member": "A"
-                }
+        {
+            "class": "unary_operation",
+            "type": "postfix_increment",
+            "argument": {
+                "class": "indirect_struct_member",
+                "structure": {
+                    "class": "identifier",
+                    "identifier": "W"
+                },
+                "member": "A"
             }
-        ]
-    }
-]
+        }
+    ]
+}

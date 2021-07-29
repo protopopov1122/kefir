@@ -1,0 +1,87 @@
+{
+    "class": "function_call",
+    "function": {
+        "class": "function_call",
+        "function": {
+            "class": "indirect_struct_member",
+            "structure": {
+                "class": "unary_operation",
+                "type": "postfix_decrement",
+                "argument": {
+                    "class": "array_subscript",
+                    "array": {
+                        "class": "indirect_struct_member",
+                        "structure": {
+                            "class": "struct_member",
+                            "structure": {
+                                "class": "struct_member",
+                                "structure": {
+                                    "class": "identifier",
+                                    "identifier": "X"
+                                },
+                                "member": "TestTestTest"
+                            },
+                            "member": "Test2"
+                        },
+                        "member": "Test3"
+                    },
+                    "subscript": {
+                        "class": "indirect_struct_member",
+                        "structure": {
+                            "class": "unary_operation",
+                            "type": "postfix_increment",
+                            "argument": {
+                                "class": "identifier",
+                                "identifier": "Y"
+                            }
+                        },
+                        "member": "VALUE"
+                    }
+                }
+            },
+            "member": "function"
+        },
+        "arguments": []
+    },
+    "arguments": [
+        {
+            "class": "array_subscript",
+            "array": {
+                "class": "identifier",
+                "identifier": "var1"
+            },
+            "subscript": {
+                "class": "constant",
+                "type": "integer",
+                "value": 6
+            }
+        },
+        {
+            "class": "constant",
+            "type": "double",
+            "value": 67.600000
+        },
+        {
+            "class": "function_call",
+            "function": {
+                "class": "identifier",
+                "identifier": "fn1"
+            },
+            "arguments": []
+        },
+        {
+            "class": "function_call",
+            "function": {
+                "class": "identifier",
+                "identifier": "fn2"
+            },
+            "arguments": [
+                {
+                    "class": "constant",
+                    "type": "unsigned_integer",
+                    "value": 66
+                }
+            ]
+        }
+    ]
+}

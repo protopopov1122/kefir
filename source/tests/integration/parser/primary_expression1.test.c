@@ -26,21 +26,22 @@
 #include <stdio.h>
 
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
-#define COUNT 5
     struct kefir_symbol_table symbols;
-    struct kefir_token TOKENS[COUNT];
+    struct kefir_token TOKENS[1024];
     struct kefir_parser_token_cursor cursor;
     struct kefir_parser parser;
 
     REQUIRE_OK(kefir_symbol_table_init(&symbols));
-    REQUIRE_OK(kefir_parser_token_cursor_init(&cursor, TOKENS, COUNT));
 
     const char MSG[] = "HELLO, WORLD!\n\n\0";
-    REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "X", &TOKENS[0]));
-    REQUIRE_OK(kefir_token_new_constant_int(100, &TOKENS[1]));
-    REQUIRE_OK(kefir_token_new_string_literal(mem, MSG, sizeof(MSG), &TOKENS[2]));
-    REQUIRE_OK(kefir_token_new_constant_float(6.28f, &TOKENS[3]));
-    REQUIRE_OK(kefir_token_new_constant_char('B', &TOKENS[4]));
+    kefir_size_t counter = 0;
+    REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "X", &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_constant_int(100, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_string_literal(mem, MSG, sizeof(MSG), &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_constant_float(6.28f, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_constant_char('B', &TOKENS[counter++]));
+
+    REQUIRE_OK(kefir_parser_token_cursor_init(&cursor, TOKENS, counter));
     REQUIRE_OK(kefir_parser_init(mem, &parser, &symbols, &cursor));
 
     struct kefir_json_output json;
@@ -48,7 +49,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_json_output_array_begin(&json));
 
     struct kefir_ast_node_base *node = NULL;
-    for (kefir_size_t i = 0; i < COUNT; i++) {
+    for (kefir_size_t i = 0; i < counter; i++) {
         REQUIRE_OK(KEFIR_PARSER_NEXT_EXPRESSION(mem, &parser, &node));
         REQUIRE_OK(kefir_ast_format(&json, node));
         REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
@@ -58,7 +59,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_json_output_finalize(&json));
 
     REQUIRE_OK(kefir_parser_free(mem, &parser));
-    for (kefir_size_t i = 0; i < COUNT; i++) {
+    for (kefir_size_t i = 0; i < counter; i++) {
         REQUIRE_OK(kefir_token_free(mem, &TOKENS[i]));
     }
     REQUIRE_OK(kefir_symbol_table_free(mem, &symbols));
