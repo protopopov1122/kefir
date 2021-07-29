@@ -43,11 +43,11 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "Test3", &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_LEFT_BRACKET, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "Y", &TOKENS[counter++]));
-    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_PLUS_PLUS, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_DOUBLE_PLUS, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_RIGHT_ARROW, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "VALUE", &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_RIGHT_BRACKET, &TOKENS[counter++]));
-    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_MINUS_MINUS, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_DOUBLE_MINUS, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_RIGHT_ARROW, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "function", &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_LEFT_PARENTHESE, &TOKENS[counter++]));

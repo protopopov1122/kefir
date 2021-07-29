@@ -14,7 +14,7 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
             REQUIRE_OK(PARSER_SHIFT(parser));
             REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(cast_expression), NULL));
             REQUIRE_OK(kefir_parser_ast_builder_binary_operation(mem, builder, KEFIR_AST_OPERATION_MULTIPLY));
-        } else if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_DIVIDE)) {
+        } else if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_SLASH)) {
             REQUIRE_OK(PARSER_SHIFT(parser));
             REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(cast_expression), NULL));
             REQUIRE_OK(kefir_parser_ast_builder_binary_operation(mem, builder, KEFIR_AST_OPERATION_DIVIDE));
