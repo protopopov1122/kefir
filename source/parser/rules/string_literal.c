@@ -2,8 +2,8 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-kefir_result_t kefir_parser_apply_rule_string_literal(struct kefir_mem *mem, struct kefir_parser *parser,
-                                                      struct kefir_ast_node_base **result, void *payload) {
+kefir_result_t KEFIR_PARSER_RULE_FN(string_literal)(struct kefir_mem *mem, struct kefir_parser *parser,
+                                                    struct kefir_ast_node_base **result, void *payload) {
     APPLY_PROLOGUE(mem, parser, result, payload);
     REQUIRE(PARSER_TOKEN_IS_STRING_LITERAL(parser, 0),
             KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Expected string literal token"));

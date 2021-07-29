@@ -1,0 +1,80 @@
+[
+    {
+        "class": "unary_operation",
+        "type": "negate",
+        "argument": {
+            "class": "unary_operation",
+            "type": "invert",
+            "argument": {
+                "class": "unary_operation",
+                "type": "prefix_increment",
+                "argument": {
+                    "class": "identifier",
+                    "identifier": "somevar"
+                }
+            }
+        }
+    },
+    {
+        "class": "unary_operation",
+        "type": "logical_negate",
+        "argument": {
+            "class": "unary_operation",
+            "type": "plus",
+            "argument": {
+                "class": "unary_operation",
+                "type": "indirection",
+                "argument": {
+                    "class": "unary_operation",
+                    "type": "address",
+                    "argument": {
+                        "class": "identifier",
+                        "identifier": "someothervar"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "class": "unary_operation",
+        "type": "sizeof",
+        "argument": {
+            "class": "unary_operation",
+            "type": "prefix_decrement",
+            "argument": {
+                "class": "identifier",
+                "identifier": "somevar"
+            }
+        }
+    },
+    {
+        "class": "unary_operation",
+        "type": "invert",
+        "argument": {
+            "class": "function_call",
+            "function": {
+                "class": "identifier",
+                "identifier": "fn1"
+            },
+            "arguments": [
+                {
+                    "class": "unary_operation",
+                    "type": "negate",
+                    "argument": {
+                        "class": "constant",
+                        "type": "long",
+                        "value": 1
+                    }
+                },
+                {
+                    "class": "unary_operation",
+                    "type": "prefix_increment",
+                    "argument": {
+                        "class": "identifier",
+                        "identifier": "var1"
+                    }
+                }
+            ]
+        }
+    }
+]

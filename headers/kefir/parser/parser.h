@@ -21,8 +21,9 @@ kefir_result_t kefir_parser_free(struct kefir_mem *, struct kefir_parser *);
 kefir_result_t kefir_parser_apply(struct kefir_mem *, struct kefir_parser *, struct kefir_ast_node_base **,
                                   kefir_parser_rule_fn_t, void *);
 
+#define KEFIR_PARSER_RULE_FN(_rule) kefir_parser_apply_rule_##_rule
 #define KEFIR_PARSER_RULE_APPLY(_mem, _parser, _rule, _result) \
-    (kefir_parser_apply((_mem), (_parser), (_result), kefir_parser_apply_rule_##_rule, NULL))
+    (kefir_parser_apply((_mem), (_parser), (_result), KEFIR_PARSER_RULE_FN(_rule), NULL))
 #define KEFIR_PARSER_NEXT_EXPRESSION(_mem, _parser, _result) \
     KEFIR_PARSER_RULE_APPLY((_mem), (_parser), assignment_expression, (_result))
 

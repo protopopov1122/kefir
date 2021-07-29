@@ -94,7 +94,7 @@ kefir_result_t kefir_parser_ast_builder_scan(struct kefir_mem *mem, struct kefir
     REQUIRE(rule != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST parser rule"));
 
     struct kefir_ast_node_base *node = NULL;
-    REQUIRE_OK(rule(mem, builder->parser, &node, payload));
+    REQUIRE_OK(kefir_parser_apply(mem, builder->parser, &node, rule, payload));
     kefir_result_t res = kefir_parser_ast_builder_push(mem, builder, node);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_AST_NODE_FREE(mem, node);
@@ -255,6 +255,39 @@ kefir_result_t kefir_parser_ast_builder_unary_operation(struct kefir_mem *mem, s
     kefir_result_t res = kefir_parser_ast_builder_push(mem, builder, KEFIR_AST_NODE_BASE(oper));
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(oper));
+        return res;
+    });
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_parser_ast_builder_cast(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+
+    struct kefir_ast_node_base *type_name = NULL, *expression = NULL;
+    REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &expression));
+    kefir_result_t res = kefir_parser_ast_builder_pop(mem, builder, &type_name);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, expression);
+        return res;
+    });
+    REQUIRE_ELSE(type_name->klass->type == KEFIR_AST_TYPE_NAME, {
+        KEFIR_AST_NODE_FREE(mem, type_name);
+        KEFIR_AST_NODE_FREE(mem, expression);
+        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected type name node");
+    });
+
+    struct kefir_ast_cast_operator *cast =
+        kefir_ast_new_cast_operator(mem, (struct kefir_ast_type_name *) type_name->self, expression);
+    REQUIRE_ELSE(cast != NULL, {
+        KEFIR_AST_NODE_FREE(mem, type_name);
+        KEFIR_AST_NODE_FREE(mem, expression);
+        return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate cast operator");
+    });
+
+    res = kefir_parser_ast_builder_push(mem, builder, KEFIR_AST_NODE_BASE(cast));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(cast));
         return res;
     });
     return KEFIR_OK;
