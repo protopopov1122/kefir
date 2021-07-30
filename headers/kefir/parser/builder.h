@@ -55,5 +55,7 @@ kefir_result_t kefir_parser_ast_builder_binary_operation(struct kefir_mem *, str
                                                          kefir_ast_binary_operation_type_t);
 kefir_result_t kefir_parser_ast_builder_cast(struct kefir_mem *, struct kefir_parser_ast_builder *);
 kefir_result_t kefir_parser_ast_builder_conditional_operator(struct kefir_mem *, struct kefir_parser_ast_builder *);
+kefir_result_t kefir_parser_ast_builder_assignment_operator(struct kefir_mem *, struct kefir_parser_ast_builder *,
+                                                            kefir_ast_assignment_operation_t);
 
 #endif

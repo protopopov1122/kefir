@@ -383,6 +383,70 @@ static kefir_result_t visit_conditional_operator(const struct kefir_ast_visitor 
     return KEFIR_OK;
 }
 
+static kefir_result_t visit_assignment_operator(const struct kefir_ast_visitor *visitor,
+                                                const struct kefir_ast_assignment_operator *node, void *payload) {
+    UNUSED(visitor);
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST assignment operator node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct kefir_json_output *, json, payload);
+
+    REQUIRE_OK(kefir_json_output_object_begin(json));
+    REQUIRE_OK(kefir_json_output_object_key(json, "class"));
+    REQUIRE_OK(kefir_json_output_string(json, "assignment_operator"));
+    REQUIRE_OK(kefir_json_output_object_key(json, "type"));
+    switch (node->operation) {
+        case KEFIR_AST_ASSIGNMENT_SIMPLE:
+            REQUIRE_OK(kefir_json_output_string(json, "simple"));
+            break;
+
+        case KEFIR_AST_ASSIGNMENT_MULTIPLY:
+            REQUIRE_OK(kefir_json_output_string(json, "multiply"));
+            break;
+
+        case KEFIR_AST_ASSIGNMENT_DIVIDE:
+            REQUIRE_OK(kefir_json_output_string(json, "divide"));
+            break;
+
+        case KEFIR_AST_ASSIGNMENT_MODULO:
+            REQUIRE_OK(kefir_json_output_string(json, "modulo"));
+            break;
+
+        case KEFIR_AST_ASSIGNMENT_ADD:
+            REQUIRE_OK(kefir_json_output_string(json, "add"));
+            break;
+
+        case KEFIR_AST_ASSIGNMENT_SUBTRACT:
+            REQUIRE_OK(kefir_json_output_string(json, "subtract"));
+            break;
+
+        case KEFIR_AST_ASSIGNMENT_SHIFT_LEFT:
+            REQUIRE_OK(kefir_json_output_string(json, "shift_left"));
+            break;
+
+        case KEFIR_AST_ASSIGNMENT_SHIFT_RIGHT:
+            REQUIRE_OK(kefir_json_output_string(json, "shift_right"));
+            break;
+
+        case KEFIR_AST_ASSIGNMENT_BITWISE_AND:
+            REQUIRE_OK(kefir_json_output_string(json, "bitwise_and"));
+            break;
+
+        case KEFIR_AST_ASSIGNMENT_BITWISE_OR:
+            REQUIRE_OK(kefir_json_output_string(json, "bitwise_or"));
+            break;
+
+        case KEFIR_AST_ASSIGNMENT_BITWISE_XOR:
+            REQUIRE_OK(kefir_json_output_string(json, "bitwise_xor"));
+            break;
+    }
+    REQUIRE_OK(kefir_json_output_object_key(json, "target"));
+    REQUIRE_OK(kefir_ast_format(json, node->target));
+    REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+    REQUIRE_OK(kefir_ast_format(json, node->value));
+    REQUIRE_OK(kefir_json_output_object_end(json));
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_format(struct kefir_json_output *json, const struct kefir_ast_node_base *node) {
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid JSON output"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node"));
@@ -399,6 +463,7 @@ kefir_result_t kefir_ast_format(struct kefir_json_output *json, const struct kef
     visitor.unary_operation = visit_unary_operation;
     visitor.binary_operation = visit_binary_operation;
     visitor.conditional_operator = visit_conditional_operator;
+    visitor.assignment_operator = visit_assignment_operator;
     REQUIRE_OK(node->klass->visit(node, &visitor, json));
     return KEFIR_OK;
 }
