@@ -1,0 +1,110 @@
+{
+    "class": "conditional_operator",
+    "condition": {
+        "class": "binary_operation",
+        "type": "logical_and",
+        "left": {
+            "class": "function_call",
+            "function": {
+                "class": "identifier",
+                "identifier": "funBOOL"
+            },
+            "arguments": [
+                {
+                    "class": "binary_operation",
+                    "type": "subtract",
+                    "left": {
+                        "class": "identifier",
+                        "identifier": "param1"
+                    },
+                    "right": {
+                        "class": "constant",
+                        "type": "integer",
+                        "value": 5
+                    }
+                },
+                {
+                    "class": "conditional_operator",
+                    "condition": {
+                        "class": "identifier",
+                        "identifier": "condition1"
+                    },
+                    "thenBranch": {
+                        "class": "unary_operation",
+                        "type": "negate",
+                        "argument": {
+                            "class": "constant",
+                            "type": "integer",
+                            "value": 9
+                        }
+                    },
+                    "elseBranch": {
+                        "class": "unary_operation",
+                        "type": "invert",
+                        "argument": {
+                            "class": "constant",
+                            "type": "integer",
+                            "value": 10
+                        }
+                    }
+                }
+            ]
+        },
+        "right": {
+            "class": "identifier",
+            "identifier": "condition2"
+        }
+    },
+    "thenBranch": {
+        "class": "identifier",
+        "identifier": "res1"
+    },
+    "elseBranch": {
+        "class": "conditional_operator",
+        "condition": {
+            "class": "binary_operation",
+            "type": "bitwise_or",
+            "left": {
+                "class": "identifier",
+                "identifier": "res2"
+            },
+            "right": {
+                "class": "identifier",
+                "identifier": "condition2"
+            }
+        },
+        "thenBranch": {
+            "class": "array_subscript",
+            "array": {
+                "class": "identifier",
+                "identifier": "array"
+            },
+            "subscript": {
+                "class": "conditional_operator",
+                "condition": {
+                    "class": "identifier",
+                    "identifier": "condition3"
+                },
+                "thenBranch": {
+                    "class": "constant",
+                    "type": "integer",
+                    "value": 0
+                },
+                "elseBranch": {
+                    "class": "unary_operation",
+                    "type": "invert",
+                    "argument": {
+                        "class": "constant",
+                        "type": "integer",
+                        "value": 0
+                    }
+                }
+            }
+        },
+        "elseBranch": {
+            "class": "constant",
+            "type": "integer",
+            "value": 10
+        }
+    }
+}

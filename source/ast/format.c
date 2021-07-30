@@ -363,6 +363,26 @@ static kefir_result_t visit_binary_operation(const struct kefir_ast_visitor *vis
     return KEFIR_OK;
 }
 
+static kefir_result_t visit_conditional_operator(const struct kefir_ast_visitor *visitor,
+                                                 const struct kefir_ast_conditional_operator *node, void *payload) {
+    UNUSED(visitor);
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST conditional operation node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct kefir_json_output *, json, payload);
+
+    REQUIRE_OK(kefir_json_output_object_begin(json));
+    REQUIRE_OK(kefir_json_output_object_key(json, "class"));
+    REQUIRE_OK(kefir_json_output_string(json, "conditional_operator"));
+    REQUIRE_OK(kefir_json_output_object_key(json, "condition"));
+    REQUIRE_OK(kefir_ast_format(json, node->condition));
+    REQUIRE_OK(kefir_json_output_object_key(json, "thenBranch"));
+    REQUIRE_OK(kefir_ast_format(json, node->expr1));
+    REQUIRE_OK(kefir_json_output_object_key(json, "elseBranch"));
+    REQUIRE_OK(kefir_ast_format(json, node->expr2));
+    REQUIRE_OK(kefir_json_output_object_end(json));
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_format(struct kefir_json_output *json, const struct kefir_ast_node_base *node) {
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid JSON output"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node"));
@@ -378,6 +398,7 @@ kefir_result_t kefir_ast_format(struct kefir_json_output *json, const struct kef
     visitor.struct_indirect_member = visit_struct_member;
     visitor.unary_operation = visit_unary_operation;
     visitor.binary_operation = visit_binary_operation;
+    visitor.conditional_operator = visit_conditional_operator;
     REQUIRE_OK(node->klass->visit(node, &visitor, json));
     return KEFIR_OK;
 }

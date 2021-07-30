@@ -26,6 +26,7 @@ DECLARE_RULE(bitwise_xor_expression);
 DECLARE_RULE(bitwise_or_expression);
 DECLARE_RULE(logical_and_expression);
 DECLARE_RULE(logical_or_expression);
+DECLARE_RULE(conditional_expression);
 DECLARE_RULE(expression);
 DECLARE_RULE(assignment_expression);
 DECLARE_RULE(type_name);
