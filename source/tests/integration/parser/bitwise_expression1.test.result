@@ -1,0 +1,115 @@
+{
+    "class": "binary_operation",
+    "type": "bitwise_or",
+    "left": {
+        "class": "binary_operation",
+        "type": "bitwise_xor",
+        "left": {
+            "class": "binary_operation",
+            "type": "bitwise_xor",
+            "left": {
+                "class": "binary_operation",
+                "type": "bitwise_and",
+                "left": {
+                    "class": "binary_operation",
+                    "type": "add",
+                    "left": {
+                        "class": "identifier",
+                        "identifier": "something"
+                    },
+                    "right": {
+                        "class": "constant",
+                        "type": "character",
+                        "value": 85
+                    }
+                },
+                "right": {
+                    "class": "function_call",
+                    "function": {
+                        "class": "identifier",
+                        "identifier": "function"
+                    },
+                    "arguments": [
+                        {
+                            "class": "binary_operation",
+                            "type": "bitwise_or",
+                            "left": {
+                                "class": "identifier",
+                                "identifier": "param"
+                            },
+                            "right": {
+                                "class": "binary_operation",
+                                "type": "bitwise_and",
+                                "left": {
+                                    "class": "constant",
+                                    "type": "unsigned_integer",
+                                    "value": 5
+                                },
+                                "right": {
+                                    "class": "binary_operation",
+                                    "type": "shift_right",
+                                    "left": {
+                                        "class": "identifier",
+                                        "identifier": "param2"
+                                    },
+                                    "right": {
+                                        "class": "constant",
+                                        "type": "unsigned_integer",
+                                        "value": 2
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "class": "binary_operation",
+                            "type": "bitwise_or",
+                            "left": {
+                                "class": "array_subscript",
+                                "array": {
+                                    "class": "identifier",
+                                    "identifier": "arr"
+                                },
+                                "subscript": {
+                                    "class": "binary_operation",
+                                    "type": "bitwise_or",
+                                    "left": {
+                                        "class": "identifier",
+                                        "identifier": "idx"
+                                    },
+                                    "right": {
+                                        "class": "identifier",
+                                        "identifier": "sth"
+                                    }
+                                }
+                            },
+                            "right": {
+                                "class": "identifier",
+                                "identifier": "sth"
+                            }
+                        }
+                    ]
+                }
+            },
+            "right": {
+                "class": "binary_operation",
+                "type": "bitwise_and",
+                "left": {
+                    "class": "identifier",
+                    "identifier": "value"
+                },
+                "right": {
+                    "class": "identifier",
+                    "identifier": "bitmask"
+                }
+            }
+        },
+        "right": {
+            "class": "identifier",
+            "identifier": "caret"
+        }
+    },
+    "right": {
+        "class": "identifier",
+        "identifier": "finally"
+    }
+}

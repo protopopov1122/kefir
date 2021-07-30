@@ -1,0 +1,88 @@
+{
+    "class": "binary_operation",
+    "type": "logical_or",
+    "left": {
+        "class": "binary_operation",
+        "type": "logical_and",
+        "left": {
+            "class": "binary_operation",
+            "type": "logical_or",
+            "left": {
+                "class": "identifier",
+                "identifier": "condition1"
+            },
+            "right": {
+                "class": "binary_operation",
+                "type": "logical_and",
+                "left": {
+                    "class": "binary_operation",
+                    "type": "logical_and",
+                    "left": {
+                        "class": "function_call",
+                        "function": {
+                            "class": "identifier",
+                            "identifier": "fn1"
+                        },
+                        "arguments": []
+                    },
+                    "right": {
+                        "class": "identifier",
+                        "identifier": "condition2"
+                    }
+                },
+                "right": {
+                    "class": "array_subscript",
+                    "array": {
+                        "class": "identifier",
+                        "identifier": "array"
+                    },
+                    "subscript": {
+                        "class": "binary_operation",
+                        "type": "logical_or",
+                        "left": {
+                            "class": "identifier",
+                            "identifier": "one"
+                        },
+                        "right": {
+                            "class": "identifier",
+                            "identifier": "two"
+                        }
+                    }
+                }
+            }
+        },
+        "right": {
+            "class": "binary_operation",
+            "type": "bitwise_or",
+            "left": {
+                "class": "indirect_struct_member",
+                "structure": {
+                    "class": "struct_member",
+                    "structure": {
+                        "class": "identifier",
+                        "identifier": "structure"
+                    },
+                    "member": "field1"
+                },
+                "member": "field2"
+            },
+            "right": {
+                "class": "unary_operation",
+                "type": "postfix_decrement",
+                "argument": {
+                    "class": "identifier",
+                    "identifier": "wtf"
+                }
+            }
+        }
+    },
+    "right": {
+        "class": "unary_operation",
+        "type": "invert",
+        "argument": {
+            "class": "constant",
+            "type": "unsigned_integer",
+            "value": 2
+        }
+    }
+}

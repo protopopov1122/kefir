@@ -348,11 +348,11 @@ static kefir_result_t visit_binary_operation(const struct kefir_ast_visitor *vis
             break;
 
         case KEFIR_AST_OPERATION_LOGICAL_AND:
-            REQUIRE_OK(kefir_json_output_string(json, "and"));
+            REQUIRE_OK(kefir_json_output_string(json, "logical_and"));
             break;
 
         case KEFIR_AST_OPERATION_LOGICAL_OR:
-            REQUIRE_OK(kefir_json_output_string(json, "or"));
+            REQUIRE_OK(kefir_json_output_string(json, "logical_or"));
             break;
     }
     REQUIRE_OK(kefir_json_output_object_key(json, "left"));
