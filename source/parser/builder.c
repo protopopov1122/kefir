@@ -386,3 +386,62 @@ kefir_result_t kefir_parser_ast_builder_assignment_operator(struct kefir_mem *me
     });
     return KEFIR_OK;
 }
+
+kefir_result_t kefir_parser_ast_builder_comma_operator(struct kefir_mem *mem,
+                                                       struct kefir_parser_ast_builder *builder) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+
+    struct kefir_ast_node_base *expr1 = NULL, *expr2 = NULL;
+    REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &expr2));
+    kefir_result_t res = kefir_parser_ast_builder_pop(mem, builder, &expr1);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, expr2);
+        return res;
+    });
+
+    if (expr1->klass->type == KEFIR_AST_COMMA_OPERATOR) {
+        ASSIGN_DECL_CAST(struct kefir_ast_comma_operator *, comma, expr1->self);
+        res = kefir_ast_comma_append(mem, comma, expr2);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            KEFIR_AST_NODE_FREE(mem, expr1);
+            KEFIR_AST_NODE_FREE(mem, expr2);
+            return res;
+        });
+
+        res = kefir_parser_ast_builder_push(mem, builder, expr1);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            KEFIR_AST_NODE_FREE(mem, expr1);
+            return res;
+        });
+    } else {
+        struct kefir_ast_comma_operator *comma = kefir_ast_new_comma_operator(mem);
+        REQUIRE_ELSE(comma != NULL, {
+            KEFIR_AST_NODE_FREE(mem, expr1);
+            KEFIR_AST_NODE_FREE(mem, expr2);
+            return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate comma operator");
+        });
+
+        res = kefir_ast_comma_append(mem, comma, expr1);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(comma));
+            KEFIR_AST_NODE_FREE(mem, expr1);
+            KEFIR_AST_NODE_FREE(mem, expr2);
+            return res;
+        });
+
+        res = kefir_ast_comma_append(mem, comma, expr2);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(comma));
+            KEFIR_AST_NODE_FREE(mem, expr2);
+            return res;
+        });
+
+        res = kefir_parser_ast_builder_push(mem, builder, KEFIR_AST_NODE_BASE(comma));
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(comma));
+            return res;
+        });
+    }
+    return KEFIR_OK;
+}

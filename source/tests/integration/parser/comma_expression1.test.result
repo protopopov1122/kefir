@@ -1,0 +1,147 @@
+{
+    "class": "comma_operator",
+    "expressions": [
+        {
+            "class": "assignment_operator",
+            "type": "multiply",
+            "target": {
+                "class": "array_subscript",
+                "array": {
+                    "class": "identifier",
+                    "identifier": "array"
+                },
+                "subscript": {
+                    "class": "function_call",
+                    "function": {
+                        "class": "identifier",
+                        "identifier": "fnction"
+                    },
+                    "arguments": [
+                        {
+                            "class": "constant",
+                            "type": "integer",
+                            "value": 0
+                        },
+                        {
+                            "class": "unary_operation",
+                            "type": "logical_negate",
+                            "argument": {
+                                "class": "unary_operation",
+                                "type": "plus",
+                                "argument": {
+                                    "class": "identifier",
+                                    "identifier": "index"
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "value": {
+                "class": "unary_operation",
+                "type": "prefix_decrement",
+                "argument": {
+                    "class": "unary_operation",
+                    "type": "indirection",
+                    "argument": {
+                        "class": "identifier",
+                        "identifier": "increase"
+                    }
+                }
+            }
+        },
+        {
+            "class": "identifier",
+            "identifier": "b"
+        },
+        {
+            "class": "function_call",
+            "function": {
+                "class": "identifier",
+                "identifier": "func1"
+            },
+            "arguments": [
+                {
+                    "class": "constant",
+                    "type": "integer",
+                    "value": 0
+                },
+                {
+                    "class": "constant",
+                    "type": "integer",
+                    "value": 1
+                },
+                {
+                    "class": "unary_operation",
+                    "type": "negate",
+                    "argument": {
+                        "class": "comma_operator",
+                        "expressions": [
+                            {
+                                "class": "constant",
+                                "type": "integer",
+                                "value": 2
+                            },
+                            {
+                                "class": "constant",
+                                "type": "integer",
+                                "value": 3
+                            },
+                            {
+                                "class": "constant",
+                                "type": "integer",
+                                "value": 4
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "class": "comma_operator",
+            "expressions": [
+                {
+                    "class": "unary_operation",
+                    "type": "indirection",
+                    "argument": {
+                        "class": "identifier",
+                        "identifier": "array"
+                    }
+                },
+                {
+                    "class": "identifier",
+                    "identifier": "index"
+                },
+                {
+                    "class": "conditional_operator",
+                    "condition": {
+                        "class": "identifier",
+                        "identifier": "condition"
+                    },
+                    "thenBranch": {
+                        "class": "comma_operator",
+                        "expressions": [
+                            {
+                                "class": "constant",
+                                "type": "integer",
+                                "value": 0
+                            },
+                            {
+                                "class": "identifier",
+                                "identifier": "index"
+                            }
+                        ]
+                    },
+                    "elseBranch": {
+                        "class": "unary_operation",
+                        "type": "invert",
+                        "argument": {
+                            "class": "identifier",
+                            "identifier": "condition"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
