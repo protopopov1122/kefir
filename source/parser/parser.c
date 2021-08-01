@@ -40,3 +40,20 @@ kefir_result_t kefir_parser_apply(struct kefir_mem *mem, struct kefir_parser *pa
     }
     return KEFIR_OK;
 }
+kefir_result_t kefir_parser_try_invoke(struct kefir_mem *mem, struct kefir_parser *parser,
+                                       kefir_parser_invocable_fn_t function, void *payload) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser"));
+    REQUIRE(function != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser invocable"));
+
+    kefir_size_t checkpoint;
+    REQUIRE_OK(kefir_parser_token_cursor_save(parser->cursor, &checkpoint));
+    kefir_result_t res = function(mem, parser, payload);
+    if (res == KEFIR_NO_MATCH) {
+        REQUIRE_OK(kefir_parser_token_cursor_restore(parser->cursor, checkpoint));
+        return res;
+    } else {
+        REQUIRE_OK(res);
+    }
+    return KEFIR_OK;
+}

@@ -26,5 +26,12 @@
 #include "kefir/util/json.h"
 
 kefir_result_t kefir_ast_format(struct kefir_json_output *, const struct kefir_ast_node_base *);
+kefir_result_t kefir_ast_format_declarator_specifier_list(struct kefir_json_output *,
+                                                          const struct kefir_ast_declarator_specifier_list *);
+kefir_result_t kefir_ast_format_declarator_specifier(struct kefir_json_output *,
+                                                     const struct kefir_ast_declarator_specifier *);
+kefir_result_t kefir_ast_format_declarator_specifier_list(struct kefir_json_output *,
+                                                          const struct kefir_ast_declarator_specifier_list *);
+kefir_result_t kefir_ast_format_declarator(struct kefir_json_output *, const struct kefir_ast_declarator *);
 
 #endif

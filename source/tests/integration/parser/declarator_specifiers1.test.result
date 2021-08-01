@@ -1,0 +1,26 @@
+[
+    {
+        "class": "storage_class",
+        "storage": "extern"
+    },
+    {
+        "class": "type_specifier",
+        "specifier": "int"
+    },
+    {
+        "class": "alignment_specifier",
+        "alignment": {
+            "class": "constant",
+            "type": "unsigned_integer",
+            "value": 1
+        }
+    },
+    {
+        "class": "type_specifier",
+        "specifier": "unsigned"
+    },
+    {
+        "class": "type_specifier",
+        "specifier": "long"
+    }
+]
