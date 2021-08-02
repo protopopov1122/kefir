@@ -1,26 +1,126 @@
 [
-    {
-        "class": "storage_class",
-        "storage": "extern"
-    },
-    {
-        "class": "type_specifier",
-        "specifier": "int"
-    },
-    {
-        "class": "alignment_specifier",
-        "alignment": {
-            "class": "constant",
-            "type": "unsigned_integer",
-            "value": 1
+    [
+        {
+            "class": "storage_class",
+            "storage": "extern"
+        },
+        {
+            "class": "type_specifier",
+            "specifier": "int"
+        },
+        {
+            "class": "alignment_specifier",
+            "alignment": {
+                "class": "constant",
+                "type": "unsigned_integer",
+                "value": 1
+            }
+        },
+        {
+            "class": "type_qualifier",
+            "qualifier": "atomic"
+        },
+        {
+            "class": "type_specifier",
+            "specifier": "unsigned"
+        },
+        {
+            "class": "type_specifier",
+            "specifier": "long"
         }
-    },
-    {
-        "class": "type_specifier",
-        "specifier": "unsigned"
-    },
-    {
-        "class": "type_specifier",
-        "specifier": "long"
-    }
+    ],
+    [
+        {
+            "class": "storage_class",
+            "storage": "static"
+        },
+        {
+            "class": "type_specifier",
+            "specifier": "double"
+        },
+        {
+            "class": "storage_class",
+            "storage": "thread_local"
+        },
+        {
+            "class": "alignment_specifier",
+            "alignment": {
+                "class": "constant",
+                "type": "unsigned_integer",
+                "value": 8
+            }
+        }
+    ],
+    [
+        {
+            "class": "storage_class",
+            "storage": "auto"
+        },
+        {
+            "class": "type_qualifier",
+            "qualifier": "const"
+        },
+        {
+            "class": "type_specifier",
+            "specifier": "float"
+        }
+    ],
+    [
+        {
+            "class": "type_qualifier",
+            "qualifier": "volatile"
+        },
+        {
+            "class": "storage_class",
+            "storage": "register"
+        },
+        {
+            "class": "type_specifier",
+            "specifier": "signed"
+        },
+        {
+            "class": "type_specifier",
+            "specifier": "char"
+        }
+    ],
+    [
+        {
+            "class": "storage_class",
+            "storage": "thread_local"
+        },
+        {
+            "class": "type_qualifier",
+            "qualifier": "restrict"
+        },
+        {
+            "class": "type_specifier",
+            "specifier": "short"
+        },
+        {
+            "class": "alignment_specifier",
+            "alignment": {
+                "class": "constant",
+                "type": "unsigned_integer",
+                "value": 4
+            }
+        },
+        {
+            "class": "type_specifier",
+            "specifier": "signed"
+        }
+    ],
+    [
+        {
+            "class": "function_specifier",
+            "specifier": "inline"
+        },
+        {
+            "class": "type_specifier",
+            "specifier": "void"
+        },
+        {
+            "class": "function_specifier",
+            "specifier": "noreturn"
+        }
+    ]
 ]

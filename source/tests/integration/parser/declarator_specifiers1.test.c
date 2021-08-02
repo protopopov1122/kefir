@@ -40,8 +40,45 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_LEFT_PARENTHESE, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_constant_uint(1, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_RIGHT_PARENTHESE, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_ATOMIC, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_UNSIGNED, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_LONG, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_SEMICOLON, &TOKENS[counter++]));
+
+    REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_STATIC, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_DOUBLE, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_THREAD_LOCAL, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_ALIGNAS, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_LEFT_PARENTHESE, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_constant_uint(8, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_RIGHT_PARENTHESE, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_SEMICOLON, &TOKENS[counter++]));
+
+    REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_AUTO, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_CONST, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_FLOAT, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_SEMICOLON, &TOKENS[counter++]));
+
+    REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_VOLATILE, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_REGISTER, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_SIGNED, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_CHAR, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_SEMICOLON, &TOKENS[counter++]));
+
+    REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_THREAD_LOCAL, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_RESTRICT, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_SHORT, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_ALIGNAS, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_LEFT_PARENTHESE, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_constant_uint(4, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_RIGHT_PARENTHESE, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_SIGNED, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_SEMICOLON, &TOKENS[counter++]));
+
+    REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_INLINE, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_VOID, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_NORETURN, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_SEMICOLON, &TOKENS[counter++]));
 
     REQUIRE_OK(kefir_parser_token_cursor_init(&cursor, TOKENS, counter));
     REQUIRE_OK(kefir_parser_init(mem, &parser, &symbols, &cursor));
@@ -49,12 +86,21 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_json_output json;
     REQUIRE_OK(kefir_json_output_init(&json, stdout, 4));
 
-    struct kefir_ast_declarator_specifier_list specifiers;
-    REQUIRE_OK(kefir_ast_declarator_specifier_list_init(&specifiers));
-    REQUIRE_OK(kefir_parser_scan_declaration_specifier_list(mem, &parser, &specifiers));
-    REQUIRE_OK(kefir_ast_format_declarator_specifier_list(&json, &specifiers));
-    REQUIRE_OK(kefir_ast_declarator_specifier_list_free(mem, &specifiers));
+    REQUIRE_OK(kefir_json_output_array_begin(&json));
 
+    struct kefir_ast_declarator_specifier_list specifiers;
+    while (kefir_parser_token_cursor_at(&cursor, 0)->klass != KEFIR_TOKEN_SENTINEL) {
+        REQUIRE_OK(kefir_ast_declarator_specifier_list_init(&specifiers));
+        REQUIRE_OK(kefir_parser_scan_declaration_specifier_list(mem, &parser, &specifiers));
+        REQUIRE(kefir_parser_token_cursor_at(&cursor, 0)->klass == KEFIR_TOKEN_PUNCTUATOR, KEFIR_INTERNAL_ERROR);
+        REQUIRE(kefir_parser_token_cursor_at(&cursor, 0)->punctuator == KEFIR_PUNCTUATOR_SEMICOLON,
+                KEFIR_INTERNAL_ERROR);
+        REQUIRE_OK(kefir_parser_token_cursor_next(&cursor));
+        REQUIRE_OK(kefir_ast_format_declarator_specifier_list(&json, &specifiers));
+        REQUIRE_OK(kefir_ast_declarator_specifier_list_free(mem, &specifiers));
+    }
+
+    REQUIRE_OK(kefir_json_output_array_end(&json));
     REQUIRE_OK(kefir_json_output_finalize(&json));
 
     REQUIRE_OK(kefir_parser_free(mem, &parser));
