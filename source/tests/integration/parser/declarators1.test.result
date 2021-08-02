@@ -1,0 +1,53 @@
+[
+    {
+        "class": "identifier",
+        "identifier": "some_variable_name"
+    },
+    {
+        "class": "pointer",
+        "declarator": {
+            "class": "identifier",
+            "identifier": "some_other_variable_name"
+        },
+        "type_qualifiers": []
+    },
+    {
+        "class": "pointer",
+        "declarator": {
+            "class": "pointer",
+            "declarator": {
+                "class": "identifier",
+                "identifier": "yet_another_variable_name"
+            },
+            "type_qualifiers": []
+        },
+        "type_qualifiers": [
+            "const"
+        ]
+    },
+    {
+        "class": "identifier",
+        "identifier": "brand_new_variable_name"
+    },
+    {
+        "class": "pointer",
+        "declarator": {
+            "class": "pointer",
+            "declarator": {
+                "class": "pointer",
+                "declarator": {
+                    "class": "identifier",
+                    "identifier": "not_a_variable_name"
+                },
+                "type_qualifiers": [
+                    "volatile",
+                    "restrict"
+                ]
+            },
+            "type_qualifiers": []
+        },
+        "type_qualifiers": [
+            "const"
+        ]
+    }
+]

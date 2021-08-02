@@ -762,5 +762,55 @@ kefir_result_t kefir_ast_format_declarator(struct kefir_json_output *json,
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid JSON output"));
     REQUIRE(declarator != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declarator"));
 
-    return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "AST declarator formatter is not implemented yet");
+    REQUIRE_OK(kefir_json_output_object_begin(json));
+    REQUIRE_OK(kefir_json_output_object_key(json, "class"));
+    switch (declarator->klass) {
+        case KEFIR_AST_DECLARATOR_IDENTIFIER:
+            REQUIRE_OK(kefir_json_output_string(json, "identifier"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
+            REQUIRE_OK(kefir_json_output_string(json, declarator->identifier));
+            break;
+
+        case KEFIR_AST_DECLARATOR_POINTER: {
+            REQUIRE_OK(kefir_json_output_string(json, "pointer"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "declarator"));
+            REQUIRE_OK(kefir_ast_format_declarator(json, declarator->pointer.declarator));
+            REQUIRE_OK(kefir_json_output_object_key(json, "type_qualifiers"));
+            REQUIRE_OK(kefir_json_output_array_begin(json));
+            kefir_ast_type_qualifier_type_t qualifier;
+            for (const struct kefir_list_entry *iter =
+                     kefir_ast_type_qualifier_list_iter(&declarator->pointer.type_qualifiers, &qualifier);
+                 iter != NULL; kefir_ast_type_qualifier_list_next(&iter, &qualifier)) {
+                switch (qualifier) {
+                    case KEFIR_AST_TYPE_QUALIFIER_CONST:
+                        REQUIRE_OK(kefir_json_output_string(json, "const"));
+                        break;
+
+                    case KEFIR_AST_TYPE_QUALIFIER_RESTRICT:
+                        REQUIRE_OK(kefir_json_output_string(json, "restrict"));
+                        break;
+
+                    case KEFIR_AST_TYPE_QUALIFIER_VOLATILE:
+                        REQUIRE_OK(kefir_json_output_string(json, "volatile"));
+                        break;
+
+                    case KEFIR_AST_TYPE_QUALIFIER_ATOMIC:
+                        REQUIRE_OK(kefir_json_output_string(json, "atomic"));
+                        break;
+
+                    default:
+                        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected type qualifier");
+                }
+            }
+            REQUIRE_OK(kefir_json_output_array_end(json));
+        } break;
+
+        case KEFIR_AST_DECLARATOR_ARRAY:
+            return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Array declarator formatter is not implemented yet");
+
+        case KEFIR_AST_DECLARATOR_FUNCTION:
+            return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Function declarator formatter is not implemented yet");
+    }
+    REQUIRE_OK(kefir_json_output_object_end(json));
+    return KEFIR_OK;
 }

@@ -38,5 +38,6 @@ kefir_result_t kefir_parser_scan_declaration_specifier(struct kefir_mem *, struc
                                                        struct kefir_ast_declarator_specifier_list *);
 kefir_result_t kefir_parser_scan_declaration_specifier_list(struct kefir_mem *, struct kefir_parser *,
                                                             struct kefir_ast_declarator_specifier_list *);
+kefir_result_t kefir_parser_scan_declarator(struct kefir_mem *, struct kefir_parser *, struct kefir_ast_declarator **);
 
 #endif
