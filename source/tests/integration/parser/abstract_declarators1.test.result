@@ -1,0 +1,95 @@
+[
+    {
+        "class": "pointer",
+        "declarator": {
+            "class": "array",
+            "declarator": {
+                "class": "abstract"
+            },
+            "type": "unbounded",
+            "static": false,
+            "type_qualifiers": []
+        },
+        "type_qualifiers": []
+    },
+    {
+        "class": "array",
+        "declarator": {
+            "class": "array",
+            "declarator": {
+                "class": "abstract"
+            },
+            "type": "bounded",
+            "length": {
+                "class": "constant",
+                "type": "integer",
+                "value": 10
+            },
+            "static": false,
+            "type_qualifiers": []
+        },
+        "type": "bounded",
+        "length": {
+            "class": "identifier",
+            "identifier": "X"
+        },
+        "static": false,
+        "type_qualifiers": []
+    },
+    {
+        "class": "array",
+        "declarator": {
+            "class": "array",
+            "declarator": {
+                "class": "pointer",
+                "declarator": {
+                    "class": "pointer",
+                    "declarator": {
+                        "class": "abstract"
+                    },
+                    "type_qualifiers": []
+                },
+                "type_qualifiers": [
+                    "const"
+                ]
+            },
+            "type": "bounded",
+            "length": {
+                "class": "constant",
+                "type": "integer",
+                "value": 10
+            },
+            "static": true,
+            "type_qualifiers": [
+                "volatile"
+            ]
+        },
+        "type": "bounded",
+        "length": {
+            "class": "identifier",
+            "identifier": "X"
+        },
+        "static": false,
+        "type_qualifiers": []
+    },
+    {
+        "class": "pointer",
+        "declarator": {
+            "class": "pointer",
+            "declarator": {
+                "class": "pointer",
+                "declarator": {
+                    "class": "abstract"
+                },
+                "type_qualifiers": [
+                    "volatile",
+                    "restrict"
+                ]
+            },
+            "type_qualifiers": []
+        },
+        "type_qualifiers": [
+            "const"
+        ]
+    }
+]

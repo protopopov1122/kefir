@@ -21,7 +21,11 @@ static kefir_result_t scan_type_qualifier_list(struct kefir_mem *mem, struct kef
 }
 
 static kefir_result_t scan_pointer(struct kefir_mem *mem, struct kefir_parser *parser,
+                                   kefir_result_t (*scan_declarator)(struct kefir_mem *, struct kefir_parser *,
+                                                                     struct kefir_ast_declarator **),
                                    struct kefir_ast_declarator **declarator_ptr) {
+    REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_STAR),
+            KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Cannot match AST pointer declarator"));
     REQUIRE_OK(PARSER_SHIFT(parser));
     struct kefir_ast_type_qualifier_list type_qualifiers;
     REQUIRE_OK(kefir_ast_type_qualifier_list_init(&type_qualifiers));
@@ -33,7 +37,7 @@ static kefir_result_t scan_pointer(struct kefir_mem *mem, struct kefir_parser *p
     });
 
     struct kefir_ast_declarator *subdeclarator = NULL;
-    res = kefir_parser_scan_declarator(mem, parser, &subdeclarator);
+    res = scan_declarator(mem, parser, &subdeclarator);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_ast_type_qualifier_list_free(mem, &type_qualifiers);
         return res;
@@ -184,16 +188,13 @@ static kefir_result_t scan_array(struct kefir_mem *mem, struct kefir_parser *par
     return KEFIR_OK;
 }
 
-static kefir_result_t scan_direct(struct kefir_mem *mem, struct kefir_parser *parser,
-                                  struct kefir_ast_declarator **declarator_ptr) {
-    struct kefir_ast_declarator *base_declarator = NULL;
-    REQUIRE_OK(scan_direct_declarator_base(mem, parser, &base_declarator));
-
+static kefir_result_t scan_direct_declarator_tail(struct kefir_mem *mem, struct kefir_parser *parser,
+                                                  struct kefir_ast_declarator **declarator_ptr) {
     kefir_result_t res = KEFIR_OK;
     kefir_bool_t scan_declarators = true;
     while (scan_declarators && res == KEFIR_OK) {
         if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_BRACKET)) {
-            res = scan_array(mem, parser, &base_declarator);
+            res = scan_array(mem, parser, declarator_ptr);
         } else if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_PARENTHESE)) {
             res = KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Function declartor is not implemented yet");
         } else {
@@ -202,9 +203,17 @@ static kefir_result_t scan_direct(struct kefir_mem *mem, struct kefir_parser *pa
     }
 
     REQUIRE_ELSE(res == KEFIR_OK, {
-        kefir_ast_declarator_free(mem, base_declarator);
+        kefir_ast_declarator_free(mem, *declarator_ptr);
         return res;
     });
+    return KEFIR_OK;
+}
+
+static kefir_result_t scan_direct(struct kefir_mem *mem, struct kefir_parser *parser,
+                                  struct kefir_ast_declarator **declarator_ptr) {
+    struct kefir_ast_declarator *base_declarator = NULL;
+    REQUIRE_OK(scan_direct_declarator_base(mem, parser, &base_declarator));
+    REQUIRE_OK(scan_direct_declarator_tail(mem, parser, &base_declarator));
     *declarator_ptr = base_declarator;
     return KEFIR_OK;
 }
@@ -219,9 +228,86 @@ kefir_result_t kefir_parser_scan_declarator(struct kefir_mem *mem, struct kefir_
     kefir_result_t res = KEFIR_OK;
     REQUIRE_OK(kefir_parser_token_cursor_save(parser->cursor, &checkpoint));
     if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_STAR)) {
-        res = scan_pointer(mem, parser, declarator_ptr);
+        res = scan_pointer(mem, parser, kefir_parser_scan_declarator, declarator_ptr);
     } else {
         res = scan_direct(mem, parser, declarator_ptr);
+    }
+
+    if (res == KEFIR_NO_MATCH) {
+        REQUIRE_OK(kefir_parser_token_cursor_restore(parser->cursor, checkpoint));
+    } else {
+        REQUIRE_OK(res);
+    }
+
+    return KEFIR_OK;
+}
+
+static kefir_result_t scan_direct_abstract_declarator_base(struct kefir_mem *mem, struct kefir_parser *parser,
+                                                           struct kefir_ast_declarator **declarator_ptr) {
+    kefir_result_t res = KEFIR_OK;
+    struct kefir_ast_declarator *base_declarator = NULL;
+
+    if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_PARENTHESE)) {
+        REQUIRE_CHAIN(&res, PARSER_SHIFT(parser));
+        REQUIRE_CHAIN(&res, kefir_parser_scan_abstract_declarator(mem, parser, &base_declarator));
+        REQUIRE_CHAIN_SET(&res, PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_PARENTHESE),
+                          KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right parenthese"));
+        REQUIRE_CHAIN(&res, PARSER_SHIFT(parser));
+    } else {
+        base_declarator = kefir_ast_declarator_identifier(mem, NULL, NULL);
+        REQUIRE_CHAIN_SET(&res, base_declarator != NULL,
+                          KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate empty AST abstract declarator"));
+    }
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        if (base_declarator != NULL) {
+            kefir_ast_declarator_free(mem, base_declarator);
+        }
+        return res;
+    });
+
+    *declarator_ptr = base_declarator;
+    return KEFIR_OK;
+}
+
+static kefir_result_t scan_direct_abstract(struct kefir_mem *mem, struct kefir_parser *parser,
+                                           kefir_bool_t permit_empty, struct kefir_ast_declarator **declarator_ptr) {
+    struct kefir_ast_declarator *base_declarator = NULL;
+    REQUIRE_OK(scan_direct_abstract_declarator_base(mem, parser, &base_declarator));
+    REQUIRE_OK(scan_direct_declarator_tail(mem, parser, &base_declarator));
+    if (base_declarator->klass == KEFIR_AST_DECLARATOR_IDENTIFIER && base_declarator->identifier == NULL) {
+        REQUIRE_ELSE(permit_empty, {
+            kefir_ast_declarator_free(mem, base_declarator);
+            return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to parse empty abstract declarator");
+        });
+    }
+    *declarator_ptr = base_declarator;
+    return KEFIR_OK;
+}
+
+static kefir_result_t scan_abstract_declarator_pointer_tail(struct kefir_mem *mem, struct kefir_parser *parser,
+                                                            struct kefir_ast_declarator **declarator_ptr) {
+
+    kefir_result_t res = scan_pointer(mem, parser, scan_abstract_declarator_pointer_tail, declarator_ptr);
+    if (res == KEFIR_NO_MATCH) {
+        res = scan_direct_abstract(mem, parser, true, declarator_ptr);
+    }
+    REQUIRE_OK(res);
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_parser_scan_abstract_declarator(struct kefir_mem *mem, struct kefir_parser *parser,
+                                                     struct kefir_ast_declarator **declarator_ptr) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser"));
+    REQUIRE(declarator_ptr != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to declarator"));
+
+    kefir_size_t checkpoint;
+    kefir_result_t res = KEFIR_OK;
+    REQUIRE_OK(kefir_parser_token_cursor_save(parser->cursor, &checkpoint));
+    if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_STAR)) {
+        res = scan_pointer(mem, parser, scan_abstract_declarator_pointer_tail, declarator_ptr);
+    } else {
+        res = scan_direct_abstract(mem, parser, false, declarator_ptr);
     }
 
     if (res == KEFIR_NO_MATCH) {

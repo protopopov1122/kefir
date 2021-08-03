@@ -797,9 +797,13 @@ kefir_result_t kefir_ast_format_declarator(struct kefir_json_output *json,
     REQUIRE_OK(kefir_json_output_object_key(json, "class"));
     switch (declarator->klass) {
         case KEFIR_AST_DECLARATOR_IDENTIFIER:
-            REQUIRE_OK(kefir_json_output_string(json, "identifier"));
-            REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
-            REQUIRE_OK(kefir_json_output_string(json, declarator->identifier));
+            if (declarator->identifier != NULL) {
+                REQUIRE_OK(kefir_json_output_string(json, "identifier"));
+                REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
+                REQUIRE_OK(kefir_json_output_string(json, declarator->identifier));
+            } else {
+                REQUIRE_OK(kefir_json_output_string(json, "abstract"));
+            }
             break;
 
         case KEFIR_AST_DECLARATOR_POINTER: {
