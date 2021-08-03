@@ -1,0 +1,147 @@
+[
+    {
+        "class": "array",
+        "declarator": {
+            "class": "identifier",
+            "identifier": "array"
+        },
+        "type": "unbounded",
+        "static": false,
+        "type_qualifiers": [
+            "volatile",
+            "const"
+        ]
+    },
+    {
+        "class": "array",
+        "declarator": {
+            "class": "identifier",
+            "identifier": "array2"
+        },
+        "type": "unbounded",
+        "static": false,
+        "type_qualifiers": []
+    },
+    {
+        "class": "array",
+        "declarator": {
+            "class": "identifier",
+            "identifier": "another_array"
+        },
+        "type": "bounded",
+        "length": {
+            "class": "binary_operation",
+            "type": "add",
+            "left": {
+                "class": "binary_operation",
+                "type": "multiply",
+                "left": {
+                    "class": "identifier",
+                    "identifier": "A"
+                },
+                "right": {
+                    "class": "constant",
+                    "type": "integer",
+                    "value": 2
+                }
+            },
+            "right": {
+                "class": "identifier",
+                "identifier": "B"
+            }
+        },
+        "static": false,
+        "type_qualifiers": []
+    },
+    {
+        "class": "array",
+        "declarator": {
+            "class": "identifier",
+            "identifier": "another_array2"
+        },
+        "type": "bounded",
+        "length": {
+            "class": "binary_operation",
+            "type": "multiply",
+            "left": {
+                "class": "binary_operation",
+                "type": "multiply",
+                "left": {
+                    "class": "unary_operation",
+                    "type": "negate",
+                    "argument": {
+                        "class": "identifier",
+                        "identifier": "A"
+                    }
+                },
+                "right": {
+                    "class": "identifier",
+                    "identifier": "D"
+                }
+            },
+            "right": {
+                "class": "constant",
+                "type": "integer",
+                "value": 3
+            }
+        },
+        "static": false,
+        "type_qualifiers": [
+            "volatile",
+            "restrict"
+        ]
+    },
+    {
+        "class": "array",
+        "declarator": {
+            "class": "identifier",
+            "identifier": "vla_array"
+        },
+        "type": "vla_unspecified",
+        "static": false,
+        "type_qualifiers": []
+    },
+    {
+        "class": "array",
+        "declarator": {
+            "class": "identifier",
+            "identifier": "vla_array2"
+        },
+        "type": "vla_unspecified",
+        "static": false,
+        "type_qualifiers": [
+            "volatile"
+        ]
+    },
+    {
+        "class": "array",
+        "declarator": {
+            "class": "identifier",
+            "identifier": "static_array"
+        },
+        "type": "bounded",
+        "length": {
+            "class": "identifier",
+            "identifier": "LENGTH1"
+        },
+        "static": true,
+        "type_qualifiers": []
+    },
+    {
+        "class": "array",
+        "declarator": {
+            "class": "identifier",
+            "identifier": "static_array2"
+        },
+        "type": "bounded",
+        "length": {
+            "class": "identifier",
+            "identifier": "LENGTH2"
+        },
+        "static": true,
+        "type_qualifiers": [
+            "const",
+            "restrict"
+        ]
+    }
+]

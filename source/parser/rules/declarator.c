@@ -94,12 +94,117 @@ static kefir_result_t scan_direct_declarator_base(struct kefir_mem *mem, struct 
     return KEFIR_OK;
 }
 
+static kefir_result_t scan_array_impl(struct kefir_mem *mem, struct kefir_parser *parser,
+                                      struct kefir_ast_type_qualifier_list *type_qualifiers,
+                                      struct kefir_ast_declarator **declarator_ptr) {
+    kefir_bool_t static_array = false;
+    struct kefir_ast_node_base *length = NULL;
+    kefir_ast_declarator_array_type_t array_type = KEFIR_AST_DECLARATOR_ARRAY_UNBOUNDED;
+
+    REQUIRE_OK(PARSER_SHIFT(parser));
+    if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_STATIC)) {
+        REQUIRE_OK(PARSER_SHIFT(parser));
+        static_array = true;
+    }
+    REQUIRE_OK(scan_type_qualifier_list(mem, parser, type_qualifiers));
+    if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_STATIC)) {
+        REQUIRE(!static_array,
+                KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Cannot duplicate static specifier in array declaration"));
+        REQUIRE_OK(PARSER_SHIFT(parser));
+        static_array = true;
+    }
+
+    kefir_result_t res = KEFIR_OK;
+    if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_STAR)) {
+        REQUIRE(!static_array,
+                KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Cannot static specifier with star in array declaration"));
+        REQUIRE_OK(PARSER_SHIFT(parser));
+        array_type = KEFIR_AST_DECLARATOR_ARRAY_VLA_UNSPECIFIED;
+    } else {
+        res = KEFIR_PARSER_RULE_APPLY(mem, parser, assignment_expression, &length);
+        if (res == KEFIR_NO_MATCH) {
+            if (static_array) {
+                res = KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Static array declaration shall include length");
+            } else {
+                res = KEFIR_OK;
+            }
+        } else if (res == KEFIR_OK) {
+            array_type = KEFIR_AST_DECLARATOR_ARRAY_BOUNDED;
+        }
+        REQUIRE_OK(res);
+    }
+
+    REQUIRE_ELSE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_BRACKET), {
+        if (length != NULL) {
+            KEFIR_AST_NODE_FREE(mem, length);
+        }
+        return KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right bracket");
+    });
+    res = PARSER_SHIFT(parser);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        if (length != NULL) {
+            KEFIR_AST_NODE_FREE(mem, length);
+        }
+        return res;
+    });
+
+    struct kefir_ast_declarator *declarator = kefir_ast_declarator_array(mem, array_type, length, *declarator_ptr);
+    REQUIRE_ELSE(declarator != NULL, {
+        if (length != NULL) {
+            KEFIR_AST_NODE_FREE(mem, length);
+        }
+        return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST array declarator");
+    });
+    declarator->array.static_array = static_array;
+
+    res = kefir_ast_type_qualifier_list_clone(mem, &declarator->array.type_qualifiers, type_qualifiers);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_ast_declarator_free(mem, declarator);
+        return res;
+    });
+
+    *declarator_ptr = declarator;
+    return KEFIR_OK;
+}
+
+static kefir_result_t scan_array(struct kefir_mem *mem, struct kefir_parser *parser,
+                                 struct kefir_ast_declarator **declarator_ptr) {
+    struct kefir_ast_type_qualifier_list type_qualifiers;
+    REQUIRE_OK(kefir_ast_type_qualifier_list_init(&type_qualifiers));
+    kefir_result_t res = scan_array_impl(mem, parser, &type_qualifiers, declarator_ptr);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_ast_type_qualifier_list_free(mem, &type_qualifiers);
+        return res;
+    });
+    res = kefir_ast_type_qualifier_list_free(mem, &type_qualifiers);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_ast_declarator_free(mem, *declarator_ptr);
+        return res;
+    });
+    return KEFIR_OK;
+}
+
 static kefir_result_t scan_direct(struct kefir_mem *mem, struct kefir_parser *parser,
                                   struct kefir_ast_declarator **declarator_ptr) {
     struct kefir_ast_declarator *base_declarator = NULL;
     REQUIRE_OK(scan_direct_declarator_base(mem, parser, &base_declarator));
 
-    // TODO Implement array and function declarators
+    kefir_result_t res = KEFIR_OK;
+    kefir_bool_t scan_declarators = true;
+    while (scan_declarators && res == KEFIR_OK) {
+        if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_BRACKET)) {
+            res = scan_array(mem, parser, &base_declarator);
+        } else if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_PARENTHESE)) {
+            res = KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Function declartor is not implemented yet");
+        } else {
+            scan_declarators = false;
+        }
+    }
+
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_ast_declarator_free(mem, base_declarator);
+        return res;
+    });
     *declarator_ptr = base_declarator;
     return KEFIR_OK;
 }

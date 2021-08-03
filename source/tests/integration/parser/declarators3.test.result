@@ -1,0 +1,97 @@
+[
+    {
+        "class": "array",
+        "declarator": {
+            "class": "array",
+            "declarator": {
+                "class": "identifier",
+                "identifier": "matrix"
+            },
+            "type": "unbounded",
+            "static": false,
+            "type_qualifiers": []
+        },
+        "type": "bounded",
+        "length": {
+            "class": "constant",
+            "type": "integer",
+            "value": 3
+        },
+        "static": false,
+        "type_qualifiers": []
+    },
+    {
+        "class": "pointer",
+        "declarator": {
+            "class": "pointer",
+            "declarator": {
+                "class": "array",
+                "declarator": {
+                    "class": "array",
+                    "declarator": {
+                        "class": "array",
+                        "declarator": {
+                            "class": "identifier",
+                            "identifier": "cube"
+                        },
+                        "type": "vla_unspecified",
+                        "static": false,
+                        "type_qualifiers": []
+                    },
+                    "type": "bounded",
+                    "length": {
+                        "class": "identifier",
+                        "identifier": "DIM"
+                    },
+                    "static": true,
+                    "type_qualifiers": []
+                },
+                "type": "bounded",
+                "length": {
+                    "class": "constant",
+                    "type": "integer",
+                    "value": 3
+                },
+                "static": false,
+                "type_qualifiers": [
+                    "const"
+                ]
+            },
+            "type_qualifiers": []
+        },
+        "type_qualifiers": [
+            "restrict"
+        ]
+    },
+    {
+        "class": "pointer",
+        "declarator": {
+            "class": "array",
+            "declarator": {
+                "class": "pointer",
+                "declarator": {
+                    "class": "array",
+                    "declarator": {
+                        "class": "identifier",
+                        "identifier": "array"
+                    },
+                    "type": "unbounded",
+                    "static": false,
+                    "type_qualifiers": []
+                },
+                "type_qualifiers": []
+            },
+            "type": "bounded",
+            "length": {
+                "class": "constant",
+                "type": "integer",
+                "value": 100
+            },
+            "static": true,
+            "type_qualifiers": [
+                "const"
+            ]
+        },
+        "type_qualifiers": []
+    }
+]
