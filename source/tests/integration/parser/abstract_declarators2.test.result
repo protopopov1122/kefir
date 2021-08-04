@@ -1,0 +1,110 @@
+[
+    {
+        "class": "pointer",
+        "declarator": {
+            "class": "function",
+            "declarator": {
+                "class": "abstract"
+            },
+            "ellipsis": false,
+            "parameters": []
+        },
+        "type_qualifiers": []
+    },
+    {
+        "class": "pointer",
+        "declarator": {
+            "class": "function",
+            "declarator": {
+                "class": "abstract"
+            },
+            "ellipsis": false,
+            "parameters": [
+                {
+                    "class": "declaration",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "int"
+                        }
+                    ],
+                    "declarators": {
+                        "class": "abstract"
+                    }
+                },
+                {
+                    "class": "declaration",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "void"
+                        }
+                    ],
+                    "declarators": {
+                        "class": "function",
+                        "declarator": {
+                            "class": "abstract"
+                        },
+                        "ellipsis": true,
+                        "parameters": [
+                            {
+                                "class": "declaration",
+                                "specifiers": [
+                                    {
+                                        "class": "type_specifier",
+                                        "specifier": "char"
+                                    }
+                                ],
+                                "declarators": {
+                                    "class": "abstract"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "class": "declaration",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "short"
+                        }
+                    ],
+                    "declarators": {
+                        "class": "function",
+                        "declarator": {
+                            "class": "identifier",
+                            "identifier": "fn1"
+                        },
+                        "ellipsis": false,
+                        "parameters": [
+                            {
+                                "class": "identifier",
+                                "identifier": "X"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "type_qualifiers": []
+    },
+    {
+        "class": "function",
+        "declarator": {
+            "class": "pointer",
+            "declarator": {
+                "class": "array",
+                "declarator": {
+                    "class": "abstract"
+                },
+                "type": "unbounded",
+                "static": false,
+                "type_qualifiers": []
+            },
+            "type_qualifiers": []
+        },
+        "ellipsis": false,
+        "parameters": []
+    }
+]

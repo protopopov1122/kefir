@@ -268,5 +268,7 @@ kefir_result_t kefir_parser_scan_declaration_specifier_list(struct kefir_mem *me
             REQUIRE_OK(res);
         }
     }
+    REQUIRE(kefir_list_length(&specifiers->list) > 0,
+            KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Declarator specifier list cannot be empty"));
     return KEFIR_OK;
 }

@@ -1,0 +1,47 @@
+[
+    {
+        "class": "function",
+        "declarator": {
+            "class": "identifier",
+            "identifier": "fn1"
+        },
+        "ellipsis": false,
+        "parameters": []
+    },
+    {
+        "class": "function",
+        "declarator": {
+            "class": "identifier",
+            "identifier": "fn2"
+        },
+        "ellipsis": false,
+        "parameters": [
+            {
+                "class": "identifier",
+                "identifier": "HEHE"
+            }
+        ]
+    },
+    {
+        "class": "function",
+        "declarator": {
+            "class": "identifier",
+            "identifier": "fn3"
+        },
+        "ellipsis": false,
+        "parameters": [
+            {
+                "class": "identifier",
+                "identifier": "x"
+            },
+            {
+                "class": "identifier",
+                "identifier": "y"
+            },
+            {
+                "class": "identifier",
+                "identifier": "z"
+            }
+        ]
+    }
+]

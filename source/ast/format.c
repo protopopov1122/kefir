@@ -468,6 +468,25 @@ static kefir_result_t visit_comma_operator(const struct kefir_ast_visitor *visit
     return KEFIR_OK;
 }
 
+static kefir_result_t visit_declaration(const struct kefir_ast_visitor *visitor,
+                                        const struct kefir_ast_declaration *node, void *payload) {
+    UNUSED(visitor);
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declaration node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct kefir_json_output *, json, payload);
+
+    REQUIRE_OK(kefir_json_output_object_begin(json));
+    REQUIRE_OK(kefir_json_output_object_key(json, "class"));
+    REQUIRE_OK(kefir_json_output_string(json, "declaration"));
+    REQUIRE_OK(kefir_json_output_object_key(json, "specifiers"));
+    REQUIRE_OK(kefir_ast_format_declarator_specifier_list(json, &node->specifiers));
+    REQUIRE_OK(kefir_json_output_object_key(json, "declarators"));
+    REQUIRE_OK(kefir_ast_format_declarator(json, node->declarator));
+    // TODO Format initializer
+    REQUIRE_OK(kefir_json_output_object_end(json));
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_format(struct kefir_json_output *json, const struct kefir_ast_node_base *node) {
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid JSON output"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node"));
@@ -486,6 +505,7 @@ kefir_result_t kefir_ast_format(struct kefir_json_output *json, const struct kef
     visitor.conditional_operator = visit_conditional_operator;
     visitor.assignment_operator = visit_assignment_operator;
     visitor.comma_operator = visit_comma_operator;
+    visitor.declaration = visit_declaration;
     REQUIRE_OK(node->klass->visit(node, &visitor, json));
     return KEFIR_OK;
 }
@@ -839,8 +859,21 @@ kefir_result_t kefir_ast_format_declarator(struct kefir_json_output *json,
             REQUIRE_OK(format_type_qualifiers(json, &declarator->array.type_qualifiers));
         } break;
 
-        case KEFIR_AST_DECLARATOR_FUNCTION:
-            return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Function declarator formatter is not implemented yet");
+        case KEFIR_AST_DECLARATOR_FUNCTION: {
+            REQUIRE_OK(kefir_json_output_string(json, "function"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "declarator"));
+            REQUIRE_OK(kefir_ast_format_declarator(json, declarator->function.declarator));
+            REQUIRE_OK(kefir_json_output_object_key(json, "ellipsis"));
+            REQUIRE_OK(kefir_json_output_boolean(json, declarator->function.ellipsis));
+            REQUIRE_OK(kefir_json_output_object_key(json, "parameters"));
+            REQUIRE_OK(kefir_json_output_array_begin(json));
+            for (const struct kefir_list_entry *iter = kefir_list_head(&declarator->function.parameters); iter != NULL;
+                 kefir_list_next(&iter)) {
+                ASSIGN_DECL_CAST(struct kefir_ast_node_base *, param, iter->value);
+                REQUIRE_OK(kefir_ast_format(json, param));
+            }
+            REQUIRE_OK(kefir_json_output_array_end(json));
+        } break;
     }
     REQUIRE_OK(kefir_json_output_object_end(json));
     return KEFIR_OK;
