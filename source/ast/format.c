@@ -517,6 +517,12 @@ static kefir_result_t format_struct(struct kefir_json_output *json,
     } else {
         REQUIRE_OK(kefir_json_output_string(json, "union"));
     }
+    REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
+    if (specifier->type_specifier.value.structure->identifier != NULL) {
+        REQUIRE_OK(kefir_json_output_string(json, specifier->type_specifier.value.structure->identifier));
+    } else {
+        REQUIRE_OK(kefir_json_output_null(json));
+    }
     REQUIRE_OK(kefir_json_output_object_key(json, "members"));
     if (specifier->type_specifier.value.structure->complete) {
         REQUIRE_OK(kefir_json_output_array_begin(json));

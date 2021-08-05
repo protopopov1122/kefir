@@ -1,0 +1,268 @@
+[
+    [
+        {
+            "class": "type_specifier",
+            "specifier": "struct",
+            "identifier": "structure",
+            "members": [
+                {
+                    "type": "declaration",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "int"
+                        }
+                    ],
+                    "declarators": [
+                        {
+                            "declarator": {
+                                "class": "identifier",
+                                "identifier": "field1"
+                            },
+                            "bitwidth": null
+                        }
+                    ]
+                },
+                {
+                    "type": "declaration",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "void"
+                        }
+                    ],
+                    "declarators": [
+                        {
+                            "declarator": {
+                                "class": "pointer",
+                                "declarator": {
+                                    "class": "identifier",
+                                    "identifier": "field2"
+                                },
+                                "type_qualifiers": []
+                            },
+                            "bitwidth": null
+                        },
+                        {
+                            "declarator": {
+                                "class": "pointer",
+                                "declarator": {
+                                    "class": "pointer",
+                                    "declarator": {
+                                        "class": "identifier",
+                                        "identifier": "field3"
+                                    },
+                                    "type_qualifiers": []
+                                },
+                                "type_qualifiers": []
+                            },
+                            "bitwidth": null
+                        }
+                    ]
+                },
+                {
+                    "type": "declaration",
+                    "specifiers": [
+                        {
+                            "class": "type_qualifier",
+                            "qualifier": "const"
+                        },
+                        {
+                            "class": "type_specifier",
+                            "specifier": "unsigned"
+                        },
+                        {
+                            "class": "type_specifier",
+                            "specifier": "long"
+                        },
+                        {
+                            "class": "type_specifier",
+                            "specifier": "long"
+                        },
+                        {
+                            "class": "type_specifier",
+                            "specifier": "int"
+                        }
+                    ],
+                    "declarators": [
+                        {
+                            "declarator": {
+                                "class": "identifier",
+                                "identifier": "field4"
+                            },
+                            "bitwidth": {
+                                "class": "constant",
+                                "type": "unsigned_integer",
+                                "value": 5
+                            }
+                        },
+                        {
+                            "declarator": {
+                                "class": "abstract"
+                            },
+                            "bitwidth": {
+                                "class": "constant",
+                                "type": "unsigned_integer",
+                                "value": 10
+                            }
+                        },
+                        {
+                            "declarator": {
+                                "class": "identifier",
+                                "identifier": "field5"
+                            },
+                            "bitwidth": {
+                                "class": "identifier",
+                                "identifier": "X"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "declaration",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "struct",
+                            "identifier": "somestruct",
+                            "members": null
+                        }
+                    ],
+                    "declarators": [
+                        {
+                            "declarator": {
+                                "class": "identifier",
+                                "identifier": "field6"
+                            },
+                            "bitwidth": null
+                        }
+                    ]
+                },
+                {
+                    "type": "declaration",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "union",
+                            "identifier": null,
+                            "members": [
+                                {
+                                    "type": "declaration",
+                                    "specifiers": [
+                                        {
+                                            "class": "type_specifier",
+                                            "specifier": "int"
+                                        }
+                                    ],
+                                    "declarators": [
+                                        {
+                                            "declarator": {
+                                                "class": "identifier",
+                                                "identifier": "nested1"
+                                            },
+                                            "bitwidth": null
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "declaration",
+                                    "specifiers": [
+                                        {
+                                            "class": "type_specifier",
+                                            "specifier": "float"
+                                        }
+                                    ],
+                                    "declarators": [
+                                        {
+                                            "declarator": {
+                                                "class": "identifier",
+                                                "identifier": "nested2"
+                                            },
+                                            "bitwidth": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "declarators": []
+                }
+            ]
+        }
+    ],
+    [
+        {
+            "class": "type_specifier",
+            "specifier": "union",
+            "identifier": "UNION1",
+            "members": [
+                {
+                    "type": "declaration",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "struct",
+                            "identifier": null,
+                            "members": [
+                                {
+                                    "type": "declaration",
+                                    "specifiers": [
+                                        {
+                                            "class": "type_specifier",
+                                            "specifier": "union",
+                                            "identifier": null,
+                                            "members": [
+                                                {
+                                                    "type": "declaration",
+                                                    "specifiers": [
+                                                        {
+                                                            "class": "type_specifier",
+                                                            "specifier": "char"
+                                                        }
+                                                    ],
+                                                    "declarators": [
+                                                        {
+                                                            "declarator": {
+                                                                "class": "array",
+                                                                "declarator": {
+                                                                    "class": "identifier",
+                                                                    "identifier": "something"
+                                                                },
+                                                                "type": "bounded",
+                                                                "length": {
+                                                                    "class": "constant",
+                                                                    "type": "unsigned_integer",
+                                                                    "value": 24
+                                                                },
+                                                                "static": false,
+                                                                "type_qualifiers": []
+                                                            },
+                                                            "bitwidth": null
+                                                        },
+                                                        {
+                                                            "declarator": {
+                                                                "class": "identifier",
+                                                                "identifier": "test"
+                                                            },
+                                                            "bitwidth": {
+                                                                "class": "constant",
+                                                                "type": "unsigned_integer",
+                                                                "value": 1
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "declarators": []
+                                }
+                            ]
+                        }
+                    ],
+                    "declarators": []
+                }
+            ]
+        }
+    ]
+]

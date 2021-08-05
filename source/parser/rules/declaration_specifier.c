@@ -59,6 +59,170 @@ static kefir_result_t scan_storage_class(struct kefir_mem *mem, struct kefir_par
     return KEFIR_OK;
 }
 
+static kefir_result_t scan_struct_field_declaration(struct kefir_mem *mem, struct kefir_parser *parser, void *payload) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+
+    ASSIGN_DECL_CAST(struct kefir_ast_structure_declaration_entry **, entry_ptr, payload);
+
+    struct kefir_ast_structure_declaration_entry *entry = kefir_ast_structure_declaration_entry_alloc(mem);
+    REQUIRE(entry != NULL,
+            KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST structure declaration entry"));
+    kefir_result_t res = kefir_parser_scan_declaration_specifier_list(mem, parser, &entry->declaration.specifiers);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_ast_structure_declaration_entry_free(mem, entry);
+        return res;
+    });
+
+    kefir_bool_t scan_declarators = !PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_SEMICOLON);
+    while (scan_declarators) {
+        struct kefir_ast_declarator *declarator = NULL;
+        kefir_result_t res = kefir_parser_scan_declarator(mem, parser, &declarator);
+        if (res == KEFIR_NO_MATCH) {
+            if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COLON)) {
+                res = KEFIR_OK;
+                declarator = kefir_ast_declarator_identifier(mem, NULL, NULL);
+                REQUIRE_CHAIN_SET(
+                    &res, declarator != NULL,
+                    KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate empty AST declarator identifier"));
+            } else {
+                res = KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected either declarator or bit-field");
+            }
+        }
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_ast_structure_declaration_entry_free(mem, entry);
+            return res;
+        });
+
+        struct kefir_ast_node_base *bitwidth = NULL;
+        if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COLON)) {
+            REQUIRE_CHAIN(&res, PARSER_SHIFT(parser));
+            REQUIRE_CHAIN(&res, KEFIR_PARSER_RULE_APPLY(mem, parser, constant_expression, &bitwidth));
+            REQUIRE_ELSE(res == KEFIR_OK, {
+                kefir_ast_structure_declaration_entry_free(mem, entry);
+                return res;
+            });
+        }
+
+        res = kefir_ast_structure_declaration_entry_append(mem, entry, declarator, bitwidth);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_ast_structure_declaration_entry_free(mem, entry);
+            return res;
+        });
+
+        if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COMMA)) {
+            res = PARSER_SHIFT(parser);
+            REQUIRE_ELSE(res == KEFIR_OK, {
+                kefir_ast_structure_declaration_entry_free(mem, entry);
+                return res;
+            });
+            scan_declarators = true;
+        } else {
+            scan_declarators = false;
+        }
+    }
+
+    REQUIRE_CHAIN_SET(&res, PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_SEMICOLON),
+                      KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected semicolon"));
+    REQUIRE_CHAIN(&res, PARSER_SHIFT(parser));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_ast_structure_declaration_entry_free(mem, entry);
+        return res;
+    });
+    *entry_ptr = entry;
+    return KEFIR_OK;
+}
+
+static kefir_result_t scan_struct_static_assert(struct kefir_mem *mem, struct kefir_parser *parser, void *payload) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+
+    // ASSIGN_DECL_CAST(struct kefir_ast_structure_declaration_entry **, entry,
+    //     payload);
+    return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Static asserts are not implemented yet");
+}
+
+static kefir_result_t scan_struct_specifier_body(struct kefir_mem *mem, struct kefir_parser *parser,
+                                                 struct kefir_ast_structure_specifier *specifier) {
+    REQUIRE_OK(PARSER_SHIFT(parser));
+
+    kefir_bool_t scan_declarations = true;
+    struct kefir_ast_structure_declaration_entry *entry = NULL;
+    while (scan_declarations) {
+        kefir_result_t res = kefir_parser_try_invoke(mem, parser, scan_struct_field_declaration, &entry);
+        if (res == KEFIR_NO_MATCH) {
+            res = kefir_parser_try_invoke(mem, parser, scan_struct_static_assert, &entry);
+        }
+
+        if (res == KEFIR_NO_MATCH) {
+            scan_declarations = false;
+        } else {
+            REQUIRE_OK(res);
+            res = kefir_ast_structure_specifier_append_entry(mem, specifier, entry);
+            REQUIRE_ELSE(res == KEFIR_OK, {
+                kefir_ast_structure_declaration_entry_free(mem, entry);
+                return res;
+            });
+        }
+    }
+
+    REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_BRACE),
+            KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right brace"));
+    REQUIRE_OK(PARSER_SHIFT(parser));
+    return KEFIR_OK;
+}
+
+static kefir_result_t scan_struct_specifier(struct kefir_mem *mem, struct kefir_parser *parser, void *payload) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct kefir_ast_declarator_specifier **, specifier_ptr, payload);
+
+    kefir_bool_t structure = PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_STRUCT);
+    REQUIRE_OK(PARSER_SHIFT(parser));
+    const char *identifier = NULL;
+    kefir_bool_t complete;
+    kefir_result_t res = KEFIR_OK;
+
+    if (PARSER_TOKEN_IS_IDENTIFIER(parser, 0)) {
+        identifier = kefir_parser_token_cursor_at(parser->cursor, 0)->identifier;
+        REQUIRE_OK(PARSER_SHIFT(parser));
+        complete = PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_BRACE);
+    } else {
+        REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_BRACE),
+                KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Anonymous structure shall have complete body"));
+        complete = true;
+    }
+
+    struct kefir_ast_structure_specifier *specifier =
+        kefir_ast_structure_specifier_init(mem, parser->symbols, identifier, complete);
+    REQUIRE(specifier != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST structure specifier"));
+    if (complete) {
+        res = scan_struct_specifier_body(mem, parser, specifier);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_ast_structure_specifier_free(mem, specifier);
+            return res;
+        });
+    }
+
+    struct kefir_ast_declarator_specifier *decl_specifier = NULL;
+    if (structure) {
+        decl_specifier = kefir_ast_type_specifier_struct(mem, specifier);
+    } else {
+        decl_specifier = kefir_ast_type_specifier_union(mem, specifier);
+    }
+    REQUIRE_ELSE(decl_specifier != NULL, {
+        kefir_ast_structure_specifier_free(mem, specifier);
+        return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST declarator specifier");
+    });
+
+    *specifier_ptr = decl_specifier;
+
+    return KEFIR_OK;
+}
+
 static kefir_result_t scan_type_specifier(struct kefir_mem *mem, struct kefir_parser *parser, void *payload) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser"));
@@ -111,9 +275,9 @@ static kefir_result_t scan_type_specifier(struct kefir_mem *mem, struct kefir_pa
             return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST declarator specifier");
         });
     } else if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_STRUCT)) {
-        return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Structure type specifier is not implemented yet");
+        REQUIRE_OK(kefir_parser_try_invoke(mem, parser, scan_struct_specifier, &specifier));
     } else if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_UNION)) {
-        return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Union type specifier is not implemented yet");
+        REQUIRE_OK(kefir_parser_try_invoke(mem, parser, scan_struct_specifier, &specifier));
     } else if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_ENUM)) {
         return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Enumeration type specifier is not implemented yet");
     } else {
