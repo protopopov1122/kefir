@@ -1,0 +1,154 @@
+[
+    [
+        {
+            "class": "type_specifier",
+            "specifier": "struct",
+            "identifier": "structure",
+            "members": [
+                {
+                    "type": "declaration",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "short"
+                        }
+                    ],
+                    "declarators": [
+                        {
+                            "declarator": {
+                                "class": "identifier",
+                                "identifier": "field1"
+                            },
+                            "bitwidth": null
+                        }
+                    ]
+                },
+                {
+                    "type": "static_assert",
+                    "assertion": {
+                        "class": "static_assertion",
+                        "assertion": {
+                            "class": "unary_operation",
+                            "type": "logical_negate",
+                            "argument": {
+                                "class": "identifier",
+                                "identifier": "SOMETHING"
+                            }
+                        },
+                        "string_literal": {
+                            "class": "string_literal",
+                            "content": "Hello, world!",
+                            "length": 14
+                        }
+                    }
+                },
+                {
+                    "type": "declaration",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "long"
+                        },
+                        {
+                            "class": "type_specifier",
+                            "specifier": "double"
+                        }
+                    ],
+                    "declarators": [
+                        {
+                            "declarator": {
+                                "class": "identifier",
+                                "identifier": "field2"
+                            },
+                            "bitwidth": null
+                        }
+                    ]
+                },
+                {
+                    "type": "declaration",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "struct",
+                            "identifier": null,
+                            "members": [
+                                {
+                                    "type": "declaration",
+                                    "specifiers": [
+                                        {
+                                            "class": "type_specifier",
+                                            "specifier": "float"
+                                        }
+                                    ],
+                                    "declarators": [
+                                        {
+                                            "declarator": {
+                                                "class": "pointer",
+                                                "declarator": {
+                                                    "class": "identifier",
+                                                    "identifier": "field3"
+                                                },
+                                                "type_qualifiers": [
+                                                    "volatile"
+                                                ]
+                                            },
+                                            "bitwidth": null
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "static_assert",
+                                    "assertion": {
+                                        "class": "static_assertion",
+                                        "assertion": {
+                                            "class": "unary_operation",
+                                            "type": "negate",
+                                            "argument": {
+                                                "class": "identifier",
+                                                "identifier": "SOMETHING_ELSE"
+                                            }
+                                        },
+                                        "string_literal": {
+                                            "class": "string_literal",
+                                            "content": "Goodbye, world!",
+                                            "length": 16
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "declarators": []
+                },
+                {
+                    "type": "static_assert",
+                    "assertion": {
+                        "class": "static_assertion",
+                        "assertion": {
+                            "class": "binary_operation",
+                            "type": "add",
+                            "left": {
+                                "class": "unary_operation",
+                                "type": "invert",
+                                "argument": {
+                                    "class": "identifier",
+                                    "identifier": "EVERYTHING"
+                                }
+                            },
+                            "right": {
+                                "class": "constant",
+                                "type": "integer",
+                                "value": 1
+                            }
+                        },
+                        "string_literal": {
+                            "class": "string_literal",
+                            "content": "What is this?\n\n",
+                            "length": 16
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+]

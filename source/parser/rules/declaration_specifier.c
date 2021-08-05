@@ -139,9 +139,15 @@ static kefir_result_t scan_struct_static_assert(struct kefir_mem *mem, struct ke
     REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
 
-    // ASSIGN_DECL_CAST(struct kefir_ast_structure_declaration_entry **, entry,
-    //     payload);
-    return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Static asserts are not implemented yet");
+    ASSIGN_DECL_CAST(struct kefir_ast_structure_declaration_entry **, entry, payload);
+    struct kefir_ast_node_base *static_assertion = NULL;
+    REQUIRE_OK(KEFIR_PARSER_RULE_APPLY(mem, parser, static_assertion, &static_assertion));
+    *entry = kefir_ast_structure_declaration_entry_alloc_assert(mem, static_assertion->self);
+    REQUIRE_ELSE(*entry != NULL, {
+        KEFIR_AST_NODE_FREE(mem, static_assertion);
+        return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST declaration static assertion entry");
+    });
+    return KEFIR_OK;
 }
 
 static kefir_result_t scan_struct_specifier_body(struct kefir_mem *mem, struct kefir_parser *parser,
