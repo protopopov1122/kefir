@@ -270,6 +270,24 @@ static kefir_result_t visit_unary_operation(const struct kefir_ast_visitor *visi
     return KEFIR_OK;
 }
 
+static kefir_result_t visit_cast_operator(const struct kefir_ast_visitor *visitor,
+                                          const struct kefir_ast_cast_operator *node, void *payload) {
+    UNUSED(visitor);
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST cast operator node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct kefir_json_output *, json, payload);
+
+    REQUIRE_OK(kefir_json_output_object_begin(json));
+    REQUIRE_OK(kefir_json_output_object_key(json, "class"));
+    REQUIRE_OK(kefir_json_output_string(json, "cast_operator"));
+    REQUIRE_OK(kefir_json_output_object_key(json, "type_name"));
+    REQUIRE_OK(kefir_ast_format(json, KEFIR_AST_NODE_BASE(node->type_name)));
+    REQUIRE_OK(kefir_json_output_object_key(json, "expression"));
+    REQUIRE_OK(kefir_ast_format(json, node->expr));
+    REQUIRE_OK(kefir_json_output_object_end(json));
+    return KEFIR_OK;
+}
+
 static kefir_result_t visit_binary_operation(const struct kefir_ast_visitor *visitor,
                                              const struct kefir_ast_binary_operation *node, void *payload) {
     UNUSED(visitor);
@@ -537,6 +555,7 @@ kefir_result_t kefir_ast_format(struct kefir_json_output *json, const struct kef
     visitor.struct_member = visit_struct_member;
     visitor.struct_indirect_member = visit_struct_member;
     visitor.unary_operation = visit_unary_operation;
+    visitor.cast_operator = visit_cast_operator;
     visitor.binary_operation = visit_binary_operation;
     visitor.conditional_operator = visit_conditional_operator;
     visitor.assignment_operator = visit_assignment_operator;

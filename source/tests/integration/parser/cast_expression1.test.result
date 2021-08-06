@@ -1,0 +1,57 @@
+[
+    {
+        "class": "cast_operator",
+        "type_name": {
+            "class": "type_name",
+            "specifiers": [
+                {
+                    "class": "type_specifier",
+                    "specifier": "long"
+                },
+                {
+                    "class": "type_specifier",
+                    "specifier": "int"
+                }
+            ],
+            "declarator": {
+                "class": "abstract"
+            }
+        },
+        "expression": {
+            "class": "constant",
+            "type": "float",
+            "value": 3.140000
+        }
+    },
+    {
+        "class": "cast_operator",
+        "type_name": {
+            "class": "type_name",
+            "specifiers": [
+                {
+                    "class": "type_qualifier",
+                    "qualifier": "const"
+                },
+                {
+                    "class": "type_specifier",
+                    "specifier": "void"
+                }
+            ],
+            "declarator": {
+                "class": "pointer",
+                "declarator": {
+                    "class": "abstract"
+                },
+                "type_qualifiers": []
+            }
+        },
+        "expression": {
+            "class": "unary_operation",
+            "type": "postfix_increment",
+            "argument": {
+                "class": "identifier",
+                "identifier": "VALUE"
+            }
+        }
+    }
+]
