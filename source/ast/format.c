@@ -589,6 +589,12 @@ static kefir_result_t format_struct(struct kefir_json_output *json,
 static kefir_result_t format_enum(struct kefir_json_output *json,
                                   const struct kefir_ast_declarator_specifier *specifier) {
     REQUIRE_OK(kefir_json_output_string(json, "enum"));
+    REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
+    if (specifier->type_specifier.value.enumeration->identifier != NULL) {
+        REQUIRE_OK(kefir_json_output_string(json, specifier->type_specifier.value.enumeration->identifier));
+    } else {
+        REQUIRE_OK(kefir_json_output_null(json));
+    }
     REQUIRE_OK(kefir_json_output_object_key(json, "members"));
     if (specifier->type_specifier.value.enumeration->complete) {
         REQUIRE_OK(kefir_json_output_array_begin(json));

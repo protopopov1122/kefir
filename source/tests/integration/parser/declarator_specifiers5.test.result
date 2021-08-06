@@ -1,0 +1,111 @@
+[
+    [
+        {
+            "class": "type_specifier",
+            "specifier": "struct",
+            "identifier": "something",
+            "members": [
+                {
+                    "type": "declaration",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "enum",
+                            "identifier": null,
+                            "members": [
+                                {
+                                    "identifier": "TYPE1",
+                                    "value": null
+                                },
+                                {
+                                    "identifier": "TYPE2",
+                                    "value": null
+                                }
+                            ]
+                        }
+                    ],
+                    "declarators": [
+                        {
+                            "declarator": {
+                                "class": "identifier",
+                                "identifier": "type"
+                            },
+                            "bitwidth": null
+                        }
+                    ]
+                },
+                {
+                    "type": "declaration",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "union",
+                            "identifier": null,
+                            "members": [
+                                {
+                                    "type": "declaration",
+                                    "specifiers": [
+                                        {
+                                            "class": "type_specifier",
+                                            "specifier": "long"
+                                        }
+                                    ],
+                                    "declarators": [
+                                        {
+                                            "declarator": {
+                                                "class": "identifier",
+                                                "identifier": "integer"
+                                            },
+                                            "bitwidth": null
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "declaration",
+                                    "specifiers": [
+                                        {
+                                            "class": "type_specifier",
+                                            "specifier": "double"
+                                        }
+                                    ],
+                                    "declarators": [
+                                        {
+                                            "declarator": {
+                                                "class": "identifier",
+                                                "identifier": "floatingPoint"
+                                            },
+                                            "bitwidth": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "declarators": []
+                },
+                {
+                    "type": "declaration",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "void"
+                        }
+                    ],
+                    "declarators": [
+                        {
+                            "declarator": {
+                                "class": "pointer",
+                                "declarator": {
+                                    "class": "identifier",
+                                    "identifier": "payload"
+                                },
+                                "type_qualifiers": []
+                            },
+                            "bitwidth": null
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+]

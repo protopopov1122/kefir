@@ -229,6 +229,97 @@ static kefir_result_t scan_struct_specifier(struct kefir_mem *mem, struct kefir_
     return KEFIR_OK;
 }
 
+static kefir_result_t scan_enum_field_declaration(struct kefir_mem *mem, struct kefir_parser *parser, void *payload) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+
+    ASSIGN_DECL_CAST(struct kefir_ast_enum_specifier *, specifier, payload);
+    REQUIRE(PARSER_TOKEN_IS_IDENTIFIER(parser, 0),
+            KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected enumeration constant identifier"));
+    const char *identifier = kefir_parser_token_cursor_at(parser->cursor, 0)->identifier;
+    REQUIRE_OK(PARSER_SHIFT(parser));
+
+    struct kefir_ast_node_base *value = NULL;
+    if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_EQUAL)) {
+        REQUIRE_OK(PARSER_SHIFT(parser));
+        REQUIRE_OK(KEFIR_PARSER_RULE_APPLY(mem, parser, constant_expression, &value));
+    }
+
+    kefir_result_t res = kefir_ast_enum_specifier_append(mem, specifier, parser->symbols, identifier, value);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, value);
+        return res;
+    });
+
+    return KEFIR_OK;
+}
+
+static kefir_result_t scan_enum_specifier_body(struct kefir_mem *mem, struct kefir_parser *parser,
+                                               struct kefir_ast_enum_specifier *specifier) {
+    REQUIRE_OK(PARSER_SHIFT(parser));
+
+    kefir_bool_t scan_constants = true;
+    while (scan_constants) {
+        REQUIRE_OK(kefir_parser_try_invoke(mem, parser, scan_enum_field_declaration, specifier));
+
+        if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COMMA)) {
+            REQUIRE_OK(PARSER_SHIFT(parser));
+            scan_constants = !PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_BRACE);
+        } else {
+            scan_constants = false;
+        }
+    }
+
+    REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_BRACE),
+            KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right brace"));
+    REQUIRE_OK(PARSER_SHIFT(parser));
+    return KEFIR_OK;
+}
+
+static kefir_result_t scan_enum_specifier(struct kefir_mem *mem, struct kefir_parser *parser, void *payload) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct kefir_ast_declarator_specifier **, specifier_ptr, payload);
+
+    REQUIRE_OK(PARSER_SHIFT(parser));
+    const char *identifier = NULL;
+    kefir_bool_t complete;
+    kefir_result_t res = KEFIR_OK;
+
+    if (PARSER_TOKEN_IS_IDENTIFIER(parser, 0)) {
+        identifier = kefir_parser_token_cursor_at(parser->cursor, 0)->identifier;
+        REQUIRE_OK(PARSER_SHIFT(parser));
+        complete = PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_BRACE);
+    } else {
+        REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_BRACE),
+                KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Anonymous structure shall have complete body"));
+        complete = true;
+    }
+
+    struct kefir_ast_enum_specifier *specifier =
+        kefir_ast_enum_specifier_init(mem, parser->symbols, identifier, complete);
+    REQUIRE(specifier != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST enum specifier"));
+    if (complete) {
+        res = scan_enum_specifier_body(mem, parser, specifier);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_ast_enum_specifier_free(mem, specifier);
+            return res;
+        });
+    }
+
+    struct kefir_ast_declarator_specifier *decl_specifier = kefir_ast_type_specifier_enum(mem, specifier);
+    REQUIRE_ELSE(decl_specifier != NULL, {
+        kefir_ast_enum_specifier_free(mem, specifier);
+        return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST declarator specifier");
+    });
+
+    *specifier_ptr = decl_specifier;
+
+    return KEFIR_OK;
+}
+
 static kefir_result_t scan_type_specifier(struct kefir_mem *mem, struct kefir_parser *parser, void *payload) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser"));
@@ -285,7 +376,7 @@ static kefir_result_t scan_type_specifier(struct kefir_mem *mem, struct kefir_pa
     } else if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_UNION)) {
         REQUIRE_OK(kefir_parser_try_invoke(mem, parser, scan_struct_specifier, &specifier));
     } else if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_ENUM)) {
-        return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Enumeration type specifier is not implemented yet");
+        REQUIRE_OK(kefir_parser_try_invoke(mem, parser, scan_enum_specifier, &specifier));
     } else {
         // TODO Implement typedef specifiers
         return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match type specifier");
