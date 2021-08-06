@@ -468,6 +468,24 @@ static kefir_result_t visit_comma_operator(const struct kefir_ast_visitor *visit
     return KEFIR_OK;
 }
 
+static kefir_result_t visit_type_name(const struct kefir_ast_visitor *visitor, const struct kefir_ast_type_name *node,
+                                      void *payload) {
+    UNUSED(visitor);
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type name node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct kefir_json_output *, json, payload);
+
+    REQUIRE_OK(kefir_json_output_object_begin(json));
+    REQUIRE_OK(kefir_json_output_object_key(json, "class"));
+    REQUIRE_OK(kefir_json_output_string(json, "type_name"));
+    REQUIRE_OK(kefir_json_output_object_key(json, "specifiers"));
+    REQUIRE_OK(kefir_ast_format_declarator_specifier_list(json, &node->type_decl.specifiers));
+    REQUIRE_OK(kefir_json_output_object_key(json, "declarator"));
+    REQUIRE_OK(kefir_ast_format_declarator(json, node->type_decl.declarator));
+    REQUIRE_OK(kefir_json_output_object_end(json));
+    return KEFIR_OK;
+}
+
 static kefir_result_t visit_declaration(const struct kefir_ast_visitor *visitor,
                                         const struct kefir_ast_declaration *node, void *payload) {
     UNUSED(visitor);
@@ -523,6 +541,7 @@ kefir_result_t kefir_ast_format(struct kefir_json_output *json, const struct kef
     visitor.conditional_operator = visit_conditional_operator;
     visitor.assignment_operator = visit_assignment_operator;
     visitor.comma_operator = visit_comma_operator;
+    visitor.type_name = visit_type_name;
     visitor.declaration = visit_declaration;
     visitor.static_assertion = visit_static_assertion;
     REQUIRE_OK(node->klass->visit(node, &visitor, json));

@@ -66,12 +66,13 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
         REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(type_name), NULL));
         REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_PARENTHESE),
                 KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right parenthese"));
+        REQUIRE_OK(PARSER_SHIFT(parser));
         REQUIRE_OK(kefir_parser_ast_builder_unary_operation(mem, builder, KEFIR_AST_OPERATION_SIZEOF));
     } else if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_SIZEOF)) {
         REQUIRE_OK(PARSER_SHIFT(parser));
         REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(unary_expression), NULL));
         REQUIRE_OK(kefir_parser_ast_builder_unary_operation(mem, builder, KEFIR_AST_OPERATION_SIZEOF));
-    } else if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_ALIGNAS)) {
+    } else if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_ALIGNOF)) {
         REQUIRE_OK(PARSER_SHIFT(parser));
         REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_PARENTHESE),
                 KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected left parenthese"));
@@ -79,6 +80,7 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
         REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(type_name), NULL));
         REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_PARENTHESE),
                 KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right parenthese"));
+        REQUIRE_OK(PARSER_SHIFT(parser));
         REQUIRE_OK(kefir_parser_ast_builder_unary_operation(mem, builder, KEFIR_AST_OPERATION_ALIGNOF));
     } else {
         REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(postfix_expression), NULL));

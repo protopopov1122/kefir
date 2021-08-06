@@ -1,0 +1,152 @@
+[
+    {
+        "class": "type_name",
+        "specifiers": [
+            {
+                "class": "type_specifier",
+                "specifier": "int"
+            }
+        ],
+        "declarator": {
+            "class": "abstract"
+        }
+    },
+    {
+        "class": "type_name",
+        "specifiers": [
+            {
+                "class": "type_qualifier",
+                "qualifier": "const"
+            },
+            {
+                "class": "type_specifier",
+                "specifier": "unsigned"
+            },
+            {
+                "class": "type_specifier",
+                "specifier": "long"
+            },
+            {
+                "class": "type_specifier",
+                "specifier": "int"
+            }
+        ],
+        "declarator": {
+            "class": "pointer",
+            "declarator": {
+                "class": "abstract"
+            },
+            "type_qualifiers": [
+                "volatile"
+            ]
+        }
+    },
+    {
+        "class": "type_name",
+        "specifiers": [
+            {
+                "class": "type_specifier",
+                "specifier": "void"
+            }
+        ],
+        "declarator": {
+            "class": "pointer",
+            "declarator": {
+                "class": "pointer",
+                "declarator": {
+                    "class": "array",
+                    "declarator": {
+                        "class": "abstract"
+                    },
+                    "type": "bounded",
+                    "length": {
+                        "class": "constant",
+                        "type": "integer",
+                        "value": 1
+                    },
+                    "static": true,
+                    "type_qualifiers": [
+                        "restrict"
+                    ]
+                },
+                "type_qualifiers": []
+            },
+            "type_qualifiers": []
+        }
+    },
+    {
+        "class": "type_name",
+        "specifiers": [
+            {
+                "class": "type_specifier",
+                "specifier": "struct",
+                "identifier": null,
+                "members": [
+                    {
+                        "type": "declaration",
+                        "specifiers": [
+                            {
+                                "class": "type_specifier",
+                                "specifier": "float"
+                            }
+                        ],
+                        "declarators": [
+                            {
+                                "declarator": {
+                                    "class": "identifier",
+                                    "identifier": "X"
+                                },
+                                "bitwidth": null
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "declarator": {
+            "class": "array",
+            "declarator": {
+                "class": "abstract"
+            },
+            "type": "unbounded",
+            "static": false,
+            "type_qualifiers": []
+        }
+    },
+    {
+        "class": "type_name",
+        "specifiers": [
+            {
+                "class": "type_specifier",
+                "specifier": "double"
+            }
+        ],
+        "declarator": {
+            "class": "pointer",
+            "declarator": {
+                "class": "function",
+                "declarator": {
+                    "class": "pointer",
+                    "declarator": {
+                        "class": "array",
+                        "declarator": {
+                            "class": "abstract"
+                        },
+                        "type": "bounded",
+                        "length": {
+                            "class": "constant",
+                            "type": "integer",
+                            "value": 10
+                        },
+                        "static": false,
+                        "type_qualifiers": []
+                    },
+                    "type_qualifiers": []
+                },
+                "ellipsis": false,
+                "parameters": []
+            },
+            "type_qualifiers": []
+        }
+    }
+]

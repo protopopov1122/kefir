@@ -49,6 +49,78 @@
     },
     {
         "class": "unary_operation",
+        "type": "sizeof",
+        "argument": {
+            "class": "type_name",
+            "specifiers": [
+                {
+                    "class": "type_specifier",
+                    "specifier": "long"
+                }
+            ],
+            "declarator": {
+                "class": "array",
+                "declarator": {
+                    "class": "abstract"
+                },
+                "type": "bounded",
+                "length": {
+                    "class": "constant",
+                    "type": "long",
+                    "value": 8
+                },
+                "static": false,
+                "type_qualifiers": []
+            }
+        }
+    },
+    {
+        "class": "unary_operation",
+        "type": "alignof",
+        "argument": {
+            "class": "type_name",
+            "specifiers": [
+                {
+                    "class": "type_specifier",
+                    "specifier": "char"
+                }
+            ],
+            "declarator": {
+                "class": "function",
+                "declarator": {
+                    "class": "pointer",
+                    "declarator": {
+                        "class": "abstract"
+                    },
+                    "type_qualifiers": []
+                },
+                "ellipsis": false,
+                "parameters": [
+                    {
+                        "class": "declaration",
+                        "specifiers": [
+                            {
+                                "class": "type_specifier",
+                                "specifier": "int"
+                            }
+                        ],
+                        "declarators": {
+                            "class": "array",
+                            "declarator": {
+                                "class": "identifier",
+                                "identifier": "arr"
+                            },
+                            "type": "unbounded",
+                            "static": false,
+                            "type_qualifiers": []
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "class": "unary_operation",
         "type": "invert",
         "argument": {
             "class": "function_call",

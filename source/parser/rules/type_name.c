@@ -25,6 +25,50 @@
 kefir_result_t KEFIR_PARSER_RULE_FN(type_name)(struct kefir_mem *mem, struct kefir_parser *parser,
                                                struct kefir_ast_node_base **result, void *payload) {
     APPLY_PROLOGUE(mem, parser, result, payload);
-    // TODO Implement type name parser
-    return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Type name parser is not implemented yet");
+    struct kefir_ast_declarator_specifier_list specifiers;
+    struct kefir_ast_declarator *declarator = NULL;
+
+    REQUIRE_OK(kefir_ast_declarator_specifier_list_init(&specifiers));
+    kefir_result_t res = kefir_parser_scan_declaration_specifier_list(mem, parser, &specifiers);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_ast_declarator_specifier_list_free(mem, &specifiers);
+        return res;
+    });
+
+    res = kefir_parser_scan_abstract_declarator(mem, parser, &declarator);
+    if (res == KEFIR_NO_MATCH) {
+        declarator = kefir_ast_declarator_identifier(mem, NULL, NULL);
+        REQUIRE_ELSE(declarator != NULL, {
+            kefir_ast_declarator_specifier_list_free(mem, &specifiers);
+            return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate empty AST identifier declarator");
+        });
+    } else {
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_ast_declarator_specifier_list_free(mem, &specifiers);
+            return res;
+        });
+    }
+
+    struct kefir_ast_type_name *type_name = kefir_ast_new_type_name(mem, declarator);
+    REQUIRE_ELSE(type_name != NULL, {
+        kefir_ast_declarator_free(mem, declarator);
+        kefir_ast_declarator_specifier_list_free(mem, &specifiers);
+        return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST type name");
+    });
+
+    res = kefir_ast_declarator_specifier_list_clone(mem, &type_name->type_decl.specifiers, &specifiers);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(type_name));
+        kefir_ast_declarator_specifier_list_free(mem, &specifiers);
+        return res;
+    });
+
+    res = kefir_ast_declarator_specifier_list_free(mem, &specifiers);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(type_name));
+        return res;
+    });
+
+    *result = KEFIR_AST_NODE_BASE(type_name);
+    return KEFIR_OK;
 }

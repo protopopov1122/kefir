@@ -25,6 +25,6 @@
 kefir_result_t KEFIR_PARSER_RULE_FN(compound_literal)(struct kefir_mem *mem, struct kefir_parser *parser,
                                                       struct kefir_ast_node_base **result, void *payload) {
     APPLY_PROLOGUE(mem, parser, result, payload);
-    // TODO Implement generic selection parser
+    // TODO Implement compound literal parser
     return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Compound literal parser is not implemented yet");
 }
