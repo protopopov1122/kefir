@@ -58,5 +58,9 @@ kefir_result_t kefir_parser_ast_builder_assignment_operator(struct kefir_mem *, 
                                                             kefir_ast_assignment_operation_t);
 kefir_result_t kefir_parser_ast_builder_comma_operator(struct kefir_mem *, struct kefir_parser_ast_builder *);
 kefir_result_t kefir_parser_ast_builder_static_assertion(struct kefir_mem *, struct kefir_parser_ast_builder *);
+kefir_result_t kefir_parser_ast_builder_generic_selection(struct kefir_mem *, struct kefir_parser_ast_builder *);
+kefir_result_t kefir_parser_ast_builder_generic_selection_append(struct kefir_mem *, struct kefir_parser_ast_builder *);
+kefir_result_t kefir_parser_ast_builder_generic_selection_append_default(struct kefir_mem *,
+                                                                         struct kefir_parser_ast_builder *);
 
 #endif

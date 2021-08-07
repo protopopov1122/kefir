@@ -480,3 +480,108 @@ kefir_result_t kefir_parser_ast_builder_static_assertion(struct kefir_mem *mem,
 
     return KEFIR_OK;
 }
+
+kefir_result_t kefir_parser_ast_builder_generic_selection(struct kefir_mem *mem,
+                                                          struct kefir_parser_ast_builder *builder) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+
+    struct kefir_ast_node_base *expr = NULL;
+    REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &expr));
+
+    struct kefir_ast_generic_selection *generic_selection = kefir_ast_new_generic_selection(mem, expr);
+    REQUIRE_ELSE(generic_selection != NULL, {
+        KEFIR_AST_NODE_FREE(mem, expr);
+        return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST generic selection");
+    });
+
+    kefir_result_t res = kefir_parser_ast_builder_push(mem, builder, KEFIR_AST_NODE_BASE(generic_selection));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(generic_selection));
+        return res;
+    });
+
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_parser_ast_builder_generic_selection_append(struct kefir_mem *mem,
+                                                                 struct kefir_parser_ast_builder *builder) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+
+    struct kefir_ast_node_base *generic_selection = NULL, *type_name = NULL, *expression = NULL;
+    REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &expression));
+    kefir_result_t res = kefir_parser_ast_builder_pop(mem, builder, &type_name);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, expression);
+        return res;
+    });
+    res = kefir_parser_ast_builder_pop(mem, builder, &generic_selection);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, type_name);
+        KEFIR_AST_NODE_FREE(mem, expression);
+        return res;
+    });
+
+    REQUIRE_ELSE(generic_selection->klass->type == KEFIR_AST_GENERIC_SELECTION, {
+        KEFIR_AST_NODE_FREE(mem, generic_selection);
+        KEFIR_AST_NODE_FREE(mem, type_name);
+        KEFIR_AST_NODE_FREE(mem, expression);
+        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected AST generic selection node");
+    });
+    REQUIRE_ELSE(type_name->klass->type == KEFIR_AST_TYPE_NAME, {
+        KEFIR_AST_NODE_FREE(mem, generic_selection);
+        KEFIR_AST_NODE_FREE(mem, type_name);
+        KEFIR_AST_NODE_FREE(mem, expression);
+        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected AST type name node");
+    });
+
+    res = kefir_ast_generic_selection_append(mem, generic_selection->self, type_name->self, expression);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, generic_selection);
+        KEFIR_AST_NODE_FREE(mem, type_name);
+        KEFIR_AST_NODE_FREE(mem, expression);
+        return res;
+    });
+
+    res = kefir_parser_ast_builder_push(mem, builder, generic_selection);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, generic_selection);
+        return res;
+    });
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_parser_ast_builder_generic_selection_append_default(struct kefir_mem *mem,
+                                                                         struct kefir_parser_ast_builder *builder) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+
+    struct kefir_ast_node_base *generic_selection = NULL, *expression = NULL;
+    REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &expression));
+    kefir_result_t res = kefir_parser_ast_builder_pop(mem, builder, &generic_selection);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, expression);
+        return res;
+    });
+
+    REQUIRE_ELSE(generic_selection->klass->type == KEFIR_AST_GENERIC_SELECTION, {
+        KEFIR_AST_NODE_FREE(mem, generic_selection);
+        KEFIR_AST_NODE_FREE(mem, expression);
+        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected AST generic selection node");
+    });
+
+    res = kefir_ast_generic_selection_append(mem, generic_selection->self, NULL, expression);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, generic_selection);
+        KEFIR_AST_NODE_FREE(mem, expression);
+        return res;
+    });
+
+    res = kefir_parser_ast_builder_push(mem, builder, generic_selection);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, generic_selection);
+        return res;
+    });
+    return KEFIR_OK;
+}

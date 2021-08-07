@@ -19,12 +19,60 @@
 */
 
 #include "kefir/parser/rule_helpers.h"
+#include "kefir/parser/builder.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+
+static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder, void *payload) {
+    UNUSED(payload);
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser AST builder"));
+    struct kefir_parser *parser = builder->parser;
+
+    REQUIRE(PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_GENERIC),
+            KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Cannot match generic selection"));
+    REQUIRE_OK(PARSER_SHIFT(parser));
+    REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_PARENTHESE),
+            KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected left parenthese"));
+    REQUIRE_OK(PARSER_SHIFT(parser));
+    REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(assignment_expression), NULL));
+    REQUIRE_OK(kefir_parser_ast_builder_generic_selection(mem, builder));
+
+    REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COMMA),
+            KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected comma"));
+    while (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COMMA)) {
+        REQUIRE_OK(PARSER_SHIFT(parser));
+        kefir_bool_t default_clause = false;
+        kefir_result_t res = kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(type_name), NULL);
+        if (res == KEFIR_NO_MATCH) {
+            REQUIRE(PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_DEFAULT),
+                    KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected either type name of default keyword"));
+            REQUIRE_OK(PARSER_SHIFT(parser));
+            default_clause = true;
+        } else {
+            REQUIRE_OK(res);
+        }
+
+        REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COLON),
+                KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected colon"));
+        REQUIRE_OK(PARSER_SHIFT(parser));
+        REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(assignment_expression), NULL));
+        if (default_clause) {
+            REQUIRE_OK(kefir_parser_ast_builder_generic_selection_append_default(mem, builder));
+        } else {
+            REQUIRE_OK(kefir_parser_ast_builder_generic_selection_append(mem, builder));
+        }
+    }
+
+    REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_PARENTHESE),
+            KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right parenthese"));
+    REQUIRE_OK(PARSER_SHIFT(parser));
+    return KEFIR_OK;
+}
 
 kefir_result_t KEFIR_PARSER_RULE_FN(generic_selection)(struct kefir_mem *mem, struct kefir_parser *parser,
                                                        struct kefir_ast_node_base **result, void *payload) {
     APPLY_PROLOGUE(mem, parser, result, payload);
-    // TODO Implement generic selection parser
-    return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Generic selection parser is not implemented yet");
+    REQUIRE_OK(kefir_parser_ast_builder_wrap(mem, parser, result, builder_callback, NULL));
+    return KEFIR_OK;
 }

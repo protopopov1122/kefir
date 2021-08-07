@@ -1,0 +1,283 @@
+[
+    {
+        "class": "generic_selection",
+        "control_expression": {
+            "class": "identifier",
+            "identifier": "x"
+        },
+        "associations": [
+            {
+                "type_name": {
+                    "class": "type_name",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "int"
+                        }
+                    ],
+                    "declarator": {
+                        "class": "abstract"
+                    }
+                },
+                "expression": {
+                    "class": "constant",
+                    "type": "unsigned_integer",
+                    "value": 1
+                }
+            },
+            {
+                "type_name": {
+                    "class": "type_name",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "long"
+                        },
+                        {
+                            "class": "type_specifier",
+                            "specifier": "int"
+                        }
+                    ],
+                    "declarator": {
+                        "class": "array",
+                        "declarator": {
+                            "class": "abstract"
+                        },
+                        "type": "unbounded",
+                        "static": false,
+                        "type_qualifiers": []
+                    }
+                },
+                "expression": {
+                    "class": "constant",
+                    "type": "unsigned_integer",
+                    "value": 2
+                }
+            },
+            {
+                "type_name": {
+                    "class": "type_name",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "float"
+                        }
+                    ],
+                    "declarator": {
+                        "class": "pointer",
+                        "declarator": {
+                            "class": "abstract"
+                        },
+                        "type_qualifiers": [
+                            "volatile"
+                        ]
+                    }
+                },
+                "expression": {
+                    "class": "constant",
+                    "type": "unsigned_integer",
+                    "value": 3
+                }
+            },
+            {
+                "type_name": {
+                    "class": "type_name",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "void"
+                        }
+                    ],
+                    "declarator": {
+                        "class": "function",
+                        "declarator": {
+                            "class": "abstract"
+                        },
+                        "ellipsis": false,
+                        "parameters": [
+                            {
+                                "class": "declaration",
+                                "specifiers": [
+                                    {
+                                        "class": "type_specifier",
+                                        "specifier": "int"
+                                    }
+                                ],
+                                "declarators": {
+                                    "class": "abstract"
+                                }
+                            },
+                            {
+                                "class": "declaration",
+                                "specifiers": [
+                                    {
+                                        "class": "type_specifier",
+                                        "specifier": "char"
+                                    }
+                                ],
+                                "declarators": {
+                                    "class": "abstract"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "expression": {
+                    "class": "constant",
+                    "type": "unsigned_integer",
+                    "value": 4
+                }
+            }
+        ],
+        "default_association": {
+            "class": "constant",
+            "type": "unsigned_integer",
+            "value": 0
+        }
+    },
+    {
+        "class": "generic_selection",
+        "control_expression": {
+            "class": "unary_operation",
+            "type": "logical_negate",
+            "argument": {
+                "class": "function_call",
+                "function": {
+                    "class": "identifier",
+                    "identifier": "Y"
+                },
+                "arguments": [
+                    {
+                        "class": "binary_operation",
+                        "type": "subtract",
+                        "left": {
+                            "class": "unary_operation",
+                            "type": "invert",
+                            "argument": {
+                                "class": "constant",
+                                "type": "integer",
+                                "value": 0
+                            }
+                        },
+                        "right": {
+                            "class": "constant",
+                            "type": "integer",
+                            "value": 1
+                        }
+                    }
+                ]
+            }
+        },
+        "associations": [
+            {
+                "type_name": {
+                    "class": "type_name",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "int"
+                        }
+                    ],
+                    "declarator": {
+                        "class": "abstract"
+                    }
+                },
+                "expression": {
+                    "class": "binary_operation",
+                    "type": "shift_left",
+                    "left": {
+                        "class": "binary_operation",
+                        "type": "multiply",
+                        "left": {
+                            "class": "unary_operation",
+                            "type": "postfix_decrement",
+                            "argument": {
+                                "class": "identifier",
+                                "identifier": "Y"
+                            }
+                        },
+                        "right": {
+                            "class": "constant",
+                            "type": "integer",
+                            "value": 10
+                        }
+                    },
+                    "right": {
+                        "class": "constant",
+                        "type": "integer",
+                        "value": 1
+                    }
+                }
+            },
+            {
+                "type_name": {
+                    "class": "type_name",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "float"
+                        }
+                    ],
+                    "declarator": {
+                        "class": "abstract"
+                    }
+                },
+                "expression": {
+                    "class": "array_subscript",
+                    "array": {
+                        "class": "identifier",
+                        "identifier": "arr"
+                    },
+                    "subscript": {
+                        "class": "constant",
+                        "type": "integer",
+                        "value": 1
+                    }
+                }
+            },
+            {
+                "type_name": {
+                    "class": "type_name",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "long"
+                        }
+                    ],
+                    "declarator": {
+                        "class": "abstract"
+                    }
+                },
+                "expression": {
+                    "class": "unary_operation",
+                    "type": "sizeof",
+                    "argument": {
+                        "class": "type_name",
+                        "specifiers": [
+                            {
+                                "class": "type_specifier",
+                                "specifier": "unsigned"
+                            },
+                            {
+                                "class": "type_specifier",
+                                "specifier": "long"
+                            },
+                            {
+                                "class": "type_specifier",
+                                "specifier": "long"
+                            },
+                            {
+                                "class": "type_specifier",
+                                "specifier": "int"
+                            }
+                        ],
+                        "declarator": {
+                            "class": "abstract"
+                        }
+                    }
+                }
+            }
+        ],
+        "default_association": null
+    }
+]
