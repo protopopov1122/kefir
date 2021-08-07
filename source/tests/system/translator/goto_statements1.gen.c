@@ -45,6 +45,7 @@ static kefir_result_t define_conditional_function(struct kefir_mem *mem, struct 
     const struct kefir_ast_type *arg_type =
         kefir_ast_type_unbounded_array(mem, context_manager->current->type_bundle, kefir_ast_type_double(), NULL);
     struct kefir_ast_function_type *func_type = NULL;
+    const struct kefir_ast_scoped_identifier *scoped_id = NULL;
     func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle, kefir_ast_type_double(), "sumall",
                                          &func_type);
     REQUIRE_OK(
@@ -53,10 +54,12 @@ static kefir_result_t define_conditional_function(struct kefir_mem *mem, struct 
                                                  kefir_ast_type_unsigned_int(), NULL));
 
     REQUIRE_OK(kefir_ast_global_context_define_function(mem, context_manager->global, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
-                                                        func->type, NULL));
+                                                        func->type, &scoped_id));
 
     REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context));
     REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager));
+
+    func->local_context.context.surrounding_function = scoped_id;
 
     REQUIRE_OK(kefir_ast_local_context_define_auto(
         mem, context_manager->local, "array",

@@ -300,6 +300,7 @@ kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem, const struct
     context->context.flow_control_tree = NULL;
     context->context.global_context = context;
     context->context.function_decl_contexts = &context->function_decl_contexts;
+    context->context.surrounding_function = NULL;
     context->context.payload = context;
     return KEFIR_OK;
 }

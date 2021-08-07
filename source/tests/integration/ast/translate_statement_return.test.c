@@ -55,15 +55,99 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_translate_global_scope(mem, &global_context.context, &module, &translator_global_scope));
     struct kefir_irbuilder_block builder;
 
-    FUNC2("return1", {
+    FUNC2("return0", {
+        struct kefir_ast_function_type *function_type = NULL;
+        const struct kefir_ast_type *type1 =
+            kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_void(), "fn0", &function_type);
+        const struct kefir_ast_scoped_identifier *scoped_id = NULL;
+        REQUIRE_OK(global_context.context.define_identifier(mem, &global_context.context, true, "fn0", type1,
+                                                            KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
+                                                            KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL, &scoped_id));
+        local_context.context.surrounding_function = scoped_id;
+
         struct kefir_ast_return_statement *return1 = kefir_ast_new_return_statement(mem, NULL);
 
-        struct kefir_ast_return_statement *return2 =
+        struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(return1);
+        REQUIRE_OK(kefir_ast_analyze_node(mem, &local_context.context, node));
+
+        REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(
+            mem, &local_context, &env, &module, kefir_ast_translator_context_type_resolver(&local_translator_context),
+            &translator_local_scope));
+        REQUIRE_OK(kefir_ast_translator_flow_control_tree_init(mem, context->flow_control_tree));
+
+        REQUIRE_OK(kefir_ast_translate_statement(mem, node, &builder, &local_translator_context));
+        REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
+    });
+
+    FUNC2("return1", {
+        struct kefir_ast_function_type *function_type = NULL;
+        const struct kefir_ast_type *type1 =
+            kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_long(), "fn1", &function_type);
+        const struct kefir_ast_scoped_identifier *scoped_id = NULL;
+        REQUIRE_OK(global_context.context.define_identifier(mem, &global_context.context, true, "fn1", type1,
+                                                            KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
+                                                            KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL, &scoped_id));
+        local_context.context.surrounding_function = scoped_id;
+
+        struct kefir_ast_return_statement *return1 =
             kefir_ast_new_return_statement(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 10)));
 
-        struct kefir_ast_return_statement *return3 =
+        struct kefir_ast_return_statement *return2 =
             kefir_ast_new_return_statement(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 3.14)));
 
+        struct kefir_ast_compound_statement *compound1 = kefir_ast_new_compound_statement(mem);
+        REQUIRE_OK(kefir_list_insert_after(mem, &compound1->block_items, kefir_list_tail(&compound1->block_items),
+                                           KEFIR_AST_NODE_BASE(return1)));
+        REQUIRE_OK(kefir_list_insert_after(mem, &compound1->block_items, kefir_list_tail(&compound1->block_items),
+                                           KEFIR_AST_NODE_BASE(return2)));
+
+        struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(compound1);
+        REQUIRE_OK(kefir_ast_analyze_node(mem, context, node));
+
+        REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(
+            mem, &local_context, &env, &module, kefir_ast_translator_context_type_resolver(&local_translator_context),
+            &translator_local_scope));
+        REQUIRE_OK(kefir_ast_translator_flow_control_tree_init(mem, context->flow_control_tree));
+
+        REQUIRE_OK(kefir_ast_translate_statement(mem, node, &builder, &local_translator_context));
+        REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
+    });
+
+    FUNC2("return2", {
+        struct kefir_ast_function_type *function_type = NULL;
+        const struct kefir_ast_type *type1 =
+            kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_float(), "fn2", &function_type);
+        const struct kefir_ast_scoped_identifier *scoped_id = NULL;
+        REQUIRE_OK(global_context.context.define_identifier(mem, &global_context.context, true, "fn2", type1,
+                                                            KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
+                                                            KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL, &scoped_id));
+        local_context.context.surrounding_function = scoped_id;
+
+        struct kefir_ast_return_statement *return1 =
+            kefir_ast_new_return_statement(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 10)));
+
+        struct kefir_ast_return_statement *return2 =
+            kefir_ast_new_return_statement(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 3.14)));
+
+        struct kefir_ast_compound_statement *compound1 = kefir_ast_new_compound_statement(mem);
+        REQUIRE_OK(kefir_list_insert_after(mem, &compound1->block_items, kefir_list_tail(&compound1->block_items),
+                                           KEFIR_AST_NODE_BASE(return1)));
+        REQUIRE_OK(kefir_list_insert_after(mem, &compound1->block_items, kefir_list_tail(&compound1->block_items),
+                                           KEFIR_AST_NODE_BASE(return2)));
+
+        struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(compound1);
+        REQUIRE_OK(kefir_ast_analyze_node(mem, context, node));
+
+        REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(
+            mem, &local_context, &env, &module, kefir_ast_translator_context_type_resolver(&local_translator_context),
+            &translator_local_scope));
+        REQUIRE_OK(kefir_ast_translator_flow_control_tree_init(mem, context->flow_control_tree));
+
+        REQUIRE_OK(kefir_ast_translate_statement(mem, node, &builder, &local_translator_context));
+        REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
+    });
+
+    FUNC2("return3", {
         struct kefir_ast_type_name *type_name1 =
             kefir_ast_new_type_name(mem, kefir_ast_declarator_identifier(mem, NULL, NULL));
         struct kefir_ast_structure_specifier *specifier1 = kefir_ast_structure_specifier_init(mem, NULL, NULL, true);
@@ -79,6 +163,16 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         REQUIRE_OK(kefir_ast_structure_specifier_append_entry(mem, specifier1, entry1));
         REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name1->type_decl.specifiers,
                                                               kefir_ast_type_specifier_struct(mem, specifier1)));
+        REQUIRE_OK(kefir_ast_analyze_node(mem, &global_context.context, KEFIR_AST_NODE_BASE(type_name1)));
+
+        struct kefir_ast_function_type *function_type = NULL;
+        const struct kefir_ast_type *type1 =
+            kefir_ast_type_function(mem, context->type_bundle, type_name1->base.properties.type, "fn3", &function_type);
+        const struct kefir_ast_scoped_identifier *scoped_id = NULL;
+        REQUIRE_OK(global_context.context.define_identifier(mem, &global_context.context, true, "fn3", type1,
+                                                            KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
+                                                            KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL, &scoped_id));
+        local_context.context.surrounding_function = scoped_id;
 
         struct kefir_ast_compound_literal *literal1 = kefir_ast_new_compound_literal(mem, type_name1);
         REQUIRE_OK(kefir_ast_initializer_list_append(
@@ -86,19 +180,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
             kefir_ast_new_expression_initializer(mem,
                                                  KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(mem, "Hey ho!")))));
 
-        struct kefir_ast_return_statement *return4 = kefir_ast_new_return_statement(mem, KEFIR_AST_NODE_BASE(literal1));
+        struct kefir_ast_return_statement *return1 = kefir_ast_new_return_statement(mem, KEFIR_AST_NODE_BASE(literal1));
 
-        struct kefir_ast_compound_statement *compound1 = kefir_ast_new_compound_statement(mem);
-        REQUIRE_OK(kefir_list_insert_after(mem, &compound1->block_items, kefir_list_tail(&compound1->block_items),
-                                           KEFIR_AST_NODE_BASE(return1)));
-        REQUIRE_OK(kefir_list_insert_after(mem, &compound1->block_items, kefir_list_tail(&compound1->block_items),
-                                           KEFIR_AST_NODE_BASE(return2)));
-        REQUIRE_OK(kefir_list_insert_after(mem, &compound1->block_items, kefir_list_tail(&compound1->block_items),
-                                           KEFIR_AST_NODE_BASE(return3)));
-        REQUIRE_OK(kefir_list_insert_after(mem, &compound1->block_items, kefir_list_tail(&compound1->block_items),
-                                           KEFIR_AST_NODE_BASE(return4)));
-
-        struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(compound1);
+        struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(return1);
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, node));
 
         REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(
@@ -110,8 +194,18 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
     });
 
-    FUNC2("return2", {
-        struct kefir_ast_return_statement *return1 = kefir_ast_new_return_statement(mem, NULL);
+    FUNC2("return4", {
+        struct kefir_ast_function_type *function_type = NULL;
+        const struct kefir_ast_type *type1 =
+            kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_char(), "fn4", &function_type);
+        const struct kefir_ast_scoped_identifier *scoped_id = NULL;
+        REQUIRE_OK(global_context.context.define_identifier(mem, &global_context.context, true, "fn4", type1,
+                                                            KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
+                                                            KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL, &scoped_id));
+        local_context.context.surrounding_function = scoped_id;
+
+        struct kefir_ast_return_statement *return1 =
+            kefir_ast_new_return_statement(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 6.1f)));
 
         struct kefir_ast_return_statement *return2 =
             kefir_ast_new_return_statement(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 10)));

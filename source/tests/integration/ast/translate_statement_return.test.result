@@ -22,6 +22,18 @@
         },
         {
             "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
+            "type": []
+        },
+        {
+            "identifier": 5,
+            "type": []
+        },
+        {
+            "identifier": 6,
             "type": [
                 {
                     "type": "struct",
@@ -53,7 +65,7 @@
             ]
         },
         {
-            "identifier": 4,
+            "identifier": 7,
             "type": [
                 {
                     "type": "array",
@@ -65,7 +77,7 @@
             ]
         },
         {
-            "identifier": 5,
+            "identifier": 8,
             "type": []
         }
     ],
@@ -80,14 +92,35 @@
     "function_declarations": [
         {
             "identifier": 0,
-            "name": "return1",
+            "name": "return0",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
             "identifier": 1,
+            "name": "return1",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 2,
             "name": "return2",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 3,
+            "name": "return3",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 4,
+            "name": "return4",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -96,7 +129,68 @@
     "functions": [
         {
             "identifier": 0,
+            "name": "return0",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "ret"
+                }
+            ]
+        },
+        {
+            "identifier": 1,
             "name": "return1",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 10
+                },
+                {
+                    "opcode": "ret"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 3.140000
+                },
+                {
+                    "opcode": "f64cint"
+                },
+                {
+                    "opcode": "ret"
+                }
+            ]
+        },
+        {
+            "identifier": 2,
+            "name": "return2",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 10
+                },
+                {
+                    "opcode": "intcf32"
+                },
+                {
+                    "opcode": "ret"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 3.140000
+                },
+                {
+                    "opcode": "f64cf32"
+                },
+                {
+                    "opcode": "ret"
+                }
+            ]
+        },
+        {
+            "identifier": 3,
+            "name": "return3",
             "locals": [
                 {
                     "type": "struct",
@@ -128,43 +222,26 @@
             ],
             "body": [
                 {
-                    "opcode": "ret"
-                },
-                {
-                    "opcode": "push",
-                    "arg": 10
-                },
-                {
-                    "opcode": "ret"
-                },
-                {
-                    "opcode": "pushf64",
-                    "arg": 3.140000
-                },
-                {
-                    "opcode": "ret"
-                },
-                {
                     "opcode": "getlocals"
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 6,
                         "index": 1
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 6,
                         "index": 2
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 6,
                         "index": 3
                     }
                 },
@@ -175,7 +252,7 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 3,
+                        "type": 6,
                         "index": 3
                     }
                 },
@@ -190,7 +267,7 @@
                 {
                     "opcode": "bcopy",
                     "arg": {
-                        "type": 4,
+                        "type": 7,
                         "index": 0
                     }
                 },
@@ -200,8 +277,8 @@
             ]
         },
         {
-            "identifier": 1,
-            "name": "return2",
+            "identifier": 4,
+            "name": "return4",
             "locals": [],
             "body": [
                 {
@@ -213,14 +290,21 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 5
+                    "arg": 7
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": 6.100000
+                },
+                {
+                    "opcode": "f32cint"
                 },
                 {
                     "opcode": "ret"
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 7
+                    "arg": 9
                 },
                 {
                     "opcode": "push",

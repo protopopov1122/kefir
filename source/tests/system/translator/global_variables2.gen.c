@@ -199,8 +199,7 @@ static kefir_result_t define_unit6(struct kefir_mem *mem, const struct kefir_ast
         kefir_ast_declarator_pointer(mem, kefir_ast_declarator_function(
                                               mem, kefir_ast_declarator_identifier(mem, context->symbols, "get_str1"))),
         body1);
-    REQUIRE_OK(
-        kefir_ast_declarator_specifier_list_append(mem, &func1->specifiers, kefir_ast_type_specifier_double(mem)));
+    REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &func1->specifiers, kefir_ast_type_specifier_char(mem)));
     REQUIRE_OK(kefir_list_insert_after(
         mem, &body1->block_items, kefir_list_tail(&body1->block_items),
         KEFIR_AST_NODE_BASE(kefir_ast_new_return_statement(

@@ -22,6 +22,7 @@
 #include "kefir/ast-translator/translator.h"
 #include "kefir/ast-translator/flow_control.h"
 #include "kefir/ast-translator/util.h"
+#include "kefir/ast-translator/typeconv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -36,8 +37,12 @@ kefir_result_t kefir_ast_translate_return_statement_node(struct kefir_mem *mem,
 
     if (node->expression != NULL) {
         REQUIRE_OK(kefir_ast_translate_expression(mem, node->expression, builder, context));
+        if (KEFIR_AST_TYPE_IS_SCALAR_TYPE(node->expression->properties.type)) {
+            REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits,
+                                                    node->expression->properties.type,
+                                                    node->base.properties.statement_props.return_type));
+        }
     }
-    // TODO Convert to function return type
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_RET, 0));
     return KEFIR_OK;
 }

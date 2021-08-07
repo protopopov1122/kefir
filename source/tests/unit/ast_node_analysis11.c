@@ -599,12 +599,30 @@ DEFINE_CASE(ast_node_analysis_return_statements1, "AST node analysis - return st
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
+    struct kefir_ast_function_type *function_type = NULL;
+    const struct kefir_ast_scoped_identifier *scoped_id = NULL;
+
+    const struct kefir_ast_type *type1 =
+        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_void(), "fn0", &function_type);
+    REQUIRE_OK(global_context.context.define_identifier(&kft_mem, &global_context.context, true, "fn0", type1,
+                                                        KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
+                                                        KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL, &scoped_id));
+    local_context.context.surrounding_function = scoped_id;
+
     struct kefir_ast_return_statement *return1 = kefir_ast_new_return_statement(&kft_mem, NULL);
     ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(return1)));
     ASSERT(return1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(return1->base.properties.statement_props.flow_control_point == NULL);
     ASSERT(return1->base.properties.statement_props.flow_control_statement == NULL);
     ASSERT(return1->expression == NULL);
+    ASSERT(KEFIR_AST_TYPE_SAME(return1->base.properties.statement_props.return_type, kefir_ast_type_void()));
+
+    const struct kefir_ast_type *type2 =
+        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_short(), "fn1", &function_type);
+    REQUIRE_OK(global_context.context.define_identifier(&kft_mem, &global_context.context, true, "fn1", type2,
+                                                        KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
+                                                        KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL, &scoped_id));
+    local_context.context.surrounding_function = scoped_id;
 
     struct kefir_ast_return_statement *return2 =
         kefir_ast_new_return_statement(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(&kft_mem, 1000)));
@@ -615,6 +633,7 @@ DEFINE_CASE(ast_node_analysis_return_statements1, "AST node analysis - return st
     ASSERT(return2->expression != NULL);
     ASSERT(return2->expression->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);
     ASSERT(KEFIR_AST_TYPE_SAME(return2->expression->properties.type, kefir_ast_type_signed_long()));
+    ASSERT(KEFIR_AST_TYPE_SAME(return2->base.properties.statement_props.return_type, kefir_ast_type_unsigned_short()));
 
     struct kefir_ast_return_statement *return3 = kefir_ast_new_return_statement(
         &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(&kft_mem, NULL)));

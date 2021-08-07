@@ -66,6 +66,7 @@ typedef struct kefir_ast_node_properties {
     struct {
         struct kefir_ast_flow_control_point *flow_control_point;
         struct kefir_ast_flow_control_statement *flow_control_statement;
+        const struct kefir_ast_type *return_type;
     } statement_props;
 
     struct {

@@ -60,6 +60,7 @@ typedef struct kefir_ast_context {
     struct kefir_ast_flow_control_tree *flow_control_tree;
     struct kefir_ast_global_context *global_context;
     struct kefir_list *function_decl_contexts;
+    const struct kefir_ast_scoped_identifier *surrounding_function;
 
     void *payload;
 } kefir_ast_context_t;

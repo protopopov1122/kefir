@@ -43,6 +43,24 @@ kefir_result_t kefir_ast_analyze_return_statement_node(struct kefir_mem *mem, co
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Return statement should return an expression"));
     }
 
-    // TODO Check function return type
+    REQUIRE(context->surrounding_function != NULL,
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Return statement should appear only in the context of a function"));
+    const struct kefir_ast_type *function_return_type =
+        kefir_ast_unqualified_type(context->surrounding_function->function.type->function_type.return_type);
+    if (function_return_type->tag == KEFIR_AST_TYPE_VOID) {
+        REQUIRE(node->expression == NULL,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
+                                "Return statement with expression shall appear only in non-void function"));
+    } else {
+        REQUIRE(node->expression != NULL,
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
+                                "Return statement with no expression shall appear only in void function"));
+        const struct kefir_ast_type *value_type =
+            KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->expression->properties.type);
+        REQUIRE_OK(kefir_ast_type_assignable(mem, context, value_type,
+                                             node->expression->properties.expression_props.constant_expression,
+                                             function_return_type));
+    }
+    base->properties.statement_props.return_type = function_return_type;
     return KEFIR_OK;
 }

@@ -87,6 +87,7 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
         KEFIR_FREE(mem, local_context);
         return res;
     });
+    local_context->context.surrounding_function = scoped_id;
     *scoped_id->function.local_context_ptr = local_context;
 
     switch (scoped_id->function.type->function_type.mode) {
