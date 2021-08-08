@@ -47,3 +47,43 @@ kefir_result_t kefir_ast_format_initializer_designation(struct kefir_json_output
     REQUIRE_OK(kefir_json_output_object_end(json));
     return KEFIR_OK;
 }
+
+kefir_result_t kefir_ast_format_initializer(struct kefir_json_output *json,
+                                            const struct kefir_ast_initializer *initializer) {
+    REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid json output"));
+    REQUIRE(initializer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST initializer"));
+
+    REQUIRE_OK(kefir_json_output_object_begin(json));
+    REQUIRE_OK(kefir_json_output_object_key(json, "type"));
+    switch (initializer->type) {
+        case KEFIR_AST_INITIALIZER_EXPRESSION:
+            REQUIRE_OK(kefir_json_output_string(json, "expression"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "expression"));
+            REQUIRE_OK(kefir_ast_format(json, initializer->expression));
+            break;
+
+        case KEFIR_AST_INITIALIZER_LIST:
+            REQUIRE_OK(kefir_json_output_string(json, "list"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "list"));
+            REQUIRE_OK(kefir_json_output_array_begin(json));
+            for (const struct kefir_list_entry *iter = kefir_list_head(&initializer->list.initializers); iter != NULL;
+                 kefir_list_next(&iter)) {
+                ASSIGN_DECL_CAST(struct kefir_ast_initializer_list_entry *, entry, iter->value);
+
+                REQUIRE_OK(kefir_json_output_object_begin(json));
+                REQUIRE_OK(kefir_json_output_object_key(json, "designation"));
+                if (entry->designation != NULL) {
+                    REQUIRE_OK(kefir_ast_format_initializer_designation(json, entry->designation));
+                } else {
+                    REQUIRE_OK(kefir_json_output_null(json));
+                }
+                REQUIRE_OK(kefir_json_output_object_key(json, "initializer"));
+                REQUIRE_OK(kefir_ast_format_initializer(json, entry->value));
+                REQUIRE_OK(kefir_json_output_object_end(json));
+            }
+            REQUIRE_OK(kefir_json_output_array_end(json));
+            break;
+    }
+    REQUIRE_OK(kefir_json_output_object_end(json));
+    return KEFIR_OK;
+}

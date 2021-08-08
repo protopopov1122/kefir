@@ -1,0 +1,443 @@
+[
+    {
+        "type": "expression",
+        "expression": {
+            "class": "constant",
+            "type": "unsigned_integer",
+            "value": 123
+        }
+    },
+    {
+        "type": "list",
+        "list": [
+            {
+                "designation": null,
+                "initializer": {
+                    "type": "expression",
+                    "expression": {
+                        "class": "constant",
+                        "type": "unsigned_integer",
+                        "value": 123
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "type": "list",
+        "list": [
+            {
+                "designation": null,
+                "initializer": {
+                    "type": "expression",
+                    "expression": {
+                        "class": "constant",
+                        "type": "character",
+                        "value": 97
+                    }
+                }
+            },
+            {
+                "designation": null,
+                "initializer": {
+                    "type": "expression",
+                    "expression": {
+                        "class": "constant",
+                        "type": "character",
+                        "value": 98
+                    }
+                }
+            },
+            {
+                "designation": null,
+                "initializer": {
+                    "type": "expression",
+                    "expression": {
+                        "class": "constant",
+                        "type": "character",
+                        "value": 99
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "type": "list",
+        "list": [
+            {
+                "designation": {
+                    "type": "member",
+                    "member": "second",
+                    "next": {
+                        "type": "index",
+                        "index": {
+                            "class": "constant",
+                            "type": "unsigned_integer",
+                            "value": 1
+                        },
+                        "next": {
+                            "type": "member",
+                            "member": "first",
+                            "next": null
+                        }
+                    }
+                },
+                "initializer": {
+                    "type": "expression",
+                    "expression": {
+                        "class": "constant",
+                        "type": "character",
+                        "value": 88
+                    }
+                }
+            },
+            {
+                "designation": null,
+                "initializer": {
+                    "type": "expression",
+                    "expression": {
+                        "class": "constant",
+                        "type": "character",
+                        "value": 89
+                    }
+                }
+            },
+            {
+                "designation": null,
+                "initializer": {
+                    "type": "expression",
+                    "expression": {
+                        "class": "constant",
+                        "type": "character",
+                        "value": 90
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "type": "list",
+        "list": [
+            {
+                "designation": {
+                    "type": "index",
+                    "index": {
+                        "class": "constant",
+                        "type": "unsigned_integer",
+                        "value": 2
+                    },
+                    "next": {
+                        "type": "index",
+                        "index": {
+                            "class": "constant",
+                            "type": "unsigned_integer",
+                            "value": 1
+                        },
+                        "next": {
+                            "type": "index",
+                            "index": {
+                                "class": "constant",
+                                "type": "unsigned_integer",
+                                "value": 0
+                            },
+                            "next": null
+                        }
+                    }
+                },
+                "initializer": {
+                    "type": "list",
+                    "list": [
+                        {
+                            "designation": null,
+                            "initializer": {
+                                "type": "expression",
+                                "expression": {
+                                    "class": "constant",
+                                    "type": "integer",
+                                    "value": -1
+                                }
+                            }
+                        },
+                        {
+                            "designation": null,
+                            "initializer": {
+                                "type": "expression",
+                                "expression": {
+                                    "class": "constant",
+                                    "type": "integer",
+                                    "value": -2
+                                }
+                            }
+                        },
+                        {
+                            "designation": {
+                                "type": "index",
+                                "index": {
+                                    "class": "constant",
+                                    "type": "unsigned_integer",
+                                    "value": 10
+                                },
+                                "next": null
+                            },
+                            "initializer": {
+                                "type": "expression",
+                                "expression": {
+                                    "class": "constant",
+                                    "type": "integer",
+                                    "value": -3
+                                }
+                            }
+                        },
+                        {
+                            "designation": null,
+                            "initializer": {
+                                "type": "expression",
+                                "expression": {
+                                    "class": "constant",
+                                    "type": "integer",
+                                    "value": -4
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "designation": null,
+                "initializer": {
+                    "type": "list",
+                    "list": [
+                        {
+                            "designation": null,
+                            "initializer": {
+                                "type": "list",
+                                "list": [
+                                    {
+                                        "designation": null,
+                                        "initializer": {
+                                            "type": "list",
+                                            "list": [
+                                                {
+                                                    "designation": null,
+                                                    "initializer": {
+                                                        "type": "expression",
+                                                        "expression": {
+                                                            "class": "binary_operation",
+                                                            "type": "add",
+                                                            "left": {
+                                                                "class": "constant",
+                                                                "type": "integer",
+                                                                "value": 1
+                                                            },
+                                                            "right": {
+                                                                "class": "binary_operation",
+                                                                "type": "multiply",
+                                                                "left": {
+                                                                    "class": "constant",
+                                                                    "type": "integer",
+                                                                    "value": 2
+                                                                },
+                                                                "right": {
+                                                                    "class": "constant",
+                                                                    "type": "integer",
+                                                                    "value": 3
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "type": "list",
+        "list": [
+            {
+                "designation": null,
+                "initializer": {
+                    "type": "list",
+                    "list": [
+                        {
+                            "designation": null,
+                            "initializer": {
+                                "type": "expression",
+                                "expression": {
+                                    "class": "constant",
+                                    "type": "integer",
+                                    "value": 1
+                                }
+                            }
+                        },
+                        {
+                            "designation": null,
+                            "initializer": {
+                                "type": "expression",
+                                "expression": {
+                                    "class": "constant",
+                                    "type": "integer",
+                                    "value": 2
+                                }
+                            }
+                        },
+                        {
+                            "designation": null,
+                            "initializer": {
+                                "type": "expression",
+                                "expression": {
+                                    "class": "constant",
+                                    "type": "integer",
+                                    "value": 4
+                                }
+                            }
+                        },
+                        {
+                            "designation": null,
+                            "initializer": {
+                                "type": "expression",
+                                "expression": {
+                                    "class": "constant",
+                                    "type": "integer",
+                                    "value": 4
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "designation": null,
+                "initializer": {
+                    "type": "list",
+                    "list": [
+                        {
+                            "designation": null,
+                            "initializer": {
+                                "type": "expression",
+                                "expression": {
+                                    "class": "constant",
+                                    "type": "integer",
+                                    "value": 5
+                                }
+                            }
+                        },
+                        {
+                            "designation": {
+                                "type": "index",
+                                "index": {
+                                    "class": "identifier",
+                                    "identifier": "index"
+                                },
+                                "next": null
+                            },
+                            "initializer": {
+                                "type": "expression",
+                                "expression": {
+                                    "class": "constant",
+                                    "type": "integer",
+                                    "value": 6
+                                }
+                            }
+                        },
+                        {
+                            "designation": null,
+                            "initializer": {
+                                "type": "expression",
+                                "expression": {
+                                    "class": "constant",
+                                    "type": "integer",
+                                    "value": 7
+                                }
+                            }
+                        },
+                        {
+                            "designation": null,
+                            "initializer": {
+                                "type": "expression",
+                                "expression": {
+                                    "class": "constant",
+                                    "type": "integer",
+                                    "value": 8
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "designation": {
+                    "type": "member",
+                    "member": "something",
+                    "next": null
+                },
+                "initializer": {
+                    "type": "list",
+                    "list": [
+                        {
+                            "designation": null,
+                            "initializer": {
+                                "type": "expression",
+                                "expression": {
+                                    "class": "constant",
+                                    "type": "integer",
+                                    "value": 9
+                                }
+                            }
+                        },
+                        {
+                            "designation": null,
+                            "initializer": {
+                                "type": "expression",
+                                "expression": {
+                                    "class": "constant",
+                                    "type": "integer",
+                                    "value": 10
+                                }
+                            }
+                        },
+                        {
+                            "designation": null,
+                            "initializer": {
+                                "type": "expression",
+                                "expression": {
+                                    "class": "constant",
+                                    "type": "integer",
+                                    "value": 11
+                                }
+                            }
+                        },
+                        {
+                            "designation": null,
+                            "initializer": {
+                                "type": "expression",
+                                "expression": {
+                                    "class": "constant",
+                                    "type": "integer",
+                                    "value": 12
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "designation": null,
+                "initializer": {
+                    "type": "expression",
+                    "expression": {
+                        "class": "constant",
+                        "type": "integer",
+                        "value": 13
+                    }
+                }
+            }
+        ]
+    }
+]

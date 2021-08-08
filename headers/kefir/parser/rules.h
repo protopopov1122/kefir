@@ -64,5 +64,9 @@ kefir_result_t kefir_parser_scan_abstract_declarator(struct kefir_mem *, struct 
                                                      struct kefir_ast_declarator **);
 kefir_result_t kefir_parser_scan_initializer_designation(struct kefir_mem *, struct kefir_parser *,
                                                          struct kefir_ast_initializer_designation **);
+kefir_result_t kefir_parser_scan_initializer_list(struct kefir_mem *, struct kefir_parser *,
+                                                  struct kefir_ast_initializer **);
+kefir_result_t kefir_parser_scan_initializer(struct kefir_mem *, struct kefir_parser *,
+                                             struct kefir_ast_initializer **);
 
 #endif
