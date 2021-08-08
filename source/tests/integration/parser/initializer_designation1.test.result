@@ -1,0 +1,129 @@
+[
+    {
+        "type": "member",
+        "member": "some_field",
+        "next": null
+    },
+    {
+        "type": "index",
+        "index": {
+            "class": "constant",
+            "type": "integer",
+            "value": 100
+        },
+        "next": null
+    },
+    {
+        "type": "index",
+        "index": {
+            "class": "constant",
+            "type": "integer",
+            "value": 5
+        },
+        "next": {
+            "type": "member",
+            "member": "four",
+            "next": {
+                "type": "member",
+                "member": "three",
+                "next": {
+                    "type": "index",
+                    "index": {
+                        "class": "constant",
+                        "type": "integer",
+                        "value": 2
+                    },
+                    "next": {
+                        "type": "index",
+                        "index": {
+                            "class": "constant",
+                            "type": "integer",
+                            "value": 1
+                        },
+                        "next": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "type": "index",
+        "index": {
+            "class": "array_subscript",
+            "array": {
+                "class": "identifier",
+                "identifier": "array"
+            },
+            "subscript": {
+                "class": "unary_operation",
+                "type": "sizeof",
+                "argument": {
+                    "class": "type_name",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "long"
+                        },
+                        {
+                            "class": "type_specifier",
+                            "specifier": "unsigned"
+                        }
+                    ],
+                    "declarator": {
+                        "class": "abstract"
+                    }
+                }
+            }
+        },
+        "next": {
+            "type": "member",
+            "member": "final_field",
+            "next": {
+                "type": "member",
+                "member": "field1",
+                "next": {
+                    "type": "index",
+                    "index": {
+                        "class": "binary_operation",
+                        "type": "multiply",
+                        "left": {
+                            "class": "function_call",
+                            "function": {
+                                "class": "identifier",
+                                "identifier": "fn1"
+                            },
+                            "arguments": [
+                                {
+                                    "class": "struct_member",
+                                    "structure": {
+                                        "class": "identifier",
+                                        "identifier": "structure"
+                                    },
+                                    "member": "field"
+                                },
+                                {
+                                    "class": "array_subscript",
+                                    "array": {
+                                        "class": "identifier",
+                                        "identifier": "sth"
+                                    },
+                                    "subscript": {
+                                        "class": "constant",
+                                        "type": "integer",
+                                        "value": 100
+                                    }
+                                }
+                            ]
+                        },
+                        "right": {
+                            "class": "constant",
+                            "type": "integer",
+                            "value": 100
+                        }
+                    },
+                    "next": null
+                }
+            }
+        }
+    }
+]
