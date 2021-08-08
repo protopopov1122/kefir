@@ -62,5 +62,7 @@ kefir_result_t kefir_parser_ast_builder_generic_selection(struct kefir_mem *, st
 kefir_result_t kefir_parser_ast_builder_generic_selection_append(struct kefir_mem *, struct kefir_parser_ast_builder *);
 kefir_result_t kefir_parser_ast_builder_generic_selection_append_default(struct kefir_mem *,
                                                                          struct kefir_parser_ast_builder *);
+kefir_result_t kefir_parser_ast_builder_compound_literal(struct kefir_mem *, struct kefir_parser_ast_builder *,
+                                                         struct kefir_ast_initializer *);
 
 #endif

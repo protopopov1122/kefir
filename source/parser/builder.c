@@ -585,3 +585,37 @@ kefir_result_t kefir_parser_ast_builder_generic_selection_append_default(struct 
     });
     return KEFIR_OK;
 }
+
+kefir_result_t kefir_parser_ast_builder_compound_literal(struct kefir_mem *mem,
+                                                         struct kefir_parser_ast_builder *builder,
+                                                         struct kefir_ast_initializer *initializer) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(initializer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST initializer"));
+
+    struct kefir_ast_node_base *type_name = NULL;
+    REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &type_name));
+    REQUIRE_ELSE(type_name->klass->type == KEFIR_AST_TYPE_NAME, {
+        KEFIR_AST_NODE_FREE(mem, type_name);
+        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected AST type name");
+    });
+
+    struct kefir_ast_compound_literal *compound = kefir_ast_new_compound_literal(mem, type_name->self);
+    REQUIRE_ELSE(compound != NULL, {
+        KEFIR_AST_NODE_FREE(mem, type_name);
+        return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST compound literal");
+    });
+
+    kefir_result_t res = kefir_ast_compound_literal_set_initializer(mem, compound, initializer);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(compound));
+        return res;
+    });
+
+    res = kefir_parser_ast_builder_push(mem, builder, KEFIR_AST_NODE_BASE(compound));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(compound));
+        return res;
+    });
+    return KEFIR_OK;
+}

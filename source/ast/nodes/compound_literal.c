@@ -19,6 +19,7 @@
 */
 
 #include "kefir/ast/node.h"
+#include "kefir/ast/node_helpers.h"
 #include "kefir/ast/node_internal.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
@@ -92,4 +93,17 @@ struct kefir_ast_compound_literal *kefir_ast_new_compound_literal(struct kefir_m
         return NULL;
     });
     return literal;
+}
+
+kefir_result_t kefir_ast_compound_literal_set_initializer(struct kefir_mem *mem,
+                                                          struct kefir_ast_compound_literal *literal,
+                                                          struct kefir_ast_initializer *initializer) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(literal != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST compound literal"));
+    REQUIRE(initializer != NULL && initializer->type == KEFIR_AST_INITIALIZER_LIST,
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST list initializer"));
+
+    REQUIRE_OK(kefir_ast_initializer_free(mem, literal->initializer));
+    literal->initializer = initializer;
+    return KEFIR_OK;
 }

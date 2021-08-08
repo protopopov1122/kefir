@@ -19,12 +19,36 @@
 */
 
 #include "kefir/parser/rule_helpers.h"
-#include "kefir/core/util.h"
-#include "kefir/core/error.h"
+#include "kefir/parser/builder.h"
+
+static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder, void *payload) {
+    UNUSED(payload);
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser AST builder"));
+    struct kefir_parser *parser = builder->parser;
+
+    REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_PARENTHESE),
+            KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match compound literal"));
+    REQUIRE_OK(PARSER_SHIFT(parser));
+    REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(type_name), NULL));
+    REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_PARENTHESE),
+            KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right parenthese"));
+    REQUIRE_OK(PARSER_SHIFT(parser));
+
+    struct kefir_ast_initializer *initializer = NULL;
+    REQUIRE_OK(kefir_parser_scan_initializer(mem, parser, &initializer));
+    kefir_result_t res = kefir_parser_ast_builder_compound_literal(mem, builder, initializer);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_ast_initializer_free(mem, initializer);
+        return res;
+    });
+
+    return KEFIR_OK;
+}
 
 kefir_result_t KEFIR_PARSER_RULE_FN(compound_literal)(struct kefir_mem *mem, struct kefir_parser *parser,
                                                       struct kefir_ast_node_base **result, void *payload) {
     APPLY_PROLOGUE(mem, parser, result, payload);
-    // TODO Implement compound literal parser
-    return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Compound literal parser is not implemented yet");
+    REQUIRE_OK(kefir_parser_ast_builder_wrap(mem, parser, result, builder_callback, NULL));
+    return KEFIR_OK;
 }
