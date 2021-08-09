@@ -30,7 +30,7 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
     REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_PARENTHESE),
             KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match compound literal"));
     REQUIRE_OK(PARSER_SHIFT(parser));
-    REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(type_name), NULL));
+    REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, type_name), NULL));
     REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_PARENTHESE),
             KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right parenthese"));
     REQUIRE_OK(PARSER_SHIFT(parser));
@@ -46,8 +46,8 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
     return KEFIR_OK;
 }
 
-kefir_result_t KEFIR_PARSER_RULE_FN(compound_literal)(struct kefir_mem *mem, struct kefir_parser *parser,
-                                                      struct kefir_ast_node_base **result, void *payload) {
+kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(compound_literal)(struct kefir_mem *mem, struct kefir_parser *parser,
+                                                             struct kefir_ast_node_base **result, void *payload) {
     APPLY_PROLOGUE(mem, parser, result, payload);
     REQUIRE_OK(kefir_parser_ast_builder_wrap(mem, parser, result, builder_callback, NULL));
     return KEFIR_OK;

@@ -35,7 +35,7 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
     REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_PARENTHESE),
             KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected left parenthese"));
     REQUIRE_OK(PARSER_SHIFT(parser));
-    REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(assignment_expression), NULL));
+    REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, assignment_expression), NULL));
     REQUIRE_OK(kefir_parser_ast_builder_generic_selection(mem, builder));
 
     REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COMMA),
@@ -43,7 +43,7 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
     while (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COMMA)) {
         REQUIRE_OK(PARSER_SHIFT(parser));
         kefir_bool_t default_clause = false;
-        kefir_result_t res = kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(type_name), NULL);
+        kefir_result_t res = kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, type_name), NULL);
         if (res == KEFIR_NO_MATCH) {
             REQUIRE(PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_DEFAULT),
                     KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected either type name of default keyword"));
@@ -56,7 +56,8 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
         REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COLON),
                 KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected colon"));
         REQUIRE_OK(PARSER_SHIFT(parser));
-        REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(assignment_expression), NULL));
+        REQUIRE_OK(
+            kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, assignment_expression), NULL));
         if (default_clause) {
             REQUIRE_OK(kefir_parser_ast_builder_generic_selection_append_default(mem, builder));
         } else {
@@ -70,8 +71,8 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
     return KEFIR_OK;
 }
 
-kefir_result_t KEFIR_PARSER_RULE_FN(generic_selection)(struct kefir_mem *mem, struct kefir_parser *parser,
-                                                       struct kefir_ast_node_base **result, void *payload) {
+kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(generic_selection)(struct kefir_mem *mem, struct kefir_parser *parser,
+                                                              struct kefir_ast_node_base **result, void *payload) {
     APPLY_PROLOGUE(mem, parser, result, payload);
     REQUIRE_OK(kefir_parser_ast_builder_wrap(mem, parser, result, builder_callback, NULL));
     return KEFIR_OK;

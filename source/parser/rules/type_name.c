@@ -22,8 +22,8 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-kefir_result_t KEFIR_PARSER_RULE_FN(type_name)(struct kefir_mem *mem, struct kefir_parser *parser,
-                                               struct kefir_ast_node_base **result, void *payload) {
+kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(type_name)(struct kefir_mem *mem, struct kefir_parser *parser,
+                                                      struct kefir_ast_node_base **result, void *payload) {
     APPLY_PROLOGUE(mem, parser, result, payload);
     struct kefir_ast_declarator_specifier_list specifiers;
     struct kefir_ast_declarator *declarator = NULL;

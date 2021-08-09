@@ -29,16 +29,16 @@
         REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser AST builder"));         \
         struct kefir_parser *parser = builder->parser;                                                               \
                                                                                                                      \
-        REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(_expr), NULL));                  \
+        REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, _expr), NULL));          \
         while (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, (_punctuator))) {                                               \
             REQUIRE_OK(PARSER_SHIFT(parser));                                                                        \
-            REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(_expr), NULL));              \
+            REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, _expr), NULL));      \
             REQUIRE_OK(kefir_parser_ast_builder_binary_operation(mem, builder, (_oper)));                            \
         }                                                                                                            \
         return KEFIR_OK;                                                                                             \
     }                                                                                                                \
                                                                                                                      \
-    kefir_result_t KEFIR_PARSER_RULE_FN(bitwise_##_id##_expression)(                                                 \
+    kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(bitwise_##_id##_expression)(                                          \
         struct kefir_mem * mem, struct kefir_parser * parser, struct kefir_ast_node_base * *result, void *payload) { \
         APPLY_PROLOGUE(mem, parser, result, payload);                                                                \
         REQUIRE_OK(kefir_parser_ast_builder_wrap(mem, parser, result, _id##_builder_callback, NULL));                \

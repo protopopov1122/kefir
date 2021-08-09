@@ -20,8 +20,8 @@
 
 #include "kefir/parser/rule_helpers.h"
 
-kefir_result_t KEFIR_PARSER_RULE_FN(primary_expression)(struct kefir_mem *mem, struct kefir_parser *parser,
-                                                        struct kefir_ast_node_base **result, void *payload) {
+kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(primary_expression)(struct kefir_mem *mem, struct kefir_parser *parser,
+                                                               struct kefir_ast_node_base **result, void *payload) {
     APPLY_PROLOGUE(mem, parser, result, payload);
     kefir_result_t res = KEFIR_PARSER_RULE_APPLY(mem, parser, identifier, result);
     REQUIRE(res == KEFIR_NO_MATCH, res);

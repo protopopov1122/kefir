@@ -23,7 +23,7 @@
 
 static kefir_result_t scan_subscript(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder) {
     REQUIRE_OK(PARSER_SHIFT(builder->parser));
-    REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(expression), NULL));
+    REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, expression), NULL));
     REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(builder->parser, 0, KEFIR_PUNCTUATOR_RIGHT_BRACKET),
             KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right bracket"));
     REQUIRE_OK(PARSER_SHIFT(builder->parser));
@@ -33,7 +33,8 @@ static kefir_result_t scan_subscript(struct kefir_mem *mem, struct kefir_parser_
 static kefir_result_t scan_argument_list(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder) {
     REQUIRE_OK(PARSER_SHIFT(builder->parser));
     while (!PARSER_TOKEN_IS_PUNCTUATOR(builder->parser, 0, KEFIR_PUNCTUATOR_RIGHT_PARENTHESE)) {
-        REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(assignment_expression), NULL));
+        REQUIRE_OK(
+            kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, assignment_expression), NULL));
         REQUIRE_OK(kefir_parser_ast_builder_function_call_append(mem, builder));
 
         if (PARSER_TOKEN_IS_PUNCTUATOR(builder->parser, 0, KEFIR_PUNCTUATOR_COMMA)) {
@@ -61,7 +62,7 @@ static kefir_result_t scan_postfixes(struct kefir_mem *mem, struct kefir_parser_
     struct kefir_parser *parser = builder->parser;
     kefir_bool_t scan_postfix = true;
 
-    REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(primary_expression), NULL));
+    REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, primary_expression), NULL));
     do {
         if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_BRACKET)) {
             REQUIRE_OK(scan_subscript(mem, builder));
@@ -90,7 +91,8 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser AST builder"));
 
-    kefir_result_t res = kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(compound_literal), NULL);
+    kefir_result_t res =
+        kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, compound_literal), NULL);
     if (res == KEFIR_NO_MATCH) {
         res = scan_postfixes(mem, builder);
     }
@@ -98,8 +100,8 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
     return KEFIR_OK;
 }
 
-kefir_result_t KEFIR_PARSER_RULE_FN(postfix_expression)(struct kefir_mem *mem, struct kefir_parser *parser,
-                                                        struct kefir_ast_node_base **result, void *payload) {
+kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(postfix_expression)(struct kefir_mem *mem, struct kefir_parser *parser,
+                                                               struct kefir_ast_node_base **result, void *payload) {
     APPLY_PROLOGUE(mem, parser, result, payload);
     REQUIRE_OK(kefir_parser_ast_builder_wrap(mem, parser, result, builder_callback, NULL));
     return KEFIR_OK;

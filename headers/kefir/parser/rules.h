@@ -23,9 +23,10 @@
 
 #include "kefir/parser/parser.h"
 
-#define DECLARE_RULE(_id)                                                                                              \
-    kefir_result_t KEFIR_PARSER_RULE_FN(_id)(struct kefir_mem *, struct kefir_parser *, struct kefir_ast_node_base **, \
-                                             void *)
+#define KEFIR_PARSER_RULE_FN_PREFIX(_id) kefir_parser_apply_rule_##_id
+#define DECLARE_RULE(_id)                                                                      \
+    kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(_id)(struct kefir_mem *, struct kefir_parser *, \
+                                                    struct kefir_ast_node_base **, void *)
 
 DECLARE_RULE(identifier);
 DECLARE_RULE(constant);
