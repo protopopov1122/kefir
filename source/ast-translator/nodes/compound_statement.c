@@ -39,7 +39,8 @@ kefir_result_t kefir_ast_translate_compound_statement_node(struct kefir_mem *mem
 
         if (item->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT) {
             REQUIRE_OK(kefir_ast_translate_statement(mem, item, builder, context));
-        } else if (item->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION) {
+        } else if (item->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION_LIST ||
+                   item->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION) {
             REQUIRE_OK(kefir_ast_translate_declaration(mem, item, builder, context));
         } else {
             return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected compound statement item");

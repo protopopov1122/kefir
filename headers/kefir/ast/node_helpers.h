@@ -38,5 +38,9 @@ kefir_result_t kefir_ast_comma_append(struct kefir_mem *, struct kefir_ast_comma
 
 kefir_result_t kefir_ast_compound_literal_set_initializer(struct kefir_mem *, struct kefir_ast_compound_literal *,
                                                           struct kefir_ast_initializer *);
+struct kefir_ast_declaration_list *kefir_ast_new_single_declaration_list(struct kefir_mem *,
+                                                                         struct kefir_ast_declarator *,
+                                                                         struct kefir_ast_initializer *,
+                                                                         struct kefir_ast_declaration **);
 
 #endif

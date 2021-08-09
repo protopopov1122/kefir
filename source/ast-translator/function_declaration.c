@@ -67,6 +67,7 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(
                     KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
                                     "Function declaration parameter shall be either expression, or declaration"));
             param_type = adjust_untyped_parameter(mem, type_bundle, type_traits, param->properties.type);
+            REQUIRE(param_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to adjust untyped parameter"));
         }
 
         if (param_type != NULL) {
@@ -117,6 +118,7 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(
 
         const struct kefir_ast_type *param_type =
             adjust_untyped_parameter(mem, type_bundle, type_traits, param->properties.type);
+        REQUIRE(param_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to adjust untyped parameter"));
 
         struct kefir_ast_type_layout *parameter_layout = NULL;
         kefir_result_t res = kefir_ast_translate_object_type(mem, param_type, 0, env, &builder, &parameter_layout);

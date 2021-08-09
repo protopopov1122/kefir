@@ -744,11 +744,22 @@ static kefir_result_t resolve_function_declarator(struct kefir_mem *mem, const s
          iter != NULL && res == KEFIR_OK; kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, node, iter->value);
 
-        if (node->klass->type == KEFIR_AST_DECLARATION) {
+        if (node->klass->type == KEFIR_AST_DECLARATION_LIST) {
+            ASSIGN_DECL_CAST(struct kefir_ast_declaration_list *, decl_list, node->self);
             res = kefir_ast_analyze_node(mem, &decl_context->context, node);
-            REQUIRE_CHAIN(&res, kefir_ast_type_function_parameter(
-                                    mem, context->type_bundle, func_type, node->properties.declaration_props.identifier,
-                                    node->properties.type, &node->properties.declaration_props.storage));
+            REQUIRE_CHAIN_SET(
+                &res, kefir_list_length(&decl_list->declarations),
+                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
+                                "Each function parameter declaration list shall contain single declaration"));
+            if (res == KEFIR_OK) {
+                ASSIGN_DECL_CAST(struct kefir_ast_node_base *, declaration,
+                                 kefir_list_head(&decl_list->declarations)->value);
+                REQUIRE_CHAIN(&res,
+                              kefir_ast_type_function_parameter(mem, context->type_bundle, func_type,
+                                                                declaration->properties.declaration_props.identifier,
+                                                                declaration->properties.type,
+                                                                &declaration->properties.declaration_props.storage));
+            }
         } else if (node->klass->type == KEFIR_AST_IDENTIFIER) {
             res = kefir_ast_analyze_node(mem, &decl_context->context, node);
             if (res == KEFIR_OK) {

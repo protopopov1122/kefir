@@ -648,10 +648,10 @@ DEFINE_CASE(ast_node_analysis_return_statements1, "AST node analysis - return st
         kefir_ast_new_return_statement(&kft_mem, KEFIR_AST_NODE_BASE(type_name1));
     ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(return4)));
 
-    struct kefir_ast_declaration *decl1 = kefir_ast_new_declaration(
+    struct kefir_ast_declaration_list *decl1 = kefir_ast_new_single_declaration_list(
         &kft_mem,
         kefir_ast_declarator_pointer(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, context->symbols, "voidptr")),
-        NULL);
+        NULL, NULL);
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &decl1->specifiers,
                                                          kefir_ast_type_specifier_void(&kft_mem)));
 

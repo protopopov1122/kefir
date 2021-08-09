@@ -117,48 +117,61 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
                  kefir_list_next(&iter)) {
 
                 ASSIGN_DECL_CAST(struct kefir_ast_node_base *, decl_node, iter->value);
-                REQUIRE(decl_node->klass->type == KEFIR_AST_DECLARATION,
+                REQUIRE(decl_node->klass->type == KEFIR_AST_DECLARATION_LIST,
                         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
                                         "Function definition declaration list shall contain exclusively declarations"));
-                ASSIGN_DECL_CAST(struct kefir_ast_declaration *, decl, decl_node->self);
+                ASSIGN_DECL_CAST(struct kefir_ast_declaration_list *, decl_list, decl_node->self);
 
-                const char *identifier = NULL;
-                const struct kefir_ast_type *type = NULL;
-                kefir_ast_scoped_identifier_storage_t storage = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN;
-                kefir_ast_function_specifier_t function_specifier = KEFIR_AST_FUNCTION_SPECIFIER_NONE;
-                kefir_size_t alignment = 0;
-                REQUIRE_OK(kefir_ast_analyze_declaration(mem, &local_context->context, &decl->specifiers,
-                                                         decl->declarator, &identifier, &type, &storage,
-                                                         &function_specifier, &alignment));
+                for (const struct kefir_list_entry *iter2 = kefir_list_head(&decl_list->declarations); iter2 != NULL;
+                     kefir_list_next(&iter2)) {
+                    ASSIGN_DECL_CAST(struct kefir_ast_node_base *, decl2_node, iter2->value);
+                    REQUIRE(
+                        decl2_node->klass->type == KEFIR_AST_DECLARATION,
+                        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
+                                        "Function definition declaration list shall contain exclusively declarations"));
+                    ASSIGN_DECL_CAST(struct kefir_ast_declaration *, decl, decl2_node->self);
 
-                type = kefir_ast_type_conv_adjust_function_parameter(mem, context->type_bundle, type);
+                    const char *identifier = NULL;
+                    const struct kefir_ast_type *type = NULL;
+                    kefir_ast_scoped_identifier_storage_t storage = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN;
+                    kefir_ast_function_specifier_t function_specifier = KEFIR_AST_FUNCTION_SPECIFIER_NONE;
+                    kefir_size_t alignment = 0;
+                    REQUIRE_OK(kefir_ast_analyze_declaration(mem, &local_context->context, decl->specifier_list,
+                                                             decl->declarator, &identifier, &type, &storage,
+                                                             &function_specifier, &alignment));
 
-                REQUIRE(kefir_hashtree_has(&scoped_id->function.type->function_type.parameter_index,
-                                           (kefir_hashtree_key_t) identifier),
-                        KEFIR_SET_ERROR(
-                            KEFIR_MALFORMED_ARG,
-                            "Function definition declaration list declarations shall refer to identifier list"));
-                REQUIRE(storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN ||
+                    type = kefir_ast_type_conv_adjust_function_parameter(mem, context->type_bundle, type);
+
+                    REQUIRE(kefir_hashtree_has(&scoped_id->function.type->function_type.parameter_index,
+                                               (kefir_hashtree_key_t) identifier),
+                            KEFIR_SET_ERROR(
+                                KEFIR_MALFORMED_ARG,
+                                "Function definition declaration list declarations shall refer to identifier list"));
+                    REQUIRE(
+                        storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN ||
                             storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER,
                         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Function definition declaration list shall not contain "
                                                              "storage class specifiers other than register"));
-                REQUIRE(alignment == 0,
+                    REQUIRE(
+                        alignment == 0,
                         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
                                         "Function definition declaration list shall not contain alignment specifiers"));
 
-                const struct kefir_ast_scoped_identifier *param_scoped_id = NULL;
-                REQUIRE_OK(local_context->context.define_identifier(mem, &local_context->context, true, identifier,
-                                                                    type, storage, function_specifier, NULL, NULL,
-                                                                    &param_scoped_id));
+                    const struct kefir_ast_scoped_identifier *param_scoped_id = NULL;
+                    REQUIRE_OK(local_context->context.define_identifier(mem, &local_context->context, true, identifier,
+                                                                        type, storage, function_specifier, NULL, NULL,
+                                                                        &param_scoped_id));
 
-                decl->base.properties.category = KEFIR_AST_NODE_CATEGORY_DECLARATION;
-                decl->base.properties.declaration_props.alignment = 0;
-                decl->base.properties.declaration_props.function = KEFIR_AST_FUNCTION_SPECIFIER_NONE;
-                decl->base.properties.declaration_props.identifier = identifier;
-                decl->base.properties.declaration_props.scoped_id = param_scoped_id;
-                decl->base.properties.declaration_props.static_assertion = false;
-                decl->base.properties.declaration_props.storage = storage;
-                decl->base.properties.type = type;
+                    decl->base.properties.category = KEFIR_AST_NODE_CATEGORY_DECLARATION;
+                    decl->base.properties.declaration_props.alignment = 0;
+                    decl->base.properties.declaration_props.function = KEFIR_AST_FUNCTION_SPECIFIER_NONE;
+                    decl->base.properties.declaration_props.identifier = identifier;
+                    decl->base.properties.declaration_props.scoped_id = param_scoped_id;
+                    decl->base.properties.declaration_props.static_assertion = false;
+                    decl->base.properties.declaration_props.storage = storage;
+                    decl->base.properties.type = type;
+                }
+                decl_list->base.properties.category = KEFIR_AST_NODE_CATEGORY_DECLARATION_LIST;
             }
 
             for (const struct kefir_list_entry *iter =
@@ -191,6 +204,7 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, item, iter->value);
         REQUIRE_OK(kefir_ast_analyze_node(mem, &local_context->context, item));
         REQUIRE(item->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT ||
+                    item->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION_LIST ||
                     item->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION,
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
                                 "Compound statement items shall be either statements or declarations"));

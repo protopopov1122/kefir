@@ -255,31 +255,32 @@ static kefir_result_t scan_function_parameter(struct kefir_mem *mem, struct kefi
         return res;
     });
 
-    struct kefir_ast_declaration *declaration = kefir_ast_new_declaration(mem, declarator, NULL);
-    REQUIRE_ELSE(declaration != NULL, {
+    struct kefir_ast_declaration_list *declaration_list =
+        kefir_ast_new_single_declaration_list(mem, declarator, NULL, NULL);
+    REQUIRE_ELSE(declaration_list != NULL, {
         kefir_ast_declarator_free(mem, declarator);
         kefir_ast_declarator_specifier_list_free(mem, &specifiers);
         return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST declaration");
     });
 
-    res = kefir_ast_declarator_specifier_list_clone(mem, &declaration->specifiers, &specifiers);
+    res = kefir_ast_declarator_specifier_list_clone(mem, &declaration_list->specifiers, &specifiers);
     REQUIRE_ELSE(res == KEFIR_OK, {
-        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(declaration));
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(declaration_list));
         kefir_ast_declarator_specifier_list_free(mem, &specifiers);
         return res;
     });
 
     res = kefir_ast_declarator_specifier_list_free(mem, &specifiers);
     REQUIRE_ELSE(res == KEFIR_OK, {
-        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(declaration));
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(declaration_list));
         return res;
     });
 
     res = kefir_list_insert_after(mem, &func_declarator->function.parameters,
                                   kefir_list_tail(&func_declarator->function.parameters),
-                                  KEFIR_AST_NODE_BASE(declaration));
+                                  KEFIR_AST_NODE_BASE(declaration_list));
     REQUIRE_ELSE(res == KEFIR_OK, {
-        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(declaration));
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(declaration_list));
         return res;
     });
     return KEFIR_OK;

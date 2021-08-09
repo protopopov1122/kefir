@@ -43,8 +43,8 @@ DEFINE_CASE(ast_node_analysis_function_definitions1, "AST node analysis - functi
         &kft_mem, kefir_ast_declarator_function(
                       &kft_mem, kefir_ast_declarator_identifier(&kft_mem, global_context.context.symbols, "fn1")));
 
-    struct kefir_ast_declaration *param1 = kefir_ast_new_declaration(
-        &kft_mem, kefir_ast_declarator_identifier(&kft_mem, global_context.context.symbols, "param1"), NULL);
+    struct kefir_ast_declaration_list *param1 = kefir_ast_new_single_declaration_list(
+        &kft_mem, kefir_ast_declarator_identifier(&kft_mem, global_context.context.symbols, "param1"), NULL, NULL);
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &param1->specifiers,
                                                          kefir_ast_storage_class_specifier_register(&kft_mem)));
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &param1->specifiers,
@@ -52,11 +52,11 @@ DEFINE_CASE(ast_node_analysis_function_definitions1, "AST node analysis - functi
     ASSERT_OK(kefir_list_insert_after(&kft_mem, &declarator->pointer.declarator->function.parameters,
                                       kefir_list_tail(&declarator->pointer.declarator->function.parameters), param1));
 
-    struct kefir_ast_declaration *param2 = kefir_ast_new_declaration(
+    struct kefir_ast_declaration_list *param2 = kefir_ast_new_single_declaration_list(
         &kft_mem,
         kefir_ast_declarator_pointer(
             &kft_mem, kefir_ast_declarator_identifier(&kft_mem, global_context.context.symbols, "param2")),
-        NULL);
+        NULL, NULL);
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &param2->specifiers,
                                                          kefir_ast_type_specifier_int(&kft_mem)));
     ASSERT_OK(kefir_list_insert_after(&kft_mem, &declarator->pointer.declarator->function.parameters,
@@ -104,27 +104,35 @@ DEFINE_CASE(ast_node_analysis_function_definitions1, "AST node analysis - functi
     ASSERT(KEFIR_AST_TYPE_SAME(func->base.properties.function_definition.scoped_id->function.type, type));
     ASSERT(func->base.properties.function_definition.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);
 
-    ASSERT(param1->base.properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION);
-    ASSERT(strcmp(param1->base.properties.declaration_props.identifier, "param1") == 0);
-    ASSERT(!param1->base.properties.declaration_props.static_assertion);
-    ASSERT(param1->base.properties.declaration_props.function == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
-    ASSERT(param1->base.properties.declaration_props.alignment == 0);
-    ASSERT(param1->base.properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER);
-    ASSERT(param1->base.properties.declaration_props.scoped_id != NULL);
-    ASSERT(param1->base.properties.declaration_props.scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_OBJECT);
-    ASSERT(KEFIR_AST_TYPE_SAME(param1->base.properties.declaration_props.scoped_id->object.type,
+    ASSERT(param1->base.properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION_LIST);
+    ASSIGN_DECL_CAST(struct kefir_ast_declaration_list *, param1_decl_list, param1->base.self);
+    ASSERT(kefir_list_length(&param1_decl_list->declarations) == 1);
+    ASSIGN_DECL_CAST(struct kefir_ast_node_base *, param1_decl,
+                     kefir_list_head(&param1_decl_list->declarations)->value);
+    ASSERT(strcmp(param1_decl->properties.declaration_props.identifier, "param1") == 0);
+    ASSERT(!param1_decl->properties.declaration_props.static_assertion);
+    ASSERT(param1_decl->properties.declaration_props.function == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
+    ASSERT(param1_decl->properties.declaration_props.alignment == 0);
+    ASSERT(param1_decl->properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER);
+    ASSERT(param1_decl->properties.declaration_props.scoped_id != NULL);
+    ASSERT(param1_decl->properties.declaration_props.scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_OBJECT);
+    ASSERT(KEFIR_AST_TYPE_SAME(param1_decl->properties.declaration_props.scoped_id->object.type,
                                kefir_ast_type_unsigned_int()));
 
-    ASSERT(param2->base.properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION);
-    ASSERT(strcmp(param2->base.properties.declaration_props.identifier, "param2") == 0);
-    ASSERT(!param2->base.properties.declaration_props.static_assertion);
-    ASSERT(param2->base.properties.declaration_props.function == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
-    ASSERT(param2->base.properties.declaration_props.alignment == 0);
-    ASSERT(param2->base.properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN);
-    ASSERT(param2->base.properties.declaration_props.scoped_id != NULL);
-    ASSERT(param2->base.properties.declaration_props.scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_OBJECT);
+    ASSERT(param2->base.properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION_LIST);
+    ASSIGN_DECL_CAST(struct kefir_ast_declaration_list *, param2_decl_list, param2->base.self);
+    ASSERT(kefir_list_length(&param2_decl_list->declarations) == 1);
+    ASSIGN_DECL_CAST(struct kefir_ast_node_base *, param2_decl,
+                     kefir_list_head(&param2_decl_list->declarations)->value);
+    ASSERT(strcmp(param2_decl->properties.declaration_props.identifier, "param2") == 0);
+    ASSERT(!param2_decl->properties.declaration_props.static_assertion);
+    ASSERT(param2_decl->properties.declaration_props.function == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
+    ASSERT(param2_decl->properties.declaration_props.alignment == 0);
+    ASSERT(param2_decl->properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN);
+    ASSERT(param2_decl->properties.declaration_props.scoped_id != NULL);
+    ASSERT(param2_decl->properties.declaration_props.scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_OBJECT);
     ASSERT(KEFIR_AST_TYPE_SAME(
-        param2->base.properties.declaration_props.scoped_id->object.type,
+        param2_decl->properties.declaration_props.scoped_id->object.type,
         kefir_ast_type_pointer(&kft_mem, global_context.context.type_bundle, kefir_ast_type_signed_int())));
 
     ASSERT(body->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
@@ -230,8 +238,8 @@ DEFINE_CASE(ast_node_analysis_function_definitions3, "AST node analysis - functi
     struct kefir_list declarations;
     REQUIRE_OK(kefir_list_init(&declarations));
 
-    struct kefir_ast_declaration *decl1 = kefir_ast_new_declaration(
-        &kft_mem, kefir_ast_declarator_identifier(&kft_mem, global_context.context.symbols, "param1"), NULL);
+    struct kefir_ast_declaration_list *decl1 = kefir_ast_new_single_declaration_list(
+        &kft_mem, kefir_ast_declarator_identifier(&kft_mem, global_context.context.symbols, "param1"), NULL, NULL);
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &decl1->specifiers,
                                                          kefir_ast_storage_class_specifier_register(&kft_mem)));
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &decl1->specifiers,
@@ -239,11 +247,11 @@ DEFINE_CASE(ast_node_analysis_function_definitions3, "AST node analysis - functi
     ASSERT_OK(
         kefir_list_insert_after(&kft_mem, &declarations, kefir_list_tail(&declarations), KEFIR_AST_NODE_BASE(decl1)));
 
-    struct kefir_ast_declaration *decl2 = kefir_ast_new_declaration(
+    struct kefir_ast_declaration_list *decl2 = kefir_ast_new_single_declaration_list(
         &kft_mem,
         kefir_ast_declarator_pointer(
             &kft_mem, kefir_ast_declarator_identifier(&kft_mem, global_context.context.symbols, "param2")),
-        NULL);
+        NULL, NULL);
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &decl2->specifiers,
                                                          kefir_ast_type_specifier_int(&kft_mem)));
     ASSERT_OK(
@@ -330,8 +338,8 @@ DEFINE_CASE(ast_node_analysis_translation_unit1, "AST node analysis - translatio
 
     struct kefir_ast_translation_unit *unit = kefir_ast_new_translation_unit(&kft_mem);
 
-    struct kefir_ast_declaration *decl1 = kefir_ast_new_declaration(
-        &kft_mem, kefir_ast_declarator_identifier(&kft_mem, global_context.context.symbols, "x"), NULL);
+    struct kefir_ast_declaration_list *decl1 = kefir_ast_new_single_declaration_list(
+        &kft_mem, kefir_ast_declarator_identifier(&kft_mem, global_context.context.symbols, "x"), NULL, NULL);
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &decl1->specifiers,
                                                          kefir_ast_storage_class_specifier_extern(&kft_mem)));
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &decl1->specifiers,
@@ -339,8 +347,8 @@ DEFINE_CASE(ast_node_analysis_translation_unit1, "AST node analysis - translatio
     ASSERT_OK(kefir_list_insert_after(&kft_mem, &unit->external_definitions,
                                       kefir_list_tail(&unit->external_definitions), KEFIR_AST_NODE_BASE(decl1)));
 
-    struct kefir_ast_declaration *func1_param1 = kefir_ast_new_declaration(
-        &kft_mem, kefir_ast_declarator_identifier(&kft_mem, global_context.context.symbols, "value"), NULL);
+    struct kefir_ast_declaration_list *func1_param1 = kefir_ast_new_single_declaration_list(
+        &kft_mem, kefir_ast_declarator_identifier(&kft_mem, global_context.context.symbols, "value"), NULL, NULL);
 
     struct kefir_ast_declarator *func1_decl = kefir_ast_declarator_function(
         &kft_mem, kefir_ast_declarator_identifier(&kft_mem, global_context.context.symbols, "addx"));
@@ -367,10 +375,13 @@ DEFINE_CASE(ast_node_analysis_translation_unit1, "AST node analysis - translatio
 
     ASSERT(unit->base.properties.category == KEFIR_AST_NODE_CATEGORY_TRANSLATION_UNIT);
 
-    ASSERT(decl1->base.properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION);
-    ASSERT(strcmp(decl1->base.properties.declaration_props.identifier, "x") == 0);
-    ASSERT(decl1->base.properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);
-    ASSERT(decl1->base.properties.declaration_props.scoped_id != NULL);
+    ASSERT(decl1->base.properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION_LIST);
+    ASSIGN_DECL_CAST(struct kefir_ast_declaration_list *, decl1_decl_list, decl1->base.self);
+    ASSERT(kefir_list_length(&decl1_decl_list->declarations) == 1);
+    ASSIGN_DECL_CAST(struct kefir_ast_node_base *, decl1_decl, kefir_list_head(&decl1_decl_list->declarations)->value);
+    ASSERT(strcmp(decl1_decl->properties.declaration_props.identifier, "x") == 0);
+    ASSERT(decl1_decl->properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);
+    ASSERT(decl1_decl->properties.declaration_props.scoped_id != NULL);
 
     ASSERT(func1->base.properties.category == KEFIR_AST_NODE_CATEGORY_FUNCTION_DEFINITION);
     ASSERT(strcmp(func1->base.properties.function_definition.identifier, "addx") == 0);
@@ -380,7 +391,7 @@ DEFINE_CASE(ast_node_analysis_translation_unit1, "AST node analysis - translatio
 
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
     ASSERT_OK(global_context.context.resolve_ordinary_identifier(&global_context.context, "x", &scoped_id));
-    ASSERT(decl1->base.properties.declaration_props.scoped_id == scoped_id);
+    ASSERT(decl1_decl->properties.declaration_props.scoped_id == scoped_id);
     ASSERT_OK(global_context.context.resolve_ordinary_identifier(&global_context.context, "addx", &scoped_id));
     ASSERT(func1->base.properties.function_definition.scoped_id == scoped_id);
 

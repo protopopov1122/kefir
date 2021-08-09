@@ -93,10 +93,11 @@ static kefir_result_t define_compound_function(struct kefir_mem *mem, struct fun
 
     struct kefir_ast_compound_statement *compound1 = kefir_ast_new_compound_statement(mem);
 
-    struct kefir_ast_declaration *declarationResult = kefir_ast_new_declaration(
+    struct kefir_ast_declaration_list *declarationResult = kefir_ast_new_single_declaration_list(
         mem, kefir_ast_declarator_identifier(mem, context_manager->current->symbols, "result"),
         kefir_ast_new_expression_initializer(
-            mem, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "base"))));
+            mem, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "base"))),
+        NULL);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &declarationResult->specifiers,
                                                           kefir_ast_type_specifier_double(mem)));
     REQUIRE_OK(kefir_list_insert_after(mem, &compound1->block_items, kefir_list_tail(&compound1->block_items),

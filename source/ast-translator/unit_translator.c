@@ -36,6 +36,7 @@ kefir_result_t kefir_ast_translate_unit(struct kefir_mem *mem, const struct kefi
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, external_definition, iter->value);
 
         switch (external_definition->properties.category) {
+            case KEFIR_AST_NODE_CATEGORY_DECLARATION_LIST:
             case KEFIR_AST_NODE_CATEGORY_DECLARATION:
                 // Intentionally left blank
                 break;

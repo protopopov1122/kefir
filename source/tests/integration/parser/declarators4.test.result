@@ -8,16 +8,21 @@
         "ellipsis": false,
         "parameters": [
             {
-                "class": "declaration",
-                "specifiers": [
+                "class": "declaration_list",
+                "declarations": [
                     {
-                        "class": "type_specifier",
-                        "specifier": "int"
+                        "class": "declaration",
+                        "specifiers": [
+                            {
+                                "class": "type_specifier",
+                                "specifier": "int"
+                            }
+                        ],
+                        "declarators": {
+                            "class": "abstract"
+                        }
                     }
-                ],
-                "declarators": {
-                    "class": "abstract"
-                }
+                ]
             }
         ]
     },
@@ -30,77 +35,92 @@
         "ellipsis": false,
         "parameters": [
             {
-                "class": "declaration",
-                "specifiers": [
+                "class": "declaration_list",
+                "declarations": [
                     {
-                        "class": "type_specifier",
-                        "specifier": "float"
+                        "class": "declaration",
+                        "specifiers": [
+                            {
+                                "class": "type_specifier",
+                                "specifier": "float"
+                            }
+                        ],
+                        "declarators": {
+                            "class": "pointer",
+                            "declarator": {
+                                "class": "array",
+                                "declarator": {
+                                    "class": "abstract"
+                                },
+                                "type": "unbounded",
+                                "static": false,
+                                "type_qualifiers": []
+                            },
+                            "type_qualifiers": []
+                        }
                     }
-                ],
-                "declarators": {
-                    "class": "pointer",
-                    "declarator": {
-                        "class": "array",
-                        "declarator": {
-                            "class": "abstract"
-                        },
-                        "type": "unbounded",
-                        "static": false,
-                        "type_qualifiers": []
-                    },
-                    "type_qualifiers": []
-                }
+                ]
             },
             {
-                "class": "declaration",
-                "specifiers": [
+                "class": "declaration_list",
+                "declarations": [
                     {
-                        "class": "type_specifier",
-                        "specifier": "long"
-                    },
-                    {
-                        "class": "type_specifier",
-                        "specifier": "long"
-                    },
-                    {
-                        "class": "type_qualifier",
-                        "qualifier": "const"
+                        "class": "declaration",
+                        "specifiers": [
+                            {
+                                "class": "type_specifier",
+                                "specifier": "long"
+                            },
+                            {
+                                "class": "type_specifier",
+                                "specifier": "long"
+                            },
+                            {
+                                "class": "type_qualifier",
+                                "qualifier": "const"
+                            }
+                        ],
+                        "declarators": {
+                            "class": "pointer",
+                            "declarator": {
+                                "class": "pointer",
+                                "declarator": {
+                                    "class": "abstract"
+                                },
+                                "type_qualifiers": []
+                            },
+                            "type_qualifiers": []
+                        }
                     }
-                ],
-                "declarators": {
-                    "class": "pointer",
-                    "declarator": {
-                        "class": "pointer",
-                        "declarator": {
-                            "class": "abstract"
-                        },
-                        "type_qualifiers": []
-                    },
-                    "type_qualifiers": []
-                }
+                ]
             },
             {
-                "class": "declaration",
-                "specifiers": [
+                "class": "declaration_list",
+                "declarations": [
                     {
-                        "class": "type_qualifier",
-                        "qualifier": "volatile"
-                    },
-                    {
-                        "class": "type_specifier",
-                        "specifier": "unsigned"
+                        "class": "declaration",
+                        "specifiers": [
+                            {
+                                "class": "type_qualifier",
+                                "qualifier": "volatile"
+                            },
+                            {
+                                "class": "type_specifier",
+                                "specifier": "unsigned"
+                            }
+                        ],
+                        "declarators": {
+                            "class": "array",
+                            "declarator": {
+                                "class": "identifier",
+                                "identifier": "param3"
+                            },
+                            "type": "vla_unspecified",
+                            "static": false,
+                            "type_qualifiers": []
+                        }
                     }
-                ],
-                "declarators": {
-                    "class": "array",
-                    "declarator": {
-                        "class": "identifier",
-                        "identifier": "param3"
-                    },
-                    "type": "vla_unspecified",
-                    "static": false,
-                    "type_qualifiers": []
-                }
+                ]
             }
         ]
     },
@@ -113,109 +133,134 @@
         "ellipsis": true,
         "parameters": [
             {
-                "class": "declaration",
-                "specifiers": [
+                "class": "declaration_list",
+                "declarations": [
                     {
-                        "class": "type_specifier",
-                        "specifier": "char"
-                    }
-                ],
-                "declarators": {
-                    "class": "function",
-                    "declarator": {
-                        "class": "pointer",
-                        "declarator": {
-                            "class": "identifier",
-                            "identifier": "callback"
-                        },
-                        "type_qualifiers": []
-                    },
-                    "ellipsis": false,
-                    "parameters": [
-                        {
-                            "class": "declaration",
-                            "specifiers": [
-                                {
-                                    "class": "type_specifier",
-                                    "specifier": "short"
-                                }
-                            ],
-                            "declarators": {
-                                "class": "identifier",
-                                "identifier": "param1"
+                        "class": "declaration",
+                        "specifiers": [
+                            {
+                                "class": "type_specifier",
+                                "specifier": "char"
                             }
-                        },
-                        {
-                            "class": "declaration",
-                            "specifiers": [
-                                {
-                                    "class": "type_specifier",
-                                    "specifier": "void"
-                                }
-                            ],
-                            "declarators": {
+                        ],
+                        "declarators": {
+                            "class": "function",
+                            "declarator": {
                                 "class": "pointer",
                                 "declarator": {
-                                    "class": "abstract"
-                                },
-                                "type_qualifiers": []
-                            }
-                        }
-                    ]
-                }
-            },
-            {
-                "class": "declaration",
-                "specifiers": [
-                    {
-                        "class": "type_specifier",
-                        "specifier": "void"
-                    }
-                ],
-                "declarators": {
-                    "class": "pointer",
-                    "declarator": {
-                        "class": "function",
-                        "declarator": {
-                            "class": "pointer",
-                            "declarator": {
-                                "class": "array",
-                                "declarator": {
                                     "class": "identifier",
-                                    "identifier": "callback2"
+                                    "identifier": "callback"
                                 },
-                                "type": "bounded",
-                                "length": {
-                                    "class": "identifier",
-                                    "identifier": "X"
-                                },
-                                "static": true,
                                 "type_qualifiers": []
                             },
-                            "type_qualifiers": []
-                        },
-                        "ellipsis": true,
-                        "parameters": [
+                            "ellipsis": false,
+                            "parameters": [
+                                {
+                                    "class": "declaration_list",
+                                    "declarations": [
+                                        {
+                                            "class": "declaration",
+                                            "specifiers": [
+                                                {
+                                                    "class": "type_specifier",
+                                                    "specifier": "short"
+                                                }
+                                            ],
+                                            "declarators": {
+                                                "class": "identifier",
+                                                "identifier": "param1"
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "class": "declaration_list",
+                                    "declarations": [
+                                        {
+                                            "class": "declaration",
+                                            "specifiers": [
+                                                {
+                                                    "class": "type_specifier",
+                                                    "specifier": "void"
+                                                }
+                                            ],
+                                            "declarators": {
+                                                "class": "pointer",
+                                                "declarator": {
+                                                    "class": "abstract"
+                                                },
+                                                "type_qualifiers": []
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                "class": "declaration_list",
+                "declarations": [
+                    {
+                        "class": "declaration",
+                        "specifiers": [
                             {
-                                "class": "declaration",
-                                "specifiers": [
-                                    {
-                                        "class": "type_specifier",
-                                        "specifier": "void"
-                                    }
-                                ],
-                                "declarators": {
+                                "class": "type_specifier",
+                                "specifier": "void"
+                            }
+                        ],
+                        "declarators": {
+                            "class": "pointer",
+                            "declarator": {
+                                "class": "function",
+                                "declarator": {
                                     "class": "pointer",
                                     "declarator": {
-                                        "class": "abstract"
+                                        "class": "array",
+                                        "declarator": {
+                                            "class": "identifier",
+                                            "identifier": "callback2"
+                                        },
+                                        "type": "bounded",
+                                        "length": {
+                                            "class": "identifier",
+                                            "identifier": "X"
+                                        },
+                                        "static": true,
+                                        "type_qualifiers": []
                                     },
                                     "type_qualifiers": []
-                                }
-                            }
-                        ]
-                    },
-                    "type_qualifiers": []
-                }
+                                },
+                                "ellipsis": true,
+                                "parameters": [
+                                    {
+                                        "class": "declaration_list",
+                                        "declarations": [
+                                            {
+                                                "class": "declaration",
+                                                "specifiers": [
+                                                    {
+                                                        "class": "type_specifier",
+                                                        "specifier": "void"
+                                                    }
+                                                ],
+                                                "declarators": {
+                                                    "class": "pointer",
+                                                    "declarator": {
+                                                        "class": "abstract"
+                                                    },
+                                                    "type_qualifiers": []
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            "type_qualifiers": []
+                        }
+                    }
+                ]
             }
         ]
     }

@@ -85,8 +85,8 @@ static kefir_result_t define_unit1(struct kefir_mem *mem, const struct kefir_ast
         mem, entryB, kefir_ast_declarator_identifier(mem, context->symbols, "value"), NULL));
     REQUIRE_OK(kefir_ast_structure_specifier_append_entry(mem, specifier2, entryB));
 
-    struct kefir_ast_declaration *decl1 =
-        kefir_ast_new_declaration(mem, kefir_ast_declarator_identifier(mem, context->symbols, "multivalue_t"), NULL);
+    struct kefir_ast_declaration_list *decl1 = kefir_ast_new_single_declaration_list(
+        mem, kefir_ast_declarator_identifier(mem, context->symbols, "multivalue_t"), NULL, NULL);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl1->specifiers,
                                                           kefir_ast_storage_class_specifier_typedef(mem)));
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl1->specifiers,
@@ -110,8 +110,8 @@ static kefir_result_t define_unit2(struct kefir_mem *mem, const struct kefir_ast
             kefir_ast_new_initializer_member_designation(mem, context->symbols, "value", NULL)),
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 8.163f)))));
 
-    struct kefir_ast_declaration *decl1 =
-        kefir_ast_new_declaration(mem, kefir_ast_declarator_identifier(mem, context->symbols, "multi1"), init1);
+    struct kefir_ast_declaration_list *decl1 = kefir_ast_new_single_declaration_list(
+        mem, kefir_ast_declarator_identifier(mem, context->symbols, "multi1"), init1, NULL);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl1->specifiers,
                                                           kefir_ast_storage_class_specifier_extern(mem)));
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(
@@ -185,11 +185,11 @@ static kefir_result_t define_unit3(struct kefir_mem *mem, const struct kefir_ast
         kefir_ast_new_initializer_index_designation(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 5)), NULL),
         init1_4));
 
-    struct kefir_ast_declaration *decl1 = kefir_ast_new_declaration(
+    struct kefir_ast_declaration_list *decl1 = kefir_ast_new_single_declaration_list(
         mem,
         kefir_ast_declarator_array(mem, KEFIR_AST_DECLARATOR_ARRAY_UNBOUNDED, NULL,
                                    kefir_ast_declarator_identifier(mem, context->symbols, "multiarr")),
-        init1);
+        init1, NULL);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl1->specifiers,
                                                           kefir_ast_storage_class_specifier_extern(mem)));
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(
@@ -200,11 +200,11 @@ static kefir_result_t define_unit3(struct kefir_mem *mem, const struct kefir_ast
 
 static kefir_result_t define_unit4(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                    struct kefir_list *unit) {
-    struct kefir_ast_declaration *decl0 = kefir_ast_new_declaration(
+    struct kefir_ast_declaration_list *decl0 = kefir_ast_new_single_declaration_list(
         mem,
         kefir_ast_declarator_array(mem, KEFIR_AST_DECLARATOR_ARRAY_UNBOUNDED, NULL,
                                    kefir_ast_declarator_identifier(mem, context->symbols, "multiarr")),
-        NULL);
+        NULL, NULL);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl0->specifiers,
                                                           kefir_ast_storage_class_specifier_extern(mem)));
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(
@@ -225,8 +225,8 @@ static kefir_result_t define_unit4(struct kefir_mem *mem, const struct kefir_ast
         kefir_ast_new_expression_initializer(
             mem, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "multiarr")))));
 
-    struct kefir_ast_declaration *decl1 =
-        kefir_ast_new_declaration(mem, kefir_ast_declarator_identifier(mem, context->symbols, "multi2"), init1);
+    struct kefir_ast_declaration_list *decl1 = kefir_ast_new_single_declaration_list(
+        mem, kefir_ast_declarator_identifier(mem, context->symbols, "multi2"), init1, NULL);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl1->specifiers,
                                                           kefir_ast_storage_class_specifier_static(mem)));
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(

@@ -465,22 +465,23 @@ DEFINE_CASE(ast_nodes_declarations1, "AST nodes - declarations #1") {
     ASSERT_OK(kefir_symbol_table_init(&symbols));
     ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
 
-    struct kefir_ast_declaration *decl1 =
-        kefir_ast_new_declaration(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL), NULL);
+    struct kefir_ast_declaration *decl1 = NULL;
+    struct kefir_ast_declaration_list *decl1_list = kefir_ast_new_single_declaration_list(
+        &kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL), NULL, &decl1);
     ASSERT(decl1 != NULL);
     ASSERT(decl1->declarator->klass == KEFIR_AST_DECLARATOR_IDENTIFIER);
     ASSERT(decl1->declarator->identifier == NULL);
-    ASSERT(kefir_ast_declarator_specifier_list_iter(&decl1->specifiers, NULL) == NULL);
+    ASSERT(kefir_ast_declarator_specifier_list_iter(&decl1_list->specifiers, NULL) == NULL);
 
-    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &decl1->specifiers,
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &decl1_list->specifiers,
                                                          kefir_ast_type_specifier_unsigned(&kft_mem)));
-    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &decl1->specifiers,
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &decl1_list->specifiers,
                                                          kefir_ast_type_specifier_long(&kft_mem)));
-    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &decl1->specifiers,
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &decl1_list->specifiers,
                                                          kefir_ast_type_qualifier_const(&kft_mem)));
 
     struct kefir_ast_declarator_specifier *specifier = NULL;
-    struct kefir_list_entry *iter = kefir_ast_declarator_specifier_list_iter(&decl1->specifiers, &specifier);
+    struct kefir_list_entry *iter = kefir_ast_declarator_specifier_list_iter(&decl1_list->specifiers, &specifier);
     ASSERT(iter != NULL);
     ASSERT(specifier->klass == KEFIR_AST_TYPE_SPECIFIER);
     ASSERT(specifier->type_specifier.specifier == KEFIR_AST_TYPE_SPECIFIER_UNSIGNED);
@@ -497,11 +498,12 @@ DEFINE_CASE(ast_nodes_declarations1, "AST nodes - declarations #1") {
     struct kefir_ast_initializer *initializer2 =
         kefir_ast_new_expression_initializer(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0)));
 
-    struct kefir_ast_declaration *decl2 = kefir_ast_new_declaration(
+    struct kefir_ast_declaration *decl2 = NULL;
+    struct kefir_ast_declaration_list *decl2_list = kefir_ast_new_single_declaration_list(
         &kft_mem,
         kefir_ast_declarator_pointer(
             &kft_mem, kefir_ast_declarator_pointer(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL))),
-        initializer2);
+        initializer2, &decl2);
     ASSERT(decl2 != NULL);
     ASSERT(decl2->declarator->klass == KEFIR_AST_DECLARATOR_POINTER);
     ASSERT(kefir_ast_type_qualifier_list_iter(&decl2->declarator->pointer.type_qualifiers, NULL) == NULL);
@@ -510,11 +512,11 @@ DEFINE_CASE(ast_nodes_declarations1, "AST nodes - declarations #1") {
            NULL);
     ASSERT(decl2->declarator->pointer.declarator->pointer.declarator->klass == KEFIR_AST_DECLARATOR_IDENTIFIER);
     ASSERT(decl2->declarator->pointer.declarator->pointer.declarator->identifier == NULL);
-    ASSERT(kefir_ast_declarator_specifier_list_iter(&decl2->specifiers, NULL) == NULL);
+    ASSERT(kefir_ast_declarator_specifier_list_iter(&decl2_list->specifiers, NULL) == NULL);
     ASSERT(decl2->initializer == initializer2);
 
-    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(decl1)));
-    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(decl2)));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(decl1_list)));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(decl2_list)));
     ASSERT_OK(kefir_ast_type_bundle_free(&kft_mem, &type_bundle));
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
 }

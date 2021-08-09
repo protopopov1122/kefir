@@ -58,16 +58,16 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         mem, &function1_decl->function.parameters, kefir_list_tail(&function1_decl->function.parameters),
         KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, global_context.context.symbols, "idx"))));
 
-    struct kefir_ast_declaration *function1_param1 = kefir_ast_new_declaration(
+    struct kefir_ast_declaration_list *function1_param1 = kefir_ast_new_single_declaration_list(
         mem,
         kefir_ast_declarator_array(mem, KEFIR_AST_DECLARATOR_ARRAY_UNBOUNDED, NULL,
                                    kefir_ast_declarator_identifier(mem, global_context.context.symbols, "arr")),
-        NULL);
+        NULL, NULL);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &function1_param1->specifiers,
                                                           kefir_ast_type_specifier_int(mem)));
 
-    struct kefir_ast_declaration *function1_param2 = kefir_ast_new_declaration(
-        mem, kefir_ast_declarator_identifier(mem, global_context.context.symbols, "idx"), NULL);
+    struct kefir_ast_declaration_list *function1_param2 = kefir_ast_new_single_declaration_list(
+        mem, kefir_ast_declarator_identifier(mem, global_context.context.symbols, "idx"), NULL, NULL);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &function1_param2->specifiers,
                                                           kefir_ast_type_specifier_int(mem)));
 
@@ -84,9 +84,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(
         kefir_ast_declarator_specifier_list_append(mem, &function1->specifiers, kefir_ast_type_specifier_int(mem)));
     REQUIRE_OK(kefir_list_insert_after(mem, &function1->declarations, kefir_list_tail(&function1->declarations),
-                                       function1_param1));
+                                       KEFIR_AST_NODE_BASE(function1_param1)));
     REQUIRE_OK(kefir_list_insert_after(mem, &function1->declarations, kefir_list_tail(&function1->declarations),
-                                       function1_param2));
+                                       KEFIR_AST_NODE_BASE(function1_param2)));
 
     REQUIRE_OK(kefir_ast_analyze_node(mem, &global_context.context, KEFIR_AST_NODE_BASE(function1)));
 

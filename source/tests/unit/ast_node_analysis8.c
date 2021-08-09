@@ -543,18 +543,20 @@ DEFINE_CASE(ast_node_analysis_compound_statements3, "AST node analysis - compoun
     ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(stmt1)));
     ASSERT(stmt1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
 
-    struct kefir_ast_declaration *decl1 =
-        kefir_ast_new_declaration(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, context->symbols, "var1"),
-                                  kefir_ast_new_expression_initializer(
-                                      &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, '\t'))));
+    struct kefir_ast_declaration_list *decl1 = kefir_ast_new_single_declaration_list(
+        &kft_mem, kefir_ast_declarator_identifier(&kft_mem, context->symbols, "var1"),
+        kefir_ast_new_expression_initializer(&kft_mem,
+                                             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, '\t'))),
+        NULL);
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &decl1->specifiers,
                                                          kefir_ast_type_qualifier_volatile(&kft_mem)));
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &decl1->specifiers,
                                                          kefir_ast_type_specifier_unsigned(&kft_mem)));
 
-    struct kefir_ast_declaration *decl2 = kefir_ast_new_declaration(
+    struct kefir_ast_declaration_list *decl2 = kefir_ast_new_single_declaration_list(
         &kft_mem,
-        kefir_ast_declarator_pointer(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, context->symbols, "X")), NULL);
+        kefir_ast_declarator_pointer(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, context->symbols, "X")), NULL,
+        NULL);
     struct kefir_ast_structure_specifier *specifier1 = kefir_ast_structure_specifier_init(&kft_mem, NULL, NULL, true);
     struct kefir_ast_structure_declaration_entry *entry1 = kefir_ast_structure_declaration_entry_alloc(&kft_mem);
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &entry1->declaration.specifiers,
@@ -603,23 +605,29 @@ DEFINE_CASE(ast_node_analysis_compound_statements3, "AST node analysis - compoun
     kefir_list_next(&iter);
     ASSERT(iter != NULL);
     ASSIGN_DECL_CAST(struct kefir_ast_node_base *, item2, iter->value);
-    ASSERT(item2->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION);
-    ASSERT(strcmp(item2->properties.declaration_props.identifier, "var1") == 0);
-    ASSERT(item2->properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO);
-    ASSERT(item2->properties.declaration_props.alignment == 0);
-    ASSERT(item2->properties.declaration_props.function == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
-    ASSERT(KEFIR_AST_TYPE_SAME(item2->properties.type,
+    ASSERT(item2->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION_LIST);
+    ASSIGN_DECL_CAST(struct kefir_ast_declaration_list *, item2_decl_list, item2->self);
+    ASSERT(kefir_list_length(&item2_decl_list->declarations) == 1);
+    ASSIGN_DECL_CAST(struct kefir_ast_node_base *, item2_decl, kefir_list_head(&item2_decl_list->declarations)->value);
+    ASSERT(strcmp(item2_decl->properties.declaration_props.identifier, "var1") == 0);
+    ASSERT(item2_decl->properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO);
+    ASSERT(item2_decl->properties.declaration_props.alignment == 0);
+    ASSERT(item2_decl->properties.declaration_props.function == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
+    ASSERT(KEFIR_AST_TYPE_SAME(item2_decl->properties.type,
                                kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_int(),
                                                         (struct kefir_ast_type_qualification){.volatile_type = true})));
 
     kefir_list_next(&iter);
     ASSERT(iter != NULL);
     ASSIGN_DECL_CAST(struct kefir_ast_node_base *, item3, iter->value);
-    ASSERT(item3->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION);
-    ASSERT(strcmp(item3->properties.declaration_props.identifier, "X") == 0);
-    ASSERT(item3->properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF);
-    ASSERT(item3->properties.declaration_props.alignment == 0);
-    ASSERT(item3->properties.declaration_props.function == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
+    ASSERT(item3->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION_LIST);
+    ASSIGN_DECL_CAST(struct kefir_ast_declaration_list *, item3_decl_list, item3->self);
+    ASSERT(kefir_list_length(&item3_decl_list->declarations) == 1);
+    ASSIGN_DECL_CAST(struct kefir_ast_node_base *, item3_decl, kefir_list_head(&item3_decl_list->declarations)->value);
+    ASSERT(strcmp(item3_decl->properties.declaration_props.identifier, "X") == 0);
+    ASSERT(item3_decl->properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF);
+    ASSERT(item3_decl->properties.declaration_props.alignment == 0);
+    ASSERT(item3_decl->properties.declaration_props.function == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
 
     struct kefir_ast_struct_type *struct_type1 = NULL;
     const struct kefir_ast_type *type1 = kefir_ast_type_structure(&kft_mem, context->type_bundle, NULL, &struct_type1);
@@ -628,7 +636,8 @@ DEFINE_CASE(ast_node_analysis_compound_statements3, "AST node analysis - compoun
                                     kefir_ast_type_array(&kft_mem, context->type_bundle, kefir_ast_type_float(),
                                                          kefir_ast_constant_expression_integer(&kft_mem, 4), NULL),
                                     NULL));
-    ASSERT(KEFIR_AST_TYPE_SAME(item3->properties.type, kefir_ast_type_pointer(&kft_mem, context->type_bundle, type1)));
+    ASSERT(KEFIR_AST_TYPE_SAME(item3_decl->properties.type,
+                               kefir_ast_type_pointer(&kft_mem, context->type_bundle, type1)));
 
     kefir_list_next(&iter);
     ASSERT(iter != NULL);

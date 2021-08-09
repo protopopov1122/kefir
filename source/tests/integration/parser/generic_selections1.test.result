@@ -96,28 +96,38 @@
                         "ellipsis": false,
                         "parameters": [
                             {
-                                "class": "declaration",
-                                "specifiers": [
+                                "class": "declaration_list",
+                                "declarations": [
                                     {
-                                        "class": "type_specifier",
-                                        "specifier": "int"
+                                        "class": "declaration",
+                                        "specifiers": [
+                                            {
+                                                "class": "type_specifier",
+                                                "specifier": "int"
+                                            }
+                                        ],
+                                        "declarators": {
+                                            "class": "abstract"
+                                        }
                                     }
-                                ],
-                                "declarators": {
-                                    "class": "abstract"
-                                }
+                                ]
                             },
                             {
-                                "class": "declaration",
-                                "specifiers": [
+                                "class": "declaration_list",
+                                "declarations": [
                                     {
-                                        "class": "type_specifier",
-                                        "specifier": "char"
+                                        "class": "declaration",
+                                        "specifiers": [
+                                            {
+                                                "class": "type_specifier",
+                                                "specifier": "char"
+                                            }
+                                        ],
+                                        "declarators": {
+                                            "class": "abstract"
+                                        }
                                     }
-                                ],
-                                "declarators": {
-                                    "class": "abstract"
-                                }
+                                ]
                             }
                         ]
                     }

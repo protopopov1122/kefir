@@ -31,7 +31,6 @@ kefir_result_t ast_declaration_free(struct kefir_mem *mem, struct kefir_ast_node
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
     ASSIGN_DECL_CAST(struct kefir_ast_declaration *, node, base->self);
-    REQUIRE_OK(kefir_ast_declarator_specifier_list_free(mem, &node->specifiers));
     if (node->declarator != NULL) {
         REQUIRE_OK(kefir_ast_declarator_free(mem, node->declarator));
         node->declarator = NULL;
@@ -73,24 +72,11 @@ struct kefir_ast_node_base *ast_declaration_clone(struct kefir_mem *mem, struct 
         clone->declarator = NULL;
     }
 
-    res = kefir_ast_declarator_specifier_list_init(&clone->specifiers);
-    REQUIRE_ELSE(res == KEFIR_OK, {
-        kefir_ast_declarator_free(mem, clone->declarator);
-        KEFIR_FREE(mem, clone);
-        return NULL;
-    });
-
-    res = kefir_ast_declarator_specifier_list_clone(mem, &clone->specifiers, &node->specifiers);
-    REQUIRE_ELSE(res == KEFIR_OK, {
-        kefir_ast_declarator_free(mem, clone->declarator);
-        KEFIR_FREE(mem, clone);
-        return NULL;
-    });
+    clone->specifier_list = node->specifier_list;
 
     if (node->initializer != NULL) {
         clone->initializer = kefir_ast_initializer_clone(mem, node->initializer);
         REQUIRE_ELSE(clone->initializer != NULL, {
-            kefir_ast_declarator_specifier_list_free(mem, &clone->specifiers);
             kefir_ast_declarator_free(mem, clone->declarator);
             KEFIR_FREE(mem, clone);
             return NULL;
@@ -101,9 +87,12 @@ struct kefir_ast_node_base *ast_declaration_clone(struct kefir_mem *mem, struct 
     return KEFIR_AST_NODE_BASE(clone);
 }
 
-struct kefir_ast_declaration *kefir_ast_new_declaration(struct kefir_mem *mem, struct kefir_ast_declarator *decl,
+struct kefir_ast_declaration *kefir_ast_new_declaration(struct kefir_mem *mem,
+                                                        struct kefir_ast_declarator_specifier_list *specifier_list,
+                                                        struct kefir_ast_declarator *decl,
                                                         struct kefir_ast_initializer *initializer) {
     REQUIRE(mem != NULL, NULL);
+    REQUIRE(specifier_list != NULL, NULL);
 
     struct kefir_ast_declaration *declaration = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_declaration));
     REQUIRE(declaration != NULL, NULL);
@@ -115,11 +104,7 @@ struct kefir_ast_declaration *kefir_ast_new_declaration(struct kefir_mem *mem, s
         return NULL;
     });
 
-    res = kefir_ast_declarator_specifier_list_init(&declaration->specifiers);
-    REQUIRE_ELSE(res == KEFIR_OK, {
-        KEFIR_FREE(mem, declaration);
-        return NULL;
-    });
+    declaration->specifier_list = specifier_list;
     declaration->declarator = decl;
     declaration->initializer = initializer;
     return declaration;

@@ -42,7 +42,8 @@ kefir_result_t kefir_ast_analyze_translation_unit_node(struct kefir_mem *mem, co
 
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, entry, iter->value);
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, entry));
-        REQUIRE(entry->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION ||
+        REQUIRE(entry->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION_LIST ||
+                    entry->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION ||
                     entry->properties.category == KEFIR_AST_NODE_CATEGORY_FUNCTION_DEFINITION,
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
                                 "AST Translation unit must contain exclusively declarations and function definitions"));

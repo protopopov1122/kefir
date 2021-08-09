@@ -66,15 +66,16 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ast_declarator *function1_decl =
         kefir_ast_declarator_function(mem, kefir_ast_declarator_identifier(mem, global_context.context.symbols, "sum"));
 
-    struct kefir_ast_declaration *function1_param1 = kefir_ast_new_declaration(
+    struct kefir_ast_declaration_list *function1_param1 = kefir_ast_new_single_declaration_list(
         mem,
         kefir_ast_declarator_pointer(mem,
                                      kefir_ast_declarator_identifier(mem, global_context.context.symbols, "value")),
-        NULL);
+        NULL, NULL);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &function1_param1->specifiers,
                                                           kefir_ast_type_specifier_struct(mem, specifier1)));
     REQUIRE_OK(kefir_list_insert_after(mem, &function1_decl->function.parameters,
-                                       kefir_list_tail(&function1_decl->function.parameters), function1_param1));
+                                       kefir_list_tail(&function1_decl->function.parameters),
+                                       KEFIR_AST_NODE_BASE(function1_param1)));
 
     struct kefir_ast_compound_statement *function1_body = kefir_ast_new_compound_statement(mem);
     REQUIRE_OK(kefir_list_insert_after(
