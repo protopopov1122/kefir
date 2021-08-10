@@ -106,9 +106,10 @@
                                 "declarations": [
                                     {
                                         "class": "declaration",
-                                        "declarators": {
+                                        "declarator": {
                                             "class": "abstract"
-                                        }
+                                        },
+                                        "initializer": null
                                     }
                                 ]
                             },
@@ -123,9 +124,10 @@
                                 "declarations": [
                                     {
                                         "class": "declaration",
-                                        "declarators": {
+                                        "declarator": {
                                             "class": "abstract"
-                                        }
+                                        },
+                                        "initializer": null
                                     }
                                 ]
                             }

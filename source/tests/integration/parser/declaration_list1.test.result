@@ -1,0 +1,168 @@
+[
+    {
+        "class": "declaration_list",
+        "specifiers": [
+            {
+                "class": "type_specifier",
+                "specifier": "int"
+            }
+        ],
+        "declarations": [
+            {
+                "class": "declaration",
+                "declarator": {
+                    "class": "identifier",
+                    "identifier": "i"
+                },
+                "initializer": {
+                    "type": "expression",
+                    "expression": {
+                        "class": "constant",
+                        "type": "integer",
+                        "value": 0
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "class": "declaration_list",
+        "specifiers": [
+            {
+                "class": "type_qualifier",
+                "qualifier": "const"
+            },
+            {
+                "class": "type_specifier",
+                "specifier": "void"
+            }
+        ],
+        "declarations": [
+            {
+                "class": "declaration",
+                "declarator": {
+                    "class": "pointer",
+                    "declarator": {
+                        "class": "identifier",
+                        "identifier": "ptr"
+                    },
+                    "type_qualifiers": []
+                },
+                "initializer": null
+            },
+            {
+                "class": "declaration",
+                "declarator": {
+                    "class": "pointer",
+                    "declarator": {
+                        "class": "pointer",
+                        "declarator": {
+                            "class": "identifier",
+                            "identifier": "pptr"
+                        },
+                        "type_qualifiers": []
+                    },
+                    "type_qualifiers": []
+                },
+                "initializer": {
+                    "type": "expression",
+                    "expression": {
+                        "class": "unary_operation",
+                        "type": "address",
+                        "argument": {
+                            "class": "identifier",
+                            "identifier": "i"
+                        }
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "class": "declaration_list",
+        "specifiers": [
+            {
+                "class": "type_specifier",
+                "specifier": "struct",
+                "identifier": "network_address",
+                "members": [
+                    {
+                        "type": "declaration",
+                        "specifiers": [
+                            {
+                                "class": "type_specifier",
+                                "specifier": "unsigned"
+                            },
+                            {
+                                "class": "type_specifier",
+                                "specifier": "char"
+                            }
+                        ],
+                        "declarators": [
+                            {
+                                "declarator": {
+                                    "class": "array",
+                                    "declarator": {
+                                        "class": "identifier",
+                                        "identifier": "ip"
+                                    },
+                                    "type": "bounded",
+                                    "length": {
+                                        "class": "constant",
+                                        "type": "integer",
+                                        "value": 4
+                                    },
+                                    "static": false,
+                                    "type_qualifiers": []
+                                },
+                                "bitwidth": null
+                            }
+                        ]
+                    },
+                    {
+                        "type": "declaration",
+                        "specifiers": [
+                            {
+                                "class": "type_specifier",
+                                "specifier": "unsigned"
+                            },
+                            {
+                                "class": "type_specifier",
+                                "specifier": "int"
+                            }
+                        ],
+                        "declarators": [
+                            {
+                                "declarator": {
+                                    "class": "identifier",
+                                    "identifier": "port"
+                                },
+                                "bitwidth": {
+                                    "class": "binary_operation",
+                                    "type": "multiply",
+                                    "left": {
+                                        "class": "constant",
+                                        "type": "integer",
+                                        "value": 4
+                                    },
+                                    "right": {
+                                        "class": "constant",
+                                        "type": "integer",
+                                        "value": 8
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "declarations": [
+            {
+                "class": "declaration",
+                "declarator": null,
+                "initializer": null
+            }
+        ]
+    }
+]

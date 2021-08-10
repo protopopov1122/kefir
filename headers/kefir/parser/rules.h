@@ -53,6 +53,7 @@ DECLARE_RULE(assignment_expression);
 DECLARE_RULE(constant_expression);
 DECLARE_RULE(type_name);
 DECLARE_RULE(static_assertion);
+DECLARE_RULE(declaration_list);
 
 #undef DECLARE_RULE
 

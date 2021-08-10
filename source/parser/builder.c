@@ -619,3 +619,64 @@ kefir_result_t kefir_parser_ast_builder_compound_literal(struct kefir_mem *mem,
     });
     return KEFIR_OK;
 }
+
+kefir_result_t kefir_parser_ast_builder_declaration_list(struct kefir_mem *mem,
+                                                         struct kefir_parser_ast_builder *builder,
+                                                         struct kefir_ast_declarator_specifier_list *list) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declarator specifier list"));
+
+    struct kefir_ast_declaration_list *declaration_list = kefir_ast_new_declaration_list(mem);
+    REQUIRE(declaration_list != NULL,
+            KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST declaration list"));
+
+    kefir_result_t res = kefir_ast_declarator_specifier_list_clone(mem, &declaration_list->specifiers, list);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(declaration_list));
+        return res;
+    });
+
+    res = kefir_parser_ast_builder_push(mem, builder, KEFIR_AST_NODE_BASE(declaration_list));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(declaration_list));
+        return res;
+    });
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_parser_ast_builder_declaration(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder,
+                                                    struct kefir_ast_declarator *declarator,
+                                                    struct kefir_ast_initializer *initializer) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+
+    struct kefir_ast_node_base *declaration_list = NULL;
+    REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &declaration_list));
+    REQUIRE_ELSE(declaration_list->klass->type == KEFIR_AST_DECLARATION_LIST, {
+        KEFIR_AST_NODE_FREE(mem, declaration_list);
+        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected node of AST declaration list type");
+    });
+    ASSIGN_DECL_CAST(struct kefir_ast_declaration_list *, decl_list, declaration_list->self);
+
+    struct kefir_ast_declaration *declaration = kefir_ast_new_declaration(mem, decl_list, declarator, initializer);
+    REQUIRE_ELSE(declaration != NULL, {
+        KEFIR_AST_NODE_FREE(mem, declaration_list);
+        return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST declaration");
+    });
+
+    kefir_result_t res = kefir_list_insert_after(
+        mem, &decl_list->declarations, kefir_list_tail(&decl_list->declarations), KEFIR_AST_NODE_BASE(declaration));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(declaration));
+        KEFIR_AST_NODE_FREE(mem, declaration_list);
+        return res;
+    });
+
+    res = kefir_parser_ast_builder_push(mem, builder, declaration_list);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, declaration_list);
+        return res;
+    });
+    return KEFIR_OK;
+}

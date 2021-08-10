@@ -107,7 +107,7 @@
                         "declarations": [
                             {
                                 "class": "declaration",
-                                "declarators": {
+                                "declarator": {
                                     "class": "array",
                                     "declarator": {
                                         "class": "identifier",
@@ -116,7 +116,8 @@
                                     "type": "unbounded",
                                     "static": false,
                                     "type_qualifiers": []
-                                }
+                                },
+                                "initializer": null
                             }
                         ]
                     }

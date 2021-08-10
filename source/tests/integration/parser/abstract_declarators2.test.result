@@ -31,9 +31,10 @@
                     "declarations": [
                         {
                             "class": "declaration",
-                            "declarators": {
+                            "declarator": {
                                 "class": "abstract"
-                            }
+                            },
+                            "initializer": null
                         }
                     ]
                 },
@@ -48,7 +49,7 @@
                     "declarations": [
                         {
                             "class": "declaration",
-                            "declarators": {
+                            "declarator": {
                                 "class": "function",
                                 "declarator": {
                                     "class": "abstract"
@@ -66,14 +67,16 @@
                                         "declarations": [
                                             {
                                                 "class": "declaration",
-                                                "declarators": {
+                                                "declarator": {
                                                     "class": "abstract"
-                                                }
+                                                },
+                                                "initializer": null
                                             }
                                         ]
                                     }
                                 ]
-                            }
+                            },
+                            "initializer": null
                         }
                     ]
                 },
@@ -88,7 +91,7 @@
                     "declarations": [
                         {
                             "class": "declaration",
-                            "declarators": {
+                            "declarator": {
                                 "class": "function",
                                 "declarator": {
                                     "class": "identifier",
@@ -101,7 +104,8 @@
                                         "identifier": "X"
                                     }
                                 ]
-                            }
+                            },
+                            "initializer": null
                         }
                     ]
                 }

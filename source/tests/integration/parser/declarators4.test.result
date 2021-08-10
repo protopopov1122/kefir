@@ -18,9 +18,10 @@
                 "declarations": [
                     {
                         "class": "declaration",
-                        "declarators": {
+                        "declarator": {
                             "class": "abstract"
-                        }
+                        },
+                        "initializer": null
                     }
                 ]
             }
@@ -45,7 +46,7 @@
                 "declarations": [
                     {
                         "class": "declaration",
-                        "declarators": {
+                        "declarator": {
                             "class": "pointer",
                             "declarator": {
                                 "class": "array",
@@ -57,7 +58,8 @@
                                 "type_qualifiers": []
                             },
                             "type_qualifiers": []
-                        }
+                        },
+                        "initializer": null
                     }
                 ]
             },
@@ -80,7 +82,7 @@
                 "declarations": [
                     {
                         "class": "declaration",
-                        "declarators": {
+                        "declarator": {
                             "class": "pointer",
                             "declarator": {
                                 "class": "pointer",
@@ -90,7 +92,8 @@
                                 "type_qualifiers": []
                             },
                             "type_qualifiers": []
-                        }
+                        },
+                        "initializer": null
                     }
                 ]
             },
@@ -109,7 +112,7 @@
                 "declarations": [
                     {
                         "class": "declaration",
-                        "declarators": {
+                        "declarator": {
                             "class": "array",
                             "declarator": {
                                 "class": "identifier",
@@ -118,7 +121,8 @@
                             "type": "vla_unspecified",
                             "static": false,
                             "type_qualifiers": []
-                        }
+                        },
+                        "initializer": null
                     }
                 ]
             }
@@ -143,7 +147,7 @@
                 "declarations": [
                     {
                         "class": "declaration",
-                        "declarators": {
+                        "declarator": {
                             "class": "function",
                             "declarator": {
                                 "class": "pointer",
@@ -166,10 +170,11 @@
                                     "declarations": [
                                         {
                                             "class": "declaration",
-                                            "declarators": {
+                                            "declarator": {
                                                 "class": "identifier",
                                                 "identifier": "param1"
-                                            }
+                                            },
+                                            "initializer": null
                                         }
                                     ]
                                 },
@@ -184,18 +189,20 @@
                                     "declarations": [
                                         {
                                             "class": "declaration",
-                                            "declarators": {
+                                            "declarator": {
                                                 "class": "pointer",
                                                 "declarator": {
                                                     "class": "abstract"
                                                 },
                                                 "type_qualifiers": []
-                                            }
+                                            },
+                                            "initializer": null
                                         }
                                     ]
                                 }
                             ]
-                        }
+                        },
+                        "initializer": null
                     }
                 ]
             },
@@ -210,7 +217,7 @@
                 "declarations": [
                     {
                         "class": "declaration",
-                        "declarators": {
+                        "declarator": {
                             "class": "pointer",
                             "declarator": {
                                 "class": "function",
@@ -245,20 +252,22 @@
                                         "declarations": [
                                             {
                                                 "class": "declaration",
-                                                "declarators": {
+                                                "declarator": {
                                                     "class": "pointer",
                                                     "declarator": {
                                                         "class": "abstract"
                                                     },
                                                     "type_qualifiers": []
-                                                }
+                                                },
+                                                "initializer": null
                                             }
                                         ]
                                     }
                                 ]
                             },
                             "type_qualifiers": []
-                        }
+                        },
+                        "initializer": null
                     }
                 ]
             }

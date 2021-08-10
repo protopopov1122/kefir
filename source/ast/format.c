@@ -538,9 +538,14 @@ static kefir_result_t visit_declaration(const struct kefir_ast_visitor *visitor,
     REQUIRE_OK(kefir_json_output_object_begin(json));
     REQUIRE_OK(kefir_json_output_object_key(json, "class"));
     REQUIRE_OK(kefir_json_output_string(json, "declaration"));
-    REQUIRE_OK(kefir_json_output_object_key(json, "declarators"));
+    REQUIRE_OK(kefir_json_output_object_key(json, "declarator"));
     REQUIRE_OK(kefir_ast_format_declarator(json, node->declarator));
-    // TODO Format initializer
+    REQUIRE_OK(kefir_json_output_object_key(json, "initializer"));
+    if (node->initializer != NULL) {
+        REQUIRE_OK(kefir_ast_format_initializer(json, node->initializer));
+    } else {
+        REQUIRE_OK(kefir_json_output_null(json));
+    }
     REQUIRE_OK(kefir_json_output_object_end(json));
     return KEFIR_OK;
 }
