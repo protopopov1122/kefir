@@ -20,24 +20,42 @@
 
 #include "kefir/core/error.h"
 
-static _Thread_local struct kefir_error current_error;
+static _Thread_local kefir_size_t next_error_index = 0;
+static _Thread_local struct kefir_error error_stack[KEFIR_ERROR_STACK_SIZE];
 
 const struct kefir_error *kefir_current_error() {
-    if (current_error.code != KEFIR_OK) {
-        return &current_error;
+    if (next_error_index != 0) {
+        return &error_stack[next_error_index - 1];
     } else {
         return NULL;
     }
 }
 
 void kefir_clear_error() {
-    current_error.code = KEFIR_OK;
+    next_error_index = 0;
 }
 
 kefir_result_t kefir_set_error(kefir_result_t code, const char *message, const char *file, unsigned int line) {
-    current_error.code = code;
-    current_error.message = message;
-    current_error.file = file;
-    current_error.line = line;
+    if (next_error_index == KEFIR_ERROR_STACK_SIZE || kefir_result_get_category(code) == KEFIR_RESULT_CATEGORY_NORMAL) {
+        return code;
+    }
+
+    if (next_error_index > 0 &&
+        kefir_result_get_category(error_stack[next_error_index - 1].code) == KEFIR_RESULT_CATEGORY_WARNING) {
+        // Override warning
+        next_error_index--;
+    }
+
+    struct kefir_error *current_error = &error_stack[next_error_index];
+    current_error->code = code;
+    current_error->message = message;
+    current_error->file = file;
+    current_error->line = line;
+    if (next_error_index != 0) {
+        current_error->prev_error = &error_stack[next_error_index - 1];
+    } else {
+        current_error->prev_error = NULL;
+    }
+    current_error->error_overflow = ++next_error_index == KEFIR_ERROR_STACK_SIZE;
     return code;
 }

@@ -23,11 +23,16 @@
 
 #include "kefir/core/basic-types.h"
 
+#define KEFIR_ERROR_STACK_SIZE 128
+
 typedef struct kefir_error {
     kefir_result_t code;
     const char *message;
     const char *file;
     unsigned int line;
+
+    kefir_bool_t error_overflow;
+    const struct kefir_error *prev_error;
 } kefir_error_t;
 
 const struct kefir_error *kefir_current_error();

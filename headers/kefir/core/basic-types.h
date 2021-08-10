@@ -116,9 +116,15 @@ typedef kefir_uint32_t kefir_id_t;
 #define KEFIR_SIZE_FMT "%zu"
 
 typedef enum kefir_result {
+    // Normal
     KEFIR_OK = 0,
     KEFIR_YIELD,
+    // Warning
     KEFIR_ITERATOR_END,
+    KEFIR_NO_MATCH,
+    KEFIR_NOT_FOUND,
+    KEFIR_ALREADY_EXISTS,
+    // Generic error
     KEFIR_UNKNOWN_ERROR,
     KEFIR_INTERNAL_ERROR,
     KEFIR_MALFORMED_ARG,
@@ -126,13 +132,21 @@ typedef enum kefir_result {
     KEFIR_MEMALLOC_FAILURE,
     KEFIR_NOT_SUPPORTED,
     KEFIR_NOT_IMPLEMENTED,
-    KEFIR_NOT_FOUND,
-    KEFIR_ALREADY_EXISTS,
-    KEFIR_NO_MATCH,
-    KEFIR_SYNTAX_ERROR,
     KEFIR_OUT_OF_SPACE,
+    // Language-specific error
+    KEFIR_SYNTAX_ERROR,
     KEFIR_NOT_CONSTANT,
     KEFIR_STATIC_ASSERT
 } kefir_result_t;
+
+typedef enum kefir_result_category {
+    KEFIR_RESULT_CATEGORY_UNKNOWN,
+    KEFIR_RESULT_CATEGORY_NORMAL,
+    KEFIR_RESULT_CATEGORY_WARNING,
+    KEFIR_RESULT_CATEGORY_GENERIC_ERROR,
+    KEFIR_RESULT_CATEGORY_LANGUAGE_ERROR
+} kefir_result_category_t;
+
+kefir_result_category_t kefir_result_get_category(kefir_result_t);
 
 #endif
