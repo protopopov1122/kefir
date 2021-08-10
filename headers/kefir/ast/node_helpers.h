@@ -43,4 +43,7 @@ struct kefir_ast_declaration_list *kefir_ast_new_single_declaration_list(struct 
                                                                          struct kefir_ast_initializer *,
                                                                          struct kefir_ast_declaration **);
 
+kefir_result_t kefir_ast_declaration_list_unpack_single(struct kefir_ast_declaration_list *,
+                                                        struct kefir_ast_declaration **);
+
 #endif

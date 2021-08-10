@@ -171,3 +171,17 @@ struct kefir_ast_declaration_list *kefir_ast_new_single_declaration_list(
     ASSIGN_PTR(declaration_ptr, declaration);
     return decl_list;
 }
+
+kefir_result_t kefir_ast_declaration_list_unpack_single(struct kefir_ast_declaration_list *list,
+                                                        struct kefir_ast_declaration **declaration_ptr) {
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declaration list"));
+    REQUIRE(declaration_ptr != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to AST declaration"));
+
+    REQUIRE(kefir_list_length(&list->declarations) == 1,
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected declaration list to contain a single declaration"));
+    struct kefir_ast_node_base *node = kefir_list_head(&list->declarations)->value;
+    REQUIRE(node->klass->type == KEFIR_AST_DECLARATION,
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected declaration list to contain a single declaration"));
+    *declaration_ptr = node->self;
+    return KEFIR_OK;
+}
