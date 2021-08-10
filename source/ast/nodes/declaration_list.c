@@ -156,8 +156,7 @@ struct kefir_ast_declaration_list *kefir_ast_new_single_declaration_list(
 
     struct kefir_ast_declaration_list *decl_list = kefir_ast_new_declaration_list(mem);
     REQUIRE(decl_list != NULL, NULL);
-    struct kefir_ast_declaration *declaration =
-        kefir_ast_new_declaration(mem, &decl_list->specifiers, declarator, initializer);
+    struct kefir_ast_declaration *declaration = kefir_ast_new_declaration(mem, decl_list, declarator, initializer);
     REQUIRE_ELSE(declaration != NULL, {
         KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(decl_list));
         return NULL;

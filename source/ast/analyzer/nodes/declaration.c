@@ -38,9 +38,10 @@ kefir_result_t kefir_ast_analyze_declaration_node(struct kefir_mem *mem, const s
     kefir_ast_scoped_identifier_storage_t storage = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN;
     REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
     base->properties.category = KEFIR_AST_NODE_CATEGORY_DECLARATION;
-    REQUIRE_OK(kefir_ast_analyze_declaration(
-        mem, context, node->specifier_list, node->declarator, &base->properties.declaration_props.identifier, &type,
-        &storage, &base->properties.declaration_props.function, &base->properties.declaration_props.alignment));
+    REQUIRE_OK(kefir_ast_analyze_declaration(mem, context, &node->declaration_list->specifiers, node->declarator,
+                                             &base->properties.declaration_props.identifier, &type, &storage,
+                                             &base->properties.declaration_props.function,
+                                             &base->properties.declaration_props.alignment));
     REQUIRE_OK(kefir_ast_analyze_type(mem, context, context->type_analysis_context, type));
 
     if (base->properties.declaration_props.identifier != NULL) {

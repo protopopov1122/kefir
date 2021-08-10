@@ -98,15 +98,15 @@
                 "parameters": [
                     {
                         "class": "declaration_list",
+                        "specifiers": [
+                            {
+                                "class": "type_specifier",
+                                "specifier": "int"
+                            }
+                        ],
                         "declarations": [
                             {
                                 "class": "declaration",
-                                "specifiers": [
-                                    {
-                                        "class": "type_specifier",
-                                        "specifier": "int"
-                                    }
-                                ],
                                 "declarators": {
                                     "class": "array",
                                     "declarator": {

@@ -514,6 +514,8 @@ static kefir_result_t visit_declaration_list(const struct kefir_ast_visitor *vis
     REQUIRE_OK(kefir_json_output_object_begin(json));
     REQUIRE_OK(kefir_json_output_object_key(json, "class"));
     REQUIRE_OK(kefir_json_output_string(json, "declaration_list"));
+    REQUIRE_OK(kefir_json_output_object_key(json, "specifiers"));
+    REQUIRE_OK(kefir_ast_format_declarator_specifier_list(json, &node->specifiers));
     REQUIRE_OK(kefir_json_output_object_key(json, "declarations"));
     REQUIRE_OK(kefir_json_output_array_begin(json));
     for (const struct kefir_list_entry *iter = kefir_list_head(&node->declarations); iter != NULL;
@@ -536,8 +538,6 @@ static kefir_result_t visit_declaration(const struct kefir_ast_visitor *visitor,
     REQUIRE_OK(kefir_json_output_object_begin(json));
     REQUIRE_OK(kefir_json_output_object_key(json, "class"));
     REQUIRE_OK(kefir_json_output_string(json, "declaration"));
-    REQUIRE_OK(kefir_json_output_object_key(json, "specifiers"));
-    REQUIRE_OK(kefir_ast_format_declarator_specifier_list(json, node->specifier_list));
     REQUIRE_OK(kefir_json_output_object_key(json, "declarators"));
     REQUIRE_OK(kefir_ast_format_declarator(json, node->declarator));
     // TODO Format initializer

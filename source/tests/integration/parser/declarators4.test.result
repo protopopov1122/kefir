@@ -9,15 +9,15 @@
         "parameters": [
             {
                 "class": "declaration_list",
+                "specifiers": [
+                    {
+                        "class": "type_specifier",
+                        "specifier": "int"
+                    }
+                ],
                 "declarations": [
                     {
                         "class": "declaration",
-                        "specifiers": [
-                            {
-                                "class": "type_specifier",
-                                "specifier": "int"
-                            }
-                        ],
                         "declarators": {
                             "class": "abstract"
                         }
@@ -36,15 +36,15 @@
         "parameters": [
             {
                 "class": "declaration_list",
+                "specifiers": [
+                    {
+                        "class": "type_specifier",
+                        "specifier": "float"
+                    }
+                ],
                 "declarations": [
                     {
                         "class": "declaration",
-                        "specifiers": [
-                            {
-                                "class": "type_specifier",
-                                "specifier": "float"
-                            }
-                        ],
                         "declarators": {
                             "class": "pointer",
                             "declarator": {
@@ -63,23 +63,23 @@
             },
             {
                 "class": "declaration_list",
+                "specifiers": [
+                    {
+                        "class": "type_specifier",
+                        "specifier": "long"
+                    },
+                    {
+                        "class": "type_specifier",
+                        "specifier": "long"
+                    },
+                    {
+                        "class": "type_qualifier",
+                        "qualifier": "const"
+                    }
+                ],
                 "declarations": [
                     {
                         "class": "declaration",
-                        "specifiers": [
-                            {
-                                "class": "type_specifier",
-                                "specifier": "long"
-                            },
-                            {
-                                "class": "type_specifier",
-                                "specifier": "long"
-                            },
-                            {
-                                "class": "type_qualifier",
-                                "qualifier": "const"
-                            }
-                        ],
                         "declarators": {
                             "class": "pointer",
                             "declarator": {
@@ -96,19 +96,19 @@
             },
             {
                 "class": "declaration_list",
+                "specifiers": [
+                    {
+                        "class": "type_qualifier",
+                        "qualifier": "volatile"
+                    },
+                    {
+                        "class": "type_specifier",
+                        "specifier": "unsigned"
+                    }
+                ],
                 "declarations": [
                     {
                         "class": "declaration",
-                        "specifiers": [
-                            {
-                                "class": "type_qualifier",
-                                "qualifier": "volatile"
-                            },
-                            {
-                                "class": "type_specifier",
-                                "specifier": "unsigned"
-                            }
-                        ],
                         "declarators": {
                             "class": "array",
                             "declarator": {
@@ -134,15 +134,15 @@
         "parameters": [
             {
                 "class": "declaration_list",
+                "specifiers": [
+                    {
+                        "class": "type_specifier",
+                        "specifier": "char"
+                    }
+                ],
                 "declarations": [
                     {
                         "class": "declaration",
-                        "specifiers": [
-                            {
-                                "class": "type_specifier",
-                                "specifier": "char"
-                            }
-                        ],
                         "declarators": {
                             "class": "function",
                             "declarator": {
@@ -157,15 +157,15 @@
                             "parameters": [
                                 {
                                     "class": "declaration_list",
+                                    "specifiers": [
+                                        {
+                                            "class": "type_specifier",
+                                            "specifier": "short"
+                                        }
+                                    ],
                                     "declarations": [
                                         {
                                             "class": "declaration",
-                                            "specifiers": [
-                                                {
-                                                    "class": "type_specifier",
-                                                    "specifier": "short"
-                                                }
-                                            ],
                                             "declarators": {
                                                 "class": "identifier",
                                                 "identifier": "param1"
@@ -175,15 +175,15 @@
                                 },
                                 {
                                     "class": "declaration_list",
+                                    "specifiers": [
+                                        {
+                                            "class": "type_specifier",
+                                            "specifier": "void"
+                                        }
+                                    ],
                                     "declarations": [
                                         {
                                             "class": "declaration",
-                                            "specifiers": [
-                                                {
-                                                    "class": "type_specifier",
-                                                    "specifier": "void"
-                                                }
-                                            ],
                                             "declarators": {
                                                 "class": "pointer",
                                                 "declarator": {
@@ -201,15 +201,15 @@
             },
             {
                 "class": "declaration_list",
+                "specifiers": [
+                    {
+                        "class": "type_specifier",
+                        "specifier": "void"
+                    }
+                ],
                 "declarations": [
                     {
                         "class": "declaration",
-                        "specifiers": [
-                            {
-                                "class": "type_specifier",
-                                "specifier": "void"
-                            }
-                        ],
                         "declarators": {
                             "class": "pointer",
                             "declarator": {
@@ -236,15 +236,15 @@
                                 "parameters": [
                                     {
                                         "class": "declaration_list",
+                                        "specifiers": [
+                                            {
+                                                "class": "type_specifier",
+                                                "specifier": "void"
+                                            }
+                                        ],
                                         "declarations": [
                                             {
                                                 "class": "declaration",
-                                                "specifiers": [
-                                                    {
-                                                        "class": "type_specifier",
-                                                        "specifier": "void"
-                                                    }
-                                                ],
                                                 "declarators": {
                                                     "class": "pointer",
                                                     "declarator": {

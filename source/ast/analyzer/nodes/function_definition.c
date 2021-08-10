@@ -136,9 +136,9 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
                     kefir_ast_scoped_identifier_storage_t storage = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN;
                     kefir_ast_function_specifier_t function_specifier = KEFIR_AST_FUNCTION_SPECIFIER_NONE;
                     kefir_size_t alignment = 0;
-                    REQUIRE_OK(kefir_ast_analyze_declaration(mem, &local_context->context, decl->specifier_list,
-                                                             decl->declarator, &identifier, &type, &storage,
-                                                             &function_specifier, &alignment));
+                    REQUIRE_OK(kefir_ast_analyze_declaration(
+                        mem, &local_context->context, &decl->declaration_list->specifiers, decl->declarator,
+                        &identifier, &type, &storage, &function_specifier, &alignment));
 
                     type = kefir_ast_type_conv_adjust_function_parameter(mem, context->type_bundle, type);
 

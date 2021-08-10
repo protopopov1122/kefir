@@ -97,15 +97,15 @@
                         "parameters": [
                             {
                                 "class": "declaration_list",
+                                "specifiers": [
+                                    {
+                                        "class": "type_specifier",
+                                        "specifier": "int"
+                                    }
+                                ],
                                 "declarations": [
                                     {
                                         "class": "declaration",
-                                        "specifiers": [
-                                            {
-                                                "class": "type_specifier",
-                                                "specifier": "int"
-                                            }
-                                        ],
                                         "declarators": {
                                             "class": "abstract"
                                         }
@@ -114,15 +114,15 @@
                             },
                             {
                                 "class": "declaration_list",
+                                "specifiers": [
+                                    {
+                                        "class": "type_specifier",
+                                        "specifier": "char"
+                                    }
+                                ],
                                 "declarations": [
                                     {
                                         "class": "declaration",
-                                        "specifiers": [
-                                            {
-                                                "class": "type_specifier",
-                                                "specifier": "char"
-                                            }
-                                        ],
                                         "declarators": {
                                             "class": "abstract"
                                         }
