@@ -55,7 +55,13 @@ kefir_result_t kefir_parser_block_scope_declare_typedef(struct kefir_mem *mem, s
     }
     kefir_result_t res = kefir_hashtree_insert(mem, &scope->identifier_declarations, (kefir_hashtree_key_t) identifier,
                                                (kefir_hashtree_value_t) IDENTIFIER_TYPEDEF);
-    REQUIRE(res == KEFIR_OK || res == KEFIR_ALREADY_EXISTS, res);
+    if (res == KEFIR_ALREADY_EXISTS) {
+        kefir_bool_t is_typedef;
+        REQUIRE_OK(kefir_parser_block_scope_is_typedef(scope, identifier, &is_typedef));
+        REQUIRE(is_typedef, KEFIR_SET_ERROR(KEFIR_ALREADY_EXISTS, "Cannot redefine variable identifier as typedef"));
+    } else {
+        REQUIRE_OK(res);
+    }
     return KEFIR_OK;
 }
 
@@ -72,7 +78,13 @@ kefir_result_t kefir_parser_block_scope_declare_variable(struct kefir_mem *mem, 
     }
     kefir_result_t res = kefir_hashtree_insert(mem, &scope->identifier_declarations, (kefir_hashtree_key_t) identifier,
                                                (kefir_hashtree_value_t) IDENTIFIER_VARIABLE);
-    REQUIRE(res == KEFIR_OK || res == KEFIR_ALREADY_EXISTS, res);
+    if (res == KEFIR_ALREADY_EXISTS) {
+        kefir_bool_t is_typedef;
+        REQUIRE_OK(kefir_parser_block_scope_is_typedef(scope, identifier, &is_typedef));
+        REQUIRE(!is_typedef, KEFIR_SET_ERROR(KEFIR_ALREADY_EXISTS, "Cannot redefine typedef as variable identifier"));
+    } else {
+        REQUIRE_OK(res);
+    }
     return KEFIR_OK;
 }
 
@@ -106,10 +118,10 @@ kefir_result_t kefir_parser_scope_init(struct kefir_mem *mem, struct kefir_parse
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser block scope"));
 
+    scope->symbols = symbols;
     REQUIRE_OK(kefir_list_init(&scope->block_scopes));
     REQUIRE_OK(kefir_list_on_remove(&scope->block_scopes, remove_block_scope, NULL));
     REQUIRE_OK(kefir_parser_scope_push_block(mem, scope));
-    scope->symbols = symbols;
     return KEFIR_OK;
 }
 
@@ -192,7 +204,7 @@ kefir_result_t kefir_parser_scope_is_typedef(struct kefir_parser_scope *scope, c
         if (res == KEFIR_OK) {
             found = true;
         } else {
-            REQUIRE_OK(res);
+            REQUIRE(res == KEFIR_NOT_FOUND, res);
         }
     }
     REQUIRE(found, KEFIR_SET_ERROR(KEFIR_NOT_FOUND, "Cannot find requested identifier"));

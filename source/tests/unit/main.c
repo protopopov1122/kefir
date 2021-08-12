@@ -393,6 +393,8 @@ DECLARE_CASE(parser_lexem_construction_punctuator);
 DECLARE_CASE(parser_lexem_move);
 DECLARE_CASE(parser_lexem_copy);
 DECLARE_CASE(parser_token_cursor1);
+DECLARE_CASE(parser_block_scope1);
+DECLARE_CASE(parser_scope1);
 
 TEST_SUITE(
     mainSuite, &amd64_sysv_abi_data_test1, &amd64_sysv_abi_data_test2, &amd64_sysv_abi_data_test3,
@@ -524,7 +526,8 @@ TEST_SUITE(
 
     &parser_lexem_construction_sentinel, &parser_lexem_construction_keyword, &parser_lexem_construction_identifier,
     &parser_lexem_construction_constants, &parser_lexem_construction_string_literals,
-    &parser_lexem_construction_punctuator, &parser_lexem_move, &parser_lexem_copy, &parser_token_cursor1);
+    &parser_lexem_construction_punctuator, &parser_lexem_move, &parser_lexem_copy, &parser_token_cursor1,
+    &parser_block_scope1, &parser_scope1);
 
 int main(int argc, const char **argv) {
     UNUSED(argc);
