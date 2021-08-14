@@ -1,0 +1,77 @@
+[
+    {
+        "class": "expression_statement",
+        "expression": null
+    },
+    {
+        "class": "expression_statement",
+        "expression": {
+            "class": "assignment_operator",
+            "type": "simple",
+            "target": {
+                "class": "identifier",
+                "identifier": "x"
+            },
+            "value": {
+                "class": "function_call",
+                "function": {
+                    "class": "identifier",
+                    "identifier": "fn1"
+                },
+                "arguments": [
+                    {
+                        "class": "identifier",
+                        "identifier": "y"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "class": "expression_statement",
+        "expression": {
+            "class": "unary_operation",
+            "type": "prefix_increment",
+            "argument": {
+                "class": "identifier",
+                "identifier": "counter"
+            }
+        }
+    },
+    {
+        "class": "expression_statement",
+        "expression": null
+    },
+    {
+        "class": "expression_statement",
+        "expression": null
+    },
+    {
+        "class": "expression_statement",
+        "expression": null
+    },
+    {
+        "class": "expression_statement",
+        "expression": {
+            "class": "assignment_operator",
+            "type": "multiply",
+            "target": {
+                "class": "identifier",
+                "identifier": "counter"
+            },
+            "value": {
+                "class": "binary_operation",
+                "type": "add",
+                "left": {
+                    "class": "identifier",
+                    "identifier": "STH"
+                },
+                "right": {
+                    "class": "constant",
+                    "type": "integer",
+                    "value": 2
+                }
+            }
+        }
+    }
+]

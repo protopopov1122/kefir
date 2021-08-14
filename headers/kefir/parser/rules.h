@@ -54,6 +54,13 @@ DECLARE_RULE(constant_expression);
 DECLARE_RULE(type_name);
 DECLARE_RULE(static_assertion);
 DECLARE_RULE(declaration_list);
+DECLARE_RULE(labeled_statement);
+DECLARE_RULE(compound_statement);
+DECLARE_RULE(expression_statement);
+DECLARE_RULE(selection_statement);
+DECLARE_RULE(iteration_statement);
+DECLARE_RULE(jump_statement);
+DECLARE_RULE(statement);
 
 #undef DECLARE_RULE
 
