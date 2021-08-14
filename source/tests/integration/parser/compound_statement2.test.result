@@ -1,0 +1,208 @@
+[
+    {
+        "class": "compound_statement",
+        "items": [
+            {
+                "class": "expression_statement",
+                "expression": {
+                    "class": "binary_operation",
+                    "type": "multiply",
+                    "left": {
+                        "class": "identifier",
+                        "identifier": "T"
+                    },
+                    "right": {
+                        "class": "identifier",
+                        "identifier": "a"
+                    }
+                }
+            },
+            {
+                "class": "compound_statement",
+                "items": [
+                    {
+                        "class": "declaration_list",
+                        "specifiers": [
+                            {
+                                "class": "storage_class",
+                                "storage": "typedef"
+                            },
+                            {
+                                "class": "type_specifier",
+                                "specifier": "short"
+                            }
+                        ],
+                        "declarations": [
+                            {
+                                "class": "declaration",
+                                "declarator": {
+                                    "class": "identifier",
+                                    "identifier": "T"
+                                },
+                                "initializer": null
+                            }
+                        ]
+                    },
+                    {
+                        "class": "declaration_list",
+                        "specifiers": [
+                            {
+                                "class": "type_qualifier",
+                                "qualifier": "const"
+                            },
+                            {
+                                "class": "type_specifier",
+                                "specifier": "typedef",
+                                "identifier": "T"
+                            }
+                        ],
+                        "declarations": [
+                            {
+                                "class": "declaration",
+                                "declarator": {
+                                    "class": "pointer",
+                                    "declarator": {
+                                        "class": "identifier",
+                                        "identifier": "a"
+                                    },
+                                    "type_qualifiers": []
+                                },
+                                "initializer": null
+                            }
+                        ]
+                    },
+                    {
+                        "class": "compound_statement",
+                        "items": [
+                            {
+                                "class": "declaration_list",
+                                "specifiers": [
+                                    {
+                                        "class": "type_specifier",
+                                        "specifier": "typedef",
+                                        "identifier": "T"
+                                    }
+                                ],
+                                "declarations": [
+                                    {
+                                        "class": "declaration",
+                                        "declarator": {
+                                            "class": "pointer",
+                                            "declarator": {
+                                                "class": "identifier",
+                                                "identifier": "a"
+                                            },
+                                            "type_qualifiers": []
+                                        },
+                                        "initializer": null
+                                    }
+                                ]
+                            },
+                            {
+                                "class": "declaration_list",
+                                "specifiers": [
+                                    {
+                                        "class": "type_specifier",
+                                        "specifier": "int"
+                                    }
+                                ],
+                                "declarations": [
+                                    {
+                                        "class": "declaration",
+                                        "declarator": {
+                                            "class": "identifier",
+                                            "identifier": "T"
+                                        },
+                                        "initializer": null
+                                    }
+                                ]
+                            },
+                            {
+                                "class": "expression_statement",
+                                "expression": {
+                                    "class": "binary_operation",
+                                    "type": "multiply",
+                                    "left": {
+                                        "class": "identifier",
+                                        "identifier": "T"
+                                    },
+                                    "right": {
+                                        "class": "identifier",
+                                        "identifier": "a"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "class": "compound_statement",
+                        "items": [
+                            {
+                                "class": "declaration_list",
+                                "specifiers": [
+                                    {
+                                        "class": "type_specifier",
+                                        "specifier": "typedef",
+                                        "identifier": "T"
+                                    }
+                                ],
+                                "declarations": [
+                                    {
+                                        "class": "declaration",
+                                        "declarator": {
+                                            "class": "pointer",
+                                            "declarator": {
+                                                "class": "identifier",
+                                                "identifier": "a"
+                                            },
+                                            "type_qualifiers": []
+                                        },
+                                        "initializer": null
+                                    }
+                                ]
+                            },
+                            {
+                                "class": "declaration_list",
+                                "specifiers": [
+                                    {
+                                        "class": "type_specifier",
+                                        "specifier": "enum",
+                                        "identifier": null,
+                                        "members": [
+                                            {
+                                                "identifier": "T",
+                                                "value": null
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "declarations": [
+                                    {
+                                        "class": "declaration",
+                                        "declarator": null,
+                                        "initializer": null
+                                    }
+                                ]
+                            },
+                            {
+                                "class": "expression_statement",
+                                "expression": {
+                                    "class": "binary_operation",
+                                    "type": "multiply",
+                                    "left": {
+                                        "class": "identifier",
+                                        "identifier": "T"
+                                    },
+                                    "right": {
+                                        "class": "identifier",
+                                        "identifier": "a"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

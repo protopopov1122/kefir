@@ -252,6 +252,7 @@ static kefir_result_t scan_enum_field_declaration(struct kefir_mem *mem, struct 
         return res;
     });
 
+    REQUIRE_OK(kefir_parser_scope_declare_variable(mem, &parser->scope, identifier));
     return KEFIR_OK;
 }
 
@@ -320,6 +321,23 @@ static kefir_result_t scan_enum_specifier(struct kefir_mem *mem, struct kefir_pa
     return KEFIR_OK;
 }
 
+static kefir_result_t has_type_specifiers(struct kefir_ast_declarator_specifier_list *specifiers,
+                                          kefir_bool_t *result) {
+    struct kefir_ast_declarator_specifier *specifier = NULL;
+    *result = false;
+    kefir_result_t res = KEFIR_OK;
+    for (struct kefir_list_entry *iter = kefir_ast_declarator_specifier_list_iter(specifiers, &specifier);
+         iter != NULL && res == KEFIR_OK && !*result;
+         res = kefir_ast_declarator_specifier_list_next(&iter, &specifier)) {
+
+        if (specifier->klass == KEFIR_AST_TYPE_SPECIFIER) {
+            *result = true;
+        }
+    }
+    REQUIRE_OK(res);
+    return KEFIR_OK;
+}
+
 static kefir_result_t scan_type_specifier(struct kefir_mem *mem, struct kefir_parser *parser, void *payload) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser"));
@@ -378,7 +396,9 @@ static kefir_result_t scan_type_specifier(struct kefir_mem *mem, struct kefir_pa
     } else if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_ENUM)) {
         REQUIRE_OK(kefir_parser_try_invoke(mem, parser, scan_enum_specifier, &specifier));
     } else {
-        REQUIRE(PARSER_TOKEN_IS_IDENTIFIER(parser, 0),
+        kefir_bool_t has_specs = false;
+        REQUIRE_OK(has_type_specifiers(specifiers, &has_specs));
+        REQUIRE(PARSER_TOKEN_IS_IDENTIFIER(parser, 0) && !has_specs,
                 KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match type specifier"));
         const char *identifier = kefir_parser_token_cursor_at(parser->cursor, 0)->identifier;
         kefir_bool_t is_typedef;
