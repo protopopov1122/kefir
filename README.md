@@ -35,7 +35,7 @@ features. Project can be relatively easily extended to comply with C17 once the 
 |Intermediate representation|Done           |Stack-based bytecode abstracting out calling convention and data layout details|
 |AST structure and analysis |Done           |See exceptions section below                                                   |
 |AST translator             |Done           |See exceptions section below                                                   |
-|Parser                     |Not started yet|                                                                               |
+|Parser                     |In progress    | Recursive descent parser with backtracking                                    |
 |Lexer                      |Not started yet|                                                                               |
 |Preprocessor               |Not planned    |Out-of-scope of initial effort                                                 |
 |Standard library           |Not planned    |Out-of-scope of initial effort                                                 |
@@ -50,6 +50,9 @@ and analysis level, code generator lacks support of thread-local data.
 * Absence of atomics. C11 standard defines them as optional feature, which I decided
 to omit in initial implementation. Support of atomics would complicate both IR and
 target code generation.
+* Absence of VLAs. C11 standard defines them as optional feature, which I decided
+to omit in initial implementation. VLAs are implemented on AST level, however there is
+no translator and code generator support yet.
 
 ## Design notes
 In order to simplify translation and facilitate portability, intermediate representation
