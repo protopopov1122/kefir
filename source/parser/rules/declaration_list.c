@@ -46,7 +46,7 @@ static kefir_result_t scan_init_declaration(struct kefir_mem *mem, struct kefir_
     kefir_result_t res = KEFIR_OK;
 
     REQUIRE_OK(kefir_parser_scan_declarator(mem, builder->parser, &declarator));
-    if (PARSER_TOKEN_IS_PUNCTUATOR(builder->parser, 0, KEFIR_PUNCTUATOR_EQUAL)) {
+    if (PARSER_TOKEN_IS_PUNCTUATOR(builder->parser, 0, KEFIR_PUNCTUATOR_ASSIGN)) {
         REQUIRE_CHAIN(&res, PARSER_SHIFT(builder->parser));
         REQUIRE_CHAIN(&res, kefir_parser_scan_initializer(mem, builder->parser, &initializer));
         REQUIRE_ELSE(res == KEFIR_OK, {

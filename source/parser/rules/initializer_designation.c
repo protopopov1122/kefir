@@ -71,7 +71,7 @@ static kefir_result_t scan_designation(struct kefir_mem *mem, struct kefir_parse
         });
     }
 
-    REQUIRE_ELSE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_EQUAL), {
+    REQUIRE_ELSE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_ASSIGN), {
         kefir_ast_initializer_designation_free(mem, *designation_ptr);
         *designation_ptr = NULL;
         return KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected equals sign");

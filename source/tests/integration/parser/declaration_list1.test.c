@@ -36,7 +36,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_INT, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "i", &TOKENS[counter++]));
-    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_EQUAL, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_ASSIGN, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_constant_int(0, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_SEMICOLON, &TOKENS[counter++]));
 
@@ -48,7 +48,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_STAR, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_STAR, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "pptr", &TOKENS[counter++]));
-    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_EQUAL, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_ASSIGN, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_AMPERSAND, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "i", &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_SEMICOLON, &TOKENS[counter++]));

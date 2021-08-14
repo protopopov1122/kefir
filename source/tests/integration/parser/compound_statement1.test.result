@@ -1,0 +1,182 @@
+[
+    {
+        "class": "compound_statement",
+        "items": []
+    },
+    {
+        "class": "compound_statement",
+        "items": [
+            {
+                "class": "declaration_list",
+                "specifiers": [
+                    {
+                        "class": "type_specifier",
+                        "specifier": "long"
+                    }
+                ],
+                "declarations": [
+                    {
+                        "class": "declaration",
+                        "declarator": {
+                            "class": "identifier",
+                            "identifier": "i"
+                        },
+                        "initializer": {
+                            "type": "expression",
+                            "expression": {
+                                "class": "constant",
+                                "type": "integer",
+                                "value": 0
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "class": "expression_statement",
+                "expression": {
+                    "class": "unary_operation",
+                    "type": "postfix_increment",
+                    "argument": {
+                        "class": "identifier",
+                        "identifier": "i"
+                    }
+                }
+            },
+            {
+                "class": "expression_statement",
+                "expression": null
+            },
+            {
+                "class": "expression_statement",
+                "expression": null
+            },
+            {
+                "class": "expression_statement",
+                "expression": {
+                    "class": "function_call",
+                    "function": {
+                        "class": "identifier",
+                        "identifier": "fn1"
+                    },
+                    "arguments": [
+                        {
+                            "class": "identifier",
+                            "identifier": "i"
+                        }
+                    ]
+                }
+            },
+            {
+                "class": "expression_statement",
+                "expression": null
+            }
+        ]
+    },
+    {
+        "class": "compound_statement",
+        "items": [
+            {
+                "class": "compound_statement",
+                "items": [
+                    {
+                        "class": "compound_statement",
+                        "items": [
+                            {
+                                "class": "compound_statement",
+                                "items": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "class": "compound_statement",
+        "items": [
+            {
+                "class": "expression_statement",
+                "expression": {
+                    "class": "binary_operation",
+                    "type": "multiply",
+                    "left": {
+                        "class": "identifier",
+                        "identifier": "T"
+                    },
+                    "right": {
+                        "class": "identifier",
+                        "identifier": "x"
+                    }
+                }
+            },
+            {
+                "class": "compound_statement",
+                "items": [
+                    {
+                        "class": "declaration_list",
+                        "specifiers": [
+                            {
+                                "class": "storage_class",
+                                "storage": "typedef"
+                            },
+                            {
+                                "class": "type_specifier",
+                                "specifier": "char"
+                            }
+                        ],
+                        "declarations": [
+                            {
+                                "class": "declaration",
+                                "declarator": {
+                                    "class": "identifier",
+                                    "identifier": "T"
+                                },
+                                "initializer": null
+                            }
+                        ]
+                    },
+                    {
+                        "class": "declaration_list",
+                        "specifiers": [
+                            {
+                                "class": "type_specifier",
+                                "specifier": "typedef",
+                                "identifier": "T"
+                            }
+                        ],
+                        "declarations": [
+                            {
+                                "class": "declaration",
+                                "declarator": {
+                                    "class": "pointer",
+                                    "declarator": {
+                                        "class": "identifier",
+                                        "identifier": "x"
+                                    },
+                                    "type_qualifiers": []
+                                },
+                                "initializer": null
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "class": "expression_statement",
+                "expression": {
+                    "class": "binary_operation",
+                    "type": "multiply",
+                    "left": {
+                        "class": "identifier",
+                        "identifier": "T"
+                    },
+                    "right": {
+                        "class": "identifier",
+                        "identifier": "x"
+                    }
+                }
+            }
+        ]
+    }
+]

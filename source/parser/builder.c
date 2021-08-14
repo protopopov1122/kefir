@@ -680,3 +680,53 @@ kefir_result_t kefir_parser_ast_builder_declaration(struct kefir_mem *mem, struc
     });
     return KEFIR_OK;
 }
+
+kefir_result_t kefir_parser_ast_builder_compound_statement(struct kefir_mem *mem,
+                                                           struct kefir_parser_ast_builder *builder) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+
+    struct kefir_ast_compound_statement *stmt = kefir_ast_new_compound_statement(mem);
+    REQUIRE(stmt != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST compound statement"));
+
+    kefir_result_t res = kefir_parser_ast_builder_push(mem, builder, KEFIR_AST_NODE_BASE(stmt));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(stmt));
+        return KEFIR_OK;
+    });
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_parser_ast_builder_compound_statement_append(struct kefir_mem *mem,
+                                                                  struct kefir_parser_ast_builder *builder) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+
+    struct kefir_ast_node_base *compound_stmt = NULL, *stmt = NULL;
+    REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &stmt));
+    kefir_result_t res = kefir_parser_ast_builder_pop(mem, builder, &compound_stmt);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, stmt);
+        return res;
+    });
+    REQUIRE_ELSE(compound_stmt->klass->type == KEFIR_AST_COMPOUND_STATEMENT, {
+        KEFIR_AST_NODE_FREE(mem, stmt);
+        KEFIR_AST_NODE_FREE(mem, compound_stmt);
+        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected AST compound statement");
+    });
+
+    ASSIGN_DECL_CAST(struct kefir_ast_compound_statement *, compound, compound_stmt->self);
+    res = kefir_list_insert_after(mem, &compound->block_items, kefir_list_tail(&compound->block_items), stmt);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, compound_stmt);
+        KEFIR_AST_NODE_FREE(mem, stmt);
+        return res;
+    });
+
+    res = kefir_parser_ast_builder_push(mem, builder, compound_stmt);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, compound_stmt);
+        return res;
+    });
+    return KEFIR_OK;
+}

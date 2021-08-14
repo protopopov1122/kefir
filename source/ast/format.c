@@ -642,6 +642,28 @@ static kefir_result_t visit_expression_statement(const struct kefir_ast_visitor 
     return KEFIR_OK;
 }
 
+static kefir_result_t visit_compound_statement(const struct kefir_ast_visitor *visitor,
+                                               const struct kefir_ast_compound_statement *node, void *payload) {
+    UNUSED(visitor);
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST compound statement node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct kefir_json_output *, json, payload);
+
+    REQUIRE_OK(kefir_json_output_object_begin(json));
+    REQUIRE_OK(kefir_json_output_object_key(json, "class"));
+    REQUIRE_OK(kefir_json_output_string(json, "compound_statement"));
+    REQUIRE_OK(kefir_json_output_object_key(json, "items"));
+    REQUIRE_OK(kefir_json_output_array_begin(json));
+    for (const struct kefir_list_entry *iter = kefir_list_head(&node->block_items); iter != NULL;
+         kefir_list_next(&iter)) {
+        ASSIGN_DECL_CAST(struct kefir_ast_node_base *, item, iter->value);
+        REQUIRE_OK(kefir_ast_format(json, item));
+    }
+    REQUIRE_OK(kefir_json_output_array_end(json));
+    REQUIRE_OK(kefir_json_output_object_end(json));
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_format(struct kefir_json_output *json, const struct kefir_ast_node_base *node) {
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid JSON output"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node"));
@@ -668,6 +690,7 @@ kefir_result_t kefir_ast_format(struct kefir_json_output *json, const struct kef
     visitor.generic_selection = visit_generic_selection;
     visitor.compound_literal = visit_compound_literal;
     visitor.expression_statement = visit_expression_statement;
+    visitor.compound_statement = visit_compound_statement;
     REQUIRE_OK(node->klass->visit(node, &visitor, json));
     return KEFIR_OK;
 }

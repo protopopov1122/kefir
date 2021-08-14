@@ -36,13 +36,13 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_DOT, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "some_field", &TOKENS[counter++]));
-    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_EQUAL, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_ASSIGN, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_SEMICOLON, &TOKENS[counter++]));
 
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_LEFT_BRACKET, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_constant_int(100, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_RIGHT_BRACKET, &TOKENS[counter++]));
-    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_EQUAL, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_ASSIGN, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_SEMICOLON, &TOKENS[counter++]));
 
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_LEFT_BRACKET, &TOKENS[counter++]));
@@ -58,7 +58,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_LEFT_BRACKET, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_constant_int(5, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_RIGHT_BRACKET, &TOKENS[counter++]));
-    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_EQUAL, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_ASSIGN, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_SEMICOLON, &TOKENS[counter++]));
 
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_LEFT_BRACKET, &TOKENS[counter++]));
@@ -90,7 +90,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_RIGHT_PARENTHESE, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_RIGHT_BRACKET, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_RIGHT_BRACKET, &TOKENS[counter++]));
-    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_EQUAL, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_ASSIGN, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_SEMICOLON, &TOKENS[counter++]));
 
     REQUIRE_OK(kefir_parser_token_cursor_init(&cursor, TOKENS, counter));

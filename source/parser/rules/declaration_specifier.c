@@ -241,7 +241,7 @@ static kefir_result_t scan_enum_field_declaration(struct kefir_mem *mem, struct 
     REQUIRE_OK(PARSER_SHIFT(parser));
 
     struct kefir_ast_node_base *value = NULL;
-    if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_EQUAL)) {
+    if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_ASSIGN)) {
         REQUIRE_OK(PARSER_SHIFT(parser));
         REQUIRE_OK(KEFIR_PARSER_RULE_APPLY(mem, parser, constant_expression, &value));
     }

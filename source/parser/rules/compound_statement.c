@@ -19,10 +19,40 @@
 */
 
 #include "kefir/parser/rule_helpers.h"
+#include "kefir/parser/builder.h"
+
+static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder, void *payload) {
+    UNUSED(payload);
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser AST builder"));
+    struct kefir_parser *parser = builder->parser;
+
+    REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_BRACE),
+            KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match compound statement"));
+    REQUIRE_OK(PARSER_SHIFT(parser));
+    REQUIRE_OK(kefir_parser_ast_builder_compound_statement(mem, builder));
+    REQUIRE_OK(kefir_parser_scope_push_block(mem, &parser->scope));
+
+    while (!PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_BRACE)) {
+        kefir_result_t res =
+            kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, declaration_list), NULL);
+        if (res == KEFIR_NO_MATCH) {
+            res = kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, statement), NULL);
+        }
+        REQUIRE_OK(res);
+        REQUIRE_OK(kefir_parser_ast_builder_compound_statement_append(mem, builder));
+    }
+
+    REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_BRACE),
+            KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right brace"));
+    REQUIRE_OK(PARSER_SHIFT(parser));
+    REQUIRE_OK(kefir_parser_scope_pop_block(mem, &parser->scope));
+    return KEFIR_OK;
+}
 
 kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(compound_statement)(struct kefir_mem *mem, struct kefir_parser *parser,
                                                                struct kefir_ast_node_base **result, void *payload) {
     APPLY_PROLOGUE(mem, parser, result, payload);
-    // TODO Implement compound statement parser
-    return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Compound statement parser is not implemented yet");
+    REQUIRE_OK(kefir_parser_ast_builder_wrap(mem, parser, result, builder_callback, NULL));
+    return KEFIR_OK;
 }
