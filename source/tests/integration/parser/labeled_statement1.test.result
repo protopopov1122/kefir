@@ -1,0 +1,96 @@
+[
+    {
+        "class": "compound_statement",
+        "items": [
+            {
+                "class": "labeled_statement",
+                "label": "label1",
+                "statement": {
+                    "class": "expression_statement",
+                    "expression": {
+                        "class": "function_call",
+                        "function": {
+                            "class": "identifier",
+                            "identifier": "fn1"
+                        },
+                        "arguments": []
+                    }
+                }
+            },
+            {
+                "class": "case_statement",
+                "expression": {
+                    "class": "constant",
+                    "type": "integer",
+                    "value": 10
+                },
+                "statement": {
+                    "class": "compound_statement",
+                    "items": [
+                        {
+                            "class": "expression_statement",
+                            "expression": {
+                                "class": "assignment_operator",
+                                "type": "add",
+                                "target": {
+                                    "class": "identifier",
+                                    "identifier": "index"
+                                },
+                                "value": {
+                                    "class": "identifier",
+                                    "identifier": "increment"
+                                }
+                            }
+                        },
+                        {
+                            "class": "expression_statement",
+                            "expression": {
+                                "class": "unary_operation",
+                                "type": "prefix_decrement",
+                                "argument": {
+                                    "class": "identifier",
+                                    "identifier": "index"
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "class": "case_statement",
+                "expression": null,
+                "statement": {
+                    "class": "expression_statement",
+                    "expression": {
+                        "class": "assignment_operator",
+                        "type": "simple",
+                        "target": {
+                            "class": "array_subscript",
+                            "array": {
+                                "class": "identifier",
+                                "identifier": "array"
+                            },
+                            "subscript": {
+                                "class": "unary_operation",
+                                "type": "indirection",
+                                "argument": {
+                                    "class": "indirect_struct_member",
+                                    "structure": {
+                                        "class": "identifier",
+                                        "identifier": "x"
+                                    },
+                                    "member": "y"
+                                }
+                            }
+                        },
+                        "value": {
+                            "class": "constant",
+                            "type": "integer",
+                            "value": -1
+                        }
+                    }
+                }
+            }
+        ]
+    }
+]
