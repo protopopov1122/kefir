@@ -1,0 +1,156 @@
+[
+    {
+        "class": "binary_operation",
+        "type": "multiply",
+        "left": {
+            "class": "identifier",
+            "identifier": "A"
+        },
+        "right": {
+            "class": "identifier",
+            "identifier": "a"
+        }
+    },
+    {
+        "class": "binary_operation",
+        "type": "multiply",
+        "left": {
+            "class": "identifier",
+            "identifier": "B"
+        },
+        "right": {
+            "class": "identifier",
+            "identifier": "b"
+        }
+    },
+    {
+        "class": "declaration_list",
+        "specifiers": [
+            {
+                "class": "storage_class",
+                "storage": "typedef"
+            },
+            {
+                "class": "type_specifier",
+                "specifier": "int"
+            }
+        ],
+        "declarations": [
+            {
+                "class": "declaration",
+                "declarator": {
+                    "class": "identifier",
+                    "identifier": "A"
+                },
+                "initializer": null
+            }
+        ]
+    },
+    {
+        "class": "declaration_list",
+        "specifiers": [
+            {
+                "class": "type_specifier",
+                "specifier": "typedef",
+                "identifier": "A"
+            }
+        ],
+        "declarations": [
+            {
+                "class": "declaration",
+                "declarator": {
+                    "class": "pointer",
+                    "declarator": {
+                        "class": "identifier",
+                        "identifier": "a"
+                    },
+                    "type_qualifiers": []
+                },
+                "initializer": null
+            }
+        ]
+    },
+    {
+        "class": "binary_operation",
+        "type": "multiply",
+        "left": {
+            "class": "identifier",
+            "identifier": "B"
+        },
+        "right": {
+            "class": "identifier",
+            "identifier": "b"
+        }
+    },
+    {
+        "class": "declaration_list",
+        "specifiers": [
+            {
+                "class": "storage_class",
+                "storage": "typedef"
+            },
+            {
+                "class": "type_specifier",
+                "specifier": "long"
+            }
+        ],
+        "declarations": [
+            {
+                "class": "declaration",
+                "declarator": {
+                    "class": "identifier",
+                    "identifier": "B"
+                },
+                "initializer": null
+            }
+        ]
+    },
+    {
+        "class": "declaration_list",
+        "specifiers": [
+            {
+                "class": "type_specifier",
+                "specifier": "typedef",
+                "identifier": "A"
+            }
+        ],
+        "declarations": [
+            {
+                "class": "declaration",
+                "declarator": {
+                    "class": "pointer",
+                    "declarator": {
+                        "class": "identifier",
+                        "identifier": "a"
+                    },
+                    "type_qualifiers": []
+                },
+                "initializer": null
+            }
+        ]
+    },
+    {
+        "class": "declaration_list",
+        "specifiers": [
+            {
+                "class": "type_specifier",
+                "specifier": "typedef",
+                "identifier": "B"
+            }
+        ],
+        "declarations": [
+            {
+                "class": "declaration",
+                "declarator": {
+                    "class": "pointer",
+                    "declarator": {
+                        "class": "identifier",
+                        "identifier": "b"
+                    },
+                    "type_qualifiers": []
+                },
+                "initializer": null
+            }
+        ]
+    }
+]

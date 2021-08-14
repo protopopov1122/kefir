@@ -378,8 +378,21 @@ static kefir_result_t scan_type_specifier(struct kefir_mem *mem, struct kefir_pa
     } else if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_ENUM)) {
         REQUIRE_OK(kefir_parser_try_invoke(mem, parser, scan_enum_specifier, &specifier));
     } else {
-        // TODO Implement typedef specifiers
-        return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match type specifier");
+        REQUIRE(PARSER_TOKEN_IS_IDENTIFIER(parser, 0),
+                KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match type specifier"));
+        const char *identifier = kefir_parser_token_cursor_at(parser->cursor, 0)->identifier;
+        kefir_bool_t is_typedef;
+        kefir_result_t res = kefir_parser_scope_is_typedef(&parser->scope, identifier, &is_typedef);
+        if (res == KEFIR_NOT_FOUND) {
+            return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match type specifier");
+        } else {
+            REQUIRE_OK(res);
+        }
+        REQUIRE(is_typedef, KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match type specifier"));
+        REQUIRE_OK(PARSER_SHIFT(parser));
+        specifier = kefir_ast_type_specifier_typedef(mem, parser->symbols, identifier);
+        REQUIRE(specifier != NULL,
+                KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST declarator specifier"));
     }
 
     REQUIRE(specifier != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST declarator specifier"));

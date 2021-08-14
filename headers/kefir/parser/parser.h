@@ -23,6 +23,7 @@
 
 #include "kefir/core/mem.h"
 #include "kefir/parser/cursor.h"
+#include "kefir/parser/scope.h"
 #include "kefir/ast/node.h"
 
 typedef struct kefir_parser kefir_parser_t;
@@ -30,6 +31,7 @@ typedef struct kefir_parser kefir_parser_t;
 typedef struct kefir_parser {
     struct kefir_symbol_table *symbols;
     struct kefir_parser_token_cursor *cursor;
+    struct kefir_parser_scope scope;
 } kefir_parser_t;
 
 typedef kefir_result_t (*kefir_parser_rule_fn_t)(struct kefir_mem *, struct kefir_parser *,

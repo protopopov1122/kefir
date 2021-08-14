@@ -249,3 +249,31 @@ kefir_result_t kefir_ast_declarator_is_abstract(struct kefir_ast_declarator *dec
     }
     return KEFIR_OK;
 }
+
+kefir_result_t kefir_ast_declarator_unpack_identifier(struct kefir_ast_declarator *decl, const char **identifier_ptr) {
+    REQUIRE(identifier_ptr != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to identifier"));
+
+    if (decl == NULL) {
+        *identifier_ptr = NULL;
+        return KEFIR_OK;
+    }
+
+    switch (decl->klass) {
+        case KEFIR_AST_DECLARATOR_IDENTIFIER:
+            *identifier_ptr = decl->identifier;
+            break;
+
+        case KEFIR_AST_DECLARATOR_POINTER:
+            REQUIRE_OK(kefir_ast_declarator_unpack_identifier(decl->pointer.declarator, identifier_ptr));
+            break;
+
+        case KEFIR_AST_DECLARATOR_ARRAY:
+            REQUIRE_OK(kefir_ast_declarator_unpack_identifier(decl->array.declarator, identifier_ptr));
+            break;
+
+        case KEFIR_AST_DECLARATOR_FUNCTION:
+            REQUIRE_OK(kefir_ast_declarator_unpack_identifier(decl->function.declarator, identifier_ptr));
+            break;
+    }
+    return KEFIR_OK;
+}

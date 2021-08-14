@@ -1,0 +1,267 @@
+[
+    {
+        "class": "declaration_list",
+        "specifiers": [
+            {
+                "class": "type_specifier",
+                "specifier": "void"
+            }
+        ],
+        "declarations": [
+            {
+                "class": "declaration",
+                "declarator": {
+                    "class": "function",
+                    "declarator": {
+                        "class": "identifier",
+                        "identifier": "fn1"
+                    },
+                    "ellipsis": false,
+                    "parameters": [
+                        {
+                            "class": "identifier",
+                            "identifier": "a"
+                        }
+                    ]
+                },
+                "initializer": null
+            }
+        ]
+    },
+    {
+        "class": "declaration_list",
+        "specifiers": [
+            {
+                "class": "type_specifier",
+                "specifier": "void"
+            }
+        ],
+        "declarations": [
+            {
+                "class": "declaration",
+                "declarator": {
+                    "class": "function",
+                    "declarator": {
+                        "class": "identifier",
+                        "identifier": "fn2"
+                    },
+                    "ellipsis": false,
+                    "parameters": [
+                        {
+                            "class": "identifier",
+                            "identifier": "b"
+                        }
+                    ]
+                },
+                "initializer": null
+            }
+        ]
+    },
+    {
+        "class": "declaration_list",
+        "specifiers": [
+            {
+                "class": "storage_class",
+                "storage": "typedef"
+            },
+            {
+                "class": "type_specifier",
+                "specifier": "float"
+            }
+        ],
+        "declarations": [
+            {
+                "class": "declaration",
+                "declarator": {
+                    "class": "identifier",
+                    "identifier": "a"
+                },
+                "initializer": null
+            }
+        ]
+    },
+    {
+        "class": "declaration_list",
+        "specifiers": [
+            {
+                "class": "type_specifier",
+                "specifier": "void"
+            }
+        ],
+        "declarations": [
+            {
+                "class": "declaration",
+                "declarator": {
+                    "class": "function",
+                    "declarator": {
+                        "class": "identifier",
+                        "identifier": "fn1"
+                    },
+                    "ellipsis": false,
+                    "parameters": [
+                        {
+                            "class": "declaration_list",
+                            "specifiers": [
+                                {
+                                    "class": "type_specifier",
+                                    "specifier": "typedef",
+                                    "identifier": "a"
+                                }
+                            ],
+                            "declarations": [
+                                {
+                                    "class": "declaration",
+                                    "declarator": {
+                                        "class": "abstract"
+                                    },
+                                    "initializer": null
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "initializer": null
+            }
+        ]
+    },
+    {
+        "class": "declaration_list",
+        "specifiers": [
+            {
+                "class": "type_specifier",
+                "specifier": "void"
+            }
+        ],
+        "declarations": [
+            {
+                "class": "declaration",
+                "declarator": {
+                    "class": "function",
+                    "declarator": {
+                        "class": "identifier",
+                        "identifier": "fn2"
+                    },
+                    "ellipsis": false,
+                    "parameters": [
+                        {
+                            "class": "identifier",
+                            "identifier": "b"
+                        }
+                    ]
+                },
+                "initializer": null
+            }
+        ]
+    },
+    {
+        "class": "declaration_list",
+        "specifiers": [
+            {
+                "class": "storage_class",
+                "storage": "typedef"
+            },
+            {
+                "class": "type_specifier",
+                "specifier": "double"
+            }
+        ],
+        "declarations": [
+            {
+                "class": "declaration",
+                "declarator": {
+                    "class": "identifier",
+                    "identifier": "b"
+                },
+                "initializer": null
+            }
+        ]
+    },
+    {
+        "class": "declaration_list",
+        "specifiers": [
+            {
+                "class": "type_specifier",
+                "specifier": "void"
+            }
+        ],
+        "declarations": [
+            {
+                "class": "declaration",
+                "declarator": {
+                    "class": "function",
+                    "declarator": {
+                        "class": "identifier",
+                        "identifier": "fn1"
+                    },
+                    "ellipsis": false,
+                    "parameters": [
+                        {
+                            "class": "declaration_list",
+                            "specifiers": [
+                                {
+                                    "class": "type_specifier",
+                                    "specifier": "typedef",
+                                    "identifier": "a"
+                                }
+                            ],
+                            "declarations": [
+                                {
+                                    "class": "declaration",
+                                    "declarator": {
+                                        "class": "abstract"
+                                    },
+                                    "initializer": null
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "initializer": null
+            }
+        ]
+    },
+    {
+        "class": "declaration_list",
+        "specifiers": [
+            {
+                "class": "type_specifier",
+                "specifier": "void"
+            }
+        ],
+        "declarations": [
+            {
+                "class": "declaration",
+                "declarator": {
+                    "class": "function",
+                    "declarator": {
+                        "class": "identifier",
+                        "identifier": "fn2"
+                    },
+                    "ellipsis": false,
+                    "parameters": [
+                        {
+                            "class": "declaration_list",
+                            "specifiers": [
+                                {
+                                    "class": "type_specifier",
+                                    "specifier": "typedef",
+                                    "identifier": "b"
+                                }
+                            ],
+                            "declarations": [
+                                {
+                                    "class": "declaration",
+                                    "declarator": {
+                                        "class": "abstract"
+                                    },
+                                    "initializer": null
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "initializer": null
+            }
+        ]
+    }
+]

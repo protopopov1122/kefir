@@ -9,6 +9,7 @@ kefir_result_t kefir_parser_init(struct kefir_mem *mem, struct kefir_parser *par
     REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser"));
     REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid token cursor"));
 
+    REQUIRE_OK(kefir_parser_scope_init(mem, &parser->scope, symbols));
     parser->symbols = symbols;
     parser->cursor = cursor;
     return KEFIR_OK;
@@ -17,6 +18,8 @@ kefir_result_t kefir_parser_init(struct kefir_mem *mem, struct kefir_parser *par
 kefir_result_t kefir_parser_free(struct kefir_mem *mem, struct kefir_parser *parser) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser"));
+
+    REQUIRE_OK(kefir_parser_scope_free(mem, &parser->scope));
     parser->cursor = NULL;
     parser->symbols = NULL;
     return KEFIR_OK;
