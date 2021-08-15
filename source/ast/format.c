@@ -820,6 +820,70 @@ static kefir_result_t visit_for_statement(const struct kefir_ast_visitor *visito
     return KEFIR_OK;
 }
 
+static kefir_result_t visit_return_statement(const struct kefir_ast_visitor *visitor,
+                                             const struct kefir_ast_return_statement *node, void *payload) {
+    UNUSED(visitor);
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST return statement node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct kefir_json_output *, json, payload);
+
+    REQUIRE_OK(kefir_json_output_object_begin(json));
+    REQUIRE_OK(kefir_json_output_object_key(json, "class"));
+    REQUIRE_OK(kefir_json_output_string(json, "return_statement"));
+    REQUIRE_OK(kefir_json_output_object_key(json, "expression"));
+    if (node->expression != NULL) {
+        REQUIRE_OK(kefir_ast_format(json, node->expression));
+    } else {
+        REQUIRE_OK(kefir_json_output_null(json));
+    }
+    REQUIRE_OK(kefir_json_output_object_end(json));
+    return KEFIR_OK;
+}
+
+static kefir_result_t visit_goto_statement(const struct kefir_ast_visitor *visitor,
+                                           const struct kefir_ast_goto_statement *node, void *payload) {
+    UNUSED(visitor);
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST goto statement node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct kefir_json_output *, json, payload);
+
+    REQUIRE_OK(kefir_json_output_object_begin(json));
+    REQUIRE_OK(kefir_json_output_object_key(json, "class"));
+    REQUIRE_OK(kefir_json_output_string(json, "goto_statement"));
+    REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
+    REQUIRE_OK(kefir_json_output_string(json, node->identifier));
+    REQUIRE_OK(kefir_json_output_object_end(json));
+    return KEFIR_OK;
+}
+
+static kefir_result_t visit_continue_statement(const struct kefir_ast_visitor *visitor,
+                                               const struct kefir_ast_continue_statement *node, void *payload) {
+    UNUSED(visitor);
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST continue statement node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct kefir_json_output *, json, payload);
+
+    REQUIRE_OK(kefir_json_output_object_begin(json));
+    REQUIRE_OK(kefir_json_output_object_key(json, "class"));
+    REQUIRE_OK(kefir_json_output_string(json, "continue_statement"));
+    REQUIRE_OK(kefir_json_output_object_end(json));
+    return KEFIR_OK;
+}
+
+static kefir_result_t visit_break_statement(const struct kefir_ast_visitor *visitor,
+                                            const struct kefir_ast_break_statement *node, void *payload) {
+    UNUSED(visitor);
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST break statement node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct kefir_json_output *, json, payload);
+
+    REQUIRE_OK(kefir_json_output_object_begin(json));
+    REQUIRE_OK(kefir_json_output_object_key(json, "class"));
+    REQUIRE_OK(kefir_json_output_string(json, "break_statement"));
+    REQUIRE_OK(kefir_json_output_object_end(json));
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_format(struct kefir_json_output *json, const struct kefir_ast_node_base *node) {
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid JSON output"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node"));
@@ -854,6 +918,10 @@ kefir_result_t kefir_ast_format(struct kefir_json_output *json, const struct kef
     visitor.while_statement = visit_while_statement;
     visitor.do_while_statement = visit_do_while_statement;
     visitor.for_statement = visit_for_statement;
+    visitor.return_statement = visit_return_statement;
+    visitor.goto_statement = visit_goto_statement;
+    visitor.continue_statement = visit_continue_statement;
+    visitor.break_statement = visit_break_statement;
     REQUIRE_OK(node->klass->visit(node, &visitor, json));
     return KEFIR_OK;
 }

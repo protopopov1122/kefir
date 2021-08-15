@@ -1,0 +1,51 @@
+[
+    {
+        "class": "return_statement",
+        "expression": null
+    },
+    {
+        "class": "return_statement",
+        "expression": {
+            "class": "binary_operation",
+            "type": "add",
+            "left": {
+                "class": "binary_operation",
+                "type": "multiply",
+                "left": {
+                    "class": "identifier",
+                    "identifier": "i"
+                },
+                "right": {
+                    "class": "constant",
+                    "type": "integer",
+                    "value": 10
+                }
+            },
+            "right": {
+                "class": "array_subscript",
+                "array": {
+                    "class": "identifier",
+                    "identifier": "arr"
+                },
+                "subscript": {
+                    "class": "unary_operation",
+                    "type": "postfix_increment",
+                    "argument": {
+                        "class": "identifier",
+                        "identifier": "j"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "class": "goto_statement",
+        "identifier": "label1"
+    },
+    {
+        "class": "continue_statement"
+    },
+    {
+        "class": "break_statement"
+    }
+]

@@ -82,5 +82,11 @@ kefir_result_t kefir_parser_ast_builder_while_statement(struct kefir_mem *, stru
 kefir_result_t kefir_parser_ast_builder_do_while_statement(struct kefir_mem *, struct kefir_parser_ast_builder *);
 kefir_result_t kefir_parser_ast_builder_for_statement(struct kefir_mem *, struct kefir_parser_ast_builder *,
                                                       kefir_bool_t, kefir_bool_t, kefir_bool_t);
+kefir_result_t kefir_parser_ast_builder_return_statement(struct kefir_mem *, struct kefir_parser_ast_builder *);
+kefir_result_t kefir_parser_ast_builder_return_value_statement(struct kefir_mem *, struct kefir_parser_ast_builder *);
+kefir_result_t kefir_parser_ast_builder_goto_statement(struct kefir_mem *, struct kefir_parser_ast_builder *,
+                                                       const char *);
+kefir_result_t kefir_parser_ast_builder_continue_statement(struct kefir_mem *, struct kefir_parser_ast_builder *);
+kefir_result_t kefir_parser_ast_builder_break_statement(struct kefir_mem *, struct kefir_parser_ast_builder *);
 
 #endif
