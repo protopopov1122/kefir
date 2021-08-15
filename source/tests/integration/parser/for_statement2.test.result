@@ -1,0 +1,337 @@
+[
+    {
+        "class": "for_statement",
+        "init": null,
+        "controlling_expression": null,
+        "tail": null,
+        "body": {
+            "class": "compound_statement",
+            "items": []
+        }
+    },
+    {
+        "class": "for_statement",
+        "init": {
+            "class": "declaration_list",
+            "specifiers": [
+                {
+                    "class": "type_specifier",
+                    "specifier": "int"
+                }
+            ],
+            "declarations": [
+                {
+                    "class": "declaration",
+                    "declarator": {
+                        "class": "identifier",
+                        "identifier": "i"
+                    },
+                    "initializer": {
+                        "type": "expression",
+                        "expression": {
+                            "class": "constant",
+                            "type": "unsigned_integer",
+                            "value": 0
+                        }
+                    }
+                }
+            ]
+        },
+        "controlling_expression": {
+            "class": "binary_operation",
+            "type": "less",
+            "left": {
+                "class": "identifier",
+                "identifier": "i"
+            },
+            "right": {
+                "class": "constant",
+                "type": "unsigned_integer",
+                "value": 10
+            }
+        },
+        "tail": {
+            "class": "unary_operation",
+            "type": "postfix_increment",
+            "argument": {
+                "class": "identifier",
+                "identifier": "i"
+            }
+        },
+        "body": {
+            "class": "compound_statement",
+            "items": [
+                {
+                    "class": "expression_statement",
+                    "expression": {
+                        "class": "assignment_operator",
+                        "type": "multiply",
+                        "target": {
+                            "class": "array_subscript",
+                            "array": {
+                                "class": "identifier",
+                                "identifier": "array"
+                            },
+                            "subscript": {
+                                "class": "identifier",
+                                "identifier": "i"
+                            }
+                        },
+                        "value": {
+                            "class": "binary_operation",
+                            "type": "multiply",
+                            "left": {
+                                "class": "unary_operation",
+                                "type": "negate",
+                                "argument": {
+                                    "class": "identifier",
+                                    "identifier": "i"
+                                }
+                            },
+                            "right": {
+                                "class": "constant",
+                                "type": "unsigned_integer",
+                                "value": 2
+                            }
+                        }
+                    }
+                },
+                {
+                    "class": "declaration_list",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "unsigned"
+                        },
+                        {
+                            "class": "type_specifier",
+                            "specifier": "char"
+                        }
+                    ],
+                    "declarations": [
+                        {
+                            "class": "declaration",
+                            "declarator": {
+                                "class": "identifier",
+                                "identifier": "res"
+                            },
+                            "initializer": {
+                                "type": "expression",
+                                "expression": {
+                                    "class": "function_call",
+                                    "function": {
+                                        "class": "identifier",
+                                        "identifier": "callback"
+                                    },
+                                    "arguments": [
+                                        {
+                                            "class": "identifier",
+                                            "identifier": "i"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "class": "for_statement",
+        "init": {
+            "class": "declaration_list",
+            "specifiers": [
+                {
+                    "class": "type_specifier",
+                    "specifier": "int"
+                }
+            ],
+            "declarations": [
+                {
+                    "class": "declaration",
+                    "declarator": {
+                        "class": "identifier",
+                        "identifier": "i"
+                    },
+                    "initializer": {
+                        "type": "expression",
+                        "expression": {
+                            "class": "constant",
+                            "type": "unsigned_integer",
+                            "value": 0
+                        }
+                    }
+                }
+            ]
+        },
+        "controlling_expression": {
+            "class": "binary_operation",
+            "type": "less",
+            "left": {
+                "class": "identifier",
+                "identifier": "i"
+            },
+            "right": {
+                "class": "constant",
+                "type": "unsigned_integer",
+                "value": 10
+            }
+        },
+        "tail": {
+            "class": "unary_operation",
+            "type": "postfix_increment",
+            "argument": {
+                "class": "identifier",
+                "identifier": "i"
+            }
+        },
+        "body": {
+            "class": "compound_statement",
+            "items": [
+                {
+                    "class": "for_statement",
+                    "init": {
+                        "class": "declaration_list",
+                        "specifiers": [
+                            {
+                                "class": "type_specifier",
+                                "specifier": "int"
+                            }
+                        ],
+                        "declarations": [
+                            {
+                                "class": "declaration",
+                                "declarator": {
+                                    "class": "identifier",
+                                    "identifier": "j"
+                                },
+                                "initializer": {
+                                    "type": "expression",
+                                    "expression": {
+                                        "class": "constant",
+                                        "type": "unsigned_integer",
+                                        "value": 0
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "controlling_expression": {
+                        "class": "binary_operation",
+                        "type": "less",
+                        "left": {
+                            "class": "identifier",
+                            "identifier": "j"
+                        },
+                        "right": {
+                            "class": "constant",
+                            "type": "unsigned_integer",
+                            "value": 10
+                        }
+                    },
+                    "tail": {
+                        "class": "unary_operation",
+                        "type": "postfix_increment",
+                        "argument": {
+                            "class": "identifier",
+                            "identifier": "j"
+                        }
+                    },
+                    "body": {
+                        "class": "compound_statement",
+                        "items": [
+                            {
+                                "class": "for_statement",
+                                "init": {
+                                    "class": "declaration_list",
+                                    "specifiers": [
+                                        {
+                                            "class": "type_specifier",
+                                            "specifier": "int"
+                                        }
+                                    ],
+                                    "declarations": [
+                                        {
+                                            "class": "declaration",
+                                            "declarator": {
+                                                "class": "identifier",
+                                                "identifier": "k"
+                                            },
+                                            "initializer": {
+                                                "type": "expression",
+                                                "expression": {
+                                                    "class": "constant",
+                                                    "type": "unsigned_integer",
+                                                    "value": 0
+                                                }
+                                            }
+                                        }
+                                    ]
+                                },
+                                "controlling_expression": {
+                                    "class": "binary_operation",
+                                    "type": "less",
+                                    "left": {
+                                        "class": "identifier",
+                                        "identifier": "k"
+                                    },
+                                    "right": {
+                                        "class": "constant",
+                                        "type": "unsigned_integer",
+                                        "value": 10
+                                    }
+                                },
+                                "tail": {
+                                    "class": "unary_operation",
+                                    "type": "postfix_increment",
+                                    "argument": {
+                                        "class": "identifier",
+                                        "identifier": "k"
+                                    }
+                                },
+                                "body": {
+                                    "class": "compound_statement",
+                                    "items": [
+                                        {
+                                            "class": "expression_statement",
+                                            "expression": {
+                                                "class": "function_call",
+                                                "function": {
+                                                    "class": "identifier",
+                                                    "identifier": "callback"
+                                                },
+                                                "arguments": [
+                                                    {
+                                                        "class": "binary_operation",
+                                                        "type": "multiply",
+                                                        "left": {
+                                                            "class": "binary_operation",
+                                                            "type": "multiply",
+                                                            "left": {
+                                                                "class": "identifier",
+                                                                "identifier": "i"
+                                                            },
+                                                            "right": {
+                                                                "class": "identifier",
+                                                                "identifier": "j"
+                                                            }
+                                                        },
+                                                        "right": {
+                                                            "class": "identifier",
+                                                            "identifier": "k"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+]

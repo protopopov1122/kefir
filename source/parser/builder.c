@@ -895,3 +895,114 @@ kefir_result_t kefir_parser_ast_builder_switch_statement(struct kefir_mem *mem,
     });
     return KEFIR_OK;
 }
+
+kefir_result_t kefir_parser_ast_builder_while_statement(struct kefir_mem *mem,
+                                                        struct kefir_parser_ast_builder *builder) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+
+    struct kefir_ast_node_base *expr = NULL, *stmt = NULL;
+    REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &stmt));
+    kefir_result_t res = kefir_parser_ast_builder_pop(mem, builder, &expr);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, stmt);
+        return res;
+    });
+
+    struct kefir_ast_while_statement *whileStmt = kefir_ast_new_while_statement(mem, expr, stmt);
+    REQUIRE_ELSE(whileStmt != NULL, {
+        KEFIR_AST_NODE_FREE(mem, expr);
+        KEFIR_AST_NODE_FREE(mem, stmt);
+        return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST while statement");
+    });
+
+    res = kefir_parser_ast_builder_push(mem, builder, KEFIR_AST_NODE_BASE(whileStmt));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(whileStmt));
+        return res;
+    });
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_parser_ast_builder_do_while_statement(struct kefir_mem *mem,
+                                                           struct kefir_parser_ast_builder *builder) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+
+    struct kefir_ast_node_base *expr = NULL, *stmt = NULL;
+    REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &expr));
+    kefir_result_t res = kefir_parser_ast_builder_pop(mem, builder, &stmt);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, expr);
+        return res;
+    });
+
+    struct kefir_ast_do_while_statement *doWhileStmt = kefir_ast_new_do_while_statement(mem, expr, stmt);
+    REQUIRE_ELSE(doWhileStmt != NULL, {
+        KEFIR_AST_NODE_FREE(mem, expr);
+        KEFIR_AST_NODE_FREE(mem, stmt);
+        return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST do while statement");
+    });
+
+    res = kefir_parser_ast_builder_push(mem, builder, KEFIR_AST_NODE_BASE(doWhileStmt));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(doWhileStmt));
+        return res;
+    });
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_parser_ast_builder_for_statement(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder,
+                                                      kefir_bool_t has_clause1, kefir_bool_t has_clause2,
+                                                      kefir_bool_t has_clause3) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+
+    struct kefir_ast_node_base *clause1 = NULL, *clause2 = NULL, *clause3 = NULL, *stmt = NULL;
+    REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &stmt));
+
+    kefir_result_t res = KEFIR_OK;
+    if (has_clause3) {
+        REQUIRE_CHAIN(&res, kefir_parser_ast_builder_pop(mem, builder, &clause3));
+    }
+
+    if (has_clause2) {
+        REQUIRE_CHAIN(&res, kefir_parser_ast_builder_pop(mem, builder, &clause2));
+    }
+
+    if (has_clause1) {
+        REQUIRE_CHAIN(&res, kefir_parser_ast_builder_pop(mem, builder, &clause1));
+    }
+#define CLEANUP                                \
+    do {                                       \
+        if (clause1 != NULL) {                 \
+            KEFIR_AST_NODE_FREE(mem, clause1); \
+        }                                      \
+        if (clause2 != NULL) {                 \
+            KEFIR_AST_NODE_FREE(mem, clause2); \
+        }                                      \
+        if (clause3 != NULL) {                 \
+            KEFIR_AST_NODE_FREE(mem, clause3); \
+        }                                      \
+        KEFIR_AST_NODE_FREE(mem, stmt);        \
+    } while (0)
+
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        CLEANUP;
+        return res;
+    });
+
+    struct kefir_ast_for_statement *forStmt = kefir_ast_new_for_statement(mem, clause1, clause2, clause3, stmt);
+    REQUIRE_ELSE(forStmt != NULL, {
+        CLEANUP;
+        return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST for statement");
+    });
+#undef CLEANUP
+
+    res = kefir_parser_ast_builder_push(mem, builder, KEFIR_AST_NODE_BASE(forStmt));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(forStmt));
+        return res;
+    });
+    return KEFIR_OK;
+}

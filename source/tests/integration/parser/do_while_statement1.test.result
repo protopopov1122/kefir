@@ -1,0 +1,138 @@
+[
+    {
+        "class": "do_while_statement",
+        "controlling_expression": {
+            "class": "constant",
+            "type": "unsigned_integer",
+            "value": 1
+        },
+        "body": {
+            "class": "compound_statement",
+            "items": []
+        }
+    },
+    {
+        "class": "do_while_statement",
+        "controlling_expression": {
+            "class": "binary_operation",
+            "type": "greater",
+            "left": {
+                "class": "identifier",
+                "identifier": "i"
+            },
+            "right": {
+                "class": "constant",
+                "type": "unsigned_integer",
+                "value": 0
+            }
+        },
+        "body": {
+            "class": "compound_statement",
+            "items": [
+                {
+                    "class": "expression_statement",
+                    "expression": {
+                        "class": "assignment_operator",
+                        "type": "simple",
+                        "target": {
+                            "class": "array_subscript",
+                            "array": {
+                                "class": "identifier",
+                                "identifier": "arr"
+                            },
+                            "subscript": {
+                                "class": "identifier",
+                                "identifier": "i"
+                            }
+                        },
+                        "value": {
+                            "class": "constant",
+                            "type": "unsigned_integer",
+                            "value": 1
+                        }
+                    }
+                },
+                {
+                    "class": "expression_statement",
+                    "expression": {
+                        "class": "unary_operation",
+                        "type": "prefix_decrement",
+                        "argument": {
+                            "class": "identifier",
+                            "identifier": "i"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "class": "do_while_statement",
+        "controlling_expression": {
+            "class": "identifier",
+            "identifier": "i"
+        },
+        "body": {
+            "class": "compound_statement",
+            "items": [
+                {
+                    "class": "expression_statement",
+                    "expression": {
+                        "class": "unary_operation",
+                        "type": "postfix_decrement",
+                        "argument": {
+                            "class": "identifier",
+                            "identifier": "i"
+                        }
+                    }
+                },
+                {
+                    "class": "do_while_statement",
+                    "controlling_expression": {
+                        "class": "identifier",
+                        "identifier": "j"
+                    },
+                    "body": {
+                        "class": "compound_statement",
+                        "items": [
+                            {
+                                "class": "expression_statement",
+                                "expression": {
+                                    "class": "unary_operation",
+                                    "type": "postfix_decrement",
+                                    "argument": {
+                                        "class": "identifier",
+                                        "identifier": "j"
+                                    }
+                                }
+                            },
+                            {
+                                "class": "do_while_statement",
+                                "controlling_expression": {
+                                    "class": "identifier",
+                                    "identifier": "k"
+                                },
+                                "body": {
+                                    "class": "compound_statement",
+                                    "items": [
+                                        {
+                                            "class": "expression_statement",
+                                            "expression": {
+                                                "class": "unary_operation",
+                                                "type": "postfix_decrement",
+                                                "argument": {
+                                                    "class": "identifier",
+                                                    "identifier": "k"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+]
