@@ -1,0 +1,106 @@
+[
+    {
+        "class": "switch_statement",
+        "expression": {
+            "class": "identifier",
+            "identifier": "value"
+        },
+        "statement": {
+            "class": "compound_statement",
+            "items": [
+                {
+                    "class": "case_statement",
+                    "expression": {
+                        "class": "constant",
+                        "type": "integer",
+                        "value": 0
+                    },
+                    "statement": {
+                        "class": "expression_statement",
+                        "expression": {
+                            "class": "assignment_operator",
+                            "type": "simple",
+                            "target": {
+                                "class": "identifier",
+                                "identifier": "result"
+                            },
+                            "value": {
+                                "class": "constant",
+                                "type": "integer",
+                                "value": 1
+                            }
+                        }
+                    }
+                },
+                {
+                    "class": "case_statement",
+                    "expression": {
+                        "class": "constant",
+                        "type": "integer",
+                        "value": 1
+                    },
+                    "statement": {
+                        "class": "expression_statement",
+                        "expression": {
+                            "class": "assignment_operator",
+                            "type": "simple",
+                            "target": {
+                                "class": "identifier",
+                                "identifier": "result"
+                            },
+                            "value": {
+                                "class": "constant",
+                                "type": "integer",
+                                "value": 2
+                            }
+                        }
+                    }
+                },
+                {
+                    "class": "case_statement",
+                    "expression": {
+                        "class": "constant",
+                        "type": "integer",
+                        "value": 2
+                    },
+                    "statement": {
+                        "class": "expression_statement",
+                        "expression": {
+                            "class": "assignment_operator",
+                            "type": "simple",
+                            "target": {
+                                "class": "identifier",
+                                "identifier": "result"
+                            },
+                            "value": {
+                                "class": "constant",
+                                "type": "integer",
+                                "value": 3
+                            }
+                        }
+                    }
+                },
+                {
+                    "class": "case_statement",
+                    "expression": null,
+                    "statement": {
+                        "class": "expression_statement",
+                        "expression": {
+                            "class": "assignment_operator",
+                            "type": "simple",
+                            "target": {
+                                "class": "identifier",
+                                "identifier": "result"
+                            },
+                            "value": {
+                                "class": "constant",
+                                "type": "integer",
+                                "value": 4
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    }
+]

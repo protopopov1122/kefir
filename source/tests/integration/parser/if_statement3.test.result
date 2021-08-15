@@ -1,0 +1,58 @@
+[
+    {
+        "class": "if_statement",
+        "expression": {
+            "class": "constant",
+            "type": "unsigned_integer",
+            "value": 1
+        },
+        "thenBranch": {
+            "class": "compound_statement",
+            "items": [
+                {
+                    "class": "if_statement",
+                    "expression": {
+                        "class": "constant",
+                        "type": "unsigned_integer",
+                        "value": 2
+                    },
+                    "thenBranch": {
+                        "class": "compound_statement",
+                        "items": []
+                    },
+                    "elseBranch": {
+                        "class": "if_statement",
+                        "expression": {
+                            "class": "constant",
+                            "type": "unsigned_integer",
+                            "value": 3
+                        },
+                        "thenBranch": {
+                            "class": "compound_statement",
+                            "items": []
+                        },
+                        "elseBranch": {
+                            "class": "compound_statement",
+                            "items": [
+                                {
+                                    "class": "if_statement",
+                                    "expression": {
+                                        "class": "constant",
+                                        "type": "integer",
+                                        "value": -1
+                                    },
+                                    "thenBranch": {
+                                        "class": "compound_statement",
+                                        "items": []
+                                    },
+                                    "elseBranch": null
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        "elseBranch": null
+    }
+]

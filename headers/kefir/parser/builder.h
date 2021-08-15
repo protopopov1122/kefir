@@ -75,5 +75,8 @@ kefir_result_t kefir_parser_ast_builder_labeled_statement(struct kefir_mem *, st
                                                           const char *);
 kefir_result_t kefir_parser_ast_builder_case_statement(struct kefir_mem *, struct kefir_parser_ast_builder *);
 kefir_result_t kefir_parser_ast_builder_default_statement(struct kefir_mem *, struct kefir_parser_ast_builder *);
+kefir_result_t kefir_parser_ast_builder_if_statement(struct kefir_mem *, struct kefir_parser_ast_builder *);
+kefir_result_t kefir_parser_ast_builder_if_else_statement(struct kefir_mem *, struct kefir_parser_ast_builder *);
+kefir_result_t kefir_parser_ast_builder_switch_statement(struct kefir_mem *, struct kefir_parser_ast_builder *);
 
 #endif

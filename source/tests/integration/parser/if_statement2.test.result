@@ -1,0 +1,70 @@
+[
+    {
+        "class": "if_statement",
+        "expression": {
+            "class": "constant",
+            "type": "unsigned_integer",
+            "value": 1
+        },
+        "thenBranch": {
+            "class": "expression_statement",
+            "expression": {
+                "class": "function_call",
+                "function": {
+                    "class": "identifier",
+                    "identifier": "doSomething1"
+                },
+                "arguments": []
+            }
+        },
+        "elseBranch": {
+            "class": "if_statement",
+            "expression": {
+                "class": "constant",
+                "type": "unsigned_integer",
+                "value": 2
+            },
+            "thenBranch": {
+                "class": "expression_statement",
+                "expression": {
+                    "class": "function_call",
+                    "function": {
+                        "class": "identifier",
+                        "identifier": "doSomething2"
+                    },
+                    "arguments": []
+                }
+            },
+            "elseBranch": {
+                "class": "if_statement",
+                "expression": {
+                    "class": "constant",
+                    "type": "unsigned_integer",
+                    "value": 3
+                },
+                "thenBranch": {
+                    "class": "expression_statement",
+                    "expression": {
+                        "class": "function_call",
+                        "function": {
+                            "class": "identifier",
+                            "identifier": "doSomething3"
+                        },
+                        "arguments": []
+                    }
+                },
+                "elseBranch": {
+                    "class": "expression_statement",
+                    "expression": {
+                        "class": "function_call",
+                        "function": {
+                            "class": "identifier",
+                            "identifier": "doSomething4"
+                        },
+                        "arguments": []
+                    }
+                }
+            }
+        }
+    }
+]

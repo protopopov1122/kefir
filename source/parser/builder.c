@@ -805,3 +805,93 @@ kefir_result_t kefir_parser_ast_builder_default_statement(struct kefir_mem *mem,
     });
     return KEFIR_OK;
 }
+
+kefir_result_t kefir_parser_ast_builder_if_statement(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+
+    struct kefir_ast_node_base *expr = NULL, *stmt = NULL;
+    REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &stmt));
+    kefir_result_t res = kefir_parser_ast_builder_pop(mem, builder, &expr);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, stmt);
+        return res;
+    });
+
+    struct kefir_ast_conditional_statement *ifCond = kefir_ast_new_conditional_statement(mem, expr, stmt, NULL);
+    REQUIRE_ELSE(ifCond != NULL, {
+        KEFIR_AST_NODE_FREE(mem, expr);
+        KEFIR_AST_NODE_FREE(mem, stmt);
+        return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST conditional statement");
+    });
+
+    res = kefir_parser_ast_builder_push(mem, builder, KEFIR_AST_NODE_BASE(ifCond));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(ifCond));
+        return res;
+    });
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_parser_ast_builder_if_else_statement(struct kefir_mem *mem,
+                                                          struct kefir_parser_ast_builder *builder) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+
+    struct kefir_ast_node_base *expr = NULL, *thenStmt = NULL, *elseStmt;
+    REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &elseStmt));
+    kefir_result_t res = kefir_parser_ast_builder_pop(mem, builder, &thenStmt);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, elseStmt);
+        return res;
+    });
+    res = kefir_parser_ast_builder_pop(mem, builder, &expr);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, thenStmt);
+        KEFIR_AST_NODE_FREE(mem, elseStmt);
+        return res;
+    });
+
+    struct kefir_ast_conditional_statement *ifCond = kefir_ast_new_conditional_statement(mem, expr, thenStmt, elseStmt);
+    REQUIRE_ELSE(ifCond != NULL, {
+        KEFIR_AST_NODE_FREE(mem, expr);
+        KEFIR_AST_NODE_FREE(mem, thenStmt);
+        KEFIR_AST_NODE_FREE(mem, elseStmt);
+        return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST conditional statement");
+    });
+
+    res = kefir_parser_ast_builder_push(mem, builder, KEFIR_AST_NODE_BASE(ifCond));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(ifCond));
+        return res;
+    });
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_parser_ast_builder_switch_statement(struct kefir_mem *mem,
+                                                         struct kefir_parser_ast_builder *builder) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+
+    struct kefir_ast_node_base *expr = NULL, *stmt = NULL;
+    REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &stmt));
+    kefir_result_t res = kefir_parser_ast_builder_pop(mem, builder, &expr);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, stmt);
+        return res;
+    });
+
+    struct kefir_ast_switch_statement *switchStmt = kefir_ast_new_switch_statement(mem, expr, stmt);
+    REQUIRE_ELSE(switchStmt != NULL, {
+        KEFIR_AST_NODE_FREE(mem, expr);
+        KEFIR_AST_NODE_FREE(mem, stmt);
+        return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST switch statement");
+    });
+
+    res = kefir_parser_ast_builder_push(mem, builder, KEFIR_AST_NODE_BASE(switchStmt));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(switchStmt));
+        return res;
+    });
+    return KEFIR_OK;
+}

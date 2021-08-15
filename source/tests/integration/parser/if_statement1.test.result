@@ -1,0 +1,150 @@
+[
+    {
+        "class": "if_statement",
+        "expression": {
+            "class": "constant",
+            "type": "unsigned_integer",
+            "value": 1
+        },
+        "thenBranch": {
+            "class": "expression_statement",
+            "expression": null
+        },
+        "elseBranch": null
+    },
+    {
+        "class": "if_statement",
+        "expression": {
+            "class": "constant",
+            "type": "unsigned_integer",
+            "value": 2
+        },
+        "thenBranch": {
+            "class": "expression_statement",
+            "expression": {
+                "class": "function_call",
+                "function": {
+                    "class": "identifier",
+                    "identifier": "fn1"
+                },
+                "arguments": []
+            }
+        },
+        "elseBranch": {
+            "class": "expression_statement",
+            "expression": {
+                "class": "function_call",
+                "function": {
+                    "class": "identifier",
+                    "identifier": "fn2"
+                },
+                "arguments": []
+            }
+        }
+    },
+    {
+        "class": "if_statement",
+        "expression": {
+            "class": "constant",
+            "type": "unsigned_integer",
+            "value": 0
+        },
+        "thenBranch": {
+            "class": "compound_statement",
+            "items": [
+                {
+                    "class": "expression_statement",
+                    "expression": {
+                        "class": "assignment_operator",
+                        "type": "simple",
+                        "target": {
+                            "class": "identifier",
+                            "identifier": "value"
+                        },
+                        "value": {
+                            "class": "constant",
+                            "type": "unsigned_integer",
+                            "value": 1
+                        }
+                    }
+                }
+            ]
+        },
+        "elseBranch": null
+    },
+    {
+        "class": "if_statement",
+        "expression": {
+            "class": "constant",
+            "type": "unsigned_integer",
+            "value": 0
+        },
+        "thenBranch": {
+            "class": "compound_statement",
+            "items": [
+                {
+                    "class": "declaration_list",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "double"
+                        }
+                    ],
+                    "declarations": [
+                        {
+                            "class": "declaration",
+                            "declarator": {
+                                "class": "identifier",
+                                "identifier": "f"
+                            },
+                            "initializer": null
+                        }
+                    ]
+                },
+                {
+                    "class": "expression_statement",
+                    "expression": {
+                        "class": "assignment_operator",
+                        "type": "add",
+                        "target": {
+                            "class": "identifier",
+                            "identifier": "f"
+                        },
+                        "value": {
+                            "class": "array_subscript",
+                            "array": {
+                                "class": "identifier",
+                                "identifier": "arr"
+                            },
+                            "subscript": {
+                                "class": "constant",
+                                "type": "unsigned_integer",
+                                "value": 0
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "elseBranch": {
+            "class": "compound_statement",
+            "items": [
+                {
+                    "class": "expression_statement",
+                    "expression": {
+                        "class": "unary_operation",
+                        "type": "indirection",
+                        "argument": {
+                            "class": "unary_operation",
+                            "type": "postfix_increment",
+                            "argument": {
+                                "class": "identifier",
+                                "identifier": "idx"
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    }
+]

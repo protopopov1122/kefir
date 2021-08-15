@@ -19,10 +19,47 @@
 */
 
 #include "kefir/parser/rule_helpers.h"
+#include "kefir/parser/builder.h"
+
+static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder, void *payload) {
+    UNUSED(payload);
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser AST builder"));
+    struct kefir_parser *parser = builder->parser;
+
+    REQUIRE(PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_IF) ||
+                PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_SWITCH),
+            KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match selection statement"));
+
+    kefir_bool_t ifStatement = PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_IF);
+    REQUIRE_OK(PARSER_SHIFT(parser));
+    REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_PARENTHESE),
+            KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected left parenthese"));
+    REQUIRE_OK(PARSER_SHIFT(parser));
+    REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, expression), NULL));
+    REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_PARENTHESE),
+            KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right parenthese"));
+    REQUIRE_OK(PARSER_SHIFT(parser));
+    REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, statement), NULL));
+
+    if (ifStatement) {
+        if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_ELSE)) {
+            REQUIRE_OK(PARSER_SHIFT(parser));
+            REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, statement), NULL));
+            REQUIRE_OK(kefir_parser_ast_builder_if_else_statement(mem, builder));
+        } else {
+            REQUIRE_OK(kefir_parser_ast_builder_if_statement(mem, builder));
+        }
+    } else {
+        REQUIRE_OK(kefir_parser_ast_builder_switch_statement(mem, builder));
+    }
+
+    return KEFIR_OK;
+}
 
 kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(selection_statement)(struct kefir_mem *mem, struct kefir_parser *parser,
                                                                 struct kefir_ast_node_base **result, void *payload) {
     APPLY_PROLOGUE(mem, parser, result, payload);
-    // TODO Implement selection statement parser
-    return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Selection statement parser is not implemented yet");
+    REQUIRE_OK(kefir_parser_ast_builder_wrap(mem, parser, result, builder_callback, NULL));
+    return KEFIR_OK;
 }

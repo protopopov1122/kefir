@@ -704,6 +704,48 @@ static kefir_result_t visit_case_statement(const struct kefir_ast_visitor *visit
     return KEFIR_OK;
 }
 
+static kefir_result_t visit_if_statement(const struct kefir_ast_visitor *visitor,
+                                         const struct kefir_ast_conditional_statement *node, void *payload) {
+    UNUSED(visitor);
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST conditional statement node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct kefir_json_output *, json, payload);
+
+    REQUIRE_OK(kefir_json_output_object_begin(json));
+    REQUIRE_OK(kefir_json_output_object_key(json, "class"));
+    REQUIRE_OK(kefir_json_output_string(json, "if_statement"));
+    REQUIRE_OK(kefir_json_output_object_key(json, "expression"));
+    REQUIRE_OK(kefir_ast_format(json, node->condition));
+    REQUIRE_OK(kefir_json_output_object_key(json, "thenBranch"));
+    REQUIRE_OK(kefir_ast_format(json, node->thenBranch));
+    REQUIRE_OK(kefir_json_output_object_key(json, "elseBranch"));
+    if (node->elseBranch != NULL) {
+        REQUIRE_OK(kefir_ast_format(json, node->elseBranch));
+    } else {
+        REQUIRE_OK(kefir_json_output_null(json));
+    }
+    REQUIRE_OK(kefir_json_output_object_end(json));
+    return KEFIR_OK;
+}
+
+static kefir_result_t visit_switch_statement(const struct kefir_ast_visitor *visitor,
+                                             const struct kefir_ast_switch_statement *node, void *payload) {
+    UNUSED(visitor);
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST switch statement node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct kefir_json_output *, json, payload);
+
+    REQUIRE_OK(kefir_json_output_object_begin(json));
+    REQUIRE_OK(kefir_json_output_object_key(json, "class"));
+    REQUIRE_OK(kefir_json_output_string(json, "switch_statement"));
+    REQUIRE_OK(kefir_json_output_object_key(json, "expression"));
+    REQUIRE_OK(kefir_ast_format(json, node->expression));
+    REQUIRE_OK(kefir_json_output_object_key(json, "statement"));
+    REQUIRE_OK(kefir_ast_format(json, node->statement));
+    REQUIRE_OK(kefir_json_output_object_end(json));
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_format(struct kefir_json_output *json, const struct kefir_ast_node_base *node) {
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid JSON output"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node"));
@@ -733,6 +775,8 @@ kefir_result_t kefir_ast_format(struct kefir_json_output *json, const struct kef
     visitor.compound_statement = visit_compound_statement;
     visitor.labeled_statement = visit_labeled_statement;
     visitor.case_statement = visit_case_statement;
+    visitor.conditional_statement = visit_if_statement;
+    visitor.switch_statement = visit_switch_statement;
     REQUIRE_OK(node->klass->visit(node, &visitor, json));
     return KEFIR_OK;
 }
