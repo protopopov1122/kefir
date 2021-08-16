@@ -117,21 +117,21 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
                  kefir_list_next(&iter)) {
 
                 ASSIGN_DECL_CAST(struct kefir_ast_node_base *, decl_node, iter->value);
-                REQUIRE(decl_node->klass->type == KEFIR_AST_DECLARATION_LIST,
+                REQUIRE(decl_node->klass->type == KEFIR_AST_DECLARATION,
                         KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
                                         "Function definition declaration list shall contain exclusively declarations"));
-                ASSIGN_DECL_CAST(struct kefir_ast_declaration_list *, decl_list, decl_node->self);
-                struct kefir_ast_declaration *decl = NULL;
-                REQUIRE_OK(kefir_ast_declaration_list_unpack_single(decl_list, &decl));
+                ASSIGN_DECL_CAST(struct kefir_ast_declaration *, decl_list, decl_node->self);
+                struct kefir_ast_init_declarator *decl = NULL;
+                REQUIRE_OK(kefir_ast_declaration_unpack_single(decl_list, &decl));
 
                 const char *identifier = NULL;
                 const struct kefir_ast_type *type = NULL;
                 kefir_ast_scoped_identifier_storage_t storage = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN;
                 kefir_ast_function_specifier_t function_specifier = KEFIR_AST_FUNCTION_SPECIFIER_NONE;
                 kefir_size_t alignment = 0;
-                REQUIRE_OK(kefir_ast_analyze_declaration(
-                    mem, &local_context->context, &decl->declaration_list->specifiers, decl->declarator, &identifier,
-                    &type, &storage, &function_specifier, &alignment));
+                REQUIRE_OK(kefir_ast_analyze_declaration(mem, &local_context->context, &decl->declaration->specifiers,
+                                                         decl->declarator, &identifier, &type, &storage,
+                                                         &function_specifier, &alignment));
 
                 type = kefir_ast_type_conv_adjust_function_parameter(mem, context->type_bundle, type);
 
@@ -153,7 +153,7 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
                                                                     type, storage, function_specifier, NULL, NULL,
                                                                     &param_scoped_id));
 
-                decl->base.properties.category = KEFIR_AST_NODE_CATEGORY_DECLARATION;
+                decl->base.properties.category = KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR;
                 decl->base.properties.declaration_props.alignment = 0;
                 decl->base.properties.declaration_props.function = KEFIR_AST_FUNCTION_SPECIFIER_NONE;
                 decl->base.properties.declaration_props.identifier = identifier;
@@ -162,7 +162,7 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
                 decl->base.properties.declaration_props.storage = storage;
                 decl->base.properties.type = type;
 
-                decl_list->base.properties.category = KEFIR_AST_NODE_CATEGORY_DECLARATION_LIST;
+                decl_list->base.properties.category = KEFIR_AST_NODE_CATEGORY_DECLARATION;
             }
 
             for (const struct kefir_list_entry *iter =
@@ -195,8 +195,8 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, item, iter->value);
         REQUIRE_OK(kefir_ast_analyze_node(mem, &local_context->context, item));
         REQUIRE(item->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT ||
-                    item->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION_LIST ||
-                    item->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION,
+                    item->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION ||
+                    item->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR,
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
                                 "Compound statement items shall be either statements or declarations"));
     }

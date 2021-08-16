@@ -55,19 +55,20 @@ kefir_result_t kefir_ast_analyze_for_statement_node(struct kefir_mem *mem, const
 
     if (node->init != NULL) {
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->init));
-        if (node->init->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION_LIST) {
-            ASSIGN_DECL_CAST(struct kefir_ast_declaration_list *, decl_list, node->init->self);
-            for (const struct kefir_list_entry *iter = kefir_list_head(&decl_list->declarations); iter != NULL;
+        if (node->init->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION) {
+            ASSIGN_DECL_CAST(struct kefir_ast_declaration *, declaration, node->init->self);
+            for (const struct kefir_list_entry *iter = kefir_list_head(&declaration->init_declarators); iter != NULL;
                  kefir_list_next(&iter)) {
-                ASSIGN_DECL_CAST(struct kefir_ast_node_base *, declaration, iter->value);
-                REQUIRE(declaration->properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO ||
-                            declaration->properties.declaration_props.storage ==
-                                KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER,
-                        KEFIR_SET_ERROR(
-                            KEFIR_MALFORMED_ARG,
-                            "Expected the first clause of for statement to declare only auto or register identifiers"));
+                ASSIGN_DECL_CAST(struct kefir_ast_node_base *, init_declarator, iter->value);
+                REQUIRE(
+                    init_declarator->properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO ||
+                        init_declarator->properties.declaration_props.storage ==
+                            KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER,
+                    KEFIR_SET_ERROR(
+                        KEFIR_MALFORMED_ARG,
+                        "Expected the first clause of for statement to declare only auto or register identifiers"));
             }
-        } else if (node->init->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION &&
+        } else if (node->init->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR &&
                    node->base.klass->type == KEFIR_AST_STATIC_ASSERTION) {
             // Intentionally left blank
         } else {

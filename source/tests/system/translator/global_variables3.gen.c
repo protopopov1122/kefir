@@ -60,7 +60,7 @@ static kefir_result_t define_unit1(struct kefir_mem *mem, const struct kefir_ast
         mem, entry2, kefir_ast_declarator_identifier(mem, context->symbols, "dim"), NULL));
     REQUIRE_OK(kefir_ast_structure_specifier_append_entry(mem, specifier1, entry2));
 
-    struct kefir_ast_declaration_list *decl1 = kefir_ast_new_single_declaration_list(
+    struct kefir_ast_declaration *decl1 = kefir_ast_new_single_declaration(
         mem, kefir_ast_declarator_identifier(mem, context->symbols, "matrix_t"), NULL, NULL);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl1->specifiers,
                                                           kefir_ast_storage_class_specifier_typedef(mem)));
@@ -171,7 +171,7 @@ static kefir_result_t define_unit2(struct kefir_mem *mem, const struct kefir_ast
     struct kefir_ast_initializer *init1 = NULL;
     REQUIRE_OK(make_init(mem, context, 0, &init1));
 
-    struct kefir_ast_declaration_list *decl1 = kefir_ast_new_single_declaration_list(
+    struct kefir_ast_declaration *decl1 = kefir_ast_new_single_declaration(
         mem, kefir_ast_declarator_identifier(mem, context->symbols, "matrix1"), init1, NULL);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(
         mem, &decl1->specifiers, kefir_ast_type_specifier_typedef(mem, context->symbols, "matrix_t")));
@@ -184,7 +184,7 @@ static kefir_result_t define_unit3(struct kefir_mem *mem, const struct kefir_ast
     struct kefir_ast_initializer *init1 = NULL;
     REQUIRE_OK(make_init(mem, context, 10, &init1));
 
-    struct kefir_ast_declaration_list *decl1 = kefir_ast_new_single_declaration_list(
+    struct kefir_ast_declaration *decl1 = kefir_ast_new_single_declaration(
         mem, kefir_ast_declarator_identifier(mem, context->symbols, "matrix2"), init1, NULL);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl1->specifiers,
                                                           kefir_ast_storage_class_specifier_static(mem)));
@@ -220,7 +220,7 @@ static kefir_result_t define_unit4(struct kefir_mem *mem, const struct kefir_ast
     struct kefir_ast_initializer *init1 = NULL;
     REQUIRE_OK(make_init(mem, context, 100, &init1));
 
-    struct kefir_ast_declaration_list *decl1 = kefir_ast_new_single_declaration_list(
+    struct kefir_ast_declaration *decl1 = kefir_ast_new_single_declaration(
         mem, kefir_ast_declarator_identifier(mem, context->symbols, "matrix3"), init1, NULL);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl1->specifiers,
                                                           kefir_ast_storage_class_specifier_static(mem)));
@@ -256,7 +256,7 @@ static kefir_result_t define_unit5(struct kefir_mem *mem, const struct kefir_ast
     struct kefir_ast_initializer *init1 = NULL;
     REQUIRE_OK(make_init(mem, context, -1, &init1));
 
-    struct kefir_ast_declaration_list *decl1 = kefir_ast_new_single_declaration_list(
+    struct kefir_ast_declaration *decl1 = kefir_ast_new_single_declaration(
         mem, kefir_ast_declarator_identifier(mem, context->symbols, "matrix4"), init1, NULL);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl1->specifiers,
                                                           kefir_ast_storage_class_specifier_static(mem)));
@@ -303,7 +303,7 @@ static kefir_result_t define_unit6(struct kefir_mem *mem, const struct kefir_ast
         kefir_ast_new_expression_initializer(
             mem, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "get_matrix4")))));
 
-    struct kefir_ast_declaration_list *decl1 = kefir_ast_new_single_declaration_list(
+    struct kefir_ast_declaration *decl1 = kefir_ast_new_single_declaration(
         mem,
         kefir_ast_declarator_pointer(
             mem, kefir_ast_declarator_function(

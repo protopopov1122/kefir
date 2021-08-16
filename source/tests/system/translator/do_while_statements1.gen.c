@@ -66,7 +66,7 @@ static kefir_result_t define_conditional_function(struct kefir_mem *mem, struct 
         KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "index"))));
 
     struct kefir_ast_compound_statement *compound0 = kefir_ast_new_compound_statement(mem);
-    struct kefir_ast_declaration_list *declarationFCurrent = kefir_ast_new_single_declaration_list(
+    struct kefir_ast_declaration *declarationFCurrent = kefir_ast_new_single_declaration(
         mem, kefir_ast_declarator_identifier(mem, context_manager->current->symbols, "f_current"),
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 0))), NULL);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &declarationFCurrent->specifiers,
@@ -76,7 +76,7 @@ static kefir_result_t define_conditional_function(struct kefir_mem *mem, struct 
     REQUIRE_OK(kefir_list_insert_after(mem, &compound0->block_items, kefir_list_tail(&compound0->block_items),
                                        KEFIR_AST_NODE_BASE(declarationFCurrent)));
 
-    struct kefir_ast_declaration_list *declarationFNext = kefir_ast_new_single_declaration_list(
+    struct kefir_ast_declaration *declarationFNext = kefir_ast_new_single_declaration(
         mem, kefir_ast_declarator_identifier(mem, context_manager->current->symbols, "f_next"),
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 1))), NULL);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &declarationFNext->specifiers,
@@ -92,7 +92,7 @@ static kefir_result_t define_conditional_function(struct kefir_mem *mem, struct 
 
     struct kefir_ast_compound_statement *loop_body = kefir_ast_new_compound_statement(mem);
 
-    struct kefir_ast_declaration_list *declarationFTemp = kefir_ast_new_single_declaration_list(
+    struct kefir_ast_declaration *declarationFTemp = kefir_ast_new_single_declaration(
         mem, kefir_ast_declarator_identifier(mem, context_manager->current->symbols, "f_temp"),
         kefir_ast_new_expression_initializer(
             mem, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "f_next"))),

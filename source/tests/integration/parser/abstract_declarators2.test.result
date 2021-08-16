@@ -21,16 +21,16 @@
             "ellipsis": false,
             "parameters": [
                 {
-                    "class": "declaration_list",
+                    "class": "declaration",
                     "specifiers": [
                         {
                             "class": "type_specifier",
                             "specifier": "int"
                         }
                     ],
-                    "declarations": [
+                    "init_declarators": [
                         {
-                            "class": "declaration",
+                            "class": "init_declarator",
                             "declarator": {
                                 "class": "abstract"
                             },
@@ -39,16 +39,16 @@
                     ]
                 },
                 {
-                    "class": "declaration_list",
+                    "class": "declaration",
                     "specifiers": [
                         {
                             "class": "type_specifier",
                             "specifier": "void"
                         }
                     ],
-                    "declarations": [
+                    "init_declarators": [
                         {
-                            "class": "declaration",
+                            "class": "init_declarator",
                             "declarator": {
                                 "class": "function",
                                 "declarator": {
@@ -57,16 +57,16 @@
                                 "ellipsis": true,
                                 "parameters": [
                                     {
-                                        "class": "declaration_list",
+                                        "class": "declaration",
                                         "specifiers": [
                                             {
                                                 "class": "type_specifier",
                                                 "specifier": "char"
                                             }
                                         ],
-                                        "declarations": [
+                                        "init_declarators": [
                                             {
-                                                "class": "declaration",
+                                                "class": "init_declarator",
                                                 "declarator": {
                                                     "class": "abstract"
                                                 },
@@ -81,16 +81,16 @@
                     ]
                 },
                 {
-                    "class": "declaration_list",
+                    "class": "declaration",
                     "specifiers": [
                         {
                             "class": "type_specifier",
                             "specifier": "short"
                         }
                     ],
-                    "declarations": [
+                    "init_declarators": [
                         {
-                            "class": "declaration",
+                            "class": "init_declarator",
                             "declarator": {
                                 "class": "function",
                                 "declarator": {

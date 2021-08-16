@@ -1,15 +1,15 @@
 [
     {
-        "class": "declaration_list",
+        "class": "declaration",
         "specifiers": [
             {
                 "class": "type_specifier",
                 "specifier": "int"
             }
         ],
-        "declarations": [
+        "init_declarators": [
             {
-                "class": "declaration",
+                "class": "init_declarator",
                 "declarator": {
                     "class": "identifier",
                     "identifier": "i"
@@ -26,7 +26,7 @@
         ]
     },
     {
-        "class": "declaration_list",
+        "class": "declaration",
         "specifiers": [
             {
                 "class": "type_qualifier",
@@ -37,9 +37,9 @@
                 "specifier": "void"
             }
         ],
-        "declarations": [
+        "init_declarators": [
             {
-                "class": "declaration",
+                "class": "init_declarator",
                 "declarator": {
                     "class": "pointer",
                     "declarator": {
@@ -51,7 +51,7 @@
                 "initializer": null
             },
             {
-                "class": "declaration",
+                "class": "init_declarator",
                 "declarator": {
                     "class": "pointer",
                     "declarator": {
@@ -79,7 +79,7 @@
         ]
     },
     {
-        "class": "declaration_list",
+        "class": "declaration",
         "specifiers": [
             {
                 "class": "type_specifier",
@@ -157,9 +157,9 @@
                 ]
             }
         ],
-        "declarations": [
+        "init_declarators": [
             {
-                "class": "declaration",
+                "class": "init_declarator",
                 "declarator": null,
                 "initializer": null
             }

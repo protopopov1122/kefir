@@ -85,7 +85,7 @@ DEFINE_CASE(ast_node_analysis_conditinal_statements2, "AST node analysis - condi
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
-    struct kefir_ast_declaration_list *decl1 = kefir_ast_new_single_declaration_list(
+    struct kefir_ast_declaration *decl1 = kefir_ast_new_single_declaration(
         &kft_mem,
         kefir_ast_declarator_pointer(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, context->symbols, "x")),
         kefir_ast_new_expression_initializer(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0))),
@@ -95,7 +95,7 @@ DEFINE_CASE(ast_node_analysis_conditinal_statements2, "AST node analysis - condi
     ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(decl1)));
 
     struct kefir_ast_compound_statement *compound1 = kefir_ast_new_compound_statement(&kft_mem);
-    struct kefir_ast_declaration_list *decl2 = kefir_ast_new_single_declaration_list(
+    struct kefir_ast_declaration *decl2 = kefir_ast_new_single_declaration(
         &kft_mem, kefir_ast_declarator_identifier(&kft_mem, context->symbols, "y"),
         kefir_ast_new_expression_initializer(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0))),
         NULL);
@@ -105,7 +105,7 @@ DEFINE_CASE(ast_node_analysis_conditinal_statements2, "AST node analysis - condi
                                       KEFIR_AST_NODE_BASE(decl2)));
 
     struct kefir_ast_compound_statement *compound2 = kefir_ast_new_compound_statement(&kft_mem);
-    struct kefir_ast_declaration_list *decl3 = kefir_ast_new_single_declaration_list(
+    struct kefir_ast_declaration *decl3 = kefir_ast_new_single_declaration(
         &kft_mem, kefir_ast_declarator_identifier(&kft_mem, context->symbols, "y"),
         kefir_ast_new_expression_initializer(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0))),
         NULL);
@@ -283,7 +283,7 @@ DEFINE_CASE(ast_node_analysis_switch_statements1, "AST node analysis - switch st
                                       KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(
                                           &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'd'))))));
 
-    struct kefir_ast_declaration_list *decl1 = kefir_ast_new_single_declaration_list(
+    struct kefir_ast_declaration *decl1 = kefir_ast_new_single_declaration(
         &kft_mem, kefir_ast_declarator_identifier(&kft_mem, context->symbols, "value"), NULL, NULL);
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &decl1->specifiers,
                                                          kefir_ast_storage_class_specifier_extern(&kft_mem)));

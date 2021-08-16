@@ -35,7 +35,7 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
 
     while (!PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_BRACE)) {
         kefir_result_t res =
-            kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, declaration_list), NULL);
+            kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, declaration), NULL);
         if (res == KEFIR_NO_MATCH) {
             res = kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, statement), NULL);
         }

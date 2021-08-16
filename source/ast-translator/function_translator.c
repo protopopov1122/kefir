@@ -59,8 +59,9 @@ static kefir_result_t init_function_declaration(struct kefir_mem *mem, struct ke
                  res == KEFIR_OK && iter != NULL; kefir_list_next(&iter)) {
 
                 ASSIGN_DECL_CAST(struct kefir_ast_node_base *, decl_node, iter->value);
-                ASSIGN_DECL_CAST(struct kefir_ast_declaration_list *, decl_list, decl_node->self);
-                ASSIGN_DECL_CAST(struct kefir_ast_node_base *, decl, kefir_list_head(&decl_list->declarations)->value);
+                ASSIGN_DECL_CAST(struct kefir_ast_declaration *, decl_list, decl_node->self);
+                ASSIGN_DECL_CAST(struct kefir_ast_node_base *, decl,
+                                 kefir_list_head(&decl_list->init_declarators)->value);
                 res = kefir_hashtree_insert(mem, &declarations,
                                             (kefir_hashtree_key_t) decl->properties.declaration_props.identifier,
                                             (kefir_hashtree_value_t) decl);
@@ -243,8 +244,8 @@ static kefir_result_t translate_function_impl(struct kefir_mem *mem, struct kefi
 
         if (item->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT) {
             REQUIRE_OK(kefir_ast_translate_statement(mem, item, builder, context));
-        } else if (item->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION_LIST ||
-                   item->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION) {
+        } else if (item->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION ||
+                   item->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR) {
             REQUIRE_OK(kefir_ast_translate_declaration(mem, item, builder, context));
         } else {
             return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected compound statement item");

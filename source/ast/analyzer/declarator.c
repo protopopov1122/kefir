@@ -744,11 +744,11 @@ static kefir_result_t resolve_function_declarator(struct kefir_mem *mem, const s
          iter != NULL && res == KEFIR_OK; kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, node, iter->value);
 
-        if (node->klass->type == KEFIR_AST_DECLARATION_LIST) {
-            ASSIGN_DECL_CAST(struct kefir_ast_declaration_list *, decl_list, node->self);
-            struct kefir_ast_declaration *declaration = NULL;
+        if (node->klass->type == KEFIR_AST_DECLARATION) {
+            ASSIGN_DECL_CAST(struct kefir_ast_declaration *, decl_list, node->self);
+            struct kefir_ast_init_declarator *declaration = NULL;
             res = kefir_ast_analyze_node(mem, &decl_context->context, node);
-            REQUIRE_CHAIN(&res, kefir_ast_declaration_list_unpack_single(decl_list, &declaration));
+            REQUIRE_CHAIN(&res, kefir_ast_declaration_unpack_single(decl_list, &declaration));
             REQUIRE_CHAIN(&res,
                           kefir_ast_type_function_parameter(mem, context->type_bundle, func_type,
                                                             declaration->base.properties.declaration_props.identifier,

@@ -58,7 +58,7 @@ static struct kefir_ast_function_definition *define_sum_function(struct kefir_me
     struct kefir_ast_declarator *function1_decl =
         kefir_ast_declarator_function(mem, kefir_ast_declarator_identifier(mem, context->symbols, "sum"));
 
-    struct kefir_ast_declaration_list *function1_param1 = kefir_ast_new_single_declaration_list(
+    struct kefir_ast_declaration *function1_param1 = kefir_ast_new_single_declaration(
         mem, kefir_ast_declarator_pointer(mem, kefir_ast_declarator_identifier(mem, context->symbols, "value")), NULL,
         NULL);
     REQUIRE(kefir_ast_declarator_specifier_list_append(mem, &function1_param1->specifiers,

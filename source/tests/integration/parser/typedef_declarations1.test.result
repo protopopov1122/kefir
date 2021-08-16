@@ -24,7 +24,7 @@
         }
     },
     {
-        "class": "declaration_list",
+        "class": "declaration",
         "specifiers": [
             {
                 "class": "storage_class",
@@ -35,9 +35,9 @@
                 "specifier": "int"
             }
         ],
-        "declarations": [
+        "init_declarators": [
             {
-                "class": "declaration",
+                "class": "init_declarator",
                 "declarator": {
                     "class": "identifier",
                     "identifier": "A"
@@ -47,7 +47,7 @@
         ]
     },
     {
-        "class": "declaration_list",
+        "class": "declaration",
         "specifiers": [
             {
                 "class": "type_specifier",
@@ -55,9 +55,9 @@
                 "identifier": "A"
             }
         ],
-        "declarations": [
+        "init_declarators": [
             {
-                "class": "declaration",
+                "class": "init_declarator",
                 "declarator": {
                     "class": "pointer",
                     "declarator": {
@@ -83,7 +83,7 @@
         }
     },
     {
-        "class": "declaration_list",
+        "class": "declaration",
         "specifiers": [
             {
                 "class": "storage_class",
@@ -94,9 +94,9 @@
                 "specifier": "long"
             }
         ],
-        "declarations": [
+        "init_declarators": [
             {
-                "class": "declaration",
+                "class": "init_declarator",
                 "declarator": {
                     "class": "identifier",
                     "identifier": "B"
@@ -106,7 +106,7 @@
         ]
     },
     {
-        "class": "declaration_list",
+        "class": "declaration",
         "specifiers": [
             {
                 "class": "type_specifier",
@@ -114,9 +114,9 @@
                 "identifier": "A"
             }
         ],
-        "declarations": [
+        "init_declarators": [
             {
-                "class": "declaration",
+                "class": "init_declarator",
                 "declarator": {
                     "class": "pointer",
                     "declarator": {
@@ -130,7 +130,7 @@
         ]
     },
     {
-        "class": "declaration_list",
+        "class": "declaration",
         "specifiers": [
             {
                 "class": "type_specifier",
@@ -138,9 +138,9 @@
                 "identifier": "B"
             }
         ],
-        "declarations": [
+        "init_declarators": [
             {
-                "class": "declaration",
+                "class": "init_declarator",
                 "declarator": {
                     "class": "pointer",
                     "declarator": {

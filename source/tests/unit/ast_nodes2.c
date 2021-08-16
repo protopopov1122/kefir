@@ -458,16 +458,16 @@ DEFINE_CASE(ast_nodes_compound_literals, "AST nodes - compound literals") {
 }
 END_CASE
 
-DEFINE_CASE(ast_nodes_declarations1, "AST nodes - declarations #1") {
+DEFINE_CASE(ast_nodes_init_declarators1, "AST nodes - declarations #1") {
     struct kefir_symbol_table symbols;
     struct kefir_ast_type_bundle type_bundle;
 
     ASSERT_OK(kefir_symbol_table_init(&symbols));
     ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
 
-    struct kefir_ast_declaration *decl1 = NULL;
-    struct kefir_ast_declaration_list *decl1_list = kefir_ast_new_single_declaration_list(
-        &kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL), NULL, &decl1);
+    struct kefir_ast_init_declarator *decl1 = NULL;
+    struct kefir_ast_declaration *decl1_list =
+        kefir_ast_new_single_declaration(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL), NULL, &decl1);
     ASSERT(decl1 != NULL);
     ASSERT(decl1->declarator->klass == KEFIR_AST_DECLARATOR_IDENTIFIER);
     ASSERT(decl1->declarator->identifier == NULL);
@@ -498,8 +498,8 @@ DEFINE_CASE(ast_nodes_declarations1, "AST nodes - declarations #1") {
     struct kefir_ast_initializer *initializer2 =
         kefir_ast_new_expression_initializer(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0)));
 
-    struct kefir_ast_declaration *decl2 = NULL;
-    struct kefir_ast_declaration_list *decl2_list = kefir_ast_new_single_declaration_list(
+    struct kefir_ast_init_declarator *decl2 = NULL;
+    struct kefir_ast_declaration *decl2_list = kefir_ast_new_single_declaration(
         &kft_mem,
         kefir_ast_declarator_pointer(
             &kft_mem, kefir_ast_declarator_pointer(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL))),

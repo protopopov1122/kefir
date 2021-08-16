@@ -51,7 +51,7 @@ kefir_result_t kefir_parser_try_invoke(struct kefir_mem *, struct kefir_parser *
 #define KEFIR_PARSER_NEXT_EXPRESSION(_mem, _parser, _result) \
     KEFIR_PARSER_RULE_APPLY((_mem), (_parser), expression, (_result))
 #define KEFIR_PARSER_NEXT_DECLARATION_LIST(_mem, _parser, _result) \
-    KEFIR_PARSER_RULE_APPLY((_mem), (_parser), declaration_list, (_result))
+    KEFIR_PARSER_RULE_APPLY((_mem), (_parser), declaration, (_result))
 #define KEFIR_PARSER_NEXT_STATEMENT(_mem, _parser, _result) \
     KEFIR_PARSER_RULE_APPLY((_mem), (_parser), statement, (_result))
 

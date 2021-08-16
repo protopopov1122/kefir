@@ -83,16 +83,16 @@
             "class": "compound_statement",
             "items": [
                 {
-                    "class": "declaration_list",
+                    "class": "declaration",
                     "specifiers": [
                         {
                             "class": "type_specifier",
                             "specifier": "double"
                         }
                     ],
-                    "declarations": [
+                    "init_declarators": [
                         {
-                            "class": "declaration",
+                            "class": "init_declarator",
                             "declarator": {
                                 "class": "identifier",
                                 "identifier": "f"

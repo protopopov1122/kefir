@@ -21,7 +21,7 @@
                 "class": "compound_statement",
                 "items": [
                     {
-                        "class": "declaration_list",
+                        "class": "declaration",
                         "specifiers": [
                             {
                                 "class": "storage_class",
@@ -32,9 +32,9 @@
                                 "specifier": "short"
                             }
                         ],
-                        "declarations": [
+                        "init_declarators": [
                             {
-                                "class": "declaration",
+                                "class": "init_declarator",
                                 "declarator": {
                                     "class": "identifier",
                                     "identifier": "T"
@@ -44,7 +44,7 @@
                         ]
                     },
                     {
-                        "class": "declaration_list",
+                        "class": "declaration",
                         "specifiers": [
                             {
                                 "class": "type_qualifier",
@@ -56,9 +56,9 @@
                                 "identifier": "T"
                             }
                         ],
-                        "declarations": [
+                        "init_declarators": [
                             {
-                                "class": "declaration",
+                                "class": "init_declarator",
                                 "declarator": {
                                     "class": "pointer",
                                     "declarator": {
@@ -75,7 +75,7 @@
                         "class": "compound_statement",
                         "items": [
                             {
-                                "class": "declaration_list",
+                                "class": "declaration",
                                 "specifiers": [
                                     {
                                         "class": "type_specifier",
@@ -83,9 +83,9 @@
                                         "identifier": "T"
                                     }
                                 ],
-                                "declarations": [
+                                "init_declarators": [
                                     {
-                                        "class": "declaration",
+                                        "class": "init_declarator",
                                         "declarator": {
                                             "class": "pointer",
                                             "declarator": {
@@ -99,16 +99,16 @@
                                 ]
                             },
                             {
-                                "class": "declaration_list",
+                                "class": "declaration",
                                 "specifiers": [
                                     {
                                         "class": "type_specifier",
                                         "specifier": "int"
                                     }
                                 ],
-                                "declarations": [
+                                "init_declarators": [
                                     {
-                                        "class": "declaration",
+                                        "class": "init_declarator",
                                         "declarator": {
                                             "class": "identifier",
                                             "identifier": "T"
@@ -138,7 +138,7 @@
                         "class": "compound_statement",
                         "items": [
                             {
-                                "class": "declaration_list",
+                                "class": "declaration",
                                 "specifiers": [
                                     {
                                         "class": "type_specifier",
@@ -146,9 +146,9 @@
                                         "identifier": "T"
                                     }
                                 ],
-                                "declarations": [
+                                "init_declarators": [
                                     {
-                                        "class": "declaration",
+                                        "class": "init_declarator",
                                         "declarator": {
                                             "class": "pointer",
                                             "declarator": {
@@ -162,7 +162,7 @@
                                 ]
                             },
                             {
-                                "class": "declaration_list",
+                                "class": "declaration",
                                 "specifiers": [
                                     {
                                         "class": "type_specifier",
@@ -176,9 +176,9 @@
                                         ]
                                     }
                                 ],
-                                "declarations": [
+                                "init_declarators": [
                                     {
-                                        "class": "declaration",
+                                        "class": "init_declarator",
                                         "declarator": null,
                                         "initializer": null
                                     }

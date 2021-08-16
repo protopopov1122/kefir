@@ -63,7 +63,7 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(
         } else if (param_iter != NULL) {
             ASSIGN_DECL_CAST(struct kefir_ast_node_base *, param, param_iter->value);
             REQUIRE(param->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION ||
-                        param->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION,
+                        param->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR,
                     KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
                                     "Function declaration parameter shall be either expression, or declaration"));
             param_type = adjust_untyped_parameter(mem, type_bundle, type_traits, param->properties.type);

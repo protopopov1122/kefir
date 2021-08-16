@@ -70,7 +70,7 @@ static kefir_result_t define_conditional_function(struct kefir_mem *mem, struct 
         KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "str"))));
 
     struct kefir_ast_compound_statement *compound0 = kefir_ast_new_compound_statement(mem);
-    struct kefir_ast_declaration_list *declarationValue = kefir_ast_new_single_declaration_list(
+    struct kefir_ast_declaration *declarationValue = kefir_ast_new_single_declaration(
         mem, kefir_ast_declarator_identifier(mem, context_manager->current->symbols, "value"),
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 0))), NULL);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &declarationValue->specifiers,
@@ -80,7 +80,7 @@ static kefir_result_t define_conditional_function(struct kefir_mem *mem, struct 
     REQUIRE_OK(kefir_list_insert_after(mem, &compound0->block_items, kefir_list_tail(&compound0->block_items),
                                        KEFIR_AST_NODE_BASE(declarationValue)));
 
-    struct kefir_ast_declaration_list *declarationSign = kefir_ast_new_single_declaration_list(
+    struct kefir_ast_declaration *declarationSign = kefir_ast_new_single_declaration(
         mem, kefir_ast_declarator_identifier(mem, context_manager->current->symbols, "sign"),
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 0))), NULL);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &declarationSign->specifiers,
@@ -105,7 +105,7 @@ static kefir_result_t define_conditional_function(struct kefir_mem *mem, struct 
 
     struct kefir_ast_compound_statement *body = kefir_ast_new_compound_statement(mem);
 
-    struct kefir_ast_declaration_list *declarationChar = kefir_ast_new_single_declaration_list(
+    struct kefir_ast_declaration *declarationChar = kefir_ast_new_single_declaration(
         mem, kefir_ast_declarator_identifier(mem, context_manager->current->symbols, "chr"),
         kefir_ast_new_expression_initializer(
             mem,

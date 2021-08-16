@@ -1,15 +1,15 @@
 [
     {
-        "class": "declaration_list",
+        "class": "declaration",
         "specifiers": [
             {
                 "class": "type_specifier",
                 "specifier": "void"
             }
         ],
-        "declarations": [
+        "init_declarators": [
             {
-                "class": "declaration",
+                "class": "init_declarator",
                 "declarator": {
                     "class": "function",
                     "declarator": {
@@ -29,16 +29,16 @@
         ]
     },
     {
-        "class": "declaration_list",
+        "class": "declaration",
         "specifiers": [
             {
                 "class": "type_specifier",
                 "specifier": "void"
             }
         ],
-        "declarations": [
+        "init_declarators": [
             {
-                "class": "declaration",
+                "class": "init_declarator",
                 "declarator": {
                     "class": "function",
                     "declarator": {
@@ -58,7 +58,7 @@
         ]
     },
     {
-        "class": "declaration_list",
+        "class": "declaration",
         "specifiers": [
             {
                 "class": "storage_class",
@@ -69,9 +69,9 @@
                 "specifier": "float"
             }
         ],
-        "declarations": [
+        "init_declarators": [
             {
-                "class": "declaration",
+                "class": "init_declarator",
                 "declarator": {
                     "class": "identifier",
                     "identifier": "a"
@@ -81,16 +81,16 @@
         ]
     },
     {
-        "class": "declaration_list",
+        "class": "declaration",
         "specifiers": [
             {
                 "class": "type_specifier",
                 "specifier": "void"
             }
         ],
-        "declarations": [
+        "init_declarators": [
             {
-                "class": "declaration",
+                "class": "init_declarator",
                 "declarator": {
                     "class": "function",
                     "declarator": {
@@ -100,7 +100,7 @@
                     "ellipsis": false,
                     "parameters": [
                         {
-                            "class": "declaration_list",
+                            "class": "declaration",
                             "specifiers": [
                                 {
                                     "class": "type_specifier",
@@ -108,9 +108,9 @@
                                     "identifier": "a"
                                 }
                             ],
-                            "declarations": [
+                            "init_declarators": [
                                 {
-                                    "class": "declaration",
+                                    "class": "init_declarator",
                                     "declarator": {
                                         "class": "abstract"
                                     },
@@ -125,16 +125,16 @@
         ]
     },
     {
-        "class": "declaration_list",
+        "class": "declaration",
         "specifiers": [
             {
                 "class": "type_specifier",
                 "specifier": "void"
             }
         ],
-        "declarations": [
+        "init_declarators": [
             {
-                "class": "declaration",
+                "class": "init_declarator",
                 "declarator": {
                     "class": "function",
                     "declarator": {
@@ -154,7 +154,7 @@
         ]
     },
     {
-        "class": "declaration_list",
+        "class": "declaration",
         "specifiers": [
             {
                 "class": "storage_class",
@@ -165,9 +165,9 @@
                 "specifier": "double"
             }
         ],
-        "declarations": [
+        "init_declarators": [
             {
-                "class": "declaration",
+                "class": "init_declarator",
                 "declarator": {
                     "class": "identifier",
                     "identifier": "b"
@@ -177,16 +177,16 @@
         ]
     },
     {
-        "class": "declaration_list",
+        "class": "declaration",
         "specifiers": [
             {
                 "class": "type_specifier",
                 "specifier": "void"
             }
         ],
-        "declarations": [
+        "init_declarators": [
             {
-                "class": "declaration",
+                "class": "init_declarator",
                 "declarator": {
                     "class": "function",
                     "declarator": {
@@ -196,7 +196,7 @@
                     "ellipsis": false,
                     "parameters": [
                         {
-                            "class": "declaration_list",
+                            "class": "declaration",
                             "specifiers": [
                                 {
                                     "class": "type_specifier",
@@ -204,9 +204,9 @@
                                     "identifier": "a"
                                 }
                             ],
-                            "declarations": [
+                            "init_declarators": [
                                 {
-                                    "class": "declaration",
+                                    "class": "init_declarator",
                                     "declarator": {
                                         "class": "abstract"
                                     },
@@ -221,16 +221,16 @@
         ]
     },
     {
-        "class": "declaration_list",
+        "class": "declaration",
         "specifiers": [
             {
                 "class": "type_specifier",
                 "specifier": "void"
             }
         ],
-        "declarations": [
+        "init_declarators": [
             {
-                "class": "declaration",
+                "class": "init_declarator",
                 "declarator": {
                     "class": "function",
                     "declarator": {
@@ -240,7 +240,7 @@
                     "ellipsis": false,
                     "parameters": [
                         {
-                            "class": "declaration_list",
+                            "class": "declaration",
                             "specifiers": [
                                 {
                                     "class": "type_specifier",
@@ -248,9 +248,9 @@
                                     "identifier": "b"
                                 }
                             ],
-                            "declarations": [
+                            "init_declarators": [
                                 {
-                                    "class": "declaration",
+                                    "class": "init_declarator",
                                     "declarator": {
                                         "class": "abstract"
                                     },

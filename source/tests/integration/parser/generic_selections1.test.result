@@ -96,16 +96,16 @@
                         "ellipsis": false,
                         "parameters": [
                             {
-                                "class": "declaration_list",
+                                "class": "declaration",
                                 "specifiers": [
                                     {
                                         "class": "type_specifier",
                                         "specifier": "int"
                                     }
                                 ],
-                                "declarations": [
+                                "init_declarators": [
                                     {
-                                        "class": "declaration",
+                                        "class": "init_declarator",
                                         "declarator": {
                                             "class": "abstract"
                                         },
@@ -114,16 +114,16 @@
                                 ]
                             },
                             {
-                                "class": "declaration_list",
+                                "class": "declaration",
                                 "specifiers": [
                                     {
                                         "class": "type_specifier",
                                         "specifier": "char"
                                     }
                                 ],
-                                "declarations": [
+                                "init_declarators": [
                                     {
-                                        "class": "declaration",
+                                        "class": "init_declarator",
                                         "declarator": {
                                             "class": "abstract"
                                         },

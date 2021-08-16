@@ -96,7 +96,7 @@ DECLARE_CASE(ast_nodes_conditional_operators);
 DECLARE_CASE(ast_nodes_assignment_operators);
 DECLARE_CASE(ast_nodes_comma_operators);
 DECLARE_CASE(ast_nodes_compound_literals);
-DECLARE_CASE(ast_nodes_declarations1);
+DECLARE_CASE(ast_nodes_init_declarators1);
 DECLARE_CASE(ast_nodes_static_assertions1);
 DECLARE_CASE(ast_nodes_labeled_statements1);
 DECLARE_CASE(ast_nodes_case_statements1);
@@ -297,19 +297,19 @@ DECLARE_CASE(ast_declarator_analysis22);
 DECLARE_CASE(ast_declarator_analysis23);
 DECLARE_CASE(ast_declarator_analysis24);
 DECLARE_CASE(ast_declarator_analysis25);
-DECLARE_CASE(ast_node_analysis_declarations1);
-DECLARE_CASE(ast_node_analysis_declarations2);
-DECLARE_CASE(ast_node_analysis_declarations3);
-DECLARE_CASE(ast_node_analysis_declarations4);
-DECLARE_CASE(ast_node_analysis_declarations5);
-DECLARE_CASE(ast_node_analysis_declarations6);
-DECLARE_CASE(ast_node_analysis_declarations7);
-DECLARE_CASE(ast_node_analysis_declarations8);
-DECLARE_CASE(ast_node_analysis_declarations9);
-DECLARE_CASE(ast_node_analysis_declarations10);
-DECLARE_CASE(ast_node_analysis_declarations11);
-DECLARE_CASE(ast_node_analysis_declarations12);
-DECLARE_CASE(ast_node_analysis_declarations13);
+DECLARE_CASE(ast_node_analysis_init_declarators1);
+DECLARE_CASE(ast_node_analysis_init_declarators2);
+DECLARE_CASE(ast_node_analysis_init_declarators3);
+DECLARE_CASE(ast_node_analysis_init_declarators4);
+DECLARE_CASE(ast_node_analysis_init_declarators5);
+DECLARE_CASE(ast_node_analysis_init_declarators6);
+DECLARE_CASE(ast_node_analysis_init_declarators7);
+DECLARE_CASE(ast_node_analysis_init_declarators8);
+DECLARE_CASE(ast_node_analysis_init_declarators9);
+DECLARE_CASE(ast_node_analysis_init_declarators10);
+DECLARE_CASE(ast_node_analysis_init_declarators11);
+DECLARE_CASE(ast_node_analysis_init_declarators12);
+DECLARE_CASE(ast_node_analysis_init_declarators13);
 DECLARE_CASE(ast_node_analysis_static_assertions1);
 DECLARE_CASE(ast_node_analysis_expression_statements1);
 DECLARE_CASE(ast_node_analysis_labeled_statements1);
@@ -381,8 +381,8 @@ DECLARE_CASE(ast_node_analysis_function_definitions2);
 DECLARE_CASE(ast_node_analysis_function_definitions3);
 DECLARE_CASE(ast_node_analysis_translation_unit1);
 DECLARE_CASE(ast_node_analysis_translation_unit2);
-DECLARE_CASE(ast_nodes_declaration_list1);
-DECLARE_CASE(ast_node_analysis_declaration_list1);
+DECLARE_CASE(ast_nodes_declaration1);
+DECLARE_CASE(ast_node_analysis_declaration1);
 
 DECLARE_CASE(parser_lexem_construction_sentinel);
 DECLARE_CASE(parser_lexem_construction_keyword);
@@ -420,15 +420,16 @@ TEST_SUITE(
     &ast_nodes_string_literals, &ast_nodes_type_name, &ast_nodes_array_subscripts, &ast_nodes_function_calls,
     &ast_nodes_struct_members, &ast_nodes_unary_operations, &ast_nodes_binary_operations, &ast_nodes_generic_selections,
     &ast_nodes_cast_operators, &ast_nodes_conditional_operators, &ast_nodes_assignment_operators,
-    &ast_nodes_comma_operators, &ast_nodes_compound_literals, &ast_nodes_declarations1, &ast_nodes_static_assertions1,
-    &ast_nodes_labeled_statements1, &ast_nodes_case_statements1, &ast_nodes_expression_statements1,
-    &ast_type_compatibility1, &ast_type_basic_compatibility, &ast_type_enum_compatibility,
-    &ast_type_pointer_compatibility, &ast_type_qualified_compatibility, &ast_type_struct_compatibility,
-    &ast_type_union_compatibility, &ast_type_array_compatibility, &ast_type_function_compatibility,
-    &ast_type_basic_composite, &ast_type_pointer_composite, &ast_type_enum_composite, &ast_type_qualified_composite,
-    &ast_type_struct_composite, &ast_type_union_composite, &ast_type_array_composite, &ast_type_function_composite,
-    &ast_type_scope1, &ast_type_scope2, &ast_type_scope3, &ast_ordinary_constant_scope1, &ast_ordinary_typedef_scope1,
-    &ast_ordinary_scope_composite_objects_external, &ast_ordinary_scope_composite_objects_external_declaration,
+    &ast_nodes_comma_operators, &ast_nodes_compound_literals, &ast_nodes_init_declarators1,
+    &ast_nodes_static_assertions1, &ast_nodes_labeled_statements1, &ast_nodes_case_statements1,
+    &ast_nodes_expression_statements1, &ast_type_compatibility1, &ast_type_basic_compatibility,
+    &ast_type_enum_compatibility, &ast_type_pointer_compatibility, &ast_type_qualified_compatibility,
+    &ast_type_struct_compatibility, &ast_type_union_compatibility, &ast_type_array_compatibility,
+    &ast_type_function_compatibility, &ast_type_basic_composite, &ast_type_pointer_composite, &ast_type_enum_composite,
+    &ast_type_qualified_composite, &ast_type_struct_composite, &ast_type_union_composite, &ast_type_array_composite,
+    &ast_type_function_composite, &ast_type_scope1, &ast_type_scope2, &ast_type_scope3, &ast_ordinary_constant_scope1,
+    &ast_ordinary_typedef_scope1, &ast_ordinary_scope_composite_objects_external,
+    &ast_ordinary_scope_composite_objects_external_declaration,
     &ast_ordinary_scope_composite_objects_thread_local_external,
     &ast_ordinary_scope_composite_objects_thread_local_external_declaration,
     &ast_ordinary_scope_composite_objects_static, &ast_ordinary_scope_composite_objects_static_thread_local,
@@ -492,11 +493,11 @@ TEST_SUITE(
     &ast_declarator_analysis12, &ast_declarator_analysis13, &ast_declarator_analysis14, &ast_declarator_analysis15,
     &ast_declarator_analysis16, &ast_declarator_analysis17, &ast_declarator_analysis18, &ast_declarator_analysis19,
     &ast_declarator_analysis20, &ast_declarator_analysis21, &ast_declarator_analysis22, &ast_declarator_analysis23,
-    &ast_declarator_analysis24, &ast_declarator_analysis25, &ast_node_analysis_declarations1,
-    &ast_node_analysis_declarations2, &ast_node_analysis_declarations3, &ast_node_analysis_declarations4,
-    &ast_node_analysis_declarations5, &ast_node_analysis_declarations6, &ast_node_analysis_declarations7,
-    &ast_node_analysis_declarations8, &ast_node_analysis_declarations9, &ast_node_analysis_declarations10,
-    &ast_node_analysis_declarations11, &ast_node_analysis_declarations12, &ast_node_analysis_declarations13,
+    &ast_declarator_analysis24, &ast_declarator_analysis25, &ast_node_analysis_init_declarators1,
+    &ast_node_analysis_init_declarators2, &ast_node_analysis_init_declarators3, &ast_node_analysis_init_declarators4,
+    &ast_node_analysis_init_declarators5, &ast_node_analysis_init_declarators6, &ast_node_analysis_init_declarators7,
+    &ast_node_analysis_init_declarators8, &ast_node_analysis_init_declarators9, &ast_node_analysis_init_declarators10,
+    &ast_node_analysis_init_declarators11, &ast_node_analysis_init_declarators12, &ast_node_analysis_init_declarators13,
     &ast_node_analysis_static_assertions1, &ast_node_analysis_expression_statements1,
     &ast_node_analysis_labeled_statements1, &ast_node_analysis_case_statements1, &ast_label_scope1, &ast_label_scope2,
     &ast_label_scope3, &ast_label_scope4, &ast_node_analysis_labeled_statements2, &ast_nodes_compound_statements1,
@@ -521,8 +522,8 @@ TEST_SUITE(
     &ast_node_analysis_continue_statements5, &ast_node_analysis_return_statements1, &ast_translator_flow_control_point1,
     &ast_nodes_function_definitions1, &ast_nodes_translation_units1, &ast_node_analysis_function_definitions1,
     &ast_node_analysis_function_definitions2, &ast_node_analysis_function_definitions3,
-    &ast_node_analysis_translation_unit1, &ast_node_analysis_translation_unit2, &ast_nodes_declaration_list1,
-    &ast_node_analysis_declaration_list1,
+    &ast_node_analysis_translation_unit1, &ast_node_analysis_translation_unit2, &ast_nodes_declaration1,
+    &ast_node_analysis_declaration1,
 
     &parser_lexem_construction_sentinel, &parser_lexem_construction_keyword, &parser_lexem_construction_identifier,
     &parser_lexem_construction_constants, &parser_lexem_construction_string_literals,

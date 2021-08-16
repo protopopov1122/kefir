@@ -31,7 +31,7 @@ static kefir_result_t scan_specifiers(struct kefir_mem *mem, struct kefir_parser
         kefir_ast_declarator_specifier_list_free(mem, &list);
         return res;
     });
-    res = kefir_parser_ast_builder_declaration_list(mem, builder, &list);
+    res = kefir_parser_ast_builder_declaration(mem, builder, &list);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_ast_declarator_specifier_list_free(mem, &list);
         return res;
@@ -55,7 +55,7 @@ static kefir_result_t scan_init_declaration(struct kefir_mem *mem, struct kefir_
         });
     }
 
-    res = kefir_parser_ast_builder_declaration(mem, builder, declarator, initializer);
+    res = kefir_parser_ast_builder_init_declarator(mem, builder, declarator, initializer);
     REQUIRE_ELSE(res == KEFIR_OK, {
         if (initializer != NULL) {
             kefir_ast_initializer_free(mem, initializer);
@@ -79,7 +79,7 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
     REQUIRE_OK(scan_specifiers(mem, builder));
     kefir_bool_t scan_init_decl = !PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_SEMICOLON);
     if (!scan_init_decl) {
-        REQUIRE_OK(kefir_parser_ast_builder_declaration(mem, builder, NULL, NULL));
+        REQUIRE_OK(kefir_parser_ast_builder_init_declarator(mem, builder, NULL, NULL));
     }
 
     while (scan_init_decl) {
@@ -100,12 +100,11 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
 }
 
 static kefir_result_t update_scope(struct kefir_mem *mem, struct kefir_parser *parser,
-                                   struct kefir_ast_declaration_list *declaration_list) {
+                                   struct kefir_ast_declaration *declaration) {
     kefir_bool_t is_typedef = false;
     struct kefir_ast_declarator_specifier *specifier = NULL;
     kefir_result_t res = KEFIR_OK;
-    for (struct kefir_list_entry *iter =
-             kefir_ast_declarator_specifier_list_iter(&declaration_list->specifiers, &specifier);
+    for (struct kefir_list_entry *iter = kefir_ast_declarator_specifier_list_iter(&declaration->specifiers, &specifier);
          !is_typedef && iter != NULL && res == KEFIR_OK;
          res = kefir_ast_declarator_specifier_list_next(&iter, &specifier)) {
         if (specifier->klass == KEFIR_AST_STORAGE_CLASS_SPECIFIER &&
@@ -115,9 +114,9 @@ static kefir_result_t update_scope(struct kefir_mem *mem, struct kefir_parser *p
     }
     REQUIRE_OK(res);
 
-    for (const struct kefir_list_entry *iter = kefir_list_head(&declaration_list->declarations); iter != NULL;
+    for (const struct kefir_list_entry *iter = kefir_list_head(&declaration->init_declarators); iter != NULL;
          kefir_list_next(&iter)) {
-        ASSIGN_DECL_CAST(struct kefir_ast_declaration *, declaration, iter->value);
+        ASSIGN_DECL_CAST(struct kefir_ast_init_declarator *, declaration, iter->value);
         const char *identifier;
         REQUIRE_OK(kefir_ast_declarator_unpack_identifier(declaration->declarator, &identifier));
         if (identifier != NULL) {
@@ -131,12 +130,12 @@ static kefir_result_t update_scope(struct kefir_mem *mem, struct kefir_parser *p
     return KEFIR_OK;
 }
 
-kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(declaration_list)(struct kefir_mem *mem, struct kefir_parser *parser,
-                                                             struct kefir_ast_node_base **result, void *payload) {
+kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(declaration)(struct kefir_mem *mem, struct kefir_parser *parser,
+                                                        struct kefir_ast_node_base **result, void *payload) {
     APPLY_PROLOGUE(mem, parser, result, payload);
     REQUIRE_OK(kefir_parser_ast_builder_wrap(mem, parser, result, builder_callback, NULL));
-    if ((*result)->klass->type == KEFIR_AST_DECLARATION_LIST) {
-        ASSIGN_DECL_CAST(struct kefir_ast_declaration_list *, decl_list, (*result)->self);
+    if ((*result)->klass->type == KEFIR_AST_DECLARATION) {
+        ASSIGN_DECL_CAST(struct kefir_ast_declaration *, decl_list, (*result)->self);
         REQUIRE_OK(update_scope(mem, parser, decl_list));
     } else {
         REQUIRE((*result)->klass->type == KEFIR_AST_STATIC_ASSERTION,

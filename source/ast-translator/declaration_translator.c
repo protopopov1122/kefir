@@ -31,17 +31,17 @@ kefir_result_t kefir_ast_translate_declaration(struct kefir_mem *mem, const stru
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR builder block"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator context"));
-    REQUIRE((node->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION &&
-             node->klass->type == KEFIR_AST_DECLARATION) ||
-                (node->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION &&
+    REQUIRE((node->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR &&
+             node->klass->type == KEFIR_AST_INIT_DECLARATOR) ||
+                (node->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR &&
                  node->klass->type == KEFIR_AST_STATIC_ASSERTION) ||
-                (node->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION_LIST &&
-                 node->klass->type == KEFIR_AST_DECLARATION_LIST),
+                (node->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION &&
+                 node->klass->type == KEFIR_AST_DECLARATION),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected declaration AST node"));
 
-    if (node->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION) {
+    if (node->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR) {
         if (node->klass->type != KEFIR_AST_STATIC_ASSERTION) {
-            ASSIGN_DECL_CAST(struct kefir_ast_declaration *, declaration, node->self);
+            ASSIGN_DECL_CAST(struct kefir_ast_init_declarator *, declaration, node->self);
             REQUIRE(declaration->initializer != NULL, KEFIR_OK);
 
             REQUIRE_OK(kefir_ast_translator_object_lvalue(mem, context, builder,
@@ -52,8 +52,8 @@ kefir_result_t kefir_ast_translate_declaration(struct kefir_mem *mem, const stru
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POP, 0));
         }
     } else {
-        ASSIGN_DECL_CAST(struct kefir_ast_declaration_list *, declaration_list, node->self);
-        for (const struct kefir_list_entry *iter = kefir_list_head(&declaration_list->declarations); iter != NULL;
+        ASSIGN_DECL_CAST(struct kefir_ast_declaration *, declaration, node->self);
+        for (const struct kefir_list_entry *iter = kefir_list_head(&declaration->init_declarators); iter != NULL;
              kefir_list_next(&iter)) {
             ASSIGN_DECL_CAST(struct kefir_ast_node_base *, decl, iter->value);
             REQUIRE_OK(kefir_ast_translate_declaration(mem, decl, builder, context));

@@ -56,14 +56,14 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_irbuilder_block builder;
 
     FUNC2("switch1", {
-        struct kefir_ast_declaration_list *decl1 = kefir_ast_new_single_declaration_list(
+        struct kefir_ast_declaration *decl1 = kefir_ast_new_single_declaration(
             mem, kefir_ast_declarator_identifier(mem, context->symbols, "request"), NULL, NULL);
         REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl1->specifiers,
                                                               kefir_ast_storage_class_specifier_extern(mem)));
         REQUIRE_OK(
             kefir_ast_declarator_specifier_list_append(mem, &decl1->specifiers, kefir_ast_type_specifier_long(mem)));
 
-        struct kefir_ast_declaration_list *decl2 = kefir_ast_new_single_declaration_list(
+        struct kefir_ast_declaration *decl2 = kefir_ast_new_single_declaration(
             mem, kefir_ast_declarator_identifier(mem, context->symbols, "response"), NULL, NULL);
         REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl2->specifiers,
                                                               kefir_ast_storage_class_specifier_extern(mem)));
@@ -136,14 +136,14 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     });
 
     FUNC2("switch2", {
-        struct kefir_ast_declaration_list *decl1 = kefir_ast_new_single_declaration_list(
+        struct kefir_ast_declaration *decl1 = kefir_ast_new_single_declaration(
             mem, kefir_ast_declarator_identifier(mem, context->symbols, "request"), NULL, NULL);
         REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl1->specifiers,
                                                               kefir_ast_storage_class_specifier_extern(mem)));
         REQUIRE_OK(
             kefir_ast_declarator_specifier_list_append(mem, &decl1->specifiers, kefir_ast_type_specifier_long(mem)));
 
-        struct kefir_ast_declaration_list *decl2 = kefir_ast_new_single_declaration_list(
+        struct kefir_ast_declaration *decl2 = kefir_ast_new_single_declaration(
             mem, kefir_ast_declarator_identifier(mem, context->symbols, "response"), NULL, NULL);
         REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl2->specifiers,
                                                               kefir_ast_storage_class_specifier_extern(mem)));

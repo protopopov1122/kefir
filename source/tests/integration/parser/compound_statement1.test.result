@@ -7,16 +7,16 @@
         "class": "compound_statement",
         "items": [
             {
-                "class": "declaration_list",
+                "class": "declaration",
                 "specifiers": [
                     {
                         "class": "type_specifier",
                         "specifier": "long"
                     }
                 ],
-                "declarations": [
+                "init_declarators": [
                     {
-                        "class": "declaration",
+                        "class": "init_declarator",
                         "declarator": {
                             "class": "identifier",
                             "identifier": "i"
@@ -114,7 +114,7 @@
                 "class": "compound_statement",
                 "items": [
                     {
-                        "class": "declaration_list",
+                        "class": "declaration",
                         "specifiers": [
                             {
                                 "class": "storage_class",
@@ -125,9 +125,9 @@
                                 "specifier": "char"
                             }
                         ],
-                        "declarations": [
+                        "init_declarators": [
                             {
-                                "class": "declaration",
+                                "class": "init_declarator",
                                 "declarator": {
                                     "class": "identifier",
                                     "identifier": "T"
@@ -137,7 +137,7 @@
                         ]
                     },
                     {
-                        "class": "declaration_list",
+                        "class": "declaration",
                         "specifiers": [
                             {
                                 "class": "type_specifier",
@@ -145,9 +145,9 @@
                                 "identifier": "T"
                             }
                         ],
-                        "declarations": [
+                        "init_declarators": [
                             {
-                                "class": "declaration",
+                                "class": "init_declarator",
                                 "declarator": {
                                     "class": "pointer",
                                     "declarator": {

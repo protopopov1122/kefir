@@ -55,8 +55,8 @@ VISITOR(function_call, struct kefir_ast_function_call)
 VISITOR(struct_member, struct kefir_ast_struct_member)
 VISITOR(string_literal, struct kefir_ast_string_literal)
 VISITOR(type_name, struct kefir_ast_type_name)
+VISITOR(init_declarator, struct kefir_ast_init_declarator)
 VISITOR(declaration, struct kefir_ast_declaration)
-VISITOR(declaration_list, struct kefir_ast_declaration_list)
 VISITOR(cast_operator, struct kefir_ast_cast_operator)
 VISITOR(generic_selection, struct kefir_ast_generic_selection)
 VISITOR(conditional_operator, struct kefir_ast_conditional_operator)
@@ -100,8 +100,8 @@ kefir_result_t kefir_ast_analyze_node(struct kefir_mem *mem, const struct kefir_
     visitor.struct_indirect_member = visit_struct_member;
     visitor.string_literal = visit_string_literal;
     visitor.type_name = visit_type_name;
+    visitor.init_declarator = visit_init_declarator;
     visitor.declaration = visit_declaration;
-    visitor.declaration_list = visit_declaration_list;
     visitor.cast_operator = visit_cast_operator;
     visitor.generic_selection = visit_generic_selection;
     visitor.conditional_operator = visit_conditional_operator;

@@ -34,8 +34,8 @@ kefir_result_t kefir_ast_translate_for_statement_node(struct kefir_mem *mem,
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST for statement node"));
 
-    if (node->init != NULL && (node->init->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION_LIST ||
-                               node->init->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION)) {
+    if (node->init != NULL && (node->init->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION ||
+                               node->init->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR)) {
         REQUIRE_OK(kefir_ast_translate_declaration(mem, node->init, builder, context));
     } else if (node->init != NULL) {
         REQUIRE(node->init->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,

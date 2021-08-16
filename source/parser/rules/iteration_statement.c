@@ -66,8 +66,7 @@ static kefir_result_t scan_for(struct kefir_mem *mem, struct kefir_parser_ast_bu
 
     kefir_bool_t clauses[] = {false, false, false};
 
-    kefir_result_t res =
-        kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, declaration_list), NULL);
+    kefir_result_t res = kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, declaration), NULL);
     if (res == KEFIR_NO_MATCH) {
         if (!PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_SEMICOLON)) {
             REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, expression), NULL));

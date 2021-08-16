@@ -44,8 +44,8 @@ kefir_result_t kefir_ast_analyze_compound_statement_node(struct kefir_mem *mem, 
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, item, iter->value);
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, item));
         REQUIRE(item->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT ||
-                    item->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION_LIST ||
-                    item->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION,
+                    item->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION ||
+                    item->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR,
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
                                 "Compound statement items shall be either statements or declarations"));
     }

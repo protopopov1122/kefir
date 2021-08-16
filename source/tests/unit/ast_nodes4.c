@@ -150,12 +150,12 @@ DEFINE_CASE(ast_nodes_function_definitions1, "AST nodes - function definitions #
     ASSERT_OK(kefir_symbol_table_init(&symbols));
     ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
 
-    struct kefir_ast_declaration_list *param1 = kefir_ast_new_single_declaration_list(
+    struct kefir_ast_declaration *param1 = kefir_ast_new_single_declaration(
         &kft_mem, kefir_ast_declarator_identifier(&kft_mem, &symbols, "x"), NULL, NULL);
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &param1->specifiers,
                                                          kefir_ast_type_specifier_long(&kft_mem)));
 
-    struct kefir_ast_declaration_list *param2 = kefir_ast_new_single_declaration_list(
+    struct kefir_ast_declaration *param2 = kefir_ast_new_single_declaration(
         &kft_mem, kefir_ast_declarator_identifier(&kft_mem, &symbols, "y"), NULL, NULL);
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &param1->specifiers,
                                                          kefir_ast_type_specifier_double(&kft_mem)));
@@ -213,7 +213,7 @@ DEFINE_CASE(ast_nodes_translation_units1, "AST nodes - translation units #1") {
     ASSERT(unit1->base.self == unit1);
     ASSERT(kefir_list_length(&unit1->external_definitions) == 0);
 
-    struct kefir_ast_declaration_list *decl1 = kefir_ast_new_single_declaration_list(
+    struct kefir_ast_declaration *decl1 = kefir_ast_new_single_declaration(
         &kft_mem, kefir_ast_declarator_identifier(&kft_mem, &symbols, "xyz"),
         kefir_ast_new_expression_initializer(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'a'))),
         NULL);
@@ -222,7 +222,7 @@ DEFINE_CASE(ast_nodes_translation_units1, "AST nodes - translation units #1") {
     ASSERT_OK(kefir_list_insert_after(&kft_mem, &unit1->external_definitions,
                                       kefir_list_tail(&unit1->external_definitions), KEFIR_AST_NODE_BASE(decl1)));
 
-    struct kefir_ast_declaration_list *decl2 = kefir_ast_new_single_declaration_list(
+    struct kefir_ast_declaration *decl2 = kefir_ast_new_single_declaration(
         &kft_mem, kefir_ast_declarator_pointer(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, &symbols, "abc")),
         kefir_ast_new_expression_initializer(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0))),
         NULL);
@@ -258,41 +258,41 @@ DEFINE_CASE(ast_nodes_translation_units1, "AST nodes - translation units #1") {
 }
 END_CASE
 
-DEFINE_CASE(ast_nodes_declaration_list1, "AST nodes - declaration list #1") {
+DEFINE_CASE(ast_nodes_declaration1, "AST nodes - declaration list #1") {
     struct kefir_symbol_table symbols;
     struct kefir_ast_type_bundle type_bundle;
 
     ASSERT_OK(kefir_symbol_table_init(&symbols));
     ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
 
-    struct kefir_ast_declaration_list *declaration_list = kefir_ast_new_declaration_list(&kft_mem);
-    ASSERT(declaration_list != NULL);
-    ASSERT(declaration_list->base.klass->type == KEFIR_AST_DECLARATION_LIST);
-    ASSERT(declaration_list->base.self == declaration_list);
-    ASSERT(kefir_list_length(&declaration_list->declarations) == 0);
+    struct kefir_ast_declaration *declaration = kefir_ast_new_declaration(&kft_mem);
+    ASSERT(declaration != NULL);
+    ASSERT(declaration->base.klass->type == KEFIR_AST_DECLARATION);
+    ASSERT(declaration->base.self == declaration);
+    ASSERT(kefir_list_length(&declaration->init_declarators) == 0);
     struct kefir_ast_declarator_specifier *specifier = NULL;
-    ASSERT(kefir_ast_declarator_specifier_list_iter(&declaration_list->specifiers, &specifier) == NULL);
+    ASSERT(kefir_ast_declarator_specifier_list_iter(&declaration->specifiers, &specifier) == NULL);
 
-    struct kefir_ast_declaration *decl1 = kefir_ast_new_declaration(
-        &kft_mem, declaration_list, kefir_ast_declarator_identifier(&kft_mem, &symbols, "A"), NULL);
-    ASSERT_OK(kefir_list_insert_after(&kft_mem, &declaration_list->declarations,
-                                      kefir_list_tail(&declaration_list->declarations), KEFIR_AST_NODE_BASE(decl1)));
-    struct kefir_ast_declaration *decl2 = kefir_ast_new_declaration(
-        &kft_mem, declaration_list, kefir_ast_declarator_identifier(&kft_mem, &symbols, "B"), NULL);
-    ASSERT_OK(kefir_list_insert_after(&kft_mem, &declaration_list->declarations,
-                                      kefir_list_tail(&declaration_list->declarations), KEFIR_AST_NODE_BASE(decl2)));
-    struct kefir_ast_declaration *decl3 = kefir_ast_new_declaration(
-        &kft_mem, declaration_list, kefir_ast_declarator_identifier(&kft_mem, &symbols, "B"), NULL);
-    ASSERT_OK(kefir_list_insert_after(&kft_mem, &declaration_list->declarations,
-                                      kefir_list_tail(&declaration_list->declarations), KEFIR_AST_NODE_BASE(decl3)));
+    struct kefir_ast_init_declarator *decl1 = kefir_ast_new_init_declarator(
+        &kft_mem, declaration, kefir_ast_declarator_identifier(&kft_mem, &symbols, "A"), NULL);
+    ASSERT_OK(kefir_list_insert_after(&kft_mem, &declaration->init_declarators,
+                                      kefir_list_tail(&declaration->init_declarators), KEFIR_AST_NODE_BASE(decl1)));
+    struct kefir_ast_init_declarator *decl2 = kefir_ast_new_init_declarator(
+        &kft_mem, declaration, kefir_ast_declarator_identifier(&kft_mem, &symbols, "B"), NULL);
+    ASSERT_OK(kefir_list_insert_after(&kft_mem, &declaration->init_declarators,
+                                      kefir_list_tail(&declaration->init_declarators), KEFIR_AST_NODE_BASE(decl2)));
+    struct kefir_ast_init_declarator *decl3 = kefir_ast_new_init_declarator(
+        &kft_mem, declaration, kefir_ast_declarator_identifier(&kft_mem, &symbols, "B"), NULL);
+    ASSERT_OK(kefir_list_insert_after(&kft_mem, &declaration->init_declarators,
+                                      kefir_list_tail(&declaration->init_declarators), KEFIR_AST_NODE_BASE(decl3)));
 
-    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &declaration_list->specifiers,
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &declaration->specifiers,
                                                          kefir_ast_type_specifier_int(&kft_mem)));
-    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &declaration_list->specifiers,
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &declaration->specifiers,
                                                          kefir_ast_type_qualifier_const(&kft_mem)));
 
-    ASSERT(kefir_list_length(&declaration_list->declarations) == 3);
-    const struct kefir_list_entry *iter = kefir_list_head(&declaration_list->declarations);
+    ASSERT(kefir_list_length(&declaration->init_declarators) == 3);
+    const struct kefir_list_entry *iter = kefir_list_head(&declaration->init_declarators);
     ASSERT(iter != NULL);
     ASSERT(iter->value == KEFIR_AST_NODE_BASE(decl1));
     kefir_list_next(&iter);
@@ -304,8 +304,7 @@ DEFINE_CASE(ast_nodes_declaration_list1, "AST nodes - declaration list #1") {
     kefir_list_next(&iter);
     ASSERT(iter == NULL);
 
-    struct kefir_list_entry *iter2 =
-        kefir_ast_declarator_specifier_list_iter(&declaration_list->specifiers, &specifier);
+    struct kefir_list_entry *iter2 = kefir_ast_declarator_specifier_list_iter(&declaration->specifiers, &specifier);
     ASSERT(iter2 != NULL && specifier != NULL);
     ASSERT(specifier->klass == KEFIR_AST_TYPE_SPECIFIER);
     ASSERT(specifier->type_specifier.specifier == KEFIR_AST_TYPE_SPECIFIER_INT);
@@ -316,7 +315,7 @@ DEFINE_CASE(ast_nodes_declaration_list1, "AST nodes - declaration list #1") {
     ASSERT_OK(kefir_ast_declarator_specifier_list_next(&iter2, &specifier));
     ASSERT(iter2 == NULL);
 
-    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(declaration_list)));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(declaration)));
     ASSERT_OK(kefir_ast_type_bundle_free(&kft_mem, &type_bundle));
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
 }

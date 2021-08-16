@@ -33,7 +33,7 @@
         }
     },
     {
-        "class": "declaration_list",
+        "class": "declaration",
         "specifiers": [
             {
                 "class": "type_qualifier",
@@ -44,9 +44,9 @@
                 "specifier": "int"
             }
         ],
-        "declarations": [
+        "init_declarators": [
             {
-                "class": "declaration",
+                "class": "init_declarator",
                 "declarator": {
                     "class": "array",
                     "declarator": {
@@ -116,7 +116,7 @@
                 }
             },
             {
-                "class": "declaration",
+                "class": "init_declarator",
                 "declarator": {
                     "class": "array",
                     "declarator": {
@@ -168,7 +168,7 @@
         ]
     },
     {
-        "class": "declaration_list",
+        "class": "declaration",
         "specifiers": [
             {
                 "class": "type_specifier",
@@ -236,9 +236,9 @@
                 ]
             }
         ],
-        "declarations": [
+        "init_declarators": [
             {
-                "class": "declaration",
+                "class": "init_declarator",
                 "declarator": {
                     "class": "identifier",
                     "identifier": "something"
