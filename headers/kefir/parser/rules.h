@@ -61,6 +61,9 @@ DECLARE_RULE(selection_statement);
 DECLARE_RULE(iteration_statement);
 DECLARE_RULE(jump_statement);
 DECLARE_RULE(statement);
+DECLARE_RULE(function_definition);
+DECLARE_RULE(external_declaration);
+DECLARE_RULE(translation_unit);
 
 #undef DECLARE_RULE
 

@@ -1088,3 +1088,66 @@ kefir_result_t kefir_parser_ast_builder_break_statement(struct kefir_mem *mem,
     });
     return KEFIR_OK;
 }
+
+kefir_result_t kefir_parser_ast_builder_translation_unit(struct kefir_mem *mem,
+                                                         struct kefir_parser_ast_builder *builder) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+
+    struct kefir_ast_node_base *node = NULL;
+    REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &node));
+
+    struct kefir_ast_translation_unit *unit = kefir_ast_new_translation_unit(mem);
+    REQUIRE_ELSE(unit != NULL, {
+        KEFIR_AST_NODE_FREE(mem, node);
+        return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST translation unit");
+    });
+
+    kefir_result_t res =
+        kefir_list_insert_after(mem, &unit->external_definitions, kefir_list_tail(&unit->external_definitions), node);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(unit));
+        KEFIR_AST_NODE_FREE(mem, node);
+        return res;
+    });
+    res = kefir_parser_ast_builder_push(mem, builder, KEFIR_AST_NODE_BASE(unit));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(unit));
+        return res;
+    });
+
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_parser_ast_builder_translation_unit_append(struct kefir_mem *mem,
+                                                                struct kefir_parser_ast_builder *builder) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+
+    struct kefir_ast_node_base *unit_node = NULL, *node = NULL;
+    REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &node));
+    kefir_result_t res = kefir_parser_ast_builder_pop(mem, builder, &unit_node);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, node);
+        return res;
+    });
+    REQUIRE_ELSE(unit_node->klass->type == KEFIR_AST_TRANSLATION_UNIT, {
+        KEFIR_AST_NODE_FREE(mem, node);
+        KEFIR_AST_NODE_FREE(mem, unit_node);
+        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected AST translation unit");
+    });
+    ASSIGN_DECL_CAST(struct kefir_ast_translation_unit *, unit, unit_node->self);
+
+    res = kefir_list_insert_after(mem, &unit->external_definitions, kefir_list_tail(&unit->external_definitions), node);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, unit_node);
+        KEFIR_AST_NODE_FREE(mem, node);
+        return res;
+    });
+    res = kefir_parser_ast_builder_push(mem, builder, unit_node);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, unit_node);
+        return res;
+    });
+    return KEFIR_OK;
+}
