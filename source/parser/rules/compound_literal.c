@@ -36,7 +36,7 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
     REQUIRE_OK(PARSER_SHIFT(parser));
 
     struct kefir_ast_initializer *initializer = NULL;
-    REQUIRE_OK(kefir_parser_scan_initializer(mem, parser, &initializer));
+    REQUIRE_OK(kefir_parser_scan_initializer_list(mem, parser, &initializer));
     kefir_result_t res = kefir_parser_ast_builder_compound_literal(mem, builder, initializer);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_ast_initializer_free(mem, initializer);

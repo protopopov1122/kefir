@@ -23,6 +23,8 @@
 kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(external_declaration)(struct kefir_mem *mem, struct kefir_parser *parser,
                                                                  struct kefir_ast_node_base **result, void *payload) {
     APPLY_PROLOGUE(mem, parser, result, payload);
-    // TODO Implement external declaration parser
-    return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "External declaration parser is not implemented yet");
+    kefir_result_t res = KEFIR_PARSER_RULE_APPLY(mem, parser, function_definition, result);
+    REQUIRE(res == KEFIR_NO_MATCH, res);
+    REQUIRE_OK(KEFIR_PARSER_RULE_APPLY(mem, parser, declaration, result));
+    return KEFIR_OK;
 }

@@ -1,0 +1,525 @@
+{
+    "class": "translation_unit",
+    "external_declarations": [
+        {
+            "class": "function_definition",
+            "specifiers": [
+                {
+                    "class": "type_specifier",
+                    "specifier": "void"
+                }
+            ],
+            "declarator": {
+                "class": "function",
+                "declarator": {
+                    "class": "identifier",
+                    "identifier": "Fn1"
+                },
+                "ellipsis": false,
+                "parameters": []
+            },
+            "declarations": [],
+            "body": {
+                "class": "compound_statement",
+                "items": []
+            }
+        },
+        {
+            "class": "declaration",
+            "specifiers": [
+                {
+                    "class": "type_specifier",
+                    "specifier": "struct",
+                    "identifier": "structure1",
+                    "members": [
+                        {
+                            "type": "declaration",
+                            "specifiers": [
+                                {
+                                    "class": "type_specifier",
+                                    "specifier": "short"
+                                },
+                                {
+                                    "class": "type_specifier",
+                                    "specifier": "int"
+                                }
+                            ],
+                            "declarators": [
+                                {
+                                    "declarator": {
+                                        "class": "identifier",
+                                        "identifier": "field1"
+                                    },
+                                    "bitwidth": null
+                                }
+                            ]
+                        },
+                        {
+                            "type": "declaration",
+                            "specifiers": [
+                                {
+                                    "class": "type_specifier",
+                                    "specifier": "int"
+                                }
+                            ],
+                            "declarators": [
+                                {
+                                    "declarator": {
+                                        "class": "identifier",
+                                        "identifier": "field2"
+                                    },
+                                    "bitwidth": {
+                                        "class": "constant",
+                                        "type": "integer",
+                                        "value": 4
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "init_declarators": [
+                {
+                    "class": "init_declarator",
+                    "declarator": null,
+                    "initializer": null
+                }
+            ]
+        },
+        {
+            "class": "declaration",
+            "specifiers": [
+                {
+                    "class": "storage_class",
+                    "storage": "typedef"
+                },
+                {
+                    "class": "type_specifier",
+                    "specifier": "struct",
+                    "identifier": "structure1",
+                    "members": null
+                }
+            ],
+            "init_declarators": [
+                {
+                    "class": "init_declarator",
+                    "declarator": {
+                        "class": "identifier",
+                        "identifier": "structure1_t"
+                    },
+                    "initializer": null
+                }
+            ]
+        },
+        {
+            "class": "function_definition",
+            "specifiers": [
+                {
+                    "class": "type_specifier",
+                    "specifier": "long"
+                },
+                {
+                    "class": "type_specifier",
+                    "specifier": "unsigned"
+                }
+            ],
+            "declarator": {
+                "class": "pointer",
+                "declarator": {
+                    "class": "function",
+                    "declarator": {
+                        "class": "identifier",
+                        "identifier": "Fn2"
+                    },
+                    "ellipsis": false,
+                    "parameters": [
+                        {
+                            "class": "declaration",
+                            "specifiers": [
+                                {
+                                    "class": "type_specifier",
+                                    "specifier": "int"
+                                }
+                            ],
+                            "init_declarators": [
+                                {
+                                    "class": "init_declarator",
+                                    "declarator": {
+                                        "class": "identifier",
+                                        "identifier": "x"
+                                    },
+                                    "initializer": null
+                                }
+                            ]
+                        },
+                        {
+                            "class": "declaration",
+                            "specifiers": [
+                                {
+                                    "class": "type_specifier",
+                                    "specifier": "float"
+                                }
+                            ],
+                            "init_declarators": [
+                                {
+                                    "class": "init_declarator",
+                                    "declarator": {
+                                        "class": "identifier",
+                                        "identifier": "y"
+                                    },
+                                    "initializer": null
+                                }
+                            ]
+                        },
+                        {
+                            "class": "declaration",
+                            "specifiers": [
+                                {
+                                    "class": "type_specifier",
+                                    "specifier": "char"
+                                }
+                            ],
+                            "init_declarators": [
+                                {
+                                    "class": "init_declarator",
+                                    "declarator": {
+                                        "class": "array",
+                                        "declarator": {
+                                            "class": "identifier",
+                                            "identifier": "z"
+                                        },
+                                        "type": "unbounded",
+                                        "static": false,
+                                        "type_qualifiers": []
+                                    },
+                                    "initializer": null
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "type_qualifiers": []
+            },
+            "declarations": [],
+            "body": {
+                "class": "compound_statement",
+                "items": [
+                    {
+                        "class": "declaration",
+                        "specifiers": [
+                            {
+                                "class": "type_specifier",
+                                "specifier": "long"
+                            },
+                            {
+                                "class": "type_specifier",
+                                "specifier": "unsigned"
+                            }
+                        ],
+                        "init_declarators": [
+                            {
+                                "class": "init_declarator",
+                                "declarator": {
+                                    "class": "identifier",
+                                    "identifier": "base"
+                                },
+                                "initializer": {
+                                    "type": "expression",
+                                    "expression": {
+                                        "class": "cast_operator",
+                                        "type_name": {
+                                            "class": "type_name",
+                                            "specifiers": [
+                                                {
+                                                    "class": "type_specifier",
+                                                    "specifier": "long"
+                                                }
+                                            ],
+                                            "declarator": {
+                                                "class": "abstract"
+                                            }
+                                        },
+                                        "expression": {
+                                            "class": "identifier",
+                                            "identifier": "y"
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "class": "return_statement",
+                        "expression": {
+                            "class": "binary_operation",
+                            "type": "shift_right",
+                            "left": {
+                                "class": "identifier",
+                                "identifier": "base"
+                            },
+                            "right": {
+                                "class": "array_subscript",
+                                "array": {
+                                    "class": "identifier",
+                                    "identifier": "z"
+                                },
+                                "subscript": {
+                                    "class": "binary_operation",
+                                    "type": "add",
+                                    "left": {
+                                        "class": "identifier",
+                                        "identifier": "x"
+                                    },
+                                    "right": {
+                                        "class": "constant",
+                                        "type": "integer",
+                                        "value": 1
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "class": "declaration",
+            "specifiers": [
+                {
+                    "class": "storage_class",
+                    "storage": "extern"
+                },
+                {
+                    "class": "type_specifier",
+                    "specifier": "void"
+                }
+            ],
+            "init_declarators": [
+                {
+                    "class": "init_declarator",
+                    "declarator": {
+                        "class": "pointer",
+                        "declarator": {
+                            "class": "identifier",
+                            "identifier": "Ptr1"
+                        },
+                        "type_qualifiers": []
+                    },
+                    "initializer": {
+                        "type": "expression",
+                        "expression": {
+                            "class": "constant",
+                            "type": "integer",
+                            "value": 0
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "class": "declaration",
+            "specifiers": [
+                {
+                    "class": "storage_class",
+                    "storage": "static"
+                },
+                {
+                    "class": "type_specifier",
+                    "specifier": "double"
+                }
+            ],
+            "init_declarators": [
+                {
+                    "class": "init_declarator",
+                    "declarator": {
+                        "class": "function",
+                        "declarator": {
+                            "class": "identifier",
+                            "identifier": "callback1"
+                        },
+                        "ellipsis": false,
+                        "parameters": [
+                            {
+                                "class": "declaration",
+                                "specifiers": [
+                                    {
+                                        "class": "type_specifier",
+                                        "specifier": "struct",
+                                        "identifier": "structure1",
+                                        "members": null
+                                    }
+                                ],
+                                "init_declarators": [
+                                    {
+                                        "class": "init_declarator",
+                                        "declarator": {
+                                            "class": "abstract"
+                                        },
+                                        "initializer": null
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "initializer": null
+                }
+            ]
+        },
+        {
+            "class": "declaration",
+            "specifiers": [
+                {
+                    "class": "type_specifier",
+                    "specifier": "void"
+                }
+            ],
+            "init_declarators": [
+                {
+                    "class": "init_declarator",
+                    "declarator": {
+                        "class": "function",
+                        "declarator": {
+                            "class": "identifier",
+                            "identifier": "SomeFn"
+                        },
+                        "ellipsis": false,
+                        "parameters": [
+                            {
+                                "class": "identifier",
+                                "identifier": "x"
+                            },
+                            {
+                                "class": "identifier",
+                                "identifier": "y"
+                            },
+                            {
+                                "class": "identifier",
+                                "identifier": "z"
+                            }
+                        ]
+                    },
+                    "initializer": null
+                }
+            ]
+        },
+        {
+            "class": "function_definition",
+            "specifiers": [
+                {
+                    "class": "type_specifier",
+                    "specifier": "void"
+                }
+            ],
+            "declarator": {
+                "class": "function",
+                "declarator": {
+                    "class": "identifier",
+                    "identifier": "SomeFn"
+                },
+                "ellipsis": false,
+                "parameters": [
+                    {
+                        "class": "identifier",
+                        "identifier": "x"
+                    },
+                    {
+                        "class": "identifier",
+                        "identifier": "y"
+                    },
+                    {
+                        "class": "identifier",
+                        "identifier": "z"
+                    }
+                ]
+            },
+            "declarations": [
+                {
+                    "class": "declaration",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "int"
+                        }
+                    ],
+                    "init_declarators": [
+                        {
+                            "class": "init_declarator",
+                            "declarator": {
+                                "class": "pointer",
+                                "declarator": {
+                                    "class": "pointer",
+                                    "declarator": {
+                                        "class": "identifier",
+                                        "identifier": "x"
+                                    },
+                                    "type_qualifiers": []
+                                },
+                                "type_qualifiers": []
+                            },
+                            "initializer": null
+                        }
+                    ]
+                },
+                {
+                    "class": "declaration",
+                    "specifiers": [
+                        {
+                            "class": "type_specifier",
+                            "specifier": "int"
+                        }
+                    ],
+                    "init_declarators": [
+                        {
+                            "class": "init_declarator",
+                            "declarator": {
+                                "class": "identifier",
+                                "identifier": "y"
+                            },
+                            "initializer": null
+                        },
+                        {
+                            "class": "init_declarator",
+                            "declarator": {
+                                "class": "identifier",
+                                "identifier": "z"
+                            },
+                            "initializer": null
+                        }
+                    ]
+                }
+            ],
+            "body": {
+                "class": "compound_statement",
+                "items": [
+                    {
+                        "class": "expression_statement",
+                        "expression": {
+                            "class": "assignment_operator",
+                            "type": "add",
+                            "target": {
+                                "class": "unary_operation",
+                                "type": "indirection",
+                                "argument": {
+                                    "class": "array_subscript",
+                                    "array": {
+                                        "class": "identifier",
+                                        "identifier": "x"
+                                    },
+                                    "subscript": {
+                                        "class": "identifier",
+                                        "identifier": "y"
+                                    }
+                                }
+                            },
+                            "value": {
+                                "class": "identifier",
+                                "identifier": "z"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
