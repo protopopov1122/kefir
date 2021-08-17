@@ -1,5 +1,6 @@
 KEFIR_SYSTEM_TESTS_TEST_SOURCES := $(wildcard \
 	$(SOURCE_DIR)/tests/system/codegen/*.gen.c \
+	$(SOURCE_DIR)/tests/system/parser/*.gen.c \
 	$(SOURCE_DIR)/tests/system/translator/*.gen.c)
 KEFIR_SYSTEM_TESTS_ALL_SOURCES = $(KEFIR_SYSTEM_TESTS_TEST_SOURCES)
 KEFIR_SYSTEM_TESTS_ALL_SOURCES += $(SOURCE_DIR)/tests/int_test.c
