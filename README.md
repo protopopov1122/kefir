@@ -53,6 +53,9 @@ target code generation.
 * Absence of VLAs. C11 standard defines them as optional feature, which I decided
 to omit in initial implementation. VLAs are implemented on AST level, however there is
 no translator and code generator support yet.
+* Absence of multibyte and unicode characters and string literals. These features were excluded
+to temporarily simplify parsing and analysis. Implementation of these is the priority after finishing
+base compiler.
 
 ## Design notes
 In order to simplify translation and facilitate portability, intermediate representation
