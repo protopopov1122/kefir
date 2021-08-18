@@ -383,6 +383,17 @@ struct kefir_ir_data *kefir_ir_module_new_named_data(struct kefir_mem *mem, stru
     return data;
 }
 
+struct kefir_ir_data *kefir_ir_module_get_named_data(struct kefir_ir_module *module, const char *identifier) {
+    REQUIRE(module != NULL, NULL);
+    REQUIRE(identifier != NULL, NULL);
+
+    struct kefir_hashtree_node *node = NULL;
+    kefir_result_t res = kefir_hashtree_at(&module->named_data, (kefir_hashtree_key_t) identifier, &node);
+    REQUIRE(res == KEFIR_OK, NULL);
+    ASSIGN_DECL_CAST(struct kefir_ir_data *, data, node->value);
+    return data;
+}
+
 const struct kefir_ir_data *kefir_ir_module_named_data_iter(const struct kefir_ir_module *module,
                                                             struct kefir_hashtree_node_iterator *iter,
                                                             const char **identifier) {

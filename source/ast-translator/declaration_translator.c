@@ -44,6 +44,11 @@ kefir_result_t kefir_ast_translate_declaration(struct kefir_mem *mem, const stru
             ASSIGN_DECL_CAST(struct kefir_ast_init_declarator *, declaration, node->self);
             REQUIRE(declaration->initializer != NULL, KEFIR_OK);
 
+            kefir_ast_scoped_identifier_storage_t storage = declaration->base.properties.declaration_props.storage;
+            REQUIRE(storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO ||
+                        storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER,
+                    KEFIR_OK);
+
             REQUIRE_OK(kefir_ast_translator_object_lvalue(mem, context, builder,
                                                           declaration->base.properties.declaration_props.identifier,
                                                           declaration->base.properties.declaration_props.scoped_id));

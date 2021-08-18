@@ -23,6 +23,7 @@
 #include "kefir/ast-translator/flow_control.h"
 #include "kefir/ast-translator/lvalue.h"
 #include "kefir/ast-translator/value.h"
+#include "kefir/ast-translator/scope/translator.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -272,6 +273,12 @@ kefir_result_t kefir_ast_translate_function(struct kefir_mem *mem, const struct 
     REQUIRE_OK(function_translator_ctx_init(mem, context, function, &ctx));
 
     kefir_result_t res = translate_function_impl(mem, function, &ctx.builder, context);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        function_translator_ctx_free(mem, &ctx);
+        return res;
+    });
+
+    res = kefir_ast_translate_local_scope(mem, &ctx.local_context->context, context->module, &ctx.local_scope_layout);
     REQUIRE_ELSE(res == KEFIR_OK, {
         function_translator_ctx_free(mem, &ctx);
         return res;
