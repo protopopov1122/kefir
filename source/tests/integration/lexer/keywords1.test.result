@@ -1,0 +1,14 @@
+[
+    {
+        "class": "keyword",
+        "keyword": "auto"
+    },
+    {
+        "class": "keyword",
+        "keyword": "else"
+    },
+    {
+        "class": "keyword",
+        "keyword": "thread_local"
+    }
+]
