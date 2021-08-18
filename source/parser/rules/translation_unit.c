@@ -28,12 +28,11 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
 
     REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, external_declaration), NULL));
     REQUIRE_OK(kefir_parser_ast_builder_translation_unit(mem, builder));
-    kefir_result_t res = KEFIR_OK;
-    while (res != KEFIR_NO_MATCH) {
-        res = kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, external_declaration), NULL);
-        REQUIRE_CHAIN(&res, kefir_parser_ast_builder_translation_unit_append(mem, builder));
+    while (!PARSER_TOKEN_IS_SENTINEL(builder->parser, 0)) {
+        REQUIRE_OK(
+            kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, external_declaration), NULL));
+        REQUIRE_OK(kefir_parser_ast_builder_translation_unit_append(mem, builder));
     }
-    REQUIRE(res == KEFIR_NO_MATCH, res);
     return KEFIR_OK;
 }
 
