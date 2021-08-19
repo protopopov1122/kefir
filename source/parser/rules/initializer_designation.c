@@ -5,7 +5,7 @@ static kefir_result_t scan_index(struct kefir_mem *mem, struct kefir_parser *par
     REQUIRE_OK(PARSER_SHIFT(parser));
     struct kefir_ast_node_base *index = NULL;
     REQUIRE_OK(KEFIR_PARSER_RULE_APPLY(mem, parser, constant_expression, &index));
-    REQUIRE_ELSE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_BRACKET), {
+    REQUIRE_ELSE(PARSER_TOKEN_IS_RIGHT_BRACKET(parser, 0), {
         KEFIR_AST_NODE_FREE(mem, index);
         return KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right bracket");
     });
@@ -46,15 +46,14 @@ static kefir_result_t scan_designation(struct kefir_mem *mem, struct kefir_parse
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_initializer_designation **, designation_ptr, payload);
-    REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_BRACKET) ||
-                PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_DOT),
+    REQUIRE(PARSER_TOKEN_IS_LEFT_BRACKET(parser, 0) || PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_DOT),
             KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Cannot match initializer designation"));
 
     *designation_ptr = NULL;
     kefir_bool_t scan_designators = true;
     while (scan_designators) {
         kefir_result_t res = KEFIR_OK;
-        if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_BRACKET)) {
+        if (PARSER_TOKEN_IS_LEFT_BRACKET(parser, 0)) {
             res = scan_index(mem, parser, designation_ptr);
         } else if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_DOT)) {
             res = scan_member(mem, parser, designation_ptr);

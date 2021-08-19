@@ -24,7 +24,7 @@
 static kefir_result_t scan_subscript(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder) {
     REQUIRE_OK(PARSER_SHIFT(builder->parser));
     REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, expression), NULL));
-    REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(builder->parser, 0, KEFIR_PUNCTUATOR_RIGHT_BRACKET),
+    REQUIRE(PARSER_TOKEN_IS_RIGHT_BRACKET(builder->parser, 0),
             KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right bracket"));
     REQUIRE_OK(PARSER_SHIFT(builder->parser));
     return KEFIR_OK;
@@ -64,7 +64,7 @@ static kefir_result_t scan_postfixes(struct kefir_mem *mem, struct kefir_parser_
 
     REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, primary_expression), NULL));
     do {
-        if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_BRACKET)) {
+        if (PARSER_TOKEN_IS_LEFT_BRACKET(parser, 0)) {
             REQUIRE_OK(scan_subscript(mem, builder));
             REQUIRE_OK(kefir_parser_ast_builder_array_subscript(mem, builder));
         } else if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_PARENTHESE)) {

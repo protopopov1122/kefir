@@ -174,8 +174,7 @@ static kefir_result_t scan_struct_specifier_body(struct kefir_mem *mem, struct k
         }
     }
 
-    REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_BRACE),
-            KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right brace"));
+    REQUIRE(PARSER_TOKEN_IS_RIGHT_BRACE(parser, 0), KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right brace"));
     REQUIRE_OK(PARSER_SHIFT(parser));
     return KEFIR_OK;
 }
@@ -195,9 +194,9 @@ static kefir_result_t scan_struct_specifier(struct kefir_mem *mem, struct kefir_
     if (PARSER_TOKEN_IS_IDENTIFIER(parser, 0)) {
         identifier = kefir_parser_token_cursor_at(parser->cursor, 0)->identifier;
         REQUIRE_OK(PARSER_SHIFT(parser));
-        complete = PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_BRACE);
+        complete = PARSER_TOKEN_IS_LEFT_BRACE(parser, 0);
     } else {
-        REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_BRACE),
+        REQUIRE(PARSER_TOKEN_IS_LEFT_BRACE(parser, 0),
                 KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Anonymous structure shall have complete body"));
         complete = true;
     }
@@ -266,14 +265,13 @@ static kefir_result_t scan_enum_specifier_body(struct kefir_mem *mem, struct kef
 
         if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COMMA)) {
             REQUIRE_OK(PARSER_SHIFT(parser));
-            scan_constants = !PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_BRACE);
+            scan_constants = !PARSER_TOKEN_IS_RIGHT_BRACE(parser, 0);
         } else {
             scan_constants = false;
         }
     }
 
-    REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_BRACE),
-            KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right brace"));
+    REQUIRE(PARSER_TOKEN_IS_RIGHT_BRACE(parser, 0), KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right brace"));
     REQUIRE_OK(PARSER_SHIFT(parser));
     return KEFIR_OK;
 }
@@ -292,9 +290,9 @@ static kefir_result_t scan_enum_specifier(struct kefir_mem *mem, struct kefir_pa
     if (PARSER_TOKEN_IS_IDENTIFIER(parser, 0)) {
         identifier = kefir_parser_token_cursor_at(parser->cursor, 0)->identifier;
         REQUIRE_OK(PARSER_SHIFT(parser));
-        complete = PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_BRACE);
+        complete = PARSER_TOKEN_IS_LEFT_BRACE(parser, 0);
     } else {
-        REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_BRACE),
+        REQUIRE(PARSER_TOKEN_IS_LEFT_BRACE(parser, 0),
                 KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Anonymous structure shall have complete body"));
         complete = true;
     }

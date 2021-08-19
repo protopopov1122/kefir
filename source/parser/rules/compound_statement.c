@@ -27,13 +27,13 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser AST builder"));
     struct kefir_parser *parser = builder->parser;
 
-    REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_BRACE),
+    REQUIRE(PARSER_TOKEN_IS_LEFT_BRACE(parser, 0),
             KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match compound statement"));
     REQUIRE_OK(PARSER_SHIFT(parser));
     REQUIRE_OK(kefir_parser_ast_builder_compound_statement(mem, builder));
     REQUIRE_OK(kefir_parser_scope_push_block(mem, &parser->scope));
 
-    while (!PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_BRACE)) {
+    while (!PARSER_TOKEN_IS_RIGHT_BRACE(parser, 0)) {
         kefir_result_t res =
             kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, declaration), NULL);
         if (res == KEFIR_NO_MATCH) {
@@ -43,8 +43,7 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
         REQUIRE_OK(kefir_parser_ast_builder_compound_statement_append(mem, builder));
     }
 
-    REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_BRACE),
-            KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right brace"));
+    REQUIRE(PARSER_TOKEN_IS_RIGHT_BRACE(parser, 0), KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right brace"));
     REQUIRE_OK(PARSER_SHIFT(parser));
     REQUIRE_OK(kefir_parser_scope_pop_block(mem, &parser->scope));
     return KEFIR_OK;

@@ -51,8 +51,7 @@ static kefir_result_t scan_initializer_list(struct kefir_mem *mem, struct kefir_
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_initializer **, initializer, payload);
-    REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_BRACE),
-            KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Cannot match initializer list"));
+    REQUIRE(PARSER_TOKEN_IS_LEFT_BRACE(parser, 0), KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Cannot match initializer list"));
     REQUIRE_OK(PARSER_SHIFT(parser));
     *initializer = kefir_ast_new_list_initializer(mem);
     REQUIRE(initializer != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocae AST initializer list"));
@@ -71,14 +70,14 @@ static kefir_result_t scan_initializer_list(struct kefir_mem *mem, struct kefir_
                 *initializer = NULL;
                 return res;
             });
-            scan_initializers = !PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_BRACE);
+            scan_initializers = !PARSER_TOKEN_IS_RIGHT_BRACE(parser, 0);
         } else {
             scan_initializers = false;
         }
     }
 
     kefir_result_t res = KEFIR_OK;
-    REQUIRE_CHAIN_SET(&res, PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_BRACE),
+    REQUIRE_CHAIN_SET(&res, PARSER_TOKEN_IS_RIGHT_BRACE(parser, 0),
                       KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right brace"));
     REQUIRE_CHAIN(&res, PARSER_SHIFT(parser));
     REQUIRE_ELSE(res == KEFIR_OK, {

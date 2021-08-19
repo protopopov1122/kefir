@@ -48,6 +48,19 @@
     (PARSER_TOKEN_IS((_parser), (_idx), KEFIR_TOKEN_PUNCTUATOR) && \
      PARSER_CURSOR((_parser), (_idx))->punctuator == (_punctuator))
 
+#define PARSER_TOKEN_IS_LEFT_BRACKET(_parser, _idx)                                  \
+    (PARSER_TOKEN_IS_PUNCTUATOR((_parser), (_idx), KEFIR_PUNCTUATOR_LEFT_BRACKET) || \
+     PARSER_TOKEN_IS_PUNCTUATOR((_parser), (_idx), KEFIR_PUNCTUATOR_DIGRAPH_LEFT_BRACKET))
+#define PARSER_TOKEN_IS_RIGHT_BRACKET(_parser, _idx)                                  \
+    (PARSER_TOKEN_IS_PUNCTUATOR((_parser), (_idx), KEFIR_PUNCTUATOR_RIGHT_BRACKET) || \
+     PARSER_TOKEN_IS_PUNCTUATOR((_parser), (_idx), KEFIR_PUNCTUATOR_DIGRAPH_RIGHT_BRACKET))
+#define PARSER_TOKEN_IS_LEFT_BRACE(_parser, _idx)                                  \
+    (PARSER_TOKEN_IS_PUNCTUATOR((_parser), (_idx), KEFIR_PUNCTUATOR_LEFT_BRACE) || \
+     PARSER_TOKEN_IS_PUNCTUATOR((_parser), (_idx), KEFIR_PUNCTUATOR_DIGRAPH_LEFT_BRACE))
+#define PARSER_TOKEN_IS_RIGHT_BRACE(_parser, _idx)                                  \
+    (PARSER_TOKEN_IS_PUNCTUATOR((_parser), (_idx), KEFIR_PUNCTUATOR_RIGHT_BRACE) || \
+     PARSER_TOKEN_IS_PUNCTUATOR((_parser), (_idx), KEFIR_PUNCTUATOR_DIGRAPH_RIGHT_BRACE))
+
 #define PARSER_SHIFT(_parser) (kefir_parser_token_cursor_next((_parser)->cursor))
 
 #define REQUIRE_ALLOC(_ptr, _expr, _error)                                           \

@@ -1,0 +1,151 @@
+{
+    "class": "translation_unit",
+    "external_declarations": [
+        {
+            "class": "declaration",
+            "specifiers": [
+                {
+                    "class": "type_specifier",
+                    "specifier": "int"
+                }
+            ],
+            "init_declarators": [
+                {
+                    "class": "init_declarator",
+                    "declarator": {
+                        "class": "array",
+                        "declarator": {
+                            "class": "identifier",
+                            "identifier": "Array"
+                        },
+                        "type": "bounded",
+                        "length": {
+                            "class": "constant",
+                            "type": "integer",
+                            "value": 100
+                        },
+                        "static": false,
+                        "type_qualifiers": []
+                    },
+                    "initializer": null
+                }
+            ]
+        },
+        {
+            "class": "declaration",
+            "specifiers": [
+                {
+                    "class": "type_specifier",
+                    "specifier": "struct",
+                    "identifier": "Structure",
+                    "members": [
+                        {
+                            "type": "declaration",
+                            "specifiers": [
+                                {
+                                    "class": "type_specifier",
+                                    "specifier": "char"
+                                }
+                            ],
+                            "declarators": [
+                                {
+                                    "declarator": {
+                                        "class": "identifier",
+                                        "identifier": "c"
+                                    },
+                                    "bitwidth": null
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "init_declarators": [
+                {
+                    "class": "init_declarator",
+                    "declarator": null,
+                    "initializer": null
+                }
+            ]
+        },
+        {
+            "class": "function_definition",
+            "specifiers": [
+                {
+                    "class": "type_specifier",
+                    "specifier": "void"
+                }
+            ],
+            "declarator": {
+                "class": "function",
+                "declarator": {
+                    "class": "identifier",
+                    "identifier": "Function"
+                },
+                "ellipsis": false,
+                "parameters": []
+            },
+            "declarations": [],
+            "body": {
+                "class": "compound_statement",
+                "items": [
+                    {
+                        "class": "declaration",
+                        "specifiers": [
+                            {
+                                "class": "type_specifier",
+                                "specifier": "int"
+                            }
+                        ],
+                        "init_declarators": [
+                            {
+                                "class": "init_declarator",
+                                "declarator": {
+                                    "class": "array",
+                                    "declarator": {
+                                        "class": "identifier",
+                                        "identifier": "x"
+                                    },
+                                    "type": "unbounded",
+                                    "static": false,
+                                    "type_qualifiers": []
+                                },
+                                "initializer": {
+                                    "type": "list",
+                                    "list": [
+                                        {
+                                            "designation": {
+                                                "type": "index",
+                                                "index": {
+                                                    "class": "constant",
+                                                    "type": "integer",
+                                                    "value": 1
+                                                },
+                                                "next": null
+                                            },
+                                            "initializer": {
+                                                "type": "expression",
+                                                "expression": {
+                                                    "class": "array_subscript",
+                                                    "array": {
+                                                        "class": "identifier",
+                                                        "identifier": "Array"
+                                                    },
+                                                    "subscript": {
+                                                        "class": "constant",
+                                                        "type": "integer",
+                                                        "value": 5
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}
