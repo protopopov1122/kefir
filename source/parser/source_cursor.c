@@ -13,10 +13,10 @@ kefir_result_t kefir_lexer_source_cursor_init(struct kefir_lexer_source_cursor *
     return KEFIR_OK;
 }
 
-char32_t kefir_lexer_source_cursor_at(struct kefir_lexer_source_cursor *cursor, kefir_size_t count) {
+kefir_char32_t kefir_lexer_source_cursor_at(struct kefir_lexer_source_cursor *cursor, kefir_size_t count) {
     REQUIRE(cursor != NULL, U'\0');
 
-    char32_t character = U'\0';
+    kefir_char32_t character = U'\0';
     kefir_size_t index = cursor->index;
     mbstate_t mbstate = cursor->mbstate;
     do {

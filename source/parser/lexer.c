@@ -28,7 +28,7 @@ kefir_result_t kefir_lexer_apply(struct kefir_mem *mem, struct kefir_lexer *lexe
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_lexer_cursor_match_string(struct kefir_lexer_source_cursor *cursor, const char32_t *string) {
+kefir_result_t kefir_lexer_cursor_match_string(struct kefir_lexer_source_cursor *cursor, const kefir_char32_t *string) {
     REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer source cursor"));
     REQUIRE(string != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string"));
 

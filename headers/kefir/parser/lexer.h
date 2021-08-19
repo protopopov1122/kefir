@@ -16,7 +16,7 @@ typedef kefir_result_t (*kefir_lexer_callback_fn_t)(struct kefir_mem *, struct k
 kefir_result_t kefir_lexer_init(struct kefir_lexer *, struct kefir_symbol_table *, struct kefir_lexer_source_cursor *);
 kefir_result_t kefir_lexer_apply(struct kefir_mem *, struct kefir_lexer *, kefir_lexer_callback_fn_t, void *);
 
-kefir_result_t kefir_lexer_cursor_match_string(struct kefir_lexer_source_cursor *, const char32_t *);
+kefir_result_t kefir_lexer_cursor_match_string(struct kefir_lexer_source_cursor *, const kefir_char32_t *);
 
 kefir_result_t kefir_lexer_match_keyword(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
 kefir_result_t kefir_lexer_next(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);

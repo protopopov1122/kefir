@@ -181,7 +181,7 @@ static kefir_result_t format_string(struct kefir_json_output *json, const char *
     mbstate_t state;
     const char *end = string + strlen(string);
     size_t sz = 0;
-    char32_t wide_char;
+    kefir_char32_t wide_char;
     while (string < end && (sz = mbrtoc32(&wide_char, string, end - string, &state)) != 0) {
         switch (wide_char) {
             case U'\"':

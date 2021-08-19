@@ -1,9 +1,10 @@
 #include "kefir/parser/lexer.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/util/char32.h"
 
 _Thread_local struct KeywordEntry {
-    const char32_t *literal;
+    const kefir_char32_t *literal;
     kefir_keyword_token_t keyword;
 } KEYWORDS[] = {{U"auto", KEFIR_KEYWORD_AUTO},
                 {U"break", KEFIR_KEYWORD_BREAK},
@@ -50,20 +51,11 @@ _Thread_local struct KeywordEntry {
                 {U"_Static_assert", KEFIR_KEYWORD_STATIC_ASSERT},
                 {U"_Thread_local", KEFIR_KEYWORD_THREAD_LOCAL}};
 
-static kefir_size_t c32strlen(const char32_t *string) {
-    REQUIRE(string != NULL, 0);
-    kefir_size_t length = 0;
-    while (string[length] != U'\0') {
-        length++;
-    }
-    return length;
-}
-
 static int keyword_cmp(const void *k1, const void *k2) {
     ASSIGN_DECL_CAST(struct KeywordEntry *, entry1, k1);
     ASSIGN_DECL_CAST(struct KeywordEntry *, entry2, k2);
-    const kefir_size_t length1 = c32strlen(entry1->literal);
-    const kefir_size_t length2 = c32strlen(entry2->literal);
+    const kefir_size_t length1 = kefir_strlen32(entry1->literal);
+    const kefir_size_t length2 = kefir_strlen32(entry2->literal);
     if (length1 > length2) {
         return -1;
     } else if (length1 == length2) {
@@ -94,7 +86,7 @@ static kefir_result_t match_keyword_impl(struct kefir_mem *mem, struct kefir_lex
         kefir_result_t res = kefir_lexer_cursor_match_string(lexer->cursor, entry->literal);
         if (res == KEFIR_OK) {
             REQUIRE_OK(kefir_token_new_keyword(entry->keyword, token));
-            REQUIRE_OK(kefir_lexer_source_cursor_next(lexer->cursor, c32strlen(entry->literal)));
+            REQUIRE_OK(kefir_lexer_source_cursor_next(lexer->cursor, kefir_strlen32(entry->literal)));
             found = true;
         } else {
             REQUIRE(res == KEFIR_NO_MATCH, res);

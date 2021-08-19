@@ -194,7 +194,7 @@ kefir_result_t amd64_string_literal(struct kefir_amd64_asmgen *asmgen, const cha
     mbstate_t state;
     const char *end = literal + length;
     size_t sz = 0;
-    char32_t wide_char;
+    kefir_char32_t wide_char;
     while (literal < end && (*literal == '\0' || (sz = mbrtoc32(&wide_char, literal, end - literal, &state)) != 0)) {
         if (*literal == '\0') {
             fprintf(out, "\\000");
