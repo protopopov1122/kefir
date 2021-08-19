@@ -1,7 +1,159 @@
 [
     {
         "class": "keyword",
-        "keyword": "auto"
+        "keyword": "extern"
+    },
+    {
+        "class": "keyword",
+        "keyword": "static"
+    },
+    {
+        "class": "keyword",
+        "keyword": "alignof"
+    },
+    {
+        "class": "keyword",
+        "keyword": "restrict"
+    },
+    {
+        "class": "keyword",
+        "keyword": "struct"
+    },
+    {
+        "class": "keyword",
+        "keyword": "static_assert"
+    },
+    {
+        "class": "keyword",
+        "keyword": "break"
+    },
+    {
+        "class": "keyword",
+        "keyword": "default"
+    },
+    {
+        "class": "keyword",
+        "keyword": "unsigned"
+    },
+    {
+        "class": "keyword",
+        "keyword": "if"
+    },
+    {
+        "class": "keyword",
+        "keyword": "register"
+    },
+    {
+        "class": "keyword",
+        "keyword": "signed"
+    },
+    {
+        "class": "keyword",
+        "keyword": "union"
+    },
+    {
+        "class": "keyword",
+        "keyword": "return"
+    },
+    {
+        "class": "keyword",
+        "keyword": "for"
+    },
+    {
+        "class": "keyword",
+        "keyword": "imaginary"
+    },
+    {
+        "class": "keyword",
+        "keyword": "long"
+    },
+    {
+        "class": "keyword",
+        "keyword": "enum"
+    },
+    {
+        "class": "keyword",
+        "keyword": "case"
+    },
+    {
+        "class": "keyword",
+        "keyword": "double"
+    },
+    {
+        "class": "keyword",
+        "keyword": "complex"
+    },
+    {
+        "class": "keyword",
+        "keyword": "void"
+    },
+    {
+        "class": "keyword",
+        "keyword": "switch"
+    },
+    {
+        "class": "keyword",
+        "keyword": "sizeof"
+    },
+    {
+        "class": "keyword",
+        "keyword": "noreturn"
+    },
+    {
+        "class": "keyword",
+        "keyword": "alignas"
+    },
+    {
+        "class": "keyword",
+        "keyword": "char"
+    },
+    {
+        "class": "keyword",
+        "keyword": "inline"
+    },
+    {
+        "class": "keyword",
+        "keyword": "short"
+    },
+    {
+        "class": "keyword",
+        "keyword": "float"
+    },
+    {
+        "class": "keyword",
+        "keyword": "typedef"
+    },
+    {
+        "class": "keyword",
+        "keyword": "int"
+    },
+    {
+        "class": "keyword",
+        "keyword": "goto"
+    },
+    {
+        "class": "keyword",
+        "keyword": "thread_local"
+    },
+    {
+        "class": "keyword",
+        "keyword": "continue"
+    },
+    {
+        "class": "keyword",
+        "keyword": "bool"
+    },
+    {
+        "class": "keyword",
+        "keyword": "while"
+    },
+    {
+        "class": "keyword",
+        "keyword": "do"
+    },
+    {
+        "class": "keyword",
+        "keyword": "volatile"
     },
     {
         "class": "keyword",
@@ -9,6 +161,21 @@
     },
     {
         "class": "keyword",
-        "keyword": "thread_local"
+        "keyword": "auto"
+    },
+    {
+        "class": "keyword",
+        "keyword": "atomic"
+    },
+    {
+        "class": "keyword",
+        "keyword": "generic"
+    },
+    {
+        "class": "keyword",
+        "keyword": "const"
+    },
+    {
+        "class": "sentinel"
     }
 ]

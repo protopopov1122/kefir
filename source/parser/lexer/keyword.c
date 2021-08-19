@@ -1,3 +1,23 @@
+/*
+    SPDX-License-Identifier: GPL-3.0
+
+    Copyright (C) 2020-2021  Jevgenijs Protopopovs
+
+    This file is part of Kefir project.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 3.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "kefir/parser/lexer.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
@@ -50,59 +70,20 @@ _Thread_local struct KeywordEntry {
                 {U"_Noreturn", KEFIR_KEYWORD_NORETURN},
                 {U"_Static_assert", KEFIR_KEYWORD_STATIC_ASSERT},
                 {U"_Thread_local", KEFIR_KEYWORD_THREAD_LOCAL}};
+const kefir_size_t KEYWORDS_LENGTH = sizeof(KEYWORDS) / sizeof(KEYWORDS[0]);
 
-static int keyword_cmp(const void *k1, const void *k2) {
-    ASSIGN_DECL_CAST(struct KeywordEntry *, entry1, k1);
-    ASSIGN_DECL_CAST(struct KeywordEntry *, entry2, k2);
-    const kefir_size_t length1 = kefir_strlen32(entry1->literal);
-    const kefir_size_t length2 = kefir_strlen32(entry2->literal);
-    if (length1 > length2) {
-        return -1;
-    } else if (length1 == length2) {
-        return 0;
-    } else {
-        return 1;
-    }
-}
+kefir_result_t kefir_lexer_match_keyword(const kefir_char32_t *string, kefir_keyword_token_t *keyword) {
+    REQUIRE(string != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string"));
+    REQUIRE(keyword != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to keyword"));
 
-static void init_keywords() {
-    static _Thread_local kefir_bool_t init_done = false;
-    if (!init_done) {
-        qsort(KEYWORDS, sizeof(KEYWORDS) / sizeof(KEYWORDS[0]), sizeof(KEYWORDS[0]), keyword_cmp);
-        init_done = true;
-    }
-}
-
-static kefir_result_t match_keyword_impl(struct kefir_mem *mem, struct kefir_lexer *lexer, void *payload) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
-
-    ASSIGN_DECL_CAST(struct kefir_token *, token, payload);
-    kefir_bool_t found = false;
-    const kefir_size_t KEYWORDS_LENGTH = sizeof(KEYWORDS) / sizeof(KEYWORDS[0]);
-    for (kefir_size_t i = 0; !found && i < KEYWORDS_LENGTH; i++) {
+    for (kefir_size_t i = 0; i < KEYWORDS_LENGTH; i++) {
         struct KeywordEntry *entry = &KEYWORDS[i];
-        kefir_result_t res = kefir_lexer_cursor_match_string(lexer->cursor, entry->literal);
-        if (res == KEFIR_OK) {
-            REQUIRE_OK(kefir_token_new_keyword(entry->keyword, token));
-            REQUIRE_OK(kefir_lexer_source_cursor_next(lexer->cursor, kefir_strlen32(entry->literal)));
-            found = true;
-        } else {
-            REQUIRE(res == KEFIR_NO_MATCH, res);
+        kefir_int_t cmpres = kefir_strcmp32(string, entry->literal);
+        REQUIRE(cmpres != KEFIR_STRCMP32_ERROR, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Error while comparing strings"));
+        if (cmpres == 0) {
+            *keyword = entry->keyword;
+            return KEFIR_OK;
         }
     }
-
-    REQUIRE(found, KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match keyword token"));
-    return KEFIR_OK;
-}
-
-kefir_result_t kefir_lexer_match_keyword(struct kefir_mem *mem, struct kefir_lexer *lexer, struct kefir_token *token) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer"));
-    REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
-
-    init_keywords();
-    REQUIRE_OK(kefir_lexer_apply(mem, lexer, match_keyword_impl, token));
-    return KEFIR_OK;
+    return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match keyword");
 }

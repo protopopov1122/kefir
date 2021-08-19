@@ -1,0 +1,45 @@
+[
+    {
+        "class": "identifier",
+        "identifier": "helloWorld"
+    },
+    {
+        "class": "identifier",
+        "identifier": "HeLoL123"
+    },
+    {
+        "class": "identifier",
+        "identifier": "__123identifier"
+    },
+    {
+        "class": "identifier",
+        "identifier": "i$"
+    },
+    {
+        "class": "identifier",
+        "identifier": "%onTwoThree____123"
+    },
+    {
+        "class": "identifier",
+        "identifier": "automatic"
+    },
+    {
+        "class": "identifier",
+        "identifier": "external"
+    },
+    {
+        "class": "identifier",
+        "identifier": "Thread_local"
+    },
+    {
+        "class": "identifier",
+        "identifier": "int_"
+    },
+    {
+        "class": "identifier",
+        "identifier": "feg"
+    },
+    {
+        "class": "sentinel"
+    }
+]

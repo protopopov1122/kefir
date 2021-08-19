@@ -18,18 +18,16 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef KEFIR_UTIL_CHAR32_H_
-#define KEFIR_UTIL_CHAR32_H_
+#include "kefir/parser/lexer.h"
+#include "kefir/core/util.h"
+#include "kefir/core/error.h"
+#include "kefir/util/char32.h"
 
-#include "kefir/core/basic-types.h"
+kefir_result_t kefir_lexer_cursor_skip_whitespaces(struct kefir_lexer_source_cursor *cursor) {
+    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer source cursor"));
 
-#define KEFIR_STRCMP32_ERROR KEFIR_INT_MAX
-
-kefir_size_t kefir_strlen32(const kefir_char32_t *);
-kefir_bool_t kefir_isspace32(kefir_char32_t);
-kefir_bool_t kefir_isdigit32(kefir_char32_t);
-kefir_bool_t kefir_ishexdigit32(kefir_char32_t);
-kefir_bool_t kefir_isnondigit32(kefir_char32_t);
-kefir_int_t kefir_strcmp32(const kefir_char32_t *, const kefir_char32_t *);
-
-#endif
+    while (kefir_isspace32(kefir_lexer_source_cursor_at(cursor, 0))) {
+        REQUIRE_OK(kefir_lexer_source_cursor_next(cursor, 1));
+    }
+    return KEFIR_OK;
+}

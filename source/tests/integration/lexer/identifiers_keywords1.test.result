@@ -1,0 +1,101 @@
+[
+    {
+        "class": "keyword",
+        "keyword": "const"
+    },
+    {
+        "class": "keyword",
+        "keyword": "long"
+    },
+    {
+        "class": "keyword",
+        "keyword": "long"
+    },
+    {
+        "class": "keyword",
+        "keyword": "unsigned"
+    },
+    {
+        "class": "keyword",
+        "keyword": "int"
+    },
+    {
+        "class": "identifier",
+        "identifier": "ABC"
+    },
+    {
+        "class": "identifier",
+        "identifier": "integral"
+    },
+    {
+        "class": "keyword",
+        "keyword": "float"
+    },
+    {
+        "class": "keyword",
+        "keyword": "thread_local"
+    },
+    {
+        "class": "identifier",
+        "identifier": "_thread_local"
+    },
+    {
+        "class": "keyword",
+        "keyword": "void"
+    },
+    {
+        "class": "identifier",
+        "identifier": "voidy"
+    },
+    {
+        "class": "identifier",
+        "identifier": "voidiest"
+    },
+    {
+        "class": "identifier",
+        "identifier": "HelloThere"
+    },
+    {
+        "class": "keyword",
+        "keyword": "char"
+    },
+    {
+        "class": "identifier",
+        "identifier": "testestTestTeSt"
+    },
+    {
+        "class": "keyword",
+        "keyword": "complex"
+    },
+    {
+        "class": "identifier",
+        "identifier": "complex"
+    },
+    {
+        "class": "identifier",
+        "identifier": "__Complex"
+    },
+    {
+        "class": "identifier",
+        "identifier": "_Complex_"
+    },
+    {
+        "class": "identifier",
+        "identifier": "A1"
+    },
+    {
+        "class": "identifier",
+        "identifier": "A2"
+    },
+    {
+        "class": "keyword",
+        "keyword": "if"
+    },
+    {
+        "class": "keyword",
+        "keyword": "else"
+    },
+    {
+        "class": "sentinel"
+    }
+]
