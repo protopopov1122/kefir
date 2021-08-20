@@ -35,7 +35,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_lexer lexer;
     REQUIRE_OK(kefir_symbol_table_init(&symbols));
     REQUIRE_OK(kefir_lexer_source_cursor_init(&cursor, CONTENT, sizeof(CONTENT)));
-    REQUIRE_OK(kefir_lexer_init(&lexer, &symbols, &cursor));
+    REQUIRE_OK(kefir_lexer_init(mem, &lexer, &symbols, &cursor));
 
     struct kefir_json_output json;
     REQUIRE_OK(kefir_json_output_init(&json, stdout, 4));
@@ -53,6 +53,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_json_output_array_end(&json));
     REQUIRE_OK(kefir_json_output_finalize(&json));
 
+    REQUIRE_OK(kefir_lexer_free(mem, &lexer));
     REQUIRE_OK(kefir_symbol_table_free(mem, &symbols));
     return KEFIR_OK;
 }

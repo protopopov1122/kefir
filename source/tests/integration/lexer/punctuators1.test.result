@@ -1,0 +1,181 @@
+[
+    {
+        "class": "punctuator",
+        "punctuator": "*="
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "<:"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "<%"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "++"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "["
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "->"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ">="
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "="
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "?"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "-"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "&"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "--"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "%>"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "{"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "+"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "#"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "%:%:"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "##"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ","
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "}"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "<<"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "*"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "!"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "\/"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "%="
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "..."
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "+="
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ")"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "<="
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ">>"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "<<="
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ":"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "%"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "("
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "<"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "%:"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "\/="
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "]"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ">"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "."
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ":>"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "-="
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "~"
+    },
+    {
+        "class": "sentinel"
+    }
+]

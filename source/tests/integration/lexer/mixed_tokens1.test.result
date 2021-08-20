@@ -1,0 +1,177 @@
+[
+    {
+        "class": "identifier",
+        "identifier": "a"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "+"
+    },
+    {
+        "class": "identifier",
+        "identifier": "b"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "*"
+    },
+    {
+        "class": "identifier",
+        "identifier": "c"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "--"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "keyword",
+        "keyword": "void"
+    },
+    {
+        "class": "identifier",
+        "identifier": "fn"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "("
+    },
+    {
+        "class": "keyword",
+        "keyword": "const"
+    },
+    {
+        "class": "keyword",
+        "keyword": "int"
+    },
+    {
+        "class": "identifier",
+        "identifier": "d"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ")"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "{"
+    },
+    {
+        "class": "keyword",
+        "keyword": "if"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "("
+    },
+    {
+        "class": "identifier",
+        "identifier": "x"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ")"
+    },
+    {
+        "class": "keyword",
+        "keyword": "return"
+    },
+    {
+        "class": "identifier",
+        "identifier": "someVar"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "++"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "keyword",
+        "keyword": "else"
+    },
+    {
+        "class": "keyword",
+        "keyword": "return"
+    },
+    {
+        "class": "keyword",
+        "keyword": "thread_local"
+    },
+    {
+        "class": "identifier",
+        "identifier": "thread_local"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "%="
+    },
+    {
+        "class": "identifier",
+        "identifier": "all"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "}"
+    },
+    {
+        "class": "keyword",
+        "keyword": "for"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "("
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ")"
+    },
+    {
+        "class": "keyword",
+        "keyword": "while"
+    },
+    {
+        "class": "keyword",
+        "keyword": "do"
+    },
+    {
+        "class": "identifier",
+        "identifier": "Do"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "++"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "sentinel"
+    }
+]

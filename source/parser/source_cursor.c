@@ -13,7 +13,7 @@ kefir_result_t kefir_lexer_source_cursor_init(struct kefir_lexer_source_cursor *
     return KEFIR_OK;
 }
 
-kefir_char32_t kefir_lexer_source_cursor_at(struct kefir_lexer_source_cursor *cursor, kefir_size_t count) {
+kefir_char32_t kefir_lexer_source_cursor_at(const struct kefir_lexer_source_cursor *cursor, kefir_size_t count) {
     REQUIRE(cursor != NULL, U'\0');
 
     kefir_char32_t character = U'\0';
@@ -92,4 +92,17 @@ const char *kefir_lexer_source_cursor_current(struct kefir_lexer_source_cursor *
 const char *kefir_lexer_source_cursor_end(struct kefir_lexer_source_cursor *cursor) {
     REQUIRE(cursor != NULL, NULL);
     return cursor->content + cursor->length;
+}
+
+kefir_result_t kefir_lexer_cursor_match_string(const struct kefir_lexer_source_cursor *cursor,
+                                               const kefir_char32_t *string) {
+    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer source cursor"));
+    REQUIRE(string != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string"));
+
+    for (kefir_size_t index = 0; string[index] != '\0'; index++) {
+        if (kefir_lexer_source_cursor_at(cursor, index) != string[index]) {
+            return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Cannot match provided string");
+        }
+    }
+    return KEFIR_OK;
 }

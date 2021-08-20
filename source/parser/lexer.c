@@ -22,13 +22,23 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-kefir_result_t kefir_lexer_init(struct kefir_lexer *lexer, struct kefir_symbol_table *symbols,
+kefir_result_t kefir_lexer_init(struct kefir_mem *mem, struct kefir_lexer *lexer, struct kefir_symbol_table *symbols,
                                 struct kefir_lexer_source_cursor *cursor) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer"));
     REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer source cursor"));
 
     lexer->symbols = symbols;
     lexer->cursor = cursor;
+    REQUIRE_OK(kefir_lexer_init_punctuators(mem, lexer));
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_lexer_free(struct kefir_mem *mem, struct kefir_lexer *lexer) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer"));
+
+    REQUIRE_OK(kefir_trie_free(mem, &lexer->punctuators));
     return KEFIR_OK;
 }
 
@@ -48,18 +58,6 @@ kefir_result_t kefir_lexer_apply(struct kefir_mem *mem, struct kefir_lexer *lexe
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_lexer_cursor_match_string(struct kefir_lexer_source_cursor *cursor, const kefir_char32_t *string) {
-    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer source cursor"));
-    REQUIRE(string != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string"));
-
-    for (kefir_size_t index = 0; string[index] != '\0'; index++) {
-        if (kefir_lexer_source_cursor_at(cursor, index) != string[index]) {
-            return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Cannot match provided string");
-        }
-    }
-    return KEFIR_OK;
-}
-
 kefir_result_t lexer_next_impl(struct kefir_mem *mem, struct kefir_lexer *lexer, void *payload) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer"));
@@ -70,7 +68,9 @@ kefir_result_t lexer_next_impl(struct kefir_mem *mem, struct kefir_lexer *lexer,
     if (kefir_lexer_source_cursor_at(lexer->cursor, 0) == U'\0') {
         REQUIRE_OK(kefir_token_new_sentinel(token));
     } else {
-        REQUIRE_OK(kefir_lexer_match_identifier_or_keyword(mem, lexer, token));
+        kefir_result_t res = kefir_lexer_match_identifier_or_keyword(mem, lexer, token);
+        REQUIRE(res == KEFIR_NO_MATCH, res);
+        REQUIRE_OK(kefir_lexer_match_punctuator(mem, lexer, token));
     }
     return KEFIR_OK;
 }

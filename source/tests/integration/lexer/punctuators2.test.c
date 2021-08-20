@@ -25,10 +25,10 @@
 #include <stdio.h>
 
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
-    const char CONTENT[] = "helloWorld\nHeLoL123 __123identifier     "
-                           "i\\u0024 \\U00000025onTwoThree____123\t\t"
-                           "automatic    \t\n\r external\rThread_local\v"
-                           "   int_ \\u0066\\u0065\\u0067";
+    const char CONTENT[] = ">>>\t<<<      >>=\n<<=\f\v\v> >>   <\r<< >>>= <<<=\n\n\n\t"
+                           "+++\v---\t\t\t\t+      ++ ++=\f+++= +\v\v\r+= --=               ---= \n\n- -=\t\t\t\v"
+                           "%%=                    %%:\t\n\n\v\t\f   \t%%:%:: "
+                           "**====          =\t==\v===\f+==\n\n\n\n-===\t\v\r ###";
 
     struct kefir_symbol_table symbols;
     struct kefir_lexer_source_cursor cursor;

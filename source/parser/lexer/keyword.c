@@ -72,7 +72,7 @@ _Thread_local struct KeywordEntry {
                 {U"_Thread_local", KEFIR_KEYWORD_THREAD_LOCAL}};
 const kefir_size_t KEYWORDS_LENGTH = sizeof(KEYWORDS) / sizeof(KEYWORDS[0]);
 
-kefir_result_t kefir_lexer_match_keyword(const kefir_char32_t *string, kefir_keyword_token_t *keyword) {
+kefir_result_t kefir_lexer_get_keyword(const kefir_char32_t *string, kefir_keyword_token_t *keyword) {
     REQUIRE(string != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string"));
     REQUIRE(keyword != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to keyword"));
 

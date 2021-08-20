@@ -104,11 +104,12 @@ static kefir_result_t scan_identifier_digit(struct kefir_lexer_source_cursor *cu
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_lexer_match_identifier_or_keyword(struct kefir_mem *mem, struct kefir_lexer *lexer,
-                                                       struct kefir_token *token) {
+static kefir_result_t match_impl(struct kefir_mem *mem, struct kefir_lexer *lexer, void *payload) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer"));
-    REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct kefir_token *, token, payload);
+
     kefir_char32_t identifier[MAX_IDENTIFIER_LENGTH + 1] = {U'\0'};
     REQUIRE_OK(scan_identifier_nondigit(lexer->cursor, &identifier[0]));
 
@@ -128,7 +129,7 @@ kefir_result_t kefir_lexer_match_identifier_or_keyword(struct kefir_mem *mem, st
     }
 
     kefir_keyword_token_t keyword;
-    kefir_result_t res = kefir_lexer_match_keyword(identifier, &keyword);
+    kefir_result_t res = kefir_lexer_get_keyword(identifier, &keyword);
     if (res == KEFIR_NO_MATCH) {
         char mb_identifier[MB_CUR_MAX * MAX_IDENTIFIER_LENGTH];
         char *mb_identifier_ptr = &mb_identifier[0];
@@ -144,6 +145,15 @@ kefir_result_t kefir_lexer_match_identifier_or_keyword(struct kefir_mem *mem, st
         REQUIRE_OK(res);
         REQUIRE_OK(kefir_token_new_keyword(keyword, token));
     }
+    return KEFIR_OK;
+}
 
+kefir_result_t kefir_lexer_match_identifier_or_keyword(struct kefir_mem *mem, struct kefir_lexer *lexer,
+                                                       struct kefir_token *token) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer"));
+    REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid token"));
+
+    REQUIRE_OK(kefir_lexer_apply(mem, lexer, match_impl, token));
     return KEFIR_OK;
 }

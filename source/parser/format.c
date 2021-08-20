@@ -204,6 +204,228 @@ static kefir_result_t format_keyword(struct kefir_json_output *json, kefir_keywo
     return KEFIR_OK;
 }
 
+static kefir_result_t format_punctuator(struct kefir_json_output *json, kefir_punctuator_token_t punctuator) {
+    REQUIRE_OK(kefir_json_output_object_key(json, "punctuator"));
+    switch (punctuator) {
+        case KEFIR_PUNCTUATOR_LEFT_BRACKET:
+            REQUIRE_OK(kefir_json_output_string(json, "["));
+            break;
+
+        case KEFIR_PUNCTUATOR_RIGHT_BRACKET:
+            REQUIRE_OK(kefir_json_output_string(json, "]"));
+            break;
+
+        case KEFIR_PUNCTUATOR_LEFT_PARENTHESE:
+            REQUIRE_OK(kefir_json_output_string(json, "("));
+            break;
+
+        case KEFIR_PUNCTUATOR_RIGHT_PARENTHESE:
+            REQUIRE_OK(kefir_json_output_string(json, ")"));
+            break;
+
+        case KEFIR_PUNCTUATOR_LEFT_BRACE:
+            REQUIRE_OK(kefir_json_output_string(json, "{"));
+            break;
+
+        case KEFIR_PUNCTUATOR_RIGHT_BRACE:
+            REQUIRE_OK(kefir_json_output_string(json, "}"));
+            break;
+
+        case KEFIR_PUNCTUATOR_DOT:
+            REQUIRE_OK(kefir_json_output_string(json, "."));
+            break;
+
+        case KEFIR_PUNCTUATOR_RIGHT_ARROW:
+            REQUIRE_OK(kefir_json_output_string(json, "->"));
+            break;
+
+        case KEFIR_PUNCTUATOR_DOUBLE_PLUS:
+            REQUIRE_OK(kefir_json_output_string(json, "++"));
+            break;
+
+        case KEFIR_PUNCTUATOR_DOUBLE_MINUS:
+            REQUIRE_OK(kefir_json_output_string(json, "--"));
+            break;
+
+        case KEFIR_PUNCTUATOR_AMPERSAND:
+            REQUIRE_OK(kefir_json_output_string(json, "&"));
+            break;
+
+        case KEFIR_PUNCTUATOR_STAR:
+            REQUIRE_OK(kefir_json_output_string(json, "*"));
+            break;
+
+        case KEFIR_PUNCTUATOR_PLUS:
+            REQUIRE_OK(kefir_json_output_string(json, "+"));
+            break;
+
+        case KEFIR_PUNCTUATOR_MINUS:
+            REQUIRE_OK(kefir_json_output_string(json, "-"));
+            break;
+
+        case KEFIR_PUNCTUATOR_TILDE:
+            REQUIRE_OK(kefir_json_output_string(json, "~"));
+            break;
+
+        case KEFIR_PUNCTUATOR_EXCLAMATION_MARK:
+            REQUIRE_OK(kefir_json_output_string(json, "!"));
+            break;
+
+        case KEFIR_PUNCTUATOR_SLASH:
+            REQUIRE_OK(kefir_json_output_string(json, "/"));
+            break;
+
+        case KEFIR_PUNCTUATOR_PERCENT:
+            REQUIRE_OK(kefir_json_output_string(json, "%"));
+            break;
+
+        case KEFIR_PUNCTUATOR_LEFT_SHIFT:
+            REQUIRE_OK(kefir_json_output_string(json, "<<"));
+            break;
+
+        case KEFIR_PUNCTUATOR_RIGHT_SHIFT:
+            REQUIRE_OK(kefir_json_output_string(json, ">>"));
+            break;
+
+        case KEFIR_PUNCTUATOR_LESS_THAN:
+            REQUIRE_OK(kefir_json_output_string(json, "<"));
+            break;
+
+        case KEFIR_PUNCTUATOR_GREATER_THAN:
+            REQUIRE_OK(kefir_json_output_string(json, ">"));
+            break;
+
+        case KEFIR_PUNCTUATOR_LESS_OR_EQUAL:
+            REQUIRE_OK(kefir_json_output_string(json, "<="));
+            break;
+
+        case KEFIR_PUNCTUATOR_GREATER_OR_EQUAL:
+            REQUIRE_OK(kefir_json_output_string(json, ">="));
+            break;
+
+        case KEFIR_PUNCTUATOR_EQUAL:
+            REQUIRE_OK(kefir_json_output_string(json, "=="));
+            break;
+
+        case KEFIR_PUNCTUATOR_NOT_EQUAL:
+            REQUIRE_OK(kefir_json_output_string(json, "!="));
+            break;
+
+        case KEFIR_PUNCTUATOR_CARET:
+            REQUIRE_OK(kefir_json_output_string(json, "^"));
+            break;
+
+        case KEFIR_PUNCTUATOR_VBAR:
+            REQUIRE_OK(kefir_json_output_string(json, "|"));
+            break;
+
+        case KEFIR_PUNCTUATOR_DOUBLE_AMPERSAND:
+            REQUIRE_OK(kefir_json_output_string(json, "&&"));
+            break;
+
+        case KEFIR_PUNCTUATOR_DOUBLE_VBAR:
+            REQUIRE_OK(kefir_json_output_string(json, "||"));
+            break;
+
+        case KEFIR_PUNCTUATOR_QUESTION_MARK:
+            REQUIRE_OK(kefir_json_output_string(json, "?"));
+            break;
+
+        case KEFIR_PUNCTUATOR_COLON:
+            REQUIRE_OK(kefir_json_output_string(json, ":"));
+            break;
+
+        case KEFIR_PUNCTUATOR_SEMICOLON:
+            REQUIRE_OK(kefir_json_output_string(json, ";"));
+            break;
+
+        case KEFIR_PUNCTUATOR_ELLIPSIS:
+            REQUIRE_OK(kefir_json_output_string(json, "..."));
+            break;
+
+        case KEFIR_PUNCTUATOR_ASSIGN:
+            REQUIRE_OK(kefir_json_output_string(json, "="));
+            break;
+
+        case KEFIR_PUNCTUATOR_ASSIGN_MULTIPLY:
+            REQUIRE_OK(kefir_json_output_string(json, "*="));
+            break;
+
+        case KEFIR_PUNCTUATOR_ASSIGN_DIVIDE:
+            REQUIRE_OK(kefir_json_output_string(json, "/="));
+            break;
+
+        case KEFIR_PUNCTUATOR_ASSIGN_MODULO:
+            REQUIRE_OK(kefir_json_output_string(json, "%="));
+            break;
+
+        case KEFIR_PUNCTUATOR_ASSIGN_ADD:
+            REQUIRE_OK(kefir_json_output_string(json, "+="));
+            break;
+
+        case KEFIR_PUNCTUATOR_ASSIGN_SUBTRACT:
+            REQUIRE_OK(kefir_json_output_string(json, "-="));
+            break;
+
+        case KEFIR_PUNCTUATOR_ASSIGN_SHIFT_LEFT:
+            REQUIRE_OK(kefir_json_output_string(json, "<<="));
+            break;
+
+        case KEFIR_PUNCTUATOR_ASSIGN_SHIFT_RIGHT:
+            REQUIRE_OK(kefir_json_output_string(json, ">>="));
+            break;
+
+        case KEFIR_PUNCTUATOR_ASSIGN_AND:
+            REQUIRE_OK(kefir_json_output_string(json, "&="));
+            break;
+
+        case KEFIR_PUNCTUATOR_ASSIGN_XOR:
+            REQUIRE_OK(kefir_json_output_string(json, "^="));
+            break;
+
+        case KEFIR_PUNCTUATOR_ASSIGN_OR:
+            REQUIRE_OK(kefir_json_output_string(json, "|="));
+            break;
+
+        case KEFIR_PUNCTUATOR_COMMA:
+            REQUIRE_OK(kefir_json_output_string(json, ","));
+            break;
+
+        case KEFIR_PUNCTUATOR_HASH:
+            REQUIRE_OK(kefir_json_output_string(json, "#"));
+            break;
+
+        case KEFIR_PUNCTUATOR_DOUBLE_HASH:
+            REQUIRE_OK(kefir_json_output_string(json, "##"));
+            break;
+
+        case KEFIR_PUNCTUATOR_DIGRAPH_LEFT_BRACKET:
+            REQUIRE_OK(kefir_json_output_string(json, "<:"));
+            break;
+
+        case KEFIR_PUNCTUATOR_DIGRAPH_RIGHT_BRACKET:
+            REQUIRE_OK(kefir_json_output_string(json, ":>"));
+            break;
+
+        case KEFIR_PUNCTUATOR_DIGRAPH_LEFT_BRACE:
+            REQUIRE_OK(kefir_json_output_string(json, "<%"));
+            break;
+
+        case KEFIR_PUNCTUATOR_DIGRAPH_RIGHT_BRACE:
+            REQUIRE_OK(kefir_json_output_string(json, "%>"));
+            break;
+
+        case KEFIR_PUNCTUATOR_DIGRAPH_HASH:
+            REQUIRE_OK(kefir_json_output_string(json, "%:"));
+            break;
+
+        case KEFIR_PUNCTUATOR_DIGRAPH_DOUBLE_HASH:
+            REQUIRE_OK(kefir_json_output_string(json, "%:%:"));
+            break;
+    }
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_token_format(struct kefir_json_output *json, const struct kefir_token *token) {
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid json output"));
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid token"));
@@ -226,9 +448,13 @@ kefir_result_t kefir_token_format(struct kefir_json_output *json, const struct k
             REQUIRE_OK(kefir_json_output_string(json, token->identifier));
             break;
 
+        case KEFIR_TOKEN_PUNCTUATOR:
+            REQUIRE_OK(kefir_json_output_string(json, "punctuator"));
+            REQUIRE_OK(format_punctuator(json, token->punctuator));
+            break;
+
         case KEFIR_TOKEN_CONSTANT:
         case KEFIR_TOKEN_STRING_LITERAL:
-        case KEFIR_TOKEN_PUNCTUATOR:
             return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Token JSON formatter is not implemented yet");
     }
     REQUIRE_OK(kefir_json_output_object_end(json));
