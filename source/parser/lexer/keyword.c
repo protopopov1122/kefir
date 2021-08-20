@@ -72,18 +72,73 @@ _Thread_local struct KeywordEntry {
                 {U"_Thread_local", KEFIR_KEYWORD_THREAD_LOCAL}};
 const kefir_size_t KEYWORDS_LENGTH = sizeof(KEYWORDS) / sizeof(KEYWORDS[0]);
 
-kefir_result_t kefir_lexer_get_keyword(const kefir_char32_t *string, kefir_keyword_token_t *keyword) {
+#define KEYWORD_NONE (~((kefir_trie_value_t) 0))
+
+static kefir_result_t insert_keyword(struct kefir_mem *mem, struct kefir_trie *trie, const kefir_char32_t *literal,
+                                     kefir_keyword_token_t keyword) {
+    struct kefir_trie_vertex *vertex = NULL;
+    if (literal[1] == U'\0') {
+        kefir_result_t res = kefir_trie_at(trie, (kefir_trie_key_t) literal[0], &vertex);
+        if (res == KEFIR_NOT_FOUND) {
+            REQUIRE_OK(kefir_trie_insert_vertex(mem, trie, (kefir_trie_key_t) literal[0], (kefir_trie_value_t) keyword,
+                                                &vertex));
+        } else {
+            REQUIRE_OK(res);
+            REQUIRE(vertex->node.value == KEYWORD_NONE,
+                    KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Keyword clash in the trie"));
+            vertex->node.value = (kefir_trie_value_t) keyword;
+        }
+    } else {
+        kefir_result_t res = kefir_trie_at(trie, (kefir_trie_key_t) literal[0], &vertex);
+        if (res == KEFIR_NOT_FOUND) {
+            REQUIRE_OK(kefir_trie_insert_vertex(mem, trie, (kefir_trie_key_t) literal[0], KEYWORD_NONE, &vertex));
+        } else {
+            REQUIRE_OK(res);
+        }
+        REQUIRE_OK(insert_keyword(mem, &vertex->node, literal + 1, keyword));
+    }
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_lexer_init_keywords(struct kefir_mem *mem, struct kefir_lexer *lexer) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer"));
+
+    REQUIRE_OK(kefir_trie_init(&lexer->keywords, KEYWORD_NONE));
+    for (kefir_size_t i = 0; i < KEYWORDS_LENGTH; i++) {
+        kefir_result_t res = insert_keyword(mem, &lexer->keywords, KEYWORDS[i].literal, KEYWORDS[i].keyword);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_trie_free(mem, &lexer->keywords);
+            return res;
+        });
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t match_keyword(const kefir_char32_t *string, struct kefir_trie *trie,
+                                    kefir_keyword_token_t *keyword) {
+    if (*string == U'\0') {
+        REQUIRE(trie->value != KEYWORD_NONE, KEFIR_SET_ERROR(KEFIR_NOT_FOUND, "Unable to match keyword"));
+        *keyword = (kefir_keyword_token_t) trie->value;
+    } else {
+        struct kefir_trie_vertex *vertex = NULL;
+        REQUIRE_OK(kefir_trie_at(trie, (kefir_trie_key_t) *string, &vertex));
+        string++;
+        REQUIRE_OK(match_keyword(string, &vertex->node, keyword));
+    }
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_lexer_get_keyword(struct kefir_lexer *lexer, const kefir_char32_t *string,
+                                       kefir_keyword_token_t *keyword) {
+    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer"));
     REQUIRE(string != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string"));
     REQUIRE(keyword != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to keyword"));
 
-    for (kefir_size_t i = 0; i < KEYWORDS_LENGTH; i++) {
-        struct KeywordEntry *entry = &KEYWORDS[i];
-        kefir_int_t cmpres = kefir_strcmp32(string, entry->literal);
-        REQUIRE(cmpres != KEFIR_STRCMP32_ERROR, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Error while comparing strings"));
-        if (cmpres == 0) {
-            *keyword = entry->keyword;
-            return KEFIR_OK;
-        }
+    kefir_result_t res = match_keyword(string, &lexer->keywords, keyword);
+    if (res == KEFIR_NOT_FOUND) {
+        res = KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match keyword");
     }
-    return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match keyword");
+    REQUIRE_OK(res);
+    return KEFIR_OK;
 }

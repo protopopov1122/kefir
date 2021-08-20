@@ -12,6 +12,7 @@ typedef struct kefir_lexer {
     struct kefir_lexer_source_cursor *cursor;
 
     struct kefir_trie punctuators;
+    struct kefir_trie keywords;
 } kefir_lexer_t;
 
 typedef kefir_result_t (*kefir_lexer_callback_fn_t)(struct kefir_mem *, struct kefir_lexer *, void *);
@@ -27,7 +28,8 @@ kefir_result_t kefir_lexer_cursor_skip_whitespaces(struct kefir_lexer_source_cur
 kefir_result_t kefir_lexer_init_punctuators(struct kefir_mem *, struct kefir_lexer *);
 kefir_result_t kefir_lexer_match_punctuator(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
 
-kefir_result_t kefir_lexer_get_keyword(const kefir_char32_t *, kefir_keyword_token_t *);
+kefir_result_t kefir_lexer_init_keywords(struct kefir_mem *, struct kefir_lexer *);
+kefir_result_t kefir_lexer_get_keyword(struct kefir_lexer *, const kefir_char32_t *, kefir_keyword_token_t *);
 kefir_result_t kefir_lexer_match_identifier_or_keyword(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
 
 #endif

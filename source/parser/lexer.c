@@ -31,6 +31,11 @@ kefir_result_t kefir_lexer_init(struct kefir_mem *mem, struct kefir_lexer *lexer
     lexer->symbols = symbols;
     lexer->cursor = cursor;
     REQUIRE_OK(kefir_lexer_init_punctuators(mem, lexer));
+    kefir_result_t res = kefir_lexer_init_keywords(mem, lexer);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_trie_free(mem, &lexer->punctuators);
+        return res;
+    });
     return KEFIR_OK;
 }
 
@@ -38,6 +43,7 @@ kefir_result_t kefir_lexer_free(struct kefir_mem *mem, struct kefir_lexer *lexer
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer"));
 
+    REQUIRE_OK(kefir_trie_free(mem, &lexer->keywords));
     REQUIRE_OK(kefir_trie_free(mem, &lexer->punctuators));
     return KEFIR_OK;
 }

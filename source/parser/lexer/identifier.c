@@ -129,7 +129,7 @@ static kefir_result_t match_impl(struct kefir_mem *mem, struct kefir_lexer *lexe
     }
 
     kefir_keyword_token_t keyword;
-    kefir_result_t res = kefir_lexer_get_keyword(identifier, &keyword);
+    kefir_result_t res = kefir_lexer_get_keyword(lexer, identifier, &keyword);
     if (res == KEFIR_NO_MATCH) {
         char mb_identifier[MB_CUR_MAX * MAX_IDENTIFIER_LENGTH];
         char *mb_identifier_ptr = &mb_identifier[0];
