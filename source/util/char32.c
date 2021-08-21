@@ -64,6 +64,23 @@ kefir_bool_t kefir_isdigit32(kefir_char32_t chr) {
     }
 }
 
+kefir_bool_t kefir_isoctdigit32(kefir_char32_t chr) {
+    switch (chr) {
+        case U'0':
+        case U'1':
+        case U'2':
+        case U'3':
+        case U'4':
+        case U'5':
+        case U'6':
+        case U'7':
+            return true;
+
+        default:
+            return false;
+    }
+}
+
 kefir_bool_t kefir_ishexdigit32(kefir_char32_t chr) {
     switch (chr) {
         case U'a':

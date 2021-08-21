@@ -1,0 +1,65 @@
+[
+    {
+        "class": "string_literal",
+        "content": "Hello\0, \n\n\tworld!HELLO THERE\0",
+        "length": 29
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "+"
+    },
+    {
+        "class": "string_literal",
+        "content": "\0",
+        "length": 1
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "."
+    },
+    {
+        "class": "string_literal",
+        "content": "hxr\v\f\r\?\a\\\0",
+        "length": 10
+    },
+    {
+        "class": "identifier",
+        "identifier": "test"
+    },
+    {
+        "class": "identifier",
+        "identifier": "test"
+    },
+    {
+        "class": "keyword",
+        "keyword": "for"
+    },
+    {
+        "class": "identifier",
+        "identifier": "big"
+    },
+    {
+        "class": "keyword",
+        "keyword": "int"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "++"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "--"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "-"
+    },
+    {
+        "class": "string_literal",
+        "content": "ooo876Hello\n\n\0",
+        "length": 14
+    },
+    {
+        "class": "sentinel"
+    }
+]

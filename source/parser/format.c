@@ -453,8 +453,15 @@ kefir_result_t kefir_token_format(struct kefir_json_output *json, const struct k
             REQUIRE_OK(format_punctuator(json, token->punctuator));
             break;
 
-        case KEFIR_TOKEN_CONSTANT:
         case KEFIR_TOKEN_STRING_LITERAL:
+            REQUIRE_OK(kefir_json_output_string(json, "string_literal"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "content"));
+            REQUIRE_OK(kefir_json_output_raw_string(json, token->string_literal.content, token->string_literal.length));
+            REQUIRE_OK(kefir_json_output_object_key(json, "length"));
+            REQUIRE_OK(kefir_json_output_uinteger(json, token->string_literal.length));
+            break;
+
+        case KEFIR_TOKEN_CONSTANT:
             return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Token JSON formatter is not implemented yet");
     }
     REQUIRE_OK(kefir_json_output_object_end(json));

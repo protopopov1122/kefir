@@ -22,7 +22,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-struct Punctuators {
+static const struct Punctuators {
     kefir_punctuator_token_t punctuator;
     const kefir_char32_t *literal;
 } PUNCTUATORS[] = {{KEFIR_PUNCTUATOR_LEFT_BRACKET, U"["},
@@ -79,7 +79,7 @@ struct Punctuators {
                    {KEFIR_PUNCTUATOR_DIGRAPH_RIGHT_BRACE, U"%>"},
                    {KEFIR_PUNCTUATOR_DIGRAPH_HASH, U"%:"},
                    {KEFIR_PUNCTUATOR_DIGRAPH_DOUBLE_HASH, U"%:%:"}};
-const kefir_size_t PUNCTUATORS_LENGTH = sizeof(PUNCTUATORS) / sizeof(PUNCTUATORS[0]);
+static const kefir_size_t PUNCTUATORS_LENGTH = sizeof(PUNCTUATORS) / sizeof(PUNCTUATORS[0]);
 
 #define PUNCTUATOR_NONE (~((kefir_trie_value_t) 0))
 

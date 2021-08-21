@@ -216,6 +216,10 @@ static kefir_result_t format_string(struct kefir_json_output *json, const char *
                 fprintf(json->file, "\\t");
                 break;
 
+            case U'\a':
+                fprintf(json->file, "\\a");
+                break;
+
             default:
                 fwrite(string, 1, sz, json->file);
                 break;
@@ -293,6 +297,72 @@ kefir_result_t kefir_json_output_string(struct kefir_json_output *json, const ch
     REQUIRE_OK(validate_value(json));
 
     REQUIRE_OK(format_string(json, value));
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_json_output_raw_string(struct kefir_json_output *json, const char *value, kefir_size_t length) {
+    REQUIRE_OK(valid_json(json));
+    REQUIRE_OK(write_separator(json));
+    REQUIRE_OK(validate_value(json));
+
+    fprintf(json->file, "\"");
+    for (kefir_size_t i = 0; i < length; i++) {
+        char chr = value[i];
+        switch (chr) {
+            case U'\"':
+                fprintf(json->file, "\\\"");
+                break;
+
+            case U'\\':
+                fprintf(json->file, "\\\\");
+                break;
+
+            case U'/':
+                fprintf(json->file, "\\/");
+                break;
+
+            case U'\b':
+                fprintf(json->file, "\\b");
+                break;
+
+            case U'\f':
+                fprintf(json->file, "\\f");
+                break;
+
+            case U'\n':
+                fprintf(json->file, "\\n");
+                break;
+
+            case U'\r':
+                fprintf(json->file, "\\r");
+                break;
+
+            case U'\t':
+                fprintf(json->file, "\\t");
+                break;
+
+            case U'\a':
+                fprintf(json->file, "\\a");
+                break;
+
+            case U'\v':
+                fprintf(json->file, "\\v");
+                break;
+
+            case U'\?':
+                fprintf(json->file, "\\?");
+                break;
+
+            case U'\0':
+                fprintf(json->file, "\\0");
+                break;
+
+            default:
+                fputc(chr, json->file);
+                break;
+        }
+    }
+    fprintf(json->file, "\"");
     return KEFIR_OK;
 }
 

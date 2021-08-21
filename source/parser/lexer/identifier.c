@@ -25,70 +25,13 @@
 
 #define MAX_IDENTIFIER_LENGTH 64
 
-static kefir_uint32_t hex_to_digit(kefir_char32_t chr) {
-    switch (chr) {
-        case U'a':
-        case U'A':
-            return 10;
-
-        case U'b':
-        case U'B':
-            return 11;
-
-        case U'c':
-        case U'C':
-            return 12;
-
-        case U'd':
-        case U'D':
-            return 13;
-
-        case U'e':
-        case U'E':
-            return 14;
-
-        case U'f':
-        case U'F':
-            return 15;
-
-        default:
-            if (chr >= U'0' && chr <= U'9') {
-                return chr - U'0';
-            } else {
-                return ~((kefir_uint32_t) 0);
-            }
-    }
-}
-
 static kefir_result_t scan_identifier_nondigit(struct kefir_lexer_source_cursor *cursor, kefir_char32_t *target) {
     kefir_char32_t chr = kefir_lexer_source_cursor_at(cursor, 0);
-    kefir_char32_t chr2 = kefir_lexer_source_cursor_at(cursor, 1);
     if (kefir_isnondigit32(chr)) {
         *target = chr;
         REQUIRE_OK(kefir_lexer_source_cursor_next(cursor, 1));
-    } else if (chr == U'\\' && chr2 == U'u') {
-        kefir_char32_t hex1 = kefir_lexer_source_cursor_at(cursor, 2), hex2 = kefir_lexer_source_cursor_at(cursor, 3),
-                       hex3 = kefir_lexer_source_cursor_at(cursor, 4), hex4 = kefir_lexer_source_cursor_at(cursor, 5);
-        REQUIRE(kefir_ishexdigit32(hex1) && kefir_ishexdigit32(hex2) && kefir_ishexdigit32(hex3) &&
-                    kefir_ishexdigit32(hex4),
-                KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match identifier"));
-        *target =
-            hex_to_digit(hex4) | (hex_to_digit(hex3) << 4) | (hex_to_digit(hex2) << 8) | (hex_to_digit(hex1) << 12);
-        REQUIRE_OK(kefir_lexer_source_cursor_next(cursor, 6));
     } else {
-        REQUIRE(chr == U'\\' && chr2 == U'U', KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match identifier"));
-        kefir_char32_t hex1 = kefir_lexer_source_cursor_at(cursor, 2), hex2 = kefir_lexer_source_cursor_at(cursor, 3),
-                       hex3 = kefir_lexer_source_cursor_at(cursor, 4), hex4 = kefir_lexer_source_cursor_at(cursor, 5),
-                       hex5 = kefir_lexer_source_cursor_at(cursor, 6), hex6 = kefir_lexer_source_cursor_at(cursor, 7),
-                       hex7 = kefir_lexer_source_cursor_at(cursor, 8), hex8 = kefir_lexer_source_cursor_at(cursor, 9);
-        REQUIRE(kefir_ishexdigit32(hex1) && kefir_ishexdigit32(hex2) && kefir_ishexdigit32(hex3) &&
-                    kefir_ishexdigit32(hex4) && kefir_ishexdigit32(hex5) && kefir_ishexdigit32(hex6) &&
-                    kefir_ishexdigit32(hex7) && kefir_ishexdigit32(hex8),
-                KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match identifier"));
-        *target = hex_to_digit(hex8) | (hex_to_digit(hex7) << 4) | (hex_to_digit(hex6) << 8) |
-                  (hex_to_digit(hex5) << 12) | (hex_to_digit(hex4) << 16) | (hex_to_digit(hex3) << 20) |
-                  (hex_to_digit(hex2) << 24) | (hex_to_digit(hex1) << 28);
-        REQUIRE_OK(kefir_lexer_source_cursor_next(cursor, 10));
+        REQUIRE_OK(kefir_lexer_cursor_next_universal_character(cursor, target));
     }
     return KEFIR_OK;
 }

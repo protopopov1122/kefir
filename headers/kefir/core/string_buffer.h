@@ -18,19 +18,23 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef KEFIR_UTIL_CHAR32_H_
-#define KEFIR_UTIL_CHAR32_H_
+#ifndef KEFIR_CORE_STRING_BUFFER_H_
+#define KEFIR_CORE_STRING_BUFFER_H_
 
 #include "kefir/core/basic-types.h"
+#include "kefir/core/mem.h"
 
-#define KEFIR_STRCMP32_ERROR KEFIR_INT_MAX
+typedef struct kefir_string_buffer {
+    char *buffer;
+    kefir_size_t length;
+    kefir_size_t capacity;
+} kefir_string_buffer_t;
 
-kefir_size_t kefir_strlen32(const kefir_char32_t *);
-kefir_bool_t kefir_isspace32(kefir_char32_t);
-kefir_bool_t kefir_isdigit32(kefir_char32_t);
-kefir_bool_t kefir_isoctdigit32(kefir_char32_t);
-kefir_bool_t kefir_ishexdigit32(kefir_char32_t);
-kefir_bool_t kefir_isnondigit32(kefir_char32_t);
-kefir_int_t kefir_strcmp32(const kefir_char32_t *, const kefir_char32_t *);
+kefir_result_t kefir_string_buffer_init(struct kefir_mem *, struct kefir_string_buffer *);
+kefir_result_t kefir_string_buffer_free(struct kefir_mem *, struct kefir_string_buffer *);
+
+const char *kefir_string_buffer_value(const struct kefir_string_buffer *, kefir_size_t *);
+kefir_result_t kefir_string_buffer_insert(struct kefir_mem *, struct kefir_string_buffer *, const char *, kefir_size_t);
+kefir_result_t kefir_string_buffer_insert32(struct kefir_mem *, struct kefir_string_buffer *, kefir_char32_t);
 
 #endif

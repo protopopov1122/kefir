@@ -76,6 +76,8 @@ kefir_result_t lexer_next_impl(struct kefir_mem *mem, struct kefir_lexer *lexer,
     } else {
         kefir_result_t res = kefir_lexer_match_identifier_or_keyword(mem, lexer, token);
         REQUIRE(res == KEFIR_NO_MATCH, res);
+        res = kefir_lexer_match_string_literal(mem, lexer, token);
+        REQUIRE(res == KEFIR_NO_MATCH, res);
         REQUIRE_OK(kefir_lexer_match_punctuator(mem, lexer, token));
     }
     return KEFIR_OK;

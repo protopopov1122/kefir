@@ -23,7 +23,7 @@
 #include "kefir/core/error.h"
 #include "kefir/util/char32.h"
 
-_Thread_local struct KeywordEntry {
+static const struct KeywordEntry {
     const kefir_char32_t *literal;
     kefir_keyword_token_t keyword;
 } KEYWORDS[] = {{U"auto", KEFIR_KEYWORD_AUTO},
@@ -70,7 +70,7 @@ _Thread_local struct KeywordEntry {
                 {U"_Noreturn", KEFIR_KEYWORD_NORETURN},
                 {U"_Static_assert", KEFIR_KEYWORD_STATIC_ASSERT},
                 {U"_Thread_local", KEFIR_KEYWORD_THREAD_LOCAL}};
-const kefir_size_t KEYWORDS_LENGTH = sizeof(KEYWORDS) / sizeof(KEYWORDS[0]);
+static const kefir_size_t KEYWORDS_LENGTH = sizeof(KEYWORDS) / sizeof(KEYWORDS[0]);
 
 #define KEYWORD_NONE (~((kefir_trie_value_t) 0))
 
