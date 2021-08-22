@@ -181,3 +181,38 @@ kefir_int_t kefir_strcmp32(const kefir_char32_t *string1, const kefir_char32_t *
     // }
     return 0;
 }
+
+kefir_uint32_t kefir_hex32todec(kefir_char32_t chr) {
+    switch (chr) {
+        case U'a':
+        case U'A':
+            return 10;
+
+        case U'b':
+        case U'B':
+            return 11;
+
+        case U'c':
+        case U'C':
+            return 12;
+
+        case U'd':
+        case U'D':
+            return 13;
+
+        case U'e':
+        case U'E':
+            return 14;
+
+        case U'f':
+        case U'F':
+            return 15;
+
+        default:
+            if (chr >= U'0' && chr <= U'9') {
+                return chr - U'0';
+            } else {
+                return (kefir_uint32_t) -1;
+            }
+    }
+}

@@ -426,6 +426,72 @@ static kefir_result_t format_punctuator(struct kefir_json_output *json, kefir_pu
     return KEFIR_OK;
 }
 
+static kefir_result_t format_constant(struct kefir_json_output *json, const struct kefir_constant_token *constant) {
+    REQUIRE_OK(kefir_json_output_object_key(json, "type"));
+    switch (constant->type) {
+        case KEFIR_CONSTANT_TOKEN_INTEGER:
+            REQUIRE_OK(kefir_json_output_string(json, "integer"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+            REQUIRE_OK(kefir_json_output_integer(json, constant->integer));
+            break;
+
+        case KEFIR_CONSTANT_TOKEN_LONG_INTEGER:
+            REQUIRE_OK(kefir_json_output_string(json, "long_integer"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+            REQUIRE_OK(kefir_json_output_integer(json, constant->integer));
+            break;
+
+        case KEFIR_CONSTANT_TOKEN_LONG_LONG_INTEGER:
+            REQUIRE_OK(kefir_json_output_string(json, "long_long_integer"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+            REQUIRE_OK(kefir_json_output_integer(json, constant->integer));
+            break;
+
+        case KEFIR_CONSTANT_TOKEN_UNSIGNED_INTEGER:
+            REQUIRE_OK(kefir_json_output_string(json, "unsigned"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+            REQUIRE_OK(kefir_json_output_uinteger(json, constant->uinteger));
+            break;
+
+        case KEFIR_CONSTANT_TOKEN_UNSIGNED_LONG_INTEGER:
+            REQUIRE_OK(kefir_json_output_string(json, "long_unsigned"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+            REQUIRE_OK(kefir_json_output_uinteger(json, constant->uinteger));
+            break;
+
+        case KEFIR_CONSTANT_TOKEN_UNSIGNED_LONG_LONG_INTEGER:
+            REQUIRE_OK(kefir_json_output_string(json, "long_long_unsigned"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+            REQUIRE_OK(kefir_json_output_uinteger(json, constant->uinteger));
+            break;
+
+        case KEFIR_CONSTANT_TOKEN_FLOAT:
+            REQUIRE_OK(kefir_json_output_string(json, "float"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+            REQUIRE_OK(kefir_json_output_float(json, constant->float32));
+            break;
+
+        case KEFIR_CONSTANT_TOKEN_DOUBLE:
+            REQUIRE_OK(kefir_json_output_string(json, "double"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+            REQUIRE_OK(kefir_json_output_float(json, constant->float64));
+            break;
+
+        case KEFIR_CONSTANT_TOKEN_CHAR:
+            REQUIRE_OK(kefir_json_output_string(json, "char"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+            REQUIRE_OK(kefir_json_output_uinteger(json, constant->character));
+            break;
+
+        case KEFIR_CONSTANT_TOKEN_UCHAR:
+            REQUIRE_OK(kefir_json_output_string(json, "unicode_char"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+            REQUIRE_OK(kefir_json_output_uinteger(json, constant->unicode_char));
+            break;
+    }
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_token_format(struct kefir_json_output *json, const struct kefir_token *token) {
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid json output"));
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid token"));
@@ -462,7 +528,9 @@ kefir_result_t kefir_token_format(struct kefir_json_output *json, const struct k
             break;
 
         case KEFIR_TOKEN_CONSTANT:
-            return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Token JSON formatter is not implemented yet");
+            REQUIRE_OK(kefir_json_output_string(json, "constant"));
+            REQUIRE_OK(format_constant(json, &token->constant));
+            break;
     }
     REQUIRE_OK(kefir_json_output_object_end(json));
     return KEFIR_OK;

@@ -18,20 +18,27 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef KEFIR_UTIL_CHAR32_H_
-#define KEFIR_UTIL_CHAR32_H_
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include "kefir/core/util.h"
+#include "kefir/test/unit_test.h"
 
-#include "kefir/core/basic-types.h"
+int factorial(int);
 
-#define KEFIR_STRCMP32_ERROR KEFIR_INT_MAX
+static long factorial2(long num) {
+    if (num < 2) {
+        return 1;
+    } else {
+        return num * factorial2(num - 1);
+    }
+}
 
-kefir_size_t kefir_strlen32(const kefir_char32_t *);
-kefir_bool_t kefir_isspace32(kefir_char32_t);
-kefir_bool_t kefir_isdigit32(kefir_char32_t);
-kefir_bool_t kefir_isoctdigit32(kefir_char32_t);
-kefir_bool_t kefir_ishexdigit32(kefir_char32_t);
-kefir_bool_t kefir_isnondigit32(kefir_char32_t);
-kefir_int_t kefir_strcmp32(const kefir_char32_t *, const kefir_char32_t *);
-kefir_uint32_t kefir_hex32todec(kefir_char32_t);
-
-#endif
+int main(int argc, const char **argv) {
+    UNUSED(argc);
+    UNUSED(argv);
+    for (int i = 0; i <= 12; i++) {
+        ASSERT(factorial(i) == factorial2(i));
+    }
+    return EXIT_SUCCESS;
+}

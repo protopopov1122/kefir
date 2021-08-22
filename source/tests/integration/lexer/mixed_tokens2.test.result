@@ -1,0 +1,116 @@
+[
+    {
+        "class": "keyword",
+        "keyword": "int"
+    },
+    {
+        "class": "identifier",
+        "identifier": "a"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "="
+    },
+    {
+        "class": "constant",
+        "type": "integer",
+        "value": 2
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "+"
+    },
+    {
+        "class": "constant",
+        "type": "integer",
+        "value": 2
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "*"
+    },
+    {
+        "class": "identifier",
+        "identifier": "b"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "identifier",
+        "identifier": "fn"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "("
+    },
+    {
+        "class": "identifier",
+        "identifier": "a"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ")"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "-"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "("
+    },
+    {
+        "class": "identifier",
+        "identifier": "c"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "--"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ")"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "keyword",
+        "keyword": "for"
+    },
+    {
+        "class": "identifier",
+        "identifier": "a"
+    },
+    {
+        "class": "keyword",
+        "keyword": "while"
+    },
+    {
+        "class": "identifier",
+        "identifier": "abc"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "-="
+    },
+    {
+        "class": "identifier",
+        "identifier": "bc"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "+"
+    },
+    {
+        "class": "constant",
+        "type": "integer",
+        "value": 85
+    },
+    {
+        "class": "sentinel"
+    }
+]
