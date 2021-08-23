@@ -57,11 +57,11 @@ typedef unsigned long kefir_ulong_t;
 
 typedef long long kefir_long_long_t;
 typedef unsigned long long kefir_ulong_long_t;
-#define KEFIR_LONG_LONG_MIN LONG_LONG_MIN
-#define KEFIR_LONG_LONG_MAX LONG_LONG_MAX
+#define KEFIR_LONG_LONG_MIN LLONG_MIN
+#define KEFIR_LONG_LONG_MAX LLONG_MAX
 #define KEFIR_LONG_LONG_FMT "%lli"
 #define KEFIR_ULONG_LONG_MIN 0
-#define KEFIR_ULONG_LONG_MAX ULONG_LONG_MAX
+#define KEFIR_ULONG_LONG_MAX ULONG_MAX
 #define KEFIR_ULONG_LONG_FMT "%llu"
 
 typedef int8_t kefir_int8_t;

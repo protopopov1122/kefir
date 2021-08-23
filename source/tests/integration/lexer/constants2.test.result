@@ -1,0 +1,55 @@
+[
+    {
+        "class": "constant",
+        "type": "integer",
+        "value": 2147483647
+    },
+    {
+        "class": "constant",
+        "type": "long_integer",
+        "value": 2147483648
+    },
+    {
+        "class": "constant",
+        "type": "unsigned",
+        "value": 2147483647
+    },
+    {
+        "class": "constant",
+        "type": "unsigned",
+        "value": 2147483648
+    },
+    {
+        "class": "constant",
+        "type": "integer",
+        "value": 2147483647
+    },
+    {
+        "class": "constant",
+        "type": "unsigned",
+        "value": 2147483648
+    },
+    {
+        "class": "constant",
+        "type": "long_integer",
+        "value": 9223372036854775807
+    },
+    {
+        "class": "constant",
+        "type": "long_unsigned",
+        "value": 9223372036854775808
+    },
+    {
+        "class": "constant",
+        "type": "long_integer",
+        "value": 9223372036854775807
+    },
+    {
+        "class": "constant",
+        "type": "long_unsigned",
+        "value": 9223372036854775808
+    },
+    {
+        "class": "sentinel"
+    }
+]

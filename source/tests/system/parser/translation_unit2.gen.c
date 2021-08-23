@@ -52,9 +52,11 @@ kefir_result_t make_unit(struct kefir_mem *mem, const struct kefir_ast_context *
 #define TOKENS_CAPACITY 1024
     struct kefir_token TOKENS[TOKENS_CAPACITY];
     struct kefir_lexer_source_cursor source_cursor;
+    struct kefir_parser_integral_types integral_types;
     struct kefir_lexer lexer;
     REQUIRE_OK(kefir_lexer_source_cursor_init(&source_cursor, SOURCE_CODE, sizeof(SOURCE_CODE)));
-    REQUIRE_OK(kefir_lexer_init(mem, &lexer, context->symbols, &source_cursor));
+    REQUIRE_OK(kefir_parser_integral_types_default(&integral_types));
+    REQUIRE_OK(kefir_lexer_init(mem, &lexer, context->symbols, &source_cursor, &integral_types));
     kefir_size_t token_count = 0;
 
     for (; token_count < TOKENS_CAPACITY; token_count++) {

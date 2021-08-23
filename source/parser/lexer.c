@@ -23,13 +23,16 @@
 #include "kefir/core/error.h"
 
 kefir_result_t kefir_lexer_init(struct kefir_mem *mem, struct kefir_lexer *lexer, struct kefir_symbol_table *symbols,
-                                struct kefir_lexer_source_cursor *cursor) {
+                                struct kefir_lexer_source_cursor *cursor,
+                                const struct kefir_parser_integral_types *integral_types) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer"));
     REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer source cursor"));
+    REQUIRE(integral_types != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser integral types"));
 
     lexer->symbols = symbols;
     lexer->cursor = cursor;
+    lexer->integral_types = integral_types;
     REQUIRE_OK(kefir_lexer_init_punctuators(mem, lexer));
     kefir_result_t res = kefir_lexer_init_keywords(mem, lexer);
     REQUIRE_ELSE(res == KEFIR_OK, {

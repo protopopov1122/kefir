@@ -23,6 +23,139 @@
 #include "kefir/core/error.h"
 #include "kefir/util/char32.h"
 
+enum integer_constant_type {
+    CONSTANT_INT,
+    CONSTANT_UNSIGNED_INT,
+    CONSTANT_LONG,
+    CONSTANT_UNSIGNED_LONG,
+    CONSTANT_LONG_LONG,
+    CONSTANT_UNSIGNED_LONG_LONG
+};
+
+static kefir_result_t get_permitted_constant_types(enum integer_constant_type original, kefir_bool_t decimal,
+                                                   const enum integer_constant_type **permitted, kefir_size_t *length) {
+    switch (original) {
+        case CONSTANT_INT:
+            if (decimal) {
+                static const enum integer_constant_type types[] = {CONSTANT_INT, CONSTANT_LONG, CONSTANT_LONG_LONG};
+                *permitted = types;
+                *length = sizeof(types) / sizeof(types[0]);
+            } else {
+                static const enum integer_constant_type types[] = {CONSTANT_INT,       CONSTANT_UNSIGNED_INT,
+                                                                   CONSTANT_LONG,      CONSTANT_UNSIGNED_LONG,
+                                                                   CONSTANT_LONG_LONG, CONSTANT_UNSIGNED_LONG_LONG};
+                *permitted = types;
+                *length = sizeof(types) / sizeof(types[0]);
+            }
+            break;
+
+        case CONSTANT_UNSIGNED_INT: {
+            static const enum integer_constant_type types[] = {CONSTANT_UNSIGNED_INT, CONSTANT_UNSIGNED_LONG,
+                                                               CONSTANT_UNSIGNED_LONG_LONG};
+            *permitted = types;
+            *length = sizeof(types) / sizeof(types[0]);
+        } break;
+
+        case CONSTANT_LONG:
+            if (decimal) {
+                static const enum integer_constant_type types[] = {CONSTANT_LONG, CONSTANT_LONG_LONG};
+                *permitted = types;
+                *length = sizeof(types) / sizeof(types[0]);
+            } else {
+                static const enum integer_constant_type types[] = {CONSTANT_LONG, CONSTANT_UNSIGNED_LONG,
+                                                                   CONSTANT_LONG_LONG, CONSTANT_UNSIGNED_LONG_LONG};
+                *permitted = types;
+                *length = sizeof(types) / sizeof(types[0]);
+            }
+            break;
+
+        case CONSTANT_UNSIGNED_LONG: {
+            static const enum integer_constant_type types[] = {CONSTANT_UNSIGNED_LONG, CONSTANT_UNSIGNED_LONG_LONG};
+            *permitted = types;
+            *length = sizeof(types) / sizeof(types[0]);
+        } break;
+
+        case CONSTANT_LONG_LONG:
+            if (decimal) {
+                static const enum integer_constant_type types[] = {CONSTANT_LONG_LONG};
+                *permitted = types;
+                *length = sizeof(types) / sizeof(types[0]);
+            } else {
+                static const enum integer_constant_type types[] = {CONSTANT_LONG_LONG, CONSTANT_UNSIGNED_LONG_LONG};
+                *permitted = types;
+                *length = sizeof(types) / sizeof(types[0]);
+            }
+            break;
+
+        case CONSTANT_UNSIGNED_LONG_LONG: {
+            static const enum integer_constant_type types[] = {CONSTANT_UNSIGNED_LONG_LONG};
+            *permitted = types;
+            *length = sizeof(types) / sizeof(types[0]);
+        } break;
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t make_integral_constant(const struct kefir_parser_integral_types *integral_types,
+                                             enum integer_constant_type type, kefir_uint64_t value,
+                                             struct kefir_token *token) {
+    switch (type) {
+        case CONSTANT_INT:
+            REQUIRE(value <= integral_types->integer_max_value,
+                    KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Provided constant exceeds maximum value of its type"));
+            REQUIRE_OK(kefir_token_new_constant_int((kefir_int64_t) value, token));
+            break;
+
+        case CONSTANT_UNSIGNED_INT:
+            REQUIRE(value <= integral_types->uinteger_max_value,
+                    KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Provided constant exceeds maximum value of its type"));
+            REQUIRE_OK(kefir_token_new_constant_uint(value, token));
+            break;
+
+        case CONSTANT_LONG:
+            REQUIRE(value <= integral_types->long_max_value,
+                    KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Provided constant exceeds maximum value of its type"));
+            REQUIRE_OK(kefir_token_new_constant_long((kefir_int64_t) value, token));
+            break;
+
+        case CONSTANT_UNSIGNED_LONG:
+            REQUIRE(value <= integral_types->ulong_max_value,
+                    KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Provided constant exceeds maximum value of its type"));
+            REQUIRE_OK(kefir_token_new_constant_ulong(value, token));
+            break;
+
+        case CONSTANT_LONG_LONG:
+            REQUIRE(value <= integral_types->long_long_max_value,
+                    KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Provided constant exceeds maximum value of its type"));
+            REQUIRE_OK(kefir_token_new_constant_long_long((kefir_int64_t) value, token));
+            break;
+
+        case CONSTANT_UNSIGNED_LONG_LONG:
+            REQUIRE(value <= integral_types->ulong_long_max_value,
+                    KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Provided constant exceeds maximum value of its type"));
+            REQUIRE_OK(kefir_token_new_constant_ulong_long(value, token));
+            break;
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t build_integral_constant(const struct kefir_parser_integral_types *integral_types,
+                                              enum integer_constant_type type, kefir_bool_t decimal,
+                                              kefir_uint64_t value, struct kefir_token *token) {
+    const enum integer_constant_type *permitted_types = NULL;
+    kefir_size_t permitted_types_length = 0;
+    REQUIRE_OK(get_permitted_constant_types(type, decimal, &permitted_types, &permitted_types_length));
+    for (kefir_size_t i = 0; i < permitted_types_length; i++) {
+        kefir_result_t res = make_integral_constant(integral_types, permitted_types[i], value, token);
+        if (res == KEFIR_OK) {
+            return KEFIR_OK;
+        } else {
+            REQUIRE(res == KEFIR_OUT_OF_BOUNDS, res);
+        }
+    }
+    return KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Provided constant exceeds maximum value of its type");
+}
+
 static kefir_result_t next_decimal_constant(struct kefir_lexer *lexer, kefir_uint64_t *value) {
     kefir_char32_t chr = kefir_lexer_source_cursor_at(lexer->cursor, 0);
     REQUIRE(kefir_isdigit32(chr) && chr != U'0',
@@ -67,21 +200,34 @@ static kefir_result_t next_octal_constant(struct kefir_lexer *lexer, kefir_uint6
     return KEFIR_OK;
 }
 
-static kefir_result_t scan_suffix(struct kefir_lexer *lexer, kefir_uint64_t value, struct kefir_token *token) {
+static kefir_result_t scan_suffix(struct kefir_lexer *lexer, kefir_bool_t decimal, kefir_uint64_t value,
+                                  struct kefir_token *token) {
     static const struct Suffix {
         const kefir_char32_t *suffix;
-        kefir_bool_t unsignedSuffix;
-        kefir_bool_t longSuffix;
-        kefir_bool_t longLongSuffix;
+        enum integer_constant_type type;
     } SUFFIXES[] = {
-        {U"uLL", true, false, true}, {U"ull", true, false, true}, {U"LLu", true, false, true},
-        {U"llu", true, false, true}, {U"ULL", true, false, true}, {U"Ull", true, false, true},
-        {U"LLU", true, false, true}, {U"llU", true, false, true}, {U"uL", true, true, false},
-        {U"ul", true, true, false},  {U"Lu", true, true, false},  {U"lu", true, true, false},
-        {U"UL", true, true, false},  {U"Ul", true, true, false},  {U"LU", true, true, false},
-        {U"lU", true, true, false},  {U"u", true, false, false},  {U"U", true, false, false},
-        {U"LL", false, false, true}, {U"ll", false, false, true}, {U"L", false, true, false},
-        {U"l", false, true, false},
+        {U"uLL", CONSTANT_UNSIGNED_LONG_LONG},
+        {U"ull", CONSTANT_UNSIGNED_LONG_LONG},
+        {U"LLu", CONSTANT_UNSIGNED_LONG_LONG},
+        {U"llu", CONSTANT_UNSIGNED_LONG_LONG},
+        {U"ULL", CONSTANT_UNSIGNED_LONG_LONG},
+        {U"Ull", CONSTANT_UNSIGNED_LONG_LONG},
+        {U"LLU", CONSTANT_UNSIGNED_LONG_LONG},
+        {U"llU", CONSTANT_UNSIGNED_LONG_LONG},
+        {U"uL", CONSTANT_UNSIGNED_LONG},
+        {U"ul", CONSTANT_UNSIGNED_LONG},
+        {U"Lu", CONSTANT_UNSIGNED_LONG},
+        {U"lu", CONSTANT_UNSIGNED_LONG},
+        {U"UL", CONSTANT_UNSIGNED_LONG},
+        {U"Ul", CONSTANT_UNSIGNED_LONG},
+        {U"LU", CONSTANT_UNSIGNED_LONG},
+        {U"lU", CONSTANT_UNSIGNED_LONG},
+        {U"u", CONSTANT_UNSIGNED_INT},
+        {U"U", CONSTANT_UNSIGNED_INT},
+        {U"LL", CONSTANT_LONG_LONG},
+        {U"ll", CONSTANT_LONG_LONG},
+        {U"L", CONSTANT_LONG},
+        {U"l", CONSTANT_LONG},
     };
     static const kefir_size_t SUFFIXES_LENGTH = sizeof(SUFFIXES) / sizeof(SUFFIXES[0]);
 
@@ -98,19 +244,9 @@ static kefir_result_t scan_suffix(struct kefir_lexer *lexer, kefir_uint64_t valu
     }
 
     if (matchedSuffix == NULL) {
-        REQUIRE_OK(kefir_token_new_constant_int((kefir_int64_t) value, token));
-    } else if (matchedSuffix->unsignedSuffix && matchedSuffix->longLongSuffix) {
-        REQUIRE_OK(kefir_token_new_constant_ulong_long(value, token));
-    } else if (matchedSuffix->unsignedSuffix && matchedSuffix->longSuffix) {
-        REQUIRE_OK(kefir_token_new_constant_ulong(value, token));
-    } else if (matchedSuffix->unsignedSuffix) {
-        REQUIRE_OK(kefir_token_new_constant_uint(value, token));
-    } else if (matchedSuffix->longLongSuffix) {
-        REQUIRE_OK(kefir_token_new_constant_long_long((kefir_int64_t) value, token));
-    } else if (matchedSuffix->longSuffix) {
-        REQUIRE_OK(kefir_token_new_constant_long((kefir_int64_t) value, token));
+        REQUIRE_OK(build_integral_constant(lexer->integral_types, CONSTANT_INT, decimal, value, token));
     } else {
-        REQUIRE_OK(kefir_token_new_constant_int((kefir_int64_t) value, token));
+        REQUIRE_OK(build_integral_constant(lexer->integral_types, matchedSuffix->type, decimal, value, token));
     }
     return KEFIR_OK;
 }
@@ -122,8 +258,10 @@ static kefir_result_t match_impl(struct kefir_mem *mem, struct kefir_lexer *lexe
     ASSIGN_DECL_CAST(struct kefir_token *, token, payload);
 
     kefir_uint64_t value;
+    kefir_bool_t decimal = true;
     kefir_result_t res = next_decimal_constant(lexer, &value);
     if (res == KEFIR_NO_MATCH) {
+        decimal = false;
         res = next_hexadecimal_constant(lexer, &value);
     }
     if (res == KEFIR_NO_MATCH) {
@@ -133,7 +271,7 @@ static kefir_result_t match_impl(struct kefir_mem *mem, struct kefir_lexer *lexe
         return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match integer constant");
     }
     REQUIRE_OK(res);
-    REQUIRE_OK(scan_suffix(lexer, value, token));
+    REQUIRE_OK(scan_suffix(lexer, decimal, value, token));
     return KEFIR_OK;
 }
 

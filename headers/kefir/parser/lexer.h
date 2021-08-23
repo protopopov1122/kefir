@@ -6,10 +6,12 @@
 #include "kefir/core/mem.h"
 #include "kefir/core/symbol_table.h"
 #include "kefir/core/trie.h"
+#include "kefir/parser/context.h"
 
 typedef struct kefir_lexer {
     struct kefir_symbol_table *symbols;
     struct kefir_lexer_source_cursor *cursor;
+    const struct kefir_parser_integral_types *integral_types;
 
     struct kefir_trie punctuators;
     struct kefir_trie keywords;
@@ -18,7 +20,7 @@ typedef struct kefir_lexer {
 typedef kefir_result_t (*kefir_lexer_callback_fn_t)(struct kefir_mem *, struct kefir_lexer *, void *);
 
 kefir_result_t kefir_lexer_init(struct kefir_mem *, struct kefir_lexer *, struct kefir_symbol_table *,
-                                struct kefir_lexer_source_cursor *);
+                                struct kefir_lexer_source_cursor *, const struct kefir_parser_integral_types *);
 kefir_result_t kefir_lexer_free(struct kefir_mem *, struct kefir_lexer *);
 kefir_result_t kefir_lexer_apply(struct kefir_mem *, struct kefir_lexer *, kefir_lexer_callback_fn_t, void *);
 kefir_result_t kefir_lexer_next(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);

@@ -25,10 +25,10 @@
 #include <stdio.h>
 
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
-    const char CONTENT[] =
-        "const long long unsigned int ABC integral float _Thread_local _thread_local\n"
-        "\t\t   void voidy voidiest HelloThere char\v\v\vtestestTestTeSt _Complex complex __Complex _Complex_ "
-        "    \fA1\fA2\fif\telse";
+    const char CONTENT[] = "2147483647 2147483648 2147483647u 2147483648u\n"
+                           "0x7fffffff 0x80000000\r"
+                           "9223372036854775807 9223372036854775808u\f\f\f"
+                           "0x7fffffffffffffff 0x8000000000000000";
 
     struct kefir_symbol_table symbols;
     struct kefir_lexer_source_cursor cursor;
