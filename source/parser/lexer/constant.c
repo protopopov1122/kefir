@@ -28,7 +28,9 @@ static kefir_result_t match_impl(struct kefir_mem *mem, struct kefir_lexer *lexe
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct kefir_token *, token, payload);
 
-    kefir_result_t res = kefir_lexer_match_integer_constant(mem, lexer, token);
+    kefir_result_t res = kefir_lexer_match_floating_constant(mem, lexer, token);
+    REQUIRE(res == KEFIR_NO_MATCH, res);
+    res = kefir_lexer_match_integer_constant(mem, lexer, token);
     REQUIRE(res == KEFIR_NO_MATCH, res);
     return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match constant");
 }

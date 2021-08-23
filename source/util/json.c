@@ -291,6 +291,15 @@ kefir_result_t kefir_json_output_float(struct kefir_json_output *json, kefir_flo
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_json_output_hexfloat(struct kefir_json_output *json, kefir_float64_t value) {
+    REQUIRE_OK(valid_json(json));
+    REQUIRE_OK(write_separator(json));
+    REQUIRE_OK(validate_value(json));
+
+    fprintf(json->file, "\"%a\"", value);
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_json_output_string(struct kefir_json_output *json, const char *value) {
     REQUIRE_OK(valid_json(json));
     REQUIRE_OK(write_separator(json));

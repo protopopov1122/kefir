@@ -1,0 +1,109 @@
+[
+    {
+        "class": "keyword",
+        "keyword": "double"
+    },
+    {
+        "class": "identifier",
+        "identifier": "a"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "="
+    },
+    {
+        "class": "constant",
+        "type": "float",
+        "value": "0x1.e4ccccp+4"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "identifier",
+        "identifier": "a"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "-="
+    },
+    {
+        "class": "constant",
+        "type": "double",
+        "value": "0x1.82p+1"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "*"
+    },
+    {
+        "class": "constant",
+        "type": "double",
+        "value": "0x1p-1"
+    },
+    {
+        "class": "identifier",
+        "identifier": "function"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "("
+    },
+    {
+        "class": "identifier",
+        "identifier": "a"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "\/"
+    },
+    {
+        "class": "constant",
+        "type": "integer",
+        "value": 5
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ","
+    },
+    {
+        "class": "constant",
+        "type": "integer",
+        "value": 7
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ","
+    },
+    {
+        "class": "constant",
+        "type": "double",
+        "value": "0x1p-5"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ")"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "string_literal",
+        "content": "What is 3.372 + 0x62p1\0",
+        "length": 23
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "-"
+    },
+    {
+        "class": "constant",
+        "type": "double",
+        "value": "0x1.3333333333333p+0"
+    },
+    {
+        "class": "sentinel"
+    }
+]
