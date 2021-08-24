@@ -102,7 +102,7 @@ typedef struct kefir_constant_token {
         kefir_uint64_t uinteger;
         kefir_float32_t float32;
         kefir_float64_t float64;
-        kefir_char_t character;
+        kefir_int_t character;
         kefir_char32_t unicode_char;
     };
 } kefir_constant_token_t;
@@ -190,7 +190,7 @@ kefir_result_t kefir_token_new_constant_long(kefir_int64_t, struct kefir_token *
 kefir_result_t kefir_token_new_constant_ulong(kefir_uint64_t, struct kefir_token *);
 kefir_result_t kefir_token_new_constant_long_long(kefir_int64_t, struct kefir_token *);
 kefir_result_t kefir_token_new_constant_ulong_long(kefir_uint64_t, struct kefir_token *);
-kefir_result_t kefir_token_new_constant_char(kefir_char_t, struct kefir_token *);
+kefir_result_t kefir_token_new_constant_char(kefir_int_t, struct kefir_token *);
 kefir_result_t kefir_token_new_constant_char32(kefir_char32_t, struct kefir_token *);
 kefir_result_t kefir_token_new_constant_float(kefir_float32_t, struct kefir_token *);
 kefir_result_t kefir_token_new_constant_double(kefir_float64_t, struct kefir_token *);

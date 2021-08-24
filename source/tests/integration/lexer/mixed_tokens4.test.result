@@ -1,0 +1,219 @@
+[
+    {
+        "class": "string_literal",
+        "content": "ABC-DEF-123\0",
+        "length": 12
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "["
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 97
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "]"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "+"
+    },
+    {
+        "class": "constant",
+        "type": "double",
+        "value": "0x1.2147ae147ae14p+2"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "-"
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 24954
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "+"
+    },
+    {
+        "class": "identifier",
+        "identifier": "fn"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "("
+    },
+    {
+        "class": "constant",
+        "type": "integer",
+        "value": 1
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ","
+    },
+    {
+        "class": "keyword",
+        "keyword": "sizeof"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "("
+    },
+    {
+        "class": "keyword",
+        "keyword": "unsigned"
+    },
+    {
+        "class": "keyword",
+        "keyword": "int"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "*"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ")"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ","
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "++"
+    },
+    {
+        "class": "identifier",
+        "identifier": "y"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ","
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 10
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ")"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 7
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 8
+    },
+    {
+        "class": "string_literal",
+        "content": "\a\b\0",
+        "length": 3
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "keyword",
+        "keyword": "float"
+    },
+    {
+        "class": "identifier",
+        "identifier": "b"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "="
+    },
+    {
+        "class": "constant",
+        "type": "float",
+        "value": "0x1p+0"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "+"
+    },
+    {
+        "class": "identifier",
+        "identifier": "fn"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "("
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 45
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ","
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 32
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ","
+    },
+    {
+        "class": "constant",
+        "type": "integer",
+        "value": 5
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ","
+    },
+    {
+        "class": "constant",
+        "type": "double",
+        "value": "0x1p+1"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ")"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "sentinel"
+    }
+]

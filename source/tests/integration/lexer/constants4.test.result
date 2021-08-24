@@ -1,0 +1,85 @@
+[
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 97
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 98
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 99
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 6382179
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 39
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 34
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 92
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 7
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 8
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 63
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 32
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 10
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 11
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 12
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 13
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 9
+    },
+    {
+        "class": "sentinel"
+    }
+]

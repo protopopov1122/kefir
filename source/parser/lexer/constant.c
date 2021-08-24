@@ -32,6 +32,8 @@ static kefir_result_t match_impl(struct kefir_mem *mem, struct kefir_lexer *lexe
     REQUIRE(res == KEFIR_NO_MATCH, res);
     res = kefir_lexer_match_integer_constant(mem, lexer, token);
     REQUIRE(res == KEFIR_NO_MATCH, res);
+    res = kefir_lexer_match_character_constant(mem, lexer, token);
+    REQUIRE(res == KEFIR_NO_MATCH, res);
     return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match constant");
 }
 

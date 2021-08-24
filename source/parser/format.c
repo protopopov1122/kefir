@@ -480,7 +480,7 @@ static kefir_result_t format_constant(struct kefir_json_output *json, const stru
         case KEFIR_CONSTANT_TOKEN_CHAR:
             REQUIRE_OK(kefir_json_output_string(json, "char"));
             REQUIRE_OK(kefir_json_output_object_key(json, "value"));
-            REQUIRE_OK(kefir_json_output_uinteger(json, constant->character));
+            REQUIRE_OK(kefir_json_output_integer(json, constant->character));
             break;
 
         case KEFIR_CONSTANT_TOKEN_UCHAR:

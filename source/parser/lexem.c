@@ -103,7 +103,7 @@ kefir_result_t kefir_token_new_constant_ulong_long(kefir_uint64_t value, struct 
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_token_new_constant_char(kefir_char_t value, struct kefir_token *token) {
+kefir_result_t kefir_token_new_constant_char(kefir_int_t value, struct kefir_token *token) {
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
     token->klass = KEFIR_TOKEN_CONSTANT;
     token->constant.type = KEFIR_CONSTANT_TOKEN_CHAR;
