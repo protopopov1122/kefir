@@ -229,7 +229,7 @@
                     "arg": 8
                 },
                 {
-                    "opcode": "ishr"
+                    "opcode": "isar"
                 },
                 {
                     "opcode": "push",

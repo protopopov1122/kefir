@@ -72,7 +72,7 @@ struct kefir_ast_constant *kefir_ast_new_constant_bool(struct kefir_mem *mem, ke
     return constant;
 }
 
-struct kefir_ast_constant *kefir_ast_new_constant_char(struct kefir_mem *mem, kefir_char_t value) {
+struct kefir_ast_constant *kefir_ast_new_constant_char(struct kefir_mem *mem, kefir_int_t value) {
     REQUIRE(mem != NULL, NULL);
     struct kefir_ast_constant *constant = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_constant));
     REQUIRE(constant != NULL, NULL);

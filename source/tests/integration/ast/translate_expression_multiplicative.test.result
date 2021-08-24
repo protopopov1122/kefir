@@ -102,7 +102,7 @@
                     "arg": 65
                 },
                 {
-                    "opcode": "uintcf32"
+                    "opcode": "intcf32"
                 },
                 {
                     "opcode": "f32div"
@@ -310,7 +310,7 @@
                     "arg": 65
                 },
                 {
-                    "opcode": "uintcf32"
+                    "opcode": "intcf32"
                 },
                 {
                     "opcode": "f32mul"

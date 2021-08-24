@@ -130,8 +130,12 @@ DEFINE_CASE(ast_node_analysis_conditional_operator1, "AST node analysis - condit
         const struct kefir_ast_type *type = TYPES[i]->base.properties.type;
         ASSERT_CONDITIONAL(&kft_mem, context, KEFIR_AST_NODE_BASE(make_constant(&kft_mem, type->referenced_type)),
                            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 1)),
-                           KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 2)), true,
-                           { ASSERT(KEFIR_AST_TYPE_SAME(oper->condition->properties.type, type->referenced_type)); });
+                           KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 2)), true, {
+                               ASSERT(KEFIR_AST_TYPE_SAME(oper->condition->properties.type,
+                                                          KEFIR_AST_TYPE_IS_CHARACTER(type->referenced_type)
+                                                              ? kefir_ast_type_signed_int()
+                                                              : type->referenced_type));
+                           });
 
         ASSERT_CONDITIONAL(&kft_mem, context,
                            KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(

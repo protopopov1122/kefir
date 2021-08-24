@@ -476,7 +476,7 @@
                     "arg": 92
                 },
                 {
-                    "opcode": "uintcf32"
+                    "opcode": "intcf32"
                 },
                 {
                     "opcode": "f32sub"
@@ -575,7 +575,7 @@
                     "arg": 0
                 },
                 {
-                    "opcode": "uintcf32"
+                    "opcode": "intcf32"
                 },
                 {
                     "opcode": "f32add"

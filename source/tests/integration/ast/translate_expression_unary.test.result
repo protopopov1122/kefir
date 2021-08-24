@@ -465,7 +465,7 @@
             "body": [
                 {
                     "opcode": "push",
-                    "arg": 1
+                    "arg": 4
                 },
                 {
                     "opcode": "push",

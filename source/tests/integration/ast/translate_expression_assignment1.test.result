@@ -735,7 +735,7 @@
                     "arg": 65
                 },
                 {
-                    "opcode": "uintcf32"
+                    "opcode": "intcf32"
                 },
                 {
                     "opcode": "xchg",

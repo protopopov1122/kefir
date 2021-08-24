@@ -216,7 +216,7 @@ DEFINE_CASE(ast_constant_expression_unary_operations3, "AST constant expressions
         &kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_SIZEOF,
                                       KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'a'))),
-        1);
+        4);
 
     ASSERT_INTEGER_CONST_EXPR(
         &kft_mem, context,

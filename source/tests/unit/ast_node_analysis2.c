@@ -94,7 +94,7 @@ DEFINE_CASE(ast_node_analysis_generic_selections, "AST node analysis - generic s
 
     ASSERT_GENERIC_SELECTION(&kft_mem, context, "x", kefir_ast_type_bool(), true, false, true);
     ASSERT_GENERIC_SELECTION(&kft_mem, context, "y", kefir_ast_type_float(), false, true, false);
-    ASSERT_GENERIC_SELECTION(&kft_mem, context, "z", kefir_ast_type_unsigned_char(), false, true, false);
+    ASSERT_GENERIC_SELECTION(&kft_mem, context, "z", kefir_ast_type_signed_int(), false, true, false);
     ASSERT_GENERIC_SELECTION(&kft_mem, context, "w", kefir_ast_type_unsigned_int(), false, true, false);
     ASSERT_GENERIC_SELECTION(&kft_mem, context, "q", kefir_ast_type_double(), false, true, false);
     ASSERT_GENERIC_SELECTION(&kft_mem, context, "r", kefir_ast_type_double(), false, true, false);
