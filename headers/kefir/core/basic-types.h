@@ -127,6 +127,7 @@ typedef enum kefir_result {
     // Generic error
     KEFIR_UNKNOWN_ERROR,
     KEFIR_INTERNAL_ERROR,
+    KEFIR_OS_ERROR,
     KEFIR_MALFORMED_ARG,
     KEFIR_OUT_OF_BOUNDS,
     KEFIR_MEMALLOC_FAILURE,
