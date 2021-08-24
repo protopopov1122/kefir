@@ -49,37 +49,29 @@ kefir_result_t make_unit(struct kefir_mem *mem, const struct kefir_ast_context *
                                "    int result = factorial_impl(x);\n"
                                "    return result;\n"
                                "}";
-#define TOKENS_CAPACITY 1024
-    struct kefir_token TOKENS[TOKENS_CAPACITY];
+
     struct kefir_lexer_source_cursor source_cursor;
     struct kefir_parser_integral_types integral_types;
     struct kefir_lexer lexer;
+    struct kefir_token_buffer tokens;
     REQUIRE_OK(kefir_lexer_source_cursor_init(&source_cursor, SOURCE_CODE, sizeof(SOURCE_CODE)));
     REQUIRE_OK(kefir_parser_integral_types_default(&integral_types));
     REQUIRE_OK(kefir_lexer_init(mem, &lexer, context->symbols, &source_cursor, &integral_types));
-    kefir_size_t token_count = 0;
-
-    for (; token_count < TOKENS_CAPACITY; token_count++) {
-        REQUIRE_OK(kefir_lexer_next(mem, &lexer, &TOKENS[token_count]));
-        if (TOKENS[token_count].klass == KEFIR_TOKEN_SENTINEL) {
-            break;
-        }
-    }
+    REQUIRE_OK(kefir_token_buffer_init(mem, &tokens));
+    REQUIRE_OK(kefir_token_buffer_consume(mem, &tokens, &lexer));
     REQUIRE_OK(kefir_lexer_free(mem, &lexer));
 
     struct kefir_parser_token_cursor cursor;
     struct kefir_parser parser;
 
-    REQUIRE_OK(kefir_parser_token_cursor_init(&cursor, TOKENS, token_count));
+    REQUIRE_OK(kefir_parser_token_cursor_init(&cursor, tokens.tokens, tokens.length));
     REQUIRE_OK(kefir_parser_init(mem, &parser, context->symbols, &cursor));
     struct kefir_ast_node_base *node = NULL;
     REQUIRE_OK(KEFIR_PARSER_NEXT_TRANSLATION_UNIT(mem, &parser, &node));
     *result = node->self;
 
     REQUIRE_OK(kefir_parser_free(mem, &parser));
-    for (kefir_size_t i = 0; i < token_count; i++) {
-        REQUIRE_OK(kefir_token_free(mem, &TOKENS[i]));
-    }
+    REQUIRE_OK(kefir_token_buffer_free(mem, &tokens));
     return KEFIR_OK;
 }
 
