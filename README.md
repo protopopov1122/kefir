@@ -26,7 +26,7 @@ Implementing some of those might be necessary to re-use third-party standard lib
 
 Note on the selection of C11 as language to implement: C programming language is extremely widespread. At the same time, it is relatively simple in
 terms of semantics, thus making implementation of the compiler feasible. C11 standard was picked over C17 because the latter does not bring any new
-features. Project can be relatively easily extended to comply with C17 once the original effort is finished.
+features. Project can be relatively easily extended to comply with C17 once the original plan is finished.
 
 ## Progress
 |Module                     |Status         |Comments                                                                       |
@@ -35,10 +35,11 @@ features. Project can be relatively easily extended to comply with C17 once the 
 |Intermediate representation|Done           |Stack-based bytecode abstracting out calling convention and data layout details|
 |AST structure and analysis |Done           |See exceptions section below                                                   |
 |AST translator             |Done           |See exceptions section below                                                   |
-|Parser                     |In progress    | Recursive descent parser with backtracking                                    |
-|Lexer                      |Not started yet|                                                                               |
+|Parser                     |Done           |Recursive descent parser with backtracking. See exceptions section below       |
+|Lexer                      |Done           |See exceptions ection below                                                    |
 |Preprocessor               |Not planned    |Out-of-scope of initial effort                                                 |
 |Standard library           |Not planned    |Out-of-scope of initial effort                                                 |
+|Command-line interface     |In progress    |Very rudimentary implementation available                                      |
 
 
 ### Exceptions
@@ -65,7 +66,7 @@ information. Compiler is structured into separate modules with respect to IR: co
 generation and AST analysis and translation. IR layer provides several interfaces for
 AST analyzer to retrieve necessary target type layout information (for instance, for
 constant expression analysis). AST analysis and translation are separate stages to 
-improve code structure and reusability.
+improve code structure and reusability. Parser uses recursive descent approach with back-tracking.
 
 ## Author and license
 Author: Jevgenijs Protopopovs \
@@ -78,3 +79,4 @@ License:
 * [System-V AMD64 ABI](https://gitlab.com/x86-psABIs/x86-64-ABI)
 * [Compiler explorer](https://godbolt.org/)
 * [C reference](https://en.cppreference.com/w/c)
+* [AMD64 instruction set reference](https://www.amd.com/system/files/TechDocs/24594.pdf)
