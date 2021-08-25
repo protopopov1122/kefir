@@ -101,7 +101,6 @@ DEFINE_CASE(parser_lexem_construction_identifier, "Parser - identifier tokens") 
         ASSERT_OK(kefir_token_new_identifier(&kft_mem, &symbols, (_id), &token)); \
         ASSERT(token.klass == KEFIR_TOKEN_IDENTIFIER);                            \
         ASSERT(token.identifier != NULL);                                         \
-        ASSERT(token.identifier != (_id));                                        \
         ASSERT(strcmp(token.identifier, (_id)) == 0);                             \
         ASSERT_OK(kefir_token_free(&kft_mem, &token));                            \
     } while (0)
@@ -118,7 +117,6 @@ DEFINE_CASE(parser_lexem_construction_identifier, "Parser - identifier tokens") 
         ASSERT_OK(kefir_token_new_identifier(NULL, NULL, (_id), &token)); \
         ASSERT(token.klass == KEFIR_TOKEN_IDENTIFIER);                    \
         ASSERT(token.identifier != NULL);                                 \
-        ASSERT(token.identifier == (_id));                                \
         ASSERT(strcmp(token.identifier, (_id)) == 0);                     \
         ASSERT_OK(kefir_token_free(&kft_mem, &token));                    \
     } while (0)

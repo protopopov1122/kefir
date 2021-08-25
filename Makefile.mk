@@ -7,9 +7,11 @@ DBG=-g3 -ggdb -DKFT_NOFORK
 EXTRAFLAGS=
 CFLAGS=-std=c11 -Wall -Wextra -pedantic -fPIC $(OPT) $(DBG) $(EXTRAFLAGS)
 INCLUDES=-Iheaders
+SANFLAGS=
 
 ifeq ($(SANITIZE),undefined)
-CFLAGS+=-fsanitize=undefined -fno-sanitize-recover=all
+SANFLAGS=-fsanitize=undefined -fno-sanitize-recover=all
+CFLAGS+=$(SANFLAGS)
 endif
 
 ROOT=.
