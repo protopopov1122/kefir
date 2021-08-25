@@ -257,7 +257,7 @@ static kefir_result_t match_impl(struct kefir_mem *mem, struct kefir_lexer *lexe
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct kefir_token *, token, payload);
 
-    kefir_uint64_t value;
+    kefir_uint64_t value = 0;
     kefir_bool_t decimal = true;
     kefir_result_t res = next_decimal_constant(lexer, &value);
     if (res == KEFIR_NO_MATCH) {
