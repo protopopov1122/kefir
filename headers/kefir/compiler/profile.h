@@ -18,23 +18,25 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef KEFIR_CODEGEN_CODEGEN_H_
-#define KEFIR_CODEGEN_CODEGEN_H_
+#ifndef KEFIR_COMPILER_PROFILE_H_
+#define KEFIR_COMPILER_PROFILE_H_
 
 #include <stdio.h>
-#include "kefir/core/mem.h"
 #include "kefir/core/basic-types.h"
-#include "kefir/ir/module.h"
+#include "kefir/parser/context.h"
+#include "kefir/ast/type.h"
+#include "kefir/codegen/codegen.h"
+#include "kefir/ir/platform.h"
 
-typedef struct kefir_codegen {
-    kefir_result_t (*translate)(struct kefir_mem *, struct kefir_codegen *, const struct kefir_ir_module *);
-    kefir_result_t (*close)(struct kefir_codegen *);
+typedef struct kefir_compiler_profile {
+    struct kefir_parser_integral_types parser_integrals;
+    const struct kefir_ast_type_traits *type_traits;
+    struct kefir_ir_target_platform ir_target_platform;
 
-    void *data;
-    void *self;
-} kefir_codegen_t;
+    kefir_result_t (*new_codegen)(struct kefir_mem *, FILE *, struct kefir_codegen **);
+    kefir_result_t (*free_codegen)(struct kefir_mem *, struct kefir_codegen *);
+} kefir_compiler_profile_t;
 
-#define KEFIR_CODEGEN_TRANSLATE(mem, codegen, module) ((codegen)->translate((mem), (codegen), (module)))
-#define KEFIR_CODEGEN_CLOSE(codegen) ((codegen)->close((codegen)))
+kefir_result_t kefir_compiler_profile(struct kefir_compiler_profile *, const char *);
 
 #endif

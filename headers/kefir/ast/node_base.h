@@ -89,7 +89,7 @@ typedef struct kefir_ast_node_base {
         struct content;                    \
     } id##_t
 
-#define KEFIR_AST_NODE_BASE(node) (&node->base)
+#define KEFIR_AST_NODE_BASE(node) (&(node)->base)
 #define KEFIR_AST_NODE_VISIT(visitor, base, payload) ((base)->klass->visit((base), (visitor), (payload)))
 #define KEFIR_AST_NODE_CLONE(mem, base) ((base) != NULL ? (base)->klass->clone((mem), (base)) : NULL)
 #define KEFIR_AST_NODE_FREE(mem, base) ((base)->klass->free((mem), (base)))
