@@ -61,7 +61,9 @@ static kefir_result_t process_struct_declaration_entry(struct kefir_mem *mem, co
             kefir_result_t res =
                 kefir_ast_struct_type_field(mem, context->symbols, struct_type, identifier, field_type, ast_alignment);
             REQUIRE_ELSE(res == KEFIR_OK, {
-                kefir_ast_alignment_free(mem, ast_alignment);
+                if (ast_alignment != NULL) {
+                    kefir_ast_alignment_free(mem, ast_alignment);
+                }
                 return res;
             });
         } else {
@@ -76,14 +78,18 @@ static kefir_result_t process_struct_declaration_entry(struct kefir_mem *mem, co
             struct kefir_ast_constant_expression *ast_bitwidth =
                 kefir_ast_constant_expression_integer(mem, value.integer);
             REQUIRE_ELSE(ast_bitwidth != NULL, {
-                kefir_ast_alignment_free(mem, ast_alignment);
+                if (ast_alignment != NULL) {
+                    kefir_ast_alignment_free(mem, ast_alignment);
+                }
                 return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST constant expression");
             });
             kefir_result_t res = kefir_ast_struct_type_bitfield(mem, context->symbols, struct_type, identifier,
                                                                 field_type, ast_alignment, ast_bitwidth);
             REQUIRE_ELSE(res == KEFIR_OK, {
                 kefir_ast_constant_expression_free(mem, ast_bitwidth);
-                kefir_ast_alignment_free(mem, ast_alignment);
+                if (ast_alignment != NULL) {
+                    kefir_ast_alignment_free(mem, ast_alignment);
+                }
                 return res;
             });
         }
@@ -105,7 +111,9 @@ static kefir_result_t process_struct_declaration_entry(struct kefir_mem *mem, co
         kefir_result_t res =
             kefir_ast_struct_type_field(mem, context->symbols, struct_type, NULL, field_type, ast_alignment);
         REQUIRE_ELSE(res == KEFIR_OK, {
-            kefir_ast_alignment_free(mem, ast_alignment);
+            if (ast_alignment != NULL) {
+                kefir_ast_alignment_free(mem, ast_alignment);
+            }
             return res;
         });
     }

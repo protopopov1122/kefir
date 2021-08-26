@@ -41,6 +41,18 @@ kefir_result_t kefir_ast_analyze_constant_node(struct kefir_mem *mem, const stru
             base->properties.type = kefir_ast_type_signed_int();
             break;
 
+        case KEFIR_AST_WIDE_CHAR_CONSTANT:
+            base->properties.type = context->type_traits->wide_char_type;
+            break;
+
+        case KEFIR_AST_UNICODE16_CHAR_CONSTANT:
+            base->properties.type = context->type_traits->unicode16_char_type;
+            break;
+
+        case KEFIR_AST_UNICODE32_CHAR_CONSTANT:
+            base->properties.type = context->type_traits->unicode32_char_type;
+            break;
+
         case KEFIR_AST_INT_CONSTANT:
             base->properties.type = kefir_ast_type_signed_int();
             break;

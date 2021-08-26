@@ -78,7 +78,7 @@
             "arguments": [
                 {
                     "class": "constant",
-                    "type": "unsigned_integer",
+                    "type": "unicode32_character",
                     "value": 66
                 }
             ]

@@ -54,6 +54,14 @@ DEFINE_CASE(ast_node_analysis_constants, "AST node analysis - constant types") {
         ASSERT_CONSTANT(&kft_mem, context, kefir_ast_new_constant_char(&kft_mem, i), kefir_ast_type_signed_int());
     }
 
+    for (kefir_char32_t i = KEFIR_CHAR32_MIN; i < 4096; i++) {
+        ASSERT_CONSTANT(&kft_mem, context, kefir_ast_new_constant_wide_char(&kft_mem, i), type_traits->wide_char_type);
+        ASSERT_CONSTANT(&kft_mem, context, kefir_ast_new_constant_unicode16_char(&kft_mem, i),
+                        type_traits->unicode16_char_type);
+        ASSERT_CONSTANT(&kft_mem, context, kefir_ast_new_constant_unicode32_char(&kft_mem, i),
+                        type_traits->unicode32_char_type);
+    }
+
     for (kefir_int_t i = -1000; i < 1000; i++) {
         ASSERT_CONSTANT(&kft_mem, context, kefir_ast_new_constant_int(&kft_mem, i), kefir_ast_type_signed_int());
         ASSERT_CONSTANT(&kft_mem, context, kefir_ast_new_constant_long(&kft_mem, i), kefir_ast_type_signed_long());

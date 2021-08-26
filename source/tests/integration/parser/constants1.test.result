@@ -1,0 +1,62 @@
+[
+    {
+        "class": "constant",
+        "type": "character",
+        "value": 120
+    },
+    {
+        "class": "constant",
+        "type": "wide_character",
+        "value": 88
+    },
+    {
+        "class": "constant",
+        "type": "unicode16_character",
+        "value": 97
+    },
+    {
+        "class": "constant",
+        "type": "unicode32_character",
+        "value": 80
+    },
+    {
+        "class": "constant",
+        "type": "integer",
+        "value": -100
+    },
+    {
+        "class": "constant",
+        "type": "unsigned_integer",
+        "value": 101
+    },
+    {
+        "class": "constant",
+        "type": "long",
+        "value": 8917
+    },
+    {
+        "class": "constant",
+        "type": "unsigned_long",
+        "value": 273617
+    },
+    {
+        "class": "constant",
+        "type": "long_long",
+        "value": -10029
+    },
+    {
+        "class": "constant",
+        "type": "unsigned_long_long",
+        "value": 183191
+    },
+    {
+        "class": "constant",
+        "type": "float",
+        "value": 0.182000
+    },
+    {
+        "class": "constant",
+        "type": "double",
+        "value": 10028.800000
+    }
+]

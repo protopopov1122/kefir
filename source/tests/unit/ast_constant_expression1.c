@@ -43,6 +43,12 @@ DEFINE_CASE(ast_constant_expression_constant1, "AST constant expressions - const
         ASSERT_INTEGER_CONST_EXPR(&kft_mem, context, kefir_ast_new_constant_char(&kft_mem, c), c);
     }
 
+    for (kefir_char32_t c = KEFIR_CHAR32_MIN; c < 4096; c++) {
+        ASSERT_INTEGER_CONST_EXPR(&kft_mem, context, kefir_ast_new_constant_wide_char(&kft_mem, c), c);
+        ASSERT_INTEGER_CONST_EXPR(&kft_mem, context, kefir_ast_new_constant_unicode16_char(&kft_mem, c), c);
+        ASSERT_INTEGER_CONST_EXPR(&kft_mem, context, kefir_ast_new_constant_unicode32_char(&kft_mem, c), c);
+    }
+
     for (kefir_int_t i = -1000; i < 1000; i++) {
         ASSERT_INTEGER_CONST_EXPR(&kft_mem, context, kefir_ast_new_constant_int(&kft_mem, i), i);
         ASSERT_INTEGER_CONST_EXPR(&kft_mem, context, kefir_ast_new_constant_long(&kft_mem, i), i);

@@ -88,6 +88,54 @@ struct kefir_ast_constant *kefir_ast_new_constant_char(struct kefir_mem *mem, ke
     return constant;
 }
 
+struct kefir_ast_constant *kefir_ast_new_constant_wide_char(struct kefir_mem *mem, kefir_wchar_t value) {
+    REQUIRE(mem != NULL, NULL);
+    struct kefir_ast_constant *constant = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_constant));
+    REQUIRE(constant != NULL, NULL);
+    constant->base.klass = &AST_CONSTANT_CLASS;
+    constant->base.self = constant;
+    kefir_result_t res = kefir_ast_node_properties_init(&constant->base.properties);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, constant);
+        return NULL;
+    });
+    constant->type = KEFIR_AST_WIDE_CHAR_CONSTANT;
+    constant->value.wide_character = value;
+    return constant;
+}
+
+struct kefir_ast_constant *kefir_ast_new_constant_unicode16_char(struct kefir_mem *mem, kefir_char16_t value) {
+    REQUIRE(mem != NULL, NULL);
+    struct kefir_ast_constant *constant = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_constant));
+    REQUIRE(constant != NULL, NULL);
+    constant->base.klass = &AST_CONSTANT_CLASS;
+    constant->base.self = constant;
+    kefir_result_t res = kefir_ast_node_properties_init(&constant->base.properties);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, constant);
+        return NULL;
+    });
+    constant->type = KEFIR_AST_UNICODE16_CHAR_CONSTANT;
+    constant->value.unicode16_character = value;
+    return constant;
+}
+
+struct kefir_ast_constant *kefir_ast_new_constant_unicode32_char(struct kefir_mem *mem, kefir_char32_t value) {
+    REQUIRE(mem != NULL, NULL);
+    struct kefir_ast_constant *constant = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_constant));
+    REQUIRE(constant != NULL, NULL);
+    constant->base.klass = &AST_CONSTANT_CLASS;
+    constant->base.self = constant;
+    kefir_result_t res = kefir_ast_node_properties_init(&constant->base.properties);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, constant);
+        return NULL;
+    });
+    constant->type = KEFIR_AST_UNICODE32_CHAR_CONSTANT;
+    constant->value.unicode32_character = value;
+    return constant;
+}
+
 struct kefir_ast_constant *kefir_ast_new_constant_int(struct kefir_mem *mem, kefir_int_t value) {
     REQUIRE(mem != NULL, NULL);
     struct kefir_ast_constant *constant = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_constant));

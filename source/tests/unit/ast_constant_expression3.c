@@ -221,6 +221,24 @@ DEFINE_CASE(ast_constant_expression_unary_operations3, "AST constant expressions
     ASSERT_INTEGER_CONST_EXPR(
         &kft_mem, context,
         kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_SIZEOF,
+                                      KEFIR_AST_NODE_BASE(kefir_ast_new_constant_wide_char(&kft_mem, U'b'))),
+        4);
+
+    ASSERT_INTEGER_CONST_EXPR(
+        &kft_mem, context,
+        kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_SIZEOF,
+                                      KEFIR_AST_NODE_BASE(kefir_ast_new_constant_unicode16_char(&kft_mem, U'c'))),
+        2);
+
+    ASSERT_INTEGER_CONST_EXPR(
+        &kft_mem, context,
+        kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_SIZEOF,
+                                      KEFIR_AST_NODE_BASE(kefir_ast_new_constant_unicode32_char(&kft_mem, U'd'))),
+        4);
+
+    ASSERT_INTEGER_CONST_EXPR(
+        &kft_mem, context,
+        kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_SIZEOF,
                                       KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, -100))),
         4);
 

@@ -272,7 +272,7 @@ kefir_result_t kefir_ast_translate_function(struct kefir_mem *mem, const struct 
     struct function_translator_ctx ctx;
     REQUIRE_OK(function_translator_ctx_init(mem, context, function, &ctx));
 
-    kefir_result_t res = translate_function_impl(mem, function, &ctx.builder, context);
+    kefir_result_t res = translate_function_impl(mem, function, &ctx.builder, &ctx.local_translator_context);
     REQUIRE_ELSE(res == KEFIR_OK, {
         function_translator_ctx_free(mem, &ctx);
         return res;

@@ -31,6 +31,9 @@ KEFIR_AST_NODE_STRUCT(kefir_ast_constant, {
     union {
         kefir_bool_t boolean;
         kefir_int_t character;
+        kefir_wchar_t wide_character;
+        kefir_char16_t unicode16_character;
+        kefir_char32_t unicode32_character;
         kefir_int_t integer;
         kefir_uint_t uinteger;
         kefir_long_t long_integer;
@@ -198,6 +201,9 @@ KEFIR_AST_NODE_STRUCT(kefir_ast_translation_unit, { struct kefir_list external_d
 
 struct kefir_ast_constant *kefir_ast_new_constant_bool(struct kefir_mem *, kefir_bool_t);
 struct kefir_ast_constant *kefir_ast_new_constant_char(struct kefir_mem *, kefir_int_t);
+struct kefir_ast_constant *kefir_ast_new_constant_wide_char(struct kefir_mem *, kefir_wchar_t);
+struct kefir_ast_constant *kefir_ast_new_constant_unicode16_char(struct kefir_mem *, kefir_char16_t);
+struct kefir_ast_constant *kefir_ast_new_constant_unicode32_char(struct kefir_mem *, kefir_char32_t);
 struct kefir_ast_constant *kefir_ast_new_constant_int(struct kefir_mem *, kefir_int_t);
 struct kefir_ast_constant *kefir_ast_new_constant_uint(struct kefir_mem *, kefir_uint_t);
 struct kefir_ast_constant *kefir_ast_new_constant_long(struct kefir_mem *, kefir_long_t);

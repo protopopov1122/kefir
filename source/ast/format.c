@@ -67,7 +67,25 @@ static kefir_result_t visit_constant(const struct kefir_ast_visitor *visitor, co
         case KEFIR_AST_CHAR_CONSTANT:
             REQUIRE_OK(kefir_json_output_string(json, "character"));
             REQUIRE_OK(kefir_json_output_object_key(json, "value"));
-            REQUIRE_OK(kefir_json_output_uinteger(json, node->value.character));
+            REQUIRE_OK(kefir_json_output_integer(json, node->value.character));
+            break;
+
+        case KEFIR_AST_WIDE_CHAR_CONSTANT:
+            REQUIRE_OK(kefir_json_output_string(json, "wide_character"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+            REQUIRE_OK(kefir_json_output_integer(json, node->value.wide_character));
+            break;
+
+        case KEFIR_AST_UNICODE16_CHAR_CONSTANT:
+            REQUIRE_OK(kefir_json_output_string(json, "unicode16_character"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+            REQUIRE_OK(kefir_json_output_uinteger(json, node->value.unicode16_character));
+            break;
+
+        case KEFIR_AST_UNICODE32_CHAR_CONSTANT:
+            REQUIRE_OK(kefir_json_output_string(json, "unicode32_character"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+            REQUIRE_OK(kefir_json_output_uinteger(json, node->value.unicode32_character));
             break;
 
         case KEFIR_AST_INT_CONSTANT:
@@ -97,7 +115,7 @@ static kefir_result_t visit_constant(const struct kefir_ast_visitor *visitor, co
         case KEFIR_AST_LONG_LONG_CONSTANT:
             REQUIRE_OK(kefir_json_output_string(json, "long_long"));
             REQUIRE_OK(kefir_json_output_object_key(json, "value"));
-            REQUIRE_OK(kefir_json_output_uinteger(json, node->value.long_long));
+            REQUIRE_OK(kefir_json_output_integer(json, node->value.long_long));
             break;
 
         case KEFIR_AST_ULONG_LONG_CONSTANT:

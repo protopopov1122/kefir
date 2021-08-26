@@ -56,7 +56,9 @@ kefir_result_t kefir_ast_analyze_init_declarator_node(struct kefir_mem *mem, con
             mem, context, node->initializer == NULL, base->properties.declaration_props.identifier, type, storage,
             base->properties.declaration_props.function, alignment, node->initializer, &scoped_id);
         REQUIRE_ELSE(res == KEFIR_OK, {
-            kefir_ast_alignment_free(mem, alignment);
+            if (alignment != NULL) {
+                kefir_ast_alignment_free(mem, alignment);
+            }
             return res;
         });
 

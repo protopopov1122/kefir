@@ -67,6 +67,9 @@ typedef struct kefir_ast_type_traits {
                                          const struct kefir_ast_type *, kefir_bool_t *);
     const struct kefir_ast_type *underlying_enumeration_type;
     const struct kefir_ast_type *ptrdiff_type;
+    const struct kefir_ast_type *wide_char_type;
+    const struct kefir_ast_type *unicode16_char_type;
+    const struct kefir_ast_type *unicode32_char_type;
     kefir_bool_t character_type_signedness;
 
     void *payload;

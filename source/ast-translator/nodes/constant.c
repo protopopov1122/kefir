@@ -37,8 +37,20 @@ kefir_result_t kefir_ast_translate_constant_node(struct kefir_mem *mem, struct k
                                                    (kefir_uint64_t) node->value.boolean);
 
         case KEFIR_AST_CHAR_CONSTANT:
-            return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHU64,
+            return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHI64,
                                                    (kefir_int64_t) node->value.character);
+
+        case KEFIR_AST_WIDE_CHAR_CONSTANT:
+            return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHI64,
+                                                   (kefir_int64_t) node->value.wide_character);
+
+        case KEFIR_AST_UNICODE16_CHAR_CONSTANT:
+            return KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_PUSHU64,
+                                                   (kefir_uint64_t) node->value.unicode16_character);
+
+        case KEFIR_AST_UNICODE32_CHAR_CONSTANT:
+            return KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_PUSHU64,
+                                                   (kefir_uint64_t) node->value.unicode32_character);
 
         case KEFIR_AST_INT_CONSTANT:
             return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHI64,

@@ -48,6 +48,30 @@ DEFINE_CASE(ast_nodes_constants, "AST nodes - constants") {
         ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(chrc)));
     }
 
+    for (kefir_char32_t chr = KEFIR_CHAR32_MIN; chr < 4096; chr++) {
+        struct kefir_ast_constant *wchrc = kefir_ast_new_constant_wide_char(&kft_mem, chr);
+        struct kefir_ast_constant *u16chrc = kefir_ast_new_constant_unicode16_char(&kft_mem, chr);
+        struct kefir_ast_constant *u32chrc = kefir_ast_new_constant_unicode32_char(&kft_mem, chr);
+        ASSERT(wchrc != NULL);
+        ASSERT(u16chrc != NULL);
+        ASSERT(u32chrc != NULL);
+        ASSERT(wchrc->base.klass->type == KEFIR_AST_CONSTANT);
+        ASSERT(u16chrc->base.klass->type == KEFIR_AST_CONSTANT);
+        ASSERT(u32chrc->base.klass->type == KEFIR_AST_CONSTANT);
+        ASSERT(wchrc->base.self = wchrc);
+        ASSERT(u16chrc->base.self = u16chrc);
+        ASSERT(u32chrc->base.self = u32chrc);
+        ASSERT(wchrc->type = KEFIR_AST_WIDE_CHAR_CONSTANT);
+        ASSERT(u16chrc->type = KEFIR_AST_UNICODE16_CHAR_CONSTANT);
+        ASSERT(u32chrc->type = KEFIR_AST_UNICODE32_CHAR_CONSTANT);
+        ASSERT(wchrc->value.wide_character == chr);
+        ASSERT(u16chrc->value.unicode16_character == chr);
+        ASSERT(u32chrc->value.unicode32_character == chr);
+        ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(wchrc)));
+        ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(u16chrc)));
+        ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(u32chrc)));
+    }
+
     for (kefir_int_t i = -1000; i < 1000; i++) {
         struct kefir_ast_constant *intc = kefir_ast_new_constant_int(&kft_mem, i);
         struct kefir_ast_constant *longc = kefir_ast_new_constant_long(&kft_mem, i);

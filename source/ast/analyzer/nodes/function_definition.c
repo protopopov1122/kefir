@@ -106,8 +106,8 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
                     KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Function definition parameters shall have definite types"));
 
                 if (type->tag != KEFIR_AST_TYPE_VOID) {
-                    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, local_context, param->identifier, param->type,
-                                                                   NULL, NULL, NULL));
+                    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, local_context, param->identifier,
+                                                                   param->adjusted_type, NULL, NULL, NULL));
                 }
             }
             break;

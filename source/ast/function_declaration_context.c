@@ -24,6 +24,7 @@
 #include "kefir/ast/context_impl.h"
 #include "kefir/ast/runtime.h"
 #include "kefir/ast/analyzer/initializer.h"
+#include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -73,7 +74,9 @@ static kefir_result_t scoped_context_define_identifier(struct kefir_mem *mem,
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
 
-    REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
+    const struct kefir_ast_type *adjusted_type =
+        kefir_ast_type_conv_adjust_function_parameter(mem, context->context.type_bundle, type);
+    REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(adjusted_type),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Identifier with no linkage shall have complete type"));
 
     struct kefir_ast_scoped_identifier *scoped_id = NULL;
