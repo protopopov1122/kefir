@@ -154,7 +154,11 @@ DEFINE_CASE(parser_lexem_construction_constants, "Parser - constant tokens") {
         ASSERT_CONSTANT(kefir_token_new_constant_ulong_long, KEFIR_CONSTANT_TOKEN_UNSIGNED_LONG_LONG_INTEGER, uinteger,
                         (kefir_uint64_t) 15 + i);
         ASSERT_CONSTANT(kefir_token_new_constant_char, KEFIR_CONSTANT_TOKEN_CHAR, character, 'A' + i);
-        ASSERT_CONSTANT(kefir_token_new_constant_char32, KEFIR_CONSTANT_TOKEN_UCHAR, unicode_char, U'B' + i);
+        ASSERT_CONSTANT(kefir_token_new_constant_wide_char, KEFIR_CONSTANT_TOKEN_WIDE_CHAR, wide_char, U'B' + i);
+        ASSERT_CONSTANT(kefir_token_new_constant_unicode16_char, KEFIR_CONSTANT_TOKEN_UNICODE16_CHAR, unicode16_char,
+                        U'C' + i);
+        ASSERT_CONSTANT(kefir_token_new_constant_unicode32_char, KEFIR_CONSTANT_TOKEN_UNICODE32_CHAR, unicode32_char,
+                        U'D' + i);
 
         ASSERT_OK(kefir_token_new_constant_float(((kefir_float32_t) i) / 10, &token));
         ASSERT(token.klass == KEFIR_TOKEN_CONSTANT);

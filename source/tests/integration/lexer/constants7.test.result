@@ -1,0 +1,77 @@
+[
+    {
+        "class": "constant",
+        "type": "unicode32_char",
+        "value": 97
+    },
+    {
+        "class": "constant",
+        "type": "unicode32_char",
+        "value": 98
+    },
+    {
+        "class": "constant",
+        "type": "unicode32_char",
+        "value": 99
+    },
+    {
+        "class": "constant",
+        "type": "unicode32_char",
+        "value": 99
+    },
+    {
+        "class": "constant",
+        "type": "unicode32_char",
+        "value": 92
+    },
+    {
+        "class": "constant",
+        "type": "unicode32_char",
+        "value": 39
+    },
+    {
+        "class": "constant",
+        "type": "unicode32_char",
+        "value": 34
+    },
+    {
+        "class": "constant",
+        "type": "unicode32_char",
+        "value": 86
+    },
+    {
+        "class": "constant",
+        "type": "unicode32_char",
+        "value": 127
+    },
+    {
+        "class": "identifier",
+        "identifier": "UU"
+    },
+    {
+        "class": "constant",
+        "type": "unicode32_char",
+        "value": 85
+    },
+    {
+        "class": "identifier",
+        "identifier": "U"
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 120
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 79
+    },
+    {
+        "class": "identifier",
+        "identifier": "U"
+    },
+    {
+        "class": "sentinel"
+    }
+]

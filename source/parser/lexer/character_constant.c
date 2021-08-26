@@ -51,6 +51,21 @@ static kefir_result_t next_character(struct kefir_lexer_source_cursor *cursor, k
     }
     return KEFIR_OK;
 }
+static kefir_result_t next_wide_character(struct kefir_lexer_source_cursor *cursor, kefir_char32_t *value,
+                                          kefir_bool_t *continueScan) {
+    kefir_char32_t chr = kefir_lexer_source_cursor_at(cursor, 0);
+    if (chr == U'\\') {
+        *continueScan = true;
+        REQUIRE_OK(kefir_lexer_cursor_next_escape_sequence(cursor, value));
+    } else if (chr == U'\'') {
+        *continueScan = false;
+    } else {
+        *continueScan = true;
+        *value = chr;
+        REQUIRE_OK(kefir_lexer_source_cursor_next(cursor, 1));
+    }
+    return KEFIR_OK;
+}
 
 static kefir_result_t match_narrow_character(struct kefir_lexer *lexer, struct kefir_token *token) {
     REQUIRE(kefir_lexer_source_cursor_at(lexer->cursor, 0) == U'\'',
@@ -67,7 +82,20 @@ static kefir_result_t match_narrow_character(struct kefir_lexer *lexer, struct k
     chr = kefir_lexer_source_cursor_at(lexer->cursor, 0);
     REQUIRE(chr == U'\'', KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Character constant shall terminate with single quote"));
     REQUIRE_OK(kefir_lexer_source_cursor_next(lexer->cursor, 1));
-    REQUIRE_OK(kefir_token_new_constant_char(character_value, token));
+    REQUIRE_OK(kefir_token_new_constant_char((kefir_int_t) character_value, token));
+    return KEFIR_OK;
+}
+
+static kefir_result_t scan_wide_character(struct kefir_lexer *lexer, kefir_char32_t *value) {
+    kefir_char32_t chr = kefir_lexer_source_cursor_at(lexer->cursor, 0);
+    REQUIRE(chr != U'\'',
+            KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Character constant shall contain at least one character"));
+    for (kefir_bool_t scan = true; scan;) {
+        REQUIRE_OK(next_wide_character(lexer->cursor, value, &scan));
+    }
+    chr = kefir_lexer_source_cursor_at(lexer->cursor, 0);
+    REQUIRE(chr == U'\'', KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Character constant shall terminate with single quote"));
+    REQUIRE_OK(kefir_lexer_source_cursor_next(lexer->cursor, 1));
     return KEFIR_OK;
 }
 
@@ -76,7 +104,12 @@ static kefir_result_t match_wide_character(struct kefir_lexer *lexer, struct kef
     REQUIRE(kefir_lexer_source_cursor_at(lexer->cursor, 0) == U'L' &&
                 kefir_lexer_source_cursor_at(lexer->cursor, 1) == U'\'',
             KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match wide character constant"));
-    return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Wide character constants are not implemented yet");
+    REQUIRE_OK(kefir_lexer_source_cursor_next(lexer->cursor, 2));
+
+    kefir_char32_t character_value = 0;
+    REQUIRE_OK(scan_wide_character(lexer, &character_value));
+    REQUIRE_OK(kefir_token_new_constant_wide_char((kefir_wchar_t) character_value, token));
+    return KEFIR_OK;
 }
 
 static kefir_result_t match_unicode16_character(struct kefir_lexer *lexer, struct kefir_token *token) {
@@ -84,7 +117,12 @@ static kefir_result_t match_unicode16_character(struct kefir_lexer *lexer, struc
     REQUIRE(kefir_lexer_source_cursor_at(lexer->cursor, 0) == U'u' &&
                 kefir_lexer_source_cursor_at(lexer->cursor, 1) == U'\'',
             KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match unicode character constant"));
-    return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Unicode character constants are not implemented yet");
+    REQUIRE_OK(kefir_lexer_source_cursor_next(lexer->cursor, 2));
+
+    kefir_char32_t character_value = 0;
+    REQUIRE_OK(scan_wide_character(lexer, &character_value));
+    REQUIRE_OK(kefir_token_new_constant_unicode16_char((kefir_char16_t) character_value, token));
+    return KEFIR_OK;
 }
 
 static kefir_result_t match_unicode32_character(struct kefir_lexer *lexer, struct kefir_token *token) {
@@ -92,7 +130,12 @@ static kefir_result_t match_unicode32_character(struct kefir_lexer *lexer, struc
     REQUIRE(kefir_lexer_source_cursor_at(lexer->cursor, 0) == U'U' &&
                 kefir_lexer_source_cursor_at(lexer->cursor, 1) == U'\'',
             KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match unicode character constant"));
-    return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Unicode character constants are not implemented yet");
+    REQUIRE_OK(kefir_lexer_source_cursor_next(lexer->cursor, 2));
+
+    kefir_char32_t character_value = 0;
+    REQUIRE_OK(scan_wide_character(lexer, &character_value));
+    REQUIRE_OK(kefir_token_new_constant_unicode32_char((kefir_char32_t) character_value, token));
+    return KEFIR_OK;
 }
 
 static kefir_result_t match_impl(struct kefir_mem *mem, struct kefir_lexer *lexer, void *payload) {

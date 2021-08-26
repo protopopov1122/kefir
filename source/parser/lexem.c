@@ -111,11 +111,27 @@ kefir_result_t kefir_token_new_constant_char(kefir_int_t value, struct kefir_tok
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_token_new_constant_char32(kefir_char32_t value, struct kefir_token *token) {
+kefir_result_t kefir_token_new_constant_wide_char(kefir_wchar_t value, struct kefir_token *token) {
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
     token->klass = KEFIR_TOKEN_CONSTANT;
-    token->constant.type = KEFIR_CONSTANT_TOKEN_UCHAR;
-    token->constant.unicode_char = value;
+    token->constant.type = KEFIR_CONSTANT_TOKEN_WIDE_CHAR;
+    token->constant.wide_char = value;
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_token_new_constant_unicode16_char(kefir_char16_t value, struct kefir_token *token) {
+    REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+    token->klass = KEFIR_TOKEN_CONSTANT;
+    token->constant.type = KEFIR_CONSTANT_TOKEN_UNICODE16_CHAR;
+    token->constant.unicode16_char = value;
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_token_new_constant_unicode32_char(kefir_char32_t value, struct kefir_token *token) {
+    REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+    token->klass = KEFIR_TOKEN_CONSTANT;
+    token->constant.type = KEFIR_CONSTANT_TOKEN_UNICODE32_CHAR;
+    token->constant.unicode32_char = value;
     return KEFIR_OK;
 }
 

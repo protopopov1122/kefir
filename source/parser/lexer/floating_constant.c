@@ -42,7 +42,8 @@ static kefir_result_t match_fractional_part(struct kefir_lexer *lexer, kefir_uin
     if (chr == U'.') {
         REQUIRE_OK(kefir_lexer_source_cursor_next(lexer->cursor, 1));
     } else {
-        REQUIRE(chr == U'e' || chr == U'E', KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match floating constant"));
+        REQUIRE(integer_digits > 0 && (chr == U'e' || chr == U'E'),
+                KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match floating constant"));
         return KEFIR_OK;
     }
     chr = kefir_lexer_source_cursor_at(lexer->cursor, 0);
@@ -140,7 +141,7 @@ static kefir_result_t match_hexadecimal_fractional_part(struct kefir_lexer *lexe
     if (chr == U'.') {
         REQUIRE_OK(kefir_lexer_source_cursor_next(lexer->cursor, 1));
     } else {
-        REQUIRE(chr == U'p' || chr == U'P',
+        REQUIRE(integer_digits > 0 && (chr == U'p' || chr == U'P'),
                 KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match hexdecimal floating constant"));
         return KEFIR_OK;
     }

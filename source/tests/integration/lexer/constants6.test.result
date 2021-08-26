@@ -1,0 +1,87 @@
+[
+    {
+        "class": "constant",
+        "type": "unicode16_char",
+        "value": 97
+    },
+    {
+        "class": "constant",
+        "type": "unicode16_char",
+        "value": 98
+    },
+    {
+        "class": "constant",
+        "type": "unicode16_char",
+        "value": 99
+    },
+    {
+        "class": "constant",
+        "type": "unicode16_char",
+        "value": 99
+    },
+    {
+        "class": "constant",
+        "type": "unicode16_char",
+        "value": 0
+    },
+    {
+        "class": "constant",
+        "type": "unicode16_char",
+        "value": 39
+    },
+    {
+        "class": "constant",
+        "type": "unicode16_char",
+        "value": 117
+    },
+    {
+        "class": "constant",
+        "type": "unicode16_char",
+        "value": 34
+    },
+    {
+        "class": "constant",
+        "type": "unicode16_char",
+        "value": 92
+    },
+    {
+        "class": "constant",
+        "type": "unicode16_char",
+        "value": 117
+    },
+    {
+        "class": "constant",
+        "type": "unicode16_char",
+        "value": 111
+    },
+    {
+        "class": "identifier",
+        "identifier": "u"
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 97
+    },
+    {
+        "class": "identifier",
+        "identifier": "u"
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 6382179
+    },
+    {
+        "class": "identifier",
+        "identifier": "u"
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 9
+    },
+    {
+        "class": "sentinel"
+    }
+]

@@ -74,8 +74,19 @@ kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(constant)(struct kefir_mem *mem, stru
                           "Failed to allocate AST constant");
             break;
 
-        case KEFIR_CONSTANT_TOKEN_UCHAR:
-            REQUIRE_ALLOC(result, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_uint(mem, token->constant.unicode_char)),
+        // TODO Wide & unicode character parsing
+        case KEFIR_CONSTANT_TOKEN_WIDE_CHAR:
+            REQUIRE_ALLOC(result, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, token->constant.wide_char)),
+                          "Failed to allocate AST constant");
+            break;
+
+        case KEFIR_CONSTANT_TOKEN_UNICODE16_CHAR:
+            REQUIRE_ALLOC(result, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_uint(mem, token->constant.unicode16_char)),
+                          "Failed to allocate AST constant");
+            break;
+
+        case KEFIR_CONSTANT_TOKEN_UNICODE32_CHAR:
+            REQUIRE_ALLOC(result, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_uint(mem, token->constant.unicode32_char)),
                           "Failed to allocate AST constant");
             break;
     }

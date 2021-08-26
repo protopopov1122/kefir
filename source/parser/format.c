@@ -483,10 +483,22 @@ static kefir_result_t format_constant(struct kefir_json_output *json, const stru
             REQUIRE_OK(kefir_json_output_integer(json, constant->character));
             break;
 
-        case KEFIR_CONSTANT_TOKEN_UCHAR:
-            REQUIRE_OK(kefir_json_output_string(json, "unicode_char"));
+        case KEFIR_CONSTANT_TOKEN_WIDE_CHAR:
+            REQUIRE_OK(kefir_json_output_string(json, "wide_char"));
             REQUIRE_OK(kefir_json_output_object_key(json, "value"));
-            REQUIRE_OK(kefir_json_output_uinteger(json, constant->unicode_char));
+            REQUIRE_OK(kefir_json_output_integer(json, constant->wide_char));
+            break;
+
+        case KEFIR_CONSTANT_TOKEN_UNICODE16_CHAR:
+            REQUIRE_OK(kefir_json_output_string(json, "unicode16_char"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+            REQUIRE_OK(kefir_json_output_uinteger(json, constant->unicode16_char));
+            break;
+
+        case KEFIR_CONSTANT_TOKEN_UNICODE32_CHAR:
+            REQUIRE_OK(kefir_json_output_string(json, "unicode32_char"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+            REQUIRE_OK(kefir_json_output_uinteger(json, constant->unicode32_char));
             break;
     }
     return KEFIR_OK;

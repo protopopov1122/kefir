@@ -1,0 +1,158 @@
+[
+    {
+        "class": "identifier",
+        "identifier": "a"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "="
+    },
+    {
+        "class": "constant",
+        "type": "wide_char",
+        "value": 97
+    },
+    {
+        "class": "constant",
+        "type": "wide_char",
+        "value": 98
+    },
+    {
+        "class": "identifier",
+        "identifier": "L"
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 99
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "identifier",
+        "identifier": "fn"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "("
+    },
+    {
+        "class": "constant",
+        "type": "unicode16_char",
+        "value": 99
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ","
+    },
+    {
+        "class": "constant",
+        "type": "unicode16_char",
+        "value": 85
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ","
+    },
+    {
+        "class": "constant",
+        "type": "unicode32_char",
+        "value": 117
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ")"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "keyword",
+        "keyword": "int"
+    },
+    {
+        "class": "identifier",
+        "identifier": "U"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ","
+    },
+    {
+        "class": "identifier",
+        "identifier": "u"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ","
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "="
+    },
+    {
+        "class": "constant",
+        "type": "double",
+        "value": "0x1.f4p+9"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "keyword",
+        "keyword": "if"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "("
+    },
+    {
+        "class": "identifier",
+        "identifier": "U"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "="
+    },
+    {
+        "class": "constant",
+        "type": "unicode16_char",
+        "value": 92
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ")"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "{"
+    },
+    {
+        "class": "identifier",
+        "identifier": "def"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "="
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 99
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "}"
+    },
+    {
+        "class": "sentinel"
+    }
+]
