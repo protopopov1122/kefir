@@ -91,6 +91,7 @@
     },
     {
         "class": "string_literal",
+        "type": "multibyte",
         "content": "What is 3.372 + 0x62p1\0",
         "length": 23
     },

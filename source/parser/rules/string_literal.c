@@ -28,10 +28,20 @@ kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(string_literal)(struct kefir_mem *mem
     REQUIRE(PARSER_TOKEN_IS_STRING_LITERAL(parser, 0),
             KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Expected string literal token"));
     const struct kefir_token *token = PARSER_CURSOR(parser, 0);
-    REQUIRE_ALLOC(result,
-                  KEFIR_AST_NODE_BASE(
-                      kefir_ast_new_string_literal(mem, token->string_literal.content, token->string_literal.length)),
-                  "Failed to allocate AST string literal");
+    switch (token->string_literal.type) {
+        case KEFIR_STRING_LITERAL_TOKEN_MULTIBYTE:
+        case KEFIR_STRING_LITERAL_TOKEN_UNICODE8:
+            REQUIRE_ALLOC(result,
+                          KEFIR_AST_NODE_BASE(kefir_ast_new_string_literal(
+                              mem, (const char *) token->string_literal.literal, token->string_literal.length)),
+                          "Failed to allocate AST string literal");
+            break;
+
+        case KEFIR_STRING_LITERAL_TOKEN_UNICODE16:
+        case KEFIR_STRING_LITERAL_TOKEN_UNICODE32:
+        case KEFIR_STRING_LITERAL_TOKEN_WIDE:
+            return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Wide string literals are not implemented yet");
+    }
     REQUIRE_OK(PARSER_SHIFT(parser));
     return KEFIR_OK;
 }

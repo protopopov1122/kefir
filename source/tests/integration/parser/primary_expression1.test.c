@@ -36,7 +36,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_size_t counter = 0;
     REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "X", &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_constant_int(100, &TOKENS[counter++]));
-    REQUIRE_OK(kefir_token_new_string_literal(mem, MSG, sizeof(MSG), &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_string_literal_multibyte(mem, MSG, sizeof(MSG), &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_constant_float(6.28f, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_constant_char('B', &TOKENS[counter++]));
 

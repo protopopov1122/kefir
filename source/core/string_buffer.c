@@ -26,6 +26,7 @@
 
 #define BUFFER_MIN_CAPACITY 32
 #define BUFFER_GROW 64
+#define NULL_BYTES sizeof(kefir_wchar_t)
 
 kefir_result_t kefir_string_buffer_init(struct kefir_mem *mem, struct kefir_string_buffer *buffer) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
@@ -50,7 +51,7 @@ kefir_result_t kefir_string_buffer_free(struct kefir_mem *mem, struct kefir_stri
     return KEFIR_OK;
 }
 
-const char *kefir_string_buffer_value(const struct kefir_string_buffer *buffer, kefir_size_t *length_ptr) {
+const void *kefir_string_buffer_multibyte_value(const struct kefir_string_buffer *buffer, kefir_size_t *length_ptr) {
     if (buffer == NULL) {
         ASSIGN_PTR(length_ptr, 0);
         return NULL;
@@ -62,7 +63,7 @@ const char *kefir_string_buffer_value(const struct kefir_string_buffer *buffer, 
 
 static kefir_size_t ensure_capacity(struct kefir_mem *mem, struct kefir_string_buffer *buffer, kefir_size_t size) {
     if (buffer->length + size + 1 >= buffer->capacity) {
-        kefir_size_t newCapacity = buffer->length + size + 1 + BUFFER_GROW;
+        kefir_size_t newCapacity = buffer->length + size + NULL_BYTES + BUFFER_GROW;
         char *newBuffer = KEFIR_MALLOC(mem, newCapacity);
         REQUIRE(newBuffer != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to reallocate string buffer"));
         memset(newBuffer, 0, newCapacity);
@@ -74,21 +75,21 @@ static kefir_size_t ensure_capacity(struct kefir_mem *mem, struct kefir_string_b
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_string_buffer_insert(struct kefir_mem *mem, struct kefir_string_buffer *buffer,
-                                          const char *fragment, kefir_size_t size) {
+static kefir_result_t insert_buffer(struct kefir_mem *mem, struct kefir_string_buffer *buffer, const void *fragment,
+                                    kefir_size_t size) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string buffer"));
     REQUIRE(fragment != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string fragment"));
     REQUIRE(size != 0, KEFIR_OK);
 
     REQUIRE_OK(ensure_capacity(mem, buffer, size));
-    memcpy(buffer->buffer + buffer->length, fragment, size);
+    memcpy(((char *) buffer->buffer) + buffer->length, fragment, size);
     buffer->length += size;
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_string_buffer_insert32(struct kefir_mem *mem, struct kefir_string_buffer *buffer,
-                                            kefir_char32_t character) {
+kefir_result_t kefir_string_buffer_insert_character(struct kefir_mem *mem, struct kefir_string_buffer *buffer,
+                                                    kefir_char32_t character) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string buffer"));
 
@@ -97,6 +98,6 @@ kefir_result_t kefir_string_buffer_insert32(struct kefir_mem *mem, struct kefir_
     size_t sz = c32rtomb(narrow_string, character, &mbstate);
     REQUIRE(sz != (size_t) -1,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Failed to convert wide character into multi-byte string"));
-    REQUIRE_OK(kefir_string_buffer_insert(mem, buffer, narrow_string, sz));
+    REQUIRE_OK(insert_buffer(mem, buffer, narrow_string, sz));
     return KEFIR_OK;
 }

@@ -151,8 +151,8 @@ kefir_result_t kefir_token_new_constant_double(kefir_float64_t value, struct kef
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_token_new_string_literal(struct kefir_mem *mem, const char *content, kefir_size_t length,
-                                              struct kefir_token *token) {
+kefir_result_t kefir_token_new_string_literal_multibyte(struct kefir_mem *mem, const char *content, kefir_size_t length,
+                                                        struct kefir_token *token) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string literal"));
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
@@ -161,7 +161,78 @@ kefir_result_t kefir_token_new_string_literal(struct kefir_mem *mem, const char 
     REQUIRE(dest_content != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate string literal"));
     memcpy(dest_content, content, length);
     token->klass = KEFIR_TOKEN_STRING_LITERAL;
-    token->string_literal.content = dest_content;
+    token->string_literal.type = KEFIR_STRING_LITERAL_TOKEN_MULTIBYTE;
+    token->string_literal.literal = dest_content;
+    token->string_literal.length = length;
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_token_new_string_literal_unicode8(struct kefir_mem *mem, const char *content, kefir_size_t length,
+                                                       struct kefir_token *token) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string literal"));
+    REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+
+    char *dest_content = KEFIR_MALLOC(mem, length);
+    REQUIRE(dest_content != NULL,
+            KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate unicode8 string literal"));
+    memcpy(dest_content, content, length);
+    token->klass = KEFIR_TOKEN_STRING_LITERAL;
+    token->string_literal.type = KEFIR_STRING_LITERAL_TOKEN_UNICODE8;
+    token->string_literal.literal = dest_content;
+    token->string_literal.length = length;
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_token_new_string_literal_unicode16(struct kefir_mem *mem, const kefir_char16_t *content,
+                                                        kefir_size_t length, struct kefir_token *token) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string literal"));
+    REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+
+    kefir_size_t sz = sizeof(kefir_char16_t) * length;
+    char *dest_content = KEFIR_MALLOC(mem, sz);
+    REQUIRE(dest_content != NULL,
+            KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate unicode16 string literal"));
+    memcpy(dest_content, content, sz);
+    token->klass = KEFIR_TOKEN_STRING_LITERAL;
+    token->string_literal.type = KEFIR_STRING_LITERAL_TOKEN_UNICODE16;
+    token->string_literal.literal = dest_content;
+    token->string_literal.length = length;
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_token_new_string_literal_unicode32(struct kefir_mem *mem, const kefir_char32_t *content,
+                                                        kefir_size_t length, struct kefir_token *token) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string literal"));
+    REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+
+    kefir_size_t sz = sizeof(kefir_char32_t) * length;
+    char *dest_content = KEFIR_MALLOC(mem, sz);
+    REQUIRE(dest_content != NULL,
+            KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate unicode32 string literal"));
+    memcpy(dest_content, content, sz);
+    token->klass = KEFIR_TOKEN_STRING_LITERAL;
+    token->string_literal.type = KEFIR_STRING_LITERAL_TOKEN_UNICODE32;
+    token->string_literal.literal = dest_content;
+    token->string_literal.length = length;
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_token_new_string_literal_wide(struct kefir_mem *mem, const kefir_wchar_t *content,
+                                                   kefir_size_t length, struct kefir_token *token) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string literal"));
+    REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+
+    kefir_size_t sz = sizeof(kefir_wchar_t) * length;
+    char *dest_content = KEFIR_MALLOC(mem, sz);
+    REQUIRE(dest_content != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate wide string literal"));
+    memcpy(dest_content, content, sz);
+    token->klass = KEFIR_TOKEN_STRING_LITERAL;
+    token->string_literal.type = KEFIR_STRING_LITERAL_TOKEN_WIDE;
+    token->string_literal.literal = dest_content;
     token->string_literal.length = length;
     return KEFIR_OK;
 }
@@ -178,7 +249,7 @@ kefir_result_t kefir_token_move(struct kefir_token *dst, struct kefir_token *src
     REQUIRE(src != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to source token"));
     *dst = *src;
     if (src->klass == KEFIR_TOKEN_STRING_LITERAL) {
-        src->string_literal.content = NULL;
+        src->string_literal.literal = NULL;
         src->string_literal.length = 0;
     }
     return KEFIR_OK;
@@ -191,10 +262,31 @@ kefir_result_t kefir_token_copy(struct kefir_mem *mem, struct kefir_token *dst, 
 
     *dst = *src;
     if (src->klass == KEFIR_TOKEN_STRING_LITERAL) {
-        char *content = KEFIR_MALLOC(mem, src->string_literal.length);
+        kefir_size_t sz = 0;
+        switch (src->string_literal.type) {
+            case KEFIR_STRING_LITERAL_TOKEN_MULTIBYTE:
+            case KEFIR_STRING_LITERAL_TOKEN_UNICODE8:
+                sz = src->string_literal.length;
+                break;
+
+            case KEFIR_STRING_LITERAL_TOKEN_UNICODE16:
+                sz = sizeof(kefir_char16_t) * src->string_literal.length;
+                break;
+
+            case KEFIR_STRING_LITERAL_TOKEN_UNICODE32:
+                sz = sizeof(kefir_char32_t) * src->string_literal.length;
+                break;
+
+            case KEFIR_STRING_LITERAL_TOKEN_WIDE:
+                sz = sizeof(kefir_wchar_t) * src->string_literal.length;
+                break;
+        }
+
+        char *content = KEFIR_MALLOC(mem, sz);
         REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate string literal"));
-        memcpy(content, src->string_literal.content, src->string_literal.length);
-        dst->string_literal.content = content;
+        memcpy(content, src->string_literal.literal, sz);
+        dst->string_literal.type = src->string_literal.type;
+        dst->string_literal.literal = content;
         dst->string_literal.length = src->string_literal.length;
     }
     return KEFIR_OK;
@@ -205,8 +297,8 @@ kefir_result_t kefir_token_free(struct kefir_mem *mem, struct kefir_token *token
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
     switch (token->klass) {
         case KEFIR_TOKEN_STRING_LITERAL:
-            KEFIR_FREE(mem, (void *) token->string_literal.content);
-            token->string_literal.content = NULL;
+            KEFIR_FREE(mem, token->string_literal.literal);
+            token->string_literal.literal = NULL;
             token->string_literal.length = 0;
             break;
 

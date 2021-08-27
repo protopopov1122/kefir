@@ -45,7 +45,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_EQUAL, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_constant_int(4, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_COMMA, &TOKENS[counter++]));
-    REQUIRE_OK(kefir_token_new_string_literal(mem, LITERAL1, sizeof(LITERAL1), &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_string_literal_multibyte(mem, LITERAL1, sizeof(LITERAL1), &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_RIGHT_PARENTHESE, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_SEMICOLON, &TOKENS[counter++]));
 

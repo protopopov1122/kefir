@@ -1,6 +1,7 @@
 [
     {
         "class": "string_literal",
+        "type": "multibyte",
         "content": "ABC-DEF-123\0",
         "length": 12
     },
@@ -137,6 +138,7 @@
     },
     {
         "class": "string_literal",
+        "type": "multibyte",
         "content": "\a\b\0",
         "length": 3
     },

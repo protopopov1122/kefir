@@ -18,22 +18,16 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef KEFIR_CORE_STRING_BUFFER_H_
-#define KEFIR_CORE_STRING_BUFFER_H_
+#ifndef KEFIR_PARSER_STRING_LITERAL_IMPL_H_
+#define KEFIR_PARSER_STRING_LITERAL_IMPL_H_
 
-#include "kefir/core/basic-types.h"
-#include "kefir/core/mem.h"
+#include "kefir/parser/lexer.h"
+#include "kefir/core/string_buffer.h"
 
-typedef struct kefir_string_buffer {
-    void *buffer;
-    kefir_size_t length;
-    kefir_size_t capacity;
-} kefir_string_buffer_t;
-
-kefir_result_t kefir_string_buffer_init(struct kefir_mem *, struct kefir_string_buffer *);
-kefir_result_t kefir_string_buffer_free(struct kefir_mem *, struct kefir_string_buffer *);
-
-const void *kefir_string_buffer_multibyte_value(const struct kefir_string_buffer *, kefir_size_t *);
-kefir_result_t kefir_string_buffer_insert_character(struct kefir_mem *, struct kefir_string_buffer *, kefir_char32_t);
+kefir_result_t kefir_lexer_next_narrow_string_literal_impl(struct kefir_mem *, struct kefir_lexer *,
+                                                           const kefir_char32_t *, struct kefir_string_buffer *);
+kefir_result_t kefir_lexer_next_narrow_string_literal_sequence_impl(
+    struct kefir_mem *, struct kefir_lexer *, const kefir_char32_t *, struct kefir_string_buffer *,
+    struct kefir_token *, kefir_result_t (*)(struct kefir_mem *, const char *, kefir_size_t, struct kefir_token *));
 
 #endif

@@ -21,6 +21,7 @@
 #include "kefir/parser/lexem.h"
 #include "kefir/test/unit_test.h"
 #include "kefir/test/util.h"
+#include "kefir/util/char32.h"
 
 DEFINE_CASE(parser_lexem_construction_sentinel, "Parser - sentinel tokens") {
     struct kefir_token token;
@@ -179,15 +180,16 @@ END_CASE
 
 DEFINE_CASE(parser_lexem_construction_string_literals, "Parser - string literal tokens") {
     struct kefir_token token;
-#define ASSERT_STRING_LITERAL(_literal, _length)                                            \
-    do {                                                                                    \
-        ASSERT_OK(kefir_token_new_string_literal(&kft_mem, (_literal), (_length), &token)); \
-        ASSERT(token.klass == KEFIR_TOKEN_STRING_LITERAL);                                  \
-        ASSERT(token.string_literal.content != NULL);                                       \
-        ASSERT(token.string_literal.content != (_literal));                                 \
-        ASSERT(token.string_literal.length == (_length));                                   \
-        ASSERT(memcmp(token.string_literal.content, (_literal), (_length)) == 0);           \
-        ASSERT_OK(kefir_token_free(&kft_mem, &token));                                      \
+#define ASSERT_STRING_LITERAL(_literal, _length)                                                      \
+    do {                                                                                              \
+        ASSERT_OK(kefir_token_new_string_literal_multibyte(&kft_mem, (_literal), (_length), &token)); \
+        ASSERT(token.klass == KEFIR_TOKEN_STRING_LITERAL);                                            \
+        ASSERT(token.string_literal.type == KEFIR_STRING_LITERAL_TOKEN_MULTIBYTE);                    \
+        ASSERT(token.string_literal.literal != NULL);                                                 \
+        ASSERT(token.string_literal.literal != (_literal));                                           \
+        ASSERT(token.string_literal.length == (_length));                                             \
+        ASSERT(memcmp(token.string_literal.literal, (_literal), (_length)) == 0);                     \
+        ASSERT_OK(kefir_token_free(&kft_mem, &token));                                                \
     } while (0)
 
     const char *MSG[] = {"", "abc", "test test test", "One two three\n\n\n\t    Test...test...test...123",
@@ -199,6 +201,124 @@ DEFINE_CASE(parser_lexem_construction_string_literals, "Parser - string literal 
 
     const char line[] = " \0\0\0\n\t\0";
     ASSERT_STRING_LITERAL(line, sizeof(line));
+
+#undef ASSERT_STRING_LITERAL
+}
+END_CASE
+
+DEFINE_CASE(parser_lexem_construction_unicode8_string_literals, "Parser - unicode8 string literal tokens") {
+    struct kefir_token token;
+#define ASSERT_STRING_LITERAL(_literal, _length)                                                     \
+    do {                                                                                             \
+        ASSERT_OK(kefir_token_new_string_literal_unicode8(&kft_mem, (_literal), (_length), &token)); \
+        ASSERT(token.klass == KEFIR_TOKEN_STRING_LITERAL);                                           \
+        ASSERT(token.string_literal.type == KEFIR_STRING_LITERAL_TOKEN_UNICODE8);                    \
+        ASSERT(token.string_literal.literal != NULL);                                                \
+        ASSERT(token.string_literal.literal != (_literal));                                          \
+        ASSERT(token.string_literal.length == (_length));                                            \
+        ASSERT(memcmp(token.string_literal.literal, (_literal), (_length)) == 0);                    \
+        ASSERT_OK(kefir_token_free(&kft_mem, &token));                                               \
+    } while (0)
+
+    const char *MSG[] = {u8"", u8"abc", u8"test test test", u8"One two three\n\n\n\t    Test...test...test...123",
+                         u8"Hello, cruel-cruel-cruel world!"};
+    kefir_size_t MSG_LEN = sizeof(MSG) / sizeof(MSG[0]);
+    for (kefir_size_t i = 0; i < MSG_LEN; i++) {
+        ASSERT_STRING_LITERAL(MSG[i], strlen(MSG[i]));
+    }
+
+    const char line[] = u8" \0\0\0\n\t\0";
+    ASSERT_STRING_LITERAL(line, sizeof(line));
+
+#undef ASSERT_STRING_LITERAL
+}
+END_CASE
+
+static kefir_size_t strlen16(const kefir_char16_t *string) {
+    kefir_size_t length = 0;
+    for (; *string != u'\0'; length++, string++) {}
+    return length;
+}
+
+DEFINE_CASE(parser_lexem_construction_unicode16_string_literals, "Parser - unicode16 string literal tokens") {
+    struct kefir_token token;
+#define ASSERT_STRING_LITERAL(_literal, _length)                                                           \
+    do {                                                                                                   \
+        ASSERT_OK(kefir_token_new_string_literal_unicode16(&kft_mem, (_literal), (_length), &token));      \
+        ASSERT(token.klass == KEFIR_TOKEN_STRING_LITERAL);                                                 \
+        ASSERT(token.string_literal.type == KEFIR_STRING_LITERAL_TOKEN_UNICODE16);                         \
+        ASSERT(token.string_literal.literal != NULL);                                                      \
+        ASSERT(token.string_literal.literal != (_literal));                                                \
+        ASSERT(token.string_literal.length == (_length));                                                  \
+        ASSERT(memcmp(token.string_literal.literal, (_literal), (_length) * sizeof(kefir_char16_t)) == 0); \
+        ASSERT_OK(kefir_token_free(&kft_mem, &token));                                                     \
+    } while (0)
+
+    const kefir_char16_t *MSG[] = {u"", u"abc", u"test test test", u"One two three\n\n\n\t    Test...test...test...123",
+                                   u"Hello, cruel-cruel-cruel world!"};
+    kefir_size_t MSG_LEN = sizeof(MSG) / sizeof(MSG[0]);
+    for (kefir_size_t i = 0; i < MSG_LEN; i++) {
+        ASSERT_STRING_LITERAL(MSG[i], strlen16(MSG[i]));
+    }
+
+    const kefir_char16_t line[] = u" \0\0\0\n\t\0";
+    ASSERT_STRING_LITERAL(line, sizeof(line) / sizeof(line[0]));
+
+#undef ASSERT_STRING_LITERAL
+}
+END_CASE
+
+DEFINE_CASE(parser_lexem_construction_unicode32_string_literals, "Parser - unicode32 string literal tokens") {
+    struct kefir_token token;
+#define ASSERT_STRING_LITERAL(_literal, _length)                                                           \
+    do {                                                                                                   \
+        ASSERT_OK(kefir_token_new_string_literal_unicode32(&kft_mem, (_literal), (_length), &token));      \
+        ASSERT(token.klass == KEFIR_TOKEN_STRING_LITERAL);                                                 \
+        ASSERT(token.string_literal.type == KEFIR_STRING_LITERAL_TOKEN_UNICODE32);                         \
+        ASSERT(token.string_literal.literal != NULL);                                                      \
+        ASSERT(token.string_literal.literal != (_literal));                                                \
+        ASSERT(token.string_literal.length == (_length));                                                  \
+        ASSERT(memcmp(token.string_literal.literal, (_literal), (_length) * sizeof(kefir_char32_t)) == 0); \
+        ASSERT_OK(kefir_token_free(&kft_mem, &token));                                                     \
+    } while (0)
+
+    const kefir_char32_t *MSG[] = {U"", U"abc", U"test test test", U"One two three\n\n\n\t    Test...test...test...123",
+                                   U"Hello, cruel-cruel-cruel world!"};
+    kefir_size_t MSG_LEN = sizeof(MSG) / sizeof(MSG[0]);
+    for (kefir_size_t i = 0; i < MSG_LEN; i++) {
+        ASSERT_STRING_LITERAL(MSG[i], kefir_strlen32(MSG[i]));
+    }
+
+    const kefir_char32_t line[] = U" \0\0\0\n\t\0";
+    ASSERT_STRING_LITERAL(line, sizeof(line) / sizeof(line[0]));
+
+#undef ASSERT_STRING_LITERAL
+}
+END_CASE
+
+DEFINE_CASE(parser_lexem_construction_wide_string_literals, "Parser - wide string literal tokens") {
+    struct kefir_token token;
+#define ASSERT_STRING_LITERAL(_literal, _length)                                                          \
+    do {                                                                                                  \
+        ASSERT_OK(kefir_token_new_string_literal_wide(&kft_mem, (_literal), (_length), &token));          \
+        ASSERT(token.klass == KEFIR_TOKEN_STRING_LITERAL);                                                \
+        ASSERT(token.string_literal.type == KEFIR_STRING_LITERAL_TOKEN_WIDE);                             \
+        ASSERT(token.string_literal.literal != NULL);                                                     \
+        ASSERT(token.string_literal.literal != (_literal));                                               \
+        ASSERT(token.string_literal.length == (_length));                                                 \
+        ASSERT(memcmp(token.string_literal.literal, (_literal), (_length) * sizeof(kefir_wchar_t)) == 0); \
+        ASSERT_OK(kefir_token_free(&kft_mem, &token));                                                    \
+    } while (0)
+
+    const kefir_wchar_t *MSG[] = {U"", U"abc", U"test test test", U"One two three\n\n\n\t    Test...test...test...123",
+                                  U"Hello, cruel-cruel-cruel world!"};
+    kefir_size_t MSG_LEN = sizeof(MSG) / sizeof(MSG[0]);
+    for (kefir_size_t i = 0; i < MSG_LEN; i++) {
+        ASSERT_STRING_LITERAL(MSG[i], kefir_strlen32(MSG[i]));
+    }
+
+    const kefir_wchar_t line[] = U" \0\0\0\n\t\0";
+    ASSERT_STRING_LITERAL(line, sizeof(line) / sizeof(line[0]));
 
 #undef ASSERT_STRING_LITERAL
 }
@@ -306,11 +426,48 @@ DEFINE_CASE(parser_lexem_move, "Parser - moving tokens") {
     ASSERT_OK(kefir_token_free(&kft_mem, &dst));
 
     const char MSG[] = "\0\0\0TEST...TEST...TEST...HELLO!!!!\0";
-    ASSERT_OK(kefir_token_new_string_literal(&kft_mem, MSG, sizeof(MSG), &src));
+    ASSERT_OK(kefir_token_new_string_literal_multibyte(&kft_mem, MSG, sizeof(MSG), &src));
     ASSERT_OK(kefir_token_move(&dst, &src));
     ASSERT(dst.klass == KEFIR_TOKEN_STRING_LITERAL);
+    ASSERT(dst.string_literal.type == KEFIR_STRING_LITERAL_TOKEN_MULTIBYTE);
     ASSERT(dst.string_literal.length == sizeof(MSG));
-    ASSERT(memcmp(MSG, dst.string_literal.content, sizeof(MSG)) == 0);
+    ASSERT(memcmp(MSG, dst.string_literal.literal, sizeof(MSG)) == 0);
+    ASSERT_OK(kefir_token_free(&kft_mem, &dst));
+
+    const char MSG2[] = u8"\\t\\nTeST test one-twoTHREE\\r\\'\\\"\0";
+    ASSERT_OK(kefir_token_new_string_literal_unicode8(&kft_mem, MSG2, sizeof(MSG2), &src));
+    ASSERT_OK(kefir_token_move(&dst, &src));
+    ASSERT(dst.klass == KEFIR_TOKEN_STRING_LITERAL);
+    ASSERT(dst.string_literal.type == KEFIR_STRING_LITERAL_TOKEN_UNICODE8);
+    ASSERT(dst.string_literal.length == sizeof(MSG2));
+    ASSERT(memcmp(MSG2, dst.string_literal.literal, sizeof(MSG2)) == 0);
+    ASSERT_OK(kefir_token_free(&kft_mem, &dst));
+
+    const kefir_char16_t MSG3[] = u"Another test string, n00000th1ng sp3c1al!\n\r\0\t";
+    ASSERT_OK(kefir_token_new_string_literal_unicode16(&kft_mem, MSG3, sizeof(MSG3) / sizeof(MSG3[0]), &src));
+    ASSERT_OK(kefir_token_move(&dst, &src));
+    ASSERT(dst.klass == KEFIR_TOKEN_STRING_LITERAL);
+    ASSERT(dst.string_literal.type == KEFIR_STRING_LITERAL_TOKEN_UNICODE16);
+    ASSERT(dst.string_literal.length == sizeof(MSG3) / sizeof(MSG3[0]));
+    ASSERT(memcmp(MSG3, dst.string_literal.literal, sizeof(MSG3)) == 0);
+    ASSERT_OK(kefir_token_free(&kft_mem, &dst));
+
+    const kefir_char32_t MSG4[] = U"\0\0rSTRING-string-testing-123\v";
+    ASSERT_OK(kefir_token_new_string_literal_unicode32(&kft_mem, MSG4, sizeof(MSG4) / sizeof(MSG4[0]), &src));
+    ASSERT_OK(kefir_token_move(&dst, &src));
+    ASSERT(dst.klass == KEFIR_TOKEN_STRING_LITERAL);
+    ASSERT(dst.string_literal.type == KEFIR_STRING_LITERAL_TOKEN_UNICODE32);
+    ASSERT(dst.string_literal.length == sizeof(MSG4) / sizeof(MSG4[0]));
+    ASSERT(memcmp(MSG4, dst.string_literal.literal, sizeof(MSG4)) == 0);
+    ASSERT_OK(kefir_token_free(&kft_mem, &dst));
+
+    const kefir_wchar_t MSG5[] = U"\"\"\\Th3 l@st w1d3 $tring!!!\v\t";
+    ASSERT_OK(kefir_token_new_string_literal_wide(&kft_mem, MSG5, sizeof(MSG5) / sizeof(MSG5[0]), &src));
+    ASSERT_OK(kefir_token_move(&dst, &src));
+    ASSERT(dst.klass == KEFIR_TOKEN_STRING_LITERAL);
+    ASSERT(dst.string_literal.type == KEFIR_STRING_LITERAL_TOKEN_WIDE);
+    ASSERT(dst.string_literal.length == sizeof(MSG5) / sizeof(MSG5[0]));
+    ASSERT(memcmp(MSG5, dst.string_literal.literal, sizeof(MSG5)) == 0);
     ASSERT_OK(kefir_token_free(&kft_mem, &dst));
 
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
@@ -364,16 +521,82 @@ DEFINE_CASE(parser_lexem_copy, "Parser - copying tokens") {
     ASSERT_OK(kefir_token_free(&kft_mem, &dst));
 
     const char MSG[] = "\0\0\0TEST...TEST...TEST...HELLO!!!!\0";
-    ASSERT_OK(kefir_token_new_string_literal(&kft_mem, MSG, sizeof(MSG), &src));
+    ASSERT_OK(kefir_token_new_string_literal_multibyte(&kft_mem, MSG, sizeof(MSG), &src));
     ASSERT_OK(kefir_token_copy(&kft_mem, &dst, &src));
     ASSERT(src.klass == KEFIR_TOKEN_STRING_LITERAL);
+    ASSERT(src.string_literal.type == KEFIR_STRING_LITERAL_TOKEN_MULTIBYTE);
     ASSERT(src.string_literal.length == sizeof(MSG));
-    ASSERT(memcmp(MSG, src.string_literal.content, sizeof(MSG)) == 0);
-    ASSERT(src.string_literal.content != MSG);
+    ASSERT(memcmp(MSG, src.string_literal.literal, sizeof(MSG)) == 0);
+    ASSERT(src.string_literal.literal != MSG);
     ASSERT(dst.klass == KEFIR_TOKEN_STRING_LITERAL);
+    ASSERT(dst.string_literal.type == KEFIR_STRING_LITERAL_TOKEN_MULTIBYTE);
     ASSERT(dst.string_literal.length == sizeof(MSG));
-    ASSERT(memcmp(MSG, dst.string_literal.content, sizeof(MSG)) == 0);
-    ASSERT(dst.string_literal.content != MSG);
+    ASSERT(memcmp(MSG, dst.string_literal.literal, sizeof(MSG)) == 0);
+    ASSERT(dst.string_literal.literal != MSG);
+    ASSERT_OK(kefir_token_free(&kft_mem, &src));
+    ASSERT_OK(kefir_token_free(&kft_mem, &dst));
+
+    const char MSG2[] = u8"Message #number2 (two)\t\v\ryes!\0.";
+    ASSERT_OK(kefir_token_new_string_literal_unicode8(&kft_mem, MSG2, sizeof(MSG2), &src));
+    ASSERT_OK(kefir_token_copy(&kft_mem, &dst, &src));
+    ASSERT(src.klass == KEFIR_TOKEN_STRING_LITERAL);
+    ASSERT(src.string_literal.type == KEFIR_STRING_LITERAL_TOKEN_UNICODE8);
+    ASSERT(src.string_literal.length == sizeof(MSG2));
+    ASSERT(memcmp(MSG2, src.string_literal.literal, sizeof(MSG2)) == 0);
+    ASSERT(src.string_literal.literal != MSG2);
+    ASSERT(dst.klass == KEFIR_TOKEN_STRING_LITERAL);
+    ASSERT(dst.string_literal.type == KEFIR_STRING_LITERAL_TOKEN_UNICODE8);
+    ASSERT(dst.string_literal.length == sizeof(MSG2));
+    ASSERT(memcmp(MSG2, dst.string_literal.literal, sizeof(MSG2)) == 0);
+    ASSERT(dst.string_literal.literal != MSG2);
+    ASSERT_OK(kefir_token_free(&kft_mem, &src));
+    ASSERT_OK(kefir_token_free(&kft_mem, &dst));
+
+    const kefir_char16_t MSG3[] = u"Message #number2 (two)\t\v\ryes!\0.";
+    ASSERT_OK(kefir_token_new_string_literal_unicode16(&kft_mem, MSG3, sizeof(MSG3) / sizeof(MSG3[0]), &src));
+    ASSERT_OK(kefir_token_copy(&kft_mem, &dst, &src));
+    ASSERT(src.klass == KEFIR_TOKEN_STRING_LITERAL);
+    ASSERT(src.string_literal.type == KEFIR_STRING_LITERAL_TOKEN_UNICODE16);
+    ASSERT(src.string_literal.length == sizeof(MSG3) / sizeof(MSG3[0]));
+    ASSERT(memcmp(MSG3, src.string_literal.literal, sizeof(MSG3)) == 0);
+    ASSERT(src.string_literal.literal != MSG3);
+    ASSERT(dst.klass == KEFIR_TOKEN_STRING_LITERAL);
+    ASSERT(dst.string_literal.type == KEFIR_STRING_LITERAL_TOKEN_UNICODE16);
+    ASSERT(dst.string_literal.length == sizeof(MSG3) / sizeof(MSG3[0]));
+    ASSERT(memcmp(MSG3, dst.string_literal.literal, sizeof(MSG3)) == 0);
+    ASSERT(dst.string_literal.literal != MSG3);
+    ASSERT_OK(kefir_token_free(&kft_mem, &src));
+    ASSERT_OK(kefir_token_free(&kft_mem, &dst));
+
+    const kefir_char32_t MSG4[] = U"Yet another silly boring messgage\n!";
+    ASSERT_OK(kefir_token_new_string_literal_unicode32(&kft_mem, MSG4, sizeof(MSG4) / sizeof(MSG4[0]), &src));
+    ASSERT_OK(kefir_token_copy(&kft_mem, &dst, &src));
+    ASSERT(src.klass == KEFIR_TOKEN_STRING_LITERAL);
+    ASSERT(src.string_literal.type == KEFIR_STRING_LITERAL_TOKEN_UNICODE32);
+    ASSERT(src.string_literal.length == sizeof(MSG4) / sizeof(MSG4[0]));
+    ASSERT(memcmp(MSG4, src.string_literal.literal, sizeof(MSG4)) == 0);
+    ASSERT(src.string_literal.literal != MSG4);
+    ASSERT(dst.klass == KEFIR_TOKEN_STRING_LITERAL);
+    ASSERT(dst.string_literal.type == KEFIR_STRING_LITERAL_TOKEN_UNICODE32);
+    ASSERT(dst.string_literal.length == sizeof(MSG4) / sizeof(MSG4[0]));
+    ASSERT(memcmp(MSG4, dst.string_literal.literal, sizeof(MSG4)) == 0);
+    ASSERT(dst.string_literal.literal != MSG4);
+    ASSERT_OK(kefir_token_free(&kft_mem, &src));
+    ASSERT_OK(kefir_token_free(&kft_mem, &dst));
+
+    const kefir_wchar_t MSG5[] = U"\0\nTHE last MSGe?0\"";
+    ASSERT_OK(kefir_token_new_string_literal_wide(&kft_mem, MSG5, sizeof(MSG5) / sizeof(MSG5[0]), &src));
+    ASSERT_OK(kefir_token_copy(&kft_mem, &dst, &src));
+    ASSERT(src.klass == KEFIR_TOKEN_STRING_LITERAL);
+    ASSERT(src.string_literal.type == KEFIR_STRING_LITERAL_TOKEN_WIDE);
+    ASSERT(src.string_literal.length == sizeof(MSG5) / sizeof(MSG5[0]));
+    ASSERT(memcmp(MSG5, src.string_literal.literal, sizeof(MSG5)) == 0);
+    ASSERT(src.string_literal.literal != MSG5);
+    ASSERT(dst.klass == KEFIR_TOKEN_STRING_LITERAL);
+    ASSERT(dst.string_literal.type == KEFIR_STRING_LITERAL_TOKEN_WIDE);
+    ASSERT(dst.string_literal.length == sizeof(MSG5) / sizeof(MSG5[0]));
+    ASSERT(memcmp(MSG5, dst.string_literal.literal, sizeof(MSG5)) == 0);
+    ASSERT(dst.string_literal.literal != MSG5);
     ASSERT_OK(kefir_token_free(&kft_mem, &src));
     ASSERT_OK(kefir_token_free(&kft_mem, &dst));
 

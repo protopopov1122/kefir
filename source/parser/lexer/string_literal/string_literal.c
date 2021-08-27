@@ -22,18 +22,6 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-static kefir_result_t match_narrow_unicode_string_sequence(struct kefir_mem *mem, struct kefir_lexer *lexer,
-                                                           struct kefir_token *token) {
-    UNUSED(mem);
-    UNUSED(token);
-    REQUIRE(kefir_lexer_source_cursor_at(lexer->cursor, 0) == U'u' &&
-                kefir_lexer_source_cursor_at(lexer->cursor, 1) == U'8' &&
-                kefir_lexer_source_cursor_at(lexer->cursor, 2) == U'\"',
-            KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match narrow unicode string literal"));
-
-    return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Narrow unicode string literals are not implemented yet");
-}
-
 static kefir_result_t match_wide_unicode_string_sequence(struct kefir_mem *mem, struct kefir_lexer *lexer,
                                                          struct kefir_token *token) {
     UNUSED(mem);
@@ -64,7 +52,7 @@ static kefir_result_t match_impl(struct kefir_mem *mem, struct kefir_lexer *lexe
 
     kefir_result_t res = kefir_lexer_next_narrow_string_literal(mem, lexer, token);
     REQUIRE(res == KEFIR_NO_MATCH, res);
-    res = match_narrow_unicode_string_sequence(mem, lexer, token);
+    res = kefir_lexer_next_unicode8_string_literal(mem, lexer, token);
     REQUIRE(res == KEFIR_NO_MATCH, res);
     res = match_wide_unicode_string_sequence(mem, lexer, token);
     REQUIRE(res == KEFIR_NO_MATCH, res);

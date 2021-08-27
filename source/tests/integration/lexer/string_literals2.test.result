@@ -1,0 +1,62 @@
+[
+    {
+        "class": "string_literal",
+        "type": "unicode8",
+        "content": "Hello, world!\0",
+        "length": 14
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "string_literal",
+        "type": "unicode8",
+        "content": "abc\0",
+        "length": 4
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "string_literal",
+        "type": "unicode8",
+        "content": "\0\0\t\v\f               eHllow,, onE two Three \\ \"'\0",
+        "length": 48
+    },
+    {
+        "class": "identifier",
+        "identifier": "u8"
+    },
+    {
+        "class": "constant",
+        "type": "char",
+        "value": 97
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "+"
+    },
+    {
+        "class": "string_literal",
+        "type": "unicode8",
+        "content": "\"\\\0",
+        "length": 3
+    },
+    {
+        "class": "string_literal",
+        "type": "multibyte",
+        "content": "world!\0",
+        "length": 7
+    },
+    {
+        "class": "string_literal",
+        "type": "unicode8",
+        "content": "gyp\0",
+        "length": 4
+    },
+    {
+        "class": "sentinel"
+    }
+]
