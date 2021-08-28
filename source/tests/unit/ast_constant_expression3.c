@@ -639,11 +639,11 @@ DEFINE_CASE(ast_constant_expression_unary_operations7, "AST constant expressions
     ASSERT_OK(kefir_ast_global_context_declare_external(&kft_mem, &global_context, "variableX",
                                                         kefir_ast_type_signed_int(), NULL, NULL));
 
-    ASSERT_INTEGER_CONST_EXPR(
-        &kft_mem, context,
-        kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_LOGICAL_NEGATE,
-                                      KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!"))),
-        0);
+    ASSERT_INTEGER_CONST_EXPR(&kft_mem, context,
+                              kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_LOGICAL_NEGATE,
+                                                            KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(
+                                                                &kft_mem, "Hello, world!"))),
+                              0);
 
     ASSERT_INTEGER_CONST_EXPR(
         &kft_mem, context,

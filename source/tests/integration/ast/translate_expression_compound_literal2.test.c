@@ -55,7 +55,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_initializer_list_append(
         mem, &literal1->initializer->list, NULL,
         kefir_ast_new_expression_initializer(
-            mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(mem, "Hello, world!")))));
+            mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(mem, "Hello, world!")))));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, KEFIR_AST_NODE_BASE(literal1)));
 
     REQUIRE_OK(kefir_ast_temporaries_next_block(context->temporaries));
@@ -95,7 +95,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_initializer_list_append(mem, &init4_2->list, NULL, init4_3));
     REQUIRE_OK(kefir_ast_initializer_list_append(
         mem, &init4_3->list, NULL,
-        kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(mem, "test...")))));
+        kefir_ast_new_expression_initializer(
+            mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(mem, "test...")))));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, KEFIR_AST_NODE_BASE(literal4)));
 
     struct kefir_ast_translator_global_scope_layout translator_global_scope;

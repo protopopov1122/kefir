@@ -111,7 +111,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ast_declarator_pointer(mem,
                                      kefir_ast_declarator_identifier(mem, global_context.context.symbols, "string1")),
         kefir_ast_new_expression_initializer(
-            mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(mem, "Some ordinary string"))),
+            mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(mem, "Some ordinary string"))),
         NULL);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl7->specifiers, kefir_ast_type_specifier_char(mem)));
 
@@ -122,7 +122,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ast_new_expression_initializer(
             mem, KEFIR_AST_NODE_BASE(kefir_ast_new_binary_operation(
                      mem, KEFIR_AST_OPERATION_ADD,
-                     KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(mem, "Another ordinary string")),
+                     KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(mem, "Another ordinary string")),
                      KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 4))))),
         NULL);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl8->specifiers, kefir_ast_type_specifier_char(mem)));

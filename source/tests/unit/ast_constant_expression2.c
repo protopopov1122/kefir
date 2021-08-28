@@ -307,7 +307,7 @@ DEFINE_CASE(ast_constant_expression_conditional_operator2, "AST constant express
     ASSERT_INTEGER_CONST_EXPR(
         &kft_mem, context,
         kefir_ast_new_conditional_operator(
-            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!")),
+            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, world!")),
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 10)),
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 200))),
         10);

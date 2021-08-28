@@ -83,7 +83,11 @@ DECLARE_CASE(ast_type_construction7);
 DECLARE_CASE(ast_type_construction8);
 DECLARE_CASE(ast_nodes_constants);
 DECLARE_CASE(ast_nodes_identifiers);
-DECLARE_CASE(ast_nodes_string_literals);
+DECLARE_CASE(ast_nodes_string_literals_multibyte);
+DECLARE_CASE(ast_nodes_string_literals_unicode8);
+DECLARE_CASE(ast_nodes_string_literals_unicode16);
+DECLARE_CASE(ast_nodes_string_literals_unicode32);
+DECLARE_CASE(ast_nodes_string_literals_wide);
 DECLARE_CASE(ast_nodes_type_name);
 DECLARE_CASE(ast_nodes_array_subscripts);
 DECLARE_CASE(ast_nodes_function_calls);
@@ -149,7 +153,11 @@ DECLARE_CASE(ast_ordinary_scope_objects_local_init2);
 DECLARE_CASE(ast_ordinary_scope_objects_local_init3);
 DECLARE_CASE(ast_ordinary_scope_objects_local_init4);
 DECLARE_CASE(ast_node_analysis_constants);
-DECLARE_CASE(ast_node_analysis_string_literals);
+DECLARE_CASE(ast_node_analysis_string_literals_multibyte);
+DECLARE_CASE(ast_node_analysis_string_literals_unicode8);
+DECLARE_CASE(ast_node_analysis_string_literals_unicode16);
+DECLARE_CASE(ast_node_analysis_string_literals_unicode32);
+DECLARE_CASE(ast_node_analysis_string_literals_wide);
 DECLARE_CASE(ast_node_analysis_identifiers);
 DECLARE_CASE(ast_node_analysis_array_subscripts);
 DECLARE_CASE(ast_node_analysis_struct_members1);
@@ -423,19 +431,20 @@ TEST_SUITE(
     &ast_ordinary_scope_objects14, &ast_ordinary_scope_objects15, &ast_type_construction1, &ast_type_construction2,
     &ast_type_construction3, &ast_type_construction4, &ast_type_construction5, &ast_type_construction6,
     &ast_type_construction7, &ast_type_construction8, &ast_nodes_constants, &ast_nodes_identifiers,
-    &ast_nodes_string_literals, &ast_nodes_type_name, &ast_nodes_array_subscripts, &ast_nodes_function_calls,
-    &ast_nodes_struct_members, &ast_nodes_unary_operations, &ast_nodes_binary_operations, &ast_nodes_generic_selections,
-    &ast_nodes_cast_operators, &ast_nodes_conditional_operators, &ast_nodes_assignment_operators,
-    &ast_nodes_comma_operators, &ast_nodes_compound_literals, &ast_nodes_init_declarators1,
-    &ast_nodes_static_assertions1, &ast_nodes_labeled_statements1, &ast_nodes_case_statements1,
-    &ast_nodes_expression_statements1, &ast_type_compatibility1, &ast_type_basic_compatibility,
-    &ast_type_enum_compatibility, &ast_type_pointer_compatibility, &ast_type_qualified_compatibility,
-    &ast_type_struct_compatibility, &ast_type_union_compatibility, &ast_type_array_compatibility,
-    &ast_type_function_compatibility, &ast_type_basic_composite, &ast_type_pointer_composite, &ast_type_enum_composite,
-    &ast_type_qualified_composite, &ast_type_struct_composite, &ast_type_union_composite, &ast_type_array_composite,
-    &ast_type_function_composite, &ast_type_scope1, &ast_type_scope2, &ast_type_scope3, &ast_ordinary_constant_scope1,
-    &ast_ordinary_typedef_scope1, &ast_ordinary_scope_composite_objects_external,
-    &ast_ordinary_scope_composite_objects_external_declaration,
+    &ast_nodes_string_literals_multibyte, &ast_nodes_string_literals_unicode8, &ast_nodes_string_literals_unicode16,
+    &ast_nodes_string_literals_unicode32, &ast_nodes_string_literals_wide, &ast_nodes_type_name,
+    &ast_nodes_array_subscripts, &ast_nodes_function_calls, &ast_nodes_struct_members, &ast_nodes_unary_operations,
+    &ast_nodes_binary_operations, &ast_nodes_generic_selections, &ast_nodes_cast_operators,
+    &ast_nodes_conditional_operators, &ast_nodes_assignment_operators, &ast_nodes_comma_operators,
+    &ast_nodes_compound_literals, &ast_nodes_init_declarators1, &ast_nodes_static_assertions1,
+    &ast_nodes_labeled_statements1, &ast_nodes_case_statements1, &ast_nodes_expression_statements1,
+    &ast_type_compatibility1, &ast_type_basic_compatibility, &ast_type_enum_compatibility,
+    &ast_type_pointer_compatibility, &ast_type_qualified_compatibility, &ast_type_struct_compatibility,
+    &ast_type_union_compatibility, &ast_type_array_compatibility, &ast_type_function_compatibility,
+    &ast_type_basic_composite, &ast_type_pointer_composite, &ast_type_enum_composite, &ast_type_qualified_composite,
+    &ast_type_struct_composite, &ast_type_union_composite, &ast_type_array_composite, &ast_type_function_composite,
+    &ast_type_scope1, &ast_type_scope2, &ast_type_scope3, &ast_ordinary_constant_scope1, &ast_ordinary_typedef_scope1,
+    &ast_ordinary_scope_composite_objects_external, &ast_ordinary_scope_composite_objects_external_declaration,
     &ast_ordinary_scope_composite_objects_thread_local_external,
     &ast_ordinary_scope_composite_objects_thread_local_external_declaration,
     &ast_ordinary_scope_composite_objects_static, &ast_ordinary_scope_composite_objects_static_thread_local,
@@ -447,7 +456,9 @@ TEST_SUITE(
     &ast_ordinary_scope_objects_init6, &ast_ordinary_scope_objects_init7, &ast_ordinary_scope_objects_init8,
     &ast_ordinary_scope_objects_local_init1, &ast_ordinary_scope_objects_local_init2,
     &ast_ordinary_scope_objects_local_init3, &ast_ordinary_scope_objects_local_init4, &ast_node_analysis_constants,
-    &ast_node_analysis_string_literals, &ast_node_analysis_identifiers, &ast_node_analysis_array_subscripts,
+    &ast_node_analysis_string_literals_multibyte, &ast_node_analysis_string_literals_unicode8,
+    &ast_node_analysis_string_literals_unicode16, &ast_node_analysis_string_literals_unicode32,
+    &ast_node_analysis_string_literals_wide, &ast_node_analysis_identifiers, &ast_node_analysis_array_subscripts,
     &ast_node_analysis_struct_members1, &ast_node_analysis_struct_members2, &ast_node_analysis_indirect_struct_members1,
     &ast_node_analysis_indirect_struct_members2, &ast_node_analysis_function_calls, &ast_node_analysis_function_calls1,
     &ast_node_analysis_function_calls2, &ast_node_analysis_function_calls3, &ast_node_analysis_function_calls4,

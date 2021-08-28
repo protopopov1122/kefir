@@ -86,7 +86,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 0.1f)))));
     REQUIRE_OK(kefir_ast_initializer_list_append(
         mem, &init1_1->list, NULL,
-        kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(mem, "hey ho")))));
+        kefir_ast_new_expression_initializer(
+            mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(mem, "hey ho")))));
     REQUIRE_OK(kefir_ast_initializer_list_append(
         mem, &init1->list,
         kefir_ast_new_initializer_index_designation(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 2)), NULL),

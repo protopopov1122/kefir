@@ -115,7 +115,7 @@ DEFINE_CASE(ast_ordinary_scope_objects_init2, "AST Declaration initializers - gl
                                KEFIR_AST_SCOPED_IDENTIFIER_EXTERNAL_LINKAGE);
 
     struct kefir_ast_initializer *init1 = kefir_ast_new_expression_initializer(
-        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!")));
+        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, world!")));
     ASSERT_OK(kefir_ast_global_context_define_external(&kft_mem, &global_context, "var1", type1, NULL, init1, NULL));
     ASSERT_RESOLVED_IDENTIFIER(&context, "var1", KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN, type2,
                                KEFIR_AST_SCOPED_IDENTIFIER_EXTERNAL_LINKAGE);
@@ -129,7 +129,7 @@ DEFINE_CASE(ast_ordinary_scope_objects_init2, "AST Declaration initializers - gl
                                KEFIR_AST_SCOPED_IDENTIFIER_EXTERNAL_LINKAGE);
 
     struct kefir_ast_initializer *init2 = kefir_ast_new_expression_initializer(
-        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello!")));
+        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello!")));
     ASSERT_NOK(kefir_ast_global_context_define_external(&kft_mem, &global_context, "var1", type1, NULL, init2, NULL));
     ASSERT_RESOLVED_IDENTIFIER(&context, "var1", KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN, type2,
                                KEFIR_AST_SCOPED_IDENTIFIER_EXTERNAL_LINKAGE);
@@ -205,7 +205,7 @@ DEFINE_CASE(ast_ordinary_scope_objects_init4, "AST Declaration initializers - gl
     ASSERT_NOK(kefir_ast_global_context_define_static(&kft_mem, &global_context, "var1", type1, NULL, NULL, NULL));
 
     struct kefir_ast_initializer *init1 = kefir_ast_new_expression_initializer(
-        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!")));
+        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, world!")));
     ASSERT_OK(kefir_ast_global_context_define_static(&kft_mem, &global_context, "var1", type1, NULL, init1, NULL));
     ASSERT_RESOLVED_IDENTIFIER(&context, "var1", KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC, type2,
                                KEFIR_AST_SCOPED_IDENTIFIER_INTERNAL_LINKAGE);
@@ -215,7 +215,7 @@ DEFINE_CASE(ast_ordinary_scope_objects_init4, "AST Declaration initializers - gl
                                KEFIR_AST_SCOPED_IDENTIFIER_INTERNAL_LINKAGE);
 
     struct kefir_ast_initializer *init2 = kefir_ast_new_expression_initializer(
-        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello")));
+        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello")));
     ASSERT_NOK(kefir_ast_global_context_define_static(&kft_mem, &global_context, "var1", type1, NULL, init2, NULL));
     ASSERT_OK(kefir_ast_initializer_free(&kft_mem, init2));
     ASSERT_RESOLVED_IDENTIFIER(&context, "var1", KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC, type2,
@@ -311,7 +311,7 @@ DEFINE_CASE(ast_ordinary_scope_objects_init6, "AST Declaration initializers - gl
                                KEFIR_AST_SCOPED_IDENTIFIER_EXTERNAL_LINKAGE);
 
     struct kefir_ast_initializer *init1 = kefir_ast_new_expression_initializer(
-        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!")));
+        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, world!")));
     ASSERT_OK(kefir_ast_global_context_define_external_thread_local(&kft_mem, &global_context, "var1", type1, NULL,
                                                                     init1, NULL));
     ASSERT_RESOLVED_IDENTIFIER(&context, "var1", KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL, type2,
@@ -328,7 +328,7 @@ DEFINE_CASE(ast_ordinary_scope_objects_init6, "AST Declaration initializers - gl
                                KEFIR_AST_SCOPED_IDENTIFIER_EXTERNAL_LINKAGE);
 
     struct kefir_ast_initializer *init2 = kefir_ast_new_expression_initializer(
-        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello!")));
+        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello!")));
     ASSERT_NOK(kefir_ast_global_context_define_external_thread_local(&kft_mem, &global_context, "var1", type1, NULL,
                                                                      init2, NULL));
     ASSERT_OK(kefir_ast_initializer_free(&kft_mem, init2));
@@ -405,7 +405,7 @@ DEFINE_CASE(ast_ordinary_scope_objects_init8, "AST Declaration initializers - gl
                                                                    NULL));
 
     struct kefir_ast_initializer *init1 = kefir_ast_new_expression_initializer(
-        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!")));
+        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, world!")));
     ASSERT_OK(kefir_ast_global_context_define_static_thread_local(&kft_mem, &global_context, "var1", type1, NULL, init1,
                                                                   NULL));
     ASSERT_RESOLVED_IDENTIFIER(&context, "var1", KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL, type2,
@@ -417,7 +417,7 @@ DEFINE_CASE(ast_ordinary_scope_objects_init8, "AST Declaration initializers - gl
                                KEFIR_AST_SCOPED_IDENTIFIER_INTERNAL_LINKAGE);
 
     struct kefir_ast_initializer *init2 = kefir_ast_new_expression_initializer(
-        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello")));
+        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello")));
     ASSERT_NOK(kefir_ast_global_context_define_static_thread_local(&kft_mem, &global_context, "var1", type1, NULL,
                                                                    init2, NULL));
     ASSERT_OK(kefir_ast_initializer_free(&kft_mem, init2));

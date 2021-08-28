@@ -140,14 +140,16 @@ static kefir_result_t define_compound_literal_function(struct kefir_mem *mem, st
     struct kefir_ast_compound_literal *compound = kefir_ast_new_compound_literal(mem, type_name1);
     REQUIRE_OK(kefir_ast_initializer_list_append(
         mem, &compound->initializer->list, NULL,
-        kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(mem, STRING)))));
+        kefir_ast_new_expression_initializer(
+            mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(mem, STRING)))));
     REQUIRE_OK(kefir_ast_initializer_list_append(
         mem, &compound->initializer->list,
         kefir_ast_new_initializer_member_designation(mem, context_manager->current->symbols, "padding", NULL),
         kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 1010)))));
     REQUIRE_OK(kefir_ast_initializer_list_append(
         mem, &compound->initializer->list, NULL,
-        kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(mem, STRING)))));
+        kefir_ast_new_expression_initializer(
+            mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(mem, STRING)))));
     REQUIRE_OK(kefir_ast_initializer_list_append(
         mem, &compound->initializer->list,
         kefir_ast_new_initializer_member_designation(mem, context_manager->current->symbols, "length", NULL),

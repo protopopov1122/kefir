@@ -32,7 +32,7 @@ kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(string_literal)(struct kefir_mem *mem
         case KEFIR_STRING_LITERAL_TOKEN_MULTIBYTE:
         case KEFIR_STRING_LITERAL_TOKEN_UNICODE8:
             REQUIRE_ALLOC(result,
-                          KEFIR_AST_NODE_BASE(kefir_ast_new_string_literal(
+                          KEFIR_AST_NODE_BASE(kefir_ast_new_string_literal_multibyte(
                               mem, (const char *) token->string_literal.literal, token->string_literal.length)),
                           "Failed to allocate AST string literal");
             break;

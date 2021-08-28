@@ -89,7 +89,7 @@ static kefir_result_t define_variables(struct kefir_mem *mem, const struct kefir
         kefir_ast_declarator_array(mem, KEFIR_AST_DECLARATOR_ARRAY_UNBOUNDED, NULL,
                                    kefir_ast_declarator_identifier(mem, context->symbols, "str1")),
         kefir_ast_new_expression_initializer(
-            mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(mem, "Test...test...test...."))),
+            mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(mem, "Test...test...test...."))),
         NULL);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl6->specifiers,
                                                           kefir_ast_storage_class_specifier_extern(mem)));
@@ -99,7 +99,7 @@ static kefir_result_t define_variables(struct kefir_mem *mem, const struct kefir
     struct kefir_ast_declaration *decl7 = kefir_ast_new_single_declaration(
         mem, kefir_ast_declarator_pointer(mem, kefir_ast_declarator_identifier(mem, context->symbols, "str2")),
         kefir_ast_new_expression_initializer(
-            mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(mem, "TEXT-ONE-TWO-THREE"))),
+            mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(mem, "TEXT-ONE-TWO-THREE"))),
         NULL);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl7->specifiers,
                                                           kefir_ast_storage_class_specifier_extern(mem)));

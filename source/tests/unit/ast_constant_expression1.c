@@ -117,13 +117,14 @@ DEFINE_CASE(ast_constant_expression_string_literal1, "AST constant expressions -
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
-    ASSERT_LITERAL_CONST_EXPR(&kft_mem, context, KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, ""), "");
-    ASSERT_LITERAL_CONST_EXPR(&kft_mem, context, KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!"),
+    ASSERT_LITERAL_CONST_EXPR(&kft_mem, context, KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, ""), "");
+    ASSERT_LITERAL_CONST_EXPR(&kft_mem, context, KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, world!"),
                               "Hello, world!");
-    ASSERT_LITERAL_CONST_EXPR(&kft_mem, context, KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, cruel world!"),
+    ASSERT_LITERAL_CONST_EXPR(&kft_mem, context,
+                              KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, cruel world!"),
                               "Hello, cruel world!");
     ASSERT_LITERAL_CONST_EXPR(&kft_mem, context,
-                              KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "\n\naaaAAA\tAbc\n   \tCBA\n\t\t"),
+                              KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "\n\naaaAAA\tAbc\n   \tCBA\n\t\t"),
                               "\n\naaaAAA\tAbc\n   \tCBA\n\t\t");
 
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));

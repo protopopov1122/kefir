@@ -97,6 +97,14 @@ typedef enum kefir_ast_constant_type {
     KEFIR_AST_DOUBLE_CONSTANT
 } kefir_ast_constant_type_t;
 
+typedef enum kefir_ast_string_literal_type {
+    KEFIR_AST_STRING_LITERAL_MULTIBYTE,
+    KEFIR_AST_STRING_LITERAL_UNICODE8,
+    KEFIR_AST_STRING_LITERAL_UNICODE16,
+    KEFIR_AST_STRING_LITERAL_UNICODE32,
+    KEFIR_AST_STRING_LITERAL_WIDE
+} kefir_ast_string_literal_type_t;
+
 typedef enum kefir_ast_unary_operation_type {
     KEFIR_AST_OPERATION_PLUS,
     KEFIR_AST_OPERATION_NEGATE,

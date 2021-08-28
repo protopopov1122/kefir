@@ -380,7 +380,7 @@ DEFINE_CASE(ast_declarator_analysis24, "AST declarator analysis - structure stat
         kefir_ast_structure_declaration_entry_alloc_assert(
             &kft_mem,
             kefir_ast_new_static_assertion(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(&kft_mem, true)),
-                                           KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "TRUE")))));
+                                           KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "TRUE")))));
 
     struct kefir_ast_structure_declaration_entry *entry2 = kefir_ast_structure_declaration_entry_alloc(&kft_mem);
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &entry2->declaration.specifiers,
@@ -446,7 +446,7 @@ DEFINE_CASE(ast_declarator_analysis25, "AST declarator analysis - structure stat
         kefir_ast_structure_declaration_entry_alloc_assert(
             &kft_mem,
             kefir_ast_new_static_assertion(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(&kft_mem, false)),
-                                           KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "FALSE")))));
+                                           KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "FALSE")))));
 
     struct kefir_ast_structure_declaration_entry *entry2 = kefir_ast_structure_declaration_entry_alloc(&kft_mem);
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &entry2->declaration.specifiers,

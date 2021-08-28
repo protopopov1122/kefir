@@ -218,10 +218,10 @@ DEFINE_CASE(ast_initializer_analysis3, "AST initializer - analysis #3") {
     ASSERT_OK(kefir_ast_initializer_list_append(
         &kft_mem, &init4->list, NULL,
         kefir_ast_new_expression_initializer(
-            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!")))));
+            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, world!")))));
 
     struct kefir_ast_initializer *init5 = kefir_ast_new_expression_initializer(
-        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!")));
+        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, world!")));
 
     struct kefir_ast_initializer *init_final = kefir_ast_new_list_initializer(&kft_mem);
     ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &init_final->list, NULL, init2));
@@ -299,7 +299,7 @@ DEFINE_CASE(ast_initializer_analysis4, "AST initializer - analysis #4") {
     ASSERT_OK(kefir_ast_initializer_free(&kft_mem, init1));
 
     struct kefir_ast_initializer *init2 = kefir_ast_new_expression_initializer(
-        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!")));
+        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, world!")));
     ASSERT_OK(kefir_ast_analyze_initializer(&kft_mem, context, type1, init2, &traversal_props));
     ASSERT(traversal_props.constant);
     ASSERT(KEFIR_AST_TYPE_SAME(traversal_props.type,
@@ -311,7 +311,7 @@ DEFINE_CASE(ast_initializer_analysis4, "AST initializer - analysis #4") {
     ASSERT_OK(kefir_ast_initializer_list_append(
         &kft_mem, &init3->list, NULL,
         kefir_ast_new_expression_initializer(
-            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!")))));
+            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, world!")))));
     ASSERT_OK(kefir_ast_analyze_initializer(&kft_mem, context, type1, init3, &traversal_props));
     ASSERT(traversal_props.constant);
     ASSERT(KEFIR_AST_TYPE_SAME(traversal_props.type,
@@ -323,7 +323,7 @@ DEFINE_CASE(ast_initializer_analysis4, "AST initializer - analysis #4") {
     ASSERT_OK(kefir_ast_initializer_list_append(
         &kft_mem, &init4->list, NULL,
         kefir_ast_new_expression_initializer(
-            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!")))));
+            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, world!")))));
     ASSERT_OK(kefir_ast_initializer_list_append(
         &kft_mem, &init4->list, NULL,
         kefir_ast_new_expression_initializer(&kft_mem,
@@ -339,7 +339,7 @@ DEFINE_CASE(ast_initializer_analysis4, "AST initializer - analysis #4") {
     ASSERT_OK(kefir_ast_initializer_list_append(
         &kft_mem, &init5_1->list, NULL,
         kefir_ast_new_expression_initializer(
-            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!")))));
+            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, world!")))));
     struct kefir_ast_initializer *init5 = kefir_ast_new_list_initializer(&kft_mem);
     ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &init5->list, NULL, init5_1));
     ASSERT_OK(kefir_ast_analyze_initializer(&kft_mem, context, type1, init5, &traversal_props));
@@ -409,7 +409,7 @@ DEFINE_CASE(ast_initializer_analysis5, "AST initializer - analysis #5") {
     ASSERT_OK(kefir_ast_initializer_free(&kft_mem, init1));
 
     struct kefir_ast_initializer *init2 = kefir_ast_new_expression_initializer(
-        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!")));
+        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, world!")));
     ASSERT_NOK(kefir_ast_analyze_initializer(&kft_mem, context, type2, init2, &traversal_props));
     ASSERT_OK(kefir_ast_initializer_free(&kft_mem, init2));
 
@@ -417,7 +417,7 @@ DEFINE_CASE(ast_initializer_analysis5, "AST initializer - analysis #5") {
     ASSERT_OK(kefir_ast_initializer_list_append(
         &kft_mem, &init3->list, NULL,
         kefir_ast_new_expression_initializer(
-            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!")))));
+            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, world!")))));
     ASSERT_OK(kefir_ast_analyze_initializer(&kft_mem, context, type2, init3, &traversal_props));
     ASSERT(traversal_props.constant);
     ASSERT(KEFIR_AST_TYPE_SAME(traversal_props.type,
@@ -429,11 +429,11 @@ DEFINE_CASE(ast_initializer_analysis5, "AST initializer - analysis #5") {
     ASSERT_OK(kefir_ast_initializer_list_append(
         &kft_mem, &init4->list, NULL,
         kefir_ast_new_expression_initializer(
-            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!")))));
+            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, world!")))));
     ASSERT_OK(kefir_ast_initializer_list_append(
         &kft_mem, &init4->list, NULL,
         kefir_ast_new_expression_initializer(
-            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world2!")))));
+            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, world2!")))));
     ASSERT_OK(kefir_ast_analyze_initializer(&kft_mem, context, type2, init4, &traversal_props));
     ASSERT(traversal_props.constant);
     ASSERT(KEFIR_AST_TYPE_SAME(traversal_props.type,
@@ -445,7 +445,7 @@ DEFINE_CASE(ast_initializer_analysis5, "AST initializer - analysis #5") {
     ASSERT_OK(kefir_ast_initializer_list_append(
         &kft_mem, &init5->list, NULL,
         kefir_ast_new_expression_initializer(
-            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!")))));
+            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, world!")))));
     ASSERT_OK(kefir_ast_initializer_list_append(
         &kft_mem, &init5->list, NULL,
         kefir_ast_new_expression_initializer(&kft_mem,
@@ -461,7 +461,7 @@ DEFINE_CASE(ast_initializer_analysis5, "AST initializer - analysis #5") {
     ASSERT_OK(kefir_ast_initializer_list_append(
         &kft_mem, &init6_1->list, NULL,
         kefir_ast_new_expression_initializer(
-            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!")))));
+            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, world!")))));
     struct kefir_ast_initializer *init6 = kefir_ast_new_list_initializer(&kft_mem);
     ASSERT_OK(kefir_ast_initializer_list_append(&kft_mem, &init6->list, NULL, init6_1));
     ASSERT_OK(kefir_ast_analyze_initializer(&kft_mem, context, type2, init6, &traversal_props));

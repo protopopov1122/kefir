@@ -58,39 +58,39 @@ DEFINE_CASE(ast_node_analysis_static_assertions1, "AST node analysis - static as
     } while (0)
 
     ASSERT_STATIC_OK(&kft_mem, context, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 1)),
-                     KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "ErrorA"));
+                     KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "ErrorA"));
 
     ASSERT_STATIC_NOK(&kft_mem, context, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0)),
-                      KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "ErrorB"));
+                      KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "ErrorB"));
 
     ASSERT_STATIC_OK(&kft_mem, context, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(&kft_mem, true)),
-                     KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Error1"));
+                     KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Error1"));
 
     ASSERT_STATIC_NOK(&kft_mem, context, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(&kft_mem, false)),
-                      KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Error2"));
+                      KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Error2"));
 
     ASSERT_STATIC_OK(
         &kft_mem, context,
         KEFIR_AST_NODE_BASE(kefir_ast_new_binary_operation(
             &kft_mem, KEFIR_AST_OPERATION_ADD, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 1)),
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 2)))),
-        KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Error3"));
+        KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Error3"));
 
     ASSERT_STATIC_NOK(
         &kft_mem, context,
         KEFIR_AST_NODE_BASE(kefir_ast_new_binary_operation(
             &kft_mem, KEFIR_AST_OPERATION_MULTIPLY, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 1000)),
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0)))),
-        KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Error4"));
+        KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Error4"));
 
     ASSERT_STATIC_OK(&kft_mem, context, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "X")),
-                     KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Error5"));
+                     KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Error5"));
 
     ASSERT_STATIC_NOK(&kft_mem, context,
                       KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(
                           &kft_mem, KEFIR_AST_OPERATION_LOGICAL_NEGATE,
                           KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "X")))),
-                      KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Error6"));
+                      KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Error6"));
 
 #undef ASSERT_STATIC_OK
 #undef ASSERT_STATIC_NOK
@@ -705,7 +705,7 @@ DEFINE_CASE(ast_node_analysis_compound_statements4, "AST node analysis - compoun
                                                   &kft_mem, KEFIR_AST_OPERATION_SIZEOF,
                                                   KEFIR_AST_NODE_CLONE(&kft_mem, KEFIR_AST_NODE_BASE(type_name2)))),
                                               KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 2)))),
-                                          KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "ERROR!")))));
+                                          KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "ERROR!")))));
     ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(stmt3)));
 
     struct kefir_ast_compound_statement *stmt4 = kefir_ast_new_compound_statement(&kft_mem);
@@ -718,7 +718,7 @@ DEFINE_CASE(ast_node_analysis_compound_statements4, "AST node analysis - compoun
                                         KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(
                                             &kft_mem, KEFIR_AST_OPERATION_SIZEOF, KEFIR_AST_NODE_BASE(type_name2))),
                                         KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 4)))),
-                                    KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "ERROR2!")))));
+                                    KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "ERROR2!")))));
     ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(stmt4)));
 
     struct kefir_ast_compound_statement *stmt5 = kefir_ast_new_compound_statement(&kft_mem);

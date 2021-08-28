@@ -48,7 +48,8 @@ KEFIR_AST_NODE_STRUCT(kefir_ast_constant, {
 KEFIR_AST_NODE_STRUCT(kefir_ast_identifier, { const char *identifier; });
 
 KEFIR_AST_NODE_STRUCT(kefir_ast_string_literal, {
-    char *literal;
+    kefir_ast_string_literal_type_t type;
+    void *literal;
     kefir_size_t length;
 });
 
@@ -214,10 +215,17 @@ struct kefir_ast_constant *kefir_ast_new_constant_float(struct kefir_mem *, kefi
 struct kefir_ast_constant *kefir_ast_new_constant_double(struct kefir_mem *, kefir_float64_t);
 struct kefir_ast_identifier *kefir_ast_new_identifier(struct kefir_mem *, struct kefir_symbol_table *, const char *);
 
-struct kefir_ast_string_literal *kefir_ast_new_string_literal(struct kefir_mem *, const char *, kefir_size_t);
+struct kefir_ast_string_literal *kefir_ast_new_string_literal_multibyte(struct kefir_mem *, const char *, kefir_size_t);
+struct kefir_ast_string_literal *kefir_ast_new_string_literal_unicode8(struct kefir_mem *, const char *, kefir_size_t);
+struct kefir_ast_string_literal *kefir_ast_new_string_literal_unicode16(struct kefir_mem *, const kefir_char16_t *,
+                                                                        kefir_size_t);
+struct kefir_ast_string_literal *kefir_ast_new_string_literal_unicode32(struct kefir_mem *, const kefir_char32_t *,
+                                                                        kefir_size_t);
+struct kefir_ast_string_literal *kefir_ast_new_string_literal_wide(struct kefir_mem *, const kefir_wchar_t *,
+                                                                   kefir_size_t);
 
-#define KEFIR_AST_MAKE_STRING_LITERAL(_mem, _string) \
-    (kefir_ast_new_string_literal((_mem), (_string), strlen((_string)) + 1))
+#define KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(_mem, _string) \
+    (kefir_ast_new_string_literal_multibyte((_mem), (_string), strlen((_string)) + 1))
 
 struct kefir_ast_generic_selection *kefir_ast_new_generic_selection(struct kefir_mem *, struct kefir_ast_node_base *);
 

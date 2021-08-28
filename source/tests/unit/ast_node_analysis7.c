@@ -369,7 +369,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators6, "AST node analysis - declaratio
     ASSERT_OK(kefir_ast_initializer_list_append(
         &kft_mem, &init1->list, NULL,
         kefir_ast_new_expression_initializer(
-            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!")))));
+            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, world!")))));
 
     struct kefir_ast_init_declarator *decl1 = NULL;
     struct kefir_ast_declaration *decl1_list = kefir_ast_new_single_declaration(

@@ -51,7 +51,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     global_translator_context.global_scope_layout = &translator_global_scope;
 
     struct kefir_ast_initializer *init1 = kefir_ast_new_expression_initializer(
-        mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(mem, "Hello, world!")));
+        mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(mem, "Hello, world!")));
 
     struct kefir_ast_declaration *decl1 = kefir_ast_new_single_declaration(
         mem,
@@ -66,7 +66,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_initializer_list_append(
         mem, &init2->list, NULL,
         kefir_ast_new_expression_initializer(
-            mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(mem, "Goodbye, world!")))));
+            mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(mem, "Goodbye, world!")))));
 
     struct kefir_ast_declaration *decl2 = kefir_ast_new_single_declaration(
         mem,
@@ -82,8 +82,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ast_initializer *init3 = kefir_ast_new_list_initializer(mem);
     REQUIRE_OK(kefir_ast_initializer_list_append(
         mem, &init3->list, NULL,
-        kefir_ast_new_expression_initializer(mem,
-                                             KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(mem, "WTF world?")))));
+        kefir_ast_new_expression_initializer(
+            mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(mem, "WTF world?")))));
 
     struct kefir_ast_declaration *decl3 = kefir_ast_new_single_declaration(
         mem,

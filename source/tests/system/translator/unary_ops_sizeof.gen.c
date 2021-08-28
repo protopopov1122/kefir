@@ -136,7 +136,7 @@ static kefir_result_t define_get_sizeof_function(struct kefir_mem *mem, struct f
         kefir_ast_new_expression_initializer(
             mem, KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(
                      mem, KEFIR_AST_OPERATION_SIZEOF,
-                     KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(mem, "Hello, world!!!")))))));
+                     KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(mem, "Hello, world!!!")))))));
 
     func->body = KEFIR_AST_NODE_BASE(compound_literal);
 

@@ -158,19 +158,114 @@ DEFINE_CASE(ast_nodes_identifiers, "AST nodes - identifiers") {
 }
 END_CASE
 
-DEFINE_CASE(ast_nodes_string_literals, "AST nodes - string literals") {
-    struct kefir_symbol_table symbols;
-    ASSERT_OK(kefir_symbol_table_init(&symbols));
-    struct kefir_ast_string_literal *sym1 = KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!");
-    struct kefir_ast_string_literal *sym2 = KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Goodbue, cruel world!");
+DEFINE_CASE(ast_nodes_string_literals_multibyte, "AST nodes - multibyte string literals") {
+    struct kefir_ast_string_literal *sym1 = KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, world!");
+    struct kefir_ast_string_literal *sym2 = KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Goodbue, cruel world!");
     ASSERT(sym1 != NULL);
     ASSERT(sym2 != NULL);
     ASSERT(sym1->base.klass->type == KEFIR_AST_STRING_LITERAL);
     ASSERT(sym2->base.klass->type == KEFIR_AST_STRING_LITERAL);
     ASSERT(sym1->base.self == sym1);
     ASSERT(sym2->base.self == sym2);
+    ASSERT(sym1->type == KEFIR_AST_STRING_LITERAL_MULTIBYTE);
+    ASSERT(sym2->type == KEFIR_AST_STRING_LITERAL_MULTIBYTE);
     ASSERT(strcmp(sym1->literal, "Hello, world!") == 0);
     ASSERT(strcmp(sym2->literal, "Goodbue, cruel world!") == 0);
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(sym1)));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(sym2)));
+}
+END_CASE
+
+DEFINE_CASE(ast_nodes_string_literals_unicode8, "AST nodes - unicode8 string literals") {
+    const char STRING1[] = u8"Hello, pretty world!\0";
+    const char STRING2[] = u8"Goodbye,\0 not so pretty world!\n";
+
+    struct kefir_symbol_table symbols;
+    ASSERT_OK(kefir_symbol_table_init(&symbols));
+    struct kefir_ast_string_literal *sym1 = kefir_ast_new_string_literal_unicode8(&kft_mem, STRING1, sizeof(STRING1));
+    struct kefir_ast_string_literal *sym2 = kefir_ast_new_string_literal_unicode8(&kft_mem, STRING2, sizeof(STRING2));
+    ASSERT(sym1 != NULL);
+    ASSERT(sym2 != NULL);
+    ASSERT(sym1->base.klass->type == KEFIR_AST_STRING_LITERAL);
+    ASSERT(sym2->base.klass->type == KEFIR_AST_STRING_LITERAL);
+    ASSERT(sym1->base.self == sym1);
+    ASSERT(sym2->base.self == sym2);
+    ASSERT(sym1->type == KEFIR_AST_STRING_LITERAL_UNICODE8);
+    ASSERT(sym2->type == KEFIR_AST_STRING_LITERAL_UNICODE8);
+    ASSERT(memcmp(sym1->literal, STRING1, sizeof(STRING1)) == 0);
+    ASSERT(memcmp(sym2->literal, STRING2, sizeof(STRING2)) == 0);
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(sym1)));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(sym2)));
+    ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
+}
+END_CASE
+
+DEFINE_CASE(ast_nodes_string_literals_unicode16, "AST nodes - unicode16 string literals") {
+    const kefir_char16_t STRING1[] = u"Another char16 string constant here\r\n...";
+    const kefir_char16_t STRING2[] = u"Yet another\0\00one. Surprise\u0180";
+
+    struct kefir_symbol_table symbols;
+    ASSERT_OK(kefir_symbol_table_init(&symbols));
+    struct kefir_ast_string_literal *sym1 = kefir_ast_new_string_literal_unicode16(&kft_mem, STRING1, sizeof(STRING1));
+    struct kefir_ast_string_literal *sym2 = kefir_ast_new_string_literal_unicode16(&kft_mem, STRING2, sizeof(STRING2));
+    ASSERT(sym1 != NULL);
+    ASSERT(sym2 != NULL);
+    ASSERT(sym1->base.klass->type == KEFIR_AST_STRING_LITERAL);
+    ASSERT(sym2->base.klass->type == KEFIR_AST_STRING_LITERAL);
+    ASSERT(sym1->base.self == sym1);
+    ASSERT(sym2->base.self == sym2);
+    ASSERT(sym1->type == KEFIR_AST_STRING_LITERAL_UNICODE16);
+    ASSERT(sym2->type == KEFIR_AST_STRING_LITERAL_UNICODE16);
+    ASSERT(memcmp(sym1->literal, STRING1, sizeof(STRING1)) == 0);
+    ASSERT(memcmp(sym2->literal, STRING2, sizeof(STRING2)) == 0);
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(sym1)));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(sym2)));
+    ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
+}
+END_CASE
+
+DEFINE_CASE(ast_nodes_string_literals_unicode32, "AST nodes - unicode32 string literals") {
+    const kefir_char32_t STRING1[] = U"\t\v\fThe real text actually goes there\n!\0";
+    const kefir_char32_t STRING2[] = U"\0Joking. In fact it\'s here\n\0Is it\?\"";
+
+    struct kefir_symbol_table symbols;
+    ASSERT_OK(kefir_symbol_table_init(&symbols));
+    struct kefir_ast_string_literal *sym1 = kefir_ast_new_string_literal_unicode32(&kft_mem, STRING1, sizeof(STRING1));
+    struct kefir_ast_string_literal *sym2 = kefir_ast_new_string_literal_unicode32(&kft_mem, STRING2, sizeof(STRING2));
+    ASSERT(sym1 != NULL);
+    ASSERT(sym2 != NULL);
+    ASSERT(sym1->base.klass->type == KEFIR_AST_STRING_LITERAL);
+    ASSERT(sym2->base.klass->type == KEFIR_AST_STRING_LITERAL);
+    ASSERT(sym1->base.self == sym1);
+    ASSERT(sym2->base.self == sym2);
+    ASSERT(sym1->type == KEFIR_AST_STRING_LITERAL_UNICODE32);
+    ASSERT(sym2->type == KEFIR_AST_STRING_LITERAL_UNICODE32);
+    ASSERT(memcmp(sym1->literal, STRING1, sizeof(STRING1)) == 0);
+    ASSERT(memcmp(sym2->literal, STRING2, sizeof(STRING2)) == 0);
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(sym1)));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(sym2)));
+    ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
+}
+END_CASE
+
+DEFINE_CASE(ast_nodes_string_literals_wide, "AST nodes - wide string literals") {
+    const kefir_wchar_t STRING1[] = U"Some fake wide char...\n\tRight here\U00000100";
+    const kefir_wchar_t STRING2[] = U"And\000here\x00000 as well.\vSurprising\\";
+
+    struct kefir_symbol_table symbols;
+    ASSERT_OK(kefir_symbol_table_init(&symbols));
+    struct kefir_ast_string_literal *sym1 = kefir_ast_new_string_literal_wide(&kft_mem, STRING1, sizeof(STRING1));
+    struct kefir_ast_string_literal *sym2 = kefir_ast_new_string_literal_wide(&kft_mem, STRING2, sizeof(STRING2));
+    ASSERT(sym1 != NULL);
+    ASSERT(sym2 != NULL);
+    ASSERT(sym1->base.klass->type == KEFIR_AST_STRING_LITERAL);
+    ASSERT(sym2->base.klass->type == KEFIR_AST_STRING_LITERAL);
+    ASSERT(sym1->base.self == sym1);
+    ASSERT(sym2->base.self == sym2);
+    ASSERT(sym1->type == KEFIR_AST_STRING_LITERAL_WIDE);
+    ASSERT(sym2->type == KEFIR_AST_STRING_LITERAL_WIDE);
+    ASSERT(memcmp(sym1->literal, STRING1, sizeof(STRING1)) == 0);
+    ASSERT(memcmp(sym2->literal, STRING2, sizeof(STRING2)) == 0);
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(sym1)));
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(sym2)));
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));

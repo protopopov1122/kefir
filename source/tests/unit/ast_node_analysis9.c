@@ -165,7 +165,7 @@ DEFINE_CASE(ast_node_analysis_conditinal_statements3, "AST node analysis - condi
     ASSERT_OK(kefir_ast_initializer_list_append(
         &kft_mem, &compound1->initializer->list, NULL,
         kefir_ast_new_expression_initializer(
-            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Something")))));
+            &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Something")))));
 
     struct kefir_ast_conditional_statement *stmt2 =
         kefir_ast_new_conditional_statement(&kft_mem, KEFIR_AST_NODE_CLONE(&kft_mem, KEFIR_AST_NODE_BASE(compound1)),

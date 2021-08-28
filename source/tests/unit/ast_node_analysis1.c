@@ -89,22 +89,26 @@ END_CASE
 
 #undef ASSERT_CONSTANT
 
-#define ASSERT_STRING_LITERAL(_mem, _context, _literal)                                                          \
-    do {                                                                                                         \
-        struct kefir_ast_string_literal *literal = KEFIR_AST_MAKE_STRING_LITERAL((_mem), (_literal));            \
-        ASSERT_OK(kefir_ast_analyze_node((_mem), (_context), KEFIR_AST_NODE_BASE(literal)));                     \
-        ASSERT(literal->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);                         \
-        ASSERT(KEFIR_AST_TYPE_SAME(                                                                              \
-            literal->base.properties.type,                                                                       \
-            kefir_ast_type_array((_mem), (_context)->type_bundle, kefir_ast_type_char(),                         \
-                                 kefir_ast_constant_expression_integer((_mem), strlen((_literal)) + 1), NULL))); \
-        ASSERT(literal->base.properties.expression_props.constant_expression);                                   \
-        ASSERT(!literal->base.properties.expression_props.lvalue);                                               \
-        ASSERT(strcmp(literal->base.properties.expression_props.string_literal.content, (_literal)) == 0);       \
-        KEFIR_AST_NODE_FREE((_mem), KEFIR_AST_NODE_BASE(literal));                                               \
+#define ASSERT_STRING_LITERAL(_mem, _context, _type, _builder, _literal, _underlying, _literal_type)                 \
+    do {                                                                                                             \
+        const _type LITERAL[] = _literal;                                                                            \
+        struct kefir_ast_string_literal *literal = _builder((_mem), LITERAL, sizeof(LITERAL));                       \
+        ASSERT_OK(kefir_ast_analyze_node((_mem), (_context), KEFIR_AST_NODE_BASE(literal)));                         \
+        ASSERT(literal->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);                             \
+        ASSERT(KEFIR_AST_TYPE_SAME(                                                                                  \
+            literal->base.properties.type,                                                                           \
+            kefir_ast_type_array((_mem), (_context)->type_bundle, (_underlying),                                     \
+                                 kefir_ast_constant_expression_integer((_mem), sizeof(LITERAL)), NULL)));            \
+        ASSERT(literal->base.properties.expression_props.constant_expression);                                       \
+        ASSERT(!literal->base.properties.expression_props.lvalue);                                                   \
+        ASSERT(literal->base.properties.expression_props.string_literal.type == (_literal_type));                    \
+        ASSERT(literal->base.properties.expression_props.string_literal.length == sizeof(LITERAL));                  \
+        ASSERT(memcmp(literal->base.properties.expression_props.string_literal.content, LITERAL, sizeof(LITERAL)) == \
+               0);                                                                                                   \
+        KEFIR_AST_NODE_FREE((_mem), KEFIR_AST_NODE_BASE(literal));                                                   \
     } while (0)
 
-DEFINE_CASE(ast_node_analysis_string_literals, "AST node analysis - string literals") {
+DEFINE_CASE(ast_node_analysis_string_literals_multibyte, "AST node analysis - multibyte string literals") {
     const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
@@ -114,14 +118,155 @@ DEFINE_CASE(ast_node_analysis_string_literals, "AST node analysis - string liter
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
-    ASSERT_STRING_LITERAL(&kft_mem, context, "");
-    ASSERT_STRING_LITERAL(&kft_mem, context, "1");
-    ASSERT_STRING_LITERAL(&kft_mem, context, "abc");
-    ASSERT_STRING_LITERAL(&kft_mem, context, "Hello, world!");
-    ASSERT_STRING_LITERAL(&kft_mem, context, "\0");
-    ASSERT_STRING_LITERAL(&kft_mem, context, "\0\0\0\t");
-    ASSERT_STRING_LITERAL(&kft_mem, context, "\n\n\n\taaa");
-    ASSERT_STRING_LITERAL(&kft_mem, context, "    Hello,\n\tcruel\n\n\n  \t world\n!");
+    ASSERT_STRING_LITERAL(&kft_mem, context, char, kefir_ast_new_string_literal_multibyte, "", kefir_ast_type_char(),
+                          KEFIR_AST_STRING_LITERAL_MULTIBYTE);
+    ASSERT_STRING_LITERAL(&kft_mem, context, char, kefir_ast_new_string_literal_multibyte, "1", kefir_ast_type_char(),
+                          KEFIR_AST_STRING_LITERAL_MULTIBYTE);
+    ASSERT_STRING_LITERAL(&kft_mem, context, char, kefir_ast_new_string_literal_multibyte, "abc", kefir_ast_type_char(),
+                          KEFIR_AST_STRING_LITERAL_MULTIBYTE);
+    ASSERT_STRING_LITERAL(&kft_mem, context, char, kefir_ast_new_string_literal_multibyte, "Hello, world!",
+                          kefir_ast_type_char(), KEFIR_AST_STRING_LITERAL_MULTIBYTE);
+    ASSERT_STRING_LITERAL(&kft_mem, context, char, kefir_ast_new_string_literal_multibyte, "\0", kefir_ast_type_char(),
+                          KEFIR_AST_STRING_LITERAL_MULTIBYTE);
+    ASSERT_STRING_LITERAL(&kft_mem, context, char, kefir_ast_new_string_literal_multibyte, "\0\0\0\t",
+                          kefir_ast_type_char(), KEFIR_AST_STRING_LITERAL_MULTIBYTE);
+    ASSERT_STRING_LITERAL(&kft_mem, context, char, kefir_ast_new_string_literal_multibyte, "\n\n\n\taaa",
+                          kefir_ast_type_char(), KEFIR_AST_STRING_LITERAL_MULTIBYTE);
+    ASSERT_STRING_LITERAL(&kft_mem, context, char, kefir_ast_new_string_literal_multibyte,
+                          "    Hello,\n\tcruel\n\n\n  \t world\n!", kefir_ast_type_char(),
+                          KEFIR_AST_STRING_LITERAL_MULTIBYTE);
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+}
+END_CASE
+
+DEFINE_CASE(ast_node_analysis_string_literals_unicode8, "AST node analysis - unicode8 string literals") {
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
+                                            &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    ASSERT_STRING_LITERAL(&kft_mem, context, char, kefir_ast_new_string_literal_unicode8, u8"", kefir_ast_type_char(),
+                          KEFIR_AST_STRING_LITERAL_UNICODE8);
+    ASSERT_STRING_LITERAL(&kft_mem, context, char, kefir_ast_new_string_literal_unicode8, u8"1", kefir_ast_type_char(),
+                          KEFIR_AST_STRING_LITERAL_UNICODE8);
+    ASSERT_STRING_LITERAL(&kft_mem, context, char, kefir_ast_new_string_literal_unicode8, u8"abc",
+                          kefir_ast_type_char(), KEFIR_AST_STRING_LITERAL_UNICODE8);
+    ASSERT_STRING_LITERAL(&kft_mem, context, char, kefir_ast_new_string_literal_unicode8, u8"Hello, world!",
+                          kefir_ast_type_char(), KEFIR_AST_STRING_LITERAL_UNICODE8);
+    ASSERT_STRING_LITERAL(&kft_mem, context, char, kefir_ast_new_string_literal_unicode8, u8"\0", kefir_ast_type_char(),
+                          KEFIR_AST_STRING_LITERAL_UNICODE8);
+    ASSERT_STRING_LITERAL(&kft_mem, context, char, kefir_ast_new_string_literal_unicode8, u8"\0\0\0\t",
+                          kefir_ast_type_char(), KEFIR_AST_STRING_LITERAL_UNICODE8);
+    ASSERT_STRING_LITERAL(&kft_mem, context, char, kefir_ast_new_string_literal_unicode8, u8"\n\n\n\taaa",
+                          kefir_ast_type_char(), KEFIR_AST_STRING_LITERAL_UNICODE8);
+    ASSERT_STRING_LITERAL(&kft_mem, context, char, kefir_ast_new_string_literal_unicode8,
+                          u8"    Hello,\n\tcruel\n\n\n  \t world\n!", kefir_ast_type_char(),
+                          KEFIR_AST_STRING_LITERAL_UNICODE8);
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+}
+END_CASE
+
+DEFINE_CASE(ast_node_analysis_string_literals_unicode16, "AST node analysis - unicode16 string literals") {
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
+                                            &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_char16_t, kefir_ast_new_string_literal_unicode16, u"",
+                          type_traits->unicode16_char_type, KEFIR_AST_STRING_LITERAL_UNICODE16);
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_char16_t, kefir_ast_new_string_literal_unicode16, u"1",
+                          type_traits->unicode16_char_type, KEFIR_AST_STRING_LITERAL_UNICODE16);
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_char16_t, kefir_ast_new_string_literal_unicode16, u"abc",
+                          type_traits->unicode16_char_type, KEFIR_AST_STRING_LITERAL_UNICODE16);
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_char16_t, kefir_ast_new_string_literal_unicode16, u"Hello, world!",
+                          type_traits->unicode16_char_type, KEFIR_AST_STRING_LITERAL_UNICODE16);
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_char16_t, kefir_ast_new_string_literal_unicode16, u"\0",
+                          type_traits->unicode16_char_type, KEFIR_AST_STRING_LITERAL_UNICODE16);
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_char16_t, kefir_ast_new_string_literal_unicode16, u"\0\0\0\t",
+                          type_traits->unicode16_char_type, KEFIR_AST_STRING_LITERAL_UNICODE16);
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_char16_t, kefir_ast_new_string_literal_unicode16, u"\n\n\n\taaa",
+                          type_traits->unicode16_char_type, KEFIR_AST_STRING_LITERAL_UNICODE16);
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_char16_t, kefir_ast_new_string_literal_unicode16,
+                          u"    Hello,\n\tcruel\n\n\n  \t world\n!", type_traits->unicode16_char_type,
+                          KEFIR_AST_STRING_LITERAL_UNICODE16);
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+}
+END_CASE
+
+DEFINE_CASE(ast_node_analysis_string_literals_unicode32, "AST node analysis - unicode32 string literals") {
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
+                                            &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_char32_t, kefir_ast_new_string_literal_unicode32, U"",
+                          type_traits->unicode32_char_type, KEFIR_AST_STRING_LITERAL_UNICODE32);
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_char32_t, kefir_ast_new_string_literal_unicode32, U"1",
+                          type_traits->unicode32_char_type, KEFIR_AST_STRING_LITERAL_UNICODE32);
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_char32_t, kefir_ast_new_string_literal_unicode32, U"abc",
+                          type_traits->unicode32_char_type, KEFIR_AST_STRING_LITERAL_UNICODE32);
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_char32_t, kefir_ast_new_string_literal_unicode32, U"Hello, world!",
+                          type_traits->unicode32_char_type, KEFIR_AST_STRING_LITERAL_UNICODE32);
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_char32_t, kefir_ast_new_string_literal_unicode32, U"\0",
+                          type_traits->unicode32_char_type, KEFIR_AST_STRING_LITERAL_UNICODE32);
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_char32_t, kefir_ast_new_string_literal_unicode32, U"\0\0\0\t",
+                          type_traits->unicode32_char_type, KEFIR_AST_STRING_LITERAL_UNICODE32);
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_char32_t, kefir_ast_new_string_literal_unicode32, U"\n\n\n\taaa",
+                          type_traits->unicode32_char_type, KEFIR_AST_STRING_LITERAL_UNICODE32);
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_char32_t, kefir_ast_new_string_literal_unicode32,
+                          U"    Hello,\n\tcruel\n\n\n  \t world\n!", type_traits->unicode32_char_type,
+                          KEFIR_AST_STRING_LITERAL_UNICODE32);
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+}
+END_CASE
+
+DEFINE_CASE(ast_node_analysis_string_literals_wide, "AST node analysis - wide string literals") {
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
+                                            &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_wchar_t, kefir_ast_new_string_literal_wide, U"",
+                          type_traits->wide_char_type, KEFIR_AST_STRING_LITERAL_WIDE);
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_wchar_t, kefir_ast_new_string_literal_wide, U"1",
+                          type_traits->wide_char_type, KEFIR_AST_STRING_LITERAL_WIDE);
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_wchar_t, kefir_ast_new_string_literal_wide, U"abc",
+                          type_traits->wide_char_type, KEFIR_AST_STRING_LITERAL_WIDE);
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_wchar_t, kefir_ast_new_string_literal_wide, U"Hello, world!",
+                          type_traits->wide_char_type, KEFIR_AST_STRING_LITERAL_WIDE);
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_wchar_t, kefir_ast_new_string_literal_wide, U"\0",
+                          type_traits->wide_char_type, KEFIR_AST_STRING_LITERAL_WIDE);
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_wchar_t, kefir_ast_new_string_literal_wide, U"\0\0\0\t",
+                          type_traits->wide_char_type, KEFIR_AST_STRING_LITERAL_WIDE);
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_wchar_t, kefir_ast_new_string_literal_wide, U"\n\n\n\taaa",
+                          type_traits->wide_char_type, KEFIR_AST_STRING_LITERAL_WIDE);
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_wchar_t, kefir_ast_new_string_literal_wide,
+                          U"    Hello,\n\tcruel\n\n\n  \t world\n!", type_traits->wide_char_type,
+                          KEFIR_AST_STRING_LITERAL_WIDE);
 
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
@@ -871,8 +1016,8 @@ DEFINE_CASE(ast_node_analysis_unary_operation_sizeof, "AST node analysis - unary
                            kefir_ast_new_identifier(&kft_mem, context->symbols, "x"), kefir_ast_type_signed_int(), true,
                            false, false);
     ASSERT_UNARY_OPERATION(&kft_mem, context, KEFIR_AST_OPERATION_SIZEOF,
-                           KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, world!"), kefir_ast_type_signed_int(), true,
-                           false, false);
+                           KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, world!"),
+                           kefir_ast_type_signed_int(), true, false, false);
     ASSERT_UNARY_OPERATION(&kft_mem, context, KEFIR_AST_OPERATION_SIZEOF,
                            kefir_ast_new_identifier(&kft_mem, context->symbols, "y"), kefir_ast_type_signed_int(), true,
                            false, false);

@@ -31,7 +31,7 @@ DEFINE_CASE(ast_nodes_static_assertions1, "AST nodes - static assertions #1") {
 
     struct kefir_ast_static_assertion *assert1 =
         kefir_ast_new_static_assertion(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 123)),
-                                       KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Hello, goodbye!"));
+                                       KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, goodbye!"));
 
     ASSERT(assert1 != NULL);
     ASSERT(assert1->base.klass->type == KEFIR_AST_STATIC_ASSERTION);
@@ -48,7 +48,7 @@ DEFINE_CASE(ast_nodes_static_assertions1, "AST nodes - static assertions #1") {
         KEFIR_AST_NODE_BASE(kefir_ast_new_binary_operation(
             &kft_mem, KEFIR_AST_OPERATION_SUBTRACT, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 1)),
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 2)))),
-        KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Something"));
+        KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Something"));
 
     ASSERT(assert2 != NULL);
     ASSERT(assert2->base.klass->type == KEFIR_AST_STATIC_ASSERTION);
@@ -167,7 +167,7 @@ DEFINE_CASE(ast_nodes_expression_statements1, "AST nodes - expression statements
     ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
 
     struct kefir_ast_expression_statement *stmt1 = kefir_ast_new_expression_statement(
-        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(&kft_mem, "Goodbye, cruel world!")));
+        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Goodbye, cruel world!")));
     ASSERT(stmt1 != NULL);
     ASSERT(stmt1->base.klass->type == KEFIR_AST_EXPRESSION_STATEMENT);
     ASSERT(stmt1->base.self == stmt1);

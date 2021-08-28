@@ -67,7 +67,7 @@ static kefir_result_t define_literal_function(struct kefir_mem *mem, struct func
         KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "x"))));
 
     func->body = KEFIR_AST_NODE_BASE(kefir_ast_new_binary_operation(
-        mem, KEFIR_AST_OPERATION_ADD, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL(mem, literal)),
+        mem, KEFIR_AST_OPERATION_ADD, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(mem, literal)),
         KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "x"))));
 
     REQUIRE_OK(kefir_ast_context_manager_detach_local(context_manager));

@@ -23,6 +23,24 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
+static kefir_size_t literal_size(kefir_ast_string_literal_type_t type, kefir_size_t length) {
+    switch (type) {
+        case KEFIR_AST_STRING_LITERAL_MULTIBYTE:
+        case KEFIR_AST_STRING_LITERAL_UNICODE8:
+            return length;
+
+        case KEFIR_AST_STRING_LITERAL_UNICODE16:
+            return sizeof(kefir_char16_t) * length;
+
+        case KEFIR_AST_STRING_LITERAL_UNICODE32:
+            return sizeof(kefir_char32_t) * length;
+
+        case KEFIR_AST_STRING_LITERAL_WIDE:
+            return sizeof(kefir_wchar_t) * length;
+    }
+    return 0;
+}
+
 NODE_VISIT_IMPL(ast_string_literal_visit, kefir_ast_string_literal, string_literal)
 
 struct kefir_ast_node_base *ast_string_literal_clone(struct kefir_mem *, struct kefir_ast_node_base *);
@@ -56,22 +74,27 @@ struct kefir_ast_node_base *ast_string_literal_clone(struct kefir_mem *mem, stru
         return NULL;
     });
 
-    clone->literal = KEFIR_MALLOC(mem, node->length);
+    kefir_size_t sz = literal_size(node->type, node->length);
+    REQUIRE(sz != 0 || node->length == 0, NULL);
+    clone->literal = KEFIR_MALLOC(mem, sz);
     REQUIRE_ELSE(clone->literal != NULL, {
         KEFIR_FREE(mem, clone);
         return NULL;
     });
-    memcpy(clone->literal, node->literal, node->length);
+    memcpy(clone->literal, node->literal, sz);
+    clone->type = node->type;
     clone->length = node->length;
     return KEFIR_AST_NODE_BASE(clone);
 }
 
-struct kefir_ast_string_literal *kefir_ast_new_string_literal(struct kefir_mem *mem, const char *literal,
-                                                              kefir_size_t length) {
+static struct kefir_ast_string_literal *alloc_literal(struct kefir_mem *mem, const void *literal, kefir_size_t length,
+                                                      kefir_ast_string_literal_type_t type) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(literal != NULL, NULL);
 
-    char *literal_copy = KEFIR_MALLOC(mem, length);
+    kefir_size_t sz = literal_size(type, length);
+    REQUIRE(sz != 0 || length == 0, NULL);
+    void *literal_copy = KEFIR_MALLOC(mem, sz);
     REQUIRE(literal_copy != NULL, NULL);
 
     struct kefir_ast_string_literal *string_literal = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_string_literal));
@@ -89,8 +112,36 @@ struct kefir_ast_string_literal *kefir_ast_new_string_literal(struct kefir_mem *
         return NULL;
     });
 
-    memcpy(literal_copy, literal, length);
+    memcpy(literal_copy, literal, sz);
+    string_literal->type = type;
     string_literal->literal = literal_copy;
     string_literal->length = length;
     return string_literal;
+}
+
+struct kefir_ast_string_literal *kefir_ast_new_string_literal_multibyte(struct kefir_mem *mem, const char *literal,
+                                                                        kefir_size_t length) {
+    return alloc_literal(mem, literal, length, KEFIR_AST_STRING_LITERAL_MULTIBYTE);
+}
+
+struct kefir_ast_string_literal *kefir_ast_new_string_literal_unicode8(struct kefir_mem *mem, const char *literal,
+                                                                       kefir_size_t length) {
+    return alloc_literal(mem, literal, length, KEFIR_AST_STRING_LITERAL_UNICODE8);
+}
+
+struct kefir_ast_string_literal *kefir_ast_new_string_literal_unicode16(struct kefir_mem *mem,
+                                                                        const kefir_char16_t *literal,
+                                                                        kefir_size_t length) {
+    return alloc_literal(mem, literal, length, KEFIR_AST_STRING_LITERAL_UNICODE16);
+}
+
+struct kefir_ast_string_literal *kefir_ast_new_string_literal_unicode32(struct kefir_mem *mem,
+                                                                        const kefir_char32_t *literal,
+                                                                        kefir_size_t length) {
+    return alloc_literal(mem, literal, length, KEFIR_AST_STRING_LITERAL_UNICODE32);
+}
+
+struct kefir_ast_string_literal *kefir_ast_new_string_literal_wide(struct kefir_mem *mem, const kefir_wchar_t *literal,
+                                                                   kefir_size_t length) {
+    return alloc_literal(mem, literal, length, KEFIR_AST_STRING_LITERAL_WIDE);
 }
