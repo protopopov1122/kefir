@@ -1,0 +1,118 @@
+[
+    {
+        "class": "string_literal",
+        "type": "multibyte",
+        "content": "Test...test.....test\0",
+        "length": 21
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "string_literal",
+        "type": "unicode8",
+        "content": "Test...Here and thereEverywhere\0",
+        "length": 32
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ","
+    },
+    {
+        "class": "string_literal",
+        "type": "unicode16",
+        "content": [
+            79,
+            110,
+            101,
+            44,
+            32,
+            9,
+            10,
+            32,
+            32,
+            32,
+            32,
+            32,
+            32,
+            0
+        ],
+        "length": 14
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "+"
+    },
+    {
+        "class": "string_literal",
+        "type": "unicode32",
+        "content": [
+            84,
+            101,
+            115,
+            116,
+            49,
+            84,
+            101,
+            115,
+            116,
+            50,
+            34,
+            34,
+            34,
+            1,
+            0,
+            0,
+            0,
+            92,
+            0
+        ],
+        "length": 19
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "..."
+    },
+    {
+        "class": "string_literal",
+        "type": "wide",
+        "content": [
+            1,
+            87,
+            73,
+            68,
+            69,
+            32,
+            115,
+            116,
+            114,
+            105,
+            110,
+            103,
+            32,
+            44,
+            32,
+            15,
+            0
+        ],
+        "length": 17
+    },
+    {
+        "class": "identifier",
+        "identifier": "L"
+    },
+    {
+        "class": "string_literal",
+        "type": "wide",
+        "content": [
+            49,
+            50,
+            0
+        ],
+        "length": 3
+    },
+    {
+        "class": "sentinel"
+    }
+]

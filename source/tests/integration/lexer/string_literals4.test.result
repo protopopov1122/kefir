@@ -1,0 +1,117 @@
+[
+    {
+        "class": "string_literal",
+        "type": "unicode32",
+        "content": [
+            71,
+            111,
+            111,
+            100,
+            98,
+            121,
+            101,
+            44,
+            32,
+            107,
+            105,
+            110,
+            100,
+            39,
+            119,
+            111,
+            114,
+            108,
+            100,
+            39,
+            33,
+            0,
+            0
+        ],
+        "length": 23
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "string_literal",
+        "type": "unicode32",
+        "content": [
+            135,
+            72,
+            111,
+            112,
+            96,
+            32,
+            32,
+            32,
+            32,
+            34,
+            92,
+            9,
+            0
+        ],
+        "length": 13
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "--"
+    },
+    {
+        "class": "identifier",
+        "identifier": "U"
+    },
+    {
+        "class": "string_literal",
+        "type": "multibyte",
+        "content": "123\0",
+        "length": 4
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ","
+    },
+    {
+        "class": "string_literal",
+        "type": "unicode32",
+        "content": [
+            49,
+            50,
+            51,
+            49,
+            50,
+            51,
+            0
+        ],
+        "length": 7
+    },
+    {
+        "class": "string_literal",
+        "type": "unicode16",
+        "content": [
+            51,
+            50,
+            49,
+            51,
+            50,
+            49,
+            0
+        ],
+        "length": 7
+    },
+    {
+        "class": "string_literal",
+        "type": "unicode32",
+        "content": [
+            13,
+            10,
+            9,
+            0,
+            0
+        ],
+        "length": 5
+    },
+    {
+        "class": "sentinel"
+    }
+]

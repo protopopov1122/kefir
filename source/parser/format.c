@@ -521,16 +521,16 @@ kefir_result_t format_string_literal(struct kefir_json_output *json, const struc
                                                     token->string_literal.length));
             break;
 
-        case KEFIR_STRING_LITERAL_TOKEN_UNICODE16:
+        case KEFIR_STRING_LITERAL_TOKEN_UNICODE16: {
             REQUIRE_OK(kefir_json_output_string(json, "unicode16"));
             REQUIRE_OK(kefir_json_output_object_key(json, "content"));
             REQUIRE_OK(kefir_json_output_array_begin(json));
+            const kefir_char16_t *literal = token->string_literal.literal;
             for (kefir_size_t i = 0; i < token->string_literal.length; i++) {
-                REQUIRE_OK(
-                    kefir_json_output_uinteger(json, ((const kefir_char16_t *) token->string_literal.literal)[i]));
+                REQUIRE_OK(kefir_json_output_uinteger(json, literal[i]));
             }
             REQUIRE_OK(kefir_json_output_array_end(json));
-            break;
+        } break;
 
         case KEFIR_STRING_LITERAL_TOKEN_UNICODE32:
             REQUIRE_OK(kefir_json_output_string(json, "unicode32"));

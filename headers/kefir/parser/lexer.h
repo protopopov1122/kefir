@@ -58,6 +58,11 @@ kefir_result_t kefir_lexer_match_identifier_or_keyword(struct kefir_mem *, struc
 
 kefir_result_t kefir_lexer_next_narrow_string_literal(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
 kefir_result_t kefir_lexer_next_unicode8_string_literal(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
+kefir_result_t kefir_lexer_next_unicode16_string_literal(struct kefir_mem *, struct kefir_lexer *,
+                                                         struct kefir_token *);
+kefir_result_t kefir_lexer_next_unicode32_string_literal(struct kefir_mem *, struct kefir_lexer *,
+                                                         struct kefir_token *);
+kefir_result_t kefir_lexer_next_wide_string_literal(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
 kefir_result_t kefir_lexer_match_string_literal(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
 
 kefir_result_t kefir_lexer_match_floating_constant(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);

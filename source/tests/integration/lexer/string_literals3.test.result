@@ -1,0 +1,99 @@
+[
+    {
+        "class": "string_literal",
+        "type": "unicode16",
+        "content": [
+            72,
+            101,
+            108,
+            108,
+            111,
+            44,
+            32,
+            99,
+            114,
+            117,
+            101,
+            108,
+            32,
+            119,
+            111,
+            114,
+            108,
+            100,
+            33,
+            0
+        ],
+        "length": 20
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "string_literal",
+        "type": "unicode16",
+        "content": [
+            34,
+            84,
+            101,
+            115,
+            116,
+            46,
+            46,
+            46,
+            32,
+            116,
+            101,
+            115,
+            116,
+            46,
+            46,
+            46,
+            32,
+            120,
+            32,
+            92,
+            39,
+            0
+        ],
+        "length": 22
+    },
+    {
+        "class": "identifier",
+        "identifier": "u"
+    },
+    {
+        "class": "string_literal",
+        "type": "multibyte",
+        "content": "\0\0",
+        "length": 2
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "+"
+    },
+    {
+        "class": "string_literal",
+        "type": "unicode16",
+        "content": [
+            0,
+            0,
+            0,
+            8,
+            44,
+            32,
+            116,
+            101,
+            115,
+            116,
+            33,
+            0,
+            0
+        ],
+        "length": 13
+    },
+    {
+        "class": "sentinel"
+    }
+]

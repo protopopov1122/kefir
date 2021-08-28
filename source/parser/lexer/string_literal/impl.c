@@ -23,7 +23,7 @@
 #include "kefir/core/error.h"
 #include "kefir/util/char32.h"
 
-kefir_result_t kefir_lexer_next_narrow_string_literal_impl(struct kefir_mem *mem, struct kefir_lexer *lexer,
+static kefir_result_t kefir_lexer_next_string_literal_impl(struct kefir_mem *mem, struct kefir_lexer *lexer,
                                                            const kefir_char32_t *prefix,
                                                            struct kefir_string_buffer *buffer) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
@@ -47,9 +47,9 @@ kefir_result_t kefir_lexer_next_narrow_string_literal_impl(struct kefir_mem *mem
         if (chr == U'\\') {
             kefir_char32_t result;
             REQUIRE_OK(kefir_lexer_cursor_next_escape_sequence(lexer->cursor, &result));
-            REQUIRE_OK(kefir_string_buffer_insert_character(mem, buffer, result));
+            REQUIRE_OK(kefir_string_buffer_insert(mem, buffer, result));
         } else {
-            REQUIRE_OK(kefir_string_buffer_insert_character(mem, buffer, chr));
+            REQUIRE_OK(kefir_string_buffer_insert(mem, buffer, chr));
             REQUIRE_OK(kefir_lexer_source_cursor_next(lexer->cursor, 1));
         }
     }
@@ -57,26 +57,27 @@ kefir_result_t kefir_lexer_next_narrow_string_literal_impl(struct kefir_mem *mem
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_lexer_next_narrow_string_literal_sequence_impl(
-    struct kefir_mem *mem, struct kefir_lexer *lexer, const kefir_char32_t *prefix, struct kefir_string_buffer *buffer,
-    struct kefir_token *token,
-    kefir_result_t (*callback)(struct kefir_mem *, const char *, kefir_size_t, struct kefir_token *)) {
+kefir_result_t kefir_lexer_next_string_literal_sequence_impl(struct kefir_mem *mem, struct kefir_lexer *lexer,
+                                                             const kefir_char32_t *prefix,
+                                                             struct kefir_string_buffer *buffer) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer"));
     REQUIRE(prefix != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid prefix"));
     REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string buffer"));
-    REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid token"));
 
-    REQUIRE_OK(kefir_lexer_next_narrow_string_literal_impl(mem, lexer, prefix, buffer));
-    kefir_result_t res = KEFIR_OK;
-    while (res == KEFIR_OK) {
-        REQUIRE_CHAIN(&res, kefir_lexer_cursor_skip_whitespaces(lexer->cursor));
-        REQUIRE_CHAIN(&res, kefir_lexer_next_narrow_string_literal_impl(mem, lexer, prefix, buffer));
+    REQUIRE_OK(kefir_lexer_next_string_literal_impl(mem, lexer, prefix, buffer));
+    kefir_bool_t scan_literals = true;
+    while (scan_literals) {
+        REQUIRE_OK(kefir_lexer_cursor_skip_whitespaces(lexer->cursor));
+        kefir_result_t res = kefir_lexer_next_string_literal_impl(mem, lexer, prefix, buffer);
+        if (res == KEFIR_NO_MATCH) {
+            res = kefir_lexer_next_string_literal_impl(mem, lexer, U"\"", buffer);
+        }
+        if (res == KEFIR_NO_MATCH) {
+            scan_literals = false;
+        } else {
+            REQUIRE_OK(res);
+        }
     }
-    REQUIRE(res == KEFIR_NO_MATCH, res);
-
-    kefir_size_t literal_length;
-    const char *literal = kefir_string_buffer_multibyte_value(buffer, &literal_length);
-    REQUIRE_OK(callback(mem, literal, literal_length, token));
     return KEFIR_OK;
 }

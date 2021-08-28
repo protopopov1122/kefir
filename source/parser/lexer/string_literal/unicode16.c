@@ -25,24 +25,24 @@
 #include "kefir/core/string_buffer.h"
 #include "kefir/parser/string_literal_impl.h"
 
-kefir_result_t kefir_lexer_next_unicode8_string_literal(struct kefir_mem *mem, struct kefir_lexer *lexer,
-                                                        struct kefir_token *token) {
+kefir_result_t kefir_lexer_next_unicode16_string_literal(struct kefir_mem *mem, struct kefir_lexer *lexer,
+                                                         struct kefir_token *token) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer"));
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid token"));
 
     REQUIRE(kefir_lexer_source_cursor_at(lexer->cursor, 0) == U'u' &&
-                kefir_lexer_source_cursor_at(lexer->cursor, 1) == U'8' &&
-                kefir_lexer_source_cursor_at(lexer->cursor, 2) == U'\"',
-            KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match narrow unicode string literal"));
+                kefir_lexer_source_cursor_at(lexer->cursor, 1) == U'\"',
+            KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match unicode16 string literal"));
 
     struct kefir_string_buffer string_buffer;
-    REQUIRE_OK(kefir_string_buffer_init(mem, &string_buffer, KEFIR_STRING_BUFFER_UNICODE8));
+    REQUIRE_OK(kefir_string_buffer_init(mem, &string_buffer, KEFIR_STRING_BUFFER_UNICODE16));
 
-    kefir_result_t res = kefir_lexer_next_string_literal_sequence_impl(mem, lexer, U"u8\"", &string_buffer);
+    kefir_result_t res = kefir_lexer_next_string_literal_sequence_impl(mem, lexer, U"u\"", &string_buffer);
+
     kefir_size_t literal_length;
-    const char *literal = kefir_string_buffer_value(&string_buffer, &literal_length);
-    REQUIRE_CHAIN(&res, kefir_token_new_string_literal_unicode8(mem, literal, literal_length, token));
+    const kefir_char16_t *literal = kefir_string_buffer_value(&string_buffer, &literal_length);
+    REQUIRE_CHAIN(&res, kefir_token_new_string_literal_unicode16(mem, literal, literal_length, token));
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_string_buffer_free(mem, &string_buffer);
         return res;

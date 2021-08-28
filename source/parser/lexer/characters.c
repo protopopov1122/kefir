@@ -116,10 +116,10 @@ static kefir_result_t next_octal_escape_sequence(struct kefir_lexer_source_curso
     kefir_char32_t chr3 = kefir_lexer_source_cursor_at(cursor, 3);
 
     if (kefir_isoctdigit32(chr1) && kefir_isoctdigit32(chr2) && kefir_isoctdigit32(chr3)) {
-        *target = (oct_to_digit(chr3) << 6) | (oct_to_digit(chr2) << 3) | oct_to_digit(chr1);
+        *target = (oct_to_digit(chr1) << 6) | (oct_to_digit(chr2) << 3) | oct_to_digit(chr3);
         REQUIRE_OK(kefir_lexer_source_cursor_next(cursor, 4));
     } else if (kefir_isoctdigit32(chr1) && kefir_isoctdigit32(chr2)) {
-        *target = (oct_to_digit(chr2) << 3) | oct_to_digit(chr1);
+        *target = (oct_to_digit(chr1) << 3) | oct_to_digit(chr2);
         REQUIRE_OK(kefir_lexer_source_cursor_next(cursor, 3));
     } else if (kefir_isoctdigit32(chr1)) {
         *target = oct_to_digit(chr1);

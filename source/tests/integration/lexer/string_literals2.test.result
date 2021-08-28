@@ -41,20 +41,8 @@
     {
         "class": "string_literal",
         "type": "unicode8",
-        "content": "\"\\\0",
-        "length": 3
-    },
-    {
-        "class": "string_literal",
-        "type": "multibyte",
-        "content": "world!\0",
-        "length": 7
-    },
-    {
-        "class": "string_literal",
-        "type": "unicode8",
-        "content": "gyp\0",
-        "length": 4
+        "content": "\"\\world!gyp\0",
+        "length": 12
     },
     {
         "class": "sentinel"

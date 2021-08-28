@@ -1,0 +1,138 @@
+[
+    {
+        "class": "string_literal",
+        "type": "wide",
+        "content": [
+            84,
+            101,
+            115,
+            116,
+            105,
+            110,
+            103,
+            32,
+            119,
+            105,
+            100,
+            101,
+            32,
+            108,
+            105,
+            116,
+            101,
+            114,
+            97,
+            108,
+            115,
+            46,
+            46,
+            46,
+            0,
+            0,
+            72,
+            101,
+            114,
+            101,
+            0
+        ],
+        "length": 31
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "string_literal",
+        "type": "wide",
+        "content": [
+            64,
+            110,
+            100,
+            32,
+            116,
+            104,
+            101,
+            114,
+            101,
+            0
+        ],
+        "length": 10
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ","
+    },
+    {
+        "class": "string_literal",
+        "type": "wide",
+        "content": [
+            13,
+            9,
+            10,
+            12,
+            11,
+            92,
+            39,
+            34,
+            32,
+            32,
+            32,
+            9,
+            7,
+            33,
+            0
+        ],
+        "length": 15
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ","
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ","
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ","
+    },
+    {
+        "class": "identifier",
+        "identifier": "L"
+    },
+    {
+        "class": "string_literal",
+        "type": "multibyte",
+        "content": "test\0",
+        "length": 5
+    },
+    {
+        "class": "identifier",
+        "identifier": "l"
+    },
+    {
+        "class": "string_literal",
+        "type": "multibyte",
+        "content": " temp \0",
+        "length": 7
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ","
+    },
+    {
+        "class": "string_literal",
+        "type": "wide",
+        "content": [
+            104,
+            101,
+            114,
+            101,
+            0
+        ],
+        "length": 5
+    },
+    {
+        "class": "sentinel"
+    }
+]

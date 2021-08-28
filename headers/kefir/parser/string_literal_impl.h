@@ -24,10 +24,7 @@
 #include "kefir/parser/lexer.h"
 #include "kefir/core/string_buffer.h"
 
-kefir_result_t kefir_lexer_next_narrow_string_literal_impl(struct kefir_mem *, struct kefir_lexer *,
-                                                           const kefir_char32_t *, struct kefir_string_buffer *);
-kefir_result_t kefir_lexer_next_narrow_string_literal_sequence_impl(
-    struct kefir_mem *, struct kefir_lexer *, const kefir_char32_t *, struct kefir_string_buffer *,
-    struct kefir_token *, kefir_result_t (*)(struct kefir_mem *, const char *, kefir_size_t, struct kefir_token *));
+kefir_result_t kefir_lexer_next_string_literal_sequence_impl(struct kefir_mem *, struct kefir_lexer *,
+                                                             const kefir_char32_t *, struct kefir_string_buffer *);
 
 #endif

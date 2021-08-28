@@ -22,28 +22,6 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-static kefir_result_t match_wide_unicode_string_sequence(struct kefir_mem *mem, struct kefir_lexer *lexer,
-                                                         struct kefir_token *token) {
-    UNUSED(mem);
-    UNUSED(token);
-    REQUIRE(kefir_lexer_source_cursor_at(lexer->cursor, 0) == U'U' &&
-                kefir_lexer_source_cursor_at(lexer->cursor, 1) == U'\"',
-            KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match wide unicode string literal"));
-
-    return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Wide unicode string literals are not implemented yet");
-}
-
-static kefir_result_t match_wide_string_sequence(struct kefir_mem *mem, struct kefir_lexer *lexer,
-                                                 struct kefir_token *token) {
-    UNUSED(mem);
-    UNUSED(token);
-    REQUIRE(kefir_lexer_source_cursor_at(lexer->cursor, 0) == U'L' &&
-                kefir_lexer_source_cursor_at(lexer->cursor, 1) == U'\"',
-            KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match wide string literal"));
-
-    return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Wide string literals are not implemented yet");
-}
-
 static kefir_result_t match_impl(struct kefir_mem *mem, struct kefir_lexer *lexer, void *payload) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer"));
@@ -54,9 +32,11 @@ static kefir_result_t match_impl(struct kefir_mem *mem, struct kefir_lexer *lexe
     REQUIRE(res == KEFIR_NO_MATCH, res);
     res = kefir_lexer_next_unicode8_string_literal(mem, lexer, token);
     REQUIRE(res == KEFIR_NO_MATCH, res);
-    res = match_wide_unicode_string_sequence(mem, lexer, token);
+    res = kefir_lexer_next_unicode16_string_literal(mem, lexer, token);
     REQUIRE(res == KEFIR_NO_MATCH, res);
-    res = match_wide_string_sequence(mem, lexer, token);
+    res = kefir_lexer_next_unicode32_string_literal(mem, lexer, token);
+    REQUIRE(res == KEFIR_NO_MATCH, res);
+    res = kefir_lexer_next_wide_string_literal(mem, lexer, token);
     REQUIRE(res == KEFIR_NO_MATCH, res);
     return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match string literal");
 }

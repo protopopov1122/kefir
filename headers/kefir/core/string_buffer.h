@@ -24,16 +24,36 @@
 #include "kefir/core/basic-types.h"
 #include "kefir/core/mem.h"
 
+typedef enum kefir_string_buffer_mode {
+    KEFIR_STRING_BUFFER_MULTIBYTE = 0,
+    KEFIR_STRING_BUFFER_UNICODE8,
+    KEFIR_STRING_BUFFER_UNICODE16,
+    KEFIR_STRING_BUFFER_UNICODE32,
+    KEFIR_STRING_BUFFER_WIDE
+} kefir_string_buffer_mode_t;
+
 typedef struct kefir_string_buffer {
+    kefir_string_buffer_mode_t mode;
     void *buffer;
     kefir_size_t length;
     kefir_size_t capacity;
 } kefir_string_buffer_t;
 
-kefir_result_t kefir_string_buffer_init(struct kefir_mem *, struct kefir_string_buffer *);
+kefir_result_t kefir_string_buffer_init(struct kefir_mem *, struct kefir_string_buffer *, kefir_string_buffer_mode_t);
 kefir_result_t kefir_string_buffer_free(struct kefir_mem *, struct kefir_string_buffer *);
 
-const void *kefir_string_buffer_multibyte_value(const struct kefir_string_buffer *, kefir_size_t *);
-kefir_result_t kefir_string_buffer_insert_character(struct kefir_mem *, struct kefir_string_buffer *, kefir_char32_t);
+const void *kefir_string_buffer_value(const struct kefir_string_buffer *, kefir_size_t *);
+kefir_result_t kefir_string_buffer_insert(struct kefir_mem *, struct kefir_string_buffer *, kefir_char32_t);
+kefir_result_t kefir_string_buffer_insert_multibyte(struct kefir_mem *, struct kefir_string_buffer *, kefir_char32_t);
+kefir_result_t kefir_string_buffer_insert_unicode8_character(struct kefir_mem *, struct kefir_string_buffer *,
+                                                             kefir_char32_t);
+kefir_result_t kefir_string_buffer_insert_unicode16_character(struct kefir_mem *, struct kefir_string_buffer *,
+                                                              kefir_char32_t);
+kefir_result_t kefir_string_buffer_insert_unicode32_character(struct kefir_mem *, struct kefir_string_buffer *,
+                                                              kefir_char32_t);
+kefir_result_t kefir_string_buffer_insert_wide_character(struct kefir_mem *, struct kefir_string_buffer *,
+                                                         kefir_char32_t);
+kefir_result_t kefir_string_buffer_convert(struct kefir_mem *, struct kefir_string_buffer *,
+                                           kefir_string_buffer_mode_t);
 
 #endif
