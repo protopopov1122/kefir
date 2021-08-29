@@ -1,6 +1,6 @@
 typedef unsigned short char16_t;
 typedef unsigned int char32_t;
-typedef unsigned int wchar_t;
+typedef int wchar_t;
 
 const char Literal1[] = u8"Test...test..test...\0u8-prefixed string\r\n\0?";
 const char16_t Literal2[] = u"x\\\"16-bit\0string\0literal";

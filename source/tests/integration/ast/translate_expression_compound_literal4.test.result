@@ -98,6 +98,18 @@
                     }
                 }
             ]
+        },
+        {
+            "identifier": 6,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 16,
+                    "element_type": {
+                        "type": "int"
+                    }
+                }
+            ]
         }
     ],
     "data": [],
@@ -345,7 +357,7 @@
                 {
                     "opcode": "bcopy",
                     "arg": {
-                        "type": 5,
+                        "type": 6,
                         "index": 0
                     }
                 }

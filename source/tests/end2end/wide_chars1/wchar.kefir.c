@@ -1,4 +1,4 @@
-typedef unsigned int wchar_t;
+typedef int wchar_t;
 
 void wstring_uppercase(wchar_t *string) {
     for (; *string != L'\0'; ++string) {

@@ -1,4 +1,4 @@
-typedef unsigned int wchar_t;
+typedef int wchar_t;
 
 struct wide_string {
     wchar_t content[32];

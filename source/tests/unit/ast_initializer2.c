@@ -981,8 +981,8 @@ DEFINE_CASE(ast_initializer_analysis_mixed_strings, "AST initializer - mixed str
                                                            &kft_mem, LITERAL4, sizeof(LITERAL4))))));
     ASSERT_OK(kefir_ast_initializer_list_append(
         &kft_mem, &init2->list, NULL,
-        kefir_ast_new_expression_initializer(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_string_literal_unicode32(
-                                                           &kft_mem, LITERAL5, sizeof(LITERAL5))))));
+        kefir_ast_new_expression_initializer(
+            &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_string_literal_wide(&kft_mem, LITERAL5, sizeof(LITERAL5))))));
     ASSERT_OK(kefir_ast_initializer_list_append(
         &kft_mem, &init2->list,
         kefir_ast_new_initializer_index_designation(

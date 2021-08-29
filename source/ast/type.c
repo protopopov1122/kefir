@@ -86,7 +86,7 @@ const struct kefir_ast_type_traits *kefir_ast_default_type_traits() {
                                                                .payload = NULL};
     DEFAULT_TYPE_TRAITS.underlying_enumeration_type = kefir_ast_type_signed_int();
     DEFAULT_TYPE_TRAITS.ptrdiff_type = kefir_ast_type_signed_long();
-    DEFAULT_TYPE_TRAITS.wide_char_type = kefir_ast_type_unsigned_int();
+    DEFAULT_TYPE_TRAITS.wide_char_type = kefir_ast_type_signed_int();
     DEFAULT_TYPE_TRAITS.unicode16_char_type = kefir_ast_type_unsigned_short();
     DEFAULT_TYPE_TRAITS.unicode32_char_type = kefir_ast_type_unsigned_int();
     return &DEFAULT_TYPE_TRAITS;
