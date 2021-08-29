@@ -103,7 +103,8 @@
     "string_literals": [
         {
             "id": 0,
-            "literal": "WTF?",
+            "type": "multibyte",
+            "literal": "WTF\?\0",
             "length": 5
         }
     ],
@@ -235,7 +236,7 @@
                 },
                 {
                     "opcode": "pushstring",
-                    "arg": "WTF?"
+                    "arg": 0
                 },
                 {
                     "opcode": "bcopy",

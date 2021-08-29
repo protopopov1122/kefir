@@ -206,10 +206,7 @@ kefir_result_t kefir_ir_format_instr_string(struct kefir_json_output *json, cons
     REQUIRE_OK(kefir_json_output_object_key(json, "opcode"));
     REQUIRE_OK(kefir_json_output_string(json, kefir_iropcode_mnemonic(instr->opcode)));
     REQUIRE_OK(kefir_json_output_object_key(json, "arg"));
-    const char *str = NULL;
-    kefir_size_t str_length = 0;
-    REQUIRE_OK(kefir_ir_module_get_string_literal(module, instr->arg.i64, &str, &str_length));
-    REQUIRE_OK(kefir_json_output_string(json, str));
+    REQUIRE_OK(kefir_json_output_integer(json, instr->arg.i64));
     REQUIRE_OK(kefir_json_output_object_end(json));
     return KEFIR_OK;
 }
@@ -578,7 +575,8 @@ static kefir_result_t format_datum(struct kefir_json_output *json, const struct 
             case KEFIR_IR_DATA_VALUE_STRING:
                 REQUIRE_OK(kefir_json_output_string(json, "string"));
                 REQUIRE_OK(kefir_json_output_object_key(json, "content"));
-                REQUIRE_OK(kefir_json_output_string(json, (const char *) value->value.raw.data));
+                REQUIRE_OK(
+                    kefir_json_output_raw_string(json, (const char *) value->value.raw.data, value->value.raw.length));
                 REQUIRE_OK(kefir_json_output_object_key(json, "length"));
                 REQUIRE_OK(kefir_json_output_uinteger(json, value->value.raw.length));
                 break;
@@ -657,16 +655,45 @@ static kefir_result_t format_string_literal(struct kefir_json_output *json, cons
     REQUIRE_OK(kefir_json_output_array_begin(json));
     struct kefir_hashtree_node_iterator iter;
     kefir_id_t id;
-    const char *literal;
+    kefir_ir_string_literal_type_t literal_type;
+    const void *literal;
     kefir_size_t length;
     kefir_result_t res = KEFIR_OK;
-    for (res = kefir_ir_module_string_literal_iter(module, &iter, &id, &literal, &length); res == KEFIR_OK;
-         res = kefir_ir_module_string_literal_next(&iter, &id, &literal, &length)) {
+    for (res = kefir_ir_module_string_literal_iter(module, &iter, &id, &literal_type, &literal, &length);
+         res == KEFIR_OK; res = kefir_ir_module_string_literal_next(&iter, &id, &literal_type, &literal, &length)) {
         REQUIRE_OK(kefir_json_output_object_begin(json));
         REQUIRE_OK(kefir_json_output_object_key(json, "id"));
         REQUIRE_OK(kefir_json_output_integer(json, id));
-        REQUIRE_OK(kefir_json_output_object_key(json, "literal"));
-        REQUIRE_OK(kefir_json_output_string(json, literal));
+        REQUIRE_OK(kefir_json_output_object_key(json, "type"));
+        switch (literal_type) {
+            case KEFIR_IR_STRING_LITERAL_MULTIBYTE:
+                REQUIRE_OK(kefir_json_output_string(json, "multibyte"));
+                REQUIRE_OK(kefir_json_output_object_key(json, "literal"));
+                REQUIRE_OK(kefir_json_output_raw_string(json, literal, length));
+                break;
+
+            case KEFIR_IR_STRING_LITERAL_UNICODE16:
+                REQUIRE_OK(kefir_json_output_string(json, "unicode16"));
+                REQUIRE_OK(kefir_json_output_object_key(json, "literal"));
+                REQUIRE_OK(kefir_json_output_array_begin(json));
+                for (kefir_size_t i = 0; i < length; i++) {
+                    kefir_char16_t chr = ((kefir_char16_t *) literal)[i];
+                    REQUIRE_OK(kefir_json_output_uinteger(json, chr));
+                }
+                REQUIRE_OK(kefir_json_output_array_end(json));
+                break;
+
+            case KEFIR_IR_STRING_LITERAL_UNICODE32:
+                REQUIRE_OK(kefir_json_output_string(json, "unicode32"));
+                REQUIRE_OK(kefir_json_output_object_key(json, "literal"));
+                REQUIRE_OK(kefir_json_output_array_begin(json));
+                for (kefir_size_t i = 0; i < length; i++) {
+                    kefir_char32_t chr = ((kefir_char32_t *) literal)[i];
+                    REQUIRE_OK(kefir_json_output_uinteger(json, chr));
+                }
+                REQUIRE_OK(kefir_json_output_array_end(json));
+                break;
+        }
         REQUIRE_OK(kefir_json_output_object_key(json, "length"));
         REQUIRE_OK(kefir_json_output_uinteger(json, length));
         REQUIRE_OK(kefir_json_output_object_end(json));

@@ -49,7 +49,8 @@ typedef struct kefir_ast_constant_expression_pointer {
         const char *literal;
         kefir_size_t integral;
         struct {
-            const char *content;
+            kefir_ast_string_literal_type_t type;
+            const void *content;
             kefir_size_t length;
         } string;
     } base;

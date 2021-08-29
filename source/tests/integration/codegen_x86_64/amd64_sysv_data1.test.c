@@ -143,9 +143,29 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_type *memory1_type = kefir_ir_module_new_type(mem, &module, 1, &memory1_type_id);
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, memory1_type, KEFIR_IR_TYPE_MEMORY, 0, strlen(MSG) + 1));
     struct kefir_ir_data *memory1_data = kefir_ir_module_new_named_data(mem, &module, "memory1_1", memory1_type_id);
-    REQUIRE_OK(kefir_ir_data_set_string(memory1_data, 0, MSG, strlen(MSG)));
+    REQUIRE_OK(kefir_ir_data_set_string(memory1_data, 0, KEFIR_IR_STRING_LITERAL_MULTIBYTE, MSG, strlen(MSG)));
     REQUIRE_OK(kefir_ir_data_finalize(memory1_data));
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "memory1_1"));
+
+    const kefir_char16_t MSG2[] = u"Two-byte encoded message\0";
+    kefir_id_t memory2_type_id;
+    struct kefir_ir_type *memory2_type = kefir_ir_module_new_type(mem, &module, 1, &memory2_type_id);
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, memory2_type, KEFIR_IR_TYPE_MEMORY, 0, sizeof(MSG2)));
+    struct kefir_ir_data *memory2_data = kefir_ir_module_new_named_data(mem, &module, "memory1_2", memory2_type_id);
+    REQUIRE_OK(kefir_ir_data_set_string(memory2_data, 0, KEFIR_IR_STRING_LITERAL_UNICODE16, MSG2,
+                                        sizeof(MSG2) / sizeof(MSG2[0])));
+    REQUIRE_OK(kefir_ir_data_finalize(memory2_data));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "memory1_2"));
+
+    const kefir_char32_t MSG3[] = U"\0\0Another string literal\"";
+    kefir_id_t memory3_type_id;
+    struct kefir_ir_type *memory3_type = kefir_ir_module_new_type(mem, &module, 1, &memory3_type_id);
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, memory3_type, KEFIR_IR_TYPE_MEMORY, 0, sizeof(MSG3)));
+    struct kefir_ir_data *memory3_data = kefir_ir_module_new_named_data(mem, &module, "memory1_3", memory3_type_id);
+    REQUIRE_OK(kefir_ir_data_set_string(memory3_data, 0, KEFIR_IR_STRING_LITERAL_UNICODE32, MSG3,
+                                        sizeof(MSG3) / sizeof(MSG3[0])));
+    REQUIRE_OK(kefir_ir_data_finalize(memory3_data));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "memory1_3"));
 
     kefir_id_t pointer1_type_id;
     struct kefir_ir_type *pointer1_type = kefir_ir_module_new_type(mem, &module, 1, &pointer1_type_id);

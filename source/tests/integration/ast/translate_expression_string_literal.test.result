@@ -19,17 +19,20 @@
     "string_literals": [
         {
             "id": 0,
-            "literal": "Hello, cruel world!",
+            "type": "multibyte",
+            "literal": "Hello, cruel world!\0",
             "length": 20
         },
         {
             "id": 1,
-            "literal": "\n\n\t\n\\'\"```T   E\nST",
+            "type": "multibyte",
+            "literal": "\n\n\t\n\\'\"```T   E\nST\0",
             "length": 19
         },
         {
             "id": 2,
-            "literal": "",
+            "type": "multibyte",
+            "literal": "\0",
             "length": 1
         }
     ],
@@ -64,7 +67,7 @@
             "body": [
                 {
                     "opcode": "pushstring",
-                    "arg": "Hello, cruel world!"
+                    "arg": 0
                 }
             ]
         },
@@ -75,7 +78,7 @@
             "body": [
                 {
                     "opcode": "pushstring",
-                    "arg": "\n\n\t\n\\'\"```T   E\nST"
+                    "arg": 1
                 }
             ]
         },
@@ -86,7 +89,7 @@
             "body": [
                 {
                     "opcode": "pushstring",
-                    "arg": ""
+                    "arg": 2
                 }
             ]
         }

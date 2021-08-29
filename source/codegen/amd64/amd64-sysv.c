@@ -174,19 +174,40 @@ static kefir_result_t cg_translate_data(struct kefir_mem *mem, struct kefir_code
     }
 
     kefir_id_t id;
-    const char *content = NULL;
+    kefir_ir_string_literal_type_t literal_type;
+    const void *content = NULL;
     kefir_size_t length = 0;
     kefir_result_t res = KEFIR_OK;
-    for (res = kefir_ir_module_string_literal_iter(module->module, &iter, &id, &content, &length); res == KEFIR_OK;
-         res = kefir_ir_module_string_literal_next(&iter, &id, &content, &length)) {
+    for (res = kefir_ir_module_string_literal_iter(module->module, &iter, &id, &literal_type, &content, &length);
+         res == KEFIR_OK; res = kefir_ir_module_string_literal_next(&iter, &id, &literal_type, &content, &length)) {
         if (first) {
             ASMGEN_SECTION(&codegen->asmgen, ".data");
             first = false;
         }
 
         ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_STRING_LITERAL, id);
-        ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_BYTE);
-        ASMGEN_STRING_LITERAL(&codegen->asmgen, content, length);
+        switch (literal_type) {
+            case KEFIR_IR_STRING_LITERAL_MULTIBYTE:
+                ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_BYTE);
+                ASMGEN_STRING_LITERAL(&codegen->asmgen, content, length);
+                break;
+
+            case KEFIR_IR_STRING_LITERAL_UNICODE16:
+                ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_WORD);
+                for (kefir_size_t i = 0; i < length; i++) {
+                    kefir_char16_t chr = ((kefir_char16_t *) content)[i];
+                    ASMGEN_ARG(&codegen->asmgen, KEFIR_UINT16_FMT, chr);
+                }
+                break;
+
+            case KEFIR_IR_STRING_LITERAL_UNICODE32:
+                ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_DOUBLE);
+                for (kefir_size_t i = 0; i < length; i++) {
+                    kefir_char32_t chr = ((kefir_char32_t *) content)[i];
+                    ASMGEN_ARG(&codegen->asmgen, KEFIR_UINT32_FMT, chr);
+                }
+                break;
+        }
     }
     REQUIRE(res == KEFIR_ITERATOR_END, res);
     return KEFIR_OK;

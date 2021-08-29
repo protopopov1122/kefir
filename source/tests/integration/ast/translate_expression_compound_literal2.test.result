@@ -73,12 +73,14 @@
     "string_literals": [
         {
             "id": 0,
-            "literal": "Hello, world!",
+            "type": "multibyte",
+            "literal": "Hello, world!\0",
             "length": 14
         },
         {
             "id": 1,
-            "literal": "test...",
+            "type": "multibyte",
+            "literal": "test...\0",
             "length": 8
         }
     ],
@@ -202,7 +204,7 @@
                 },
                 {
                     "opcode": "pushstring",
-                    "arg": "Hello, world!"
+                    "arg": 0
                 },
                 {
                     "opcode": "bcopy",
@@ -565,7 +567,7 @@
                 },
                 {
                     "opcode": "pushstring",
-                    "arg": "test..."
+                    "arg": 1
                 },
                 {
                     "opcode": "bcopy",

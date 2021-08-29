@@ -109,7 +109,7 @@
                 },
                 {
                     "class": "string",
-                    "content": "hey ho",
+                    "content": "hey ho\0",
                     "length": 7
                 },
                 {
@@ -147,7 +147,8 @@
     "string_literals": [
         {
             "id": 0,
-            "literal": "hey ho",
+            "type": "multibyte",
+            "literal": "hey ho\0",
             "length": 7
         }
     ],

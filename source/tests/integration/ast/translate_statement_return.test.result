@@ -85,7 +85,8 @@
     "string_literals": [
         {
             "id": 0,
-            "literal": "Hey ho!",
+            "type": "multibyte",
+            "literal": "Hey ho!\0",
             "length": 8
         }
     ],
@@ -262,7 +263,7 @@
                 },
                 {
                     "opcode": "pushstring",
-                    "arg": "Hey ho!"
+                    "arg": 0
                 },
                 {
                     "opcode": "bcopy",

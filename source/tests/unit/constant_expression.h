@@ -66,7 +66,7 @@
         ASSERT_OK(kefir_ast_constant_expression_value_evaluate((_mem), (_context), base, &value)); \
         ASSERT(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS);                        \
         ASSERT(value.pointer.type == KEFIR_AST_CONSTANT_EXPRESSION_POINTER_LITERAL);               \
-        ASSERT(strcmp(value.pointer.base.literal, (_value)) == 0);                                 \
+        ASSERT(strcmp(value.pointer.base.string.content, (_value)) == 0);                          \
         ASSERT(value.pointer.offset == 0);                                                         \
         ASSERT_OK(KEFIR_AST_NODE_FREE((_mem), base));                                              \
     } while (0)

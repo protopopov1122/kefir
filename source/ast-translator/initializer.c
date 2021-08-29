@@ -97,8 +97,10 @@ static kefir_result_t traverse_scalar(const struct kefir_ast_designator *designa
 }
 
 static kefir_result_t traverse_string_literal(const struct kefir_ast_designator *designator,
-                                              struct kefir_ast_node_base *expression, const char *string,
+                                              struct kefir_ast_node_base *expression,
+                                              kefir_ast_string_literal_type_t type, const void *string,
                                               kefir_size_t length, void *payload) {
+    UNUSED(type);
     UNUSED(string);
     REQUIRE(expression != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST expression node"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));

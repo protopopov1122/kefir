@@ -10,7 +10,8 @@
     },
     {
         "class": "string_literal",
-        "content": "HELLO, WORLD!\n\n",
+        "type": "multibyte",
+        "content": "HELLO, WORLD!\n\n\0\0",
         "length": 17
     },
     {

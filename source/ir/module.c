@@ -24,7 +24,8 @@
 #include "kefir/core/error.h"
 
 struct string_literal {
-    char *content;
+    kefir_ir_string_literal_type_t type;
+    void *content;
     kefir_size_t length;
 };
 
@@ -133,7 +134,8 @@ const char *kefir_ir_module_symbol(struct kefir_mem *mem, struct kefir_ir_module
 }
 
 kefir_result_t kefir_ir_module_string_literal(struct kefir_mem *mem, struct kefir_ir_module *module,
-                                              const char *content, kefir_size_t length, kefir_id_t *id) {
+                                              kefir_ir_string_literal_type_t type, const void *content,
+                                              kefir_size_t length, kefir_id_t *id) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module"));
     REQUIRE(content != NULL && length > 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid literal"));
@@ -142,13 +144,29 @@ kefir_result_t kefir_ir_module_string_literal(struct kefir_mem *mem, struct kefi
     struct string_literal *literal = KEFIR_MALLOC(mem, sizeof(struct string_literal));
     REQUIRE(literal != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate string literal"));
 
-    literal->content = KEFIR_MALLOC(mem, length);
+    literal->type = type;
+    kefir_size_t sz = 0;
+    switch (literal->type) {
+        case KEFIR_IR_STRING_LITERAL_MULTIBYTE:
+            sz = length;
+            break;
+
+        case KEFIR_IR_STRING_LITERAL_UNICODE16:
+            sz = length * 2;
+            break;
+
+        case KEFIR_IR_STRING_LITERAL_UNICODE32:
+            sz = length * 4;
+            break;
+    }
+
+    literal->content = KEFIR_MALLOC(mem, sz);
     REQUIRE_ELSE(literal->content != NULL, {
         KEFIR_FREE(mem, literal);
         return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate string literal content");
     });
 
-    memcpy(literal->content, content, length);
+    memcpy(literal->content, content, sz);
     literal->length = length;
 
     kefir_result_t res =
@@ -310,14 +328,17 @@ const char *kefir_ir_module_symbol_iter_next(const struct kefir_list_entry **ite
 }
 
 kefir_result_t kefir_ir_module_get_string_literal(const struct kefir_ir_module *module, kefir_id_t id,
-                                                  const char **content, kefir_size_t *length) {
+                                                  kefir_ir_string_literal_type_t *type, const void **content,
+                                                  kefir_size_t *length) {
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string literal type"));
     REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid content pointer"));
     REQUIRE(length != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid length pointer"));
 
     struct kefir_hashtree_node *node = NULL;
     REQUIRE_OK(kefir_hashtree_at(&module->string_literals, (kefir_hashtree_key_t) id, &node));
     ASSIGN_DECL_CAST(struct string_literal *, literal, node->value);
+    *type = literal->type;
     *content = literal->content;
     *length = literal->length;
     return KEFIR_OK;
@@ -325,10 +346,12 @@ kefir_result_t kefir_ir_module_get_string_literal(const struct kefir_ir_module *
 
 kefir_result_t kefir_ir_module_string_literal_iter(const struct kefir_ir_module *module,
                                                    struct kefir_hashtree_node_iterator *iter, kefir_id_t *id,
-                                                   const char **content, kefir_size_t *length) {
+                                                   kefir_ir_string_literal_type_t *type, const void **content,
+                                                   kefir_size_t *length) {
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module"));
     REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid hash tree iterator pointer"));
     REQUIRE(id != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string literal identifier pointer"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string literal type pointer"));
     REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string literal content pointer"));
     REQUIRE(length != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string literal length pointer"));
 
@@ -336,15 +359,18 @@ kefir_result_t kefir_ir_module_string_literal_iter(const struct kefir_ir_module 
     REQUIRE(node != NULL, KEFIR_ITERATOR_END);
     ASSIGN_DECL_CAST(struct string_literal *, literal, node->value);
     *id = (kefir_id_t) node->key;
+    *type = literal->type;
     *content = literal->content;
     *length = literal->length;
     return KEFIR_OK;
 }
 
 kefir_result_t kefir_ir_module_string_literal_next(struct kefir_hashtree_node_iterator *iter, kefir_id_t *id,
-                                                   const char **content, kefir_size_t *length) {
+                                                   kefir_ir_string_literal_type_t *type, const void **content,
+                                                   kefir_size_t *length) {
     REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid hash tree iterator pointer"));
     REQUIRE(id != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string literal identifier pointer"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string literal type pointer"));
     REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string literal content pointer"));
     REQUIRE(length != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string literal length pointer"));
 
@@ -352,6 +378,7 @@ kefir_result_t kefir_ir_module_string_literal_next(struct kefir_hashtree_node_it
     REQUIRE(node != NULL, KEFIR_ITERATOR_END);
     ASSIGN_DECL_CAST(struct string_literal *, literal, node->value);
     *id = (kefir_id_t) node->key;
+    *type = literal->type;
     *content = literal->content;
     *length = literal->length;
     return KEFIR_OK;

@@ -60,6 +60,45 @@ static kefir_bool_t is_char_array(const struct kefir_ast_type *type, void *paylo
            KEFIR_AST_TYPE_IS_CHARACTER(kefir_ast_unqualified_type(type->array_type.element_type));
 }
 
+static kefir_bool_t is_array_of(const struct kefir_ast_type *type, void *payload) {
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    ASSIGN_DECL_CAST(const struct kefir_ast_type *, expected_type, payload);
+    return type->tag == KEFIR_AST_TYPE_ARRAY &&
+           KEFIR_AST_TYPE_SAME(kefir_ast_unqualified_type(type->array_type.element_type), expected_type);
+}
+
+static kefir_result_t string_literal_stop_fn(struct kefir_ast_node_base *node,
+                                             const struct kefir_ast_type_traits *type_traits,
+                                             kefir_bool_t (**stop_fn)(const struct kefir_ast_type *, void *),
+                                             void **stop_payload) {
+    switch (node->properties.expression_props.string_literal.type) {
+        case KEFIR_AST_STRING_LITERAL_MULTIBYTE:
+        case KEFIR_AST_STRING_LITERAL_UNICODE8:
+            *stop_fn = is_char_array;
+            *stop_payload = NULL;
+            break;
+
+        case KEFIR_AST_STRING_LITERAL_UNICODE16:
+            *stop_fn = is_array_of;
+            *stop_payload = (void *) type_traits->unicode16_char_type;
+            break;
+
+        case KEFIR_AST_STRING_LITERAL_UNICODE32:
+            *stop_fn = is_array_of;
+            *stop_payload = (void *) type_traits->unicode32_char_type;
+            break;
+
+        case KEFIR_AST_STRING_LITERAL_WIDE:
+            *stop_fn = is_array_of;
+            *stop_payload = (void *) type_traits->wide_char_type;
+            break;
+
+        default:
+            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected string literal type");
+    }
+    return KEFIR_OK;
+}
+
 static kefir_result_t layer_designator(struct kefir_mem *mem, struct kefir_symbol_table *symbols,
                                        struct kefir_ast_designator *current_designator,
                                        const struct kefir_ast_type_traversal_layer *layer,
@@ -75,25 +114,29 @@ static kefir_result_t layer_designator(struct kefir_mem *mem, struct kefir_symbo
     return KEFIR_OK;
 }
 
-static kefir_result_t assign_string(struct kefir_mem *mem, struct kefir_symbol_table *symbols,
+static kefir_result_t assign_string(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                     struct kefir_ast_initializer_list_entry *entry,
                                     struct kefir_ast_type_traversal *traversal,
                                     const struct kefir_ast_initializer_traversal *initializer_traversal) {
     const struct kefir_ast_type *type = NULL;
     const struct kefir_ast_type_traversal_layer *layer = NULL;
     struct kefir_ast_designator *designator_layer = NULL;
+    kefir_bool_t (*stop_fn)(const struct kefir_ast_type *, void *) = NULL;
+    void *stop_payload = NULL;
+    struct kefir_ast_node_base *node = entry->value->expression;
+    REQUIRE_OK(string_literal_stop_fn(node, context->type_traits, &stop_fn, &stop_payload));
 
-    REQUIRE_OK(kefir_ast_type_traversal_next_recursive2(mem, traversal, is_char_array, NULL, &type, &layer));
-    REQUIRE_OK(layer_designator(mem, symbols, entry->designator, layer, &designator_layer));
+    REQUIRE_OK(kefir_ast_type_traversal_next_recursive2(mem, traversal, stop_fn, stop_payload, &type, &layer));
+    REQUIRE_OK(layer_designator(mem, context->symbols, entry->designator, layer, &designator_layer));
 
     kefir_result_t res = KEFIR_OK;
-    if (is_char_array(type, NULL) && (type->array_type.boundary == KEFIR_AST_ARRAY_BOUNDED ||
-                                      type->array_type.boundary == KEFIR_AST_ARRAY_BOUNDED_STATIC)) {
+    if (stop_fn(type, stop_payload) && (type->array_type.boundary == KEFIR_AST_ARRAY_BOUNDED ||
+                                        type->array_type.boundary == KEFIR_AST_ARRAY_BOUNDED_STATIC)) {
         kefir_size_t length = MIN((kefir_size_t) type->array_type.const_length->value.integer,
                                   entry->value->expression->properties.expression_props.string_literal.length);
-        INVOKE_TRAVERSAL_CHAIN(&res, initializer_traversal, visit_string_literal, designator_layer,
-                               entry->value->expression,
-                               entry->value->expression->properties.expression_props.string_literal.content, length);
+        INVOKE_TRAVERSAL_CHAIN(&res, initializer_traversal, visit_string_literal, designator_layer, node,
+                               node->properties.expression_props.string_literal.type,
+                               node->properties.expression_props.string_literal.content, length);
     } else {
         INVOKE_TRAVERSAL_CHAIN(&res, initializer_traversal, visit_value, designator_layer, entry->value->expression);
     }
@@ -135,7 +178,7 @@ static kefir_result_t traverse_aggregate_union(struct kefir_mem *mem, const stru
 
             INVOKE_TRAVERSAL_CHAIN(&res, initializer_traversal, visit_initializer_list, designator_layer, entry->value);
         } else if (entry->value->expression->properties.expression_props.string_literal.content != NULL) {
-            REQUIRE_OK(assign_string(mem, context->symbols, entry, traversal, initializer_traversal));
+            REQUIRE_OK(assign_string(mem, context, entry, traversal, initializer_traversal));
         } else if (KEFIR_AST_TYPE_IS_SCALAR_TYPE(entry->value->expression->properties.type)) {
             const struct kefir_ast_type *type = NULL;
             REQUIRE_OK(kefir_ast_type_traversal_next_recursive(mem, traversal, &type, &layer));
@@ -199,13 +242,22 @@ static kefir_result_t traverse_array(struct kefir_mem *mem, const struct kefir_a
                                      const struct kefir_ast_initializer *initializer,
                                      const struct kefir_ast_initializer_traversal *initializer_traversal) {
     struct kefir_ast_node_base *head_expr = kefir_ast_initializer_head(initializer);
-    if (head_expr != NULL && head_expr->properties.expression_props.string_literal.content != NULL &&
-        is_char_array(type, NULL)) {
+    kefir_bool_t is_string = false;
 
-        INVOKE_TRAVERSAL(initializer_traversal, visit_string_literal, designator, head_expr,
-                         head_expr->properties.expression_props.string_literal.content,
-                         head_expr->properties.expression_props.string_literal.length);
-    } else {
+    if (head_expr != NULL && head_expr->properties.expression_props.string_literal.content != NULL) {
+        kefir_bool_t (*stop_fn)(const struct kefir_ast_type *, void *) = NULL;
+        void *stop_payload = NULL;
+        REQUIRE_OK(string_literal_stop_fn(head_expr, context->type_traits, &stop_fn, &stop_payload));
+        if (stop_fn(type, stop_payload)) {
+            INVOKE_TRAVERSAL(initializer_traversal, visit_string_literal, designator, head_expr,
+                             head_expr->properties.expression_props.string_literal.type,
+                             head_expr->properties.expression_props.string_literal.content,
+                             head_expr->properties.expression_props.string_literal.length);
+            is_string = true;
+        }
+    }
+
+    if (!is_string) {
         REQUIRE(initializer->type == KEFIR_AST_INITIALIZER_LIST,
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to initialize array by non-string literal expression"));
 

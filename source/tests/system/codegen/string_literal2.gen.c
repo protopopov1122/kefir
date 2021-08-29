@@ -48,9 +48,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl1->name));
     kefir_irbuilder_type_append_v(mem, func1->declaration->result, KEFIR_IR_TYPE_WORD, 0, 0);
 
-    const char *literal = "Hello, world!";
-    REQUIRE_OK(kefir_ir_module_string_literal(mem, &module, KEFIR_IR_STRING_LITERAL_MULTIBYTE, literal,
-                                              strlen(literal) + 1, &literal_id));
+    const kefir_char16_t literal[] = u"Hello, world!";
+    REQUIRE_OK(kefir_ir_module_string_literal(mem, &module, KEFIR_IR_STRING_LITERAL_UNICODE16, literal,
+                                              sizeof(literal) / sizeof(literal[0]), &literal_id));
     kefir_irbuilder_block_appendi64(mem, &func1->body, KEFIR_IROPCODE_PUSHSTRING, literal_id);
 
     struct kefir_ir_type *decl2_params = kefir_ir_module_new_type(mem, &module, 0, NULL),
@@ -65,9 +65,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl2->name));
     kefir_irbuilder_type_append_v(mem, func2->declaration->result, KEFIR_IR_TYPE_WORD, 0, 0);
 
-    literal = "\n\n\t\tHey there\'\"!\v\n";
-    REQUIRE_OK(kefir_ir_module_string_literal(mem, &module, KEFIR_IR_STRING_LITERAL_MULTIBYTE, literal,
-                                              strlen(literal) + 1, &literal_id));
+    const kefir_char16_t literal2[] = u"\n\n\t\tHey there\'\"!\v\n";
+    REQUIRE_OK(kefir_ir_module_string_literal(mem, &module, KEFIR_IR_STRING_LITERAL_UNICODE16, literal2,
+                                              sizeof(literal2) / sizeof(literal2[0]), &literal_id));
     kefir_irbuilder_block_appendi64(mem, &func2->body, KEFIR_IROPCODE_PUSHSTRING, literal_id);
 
     struct kefir_ir_type *decl3_params = kefir_ir_module_new_type(mem, &module, 0, NULL),
@@ -82,9 +82,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl3->name));
     kefir_irbuilder_type_append_v(mem, func3->declaration->result, KEFIR_IR_TYPE_WORD, 0, 0);
 
-    literal = "\0\0\0";
-    REQUIRE_OK(
-        kefir_ir_module_string_literal(mem, &module, KEFIR_IR_STRING_LITERAL_MULTIBYTE, literal, 4, &literal_id));
+    const kefir_char16_t literal3[] = u"\0\0\0";
+    REQUIRE_OK(kefir_ir_module_string_literal(mem, &module, KEFIR_IR_STRING_LITERAL_UNICODE16, literal3,
+                                              sizeof(literal3) / sizeof(literal3[0]), &literal_id));
     kefir_irbuilder_block_appendi64(mem, &func3->body, KEFIR_IROPCODE_PUSHSTRING, literal_id);
 
     KEFIR_CODEGEN_TRANSLATE(mem, &codegen.iface, &module);

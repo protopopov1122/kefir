@@ -37,6 +37,7 @@ kefir_result_t kefir_ast_evaluate_string_literal_node(struct kefir_mem *mem, con
 
     value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS;
     value->pointer.type = KEFIR_AST_CONSTANT_EXPRESSION_POINTER_LITERAL;
+    value->pointer.base.string.type = node->type;
     value->pointer.base.string.content = node->literal;
     value->pointer.base.string.length = node->length;
     value->pointer.offset = 0;

@@ -126,6 +126,13 @@ struct traversal_param {
     struct kefir_ir_type_tree ir_type_tree;
 };
 
+static const kefir_ir_string_literal_type_t StringLiteralTypes[] = {
+    [KEFIR_AST_STRING_LITERAL_MULTIBYTE] = KEFIR_IR_STRING_LITERAL_MULTIBYTE,
+    [KEFIR_AST_STRING_LITERAL_UNICODE8] = KEFIR_IR_STRING_LITERAL_MULTIBYTE,
+    [KEFIR_AST_STRING_LITERAL_UNICODE16] = KEFIR_IR_STRING_LITERAL_UNICODE16,
+    [KEFIR_AST_STRING_LITERAL_UNICODE32] = KEFIR_IR_STRING_LITERAL_UNICODE32,
+    [KEFIR_AST_STRING_LITERAL_WIDE] = KEFIR_IR_STRING_LITERAL_UNICODE32};
+
 static kefir_result_t visit_value(const struct kefir_ast_designator *designator, struct kefir_ast_node_base *expression,
                                   void *payload) {
     REQUIRE(expression != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST expression node"));
@@ -214,9 +221,9 @@ static kefir_result_t visit_value(const struct kefir_ast_designator *designator,
 
                 case KEFIR_AST_CONSTANT_EXPRESSION_POINTER_LITERAL: {
                     kefir_id_t id;
-                    REQUIRE_OK(kefir_ir_module_string_literal(param->mem, param->module,
-                                                              value.pointer.base.string.content,
-                                                              value.pointer.base.string.length, &id));
+                    REQUIRE_OK(kefir_ir_module_string_literal(
+                        param->mem, param->module, StringLiteralTypes[value.pointer.base.string.type],
+                        value.pointer.base.string.content, value.pointer.base.string.length, &id));
                     REQUIRE_OK(kefir_ir_data_set_string_pointer(param->data, slot, id, value.pointer.offset));
                 } break;
             }
@@ -225,26 +232,30 @@ static kefir_result_t visit_value(const struct kefir_ast_designator *designator,
 
     return KEFIR_OK;
 }
+
 static kefir_result_t visit_string_literal(const struct kefir_ast_designator *designator,
-                                           struct kefir_ast_node_base *expression, const char *string,
-                                           kefir_size_t length, void *payload) {
+                                           struct kefir_ast_node_base *expression, kefir_ast_string_literal_type_t type,
+                                           const void *string, kefir_size_t length, void *payload) {
     UNUSED(expression);
     REQUIRE(string != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid string literal"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct traversal_param *, param, payload);
 
     kefir_id_t string_id;
-    REQUIRE_OK(kefir_ir_module_string_literal(param->mem, param->module, string, length, &string_id));
+    REQUIRE_OK(kefir_ir_module_string_literal(param->mem, param->module, StringLiteralTypes[type], string, length,
+                                              &string_id));
 
-    const char *string_content = NULL;
+    kefir_ir_string_literal_type_t ir_string_type;
+    const void *string_content = NULL;
     kefir_size_t string_length = 0;
-    REQUIRE_OK(kefir_ir_module_get_string_literal(param->module, string_id, &string_content, &string_length));
+    REQUIRE_OK(
+        kefir_ir_module_get_string_literal(param->module, string_id, &ir_string_type, &string_content, &string_length));
 
     struct kefir_ast_type_layout *resolved_layout = NULL;
     kefir_size_t slot = 0;
     REQUIRE_OK(resolve_designated_slot(param->type_layout, designator, &param->ir_type_tree, param->base_slot,
                                        &resolved_layout, &slot));
-    REQUIRE_OK(kefir_ir_data_set_string(param->data, slot, string_content, string_length));
+    REQUIRE_OK(kefir_ir_data_set_string(param->data, slot, StringLiteralTypes[type], string_content, string_length));
     return KEFIR_OK;
 }
 

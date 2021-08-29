@@ -28,7 +28,8 @@
         },
         "string_literal": {
             "class": "string_literal",
-            "content": "What's wrong?",
+            "type": "multibyte",
+            "content": "What's wrong\?\0",
             "length": 14
         }
     },

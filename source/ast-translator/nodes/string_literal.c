@@ -33,7 +33,14 @@ kefir_result_t kefir_ast_translate_string_literal_node(struct kefir_mem *mem,
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST string literal node"));
 
     kefir_id_t literal_id;
-    REQUIRE_OK(kefir_ir_module_string_literal(mem, context->module, node->literal, node->length, &literal_id));
+    static const kefir_ir_string_literal_type_t LiteralTypes[] = {
+        [KEFIR_AST_STRING_LITERAL_MULTIBYTE] = KEFIR_IR_STRING_LITERAL_MULTIBYTE,
+        [KEFIR_AST_STRING_LITERAL_UNICODE8] = KEFIR_IR_STRING_LITERAL_MULTIBYTE,
+        [KEFIR_AST_STRING_LITERAL_UNICODE16] = KEFIR_IR_STRING_LITERAL_UNICODE16,
+        [KEFIR_AST_STRING_LITERAL_UNICODE32] = KEFIR_IR_STRING_LITERAL_UNICODE32,
+        [KEFIR_AST_STRING_LITERAL_WIDE] = KEFIR_IR_STRING_LITERAL_UNICODE32};
+    REQUIRE_OK(kefir_ir_module_string_literal(mem, context->module, LiteralTypes[node->type], node->literal,
+                                              node->length, &literal_id));
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHSTRING, literal_id));
     return KEFIR_OK;
 }

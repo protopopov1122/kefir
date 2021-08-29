@@ -27,7 +27,7 @@
 typedef struct kefir_ast_initializer_traversal {
     kefir_result_t (*visit_value)(const struct kefir_ast_designator *, struct kefir_ast_node_base *, void *);
     kefir_result_t (*visit_string_literal)(const struct kefir_ast_designator *, struct kefir_ast_node_base *,
-                                           const char *, kefir_size_t, void *);
+                                           kefir_ast_string_literal_type_t, const void *, kefir_size_t, void *);
     kefir_result_t (*begin_struct_union)(const struct kefir_ast_designator *, const struct kefir_ast_initializer *,
                                          void *);
     kefir_result_t (*begin_array)(const struct kefir_ast_designator *, const struct kefir_ast_initializer *, void *);
