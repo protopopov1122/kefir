@@ -94,18 +94,21 @@
     "string_literals": [
         {
             "id": 0,
+            "public": false,
             "type": "multibyte",
             "literal": "Hello, world!\0",
             "length": 14
         },
         {
             "id": 1,
+            "public": false,
             "type": "multibyte",
             "literal": "Goodbye, world!\0",
             "length": 16
         },
         {
             "id": 2,
+            "public": false,
             "type": "multibyte",
             "literal": "WTF world\?\0",
             "length": 11

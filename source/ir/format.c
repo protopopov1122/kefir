@@ -656,14 +656,18 @@ static kefir_result_t format_string_literal(struct kefir_json_output *json, cons
     struct kefir_hashtree_node_iterator iter;
     kefir_id_t id;
     kefir_ir_string_literal_type_t literal_type;
+    kefir_bool_t public;
     const void *literal;
     kefir_size_t length;
     kefir_result_t res = KEFIR_OK;
-    for (res = kefir_ir_module_string_literal_iter(module, &iter, &id, &literal_type, &literal, &length);
-         res == KEFIR_OK; res = kefir_ir_module_string_literal_next(&iter, &id, &literal_type, &literal, &length)) {
+    for (res = kefir_ir_module_string_literal_iter(module, &iter, &id, &literal_type, &public, &literal, &length);
+         res == KEFIR_OK;
+         res = kefir_ir_module_string_literal_next(&iter, &id, &literal_type, &public, &literal, &length)) {
         REQUIRE_OK(kefir_json_output_object_begin(json));
         REQUIRE_OK(kefir_json_output_object_key(json, "id"));
         REQUIRE_OK(kefir_json_output_integer(json, id));
+        REQUIRE_OK(kefir_json_output_object_key(json, "public"));
+        REQUIRE_OK(kefir_json_output_boolean(json, public));
         REQUIRE_OK(kefir_json_output_object_key(json, "type"));
         switch (literal_type) {
             case KEFIR_IR_STRING_LITERAL_MULTIBYTE:

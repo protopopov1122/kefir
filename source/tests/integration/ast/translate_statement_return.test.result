@@ -85,6 +85,7 @@
     "string_literals": [
         {
             "id": 0,
+            "public": true,
             "type": "multibyte",
             "literal": "Hey ho!\0",
             "length": 8

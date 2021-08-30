@@ -170,8 +170,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "pointer1_1"));
 
     kefir_id_t str_id;
-    REQUIRE_OK(
-        kefir_ir_module_string_literal(mem, &module, KEFIR_IR_STRING_LITERAL_MULTIBYTE, MSG, strlen(MSG), &str_id));
+    REQUIRE_OK(kefir_ir_module_string_literal(mem, &module, KEFIR_IR_STRING_LITERAL_MULTIBYTE, true, MSG, strlen(MSG),
+                                              &str_id));
 
     kefir_id_t strpointer1_type_id;
     struct kefir_ir_type *strpointer1_type = kefir_ir_module_new_type(mem, &module, 1, &strpointer1_type_id);

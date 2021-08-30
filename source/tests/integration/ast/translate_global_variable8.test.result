@@ -139,12 +139,14 @@
     "string_literals": [
         {
             "id": 0,
+            "public": false,
             "type": "multibyte",
             "literal": "Global UTF-8 string literal\n\r\0",
             "length": 30
         },
         {
             "id": 1,
+            "public": false,
             "type": "unicode16",
             "literal": [
                 71,
@@ -183,6 +185,7 @@
         },
         {
             "id": 2,
+            "public": false,
             "type": "unicode32",
             "literal": [
                 71,
@@ -221,6 +224,7 @@
         },
         {
             "id": 3,
+            "public": false,
             "type": "unicode32",
             "literal": [
                 71,

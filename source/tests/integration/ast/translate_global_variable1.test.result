@@ -182,12 +182,14 @@
     "string_literals": [
         {
             "id": 0,
+            "public": true,
             "type": "multibyte",
             "literal": "Some ordinary string\0",
             "length": 21
         },
         {
             "id": 1,
+            "public": true,
             "type": "multibyte",
             "literal": "Another ordinary string\0",
             "length": 24

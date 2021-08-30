@@ -90,6 +90,14 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem, struct kefir_
         case KEFIR_IROPCODE_PUSHSTRING: {
             const kefir_id_t identifier = (kefir_id_t) instr->arg.u64;
 
+            kefir_ir_string_literal_type_t type;
+            kefir_bool_t public;
+            const void *content;
+            kefir_size_t length;
+            REQUIRE_OK(
+                kefir_ir_module_get_string_literal(sysv_module->module, identifier, &type, &public, &content, &length));
+            REQUIRE(public, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot push non-public string literal"));
+
             const char *opcode_symbol = NULL;
             REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_PUSHI64, &opcode_symbol));
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);

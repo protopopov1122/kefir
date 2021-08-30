@@ -175,11 +175,17 @@ static kefir_result_t cg_translate_data(struct kefir_mem *mem, struct kefir_code
 
     kefir_id_t id;
     kefir_ir_string_literal_type_t literal_type;
+    kefir_bool_t public;
     const void *content = NULL;
     kefir_size_t length = 0;
     kefir_result_t res = KEFIR_OK;
-    for (res = kefir_ir_module_string_literal_iter(module->module, &iter, &id, &literal_type, &content, &length);
-         res == KEFIR_OK; res = kefir_ir_module_string_literal_next(&iter, &id, &literal_type, &content, &length)) {
+    for (res =
+             kefir_ir_module_string_literal_iter(module->module, &iter, &id, &literal_type, &public, &content, &length);
+         res == KEFIR_OK;
+         res = kefir_ir_module_string_literal_next(&iter, &id, &literal_type, &public, &content, &length)) {
+        if (!public) {
+            continue;
+        }
         if (first) {
             ASMGEN_SECTION(&codegen->asmgen, ".data");
             first = false;

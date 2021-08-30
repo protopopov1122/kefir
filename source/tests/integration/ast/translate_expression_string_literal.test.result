@@ -19,18 +19,21 @@
     "string_literals": [
         {
             "id": 0,
+            "public": true,
             "type": "multibyte",
             "literal": "Hello, cruel world!\0",
             "length": 20
         },
         {
             "id": 1,
+            "public": true,
             "type": "multibyte",
             "literal": "\n\n\t\n\\'\"```T   E\nST\0",
             "length": 19
         },
         {
             "id": 2,
+            "public": true,
             "type": "multibyte",
             "literal": "\0",
             "length": 1

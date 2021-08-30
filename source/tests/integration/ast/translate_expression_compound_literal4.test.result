@@ -116,12 +116,14 @@
     "string_literals": [
         {
             "id": 0,
+            "public": true,
             "type": "multibyte",
             "literal": "Literal #0\0Here\0",
             "length": 16
         },
         {
             "id": 1,
+            "public": true,
             "type": "unicode16",
             "literal": [
                 76,
@@ -145,6 +147,7 @@
         },
         {
             "id": 2,
+            "public": true,
             "type": "unicode32",
             "literal": [
                 76,
@@ -168,6 +171,7 @@
         },
         {
             "id": 3,
+            "public": true,
             "type": "unicode32",
             "literal": [
                 76,

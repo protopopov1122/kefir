@@ -222,7 +222,7 @@ static kefir_result_t visit_value(const struct kefir_ast_designator *designator,
                 case KEFIR_AST_CONSTANT_EXPRESSION_POINTER_LITERAL: {
                     kefir_id_t id;
                     REQUIRE_OK(kefir_ir_module_string_literal(
-                        param->mem, param->module, StringLiteralTypes[value.pointer.base.string.type],
+                        param->mem, param->module, StringLiteralTypes[value.pointer.base.string.type], true,
                         value.pointer.base.string.content, value.pointer.base.string.length, &id));
                     REQUIRE_OK(kefir_ir_data_set_string_pointer(param->data, slot, id, value.pointer.offset));
                 } break;
@@ -242,14 +242,15 @@ static kefir_result_t visit_string_literal(const struct kefir_ast_designator *de
     ASSIGN_DECL_CAST(struct traversal_param *, param, payload);
 
     kefir_id_t string_id;
-    REQUIRE_OK(kefir_ir_module_string_literal(param->mem, param->module, StringLiteralTypes[type], string, length,
-                                              &string_id));
+    REQUIRE_OK(kefir_ir_module_string_literal(param->mem, param->module, StringLiteralTypes[type], false, string,
+                                              length, &string_id));
 
     kefir_ir_string_literal_type_t ir_string_type;
+    kefir_bool_t public;
     const void *string_content = NULL;
     kefir_size_t string_length = 0;
-    REQUIRE_OK(
-        kefir_ir_module_get_string_literal(param->module, string_id, &ir_string_type, &string_content, &string_length));
+    REQUIRE_OK(kefir_ir_module_get_string_literal(param->module, string_id, &ir_string_type, &public, &string_content,
+                                                  &string_length));
 
     struct kefir_ast_type_layout *resolved_layout = NULL;
     kefir_size_t slot = 0;
