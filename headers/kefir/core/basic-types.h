@@ -25,6 +25,7 @@
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <wchar.h>
 #include <uchar.h>
 #include "kefir/core/base.h"
 
@@ -41,9 +42,9 @@ typedef char16_t kefir_char16_t;
 #define KEFIR_CHAR16_MIN 0
 #define KEFIR_CHAR16_MAX UINT_LEAST16_MIN
 
-typedef kefir_char32_t kefir_wchar_t;
-#define KEFIR_WCHAR_MIN KEFIR_CHAR32_MIN
-#define KEFIR_WCHAR_MAX KEFIR_CHAR32_MAX
+typedef wchar_t kefir_wchar_t;
+#define KEFIR_WCHAR_MIN WCHAR_MIN
+#define KEFIR_WCHAR_MAX WCHAR_MAX
 
 typedef int kefir_int_t;
 typedef unsigned int kefir_uint_t;

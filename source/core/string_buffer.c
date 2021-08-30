@@ -241,11 +241,34 @@ kefir_result_t kefir_string_buffer_insert_wide_character(struct kefir_mem *mem, 
     REQUIRE(buffer->mode == KEFIR_STRING_BUFFER_WIDE,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected wide string buffer"));
 
+    char narrow_string[MB_CUR_MAX];
+    mbstate_t mbstate = {0};
+    size_t sz = c32rtomb(narrow_string, character, &mbstate);
+    REQUIRE(sz != (size_t) -1, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Failed to convert unicode32 character into wide"));
+
+    const char *begin = narrow_string;
+    const char *end = narrow_string + sz;
     union {
         kefir_wchar_t value;
         const char bytes[sizeof(kefir_wchar_t)];
-    } wchr = {.value = character};
-    REQUIRE_OK(insert_buffer(mem, buffer, wchr.bytes, sizeof(kefir_wchar_t)));
+    } wchr;
+
+    while (begin < end) {
+        int rc = mbtowc(&wchr.value, begin, end - begin);
+        switch (rc) {
+            case -1:
+                return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Failed to convert unicode32 character into wide");
+            case 0:
+                REQUIRE_OK(insert_buffer(mem, buffer, wchr.bytes, sizeof(kefir_wchar_t)));
+                begin = end;
+                break;
+
+            default:
+                REQUIRE_OK(insert_buffer(mem, buffer, wchr.bytes, sizeof(kefir_wchar_t)));
+                begin += rc;
+                break;
+        }
+    }
     return KEFIR_OK;
 }
 

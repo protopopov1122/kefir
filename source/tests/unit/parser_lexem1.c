@@ -310,14 +310,14 @@ DEFINE_CASE(parser_lexem_construction_wide_string_literals, "Parser - wide strin
         ASSERT_OK(kefir_token_free(&kft_mem, &token));                                                    \
     } while (0)
 
-    const kefir_wchar_t *MSG[] = {U"", U"abc", U"test test test", U"One two three\n\n\n\t    Test...test...test...123",
-                                  U"Hello, cruel-cruel-cruel world!"};
+    const kefir_wchar_t *MSG[] = {L"", L"abc", L"test test test", L"One two three\n\n\n\t    Test...test...test...123",
+                                  L"Hello, cruel-cruel-cruel world!"};
     kefir_size_t MSG_LEN = sizeof(MSG) / sizeof(MSG[0]);
     for (kefir_size_t i = 0; i < MSG_LEN; i++) {
-        ASSERT_STRING_LITERAL(MSG[i], kefir_strlen32(MSG[i]));
+        ASSERT_STRING_LITERAL(MSG[i], wcslen(MSG[i]));
     }
 
-    const kefir_wchar_t line[] = U" \0\0\0\n\t\0";
+    const kefir_wchar_t line[] = L" \0\0\0\n\t\0";
     ASSERT_STRING_LITERAL(line, sizeof(line) / sizeof(line[0]));
 
 #undef ASSERT_STRING_LITERAL
@@ -461,7 +461,7 @@ DEFINE_CASE(parser_lexem_move, "Parser - moving tokens") {
     ASSERT(memcmp(MSG4, dst.string_literal.literal, sizeof(MSG4)) == 0);
     ASSERT_OK(kefir_token_free(&kft_mem, &dst));
 
-    const kefir_wchar_t MSG5[] = U"\"\"\\Th3 l@st w1d3 $tring!!!\v\t";
+    const kefir_wchar_t MSG5[] = L"\"\"\\Th3 l@st w1d3 $tring!!!\v\t";
     ASSERT_OK(kefir_token_new_string_literal_wide(&kft_mem, MSG5, sizeof(MSG5) / sizeof(MSG5[0]), &src));
     ASSERT_OK(kefir_token_move(&dst, &src));
     ASSERT(dst.klass == KEFIR_TOKEN_STRING_LITERAL);
@@ -584,7 +584,7 @@ DEFINE_CASE(parser_lexem_copy, "Parser - copying tokens") {
     ASSERT_OK(kefir_token_free(&kft_mem, &src));
     ASSERT_OK(kefir_token_free(&kft_mem, &dst));
 
-    const kefir_wchar_t MSG5[] = U"\0\nTHE last MSGe?0\"";
+    const kefir_wchar_t MSG5[] = L"\0\nTHE last MSGe?0\"";
     ASSERT_OK(kefir_token_new_string_literal_wide(&kft_mem, MSG5, sizeof(MSG5) / sizeof(MSG5[0]), &src));
     ASSERT_OK(kefir_token_copy(&kft_mem, &dst, &src));
     ASSERT(src.klass == KEFIR_TOKEN_STRING_LITERAL);

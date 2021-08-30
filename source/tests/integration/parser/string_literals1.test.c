@@ -38,7 +38,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     const char Literal2[] = u8"Literal2 string literal. It's a UTF-8 literal. Similar to normal one";
     const kefir_char16_t Literal3[] = u"Crazy 2-byte string literal. It has char16_t type";
     const kefir_char32_t Literal4[] = U"Even more crazy string literal. It's represented as int";
-    const kefir_wchar_t Literal5[] = U"Wide string literal. Not so crazy though";
+    const kefir_wchar_t Literal5[] = L"Wide string literal. Not so crazy though";
 
     REQUIRE_OK(kefir_token_new_string_literal_multibyte(mem, Literal1, sizeof(Literal1), &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_string_literal_unicode8(mem, Literal2, sizeof(Literal2), &TOKENS[counter++]));

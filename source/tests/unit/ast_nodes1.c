@@ -64,7 +64,7 @@ DEFINE_CASE(ast_nodes_constants, "AST nodes - constants") {
         ASSERT(wchrc->type = KEFIR_AST_WIDE_CHAR_CONSTANT);
         ASSERT(u16chrc->type = KEFIR_AST_UNICODE16_CHAR_CONSTANT);
         ASSERT(u32chrc->type = KEFIR_AST_UNICODE32_CHAR_CONSTANT);
-        ASSERT(wchrc->value.wide_character == chr);
+        ASSERT(wchrc->value.wide_character == (kefir_wchar_t) chr);
         ASSERT(u16chrc->value.unicode16_character == chr);
         ASSERT(u32chrc->value.unicode32_character == chr);
         ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(wchrc)));
@@ -249,8 +249,8 @@ DEFINE_CASE(ast_nodes_string_literals_unicode32, "AST nodes - unicode32 string l
 END_CASE
 
 DEFINE_CASE(ast_nodes_string_literals_wide, "AST nodes - wide string literals") {
-    const kefir_wchar_t STRING1[] = U"Some fake wide char...\n\tRight here\U00000100";
-    const kefir_wchar_t STRING2[] = U"And\000here\x00000 as well.\vSurprising\\";
+    const kefir_wchar_t STRING1[] = L"Some fake wide char...\n\tRight here\U00000100";
+    const kefir_wchar_t STRING2[] = L"And\000here\x00000 as well.\vSurprising\\";
 
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));

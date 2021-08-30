@@ -250,22 +250,22 @@ DEFINE_CASE(ast_node_analysis_string_literals_wide, "AST node analysis - wide st
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
-    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_wchar_t, kefir_ast_new_string_literal_wide, U"",
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_wchar_t, kefir_ast_new_string_literal_wide, L"",
                           type_traits->wide_char_type, KEFIR_AST_STRING_LITERAL_WIDE);
-    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_wchar_t, kefir_ast_new_string_literal_wide, U"1",
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_wchar_t, kefir_ast_new_string_literal_wide, L"1",
                           type_traits->wide_char_type, KEFIR_AST_STRING_LITERAL_WIDE);
-    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_wchar_t, kefir_ast_new_string_literal_wide, U"abc",
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_wchar_t, kefir_ast_new_string_literal_wide, L"abc",
                           type_traits->wide_char_type, KEFIR_AST_STRING_LITERAL_WIDE);
-    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_wchar_t, kefir_ast_new_string_literal_wide, U"Hello, world!",
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_wchar_t, kefir_ast_new_string_literal_wide, L"Hello, world!",
                           type_traits->wide_char_type, KEFIR_AST_STRING_LITERAL_WIDE);
-    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_wchar_t, kefir_ast_new_string_literal_wide, U"\0",
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_wchar_t, kefir_ast_new_string_literal_wide, L"\0",
                           type_traits->wide_char_type, KEFIR_AST_STRING_LITERAL_WIDE);
-    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_wchar_t, kefir_ast_new_string_literal_wide, U"\0\0\0\t",
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_wchar_t, kefir_ast_new_string_literal_wide, L"\0\0\0\t",
                           type_traits->wide_char_type, KEFIR_AST_STRING_LITERAL_WIDE);
-    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_wchar_t, kefir_ast_new_string_literal_wide, U"\n\n\n\taaa",
+    ASSERT_STRING_LITERAL(&kft_mem, context, kefir_wchar_t, kefir_ast_new_string_literal_wide, L"\n\n\n\taaa",
                           type_traits->wide_char_type, KEFIR_AST_STRING_LITERAL_WIDE);
     ASSERT_STRING_LITERAL(&kft_mem, context, kefir_wchar_t, kefir_ast_new_string_literal_wide,
-                          U"    Hello,\n\tcruel\n\n\n  \t world\n!", type_traits->wide_char_type,
+                          L"    Hello,\n\tcruel\n\n\n  \t world\n!", type_traits->wide_char_type,
                           KEFIR_AST_STRING_LITERAL_WIDE);
 
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));

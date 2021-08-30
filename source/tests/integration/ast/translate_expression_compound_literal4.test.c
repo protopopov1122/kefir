@@ -103,7 +103,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     const char LITERAL0[] = u8"Literal #0\0Here";
     const kefir_char16_t LITERAL1[] = u"Literal #1\0Here";
     const kefir_char32_t LITERAL2[] = U"Literal #2\0Here";
-    const kefir_char32_t LITERAL3[] = U"Literal #3\0Here";
+    const kefir_wchar_t LITERAL3[] = L"Literal #3\0Here";
     struct kefir_ast_compound_literal *literal1 = kefir_ast_new_compound_literal(mem, type_name3);
     REQUIRE_OK(kefir_ast_initializer_list_append(
         mem, &literal1->initializer->list, NULL,

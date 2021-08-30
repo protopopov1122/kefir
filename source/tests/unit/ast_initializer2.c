@@ -825,7 +825,7 @@ DEFINE_CASE(ast_initializer_analysis_wide, "AST initializer - wide string analys
                                                     kefir_ast_constant_expression_integer(&kft_mem, 0), NULL)));
     ASSERT_OK(kefir_ast_initializer_free(&kft_mem, init1));
 
-    const kefir_wchar_t LITERAL1[] = U"Hello, world!";
+    const kefir_wchar_t LITERAL1[] = L"Hello, world!";
     struct kefir_ast_initializer *init2 = kefir_ast_new_expression_initializer(
         &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_string_literal_wide(&kft_mem, LITERAL1, sizeof(LITERAL1))));
     ASSERT_OK(kefir_ast_analyze_initializer(&kft_mem, context, type1, init2, &traversal_props));
@@ -961,7 +961,7 @@ DEFINE_CASE(ast_initializer_analysis_mixed_strings, "AST initializer - mixed str
     const char LITERAL2[] = u8"Goodbye, world!";
     const kefir_char16_t LITERAL3[] = u"It's me. Again";
     const kefir_char32_t LITERAL4[] = U"One more time";
-    const kefir_wchar_t LITERAL5[] = U"The real goodbye";
+    const kefir_wchar_t LITERAL5[] = L"The real goodbye";
     struct kefir_ast_initializer *init2 = kefir_ast_new_list_initializer(&kft_mem);
     ASSERT_OK(kefir_ast_initializer_list_append(
         &kft_mem, &init2->list, NULL,

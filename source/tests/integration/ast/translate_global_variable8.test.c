@@ -90,7 +90,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ast_declarator_specifier_list_append(mem, &decl3->specifiers, kefir_ast_type_specifier_unsigned(mem)));
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl3->specifiers, kefir_ast_type_specifier_int(mem)));
 
-    const kefir_wchar_t LITERAL4[] = U"Global Wide string literal\n\r";
+    const kefir_wchar_t LITERAL4[] = L"Global Wide string literal\n\r";
     struct kefir_ast_initializer *init4 = kefir_ast_new_expression_initializer(
         mem,
         KEFIR_AST_NODE_BASE(kefir_ast_new_string_literal_wide(mem, LITERAL4, sizeof(LITERAL4) / sizeof(LITERAL4[0]))));
