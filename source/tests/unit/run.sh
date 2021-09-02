@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-VALGRIND="valgrind --trace-children=yes --leak-check=full --error-exitcode=127"
+VALGRIND="valgrind $VALGRIND_OPTIONS"
 
 if [[ "x$MEMCHECK" == "xyes" ]]; then
     exec $VALGRIND "$1"

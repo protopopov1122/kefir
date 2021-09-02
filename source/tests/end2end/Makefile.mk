@@ -8,7 +8,7 @@ $(END2END_BIN_PATH)/runtime.o: $(SOURCE_DIR)/runtime/amd64_sysv.asm
 $(BIN_DIR)/%.kefir.o: $(SOURCE_DIR)/%.kefir.c $(BIN_DIR)/kefir
 	@mkdir -p $(shell dirname "$@")
 	@echo "Kefir-Compile $@"
-	@$(SOURCE_DIR)/tests/end2end/compile.sh $(BIN_DIR) $< $@
+	@VALGRIND_OPTIONS="$(VALGRIND_OPTIONS)" $(SOURCE_DIR)/tests/end2end/compile.sh $(BIN_DIR) $< $@
 
 $(END2END_BIN_PATH)/%.test: $(END2END_BIN_PATH)/runtime.o
 	@mkdir -p $(shell dirname "$@")
@@ -17,7 +17,7 @@ $(END2END_BIN_PATH)/%.test: $(END2END_BIN_PATH)/runtime.o
 
 $(END2END_BIN_PATH)/%.test.done: $(END2END_BIN_PATH)/%.test
 	@echo "Running $<"
-	@valgrind -q --track-origins=yes --expensive-definedness-checks=yes --leak-check=full --error-exitcode=127 $<
+	@valgrind $(VALGRIND_OPTIONS) $<
 	@touch $@
 
 OBJECT_FILES += $(END2END_BIN_PATH)/runtime.o

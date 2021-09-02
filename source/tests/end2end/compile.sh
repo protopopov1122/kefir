@@ -36,5 +36,5 @@ function cleanup {
 trap cleanup EXIT HUP INT QUIT PIPE TERM
 set -e
 
-valgrind -q --track-origins=yes --leak-check=full --error-exitcode=127 "$KEFIRCC" "$SRC_FILE" > "$TMPDIR/module.asm"
+valgrind $VALGRIND_OPTIONS "$KEFIRCC" "$SRC_FILE" > "$TMPDIR/module.asm"
 nasm -f elf64 -o "$DST_FILE" "$TMPDIR/module.asm"

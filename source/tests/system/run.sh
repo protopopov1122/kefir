@@ -24,7 +24,7 @@ ASM_OBJ="$TMPDIR/gen.o"
 LIB_OBJ="$TMPDIR/lib.o"
 TEST_EXE="$TMPDIR/test"
 VALGRIND_FILE="$TMPDIR/gen.log"
-VALGRIND="valgrind --trace-children=yes --track-origins=yes --expensive-definedness-checks=yes --leak-check=full --error-exitcode=127 --log-file=$VALGRIND_FILE"
+VALGRIND="valgrind $VALGRIND_OPTIONS --log-file=$VALGRIND_FILE"
 NASM="nasm -f elf64 -o $ASM_OBJ"
 COMPILE="$CC -std=c11 -Wall -Wextra -pedantic $OPT $DBG -no-pie -I$DIR/../../../headers -o $TEST_EXE"
 

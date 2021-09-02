@@ -28,7 +28,7 @@ $(BIN_DIR)/tests/integration/%: $(BIN_DIR)/tests/integration/%.o $(LIBKEFIR_SO) 
 								 -L $(LIB_DIR) -lkefir
 
 $(BIN_DIR)/tests/integration/%.done: $(BIN_DIR)/tests/integration/%
-	@LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(LIB_DIR) $(SOURCE_DIR)/tests/integration/run.sh $<
+	@LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(LIB_DIR) VALGRIND_OPTIONS="$(VALGRIND_OPTIONS)" $(SOURCE_DIR)/tests/integration/run.sh $<
 	@touch $@
 
 $(SOURCE_DIR)/tests/integration/%.test.result: $(BIN_DIR)/tests/integration/%.test
