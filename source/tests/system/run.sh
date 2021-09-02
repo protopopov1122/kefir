@@ -26,7 +26,7 @@ TEST_EXE="$TMPDIR/test"
 VALGRIND_FILE="$TMPDIR/gen.log"
 VALGRIND="valgrind $VALGRIND_OPTIONS --log-file=$VALGRIND_FILE"
 NASM="nasm -f elf64 -o $ASM_OBJ"
-COMPILE="$CC -std=c11 -Wall -Wextra -pedantic $OPT $DBG -no-pie -I$DIR/../../../headers -o $TEST_EXE -lm"
+COMPILE="$CC -std=c11 -Wall -Wextra -pedantic $OPT $DBG -no-pie -I$DIR/../../../headers $CC_TEST_FLAGS -o $TEST_EXE -lm"
 
 if [[ "x$SANITIZE" == "xundefined" ]]; then
     COMPILE="$COMPILE -fsanitize=undefined -fno-sanitize-recover=all"
