@@ -31,13 +31,13 @@ struct type1 {
     uint64_t u64;
 };
 
-void truncate(struct type1 *, uint64_t);
+void custom_truncate(struct type1 *, uint64_t);
 
 int main(int argc, const char **argv) {
     UNUSED(argc);
     UNUSED(argv);
     struct type1 val;
-    truncate(&val, 0xf12345678ul);
+    custom_truncate(&val, 0xf12345678ul);
     ASSERT(val.u8 == 0x78);
     ASSERT(val.u16 == 0x5678);
     ASSERT(val.u32 == 0x12345678);
