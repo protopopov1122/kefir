@@ -5,7 +5,7 @@ CLANG_FORMAT=clang-format
 OPT=-O0
 DBG=-g3 -ggdb -DKFT_NOFORK
 EXTRAFLAGS=
-CFLAGS=-std=c11 -Wall -Wextra -pedantic -fPIC $(OPT) $(DBG) $(EXTRAFLAGS)
+CFLAGS=-std=c11 -Wall -Wextra -pedantic -Wno-overlength-strings -fPIC $(OPT) $(DBG) $(EXTRAFLAGS)
 INCLUDES=-Iheaders
 SANFLAGS=
 
