@@ -8,6 +8,7 @@ EXTRAFLAGS=
 CFLAGS=-std=c11 -Wall -Wextra -pedantic -Wno-overlength-strings -fPIC $(OPT) $(DBG) $(EXTRAFLAGS)
 INCLUDES=-Iheaders
 SANFLAGS=
+PLATFORM=
 
 ifeq ($(SANITIZE),undefined)
 SANFLAGS=-fsanitize=undefined -fno-sanitize-recover=all
