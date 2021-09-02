@@ -57,3 +57,4 @@ tmp
 vgcore.*
 compile_commands.json
 .vscode
+*.core
