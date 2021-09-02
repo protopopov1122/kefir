@@ -1,6 +1,9 @@
 name: Build & Test
 
-on: [push]
+on:
+  push:
+    branches-ignore:
+      - freebsd
 
 jobs:
   optimized_build_gcc:

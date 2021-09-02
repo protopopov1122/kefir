@@ -178,7 +178,7 @@ kefir_result_t kefir_json_output_array_end(struct kefir_json_output *json) {
 static kefir_result_t format_string(struct kefir_json_output *json, const char *string) {
     fprintf(json->file, "\"");
 
-    mbstate_t state;
+    mbstate_t state = {0};
     const char *end = string + strlen(string);
     size_t sz = 0;
     kefir_char32_t wide_char;

@@ -191,7 +191,7 @@ kefir_result_t amd64_string_literal(struct kefir_amd64_asmgen *asmgen, const cha
     asmgen->state.arguments++;
     fprintf(out, "`");
 
-    mbstate_t state;
+    mbstate_t state = {0};
     const char *end = literal + length;
     size_t sz = 0;
     kefir_char32_t wide_char;
