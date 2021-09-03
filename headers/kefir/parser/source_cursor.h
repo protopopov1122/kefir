@@ -3,6 +3,7 @@
 
 #include "kefir/parser/base.h"
 #include "kefir/core/basic-types.h"
+#include "kefir/core/source_location.h"
 #include <uchar.h>
 
 typedef struct kefir_lexer_source_cursor {
@@ -10,14 +11,17 @@ typedef struct kefir_lexer_source_cursor {
     kefir_size_t index;
     kefir_size_t length;
     mbstate_t mbstate;
+    struct kefir_source_location location;
 } kefir_lexer_source_cursor_t;
 
 typedef struct kefir_lexer_source_cursor_state {
     kefir_size_t index;
     mbstate_t mbstate;
+    struct kefir_source_location location;
 } kefir_lexer_source_cursor_state_t;
 
-kefir_result_t kefir_lexer_source_cursor_init(struct kefir_lexer_source_cursor *, const char *, kefir_size_t);
+kefir_result_t kefir_lexer_source_cursor_init(struct kefir_lexer_source_cursor *, const char *, kefir_size_t,
+                                              const char *);
 kefir_char32_t kefir_lexer_source_cursor_at(const struct kefir_lexer_source_cursor *, kefir_size_t);
 kefir_result_t kefir_lexer_source_cursor_next(struct kefir_lexer_source_cursor *, kefir_size_t);
 kefir_result_t kefir_lexer_source_cursor_save(const struct kefir_lexer_source_cursor *,

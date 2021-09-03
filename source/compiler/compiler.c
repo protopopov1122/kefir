@@ -87,7 +87,7 @@ kefir_result_t kefir_compiler_lex(struct kefir_mem *mem, struct kefir_compiler_c
 
     struct kefir_lexer_source_cursor source_cursor;
     struct kefir_lexer lexer;
-    REQUIRE_OK(kefir_lexer_source_cursor_init(&source_cursor, content, length));
+    REQUIRE_OK(kefir_lexer_source_cursor_init(&source_cursor, content, length, ""));
     REQUIRE_OK(kefir_lexer_init(mem, &lexer, &context->ast_global_context.symbols, &source_cursor,
                                 &context->profile->parser_integrals));
     kefir_result_t res = kefir_token_buffer_consume(mem, buffer, &lexer);

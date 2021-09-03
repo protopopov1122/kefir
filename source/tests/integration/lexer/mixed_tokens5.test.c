@@ -32,7 +32,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_parser_integral_types integral_types;
     struct kefir_lexer lexer;
     REQUIRE_OK(kefir_symbol_table_init(&symbols));
-    REQUIRE_OK(kefir_lexer_source_cursor_init(&cursor, CONTENT, sizeof(CONTENT)));
+    REQUIRE_OK(kefir_lexer_source_cursor_init(&cursor, CONTENT, sizeof(CONTENT), ""));
     REQUIRE_OK(kefir_parser_integral_types_default(&integral_types));
     REQUIRE_OK(kefir_lexer_init(mem, &lexer, &symbols, &cursor, &integral_types));
 

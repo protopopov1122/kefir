@@ -1,15 +1,37 @@
+/*
+    SPDX-License-Identifier: GPL-3.0
+
+    Copyright (C) 2020-2021  Jevgenijs Protopopovs
+
+    This file is part of Kefir project.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 3.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "kefir/parser/source_cursor.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
 kefir_result_t kefir_lexer_source_cursor_init(struct kefir_lexer_source_cursor *cursor, const char *content,
-                                              kefir_size_t length) {
+                                              kefir_size_t length, const char *source_id) {
     REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer source cursor"));
     REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid content"));
+    REQUIRE(source_id != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid source identifier"));
 
     *cursor = (struct kefir_lexer_source_cursor){0};
     cursor->content = content;
     cursor->length = length;
+    REQUIRE_OK(kefir_source_location_init(&cursor->location, source_id, 1, 1));
     return KEFIR_OK;
 }
 
@@ -40,8 +62,9 @@ kefir_char32_t kefir_lexer_source_cursor_at(const struct kefir_lexer_source_curs
 
 kefir_result_t kefir_lexer_source_cursor_next(struct kefir_lexer_source_cursor *cursor, kefir_size_t count) {
     REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer source cursor"));
-    size_t rc = mbrtoc32(NULL, cursor->content + cursor->index, cursor->length - cursor->index, &cursor->mbstate);
     while (count--) {
+        kefir_char32_t chr;
+        size_t rc = mbrtoc32(&chr, cursor->content + cursor->index, cursor->length - cursor->index, &cursor->mbstate);
         switch (rc) {
             case (size_t) -1:
             case (size_t) -2:
@@ -53,6 +76,12 @@ kefir_result_t kefir_lexer_source_cursor_next(struct kefir_lexer_source_cursor *
 
             default:
                 cursor->index += rc;
+                if (chr == U'\n') {
+                    cursor->location.column = 1;
+                    cursor->location.line++;
+                } else {
+                    cursor->location.column++;
+                }
                 break;
         }
     }
@@ -66,6 +95,7 @@ kefir_result_t kefir_lexer_source_cursor_save(const struct kefir_lexer_source_cu
 
     state->index = cursor->index;
     state->mbstate = cursor->mbstate;
+    state->location = cursor->location;
     return KEFIR_OK;
 }
 
@@ -76,6 +106,7 @@ kefir_result_t kefir_lexer_source_cursor_restore(struct kefir_lexer_source_curso
 
     cursor->index = state->index;
     cursor->mbstate = state->mbstate;
+    cursor->location = state->location;
     return KEFIR_OK;
 }
 
