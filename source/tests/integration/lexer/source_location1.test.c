@@ -25,15 +25,16 @@
 #include <stdio.h>
 
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
-    const char CONTENT[] = "'a'\f'b'      'c' 'abc' '\\'''\\\"'\v\v\r'\\\\'\n"
-                           "'\a' '\b' '\?'\t\t\t' ' '\\n' '\\v'     \t\t\n\t\n\r\v      '\\f''\\r''\\t'";
+    const char CONTENT[] = "2 + 2.0 - fn(\"Hello, world!\");\n"
+                           "    \tfor ( int i =0\t\t\t)\n\n"
+                           "\v\f\n\nfloat f = U\'a\'";
 
     struct kefir_symbol_table symbols;
     struct kefir_lexer_source_cursor cursor;
     struct kefir_parser_integral_types integral_types;
     struct kefir_lexer lexer;
     REQUIRE_OK(kefir_symbol_table_init(&symbols));
-    REQUIRE_OK(kefir_lexer_source_cursor_init(&cursor, CONTENT, sizeof(CONTENT), ""));
+    REQUIRE_OK(kefir_lexer_source_cursor_init(&cursor, CONTENT, sizeof(CONTENT), "source_file_identifier"));
     REQUIRE_OK(kefir_parser_integral_types_default(&integral_types));
     REQUIRE_OK(kefir_lexer_init(mem, &lexer, &symbols, &cursor, &integral_types));
 
@@ -45,7 +46,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     while (scan_tokens) {
         struct kefir_token token;
         REQUIRE_OK(kefir_lexer_next(mem, &lexer, &token));
-        REQUIRE_OK(kefir_token_format(&json, &token, false));
+        REQUIRE_OK(kefir_token_format(&json, &token, true));
         scan_tokens = token.klass != KEFIR_TOKEN_SENTINEL;
         REQUIRE_OK(kefir_token_free(mem, &token));
     }

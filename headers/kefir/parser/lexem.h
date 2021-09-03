@@ -25,6 +25,7 @@
 #include "kefir/core/mem.h"
 #include "kefir/core/basic-types.h"
 #include "kefir/core/symbol_table.h"
+#include "kefir/core/source_location.h"
 
 typedef enum kefir_token_class {
     KEFIR_TOKEN_SENTINEL,
@@ -191,6 +192,8 @@ typedef struct kefir_token {
         struct kefir_string_literal_token string_literal;
         kefir_punctuator_token_t punctuator;
     };
+
+    struct kefir_source_location source_location;
 } kefir_token_t;
 
 kefir_result_t kefir_token_new_sentinel(struct kefir_token *);

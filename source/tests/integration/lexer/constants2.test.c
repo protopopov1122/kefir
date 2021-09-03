@@ -47,7 +47,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     while (scan_tokens) {
         struct kefir_token token;
         REQUIRE_OK(kefir_lexer_next(mem, &lexer, &token));
-        REQUIRE_OK(kefir_token_format(&json, &token));
+        REQUIRE_OK(kefir_token_format(&json, &token, false));
         scan_tokens = token.klass != KEFIR_TOKEN_SENTINEL;
         REQUIRE_OK(kefir_token_free(mem, &token));
     }

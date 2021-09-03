@@ -4,6 +4,6 @@
 #include "kefir/parser/lexem.h"
 #include "kefir/util/json.h"
 
-kefir_result_t kefir_token_format(struct kefir_json_output *, const struct kefir_token *);
+kefir_result_t kefir_token_format(struct kefir_json_output *, const struct kefir_token *, kefir_bool_t);
 
 #endif

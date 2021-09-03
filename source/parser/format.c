@@ -559,7 +559,8 @@ kefir_result_t format_string_literal(struct kefir_json_output *json, const struc
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_token_format(struct kefir_json_output *json, const struct kefir_token *token) {
+kefir_result_t kefir_token_format(struct kefir_json_output *json, const struct kefir_token *token,
+                                  kefir_bool_t display_source_location) {
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid json output"));
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid token"));
 
@@ -595,6 +596,22 @@ kefir_result_t kefir_token_format(struct kefir_json_output *json, const struct k
             REQUIRE_OK(kefir_json_output_string(json, "constant"));
             REQUIRE_OK(format_constant(json, &token->constant));
             break;
+    }
+
+    if (display_source_location) {
+        REQUIRE_OK(kefir_json_output_object_key(json, "source_location"));
+        if (kefir_source_location_get(&token->source_location, NULL, NULL, NULL)) {
+            REQUIRE_OK(kefir_json_output_object_begin(json));
+            REQUIRE_OK(kefir_json_output_object_key(json, "source"));
+            REQUIRE_OK(kefir_json_output_string(json, token->source_location.source));
+            REQUIRE_OK(kefir_json_output_object_key(json, "line"));
+            REQUIRE_OK(kefir_json_output_uinteger(json, token->source_location.line));
+            REQUIRE_OK(kefir_json_output_object_key(json, "column"));
+            REQUIRE_OK(kefir_json_output_uinteger(json, token->source_location.column));
+            REQUIRE_OK(kefir_json_output_object_end(json));
+        } else {
+            REQUIRE_OK(kefir_json_output_null(json));
+        }
     }
     REQUIRE_OK(kefir_json_output_object_end(json));
     return KEFIR_OK;

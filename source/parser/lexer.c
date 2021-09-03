@@ -74,17 +74,23 @@ kefir_result_t lexer_next_impl(struct kefir_mem *mem, struct kefir_lexer *lexer,
 
     ASSIGN_DECL_CAST(struct kefir_token *, token, payload);
     REQUIRE_OK(kefir_lexer_cursor_skip_whitespaces(lexer->cursor));
+    struct kefir_source_location source_location = lexer->cursor->location;
     if (kefir_lexer_source_cursor_at(lexer->cursor, 0) == U'\0') {
         REQUIRE_OK(kefir_token_new_sentinel(token));
     } else {
         kefir_result_t res = kefir_lexer_match_constant(mem, lexer, token);
-        REQUIRE(res == KEFIR_NO_MATCH, res);
-        res = kefir_lexer_match_string_literal(mem, lexer, token);
-        REQUIRE(res == KEFIR_NO_MATCH, res);
-        res = kefir_lexer_match_identifier_or_keyword(mem, lexer, token);
-        REQUIRE(res == KEFIR_NO_MATCH, res);
-        REQUIRE_OK(kefir_lexer_match_punctuator(mem, lexer, token));
+        if (res == KEFIR_NO_MATCH) {
+            res = kefir_lexer_match_string_literal(mem, lexer, token);
+        }
+        if (res == KEFIR_NO_MATCH) {
+            res = kefir_lexer_match_identifier_or_keyword(mem, lexer, token);
+        }
+        if (res == KEFIR_NO_MATCH) {
+            res = kefir_lexer_match_punctuator(mem, lexer, token);
+        }
+        REQUIRE_OK(res);
     }
+    token->source_location = source_location;
     return KEFIR_OK;
 }
 

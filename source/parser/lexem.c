@@ -25,12 +25,14 @@
 
 kefir_result_t kefir_token_new_sentinel(struct kefir_token *token) {
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+    REQUIRE_OK(kefir_source_location_empty(&token->source_location));
     token->klass = KEFIR_TOKEN_SENTINEL;
     return KEFIR_OK;
 }
 
 kefir_result_t kefir_token_new_keyword(kefir_keyword_token_t keyword, struct kefir_token *token) {
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+    REQUIRE_OK(kefir_source_location_empty(&token->source_location));
     token->klass = KEFIR_TOKEN_KEYWORD;
     token->keyword = keyword;
     return KEFIR_OK;
@@ -44,6 +46,7 @@ kefir_result_t kefir_token_new_identifier(struct kefir_mem *mem, struct kefir_sy
     REQUIRE((mem == NULL && symbols == NULL) || (mem != NULL && symbols != NULL),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
                             "Expected both memory allocator and symbol table to be either valid or not"));
+    REQUIRE_OK(kefir_source_location_empty(&token->source_location));
 
     if (symbols != NULL) {
         identifier = kefir_symbol_table_insert(mem, symbols, identifier, NULL);
@@ -57,6 +60,7 @@ kefir_result_t kefir_token_new_identifier(struct kefir_mem *mem, struct kefir_sy
 
 kefir_result_t kefir_token_new_constant_int(kefir_int64_t value, struct kefir_token *token) {
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+    REQUIRE_OK(kefir_source_location_empty(&token->source_location));
     token->klass = KEFIR_TOKEN_CONSTANT;
     token->constant.type = KEFIR_CONSTANT_TOKEN_INTEGER;
     token->constant.integer = value;
@@ -65,6 +69,7 @@ kefir_result_t kefir_token_new_constant_int(kefir_int64_t value, struct kefir_to
 
 kefir_result_t kefir_token_new_constant_uint(kefir_uint64_t value, struct kefir_token *token) {
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+    REQUIRE_OK(kefir_source_location_empty(&token->source_location));
     token->klass = KEFIR_TOKEN_CONSTANT;
     token->constant.type = KEFIR_CONSTANT_TOKEN_UNSIGNED_INTEGER;
     token->constant.uinteger = value;
@@ -73,6 +78,7 @@ kefir_result_t kefir_token_new_constant_uint(kefir_uint64_t value, struct kefir_
 
 kefir_result_t kefir_token_new_constant_long(kefir_int64_t value, struct kefir_token *token) {
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+    REQUIRE_OK(kefir_source_location_empty(&token->source_location));
     token->klass = KEFIR_TOKEN_CONSTANT;
     token->constant.type = KEFIR_CONSTANT_TOKEN_LONG_INTEGER;
     token->constant.integer = value;
@@ -89,6 +95,7 @@ kefir_result_t kefir_token_new_constant_ulong(kefir_uint64_t value, struct kefir
 
 kefir_result_t kefir_token_new_constant_long_long(kefir_int64_t value, struct kefir_token *token) {
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+    REQUIRE_OK(kefir_source_location_empty(&token->source_location));
     token->klass = KEFIR_TOKEN_CONSTANT;
     token->constant.type = KEFIR_CONSTANT_TOKEN_LONG_LONG_INTEGER;
     token->constant.integer = value;
@@ -97,6 +104,7 @@ kefir_result_t kefir_token_new_constant_long_long(kefir_int64_t value, struct ke
 
 kefir_result_t kefir_token_new_constant_ulong_long(kefir_uint64_t value, struct kefir_token *token) {
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+    REQUIRE_OK(kefir_source_location_empty(&token->source_location));
     token->klass = KEFIR_TOKEN_CONSTANT;
     token->constant.type = KEFIR_CONSTANT_TOKEN_UNSIGNED_LONG_LONG_INTEGER;
     token->constant.integer = value;
@@ -105,6 +113,7 @@ kefir_result_t kefir_token_new_constant_ulong_long(kefir_uint64_t value, struct 
 
 kefir_result_t kefir_token_new_constant_char(kefir_int_t value, struct kefir_token *token) {
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+    REQUIRE_OK(kefir_source_location_empty(&token->source_location));
     token->klass = KEFIR_TOKEN_CONSTANT;
     token->constant.type = KEFIR_CONSTANT_TOKEN_CHAR;
     token->constant.character = value;
@@ -113,6 +122,7 @@ kefir_result_t kefir_token_new_constant_char(kefir_int_t value, struct kefir_tok
 
 kefir_result_t kefir_token_new_constant_wide_char(kefir_wchar_t value, struct kefir_token *token) {
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+    REQUIRE_OK(kefir_source_location_empty(&token->source_location));
     token->klass = KEFIR_TOKEN_CONSTANT;
     token->constant.type = KEFIR_CONSTANT_TOKEN_WIDE_CHAR;
     token->constant.wide_char = value;
@@ -121,6 +131,7 @@ kefir_result_t kefir_token_new_constant_wide_char(kefir_wchar_t value, struct ke
 
 kefir_result_t kefir_token_new_constant_unicode16_char(kefir_char16_t value, struct kefir_token *token) {
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+    REQUIRE_OK(kefir_source_location_empty(&token->source_location));
     token->klass = KEFIR_TOKEN_CONSTANT;
     token->constant.type = KEFIR_CONSTANT_TOKEN_UNICODE16_CHAR;
     token->constant.unicode16_char = value;
@@ -129,6 +140,7 @@ kefir_result_t kefir_token_new_constant_unicode16_char(kefir_char16_t value, str
 
 kefir_result_t kefir_token_new_constant_unicode32_char(kefir_char32_t value, struct kefir_token *token) {
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+    REQUIRE_OK(kefir_source_location_empty(&token->source_location));
     token->klass = KEFIR_TOKEN_CONSTANT;
     token->constant.type = KEFIR_CONSTANT_TOKEN_UNICODE32_CHAR;
     token->constant.unicode32_char = value;
@@ -137,6 +149,7 @@ kefir_result_t kefir_token_new_constant_unicode32_char(kefir_char32_t value, str
 
 kefir_result_t kefir_token_new_constant_float(kefir_float32_t value, struct kefir_token *token) {
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+    REQUIRE_OK(kefir_source_location_empty(&token->source_location));
     token->klass = KEFIR_TOKEN_CONSTANT;
     token->constant.type = KEFIR_CONSTANT_TOKEN_FLOAT;
     token->constant.float32 = value;
@@ -145,6 +158,7 @@ kefir_result_t kefir_token_new_constant_float(kefir_float32_t value, struct kefi
 
 kefir_result_t kefir_token_new_constant_double(kefir_float64_t value, struct kefir_token *token) {
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+    REQUIRE_OK(kefir_source_location_empty(&token->source_location));
     token->klass = KEFIR_TOKEN_CONSTANT;
     token->constant.type = KEFIR_CONSTANT_TOKEN_DOUBLE;
     token->constant.float64 = value;
@@ -156,6 +170,7 @@ kefir_result_t kefir_token_new_string_literal_multibyte(struct kefir_mem *mem, c
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string literal"));
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+    REQUIRE_OK(kefir_source_location_empty(&token->source_location));
 
     char *dest_content = KEFIR_MALLOC(mem, length);
     REQUIRE(dest_content != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate string literal"));
@@ -172,6 +187,7 @@ kefir_result_t kefir_token_new_string_literal_unicode8(struct kefir_mem *mem, co
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string literal"));
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+    REQUIRE_OK(kefir_source_location_empty(&token->source_location));
 
     char *dest_content = KEFIR_MALLOC(mem, length);
     REQUIRE(dest_content != NULL,
@@ -189,6 +205,7 @@ kefir_result_t kefir_token_new_string_literal_unicode16(struct kefir_mem *mem, c
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string literal"));
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+    REQUIRE_OK(kefir_source_location_empty(&token->source_location));
 
     kefir_size_t sz = sizeof(kefir_char16_t) * length;
     char *dest_content = KEFIR_MALLOC(mem, sz);
@@ -207,6 +224,7 @@ kefir_result_t kefir_token_new_string_literal_unicode32(struct kefir_mem *mem, c
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string literal"));
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+    REQUIRE_OK(kefir_source_location_empty(&token->source_location));
 
     kefir_size_t sz = sizeof(kefir_char32_t) * length;
     char *dest_content = KEFIR_MALLOC(mem, sz);
@@ -225,6 +243,7 @@ kefir_result_t kefir_token_new_string_literal_wide(struct kefir_mem *mem, const 
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string literal"));
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+    REQUIRE_OK(kefir_source_location_empty(&token->source_location));
 
     kefir_size_t sz = sizeof(kefir_wchar_t) * length;
     char *dest_content = KEFIR_MALLOC(mem, sz);
@@ -239,6 +258,7 @@ kefir_result_t kefir_token_new_string_literal_wide(struct kefir_mem *mem, const 
 
 kefir_result_t kefir_token_new_punctuator(kefir_punctuator_token_t punctuator, struct kefir_token *token) {
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to token"));
+    REQUIRE_OK(kefir_source_location_empty(&token->source_location));
     token->klass = KEFIR_TOKEN_PUNCTUATOR;
     token->punctuator = punctuator;
     return KEFIR_OK;
