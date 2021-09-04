@@ -35,7 +35,8 @@ void kefir_clear_error() {
     next_error_index = 0;
 }
 
-kefir_result_t kefir_set_error(kefir_result_t code, const char *message, const char *file, unsigned int line) {
+kefir_result_t kefir_set_error(kefir_result_t code, const char *message, const char *file, unsigned int line,
+                               struct kefir_error **error_ptr) {
     if (next_error_index == KEFIR_ERROR_STACK_SIZE || kefir_result_get_category(code) == KEFIR_RESULT_CATEGORY_NORMAL) {
         return code;
     }
@@ -57,5 +58,8 @@ kefir_result_t kefir_set_error(kefir_result_t code, const char *message, const c
         current_error->prev_error = NULL;
     }
     current_error->error_overflow = ++next_error_index == KEFIR_ERROR_STACK_SIZE;
+    if (error_ptr != NULL) {
+        *error_ptr = current_error;
+    }
     return code;
 }
