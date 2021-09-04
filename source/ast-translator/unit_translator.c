@@ -27,7 +27,7 @@ kefir_result_t kefir_ast_translate_unit(struct kefir_mem *mem, const struct kefi
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(node != NULL && node->properties.category == KEFIR_AST_NODE_CATEGORY_TRANSLATION_UNIT &&
                 node->klass->type == KEFIR_AST_TRANSLATION_UNIT,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translation unit"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translation unit"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator context"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_translation_unit *, unit, node->self);
@@ -46,7 +46,7 @@ kefir_result_t kefir_ast_translate_unit(struct kefir_mem *mem, const struct kefi
                 break;
 
             default:
-                return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected external definition node category");
+                return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected external definition node category");
         }
     }
     return KEFIR_OK;

@@ -249,7 +249,7 @@ static kefir_result_t translate_function_impl(struct kefir_mem *mem, struct kefi
                    item->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR) {
             REQUIRE_OK(kefir_ast_translate_declaration(mem, item, builder, context));
         } else {
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected compound statement item");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected compound statement item");
         }
     }
 
@@ -262,10 +262,10 @@ kefir_result_t kefir_ast_translate_function(struct kefir_mem *mem, const struct 
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node base"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator context"));
     REQUIRE(context->global_scope_layout != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator global scope layout"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator global scope layout"));
     REQUIRE(node->properties.category == KEFIR_AST_NODE_CATEGORY_FUNCTION_DEFINITION &&
                 node->klass->type == KEFIR_AST_FUNCTION_DEFINITION,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected function definition AST node"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected function definition AST node"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_function_definition *, function, node->self);
 

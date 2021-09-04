@@ -83,6 +83,6 @@ kefir_result_t kefir_ast_translate_constant_node(struct kefir_mem *mem, struct k
             return KEFIR_IRBUILDER_BLOCK_APPENDF64(builder, KEFIR_IROPCODE_PUSHF64, node->value.float64);
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected AST constant type");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected AST constant type");
     }
 }

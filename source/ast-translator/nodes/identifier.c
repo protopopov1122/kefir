@@ -27,6 +27,7 @@
 #include "kefir/core/error.h"
 #include "kefir/ir/module.h"
 #include "kefir/ast-translator/scope/scoped_identifier.h"
+#include "kefir/core/lang_error.h"
 
 static kefir_result_t translate_object_identifier(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
                                                   struct kefir_irbuilder_block *builder, const char *identifier,
@@ -41,7 +42,7 @@ static kefir_result_t translate_enum_constant(struct kefir_irbuilder_block *buil
                                               const struct kefir_ast_type_traits *type_traits,
                                               const struct kefir_ast_scoped_identifier *scoped_identifier) {
     REQUIRE(KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(scoped_identifier->enum_constant.type),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Enum constant cannot have non-integral type"));
+            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Enum constant cannot have non-integral type"));
 
     kefir_bool_t signedness;
     REQUIRE_OK(kefir_ast_type_is_signed(type_traits, scoped_identifier->enum_constant.type, &signedness));
@@ -87,7 +88,7 @@ kefir_result_t kefir_ast_translate_identifier_node(struct kefir_mem *mem, struct
 
         case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_TAG:
         case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot translate type information");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Cannot translate type information");
 
         case KEFIR_AST_SCOPE_IDENTIFIER_LABEL:
             return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "AST label identifiers are not implemented yet");

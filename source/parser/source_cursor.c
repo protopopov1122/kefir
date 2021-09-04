@@ -69,7 +69,7 @@ kefir_result_t kefir_lexer_source_cursor_next(struct kefir_lexer_source_cursor *
             case (size_t) -1:
             case (size_t) -2:
             case (size_t) -3:
-                return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Invalid lexer source cursor input");
+                return KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Invalid lexer source cursor input");
 
             case 0:
                 return KEFIR_OK;

@@ -91,7 +91,7 @@ static kefir_result_t translate_externals(struct kefir_mem *mem, const struct ke
             } break;
 
             default:
-                return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to translator global scoped identifier");
+                return KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Unable to translate global scoped identifier");
         }
     }
     return KEFIR_OK;
@@ -105,7 +105,7 @@ static kefir_result_t get_static_data(struct kefir_mem *mem, struct kefir_ir_mod
         REQUIRE(*data != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR data"));
     } else {
         REQUIRE((*data)->type_id == type_id,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Provided IR type id does not match existing"));
+                KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Provided IR type id does not match existing"));
     }
     return KEFIR_OK;
 }
@@ -137,7 +137,7 @@ static kefir_result_t translate_static(struct kefir_mem *mem, const struct kefir
                 break;
 
             default:
-                return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to translator global scoped identifier");
+                return KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Unable to translate global scoped identifier");
         }
     }
 
@@ -190,7 +190,7 @@ static kefir_result_t translate_local_static(struct kefir_mem *mem, const struct
                 break;
 
             default:
-                return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to translatу local scope identifier");
+                return KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Unable to translate local scope identifier");
         }
     }
     return KEFIR_OK;

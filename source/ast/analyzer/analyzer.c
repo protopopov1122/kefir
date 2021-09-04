@@ -35,15 +35,15 @@ static kefir_result_t visit_non_expression(const struct kefir_ast_visitor *visit
     UNUSED(visitor);
     UNUSED(base);
     UNUSED(payload);
-    return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to assign type to non-expression AST node");
+    return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unimplemented AST node analyzer");
 }
 
-#define VISITOR(id, type)                                                                                        \
-    static kefir_result_t visit_##id(const struct kefir_ast_visitor *visitor, const type *node, void *payload) { \
-        UNUSED(visitor);                                                                                         \
-        REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST analyzer payload"));   \
-        ASSIGN_DECL_CAST(struct assign_param *, param, payload);                                                 \
-        return kefir_ast_analyze_##id##_node(param->mem, param->context, node, param->base);                     \
+#define VISITOR(id, type)                                                                                          \
+    static kefir_result_t visit_##id(const struct kefir_ast_visitor *visitor, const type *node, void *payload) {   \
+        UNUSED(visitor);                                                                                           \
+        REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST analyzer payload")); \
+        ASSIGN_DECL_CAST(struct assign_param *, param, payload);                                                   \
+        return kefir_ast_analyze_##id##_node(param->mem, param->context, node, param->base);                       \
     }
 
 VISITOR(constant, struct kefir_ast_constant)

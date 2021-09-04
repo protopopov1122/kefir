@@ -26,6 +26,7 @@
 #include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/core/lang_error.h"
 
 kefir_result_t kefir_ast_analyze_compound_statement_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                          const struct kefir_ast_compound_statement *node,
@@ -46,8 +47,8 @@ kefir_result_t kefir_ast_analyze_compound_statement_node(struct kefir_mem *mem, 
         REQUIRE(item->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT ||
                     item->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION ||
                     item->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
-                                "Compound statement items shall be either statements or declarations"));
+                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                     "Compound statement items shall be either statements or declarations"));
     }
     REQUIRE_OK(context->pop_block(mem, context));
     return KEFIR_OK;

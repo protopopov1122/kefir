@@ -26,6 +26,7 @@
 #include "kefir/ast-translator/util.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/core/lang_error.h"
 
 static kefir_result_t translate_arithmetic_unary(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
                                                  struct kefir_irbuilder_block *builder,
@@ -62,9 +63,9 @@ static kefir_result_t translate_arithmetic_unary(struct kefir_mem *mem, struct k
             break;
 
         default:
-            REQUIRE(
-                KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(normalized_type),
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected integral type as operand of unary arithmetic operator"));
+            REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(normalized_type),
+                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                         "Expected integral type as operand of unary arithmetic operator"));
             switch (node->type) {
                 case KEFIR_AST_OPERATION_PLUS:
                     break;
@@ -158,7 +159,7 @@ static kefir_result_t incdec_impl(struct kefir_mem *mem, struct kefir_ast_transl
                 mem, &context->type_cache.resolver, context->environment, context->module,
                 node->base.properties.type->referenced_type, 0, &cached_type));
             REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
-                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
+                    KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected cached type to be an object"));
 
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHI64, diff));
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(
@@ -177,7 +178,7 @@ static kefir_result_t incdec_impl(struct kefir_mem *mem, struct kefir_ast_transl
 
         default:
             REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(normalized_type),
-                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected value of an integral type"));
+                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected value of an integral type"));
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IADD1, diff));
             break;
     }
@@ -264,7 +265,7 @@ kefir_result_t kefir_ast_translate_unary_operation_node(struct kefir_mem *mem,
             break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected AST unary operation");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected AST unary operation");
     }
     return KEFIR_OK;
 }

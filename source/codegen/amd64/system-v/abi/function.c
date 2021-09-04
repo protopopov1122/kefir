@@ -178,7 +178,7 @@ static kefir_result_t calculate_frame(struct kefir_mem *mem, struct kefir_codege
 
 static kefir_result_t function_alloc_return(struct kefir_mem *mem, struct kefir_amd64_sysv_function_decl *sysv_decl) {
     REQUIRE(kefir_ir_type_nodes(sysv_decl->decl->result) <= 1,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected IR function to have return type count less than 2"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected IR function to have return type count less than 2"));
     REQUIRE_OK(kefir_amd64_sysv_type_layout(sysv_decl->decl->result, mem, &sysv_decl->returns.layout));
     kefir_result_t res = kefir_amd64_sysv_parameter_classify(mem, sysv_decl->decl->result, &sysv_decl->returns.layout,
                                                              &sysv_decl->returns.allocation);

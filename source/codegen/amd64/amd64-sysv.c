@@ -222,7 +222,7 @@ static kefir_result_t cg_translate_data(struct kefir_mem *mem, struct kefir_code
 static kefir_result_t cg_translate(struct kefir_mem *mem, struct kefir_codegen *cg_iface,
                                    const struct kefir_ir_module *module) {
     REQUIRE(cg_iface != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid code generator interface"));
-    REQUIRE(cg_iface->data != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 code generator"));
+    REQUIRE(cg_iface->data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 code generator"));
     struct kefir_codegen_amd64 *codegen = (struct kefir_codegen_amd64 *) cg_iface->data;
     struct kefir_codegen_amd64_sysv_module sysv_module;
     REQUIRE_OK(kefir_codegen_amd64_sysv_module_alloc(mem, &sysv_module, module));
@@ -241,7 +241,7 @@ static kefir_result_t cg_translate(struct kefir_mem *mem, struct kefir_codegen *
 
 static kefir_result_t cg_close(struct kefir_codegen *cg) {
     REQUIRE(cg != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid code generator interface"));
-    REQUIRE(cg->data != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 code generator"));
+    REQUIRE(cg->data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 code generator"));
     struct kefir_codegen_amd64 *codegen = (struct kefir_codegen_amd64 *) cg->data;
     KEFIR_AMD64_ASMGEN_CLOSE(&codegen->asmgen);
     return KEFIR_OK;

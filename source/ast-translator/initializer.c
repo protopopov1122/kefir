@@ -41,7 +41,7 @@ static kefir_result_t zero_type(struct kefir_mem *mem, struct kefir_ast_translat
     REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_cache.resolver, context->environment,
                                                                context->module, type, 0, &cached_type));
     REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected cached type to be an object"));
 
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 0));
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_BZERO, cached_type->object.ir_type_id,
@@ -182,7 +182,7 @@ kefir_result_t kefir_ast_translate_initializer(struct kefir_mem *mem, struct kef
     REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_cache.resolver, context->environment,
                                                                context->module, type, 0, &param.cached_type));
     REQUIRE(param.cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected cached type to be an object"));
 
     struct kefir_ast_initializer_traversal initializer_traversal;
     KEFIR_AST_INITIALIZER_TRAVERSAL_INIT(&initializer_traversal);

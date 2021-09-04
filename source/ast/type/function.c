@@ -34,7 +34,7 @@ kefir_result_t kefir_ast_type_function_get_parameter(const struct kefir_ast_func
                                                      const struct kefir_ast_function_type_parameter **parameter) {
     REQUIRE(function_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST finction type"));
     REQUIRE(parameter != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST function type parameter pointer"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST function type parameter pointer"));
     struct kefir_list_entry *entry = kefir_list_at(&function_type->parameters, index);
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Expected valid AST function type parameter index"));
     *parameter = (const struct kefir_ast_function_type_parameter *) entry->value;
@@ -56,9 +56,9 @@ kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem, struct k
 
         case KEFIR_AST_FUNCTION_TYPE_PARAM_IDENTIFIERS:
             REQUIRE(identifier != NULL && strlen(identifier) > 0,
-                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST function parameter identifier"));
+                    KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST function parameter identifier"));
             REQUIRE(type == NULL,
-                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected empty AST function parameter identifier type"));
+                    KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected empty AST function parameter identifier type"));
             break;
 
         case KEFIR_AST_FUNCTION_TYPE_PARAM_EMPTY:
@@ -67,14 +67,14 @@ kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem, struct k
             } else if (identifier != NULL && strlen(identifier) > 0) {
                 function_type->mode = KEFIR_AST_FUNCTION_TYPE_PARAM_IDENTIFIERS;
             } else {
-                return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
+                return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER,
                                        "Expected either valid AST function parameter type or identifier");
             }
             break;
     }
     if (identifier != NULL && strlen(identifier) > 0 &&
         kefir_hashtree_has(&function_type->parameter_index, (kefir_hashtree_key_t) identifier)) {
-        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Duplicate function parameter identifier");
+        return KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Duplicate function parameter identifier");
     }
     struct kefir_ast_function_type_parameter *param =
         KEFIR_MALLOC(mem, sizeof(struct kefir_ast_function_type_parameter));

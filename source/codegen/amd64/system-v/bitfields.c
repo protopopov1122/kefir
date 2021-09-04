@@ -78,7 +78,7 @@ static kefir_result_t amd64_sysv_bitfield_props(kefir_ir_typecode_t typecode, ke
             break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected bit-field type");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected bit-field type");
     }
     return KEFIR_OK;
 }
@@ -132,7 +132,7 @@ static kefir_result_t amd64_sysv_bitfield_next(struct kefir_mem *mem, struct kef
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(allocator != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR platform bitfield allocator"));
-    REQUIRE(bitwidth != 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-zero bit-field width"));
+    REQUIRE(bitwidth != 0, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-zero bit-field width"));
     REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type entry"));
     REQUIRE(bitfield != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR bitfield"));
     ASSIGN_DECL_CAST(struct bitfield_allocator_payload *, payload, allocator->payload);
@@ -182,10 +182,10 @@ static kefir_result_t amd64_sysv_bitfield_next_colocated(struct kefir_mem *mem,
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(allocator != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR platform bitfield allocator"));
-    REQUIRE(bitwidth != 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-zero bit-field width"));
+    REQUIRE(bitwidth != 0, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-zero bit-field width"));
     REQUIRE(bitfield != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR bitfield"));
     ASSIGN_DECL_CAST(struct bitfield_allocator_payload *, payload, allocator->payload);
-    REQUIRE(payload->has_last_bitfield, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to colocate a bit-field"));
+    REQUIRE(payload->has_last_bitfield, KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Unable to colocate a bit-field"));
 
     kefir_size_t colocated_bit_size = 0;
     kefir_size_t colocated_bit_alignment = 0;

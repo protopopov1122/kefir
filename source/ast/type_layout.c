@@ -22,6 +22,7 @@
 #include "kefir/ast/type_layout.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/core/lang_error.h"
 
 static kefir_result_t on_structure_member_remove(struct kefir_mem *mem, struct kefir_list *list,
                                                  struct kefir_list_entry *entry, void *payload) {
@@ -137,11 +138,11 @@ kefir_result_t kefir_ast_type_layout_insert_structure_member(struct kefir_mem *m
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(root_layout != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid root AST type layout"));
     REQUIRE(identifier != NULL && strlen(identifier) > 0,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid member AST type layout"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid member AST type layout"));
     REQUIRE(member != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid member AST type layout"));
     REQUIRE(root_layout->type != NULL &&
                 (root_layout->type->tag == KEFIR_AST_TYPE_STRUCTURE || root_layout->type->tag == KEFIR_AST_TYPE_UNION),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Root AST type layout should have struct/union type"));
+            KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Root AST type layout should have struct/union type"));
 
     struct kefir_ast_type_layout_structure_member *struct_member =
         KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type_layout_structure_member));
@@ -175,7 +176,7 @@ kefir_result_t kefir_ast_type_layout_add_structure_anonymous_member(struct kefir
     REQUIRE(member != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid member AST type layout"));
     REQUIRE(root_layout->type != NULL &&
                 (root_layout->type->tag == KEFIR_AST_TYPE_STRUCTURE || root_layout->type->tag == KEFIR_AST_TYPE_UNION),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Root AST type layout should have struct/union type"));
+            KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Root AST type layout should have struct/union type"));
 
     struct kefir_ast_type_layout_structure_member *struct_member =
         KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type_layout_structure_member));
@@ -200,7 +201,8 @@ static kefir_result_t resolve_member(struct kefir_ast_type_layout *current_layou
                                      kefir_ast_type_layout_resolver_callback_t callback, void *payload) {
     REQUIRE(current_layout->type != NULL && (current_layout->type->tag == KEFIR_AST_TYPE_STRUCTURE ||
                                              current_layout->type->tag == KEFIR_AST_TYPE_UNION),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected struct/union type to correspond to member designator"));
+            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                 "Expected struct/union type to correspond to member designator"));
 
     struct kefir_hashtree_node *node = NULL;
     kefir_result_t res = kefir_hashtree_at(&current_layout->structure_layout.named_members,
@@ -232,7 +234,7 @@ static kefir_result_t resolve_subscript(struct kefir_ast_type_layout *current_la
                                         struct kefir_ast_type_layout **layout,
                                         kefir_ast_type_layout_resolver_callback_t callback, void *payload) {
     REQUIRE(current_layout->type != NULL && current_layout->type->tag == KEFIR_AST_TYPE_ARRAY,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected array type to resolve subscript"));
+            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected array type to resolve subscript"));
     struct kefir_ast_type_layout *next_layout = current_layout->array_layout.element_type;
     *layout = next_layout;
     if (callback != NULL) {
@@ -283,7 +285,7 @@ static kefir_result_t add_to_offset(struct kefir_ast_type_layout *layout, const 
     } else if (designator->type == KEFIR_AST_DESIGNATOR_SUBSCRIPT) {
         *offset += layout->properties.relative_offset + designator->index * layout->properties.size;
     } else {
-        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected designator type");
+        return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected designator type");
     }
     return KEFIR_OK;
 }

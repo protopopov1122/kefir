@@ -54,7 +54,7 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_alloc(struct kefir_amd64_sysv_abi_qwo
                                                  kefir_size_t qword_count) {
     REQUIRE(qwords != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid QWord vector"));
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
-    REQUIRE(qword_count > 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-zero QWord count"));
+    REQUIRE(qword_count > 0, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-zero QWord count"));
     REQUIRE_OK(kefir_vector_alloc(mem, sizeof(struct kefir_amd64_sysv_abi_qword), qword_count, &qwords->qwords));
     kefir_vector_extend(&qwords->qwords, qword_count);
     for (kefir_size_t i = 0; i < qword_count; i++) {
@@ -116,7 +116,7 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_next(struct kefir_amd64_sysv_abi_qwor
                                                 kefir_amd64_sysv_data_class_t dataclass, kefir_size_t size,
                                                 kefir_size_t alignment, struct kefir_amd64_sysv_abi_qword_ref *ref) {
     REQUIRE(qwords != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid QWord vector"));
-    REQUIRE(size > 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-zero data size"));
+    REQUIRE(size > 0, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-zero data size"));
     REQUIRE(ref != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid QWord reference"));
     struct kefir_amd64_sysv_abi_qword *first = NULL;
     while (size > 0) {
@@ -142,7 +142,7 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_reset_class(struct kefir_amd64_sysv_a
     REQUIRE(qwords != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid QWord vector"));
     const kefir_size_t length = kefir_vector_length(&qwords->qwords);
     REQUIRE(begin < length, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Index exceeds QWord vector length"));
-    REQUIRE(count > 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-zero number of QWords"));
+    REQUIRE(count > 0, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-zero number of QWords"));
     for (kefir_size_t i = begin; i < MIN(length, begin + count); i++) {
         ASSIGN_DECL_CAST(struct kefir_amd64_sysv_abi_qword *, qword, kefir_vector_at(&qwords->qwords, i));
         qword->klass = dataclass;

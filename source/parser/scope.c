@@ -159,7 +159,7 @@ kefir_result_t kefir_parser_scope_pop_block(struct kefir_mem *mem, struct kefir_
     REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser block scope"));
 
     REQUIRE(kefir_list_length(&scope->block_scopes) > 1,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot pop the base block of parser scope"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot pop the base block of parser scope"));
     REQUIRE_OK(kefir_list_pop(mem, &scope->block_scopes, kefir_list_tail(&scope->block_scopes)));
     return KEFIR_OK;
 }

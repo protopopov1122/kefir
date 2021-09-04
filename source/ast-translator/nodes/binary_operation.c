@@ -77,7 +77,7 @@ static kefir_result_t translate_addition(struct kefir_mem *mem, struct kefir_ast
             mem, &context->type_cache.resolver, context->environment, context->module,
             result_normalized_type->referenced_type, 0, &cached_type));
         REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
+                KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected cached type to be an object"));
 
         if (arg1_normalized_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
             REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg1, builder, context));
@@ -140,7 +140,7 @@ static kefir_result_t translate_subtraction(struct kefir_mem *mem, struct kefir_
             mem, &context->type_cache.resolver, context->environment, context->module,
             arg1_normalized_type->referenced_type, 0, &cached_type));
         REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
+                KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected cached type to be an object"));
 
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_INEG, 0));
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_ELEMENTPTR, cached_type->object.ir_type_id,
@@ -496,7 +496,7 @@ kefir_result_t kefir_ast_translate_binary_operation_node(struct kefir_mem *mem,
             break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected AST binary operation type");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected AST binary operation type");
     }
     return KEFIR_OK;
 }

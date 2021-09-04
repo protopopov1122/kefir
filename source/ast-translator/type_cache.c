@@ -147,16 +147,16 @@ kefir_result_t kefir_ast_translator_aligned_type_layout_insert(struct kefir_mem 
     switch (cached_type->klass) {
         case KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE: {
             REQUIRE(cached_type->object.layout->alignment == cache->alignment,
-                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Provided layout alignment does not correspond to cache"));
+                    KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Provided layout alignment does not correspond to cache"));
 
             REQUIRE_OK(kefir_hashtree_insert(mem, &cache->cache, (kefir_hashtree_key_t) cached_type->type,
                                              (kefir_hashtree_value_t) cached_type));
         } break;
 
         case KEFIR_AST_TRANSLATOR_RESOLVED_FUNCTION_TYPE: {
-            REQUIRE(
-                cache->alignment == 0,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Function type cannot be inserted into non-zero aligned cache"));
+            REQUIRE(cache->alignment == 0,
+                    KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER,
+                                    "Function type cannot be inserted into non-zero aligned cache"));
 
             REQUIRE_OK(kefir_hashtree_insert(mem, &cache->cache, (kefir_hashtree_key_t) cached_type->type,
                                              (kefir_hashtree_value_t) cached_type));
@@ -173,7 +173,7 @@ static kefir_result_t cache_on_remove(struct kefir_mem *mem, struct kefir_hashtr
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     ASSIGN_DECL_CAST(struct kefir_ast_translator_aligned_type_cache *, aligned_cache, value);
     REQUIRE(aligned_cache != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator type aligned cache"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator type aligned cache"));
     REQUIRE_OK(kefir_ast_translator_aligned_type_cache_free(mem, aligned_cache));
     KEFIR_FREE(mem, aligned_cache);
     return KEFIR_OK;
@@ -185,7 +185,7 @@ static kefir_result_t resolver_resolve(const struct kefir_ast_translator_type_re
     REQUIRE(resolver != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator type resolver"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
     REQUIRE(resolved_type != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator resolved type pointer"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator resolved type pointer"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_translator_type_cache *, cache, resolver->payload);
 
@@ -222,7 +222,7 @@ static kefir_result_t resolver_register_function(struct kefir_mem *mem,
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(resolver != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator type resolver"));
     REQUIRE(declaration != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator function declaratin"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator function declaration"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_translator_type_cache *, cache, resolver->payload);
     REQUIRE_OK(kefir_ast_translator_type_cache_insert_unowned_function(mem, cache, declaration));
@@ -240,7 +240,7 @@ static kefir_result_t resolver_build_object(struct kefir_mem *mem, struct kefir_
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR module"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
     REQUIRE(resolved_type != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator resolved type pointer"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator resolved type pointer"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_translator_type_cache *, cache, resolver->payload);
     kefir_result_t res = KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_RESOLVE(resolver, type, alignment, resolved_type);
@@ -267,7 +267,7 @@ static kefir_result_t resolver_build_function(struct kefir_mem *mem,
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR module"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
     REQUIRE(resolved_type != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator resolved type pointer"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator resolved type pointer"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_translator_type_cache *, cache, resolver->payload);
     kefir_result_t res = KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_RESOLVE(resolver, type, 0, resolved_type);
@@ -320,7 +320,7 @@ kefir_result_t kefir_ast_translator_type_cache_at(struct kefir_ast_translator_ty
     REQUIRE(cache != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator type cache"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
     REQUIRE(cached_type != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator cached type pointer"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator cached type pointer"));
 
     struct kefir_hashtree_node *node = NULL;
     REQUIRE_OK(kefir_hashtree_at(&cache->cache, (kefir_hashtree_key_t) alignment, &node));
@@ -422,7 +422,7 @@ kefir_result_t kefir_ast_translator_type_cache_insert_unowned_object(struct kefi
     REQUIRE(ir_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type"));
     REQUIRE(type_layout != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type layout"));
     REQUIRE(type_layout->properties.valid,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected provided type layout to have valid properties"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected provided type layout to have valid properties"));
 
     struct kefir_ast_translator_resolved_type *cached_type =
         KEFIR_MALLOC(mem, sizeof(struct kefir_ast_translator_resolved_type));
@@ -481,7 +481,7 @@ kefir_result_t kefir_ast_translator_type_cache_generate_owned_object(
     REQUIRE(env != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator environment"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR module"));
     REQUIRE(cached_type_ptr != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator cached type pointer"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator cached type pointer"));
 
     kefir_result_t res = kefir_ast_translator_type_cache_at(cache, type, alignment, cached_type_ptr);
     if (res == KEFIR_NOT_FOUND) {
@@ -544,12 +544,12 @@ kefir_result_t kefir_ast_translator_type_cache_generate_owned_function(
     const struct kefir_ast_translator_resolved_type **cached_type_ptr) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(type != NULL && type->tag == KEFIR_AST_TYPE_FUNCTION,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST function type"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST function type"));
     REQUIRE(cache != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator type cache"));
     REQUIRE(env != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator environment"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR module"));
     REQUIRE(cached_type_ptr != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator cached type pointer"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator cached type pointer"));
 
     kefir_result_t res = kefir_ast_translator_type_cache_at(cache, type, 0, cached_type_ptr);
     if (res == KEFIR_NOT_FOUND) {

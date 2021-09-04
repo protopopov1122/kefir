@@ -26,6 +26,7 @@
 #include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/core/lang_error.h"
 
 kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
                                                           const struct kefir_ast_context *context,
@@ -47,11 +48,13 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
                                              &base->properties.function_definition.function, &alignment));
     REQUIRE_OK(kefir_ast_analyze_type(mem, context, context->type_analysis_context, type));
 
-    REQUIRE(type->tag == KEFIR_AST_TYPE_FUNCTION,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Function definition declarator shall have function type"));
+    REQUIRE(
+        type->tag == KEFIR_AST_TYPE_FUNCTION,
+        KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Function definition declarator shall have function type"));
     REQUIRE(base->properties.function_definition.identifier != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Function definition shall have non-empty identifier"));
-    REQUIRE(alignment == 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Function definition cannot have non-zero alignment"));
+            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Function definition shall have non-empty identifier"));
+    REQUIRE(alignment == 0,
+            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Function definition cannot have non-zero alignment"));
     switch (storage) {
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL:
@@ -59,7 +62,7 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL:
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO:
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Invalid function definition storage specifier");
+            return KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Invalid function definition storage specifier");
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN:
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC:
@@ -93,8 +96,8 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
     switch (scoped_id->function.type->function_type.mode) {
         case KEFIR_AST_FUNCTION_TYPE_PARAMETERS:
             REQUIRE(kefir_list_length(&node->declarations) == 0,
-                    KEFIR_SET_ERROR(
-                        KEFIR_MALFORMED_ARG,
+                    KEFIR_SET_LANG_ERROR(
+                        KEFIR_ANALYSIS_ERROR, NULL,
                         "Function definition with non-empty parameter list shall not contain any declarations"));
 
             for (const struct kefir_list_entry *iter =
@@ -118,8 +121,9 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
 
                 ASSIGN_DECL_CAST(struct kefir_ast_node_base *, decl_node, iter->value);
                 REQUIRE(decl_node->klass->type == KEFIR_AST_DECLARATION,
-                        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
-                                        "Function definition declaration list shall contain exclusively declarations"));
+                        KEFIR_SET_LANG_ERROR(
+                            KEFIR_ANALYSIS_ERROR, NULL,
+                            "Function definition declaration list shall contain exclusively declarations"));
                 ASSIGN_DECL_CAST(struct kefir_ast_declaration *, decl_list, decl_node->self);
                 struct kefir_ast_init_declarator *decl = NULL;
                 REQUIRE_OK(kefir_ast_declaration_unpack_single(decl_list, &decl));
@@ -137,16 +141,18 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
 
                 REQUIRE(kefir_hashtree_has(&scoped_id->function.type->function_type.parameter_index,
                                            (kefir_hashtree_key_t) identifier),
-                        KEFIR_SET_ERROR(
-                            KEFIR_MALFORMED_ARG,
+                        KEFIR_SET_LANG_ERROR(
+                            KEFIR_ANALYSIS_ERROR, NULL,
                             "Function definition declaration list declarations shall refer to identifier list"));
                 REQUIRE(storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN ||
                             storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER,
-                        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Function definition declaration list shall not contain "
-                                                             "storage class specifiers other than register"));
+                        KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                             "Function definition declaration list shall not contain "
+                                             "storage class specifiers other than register"));
                 REQUIRE(alignment == 0,
-                        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
-                                        "Function definition declaration list shall not contain alignment specifiers"));
+                        KEFIR_SET_LANG_ERROR(
+                            KEFIR_ANALYSIS_ERROR, NULL,
+                            "Function definition declaration list shall not contain alignment specifiers"));
 
                 const struct kefir_ast_scoped_identifier *param_scoped_id = NULL;
                 REQUIRE_OK(local_context->context.define_identifier(mem, &local_context->context, true, identifier,
@@ -180,10 +186,10 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
             break;
 
         case KEFIR_AST_FUNCTION_TYPE_PARAM_EMPTY:
-            REQUIRE(
-                kefir_list_length(&node->declarations) == 0,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
-                                "Function definition with empty parameter list shall not contain any declarations"));
+            REQUIRE(kefir_list_length(&node->declarations) == 0,
+                    KEFIR_SET_LANG_ERROR(
+                        KEFIR_ANALYSIS_ERROR, NULL,
+                        "Function definition with empty parameter list shall not contain any declarations"));
             break;
     }
 
@@ -197,8 +203,8 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
         REQUIRE(item->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT ||
                     item->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION ||
                     item->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
-                                "Compound statement items shall be either statements or declarations"));
+                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                     "Compound statement items shall be either statements or declarations"));
     }
 
     return KEFIR_OK;

@@ -96,7 +96,7 @@ static kefir_result_t patch_command(struct kefir_irblock *block, kefir_size_t in
             break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to patch IR instruction");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Unable to patch IR instruction");
     }
     return KEFIR_OK;
 }
@@ -140,7 +140,7 @@ kefir_result_t kefir_ast_translator_flow_control_point_resolve(struct kefir_mem 
     struct kefir_ast_translator_flow_control_point *ast_translator_point =
         *((struct kefir_ast_translator_flow_control_point **) point->ptr);
     REQUIRE(!ast_translator_point->resolved,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot resolve already resolved AST translator flow contron point"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot resolve already resolved AST translator flow contron point"));
 
     for (const struct kefir_list_entry *iter = kefir_list_head(&ast_translator_point->dependents); iter != NULL;
          kefir_list_next(&iter)) {

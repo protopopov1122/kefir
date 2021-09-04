@@ -369,7 +369,7 @@ kefir_result_t invoke_epilogue(struct kefir_codegen_amd64 *codegen, const struct
     visitor.visit[KEFIR_IR_TYPE_PAD] = visit_pad;
     visitor.visit[KEFIR_IR_TYPE_BUILTIN] = builtin_return;
     REQUIRE(kefir_ir_type_nodes(decl->decl->result) <= 1,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Function cannot return more than one value"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Function cannot return more than one value"));
     REQUIRE_OK(kefir_ir_type_visitor_list_nodes(decl->decl->result, &visitor, (void *) info, 0, 1));
     return KEFIR_OK;
 }
@@ -385,7 +385,7 @@ kefir_result_t kefir_amd64_sysv_function_invoke(struct kefir_codegen_amd64 *code
                    info.total_arguments * KEFIR_AMD64_SYSV_ABI_QWORD);
     } else {
         REQUIRE(decl->decl->name != NULL && strlen(decl->decl->name) != 0,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to translate invocation with no valid identifier"));
+                KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unable to translate invocation with no valid identifier"));
         ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_CALL);
         ASMGEN_ARG0(&codegen->asmgen, decl->decl->name);
     }

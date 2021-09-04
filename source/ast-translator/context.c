@@ -27,7 +27,7 @@ kefir_result_t kefir_ast_translator_context_init(struct kefir_ast_translator_con
                                                  const struct kefir_ast_translator_environment *environment,
                                                  struct kefir_ir_module *module) {
     REQUIRE(context != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected a pointer to valid AST translator context"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected a pointer to valid AST translator context"));
     REQUIRE(ast_context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
     REQUIRE(environment != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator environment"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR module"));
@@ -46,7 +46,7 @@ kefir_result_t kefir_ast_translator_context_init_local(struct kefir_ast_translat
                                                        const struct kefir_ast_context *ast_context,
                                                        struct kefir_ast_translator_context *base_context) {
     REQUIRE(context != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected a pointer to valid AST translator context"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected a pointer to valid AST translator context"));
     REQUIRE(ast_context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
     REQUIRE(base_context != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid base AST translator context"));
@@ -63,7 +63,7 @@ kefir_result_t kefir_ast_translator_context_init_local(struct kefir_ast_translat
 
 kefir_result_t kefir_ast_translator_context_free(struct kefir_mem *mem, struct kefir_ast_translator_context *context) {
     REQUIRE(context != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected a pointer to valid AST translator context"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected a pointer to valid AST translator context"));
 
     REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_FREE(mem, &context->type_cache.resolver));
     context->base_context = NULL;

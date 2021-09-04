@@ -24,6 +24,7 @@
 #include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/core/lang_error.h"
 
 static kefir_result_t load_bitfield(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
                                     struct kefir_irbuilder_block *builder, const struct kefir_ast_struct_member *node,
@@ -39,7 +40,7 @@ static kefir_result_t load_bitfield(struct kefir_mem *mem, struct kefir_ast_tran
     REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_cache.resolver, context->environment,
                                                                context->module, structure_type, 0, &cached_type));
     REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected cached type to be an object"));
 
     struct kefir_ast_type_layout *member_layout = NULL;
     struct kefir_ast_designator designator = {
@@ -48,7 +49,8 @@ static kefir_result_t load_bitfield(struct kefir_mem *mem, struct kefir_ast_tran
     ASSIGN_PTR(layout, member_layout);
 
     struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(cached_type->object.ir_type, member_layout->value);
-    REQUIRE(typeentry->typecode == KEFIR_IR_TYPE_BITS, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected a bit-field"));
+    REQUIRE(typeentry->typecode == KEFIR_IR_TYPE_BITS,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected a bit-field"));
     ASSIGN_PTR(typeentry_ptr, typeentry);
 
     kefir_size_t byte_offset = member_layout->bitfield_props.offset / 8;
@@ -74,7 +76,7 @@ static kefir_result_t load_bitfield(struct kefir_mem *mem, struct kefir_ast_tran
     } else if (bits <= 64) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD64, 0));
     } else {
-        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Bit-field exceeds storage unit width");
+        return KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Bit-field exceeds storage unit width");
     }
     return KEFIR_OK;
 }
@@ -137,7 +139,7 @@ static kefir_result_t store_bitfield(struct kefir_mem *mem, struct kefir_ast_tra
     } else if (bits <= 64) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE64, 0));
     } else {
-        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Bit-field exceeds storage unit width");
+        return KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Bit-field exceeds storage unit width");
     }
     return KEFIR_OK;
 }
@@ -154,7 +156,8 @@ kefir_result_t kefir_ast_translator_resolve_node_value(struct kefir_mem *mem,
     if (node->properties.expression_props.bitfield) {
         REQUIRE(
             node->klass->type == KEFIR_AST_STRUCTURE_MEMBER || node->klass->type == KEFIR_AST_STRUCTURE_INDIRECT_MEMBER,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected bit-field node to be a direct/indirect structure member"));
+            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                 "Expected bit-field node to be a direct/indirect structure member"));
         REQUIRE_OK(resolve_bitfield(mem, context, builder, (const struct kefir_ast_struct_member *) node->self));
     } else {
         REQUIRE_OK(kefir_ast_translator_load_value(node->properties.type, context->ast_context->type_traits, builder));
@@ -174,7 +177,8 @@ kefir_result_t kefir_ast_translator_store_node_value(struct kefir_mem *mem,
     if (node->properties.expression_props.bitfield) {
         REQUIRE(
             node->klass->type == KEFIR_AST_STRUCTURE_MEMBER || node->klass->type == KEFIR_AST_STRUCTURE_INDIRECT_MEMBER,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected bit-field node to be a direct/indirect structure member"));
+            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                 "Expected bit-field node to be a direct/indirect structure member"));
         REQUIRE_OK(store_bitfield(mem, context, builder, (const struct kefir_ast_struct_member *) node->self));
     } else {
         REQUIRE_OK(kefir_ast_translator_store_value(mem, node->properties.type, context, builder));
@@ -192,7 +196,7 @@ kefir_result_t kefir_ast_translator_load_value(const struct kefir_ast_type *type
 
     switch (normalizer->tag) {
         case KEFIR_AST_TYPE_VOID:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot load variable with void type");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Cannot load variable with void type");
 
         case KEFIR_AST_TYPE_SCALAR_BOOL:
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD8U, 0));
@@ -268,7 +272,7 @@ kefir_result_t kefir_ast_translator_store_value(struct kefir_mem *mem, const str
 
     switch (normalizer->tag) {
         case KEFIR_AST_TYPE_VOID:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot store value with void type");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Cannot store value with void type");
 
         case KEFIR_AST_TYPE_SCALAR_BOOL:
         case KEFIR_AST_TYPE_SCALAR_CHAR:
@@ -307,14 +311,14 @@ kefir_result_t kefir_ast_translator_store_value(struct kefir_mem *mem, const str
             REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(
                 mem, &context->type_cache.resolver, context->environment, context->module, type, 0, &cached_type));
             REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
-                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
+                    KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected cached type to be an object"));
 
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_BCOPY, cached_type->object.ir_type_id,
                                                        cached_type->object.layout->value));
         } break;
 
         case KEFIR_AST_TYPE_FUNCTION:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot store value with function type");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Cannot store value with function type");
 
         case KEFIR_AST_TYPE_QUALIFIED:
             return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected qualified type");

@@ -56,7 +56,7 @@ kefir_result_t kefir_ast_temporaries_new_temporary(struct kefir_mem *mem, const 
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid temporary AST type"));
     REQUIRE(temp_id != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid temporary identifier pointer"));
     REQUIRE(context->temporaries != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Provided AST context has no support for temporary values"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Provided AST context has no support for temporary values"));
 
 #define BUFFER_LEN 128
     char BUFFER[BUFFER_LEN] = {0};

@@ -139,7 +139,7 @@ kefir_result_t kefir_ir_module_string_literal(struct kefir_mem *mem, struct kefi
                                               const void *content, kefir_size_t length, kefir_id_t *id) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR module"));
-    REQUIRE(content != NULL && length > 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid literal"));
+    REQUIRE(content != NULL && length > 0, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid literal"));
     REQUIRE(id != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid literal id pointer"));
 
     struct string_literal *literal = KEFIR_MALLOC(mem, sizeof(struct string_literal));

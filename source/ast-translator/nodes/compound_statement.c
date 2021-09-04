@@ -43,7 +43,7 @@ kefir_result_t kefir_ast_translate_compound_statement_node(struct kefir_mem *mem
                    item->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR) {
             REQUIRE_OK(kefir_ast_translate_declaration(mem, item, builder, context));
         } else {
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected compound statement item");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected compound statement item");
         }
     }
     return KEFIR_OK;

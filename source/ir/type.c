@@ -26,8 +26,9 @@
 
 kefir_result_t kefir_ir_type_init(struct kefir_ir_type *type, void *area, kefir_size_t capacity) {
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type pointer"));
-    REQUIRE((area != NULL && capacity != 0) || (area == NULL && capacity == 0),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL IR type content pointer for non-zero capacity"));
+    REQUIRE(
+        (area != NULL && capacity != 0) || (area == NULL && capacity == 0),
+        KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-NULL IR type content pointer for non-zero capacity"));
     return kefir_vector_init(&type->vector, sizeof(struct kefir_ir_typeentry), area, capacity);
 }
 
@@ -50,7 +51,7 @@ kefir_result_t kefir_ir_type_append(struct kefir_ir_type *type, const struct kef
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type pointer"));
     REQUIRE(value != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type entry pointer"));
     REQUIRE(value->typecode != KEFIR_IR_TYPE_COUNT,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot append auxilary typecodes"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot append auxilary typecodes"));
     return kefir_vector_append(&type->vector, value);
 }
 
@@ -64,7 +65,7 @@ kefir_result_t kefir_ir_type_append_e(struct kefir_ir_type *type, const struct k
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type"));
     REQUIRE(ext != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid external IR type"));
     const kefir_size_t length = kefir_ir_type_node_total_length(ext, index);
-    REQUIRE(length > 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid external index"));
+    REQUIRE(length > 0, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid external index"));
     REQUIRE(kefir_ir_type_raw_available(type) >= length,
             KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to extend IR type"));
     for (kefir_size_t i = index; i < index + length; i++) {
@@ -257,7 +258,7 @@ kefir_result_t kefir_ir_type_visitor_list_nodes(const struct kefir_ir_type *type
         switch (typeentry->typecode) {
             case KEFIR_IR_TYPE_STRUCT:
                 REQUIRE(typeentry->param > 0,
-                        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected IR type struct to have non-zero member count"));
+                        KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected IR type struct to have non-zero member count"));
                 INVOKE(visitor->visit[KEFIR_IR_TYPE_STRUCT]);
                 break;
 
@@ -267,7 +268,7 @@ kefir_result_t kefir_ir_type_visitor_list_nodes(const struct kefir_ir_type *type
 
             case KEFIR_IR_TYPE_UNION:
                 REQUIRE(typeentry->param > 0,
-                        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected IR type union to have non-zero member count"));
+                        KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected IR type union to have non-zero member count"));
                 INVOKE(visitor->visit[KEFIR_IR_TYPE_UNION]);
                 break;
 
@@ -330,7 +331,7 @@ kefir_result_t kefir_ir_type_iterator_goto_field(struct kefir_ir_type_iterator *
     struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(iter->type, iter->index);
     REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Expected valid IR type iterator state"));
     REQUIRE(typeentry->typecode == KEFIR_IR_TYPE_STRUCT || typeentry->typecode == KEFIR_IR_TYPE_UNION,
-            KEFIR_MALFORMED_ARG);
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected IR type entry to be either structure or union"));
     struct iter_params params = {.iter = iter, .slot = 1 + iter->slot, .target = target};
     struct kefir_ir_type_visitor visitor;
     kefir_ir_type_visitor_init(&visitor, iter_visitor);
@@ -345,7 +346,7 @@ kefir_result_t kefir_ir_type_iterator_goto_index(struct kefir_ir_type_iterator *
     struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(iter->type, iter->index);
     REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Expected valid IR type iterator state"));
     REQUIRE(typeentry->typecode == KEFIR_IR_TYPE_ARRAY,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected type entry to be an array"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected type entry to be an array"));
     REQUIRE(target < (kefir_size_t) typeentry->param,
             KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Requested index is out of array bounds"));
     iter->index += iter->index;

@@ -23,6 +23,7 @@
 #include "kefir/ast/node.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/core/lang_error.h"
 
 struct kefir_ast_initializer_designation *kefir_ast_new_initializer_member_designation(
     struct kefir_mem *mem, struct kefir_symbol_table *symbols, const char *identifier,
@@ -145,7 +146,8 @@ kefir_result_t kefir_ast_evaluate_initializer_designation(struct kefir_mem *mem,
         });
         REQUIRE_ELSE(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER, {
             kefir_ast_designator_free(mem, next_designator);
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "AST designator index must be an integral constant expression");
+            return KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                        "AST designator index must be an integral constant expression");
         });
 
         designator = kefir_ast_new_index_designator(mem, value.integer, next_designator);

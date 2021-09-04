@@ -189,7 +189,7 @@ kefir_result_t kefir_ast_type_is_signed(const struct kefir_ast_type_traits *type
             break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected integral AST type");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Expected integral AST type");
     }
     return KEFIR_OK;
 }

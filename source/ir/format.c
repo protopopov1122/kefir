@@ -327,7 +327,7 @@ static kefir_result_t format_type_default(const struct kefir_ir_type *type, kefi
         } break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid type code");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid type code");
     }
     return KEFIR_OK;
 }
@@ -381,7 +381,7 @@ static kefir_result_t format_type_builtin(const struct kefir_ir_type *type, kefi
             break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid built-in type code");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid built-in type code");
     }
     return KEFIR_OK;
 }

@@ -25,8 +25,9 @@
 
 kefir_result_t kefir_irblock_init(struct kefir_irblock *bcblock, void *area, kefir_size_t capacity) {
     REQUIRE(bcblock != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR block pointer"));
-    REQUIRE((area != NULL && capacity != 0) || (area == NULL && capacity == 0),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL content pointer for non-zero capacity IR block"));
+    REQUIRE(
+        (area != NULL && capacity != 0) || (area == NULL && capacity == 0),
+        KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-NULL content pointer for non-zero capacity IR block"));
     REQUIRE_OK(kefir_vector_init(&bcblock->content, sizeof(struct kefir_irinstr), area, capacity));
     return KEFIR_OK;
 }

@@ -26,9 +26,9 @@
 kefir_result_t kefir_vector_init(struct kefir_vector *vector, kefir_size_t elem_size, void *area,
                                  kefir_size_t capacity) {
     REQUIRE(vector != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-NULL vector pointer"));
-    REQUIRE(elem_size > 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-zero vector element size"));
+    REQUIRE(elem_size > 0, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-zero vector element size"));
     REQUIRE((area != NULL && capacity > 0) || (area == NULL && capacity == 0),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL content pointer for non-zero capacity vector"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-NULL content pointer for non-zero capacity vector"));
     vector->element_size = elem_size;
     vector->content = area;
     vector->length = 0;
@@ -69,7 +69,7 @@ kefir_result_t kefir_vector_append(struct kefir_vector *vector, const void *valu
 kefir_result_t kefir_vector_copy(struct kefir_vector *vector, void *src, kefir_size_t length) {
     REQUIRE(vector != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-NULL vector pointer"));
     REQUIRE((src != NULL && length > 0) || (src == NULL && length == 0),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-zero length for non-NULL source pointer"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-zero length for non-NULL source pointer"));
     REQUIRE(kefir_vector_available(vector) >= length,
             KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to copy given number of elements"));
     if (src != NULL) {
@@ -90,7 +90,7 @@ kefir_result_t kefir_vector_extend(struct kefir_vector *vector, kefir_size_t cou
 kefir_result_t kefir_vector_alloc(struct kefir_mem *mem, kefir_size_t element_size, kefir_size_t capacity,
                                   struct kefir_vector *vector) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
-    REQUIRE(element_size > 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-zero element size"));
+    REQUIRE(element_size > 0, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-zero element size"));
     REQUIRE(vector != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-NULL vector pointer"));
     if (capacity > 0) {
         vector->content = KEFIR_MALLOC(mem, element_size * capacity);
@@ -109,7 +109,7 @@ kefir_result_t kefir_vector_realloc(struct kefir_mem *mem, kefir_size_t new_capa
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(vector != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-NULL vector pointer"));
     REQUIRE((vector->content != NULL && vector->length > 0) || (vector->content == NULL && vector->length == 0),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid vector content pointer"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected valid vector content pointer"));
     REQUIRE(vector->length <= new_capacity,
             KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Expected new capacity to fit current vector length"));
     vector->content = KEFIR_REALLOC(mem, vector->content, vector->element_size * new_capacity);

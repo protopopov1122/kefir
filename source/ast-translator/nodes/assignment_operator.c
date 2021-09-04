@@ -237,7 +237,7 @@ static kefir_result_t translate_add(struct kefir_mem *mem, struct kefir_ast_tran
     } else {
         REQUIRE(target_normalized_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER &&
                     KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(value_normalized_type),
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
+                KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER,
                                 "Expected scalar pointer on the left side, and an integer on the right"));
 
         const struct kefir_ast_translator_resolved_type *cached_type = NULL;
@@ -245,7 +245,7 @@ static kefir_result_t translate_add(struct kefir_mem *mem, struct kefir_ast_tran
             mem, &context->type_cache.resolver, context->environment, context->module,
             target_normalized_type->referenced_type, 0, &cached_type));
         REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
+                KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected cached type to be an object"));
 
         REQUIRE_OK(kefir_ast_translate_expression(mem, node->value, builder, context));
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_ELEMENTPTR, cached_type->object.ir_type_id,
@@ -300,7 +300,7 @@ static kefir_result_t translate_subtract(struct kefir_mem *mem, struct kefir_ast
     } else {
         REQUIRE(target_normalized_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER &&
                     KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(value_normalized_type),
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
+                KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER,
                                 "Expected scalar pointer on the left side, and an integer on the right"));
 
         const struct kefir_ast_translator_resolved_type *cached_type = NULL;
@@ -308,7 +308,7 @@ static kefir_result_t translate_subtract(struct kefir_mem *mem, struct kefir_ast
             mem, &context->type_cache.resolver, context->environment, context->module,
             target_normalized_type->referenced_type, 0, &cached_type));
         REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
+                KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected cached type to be an object"));
 
         REQUIRE_OK(kefir_ast_translate_expression(mem, node->value, builder, context));
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_INEG, 0));

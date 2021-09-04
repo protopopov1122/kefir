@@ -23,11 +23,12 @@
 #include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/core/lang_error.h"
 
 static kefir_result_t analyze_modulo(const struct kefir_ast_context *context, const struct kefir_ast_type *type1,
                                      const struct kefir_ast_type *type2, struct kefir_ast_node_base *base) {
     REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1) && KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type2),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both modulo operands shall have integral type"));
+            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Both modulo operands shall have integral type"));
     base->properties.type = kefir_ast_type_common_arithmetic(context->type_traits, type1, type2);
     REQUIRE(base->properties.type != NULL,
             KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to determine common AST arithmetic type"));
@@ -36,8 +37,9 @@ static kefir_result_t analyze_modulo(const struct kefir_ast_context *context, co
 
 static kefir_result_t analyze_muldiv(const struct kefir_ast_context *context, const struct kefir_ast_type *type1,
                                      const struct kefir_ast_type *type2, struct kefir_ast_node_base *base) {
-    REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1) && KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type2),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both multiply/divide operands shall have arithmetic type"));
+    REQUIRE(
+        KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1) && KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type2),
+        KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Both multiply/divide operands shall have arithmetic type"));
     base->properties.type = kefir_ast_type_common_arithmetic(context->type_traits, type1, type2);
     REQUIRE(base->properties.type != NULL,
             KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to determine common AST arithmetic type"));
@@ -48,15 +50,15 @@ static kefir_result_t analyze_addition(const struct kefir_ast_context *context, 
                                        const struct kefir_ast_type *type2, struct kefir_ast_node_base *base) {
     if (type1->tag == KEFIR_AST_TYPE_SCALAR_POINTER && !KEFIR_AST_TYPE_IS_INCOMPLETE(type1->referenced_type)) {
         REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type2),
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Second operand shall be have an integral type"));
+                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Second operand shall be have an integral type"));
         base->properties.type = type1;
     } else if (type2->tag == KEFIR_AST_TYPE_SCALAR_POINTER && !KEFIR_AST_TYPE_IS_INCOMPLETE(type2->referenced_type)) {
         REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1),
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "First operand shall be have an integral type"));
+                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "First operand shall be have an integral type"));
         base->properties.type = type2;
     } else {
         REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1) && KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type2),
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both operands shall have arithmetic types"));
+                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Both operands shall have arithmetic types"));
         base->properties.type = kefir_ast_type_common_arithmetic(context->type_traits, type1, type2);
         REQUIRE(base->properties.type != NULL,
                 KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to determine common AST arithmetic type"));
@@ -70,17 +72,17 @@ static kefir_result_t analyze_subtraction(const struct kefir_ast_context *contex
         const struct kefir_ast_type *obj_type1 = kefir_ast_unqualified_type(type1->referenced_type);
         const struct kefir_ast_type *obj_type2 = kefir_ast_unqualified_type(type2->referenced_type);
         REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(obj_type1) && !KEFIR_AST_TYPE_IS_INCOMPLETE(obj_type2),
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both operands shall have complete types"));
+                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Both operands shall have complete types"));
         REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, obj_type1, obj_type2),
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both operands shall have compatible types"));
+                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Both operands shall have compatible types"));
         base->properties.type = context->type_traits->ptrdiff_type;
     } else if (type1->tag == KEFIR_AST_TYPE_SCALAR_POINTER && !KEFIR_AST_TYPE_IS_INCOMPLETE(type1->referenced_type)) {
         REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type2),
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Right operand shal have an integral type"));
+                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Right operand shal have an integral type"));
         base->properties.type = type1;
     } else {
         REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1) && KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type2),
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both operands shall have arithmetic types"));
+                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Both operands shall have arithmetic types"));
         base->properties.type = kefir_ast_type_common_arithmetic(context->type_traits, type1, type2);
         REQUIRE(base->properties.type != NULL,
                 KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to determine common AST arithmetic type"));
@@ -91,7 +93,7 @@ static kefir_result_t analyze_subtraction(const struct kefir_ast_context *contex
 static kefir_result_t analyze_shift(const struct kefir_ast_context *context, const struct kefir_ast_type *type1,
                                     const struct kefir_ast_type *type2, struct kefir_ast_node_base *base) {
     REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1) && KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type2),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Bitwise shift operator expects integer arguments"));
+            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Bitwise shift operator expects integer arguments"));
     base->properties.type = kefir_ast_type_int_promotion(context->type_traits, type1);
     REQUIRE(base->properties.type != NULL,
             KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to determine common AST arithmetic type"));
@@ -104,10 +106,10 @@ static kefir_result_t analyze_relational(const struct kefir_ast_context *context
         const struct kefir_ast_type *obj_type1 = kefir_ast_unqualified_type(type1->referenced_type);
         const struct kefir_ast_type *obj_type2 = kefir_ast_unqualified_type(type2->referenced_type);
         REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, obj_type1, obj_type2),
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both operands shall have compatible types"));
+                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Both operands shall have compatible types"));
     } else {
         REQUIRE(KEFIR_AST_TYPE_IS_REAL_TYPE(type1) && KEFIR_AST_TYPE_IS_REAL_TYPE(type2),
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both operands shall have real types"));
+                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Both operands shall have real types"));
     }
     base->properties.type = kefir_ast_type_signed_int();
     return KEFIR_OK;
@@ -123,17 +125,18 @@ static kefir_result_t analyze_equality(const struct kefir_ast_context *context, 
         const struct kefir_ast_type *unqualified2 = kefir_ast_unqualified_type(type2->referenced_type);
         REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, unqualified1, unqualified2) ||
                     unqualified1->tag == KEFIR_AST_TYPE_VOID || unqualified2->tag == KEFIR_AST_TYPE_VOID,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both pointer operands shall point to compatible types or void"));
+                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                     "Both pointer operands shall point to compatible types or void"));
         base->properties.type = kefir_ast_type_signed_int();
     } else if (type1->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
         REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type2) && node2->properties.expression_props.constant_expression,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Second operand shall be NULL pointer"));
+                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Second operand shall be NULL pointer"));
         base->properties.type = kefir_ast_type_signed_int();
     } else {
         REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1) && node1->properties.expression_props.constant_expression,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "First operand shall be NULL pointer"));
+                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "First operand shall be NULL pointer"));
         REQUIRE(type2->tag == KEFIR_AST_TYPE_SCALAR_POINTER,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Second operand shall be pointer"));
+                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Second operand shall be pointer"));
         base->properties.type = kefir_ast_type_signed_int();
     }
     return KEFIR_OK;
@@ -142,7 +145,7 @@ static kefir_result_t analyze_equality(const struct kefir_ast_context *context, 
 static kefir_result_t analyze_bitwise(const struct kefir_ast_context *context, const struct kefir_ast_type *type1,
                                       const struct kefir_ast_type *type2, struct kefir_ast_node_base *base) {
     REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1) && KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type2),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both operands shall have integral types"));
+            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Both operands shall have integral types"));
     base->properties.type = kefir_ast_type_common_arithmetic(context->type_traits, type1, type2);
     REQUIRE(base->properties.type != NULL,
             KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to determine common AST arithmetic type"));
@@ -153,7 +156,7 @@ static kefir_result_t analyze_logical(const struct kefir_ast_context *context, c
                                       const struct kefir_ast_type *type2, struct kefir_ast_node_base *base) {
     UNUSED(context);
     REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(type1) && KEFIR_AST_TYPE_IS_SCALAR_TYPE(type2),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both operands shall have scalar types"));
+            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Both operands shall have scalar types"));
     base->properties.type = kefir_ast_type_signed_int();
     return KEFIR_OK;
 }
@@ -170,9 +173,9 @@ kefir_result_t kefir_ast_analyze_binary_operation_node(struct kefir_mem *mem, co
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->arg2));
 
     REQUIRE(node->arg1->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both assignment operands shall be expressions"));
+            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Both assignment operands shall be expressions"));
     REQUIRE(node->arg2->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both binary operator operands shall be expressions"));
+            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Both binary operator operands shall be expressions"));
 
     const struct kefir_ast_type *type1 =
         KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->arg1->properties.type);
@@ -230,7 +233,7 @@ kefir_result_t kefir_ast_analyze_binary_operation_node(struct kefir_mem *mem, co
             break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected AST binary operator");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected AST binary operator");
     }
     return KEFIR_OK;
 }

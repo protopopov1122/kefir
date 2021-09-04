@@ -59,7 +59,7 @@ static kefir_result_t default_integral_type_fits(const struct kefir_ast_type_tra
     REQUIRE(result != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid result pointer"));
     REQUIRE((KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(source) || source->tag == KEFIR_AST_TYPE_SCALAR_BOOL) &&
                 (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(dest) || dest->tag == KEFIR_AST_TYPE_SCALAR_BOOL),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected both source and destination to be basic types"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected both source and destination to be basic types"));
     kefir_size_t source_fit = default_integral_type_fit_rank(source);
     kefir_size_t dest_fit = default_integral_type_fit_rank(dest);
     REQUIRE(source_fit != 0 && dest_fit != 0, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected integral type"));

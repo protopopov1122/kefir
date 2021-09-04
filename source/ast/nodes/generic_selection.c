@@ -202,7 +202,7 @@ kefir_result_t kefir_ast_generic_selection_append(struct kefir_mem *mem, struct 
     } else {
         REQUIRE(
             selection->default_assoc == NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "AST generic selection cannot have multiple default associations"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "AST generic selection cannot have multiple default associations"));
         selection->default_assoc = expr;
     }
     return KEFIR_OK;

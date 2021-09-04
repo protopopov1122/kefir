@@ -41,10 +41,10 @@ kefir_result_t kefir_token_new_keyword(kefir_keyword_token_t keyword, struct kef
 kefir_result_t kefir_token_new_identifier(struct kefir_mem *mem, struct kefir_symbol_table *symbols,
                                           const char *identifier, struct kefir_token *token) {
     REQUIRE(identifier != NULL && strlen(identifier) > 0,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to token"));
     REQUIRE((mem == NULL && symbols == NULL) || (mem != NULL && symbols != NULL),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER,
                             "Expected both memory allocator and symbol table to be either valid or not"));
     REQUIRE_OK(kefir_source_location_empty(&token->source_location));
 

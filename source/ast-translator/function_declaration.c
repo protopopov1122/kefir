@@ -27,6 +27,7 @@
 #include "kefir/ir/builder.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/core/lang_error.h"
 
 static const struct kefir_ast_type *adjust_untyped_parameter(struct kefir_mem *mem,
                                                              struct kefir_ast_type_bundle *type_bundle,
@@ -64,8 +65,8 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(
             ASSIGN_DECL_CAST(struct kefir_ast_node_base *, param, param_iter->value);
             REQUIRE(param->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION ||
                         param->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR,
-                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
-                                    "Function declaration parameter shall be either expression, or declaration"));
+                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                         "Function declaration parameter shall be either expression, or declaration"));
             param_type = adjust_untyped_parameter(mem, type_bundle, type_traits, param->properties.type);
             REQUIRE(param_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unable to adjust untyped parameter"));
         }
@@ -244,9 +245,9 @@ kefir_result_t kefir_ast_translator_function_declaration_init(
     REQUIRE(type_resolver != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator type resolver"));
     REQUIRE(func_type != NULL && func_type->tag == KEFIR_AST_TYPE_FUNCTION,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST function type"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST function type"));
     REQUIRE(func_decl != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator function declaration pointer"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator function declaration pointer"));
 
     struct kefir_ast_translator_function_declaration *function_declaration =
         KEFIR_MALLOC(mem, sizeof(struct kefir_ast_translator_function_declaration));
@@ -268,7 +269,7 @@ kefir_result_t kefir_ast_translator_function_declaration_free(
     struct kefir_mem *mem, struct kefir_ast_translator_function_declaration *func_decl) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(func_decl != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator function declaration pointer"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator function declaration pointer"));
 
     REQUIRE_OK(kefir_ast_type_layout_free(mem, func_decl->return_layout));
     REQUIRE_OK(kefir_hashtree_free(mem, &func_decl->named_argument_layouts));

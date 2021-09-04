@@ -34,7 +34,7 @@ static kefir_result_t target_env_get_type(struct kefir_mem *mem, const struct ke
     REQUIRE(target_env != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expectd valid AST target environment"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
     REQUIRE(opaque_type != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST target environment type pointer"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST target environment type pointer"));
     ASSIGN_DECL_CAST(const struct kefir_ast_translator_environment *, env, target_env->payload);
 
     struct kefir_ast_translator_environment_type *env_type =

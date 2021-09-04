@@ -24,7 +24,7 @@
 
 kefir_result_t kefir_parser_integral_types_default(struct kefir_parser_integral_types *integral_types) {
     REQUIRE(integral_types != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to parser integral types"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to parser integral types"));
 
     integral_types->integer_max_value = KEFIR_INT_MAX;
     integral_types->uinteger_max_value = KEFIR_UINT_MAX;

@@ -186,10 +186,10 @@ kefir_result_t kefir_ast_declaration_unpack_single(struct kefir_ast_declaration 
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to AST declaration"));
 
     REQUIRE(kefir_list_length(&list->init_declarators) == 1,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected declaration list to contain a single declaration"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected declaration list to contain a single declaration"));
     struct kefir_ast_node_base *node = kefir_list_head(&list->init_declarators)->value;
     REQUIRE(node->klass->type == KEFIR_AST_INIT_DECLARATOR,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected declaration list to contain a single declaration"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected declaration list to contain a single declaration"));
     *declaration_ptr = node->self;
     return KEFIR_OK;
 }

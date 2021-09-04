@@ -24,6 +24,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/ast-translator/scope/scope_layout_impl.h"
+#include "kefir/core/lang_error.h"
 
 kefir_result_t kefir_ast_translator_global_scope_layout_init(struct kefir_mem *mem, struct kefir_ir_module *module,
                                                              struct kefir_ast_translator_global_scope_layout *layout) {
@@ -223,11 +224,12 @@ static kefir_result_t translate_global_scoped_identifier_object(
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO:
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "File-scope variable cannot have auto/register storage");
+            return KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                        "File-scope variable cannot have auto/register storage");
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected storage class of file-scope variable");
+            return KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Unexpected storage class of file-scope variable");
     }
     return KEFIR_OK;
 }
@@ -256,7 +258,7 @@ static kefir_result_t translate_global_scoped_identifier_function(
             break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected function storage specifier");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected function storage specifier");
     }
     REQUIRE_OK(
         KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_REGISTER_FUNCTION(mem, type_resolver, scoped_identifier_func->declaration));
@@ -285,7 +287,7 @@ static kefir_result_t translate_global_scoped_identifier(
             break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_LABEL:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "No labels are allowed in the global scope");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "No labels are allowed in the global scope");
     }
     return KEFIR_OK;
 }
@@ -303,7 +305,7 @@ kefir_result_t kefir_ast_translator_build_global_scope_layout(struct kefir_mem *
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator type resolver"));
     REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST global scope layout"));
     REQUIRE(layout->global_context == NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected empty AST translator global scope"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected empty AST translator global scope"));
 
     layout->global_context = context;
 

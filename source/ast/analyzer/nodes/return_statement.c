@@ -25,6 +25,7 @@
 #include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/core/lang_error.h"
 
 kefir_result_t kefir_ast_analyze_return_statement_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                        const struct kefir_ast_return_statement *node,
@@ -40,21 +41,22 @@ kefir_result_t kefir_ast_analyze_return_statement_node(struct kefir_mem *mem, co
     if (node->expression != NULL) {
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->expression));
         REQUIRE(node->expression->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Return statement should return an expression"));
+                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Return statement should return an expression"));
     }
 
     REQUIRE(context->surrounding_function != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Return statement should appear only in the context of a function"));
+            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                 "Return statement should appear only in the context of a function"));
     const struct kefir_ast_type *function_return_type =
         kefir_ast_unqualified_type(context->surrounding_function->function.type->function_type.return_type);
     if (function_return_type->tag == KEFIR_AST_TYPE_VOID) {
         REQUIRE(node->expression == NULL,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
-                                "Return statement with expression shall appear only in non-void function"));
+                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                     "Return statement with expression shall appear only in non-void function"));
     } else {
         REQUIRE(node->expression != NULL,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
-                                "Return statement with no expression shall appear only in void function"));
+                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                     "Return statement with no expression shall appear only in void function"));
         const struct kefir_ast_type *value_type =
             KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->expression->properties.type);
         REQUIRE_OK(kefir_ast_type_assignable(mem, context, value_type,

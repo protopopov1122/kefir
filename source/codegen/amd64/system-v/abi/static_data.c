@@ -66,7 +66,7 @@ static kefir_result_t trailing_padding(kefir_size_t start_offset, struct kefir_a
         param->offset = end_offset;
     } else {
         REQUIRE(end_offset == param->offset,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Actual object size exceeds expected"));
+                KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Actual object size exceeds expected"));
     }
     return KEFIR_OK;
 }
@@ -90,7 +90,7 @@ static kefir_result_t integral_static_data(const struct kefir_ir_type *type, kef
             break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected value of integral field");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected value of integral field");
     }
 
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout, kefir_vector_at(&param->layout, index));
@@ -189,7 +189,7 @@ static kefir_result_t word_static_data(const struct kefir_ir_type *type, kefir_s
             break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected value of word type field");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected value of word type field");
     }
 
     param->offset += layout->size;
@@ -215,7 +215,7 @@ static kefir_result_t float32_static_data(const struct kefir_ir_type *type, kefi
             break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected value of floating-point type field");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected value of floating-point type field");
     }
 
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout, kefir_vector_at(&param->layout, index));
@@ -253,7 +253,7 @@ static kefir_result_t float64_static_data(const struct kefir_ir_type *type, kefi
             break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected value of floating-point type field");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected value of floating-point type field");
     }
 
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout, kefir_vector_at(&param->layout, index));
@@ -362,7 +362,7 @@ static kefir_result_t array_static_data(const struct kefir_ir_type *type, kefir_
         } break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected array data type");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected array data type");
     }
 
     REQUIRE_OK(trailing_padding(start_offset, layout, param));
@@ -396,7 +396,7 @@ static kefir_result_t memory_static_data(const struct kefir_ir_type *type, kefir
         } break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected memory data type");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected memory data type");
     }
 
     REQUIRE_OK(trailing_padding(start_offset, layout, param));
@@ -455,7 +455,7 @@ kefir_result_t kefir_amd64_sysv_static_data(struct kefir_mem *mem, struct kefir_
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 code generator"));
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data"));
-    REQUIRE(data->finalized, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected finalized IR data"));
+    REQUIRE(data->finalized, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected finalized IR data"));
 
     struct kefir_ir_type_visitor visitor;
     REQUIRE_OK(kefir_ir_type_visitor_init(&visitor, visitor_not_supported));

@@ -67,7 +67,7 @@ kefir_result_t kefir_ast_analyze_identifier_node(struct kefir_mem *mem, const st
             break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected scoped identifier type");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected scoped identifier type");
     }
 
     base->properties.expression_props.scoped_id = scoped_id;

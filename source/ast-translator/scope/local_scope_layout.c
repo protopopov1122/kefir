@@ -25,6 +25,7 @@
 #include "kefir/core/error.h"
 #include "kefir/ast-translator/scope/scope_layout_impl.h"
 #include "kefir/ast-translator/flow_control.h"
+#include "kefir/core/lang_error.h"
 
 kefir_result_t kefir_ast_translator_local_scope_layout_init(struct kefir_mem *mem, struct kefir_ir_module *module,
                                                             struct kefir_ast_translator_global_scope_layout *global,
@@ -180,7 +181,7 @@ static kefir_result_t translate_local_scoped_identifier_object(
             break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
+            return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST,
                                    "Cannot have thread local block-scope variable with no linkage");
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL:
@@ -196,7 +197,7 @@ static kefir_result_t translate_local_scoped_identifier_object(
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected storage class of local-scope variable");
+            return KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Unexpected storage class of local-scope variable");
     }
     return KEFIR_OK;
 }
@@ -241,7 +242,7 @@ static kefir_result_t translate_local_scoped_identifier(
 
         case KEFIR_AST_SCOPE_IDENTIFIER_LABEL:
             REQUIRE(scoped_identifier->label.defined,
-                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot translate undefined label"));
+                    KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Cannot translate undefined label"));
             REQUIRE_OK(kefir_ast_translator_flow_control_point_init(mem, scoped_identifier->label.point, NULL));
             break;
     }
@@ -352,7 +353,7 @@ kefir_result_t kefir_ast_translator_build_local_scope_layout(struct kefir_mem *m
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator type cache"));
     REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST local scope layout"));
     REQUIRE(layout->local_context == NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected empty AST translator local scope layout"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected empty AST translator local scope layout"));
 
     layout->local_context = context;
 
@@ -376,8 +377,8 @@ kefir_result_t kefir_ast_translator_build_local_scope_layout(struct kefir_mem *m
          res = kefir_ast_identifier_flat_scope_next(&context->label_scope, &iter)) {
 
         REQUIRE(iter.value->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected label scope to contain only labels"));
-        REQUIRE(iter.value->label.defined, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot translate undefined label"));
+                KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected label scope to contain only labels"));
+        REQUIRE(iter.value->label.defined, KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Cannot translate undefined label"));
         REQUIRE_OK(kefir_ast_translator_flow_control_point_init(mem, iter.value->label.point, NULL));
     }
     return KEFIR_OK;

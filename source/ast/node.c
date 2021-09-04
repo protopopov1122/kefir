@@ -41,9 +41,9 @@ kefir_result_t kefir_ast_node_properties_init(struct kefir_ast_node_properties *
 kefir_result_t kefir_ast_node_properties_clone(struct kefir_ast_node_properties *dst_props,
                                                const struct kefir_ast_node_properties *src_props) {
     REQUIRE(dst_props != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node properties destination pointer"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node properties destination pointer"));
     REQUIRE(src_props != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node properties source pointer"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node properties source pointer"));
     dst_props->category = src_props->category;
     dst_props->type = src_props->type;
     dst_props->expression_props = src_props->expression_props;

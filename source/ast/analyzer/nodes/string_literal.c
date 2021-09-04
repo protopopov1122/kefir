@@ -54,7 +54,7 @@ kefir_result_t kefir_ast_analyze_string_literal_node(struct kefir_mem *mem, cons
 
     const struct kefir_ast_type *elt_type = string_element_type(context->type_traits, node->type);
     REQUIRE(elt_type != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to detect AST string literal underlying type"));
+            KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to detect AST string literal underlying type"));
 
     REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
     base->properties.category = KEFIR_AST_NODE_CATEGORY_EXPRESSION;

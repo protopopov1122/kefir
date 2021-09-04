@@ -37,7 +37,7 @@ kefir_result_t kefir_json_output_init(struct kefir_json_output *json, FILE *file
 
 kefir_result_t kefir_json_output_finalize(struct kefir_json_output *json) {
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid json output"));
-    REQUIRE(json->level == 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot finalizer malformed json"));
+    REQUIRE(json->level == 0, KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot finalizer malformed json"));
 
     fflush(json->file);
     json->file = NULL;
@@ -46,7 +46,7 @@ kefir_result_t kefir_json_output_finalize(struct kefir_json_output *json) {
 
 static inline kefir_result_t valid_json(struct kefir_json_output *json) {
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid json output"));
-    REQUIRE(json->file != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid json output"));
+    REQUIRE(json->file != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid json output"));
     return KEFIR_OK;
 }
 
@@ -90,7 +90,7 @@ static inline kefir_result_t write_separator(struct kefir_json_output *json) {
 kefir_result_t kefir_json_output_object_begin(struct kefir_json_output *json) {
     REQUIRE_OK(valid_json(json));
     REQUIRE(json->level + 1 < KEFIR_JSON_MAX_DEPTH,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Maximum json depth exceeded"));
+            KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Maximum json depth exceeded"));
 
     REQUIRE_OK(write_separator(json));
     switch (json->state[json->level]) {
@@ -108,7 +108,7 @@ kefir_result_t kefir_json_output_object_begin(struct kefir_json_output *json) {
             break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot open json object");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot open json object");
     }
     json->state[++json->level] = KEFIR_JSON_STATE_OBJECT_EMPTY;
     fprintf(json->file, "{");
@@ -117,10 +117,10 @@ kefir_result_t kefir_json_output_object_begin(struct kefir_json_output *json) {
 
 kefir_result_t kefir_json_output_object_end(struct kefir_json_output *json) {
     REQUIRE_OK(valid_json(json));
-    REQUIRE(json->level > 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot close json object"));
+    REQUIRE(json->level > 0, KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot close json object"));
     REQUIRE(json->state[json->level] == KEFIR_JSON_STATE_OBJECT_EMPTY ||
                 json->state[json->level] == KEFIR_JSON_STATE_OBJECT,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot close json object"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot close json object"));
 
     kefir_bool_t indent = json->state[json->level] == KEFIR_JSON_STATE_OBJECT;
     json->level--;
@@ -134,7 +134,7 @@ kefir_result_t kefir_json_output_object_end(struct kefir_json_output *json) {
 kefir_result_t kefir_json_output_array_begin(struct kefir_json_output *json) {
     REQUIRE_OK(valid_json(json));
     REQUIRE(json->level + 1 < KEFIR_JSON_MAX_DEPTH,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Maximum json depth exceeded"));
+            KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Maximum json depth exceeded"));
 
     REQUIRE_OK(write_separator(json));
     switch (json->state[json->level]) {
@@ -152,7 +152,7 @@ kefir_result_t kefir_json_output_array_begin(struct kefir_json_output *json) {
             break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot open json array");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot open json array");
     }
     json->state[++json->level] = KEFIR_JSON_STATE_ARRAY_EMPTY;
     fprintf(json->file, "[");
@@ -161,10 +161,10 @@ kefir_result_t kefir_json_output_array_begin(struct kefir_json_output *json) {
 
 kefir_result_t kefir_json_output_array_end(struct kefir_json_output *json) {
     REQUIRE_OK(valid_json(json));
-    REQUIRE(json->level > 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot close json array"));
+    REQUIRE(json->level > 0, KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot close json array"));
     REQUIRE(
         json->state[json->level] == KEFIR_JSON_STATE_ARRAY_EMPTY || json->state[json->level] == KEFIR_JSON_STATE_ARRAY,
-        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot close json array"));
+        KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot close json array"));
 
     kefir_bool_t indent = json->state[json->level] == KEFIR_JSON_STATE_ARRAY;
     json->level--;
@@ -236,7 +236,7 @@ kefir_result_t kefir_json_output_object_key(struct kefir_json_output *json, cons
 
     REQUIRE(json->state[json->level] == KEFIR_JSON_STATE_OBJECT_EMPTY ||
                 json->state[json->level] == KEFIR_JSON_STATE_OBJECT,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot add key to json object"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot add key to json object"));
 
     json->state[json->level] = KEFIR_JSON_STATE_OBJECT_FIELD;
     REQUIRE_OK(format_string(json, key));
@@ -259,7 +259,7 @@ static kefir_result_t validate_value(struct kefir_json_output *json) {
             break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot write json value");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot write json value");
     }
     return KEFIR_OK;
 }

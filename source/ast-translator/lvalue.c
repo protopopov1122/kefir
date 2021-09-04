@@ -47,10 +47,10 @@ kefir_result_t kefir_ast_translator_object_lvalue(struct kefir_mem *mem, struct 
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator context"));
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR block builder"));
     REQUIRE(identifier != NULL && strlen(identifier) > 0,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid object identifier"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid object identifier"));
     REQUIRE(scoped_identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid scope identifier"));
     REQUIRE(scoped_identifier->klass == KEFIR_AST_SCOPE_IDENTIFIER_OBJECT,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected object scoped identifier"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected object scoped identifier"));
 
     switch (scoped_identifier->object.storage) {
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN: {
@@ -87,7 +87,7 @@ kefir_result_t kefir_ast_translator_object_lvalue(struct kefir_mem *mem, struct 
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected storage class for lvalue");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected storage class for lvalue");
     }
 
     return KEFIR_OK;
@@ -99,7 +99,7 @@ kefir_result_t kefir_ast_translator_function_lvalue(struct kefir_mem *mem, struc
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator context"));
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR block builder"));
     REQUIRE(identifier != NULL && strlen(identifier) > 0,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid function identifier"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid function identifier"));
 
     kefir_id_t id;
     REQUIRE(kefir_ir_module_symbol(mem, context->module, identifier, &id) != NULL,
@@ -122,7 +122,7 @@ kefir_result_t kefir_ast_translate_array_subscript_lvalue(struct kefir_mem *mem,
                                                                context->module, node->base.properties.type, 0,
                                                                &cached_type));
     REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected cached type to be an object"));
 
     const struct kefir_ast_type *array_type =
         KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, node->array->properties.type);
@@ -157,7 +157,7 @@ kefir_result_t kefir_ast_translate_struct_member_lvalue(struct kefir_mem *mem,
     REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_cache.resolver, context->environment,
                                                                context->module, structure_type, 0, &cached_type));
     REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected cached type to be an object"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected cached type to be an object"));
 
     struct kefir_ast_type_layout *member_layout = NULL;
     struct kefir_ast_designator designator = {
@@ -196,7 +196,7 @@ static kefir_result_t translate_not_impl(const struct kefir_ast_visitor *visitor
     UNUSED(visitor);
     UNUSED(base);
     UNUSED(payload);
-    return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot translate non-lvalue AST node");
+    return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Cannot translate non-lvalue AST node");
 }
 
 static kefir_result_t translate_identifier_node(const struct kefir_ast_visitor *visitor,
@@ -223,10 +223,10 @@ static kefir_result_t translate_identifier_node(const struct kefir_ast_visitor *
 
         case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_TAG:
         case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Type definition is not an lvalue");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Type definition is not an lvalue");
 
         case KEFIR_AST_SCOPE_IDENTIFIER_LABEL:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Label is not an lvalue");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Label is not an lvalue");
     }
     return KEFIR_OK;
     return KEFIR_OK;
@@ -267,7 +267,7 @@ static kefir_result_t translate_unary_operation_node(const struct kefir_ast_visi
             break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Specified unary operator does not produce an lvalue");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Specified unary operator does not produce an lvalue");
     }
     return KEFIR_OK;
 }

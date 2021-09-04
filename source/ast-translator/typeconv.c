@@ -38,7 +38,7 @@ static kefir_result_t cast_to_float32(struct kefir_irbuilder_block *builder,
     } else if (origin->tag == KEFIR_AST_TYPE_SCALAR_DOUBLE) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64CF32, 0));
     } else {
-        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot cast pointers to floating-point values");
+        return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Cannot cast pointers to floating-point values");
     }
     return KEFIR_OK;
 }
@@ -58,7 +58,7 @@ static kefir_result_t cast_to_float64(struct kefir_irbuilder_block *builder,
     } else if (origin->tag == KEFIR_AST_TYPE_SCALAR_FLOAT) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32CF64, 0));
     } else {
-        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot cast pointers to floating-point values");
+        return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Cannot cast pointers to floating-point values");
     }
     return KEFIR_OK;
 }
@@ -71,7 +71,7 @@ static kefir_result_t cast_to_integer(struct kefir_irbuilder_block *builder, con
     } else if (origin->tag == KEFIR_AST_TYPE_SCALAR_DOUBLE) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64CINT, 0));
     } else {
-        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected type in integral conversion");
+        return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected type in integral conversion");
     }
     return KEFIR_OK;
 }
@@ -89,9 +89,9 @@ kefir_result_t kefir_ast_translate_typeconv(struct kefir_irbuilder_block *builde
     const struct kefir_ast_type *normalized_destination = kefir_ast_translator_normalize_type(destination);
 
     REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(normalized_origin) || normalized_destination->tag == KEFIR_AST_TYPE_VOID,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected origin AST type to be scalar"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected origin AST type to be scalar"));
     REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(normalized_destination) || normalized_destination->tag == KEFIR_AST_TYPE_VOID,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected destination AST type to be scalar or void"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected destination AST type to be scalar or void"));
     REQUIRE(!KEFIR_AST_TYPE_SAME(normalized_origin, normalized_destination), KEFIR_OK);
 
     switch (normalized_destination->tag) {
@@ -102,7 +102,7 @@ kefir_result_t kefir_ast_translate_typeconv(struct kefir_irbuilder_block *builde
         case KEFIR_AST_TYPE_SCALAR_POINTER:
             REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(normalized_origin) ||
                         normalized_origin->tag == KEFIR_AST_TYPE_SCALAR_POINTER,
-                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected origin type to be integral or pointer"));
+                    KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected origin type to be integral or pointer"));
             break;
 
         case KEFIR_AST_TYPE_SCALAR_FLOAT:

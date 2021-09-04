@@ -41,7 +41,7 @@ static kefir_result_t next_character(struct kefir_lexer_source_cursor *cursor, k
         mbstate_t mbstate = {0};
         size_t sz = c32rtomb(multibyte, chr, &mbstate);
         REQUIRE(sz != (size_t) -1,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to convert unicode character into multibyte"));
+                KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Unable to convert unicode character into multibyte"));
         char *iter = multibyte;
         while (sz--) {
             *value <<= 8;

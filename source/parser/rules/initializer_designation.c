@@ -89,7 +89,7 @@ kefir_result_t kefir_parser_scan_initializer_designation(struct kefir_mem *mem, 
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser"));
     REQUIRE(designation != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to initializer designation"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to initializer designation"));
 
     REQUIRE_OK(kefir_parser_try_invoke(mem, parser, scan_designation, designation));
     return KEFIR_OK;

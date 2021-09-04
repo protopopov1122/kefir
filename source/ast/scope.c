@@ -102,7 +102,7 @@ kefir_result_t kefir_ast_identifier_flat_scope_at(const struct kefir_ast_identif
     REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST identifier scope"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST identifier"));
     REQUIRE(scope_identifier != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST scoped identifier pointer"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST scoped identifier pointer"));
     struct kefir_hashtree_node *node = NULL;
     REQUIRE_OK(kefir_hashtree_at(&scope->content, (kefir_hashtree_key_t) identifier, &node));
     *scope_identifier = (struct kefir_ast_scoped_identifier *) node->value;
@@ -280,7 +280,7 @@ kefir_result_t kefir_ast_identifier_block_scope_push(struct kefir_mem *mem,
 
 kefir_result_t kefir_ast_identifier_block_scope_pop(struct kefir_ast_identifier_block_scope *scope) {
     REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid multi scope"));
-    REQUIRE(scope->top_scope->parent != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot close root scope"));
+    REQUIRE(scope->top_scope->parent != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot close root scope"));
     scope->top_scope = scope->top_scope->parent;
     return KEFIR_OK;
 }
@@ -292,7 +292,7 @@ kefir_result_t kefir_ast_identifier_block_scope_insert(struct kefir_mem *mem,
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid multi scope"));
     struct kefir_ast_identifier_flat_scope *top_scope = kefir_ast_identifier_block_scope_top(scope);
-    REQUIRE(top_scope, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Failed to retieve current identifier scope"));
+    REQUIRE(top_scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Failed to retieve current identifier scope"));
     REQUIRE_OK(kefir_ast_identifier_flat_scope_insert(mem, top_scope, identifier, scoped_identifier));
     return KEFIR_OK;
 }
@@ -304,7 +304,8 @@ kefir_result_t kefir_ast_identifier_block_scope_at(const struct kefir_ast_identi
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
     struct kefir_tree_node *current_node = scope->top_scope;
     ASSIGN_DECL_CAST(struct kefir_ast_identifier_flat_scope *, current_scope, current_node->value);
-    REQUIRE(current_scope, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Failed to retieve current identifier scope"));
+    REQUIRE(current_scope != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Failed to retieve current identifier scope"));
     while (current_scope != NULL) {
         kefir_result_t res = kefir_ast_identifier_flat_scope_at(current_scope, identifier, scoped_identifier);
         if (res == KEFIR_NOT_FOUND) {

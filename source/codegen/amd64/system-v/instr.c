@@ -27,9 +27,10 @@
 #include "kefir/core/error.h"
 
 static kefir_result_t cg_symbolic_opcode(kefir_iropcode_t opcode, const char **symbolic) {
-    REQUIRE(symbolic != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected symbolic != NULL"));
+    REQUIRE(symbolic != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to symbolic opcode"));
     *symbolic = kefir_amd64_iropcode_handler(opcode);
-    return *symbolic != NULL ? KEFIR_OK : KEFIR_MALFORMED_ARG;
+    REQUIRE(*symbolic != NULL, KEFIR_SET_ERROR(KEFIR_NOT_FOUND, "Unable to find symbolic opcode representation"));
+    return KEFIR_OK;
 }
 
 kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem, struct kefir_codegen_amd64 *codegen,
@@ -41,7 +42,7 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem, struct kefir_
         case KEFIR_IROPCODE_BRANCH: {
             const char *opcode_symbol = NULL;
             REQUIRE(instr->arg.u64 <= kefir_irblock_length(&sysv_func->func->body),
-                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Jump offset is out of IR block bounds"));
+                    KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Jump offset is out of IR block bounds"));
             REQUIRE_OK(cg_symbolic_opcode(instr->opcode, &opcode_symbol));
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
             ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
@@ -96,7 +97,7 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem, struct kefir_
             kefir_size_t length;
             REQUIRE_OK(
                 kefir_ir_module_get_string_literal(sysv_module->module, identifier, &type, &public, &content, &length));
-            REQUIRE(public, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot push non-public string literal"));
+            REQUIRE(public, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Cannot push non-public string literal"));
 
             const char *opcode_symbol = NULL;
             REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_PUSHI64, &opcode_symbol));

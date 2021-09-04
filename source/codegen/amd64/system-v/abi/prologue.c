@@ -109,7 +109,7 @@ static kefir_result_t mask_argument(struct kefir_codegen_amd64 *codegen, const s
         } break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected argument type");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected argument type");
     }
     return KEFIR_OK;
 }

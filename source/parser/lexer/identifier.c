@@ -80,7 +80,7 @@ static kefir_result_t match_impl(struct kefir_mem *mem, struct kefir_lexer *lexe
         for (kefir_size_t i = 0; i <= length; i++) {
             size_t sz = c32rtomb(mb_identifier_ptr, identifier[i], &mbstate);
             REQUIRE(sz != ((size_t) -1),
-                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to convert wide character to multibyte character"));
+                    KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Unable to convert wide character to multibyte character"));
             mb_identifier_ptr += sz;
         }
         REQUIRE_OK(kefir_token_new_identifier(mem, lexer->symbols, mb_identifier, token));

@@ -37,7 +37,7 @@ kefir_result_t kefir_ast_translate_declaration(struct kefir_mem *mem, const stru
                  node->klass->type == KEFIR_AST_STATIC_ASSERTION) ||
                 (node->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION &&
                  node->klass->type == KEFIR_AST_DECLARATION),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected declaration AST node"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected declaration AST node"));
 
     if (node->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR) {
         if (node->klass->type != KEFIR_AST_STATIC_ASSERTION) {

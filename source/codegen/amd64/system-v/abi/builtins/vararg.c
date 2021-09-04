@@ -42,7 +42,7 @@ static kefir_result_t vararg_classify_nested_argument(
     UNUSED(builtin_type);
     UNUSED(typeentry);
     REQUIRE(immediate_allocation != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid nested data classificator"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid nested data classificator"));
     REQUIRE(allocation != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid nested data classificator"));
     REQUIRE_OK(kefir_amd64_sysv_abi_qwords_next(&immediate_allocation->container, KEFIR_AMD64_SYSV_PARAM_INTEGER,
                                                 3 * KEFIR_AMD64_SYSV_ABI_QWORD, KEFIR_AMD64_SYSV_ABI_QWORD,

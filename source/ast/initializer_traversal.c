@@ -24,6 +24,7 @@
 #include "kefir/ast/type.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/core/lang_error.h"
 
 #define INVOKE_TRAVERSAL(_traversal, _callback, ...)                                 \
     do {                                                                             \
@@ -94,7 +95,7 @@ static kefir_result_t string_literal_stop_fn(struct kefir_ast_node_base *node,
             break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected string literal type");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected string literal type");
     }
     return KEFIR_OK;
 }
@@ -223,7 +224,7 @@ static kefir_result_t traverse_struct_union(struct kefir_mem *mem, const struct 
                                             const struct kefir_ast_initializer *initializer,
                                             const struct kefir_ast_initializer_traversal *initializer_traversal) {
     REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot initialize incomplete object type"));
+            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Cannot initialize incomplete object type"));
     if (initializer->type == KEFIR_AST_INITIALIZER_EXPRESSION) {
         INVOKE_TRAVERSAL(initializer_traversal, visit_value, designator, initializer->expression);
     } else {
@@ -259,7 +260,8 @@ static kefir_result_t traverse_array(struct kefir_mem *mem, const struct kefir_a
 
     if (!is_string) {
         REQUIRE(initializer->type == KEFIR_AST_INITIALIZER_LIST,
-                KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to initialize array by non-string literal expression"));
+                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                     "Unable to initialize array by non-string literal expression"));
 
         INVOKE_TRAVERSAL(initializer_traversal, begin_array, designator, initializer);
         struct kefir_ast_type_traversal traversal;
@@ -284,7 +286,7 @@ static kefir_result_t kefi_ast_traverse_initializer_impl(
     } else if (type->tag == KEFIR_AST_TYPE_STRUCTURE || type->tag == KEFIR_AST_TYPE_UNION) {
         REQUIRE_OK(traverse_struct_union(mem, context, type, designator, initializer, initializer_traversal));
     } else {
-        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot initialize incomplete object type");
+        return KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Cannot initialize incomplete object type");
     }
     return KEFIR_OK;
 }
@@ -298,7 +300,7 @@ kefir_result_t kefi_ast_traverse_initializer(struct kefir_mem *mem, const struct
     REQUIRE(initializer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST initializer"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
     REQUIRE(initializer_traversal != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST initializer traversal"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST initializer traversal"));
 
     return kefi_ast_traverse_initializer_impl(mem, context, NULL, initializer, type, initializer_traversal);
 }

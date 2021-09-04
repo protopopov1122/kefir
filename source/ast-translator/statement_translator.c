@@ -34,14 +34,14 @@ static kefir_result_t translate_not_impl(const struct kefir_ast_visitor *visitor
     UNUSED(visitor);
     UNUSED(base);
     UNUSED(payload);
-    return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot translate non-statement AST node");
+    return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Cannot translate non-statement AST node");
 }
 
 #define TRANSLATE_NODE(_id, _type)                                                                                     \
     static kefir_result_t translate_##_id(const struct kefir_ast_visitor *visitor, const _type *node, void *payload) { \
         REQUIRE(visitor != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST visitor"));                 \
         REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST node"));                       \
-        REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));                      \
+        REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));                  \
         ASSIGN_DECL_CAST(struct translator_param *, param, payload);                                                   \
         REQUIRE_OK(kefir_ast_translate_##_id##_node(param->mem, param->context, param->builder, node));                \
         return KEFIR_OK;                                                                                               \

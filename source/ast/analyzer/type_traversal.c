@@ -22,6 +22,7 @@
 #include "kefir/core/linked_stack.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/core/lang_error.h"
 
 static kefir_bool_t is_array_finished(const struct kefir_ast_type *type, kefir_size_t index) {
     return type->array_type.boundary != KEFIR_AST_ARRAY_UNBOUNDED &&
@@ -70,7 +71,7 @@ static kefir_result_t push_layer(struct kefir_mem *mem, struct kefir_ast_type_tr
         case KEFIR_AST_TYPE_ARRAY: {
             REQUIRE(object_type->array_type.boundary != KEFIR_AST_ARRAY_VLA &&
                         object_type->array_type.boundary != KEFIR_AST_ARRAY_VLA_STATIC,
-                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot traverse VLA AST array types"));
+                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Cannot traverse VLA AST array types"));
             layer->type = KEFIR_AST_TYPE_TRAVERSAL_ARRAY;
             layer->array.index = 0;
         } break;
@@ -246,7 +247,7 @@ kefir_result_t kefir_ast_type_traversal_step(struct kefir_mem *mem, struct kefir
     REQUIRE(traversal != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid traversal structure"));
 
     if (kefir_list_length(&traversal->stack) == 0) {
-        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Type traversal is empty");
+        return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Type traversal is empty");
     }
 
     struct kefir_ast_type_traversal_layer *layer = NULL;
@@ -263,7 +264,7 @@ kefir_result_t kefir_ast_type_traversal_step(struct kefir_mem *mem, struct kefir
             break;
 
         case KEFIR_AST_TYPE_TRAVERSAL_SCALAR:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Type traversal is unable to step into scalar");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Type traversal is unable to step into scalar");
     }
     return KEFIR_OK;
 }
@@ -293,7 +294,7 @@ static kefir_result_t navigate_member(struct kefir_mem *mem, struct kefir_ast_ty
                     return KEFIR_OK;
                 }
             }
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to find specified structure/union member");
+            return KEFIR_SET_ERROR(KEFIR_NOT_FOUND, "Unable to find specified structure member");
         };
 
         case KEFIR_AST_TYPE_TRAVERSAL_UNION: {
@@ -311,14 +312,14 @@ static kefir_result_t navigate_member(struct kefir_mem *mem, struct kefir_ast_ty
                     return KEFIR_OK;
                 }
             }
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to find specified structure/union member");
+            return KEFIR_SET_ERROR(KEFIR_NOT_FOUND, "Unable to find specified union member");
         };
 
         case KEFIR_AST_TYPE_TRAVERSAL_ARRAY:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Member access is not supported for array types");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Member access is not supported for array types");
 
         case KEFIR_AST_TYPE_TRAVERSAL_SCALAR:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Member access is not supported for scalar types");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Member access is not supported for scalar types");
     }
     return KEFIR_OK;
 }
@@ -330,7 +331,7 @@ static kefir_result_t navigate_index(struct kefir_mem *mem, struct kefir_ast_typ
     switch (layer->type) {
         case KEFIR_AST_TYPE_TRAVERSAL_STRUCTURE:
         case KEFIR_AST_TYPE_TRAVERSAL_UNION:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Indexed access is not supported for structure/union types");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Indexed access is not supported for structure/union types");
 
         case KEFIR_AST_TYPE_TRAVERSAL_ARRAY: {
             const struct kefir_ast_type *array = layer->object_type;
@@ -353,7 +354,7 @@ static kefir_result_t navigate_index(struct kefir_mem *mem, struct kefir_ast_typ
         } break;
 
         case KEFIR_AST_TYPE_TRAVERSAL_SCALAR:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Indexed access is not supported for scalar types");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Indexed access is not supported for scalar types");
     }
     return KEFIR_OK;
 }

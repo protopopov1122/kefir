@@ -27,7 +27,7 @@ kefir_result_t kefir_ast_enumeration_get(const struct kefir_ast_enum_type *enum_
                                          const struct kefir_ast_constant_expression **value) {
     REQUIRE(enum_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST enum type"));
     REQUIRE(identifier != NULL && strlen(identifier) > 0,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST enum constant identifier"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST enum constant identifier"));
     REQUIRE(value != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid enumerator constant value pointer"));
     struct kefir_hashtree_node *node = NULL;
@@ -186,9 +186,9 @@ kefir_result_t kefir_ast_enumeration_type_constant(struct kefir_mem *mem, struct
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(enum_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST enum type"));
     REQUIRE(identifier != NULL && strlen(identifier) > 0,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid constant identifier"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid constant identifier"));
     if (kefir_hashtree_has(&enum_type->enumerator_index, (kefir_hashtree_key_t) identifier)) {
-        return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Duplicate enumerate constant identifier");
+        return KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Duplicate enumerate constant identifier");
     }
     struct kefir_ast_enum_enumerator *enum_constant = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_enum_enumerator));
     REQUIRE(enum_constant != NULL,
@@ -223,7 +223,7 @@ kefir_result_t kefir_ast_enumeration_type_constant_auto(struct kefir_mem *mem, s
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(enum_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST enum type"));
     REQUIRE(identifier != NULL && strlen(identifier) > 0,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid constant identifier"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid constant identifier"));
     return kefir_ast_enumeration_type_constant(mem, symbols, enum_type, identifier, NULL);
 }
 

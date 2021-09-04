@@ -23,6 +23,7 @@
 #include "kefir/ast/analyzer/initializer.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/core/lang_error.h"
 
 kefir_result_t kefir_ast_analyze_compound_literal_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                        const struct kefir_ast_compound_literal *node,
@@ -37,8 +38,8 @@ kefir_result_t kefir_ast_analyze_compound_literal_node(struct kefir_mem *mem, co
     REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(unqualified_type) ||
                 (unqualified_type->tag == KEFIR_AST_TYPE_ARRAY &&
                  unqualified_type->array_type.boundary == KEFIR_AST_ARRAY_UNBOUNDED),
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
-                            "Compound literal type shall be complete object or array of unknown length"));
+            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                 "Compound literal type shall be complete object or array of unknown length"));
     struct kefir_ast_initializer_properties initializer_properties;
     REQUIRE_OK(kefir_ast_analyze_initializer(mem, context, node->type_name->base.properties.type, node->initializer,
                                              &initializer_properties));
