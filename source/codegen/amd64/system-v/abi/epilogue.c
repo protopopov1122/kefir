@@ -124,7 +124,7 @@ static kefir_result_t return_register_aggregate(struct kefir_codegen_amd64 *code
                 break;
 
             default:
-                return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED,
+                return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED,
                                        "Return of non-integer,sse aggregate members is not supported");
         }
     }

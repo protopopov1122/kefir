@@ -188,7 +188,7 @@ static kefir_result_t load_reg_aggregate(struct argument_load *param, struct kef
                 break;
 
             default:
-                return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED,
+                return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED,
                                        "Aggregates with non-INTEGER and non-SSE members are not supported yet");
         }
     }

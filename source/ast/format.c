@@ -49,7 +49,7 @@ static kefir_result_t visit_not_impl(const struct kefir_ast_visitor *visitor, co
     UNUSED(visitor);
     UNUSED(node);
     UNUSED(payload);
-    return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "AST node JSON formatter is not implemented yet");
+    return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Missing AST node JSON formatter");
 }
 
 static kefir_result_t visit_identifier(const struct kefir_ast_visitor *visitor, const struct kefir_ast_identifier *node,

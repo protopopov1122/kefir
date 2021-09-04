@@ -399,7 +399,7 @@ static kefir_result_t register_aggregate_requirements(struct vararg_aggregate_in
                 break;
 
             default:
-                return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED,
+                return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED,
                                        "Non-integer,sse vararg aggregate members are not supported");
         }
     }
@@ -542,7 +542,7 @@ static kefir_result_t vararg_get_register_aggregate_load(struct kefir_codegen_am
                 break;
 
             default:
-                return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED,
+                return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED,
                                        "Non-integer,sse vararg aggregate members are not supported");
         }
     }

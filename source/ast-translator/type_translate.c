@@ -257,7 +257,8 @@ static kefir_result_t translate_struct_type(struct kefir_mem *mem, const struct 
                                             struct kefir_irbuilder_type *builder,
                                             struct kefir_ast_type_layout **layout_ptr) {
     REQUIRE(type->structure_type.complete,
-            KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Non-complete structure/union definitions are not supported yet"));
+            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
+                            "Non-complete structure/union definitions cannot be translated into IR type"));
 
     kefir_size_t type_index = kefir_ir_type_total_length(builder->type);
     REQUIRE_OK(KEFIR_IRBUILDER_TYPE_APPEND_V(

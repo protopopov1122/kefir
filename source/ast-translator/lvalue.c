@@ -226,7 +226,7 @@ static kefir_result_t translate_identifier_node(const struct kefir_ast_visitor *
             return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Type definition is not an lvalue");
 
         case KEFIR_AST_SCOPE_IDENTIFIER_LABEL:
-            return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Label is not an lvalue");
+            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Label is not an lvalue");
     }
     return KEFIR_OK;
     return KEFIR_OK;
