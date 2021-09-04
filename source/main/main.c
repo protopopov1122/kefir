@@ -26,16 +26,17 @@
 #include <sys/stat.h>
 #include "kefir/core/util.h"
 #include "kefir/compiler/compiler.h"
+#include "kefir/core/os_error.h"
 
 static kefir_result_t mmap_file(const char *filepath, const char **content, size_t *length) {
     int fd = open(filepath, O_RDONLY);
-    REQUIRE(fd >= 0, KEFIR_SET_ERROR(KEFIR_OS_ERROR, "Failed to open file"));
+    REQUIRE(fd >= 0, KEFIR_SET_OS_ERROR("Failed to open file"));
 
     struct stat statbuf;
-    REQUIRE(fstat(fd, &statbuf) >= 0, KEFIR_SET_ERROR(KEFIR_OS_ERROR, "Failed to fstat file"));
+    REQUIRE(fstat(fd, &statbuf) >= 0, KEFIR_SET_OS_ERROR("Failed to fstat file"));
 
     const char *ptr = mmap(NULL, statbuf.st_size, PROT_READ, MAP_SHARED, fd, 0);
-    REQUIRE(ptr != MAP_FAILED, KEFIR_SET_ERROR(KEFIR_OS_ERROR, "Failed to mmap file"));
+    REQUIRE(ptr != MAP_FAILED, KEFIR_SET_OS_ERROR("Failed to mmap file"));
     *content = ptr;
     *length = statbuf.st_size;
     close(fd);
@@ -45,7 +46,7 @@ static kefir_result_t mmap_file(const char *filepath, const char **content, size
 static kefir_result_t unmap_file(const char *content, kefir_size_t length) {
     int err = munmap((void *) content, length);
     if (err != 0) {
-        return KEFIR_SET_ERROR(KEFIR_OS_ERROR, "Failed to unmap file");
+        return KEFIR_SET_OS_ERROR("Failed to unmap file");
     }
     return KEFIR_OK;
 }
@@ -81,11 +82,6 @@ static kefir_result_t compiler(const char *filepath) {
 static int report_error(kefir_result_t res) {
     if (res == KEFIR_OK) {
         return EXIT_SUCCESS;
-    } else if (res == KEFIR_OS_ERROR) {
-        fprintf(stderr, "Failed to compile! Error stack:\n");
-        const struct kefir_error *err = kefir_current_error();
-        fprintf(stderr, "\t%s:%u\t", err->file, err->line);
-        perror(kefir_current_error()->message);
     } else {
         fprintf(stderr, "Failed to compile! Error stack:\n");
         const struct kefir_error *err = kefir_current_error();
