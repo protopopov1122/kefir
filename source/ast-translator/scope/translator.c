@@ -71,7 +71,7 @@ static kefir_result_t translate_externals(struct kefir_mem *mem, const struct ke
                 } else {
                     struct kefir_ir_data *data = kefir_ir_module_new_named_data(
                         mem, module, scoped_identifier->identifier, identifier_data->type_id);
-                    REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate IR named data"));
+                    REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate IR named data"));
                     if (scoped_identifier->value->object.initializer != NULL) {
                         REQUIRE_OK(initialize_data(mem, context, module, identifier_data->type, identifier_data->layout,
                                                    scoped_identifier->value->object.initializer, data));

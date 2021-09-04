@@ -82,7 +82,7 @@ kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem, struct k
         identifier = kefir_symbol_table_insert(mem, type_bundle->symbols, identifier, NULL);
         REQUIRE_ELSE(identifier != NULL, {
             KEFIR_FREE(mem, param);
-            return KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate parameter identifier");
+            return KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate parameter identifier");
         });
     }
     param->identifier = identifier;
@@ -90,7 +90,7 @@ kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem, struct k
     if (type) {
         param->adjusted_type = kefir_ast_type_conv_adjust_function_parameter(mem, type_bundle, type);
         REQUIRE(param->adjusted_type != NULL,
-                KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to adjust AST function parameter type"));
+                KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to adjust AST function parameter type"));
     } else {
         param->adjusted_type = NULL;
     }

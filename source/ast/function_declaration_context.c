@@ -91,7 +91,7 @@ static kefir_result_t scoped_context_define_identifier(struct kefir_mem *mem,
         REQUIRE(scoped_id != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
 
         const char *id = kefir_symbol_table_insert(mem, context->parent->symbols, identifier, NULL);
-        REQUIRE(id != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate identifier"));
+        REQUIRE(id != NULL, KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to insert identifier into symbol table"));
         REQUIRE_OK(kefir_ast_identifier_flat_scope_insert(mem, &context->ordinary_scope, id, scoped_id));
     }
     ASSIGN_PTR(scoped_id_ptr, scoped_id);
@@ -119,7 +119,7 @@ static kefir_result_t scoped_context_define_constant(struct kefir_mem *mem,
         REQUIRE(scoped_id != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
 
         const char *id = kefir_symbol_table_insert(mem, context->parent->symbols, identifier, NULL);
-        REQUIRE(id != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate identifier"));
+        REQUIRE(id != NULL, KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to insert identifier into symbol table"));
         REQUIRE_OK(kefir_ast_identifier_flat_scope_insert(mem, &context->ordinary_scope, id, scoped_id));
     }
     ASSIGN_PTR(scoped_id_ptr, scoped_id);
@@ -147,7 +147,7 @@ static kefir_result_t scoped_context_define_tag(struct kefir_mem *mem,
         scoped_id = kefir_ast_context_allocate_scoped_type_tag(mem, type);
         REQUIRE(scoped_id != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
         const char *id = kefir_symbol_table_insert(mem, context->parent->symbols, identifier, NULL);
-        REQUIRE(id != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate identifier"));
+        REQUIRE(id != NULL, KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to insert identifier into symbol table"));
         res = kefir_ast_identifier_flat_scope_insert(mem, &context->tag_scope, id, scoped_id);
         REQUIRE_ELSE(res == KEFIR_OK, {
             kefir_ast_context_free_scoped_identifier(mem, scoped_id, NULL);

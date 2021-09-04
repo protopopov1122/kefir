@@ -196,7 +196,7 @@ kefir_result_t kefir_ast_enumeration_type_constant(struct kefir_mem *mem, struct
         identifier = kefir_symbol_table_insert(mem, symbols, identifier, NULL);
         REQUIRE_ELSE(identifier != NULL, {
             KEFIR_FREE(mem, enum_constant);
-            return KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate enumeration constant");
+            return KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate enumeration constant");
         });
     }
     enum_constant->identifier = identifier;

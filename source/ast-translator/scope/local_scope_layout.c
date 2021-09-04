@@ -44,7 +44,7 @@ kefir_result_t kefir_ast_translator_local_scope_layout_init(struct kefir_mem *me
     layout->global = global;
     layout->local_layout = kefir_ir_module_new_type(mem, module, 0, &layout->local_layout_id);
     layout->local_type_layout = NULL;
-    REQUIRE(layout->local_layout != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate new IR type"));
+    REQUIRE(layout->local_layout != NULL, KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate new IR type"));
     return KEFIR_OK;
 }
 

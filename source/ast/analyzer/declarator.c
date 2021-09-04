@@ -131,7 +131,7 @@ static kefir_result_t resolve_struct_type(struct kefir_mem *mem, const struct ke
         type = specifier_type == KEFIR_AST_TYPE_SPECIFIER_STRUCT
                    ? kefir_ast_type_structure(mem, context->type_bundle, specifier->identifier, &struct_type)
                    : kefir_ast_type_union(mem, context->type_bundle, specifier->identifier, &struct_type);
-        REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to allocate AST struct/union type"));
+        REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Unable to allocate AST struct/union type"));
 
         for (const struct kefir_list_entry *iter = kefir_list_head(&specifier->entries); iter != NULL;
              kefir_list_next(&iter)) {
@@ -163,7 +163,7 @@ static kefir_result_t resolve_struct_type(struct kefir_mem *mem, const struct ke
             type = specifier_type == KEFIR_AST_TYPE_SPECIFIER_STRUCT
                        ? kefir_ast_type_incomplete_structure(mem, context->type_bundle, specifier->identifier)
                        : kefir_ast_type_incomplete_union(mem, context->type_bundle, specifier->identifier);
-            REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to allocate AST struct/union type"));
+            REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Unable to allocate AST struct/union type"));
         }
     }
 
@@ -183,7 +183,7 @@ static kefir_result_t resolve_enum_type(struct kefir_mem *mem, const struct kefi
         struct kefir_ast_enum_type *enum_type = NULL;
         type = kefir_ast_type_enumeration(mem, context->type_bundle, specifier->identifier,
                                           context->type_traits->underlying_enumeration_type, &enum_type);
-        REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to allocate AST enum type"));
+        REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Unable to allocate AST enum type"));
 
         kefir_ast_constant_expression_int_t constant_value = 0;
         for (const struct kefir_list_entry *iter = kefir_list_head(&specifier->entries); iter != NULL;
@@ -225,7 +225,7 @@ static kefir_result_t resolve_enum_type(struct kefir_mem *mem, const struct kefi
         if (!resolved) {
             type = kefir_ast_type_incomplete_enumeration(mem, context->type_bundle, specifier->identifier,
                                                          context->type_traits->underlying_enumeration_type);
-            REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to allocate AST enum type"));
+            REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Unable to allocate AST enum type"));
         }
     }
 

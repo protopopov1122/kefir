@@ -176,7 +176,7 @@ static kefir_result_t function_translator_ctx_init(struct kefir_mem *mem, struct
         kefir_ast_translator_local_scope_layout_free(mem, &args->local_scope_layout);
         kefir_ast_translator_context_free(mem, &args->local_translator_context);
         free_function_declaration(mem, args);
-        return KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate IR function");
+        return KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate IR function");
     });
 
     res = kefir_irbuilder_block_init(mem, &args->builder, &args->ir_func->body);

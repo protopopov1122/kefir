@@ -340,7 +340,7 @@ static kefir_result_t kefir_ast_struct_type_field_impl(struct kefir_mem *mem, st
         identifier = kefir_symbol_table_insert(mem, symbols, identifier, NULL);
         REQUIRE_ELSE(identifier != NULL, {
             KEFIR_FREE(mem, field);
-            return KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate field identifier");
+            return KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate field identifier");
         });
     }
     field->identifier = identifier;

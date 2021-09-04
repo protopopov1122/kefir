@@ -30,7 +30,7 @@ static kefir_result_t analyze_modulo(const struct kefir_ast_context *context, co
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both modulo operands shall have integral type"));
     base->properties.type = kefir_ast_type_common_arithmetic(context->type_traits, type1, type2);
     REQUIRE(base->properties.type != NULL,
-            KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to determine common AST arithmetic type"));
+            KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to determine common AST arithmetic type"));
     return KEFIR_OK;
 }
 
@@ -40,7 +40,7 @@ static kefir_result_t analyze_muldiv(const struct kefir_ast_context *context, co
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both multiply/divide operands shall have arithmetic type"));
     base->properties.type = kefir_ast_type_common_arithmetic(context->type_traits, type1, type2);
     REQUIRE(base->properties.type != NULL,
-            KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to determine common AST arithmetic type"));
+            KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to determine common AST arithmetic type"));
     return KEFIR_OK;
 }
 
@@ -59,7 +59,7 @@ static kefir_result_t analyze_addition(const struct kefir_ast_context *context, 
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both operands shall have arithmetic types"));
         base->properties.type = kefir_ast_type_common_arithmetic(context->type_traits, type1, type2);
         REQUIRE(base->properties.type != NULL,
-                KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to determine common AST arithmetic type"));
+                KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to determine common AST arithmetic type"));
     }
     return KEFIR_OK;
 }
@@ -83,7 +83,7 @@ static kefir_result_t analyze_subtraction(const struct kefir_ast_context *contex
                 KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both operands shall have arithmetic types"));
         base->properties.type = kefir_ast_type_common_arithmetic(context->type_traits, type1, type2);
         REQUIRE(base->properties.type != NULL,
-                KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to determine common AST arithmetic type"));
+                KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to determine common AST arithmetic type"));
     }
     return KEFIR_OK;
 }
@@ -94,7 +94,7 @@ static kefir_result_t analyze_shift(const struct kefir_ast_context *context, con
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Bitwise shift operator expects integer arguments"));
     base->properties.type = kefir_ast_type_int_promotion(context->type_traits, type1);
     REQUIRE(base->properties.type != NULL,
-            KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to determine common AST arithmetic type"));
+            KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to determine common AST arithmetic type"));
     return KEFIR_OK;
 }
 
@@ -145,7 +145,7 @@ static kefir_result_t analyze_bitwise(const struct kefir_ast_context *context, c
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Both operands shall have integral types"));
     base->properties.type = kefir_ast_type_common_arithmetic(context->type_traits, type1, type2);
     REQUIRE(base->properties.type != NULL,
-            KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to determine common AST arithmetic type"));
+            KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to determine common AST arithmetic type"));
     return KEFIR_OK;
 }
 

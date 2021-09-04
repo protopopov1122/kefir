@@ -53,7 +53,7 @@ kefir_result_t kefir_ast_analyze_switch_statement_node(struct kefir_mem *mem, co
         kefir_ast_type_int_promotion(context->type_traits, node->expression->properties.type);
     REQUIRE(
         controlling_expr_type != NULL,
-        KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to perform integral promotion on controlling expression type"));
+        KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to perform integral promotion on controlling expression type"));
 
     struct kefir_ast_flow_control_statement *stmt = NULL;
     REQUIRE_OK(kefir_ast_flow_control_tree_push(mem, context->flow_control_tree,

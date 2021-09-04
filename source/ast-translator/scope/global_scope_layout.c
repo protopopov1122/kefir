@@ -44,11 +44,11 @@ kefir_result_t kefir_ast_translator_global_scope_layout_init(struct kefir_mem *m
                                     NULL));
 
     layout->static_layout = kefir_ir_module_new_type(mem, module, 0, &layout->static_layout_id);
-    REQUIRE(layout->static_layout != NULL, KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate new IR type"));
+    REQUIRE(layout->static_layout != NULL, KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate new IR type"));
     layout->static_thread_local_layout =
         kefir_ir_module_new_type(mem, module, 0, &layout->static_thread_local_layout_id);
     REQUIRE(layout->static_thread_local_layout != NULL,
-            KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Failed to allocate new IR type"));
+            KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate new IR type"));
     return KEFIR_OK;
 }
 
@@ -80,7 +80,7 @@ static kefir_result_t translate_scoped_identifier_type(struct kefir_mem *mem, st
     KEFIR_AST_SCOPE_SET_CLEANUP(scoped_identifier, kefir_ast_translator_scoped_identifer_payload_free, NULL);
     scoped_identifier_layout->type = kefir_ir_module_new_type(mem, module, 0, &scoped_identifier_layout->type_id);
     REQUIRE(scoped_identifier_layout->type != NULL,
-            KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, "Unable to allocate new IR type"));
+            KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Unable to allocate new IR type"));
     struct kefir_irbuilder_type builder;
     REQUIRE_OK(kefir_irbuilder_type_init(mem, &builder, scoped_identifier_layout->type));
     REQUIRE_OK(kefir_ast_translate_object_type(mem, scoped_identifier->object.type,
