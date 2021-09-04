@@ -526,10 +526,10 @@ static kefir_result_t assign_immediate_builtin(const struct kefir_ir_type *type,
 
 kefir_result_t kefir_amd64_sysv_parameter_classify(struct kefir_mem *mem, const struct kefir_ir_type *type,
                                                    const struct kefir_vector *layout, struct kefir_vector *allocation) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type definition"));
-    REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid layout vector"));
-    REQUIRE(allocation != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid allocation vector"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type definition"));
+    REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid layout vector"));
+    REQUIRE(allocation != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid allocation vector"));
     kefir_size_t slots = kefir_ir_type_total_slots(type);
     REQUIRE_OK(kefir_vector_alloc(mem, sizeof(struct kefir_amd64_sysv_parameter_allocation), slots, allocation));
     kefir_result_t res = kefir_vector_extend(allocation, slots);
@@ -567,8 +567,8 @@ kefir_result_t kefir_amd64_sysv_parameter_classify(struct kefir_mem *mem, const 
 }
 
 kefir_result_t kefir_amd64_sysv_parameter_free(struct kefir_mem *mem, struct kefir_vector *allocation) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(allocation != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid allocation vector"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(allocation != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid allocation vector"));
     for (kefir_size_t i = 0; i < kefir_vector_length(allocation); i++) {
         ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, alloc, kefir_vector_at(allocation, i));
         if (alloc->type == KEFIR_AMD64_SYSV_INPUT_PARAM_OWNING_CONTAINER) {
@@ -747,10 +747,10 @@ static kefir_result_t builtin_allocate(const struct kefir_ir_type *type, kefir_s
 kefir_result_t kefir_amd64_sysv_parameter_allocate(struct kefir_mem *mem, const struct kefir_ir_type *type,
                                                    const struct kefir_vector *layout, struct kefir_vector *allocation,
                                                    struct kefir_amd64_sysv_parameter_location *location) {
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type"));
-    REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type layout"));
-    REQUIRE(allocation != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type allocation"));
-    REQUIRE(location != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parameter location pointer"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type"));
+    REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type layout"));
+    REQUIRE(allocation != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type allocation"));
+    REQUIRE(location != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parameter location pointer"));
 
     struct kefir_ir_type_visitor visitor;
     kefir_ir_type_visitor_init(&visitor, visitor_not_supported);

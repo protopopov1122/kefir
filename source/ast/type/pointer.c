@@ -53,8 +53,8 @@ const struct kefir_ast_type *composite_pointer_types(struct kefir_mem *mem, stru
 }
 
 static kefir_result_t free_pointer_type(struct kefir_mem *mem, const struct kefir_ast_type *type) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
     KEFIR_FREE(mem, (void *) type);
     return KEFIR_OK;
 }

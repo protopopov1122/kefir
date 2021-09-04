@@ -28,8 +28,8 @@ NODE_VISIT_IMPL(ast_while_statement_visit, kefir_ast_while_statement, while_stat
 struct kefir_ast_node_base *ast_while_statement_clone(struct kefir_mem *, struct kefir_ast_node_base *);
 
 kefir_result_t ast_while_statement_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valstmt memory allocator"));
-    REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valstmt AST node base"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valstmt memory allocator"));
+    REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valstmt AST node base"));
     ASSIGN_DECL_CAST(struct kefir_ast_while_statement *, node, base->self);
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node->controlling_expr));
     node->controlling_expr = NULL;

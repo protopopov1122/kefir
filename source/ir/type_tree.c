@@ -28,9 +28,9 @@ static kefir_result_t free_node(struct kefir_mem *mem, struct kefir_hashtree *tr
     UNUSED(key);
     UNUSED(payload);
 
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     ASSIGN_DECL_CAST(struct kefir_ir_type_tree_node *, node, value);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type tree node"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type tree node"));
 
     REQUIRE_OK(kefir_list_free(mem, &node->subtypes));
     KEFIR_FREE(mem, node);
@@ -122,9 +122,9 @@ static kefir_result_t visit_typeentry(const struct kefir_ir_type *type, kefir_si
 
 kefir_result_t kefir_ir_type_tree_init(struct kefir_mem *mem, const struct kefir_ir_type *type,
                                        struct kefir_ir_type_tree *tree) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type"));
-    REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type tree"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type"));
+    REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type tree"));
 
     struct kefir_ir_type_visitor visitor;
     REQUIRE_OK(kefir_ir_type_visitor_init(&visitor, visit_typeentry));
@@ -145,8 +145,8 @@ kefir_result_t kefir_ir_type_tree_init(struct kefir_mem *mem, const struct kefir
 }
 
 kefir_result_t kefir_ir_type_tree_free(struct kefir_mem *mem, struct kefir_ir_type_tree *tree) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type tree"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type tree"));
 
     REQUIRE_OK(kefir_list_free(mem, &tree->roots));
     REQUIRE_OK(kefir_hashtree_free(mem, &tree->index));
@@ -156,8 +156,8 @@ kefir_result_t kefir_ir_type_tree_free(struct kefir_mem *mem, struct kefir_ir_ty
 
 kefir_result_t kefir_ir_type_tree_at(const struct kefir_ir_type_tree *tree, kefir_size_t index,
                                      const struct kefir_ir_type_tree_node **node) {
-    REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type tree"));
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to IR type tree node"));
+    REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type tree"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to IR type tree node"));
 
     struct kefir_hashtree_node *tree_node = NULL;
     REQUIRE_OK(kefir_hashtree_at(&tree->index, (kefir_hashtree_key_t) index, &tree_node));

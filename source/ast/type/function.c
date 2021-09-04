@@ -32,7 +32,7 @@ kefir_size_t kefir_ast_type_function_parameter_count(const struct kefir_ast_func
 kefir_result_t kefir_ast_type_function_get_parameter(const struct kefir_ast_function_type *function_type,
                                                      kefir_size_t index,
                                                      const struct kefir_ast_function_type_parameter **parameter) {
-    REQUIRE(function_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST finction type"));
+    REQUIRE(function_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST finction type"));
     REQUIRE(parameter != NULL,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST function type parameter pointer"));
     struct kefir_list_entry *entry = kefir_list_at(&function_type->parameters, index);
@@ -45,12 +45,13 @@ kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem, struct k
                                                  struct kefir_ast_function_type *function_type, const char *identifier,
                                                  const struct kefir_ast_type *type,
                                                  const kefir_ast_scoped_identifier_storage_t *storage) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(type_bundle != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type storage"));
-    REQUIRE(function_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST finction type"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(type_bundle != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type storage"));
+    REQUIRE(function_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST finction type"));
     switch (function_type->mode) {
         case KEFIR_AST_FUNCTION_TYPE_PARAMETERS:
-            REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST function parameter type"));
+            REQUIRE(type != NULL,
+                    KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST function parameter type"));
             break;
 
         case KEFIR_AST_FUNCTION_TYPE_PARAM_IDENTIFIERS:
@@ -118,7 +119,7 @@ kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem, struct k
 }
 
 kefir_result_t kefir_ast_type_function_ellipsis(struct kefir_ast_function_type *function_type, kefir_bool_t ellipsis) {
-    REQUIRE(function_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST function type"));
+    REQUIRE(function_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST function type"));
     function_type->ellipsis = ellipsis;
     return KEFIR_OK;
 }
@@ -246,8 +247,8 @@ const struct kefir_ast_type *composite_function_types(struct kefir_mem *mem, str
 }
 
 static kefir_result_t free_function_type(struct kefir_mem *mem, const struct kefir_ast_type *type) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
     REQUIRE_OK(kefir_hashtree_free(mem, (struct kefir_hashtree *) &type->function_type.parameter_index));
     REQUIRE_OK(kefir_list_free(mem, (struct kefir_list *) &type->function_type.parameters));
     KEFIR_FREE(mem, (void *) type);

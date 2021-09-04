@@ -28,8 +28,8 @@ NODE_VISIT_IMPL(ast_comma_operator_visit, kefir_ast_comma_operator, comma_operat
 struct kefir_ast_node_base *ast_comma_operator_clone(struct kefir_mem *, struct kefir_ast_node_base *);
 
 kefir_result_t ast_comma_operator_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node base"));
     ASSIGN_DECL_CAST(struct kefir_ast_comma_operator *, node, base->self);
     REQUIRE_OK(kefir_list_free(mem, &node->expressions));
     KEFIR_FREE(mem, node);
@@ -45,8 +45,8 @@ static kefir_result_t comma_on_removal(struct kefir_mem *mem, struct kefir_list 
                                        void *payload) {
     UNUSED(list);
     UNUSED(payload);
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid list entry"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid list entry"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_node_base *, node, entry->value);
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
@@ -135,9 +135,9 @@ struct kefir_ast_comma_operator *kefir_ast_new_comma_operator(struct kefir_mem *
 
 kefir_result_t kefir_ast_comma_append(struct kefir_mem *mem, struct kefir_ast_comma_operator *comma,
                                       struct kefir_ast_node_base *base) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(comma != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST comma operator"));
-    REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(comma != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST comma operator"));
+    REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node"));
 
     REQUIRE_OK(kefir_list_insert_after(mem, &comma->expressions, kefir_list_tail(&comma->expressions), base));
     return KEFIR_OK;

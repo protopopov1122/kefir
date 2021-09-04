@@ -25,10 +25,11 @@
 
 kefir_result_t kefir_ast_enumeration_get(const struct kefir_ast_enum_type *enum_type, const char *identifier,
                                          const struct kefir_ast_constant_expression **value) {
-    REQUIRE(enum_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST enum type"));
+    REQUIRE(enum_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST enum type"));
     REQUIRE(identifier != NULL && strlen(identifier) > 0,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST enum constant identifier"));
-    REQUIRE(value != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid enumerator constant value pointer"));
+    REQUIRE(value != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid enumerator constant value pointer"));
     struct kefir_hashtree_node *node = NULL;
     REQUIRE_OK(kefir_hashtree_at(&enum_type->enumerator_index, (kefir_hashtree_key_t) identifier, &node));
     ASSIGN_DECL_CAST(struct kefir_ast_enum_enumerator *, constant, node->value);
@@ -121,8 +122,8 @@ const struct kefir_ast_type *composite_enum_types(struct kefir_mem *mem, struct 
 }
 
 static kefir_result_t free_enumeration_type(struct kefir_mem *mem, const struct kefir_ast_type *type) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
     if (type->enumeration_type.complete) {
         REQUIRE_OK(kefir_hashtree_free(mem, (struct kefir_hashtree *) &type->enumeration_type.enumerator_index));
         REQUIRE_OK(kefir_list_free(mem, (struct kefir_list *) &type->enumeration_type.enumerators));
@@ -182,8 +183,8 @@ static kefir_result_t enumeration_free(struct kefir_mem *mem, struct kefir_list 
 kefir_result_t kefir_ast_enumeration_type_constant(struct kefir_mem *mem, struct kefir_symbol_table *symbols,
                                                    struct kefir_ast_enum_type *enum_type, const char *identifier,
                                                    struct kefir_ast_constant_expression *value) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(enum_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST enum type"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(enum_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST enum type"));
     REQUIRE(identifier != NULL && strlen(identifier) > 0,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid constant identifier"));
     if (kefir_hashtree_has(&enum_type->enumerator_index, (kefir_hashtree_key_t) identifier)) {
@@ -219,8 +220,8 @@ kefir_result_t kefir_ast_enumeration_type_constant(struct kefir_mem *mem, struct
 
 kefir_result_t kefir_ast_enumeration_type_constant_auto(struct kefir_mem *mem, struct kefir_symbol_table *symbols,
                                                         struct kefir_ast_enum_type *enum_type, const char *identifier) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(enum_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST enum type"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(enum_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST enum type"));
     REQUIRE(identifier != NULL && strlen(identifier) > 0,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid constant identifier"));
     return kefir_ast_enumeration_type_constant(mem, symbols, enum_type, identifier, NULL);

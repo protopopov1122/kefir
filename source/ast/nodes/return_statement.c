@@ -28,8 +28,8 @@ NODE_VISIT_IMPL(ast_return_statement_visit, kefir_ast_return_statement, return_s
 struct kefir_ast_node_base *ast_return_statement_clone(struct kefir_mem *, struct kefir_ast_node_base *);
 
 kefir_result_t ast_return_statement_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node base"));
     ASSIGN_DECL_CAST(struct kefir_ast_return_statement *, node, base->self);
     if (node->expression != NULL) {
         REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node->expression));

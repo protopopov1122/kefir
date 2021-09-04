@@ -69,7 +69,7 @@ static kefir_bool_t is_char_array(const struct kefir_ast_type *type, void *paylo
 }
 
 static kefir_bool_t is_array_of(const struct kefir_ast_type *type, void *payload) {
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(const struct kefir_ast_type *, expected_type, payload);
     return type->tag == KEFIR_AST_TYPE_ARRAY &&
            KEFIR_AST_TYPE_SAME(kefir_ast_unqualified_type(type->array_type.element_type), expected_type);
@@ -256,10 +256,10 @@ kefir_result_t kefir_ast_analyze_initializer(struct kefir_mem *mem, const struct
                                              const struct kefir_ast_type *type,
                                              const struct kefir_ast_initializer *initializer,
                                              struct kefir_ast_initializer_properties *properties) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
-    REQUIRE(initializer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST initializer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
+    REQUIRE(initializer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST initializer"));
 
     type = kefir_ast_unqualified_type(type);
 

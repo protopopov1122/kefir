@@ -25,9 +25,9 @@
 #include "kefir/codegen/amd64-sysv.h"
 
 static kefir_result_t amd64_sysv_new_codegen(struct kefir_mem *mem, FILE *output, struct kefir_codegen **codegen_ptr) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(output != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid FILE"));
-    REQUIRE(codegen_ptr != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to code generator"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(output != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid FILE"));
+    REQUIRE(codegen_ptr != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to code generator"));
 
     struct kefir_codegen_amd64 *codegen = KEFIR_MALLOC(mem, sizeof(struct kefir_codegen_amd64));
     REQUIRE(codegen != NULL,
@@ -42,8 +42,8 @@ static kefir_result_t amd64_sysv_new_codegen(struct kefir_mem *mem, FILE *output
 }
 
 static kefir_result_t amd64_sysv_free_codegen(struct kefir_mem *mem, struct kefir_codegen *codegen) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid code generator"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid code generator"));
 
     REQUIRE_OK(KEFIR_CODEGEN_CLOSE(codegen));
     KEFIR_FREE(mem, codegen->self);
@@ -51,7 +51,7 @@ static kefir_result_t amd64_sysv_free_codegen(struct kefir_mem *mem, struct kefi
 }
 
 static kefir_result_t kefir_compiler_amd64_sysv_profile(struct kefir_compiler_profile *profile) {
-    REQUIRE(profile != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid compiler profile"));
+    REQUIRE(profile != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler profile"));
 
     REQUIRE_OK(kefir_parser_integral_types_default(&profile->parser_integrals));
     REQUIRE_OK(kefir_codegen_amd64_sysv_target_platform(&profile->ir_target_platform));
@@ -68,7 +68,7 @@ const struct Profile {
 const kefir_size_t ProfileCount = sizeof(Profiles) / sizeof(Profiles[0]);
 
 kefir_result_t kefir_compiler_profile(struct kefir_compiler_profile *profile, const char *identifier) {
-    REQUIRE(profile != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid compiler profile"));
+    REQUIRE(profile != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler profile"));
 
     for (kefir_size_t i = 0; i < ProfileCount; i++) {
         const struct Profile *profileId = &Profiles[i];

@@ -74,10 +74,11 @@ kefir_result_t kefir_ast_translator_scoped_identifier_remove(struct kefir_mem *m
 kefir_result_t kefir_ast_translator_scoped_identifier_insert(
     struct kefir_mem *mem, const char *identifier, const struct kefir_ast_scoped_identifier *scoped_identifier,
     struct kefir_list *list) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
-    REQUIRE(scoped_identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST scoped identifier"));
-    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid list"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
+    REQUIRE(scoped_identifier != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST scoped identifier"));
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid list"));
 
     struct kefir_ast_translator_scoped_identifier_entry *scoped_id =
         KEFIR_MALLOC(mem, sizeof(struct kefir_ast_translator_scoped_identifier_entry));

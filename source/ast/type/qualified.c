@@ -23,8 +23,8 @@
 #include "kefir/core/error.h"
 
 static kefir_result_t free_qualified_type(struct kefir_mem *mem, const struct kefir_ast_type *type) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
     KEFIR_FREE(mem, (void *) type);
     return KEFIR_OK;
 }
@@ -129,7 +129,7 @@ kefir_result_t kefir_ast_type_retrieve_qualifications(struct kefir_ast_type_qual
                                                       const struct kefir_ast_type *type) {
     REQUIRE(qualifications != NULL,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type qualification pointer"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
     if (type->tag == KEFIR_AST_TYPE_QUALIFIED) {
         *qualifications = type->qualified_type.qualification;
     } else {

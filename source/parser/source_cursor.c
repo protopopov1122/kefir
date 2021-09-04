@@ -24,9 +24,9 @@
 
 kefir_result_t kefir_lexer_source_cursor_init(struct kefir_lexer_source_cursor *cursor, const char *content,
                                               kefir_size_t length, const char *source_id) {
-    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer source cursor"));
-    REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid content"));
-    REQUIRE(source_id != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid source identifier"));
+    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer source cursor"));
+    REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid content"));
+    REQUIRE(source_id != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid source identifier"));
 
     *cursor = (struct kefir_lexer_source_cursor){0};
     cursor->content = content;
@@ -61,7 +61,7 @@ kefir_char32_t kefir_lexer_source_cursor_at(const struct kefir_lexer_source_curs
 }
 
 kefir_result_t kefir_lexer_source_cursor_next(struct kefir_lexer_source_cursor *cursor, kefir_size_t count) {
-    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer source cursor"));
+    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer source cursor"));
     while (count--) {
         kefir_char32_t chr;
         size_t rc = mbrtoc32(&chr, cursor->content + cursor->index, cursor->length - cursor->index, &cursor->mbstate);
@@ -90,8 +90,9 @@ kefir_result_t kefir_lexer_source_cursor_next(struct kefir_lexer_source_cursor *
 
 kefir_result_t kefir_lexer_source_cursor_save(const struct kefir_lexer_source_cursor *cursor,
                                               struct kefir_lexer_source_cursor_state *state) {
-    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer source cursor"));
-    REQUIRE(state != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer lexer source cursor state"));
+    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer source cursor"));
+    REQUIRE(state != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer lexer source cursor state"));
 
     state->index = cursor->index;
     state->mbstate = cursor->mbstate;
@@ -101,8 +102,9 @@ kefir_result_t kefir_lexer_source_cursor_save(const struct kefir_lexer_source_cu
 
 kefir_result_t kefir_lexer_source_cursor_restore(struct kefir_lexer_source_cursor *cursor,
                                                  const struct kefir_lexer_source_cursor_state *state) {
-    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer source cursor"));
-    REQUIRE(state != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer lexer source cursor state"));
+    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer source cursor"));
+    REQUIRE(state != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer lexer source cursor state"));
 
     cursor->index = state->index;
     cursor->mbstate = state->mbstate;
@@ -127,8 +129,8 @@ const char *kefir_lexer_source_cursor_end(struct kefir_lexer_source_cursor *curs
 
 kefir_result_t kefir_lexer_cursor_match_string(const struct kefir_lexer_source_cursor *cursor,
                                                const kefir_char32_t *string) {
-    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer source cursor"));
-    REQUIRE(string != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string"));
+    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer source cursor"));
+    REQUIRE(string != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string"));
 
     for (kefir_size_t index = 0; string[index] != '\0'; index++) {
         if (kefir_lexer_source_cursor_at(cursor, index) != string[index]) {

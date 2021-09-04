@@ -28,8 +28,8 @@ NODE_VISIT_IMPL(ast_function_call_visit, kefir_ast_function_call, function_call)
 struct kefir_ast_node_base *ast_function_call_clone(struct kefir_mem *, struct kefir_ast_node_base *);
 
 kefir_result_t ast_function_call_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node base"));
     ASSIGN_DECL_CAST(struct kefir_ast_function_call *, node, base->self);
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node->function));
     REQUIRE_OK(kefir_list_free(mem, &node->arguments));
@@ -138,9 +138,9 @@ struct kefir_ast_function_call *kefir_ast_new_function_call(struct kefir_mem *me
 
 kefir_result_t kefir_ast_function_call_append(struct kefir_mem *mem, struct kefir_ast_function_call *call,
                                               struct kefir_ast_node_base *arg) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(call != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST function call"));
-    REQUIRE(arg != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid function parameter AST node"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(call != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST function call"));
+    REQUIRE(arg != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid function parameter AST node"));
     REQUIRE_OK(kefir_list_insert_after(mem, &call->arguments, kefir_list_tail(&call->arguments), arg));
     return KEFIR_OK;
 }

@@ -452,9 +452,9 @@ static kefir_result_t calculate_type_properties(const struct kefir_ir_type *type
 
 kefir_result_t kefir_amd64_sysv_static_data(struct kefir_mem *mem, struct kefir_codegen_amd64 *codegen,
                                             const struct kefir_ir_data *data, const char *identifier) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 code generator"));
-    REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR data"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 code generator"));
+    REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data"));
     REQUIRE(data->finalized, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected finalized IR data"));
 
     struct kefir_ir_type_visitor visitor;

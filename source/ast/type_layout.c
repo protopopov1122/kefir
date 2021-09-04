@@ -27,9 +27,9 @@ static kefir_result_t on_structure_member_remove(struct kefir_mem *mem, struct k
                                                  struct kefir_list_entry *entry, void *payload) {
     UNUSED(list);
     UNUSED(payload);
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     ASSIGN_DECL_CAST(struct kefir_ast_type_layout_structure_member *, member, entry->value);
-    REQUIRE(member != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type layout member"));
+    REQUIRE(member != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type layout member"));
     REQUIRE_OK(kefir_ast_type_layout_free(mem, member->layout));
     KEFIR_FREE(mem, member);
     return KEFIR_OK;
@@ -39,9 +39,9 @@ static kefir_result_t on_sublayout_remove(struct kefir_mem *mem, struct kefir_li
                                           struct kefir_list_entry *entry, void *payload) {
     UNUSED(list);
     UNUSED(payload);
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     ASSIGN_DECL_CAST(struct kefir_ast_type_layout *, sublayout, entry->value);
-    REQUIRE(sublayout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type layout"));
+    REQUIRE(sublayout != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type layout"));
     REQUIRE_OK(kefir_ast_type_layout_free(mem, sublayout));
     return KEFIR_OK;
 }
@@ -105,8 +105,8 @@ struct kefir_ast_type_layout *kefir_ast_new_type_layout(struct kefir_mem *mem, c
 }
 
 kefir_result_t kefir_ast_type_layout_free(struct kefir_mem *mem, struct kefir_ast_type_layout *type_layout) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(type_layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type layout"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(type_layout != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type layout"));
 
     if (type_layout->type == NULL) {
         REQUIRE_OK(kefir_list_free(mem, &type_layout->custom_layout.sublayouts));
@@ -134,11 +134,11 @@ kefir_result_t kefir_ast_type_layout_insert_structure_member(struct kefir_mem *m
                                                              struct kefir_ast_type_layout *root_layout,
                                                              const char *identifier,
                                                              struct kefir_ast_type_layout *member) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(root_layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid root AST type layout"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(root_layout != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid root AST type layout"));
     REQUIRE(identifier != NULL && strlen(identifier) > 0,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid member AST type layout"));
-    REQUIRE(member != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid member AST type layout"));
+    REQUIRE(member != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid member AST type layout"));
     REQUIRE(root_layout->type != NULL &&
                 (root_layout->type->tag == KEFIR_AST_TYPE_STRUCTURE || root_layout->type->tag == KEFIR_AST_TYPE_UNION),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Root AST type layout should have struct/union type"));
@@ -170,9 +170,9 @@ kefir_result_t kefir_ast_type_layout_insert_structure_member(struct kefir_mem *m
 kefir_result_t kefir_ast_type_layout_add_structure_anonymous_member(struct kefir_mem *mem,
                                                                     struct kefir_ast_type_layout *root_layout,
                                                                     struct kefir_ast_type_layout *member) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(root_layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid root AST type layout"));
-    REQUIRE(member != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid member AST type layout"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(root_layout != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid root AST type layout"));
+    REQUIRE(member != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid member AST type layout"));
     REQUIRE(root_layout->type != NULL &&
                 (root_layout->type->tag == KEFIR_AST_TYPE_STRUCTURE || root_layout->type->tag == KEFIR_AST_TYPE_UNION),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Root AST type layout should have struct/union type"));
@@ -263,9 +263,9 @@ kefir_result_t kefir_ast_type_layout_resolve(struct kefir_ast_type_layout *root,
                                              const struct kefir_ast_designator *designator,
                                              struct kefir_ast_type_layout **layout_ptr,
                                              kefir_ast_type_layout_resolver_callback_t callback, void *payload) {
-    REQUIRE(root != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid root AST type layout"));
-    REQUIRE(designator != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST designator"));
-    REQUIRE(layout_ptr != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type layout pointer"));
+    REQUIRE(root != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid root AST type layout"));
+    REQUIRE(designator != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST designator"));
+    REQUIRE(layout_ptr != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type layout pointer"));
 
     REQUIRE_OK(resolve_layout(root, designator, layout_ptr, callback, payload));
     return KEFIR_OK;
@@ -291,9 +291,9 @@ static kefir_result_t add_to_offset(struct kefir_ast_type_layout *layout, const 
 kefir_result_t kefir_ast_type_layout_resolve_offset(struct kefir_ast_type_layout *root,
                                                     const struct kefir_ast_designator *designator,
                                                     struct kefir_ast_type_layout **layout_ptr, kefir_size_t *offset) {
-    REQUIRE(root != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid root AST type layout"));
-    REQUIRE(layout_ptr != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type layout pointer"));
-    REQUIRE(offset != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid type layout offset pointer"));
+    REQUIRE(root != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid root AST type layout"));
+    REQUIRE(layout_ptr != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type layout pointer"));
+    REQUIRE(offset != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid type layout offset pointer"));
 
     if (designator != NULL) {
         *offset = 0;

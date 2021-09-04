@@ -147,7 +147,7 @@ static kefir_result_t visit_value(const struct kefir_ast_designator *designator,
     struct kefir_ast_constant_expression_value value;
     REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(param->mem, param->context, expression, &value));
     struct kefir_ir_typeentry *target_typeentry = kefir_ir_type_at(param->type, resolved_layout->value);
-    REQUIRE(target_typeentry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot obtain target IR type entry"));
+    REQUIRE(target_typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Cannot obtain target IR type entry"));
     switch (value.klass) {
         case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_NONE:
             return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected constant expression value type");
@@ -282,13 +282,13 @@ kefir_result_t kefir_ast_translate_data_initializer(struct kefir_mem *mem, const
                                                     const struct kefir_ir_type *type,
                                                     const struct kefir_ast_initializer *initializer,
                                                     struct kefir_ir_data *data, kefir_size_t base_slot) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
-    REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module"));
-    REQUIRE(type_layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type layout"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type"));
-    REQUIRE(initializer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST initializer"));
-    REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR data"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
+    REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR module"));
+    REQUIRE(type_layout != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type layout"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type"));
+    REQUIRE(initializer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST initializer"));
+    REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data"));
 
     struct traversal_param param = {.mem = mem,
                                     .context = context,

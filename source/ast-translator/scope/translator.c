@@ -150,10 +150,11 @@ static kefir_result_t translate_static(struct kefir_mem *mem, const struct kefir
 kefir_result_t kefir_ast_translate_global_scope(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                 struct kefir_ir_module *module,
                                                 const struct kefir_ast_translator_global_scope_layout *global_scope) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
-    REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module"));
-    REQUIRE(global_scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator global scope"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
+    REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR module"));
+    REQUIRE(global_scope != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator global scope"));
 
     REQUIRE_OK(translate_externals(mem, context, module, global_scope));
     REQUIRE_OK(translate_static(mem, context, module, global_scope));
@@ -198,10 +199,10 @@ static kefir_result_t translate_local_static(struct kefir_mem *mem, const struct
 kefir_result_t kefir_ast_translate_local_scope(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                struct kefir_ir_module *module,
                                                const struct kefir_ast_translator_local_scope_layout *local_scope) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
-    REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module"));
-    REQUIRE(local_scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator local scope"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
+    REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR module"));
+    REQUIRE(local_scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator local scope"));
 
     REQUIRE_OK(translate_local_static(mem, context, module, local_scope));
     // TODO Implement thread-local objects

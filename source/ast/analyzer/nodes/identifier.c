@@ -26,9 +26,9 @@ kefir_result_t kefir_ast_analyze_identifier_node(struct kefir_mem *mem, const st
                                                  const struct kefir_ast_identifier *node,
                                                  struct kefir_ast_node_base *base) {
     UNUSED(mem);
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier"));
-    REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST base node"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST identifier"));
+    REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST base node"));
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
     REQUIRE_OK(context->resolve_ordinary_identifier(context, node->identifier, &scoped_id));
     switch (scoped_id->klass) {

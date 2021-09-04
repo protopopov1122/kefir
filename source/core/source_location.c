@@ -23,7 +23,7 @@
 #include "kefir/core/error.h"
 
 kefir_result_t kefir_source_location_empty(struct kefir_source_location *location) {
-    REQUIRE(location != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to source location"));
+    REQUIRE(location != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to source location"));
 
     location->source = NULL;
     location->line = 0;
@@ -33,8 +33,8 @@ kefir_result_t kefir_source_location_empty(struct kefir_source_location *locatio
 
 kefir_result_t kefir_source_location_init(struct kefir_source_location *location, const char *source,
                                           kefir_source_location_line_t line, kefir_source_location_column_t column) {
-    REQUIRE(location != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to source location"));
-    REQUIRE(source != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid source"));
+    REQUIRE(location != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to source location"));
+    REQUIRE(source != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid source"));
 
     location->source = source;
     location->line = line;

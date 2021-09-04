@@ -28,8 +28,8 @@ NODE_VISIT_IMPL(ast_compound_statement_visit, kefir_ast_compound_statement, comp
 struct kefir_ast_node_base *ast_compound_statement_clone(struct kefir_mem *, struct kefir_ast_node_base *);
 
 kefir_result_t ast_compound_statement_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node base"));
     ASSIGN_DECL_CAST(struct kefir_ast_compound_statement *, node, base->self);
     REQUIRE_OK(kefir_list_free(mem, &node->block_items));
     KEFIR_FREE(mem, node);
@@ -45,8 +45,8 @@ kefir_result_t free_block_item(struct kefir_mem *mem, struct kefir_list *list, s
                                void *payload) {
     UNUSED(list);
     UNUSED(payload);
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid list entry"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid list entry"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_node_base *, item_base, entry->value);
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, item_base));

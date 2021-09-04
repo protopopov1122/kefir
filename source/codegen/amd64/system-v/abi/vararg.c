@@ -123,8 +123,8 @@ struct vararg_scalar_type {
 };
 
 static kefir_result_t free_vararg_scalar_type(struct kefir_mem *mem, void *payload) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct vararg_scalar_type *, type, payload);
     KEFIR_FREE(mem, type);
     return KEFIR_OK;
@@ -200,9 +200,9 @@ static kefir_result_t vararg_get_int(struct kefir_codegen_amd64 *codegen,
                                      void *payload) {
     UNUSED(sysv_module);
     UNUSED(sysv_func);
-    REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 codegen"));
-    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 codegen"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
 
     ASSIGN_DECL_CAST(struct vararg_scalar_type *, scalar_type, payload);
     ASMGEN_LABEL(&codegen->asmgen, "%s", identifier);
@@ -260,9 +260,9 @@ static kefir_result_t vararg_get_sse(struct kefir_codegen_amd64 *codegen,
                                      void *payload) {
     UNUSED(sysv_module);
     UNUSED(sysv_func);
-    REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 codegen"));
-    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 codegen"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
 
     ASSIGN_DECL_CAST(struct vararg_scalar_type *, scalar_type, payload);
     ASMGEN_LABEL(&codegen->asmgen, "%s", identifier);
@@ -668,7 +668,7 @@ static kefir_result_t vararg_visit_builtin_impl(struct kefir_mem *mem, struct ke
                                                 struct kefir_codegen_amd64 *codegen,
                                                 struct kefir_amd64_sysv_function *sysv_func, const char *identifier) {
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, alloc, kefir_vector_at(allocation, slot));
-    REQUIRE(alloc != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to find parameter allocation information"));
+    REQUIRE(alloc != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unable to find parameter allocation information"));
 
     kefir_ir_builtin_type_t builtin = (kefir_ir_builtin_type_t) typeentry->param;
     REQUIRE(builtin < KEFIR_IR_TYPE_BUILTIN_COUNT, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unknown built-in type"));
@@ -742,7 +742,7 @@ kefir_result_t kefir_codegen_amd64_sysv_vararg_instruction(struct kefir_mem *mem
             const kefir_id_t type_id = (kefir_id_t) instr->arg.u32[0];
             const kefir_size_t type_index = (kefir_size_t) instr->arg.u32[1];
             struct kefir_ir_type *type = kefir_ir_module_get_named_type(sysv_module->module, type_id);
-            REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unknown named IR type"));
+            REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unknown named IR type"));
             struct kefir_ir_type_visitor visitor;
             REQUIRE_OK(kefir_ir_type_visitor_init(&visitor, visitor_not_supported));
             KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS(&visitor, vararg_visit_integer);

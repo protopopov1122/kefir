@@ -32,7 +32,7 @@ static kefir_result_t visit_non_const_ref(const struct kefir_ast_visitor *visito
                                           const struct kefir_ast_node_base *node, void *payload) {
     UNUSED(visitor);
     UNUSED(node);
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     *param->constant = false;
     return KEFIR_OK;
@@ -109,9 +109,9 @@ static kefir_result_t visit_struct_indirect_member(const struct kefir_ast_visito
 kefir_result_t kefir_ast_node_is_lvalue_reference_constant(const struct kefir_ast_context *context,
                                                            const struct kefir_ast_node_base *node,
                                                            kefir_bool_t *constant) {
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node"));
-    REQUIRE(constant != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to boolean"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node"));
+    REQUIRE(constant != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to boolean"));
 
     struct visitor_param param = {.context = context, .constant = constant};
     *constant = true;

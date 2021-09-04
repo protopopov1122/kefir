@@ -29,10 +29,10 @@
 kefir_result_t kefir_ast_translator_local_scope_layout_init(struct kefir_mem *mem, struct kefir_ir_module *module,
                                                             struct kefir_ast_translator_global_scope_layout *global,
                                                             struct kefir_ast_translator_local_scope_layout *layout) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module"));
-    REQUIRE(global != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST global scope layout"));
-    REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST local scope layout"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR module"));
+    REQUIRE(global != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST global scope layout"));
+    REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST local scope layout"));
     layout->local_context = NULL;
     REQUIRE_OK(kefir_list_init(&layout->local_objects));
     REQUIRE_OK(kefir_list_init(&layout->static_objects));
@@ -50,7 +50,7 @@ kefir_result_t kefir_ast_translator_local_scope_layout_init(struct kefir_mem *me
 
 kefir_result_t kefir_ast_translator_local_scope_layout_free(struct kefir_mem *mem,
                                                             struct kefir_ast_translator_local_scope_layout *layout) {
-    REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST local scope layout"));
+    REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST local scope layout"));
     if (layout->local_context != NULL) {
         REQUIRE_OK(kefir_ast_identifier_block_scope_cleanup_payload(mem, &layout->local_context->ordinary_scope));
         layout->local_context = NULL;
@@ -346,10 +346,11 @@ kefir_result_t kefir_ast_translator_build_local_scope_layout(struct kefir_mem *m
                                                              struct kefir_ir_module *module,
                                                              struct kefir_ast_translator_type_resolver *type_resolver,
                                                              struct kefir_ast_translator_local_scope_layout *layout) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
-    REQUIRE(type_resolver != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator type cache"));
-    REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST local scope layout"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
+    REQUIRE(type_resolver != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator type cache"));
+    REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST local scope layout"));
     REQUIRE(layout->local_context == NULL,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected empty AST translator local scope layout"));
 

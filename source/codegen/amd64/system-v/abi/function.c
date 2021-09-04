@@ -137,7 +137,7 @@ static kefir_result_t calculate_frame_temporaries(struct kefir_mem *mem,
         if (instr->opcode == KEFIR_IROPCODE_VARARG_GET) {
             kefir_id_t id = (kefir_id_t) instr->arg.u32[0];
             struct kefir_ir_type *type = kefir_ir_module_get_named_type(sysv_module->module, id);
-            REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to find named type"));
+            REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unable to find named type"));
             REQUIRE_OK(update_frame_temporaries_type(mem, type, (kefir_size_t) instr->arg.u32[1], &size, &alignment));
         }
     }
@@ -258,10 +258,10 @@ kefir_result_t kefir_amd64_sysv_function_alloc(struct kefir_mem *mem,
                                                struct kefir_codegen_amd64_sysv_module *sysv_module,
                                                const struct kefir_ir_function *func,
                                                struct kefir_amd64_sysv_function *sysv_func) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(sysv_module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected vaaid AMD64 System-V module"));
-    REQUIRE(func != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR function"));
-    REQUIRE(sysv_func != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 System-V function"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(sysv_module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected vaaid AMD64 System-V module"));
+    REQUIRE(func != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR function"));
+    REQUIRE(sysv_func != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 System-V function"));
     sysv_func->func = func;
     REQUIRE_OK(kefir_amd64_sysv_function_decl_alloc(mem, func->declaration, &sysv_func->decl));
     REQUIRE_OK(kefir_hashtree_init(&sysv_func->appendix, &kefir_hashtree_str_ops));
@@ -281,8 +281,8 @@ kefir_result_t kefir_amd64_sysv_function_alloc(struct kefir_mem *mem,
 }
 
 kefir_result_t kefir_amd64_sysv_function_free(struct kefir_mem *mem, struct kefir_amd64_sysv_function *sysv_func) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(sysv_func != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 System-V function"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(sysv_func != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 System-V function"));
     if (sysv_func->func->locals != NULL) {
         REQUIRE_OK(kefir_vector_free(mem, &sysv_func->local_layout));
     }
@@ -302,10 +302,10 @@ kefir_result_t kefir_amd64_sysv_function_insert_appendix(struct kefir_mem *mem,
                                                          kefir_amd64_sysv_function_appendix_t callback,
                                                          kefir_result_t (*cleanup)(struct kefir_mem *, void *),
                                                          void *payload, const char *identifier) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(sysv_func != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 System-V function"));
-    REQUIRE(callback != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid appendix callback"));
-    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid appendix identifier"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(sysv_func != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 System-V function"));
+    REQUIRE(callback != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid appendix callback"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid appendix identifier"));
     kefir_result_t res = kefir_amd64_sysv_function_has_appendix(sysv_func, identifier);
     if (res == KEFIR_NOT_FOUND) {
         char *identifier_copy = KEFIR_MALLOC(mem, strlen(identifier) + 1);

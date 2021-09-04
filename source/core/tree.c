@@ -33,7 +33,7 @@ static kefir_result_t child_node_remove(struct kefir_mem *mem, struct kefir_list
 }
 
 kefir_result_t kefir_tree_init(struct kefir_tree_node *root, void *value) {
-    REQUIRE(root != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid tree node"));
+    REQUIRE(root != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid tree node"));
     root->value = value;
     root->parent = NULL;
     root->prev_sibling = NULL;
@@ -46,8 +46,8 @@ kefir_result_t kefir_tree_init(struct kefir_tree_node *root, void *value) {
 }
 
 kefir_result_t kefir_tree_free(struct kefir_mem *mem, struct kefir_tree_node *node) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid tree node"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid tree node"));
 
     if (node->removal_callback != NULL) {
         REQUIRE_OK(node->removal_callback(mem, node->value, node->removal_payload));
@@ -58,7 +58,7 @@ kefir_result_t kefir_tree_free(struct kefir_mem *mem, struct kefir_tree_node *no
 
 kefir_result_t kefir_tree_on_removal(struct kefir_tree_node *node,
                                      kefir_result_t (*callback)(struct kefir_mem *, void *, void *), void *payload) {
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid tree node"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid tree node"));
     node->removal_callback = callback;
     node->removal_payload = payload;
     return KEFIR_OK;
@@ -66,8 +66,8 @@ kefir_result_t kefir_tree_on_removal(struct kefir_tree_node *node,
 
 kefir_result_t kefir_tree_insert_child(struct kefir_mem *mem, struct kefir_tree_node *node, void *value,
                                        struct kefir_tree_node **subnode) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid tree node"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid tree node"));
     struct kefir_tree_node *child = KEFIR_MALLOC(mem, sizeof(struct kefir_tree_node));
     REQUIRE(child != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate tree node"));
     child->value = value;
@@ -116,8 +116,8 @@ struct kefir_tree_node *kefir_tree_prev_sibling(const struct kefir_tree_node *no
 }
 
 kefir_result_t kefir_tree_iter(struct kefir_tree_node *root, struct kefir_tree_node_iterator *iter) {
-    REQUIRE(root != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid tree node"));
-    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid tree node iterator"));
+    REQUIRE(root != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid tree node"));
+    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid tree node iterator"));
     iter->current = root;
     REQUIRE_OK(kefir_list_init(&iter->pending));
     return KEFIR_OK;
@@ -125,8 +125,8 @@ kefir_result_t kefir_tree_iter(struct kefir_tree_node *root, struct kefir_tree_n
 }
 
 kefir_result_t kefir_tree_iter_next(struct kefir_mem *mem, struct kefir_tree_node_iterator *iter) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid tree node iterator"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid tree node iterator"));
     if (iter->current == NULL) {
         return KEFIR_OK;
     }
@@ -147,8 +147,8 @@ kefir_result_t kefir_tree_iter_next(struct kefir_mem *mem, struct kefir_tree_nod
 }
 
 kefir_result_t kefir_tree_iter_free(struct kefir_mem *mem, struct kefir_tree_node_iterator *iter) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid tree node iterator"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid tree node iterator"));
     iter->current = NULL;
     REQUIRE_OK(kefir_list_free(mem, &iter->pending));
     return KEFIR_OK;

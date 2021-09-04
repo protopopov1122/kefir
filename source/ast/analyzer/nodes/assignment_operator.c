@@ -81,8 +81,8 @@ kefir_result_t kefir_ast_analyze_assignment_operator_node(struct kefir_mem *mem,
                                                           struct kefir_ast_node_base *base) {
     UNUSED(mem);
     UNUSED(context);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST constant"));
-    REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST base node"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST constant"));
+    REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST base node"));
 
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->target));
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->value));

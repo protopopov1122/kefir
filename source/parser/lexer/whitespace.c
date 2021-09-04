@@ -24,7 +24,7 @@
 #include "kefir/util/char32.h"
 
 kefir_result_t kefir_lexer_cursor_skip_whitespaces(struct kefir_lexer_source_cursor *cursor) {
-    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer source cursor"));
+    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer source cursor"));
 
     while (kefir_isspace32(kefir_lexer_source_cursor_at(cursor, 0))) {
         REQUIRE_OK(kefir_lexer_source_cursor_next(cursor, 1));

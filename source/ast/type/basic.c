@@ -158,9 +158,9 @@ const struct kefir_ast_type *kefir_ast_type_flip_integer_singedness(const struct
 
 kefir_result_t kefir_ast_type_is_signed(const struct kefir_ast_type_traits *type_traits,
                                         const struct kefir_ast_type *type, kefir_bool_t *signedness) {
-    REQUIRE(type_traits != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type traits"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
-    REQUIRE(signedness != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to boolean"));
+    REQUIRE(type_traits != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type traits"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
+    REQUIRE(signedness != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to boolean"));
 
     switch (type->tag) {
         case KEFIR_AST_TYPE_SCALAR_BOOL:

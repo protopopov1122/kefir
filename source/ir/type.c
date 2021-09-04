@@ -25,7 +25,7 @@
 #include "kefir/core/error.h"
 
 kefir_result_t kefir_ir_type_init(struct kefir_ir_type *type, void *area, kefir_size_t capacity) {
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type pointer"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type pointer"));
     REQUIRE((area != NULL && capacity != 0) || (area == NULL && capacity == 0),
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL IR type content pointer for non-zero capacity"));
     return kefir_vector_init(&type->vector, sizeof(struct kefir_ir_typeentry), area, capacity);
@@ -47,8 +47,8 @@ struct kefir_ir_typeentry *kefir_ir_type_raw_at(const struct kefir_ir_type *type
 }
 
 kefir_result_t kefir_ir_type_append(struct kefir_ir_type *type, const struct kefir_ir_typeentry *value) {
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type pointer"));
-    REQUIRE(value != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type entry pointer"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type pointer"));
+    REQUIRE(value != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type entry pointer"));
     REQUIRE(value->typecode != KEFIR_IR_TYPE_COUNT,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot append auxilary typecodes"));
     return kefir_vector_append(&type->vector, value);
@@ -61,8 +61,8 @@ kefir_result_t kefir_ir_type_append_v(struct kefir_ir_type *type, kefir_ir_typec
 }
 
 kefir_result_t kefir_ir_type_append_e(struct kefir_ir_type *type, const struct kefir_ir_type *ext, kefir_size_t index) {
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type"));
-    REQUIRE(ext != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid external IR type"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type"));
+    REQUIRE(ext != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid external IR type"));
     const kefir_size_t length = kefir_ir_type_node_total_length(ext, index);
     REQUIRE(length > 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid external index"));
     REQUIRE(kefir_ir_type_raw_available(type) >= length,
@@ -76,8 +76,8 @@ kefir_result_t kefir_ir_type_append_e(struct kefir_ir_type *type, const struct k
 }
 
 kefir_result_t kefir_ir_type_alloc(struct kefir_mem *mem, kefir_size_t capacity, struct kefir_ir_type *type) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type pointer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type pointer"));
     if (capacity == 0) {
         return kefir_ir_type_init(type, NULL, 0);
     }
@@ -85,8 +85,8 @@ kefir_result_t kefir_ir_type_alloc(struct kefir_mem *mem, kefir_size_t capacity,
 }
 
 kefir_result_t kefir_ir_type_realloc(struct kefir_mem *mem, kefir_size_t capacity, struct kefir_ir_type *type) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type pointer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type pointer"));
     if (capacity == 0) {
         return kefir_ir_type_free(mem, type);
     }
@@ -94,8 +94,8 @@ kefir_result_t kefir_ir_type_realloc(struct kefir_mem *mem, kefir_size_t capacit
 }
 
 kefir_result_t kefir_ir_type_free(struct kefir_mem *mem, struct kefir_ir_type *type) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type pointer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type pointer"));
     return kefir_vector_free(mem, &type->vector);
 }
 
@@ -224,7 +224,7 @@ kefir_size_t kefir_ir_type_total_slots(const struct kefir_ir_type *type) {
 
 kefir_result_t kefir_ir_type_visitor_init(struct kefir_ir_type_visitor *visitor,
                                           kefir_ir_type_visitor_callback_t defCallback) {
-    REQUIRE(visitor != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL IR type visitor pointer"));
+    REQUIRE(visitor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-NULL IR type visitor pointer"));
     for (kefir_size_t i = 0; i < KEFIR_IR_TYPE_COUNT; i++) {
         visitor->visit[i] = defCallback;
     }
@@ -237,15 +237,16 @@ kefir_result_t kefir_ir_type_visitor_list_nodes(const struct kefir_ir_type *type
                                                 const struct kefir_ir_type_visitor *visitor, void *payload,
                                                 kefir_size_t begin, kefir_size_t count) {
 
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type pointer"));
-    REQUIRE(visitor != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type visitor pointer"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type pointer"));
+    REQUIRE(visitor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type visitor pointer"));
     REQUIRE(begin <= kefir_ir_type_total_length(type),
             KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Index exceeds IR type length"));
     for (kefir_size_t index = begin; index < kefir_ir_type_total_length(type) && count-- > 0;
          index += kefir_ir_type_node_total_length(type, index)) {
 
         struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(type, index);
-        REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Failed to retrieve type entry from IR type"));
+        REQUIRE(typeentry != NULL,
+                KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Failed to retrieve type entry from IR type"));
 #define INVOKE(method)                                                      \
     do {                                                                    \
         if (method) {                                                       \
@@ -303,8 +304,8 @@ static kefir_result_t iter_visitor(const struct kefir_ir_type *type, kefir_size_
 }
 
 kefir_result_t kefir_ir_type_iterator_init(const struct kefir_ir_type *type, struct kefir_ir_type_iterator *iter) {
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type pointer"));
-    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type iterator pointer"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type pointer"));
+    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type iterator pointer"));
     iter->type = type;
     iter->index = 0;
     iter->slot = 0;
@@ -312,7 +313,7 @@ kefir_result_t kefir_ir_type_iterator_init(const struct kefir_ir_type *type, str
 }
 
 kefir_result_t kefir_ir_type_iterator_goto(struct kefir_ir_type_iterator *iter, kefir_size_t target) {
-    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type iterator pointer"));
+    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type iterator pointer"));
     iter->index = 0;
     iter->slot = 0;
     struct iter_params params = {.iter = iter, .slot = 0, .target = target};
@@ -325,7 +326,7 @@ kefir_result_t kefir_ir_type_iterator_goto(struct kefir_ir_type_iterator *iter, 
 }
 
 kefir_result_t kefir_ir_type_iterator_goto_field(struct kefir_ir_type_iterator *iter, kefir_size_t target) {
-    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type iterator pointer"));
+    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type iterator pointer"));
     struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(iter->type, iter->index);
     REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Expected valid IR type iterator state"));
     REQUIRE(typeentry->typecode == KEFIR_IR_TYPE_STRUCT || typeentry->typecode == KEFIR_IR_TYPE_UNION,
@@ -340,7 +341,7 @@ kefir_result_t kefir_ir_type_iterator_goto_field(struct kefir_ir_type_iterator *
 }
 
 kefir_result_t kefir_ir_type_iterator_goto_index(struct kefir_ir_type_iterator *iter, kefir_size_t target) {
-    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type iterator pointer"));
+    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type iterator pointer"));
     struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(iter->type, iter->index);
     REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Expected valid IR type iterator state"));
     REQUIRE(typeentry->typecode == KEFIR_IR_TYPE_ARRAY,

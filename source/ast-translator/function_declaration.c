@@ -67,7 +67,7 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(
                     KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG,
                                     "Function declaration parameter shall be either expression, or declaration"));
             param_type = adjust_untyped_parameter(mem, type_bundle, type_traits, param->properties.type);
-            REQUIRE(param_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to adjust untyped parameter"));
+            REQUIRE(param_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unable to adjust untyped parameter"));
         }
 
         if (param_type != NULL) {
@@ -118,7 +118,7 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(
 
         const struct kefir_ast_type *param_type =
             adjust_untyped_parameter(mem, type_bundle, type_traits, param->properties.type);
-        REQUIRE(param_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to adjust untyped parameter"));
+        REQUIRE(param_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unable to adjust untyped parameter"));
 
         struct kefir_ast_type_layout *parameter_layout = NULL;
         kefir_result_t res = kefir_ast_translate_object_type(mem, param_type, 0, env, &builder, &parameter_layout);
@@ -182,8 +182,8 @@ static kefir_result_t free_argument_layout(struct kefir_mem *mem, struct kefir_l
                                            struct kefir_list_entry *entry, void *payload) {
     UNUSED(list);
     UNUSED(payload);
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid list entry"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid list entry"));
     ASSIGN_DECL_CAST(struct kefir_ast_type_layout *, type_layout, entry->value);
     if (type_layout != NULL) {
         REQUIRE_OK(kefir_ast_type_layout_free(mem, type_layout));
@@ -237,11 +237,12 @@ kefir_result_t kefir_ast_translator_function_declaration_init(
     struct kefir_ir_module *module, struct kefir_ast_translator_type_resolver *type_resolver,
     const struct kefir_ast_type *func_type, const struct kefir_list *parameters,
     struct kefir_ast_translator_function_declaration **func_decl) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator environment"));
-    REQUIRE(type_traits != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type traits"));
-    REQUIRE(env != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module"));
-    REQUIRE(type_resolver != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator type resolver"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator environment"));
+    REQUIRE(type_traits != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type traits"));
+    REQUIRE(env != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR module"));
+    REQUIRE(type_resolver != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator type resolver"));
     REQUIRE(func_type != NULL && func_type->tag == KEFIR_AST_TYPE_FUNCTION,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST function type"));
     REQUIRE(func_decl != NULL,
@@ -265,7 +266,7 @@ kefir_result_t kefir_ast_translator_function_declaration_init(
 
 kefir_result_t kefir_ast_translator_function_declaration_free(
     struct kefir_mem *mem, struct kefir_ast_translator_function_declaration *func_decl) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(func_decl != NULL,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translator function declaration pointer"));
 

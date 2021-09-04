@@ -206,8 +206,8 @@ static kefir_result_t restore_state(struct kefir_codegen_amd64 *codegen, const s
 
 kefir_result_t kefir_amd64_sysv_function_epilogue(struct kefir_codegen_amd64 *codegen,
                                                   const struct kefir_amd64_sysv_function *func) {
-    REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 code generator"));
-    REQUIRE(func != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR function declaration"));
+    REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 code generator"));
+    REQUIRE(func != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR function declaration"));
     ASMGEN_COMMENT(&codegen->asmgen, "Begin epilogue of %s", func->func->name);
     REQUIRE_OK(return_values(codegen, func));
     REQUIRE_OK(restore_state(codegen, func));

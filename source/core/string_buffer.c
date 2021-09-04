@@ -29,8 +29,8 @@
 
 kefir_result_t kefir_string_buffer_init(struct kefir_mem *mem, struct kefir_string_buffer *buffer,
                                         kefir_string_buffer_mode_t mode) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string buffer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string buffer"));
 
     buffer->mode = mode;
     buffer->capacity = BUFFER_MIN_CAPACITY;
@@ -42,8 +42,8 @@ kefir_result_t kefir_string_buffer_init(struct kefir_mem *mem, struct kefir_stri
 }
 
 kefir_result_t kefir_string_buffer_free(struct kefir_mem *mem, struct kefir_string_buffer *buffer) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string buffer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string buffer"));
 
     KEFIR_FREE(mem, buffer->buffer);
     buffer->buffer = NULL;
@@ -100,9 +100,9 @@ static kefir_size_t ensure_capacity(struct kefir_mem *mem, struct kefir_string_b
 
 static kefir_result_t insert_buffer(struct kefir_mem *mem, struct kefir_string_buffer *buffer, const void *fragment,
                                     kefir_size_t size) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string buffer"));
-    REQUIRE(fragment != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string fragment"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string buffer"));
+    REQUIRE(fragment != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string fragment"));
     REQUIRE(size != 0, KEFIR_OK);
 
     REQUIRE_OK(ensure_capacity(mem, buffer, size));
@@ -113,8 +113,8 @@ static kefir_result_t insert_buffer(struct kefir_mem *mem, struct kefir_string_b
 
 kefir_result_t kefir_string_buffer_insert(struct kefir_mem *mem, struct kefir_string_buffer *buffer,
                                           kefir_char32_t character) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string buffer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string buffer"));
 
     switch (buffer->mode) {
         case KEFIR_STRING_BUFFER_MULTIBYTE:
@@ -142,8 +142,8 @@ kefir_result_t kefir_string_buffer_insert(struct kefir_mem *mem, struct kefir_st
 
 kefir_result_t kefir_string_buffer_insert_multibyte(struct kefir_mem *mem, struct kefir_string_buffer *buffer,
                                                     kefir_char32_t character) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string buffer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string buffer"));
     REQUIRE(buffer->mode == KEFIR_STRING_BUFFER_MULTIBYTE,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected mulibyte string buffer"));
 
@@ -158,8 +158,8 @@ kefir_result_t kefir_string_buffer_insert_multibyte(struct kefir_mem *mem, struc
 
 kefir_result_t kefir_string_buffer_insert_unicode8_character(struct kefir_mem *mem, struct kefir_string_buffer *buffer,
                                                              kefir_char32_t character) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string buffer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string buffer"));
     REQUIRE(buffer->mode == KEFIR_STRING_BUFFER_UNICODE8,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected unicode8 string buffer"));
 
@@ -174,8 +174,8 @@ kefir_result_t kefir_string_buffer_insert_unicode8_character(struct kefir_mem *m
 
 kefir_result_t kefir_string_buffer_insert_unicode16_character(struct kefir_mem *mem, struct kefir_string_buffer *buffer,
                                                               kefir_char32_t character) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string buffer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string buffer"));
     REQUIRE(buffer->mode == KEFIR_STRING_BUFFER_UNICODE16,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected unicode16 string buffer"));
 
@@ -221,8 +221,8 @@ kefir_result_t kefir_string_buffer_insert_unicode16_character(struct kefir_mem *
 
 kefir_result_t kefir_string_buffer_insert_unicode32_character(struct kefir_mem *mem, struct kefir_string_buffer *buffer,
                                                               kefir_char32_t character) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string buffer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string buffer"));
     REQUIRE(buffer->mode == KEFIR_STRING_BUFFER_UNICODE32,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected unicode32 string buffer"));
 
@@ -236,8 +236,8 @@ kefir_result_t kefir_string_buffer_insert_unicode32_character(struct kefir_mem *
 
 kefir_result_t kefir_string_buffer_insert_wide_character(struct kefir_mem *mem, struct kefir_string_buffer *buffer,
                                                          kefir_char32_t character) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string buffer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string buffer"));
     REQUIRE(buffer->mode == KEFIR_STRING_BUFFER_WIDE,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected wide string buffer"));
 
@@ -299,8 +299,8 @@ static kefir_result_t convert_multibyte(struct kefir_mem *mem, struct kefir_stri
 
 kefir_result_t kefir_string_buffer_convert(struct kefir_mem *mem, struct kefir_string_buffer *buffer,
                                            kefir_string_buffer_mode_t newMode) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string buffer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string buffer"));
     REQUIRE(buffer->mode == KEFIR_STRING_BUFFER_MULTIBYTE,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Can only convert multibyte buffers"));
 

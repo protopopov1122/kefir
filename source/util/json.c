@@ -25,8 +25,8 @@
 #include <uchar.h>
 
 kefir_result_t kefir_json_output_init(struct kefir_json_output *json, FILE *file, kefir_size_t indent) {
-    REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid json output"));
-    REQUIRE(file != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid file"));
+    REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid json output"));
+    REQUIRE(file != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid file"));
 
     json->file = file;
     json->level = 0;
@@ -36,7 +36,7 @@ kefir_result_t kefir_json_output_init(struct kefir_json_output *json, FILE *file
 }
 
 kefir_result_t kefir_json_output_finalize(struct kefir_json_output *json) {
-    REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid json output"));
+    REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid json output"));
     REQUIRE(json->level == 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot finalizer malformed json"));
 
     fflush(json->file);
@@ -45,7 +45,7 @@ kefir_result_t kefir_json_output_finalize(struct kefir_json_output *json) {
 }
 
 static inline kefir_result_t valid_json(struct kefir_json_output *json) {
-    REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid json output"));
+    REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid json output"));
     REQUIRE(json->file != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid json output"));
     return KEFIR_OK;
 }

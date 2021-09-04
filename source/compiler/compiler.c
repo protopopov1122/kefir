@@ -58,9 +58,9 @@ struct kefir_mem *kefir_system_memalloc() {
 
 kefir_result_t kefir_compiler_context_init(struct kefir_mem *mem, struct kefir_compiler_context *context,
                                            struct kefir_compiler_profile *profile) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid compiler context"));
-    REQUIRE(profile != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid compiler profile"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler context"));
+    REQUIRE(profile != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler profile"));
 
     REQUIRE_OK(kefir_ast_translator_environment_init(&context->translator_env, &profile->ir_target_platform));
     REQUIRE_OK(kefir_ast_global_context_init(mem, profile->type_traits, &context->translator_env.target_env,
@@ -70,8 +70,8 @@ kefir_result_t kefir_compiler_context_init(struct kefir_mem *mem, struct kefir_c
 }
 
 kefir_result_t kefir_compiler_context_free(struct kefir_mem *mem, struct kefir_compiler_context *context) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid compiler context"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler context"));
 
     REQUIRE_OK(kefir_ast_global_context_free(mem, &context->ast_global_context));
     context->profile = NULL;
@@ -80,10 +80,10 @@ kefir_result_t kefir_compiler_context_free(struct kefir_mem *mem, struct kefir_c
 
 kefir_result_t kefir_compiler_lex(struct kefir_mem *mem, struct kefir_compiler_context *context,
                                   struct kefir_token_buffer *buffer, const char *content, kefir_size_t length) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid compiler context"));
-    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid token buffer"));
-    REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid content"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler context"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));
+    REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid content"));
 
     struct kefir_lexer_source_cursor source_cursor;
     struct kefir_lexer lexer;
@@ -101,10 +101,10 @@ kefir_result_t kefir_compiler_lex(struct kefir_mem *mem, struct kefir_compiler_c
 
 kefir_result_t kefir_compiler_parse(struct kefir_mem *mem, struct kefir_compiler_context *context,
                                     struct kefir_token_buffer *buffer, struct kefir_ast_translation_unit **unit_ptr) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid compiler context"));
-    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid token buffer"));
-    REQUIRE(unit_ptr != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer AST translation unit"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler context"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));
+    REQUIRE(unit_ptr != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer AST translation unit"));
 
     struct kefir_parser_token_cursor cursor;
     struct kefir_parser parser;
@@ -135,10 +135,10 @@ kefir_result_t kefir_compiler_parse(struct kefir_mem *mem, struct kefir_compiler
 kefir_result_t kefir_compiler_parse_source(struct kefir_mem *mem, struct kefir_compiler_context *context,
                                            const char *content, kefir_size_t length,
                                            struct kefir_ast_translation_unit **unit_ptr) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid compiler context"));
-    REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid content"));
-    REQUIRE(unit_ptr != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer AST translation unit"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler context"));
+    REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid content"));
+    REQUIRE(unit_ptr != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer AST translation unit"));
 
     struct kefir_token_buffer tokens;
     REQUIRE_OK(kefir_token_buffer_init(mem, &tokens));
@@ -159,18 +159,18 @@ kefir_result_t kefir_compiler_parse_source(struct kefir_mem *mem, struct kefir_c
 
 kefir_result_t kefir_compiler_analyze(struct kefir_mem *mem, struct kefir_compiler_context *context,
                                       struct kefir_ast_node_base *node) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid compiler context"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler context"));
     REQUIRE_OK(kefir_ast_analyze_node(mem, &context->ast_global_context.context, node));
     return KEFIR_OK;
 }
 
 kefir_result_t kefir_compiler_translate(struct kefir_mem *mem, struct kefir_compiler_context *context,
                                         struct kefir_ast_translation_unit *unit, struct kefir_ir_module *module) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid compiler context"));
-    REQUIRE(unit != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translation unit"));
-    REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler context"));
+    REQUIRE(unit != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translation unit"));
+    REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR module"));
 
     struct kefir_ast_translator_context translator_context;
     REQUIRE_OK(kefir_ast_translator_context_init(&translator_context, &context->ast_global_context.context,
@@ -207,10 +207,10 @@ kefir_result_t kefir_compiler_translate(struct kefir_mem *mem, struct kefir_comp
 
 kefir_result_t kefir_compiler_codegen(struct kefir_mem *mem, struct kefir_compiler_context *context,
                                       struct kefir_ir_module *module, FILE *output) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid compiler context"));
-    REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module"));
-    REQUIRE(output != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid FILE"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler context"));
+    REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR module"));
+    REQUIRE(output != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid FILE"));
 
     struct kefir_codegen *codegen = NULL;
     REQUIRE_OK(context->profile->new_codegen(mem, output, &codegen));

@@ -29,9 +29,9 @@
 #define INDENTATION "    "
 
 static kefir_result_t amd64_newline(struct kefir_amd64_asmgen *asmgen, unsigned int count) {
-    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 assembly generator"));
+    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator"));
     FILE *out = (FILE *) asmgen->data;
-    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid output file for AMD64 assembly"));
+    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid output file for AMD64 assembly"));
     while (count--) {
         fprintf(out, "\n");
     }
@@ -39,10 +39,10 @@ static kefir_result_t amd64_newline(struct kefir_amd64_asmgen *asmgen, unsigned 
 }
 
 static kefir_result_t amd64_comment(struct kefir_amd64_asmgen *asmgen, const char *format, ...) {
-    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 assembly generator"));
+    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator"));
     if (asmgen->settings.enable_comments) {
         FILE *out = (FILE *) asmgen->data;
-        REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid output file for AMD64 assembly"));
+        REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid output file for AMD64 assembly"));
         if (!asmgen->state.empty) {
             fprintf(out, "\n");
         }
@@ -57,9 +57,9 @@ static kefir_result_t amd64_comment(struct kefir_amd64_asmgen *asmgen, const cha
 }
 
 static kefir_result_t amd64_label(struct kefir_amd64_asmgen *asmgen, const char *format, ...) {
-    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 assembly generator"));
+    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator"));
     FILE *out = (FILE *) asmgen->data;
-    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid output file for AMD64 assembly"));
+    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid output file for AMD64 assembly"));
     if (!asmgen->state.empty) {
         fprintf(out, "\n");
     }
@@ -73,9 +73,9 @@ static kefir_result_t amd64_label(struct kefir_amd64_asmgen *asmgen, const char 
 }
 
 static kefir_result_t amd64_global(struct kefir_amd64_asmgen *asmgen, const char *format, ...) {
-    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 assembly generator"));
+    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator"));
     FILE *out = (FILE *) asmgen->data;
-    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid output file for AMD64 assembly"));
+    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid output file for AMD64 assembly"));
     if (!asmgen->state.empty) {
         fprintf(out, "\n");
     }
@@ -89,9 +89,9 @@ static kefir_result_t amd64_global(struct kefir_amd64_asmgen *asmgen, const char
 }
 
 static kefir_result_t amd64_external(struct kefir_amd64_asmgen *asmgen, const char *identifier) {
-    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 assembly generator"));
+    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator"));
     FILE *out = (FILE *) asmgen->data;
-    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid output file for AMD64 assembly"));
+    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid output file for AMD64 assembly"));
     if (!asmgen->state.empty) {
         fprintf(out, "\n");
     }
@@ -101,9 +101,9 @@ static kefir_result_t amd64_external(struct kefir_amd64_asmgen *asmgen, const ch
 }
 
 static kefir_result_t amd64_section(struct kefir_amd64_asmgen *asmgen, const char *identifier) {
-    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 assembly generator"));
+    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator"));
     FILE *out = (FILE *) asmgen->data;
-    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid output file for AMD64 assembly"));
+    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid output file for AMD64 assembly"));
     if (!asmgen->state.empty) {
         fprintf(out, "\n");
     }
@@ -113,9 +113,9 @@ static kefir_result_t amd64_section(struct kefir_amd64_asmgen *asmgen, const cha
 }
 
 static kefir_result_t amd64_instr(struct kefir_amd64_asmgen *asmgen, const char *opcode) {
-    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 assembly generator"));
+    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator"));
     FILE *out = (FILE *) asmgen->data;
-    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid output file for AMD64 assembly"));
+    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid output file for AMD64 assembly"));
     if (!asmgen->state.empty) {
         fprintf(out, "\n");
     }
@@ -129,9 +129,9 @@ static kefir_result_t amd64_instr(struct kefir_amd64_asmgen *asmgen, const char 
 }
 
 static kefir_result_t amd64_rawdata(struct kefir_amd64_asmgen *asmgen, kefir_amd64_asmgen_datawidth_t width) {
-    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 assembly generator"));
+    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator"));
     FILE *out = (FILE *) asmgen->data;
-    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid output file for AMD64 assembly"));
+    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid output file for AMD64 assembly"));
     if (!asmgen->state.empty) {
         fprintf(out, "\n");
     }
@@ -146,9 +146,9 @@ static kefir_result_t amd64_rawdata(struct kefir_amd64_asmgen *asmgen, kefir_amd
 
 static kefir_result_t amd64_multrawdata(struct kefir_amd64_asmgen *asmgen, kefir_size_t times,
                                         kefir_amd64_asmgen_datawidth_t width) {
-    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 assembly generator"));
+    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator"));
     FILE *out = (FILE *) asmgen->data;
-    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid output file for AMD64 assembly"));
+    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid output file for AMD64 assembly"));
     if (!asmgen->state.empty) {
         fprintf(out, "\n");
     }
@@ -162,9 +162,9 @@ static kefir_result_t amd64_multrawdata(struct kefir_amd64_asmgen *asmgen, kefir
 }
 
 static kefir_result_t amd64_argument(struct kefir_amd64_asmgen *asmgen, const char *format, ...) {
-    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 assembly generator"));
+    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator"));
     FILE *out = (FILE *) asmgen->data;
-    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid output file for AMD64 assembly"));
+    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid output file for AMD64 assembly"));
     if (asmgen->state.arguments > 0) {
         fprintf(out, ", ");
     } else {
@@ -179,8 +179,8 @@ static kefir_result_t amd64_argument(struct kefir_amd64_asmgen *asmgen, const ch
 }
 
 kefir_result_t amd64_string_literal(struct kefir_amd64_asmgen *asmgen, const char *literal, kefir_size_t length) {
-    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 assembly generator"));
-    REQUIRE(literal != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string literal"));
+    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator"));
+    REQUIRE(literal != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string literal"));
 
     FILE *out = (FILE *) asmgen->data;
     if (asmgen->state.arguments > 0) {
@@ -261,16 +261,17 @@ kefir_result_t amd64_string_literal(struct kefir_amd64_asmgen *asmgen, const cha
 }
 
 static kefir_result_t amd64_close(struct kefir_amd64_asmgen *asmgen) {
-    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 assembly generator"));
+    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator"));
     FILE *out = (FILE *) asmgen->data;
-    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid output file for AMD64 assembly"));
+    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid output file for AMD64 assembly"));
     fclose(out);
     return KEFIR_OK;
 }
 
 kefir_result_t kefir_amd64_nasm_gen_init(struct kefir_amd64_asmgen *asmgen, FILE *out) {
-    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 assembly generator pointer"));
-    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid output file for AMD64 assembly"));
+    REQUIRE(asmgen != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator pointer"));
+    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid output file for AMD64 assembly"));
     asmgen->newline = amd64_newline;
     asmgen->comment = amd64_comment;
     asmgen->label = amd64_label;

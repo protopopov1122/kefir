@@ -56,9 +56,9 @@ kefir_result_t type_layout_removal(struct kefir_mem *mem, struct kefir_hashtree 
 kefir_result_t kefir_codegen_amd64_sysv_module_alloc(struct kefir_mem *mem,
                                                      struct kefir_codegen_amd64_sysv_module *sysv_module,
                                                      const struct kefir_ir_module *module) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(sysv_module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 System-V module"));
-    REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR module"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(sysv_module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 System-V module"));
+    REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR module"));
     sysv_module->module = module;
     REQUIRE_OK(kefir_hashtree_init(&sysv_module->function_gates, &kefir_hashtree_uint_ops));
     REQUIRE_OK(kefir_hashtree_on_removal(&sysv_module->function_gates, function_gate_removal, NULL));
@@ -71,8 +71,8 @@ kefir_result_t kefir_codegen_amd64_sysv_module_alloc(struct kefir_mem *mem,
 
 kefir_result_t kefir_codegen_amd64_sysv_module_free(struct kefir_mem *mem,
                                                     struct kefir_codegen_amd64_sysv_module *sysv_module) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(sysv_module != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AMD64 System-V module"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(sysv_module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 System-V module"));
     REQUIRE_OK(kefir_hashtree_free(mem, &sysv_module->type_layouts));
     REQUIRE_OK(kefir_hashtree_free(mem, &sysv_module->function_gates));
     REQUIRE_OK(kefir_hashtree_free(mem, &sysv_module->function_vgates));

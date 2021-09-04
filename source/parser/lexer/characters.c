@@ -13,8 +13,8 @@ static kefir_uint32_t oct_to_digit(kefir_char32_t chr) {
 
 kefir_result_t kefir_lexer_cursor_next_universal_character(struct kefir_lexer_source_cursor *cursor,
                                                            kefir_char32_t *target) {
-    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer source cursor"));
-    REQUIRE(target != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to character"));
+    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer source cursor"));
+    REQUIRE(target != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to character"));
 
     kefir_char32_t chr = kefir_lexer_source_cursor_at(cursor, 0);
     kefir_char32_t chr2 = kefir_lexer_source_cursor_at(cursor, 1);
@@ -150,8 +150,8 @@ static kefir_result_t next_hexadecimal_escape_sequence(struct kefir_lexer_source
 
 kefir_result_t kefir_lexer_cursor_next_escape_sequence(struct kefir_lexer_source_cursor *cursor,
                                                        kefir_char32_t *target) {
-    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer source cursor"));
-    REQUIRE(target != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to character"));
+    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer source cursor"));
+    REQUIRE(target != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to character"));
     REQUIRE(kefir_lexer_source_cursor_at(cursor, 0) == U'\\',
             KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match escape sequence"));
 

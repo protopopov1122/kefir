@@ -33,7 +33,7 @@ static kefir_result_t destroy_string(struct kefir_mem *mem, struct kefir_hashtre
 }
 
 kefir_result_t kefir_symbol_table_init(struct kefir_symbol_table *table) {
-    REQUIRE(table != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid symbol table pointer"));
+    REQUIRE(table != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid symbol table pointer"));
     REQUIRE_OK(kefir_hashtree_init(&table->symbols, &kefir_hashtree_str_ops));
     REQUIRE_OK(kefir_hashtree_on_removal(&table->symbols, destroy_string, NULL));
     REQUIRE_OK(kefir_hashtree_init(&table->symbol_identifiers, &kefir_hashtree_uint_ops));
@@ -42,8 +42,8 @@ kefir_result_t kefir_symbol_table_init(struct kefir_symbol_table *table) {
 }
 
 kefir_result_t kefir_symbol_table_free(struct kefir_mem *mem, struct kefir_symbol_table *table) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(table != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid symbol table pointer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(table != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid symbol table pointer"));
     REQUIRE_OK(kefir_hashtree_free(mem, &table->symbol_identifiers));
     REQUIRE_OK(kefir_hashtree_free(mem, &table->symbols));
     return KEFIR_OK;

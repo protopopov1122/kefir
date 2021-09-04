@@ -27,10 +27,10 @@
 kefir_result_t kefir_ast_type_assignable(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                          const struct kefir_ast_type *value_type, kefir_bool_t constant_expression,
                                          const struct kefir_ast_type *target_type) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
-    REQUIRE(value_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid value AST type"));
-    REQUIRE(target_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid target AST type"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
+    REQUIRE(value_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid value AST type"));
+    REQUIRE(target_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid target AST type"));
 
     if (target_type->tag == KEFIR_AST_TYPE_SCALAR_BOOL && value_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
         // Intentionally left empty
@@ -68,10 +68,10 @@ kefir_result_t kefir_ast_type_assignable(struct kefir_mem *mem, const struct kef
 kefir_result_t kefir_ast_node_assignable(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                          const struct kefir_ast_node_base *node,
                                          const struct kefir_ast_type *target_type) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid value AST node"));
-    REQUIRE(target_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid target AST type"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid value AST node"));
+    REQUIRE(target_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid target AST type"));
 
     const struct kefir_ast_type *value_type =
         KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->properties.type);

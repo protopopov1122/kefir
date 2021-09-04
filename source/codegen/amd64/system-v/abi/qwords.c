@@ -52,8 +52,8 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_count(const struct kefir_ir_type *typ
 
 kefir_result_t kefir_amd64_sysv_abi_qwords_alloc(struct kefir_amd64_sysv_abi_qwords *qwords, struct kefir_mem *mem,
                                                  kefir_size_t qword_count) {
-    REQUIRE(qwords != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid QWord vector"));
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(qwords != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid QWord vector"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(qword_count > 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-zero QWord count"));
     REQUIRE_OK(kefir_vector_alloc(mem, sizeof(struct kefir_amd64_sysv_abi_qword), qword_count, &qwords->qwords));
     kefir_vector_extend(&qwords->qwords, qword_count);
@@ -69,7 +69,7 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_alloc(struct kefir_amd64_sysv_abi_qwo
 }
 
 kefir_result_t kefir_amd64_sysv_abi_qwords_free(struct kefir_amd64_sysv_abi_qwords *qwords, struct kefir_mem *mem) {
-    REQUIRE(qwords != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid QWord vector"));
+    REQUIRE(qwords != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid QWord vector"));
     return kefir_vector_free(mem, &qwords->qwords);
 }
 
@@ -115,9 +115,9 @@ struct kefir_amd64_sysv_abi_qword *next_qword(struct kefir_amd64_sysv_abi_qwords
 kefir_result_t kefir_amd64_sysv_abi_qwords_next(struct kefir_amd64_sysv_abi_qwords *qwords,
                                                 kefir_amd64_sysv_data_class_t dataclass, kefir_size_t size,
                                                 kefir_size_t alignment, struct kefir_amd64_sysv_abi_qword_ref *ref) {
-    REQUIRE(qwords != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid QWord vector"));
+    REQUIRE(qwords != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid QWord vector"));
     REQUIRE(size > 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-zero data size"));
-    REQUIRE(ref != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid QWord reference"));
+    REQUIRE(ref != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid QWord reference"));
     struct kefir_amd64_sysv_abi_qword *first = NULL;
     while (size > 0) {
         struct kefir_amd64_sysv_abi_qword *current = next_qword(qwords, alignment);
@@ -139,7 +139,7 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_next(struct kefir_amd64_sysv_abi_qwor
 kefir_result_t kefir_amd64_sysv_abi_qwords_reset_class(struct kefir_amd64_sysv_abi_qwords *qwords,
                                                        kefir_amd64_sysv_data_class_t dataclass, kefir_size_t begin,
                                                        kefir_size_t count) {
-    REQUIRE(qwords != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid QWord vector"));
+    REQUIRE(qwords != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid QWord vector"));
     const kefir_size_t length = kefir_vector_length(&qwords->qwords);
     REQUIRE(begin < length, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Index exceeds QWord vector length"));
     REQUIRE(count > 0, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-zero number of QWords"));
@@ -152,8 +152,8 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_reset_class(struct kefir_amd64_sysv_a
 
 kefir_result_t kefir_amd64_sysv_abi_qwords_save_position(const struct kefir_amd64_sysv_abi_qwords *qwords,
                                                          struct kefir_amd64_sysv_abi_qword_position *position) {
-    REQUIRE(qwords != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid QWord vector"));
-    REQUIRE(position != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid QWord position"));
+    REQUIRE(qwords != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid QWord vector"));
+    REQUIRE(position != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid QWord position"));
     position->index = qwords->current;
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_abi_qword *, qword, kefir_vector_at(&qwords->qwords, qwords->current));
     position->offset = qword->current_offset;
@@ -162,8 +162,8 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_save_position(const struct kefir_amd6
 
 kefir_result_t kefir_amd64_sysv_abi_qwords_restore_position(
     struct kefir_amd64_sysv_abi_qwords *qwords, const struct kefir_amd64_sysv_abi_qword_position *position) {
-    REQUIRE(qwords != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid QWord vector"));
-    REQUIRE(position != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid QWord position"));
+    REQUIRE(qwords != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid QWord vector"));
+    REQUIRE(position != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid QWord position"));
     const kefir_size_t length = kefir_vector_length(&qwords->qwords);
     REQUIRE(position->index <= length,
             KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Position index exceeds QWord vector length"));
@@ -180,9 +180,9 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_restore_position(
 kefir_result_t kefir_amd64_sysv_abi_qwords_max_position(const struct kefir_amd64_sysv_abi_qword_position *first,
                                                         const struct kefir_amd64_sysv_abi_qword_position *second,
                                                         struct kefir_amd64_sysv_abi_qword_position *result) {
-    REQUIRE(first != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid first position argument"));
-    REQUIRE(second != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid second position argument"));
-    REQUIRE(result != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid result pointer"));
+    REQUIRE(first != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid first position argument"));
+    REQUIRE(second != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid second position argument"));
+    REQUIRE(result != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid result pointer"));
     if (first->index > second->index || (first->index == second->index && first->offset >= second->offset)) {
         *result = *first;
     } else {

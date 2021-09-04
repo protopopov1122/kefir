@@ -31,8 +31,8 @@ static kefir_result_t dependant_free(struct kefir_mem *mem, struct kefir_list *l
                                      void *payload) {
     UNUSED(list);
     UNUSED(payload);
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid list entry"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid list entry"));
 
     ASSIGN_DECL_CAST(struct dependant *, dep, entry->value);
     KEFIR_FREE(mem, dep);
@@ -41,8 +41,8 @@ static kefir_result_t dependant_free(struct kefir_mem *mem, struct kefir_list *l
 
 static kefir_result_t point_cleanup(struct kefir_mem *mem, struct kefir_ast_flow_control_point *point, void *payload) {
     UNUSED(payload);
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(point != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST flow control point"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(point != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST flow control point"));
 
     struct kefir_ast_translator_flow_control_point *ast_translator_point =
         *((struct kefir_ast_translator_flow_control_point **) point->ptr);
@@ -57,8 +57,8 @@ static kefir_result_t point_cleanup(struct kefir_mem *mem, struct kefir_ast_flow
 kefir_result_t kefir_ast_translator_flow_control_point_init(
     struct kefir_mem *mem, struct kefir_ast_flow_control_point *point,
     struct kefir_ast_translator_flow_control_point **translator_point) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(point != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST flow control point"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(point != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST flow control point"));
 
     struct kefir_ast_translator_flow_control_point *ast_translator_point =
         KEFIR_MALLOC(mem, sizeof(struct kefir_ast_translator_flow_control_point));
@@ -104,9 +104,9 @@ static kefir_result_t patch_command(struct kefir_irblock *block, kefir_size_t in
 kefir_result_t kefir_ast_translator_flow_control_point_reference(struct kefir_mem *mem,
                                                                  struct kefir_ast_flow_control_point *point,
                                                                  struct kefir_irblock *block, kefir_size_t index) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(point != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST flow control point"));
-    REQUIRE(block != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(point != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST flow control point"));
+    REQUIRE(block != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR block"));
     REQUIRE(index < kefir_irblock_length(block),
             KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Expected valid index in the IR block"));
 
@@ -134,8 +134,8 @@ kefir_result_t kefir_ast_translator_flow_control_point_reference(struct kefir_me
 kefir_result_t kefir_ast_translator_flow_control_point_resolve(struct kefir_mem *mem,
                                                                struct kefir_ast_flow_control_point *point,
                                                                kefir_uint64_t value) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(point != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST flow control point"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(point != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST flow control point"));
 
     struct kefir_ast_translator_flow_control_point *ast_translator_point =
         *((struct kefir_ast_translator_flow_control_point **) point->ptr);
@@ -199,8 +199,8 @@ static kefir_result_t flow_control_tree_init(struct kefir_mem *mem, struct kefir
 
 kefir_result_t kefir_ast_translator_flow_control_tree_init(struct kefir_mem *mem,
                                                            struct kefir_ast_flow_control_tree *tree) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST flow control tree"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST flow control tree"));
 
     REQUIRE_OK(flow_control_tree_init(mem, &tree->root));
     return KEFIR_OK;

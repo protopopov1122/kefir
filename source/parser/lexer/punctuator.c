@@ -110,8 +110,8 @@ static kefir_result_t insert_punctuator(struct kefir_mem *mem, struct kefir_trie
 }
 
 kefir_result_t kefir_lexer_init_punctuators(struct kefir_mem *mem, struct kefir_lexer *lexer) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer"));
 
     REQUIRE_OK(kefir_trie_init(&lexer->punctuators, PUNCTUATOR_NONE));
     for (kefir_size_t i = 0; i < PUNCTUATORS_LENGTH; i++) {
@@ -142,9 +142,9 @@ static kefir_result_t match_punctuator(struct kefir_lexer_source_cursor *cursor,
 }
 
 static kefir_result_t match_impl(struct kefir_mem *mem, struct kefir_lexer *lexer, void *payload) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct kefir_token *, token, payload);
 
     kefir_result_t res = match_punctuator(lexer->cursor, &lexer->punctuators, token);
@@ -157,9 +157,9 @@ static kefir_result_t match_impl(struct kefir_mem *mem, struct kefir_lexer *lexe
 
 kefir_result_t kefir_lexer_match_punctuator(struct kefir_mem *mem, struct kefir_lexer *lexer,
                                             struct kefir_token *token) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer"));
-    REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid token"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer"));
+    REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token"));
 
     REQUIRE_OK(kefir_lexer_apply(mem, lexer, match_impl, token));
     return KEFIR_OK;

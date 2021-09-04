@@ -41,9 +41,9 @@ static kefir_result_t scan_member(struct kefir_mem *mem, struct kefir_parser *pa
 }
 
 static kefir_result_t scan_designation(struct kefir_mem *mem, struct kefir_parser *parser, void *payload) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_initializer_designation **, designation_ptr, payload);
     REQUIRE(PARSER_TOKEN_IS_LEFT_BRACKET(parser, 0) || PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_DOT),
@@ -86,8 +86,8 @@ static kefir_result_t scan_designation(struct kefir_mem *mem, struct kefir_parse
 
 kefir_result_t kefir_parser_scan_initializer_designation(struct kefir_mem *mem, struct kefir_parser *parser,
                                                          struct kefir_ast_initializer_designation **designation) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser"));
     REQUIRE(designation != NULL,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to initializer designation"));
 

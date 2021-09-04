@@ -51,10 +51,10 @@ kefir_result_t kefir_ast_temporaries_next_block(struct kefir_ast_context_tempora
 kefir_result_t kefir_ast_temporaries_new_temporary(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                    const struct kefir_ast_type *type,
                                                    struct kefir_ast_temporary_identifier *temp_id) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid temporary AST type"));
-    REQUIRE(temp_id != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid temporary identifier pointer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid temporary AST type"));
+    REQUIRE(temp_id != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid temporary identifier pointer"));
     REQUIRE(context->temporaries != NULL,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Provided AST context has no support for temporary values"));
 

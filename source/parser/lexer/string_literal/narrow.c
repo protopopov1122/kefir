@@ -83,9 +83,9 @@ static kefir_result_t next_string_literal(struct kefir_mem *mem, struct kefir_le
 
 kefir_result_t kefir_lexer_next_narrow_string_literal(struct kefir_mem *mem, struct kefir_lexer *lexer,
                                                       struct kefir_token *token) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer"));
-    REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid token"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer"));
+    REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token"));
 
     REQUIRE(kefir_lexer_source_cursor_at(lexer->cursor, 0) == U'\"',
             KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match narrow string literal"));

@@ -33,8 +33,8 @@ static kefir_result_t remove_layer(struct kefir_mem *mem, struct kefir_list *lis
                                    void *payload) {
     UNUSED(list);
     UNUSED(payload);
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid list entry"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid list entry"));
     ASSIGN_DECL_CAST(struct kefir_ast_type_traversal_layer *, layer, entry->value);
     KEFIR_FREE(mem, layer);
     return KEFIR_OK;
@@ -104,9 +104,9 @@ static kefir_result_t pop_layer(struct kefir_mem *mem, struct kefir_ast_type_tra
 
 kefir_result_t kefir_ast_type_traversal_init(struct kefir_mem *mem, struct kefir_ast_type_traversal *traversal,
                                              const struct kefir_ast_type *object_type) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(traversal != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid traversal structure"));
-    REQUIRE(object_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid object type"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(traversal != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid traversal structure"));
+    REQUIRE(object_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid object type"));
 
     traversal->current_object_type = object_type;
     traversal->events = (struct kefir_ast_type_traversal_events){0};
@@ -117,8 +117,8 @@ kefir_result_t kefir_ast_type_traversal_init(struct kefir_mem *mem, struct kefir
 }
 
 kefir_result_t kefir_ast_type_traversal_free(struct kefir_mem *mem, struct kefir_ast_type_traversal *traversal) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(traversal != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid traversal structure"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(traversal != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid traversal structure"));
     while (kefir_list_length(&traversal->stack) > 0) {
         REQUIRE_OK(pop_layer(mem, traversal));
     }
@@ -130,9 +130,9 @@ kefir_result_t kefir_ast_type_traversal_free(struct kefir_mem *mem, struct kefir
 kefir_result_t kefir_ast_type_traversal_next(struct kefir_mem *mem, struct kefir_ast_type_traversal *traversal,
                                              const struct kefir_ast_type **type,
                                              const struct kefir_ast_type_traversal_layer **layer_ptr) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(traversal != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid traversal structure"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type pointer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(traversal != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid traversal structure"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type pointer"));
 
     if (kefir_list_length(&traversal->stack) == 0) {
         ASSIGN_PTR(layer_ptr, NULL);
@@ -210,9 +210,9 @@ kefir_result_t kefir_ast_type_traversal_next_recursive2(struct kefir_mem *mem,
                                                         kefir_bool_t (*stop)(const struct kefir_ast_type *, void *),
                                                         void *stop_payload, const struct kefir_ast_type **type,
                                                         const struct kefir_ast_type_traversal_layer **layer_ptr) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(traversal != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid traversal structure"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type pointer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(traversal != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid traversal structure"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type pointer"));
 
     const struct kefir_ast_type *top_type = NULL;
     const struct kefir_ast_type_traversal_layer *top_layer = NULL;
@@ -242,8 +242,8 @@ kefir_result_t kefir_ast_type_traversal_next_recursive2(struct kefir_mem *mem,
 }
 
 kefir_result_t kefir_ast_type_traversal_step(struct kefir_mem *mem, struct kefir_ast_type_traversal *traversal) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(traversal != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid traversal structure"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(traversal != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid traversal structure"));
 
     if (kefir_list_length(&traversal->stack) == 0) {
         return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Type traversal is empty");
@@ -377,9 +377,9 @@ static kefir_result_t navigate_impl(struct kefir_mem *mem, struct kefir_ast_type
 
 kefir_result_t kefir_ast_type_traversal_navigate(struct kefir_mem *mem, struct kefir_ast_type_traversal *traversal,
                                                  const struct kefir_ast_designator *designator) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(traversal != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid traversal structure"));
-    REQUIRE(designator != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST designator"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(traversal != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid traversal structure"));
+    REQUIRE(designator != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST designator"));
 
     REQUIRE_OK(kefir_list_clear(mem, &traversal->stack));
     REQUIRE_OK(push_layer(mem, traversal, traversal->current_object_type, NULL));

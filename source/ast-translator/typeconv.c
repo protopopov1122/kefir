@@ -80,10 +80,10 @@ kefir_result_t kefir_ast_translate_typeconv(struct kefir_irbuilder_block *builde
                                             const struct kefir_ast_type_traits *type_traits,
                                             const struct kefir_ast_type *origin,
                                             const struct kefir_ast_type *destination) {
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
-    REQUIRE(type_traits != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid origin AST type traits"));
-    REQUIRE(origin != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid origin AST type"));
-    REQUIRE(destination != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid destination AST type"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR block builder"));
+    REQUIRE(type_traits != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid origin AST type traits"));
+    REQUIRE(origin != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid origin AST type"));
+    REQUIRE(destination != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid destination AST type"));
 
     const struct kefir_ast_type *normalized_origin = kefir_ast_translator_normalize_type(origin);
     const struct kefir_ast_type *normalized_destination = kefir_ast_translator_normalize_type(destination);

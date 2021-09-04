@@ -26,8 +26,8 @@ static kefir_result_t free_vertex(struct kefir_mem *mem, struct kefir_list *list
                                   void *payload) {
     UNUSED(list);
     UNUSED(payload);
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid list entry"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid list entry"));
 
     ASSIGN_DECL_CAST(struct kefir_trie_vertex *, vertex, entry->value);
     REQUIRE_OK(kefir_list_free(mem, &vertex->node.vertices));
@@ -36,7 +36,7 @@ static kefir_result_t free_vertex(struct kefir_mem *mem, struct kefir_list *list
 }
 
 kefir_result_t kefir_trie_init(struct kefir_trie *trie, kefir_trie_value_t value) {
-    REQUIRE(trie != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid trie"));
+    REQUIRE(trie != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid trie"));
 
     trie->value = value;
     REQUIRE_OK(kefir_list_init(&trie->vertices));
@@ -45,8 +45,8 @@ kefir_result_t kefir_trie_init(struct kefir_trie *trie, kefir_trie_value_t value
 }
 
 kefir_result_t kefir_trie_free(struct kefir_mem *mem, struct kefir_trie *trie) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(trie != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid trie"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(trie != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid trie"));
 
     REQUIRE_OK(kefir_list_free(mem, &trie->vertices));
     return KEFIR_OK;
@@ -54,8 +54,8 @@ kefir_result_t kefir_trie_free(struct kefir_mem *mem, struct kefir_trie *trie) {
 
 kefir_result_t kefir_trie_insert_vertex(struct kefir_mem *mem, struct kefir_trie *trie, kefir_trie_key_t key,
                                         kefir_trie_value_t value, struct kefir_trie_vertex **vertex_ptr) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(trie != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid trie"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(trie != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid trie"));
 
     for (const struct kefir_list_entry *iter = kefir_list_head(&trie->vertices); iter != NULL; kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_trie_vertex *, vertex, iter->value);
@@ -80,8 +80,8 @@ kefir_result_t kefir_trie_insert_vertex(struct kefir_mem *mem, struct kefir_trie
 
 kefir_result_t kefir_trie_at(const struct kefir_trie *trie, kefir_trie_key_t key,
                              struct kefir_trie_vertex **vertex_ptr) {
-    REQUIRE(trie != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid trie"));
-    REQUIRE(vertex_ptr != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to trie vertex"));
+    REQUIRE(trie != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid trie"));
+    REQUIRE(vertex_ptr != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to trie vertex"));
 
     *vertex_ptr = NULL;
     for (const struct kefir_list_entry *iter = kefir_list_head(&trie->vertices); iter != NULL && *vertex_ptr == NULL;

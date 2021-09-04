@@ -49,7 +49,7 @@ static kefir_result_t traverse_scalar(const struct kefir_ast_designator *designa
                                       const struct kefir_ast_initializer *initializer,
                                       const struct kefir_ast_initializer_traversal *traversal) {
     struct kefir_ast_node_base *expr = kefir_ast_initializer_head(initializer);
-    REQUIRE(expr != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Scalar initializer list cannot be empty"));
+    REQUIRE(expr != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Scalar initializer list cannot be empty"));
     INVOKE_TRAVERSAL(traversal, visit_value, designator, expr);
     return KEFIR_OK;
 }
@@ -61,7 +61,7 @@ static kefir_bool_t is_char_array(const struct kefir_ast_type *type, void *paylo
 }
 
 static kefir_bool_t is_array_of(const struct kefir_ast_type *type, void *payload) {
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(const struct kefir_ast_type *, expected_type, payload);
     return type->tag == KEFIR_AST_TYPE_ARRAY &&
            KEFIR_AST_TYPE_SAME(kefir_ast_unqualified_type(type->array_type.element_type), expected_type);
@@ -107,7 +107,7 @@ static kefir_result_t layer_designator(struct kefir_mem *mem, struct kefir_symbo
 
     if (designator == NULL) {
         designator = kefir_ast_type_traversal_layer_designator(mem, symbols, layer);
-        REQUIRE(designator != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to derive a designator"));
+        REQUIRE(designator != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unable to derive a designator"));
     }
 
     *result = designator;
@@ -293,10 +293,10 @@ kefir_result_t kefi_ast_traverse_initializer(struct kefir_mem *mem, const struct
                                              const struct kefir_ast_initializer *initializer,
                                              const struct kefir_ast_type *type,
                                              const struct kefir_ast_initializer_traversal *initializer_traversal) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
-    REQUIRE(initializer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST initializer"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
+    REQUIRE(initializer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST initializer"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
     REQUIRE(initializer_traversal != NULL,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST initializer traversal"));
 

@@ -291,7 +291,7 @@ static kefir_result_t format_type_default(const struct kefir_ir_type *type, kefi
     REQUIRE_OK(kefir_json_output_object_key(param->json, "type"));
 
     const char *type_literal = typecode_to_string(typeentry->typecode);
-    REQUIRE(type_literal != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unknown IR type code"));
+    REQUIRE(type_literal != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unknown IR type code"));
     REQUIRE_OK(kefir_json_output_string(param->json, type_literal));
 
     switch (typeentry->typecode) {
@@ -432,8 +432,8 @@ kefir_result_t kefir_ir_format_type_json(struct kefir_json_output *json, const s
 }
 
 kefir_result_t kefir_ir_format_type(FILE *fp, const struct kefir_ir_type *type) {
-    REQUIRE(fp != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid file pointer"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type"));
+    REQUIRE(fp != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid file pointer"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type"));
 
     struct kefir_json_output json;
     REQUIRE_OK(kefir_json_output_init(&json, fp, 4));

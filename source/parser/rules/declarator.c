@@ -406,9 +406,9 @@ static kefir_result_t scan_direct(struct kefir_mem *mem, struct kefir_parser *pa
 
 kefir_result_t kefir_parser_scan_declarator(struct kefir_mem *mem, struct kefir_parser *parser,
                                             struct kefir_ast_declarator **declarator_ptr) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser"));
-    REQUIRE(declarator_ptr != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to declarator"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser"));
+    REQUIRE(declarator_ptr != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to declarator"));
 
     kefir_size_t checkpoint;
     kefir_result_t res = KEFIR_OK;
@@ -493,9 +493,9 @@ static kefir_result_t scan_abstract_declarator_pointer_tail(struct kefir_mem *me
 
 kefir_result_t kefir_parser_scan_abstract_declarator(struct kefir_mem *mem, struct kefir_parser *parser,
                                                      struct kefir_ast_declarator **declarator_ptr) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser"));
-    REQUIRE(declarator_ptr != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to declarator"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser"));
+    REQUIRE(declarator_ptr != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to declarator"));
 
     kefir_size_t checkpoint;
     kefir_result_t res = KEFIR_OK;

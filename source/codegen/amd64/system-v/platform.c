@@ -28,9 +28,10 @@ static kefir_result_t amd64_sysv_get_type(struct kefir_mem *mem, struct kefir_ir
                                           const struct kefir_ir_type *ir_type,
                                           kefir_ir_target_platform_opaque_type_t *type_ptr) {
     UNUSED(platform);
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(ir_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type"));
-    REQUIRE(type_ptr != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR target platform type pointer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(ir_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type"));
+    REQUIRE(type_ptr != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR target platform type pointer"));
 
     struct kefir_codegen_amd64_sysv_type *type = KEFIR_MALLOC(mem, sizeof(struct kefir_codegen_amd64_sysv_type));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AMD64 SysV platform IR type"));
@@ -48,8 +49,8 @@ static kefir_result_t amd64_sysv_get_type(struct kefir_mem *mem, struct kefir_ir
 static kefir_result_t amd64_sysv_free_type(struct kefir_mem *mem, struct kefir_ir_target_platform *platform,
                                            kefir_ir_target_platform_opaque_type_t platform_type) {
     UNUSED(platform);
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(platform_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR platform type"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(platform_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR platform type"));
 
     ASSIGN_DECL_CAST(struct kefir_codegen_amd64_sysv_type *, type, platform_type);
     REQUIRE_OK(kefir_vector_free(mem, &type->layout));
@@ -62,9 +63,9 @@ static kefir_result_t amd64_sysv_type_info(struct kefir_mem *mem, struct kefir_i
                                            kefir_ir_target_platform_opaque_type_t platform_type, kefir_size_t index,
                                            struct kefir_ir_target_type_info *type_info) {
     UNUSED(platform);
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(platform_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR platform type"));
-    REQUIRE(type_info != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid target type info"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(platform_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR platform type"));
+    REQUIRE(type_info != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid target type info"));
 
     ASSIGN_DECL_CAST(struct kefir_codegen_amd64_sysv_type *, type, platform_type);
     REQUIRE(index < kefir_ir_type_total_length(type->ir_type),
@@ -81,9 +82,10 @@ static kefir_result_t amd64_sysv_bitfield_allocator(struct kefir_mem *mem, struc
                                                     struct kefir_ir_type *type,
                                                     struct kefir_ir_bitfield_allocator *allocator) {
     UNUSED(platform);
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR type"));
-    REQUIRE(allocator != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to IR bitfield allocator"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type"));
+    REQUIRE(allocator != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to IR bitfield allocator"));
 
     REQUIRE_OK(kefir_codegen_amd64_sysv_bitfield_allocator(mem, type, allocator));
     return KEFIR_OK;
@@ -91,7 +93,7 @@ static kefir_result_t amd64_sysv_bitfield_allocator(struct kefir_mem *mem, struc
 
 static kefir_result_t amd64_sysv_free(struct kefir_mem *mem, struct kefir_ir_target_platform *platform) {
     UNUSED(mem);
-    REQUIRE(platform != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid target platform"));
+    REQUIRE(platform != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid target platform"));
     platform->type_info = NULL;
     platform->free = NULL;
     platform->payload = NULL;
@@ -99,7 +101,8 @@ static kefir_result_t amd64_sysv_free(struct kefir_mem *mem, struct kefir_ir_tar
 }
 
 kefir_result_t kefir_codegen_amd64_sysv_target_platform(struct kefir_ir_target_platform *platform) {
-    REQUIRE(platform != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translation platform pointer"));
+    REQUIRE(platform != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translation platform pointer"));
     platform->get_type = amd64_sysv_get_type;
     platform->free_type = amd64_sysv_free_type;
     platform->type_info = amd64_sysv_type_info;

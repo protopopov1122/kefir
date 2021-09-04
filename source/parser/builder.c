@@ -26,8 +26,8 @@ static kefir_result_t free_node(struct kefir_mem *mem, struct kefir_list *list, 
                                 void *payload) {
     UNUSED(list);
     UNUSED(payload);
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid list entry"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid list entry"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_node_base *, node, entry->value);
     if (node != NULL) {
@@ -37,8 +37,8 @@ static kefir_result_t free_node(struct kefir_mem *mem, struct kefir_list *list, 
 }
 
 kefir_result_t kefir_parser_ast_builder_init(struct kefir_parser_ast_builder *builder, struct kefir_parser *parser) {
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
-    REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST parser"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
+    REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST parser"));
 
     builder->parser = parser;
     REQUIRE_OK(kefir_list_init(&builder->stack));
@@ -47,17 +47,17 @@ kefir_result_t kefir_parser_ast_builder_init(struct kefir_parser_ast_builder *bu
 }
 
 kefir_result_t kefir_parser_ast_builder_free(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
     REQUIRE_OK(kefir_list_free(mem, &builder->stack));
     return KEFIR_OK;
 }
 
 kefir_result_t kefir_parser_ast_builder_push(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder,
                                              struct kefir_ast_node_base *node) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node"));
 
     REQUIRE_OK(kefir_list_insert_after(mem, &builder->stack, kefir_list_tail(&builder->stack), node));
     return KEFIR_OK;
@@ -65,8 +65,8 @@ kefir_result_t kefir_parser_ast_builder_push(struct kefir_mem *mem, struct kefir
 
 kefir_result_t kefir_parser_ast_builder_pop(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder,
                                             struct kefir_ast_node_base **node_ptr) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_list_entry *iter = kefir_list_tail(&builder->stack);
     REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Cannot pop empty AST node stack"));
@@ -88,9 +88,9 @@ kefir_result_t kefir_parser_ast_builder_pop(struct kefir_mem *mem, struct kefir_
 
 kefir_result_t kefir_parser_ast_builder_scan(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder,
                                              kefir_parser_rule_fn_t rule, void *payload) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
-    REQUIRE(rule != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST parser rule"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
+    REQUIRE(rule != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST parser rule"));
 
     struct kefir_ast_node_base *node = NULL;
     REQUIRE_OK(kefir_parser_apply(mem, builder->parser, &node, rule, payload));
@@ -105,10 +105,10 @@ kefir_result_t kefir_parser_ast_builder_scan(struct kefir_mem *mem, struct kefir
 kefir_result_t kefir_parser_ast_builder_wrap(struct kefir_mem *mem, struct kefir_parser *parser,
                                              struct kefir_ast_node_base **result,
                                              kefir_parser_ast_builder_callback_t callback, void *payload) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST parser"));
-    REQUIRE(result != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to AST node"));
-    REQUIRE(callback != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser AST builder callback"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST parser"));
+    REQUIRE(result != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to AST node"));
+    REQUIRE(callback != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser AST builder callback"));
 
     struct kefir_parser_ast_builder builder;
     REQUIRE_OK(kefir_parser_ast_builder_init(&builder, parser));
@@ -129,8 +129,8 @@ kefir_result_t kefir_parser_ast_builder_wrap(struct kefir_mem *mem, struct kefir
 
 kefir_result_t kefir_parser_ast_builder_array_subscript(struct kefir_mem *mem,
                                                         struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *array = NULL, *subscript = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &subscript));
@@ -156,8 +156,8 @@ kefir_result_t kefir_parser_ast_builder_array_subscript(struct kefir_mem *mem,
 }
 
 kefir_result_t kefir_parser_ast_builder_function_call(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *function = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &function));
@@ -178,8 +178,8 @@ kefir_result_t kefir_parser_ast_builder_function_call(struct kefir_mem *mem, str
 
 kefir_result_t kefir_parser_ast_builder_function_call_append(struct kefir_mem *mem,
                                                              struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *function = NULL, *arg = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &arg));
@@ -211,9 +211,9 @@ kefir_result_t kefir_parser_ast_builder_function_call_append(struct kefir_mem *m
 
 kefir_result_t kefir_parser_ast_builder_struct_member(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder,
                                                       kefir_bool_t direct, const char *identifier) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
-    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
 
     struct kefir_ast_node_base *base = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &base));
@@ -239,8 +239,8 @@ kefir_result_t kefir_parser_ast_builder_struct_member(struct kefir_mem *mem, str
 
 kefir_result_t kefir_parser_ast_builder_unary_operation(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder,
                                                         kefir_ast_unary_operation_type_t operation) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *base = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &base));
@@ -262,8 +262,8 @@ kefir_result_t kefir_parser_ast_builder_unary_operation(struct kefir_mem *mem, s
 kefir_result_t kefir_parser_ast_builder_binary_operation(struct kefir_mem *mem,
                                                          struct kefir_parser_ast_builder *builder,
                                                          kefir_ast_binary_operation_type_t operation) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *right = NULL, *left = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &right));
@@ -289,8 +289,8 @@ kefir_result_t kefir_parser_ast_builder_binary_operation(struct kefir_mem *mem,
 }
 
 kefir_result_t kefir_parser_ast_builder_cast(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *type_name = NULL, *expression = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &expression));
@@ -323,8 +323,8 @@ kefir_result_t kefir_parser_ast_builder_cast(struct kefir_mem *mem, struct kefir
 
 kefir_result_t kefir_parser_ast_builder_conditional_operator(struct kefir_mem *mem,
                                                              struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *condition = NULL, *thenBranch = NULL, *elseBranch = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &elseBranch));
@@ -360,8 +360,8 @@ kefir_result_t kefir_parser_ast_builder_conditional_operator(struct kefir_mem *m
 kefir_result_t kefir_parser_ast_builder_assignment_operator(struct kefir_mem *mem,
                                                             struct kefir_parser_ast_builder *builder,
                                                             kefir_ast_assignment_operation_t oper) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *lvalue = NULL, *expression = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &expression));
@@ -388,8 +388,8 @@ kefir_result_t kefir_parser_ast_builder_assignment_operator(struct kefir_mem *me
 
 kefir_result_t kefir_parser_ast_builder_comma_operator(struct kefir_mem *mem,
                                                        struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *expr1 = NULL, *expr2 = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &expr2));
@@ -447,8 +447,8 @@ kefir_result_t kefir_parser_ast_builder_comma_operator(struct kefir_mem *mem,
 
 kefir_result_t kefir_parser_ast_builder_static_assertion(struct kefir_mem *mem,
                                                          struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *assertion = NULL, *string_literal = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &string_literal));
@@ -483,8 +483,8 @@ kefir_result_t kefir_parser_ast_builder_static_assertion(struct kefir_mem *mem,
 
 kefir_result_t kefir_parser_ast_builder_generic_selection(struct kefir_mem *mem,
                                                           struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *expr = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &expr));
@@ -506,8 +506,8 @@ kefir_result_t kefir_parser_ast_builder_generic_selection(struct kefir_mem *mem,
 
 kefir_result_t kefir_parser_ast_builder_generic_selection_append(struct kefir_mem *mem,
                                                                  struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *generic_selection = NULL, *type_name = NULL, *expression = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &expression));
@@ -554,8 +554,8 @@ kefir_result_t kefir_parser_ast_builder_generic_selection_append(struct kefir_me
 
 kefir_result_t kefir_parser_ast_builder_generic_selection_append_default(struct kefir_mem *mem,
                                                                          struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *generic_selection = NULL, *expression = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &expression));
@@ -589,9 +589,9 @@ kefir_result_t kefir_parser_ast_builder_generic_selection_append_default(struct 
 kefir_result_t kefir_parser_ast_builder_compound_literal(struct kefir_mem *mem,
                                                          struct kefir_parser_ast_builder *builder,
                                                          struct kefir_ast_initializer *initializer) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
-    REQUIRE(initializer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST initializer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
+    REQUIRE(initializer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST initializer"));
 
     struct kefir_ast_node_base *type_name = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &type_name));
@@ -622,9 +622,9 @@ kefir_result_t kefir_parser_ast_builder_compound_literal(struct kefir_mem *mem,
 
 kefir_result_t kefir_parser_ast_builder_declaration(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder,
                                                     struct kefir_ast_declarator_specifier_list *list) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
-    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declarator specifier list"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST declarator specifier list"));
 
     struct kefir_ast_declaration *declaration = kefir_ast_new_declaration(mem);
     REQUIRE(declaration != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST declaration list"));
@@ -647,8 +647,8 @@ kefir_result_t kefir_parser_ast_builder_init_declarator(struct kefir_mem *mem, s
                                                         struct kefir_ast_declarator *declarator,
                                                         struct kefir_ast_initializer *initializer,
                                                         struct kefir_ast_init_declarator **init_declarator_ptr) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *declaration = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &declaration));
@@ -685,8 +685,8 @@ kefir_result_t kefir_parser_ast_builder_init_declarator(struct kefir_mem *mem, s
 
 kefir_result_t kefir_parser_ast_builder_compound_statement(struct kefir_mem *mem,
                                                            struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_compound_statement *stmt = kefir_ast_new_compound_statement(mem);
     REQUIRE(stmt != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST compound statement"));
@@ -701,8 +701,8 @@ kefir_result_t kefir_parser_ast_builder_compound_statement(struct kefir_mem *mem
 
 kefir_result_t kefir_parser_ast_builder_compound_statement_append(struct kefir_mem *mem,
                                                                   struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *compound_stmt = NULL, *stmt = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &stmt));
@@ -736,9 +736,9 @@ kefir_result_t kefir_parser_ast_builder_compound_statement_append(struct kefir_m
 kefir_result_t kefir_parser_ast_builder_labeled_statement(struct kefir_mem *mem,
                                                           struct kefir_parser_ast_builder *builder,
                                                           const char *identifier) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
-    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
 
     struct kefir_ast_node_base *stmt = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &stmt));
@@ -760,8 +760,8 @@ kefir_result_t kefir_parser_ast_builder_labeled_statement(struct kefir_mem *mem,
 
 kefir_result_t kefir_parser_ast_builder_case_statement(struct kefir_mem *mem,
                                                        struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *expr = NULL, *stmt = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &stmt));
@@ -788,8 +788,8 @@ kefir_result_t kefir_parser_ast_builder_case_statement(struct kefir_mem *mem,
 
 kefir_result_t kefir_parser_ast_builder_default_statement(struct kefir_mem *mem,
                                                           struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *stmt = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &stmt));
@@ -809,8 +809,8 @@ kefir_result_t kefir_parser_ast_builder_default_statement(struct kefir_mem *mem,
 }
 
 kefir_result_t kefir_parser_ast_builder_if_statement(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *expr = NULL, *stmt = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &stmt));
@@ -837,8 +837,8 @@ kefir_result_t kefir_parser_ast_builder_if_statement(struct kefir_mem *mem, stru
 
 kefir_result_t kefir_parser_ast_builder_if_else_statement(struct kefir_mem *mem,
                                                           struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *expr = NULL, *thenStmt = NULL, *elseStmt;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &elseStmt));
@@ -872,8 +872,8 @@ kefir_result_t kefir_parser_ast_builder_if_else_statement(struct kefir_mem *mem,
 
 kefir_result_t kefir_parser_ast_builder_switch_statement(struct kefir_mem *mem,
                                                          struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *expr = NULL, *stmt = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &stmt));
@@ -900,8 +900,8 @@ kefir_result_t kefir_parser_ast_builder_switch_statement(struct kefir_mem *mem,
 
 kefir_result_t kefir_parser_ast_builder_while_statement(struct kefir_mem *mem,
                                                         struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *expr = NULL, *stmt = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &stmt));
@@ -928,8 +928,8 @@ kefir_result_t kefir_parser_ast_builder_while_statement(struct kefir_mem *mem,
 
 kefir_result_t kefir_parser_ast_builder_do_while_statement(struct kefir_mem *mem,
                                                            struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *expr = NULL, *stmt = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &expr));
@@ -957,8 +957,8 @@ kefir_result_t kefir_parser_ast_builder_do_while_statement(struct kefir_mem *mem
 kefir_result_t kefir_parser_ast_builder_for_statement(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder,
                                                       kefir_bool_t has_clause1, kefir_bool_t has_clause2,
                                                       kefir_bool_t has_clause3) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *clause1 = NULL, *clause2 = NULL, *clause3 = NULL, *stmt = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &stmt));
@@ -1011,8 +1011,8 @@ kefir_result_t kefir_parser_ast_builder_for_statement(struct kefir_mem *mem, str
 
 kefir_result_t kefir_parser_ast_builder_return_statement(struct kefir_mem *mem,
                                                          struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_return_statement *returnStmt = kefir_ast_new_return_statement(mem, NULL);
     REQUIRE(returnStmt != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST return statement"));
@@ -1026,8 +1026,8 @@ kefir_result_t kefir_parser_ast_builder_return_statement(struct kefir_mem *mem,
 
 kefir_result_t kefir_parser_ast_builder_return_value_statement(struct kefir_mem *mem,
                                                                struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *expr = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &expr));
@@ -1047,9 +1047,9 @@ kefir_result_t kefir_parser_ast_builder_return_value_statement(struct kefir_mem 
 
 kefir_result_t kefir_parser_ast_builder_goto_statement(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder,
                                                        const char *identifier) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
-    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
 
     struct kefir_ast_goto_statement *gotoStmt = kefir_ast_new_goto_statement(mem, builder->parser->symbols, identifier);
     REQUIRE(gotoStmt != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST goto statement"));
@@ -1063,8 +1063,8 @@ kefir_result_t kefir_parser_ast_builder_goto_statement(struct kefir_mem *mem, st
 
 kefir_result_t kefir_parser_ast_builder_continue_statement(struct kefir_mem *mem,
                                                            struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_continue_statement *continueStmt = kefir_ast_new_continue_statement(mem);
     REQUIRE(continueStmt != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST continue statement"));
@@ -1078,8 +1078,8 @@ kefir_result_t kefir_parser_ast_builder_continue_statement(struct kefir_mem *mem
 
 kefir_result_t kefir_parser_ast_builder_break_statement(struct kefir_mem *mem,
                                                         struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_break_statement *breakStmt = kefir_ast_new_break_statement(mem);
     REQUIRE(breakStmt != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST break statement"));
@@ -1093,8 +1093,8 @@ kefir_result_t kefir_parser_ast_builder_break_statement(struct kefir_mem *mem,
 
 kefir_result_t kefir_parser_ast_builder_translation_unit(struct kefir_mem *mem,
                                                          struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *node = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &node));
@@ -1123,8 +1123,8 @@ kefir_result_t kefir_parser_ast_builder_translation_unit(struct kefir_mem *mem,
 
 kefir_result_t kefir_parser_ast_builder_translation_unit_append(struct kefir_mem *mem,
                                                                 struct kefir_parser_ast_builder *builder) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
 
     struct kefir_ast_node_base *unit_node = NULL, *node = NULL;
     REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &node));

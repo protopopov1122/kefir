@@ -29,9 +29,9 @@ kefir_result_t kefir_ast_translate_cast_operator_node(struct kefir_mem *mem,
                                                       struct kefir_irbuilder_block *builder,
                                                       const struct kefir_ast_cast_operator *node) {
     UNUSED(mem);
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translation context"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST cast operator node"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translation context"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR block builder"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST cast operator node"));
 
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->expr, builder, context));
     REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits, node->expr->properties.type,

@@ -24,7 +24,7 @@
 #include "kefir/core/error.h"
 
 kefir_result_t kefir_list_init(struct kefir_list *list) {
-    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL list pointer"));
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-NULL list pointer"));
     list->head = NULL;
     list->tail = NULL;
     list->length = 0;
@@ -34,8 +34,8 @@ kefir_result_t kefir_list_init(struct kefir_list *list) {
 }
 
 kefir_result_t kefir_list_free(struct kefir_mem *mem, struct kefir_list *list) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL list pointer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-NULL list pointer"));
     struct kefir_list_entry *current = list->head, *next = NULL;
     while (current != NULL) {
         next = current->next;
@@ -53,7 +53,7 @@ kefir_result_t kefir_list_on_remove(struct kefir_list *list,
                                     kefir_result_t (*callback)(struct kefir_mem *, struct kefir_list *,
                                                                struct kefir_list_entry *, void *),
                                     void *data) {
-    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL list pointer"));
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-NULL list pointer"));
     list->entry_removal.callback = callback;
     list->entry_removal.data = data;
     return KEFIR_OK;
@@ -66,8 +66,8 @@ kefir_size_t kefir_list_length(const struct kefir_list *list) {
 
 kefir_result_t kefir_list_insert_after(struct kefir_mem *mem, struct kefir_list *list, struct kefir_list_entry *iter,
                                        void *value) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL list pointer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-NULL list pointer"));
     REQUIRE_ELSE((iter == NULL && list->head == NULL) || (iter != NULL && list->head != NULL),
                  KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL iterator for non-empty list"));
     struct kefir_list_entry *entry = KEFIR_MALLOC(mem, sizeof(struct kefir_list_entry));
@@ -94,9 +94,9 @@ kefir_result_t kefir_list_insert_after(struct kefir_mem *mem, struct kefir_list 
 }
 
 kefir_result_t kefir_list_pop(struct kefir_mem *mem, struct kefir_list *list, struct kefir_list_entry *iter) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL list pointer"));
-    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL list iterator"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-NULL list pointer"));
+    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-NULL list iterator"));
     if (list->entry_removal.callback != NULL) {
         REQUIRE_OK(list->entry_removal.callback(mem, list, iter, list->entry_removal.data));
     }
@@ -118,8 +118,8 @@ kefir_result_t kefir_list_pop(struct kefir_mem *mem, struct kefir_list *list, st
 }
 
 kefir_result_t kefir_list_clear(struct kefir_mem *mem, struct kefir_list *list) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected non-NULL list pointer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-NULL list pointer"));
     while (list->head != NULL) {
         struct kefir_list_entry *entry = list->head;
         if (list->entry_removal.callback != NULL) {
@@ -169,8 +169,8 @@ void *kefir_list_next(const struct kefir_list_entry **current) {
 }
 
 kefir_result_t kefir_list_move_all(struct kefir_list *dst, struct kefir_list *src) {
-    REQUIRE(dst != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid destination list"));
-    REQUIRE(src != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid source list"));
+    REQUIRE(dst != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid destination list"));
+    REQUIRE(src != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid source list"));
 
     struct kefir_list_entry *src_head = src->head;
     struct kefir_list_entry *src_tail = src->tail;

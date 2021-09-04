@@ -28,9 +28,9 @@ kefir_result_t kefir_ast_translate_comma_operator_node(struct kefir_mem *mem,
                                                        struct kefir_irbuilder_block *builder,
                                                        const struct kefir_ast_comma_operator *node) {
     UNUSED(mem);
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translation context"));
-    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid IR block builder"));
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST comma operator node"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translation context"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR block builder"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST comma operator node"));
 
     for (const struct kefir_list_entry *iter = kefir_list_head(&node->expressions); iter != NULL;
          kefir_list_next(&iter)) {

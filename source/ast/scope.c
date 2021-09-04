@@ -35,7 +35,7 @@ static kefir_result_t flat_scope_removal(struct kefir_mem *mem, struct kefir_has
 }
 
 kefir_result_t kefir_ast_identifier_flat_scope_init(struct kefir_ast_identifier_flat_scope *scope) {
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier scope"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST identifier scope"));
     scope->remove_callback = NULL;
     scope->remove_payload = NULL;
     REQUIRE_OK(kefir_hashtree_init(&scope->content, &kefir_hashtree_str_ops));
@@ -45,8 +45,8 @@ kefir_result_t kefir_ast_identifier_flat_scope_init(struct kefir_ast_identifier_
 
 kefir_result_t kefir_ast_identifier_flat_scope_free(struct kefir_mem *mem,
                                                     struct kefir_ast_identifier_flat_scope *scope) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier scope"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST identifier scope"));
     REQUIRE_OK(kefir_hashtree_free(mem, &scope->content));
     scope->remove_callback = NULL;
     scope->remove_payload = NULL;
@@ -55,8 +55,8 @@ kefir_result_t kefir_ast_identifier_flat_scope_free(struct kefir_mem *mem,
 
 kefir_result_t kefir_ast_identifier_flat_scope_cleanup_payload(struct kefir_mem *mem,
                                                                const struct kefir_ast_identifier_flat_scope *scope) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier scope"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST identifier scope"));
 
     struct kefir_ast_identifier_flat_scope_iterator iter;
     kefir_result_t res = KEFIR_OK;
@@ -76,7 +76,7 @@ kefir_result_t kefir_ast_identifier_flat_scope_cleanup_payload(struct kefir_mem 
 kefir_result_t kefir_ast_identifier_flat_scope_on_removal(
     struct kefir_ast_identifier_flat_scope *scope,
     kefir_result_t (*callback)(struct kefir_mem *, struct kefir_ast_scoped_identifier *, void *), void *payload) {
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier scope"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST identifier scope"));
     scope->remove_callback = callback;
     scope->remove_payload = payload;
     return KEFIR_OK;
@@ -86,10 +86,11 @@ kefir_result_t kefir_ast_identifier_flat_scope_insert(struct kefir_mem *mem,
                                                       struct kefir_ast_identifier_flat_scope *scope,
                                                       const char *identifier,
                                                       struct kefir_ast_scoped_identifier *scoped_identifier) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier scope"));
-    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier"));
-    REQUIRE(scoped_identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST scoped identifier"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST identifier scope"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST identifier"));
+    REQUIRE(scoped_identifier != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST scoped identifier"));
     REQUIRE_OK(kefir_hashtree_insert(mem, &scope->content, (kefir_hashtree_key_t) identifier,
                                      (kefir_hashtree_value_t) scoped_identifier));
     return KEFIR_OK;
@@ -98,8 +99,8 @@ kefir_result_t kefir_ast_identifier_flat_scope_insert(struct kefir_mem *mem,
 kefir_result_t kefir_ast_identifier_flat_scope_at(const struct kefir_ast_identifier_flat_scope *scope,
                                                   const char *identifier,
                                                   struct kefir_ast_scoped_identifier **scope_identifier) {
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier scope"));
-    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST identifier scope"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST identifier"));
     REQUIRE(scope_identifier != NULL,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST scoped identifier pointer"));
     struct kefir_hashtree_node *node = NULL;
@@ -110,8 +111,8 @@ kefir_result_t kefir_ast_identifier_flat_scope_at(const struct kefir_ast_identif
 
 kefir_bool_t kefir_ast_identifier_flat_scope_has(const struct kefir_ast_identifier_flat_scope *scope,
                                                  const char *identifier) {
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier scope"));
-    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST identifier scope"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST identifier"));
     return kefir_hashtree_has(&scope->content, (kefir_hashtree_key_t) identifier);
 }
 
@@ -122,8 +123,8 @@ kefir_bool_t kefir_ast_identifier_flat_scope_empty(const struct kefir_ast_identi
 
 kefir_result_t kefir_ast_identifier_flat_scope_iter(const struct kefir_ast_identifier_flat_scope *scope,
                                                     struct kefir_ast_identifier_flat_scope_iterator *iter) {
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier scope"));
-    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier scope iterator"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST identifier scope"));
+    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST identifier scope iterator"));
     const struct kefir_hashtree_node *node = kefir_hashtree_iter(&scope->content, &iter->iter);
     if (node != NULL) {
         iter->identifier = (const char *) node->key;
@@ -138,8 +139,8 @@ kefir_result_t kefir_ast_identifier_flat_scope_iter(const struct kefir_ast_ident
 
 kefir_result_t kefir_ast_identifier_flat_scope_next(const struct kefir_ast_identifier_flat_scope *scope,
                                                     struct kefir_ast_identifier_flat_scope_iterator *iter) {
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier scope"));
-    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier scope iterator"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST identifier scope"));
+    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST identifier scope iterator"));
     const struct kefir_hashtree_node *node = kefir_hashtree_next(&iter->iter);
     if (node != NULL) {
         iter->identifier = (const char *) node->key;
@@ -162,8 +163,8 @@ static kefir_result_t multi_scope_remove(struct kefir_mem *mem, void *raw_scope,
 
 kefir_result_t kefir_ast_identifier_block_scope_init(struct kefir_mem *mem,
                                                      struct kefir_ast_identifier_block_scope *scope) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid multi scope"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid multi scope"));
     struct kefir_ast_identifier_flat_scope *root_scope =
         KEFIR_MALLOC(mem, sizeof(struct kefir_ast_identifier_flat_scope));
     REQUIRE(root_scope != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate identifier scope"));
@@ -192,8 +193,8 @@ kefir_result_t kefir_ast_identifier_block_scope_init(struct kefir_mem *mem,
 
 kefir_result_t kefir_ast_identifier_block_scope_free(struct kefir_mem *mem,
                                                      struct kefir_ast_identifier_block_scope *scope) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid multi scope"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid multi scope"));
     REQUIRE_OK(kefir_tree_free(mem, &scope->root));
     scope->top_scope = NULL;
     return KEFIR_OK;
@@ -212,8 +213,8 @@ static kefir_result_t invoke_cleanup_callbacks(struct kefir_mem *mem, const stru
 
 kefir_result_t kefir_ast_identifier_block_scope_cleanup_payload(struct kefir_mem *mem,
                                                                 const struct kefir_ast_identifier_block_scope *scope) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid multi scope"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid multi scope"));
     REQUIRE_OK(invoke_cleanup_callbacks(mem, &scope->root));
     return KEFIR_OK;
 }
@@ -233,7 +234,7 @@ static kefir_result_t update_removal_callback(struct kefir_ast_identifier_block_
 kefir_result_t kefir_ast_identifier_block_scope_on_removal(
     struct kefir_ast_identifier_block_scope *scope,
     kefir_result_t (*callback)(struct kefir_mem *, struct kefir_ast_scoped_identifier *, void *), void *payload) {
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid multi scope"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid multi scope"));
     scope->remove_callback = callback;
     scope->remove_payload = payload;
     REQUIRE_OK(update_removal_callback(scope, &scope->root));
@@ -248,8 +249,8 @@ struct kefir_ast_identifier_flat_scope *kefir_ast_identifier_block_scope_top(
 
 kefir_result_t kefir_ast_identifier_block_scope_push(struct kefir_mem *mem,
                                                      struct kefir_ast_identifier_block_scope *scope) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid multi scope"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid multi scope"));
     struct kefir_ast_identifier_flat_scope *subscope =
         KEFIR_MALLOC(mem, sizeof(struct kefir_ast_identifier_flat_scope));
     REQUIRE(subscope != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate identifier scope"));
@@ -278,7 +279,7 @@ kefir_result_t kefir_ast_identifier_block_scope_push(struct kefir_mem *mem,
 }
 
 kefir_result_t kefir_ast_identifier_block_scope_pop(struct kefir_ast_identifier_block_scope *scope) {
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid multi scope"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid multi scope"));
     REQUIRE(scope->top_scope->parent != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot close root scope"));
     scope->top_scope = scope->top_scope->parent;
     return KEFIR_OK;
@@ -288,8 +289,8 @@ kefir_result_t kefir_ast_identifier_block_scope_insert(struct kefir_mem *mem,
                                                        const struct kefir_ast_identifier_block_scope *scope,
                                                        const char *identifier,
                                                        struct kefir_ast_scoped_identifier *scoped_identifier) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid multi scope"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid multi scope"));
     struct kefir_ast_identifier_flat_scope *top_scope = kefir_ast_identifier_block_scope_top(scope);
     REQUIRE(top_scope, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Failed to retieve current identifier scope"));
     REQUIRE_OK(kefir_ast_identifier_flat_scope_insert(mem, top_scope, identifier, scoped_identifier));
@@ -299,8 +300,8 @@ kefir_result_t kefir_ast_identifier_block_scope_insert(struct kefir_mem *mem,
 kefir_result_t kefir_ast_identifier_block_scope_at(const struct kefir_ast_identifier_block_scope *scope,
                                                    const char *identifier,
                                                    struct kefir_ast_scoped_identifier **scoped_identifier) {
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid multi scope"));
-    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid multi scope"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
     struct kefir_tree_node *current_node = scope->top_scope;
     ASSIGN_DECL_CAST(struct kefir_ast_identifier_flat_scope *, current_scope, current_node->value);
     REQUIRE(current_scope, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Failed to retieve current identifier scope"));

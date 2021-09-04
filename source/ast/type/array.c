@@ -129,8 +129,8 @@ const struct kefir_ast_type *composite_array_types(struct kefir_mem *mem, struct
 }
 
 static kefir_result_t free_array(struct kefir_mem *mem, const struct kefir_ast_type *type) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
     if (type->array_type.boundary == KEFIR_AST_ARRAY_VLA || type->array_type.boundary == KEFIR_AST_ARRAY_VLA_STATIC) {
         if (type->array_type.vla_length != NULL) {
             REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, type->array_type.vla_length));

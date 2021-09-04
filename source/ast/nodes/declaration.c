@@ -28,8 +28,8 @@ NODE_VISIT_IMPL(ast_declaration_visit, kefir_ast_declaration, declaration)
 struct kefir_ast_node_base *ast_declaration_clone(struct kefir_mem *, struct kefir_ast_node_base *);
 
 kefir_result_t ast_declaration_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node base"));
     ASSIGN_DECL_CAST(struct kefir_ast_declaration *, node, base->self);
     REQUIRE_OK(kefir_ast_declarator_specifier_list_free(mem, &node->specifiers));
     REQUIRE_OK(kefir_list_free(mem, &node->init_declarators));
@@ -46,8 +46,8 @@ static kefir_result_t declaration_free(struct kefir_mem *mem, struct kefir_list 
                                        void *payload) {
     UNUSED(list);
     UNUSED(payload);
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid list entry"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid list entry"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_node_base *, declaration, entry->value);
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, declaration));
@@ -181,8 +181,9 @@ struct kefir_ast_declaration *kefir_ast_new_single_declaration(struct kefir_mem 
 
 kefir_result_t kefir_ast_declaration_unpack_single(struct kefir_ast_declaration *list,
                                                    struct kefir_ast_init_declarator **declaration_ptr) {
-    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declaration list"));
-    REQUIRE(declaration_ptr != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to AST declaration"));
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST declaration list"));
+    REQUIRE(declaration_ptr != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to AST declaration"));
 
     REQUIRE(kefir_list_length(&list->init_declarators) == 1,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected declaration list to contain a single declaration"));

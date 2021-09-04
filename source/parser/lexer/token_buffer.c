@@ -27,8 +27,8 @@
 #define CAPACITY_INCREASE 256
 
 kefir_result_t kefir_token_buffer_init(struct kefir_mem *mem, struct kefir_token_buffer *buffer) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid token buffer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));
 
     buffer->length = 0;
     buffer->capacity = INIT_CAPACITY;
@@ -38,8 +38,8 @@ kefir_result_t kefir_token_buffer_init(struct kefir_mem *mem, struct kefir_token
 }
 
 kefir_result_t kefir_token_buffer_free(struct kefir_mem *mem, struct kefir_token_buffer *buffer) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid token buffer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));
 
     for (kefir_size_t i = 0; i < buffer->length; i++) {
         REQUIRE_OK(kefir_token_free(mem, &buffer->tokens[i]));
@@ -66,9 +66,9 @@ static kefir_result_t ensure_size(struct kefir_mem *mem, struct kefir_token_buff
 
 kefir_result_t kefir_token_buffer_consume(struct kefir_mem *mem, struct kefir_token_buffer *buffer,
                                           struct kefir_lexer *lexer) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid token buffer"));
-    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));
+    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer"));
 
     kefir_bool_t scan_tokens = true;
     while (scan_tokens) {

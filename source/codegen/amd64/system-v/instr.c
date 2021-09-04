@@ -27,7 +27,7 @@
 #include "kefir/core/error.h"
 
 static kefir_result_t cg_symbolic_opcode(kefir_iropcode_t opcode, const char **symbolic) {
-    REQUIRE(symbolic != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected symbolic != NULL"));
+    REQUIRE(symbolic != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected symbolic != NULL"));
     *symbolic = kefir_amd64_iropcode_handler(opcode);
     return *symbolic != NULL ? KEFIR_OK : KEFIR_MALFORMED_ARG;
 }
@@ -110,9 +110,9 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem, struct kefir_
             const kefir_id_t type_id = (kefir_id_t) instr->arg.u32[0];
             const kefir_size_t type_index = (kefir_size_t) instr->arg.u32[1];
             struct kefir_vector *layout = kefir_codegen_amd64_sysv_module_type_layout(mem, sysv_module, type_id);
-            REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unknown named type"));
+            REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unknown named type"));
             ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, entry, kefir_vector_at(layout, type_index));
-            REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to retrieve type node at index"));
+            REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unable to retrieve type node at index"));
 
             const char *opcode_symbol = NULL;
             REQUIRE_OK(cg_symbolic_opcode(instr->opcode, &opcode_symbol));
@@ -138,9 +138,9 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem, struct kefir_
             const kefir_id_t type_id = (kefir_id_t) instr->arg.u32[0];
             const kefir_size_t type_index = (kefir_size_t) instr->arg.u32[1];
             struct kefir_vector *layout = kefir_codegen_amd64_sysv_module_type_layout(mem, sysv_module, type_id);
-            REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unknown named type"));
+            REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unknown named type"));
             ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, entry, kefir_vector_at(layout, type_index));
-            REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to retrieve type node at index"));
+            REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unable to retrieve type node at index"));
             const char *opcode_symbol = NULL;
             if (instr->opcode == KEFIR_IROPCODE_OFFSETPTR) {
                 REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_OFFSETPTR, &opcode_symbol));
@@ -166,7 +166,7 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem, struct kefir_
         case KEFIR_IROPCODE_GETGLOBAL: {
             const kefir_id_t named_symbol = (kefir_id_t) instr->arg.u64;
             const char *symbol = kefir_ir_module_get_named_symbol(sysv_module->module, named_symbol);
-            REQUIRE(symbol != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to find named symbol"));
+            REQUIRE(symbol != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unable to find named symbol"));
 
             const char *opcode_symbol = NULL;
             REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_PUSHI64, &opcode_symbol));

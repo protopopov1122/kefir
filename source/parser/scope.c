@@ -26,7 +26,7 @@ enum identifier_type { IDENTIFIER_TYPEDEF = 0, IDENTIFIER_VARIABLE };
 
 kefir_result_t kefir_parser_block_scope_init(struct kefir_parser_block_scope *scope,
                                              struct kefir_symbol_table *symbols) {
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser block scope"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser block scope"));
 
     scope->symbols = symbols;
     REQUIRE_OK(kefir_hashtree_init(&scope->identifier_declarations, &kefir_hashtree_str_ops));
@@ -34,8 +34,8 @@ kefir_result_t kefir_parser_block_scope_init(struct kefir_parser_block_scope *sc
 }
 
 kefir_result_t kefir_parser_block_scope_free(struct kefir_mem *mem, struct kefir_parser_block_scope *scope) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser block scope"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser block scope"));
 
     REQUIRE_OK(kefir_hashtree_free(mem, &scope->identifier_declarations));
     scope->symbols = NULL;
@@ -44,9 +44,9 @@ kefir_result_t kefir_parser_block_scope_free(struct kefir_mem *mem, struct kefir
 
 kefir_result_t kefir_parser_block_scope_declare_typedef(struct kefir_mem *mem, struct kefir_parser_block_scope *scope,
                                                         const char *identifier) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser block scope"));
-    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser block scope"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
 
     if (scope->symbols != NULL) {
         identifier = kefir_symbol_table_insert(mem, scope->symbols, identifier, NULL);
@@ -67,9 +67,9 @@ kefir_result_t kefir_parser_block_scope_declare_typedef(struct kefir_mem *mem, s
 
 kefir_result_t kefir_parser_block_scope_declare_variable(struct kefir_mem *mem, struct kefir_parser_block_scope *scope,
                                                          const char *identifier) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser block scope"));
-    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser block scope"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
 
     if (scope->symbols != NULL) {
         identifier = kefir_symbol_table_insert(mem, scope->symbols, identifier, NULL);
@@ -90,9 +90,9 @@ kefir_result_t kefir_parser_block_scope_declare_variable(struct kefir_mem *mem, 
 
 kefir_result_t kefir_parser_block_scope_is_typedef(struct kefir_parser_block_scope *scope, const char *identifier,
                                                    kefir_bool_t *result) {
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser block scope"));
-    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
-    REQUIRE(result != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to result"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser block scope"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
+    REQUIRE(result != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to result"));
 
     struct kefir_hashtree_node *node = NULL;
     REQUIRE_OK(kefir_hashtree_at(&scope->identifier_declarations, (kefir_hashtree_key_t) identifier, &node));
@@ -104,8 +104,8 @@ static kefir_result_t remove_block_scope(struct kefir_mem *mem, struct kefir_lis
                                          void *payload) {
     UNUSED(list);
     UNUSED(payload);
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid list entry"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid list entry"));
 
     ASSIGN_DECL_CAST(struct kefir_parser_block_scope *, scope, entry->value);
     REQUIRE_OK(kefir_parser_block_scope_free(mem, scope));
@@ -115,8 +115,8 @@ static kefir_result_t remove_block_scope(struct kefir_mem *mem, struct kefir_lis
 
 kefir_result_t kefir_parser_scope_init(struct kefir_mem *mem, struct kefir_parser_scope *scope,
                                        struct kefir_symbol_table *symbols) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser block scope"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser block scope"));
 
     scope->symbols = symbols;
     REQUIRE_OK(kefir_list_init(&scope->block_scopes));
@@ -126,8 +126,8 @@ kefir_result_t kefir_parser_scope_init(struct kefir_mem *mem, struct kefir_parse
 }
 
 kefir_result_t kefir_parser_scope_free(struct kefir_mem *mem, struct kefir_parser_scope *scope) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser block scope"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser block scope"));
 
     REQUIRE_OK(kefir_list_free(mem, &scope->block_scopes));
     scope->symbols = NULL;
@@ -135,8 +135,8 @@ kefir_result_t kefir_parser_scope_free(struct kefir_mem *mem, struct kefir_parse
 }
 
 kefir_result_t kefir_parser_scope_push_block(struct kefir_mem *mem, struct kefir_parser_scope *scope) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser block scope"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser block scope"));
 
     struct kefir_parser_block_scope *block_scope = KEFIR_MALLOC(mem, sizeof(struct kefir_parser_block_scope));
     REQUIRE(block_scope != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST parser block scope"));
@@ -155,8 +155,8 @@ kefir_result_t kefir_parser_scope_push_block(struct kefir_mem *mem, struct kefir
 }
 
 kefir_result_t kefir_parser_scope_pop_block(struct kefir_mem *mem, struct kefir_parser_scope *scope) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser block scope"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser block scope"));
 
     REQUIRE(kefir_list_length(&scope->block_scopes) > 1,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot pop the base block of parser scope"));
@@ -166,12 +166,12 @@ kefir_result_t kefir_parser_scope_pop_block(struct kefir_mem *mem, struct kefir_
 
 kefir_result_t kefir_parser_scope_declare_typedef(struct kefir_mem *mem, struct kefir_parser_scope *scope,
                                                   const char *identifier) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser block scope"));
-    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser block scope"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
 
     struct kefir_list_entry *tail = kefir_list_tail(&scope->block_scopes);
-    REQUIRE(tail != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to retrieve current parser block scope"));
+    REQUIRE(tail != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unable to retrieve current parser block scope"));
     ASSIGN_DECL_CAST(struct kefir_parser_block_scope *, block_scope, tail->value);
     REQUIRE_OK(kefir_parser_block_scope_declare_typedef(mem, block_scope, identifier));
     return KEFIR_OK;
@@ -179,12 +179,12 @@ kefir_result_t kefir_parser_scope_declare_typedef(struct kefir_mem *mem, struct 
 
 kefir_result_t kefir_parser_scope_declare_variable(struct kefir_mem *mem, struct kefir_parser_scope *scope,
                                                    const char *identifier) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser block scope"));
-    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser block scope"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
 
     struct kefir_list_entry *tail = kefir_list_tail(&scope->block_scopes);
-    REQUIRE(tail != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to retrieve current parser block scope"));
+    REQUIRE(tail != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unable to retrieve current parser block scope"));
     ASSIGN_DECL_CAST(struct kefir_parser_block_scope *, block_scope, tail->value);
     REQUIRE_OK(kefir_parser_block_scope_declare_variable(mem, block_scope, identifier));
     return KEFIR_OK;
@@ -192,9 +192,9 @@ kefir_result_t kefir_parser_scope_declare_variable(struct kefir_mem *mem, struct
 
 kefir_result_t kefir_parser_scope_is_typedef(struct kefir_parser_scope *scope, const char *identifier,
                                              kefir_bool_t *result) {
-    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser scope"));
-    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid identifier"));
-    REQUIRE(result != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to result"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser scope"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
+    REQUIRE(result != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to result"));
 
     kefir_bool_t found = false;
     const struct kefir_list_entry *iter = kefir_list_tail(&scope->block_scopes);

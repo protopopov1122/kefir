@@ -232,8 +232,8 @@ const struct kefir_ast_type *composite_union_types(struct kefir_mem *mem, struct
 }
 
 static kefir_result_t free_structure(struct kefir_mem *mem, const struct kefir_ast_type *type) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
     if (type->structure_type.complete) {
         REQUIRE_OK(kefir_hashtree_free(mem, (struct kefir_hashtree *) &type->structure_type.field_index));
         REQUIRE_OK(kefir_list_free(mem, (struct kefir_list *) &type->structure_type.fields));
@@ -326,11 +326,11 @@ static kefir_result_t kefir_ast_struct_type_field_impl(struct kefir_mem *mem, st
                                                        const char *identifier, const struct kefir_ast_type *type,
                                                        struct kefir_ast_alignment *alignment, kefir_bool_t bitfield,
                                                        struct kefir_ast_constant_expression *bitwidth) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(struct_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST structure type"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(struct_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST structure type"));
     REQUIRE(identifier == NULL || strlen(identifier) > 0,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid field identifier"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid field type"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid field type"));
     if (identifier != NULL && kefir_hashtree_has(&struct_type->field_index, (kefir_hashtree_key_t) identifier)) {
         return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Duplicate structure field identifier");
     }
@@ -379,10 +379,10 @@ static kefir_result_t kefir_ast_struct_type_field_impl(struct kefir_mem *mem, st
 
 kefir_result_t kefir_ast_struct_type_get_field(const struct kefir_ast_struct_type *struct_type, const char *identifier,
                                                const struct kefir_ast_struct_field **field) {
-    REQUIRE(struct_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST structure type"));
+    REQUIRE(struct_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST structure type"));
     REQUIRE(identifier == NULL || strlen(identifier) > 0,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid field identifier"));
-    REQUIRE(field != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST structure field pointer"));
+    REQUIRE(field != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST structure field pointer"));
 
     struct kefir_hashtree_node *node = NULL;
     REQUIRE_OK(kefir_hashtree_at(&struct_type->field_index, (kefir_hashtree_key_t) identifier, &node));
@@ -393,10 +393,10 @@ kefir_result_t kefir_ast_struct_type_get_field(const struct kefir_ast_struct_typ
 kefir_result_t kefir_ast_struct_type_resolve_field(const struct kefir_ast_struct_type *struct_type,
                                                    const char *identifier,
                                                    const struct kefir_ast_struct_field **field) {
-    REQUIRE(struct_type != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST structure type"));
+    REQUIRE(struct_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST structure type"));
     REQUIRE(identifier == NULL || strlen(identifier) > 0,
             KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid field identifier"));
-    REQUIRE(field != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST structure field pointer"));
+    REQUIRE(field != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST structure field pointer"));
 
     *field = NULL;
     struct kefir_hashtree_node *node = NULL;
@@ -428,7 +428,8 @@ kefir_result_t kefir_ast_struct_type_bitfield(struct kefir_mem *mem, struct kefi
                                               struct kefir_ast_struct_type *struct_type, const char *identifier,
                                               const struct kefir_ast_type *type, struct kefir_ast_alignment *alignment,
                                               struct kefir_ast_constant_expression *bitwidth) {
-    REQUIRE(bitwidth != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST constant exression bitwidth"));
+    REQUIRE(bitwidth != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST constant exression bitwidth"));
     return kefir_ast_struct_type_field_impl(mem, symbols, struct_type, identifier, type, alignment, true, bitwidth);
 }
 

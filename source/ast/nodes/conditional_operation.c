@@ -28,8 +28,8 @@ NODE_VISIT_IMPL(ast_conditional_operator_visit, kefir_ast_conditional_operator, 
 struct kefir_ast_node_base *ast_conditional_operator_clone(struct kefir_mem *, struct kefir_ast_node_base *);
 
 kefir_result_t ast_conditional_operator_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node base"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node base"));
     ASSIGN_DECL_CAST(struct kefir_ast_conditional_operator *, node, base->self);
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node->expr2));
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node->expr1));

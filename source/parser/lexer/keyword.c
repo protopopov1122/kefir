@@ -101,8 +101,8 @@ static kefir_result_t insert_keyword(struct kefir_mem *mem, struct kefir_trie *t
 }
 
 kefir_result_t kefir_lexer_init_keywords(struct kefir_mem *mem, struct kefir_lexer *lexer) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer"));
 
     REQUIRE_OK(kefir_trie_init(&lexer->keywords, KEYWORD_NONE));
     for (kefir_size_t i = 0; i < KEYWORDS_LENGTH; i++) {
@@ -131,9 +131,9 @@ static kefir_result_t match_keyword(const kefir_char32_t *string, struct kefir_t
 
 kefir_result_t kefir_lexer_get_keyword(struct kefir_lexer *lexer, const kefir_char32_t *string,
                                        kefir_keyword_token_t *keyword) {
-    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid lexer"));
-    REQUIRE(string != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid string"));
-    REQUIRE(keyword != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to keyword"));
+    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer"));
+    REQUIRE(string != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string"));
+    REQUIRE(keyword != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to keyword"));
 
     kefir_result_t res = match_keyword(string, &lexer->keywords, keyword);
     if (res == KEFIR_NOT_FOUND) {
