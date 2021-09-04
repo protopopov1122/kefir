@@ -14,7 +14,6 @@ kefir_result_category_t kefir_result_get_category(kefir_result_t res) {
 
         case KEFIR_UNKNOWN_ERROR:
         case KEFIR_INTERNAL_ERROR:
-        case KEFIR_MALFORMED_ARG:
         case KEFIR_OUT_OF_BOUNDS:
         case KEFIR_MEMALLOC_FAILURE:
         case KEFIR_NOT_SUPPORTED:
