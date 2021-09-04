@@ -50,7 +50,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ast_node_base *node = NULL;
     for (kefir_size_t i = 0; i < counter; i++) {
         REQUIRE_OK(KEFIR_PARSER_NEXT_EXPRESSION(mem, &parser, &node));
-        REQUIRE_OK(kefir_ast_format(&json, node));
+        REQUIRE_OK(kefir_ast_format(&json, node, false));
         REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
     }
 

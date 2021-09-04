@@ -49,6 +49,7 @@ struct kefir_ast_node_base *ast_labeled_statement_clone(struct kefir_mem *mem, s
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_LABELED_STATEMENT_CLASS;
     clone->base.self = clone;
+    clone->base.source_location = base->source_location;
     kefir_result_t res = kefir_ast_node_properties_clone(&clone->base.properties, &node->base.properties);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, clone);
@@ -75,16 +76,21 @@ struct kefir_ast_labeled_statement *kefir_ast_new_labeled_statement(struct kefir
     const char *label_copy = kefir_symbol_table_insert(mem, symbols, label, NULL);
     REQUIRE(label_copy != NULL, NULL);
 
-    struct kefir_ast_labeled_statement *id = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_labeled_statement));
-    REQUIRE(id != NULL, NULL);
-    id->base.klass = &AST_LABELED_STATEMENT_CLASS;
-    id->base.self = id;
-    kefir_result_t res = kefir_ast_node_properties_init(&id->base.properties);
+    struct kefir_ast_labeled_statement *labeled_stmt = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_labeled_statement));
+    REQUIRE(labeled_stmt != NULL, NULL);
+    labeled_stmt->base.klass = &AST_LABELED_STATEMENT_CLASS;
+    labeled_stmt->base.self = labeled_stmt;
+    kefir_result_t res = kefir_ast_node_properties_init(&labeled_stmt->base.properties);
     REQUIRE_ELSE(res == KEFIR_OK, {
-        KEFIR_FREE(mem, id);
+        KEFIR_FREE(mem, labeled_stmt);
         return NULL;
     });
-    id->label = label_copy;
-    id->statement = statement;
-    return id;
+    res = kefir_source_location_empty(&labeled_stmt->base.source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, labeled_stmt);
+        return NULL;
+    });
+    labeled_stmt->label = label_copy;
+    labeled_stmt->statement = statement;
+    return labeled_stmt;
 }

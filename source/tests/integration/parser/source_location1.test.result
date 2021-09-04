@@ -1,0 +1,254 @@
+{
+    "class": "translation_unit",
+    "external_declarations": [
+        {
+            "class": "declaration",
+            "specifiers": [
+                {
+                    "class": "storage_class",
+                    "storage": "extern"
+                },
+                {
+                    "class": "type_specifier",
+                    "specifier": "char"
+                }
+            ],
+            "init_declarators": [
+                {
+                    "class": "init_declarator",
+                    "declarator": {
+                        "class": "identifier",
+                        "identifier": "X"
+                    },
+                    "initializer": {
+                        "type": "expression",
+                        "expression": {
+                            "class": "constant",
+                            "type": "character",
+                            "value": 88,
+                            "source_location": {
+                                "source": "<stdin>",
+                                "line": 1,
+                                "column": 17
+                            }
+                        }
+                    },
+                    "source_location": {
+                        "source": "<stdin>",
+                        "line": 1,
+                        "column": 13
+                    }
+                }
+            ],
+            "source_location": {
+                "source": "<stdin>",
+                "line": 1,
+                "column": 1
+            }
+        },
+        {
+            "class": "function_definition",
+            "specifiers": [
+                {
+                    "class": "type_specifier",
+                    "specifier": "int"
+                }
+            ],
+            "declarator": {
+                "class": "function",
+                "declarator": {
+                    "class": "identifier",
+                    "identifier": "fn"
+                },
+                "ellipsis": false,
+                "parameters": [
+                    {
+                        "class": "declaration",
+                        "specifiers": [
+                            {
+                                "class": "type_specifier",
+                                "specifier": "int"
+                            }
+                        ],
+                        "init_declarators": [
+                            {
+                                "class": "init_declarator",
+                                "declarator": {
+                                    "class": "identifier",
+                                    "identifier": "x"
+                                },
+                                "initializer": null,
+                                "source_location": {
+                                    "source": "<stdin>",
+                                    "line": 3,
+                                    "column": 12
+                                }
+                            }
+                        ],
+                        "source_location": {
+                            "source": "<stdin>",
+                            "line": 3,
+                            "column": 12
+                        }
+                    }
+                ]
+            },
+            "declarations": [],
+            "body": {
+                "class": "compound_statement",
+                "items": [
+                    {
+                        "class": "return_statement",
+                        "expression": {
+                            "class": "binary_operation",
+                            "type": "add",
+                            "left": {
+                                "class": "identifier",
+                                "identifier": "x",
+                                "source_location": {
+                                    "source": "<stdin>",
+                                    "line": 4,
+                                    "column": 12
+                                }
+                            },
+                            "right": {
+                                "class": "unary_operation",
+                                "type": "sizeof",
+                                "argument": {
+                                    "class": "type_name",
+                                    "specifiers": [
+                                        {
+                                            "class": "type_specifier",
+                                            "specifier": "struct",
+                                            "identifier": "X",
+                                            "members": null
+                                        }
+                                    ],
+                                    "declarator": {
+                                        "class": "abstract"
+                                    },
+                                    "source_location": {
+                                        "source": "<stdin>",
+                                        "line": 4,
+                                        "column": 23
+                                    }
+                                },
+                                "source_location": {
+                                    "source": "<stdin>",
+                                    "line": 4,
+                                    "column": 16
+                                }
+                            },
+                            "source_location": {
+                                "source": "<stdin>",
+                                "line": 4,
+                                "column": 12
+                            }
+                        },
+                        "source_location": {
+                            "source": "<stdin>",
+                            "line": 4,
+                            "column": 5
+                        }
+                    }
+                ],
+                "source_location": {
+                    "source": "<stdin>",
+                    "line": 3,
+                    "column": 15
+                }
+            },
+            "source_location": {
+                "source": "<stdin>",
+                "line": 3,
+                "column": 1
+            }
+        },
+        {
+            "class": "declaration",
+            "specifiers": [
+                {
+                    "class": "storage_class",
+                    "storage": "typedef"
+                },
+                {
+                    "class": "type_specifier",
+                    "specifier": "struct",
+                    "identifier": "X",
+                    "members": [
+                        {
+                            "type": "declaration",
+                            "specifiers": [
+                                {
+                                    "class": "type_specifier",
+                                    "specifier": "int"
+                                }
+                            ],
+                            "declarators": [
+                                {
+                                    "declarator": {
+                                        "class": "identifier",
+                                        "identifier": "a"
+                                    },
+                                    "bitwidth": null
+                                }
+                            ]
+                        },
+                        {
+                            "type": "declaration",
+                            "specifiers": [
+                                {
+                                    "class": "type_specifier",
+                                    "specifier": "long"
+                                }
+                            ],
+                            "declarators": [
+                                {
+                                    "declarator": {
+                                        "class": "identifier",
+                                        "identifier": "x"
+                                    },
+                                    "bitwidth": {
+                                        "class": "constant",
+                                        "type": "integer",
+                                        "value": 3,
+                                        "source_location": {
+                                            "source": "<stdin>",
+                                            "line": 8,
+                                            "column": 11
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "init_declarators": [
+                {
+                    "class": "init_declarator",
+                    "declarator": {
+                        "class": "identifier",
+                        "identifier": "X_t"
+                    },
+                    "initializer": null,
+                    "source_location": {
+                        "source": "<stdin>",
+                        "line": 9,
+                        "column": 3
+                    }
+                }
+            ],
+            "source_location": {
+                "source": "<stdin>",
+                "line": 6,
+                "column": 1
+            }
+        }
+    ],
+    "source_location": {
+        "source": "<stdin>",
+        "line": 1,
+        "column": 1
+    }
+}

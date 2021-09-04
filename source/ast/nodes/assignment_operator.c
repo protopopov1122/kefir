@@ -50,6 +50,7 @@ struct kefir_ast_node_base *ast_assignment_operator_clone(struct kefir_mem *mem,
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_ASSIGNMENT_OPERATOR_CLASS;
     clone->base.self = clone;
+    clone->base.source_location = base->source_location;
     kefir_result_t res = kefir_ast_node_properties_clone(&clone->base.properties, &node->base.properties);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, clone);
@@ -89,6 +90,11 @@ struct kefir_ast_assignment_operator *kefir_ast_new_compound_assignment(struct k
     assignment->base.klass = &AST_ASSIGNMENT_OPERATOR_CLASS;
     assignment->base.self = assignment;
     kefir_result_t res = kefir_ast_node_properties_init(&assignment->base.properties);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, assignment);
+        return NULL;
+    });
+    res = kefir_source_location_empty(&assignment->base.source_location);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, assignment);
         return NULL;

@@ -24,16 +24,17 @@
 #include "kefir/ast/node.h"
 #include "kefir/util/json.h"
 
-kefir_result_t kefir_ast_format(struct kefir_json_output *, const struct kefir_ast_node_base *);
+kefir_result_t kefir_ast_format(struct kefir_json_output *, const struct kefir_ast_node_base *, kefir_bool_t);
 kefir_result_t kefir_ast_format_declarator_specifier_list(struct kefir_json_output *,
-                                                          const struct kefir_ast_declarator_specifier_list *);
+                                                          const struct kefir_ast_declarator_specifier_list *,
+                                                          kefir_bool_t);
 kefir_result_t kefir_ast_format_declarator_specifier(struct kefir_json_output *,
-                                                     const struct kefir_ast_declarator_specifier *);
-kefir_result_t kefir_ast_format_declarator_specifier_list(struct kefir_json_output *,
-                                                          const struct kefir_ast_declarator_specifier_list *);
-kefir_result_t kefir_ast_format_declarator(struct kefir_json_output *, const struct kefir_ast_declarator *);
+                                                     const struct kefir_ast_declarator_specifier *, kefir_bool_t);
+kefir_result_t kefir_ast_format_declarator(struct kefir_json_output *, const struct kefir_ast_declarator *,
+                                           kefir_bool_t);
 kefir_result_t kefir_ast_format_initializer_designation(struct kefir_json_output *,
-                                                        const struct kefir_ast_initializer_designation *);
-kefir_result_t kefir_ast_format_initializer(struct kefir_json_output *, const struct kefir_ast_initializer *);
+                                                        const struct kefir_ast_initializer_designation *, kefir_bool_t);
+kefir_result_t kefir_ast_format_initializer(struct kefir_json_output *, const struct kefir_ast_initializer *,
+                                            kefir_bool_t);
 
 #endif

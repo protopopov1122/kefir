@@ -62,6 +62,7 @@ struct kefir_ast_node_base *ast_translation_unit_clone(struct kefir_mem *mem, st
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_TRANSLATION_UNIT_CLASS;
     clone->base.self = clone;
+    clone->base.source_location = base->source_location;
     kefir_result_t res = kefir_ast_node_properties_clone(&clone->base.properties, &node->base.properties);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, clone);
@@ -107,6 +108,11 @@ struct kefir_ast_translation_unit *kefir_ast_new_translation_unit(struct kefir_m
     unit->base.klass = &AST_TRANSLATION_UNIT_CLASS;
     unit->base.self = unit;
     kefir_result_t res = kefir_ast_node_properties_init(&unit->base.properties);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, unit);
+        return NULL;
+    });
+    res = kefir_source_location_empty(&unit->base.source_location);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, unit);
         return NULL;

@@ -248,6 +248,7 @@ static kefir_result_t scan_function_parameter(struct kefir_mem *mem, struct kefi
         return res;
     });
 
+    struct kefir_source_location source_location = kefir_parser_token_cursor_at(parser->cursor, 0)->source_location;
     struct kefir_ast_declarator *declarator = NULL;
     res = scan_function_parameter_declarator(mem, parser, &declarator);
     REQUIRE_ELSE(res == KEFIR_OK, {
@@ -255,12 +256,16 @@ static kefir_result_t scan_function_parameter(struct kefir_mem *mem, struct kefi
         return res;
     });
 
-    struct kefir_ast_declaration *declaration = kefir_ast_new_single_declaration(mem, declarator, NULL, NULL);
+    struct kefir_ast_init_declarator *init_declarator = NULL;
+    struct kefir_ast_declaration *declaration =
+        kefir_ast_new_single_declaration(mem, declarator, NULL, &init_declarator);
     REQUIRE_ELSE(declaration != NULL, {
         kefir_ast_declarator_free(mem, declarator);
         kefir_ast_declarator_specifier_list_free(mem, &specifiers);
         return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST declaration");
     });
+    init_declarator->base.source_location = source_location;
+    declaration->base.source_location = source_location;
 
     res = kefir_ast_declarator_specifier_list_clone(mem, &declaration->specifiers, &specifiers);
     REQUIRE_ELSE(res == KEFIR_OK, {

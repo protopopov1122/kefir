@@ -28,6 +28,7 @@
 #include "kefir/ast/constants.h"
 #include "kefir/ast/type.h"
 #include "kefir/ast/temporaries.h"
+#include "kefir/core/source_location.h"
 
 typedef struct kefir_ast_visitor kefir_ast_visitor_t;
 typedef struct kefir_ast_visitor kefir_ast_visitor_t;
@@ -82,6 +83,7 @@ typedef struct kefir_ast_node_base {
     const struct kefir_ast_node_class *klass;
     void *self;
     struct kefir_ast_node_properties properties;
+    struct kefir_source_location source_location;
 } kefir_ast_node_base_t;
 
 #define KEFIR_AST_NODE_STRUCT(id, content) \

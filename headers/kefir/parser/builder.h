@@ -67,7 +67,8 @@ kefir_result_t kefir_parser_ast_builder_compound_literal(struct kefir_mem *, str
 kefir_result_t kefir_parser_ast_builder_declaration(struct kefir_mem *, struct kefir_parser_ast_builder *,
                                                     struct kefir_ast_declarator_specifier_list *);
 kefir_result_t kefir_parser_ast_builder_init_declarator(struct kefir_mem *, struct kefir_parser_ast_builder *,
-                                                        struct kefir_ast_declarator *, struct kefir_ast_initializer *);
+                                                        struct kefir_ast_declarator *, struct kefir_ast_initializer *,
+                                                        struct kefir_ast_init_declarator **);
 kefir_result_t kefir_parser_ast_builder_compound_statement(struct kefir_mem *, struct kefir_parser_ast_builder *);
 kefir_result_t kefir_parser_ast_builder_compound_statement_append(struct kefir_mem *,
                                                                   struct kefir_parser_ast_builder *);

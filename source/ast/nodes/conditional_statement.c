@@ -53,6 +53,7 @@ struct kefir_ast_node_base *ast_conditional_statement_clone(struct kefir_mem *me
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_CONDITIONAL_STATEMENT_CLASS;
     clone->base.self = clone;
+    clone->base.source_location = base->source_location;
     kefir_result_t res = kefir_ast_node_properties_clone(&clone->base.properties, &node->base.properties);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, clone);

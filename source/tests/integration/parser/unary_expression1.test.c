@@ -92,7 +92,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ast_node_base *node = NULL;
     while (kefir_parser_token_cursor_at(&cursor, 0)->klass != KEFIR_TOKEN_SENTINEL) {
         REQUIRE_OK(KEFIR_PARSER_NEXT_EXPRESSION(mem, &parser, &node));
-        REQUIRE_OK(kefir_ast_format(&json, node));
+        REQUIRE_OK(kefir_ast_format(&json, node, false));
         REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
     }
 

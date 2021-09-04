@@ -61,6 +61,7 @@ struct kefir_ast_node_base *ast_comma_operator_clone(struct kefir_mem *mem, stru
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_COMMA_OPERATOR_CLASS;
     clone->base.self = clone;
+    clone->base.source_location = base->source_location;
     kefir_result_t res = kefir_ast_node_properties_clone(&clone->base.properties, &node->base.properties);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, clone);
@@ -109,6 +110,11 @@ struct kefir_ast_comma_operator *kefir_ast_new_comma_operator(struct kefir_mem *
     comma->base.klass = &AST_COMMA_OPERATOR_CLASS;
     comma->base.self = comma;
     kefir_result_t res = kefir_ast_node_properties_init(&comma->base.properties);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, comma);
+        return NULL;
+    });
+    res = kefir_source_location_empty(&comma->base.source_location);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, comma);
         return NULL;

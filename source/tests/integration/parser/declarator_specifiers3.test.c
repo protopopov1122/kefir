@@ -101,7 +101,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         REQUIRE(kefir_parser_token_cursor_at(&cursor, 0)->punctuator == KEFIR_PUNCTUATOR_SEMICOLON,
                 KEFIR_INTERNAL_ERROR);
         REQUIRE_OK(kefir_parser_token_cursor_next(&cursor));
-        REQUIRE_OK(kefir_ast_format_declarator_specifier_list(&json, &specifiers));
+        REQUIRE_OK(kefir_ast_format_declarator_specifier_list(&json, &specifiers, false));
         REQUIRE_OK(kefir_ast_declarator_specifier_list_free(mem, &specifiers));
     }
 

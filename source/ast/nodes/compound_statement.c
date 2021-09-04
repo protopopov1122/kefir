@@ -61,6 +61,7 @@ struct kefir_ast_node_base *ast_compound_statement_clone(struct kefir_mem *mem, 
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_COMPOUND_STATEMENT_CLASS;
     clone->base.self = clone;
+    clone->base.source_location = base->source_location;
     kefir_result_t res = kefir_ast_node_properties_clone(&clone->base.properties, &node->base.properties);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, clone);
@@ -109,6 +110,11 @@ struct kefir_ast_compound_statement *kefir_ast_new_compound_statement(struct kef
     stmt->base.klass = &AST_COMPOUND_STATEMENT_CLASS;
     stmt->base.self = stmt;
     kefir_result_t res = kefir_ast_node_properties_init(&stmt->base.properties);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, stmt);
+        return NULL;
+    });
+    res = kefir_source_location_empty(&stmt->base.source_location);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, stmt);
         return NULL;

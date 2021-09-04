@@ -54,7 +54,8 @@ static kefir_result_t format_type_qualifiers(struct kefir_json_output *json,
 }
 
 kefir_result_t kefir_ast_format_declarator(struct kefir_json_output *json,
-                                           const struct kefir_ast_declarator *declarator) {
+                                           const struct kefir_ast_declarator *declarator,
+                                           kefir_bool_t display_source_location) {
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid JSON output"));
     if (declarator == NULL) {
         REQUIRE_OK(kefir_json_output_null(json));
@@ -77,7 +78,7 @@ kefir_result_t kefir_ast_format_declarator(struct kefir_json_output *json,
         case KEFIR_AST_DECLARATOR_POINTER: {
             REQUIRE_OK(kefir_json_output_string(json, "pointer"));
             REQUIRE_OK(kefir_json_output_object_key(json, "declarator"));
-            REQUIRE_OK(kefir_ast_format_declarator(json, declarator->pointer.declarator));
+            REQUIRE_OK(kefir_ast_format_declarator(json, declarator->pointer.declarator, display_source_location));
             REQUIRE_OK(kefir_json_output_object_key(json, "type_qualifiers"));
             REQUIRE_OK(format_type_qualifiers(json, &declarator->pointer.type_qualifiers));
         } break;
@@ -85,7 +86,7 @@ kefir_result_t kefir_ast_format_declarator(struct kefir_json_output *json,
         case KEFIR_AST_DECLARATOR_ARRAY: {
             REQUIRE_OK(kefir_json_output_string(json, "array"));
             REQUIRE_OK(kefir_json_output_object_key(json, "declarator"));
-            REQUIRE_OK(kefir_ast_format_declarator(json, declarator->array.declarator));
+            REQUIRE_OK(kefir_ast_format_declarator(json, declarator->array.declarator, display_source_location));
             REQUIRE_OK(kefir_json_output_object_key(json, "type"));
             switch (declarator->array.type) {
                 case KEFIR_AST_DECLARATOR_ARRAY_UNBOUNDED:
@@ -99,7 +100,7 @@ kefir_result_t kefir_ast_format_declarator(struct kefir_json_output *json,
                 case KEFIR_AST_DECLARATOR_ARRAY_BOUNDED:
                     REQUIRE_OK(kefir_json_output_string(json, "bounded"));
                     REQUIRE_OK(kefir_json_output_object_key(json, "length"));
-                    REQUIRE_OK(kefir_ast_format(json, declarator->array.length));
+                    REQUIRE_OK(kefir_ast_format(json, declarator->array.length, display_source_location));
                     break;
             }
             REQUIRE_OK(kefir_json_output_object_key(json, "static"));
@@ -111,7 +112,7 @@ kefir_result_t kefir_ast_format_declarator(struct kefir_json_output *json,
         case KEFIR_AST_DECLARATOR_FUNCTION: {
             REQUIRE_OK(kefir_json_output_string(json, "function"));
             REQUIRE_OK(kefir_json_output_object_key(json, "declarator"));
-            REQUIRE_OK(kefir_ast_format_declarator(json, declarator->function.declarator));
+            REQUIRE_OK(kefir_ast_format_declarator(json, declarator->function.declarator, display_source_location));
             REQUIRE_OK(kefir_json_output_object_key(json, "ellipsis"));
             REQUIRE_OK(kefir_json_output_boolean(json, declarator->function.ellipsis));
             REQUIRE_OK(kefir_json_output_object_key(json, "parameters"));
@@ -119,7 +120,7 @@ kefir_result_t kefir_ast_format_declarator(struct kefir_json_output *json,
             for (const struct kefir_list_entry *iter = kefir_list_head(&declarator->function.parameters); iter != NULL;
                  kefir_list_next(&iter)) {
                 ASSIGN_DECL_CAST(struct kefir_ast_node_base *, param, iter->value);
-                REQUIRE_OK(kefir_ast_format(json, param));
+                REQUIRE_OK(kefir_ast_format(json, param, display_source_location));
             }
             REQUIRE_OK(kefir_json_output_array_end(json));
         } break;

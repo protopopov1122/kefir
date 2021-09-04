@@ -46,6 +46,7 @@ struct kefir_ast_node_base *ast_constant_clone(struct kefir_mem *mem, struct kef
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_CONSTANT_CLASS;
     clone->base.self = clone;
+    clone->base.source_location = base->source_location;
     kefir_result_t res = kefir_ast_node_properties_clone(&clone->base.properties, &node->base.properties);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, clone);
@@ -67,6 +68,11 @@ struct kefir_ast_constant *kefir_ast_new_constant_bool(struct kefir_mem *mem, ke
         KEFIR_FREE(mem, constant);
         return NULL;
     });
+    res = kefir_source_location_empty(&constant->base.source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, constant);
+        return NULL;
+    });
     constant->type = KEFIR_AST_BOOL_CONSTANT;
     constant->value.boolean = value;
     return constant;
@@ -79,6 +85,11 @@ struct kefir_ast_constant *kefir_ast_new_constant_char(struct kefir_mem *mem, ke
     constant->base.klass = &AST_CONSTANT_CLASS;
     constant->base.self = constant;
     kefir_result_t res = kefir_ast_node_properties_init(&constant->base.properties);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, constant);
+        return NULL;
+    });
+    res = kefir_source_location_empty(&constant->base.source_location);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, constant);
         return NULL;
@@ -99,6 +110,11 @@ struct kefir_ast_constant *kefir_ast_new_constant_wide_char(struct kefir_mem *me
         KEFIR_FREE(mem, constant);
         return NULL;
     });
+    res = kefir_source_location_empty(&constant->base.source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, constant);
+        return NULL;
+    });
     constant->type = KEFIR_AST_WIDE_CHAR_CONSTANT;
     constant->value.wide_character = value;
     return constant;
@@ -111,6 +127,11 @@ struct kefir_ast_constant *kefir_ast_new_constant_unicode16_char(struct kefir_me
     constant->base.klass = &AST_CONSTANT_CLASS;
     constant->base.self = constant;
     kefir_result_t res = kefir_ast_node_properties_init(&constant->base.properties);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, constant);
+        return NULL;
+    });
+    res = kefir_source_location_empty(&constant->base.source_location);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, constant);
         return NULL;
@@ -131,6 +152,11 @@ struct kefir_ast_constant *kefir_ast_new_constant_unicode32_char(struct kefir_me
         KEFIR_FREE(mem, constant);
         return NULL;
     });
+    res = kefir_source_location_empty(&constant->base.source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, constant);
+        return NULL;
+    });
     constant->type = KEFIR_AST_UNICODE32_CHAR_CONSTANT;
     constant->value.unicode32_character = value;
     return constant;
@@ -143,6 +169,11 @@ struct kefir_ast_constant *kefir_ast_new_constant_int(struct kefir_mem *mem, kef
     constant->base.klass = &AST_CONSTANT_CLASS;
     constant->base.self = constant;
     kefir_result_t res = kefir_ast_node_properties_init(&constant->base.properties);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, constant);
+        return NULL;
+    });
+    res = kefir_source_location_empty(&constant->base.source_location);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, constant);
         return NULL;
@@ -163,6 +194,11 @@ struct kefir_ast_constant *kefir_ast_new_constant_uint(struct kefir_mem *mem, ke
         KEFIR_FREE(mem, constant);
         return NULL;
     });
+    res = kefir_source_location_empty(&constant->base.source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, constant);
+        return NULL;
+    });
     constant->type = KEFIR_AST_UINT_CONSTANT;
     constant->value.uinteger = value;
     return constant;
@@ -175,6 +211,11 @@ struct kefir_ast_constant *kefir_ast_new_constant_long(struct kefir_mem *mem, ke
     constant->base.klass = &AST_CONSTANT_CLASS;
     constant->base.self = constant;
     kefir_result_t res = kefir_ast_node_properties_init(&constant->base.properties);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, constant);
+        return NULL;
+    });
+    res = kefir_source_location_empty(&constant->base.source_location);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, constant);
         return NULL;
@@ -195,6 +236,11 @@ struct kefir_ast_constant *kefir_ast_new_constant_ulong(struct kefir_mem *mem, k
         KEFIR_FREE(mem, constant);
         return NULL;
     });
+    res = kefir_source_location_empty(&constant->base.source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, constant);
+        return NULL;
+    });
     constant->type = KEFIR_AST_ULONG_CONSTANT;
     constant->value.ulong_integer = value;
     return constant;
@@ -207,6 +253,11 @@ struct kefir_ast_constant *kefir_ast_new_constant_long_long(struct kefir_mem *me
     constant->base.klass = &AST_CONSTANT_CLASS;
     constant->base.self = constant;
     kefir_result_t res = kefir_ast_node_properties_init(&constant->base.properties);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, constant);
+        return NULL;
+    });
+    res = kefir_source_location_empty(&constant->base.source_location);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, constant);
         return NULL;
@@ -227,6 +278,11 @@ struct kefir_ast_constant *kefir_ast_new_constant_ulong_long(struct kefir_mem *m
         KEFIR_FREE(mem, constant);
         return NULL;
     });
+    res = kefir_source_location_empty(&constant->base.source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, constant);
+        return NULL;
+    });
     constant->type = KEFIR_AST_ULONG_LONG_CONSTANT;
     constant->value.ulong_long = value;
     return constant;
@@ -243,6 +299,11 @@ struct kefir_ast_constant *kefir_ast_new_constant_float(struct kefir_mem *mem, k
         KEFIR_FREE(mem, constant);
         return NULL;
     });
+    res = kefir_source_location_empty(&constant->base.source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, constant);
+        return NULL;
+    });
     constant->type = KEFIR_AST_FLOAT_CONSTANT;
     constant->value.float32 = value;
     return constant;
@@ -255,6 +316,11 @@ struct kefir_ast_constant *kefir_ast_new_constant_double(struct kefir_mem *mem, 
     constant->base.klass = &AST_CONSTANT_CLASS;
     constant->base.self = constant;
     kefir_result_t res = kefir_ast_node_properties_init(&constant->base.properties);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, constant);
+        return NULL;
+    });
+    res = kefir_source_location_empty(&constant->base.source_location);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, constant);
         return NULL;

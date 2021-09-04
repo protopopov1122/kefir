@@ -62,6 +62,7 @@ struct kefir_ast_node_base *ast_declaration_clone(struct kefir_mem *mem, struct 
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_DECLARATION_LIST_CLASS;
     clone->base.self = clone;
+    clone->base.source_location = base->source_location;
     kefir_result_t res = kefir_ast_node_properties_clone(&clone->base.properties, &node->base.properties);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, clone);
@@ -126,6 +127,11 @@ struct kefir_ast_declaration *kefir_ast_new_declaration(struct kefir_mem *mem) {
     declaration->base.klass = &AST_DECLARATION_LIST_CLASS;
     declaration->base.self = declaration;
     kefir_result_t res = kefir_ast_node_properties_init(&declaration->base.properties);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, declaration);
+        return NULL;
+    });
+    res = kefir_source_location_empty(&declaration->base.source_location);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, declaration);
         return NULL;

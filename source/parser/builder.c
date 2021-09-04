@@ -645,7 +645,8 @@ kefir_result_t kefir_parser_ast_builder_declaration(struct kefir_mem *mem, struc
 
 kefir_result_t kefir_parser_ast_builder_init_declarator(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder,
                                                         struct kefir_ast_declarator *declarator,
-                                                        struct kefir_ast_initializer *initializer) {
+                                                        struct kefir_ast_initializer *initializer,
+                                                        struct kefir_ast_init_declarator **init_declarator_ptr) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST builder"));
 
@@ -678,6 +679,7 @@ kefir_result_t kefir_parser_ast_builder_init_declarator(struct kefir_mem *mem, s
         KEFIR_AST_NODE_FREE(mem, declaration);
         return res;
     });
+    ASSIGN_PTR(init_declarator_ptr, init_declarator);
     return KEFIR_OK;
 }
 

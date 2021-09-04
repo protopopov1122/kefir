@@ -104,7 +104,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                     KEFIR_INTERNAL_ERROR);
             REQUIRE_OK(kefir_parser_token_cursor_next(&cursor));
         }
-        REQUIRE_OK(kefir_ast_format(&json, node));
+        REQUIRE_OK(kefir_ast_format(&json, node, false));
         REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
     }
 

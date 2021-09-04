@@ -50,6 +50,7 @@ struct kefir_ast_node_base *ast_static_assertion_clone(struct kefir_mem *mem, st
     REQUIRE(clone != NULL, NULL);
     clone->base.klass = &AST_STATIC_ASSERTION_CLASS;
     clone->base.self = clone;
+    clone->base.source_location = base->source_location;
     kefir_result_t res = kefir_ast_node_properties_clone(&clone->base.properties, &node->base.properties);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, clone);
@@ -71,17 +72,22 @@ struct kefir_ast_static_assertion *kefir_ast_new_static_assertion(struct kefir_m
     REQUIRE(condition != NULL, NULL);
     REQUIRE(string != NULL, NULL);
 
-    struct kefir_ast_static_assertion *id = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_static_assertion));
-    REQUIRE(id != NULL, NULL);
-    id->base.klass = &AST_STATIC_ASSERTION_CLASS;
-    id->base.self = id;
-    kefir_result_t res = kefir_ast_node_properties_init(&id->base.properties);
+    struct kefir_ast_static_assertion *static_assertion = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_static_assertion));
+    REQUIRE(static_assertion != NULL, NULL);
+    static_assertion->base.klass = &AST_STATIC_ASSERTION_CLASS;
+    static_assertion->base.self = static_assertion;
+    kefir_result_t res = kefir_ast_node_properties_init(&static_assertion->base.properties);
     REQUIRE_ELSE(res == KEFIR_OK, {
-        KEFIR_FREE(mem, id);
+        KEFIR_FREE(mem, static_assertion);
+        return NULL;
+    });
+    res = kefir_source_location_empty(&static_assertion->base.source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, static_assertion);
         return NULL;
     });
 
-    id->condition = condition;
-    id->string = string;
-    return id;
+    static_assertion->condition = condition;
+    static_assertion->string = string;
+    return static_assertion;
 }
