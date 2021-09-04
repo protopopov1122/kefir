@@ -119,8 +119,8 @@ static kefir_result_t format_enum(struct kefir_json_output *json,
 kefir_result_t kefir_ast_format_declarator_specifier(struct kefir_json_output *json,
                                                      const struct kefir_ast_declarator_specifier *specifier,
                                                      kefir_bool_t display_source_location) {
-    REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid JSON output"));
-    REQUIRE(specifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declarator specifier"));
+    REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid JSON output"));
+    REQUIRE(specifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST declarator specifier"));
 
     REQUIRE_OK(kefir_json_output_object_begin(json));
     REQUIRE_OK(kefir_json_output_object_key(json, "class"));
@@ -196,7 +196,7 @@ kefir_result_t kefir_ast_format_declarator_specifier(struct kefir_json_output *j
                     break;
 
                 default:
-                    return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected type specifier");
+                    return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected type specifier");
             }
             break;
 
@@ -221,7 +221,7 @@ kefir_result_t kefir_ast_format_declarator_specifier(struct kefir_json_output *j
                     break;
 
                 default:
-                    return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected type qualifier");
+                    return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected type qualifier");
             }
             break;
 
@@ -254,7 +254,7 @@ kefir_result_t kefir_ast_format_declarator_specifier(struct kefir_json_output *j
                     break;
 
                 default:
-                    return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected storage class");
+                    return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected storage class");
             }
             break;
 
@@ -271,7 +271,7 @@ kefir_result_t kefir_ast_format_declarator_specifier(struct kefir_json_output *j
                     break;
 
                 default:
-                    return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected function specifier");
+                    return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected function specifier");
             }
             break;
 
@@ -282,7 +282,7 @@ kefir_result_t kefir_ast_format_declarator_specifier(struct kefir_json_output *j
             break;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected declarator specifier");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected declarator specifier");
     }
     REQUIRE_OK(kefir_json_output_object_end(json));
 
@@ -292,8 +292,9 @@ kefir_result_t kefir_ast_format_declarator_specifier(struct kefir_json_output *j
 kefir_result_t kefir_ast_format_declarator_specifier_list(struct kefir_json_output *json,
                                                           const struct kefir_ast_declarator_specifier_list *specifiers,
                                                           kefir_bool_t display_source_location) {
-    REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid JSON output"));
-    REQUIRE(specifiers != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declarator specifier list"));
+    REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid JSON output"));
+    REQUIRE(specifiers != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST declarator specifier list"));
 
     REQUIRE_OK(kefir_json_output_array_begin(json));
     struct kefir_ast_declarator_specifier *specifier = NULL;

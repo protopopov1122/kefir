@@ -55,8 +55,8 @@ static kefir_result_t visit_not_impl(const struct kefir_ast_visitor *visitor, co
 static kefir_result_t visit_identifier(const struct kefir_ast_visitor *visitor, const struct kefir_ast_identifier *node,
                                        void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST identifier node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST identifier node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -75,8 +75,8 @@ static kefir_result_t visit_identifier(const struct kefir_ast_visitor *visitor, 
 static kefir_result_t visit_constant(const struct kefir_ast_visitor *visitor, const struct kefir_ast_constant *node,
                                      void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST constant node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST constant node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -173,8 +173,8 @@ static kefir_result_t visit_constant(const struct kefir_ast_visitor *visitor, co
 static kefir_result_t visit_string_literal(const struct kefir_ast_visitor *visitor,
                                            const struct kefir_ast_string_literal *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST string literal node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST string literal node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -225,8 +225,8 @@ static kefir_result_t visit_string_literal(const struct kefir_ast_visitor *visit
 static kefir_result_t visit_array_subscript(const struct kefir_ast_visitor *visitor,
                                             const struct kefir_ast_array_subscript *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST array subscript node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST array subscript node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -247,8 +247,8 @@ static kefir_result_t visit_array_subscript(const struct kefir_ast_visitor *visi
 static kefir_result_t visit_function_call(const struct kefir_ast_visitor *visitor,
                                           const struct kefir_ast_function_call *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST function call node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST function call node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -275,8 +275,8 @@ static kefir_result_t visit_function_call(const struct kefir_ast_visitor *visito
 static kefir_result_t visit_struct_member(const struct kefir_ast_visitor *visitor,
                                           const struct kefir_ast_struct_member *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST struct member node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST struct member node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -301,8 +301,8 @@ static kefir_result_t visit_struct_member(const struct kefir_ast_visitor *visito
 static kefir_result_t visit_unary_operation(const struct kefir_ast_visitor *visitor,
                                             const struct kefir_ast_unary_operation *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST unary operation node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST unary operation node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -371,8 +371,8 @@ static kefir_result_t visit_unary_operation(const struct kefir_ast_visitor *visi
 static kefir_result_t visit_cast_operator(const struct kefir_ast_visitor *visitor,
                                           const struct kefir_ast_cast_operator *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST cast operator node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST cast operator node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -393,8 +393,8 @@ static kefir_result_t visit_cast_operator(const struct kefir_ast_visitor *visito
 static kefir_result_t visit_binary_operation(const struct kefir_ast_visitor *visitor,
                                              const struct kefir_ast_binary_operation *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST binary operation node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST binary operation node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -489,8 +489,8 @@ static kefir_result_t visit_binary_operation(const struct kefir_ast_visitor *vis
 static kefir_result_t visit_conditional_operator(const struct kefir_ast_visitor *visitor,
                                                  const struct kefir_ast_conditional_operator *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST conditional operation node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST conditional operation node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -513,8 +513,8 @@ static kefir_result_t visit_conditional_operator(const struct kefir_ast_visitor 
 static kefir_result_t visit_assignment_operator(const struct kefir_ast_visitor *visitor,
                                                 const struct kefir_ast_assignment_operator *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST assignment operator node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST assignment operator node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -581,8 +581,8 @@ static kefir_result_t visit_assignment_operator(const struct kefir_ast_visitor *
 static kefir_result_t visit_comma_operator(const struct kefir_ast_visitor *visitor,
                                            const struct kefir_ast_comma_operator *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST assignment operator node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST assignment operator node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -607,8 +607,8 @@ static kefir_result_t visit_comma_operator(const struct kefir_ast_visitor *visit
 static kefir_result_t visit_type_name(const struct kefir_ast_visitor *visitor, const struct kefir_ast_type_name *node,
                                       void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type name node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type name node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -630,8 +630,8 @@ static kefir_result_t visit_type_name(const struct kefir_ast_visitor *visitor, c
 static kefir_result_t visit_declaration(const struct kefir_ast_visitor *visitor,
                                         const struct kefir_ast_declaration *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declaration node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST declaration node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -658,8 +658,8 @@ static kefir_result_t visit_declaration(const struct kefir_ast_visitor *visitor,
 static kefir_result_t visit_init_declarator(const struct kefir_ast_visitor *visitor,
                                             const struct kefir_ast_init_declarator *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST init declarator node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST init declarator node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -684,8 +684,8 @@ static kefir_result_t visit_init_declarator(const struct kefir_ast_visitor *visi
 static kefir_result_t visit_static_assertion(const struct kefir_ast_visitor *visitor,
                                              const struct kefir_ast_static_assertion *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST static assertion node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST static assertion node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -706,8 +706,8 @@ static kefir_result_t visit_static_assertion(const struct kefir_ast_visitor *vis
 static kefir_result_t visit_generic_selection(const struct kefir_ast_visitor *visitor,
                                               const struct kefir_ast_generic_selection *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST generic selection node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST generic selection node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -746,8 +746,8 @@ static kefir_result_t visit_generic_selection(const struct kefir_ast_visitor *vi
 static kefir_result_t visit_compound_literal(const struct kefir_ast_visitor *visitor,
                                              const struct kefir_ast_compound_literal *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST compound literal node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST compound literal node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -768,8 +768,8 @@ static kefir_result_t visit_compound_literal(const struct kefir_ast_visitor *vis
 static kefir_result_t visit_expression_statement(const struct kefir_ast_visitor *visitor,
                                                  const struct kefir_ast_expression_statement *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST expression statement node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST expression statement node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -792,8 +792,8 @@ static kefir_result_t visit_expression_statement(const struct kefir_ast_visitor 
 static kefir_result_t visit_compound_statement(const struct kefir_ast_visitor *visitor,
                                                const struct kefir_ast_compound_statement *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST compound statement node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST compound statement node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -818,8 +818,8 @@ static kefir_result_t visit_compound_statement(const struct kefir_ast_visitor *v
 static kefir_result_t visit_labeled_statement(const struct kefir_ast_visitor *visitor,
                                               const struct kefir_ast_labeled_statement *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST labeled statement node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST labeled statement node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -840,8 +840,8 @@ static kefir_result_t visit_labeled_statement(const struct kefir_ast_visitor *vi
 static kefir_result_t visit_case_statement(const struct kefir_ast_visitor *visitor,
                                            const struct kefir_ast_case_statement *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST case statement node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST case statement node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -866,8 +866,8 @@ static kefir_result_t visit_case_statement(const struct kefir_ast_visitor *visit
 static kefir_result_t visit_if_statement(const struct kefir_ast_visitor *visitor,
                                          const struct kefir_ast_conditional_statement *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST conditional statement node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST conditional statement node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -894,8 +894,8 @@ static kefir_result_t visit_if_statement(const struct kefir_ast_visitor *visitor
 static kefir_result_t visit_switch_statement(const struct kefir_ast_visitor *visitor,
                                              const struct kefir_ast_switch_statement *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST switch statement node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST switch statement node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -916,8 +916,8 @@ static kefir_result_t visit_switch_statement(const struct kefir_ast_visitor *vis
 static kefir_result_t visit_while_statement(const struct kefir_ast_visitor *visitor,
                                             const struct kefir_ast_while_statement *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST while statement node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST while statement node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -938,8 +938,8 @@ static kefir_result_t visit_while_statement(const struct kefir_ast_visitor *visi
 static kefir_result_t visit_do_while_statement(const struct kefir_ast_visitor *visitor,
                                                const struct kefir_ast_do_while_statement *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST do while statement node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST do while statement node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -960,8 +960,8 @@ static kefir_result_t visit_do_while_statement(const struct kefir_ast_visitor *v
 static kefir_result_t visit_for_statement(const struct kefir_ast_visitor *visitor,
                                           const struct kefir_ast_for_statement *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST for statement node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST for statement node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -1002,8 +1002,8 @@ static kefir_result_t visit_for_statement(const struct kefir_ast_visitor *visito
 static kefir_result_t visit_return_statement(const struct kefir_ast_visitor *visitor,
                                              const struct kefir_ast_return_statement *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST return statement node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST return statement node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -1026,8 +1026,8 @@ static kefir_result_t visit_return_statement(const struct kefir_ast_visitor *vis
 static kefir_result_t visit_goto_statement(const struct kefir_ast_visitor *visitor,
                                            const struct kefir_ast_goto_statement *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST goto statement node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST goto statement node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -1046,8 +1046,8 @@ static kefir_result_t visit_goto_statement(const struct kefir_ast_visitor *visit
 static kefir_result_t visit_continue_statement(const struct kefir_ast_visitor *visitor,
                                                const struct kefir_ast_continue_statement *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST continue statement node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST continue statement node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -1064,8 +1064,8 @@ static kefir_result_t visit_continue_statement(const struct kefir_ast_visitor *v
 static kefir_result_t visit_break_statement(const struct kefir_ast_visitor *visitor,
                                             const struct kefir_ast_break_statement *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST break statement node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST break statement node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -1082,8 +1082,8 @@ static kefir_result_t visit_break_statement(const struct kefir_ast_visitor *visi
 static kefir_result_t visit_function_definitions(const struct kefir_ast_visitor *visitor,
                                                  const struct kefir_ast_function_definition *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST function definition node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST function definition node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -1114,8 +1114,8 @@ static kefir_result_t visit_function_definitions(const struct kefir_ast_visitor 
 static kefir_result_t visit_translation_unit(const struct kefir_ast_visitor *visitor,
                                              const struct kefir_ast_translation_unit *node, void *payload) {
     UNUSED(visitor);
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST translation unit node"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid payload"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translation unit node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
     struct kefir_json_output *json = param->json;
 
@@ -1139,8 +1139,8 @@ static kefir_result_t visit_translation_unit(const struct kefir_ast_visitor *vis
 
 kefir_result_t kefir_ast_format(struct kefir_json_output *json, const struct kefir_ast_node_base *node,
                                 kefir_bool_t display_source_location) {
-    REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid JSON output"));
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST node"));
+    REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid JSON output"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node"));
 
     struct visitor_param param = {.json = json, .display_source_location = display_source_location};
 

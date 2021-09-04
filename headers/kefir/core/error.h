@@ -22,6 +22,7 @@
 #define KEFIR_CORE_ERROR_H_
 
 #include "kefir/core/basic-types.h"
+#include <stddef.h>
 
 #define KEFIR_ERROR_STACK_SIZE 32
 #define KEFIR_ERROR_PAYLOAD_LENGTH 256
@@ -31,7 +32,7 @@ typedef struct kefir_error {
     const char *message;
     const char *file;
     unsigned int line;
-    char payload[KEFIR_ERROR_PAYLOAD_LENGTH];
+    _Alignas(max_align_t) char payload[KEFIR_ERROR_PAYLOAD_LENGTH];
 
     kefir_bool_t error_overflow;
     const struct kefir_error *prev_error;

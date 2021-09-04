@@ -25,8 +25,9 @@
 kefir_result_t kefir_ast_format_initializer_designation(struct kefir_json_output *json,
                                                         const struct kefir_ast_initializer_designation *designation,
                                                         kefir_bool_t display_source_location) {
-    REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid json output"));
-    REQUIRE(designation != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST initializer designation"));
+    REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid json output"));
+    REQUIRE(designation != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST initializer designation"));
 
     REQUIRE_OK(kefir_json_output_object_begin(json));
     REQUIRE_OK(kefir_json_output_object_key(json, "type"));
@@ -52,8 +53,8 @@ kefir_result_t kefir_ast_format_initializer_designation(struct kefir_json_output
 kefir_result_t kefir_ast_format_initializer(struct kefir_json_output *json,
                                             const struct kefir_ast_initializer *initializer,
                                             kefir_bool_t display_source_location) {
-    REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid json output"));
-    REQUIRE(initializer != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST initializer"));
+    REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid json output"));
+    REQUIRE(initializer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST initializer"));
 
     REQUIRE_OK(kefir_json_output_object_begin(json));
     REQUIRE_OK(kefir_json_output_object_key(json, "type"));

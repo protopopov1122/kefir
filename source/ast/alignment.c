@@ -69,8 +69,8 @@ struct kefir_ast_alignment *kefir_ast_alignment_const_expression(struct kefir_me
 }
 
 kefir_result_t kefir_ast_alignment_free(struct kefir_mem *mem, struct kefir_ast_alignment *alignment) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(alignment != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST alignment"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(alignment != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST alignment"));
     switch (alignment->klass) {
         case KEFIR_AST_ALIGNMENT_DEFAULT:
             break;
@@ -92,9 +92,9 @@ kefir_result_t kefir_ast_alignment_free(struct kefir_mem *mem, struct kefir_ast_
 
 kefir_result_t kefir_ast_alignment_evaluate(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                             struct kefir_ast_alignment *alignment) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST context"));
-    REQUIRE(alignment != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST alignment"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
+    REQUIRE(alignment != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST alignment"));
 
     switch (alignment->klass) {
         case KEFIR_AST_ALIGNMENT_DEFAULT:
@@ -118,7 +118,7 @@ kefir_result_t kefir_ast_alignment_evaluate(struct kefir_mem *mem, const struct 
         case KEFIR_AST_ALIGNMENT_AS_CONST_EXPR: {
             REQUIRE_OK(kefir_ast_constant_expression_evaluate(mem, context, alignment->const_expr));
             REQUIRE(alignment->const_expr->value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
-                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected integral constant expression as an alignment"));
+                    KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected integral constant expression as an alignment"));
             alignment->value = alignment->const_expr->value.integer;
         } break;
     }

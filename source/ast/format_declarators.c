@@ -46,7 +46,7 @@ static kefir_result_t format_type_qualifiers(struct kefir_json_output *json,
                 break;
 
             default:
-                return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unexpected type qualifier");
+                return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected type qualifier");
         }
     }
     REQUIRE_OK(kefir_json_output_array_end(json));
@@ -56,7 +56,7 @@ static kefir_result_t format_type_qualifiers(struct kefir_json_output *json,
 kefir_result_t kefir_ast_format_declarator(struct kefir_json_output *json,
                                            const struct kefir_ast_declarator *declarator,
                                            kefir_bool_t display_source_location) {
-    REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid JSON output"));
+    REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid JSON output"));
     if (declarator == NULL) {
         REQUIRE_OK(kefir_json_output_null(json));
         return KEFIR_OK;

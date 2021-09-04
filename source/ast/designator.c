@@ -55,8 +55,8 @@ struct kefir_ast_designator *kefir_ast_new_index_designator(struct kefir_mem *me
 }
 
 kefir_result_t kefir_ast_designator_free(struct kefir_mem *mem, struct kefir_ast_designator *designator) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(designator != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST designator"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(designator != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST designator"));
 
     if (designator->next != NULL) {
         REQUIRE_OK(kefir_ast_designator_free(mem, designator->next));

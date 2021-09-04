@@ -135,33 +135,33 @@ kefir_result_t kefir_ast_context_type_retrieve_tag(const struct kefir_ast_type *
         case KEFIR_AST_TYPE_STRUCTURE:
         case KEFIR_AST_TYPE_UNION:
             REQUIRE(type->structure_type.identifier != NULL,
-                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected struct/union with a tag"));
+                    KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected struct/union with a tag"));
             *identifier = type->structure_type.identifier;
             return KEFIR_OK;
 
         case KEFIR_AST_TYPE_ENUMERATION:
             REQUIRE(type->enumeration_type.identifier != NULL,
-                    KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected enum with a tag"));
+                    KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected enum with a tag"));
             *identifier = type->enumeration_type.identifier;
             return KEFIR_OK;
 
         default:
-            return KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected AST structure, union or enum type");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected AST structure, union or enum type");
     }
 }
 
 kefir_result_t kefir_ast_context_update_existing_scoped_type_tag(struct kefir_ast_scoped_identifier *scoped_id,
                                                                  const struct kefir_ast_type *type) {
     REQUIRE(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_TYPE_TAG,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot redefine with different kind of symbol"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot redefine with different kind of symbol"));
     REQUIRE(scoped_id->type->tag == type->tag,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot redefine tag with different type"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot redefine tag with different type"));
     switch (scoped_id->type->tag) {
         case KEFIR_AST_TYPE_STRUCTURE:
         case KEFIR_AST_TYPE_UNION:
             if (type->structure_type.complete) {
                 REQUIRE(!scoped_id->type->structure_type.complete,
-                        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot redefine complete struct/union"));
+                        KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot redefine complete struct/union"));
                 scoped_id->type = type;
             }
             return KEFIR_OK;
@@ -169,7 +169,7 @@ kefir_result_t kefir_ast_context_update_existing_scoped_type_tag(struct kefir_as
         case KEFIR_AST_TYPE_ENUMERATION:
             if (type->enumeration_type.complete) {
                 REQUIRE(!scoped_id->type->enumeration_type.complete,
-                        KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Cannot redefine complete enumeration"));
+                        KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot redefine complete enumeration"));
                 scoped_id->type = type;
             }
             return KEFIR_OK;
@@ -218,8 +218,8 @@ struct kefir_ast_scoped_identifier *kefir_ast_context_allocate_scoped_label(stru
 
 kefir_result_t kefir_ast_context_merge_alignment(struct kefir_mem *mem, struct kefir_ast_alignment **original,
                                                  struct kefir_ast_alignment *alignment) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(original != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid original alignment pointer"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(original != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid original alignment pointer"));
     REQUIRE(alignment != NULL, KEFIR_OK);
     if (*original == NULL) {
         *original = alignment;

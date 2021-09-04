@@ -26,12 +26,12 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-#define APPLY_PROLOGUE(_mem, _parser, _result, _payload)                                                        \
-    do {                                                                                                        \
-        UNUSED((_payload));                                                                                     \
-        REQUIRE((_mem) != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));       \
-        REQUIRE((_parser) != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid parser"));              \
-        REQUIRE((_result) != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to AST node")); \
+#define APPLY_PROLOGUE(_mem, _parser, _result, _payload)                                                            \
+    do {                                                                                                            \
+        UNUSED((_payload));                                                                                         \
+        REQUIRE((_mem) != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));       \
+        REQUIRE((_parser) != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser"));              \
+        REQUIRE((_result) != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to AST node")); \
     } while (0)
 
 #define PARSER_CURSOR(_parser, _idx) (kefir_parser_token_cursor_at((_parser)->cursor, (_idx)))

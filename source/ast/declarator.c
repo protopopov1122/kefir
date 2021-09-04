@@ -89,8 +89,8 @@ static kefir_result_t free_function_param(struct kefir_mem *mem, struct kefir_li
                                           struct kefir_list_entry *entry, void *payload) {
     UNUSED(list);
     UNUSED(payload);
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid list entry"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid list entry"));
     ASSIGN_DECL_CAST(struct kefir_ast_node_base *, param, entry->value);
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, param));
     return KEFIR_OK;
@@ -191,8 +191,8 @@ struct kefir_ast_declarator *kefir_ast_declarator_clone(struct kefir_mem *mem,
 }
 
 kefir_result_t kefir_ast_declarator_free(struct kefir_mem *mem, struct kefir_ast_declarator *decl) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(decl != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declarator"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(decl != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST declarator"));
 
     switch (decl->klass) {
         case KEFIR_AST_DECLARATOR_IDENTIFIER:
@@ -227,8 +227,8 @@ kefir_result_t kefir_ast_declarator_free(struct kefir_mem *mem, struct kefir_ast
 }
 
 kefir_result_t kefir_ast_declarator_is_abstract(struct kefir_ast_declarator *decl, kefir_bool_t *result) {
-    REQUIRE(decl != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declarator"));
-    REQUIRE(result != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to boolean"));
+    REQUIRE(decl != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST declarator"));
+    REQUIRE(result != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to boolean"));
 
     switch (decl->klass) {
         case KEFIR_AST_DECLARATOR_IDENTIFIER:
@@ -251,7 +251,7 @@ kefir_result_t kefir_ast_declarator_is_abstract(struct kefir_ast_declarator *dec
 }
 
 kefir_result_t kefir_ast_declarator_unpack_identifier(struct kefir_ast_declarator *decl, const char **identifier_ptr) {
-    REQUIRE(identifier_ptr != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to identifier"));
+    REQUIRE(identifier_ptr != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to identifier"));
 
     if (decl == NULL) {
         *identifier_ptr = NULL;

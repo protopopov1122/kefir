@@ -27,8 +27,8 @@ static kefir_result_t remove_declarator_specifier(struct kefir_mem *mem, struct 
                                                   struct kefir_list_entry *entry, void *payload) {
     UNUSED(list);
     UNUSED(payload);
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid list entry"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid list entry"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_declarator_specifier *, specifier, entry->value);
     REQUIRE_OK(kefir_ast_declarator_specifier_free(mem, specifier));
@@ -36,7 +36,7 @@ static kefir_result_t remove_declarator_specifier(struct kefir_mem *mem, struct 
 }
 
 kefir_result_t kefir_ast_declarator_specifier_list_init(struct kefir_ast_declarator_specifier_list *list) {
-    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declarator specifier list"));
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST declarator specifier list"));
 
     REQUIRE_OK(kefir_list_init(&list->list));
     REQUIRE_OK(kefir_list_on_remove(&list->list, remove_declarator_specifier, NULL));
@@ -45,8 +45,8 @@ kefir_result_t kefir_ast_declarator_specifier_list_init(struct kefir_ast_declara
 
 kefir_result_t kefir_ast_declarator_specifier_list_free(struct kefir_mem *mem,
                                                         struct kefir_ast_declarator_specifier_list *list) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declarator specifier list"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST declarator specifier list"));
 
     REQUIRE_OK(kefir_list_free(mem, &list->list));
     return KEFIR_OK;
@@ -55,9 +55,9 @@ kefir_result_t kefir_ast_declarator_specifier_list_free(struct kefir_mem *mem,
 kefir_result_t kefir_ast_declarator_specifier_list_append(struct kefir_mem *mem,
                                                           struct kefir_ast_declarator_specifier_list *list,
                                                           struct kefir_ast_declarator_specifier *specifier) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declarator specifier list"));
-    REQUIRE(specifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declarator specifier"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST declarator specifier list"));
+    REQUIRE(specifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST declarator specifier"));
 
     REQUIRE_OK(kefir_list_insert_after(mem, &list->list, kefir_list_tail(&list->list), specifier));
     return KEFIR_OK;
@@ -77,7 +77,7 @@ struct kefir_list_entry *kefir_ast_declarator_specifier_list_iter(
 kefir_result_t kefir_ast_declarator_specifier_list_next(struct kefir_list_entry **iter,
                                                         struct kefir_ast_declarator_specifier **specifier_ptr) {
     REQUIRE(iter != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declarator specifier list iterator"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST declarator specifier list iterator"));
     REQUIRE(*iter != NULL, KEFIR_OK);
 
     *iter = (*iter)->next;
@@ -90,9 +90,9 @@ kefir_result_t kefir_ast_declarator_specifier_list_next(struct kefir_list_entry 
 kefir_result_t kefir_ast_declarator_specifier_list_remove(struct kefir_mem *mem,
                                                           struct kefir_ast_declarator_specifier_list *list,
                                                           struct kefir_list_entry *iter) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declarator specifier list"));
-    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid list iterator"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST declarator specifier list"));
+    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid list iterator"));
 
     REQUIRE_OK(kefir_list_pop(mem, &list->list, iter));
     return KEFIR_OK;
@@ -101,10 +101,11 @@ kefir_result_t kefir_ast_declarator_specifier_list_remove(struct kefir_mem *mem,
 kefir_result_t kefir_ast_declarator_specifier_list_clone(struct kefir_mem *mem,
                                                          struct kefir_ast_declarator_specifier_list *dst,
                                                          const struct kefir_ast_declarator_specifier_list *src) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(dst != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid destination AST declarator specifier list"));
-    REQUIRE(src != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid source AST declarator specifier list"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid destination AST declarator specifier list"));
+    REQUIRE(src != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid source AST declarator specifier list"));
 
     struct kefir_ast_declarator_specifier *specifier = NULL;
     for (struct kefir_list_entry *iter = kefir_ast_declarator_specifier_list_iter(src, &specifier); iter != NULL;
@@ -124,8 +125,9 @@ kefir_result_t kefir_ast_declarator_specifier_list_clone(struct kefir_mem *mem,
 kefir_result_t kefir_ast_declarator_specifier_list_move_all(struct kefir_ast_declarator_specifier_list *dst,
                                                             struct kefir_ast_declarator_specifier_list *src) {
     REQUIRE(dst != NULL,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid destination AST declarator specifier list"));
-    REQUIRE(src != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid source AST declarator specifier list"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid destination AST declarator specifier list"));
+    REQUIRE(src != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid source AST declarator specifier list"));
 
     REQUIRE_OK(kefir_list_move_all(&dst->list, &src->list));
     return KEFIR_OK;
@@ -135,8 +137,8 @@ static kefir_result_t struct_entry_remove(struct kefir_mem *mem, struct kefir_li
                                           struct kefir_list_entry *entry, void *payload) {
     UNUSED(list);
     UNUSED(payload);
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid list entry"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid list entry"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_structure_declaration_entry *, decl_entry, entry->value);
     REQUIRE_OK(kefir_ast_structure_declaration_entry_free(mem, decl_entry));
@@ -169,8 +171,8 @@ struct kefir_ast_structure_specifier *kefir_ast_structure_specifier_init(struct 
 
 kefir_result_t kefir_ast_structure_specifier_free(struct kefir_mem *mem,
                                                   struct kefir_ast_structure_specifier *specifier) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(specifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST structure specifier"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(specifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST structure specifier"));
 
     if (specifier->complete) {
         REQUIRE_OK(kefir_list_free(mem, &specifier->entries));
@@ -271,11 +273,11 @@ struct kefir_ast_structure_specifier *kefir_ast_structure_specifier_clone(
 kefir_result_t kefir_ast_structure_specifier_append_entry(struct kefir_mem *mem,
                                                           struct kefir_ast_structure_specifier *specifier,
                                                           struct kefir_ast_structure_declaration_entry *entry) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(specifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST structure specifier"));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST structure declaration entry"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(specifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST structure specifier"));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST structure declaration entry"));
     REQUIRE(specifier->complete,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to insert into incomplete structure declaration"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Unable to insert into incomplete structure declaration"));
 
     REQUIRE_OK(kefir_list_insert_after(mem, &specifier->entries, kefir_list_tail(&specifier->entries), entry));
     return KEFIR_OK;
@@ -285,8 +287,8 @@ static kefir_result_t declaration_declarator_remove(struct kefir_mem *mem, struc
                                                     struct kefir_list_entry *entry, void *payload) {
     UNUSED(list != NULL);
     UNUSED(payload != NULL);
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid list entry"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid list entry"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_structure_entry_declarator *, declarator, entry->value);
     REQUIRE_OK(kefir_ast_declarator_free(mem, declarator->declarator));
@@ -347,8 +349,8 @@ struct kefir_ast_structure_declaration_entry *kefir_ast_structure_declaration_en
 
 kefir_result_t kefir_ast_structure_declaration_entry_free(struct kefir_mem *mem,
                                                           struct kefir_ast_structure_declaration_entry *entry) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST structure declaration entry"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST structure declaration entry"));
 
     if (entry->is_static_assertion) {
         REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(entry->static_assertion)));
@@ -366,11 +368,11 @@ kefir_result_t kefir_ast_structure_declaration_entry_append(struct kefir_mem *me
                                                             struct kefir_ast_structure_declaration_entry *entry,
                                                             struct kefir_ast_declarator *declarator,
                                                             struct kefir_ast_node_base *bitwidth) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST structure declaration entry"));
-    REQUIRE(declarator != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declarator"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST structure declaration entry"));
+    REQUIRE(declarator != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST declarator"));
     REQUIRE(!entry->is_static_assertion,
-            KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Unable to append declarators to a static assertion entry"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Unable to append declarators to a static assertion entry"));
 
     struct kefir_ast_structure_entry_declarator *entry_declarator =
         KEFIR_MALLOC(mem, sizeof(struct kefir_ast_structure_entry_declarator));
@@ -393,8 +395,8 @@ static kefir_result_t remove_enum_entry(struct kefir_mem *mem, struct kefir_list
                                         void *payload) {
     UNUSED(list);
     UNUSED(payload);
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid list entry"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid list entry"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_enum_specifier_entry *, enum_entry, entry->value);
     if (enum_entry->value != NULL) {
@@ -430,8 +432,8 @@ struct kefir_ast_enum_specifier *kefir_ast_enum_specifier_init(struct kefir_mem 
 }
 
 kefir_result_t kefir_ast_enum_specifier_free(struct kefir_mem *mem, struct kefir_ast_enum_specifier *specifier) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(specifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST enum specifier"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(specifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST enum specifier"));
 
     if (specifier->complete) {
         REQUIRE_OK(kefir_list_free(mem, &specifier->entries));
@@ -474,10 +476,11 @@ struct kefir_ast_enum_specifier *kefir_ast_enum_specifier_clone(struct kefir_mem
 kefir_result_t kefir_ast_enum_specifier_append(struct kefir_mem *mem, struct kefir_ast_enum_specifier *specifier,
                                                struct kefir_symbol_table *symbols, const char *identifier,
                                                struct kefir_ast_node_base *value) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(specifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST enum specifier"));
-    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST enum entry identifier"));
-    REQUIRE(specifier->complete, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected AST enum specifier to be complete"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(specifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST enum specifier"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST enum entry identifier"));
+    REQUIRE(specifier->complete,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected AST enum specifier to be complete"));
 
     if (symbols != NULL) {
         identifier = kefir_symbol_table_insert(mem, symbols, identifier, NULL);
@@ -800,8 +803,8 @@ struct kefir_ast_declarator_specifier *kefir_ast_declarator_specifier_clone(
 
 kefir_result_t kefir_ast_declarator_specifier_free(struct kefir_mem *mem,
                                                    struct kefir_ast_declarator_specifier *specifier) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(specifier != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST declarator specifier"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(specifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST declarator specifier"));
 
     switch (specifier->klass) {
         case KEFIR_AST_TYPE_SPECIFIER:
@@ -845,15 +848,15 @@ kefir_result_t kefir_ast_declarator_specifier_free(struct kefir_mem *mem,
 }
 
 kefir_result_t kefir_ast_type_qualifier_list_init(struct kefir_ast_type_qualifier_list *list) {
-    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type qualifier list"));
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type qualifier list"));
 
     REQUIRE_OK(kefir_list_init(&list->list));
     return KEFIR_OK;
 }
 
 kefir_result_t kefir_ast_type_qualifier_list_free(struct kefir_mem *mem, struct kefir_ast_type_qualifier_list *list) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type qualifier list"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type qualifier list"));
 
     REQUIRE_OK(kefir_list_free(mem, &list->list));
     return KEFIR_OK;
@@ -861,8 +864,8 @@ kefir_result_t kefir_ast_type_qualifier_list_free(struct kefir_mem *mem, struct 
 
 kefir_result_t kefir_ast_type_qualifier_list_append(struct kefir_mem *mem, struct kefir_ast_type_qualifier_list *list,
                                                     kefir_ast_type_qualifier_type_t qualifier) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type qualifier list"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type qualifier list"));
 
     REQUIRE_OK(
         kefir_list_insert_after(mem, &list->list, kefir_list_tail(&list->list), (void *) ((kefir_uptr_t) qualifier)));
@@ -882,7 +885,7 @@ struct kefir_list_entry *kefir_ast_type_qualifier_list_iter(const struct kefir_a
 
 kefir_result_t kefir_ast_type_qualifier_list_next(const struct kefir_list_entry **iter,
                                                   kefir_ast_type_qualifier_type_t *value) {
-    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid pointer to list entry iterator"));
+    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to list entry iterator"));
     REQUIRE(*iter != NULL, KEFIR_OK);
 
     *iter = (*iter)->next;
@@ -894,9 +897,9 @@ kefir_result_t kefir_ast_type_qualifier_list_next(const struct kefir_list_entry 
 
 kefir_result_t kefir_ast_type_qualifier_list_remove(struct kefir_mem *mem, struct kefir_ast_type_qualifier_list *list,
                                                     struct kefir_list_entry *iter) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid AST type qualifier list"));
-    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid list iterator"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type qualifier list"));
+    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid list iterator"));
 
     REQUIRE_OK(kefir_list_pop(mem, &list->list, iter));
     return KEFIR_OK;
@@ -904,9 +907,10 @@ kefir_result_t kefir_ast_type_qualifier_list_remove(struct kefir_mem *mem, struc
 
 kefir_result_t kefir_ast_type_qualifier_list_clone(struct kefir_mem *mem, struct kefir_ast_type_qualifier_list *dst,
                                                    const struct kefir_ast_type_qualifier_list *src) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid memory allocator"));
-    REQUIRE(dst != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid destination AST type qualifier list"));
-    REQUIRE(src != NULL, KEFIR_SET_ERROR(KEFIR_MALFORMED_ARG, "Expected valid source AST type qualifier list"));
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(dst != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid destination AST type qualifier list"));
+    REQUIRE(src != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid source AST type qualifier list"));
 
     kefir_ast_type_qualifier_type_t value;
     for (const struct kefir_list_entry *iter = kefir_ast_type_qualifier_list_iter(src, &value); iter != NULL;
