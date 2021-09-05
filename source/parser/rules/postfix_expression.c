@@ -20,12 +20,13 @@
 
 #include "kefir/parser/rule_helpers.h"
 #include "kefir/parser/builder.h"
+#include "kefir/core/source_error.h"
 
 static kefir_result_t scan_subscript(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder) {
     REQUIRE_OK(PARSER_SHIFT(builder->parser));
     REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, expression), NULL));
     REQUIRE(PARSER_TOKEN_IS_RIGHT_BRACKET(builder->parser, 0),
-            KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right bracket"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected right bracket"));
     REQUIRE_OK(PARSER_SHIFT(builder->parser));
     return KEFIR_OK;
 }
@@ -41,7 +42,7 @@ static kefir_result_t scan_argument_list(struct kefir_mem *mem, struct kefir_par
             REQUIRE_OK(PARSER_SHIFT(builder->parser));
         } else {
             REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(builder->parser, 0, KEFIR_PUNCTUATOR_RIGHT_PARENTHESE),
-                    KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected either comma, or right parenthese"));
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected either comma, or right parenthese"));
         }
     }
     REQUIRE_OK(PARSER_SHIFT(builder->parser));
@@ -51,7 +52,8 @@ static kefir_result_t scan_argument_list(struct kefir_mem *mem, struct kefir_par
 static kefir_result_t scan_member(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder) {
     kefir_bool_t direct = PARSER_TOKEN_IS_PUNCTUATOR(builder->parser, 0, KEFIR_PUNCTUATOR_DOT);
     REQUIRE_OK(PARSER_SHIFT(builder->parser));
-    REQUIRE(PARSER_TOKEN_IS_IDENTIFIER(builder->parser, 0), KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected identifier"));
+    REQUIRE(PARSER_TOKEN_IS_IDENTIFIER(builder->parser, 0),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected identifier"));
     const struct kefir_token *token = PARSER_CURSOR(builder->parser, 0);
     REQUIRE_OK(PARSER_SHIFT(builder->parser));
     REQUIRE_OK(kefir_parser_ast_builder_struct_member(mem, builder, direct, token->identifier));

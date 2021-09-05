@@ -19,6 +19,7 @@
 */
 
 #include "kefir/parser/rule_helpers.h"
+#include "kefir/core/source_error.h"
 
 static kefir_result_t scan_initializer(struct kefir_mem *mem, struct kefir_parser *parser,
                                        struct kefir_ast_initializer *initializer) {
@@ -78,7 +79,7 @@ static kefir_result_t scan_initializer_list(struct kefir_mem *mem, struct kefir_
 
     kefir_result_t res = KEFIR_OK;
     REQUIRE_CHAIN_SET(&res, PARSER_TOKEN_IS_RIGHT_BRACE(parser, 0),
-                      KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right brace"));
+                      KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected right brace"));
     REQUIRE_CHAIN(&res, PARSER_SHIFT(parser));
     REQUIRE_ELSE(res == KEFIR_OK, {
         *initializer = NULL;

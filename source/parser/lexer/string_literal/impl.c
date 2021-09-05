@@ -22,6 +22,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/util/char32.h"
+#include "kefir/core/source_error.h"
 
 static kefir_result_t kefir_lexer_next_string_literal_impl(struct kefir_mem *mem, struct kefir_lexer *lexer,
                                                            const kefir_char32_t *prefix,
@@ -42,8 +43,8 @@ static kefir_result_t kefir_lexer_next_string_literal_impl(struct kefir_mem *mem
     for (kefir_char32_t chr = kefir_lexer_source_cursor_at(lexer->cursor, 0); chr != U'\"';
          chr = kefir_lexer_source_cursor_at(lexer->cursor, 0)) {
 
-        REQUIRE(chr != U'\0', KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Unexpected newline character"));
-        REQUIRE(chr != U'\n', KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Unexpected null character"));
+        REQUIRE(chr != U'\0', KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, NULL, "Unexpected newline character"));
+        REQUIRE(chr != U'\n', KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, NULL, "Unexpected null character"));
         if (chr == U'\\') {
             kefir_char32_t result;
             REQUIRE_OK(kefir_lexer_cursor_next_escape_sequence(lexer->cursor, &result));

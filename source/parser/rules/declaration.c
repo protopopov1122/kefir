@@ -22,6 +22,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/parser/builder.h"
+#include "kefir/core/source_error.h"
 
 static kefir_result_t scan_specifiers(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder) {
     struct kefir_ast_declarator_specifier_list list;
@@ -99,7 +100,7 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
     }
 
     REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_SEMICOLON),
-            KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected semiolon"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected semiolon"));
     REQUIRE_OK(PARSER_SHIFT(parser));
 
     return KEFIR_OK;

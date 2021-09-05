@@ -22,6 +22,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/util/char32.h"
+#include "kefir/core/source_error.h"
 
 #define MAX_IDENTIFIER_LENGTH 64
 
@@ -66,7 +67,7 @@ static kefir_result_t match_impl(struct kefir_mem *mem, struct kefir_lexer *lexe
         } else {
             REQUIRE_OK(res);
             REQUIRE(length < MAX_IDENTIFIER_LENGTH,
-                    KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Identifier exceeds maximum length"));
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, NULL, "Identifier exceeds maximum length"));
             identifier[length++] = chr;
         }
     }

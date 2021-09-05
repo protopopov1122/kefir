@@ -22,6 +22,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/util/char32.h"
+#include "kefir/core/source_error.h"
 
 static kefir_result_t next_character(struct kefir_lexer_source_cursor *cursor, kefir_int_t *value,
                                      kefir_bool_t *continueScan) {
@@ -75,12 +76,13 @@ static kefir_result_t match_narrow_character(struct kefir_lexer *lexer, struct k
     kefir_int_t character_value = 0;
     kefir_char32_t chr = kefir_lexer_source_cursor_at(lexer->cursor, 0);
     REQUIRE(chr != U'\'',
-            KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Character constant shall contain at least one character"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, NULL, "Character constant shall contain at least one character"));
     for (kefir_bool_t scan = true; scan;) {
         REQUIRE_OK(next_character(lexer->cursor, &character_value, &scan));
     }
     chr = kefir_lexer_source_cursor_at(lexer->cursor, 0);
-    REQUIRE(chr == U'\'', KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Character constant shall terminate with single quote"));
+    REQUIRE(chr == U'\'',
+            KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, NULL, "Character constant shall terminate with single quote"));
     REQUIRE_OK(kefir_lexer_source_cursor_next(lexer->cursor, 1));
     REQUIRE_OK(kefir_token_new_constant_char((kefir_int_t) character_value, token));
     return KEFIR_OK;
@@ -89,12 +91,13 @@ static kefir_result_t match_narrow_character(struct kefir_lexer *lexer, struct k
 static kefir_result_t scan_wide_character(struct kefir_lexer *lexer, kefir_char32_t *value) {
     kefir_char32_t chr = kefir_lexer_source_cursor_at(lexer->cursor, 0);
     REQUIRE(chr != U'\'',
-            KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Character constant shall contain at least one character"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, NULL, "Character constant shall contain at least one character"));
     for (kefir_bool_t scan = true; scan;) {
         REQUIRE_OK(next_wide_character(lexer->cursor, value, &scan));
     }
     chr = kefir_lexer_source_cursor_at(lexer->cursor, 0);
-    REQUIRE(chr == U'\'', KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Character constant shall terminate with single quote"));
+    REQUIRE(chr == U'\'',
+            KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, NULL, "Character constant shall terminate with single quote"));
     REQUIRE_OK(kefir_lexer_source_cursor_next(lexer->cursor, 1));
     return KEFIR_OK;
 }

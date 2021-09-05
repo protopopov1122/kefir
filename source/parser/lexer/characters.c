@@ -2,6 +2,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/util/char32.h"
+#include "kefir/core/source_error.h"
 
 static kefir_uint32_t oct_to_digit(kefir_char32_t chr) {
     if (chr >= U'0' && chr <= U'7') {
@@ -138,7 +139,7 @@ static kefir_result_t next_hexadecimal_escape_sequence(struct kefir_lexer_source
     REQUIRE_OK(kefir_lexer_source_cursor_next(cursor, 2));
     kefir_char32_t chr = kefir_lexer_source_cursor_at(cursor, 0);
     REQUIRE(kefir_ishexdigit32(chr),
-            KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Unable to match hexadecimal escape sequence"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, NULL, "Unable to match hexadecimal escape sequence"));
     *target = 0;
     for (; kefir_ishexdigit32(chr);
          kefir_lexer_source_cursor_next(cursor, 1), chr = kefir_lexer_source_cursor_at(cursor, 0)) {

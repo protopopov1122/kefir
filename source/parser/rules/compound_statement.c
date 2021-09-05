@@ -20,6 +20,7 @@
 
 #include "kefir/parser/rule_helpers.h"
 #include "kefir/parser/builder.h"
+#include "kefir/core/source_error.h"
 
 static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder, void *payload) {
     UNUSED(payload);
@@ -43,7 +44,8 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
         REQUIRE_OK(kefir_parser_ast_builder_compound_statement_append(mem, builder));
     }
 
-    REQUIRE(PARSER_TOKEN_IS_RIGHT_BRACE(parser, 0), KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right brace"));
+    REQUIRE(PARSER_TOKEN_IS_RIGHT_BRACE(parser, 0),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected right brace"));
     REQUIRE_OK(PARSER_SHIFT(parser));
     REQUIRE_OK(kefir_parser_scope_pop_block(mem, &parser->scope));
     return KEFIR_OK;

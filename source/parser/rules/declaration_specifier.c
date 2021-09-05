@@ -19,6 +19,7 @@
 */
 
 #include "kefir/parser/rule_helpers.h"
+#include "kefir/core/source_error.h"
 
 static kefir_result_t scan_storage_class(struct kefir_mem *mem, struct kefir_parser *parser, void *payload) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
@@ -87,7 +88,7 @@ static kefir_result_t scan_struct_field_declaration(struct kefir_mem *mem, struc
                     &res, declarator != NULL,
                     KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate empty AST declarator identifier"));
             } else {
-                res = KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected either declarator or bit-field");
+                res = KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected either declarator or bit-field");
             }
         }
         REQUIRE_ELSE(res == KEFIR_OK, {
@@ -124,7 +125,7 @@ static kefir_result_t scan_struct_field_declaration(struct kefir_mem *mem, struc
     }
 
     REQUIRE_CHAIN_SET(&res, PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_SEMICOLON),
-                      KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected semicolon"));
+                      KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected semicolon"));
     REQUIRE_CHAIN(&res, PARSER_SHIFT(parser));
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_ast_structure_declaration_entry_free(mem, entry);
@@ -174,7 +175,8 @@ static kefir_result_t scan_struct_specifier_body(struct kefir_mem *mem, struct k
         }
     }
 
-    REQUIRE(PARSER_TOKEN_IS_RIGHT_BRACE(parser, 0), KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right brace"));
+    REQUIRE(PARSER_TOKEN_IS_RIGHT_BRACE(parser, 0),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected right brace"));
     REQUIRE_OK(PARSER_SHIFT(parser));
     return KEFIR_OK;
 }
@@ -197,7 +199,7 @@ static kefir_result_t scan_struct_specifier(struct kefir_mem *mem, struct kefir_
         complete = PARSER_TOKEN_IS_LEFT_BRACE(parser, 0);
     } else {
         REQUIRE(PARSER_TOKEN_IS_LEFT_BRACE(parser, 0),
-                KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Anonymous structure shall have complete body"));
+                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Anonymous structure shall have complete body"));
         complete = true;
     }
 
@@ -235,7 +237,7 @@ static kefir_result_t scan_enum_field_declaration(struct kefir_mem *mem, struct 
 
     ASSIGN_DECL_CAST(struct kefir_ast_enum_specifier *, specifier, payload);
     REQUIRE(PARSER_TOKEN_IS_IDENTIFIER(parser, 0),
-            KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected enumeration constant identifier"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected enumeration constant identifier"));
     const char *identifier = kefir_parser_token_cursor_at(parser->cursor, 0)->identifier;
     REQUIRE_OK(PARSER_SHIFT(parser));
 
@@ -271,7 +273,8 @@ static kefir_result_t scan_enum_specifier_body(struct kefir_mem *mem, struct kef
         }
     }
 
-    REQUIRE(PARSER_TOKEN_IS_RIGHT_BRACE(parser, 0), KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right brace"));
+    REQUIRE(PARSER_TOKEN_IS_RIGHT_BRACE(parser, 0),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected right brace"));
     REQUIRE_OK(PARSER_SHIFT(parser));
     return KEFIR_OK;
 }
@@ -293,7 +296,7 @@ static kefir_result_t scan_enum_specifier(struct kefir_mem *mem, struct kefir_pa
         complete = PARSER_TOKEN_IS_LEFT_BRACE(parser, 0);
     } else {
         REQUIRE(PARSER_TOKEN_IS_LEFT_BRACE(parser, 0),
-                KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Anonymous structure shall have complete body"));
+                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Anonymous structure shall have complete body"));
         complete = true;
     }
 
@@ -493,7 +496,7 @@ static kefir_result_t scan_alignment_specifier(struct kefir_mem *mem, struct kef
             KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match alignment specifier"));
     REQUIRE_OK(PARSER_SHIFT(parser));
     REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_PARENTHESE),
-            KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected left parenthese"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected left parenthese"));
     REQUIRE_OK(PARSER_SHIFT(parser));
 
     struct kefir_ast_node_base *alignment = NULL;
@@ -504,7 +507,7 @@ static kefir_result_t scan_alignment_specifier(struct kefir_mem *mem, struct kef
     REQUIRE_OK(res);
     REQUIRE_ELSE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_PARENTHESE), {
         KEFIR_AST_NODE_FREE(mem, alignment);
-        return KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Expected right parenthese");
+        return KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected right parenthese");
     });
     res = PARSER_SHIFT(parser);
     REQUIRE_ELSE(res == KEFIR_OK, {

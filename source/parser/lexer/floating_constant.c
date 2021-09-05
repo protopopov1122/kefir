@@ -22,6 +22,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/util/char32.h"
+#include "kefir/core/source_error.h"
 
 static kefir_result_t match_fractional_part(struct kefir_lexer *lexer, kefir_uint64_t *integer,
                                             kefir_uint64_t *fraction, kefir_size_t *fraction_digits) {
@@ -80,7 +81,8 @@ static kefir_result_t match_exponent(struct kefir_lexer *lexer, kefir_int64_t *e
         *exponent += chr - U'0';
         exponent_digits++;
     }
-    REQUIRE(exponent_digits > 0, KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Unable to match floating constant exponent"));
+    REQUIRE(exponent_digits > 0,
+            KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, NULL, "Unable to match floating constant exponent"));
     *exponent *= sign;
     return KEFIR_OK;
 }
@@ -172,7 +174,7 @@ static kefir_result_t match_hexadecimal_exponent(struct kefir_lexer *lexer) {
         exponent_digits++;
     }
     REQUIRE(exponent_digits > 0,
-            KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Unable to match hexadecimal floating constant exponent"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, NULL, "Unable to match hexadecimal floating constant exponent"));
     return KEFIR_OK;
 }
 
