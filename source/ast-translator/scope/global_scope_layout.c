@@ -24,7 +24,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/ast-translator/scope/scope_layout_impl.h"
-#include "kefir/core/lang_error.h"
+#include "kefir/core/source_error.h"
 
 kefir_result_t kefir_ast_translator_global_scope_layout_init(struct kefir_mem *mem, struct kefir_ir_module *module,
                                                              struct kefir_ast_translator_global_scope_layout *layout) {
@@ -224,12 +224,13 @@ static kefir_result_t translate_global_scoped_identifier_object(
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO:
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER:
-            return KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                        "File-scope variable cannot have auto/register storage");
+            return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                          "File-scope variable cannot have auto/register storage");
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
-            return KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Unexpected storage class of file-scope variable");
+            return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                          "Unexpected storage class of file-scope variable");
     }
     return KEFIR_OK;
 }

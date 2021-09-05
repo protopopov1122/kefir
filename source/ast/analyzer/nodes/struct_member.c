@@ -23,7 +23,7 @@
 #include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
-#include "kefir/core/lang_error.h"
+#include "kefir/core/source_error.h"
 
 kefir_result_t kefir_ast_analyze_struct_member_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                     const struct kefir_ast_struct_member *node,
@@ -36,26 +36,27 @@ kefir_result_t kefir_ast_analyze_struct_member_node(struct kefir_mem *mem, const
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->structure));
 
     REQUIRE(node->structure->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
-            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Structure shall be an expression"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Structure shall be an expression"));
 
     const struct kefir_ast_type *struct_type = node->structure->properties.type;
     const struct kefir_ast_type_qualification *qualification = NULL;
     if (node->base.klass->type == KEFIR_AST_STRUCTURE_INDIRECT_MEMBER) {
         struct_type = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, struct_type);
         REQUIRE(struct_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER,
-                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected pointer type on the left side"));
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected pointer type on the left side"));
         struct_type = struct_type->referenced_type;
     }
     if (struct_type->tag == KEFIR_AST_TYPE_QUALIFIED) {
         REQUIRE(struct_type->qualified_type.type->tag == KEFIR_AST_TYPE_STRUCTURE ||
                     struct_type->qualified_type.type->tag == KEFIR_AST_TYPE_UNION,
-                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                     "Expected qualified structure or union type on the left side"));
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                       "Expected qualified structure or union type on the left side"));
         qualification = &struct_type->qualified_type.qualification;
         struct_type = struct_type->qualified_type.type;
     } else {
-        REQUIRE(struct_type->tag == KEFIR_AST_TYPE_STRUCTURE || struct_type->tag == KEFIR_AST_TYPE_UNION,
-                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected structure or union type on the left side"));
+        REQUIRE(
+            struct_type->tag == KEFIR_AST_TYPE_STRUCTURE || struct_type->tag == KEFIR_AST_TYPE_UNION,
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected structure or union type on the left side"));
     }
 
     const struct kefir_ast_struct_field *field = NULL;

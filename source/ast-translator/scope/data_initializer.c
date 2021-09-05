@@ -25,7 +25,7 @@
 #include "kefir/ast/constant_expression.h"
 #include "kefir/ast/runtime.h"
 #include "kefir/ast/initializer_traversal.h"
-#include "kefir/core/lang_error.h"
+#include "kefir/core/source_error.h"
 
 static kefir_size_t resolve_identifier_offset(const struct kefir_ast_type_layout *layout) {
     if (layout->parent != NULL) {
@@ -68,7 +68,7 @@ static kefir_result_t translate_pointer_to_identifier(struct kefir_mem *mem,
         }
     } else {
         REQUIRE(value->pointer.scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION,
-                KEFIR_SET_LANG_ERROR(
+                KEFIR_SET_SOURCE_ERROR(
                     KEFIR_ANALYSIS_ERROR, NULL,
                     "Global variables can be initialized by pointer either to an object or to a function"));
         const char *literal = kefir_ir_module_symbol(mem, module, value->pointer.base.literal, NULL);

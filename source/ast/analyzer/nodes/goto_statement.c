@@ -25,7 +25,7 @@
 #include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
-#include "kefir/core/lang_error.h"
+#include "kefir/core/source_error.h"
 
 kefir_result_t kefir_ast_analyze_goto_statement_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                      const struct kefir_ast_goto_statement *node,
@@ -41,7 +41,7 @@ kefir_result_t kefir_ast_analyze_goto_statement_node(struct kefir_mem *mem, cons
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
     REQUIRE_OK(context->reference_label(mem, context, node->identifier, false, &scoped_id));
     REQUIRE(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL,
-            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Goto statement identifier should reference a label"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Goto statement identifier should reference a label"));
     base->properties.statement_props.flow_control_point = scoped_id->label.point;
     return KEFIR_OK;
 }

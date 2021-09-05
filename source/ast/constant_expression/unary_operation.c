@@ -21,7 +21,7 @@
 #include "kefir/ast/constant_expression_impl.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
-#include "kefir/core/lang_error.h"
+#include "kefir/core/source_error.h"
 
 kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                        const struct kefir_ast_unary_operation *node,
@@ -30,11 +30,11 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem, co
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST unary operation node"));
     REQUIRE(value != NULL,
-            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected valid AST constant expression value pointer"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected valid AST constant expression value pointer"));
     REQUIRE(node->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
-            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected constant expression AST node"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected constant expression AST node"));
     REQUIRE(node->base.properties.expression_props.constant_expression,
-            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected constant expression AST node"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected constant expression AST node"));
 
     struct kefir_ast_constant_expression_value arg_value;
     switch (node->type) {
@@ -47,8 +47,8 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem, co
                 value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT;
                 value->floating_point = arg_value.floating_point;
             } else {
-                return KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                            "Expected integeral or floating-point constant expression");
+                return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                              "Expected integeral or floating-point constant expression");
             }
             break;
 
@@ -61,8 +61,8 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem, co
                 value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT;
                 value->floating_point = -arg_value.floating_point;
             } else {
-                return KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                            "Expected integeral or floating-point constant expression");
+                return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                              "Expected integeral or floating-point constant expression");
             }
             break;
 
@@ -72,7 +72,7 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem, co
                 value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
                 value->integer = ~arg_value.integer;
             } else {
-                return KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected integeral constant expression");
+                return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected integeral constant expression");
             }
             break;
 

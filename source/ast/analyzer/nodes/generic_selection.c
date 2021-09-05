@@ -23,7 +23,7 @@
 #include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
-#include "kefir/core/lang_error.h"
+#include "kefir/core/source_error.h"
 
 kefir_result_t kefir_ast_analyze_generic_selection_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                         const struct kefir_ast_generic_selection *node,
@@ -55,8 +55,9 @@ kefir_result_t kefir_ast_analyze_generic_selection_node(struct kefir_mem *mem, c
         matched = true;
     }
 
-    REQUIRE(matched, KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                          "Expected at least one of associations in generic selection to be compatible"
-                                          " with control expression type"));
+    REQUIRE(matched,
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                   "Expected at least one of associations in generic selection to be compatible"
+                                   " with control expression type"));
     return KEFIR_OK;
 }

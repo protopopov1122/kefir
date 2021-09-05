@@ -25,7 +25,7 @@
 #include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
-#include "kefir/core/lang_error.h"
+#include "kefir/core/source_error.h"
 
 kefir_result_t kefir_ast_analyze_expression_statement_node(struct kefir_mem *mem,
                                                            const struct kefir_ast_context *context,
@@ -42,8 +42,8 @@ kefir_result_t kefir_ast_analyze_expression_statement_node(struct kefir_mem *mem
     if (node->expression != NULL) {
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->expression));
         REQUIRE(node->expression->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
-                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                     "Expected AST expression node as part of expression statement"));
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                       "Expected AST expression node as part of expression statement"));
     }
     return KEFIR_OK;
 }

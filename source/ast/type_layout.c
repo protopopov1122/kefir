@@ -22,7 +22,7 @@
 #include "kefir/ast/type_layout.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
-#include "kefir/core/lang_error.h"
+#include "kefir/core/source_error.h"
 
 static kefir_result_t on_structure_member_remove(struct kefir_mem *mem, struct kefir_list *list,
                                                  struct kefir_list_entry *entry, void *payload) {
@@ -201,8 +201,8 @@ static kefir_result_t resolve_member(struct kefir_ast_type_layout *current_layou
                                      kefir_ast_type_layout_resolver_callback_t callback, void *payload) {
     REQUIRE(current_layout->type != NULL && (current_layout->type->tag == KEFIR_AST_TYPE_STRUCTURE ||
                                              current_layout->type->tag == KEFIR_AST_TYPE_UNION),
-            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                 "Expected struct/union type to correspond to member designator"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                   "Expected struct/union type to correspond to member designator"));
 
     struct kefir_hashtree_node *node = NULL;
     kefir_result_t res = kefir_hashtree_at(&current_layout->structure_layout.named_members,
@@ -234,7 +234,7 @@ static kefir_result_t resolve_subscript(struct kefir_ast_type_layout *current_la
                                         struct kefir_ast_type_layout **layout,
                                         kefir_ast_type_layout_resolver_callback_t callback, void *payload) {
     REQUIRE(current_layout->type != NULL && current_layout->type->tag == KEFIR_AST_TYPE_ARRAY,
-            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected array type to resolve subscript"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected array type to resolve subscript"));
     struct kefir_ast_type_layout *next_layout = current_layout->array_layout.element_type;
     *layout = next_layout;
     if (callback != NULL) {

@@ -25,7 +25,7 @@
 #include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
-#include "kefir/core/lang_error.h"
+#include "kefir/core/source_error.h"
 
 kefir_result_t kefir_ast_analyze_declaration_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                   const struct kefir_ast_declaration *node,
@@ -43,8 +43,8 @@ kefir_result_t kefir_ast_analyze_declaration_node(struct kefir_mem *mem, const s
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, node, iter->value);
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, node));
         REQUIRE(node->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR,
-                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                     "Declaration list shall contain exclusively init declarators"));
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                       "Declaration list shall contain exclusively init declarators"));
     }
     return KEFIR_OK;
 }

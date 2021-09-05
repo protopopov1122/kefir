@@ -26,7 +26,7 @@
 #include "kefir/core/error.h"
 #include "kefir/ast/constant_expression.h"
 #include "kefir/ast/function_declaration_context.h"
-#include "kefir/core/lang_error.h"
+#include "kefir/core/source_error.h"
 
 enum signedness { SIGNEDNESS_DEFAULT, SIGNEDNESS_SIGNED, SIGNEDNESS_UNSIGNED };
 
@@ -53,8 +53,8 @@ static kefir_result_t process_struct_declaration_entry(struct kefir_mem *mem, co
                                                  entry_declarator->declarator, &identifier, &field_type, &storage_class,
                                                  NULL, &alignment));
         REQUIRE(storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
-                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                     "Structure/union field cannot have storage class specified"));
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                       "Structure/union field cannot have storage class specified"));
 
         if (entry_declarator->bitwidth == NULL) {
             struct kefir_ast_alignment *ast_alignment = wrap_alignment(mem, alignment);
@@ -73,8 +73,8 @@ static kefir_result_t process_struct_declaration_entry(struct kefir_mem *mem, co
             REQUIRE_OK(kefir_ast_analyze_node(mem, context, entry_declarator->bitwidth));
             REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, entry_declarator->bitwidth, &value));
             REQUIRE(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                         "Bit-field width shall be integral constant expression"));
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                           "Bit-field width shall be integral constant expression"));
             struct kefir_ast_alignment *ast_alignment = wrap_alignment(mem, alignment);
             REQUIRE(alignment == 0 || ast_alignment != NULL,
                     KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST alignment"));
@@ -104,12 +104,12 @@ static kefir_result_t process_struct_declaration_entry(struct kefir_mem *mem, co
         REQUIRE_OK(kefir_ast_analyze_declaration(mem, context, &entry->declaration.specifiers, NULL, NULL, &field_type,
                                                  &storage_class, NULL, &alignment));
         REQUIRE(storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
-                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                     "Structure/union field cannot have storage class specified"));
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                       "Structure/union field cannot have storage class specified"));
         REQUIRE((field_type->tag == KEFIR_AST_TYPE_STRUCTURE || field_type->tag == KEFIR_AST_TYPE_UNION) &&
                     field_type->structure_type.identifier == NULL,
-                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                     "Anonymous member shall be a structure/union without a tag"));
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                       "Anonymous member shall be a structure/union without a tag"));
         struct kefir_ast_alignment *ast_alignment = wrap_alignment(mem, alignment);
         REQUIRE(alignment == 0 || ast_alignment != NULL,
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST alignment"));
@@ -156,7 +156,7 @@ static kefir_result_t resolve_struct_type(struct kefir_mem *mem, const struct ke
                          scoped_identifier->type->tag == KEFIR_AST_TYPE_STRUCTURE) ||
                             (specifier_type == KEFIR_AST_TYPE_SPECIFIER_UNION &&
                              scoped_identifier->type->tag == KEFIR_AST_TYPE_UNION),
-                        KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Tagged type declaration mismatch"));
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Tagged type declaration mismatch"));
                 type = scoped_identifier->type;
                 resolved = true;
             } else {
@@ -200,8 +200,8 @@ static kefir_result_t resolve_enum_type(struct kefir_mem *mem, const struct kefi
                 REQUIRE_OK(kefir_ast_analyze_node(mem, context, entry->value));
                 REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, entry->value, &value));
                 REQUIRE(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
-                        KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                             "Enumeration constant value shall be an integer constant expression"));
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                               "Enumeration constant value shall be an integer constant expression"));
                 constant_value = value.integer;
                 REQUIRE_OK(
                     kefir_ast_enumeration_type_constant(mem, context->symbols, enum_type, entry->constant,
@@ -219,7 +219,7 @@ static kefir_result_t resolve_enum_type(struct kefir_mem *mem, const struct kefi
             kefir_result_t res = context->resolve_tag_identifier(context, specifier->identifier, &scoped_identifier);
             if (res == KEFIR_OK) {
                 REQUIRE(scoped_identifier->type->tag == KEFIR_AST_TYPE_ENUMERATION,
-                        KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Tagged type declaration mismatch"));
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Tagged type declaration mismatch"));
                 type = scoped_identifier->type;
                 resolved = true;
             } else {
@@ -246,7 +246,7 @@ static kefir_result_t resolve_typedef(const struct kefir_ast_context *context, c
     const struct kefir_ast_scoped_identifier *scoped_identifier = NULL;
     REQUIRE_OK(context->resolve_ordinary_identifier(context, type_name, &scoped_identifier));
     REQUIRE(scoped_identifier->klass == KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION,
-            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Referenced identifier is not a type definition"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Referenced identifier is not a type definition"));
     *base_type = scoped_identifier->type;
     return KEFIR_OK;
 }
@@ -263,80 +263,80 @@ static kefir_result_t resolve_type(struct kefir_mem *mem, const struct kefir_ast
                                    const struct kefir_ast_type_specifier *specifier) {
     switch (specifier->specifier) {
         case KEFIR_AST_TYPE_SPECIFIER_VOID:
-            REQUIRE(*base_type == NULL, KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                                             "Void type specifier cannot be combined with others"));
+            REQUIRE(*base_type == NULL, KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                                               "Void type specifier cannot be combined with others"));
             *base_type = kefir_ast_type_void();
             *seq_state = TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_CHAR:
-            REQUIRE(*base_type == NULL, KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                                             "Char type specifier cannot be combined with others"));
+            REQUIRE(*base_type == NULL, KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                                               "Char type specifier cannot be combined with others"));
             *base_type = kefir_ast_type_char();
             *seq_state = TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_SHORT:
-            REQUIRE(
-                *base_type == NULL || (*base_type)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_INT,
-                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Short type specifier can only be combined with int"));
+            REQUIRE(*base_type == NULL || (*base_type)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_INT,
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                           "Short type specifier can only be combined with int"));
             REQUIRE(*seq_state != TYPE_SPECIFIER_SEQUENCE_TYPEDEF,
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                         "Cannot combine type specifiers with referenced type definition"));
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                           "Cannot combine type specifiers with referenced type definition"));
             *base_type = kefir_ast_type_signed_short();
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_INT:
             REQUIRE(*seq_state != TYPE_SPECIFIER_SEQUENCE_TYPEDEF,
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                         "Cannot combine type specifiers with referenced type definition"));
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                           "Cannot combine type specifiers with referenced type definition"));
             if (*base_type == NULL) {
                 *base_type = kefir_ast_type_signed_int();
             } else {
                 REQUIRE((*base_type)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_SHORT ||
                             (*base_type)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_LONG ||
                             (*base_type)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_LONG_LONG,
-                        KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                             "Int type specifier can only be combined with short or long"));
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                               "Int type specifier can only be combined with short or long"));
             }
             *seq_state = TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_LONG:
             REQUIRE(*seq_state != TYPE_SPECIFIER_SEQUENCE_TYPEDEF,
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                         "Cannot combine type specifiers with referenced type definition"));
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                           "Cannot combine type specifiers with referenced type definition"));
             if (*base_type != NULL && (*base_type)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_LONG) {
                 *base_type = kefir_ast_type_signed_long_long();
             } else {
                 REQUIRE((*base_type) == NULL || (*base_type)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_INT,
-                        KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                             "Long type specifier can only be combined with int or long"));
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                               "Long type specifier can only be combined with int or long"));
                 *base_type = kefir_ast_type_signed_long();
             }
             *seq_state = TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_FLOAT:
-            REQUIRE(*base_type == NULL, KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                                             "Float type specifier cannot be combined with others"));
+            REQUIRE(*base_type == NULL, KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                                               "Float type specifier cannot be combined with others"));
             REQUIRE(*seq_state != TYPE_SPECIFIER_SEQUENCE_TYPEDEF,
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                         "Cannot combine type specifiers with referenced type definition"));
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                           "Cannot combine type specifiers with referenced type definition"));
             *base_type = kefir_ast_type_float();
             *seq_state = TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_DOUBLE:
             REQUIRE(*seq_state != TYPE_SPECIFIER_SEQUENCE_TYPEDEF,
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                         "Cannot combine type specifiers with referenced type definition"));
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                           "Cannot combine type specifiers with referenced type definition"));
             if ((*base_type) == NULL) {
                 *base_type = kefir_ast_type_double();
             } else {
                 REQUIRE((*base_type)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_LONG,
-                        KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                             "Double type specifier can only be combined with complex and long"));
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                               "Double type specifier can only be combined with complex and long"));
                 return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Long and complex doubles are not supported yet");
             }
             *seq_state = TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
@@ -344,33 +344,35 @@ static kefir_result_t resolve_type(struct kefir_mem *mem, const struct kefir_ast
 
         case KEFIR_AST_TYPE_SPECIFIER_SIGNED:
             REQUIRE(*seq_state != TYPE_SPECIFIER_SEQUENCE_TYPEDEF,
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                         "Cannot combine type specifiers with referenced type definition"));
-            REQUIRE(*signedness == SIGNEDNESS_DEFAULT,
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                         "Signed type specifier cannot be combined with other signedness specifiers"));
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                           "Cannot combine type specifiers with referenced type definition"));
+            REQUIRE(
+                *signedness == SIGNEDNESS_DEFAULT,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                       "Signed type specifier cannot be combined with other signedness specifiers"));
             *signedness = SIGNEDNESS_SIGNED;
             *seq_state = TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_UNSIGNED:
             REQUIRE(*seq_state != TYPE_SPECIFIER_SEQUENCE_TYPEDEF,
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                         "Cannot combine type specifiers with referenced type definition"));
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                           "Cannot combine type specifiers with referenced type definition"));
             REQUIRE(
                 *signedness == SIGNEDNESS_DEFAULT,
-                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                     "Unsigned type specifier cannot be combined with other signedness specifiers"));
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                       "Unsigned type specifier cannot be combined with other signedness specifiers"));
             *signedness = SIGNEDNESS_UNSIGNED;
             *seq_state = TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_BOOL:
             REQUIRE(*seq_state != TYPE_SPECIFIER_SEQUENCE_TYPEDEF,
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                         "Cannot combine type specifiers with referenced type definition"));
-            REQUIRE(*base_type == NULL, KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                                             "Boolean type specifier cannot be combined with others"));
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                           "Cannot combine type specifiers with referenced type definition"));
+            REQUIRE(*base_type == NULL,
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                           "Boolean type specifier cannot be combined with others"));
             *base_type = kefir_ast_type_bool();
             *seq_state = TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
@@ -384,24 +386,24 @@ static kefir_result_t resolve_type(struct kefir_mem *mem, const struct kefir_ast
         case KEFIR_AST_TYPE_SPECIFIER_STRUCT:
         case KEFIR_AST_TYPE_SPECIFIER_UNION:
             REQUIRE(*seq_state == TYPE_SPECIFIER_SEQUENCE_EMPTY,
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                         "Cannot combine struct/union type specifier with others"));
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                           "Cannot combine struct/union type specifier with others"));
             REQUIRE_OK(resolve_struct_type(mem, context, specifier->specifier, specifier->value.structure, base_type));
             *seq_state = TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_ENUM:
             REQUIRE(*seq_state == TYPE_SPECIFIER_SEQUENCE_EMPTY,
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                         "Cannot combine struct/union type specifier with others"));
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                           "Cannot combine struct/union type specifier with others"));
             REQUIRE_OK(resolve_enum_type(mem, context, specifier->value.enumeration, base_type));
             *seq_state = TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
 
         case KEFIR_AST_TYPE_SPECIFIER_TYPEDEF:
             REQUIRE(*seq_state == TYPE_SPECIFIER_SEQUENCE_EMPTY,
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                         "Cannot combine referenced type definition with others"));
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                           "Cannot combine referenced type definition with others"));
             REQUIRE_OK(resolve_typedef(context, specifier->value.type_name, base_type));
             *seq_state = TYPE_SPECIFIER_SEQUENCE_TYPEDEF;
             break;
@@ -455,8 +457,8 @@ static kefir_result_t apply_type_signedness(struct kefir_mem *mem, struct kefir_
                 case KEFIR_AST_TYPE_ARRAY:
                 case KEFIR_AST_TYPE_FUNCTION:
                 case KEFIR_AST_TYPE_QUALIFIED:
-                    return KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                                "Signed type specifier cannot be applied to the type");
+                    return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                                  "Signed type specifier cannot be applied to the type");
             }
         }
     } else {
@@ -503,8 +505,8 @@ static kefir_result_t apply_type_signedness(struct kefir_mem *mem, struct kefir_
                 case KEFIR_AST_TYPE_ARRAY:
                 case KEFIR_AST_TYPE_FUNCTION:
                 case KEFIR_AST_TYPE_QUALIFIED:
-                    return KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                                "Unsigned type specifier cannot be applied to the type");
+                    return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                                  "Unsigned type specifier cannot be applied to the type");
             }
         }
     }
@@ -540,8 +542,8 @@ static kefir_result_t resolve_storage_class(kefir_ast_storage_class_specifier_ty
     switch (specifier) {
         case KEFIR_AST_STORAGE_SPECIFIER_TYPEDEF:
             REQUIRE(*storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                         "Typedef storage class cannot be combined with others"));
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                           "Typedef storage class cannot be combined with others"));
             *storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF;
             break;
 
@@ -550,8 +552,8 @@ static kefir_result_t resolve_storage_class(kefir_ast_storage_class_specifier_ty
                 *storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN;
             } else {
                 REQUIRE(*storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL,
-                        KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                             "Extern storage class can only be colocated with thread_local"));
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                               "Extern storage class can only be colocated with thread_local"));
                 *storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL;
             }
             break;
@@ -561,8 +563,8 @@ static kefir_result_t resolve_storage_class(kefir_ast_storage_class_specifier_ty
                 *storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC;
             } else {
                 REQUIRE(*storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL,
-                        KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                             "Static storage class can only be colocated with thread_local"));
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                               "Static storage class can only be colocated with thread_local"));
                 *storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL;
             }
             break;
@@ -573,24 +575,25 @@ static kefir_result_t resolve_storage_class(kefir_ast_storage_class_specifier_ty
             } else if (*storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC) {
                 *storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL;
             } else {
-                REQUIRE(*storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
-                        KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                             "Thread_local storage class can only be colocated with extern or static"));
+                REQUIRE(
+                    *storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                           "Thread_local storage class can only be colocated with extern or static"));
                 *storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL;
             }
             break;
 
         case KEFIR_AST_STORAGE_SPECIFIER_AUTO:
-            REQUIRE(
-                *storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
-                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Auto storage class cannot be combined with others"));
+            REQUIRE(*storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                           "Auto storage class cannot be combined with others"));
             *storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO;
             break;
 
         case KEFIR_AST_STORAGE_SPECIFIER_REGISTER:
             REQUIRE(*storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                         "Register storage class cannot be combined with others"));
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                           "Register storage class cannot be combined with others"));
             *storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER;
             break;
 
@@ -647,8 +650,8 @@ static kefir_result_t evaluate_alignment(struct kefir_mem *mem, const struct kef
         struct kefir_ast_constant_expression_value value;
         REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node, &value));
         REQUIRE(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
-                KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                     "Expected alignment specifier to produce integral constant expression"));
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                       "Expected alignment specifier to produce integral constant expression"));
         *alignment = MAX(*alignment, (kefir_size_t) value.integer);
     }
     return KEFIR_OK;
@@ -721,8 +724,8 @@ static kefir_result_t resolve_array_declarator(struct kefir_mem *mem, const stru
             } else {
                 REQUIRE_OK(res);
                 REQUIRE(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
-                        KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                             "Constant length of AST array declaration shall have integral type"));
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                               "Constant length of AST array declaration shall have integral type"));
                 if (declarator->array.static_array) {
                     *base_type = kefir_ast_type_array_static(mem, context->type_bundle, *base_type,
                                                              kefir_ast_constant_expression_integer(mem, value.integer),
@@ -781,7 +784,7 @@ static kefir_result_t resolve_function_declarator(struct kefir_mem *mem, const s
             res = kefir_ast_analyze_node(mem, &decl_context->context, node);
             if (res == KEFIR_OK) {
                 if (node->properties.category != KEFIR_AST_NODE_CATEGORY_TYPE) {
-                    res = KEFIR_SET_LANG_ERROR(
+                    res = KEFIR_SET_SOURCE_ERROR(
                         KEFIR_ANALYSIS_ERROR, NULL,
                         "Function declaration parameter shall be either declaration, or identifier");
                 }
@@ -794,8 +797,8 @@ static kefir_result_t resolve_function_declarator(struct kefir_mem *mem, const s
                                                         NULL);
             }
         } else {
-            res = KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                       "Function declaration parameter shall be either declaration, or identifier");
+            res = KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                         "Function declaration parameter shall be either declaration, or identifier");
         }
     }
 
@@ -908,8 +911,8 @@ kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *mem, const struct
             kefir_size_t natural_alignment = 0;
             REQUIRE_OK(type_alignment(mem, context, base_type, &natural_alignment));
             REQUIRE(natural_alignment <= alignment_specifier,
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                         "Specified alignment shall be at least as strict as natural"));
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                           "Specified alignment shall be at least as strict as natural"));
             *alignment = alignment_specifier;
         } else {
             *alignment = 0;

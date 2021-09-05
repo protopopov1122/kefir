@@ -27,7 +27,7 @@
 #include "kefir/ir/builder.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
-#include "kefir/core/lang_error.h"
+#include "kefir/core/source_error.h"
 
 static const struct kefir_ast_type *adjust_untyped_parameter(struct kefir_mem *mem,
                                                              struct kefir_ast_type_bundle *type_bundle,
@@ -63,10 +63,11 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(
             param_type = parameter->adjusted_type;
         } else if (param_iter != NULL) {
             ASSIGN_DECL_CAST(struct kefir_ast_node_base *, param, param_iter->value);
-            REQUIRE(param->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION ||
-                        param->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR,
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                         "Function declaration parameter shall be either expression, or declaration"));
+            REQUIRE(
+                param->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION ||
+                    param->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                       "Function declaration parameter shall be either expression, or declaration"));
             param_type = adjust_untyped_parameter(mem, type_bundle, type_traits, param->properties.type);
             REQUIRE(param_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unable to adjust untyped parameter"));
         }

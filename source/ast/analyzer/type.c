@@ -21,7 +21,7 @@
 #include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
-#include "kefir/core/lang_error.h"
+#include "kefir/core/source_error.h"
 
 static kefir_result_t analyze_enum(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                    const struct kefir_ast_enum_type *enum_type) {
@@ -36,8 +36,8 @@ static kefir_result_t analyze_enum(struct kefir_mem *mem, const struct kefir_ast
                 REQUIRE_OK(kefir_ast_analyze_constant_expression(mem, context, enumerator->value));
                 REQUIRE_OK(kefir_ast_constant_expression_evaluate(mem, context, enumerator->value));
                 REQUIRE(enumerator->value->value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
-                        KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                             "Enumerator constant expression shall have integral type"));
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                               "Enumerator constant expression shall have integral type"));
                 next_value = enumerator->value->value.integer + 1;
             } else {
                 enumerator->value = kefir_ast_constant_expression_integer(mem, next_value);
@@ -54,15 +54,17 @@ static kefir_result_t analyze_array(struct kefir_mem *mem, const struct kefir_as
                                     kefir_ast_type_analysis_context_t analysis_context,
                                     const struct kefir_ast_array_type *array_type) {
     REQUIRE_OK(kefir_ast_analyze_type(mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, array_type->element_type));
-    REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(array_type->element_type) &&
-                array_type->element_type->tag != KEFIR_AST_TYPE_FUNCTION,
-            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Array element type shall be complete non-function type"));
+    REQUIRE(
+        !KEFIR_AST_TYPE_IS_INCOMPLETE(array_type->element_type) &&
+            array_type->element_type->tag != KEFIR_AST_TYPE_FUNCTION,
+        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Array element type shall be complete non-function type"));
     REQUIRE(
         (array_type->boundary != KEFIR_AST_ARRAY_BOUNDED_STATIC && array_type->boundary != KEFIR_AST_ARRAY_VLA_STATIC &&
          KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&array_type->qualifications)) ||
             analysis_context == KEFIR_AST_TYPE_ANALYSIS_FUNCTION_PARAMETER,
-        KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                             "Array type qualifications shall appear only for the outermost function parameter type"));
+        KEFIR_SET_SOURCE_ERROR(
+            KEFIR_ANALYSIS_ERROR, NULL,
+            "Array type qualifications shall appear only for the outermost function parameter type"));
     switch (array_type->boundary) {
         case KEFIR_AST_ARRAY_UNBOUNDED:
             break;
@@ -71,17 +73,18 @@ static kefir_result_t analyze_array(struct kefir_mem *mem, const struct kefir_as
         case KEFIR_AST_ARRAY_BOUNDED_STATIC:
             REQUIRE_OK(kefir_ast_analyze_constant_expression(mem, context, array_type->const_length));
             REQUIRE_OK(kefir_ast_constant_expression_evaluate(mem, context, array_type->const_length));
-            REQUIRE(array_type->const_length->value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Array type subscript shall have integral type"));
+            REQUIRE(
+                array_type->const_length->value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Array type subscript shall have integral type"));
             break;
 
         case KEFIR_AST_ARRAY_VLA:
         case KEFIR_AST_ARRAY_VLA_STATIC:
             if (array_type->vla_length != NULL) {
                 REQUIRE_OK(kefir_ast_analyze_node(mem, context, array_type->vla_length));
-                REQUIRE(
-                    KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(array_type->vla_length->properties.type),
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Array type subscript shall have integral type"));
+                REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(array_type->vla_length->properties.type),
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                               "Array type subscript shall have integral type"));
             }
             break;
     }
@@ -102,37 +105,37 @@ static kefir_result_t analyze_structure(struct kefir_mem *mem, const struct kefi
                 REQUIRE_OK(kefir_ast_analyze_constant_expression(mem, context, field->bitwidth));
                 if (field->bitwidth->expression != NULL) {
                     REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(field->bitwidth->expression->properties.type),
-                            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Bit-field shall have integral type"));
+                            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Bit-field shall have integral type"));
                 }
                 REQUIRE_OK(kefir_ast_constant_expression_evaluate(mem, context, field->bitwidth));
                 REQUIRE(field->bitwidth->value.integer >= 0,
-                        KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                             "Structure/union bitfield width shall be non-negative"));
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                               "Structure/union bitfield width shall be non-negative"));
                 REQUIRE(field->bitwidth->value.integer > 0 || field->identifier == NULL,
-                        KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                             "Named bit-field with zero width is not permitted"));
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                               "Named bit-field with zero width is not permitted"));
                 REQUIRE(
                     field->alignment->klass == KEFIR_AST_ALIGNMENT_DEFAULT,
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Bit-field shall not have alignment attribute"));
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Bit-field shall not have alignment attribute"));
             }
 
             if (field->type->tag == KEFIR_AST_TYPE_ARRAY) {
                 if (field->type->array_type.boundary == KEFIR_AST_ARRAY_UNBOUNDED) {
                     REQUIRE(iter->next == NULL && type->tag == KEFIR_AST_TYPE_STRUCTURE,
-                            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                                 "Flexible member should be the last member of structure"));
+                            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                                   "Flexible member should be the last member of structure"));
                     REQUIRE(iter->prev != NULL,
-                            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                                 "Flexible member is not allowed in otherwise empty structure"));
+                            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                                   "Flexible member is not allowed in otherwise empty structure"));
                 } else {
                     REQUIRE(!KEFIR_AST_TYPE_IS_VARIABLY_MODIFIED(field->type),
-                            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                                 "Structure/union cannot have variably modified members"));
+                            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                                   "Structure/union cannot have variably modified members"));
                 }
             } else {
                 REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(field->type) && field->type->tag != KEFIR_AST_TYPE_FUNCTION,
-                        KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                             "Structure/union field shall have complete non-function type"));
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                               "Structure/union field shall have complete non-function type"));
             }
         }
     }
@@ -143,7 +146,7 @@ static kefir_result_t analyze_function(struct kefir_mem *mem, const struct kefir
                                        const struct kefir_ast_function_type *func_type) {
     REQUIRE(
         func_type->return_type->tag != KEFIR_AST_TYPE_FUNCTION && func_type->return_type->tag != KEFIR_AST_TYPE_ARRAY,
-        KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Function return type shall not be array or function"));
+        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Function return type shall not be array or function"));
 
     if (func_type->mode == KEFIR_AST_FUNCTION_TYPE_PARAMETERS) {
         for (const struct kefir_list_entry *iter = kefir_list_head(&func_type->parameters); iter != NULL;
@@ -154,21 +157,21 @@ static kefir_result_t analyze_function(struct kefir_mem *mem, const struct kefir
             REQUIRE_OK(
                 kefir_ast_analyze_type(mem, context, KEFIR_AST_TYPE_ANALYSIS_FUNCTION_PARAMETER, param->adjusted_type));
             if (param->adjusted_type->tag == KEFIR_AST_TYPE_VOID) {
-                REQUIRE(
-                    param->identifier == NULL,
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Void type function parameter shall be unnamed"));
+                REQUIRE(param->identifier == NULL,
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                               "Void type function parameter shall be unnamed"));
                 REQUIRE(kefir_list_length(&func_type->parameters) == 1,
-                        KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                             "Void type parameter shall be the only function parameter"));
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                               "Void type parameter shall be the only function parameter"));
             } else {
                 REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(param->adjusted_type),
-                        KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                             "Function parameters shall not have incomplete type"));
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                               "Function parameters shall not have incomplete type"));
                 REQUIRE(KEFIR_OPTIONAL_EMPTY(&param->storage) ||
                             *KEFIR_OPTIONAL_VALUE(&param->storage) == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER ||
                             *KEFIR_OPTIONAL_VALUE(&param->storage) == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
-                        KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                             "Function parameter might only have register storage class"));
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                               "Function parameter might only have register storage class"));
             }
         }
     }

@@ -26,7 +26,7 @@
 #include "kefir/ast-translator/util.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
-#include "kefir/core/lang_error.h"
+#include "kefir/core/source_error.h"
 
 static kefir_result_t translate_arithmetic_unary(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
                                                  struct kefir_irbuilder_block *builder,
@@ -64,8 +64,8 @@ static kefir_result_t translate_arithmetic_unary(struct kefir_mem *mem, struct k
 
         default:
             REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(normalized_type),
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                         "Expected integral type as operand of unary arithmetic operator"));
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                           "Expected integral type as operand of unary arithmetic operator"));
             switch (node->type) {
                 case KEFIR_AST_OPERATION_PLUS:
                     break;
@@ -178,7 +178,7 @@ static kefir_result_t incdec_impl(struct kefir_mem *mem, struct kefir_ast_transl
 
         default:
             REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(normalized_type),
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected value of an integral type"));
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected value of an integral type"));
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IADD1, diff));
             break;
     }

@@ -27,7 +27,7 @@
 #include "kefir/core/error.h"
 #include "kefir/ir/module.h"
 #include "kefir/ast-translator/scope/scoped_identifier.h"
-#include "kefir/core/lang_error.h"
+#include "kefir/core/source_error.h"
 
 static kefir_result_t translate_object_identifier(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
                                                   struct kefir_irbuilder_block *builder, const char *identifier,
@@ -42,7 +42,7 @@ static kefir_result_t translate_enum_constant(struct kefir_irbuilder_block *buil
                                               const struct kefir_ast_type_traits *type_traits,
                                               const struct kefir_ast_scoped_identifier *scoped_identifier) {
     REQUIRE(KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(scoped_identifier->enum_constant.type),
-            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Enum constant cannot have non-integral type"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Enum constant cannot have non-integral type"));
 
     kefir_bool_t signedness;
     REQUIRE_OK(kefir_ast_type_is_signed(type_traits, scoped_identifier->enum_constant.type, &signedness));

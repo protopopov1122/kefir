@@ -26,7 +26,7 @@
 #include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
-#include "kefir/core/lang_error.h"
+#include "kefir/core/source_error.h"
 
 kefir_result_t kefir_ast_analyze_while_statement_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                       const struct kefir_ast_while_statement *node,
@@ -40,7 +40,7 @@ kefir_result_t kefir_ast_analyze_while_statement_node(struct kefir_mem *mem, con
     base->properties.category = KEFIR_AST_NODE_CATEGORY_STATEMENT;
 
     REQUIRE(context->flow_control_tree != NULL,
-            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Unable to use while statement in current context"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Unable to use while statement in current context"));
     REQUIRE_OK(kefir_ast_flow_control_tree_push(mem, context->flow_control_tree, KEFIR_AST_FLOW_CONTROL_STATEMENT_WHILE,
                                                 &base->properties.statement_props.flow_control_statement));
 
@@ -57,18 +57,18 @@ kefir_result_t kefir_ast_analyze_while_statement_node(struct kefir_mem *mem, con
 
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->controlling_expr));
     REQUIRE(node->controlling_expr->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
-            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                 "Expected while statement controlling expression to be scalar expression"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                   "Expected while statement controlling expression to be scalar expression"));
 
     const struct kefir_ast_type *condition_type =
         KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->controlling_expr->properties.type);
-    REQUIRE(
-        KEFIR_AST_TYPE_IS_SCALAR_TYPE(condition_type),
-        KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected while statement condition to be scalar expression"));
+    REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(condition_type),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                   "Expected while statement condition to be scalar expression"));
 
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->body));
     REQUIRE(node->body->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT,
-            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected while statement body to be a statement"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected while statement body to be a statement"));
 
     REQUIRE_OK(context->pop_block(mem, context));
     REQUIRE_OK(kefir_ast_flow_control_tree_pop(context->flow_control_tree));

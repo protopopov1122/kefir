@@ -25,7 +25,7 @@
 #include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
-#include "kefir/core/lang_error.h"
+#include "kefir/core/source_error.h"
 
 static kefir_result_t resolve_loop(const struct kefir_ast_flow_control_statement *stmt, void *payload,
                                    kefir_bool_t *result) {
@@ -61,7 +61,7 @@ kefir_result_t kefir_ast_analyze_continue_statement_node(struct kefir_mem *mem, 
     base->properties.category = KEFIR_AST_NODE_CATEGORY_STATEMENT;
 
     REQUIRE(context->flow_control_tree != NULL,
-            KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Continue statement is not allowed in current context"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Continue statement is not allowed in current context"));
 
     struct kefir_ast_flow_control_statement *flow_control_stmt = NULL;
     REQUIRE_OK(

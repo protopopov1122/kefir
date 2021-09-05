@@ -25,7 +25,7 @@
 #include "kefir/core/error.h"
 #include "kefir/ast-translator/scope/scope_layout_impl.h"
 #include "kefir/ast-translator/flow_control.h"
-#include "kefir/core/lang_error.h"
+#include "kefir/core/source_error.h"
 
 kefir_result_t kefir_ast_translator_local_scope_layout_init(struct kefir_mem *mem, struct kefir_ir_module *module,
                                                             struct kefir_ast_translator_global_scope_layout *global,
@@ -197,7 +197,8 @@ static kefir_result_t translate_local_scoped_identifier_object(
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
-            return KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Unexpected storage class of local-scope variable");
+            return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                          "Unexpected storage class of local-scope variable");
     }
     return KEFIR_OK;
 }

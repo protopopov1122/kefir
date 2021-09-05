@@ -22,7 +22,7 @@
 #include "kefir/core/linked_stack.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
-#include "kefir/core/lang_error.h"
+#include "kefir/core/source_error.h"
 
 static kefir_bool_t is_array_finished(const struct kefir_ast_type *type, kefir_size_t index) {
     return type->array_type.boundary != KEFIR_AST_ARRAY_UNBOUNDED &&
@@ -71,7 +71,7 @@ static kefir_result_t push_layer(struct kefir_mem *mem, struct kefir_ast_type_tr
         case KEFIR_AST_TYPE_ARRAY: {
             REQUIRE(object_type->array_type.boundary != KEFIR_AST_ARRAY_VLA &&
                         object_type->array_type.boundary != KEFIR_AST_ARRAY_VLA_STATIC,
-                    KEFIR_SET_LANG_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Cannot traverse VLA AST array types"));
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Cannot traverse VLA AST array types"));
             layer->type = KEFIR_AST_TYPE_TRAVERSAL_ARRAY;
             layer->array.index = 0;
         } break;

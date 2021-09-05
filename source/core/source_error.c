@@ -18,26 +18,26 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "kefir/core/lang_error.h"
+#include "kefir/core/source_error.h"
 #include <stdio.h>
 
-kefir_result_t kefir_set_lang_error(kefir_result_t code, const struct kefir_source_location *location,
-                                    const char *message, const char *file, unsigned int line,
-                                    struct kefir_error **error_ptr) {
+kefir_result_t kefir_set_source_error(kefir_result_t code, const struct kefir_source_location *location,
+                                      const char *message, const char *file, unsigned int line,
+                                      struct kefir_error **error_ptr) {
     struct kefir_error *error = NULL;
     kefir_result_t res = kefir_set_error(code, message, file, line, &error);
     if (error == NULL) {
         return res;
     }
 
-    struct kefir_lang_error *lang_error = (struct kefir_lang_error *) error->payload;
+    struct kefir_source_error *source_error = (struct kefir_source_error *) error->payload;
     if (location != NULL) {
-        lang_error->source_location = *location;
-        snprintf(lang_error->message, KEFIR_LANG_ERROR_MESSAGE_LENGTH, "%s@%u:%u %s", location->source, location->line,
-                 location->column, message);
-        error->message = lang_error->message;
+        source_error->source_location = *location;
+        snprintf(source_error->message, KEFIR_SOURCE_ERROR_MESSAGE_LENGTH, "%s@%u:%u %s", location->source,
+                 location->line, location->column, message);
+        error->message = source_error->message;
     } else {
-        kefir_source_location_empty(&lang_error->source_location);
+        kefir_source_location_empty(&source_error->source_location);
     }
     if (error_ptr != NULL) {
         *error_ptr = error;
