@@ -42,44 +42,44 @@ No.  Message                  Class          Subclass   Compiler ref.
 
 
 No.  Message                                      Class          Subclass   Compiler ref.
-  0| file5.c@1:1 Static assertion failed    |     Error|    Static assert|  source/tests/integration/misc/error_format.test.c:110
-  1| file4.c@91:1000 Expected constant      |     Error|         Constant|  source/tests/integration/misc/error_format.test.c:107
-  2| file3.c@4739:1 Analyzer error detected |     Error|         Analysis|  source/tests/integration/misc/error_format.test.c:104
+  0| file5.c@1:1 Static assertion failed    |     Error|    Static assert|  source/tests/integration/misc/error_format.test.c:107
+  1| file4.c@91:1000 Expected constant      |     Error|         Constant|  source/tests/integration/misc/error_format.test.c:105
+  2| file3.c@4739:1 Analyzer error detected |     Error|         Analysis|  source/tests/integration/misc/error_format.test.c:103
   3| file2.c@1:10 Parsing error detected    |     Error|           Parser|  source/tests/integration/misc/error_format.test.c:101
-  4| file1.c@100:5 Lexer error detected     |     Error|            Lexer|  source/tests/integration/misc/error_format.test.c:98
+  4| file1.c@100:5 Lexer error detected     |     Error|            Lexer|  source/tests/integration/misc/error_format.test.c:99
 
 
 No.  Message                                        Class          Subclass   Compiler ref.
   -| [Error stack overflow. Skipping entries] |          |                 |
-  0| Some unknwon error #31                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
-  1| Some unknwon error #30                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
-  2| Some unknwon error #29                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
-  3| Some unknwon error #28                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
-  4| Some unknwon error #27                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
-  5| Some unknwon error #26                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
-  6| Some unknwon error #25                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
-  7| Some unknwon error #24                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
-  8| Some unknwon error #23                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
-  9| Some unknwon error #22                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
- 10| Some unknwon error #21                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
- 11| Some unknwon error #20                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
- 12| Some unknwon error #19                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
- 13| Some unknwon error #18                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
- 14| Some unknwon error #17                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
- 15| Some unknwon error #16                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
- 16| Some unknwon error #15                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
- 17| Some unknwon error #14                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
- 18| Some unknwon error #13                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
- 19| Some unknwon error #12                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
- 20| Some unknwon error #11                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
- 21| Some unknwon error #10                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
- 22| Some unknwon error #9                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
- 23| Some unknwon error #8                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
- 24| Some unknwon error #7                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
- 25| Some unknwon error #6                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
- 26| Some unknwon error #5                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
- 27| Some unknwon error #4                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
- 28| Some unknwon error #3                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
- 29| Some unknwon error #2                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
- 30| Some unknwon error #1                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
- 31| Some unknwon error #0                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:120
+  0| Some unknwon error #31                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+  1| Some unknwon error #30                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+  2| Some unknwon error #29                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+  3| Some unknwon error #28                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+  4| Some unknwon error #27                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+  5| Some unknwon error #26                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+  6| Some unknwon error #25                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+  7| Some unknwon error #24                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+  8| Some unknwon error #23                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+  9| Some unknwon error #22                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+ 10| Some unknwon error #21                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+ 11| Some unknwon error #20                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+ 12| Some unknwon error #19                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+ 13| Some unknwon error #18                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+ 14| Some unknwon error #17                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+ 15| Some unknwon error #16                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+ 16| Some unknwon error #15                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+ 17| Some unknwon error #14                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+ 18| Some unknwon error #13                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+ 19| Some unknwon error #12                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+ 20| Some unknwon error #11                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+ 21| Some unknwon error #10                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+ 22| Some unknwon error #9                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+ 23| Some unknwon error #8                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+ 24| Some unknwon error #7                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+ 25| Some unknwon error #6                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+ 26| Some unknwon error #5                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+ 27| Some unknwon error #4                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+ 28| Some unknwon error #3                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+ 29| Some unknwon error #2                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+ 30| Some unknwon error #1                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
+ 31| Some unknwon error #0                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format.test.c:115
