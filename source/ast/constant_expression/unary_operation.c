@@ -101,8 +101,8 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem, co
         case KEFIR_AST_OPERATION_POSTFIX_DECREMENT:
         case KEFIR_AST_OPERATION_PREFIX_INCREMENT:
         case KEFIR_AST_OPERATION_PREFIX_DECREMENT:
-            return KEFIR_SET_ERROR(KEFIR_NOT_CONSTANT,
-                                   "Constant expressions shall not contain increment/decrement operators");
+            return KEFIR_SET_SOURCE_ERROR(KEFIR_NOT_CONSTANT, NULL,
+                                          "Constant expressions shall not contain increment/decrement operators");
 
         case KEFIR_AST_OPERATION_ADDRESS:
             REQUIRE_OK(kefir_ast_constant_expression_value_evaluate_lvalue_reference(mem, context, node->arg,
@@ -111,7 +111,8 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem, co
             break;
 
         case KEFIR_AST_OPERATION_INDIRECTION:
-            return KEFIR_SET_ERROR(KEFIR_NOT_CONSTANT, "Constant expression cannot contain indirection operator");
+            return KEFIR_SET_SOURCE_ERROR(KEFIR_NOT_CONSTANT, NULL,
+                                          "Constant expression cannot contain indirection operator");
 
         case KEFIR_AST_OPERATION_SIZEOF: {
             kefir_ast_target_environment_opaque_type_t opaque_type;

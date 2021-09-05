@@ -75,7 +75,7 @@ kefir_result_t kefir_ast_evaluate_binary_operation_node(struct kefir_mem *mem, c
     REQUIRE(node->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected constant expression AST node"));
     REQUIRE(node->base.properties.expression_props.constant_expression,
-            KEFIR_SET_ERROR(KEFIR_NOT_CONSTANT, "Expected constant expression AST node"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_NOT_CONSTANT, NULL, "Expected constant expression AST node"));
 
     struct kefir_ast_constant_expression_value arg1_value, arg2_value;
     REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->arg1, &arg1_value));

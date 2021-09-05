@@ -35,7 +35,7 @@ static kefir_result_t non_const_expr(const struct kefir_ast_visitor *visitor, co
     UNUSED(visitor);
     UNUSED(node);
     UNUSED(payload);
-    return KEFIR_SET_ERROR(KEFIR_NOT_CONSTANT, "Provided expression is not a constant lvalue");
+    return KEFIR_SET_SOURCE_ERROR(KEFIR_NOT_CONSTANT, NULL, "Provided expression is not a constant lvalue");
 }
 
 static kefir_result_t visit_identifier(const struct kefir_ast_visitor *visitor, const struct kefir_ast_identifier *node,
@@ -51,7 +51,7 @@ static kefir_result_t visit_identifier(const struct kefir_ast_visitor *visitor, 
         case KEFIR_AST_SCOPE_IDENTIFIER_OBJECT: {
             REQUIRE(scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC ||
                         scoped_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
-                    KEFIR_SET_ERROR(KEFIR_NOT_CONSTANT, "Not a constant expression"));
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_NOT_CONSTANT, NULL, "Not a constant expression"));
         } break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION:
@@ -61,7 +61,7 @@ static kefir_result_t visit_identifier(const struct kefir_ast_visitor *visitor, 
         case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_TAG:
         case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION:
         case KEFIR_AST_SCOPE_IDENTIFIER_LABEL:
-            return KEFIR_SET_ERROR(KEFIR_NOT_CONSTANT, "Not a constant expression");
+            return KEFIR_SET_SOURCE_ERROR(KEFIR_NOT_CONSTANT, NULL, "Not a constant expression");
     }
 
     param->pointer->type = KEFIR_AST_CONSTANT_EXPRESSION_POINTER_IDENTIFER;
