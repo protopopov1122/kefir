@@ -23,6 +23,7 @@
 #include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/core/source_error.h"
 
 kefir_result_t kefir_ast_analyze_static_assertion_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                        const struct kefir_ast_static_assertion *node,
@@ -40,10 +41,11 @@ kefir_result_t kefir_ast_analyze_static_assertion_node(struct kefir_mem *mem, co
 
     struct kefir_ast_constant_expression_value value;
     REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->condition, &value));
-    REQUIRE(
-        value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
-        KEFIR_SET_ERROR(KEFIR_STATIC_ASSERT, "Static assertion condition shall be an integral constant expression"));
+    REQUIRE(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                                   "Static assertion condition shall be an integral constant expression"));
     REQUIRE(value.integer != 0,
-            KEFIR_SET_ERROR(KEFIR_STATIC_ASSERT, "Static assertion failure"));  // TODO Provide string from assertion
+            KEFIR_SET_SOURCE_ERROR(KEFIR_STATIC_ASSERT, NULL,
+                                   "Static assertion failure"));  // TODO Provide string from assertion
     return KEFIR_OK;
 }

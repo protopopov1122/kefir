@@ -27,6 +27,7 @@
 #include "kefir/core/util.h"
 #include "kefir/compiler/compiler.h"
 #include "kefir/core/os_error.h"
+#include "kefir/core/error_format.h"
 
 static kefir_result_t mmap_file(const char *filepath, const char **content, size_t *length) {
     int fd = open(filepath, O_RDONLY);
@@ -84,14 +85,7 @@ static int report_error(kefir_result_t res) {
         return EXIT_SUCCESS;
     } else {
         fprintf(stderr, "Failed to compile! Error stack:\n");
-        const struct kefir_error *err = kefir_current_error();
-        if (err->error_overflow) {
-            fprintf(stderr, "[Omitted due to overflow]\n");
-        }
-        while (err != NULL) {
-            fprintf(stderr, "\t%s:%u\t%s\n", err->file, err->line, err->message);
-            err = err->prev_error;
-        }
+        kefir_format_error(stdout, kefir_current_error());
     }
     return EXIT_FAILURE;
 }
