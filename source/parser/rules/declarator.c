@@ -96,8 +96,9 @@ static kefir_result_t scan_direct_declarator_base(struct kefir_mem *mem, struct 
     if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_PARENTHESE)) {
         REQUIRE_CHAIN(&res, PARSER_SHIFT(parser));
         REQUIRE_CHAIN(&res, kefir_parser_scan_declarator(mem, parser, &base_declarator));
-        REQUIRE_CHAIN_SET(&res, PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_PARENTHESE),
-                          KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected right parenthese"));
+        REQUIRE_CHAIN_SET(
+            &res, PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_PARENTHESE),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected right parenthese"));
         REQUIRE_CHAIN(&res, PARSER_SHIFT(parser));
     } else {
         REQUIRE_CHAIN_SET(&res, PARSER_TOKEN_IS_IDENTIFIER(parser, 0),
@@ -135,23 +136,26 @@ static kefir_result_t scan_array_impl(struct kefir_mem *mem, struct kefir_parser
     }
     REQUIRE_OK(scan_type_qualifier_list(mem, parser, type_qualifiers));
     if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_STATIC)) {
-        REQUIRE(!static_array, KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL,
-                                                      "Cannot duplicate static specifier in array declaration"));
+        REQUIRE(!static_array,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
+                                       "Static specifier duplication in array declaration is forbidden"));
         REQUIRE_OK(PARSER_SHIFT(parser));
         static_array = true;
     }
 
     kefir_result_t res = KEFIR_OK;
     if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_STAR)) {
-        REQUIRE(!static_array, KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL,
-                                                      "Cannot static specifier with star in array declaration"));
+        REQUIRE(!static_array,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
+                                       "Static specifier combination with star in array declaration is forbidden"));
         REQUIRE_OK(PARSER_SHIFT(parser));
         array_type = KEFIR_AST_DECLARATOR_ARRAY_VLA_UNSPECIFIED;
     } else {
         res = KEFIR_PARSER_RULE_APPLY(mem, parser, assignment_expression, &length);
         if (res == KEFIR_NO_MATCH) {
             if (static_array) {
-                res = KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Static array declaration shall include length");
+                res = KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
+                                             "Static array declaration shall include length");
             } else {
                 res = KEFIR_OK;
             }
@@ -165,7 +169,7 @@ static kefir_result_t scan_array_impl(struct kefir_mem *mem, struct kefir_parser
         if (length != NULL) {
             KEFIR_AST_NODE_FREE(mem, length);
         }
-        return KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected right bracket");
+        return KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected right bracket");
     });
     res = PARSER_SHIFT(parser);
     REQUIRE_ELSE(res == KEFIR_OK, {
@@ -300,7 +304,7 @@ static kefir_result_t scan_function_parameter_list(struct kefir_mem *mem, struct
         kefir_result_t res = scan_function_parameter(mem, parser, declarator);
         if (res == KEFIR_NO_MATCH) {
             REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_ELLIPSIS),
-                    KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL,
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
                                            "Expected either function parameter declaration or ellipsis"));
             REQUIRE_OK(PARSER_SHIFT(parser));
             declarator->function.ellipsis = true;
@@ -442,8 +446,9 @@ static kefir_result_t scan_direct_abstract_declarator_base(struct kefir_mem *mem
         res = KEFIR_OK;
         REQUIRE_CHAIN(&res, PARSER_SHIFT(parser));
         REQUIRE_CHAIN(&res, kefir_parser_scan_abstract_declarator(mem, parser, &base_declarator));
-        REQUIRE_CHAIN_SET(&res, PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_PARENTHESE),
-                          KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected right parenthese"));
+        REQUIRE_CHAIN_SET(
+            &res, PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_PARENTHESE),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected right parenthese"));
         REQUIRE_CHAIN(&res, PARSER_SHIFT(parser));
     }
 

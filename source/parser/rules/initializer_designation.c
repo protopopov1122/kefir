@@ -8,7 +8,7 @@ static kefir_result_t scan_index(struct kefir_mem *mem, struct kefir_parser *par
     REQUIRE_OK(KEFIR_PARSER_RULE_APPLY(mem, parser, constant_expression, &index));
     REQUIRE_ELSE(PARSER_TOKEN_IS_RIGHT_BRACKET(parser, 0), {
         KEFIR_AST_NODE_FREE(mem, index);
-        return KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected right bracket");
+        return KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected right bracket");
     });
     kefir_result_t res = PARSER_SHIFT(parser);
     REQUIRE_ELSE(res == KEFIR_OK, {
@@ -31,7 +31,7 @@ static kefir_result_t scan_member(struct kefir_mem *mem, struct kefir_parser *pa
                                   struct kefir_ast_initializer_designation **designation) {
     REQUIRE_OK(PARSER_SHIFT(parser));
     REQUIRE(PARSER_TOKEN_IS_IDENTIFIER(parser, 0),
-            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected identifier"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected identifier"));
     const char *identifier = kefir_parser_token_cursor_at(parser->cursor, 0)->identifier;
     REQUIRE_OK(PARSER_SHIFT(parser));
     struct kefir_ast_initializer_designation *new_designation =
@@ -75,7 +75,7 @@ static kefir_result_t scan_designation(struct kefir_mem *mem, struct kefir_parse
     REQUIRE_ELSE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_ASSIGN), {
         kefir_ast_initializer_designation_free(mem, *designation_ptr);
         *designation_ptr = NULL;
-        return KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected equals sign");
+        return KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected equals sign");
     });
     kefir_result_t res = PARSER_SHIFT(parser);
     REQUIRE_ELSE(res == KEFIR_OK, {

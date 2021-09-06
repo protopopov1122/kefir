@@ -20,17 +20,24 @@
 
 #include "kefir/parser/rule_helpers.h"
 #include "kefir/parser/builder.h"
+#include "kefir/core/source_error.h"
 
 static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder, void *payload) {
     UNUSED(payload);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser AST builder"));
 
-    REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, external_declaration), NULL));
+    kefir_result_t res;
+    REQUIRE_MATCH_OK(
+        &res, kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, external_declaration), NULL),
+        KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(builder->parser, 0),
+                               "Expected declaration or function definition"));
     REQUIRE_OK(kefir_parser_ast_builder_translation_unit(mem, builder));
     while (!PARSER_TOKEN_IS_SENTINEL(builder->parser, 0)) {
-        REQUIRE_OK(
-            kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, external_declaration), NULL));
+        REQUIRE_MATCH_OK(
+            &res, kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, external_declaration), NULL),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(builder->parser, 0),
+                                   "Expected declaration or function definition"));
         REQUIRE_OK(kefir_parser_ast_builder_translation_unit_append(mem, builder));
     }
     return KEFIR_OK;

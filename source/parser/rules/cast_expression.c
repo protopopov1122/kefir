@@ -35,8 +35,9 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
         res = KEFIR_OK;
         REQUIRE_CHAIN(&res, PARSER_SHIFT(parser));
         REQUIRE_CHAIN(&res, kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, type_name), NULL));
-        REQUIRE_CHAIN_SET(&res, PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_PARENTHESE),
-                          KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected right parenthese"));
+        REQUIRE_CHAIN_SET(
+            &res, PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_PARENTHESE),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected right parenthese"));
         REQUIRE_CHAIN(&res, PARSER_SHIFT(parser));
         REQUIRE_CHAIN(&res,
                       kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, cast_expression), NULL));

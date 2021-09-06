@@ -33,7 +33,7 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
         REQUIRE_OK(PARSER_SHIFT(parser));
         REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, expression), NULL));
         REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COLON),
-                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected colon"));
+                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected colon"));
         REQUIRE_OK(PARSER_SHIFT(parser));
         REQUIRE_OK(
             kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, conditional_expression), NULL));

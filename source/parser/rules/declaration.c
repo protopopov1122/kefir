@@ -90,7 +90,9 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
     }
 
     while (scan_init_decl) {
-        REQUIRE_OK(scan_init_declaration(mem, builder));
+        REQUIRE_MATCH_OK(&res, scan_init_declaration(mem, builder),
+                         KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
+                                                "Expected either init declaration or semicolon"));
         if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COMMA)) {
             scan_init_decl = true;
             REQUIRE_OK(PARSER_SHIFT(parser));
@@ -100,7 +102,7 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
     }
 
     REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_SEMICOLON),
-            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected semiolon"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected semicolon"));
     REQUIRE_OK(PARSER_SHIFT(parser));
 
     return KEFIR_OK;

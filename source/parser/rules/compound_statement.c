@@ -45,7 +45,7 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
     }
 
     REQUIRE(PARSER_TOKEN_IS_RIGHT_BRACE(parser, 0),
-            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected right brace"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected right brace"));
     REQUIRE_OK(PARSER_SHIFT(parser));
     REQUIRE_OK(kefir_parser_scope_pop_block(mem, &parser->scope));
     return KEFIR_OK;

@@ -79,6 +79,15 @@
             *(result) = (expr);                      \
         }                                            \
     } while (0)
+#define REQUIRE_MATCH_OK(result, expr, no_match) \
+    do {                                         \
+        *(result) = (expr);                      \
+        if (*(result) == KEFIR_NO_MATCH) {       \
+            return (no_match);                   \
+        } else {                                 \
+            REQUIRE_OK(*(result));               \
+        }                                        \
+    } while (0)
 
 // Evaluates twice
 #define MIN(a, b) ((a) < (b) ? (a) : (b))

@@ -78,8 +78,9 @@ static kefir_result_t scan_initializer_list(struct kefir_mem *mem, struct kefir_
     }
 
     kefir_result_t res = KEFIR_OK;
-    REQUIRE_CHAIN_SET(&res, PARSER_TOKEN_IS_RIGHT_BRACE(parser, 0),
-                      KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected right brace"));
+    REQUIRE_CHAIN_SET(
+        &res, PARSER_TOKEN_IS_RIGHT_BRACE(parser, 0),
+        KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected right brace"));
     REQUIRE_CHAIN(&res, PARSER_SHIFT(parser));
     REQUIRE_ELSE(res == KEFIR_OK, {
         *initializer = NULL;

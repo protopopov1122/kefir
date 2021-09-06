@@ -30,8 +30,9 @@ kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(expression_statement)(struct kefir_me
     }
 
     kefir_result_t res = KEFIR_OK;
-    REQUIRE_CHAIN_SET(&res, PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_SEMICOLON),
-                      KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected semicolon"));
+    REQUIRE_CHAIN_SET(
+        &res, PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_SEMICOLON),
+        KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected semicolon"));
     REQUIRE_CHAIN(&res, PARSER_SHIFT(parser));
 
     REQUIRE_ELSE(res == KEFIR_OK, {
