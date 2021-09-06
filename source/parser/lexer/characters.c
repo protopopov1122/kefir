@@ -25,7 +25,7 @@ kefir_result_t kefir_lexer_cursor_next_universal_character(struct kefir_lexer_so
                        hex3 = kefir_lexer_source_cursor_at(cursor, 4), hex4 = kefir_lexer_source_cursor_at(cursor, 5);
         REQUIRE(kefir_ishexdigit32(hex1) && kefir_ishexdigit32(hex2) && kefir_ishexdigit32(hex3) &&
                     kefir_ishexdigit32(hex4),
-                KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match universal character"));
+                KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &cursor->location, "Incomplete universal character"));
         *target = kefir_hex32todec(hex4) | (kefir_hex32todec(hex3) << 4) | (kefir_hex32todec(hex2) << 8) |
                   (kefir_hex32todec(hex1) << 12);
         REQUIRE_OK(kefir_lexer_source_cursor_next(cursor, 6));
@@ -37,7 +37,7 @@ kefir_result_t kefir_lexer_cursor_next_universal_character(struct kefir_lexer_so
         REQUIRE(kefir_ishexdigit32(hex1) && kefir_ishexdigit32(hex2) && kefir_ishexdigit32(hex3) &&
                     kefir_ishexdigit32(hex4) && kefir_ishexdigit32(hex5) && kefir_ishexdigit32(hex6) &&
                     kefir_ishexdigit32(hex7) && kefir_ishexdigit32(hex8),
-                KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match universal character"));
+                KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &cursor->location, "Incomplete universal character"));
         *target = kefir_hex32todec(hex8) | (kefir_hex32todec(hex7) << 4) | (kefir_hex32todec(hex6) << 8) |
                   (kefir_hex32todec(hex5) << 12) | (kefir_hex32todec(hex4) << 16) | (kefir_hex32todec(hex3) << 20) |
                   (kefir_hex32todec(hex2) << 24) | (kefir_hex32todec(hex1) << 28);
@@ -139,7 +139,7 @@ static kefir_result_t next_hexadecimal_escape_sequence(struct kefir_lexer_source
     REQUIRE_OK(kefir_lexer_source_cursor_next(cursor, 2));
     kefir_char32_t chr = kefir_lexer_source_cursor_at(cursor, 0);
     REQUIRE(kefir_ishexdigit32(chr),
-            KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, NULL, "Unable to match hexadecimal escape sequence"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &cursor->location, "Expected hexadecimal digit"));
     *target = 0;
     for (; kefir_ishexdigit32(chr);
          kefir_lexer_source_cursor_next(cursor, 1), chr = kefir_lexer_source_cursor_at(cursor, 0)) {

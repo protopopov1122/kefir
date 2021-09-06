@@ -21,6 +21,7 @@
 #include "kefir/parser/lexer.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/core/source_error.h"
 
 kefir_result_t kefir_lexer_init(struct kefir_mem *mem, struct kefir_lexer *lexer, struct kefir_symbol_table *symbols,
                                 struct kefir_lexer_source_cursor *cursor,
@@ -88,7 +89,13 @@ kefir_result_t lexer_next_impl(struct kefir_mem *mem, struct kefir_lexer *lexer,
         if (res == KEFIR_NO_MATCH) {
             res = kefir_lexer_match_punctuator(mem, lexer, token);
         }
-        REQUIRE_OK(res);
+
+        if (res == KEFIR_NO_MATCH) {
+            return KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &source_location,
+                                          "Expected constant, string literal, identifier, keyword or punctuator");
+        } else {
+            REQUIRE_OK(res);
+        }
     }
     token->source_location = source_location;
     return KEFIR_OK;

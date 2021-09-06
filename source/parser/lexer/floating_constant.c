@@ -73,6 +73,7 @@ static kefir_result_t match_exponent(struct kefir_lexer *lexer, kefir_int64_t *e
         REQUIRE_OK(kefir_lexer_source_cursor_next(lexer->cursor, 1));
     }
 
+    struct kefir_source_location exponent_location = lexer->cursor->location;
     kefir_size_t exponent_digits = 0;
     *exponent = 0;
     for (chr = kefir_lexer_source_cursor_at(lexer->cursor, 0); kefir_isdigit32(chr);
@@ -81,8 +82,8 @@ static kefir_result_t match_exponent(struct kefir_lexer *lexer, kefir_int64_t *e
         *exponent += chr - U'0';
         exponent_digits++;
     }
-    REQUIRE(exponent_digits > 0,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, NULL, "Unable to match floating constant exponent"));
+    REQUIRE(exponent_digits > 0, KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &exponent_location,
+                                                        "Expected one or more floating point exponent digits"));
     *exponent *= sign;
     return KEFIR_OK;
 }
@@ -168,13 +169,14 @@ static kefir_result_t match_hexadecimal_exponent(struct kefir_lexer *lexer) {
         REQUIRE_OK(kefir_lexer_source_cursor_next(lexer->cursor, 1));
     }
 
+    struct kefir_source_location exponent_location = lexer->cursor->location;
     kefir_size_t exponent_digits = 0;
     for (chr = kefir_lexer_source_cursor_at(lexer->cursor, 0); kefir_isdigit32(chr);
          kefir_lexer_source_cursor_next(lexer->cursor, 1), chr = kefir_lexer_source_cursor_at(lexer->cursor, 0)) {
         exponent_digits++;
     }
-    REQUIRE(exponent_digits > 0,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, NULL, "Unable to match hexadecimal floating constant exponent"));
+    REQUIRE(exponent_digits > 0, KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &exponent_location,
+                                                        "Expected one or more floating point exponent digits"));
     return KEFIR_OK;
 }
 

@@ -54,6 +54,7 @@ static kefir_result_t match_impl(struct kefir_mem *mem, struct kefir_lexer *lexe
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct kefir_token *, token, payload);
 
+    struct kefir_source_location identifier_location = lexer->cursor->location;
     kefir_char32_t identifier[MAX_IDENTIFIER_LENGTH + 1] = {U'\0'};
     REQUIRE_OK(scan_identifier_nondigit(lexer->cursor, &identifier[0]));
 
@@ -66,8 +67,8 @@ static kefir_result_t match_impl(struct kefir_mem *mem, struct kefir_lexer *lexe
             scan_identifier = false;
         } else {
             REQUIRE_OK(res);
-            REQUIRE(length < MAX_IDENTIFIER_LENGTH,
-                    KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, NULL, "Identifier exceeds maximum length"));
+            REQUIRE(length < MAX_IDENTIFIER_LENGTH, KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &identifier_location,
+                                                                           "Identifier exceeds maximum length"));
             identifier[length++] = chr;
         }
     }
