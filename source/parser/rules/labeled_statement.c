@@ -36,19 +36,27 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
         REQUIRE_OK(kefir_parser_ast_builder_labeled_statement(mem, builder, identifier));
     } else if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_CASE)) {
         REQUIRE_OK(PARSER_SHIFT(parser));
-        REQUIRE_OK(
-            kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, constant_expression), NULL));
+        kefir_result_t res;
+        REQUIRE_MATCH_OK(
+            &res, kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, constant_expression), NULL),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
+                                   "Expected constant expression"));
         REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COLON),
-                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected colon"));
+                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected colon"));
         REQUIRE_OK(PARSER_SHIFT(parser));
-        REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, statement), NULL));
+        REQUIRE_MATCH_OK(
+            &res, kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, statement), NULL),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected statement"));
         REQUIRE_OK(kefir_parser_ast_builder_case_statement(mem, builder));
     } else if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_DEFAULT)) {
         REQUIRE_OK(PARSER_SHIFT(parser));
         REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COLON),
-                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected colon"));
+                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected colon"));
         REQUIRE_OK(PARSER_SHIFT(parser));
-        REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, statement), NULL));
+        kefir_result_t res;
+        REQUIRE_MATCH_OK(
+            &res, kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, statement), NULL),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected statement"));
         REQUIRE_OK(kefir_parser_ast_builder_default_statement(mem, builder));
     } else {
         return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match labeled statement");

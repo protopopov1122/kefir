@@ -32,18 +32,23 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
             KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Cannot match static assertion"));
     REQUIRE_OK(PARSER_SHIFT(parser));
     REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_PARENTHESE),
-            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected left parenthese"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected left parenthese"));
     REQUIRE_OK(PARSER_SHIFT(parser));
-    REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, constant_expression), NULL));
+    kefir_result_t res;
+    REQUIRE_MATCH_OK(
+        &res, kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, constant_expression), NULL),
+        KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected constant expression"));
     REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COMMA),
-            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected comma"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected comma"));
     REQUIRE_OK(PARSER_SHIFT(parser));
-    REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, string_literal), NULL));
+    REQUIRE_MATCH_OK(
+        &res, kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, string_literal), NULL),
+        KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected string literal"));
     REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_PARENTHESE),
-            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected right parenthese"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected right parenthese"));
     REQUIRE_OK(PARSER_SHIFT(parser));
     REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_SEMICOLON),
-            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, NULL, "Expected semicolon"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected semicolon"));
     REQUIRE_OK(PARSER_SHIFT(parser));
     REQUIRE_OK(kefir_parser_ast_builder_static_assertion(mem, builder));
     return KEFIR_OK;
