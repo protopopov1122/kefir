@@ -40,7 +40,13 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
         if (res == KEFIR_NO_MATCH) {
             res = kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, statement), NULL);
         }
-        REQUIRE_OK(res);
+
+        if (res == KEFIR_NO_MATCH) {
+            return KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
+                                          "Expected either declaration or statement");
+        } else {
+            REQUIRE_OK(res);
+        }
         REQUIRE_OK(kefir_parser_ast_builder_compound_statement_append(mem, builder));
     }
 

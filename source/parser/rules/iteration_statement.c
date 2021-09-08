@@ -35,7 +35,9 @@ static kefir_result_t scan_while(struct kefir_mem *mem, struct kefir_parser_ast_
     REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_PARENTHESE),
             KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected right parenthese"));
     REQUIRE_OK(PARSER_SHIFT(parser));
-    REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, statement), NULL));
+    REQUIRE_MATCH_OK(
+        &res, kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, statement), NULL),
+        KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected statement"));
     REQUIRE_OK(kefir_parser_ast_builder_while_statement(mem, builder));
     return KEFIR_OK;
 }
@@ -43,14 +45,16 @@ static kefir_result_t scan_while(struct kefir_mem *mem, struct kefir_parser_ast_
 static kefir_result_t scan_do_while(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder) {
     struct kefir_parser *parser = builder->parser;
     REQUIRE_OK(PARSER_SHIFT(parser));
-    REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, statement), NULL));
+    kefir_result_t res;
+    REQUIRE_MATCH_OK(
+        &res, kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, statement), NULL),
+        KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected statement"));
     REQUIRE(PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_WHILE),
             KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected while keyword"));
     REQUIRE_OK(PARSER_SHIFT(parser));
     REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_PARENTHESE),
             KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected left parenthese"));
     REQUIRE_OK(PARSER_SHIFT(parser));
-    kefir_result_t res;
     REQUIRE_MATCH_OK(
         &res, kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, expression), NULL),
         KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected expression"));
@@ -112,7 +116,9 @@ static kefir_result_t scan_for(struct kefir_mem *mem, struct kefir_parser_ast_bu
             KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected right parenthese"));
     REQUIRE_OK(PARSER_SHIFT(parser));
 
-    REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, statement), NULL));
+    REQUIRE_MATCH_OK(
+        &res, kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, statement), NULL),
+        KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected statement"));
     REQUIRE_OK(kefir_parser_ast_builder_for_statement(mem, builder, clauses[0], clauses[1], clauses[2]));
     return KEFIR_OK;
 }

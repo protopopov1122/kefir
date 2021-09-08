@@ -20,8 +20,9 @@
 
 #include "kefir/parser/rule_helpers.h"
 #include "kefir/parser/builder.h"
+#include "kefir/core/source_error.h"
 
-#define LOGICAL_RULE(_id, _expr, _punctuator, _oper)                                                                 \
+#define LOGICAL_RULE(_id, _expr, _punctuator, _oper, _err)                                                           \
     static kefir_result_t _id##_builder_callback(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder,    \
                                                  void *payload) {                                                    \
         UNUSED(payload);                                                                                             \
@@ -32,7 +33,10 @@
         REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, _expr), NULL));          \
         while (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, (_punctuator))) {                                               \
             REQUIRE_OK(PARSER_SHIFT(parser));                                                                        \
-            REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, _expr), NULL));      \
+            kefir_result_t res;                                                                                      \
+            REQUIRE_MATCH_OK(&res,                                                                                   \
+                             kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, _expr), NULL), \
+                             KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), (_err)));  \
             REQUIRE_OK(kefir_parser_ast_builder_binary_operation(mem, builder, (_oper)));                            \
         }                                                                                                            \
         return KEFIR_OK;                                                                                             \
@@ -45,5 +49,7 @@
         return KEFIR_OK;                                                                                             \
     }
 
-LOGICAL_RULE(and, bitwise_or_expression, KEFIR_PUNCTUATOR_DOUBLE_AMPERSAND, KEFIR_AST_OPERATION_LOGICAL_AND)
-LOGICAL_RULE(or, logical_and_expression, KEFIR_PUNCTUATOR_DOUBLE_VBAR, KEFIR_AST_OPERATION_LOGICAL_OR)
+LOGICAL_RULE(and, bitwise_or_expression, KEFIR_PUNCTUATOR_DOUBLE_AMPERSAND, KEFIR_AST_OPERATION_LOGICAL_AND,
+             "Expected bitwise-or expression")
+LOGICAL_RULE(or, logical_and_expression, KEFIR_PUNCTUATOR_DOUBLE_VBAR, KEFIR_AST_OPERATION_LOGICAL_OR,
+             "Expected logical-and expression")

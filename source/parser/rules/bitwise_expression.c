@@ -20,8 +20,9 @@
 
 #include "kefir/parser/rule_helpers.h"
 #include "kefir/parser/builder.h"
+#include "kefir/core/source_error.h"
 
-#define BITWISE_RULE(_id, _expr, _punctuator, _oper)                                                                 \
+#define BITWISE_RULE(_id, _expr, _punctuator, _oper, _err)                                                           \
     static kefir_result_t _id##_builder_callback(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder,    \
                                                  void *payload) {                                                    \
         UNUSED(payload);                                                                                             \
@@ -32,7 +33,10 @@
         REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, _expr), NULL));          \
         while (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, (_punctuator))) {                                               \
             REQUIRE_OK(PARSER_SHIFT(parser));                                                                        \
-            REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, _expr), NULL));      \
+            kefir_result_t res;                                                                                      \
+            REQUIRE_MATCH_OK(&res,                                                                                   \
+                             kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, _expr), NULL), \
+                             KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), (_err)));  \
             REQUIRE_OK(kefir_parser_ast_builder_binary_operation(mem, builder, (_oper)));                            \
         }                                                                                                            \
         return KEFIR_OK;                                                                                             \
@@ -45,6 +49,9 @@
         return KEFIR_OK;                                                                                             \
     }
 
-BITWISE_RULE(and, equality_expression, KEFIR_PUNCTUATOR_AMPERSAND, KEFIR_AST_OPERATION_BITWISE_AND)
-BITWISE_RULE(xor, bitwise_and_expression, KEFIR_PUNCTUATOR_CARET, KEFIR_AST_OPERATION_BITWISE_XOR)
-BITWISE_RULE(or, bitwise_xor_expression, KEFIR_PUNCTUATOR_VBAR, KEFIR_AST_OPERATION_BITWISE_OR)
+BITWISE_RULE(and, equality_expression, KEFIR_PUNCTUATOR_AMPERSAND, KEFIR_AST_OPERATION_BITWISE_AND,
+             "Expected equality expression")
+BITWISE_RULE(xor, bitwise_and_expression, KEFIR_PUNCTUATOR_CARET, KEFIR_AST_OPERATION_BITWISE_XOR,
+             "Expected bitwise-and expression")
+BITWISE_RULE(or, bitwise_xor_expression, KEFIR_PUNCTUATOR_VBAR, KEFIR_AST_OPERATION_BITWISE_OR,
+             "Expected bitwise-xor expression")

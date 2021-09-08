@@ -36,7 +36,10 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
     REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_PARENTHESE),
             KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected left parenthese"));
     REQUIRE_OK(PARSER_SHIFT(parser));
-    REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, assignment_expression), NULL));
+    kefir_result_t res;
+    REQUIRE_MATCH_OK(
+        &res, kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, assignment_expression), NULL),
+        KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected assignment expression"));
     REQUIRE_OK(kefir_parser_ast_builder_generic_selection(mem, builder));
 
     REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COMMA),
@@ -44,7 +47,7 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
     while (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COMMA)) {
         REQUIRE_OK(PARSER_SHIFT(parser));
         kefir_bool_t default_clause = false;
-        kefir_result_t res = kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, type_name), NULL);
+        res = kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, type_name), NULL);
         if (res == KEFIR_NO_MATCH) {
             REQUIRE(PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_DEFAULT),
                     KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
@@ -58,8 +61,11 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
         REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COLON),
                 KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected colon"));
         REQUIRE_OK(PARSER_SHIFT(parser));
-        REQUIRE_OK(
-            kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, assignment_expression), NULL));
+        REQUIRE_MATCH_OK(
+            &res,
+            kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, assignment_expression), NULL),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
+                                   "Expected assignment expression"));
         if (default_clause) {
             REQUIRE_OK(kefir_parser_ast_builder_generic_selection_append_default(mem, builder));
         } else {

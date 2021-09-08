@@ -20,6 +20,7 @@
 
 #include "kefir/parser/rule_helpers.h"
 #include "kefir/parser/builder.h"
+#include "kefir/core/source_error.h"
 
 static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder, void *payload) {
     UNUSED(payload);
@@ -29,21 +30,28 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
 
     REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, cast_expression), NULL));
     kefir_bool_t scan_multiplicative = true;
+    kefir_result_t res;
     do {
         if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_STAR)) {
             REQUIRE_OK(PARSER_SHIFT(parser));
-            REQUIRE_OK(
-                kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, cast_expression), NULL));
+            REQUIRE_MATCH_OK(
+                &res, kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, cast_expression), NULL),
+                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
+                                       "Expected cast expression"));
             REQUIRE_OK(kefir_parser_ast_builder_binary_operation(mem, builder, KEFIR_AST_OPERATION_MULTIPLY));
         } else if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_SLASH)) {
             REQUIRE_OK(PARSER_SHIFT(parser));
-            REQUIRE_OK(
-                kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, cast_expression), NULL));
+            REQUIRE_MATCH_OK(
+                &res, kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, cast_expression), NULL),
+                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
+                                       "Expected cast expression"));
             REQUIRE_OK(kefir_parser_ast_builder_binary_operation(mem, builder, KEFIR_AST_OPERATION_DIVIDE));
         } else if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_PERCENT)) {
             REQUIRE_OK(PARSER_SHIFT(parser));
-            REQUIRE_OK(
-                kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, cast_expression), NULL));
+            REQUIRE_MATCH_OK(
+                &res, kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, cast_expression), NULL),
+                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
+                                       "Expected cast expression"));
             REQUIRE_OK(kefir_parser_ast_builder_binary_operation(mem, builder, KEFIR_AST_OPERATION_MODULO));
         } else {
             scan_multiplicative = false;

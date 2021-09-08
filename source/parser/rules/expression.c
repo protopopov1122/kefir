@@ -22,6 +22,7 @@
 #include "kefir/parser/builder.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/core/source_error.h"
 
 static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder, void *payload) {
     UNUSED(payload);
@@ -32,8 +33,12 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
     REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, assignment_expression), NULL));
     while (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COMMA)) {
         REQUIRE_OK(PARSER_SHIFT(parser));
-        REQUIRE_OK(
-            kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, assignment_expression), NULL));
+        kefir_result_t res;
+        REQUIRE_MATCH_OK(
+            &res,
+            kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, assignment_expression), NULL),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
+                                   "Expected assignment expression"));
         REQUIRE_OK(kefir_parser_ast_builder_comma_operator(mem, builder));
     }
 

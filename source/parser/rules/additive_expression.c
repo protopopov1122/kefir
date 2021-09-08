@@ -20,6 +20,7 @@
 
 #include "kefir/parser/rule_helpers.h"
 #include "kefir/parser/builder.h"
+#include "kefir/core/source_error.h"
 
 static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder, void *payload) {
     UNUSED(payload);
@@ -31,15 +32,22 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
         kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, multiplicative_expression), NULL));
     kefir_bool_t scan_additive = true;
     do {
+        kefir_result_t res;
         if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_PLUS)) {
             REQUIRE_OK(PARSER_SHIFT(parser));
-            REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder,
-                                                     KEFIR_PARSER_RULE_FN(parser, multiplicative_expression), NULL));
+            REQUIRE_MATCH_OK(&res,
+                             kefir_parser_ast_builder_scan(
+                                 mem, builder, KEFIR_PARSER_RULE_FN(parser, multiplicative_expression), NULL),
+                             KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
+                                                    "Expected multiplicative expression"));
             REQUIRE_OK(kefir_parser_ast_builder_binary_operation(mem, builder, KEFIR_AST_OPERATION_ADD));
         } else if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_MINUS)) {
             REQUIRE_OK(PARSER_SHIFT(parser));
-            REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder,
-                                                     KEFIR_PARSER_RULE_FN(parser, multiplicative_expression), NULL));
+            REQUIRE_MATCH_OK(&res,
+                             kefir_parser_ast_builder_scan(
+                                 mem, builder, KEFIR_PARSER_RULE_FN(parser, multiplicative_expression), NULL),
+                             KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
+                                                    "Expected multiplicative expression"));
             REQUIRE_OK(kefir_parser_ast_builder_binary_operation(mem, builder, KEFIR_AST_OPERATION_SUBTRACT));
         } else {
             scan_additive = false;

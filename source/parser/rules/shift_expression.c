@@ -20,6 +20,7 @@
 
 #include "kefir/parser/rule_helpers.h"
 #include "kefir/parser/builder.h"
+#include "kefir/core/source_error.h"
 
 static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder, void *payload) {
     UNUSED(payload);
@@ -29,16 +30,23 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
 
     REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, additive_expression), NULL));
     kefir_bool_t scan_additive = true;
+    kefir_result_t res;
     do {
         if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_SHIFT)) {
             REQUIRE_OK(PARSER_SHIFT(parser));
-            REQUIRE_OK(
-                kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, additive_expression), NULL));
+            REQUIRE_MATCH_OK(
+                &res,
+                kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, additive_expression), NULL),
+                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
+                                       "Expected additive expression"));
             REQUIRE_OK(kefir_parser_ast_builder_binary_operation(mem, builder, KEFIR_AST_OPERATION_SHIFT_LEFT));
         } else if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_SHIFT)) {
             REQUIRE_OK(PARSER_SHIFT(parser));
-            REQUIRE_OK(
-                kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, additive_expression), NULL));
+            REQUIRE_MATCH_OK(
+                &res,
+                kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, additive_expression), NULL),
+                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
+                                       "Expected additive expression"));
             REQUIRE_OK(kefir_parser_ast_builder_binary_operation(mem, builder, KEFIR_AST_OPERATION_SHIFT_RIGHT));
         } else {
             scan_additive = false;

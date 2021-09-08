@@ -28,15 +28,17 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser AST builder"));
     struct kefir_parser *parser = builder->parser;
 
+    kefir_result_t res;
     if (PARSER_TOKEN_IS_IDENTIFIER(parser, 0) && PARSER_TOKEN_IS_PUNCTUATOR(parser, 1, KEFIR_PUNCTUATOR_COLON)) {
         const char *identifier = kefir_parser_token_cursor_at(parser->cursor, 0)->identifier;
         REQUIRE_OK(PARSER_SHIFT(parser));
         REQUIRE_OK(PARSER_SHIFT(parser));
-        REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, statement), NULL));
+        REQUIRE_MATCH_OK(
+            &res, kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, statement), NULL),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected statement"));
         REQUIRE_OK(kefir_parser_ast_builder_labeled_statement(mem, builder, identifier));
     } else if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_CASE)) {
         REQUIRE_OK(PARSER_SHIFT(parser));
-        kefir_result_t res;
         REQUIRE_MATCH_OK(
             &res, kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, constant_expression), NULL),
             KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
