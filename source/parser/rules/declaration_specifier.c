@@ -253,7 +253,10 @@ static kefir_result_t scan_enum_field_declaration(struct kefir_mem *mem, struct 
     struct kefir_ast_node_base *value = NULL;
     if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_ASSIGN)) {
         REQUIRE_OK(PARSER_SHIFT(parser));
-        REQUIRE_OK(KEFIR_PARSER_RULE_APPLY(mem, parser, constant_expression, &value));
+        kefir_result_t res;
+        REQUIRE_MATCH_OK(&res, KEFIR_PARSER_RULE_APPLY(mem, parser, constant_expression, &value),
+                         KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
+                                                "Expected constant expression"));
     }
 
     kefir_result_t res = kefir_ast_enum_specifier_append(mem, specifier, parser->symbols, identifier, value);
@@ -394,7 +397,10 @@ static kefir_result_t scan_type_specifier(struct kefir_mem *mem, struct kefir_pa
         REQUIRE_OK(PARSER_SHIFT(parser));
         REQUIRE_OK(PARSER_SHIFT(parser));
         struct kefir_ast_node_base *type_name = NULL;
-        REQUIRE_OK(KEFIR_PARSER_RULE_APPLY(mem, parser, type_name, &type_name));
+        kefir_result_t res;
+        REQUIRE_MATCH_OK(
+            &res, KEFIR_PARSER_RULE_APPLY(mem, parser, type_name, &type_name),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected type name"));
         specifier = kefir_ast_type_specifier_atomic(mem, type_name);
         REQUIRE_ELSE(specifier != NULL, {
             KEFIR_AST_NODE_FREE(mem, type_name);
@@ -514,7 +520,13 @@ static kefir_result_t scan_alignment_specifier(struct kefir_mem *mem, struct kef
     if (res == KEFIR_NO_MATCH) {
         res = KEFIR_PARSER_RULE_APPLY(mem, parser, type_name, &alignment);
     }
-    REQUIRE_OK(res);
+
+    if (res == KEFIR_NO_MATCH) {
+        return KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
+                                      "Expected either constant expression, or type name");
+    } else {
+        REQUIRE_OK(res);
+    }
     REQUIRE_ELSE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_PARENTHESE), {
         KEFIR_AST_NODE_FREE(mem, alignment);
         return KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),

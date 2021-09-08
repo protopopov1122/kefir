@@ -322,9 +322,12 @@ static kefir_result_t scan_function_identifier_list(struct kefir_mem *mem, struc
     kefir_bool_t scan_parameters = PARSER_TOKEN_IS_IDENTIFIER(parser, 0);
     while (scan_parameters) {
         struct kefir_ast_node_base *param = NULL;
-        REQUIRE_OK(KEFIR_PARSER_RULE_APPLY(mem, parser, identifier, &param));
-        kefir_result_t res = kefir_list_insert_after(mem, &declarator->function.parameters,
-                                                     kefir_list_tail(&declarator->function.parameters), param);
+        kefir_result_t res;
+        REQUIRE_MATCH_OK(&res, KEFIR_PARSER_RULE_APPLY(mem, parser, identifier, &param),
+                         KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
+                                                "Expected function parameter identifier"));
+        res = kefir_list_insert_after(mem, &declarator->function.parameters,
+                                      kefir_list_tail(&declarator->function.parameters), param);
         REQUIRE_ELSE(res == KEFIR_OK, {
             KEFIR_AST_NODE_FREE(mem, param);
             return res;
@@ -358,9 +361,15 @@ static kefir_result_t scan_function_impl(struct kefir_mem *mem, struct kefir_par
             res = scan_function_identifier_list(mem, parser, declarator);
         }
     }
-    REQUIRE_OK(res);
+
+    if (res == KEFIR_NO_MATCH) {
+        return KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
+                                      "Expected function parameter list");
+    } else {
+        REQUIRE_OK(res);
+    }
     REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_PARENTHESE),
-            KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Expected right parenthese"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected right parenthese"));
     REQUIRE_OK(PARSER_SHIFT(parser));
     return KEFIR_OK;
 }

@@ -5,12 +5,15 @@ static kefir_result_t scan_index(struct kefir_mem *mem, struct kefir_parser *par
                                  struct kefir_ast_initializer_designation **designation) {
     REQUIRE_OK(PARSER_SHIFT(parser));
     struct kefir_ast_node_base *index = NULL;
-    REQUIRE_OK(KEFIR_PARSER_RULE_APPLY(mem, parser, constant_expression, &index));
+    kefir_result_t res;
+    REQUIRE_MATCH_OK(
+        &res, KEFIR_PARSER_RULE_APPLY(mem, parser, constant_expression, &index),
+        KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected constant expression"));
     REQUIRE_ELSE(PARSER_TOKEN_IS_RIGHT_BRACKET(parser, 0), {
         KEFIR_AST_NODE_FREE(mem, index);
         return KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected right bracket");
     });
-    kefir_result_t res = PARSER_SHIFT(parser);
+    res = PARSER_SHIFT(parser);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_AST_NODE_FREE(mem, index);
         return res;
