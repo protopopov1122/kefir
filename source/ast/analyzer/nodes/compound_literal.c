@@ -38,7 +38,7 @@ kefir_result_t kefir_ast_analyze_compound_literal_node(struct kefir_mem *mem, co
     REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(unqualified_type) ||
                 (unqualified_type->tag == KEFIR_AST_TYPE_ARRAY &&
                  unqualified_type->array_type.boundary == KEFIR_AST_ARRAY_UNBOUNDED),
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->type_name->base.source_location,
                                    "Compound literal type shall be complete object or array of unknown length"));
     struct kefir_ast_initializer_properties initializer_properties;
     REQUIRE_OK(kefir_ast_analyze_initializer(mem, context, node->type_name->base.properties.type, node->initializer,

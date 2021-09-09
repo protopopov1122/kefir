@@ -49,11 +49,18 @@ kefir_result_t kefir_ast_analyze_case_statement_node(struct kefir_mem *mem, cons
     base->properties.category = KEFIR_AST_NODE_CATEGORY_STATEMENT;
 
     REQUIRE(context->flow_control_tree != NULL,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Unable to use switch statement in current context"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
+                                   "Unable to use case statement in current context"));
 
     struct kefir_ast_flow_control_statement *switch_statement = NULL;
-    REQUIRE_OK(kefir_ast_flow_control_tree_traverse(context->flow_control_tree, match_switch_statement, NULL,
-                                                    &switch_statement));
+    kefir_result_t res = kefir_ast_flow_control_tree_traverse(context->flow_control_tree, match_switch_statement, NULL,
+                                                              &switch_statement);
+    if (res == KEFIR_NOT_FOUND) {
+        return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
+                                      "Cannot use case statement outside of switch");
+    } else {
+        REQUIRE_OK(res);
+    }
     base->properties.statement_props.flow_control_statement = switch_statement;
 
     if (node->expression != NULL) {
@@ -61,22 +68,26 @@ kefir_result_t kefir_ast_analyze_case_statement_node(struct kefir_mem *mem, cons
         struct kefir_ast_constant_expression_value value;
         REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->expression, &value));
         REQUIRE(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->expression->source_location,
                                        "Expected AST case label to be an integral constant expression"));
         struct kefir_ast_flow_control_point *point = kefir_ast_flow_control_point_alloc(mem);
         REQUIRE(point != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST flow control point"));
         kefir_result_t res =
             kefir_hashtree_insert(mem, &switch_statement->value.switchStatement.cases,
                                   (kefir_hashtree_key_t) value.integer, (kefir_hashtree_value_t) point);
+        if (res == KEFIR_ALREADY_EXISTS) {
+            res = KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->expression->source_location,
+                                         "Cannot duplicate case statement constants");
+        }
         REQUIRE_ELSE(res == KEFIR_OK, {
             kefir_ast_flow_control_point_free(mem, point);
             return res;
         });
         base->properties.statement_props.flow_control_point = point;
     } else {
-        REQUIRE(
-            switch_statement->value.switchStatement.defaultCase == NULL,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Switch statement cannot have multiple default labels"));
+        REQUIRE(switch_statement->value.switchStatement.defaultCase == NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
+                                       "Switch statement cannot have multiple default labels"));
         switch_statement->value.switchStatement.defaultCase = kefir_ast_flow_control_point_alloc(mem);
         REQUIRE(switch_statement->value.switchStatement.defaultCase != NULL,
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST flow control point"));
@@ -85,7 +96,7 @@ kefir_result_t kefir_ast_analyze_case_statement_node(struct kefir_mem *mem, cons
 
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->statement));
     REQUIRE(node->statement->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->statement->source_location,
                                    "Expected AST statement node to be associated with the case"));
     return KEFIR_OK;
 }

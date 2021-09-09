@@ -39,7 +39,7 @@ kefir_result_t kefir_ast_analyze_labeled_statement_node(struct kefir_mem *mem, c
     base->properties.category = KEFIR_AST_NODE_CATEGORY_STATEMENT;
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->statement));
     REQUIRE(node->statement->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->statement->source_location,
                                    "Expected AST statement node to be associated with the label"));
 
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;

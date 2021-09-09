@@ -37,9 +37,11 @@ kefir_result_t kefir_ast_analyze_array_subscript_node(struct kefir_mem *mem, con
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->subscript));
 
     REQUIRE(node->array->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Both array subscript operands shall be expressions"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->array->source_location,
+                                   "Both array subscript operands shall be expressions"));
     REQUIRE(node->subscript->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Both array subscript operands shall be expressions"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->subscript->source_location,
+                                   "Both array subscript operands shall be expressions"));
 
     const struct kefir_ast_type *array_type =
         KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->array->properties.type);
@@ -47,16 +49,17 @@ kefir_result_t kefir_ast_analyze_array_subscript_node(struct kefir_mem *mem, con
         KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->subscript->properties.type);
     const struct kefir_ast_type *type = NULL;
     if (array_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
-        REQUIRE(
-            KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(subcript_type),
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected one of expressions to have integral type"));
+        REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(subcript_type),
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->subscript->source_location,
+                                       "Expected one of subscript operands to have integral type"));
         type = array_type->referenced_type;
     } else {
         REQUIRE(subcript_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected one of expressions to have pointer type"));
-        REQUIRE(
-            KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(array_type),
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected one of expressions to have integral type"));
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->subscript->source_location,
+                                       "Expected one of subscript operands to have pointer type"));
+        REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(array_type),
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->array->source_location,
+                                       "Expected one of subscript operands to have integral type"));
         type = subcript_type->referenced_type;
     }
     REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));

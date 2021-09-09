@@ -47,7 +47,7 @@ kefir_result_t kefir_ast_analyze_translation_unit_node(struct kefir_mem *mem, co
                     entry->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR ||
                     entry->properties.category == KEFIR_AST_NODE_CATEGORY_FUNCTION_DEFINITION,
                 KEFIR_SET_SOURCE_ERROR(
-                    KEFIR_ANALYSIS_ERROR, NULL,
+                    KEFIR_ANALYSIS_ERROR, &entry->source_location,
                     "AST Translation unit must contain exclusively declarations and function definitions"));
     }
 

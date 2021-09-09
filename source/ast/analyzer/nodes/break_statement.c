@@ -61,11 +61,18 @@ kefir_result_t kefir_ast_analyze_break_statement_node(struct kefir_mem *mem, con
     base->properties.category = KEFIR_AST_NODE_CATEGORY_STATEMENT;
 
     REQUIRE(context->flow_control_tree != NULL,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Continue statement is not allowed in current context"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
+                                   "Break statement is not allowed in current context"));
 
     struct kefir_ast_flow_control_statement *flow_control_stmt = NULL;
-    REQUIRE_OK(kefir_ast_flow_control_tree_traverse(context->flow_control_tree, resolve_loop_switch, NULL,
-                                                    &flow_control_stmt));
+    kefir_result_t res =
+        kefir_ast_flow_control_tree_traverse(context->flow_control_tree, resolve_loop_switch, NULL, &flow_control_stmt);
+    if (res == KEFIR_NOT_FOUND) {
+        return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
+                                      "Break statement is not allowed outside of while/do/for/switch statements");
+    } else {
+        REQUIRE_OK(res);
+    }
     if (flow_control_stmt->type == KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH) {
         base->properties.statement_props.flow_control_point = flow_control_stmt->value.switchStatement.end;
     } else {

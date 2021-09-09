@@ -56,7 +56,7 @@ kefir_result_t kefir_ast_analyze_generic_selection_node(struct kefir_mem *mem, c
     }
 
     REQUIRE(matched,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
                                    "Expected at least one of associations in generic selection to be compatible"
                                    " with control expression type"));
     return KEFIR_OK;

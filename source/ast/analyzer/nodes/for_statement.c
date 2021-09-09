@@ -39,7 +39,8 @@ kefir_result_t kefir_ast_analyze_for_statement_node(struct kefir_mem *mem, const
     base->properties.category = KEFIR_AST_NODE_CATEGORY_STATEMENT;
 
     REQUIRE(context->flow_control_tree != NULL,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Unable to use for statement in current context"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
+                                   "Unable to use for statement in current context"));
     REQUIRE_OK(kefir_ast_flow_control_tree_push(mem, context->flow_control_tree, KEFIR_AST_FLOW_CONTROL_STATEMENT_FOR,
                                                 &base->properties.statement_props.flow_control_statement));
 
@@ -66,7 +67,7 @@ kefir_result_t kefir_ast_analyze_for_statement_node(struct kefir_mem *mem, const
                         init_declarator->properties.declaration_props.storage ==
                             KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER,
                     KEFIR_SET_SOURCE_ERROR(
-                        KEFIR_ANALYSIS_ERROR, NULL,
+                        KEFIR_ANALYSIS_ERROR, &node->init->source_location,
                         "Expected the first clause of for statement to declare only auto or register identifiers"));
             }
         } else if (node->init->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR &&
@@ -75,7 +76,7 @@ kefir_result_t kefir_ast_analyze_for_statement_node(struct kefir_mem *mem, const
         } else {
             REQUIRE(node->init->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
                     KEFIR_SET_SOURCE_ERROR(
-                        KEFIR_ANALYSIS_ERROR, NULL,
+                        KEFIR_ANALYSIS_ERROR, &node->init->source_location,
                         "Expected the first clause of for statement to be either declaration or expression"));
         }
     }
@@ -83,25 +84,26 @@ kefir_result_t kefir_ast_analyze_for_statement_node(struct kefir_mem *mem, const
     if (node->controlling_expr != NULL) {
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->controlling_expr));
         REQUIRE(node->controlling_expr->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->controlling_expr->source_location,
                                        "Expected the second clause of for statement to be an expression"));
         const struct kefir_ast_type *condition_type =
             KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->controlling_expr->properties.type);
         REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(condition_type),
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                       "Expected while statement condition to be scalar expression"));
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->controlling_expr->source_location,
+                                       "Expected for statement condition to be scalar expression"));
     }
 
     if (node->tail != NULL) {
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->tail));
         REQUIRE(node->tail->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->tail->source_location,
                                        "Expected the third clause of for statement to be an expression"));
     }
 
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->body));
     REQUIRE(node->body->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected for statement body to be a statement"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->body->source_location,
+                                   "Expected for statement body to be a statement"));
 
     REQUIRE_OK(context->pop_block(mem, context));
     REQUIRE_OK(kefir_ast_flow_control_tree_pop(context->flow_control_tree));

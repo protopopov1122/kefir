@@ -40,15 +40,16 @@ kefir_result_t kefir_ast_analyze_switch_statement_node(struct kefir_mem *mem, co
     base->properties.category = KEFIR_AST_NODE_CATEGORY_STATEMENT;
 
     REQUIRE(context->flow_control_tree != NULL,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Unable to use switch statement in current context"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
+                                   "Unable to use switch statement in current context"));
     REQUIRE_OK(context->push_block(mem, context));
 
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->expression));
     REQUIRE(node->expression->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->expression->source_location,
                                    "Expected switch controlling expression to be an integral expression"));
     REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(node->expression->properties.type),
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->expression->source_location,
                                    "Expected switch controlling expression to be an integral expression"));
     const struct kefir_ast_type *controlling_expr_type =
         kefir_ast_type_int_promotion(context->type_traits, node->expression->properties.type);
@@ -68,7 +69,8 @@ kefir_result_t kefir_ast_analyze_switch_statement_node(struct kefir_mem *mem, co
 
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->statement));
     REQUIRE(node->statement->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected switch body to be a statement"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->statement->source_location,
+                                   "Expected switch body to be a statement"));
 
     REQUIRE_OK(kefir_ast_flow_control_tree_pop(context->flow_control_tree));
     REQUIRE_OK(context->pop_block(mem, context));
