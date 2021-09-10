@@ -133,6 +133,15 @@ kefir_result_t kefir_ast_declarator_specifier_list_move_all(struct kefir_ast_dec
     return KEFIR_OK;
 }
 
+const struct kefir_source_location *kefir_ast_declarator_specifier_list_source_location(
+    const struct kefir_ast_declarator_specifier_list *list) {
+    REQUIRE(list != NULL, NULL);
+    struct kefir_ast_declarator_specifier *specifier = NULL;
+    const struct kefir_list_entry *iter = kefir_ast_declarator_specifier_list_iter(list, &specifier);
+    REQUIRE(iter != NULL && specifier != NULL, NULL);
+    return &specifier->source_location;
+}
+
 static kefir_result_t struct_entry_remove(struct kefir_mem *mem, struct kefir_list *list,
                                           struct kefir_list_entry *entry, void *payload) {
     UNUSED(list);
