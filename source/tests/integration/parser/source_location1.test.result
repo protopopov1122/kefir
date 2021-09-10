@@ -6,11 +6,21 @@
             "specifiers": [
                 {
                     "class": "storage_class",
-                    "storage": "extern"
+                    "storage": "extern",
+                    "source_location": {
+                        "source": "<stdin>",
+                        "line": 1,
+                        "column": 1
+                    }
                 },
                 {
                     "class": "type_specifier",
-                    "specifier": "char"
+                    "specifier": "char",
+                    "source_location": {
+                        "source": "<stdin>",
+                        "line": 1,
+                        "column": 8
+                    }
                 }
             ],
             "init_declarators": [
@@ -51,7 +61,12 @@
             "specifiers": [
                 {
                     "class": "type_specifier",
-                    "specifier": "int"
+                    "specifier": "int",
+                    "source_location": {
+                        "source": "<stdin>",
+                        "line": 3,
+                        "column": 1
+                    }
                 }
             ],
             "declarator": {
@@ -67,7 +82,12 @@
                         "specifiers": [
                             {
                                 "class": "type_specifier",
-                                "specifier": "int"
+                                "specifier": "int",
+                                "source_location": {
+                                    "source": "<stdin>",
+                                    "line": 3,
+                                    "column": 8
+                                }
                             }
                         ],
                         "init_declarators": [
@@ -121,7 +141,12 @@
                                             "class": "type_specifier",
                                             "specifier": "struct",
                                             "identifier": "X",
-                                            "members": null
+                                            "members": null,
+                                            "source_location": {
+                                                "source": "<stdin>",
+                                                "line": 4,
+                                                "column": 23
+                                            }
                                         }
                                     ],
                                     "declarator": {
@@ -169,7 +194,12 @@
             "specifiers": [
                 {
                     "class": "storage_class",
-                    "storage": "typedef"
+                    "storage": "typedef",
+                    "source_location": {
+                        "source": "<stdin>",
+                        "line": 6,
+                        "column": 1
+                    }
                 },
                 {
                     "class": "type_specifier",
@@ -181,7 +211,12 @@
                             "specifiers": [
                                 {
                                     "class": "type_specifier",
-                                    "specifier": "int"
+                                    "specifier": "int",
+                                    "source_location": {
+                                        "source": "<stdin>",
+                                        "line": 7,
+                                        "column": 2
+                                    }
                                 }
                             ],
                             "declarators": [
@@ -199,7 +234,12 @@
                             "specifiers": [
                                 {
                                     "class": "type_specifier",
-                                    "specifier": "long"
+                                    "specifier": "long",
+                                    "source_location": {
+                                        "source": "<stdin>",
+                                        "line": 8,
+                                        "column": 2
+                                    }
                                 }
                             ],
                             "declarators": [
@@ -221,7 +261,12 @@
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    "source_location": {
+                        "source": "<stdin>",
+                        "line": 6,
+                        "column": 9
+                    }
                 }
             ],
             "init_declarators": [

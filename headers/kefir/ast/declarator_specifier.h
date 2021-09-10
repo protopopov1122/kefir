@@ -26,6 +26,7 @@
 #include "kefir/core/list.h"
 #include "kefir/ast/constants.h"
 #include "kefir/ast/base.h"
+#include "kefir/core/source_location.h"
 
 typedef struct kefir_ast_declarator_specifier kefir_ast_declarator_specifier_t;
 typedef struct kefir_ast_declarator kefir_ast_declarator_t;
@@ -141,6 +142,7 @@ typedef struct kefir_ast_declarator_specifier {
         kefir_ast_function_specifier_type_t function_specifier;
         struct kefir_ast_node_base *alignment_specifier;
     };
+    struct kefir_source_location source_location;
 } kefir_ast_declarator_specifier_t;
 
 struct kefir_ast_declarator_specifier *kefir_ast_type_specifier_void(struct kefir_mem *);

@@ -510,6 +510,11 @@ kefir_result_t kefir_ast_enum_specifier_append(struct kefir_mem *mem, struct kef
                                                                                                    \
         specifier->klass = KEFIR_AST_TYPE_SPECIFIER;                                               \
         specifier->type_specifier.specifier = (_spec);                                             \
+        kefir_result_t res = kefir_source_location_empty(&specifier->source_location);             \
+        REQUIRE_ELSE(res == KEFIR_OK, {                                                            \
+            KEFIR_FREE(mem, specifier);                                                            \
+            return NULL;                                                                           \
+        });                                                                                        \
         return specifier;                                                                          \
     }
 
@@ -538,6 +543,11 @@ struct kefir_ast_declarator_specifier *kefir_ast_type_specifier_atomic(struct ke
     specifier->klass = KEFIR_AST_TYPE_SPECIFIER;
     specifier->type_specifier.specifier = KEFIR_AST_TYPE_SPECIFIER_ATOMIC;
     specifier->type_specifier.value.atomic_type = type;
+    kefir_result_t res = kefir_source_location_empty(&specifier->source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, specifier);
+        return NULL;
+    });
     return specifier;
 }
 
@@ -552,6 +562,11 @@ struct kefir_ast_declarator_specifier *kefir_ast_type_specifier_struct(
     specifier->klass = KEFIR_AST_TYPE_SPECIFIER;
     specifier->type_specifier.specifier = KEFIR_AST_TYPE_SPECIFIER_STRUCT;
     specifier->type_specifier.value.structure = structure;
+    kefir_result_t res = kefir_source_location_empty(&specifier->source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, specifier);
+        return NULL;
+    });
     return specifier;
 }
 
@@ -566,6 +581,11 @@ struct kefir_ast_declarator_specifier *kefir_ast_type_specifier_union(struct kef
     specifier->klass = KEFIR_AST_TYPE_SPECIFIER;
     specifier->type_specifier.specifier = KEFIR_AST_TYPE_SPECIFIER_UNION;
     specifier->type_specifier.value.structure = structure;
+    kefir_result_t res = kefir_source_location_empty(&specifier->source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, specifier);
+        return NULL;
+    });
     return specifier;
 }
 
@@ -580,6 +600,11 @@ struct kefir_ast_declarator_specifier *kefir_ast_type_specifier_enum(struct kefi
     specifier->klass = KEFIR_AST_TYPE_SPECIFIER;
     specifier->type_specifier.specifier = KEFIR_AST_TYPE_SPECIFIER_ENUM;
     specifier->type_specifier.value.enumeration = enumeration;
+    kefir_result_t res = kefir_source_location_empty(&specifier->source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, specifier);
+        return NULL;
+    });
     return specifier;
 }
 
@@ -600,6 +625,11 @@ struct kefir_ast_declarator_specifier *kefir_ast_type_specifier_typedef(struct k
     specifier->klass = KEFIR_AST_TYPE_SPECIFIER;
     specifier->type_specifier.specifier = KEFIR_AST_TYPE_SPECIFIER_TYPEDEF;
     specifier->type_specifier.value.type_name = literal;
+    kefir_result_t res = kefir_source_location_empty(&specifier->source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, specifier);
+        return NULL;
+    });
     return specifier;
 }
 
@@ -612,6 +642,11 @@ struct kefir_ast_declarator_specifier *kefir_ast_type_specifier_typedef(struct k
                                                                                                             \
         specifier->klass = KEFIR_AST_STORAGE_CLASS_SPECIFIER;                                               \
         specifier->storage_class = (_spec);                                                                 \
+        kefir_result_t res = kefir_source_location_empty(&specifier->source_location);                      \
+        REQUIRE_ELSE(res == KEFIR_OK, {                                                                     \
+            KEFIR_FREE(mem, specifier);                                                                     \
+            return NULL;                                                                                    \
+        });                                                                                                 \
         return specifier;                                                                                   \
     }
 
@@ -633,6 +668,11 @@ STORAGE_CLASS_SPECIFIER(register, KEFIR_AST_STORAGE_SPECIFIER_REGISTER)
                                                                                                    \
         specifier->klass = KEFIR_AST_TYPE_QUALIFIER;                                               \
         specifier->type_qualifier = (_spec);                                                       \
+        kefir_result_t res = kefir_source_location_empty(&specifier->source_location);             \
+        REQUIRE_ELSE(res == KEFIR_OK, {                                                            \
+            KEFIR_FREE(mem, specifier);                                                            \
+            return NULL;                                                                           \
+        });                                                                                        \
         return specifier;                                                                          \
     }
 
@@ -652,6 +692,11 @@ TYPE_QUALIFIER(atomic, KEFIR_AST_TYPE_QUALIFIER_ATOMIC)
                                                                                                        \
         specifier->klass = KEFIR_AST_FUNCTION_SPECIFIER;                                               \
         specifier->function_specifier = (_spec);                                                       \
+        kefir_result_t res = kefir_source_location_empty(&specifier->source_location);                 \
+        REQUIRE_ELSE(res == KEFIR_OK, {                                                                \
+            KEFIR_FREE(mem, specifier);                                                                \
+            return NULL;                                                                               \
+        });                                                                                            \
         return specifier;                                                                              \
     }
 
@@ -670,6 +715,11 @@ struct kefir_ast_declarator_specifier *kefir_ast_alignment_specifier(struct kefi
 
     specifier->klass = KEFIR_AST_ALIGNMENT_SPECIFIER;
     specifier->alignment_specifier = alignment;
+    kefir_result_t res = kefir_source_location_empty(&specifier->source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, specifier);
+        return NULL;
+    });
     return specifier;
 }
 
@@ -678,127 +728,165 @@ struct kefir_ast_declarator_specifier *kefir_ast_declarator_specifier_clone(
     REQUIRE(mem != NULL, NULL);
     REQUIRE(specifier != NULL, NULL);
 
+    struct kefir_ast_declarator_specifier *clone = NULL;
     switch (specifier->klass) {
         case KEFIR_AST_TYPE_SPECIFIER: {
             switch (specifier->type_specifier.specifier) {
                 case KEFIR_AST_TYPE_SPECIFIER_VOID:
-                    return kefir_ast_type_specifier_void(mem);
+                    clone = kefir_ast_type_specifier_void(mem);
+                    break;
 
                 case KEFIR_AST_TYPE_SPECIFIER_CHAR:
-                    return kefir_ast_type_specifier_char(mem);
+                    clone = kefir_ast_type_specifier_char(mem);
+                    break;
 
                 case KEFIR_AST_TYPE_SPECIFIER_SHORT:
-                    return kefir_ast_type_specifier_short(mem);
+                    clone = kefir_ast_type_specifier_short(mem);
+                    break;
 
                 case KEFIR_AST_TYPE_SPECIFIER_INT:
-                    return kefir_ast_type_specifier_int(mem);
+                    clone = kefir_ast_type_specifier_int(mem);
+                    break;
 
                 case KEFIR_AST_TYPE_SPECIFIER_LONG:
-                    return kefir_ast_type_specifier_long(mem);
+                    clone = kefir_ast_type_specifier_long(mem);
+                    break;
 
                 case KEFIR_AST_TYPE_SPECIFIER_FLOAT:
-                    return kefir_ast_type_specifier_float(mem);
+                    clone = kefir_ast_type_specifier_float(mem);
+                    break;
 
                 case KEFIR_AST_TYPE_SPECIFIER_DOUBLE:
-                    return kefir_ast_type_specifier_double(mem);
+                    clone = kefir_ast_type_specifier_double(mem);
+                    break;
 
                 case KEFIR_AST_TYPE_SPECIFIER_SIGNED:
-                    return kefir_ast_type_specifier_signed(mem);
+                    clone = kefir_ast_type_specifier_signed(mem);
+                    break;
 
                 case KEFIR_AST_TYPE_SPECIFIER_UNSIGNED:
-                    return kefir_ast_type_specifier_unsigned(mem);
+                    clone = kefir_ast_type_specifier_unsigned(mem);
+                    break;
 
                 case KEFIR_AST_TYPE_SPECIFIER_BOOL:
-                    return kefir_ast_type_specifier_bool(mem);
+                    clone = kefir_ast_type_specifier_bool(mem);
+                    break;
 
                 case KEFIR_AST_TYPE_SPECIFIER_COMPLEX:
-                    return kefir_ast_type_specifier_complex(mem);
+                    clone = kefir_ast_type_specifier_complex(mem);
+                    break;
 
                 case KEFIR_AST_TYPE_SPECIFIER_ATOMIC:
-                    return kefir_ast_type_specifier_atomic(
+                    clone = kefir_ast_type_specifier_atomic(
                         mem, KEFIR_AST_NODE_CLONE(mem, specifier->type_specifier.value.atomic_type));
+                    break;
 
                 case KEFIR_AST_TYPE_SPECIFIER_STRUCT:
-                    return kefir_ast_type_specifier_struct(
+                    clone = kefir_ast_type_specifier_struct(
                         mem, kefir_ast_structure_specifier_clone(mem, specifier->type_specifier.value.structure));
+                    break;
 
                 case KEFIR_AST_TYPE_SPECIFIER_UNION:
-                    return kefir_ast_type_specifier_union(
+                    clone = kefir_ast_type_specifier_union(
                         mem, kefir_ast_structure_specifier_clone(mem, specifier->type_specifier.value.structure));
+                    break;
 
                 case KEFIR_AST_TYPE_SPECIFIER_ENUM:
-                    return kefir_ast_type_specifier_enum(
+                    clone = kefir_ast_type_specifier_enum(
                         mem, kefir_ast_enum_specifier_clone(mem, specifier->type_specifier.value.enumeration));
+                    break;
 
                 case KEFIR_AST_TYPE_SPECIFIER_TYPEDEF:
-                    return kefir_ast_type_specifier_typedef(mem, NULL, specifier->type_specifier.value.type_name);
+                    clone = kefir_ast_type_specifier_typedef(mem, NULL, specifier->type_specifier.value.type_name);
+                    break;
 
                 default:
-                    return NULL;
+                    // Intentionally left blank
+                    break;
             }
         } break;
 
         case KEFIR_AST_TYPE_QUALIFIER: {
             switch (specifier->type_qualifier) {
                 case KEFIR_AST_TYPE_QUALIFIER_CONST:
-                    return kefir_ast_type_qualifier_const(mem);
+                    clone = kefir_ast_type_qualifier_const(mem);
+                    break;
 
                 case KEFIR_AST_TYPE_QUALIFIER_RESTRICT:
-                    return kefir_ast_type_qualifier_restrict(mem);
+                    clone = kefir_ast_type_qualifier_restrict(mem);
+                    break;
 
                 case KEFIR_AST_TYPE_QUALIFIER_VOLATILE:
-                    return kefir_ast_type_qualifier_volatile(mem);
+                    clone = kefir_ast_type_qualifier_volatile(mem);
+                    break;
 
                 case KEFIR_AST_TYPE_QUALIFIER_ATOMIC:
-                    return kefir_ast_type_qualifier_atomic(mem);
+                    clone = kefir_ast_type_qualifier_atomic(mem);
+                    break;
 
                 default:
-                    return NULL;
+                    // Intentionally left blank
+                    break;
             }
         } break;
 
         case KEFIR_AST_STORAGE_CLASS_SPECIFIER: {
             switch (specifier->storage_class) {
                 case KEFIR_AST_STORAGE_SPECIFIER_TYPEDEF:
-                    return kefir_ast_storage_class_specifier_typedef(mem);
+                    clone = kefir_ast_storage_class_specifier_typedef(mem);
+                    break;
 
                 case KEFIR_AST_STORAGE_SPECIFIER_EXTERN:
-                    return kefir_ast_storage_class_specifier_extern(mem);
+                    clone = kefir_ast_storage_class_specifier_extern(mem);
+                    break;
 
                 case KEFIR_AST_STORAGE_SPECIFIER_STATIC:
-                    return kefir_ast_storage_class_specifier_static(mem);
+                    clone = kefir_ast_storage_class_specifier_static(mem);
+                    break;
 
                 case KEFIR_AST_STORAGE_SPECIFIER_THREAD_LOCAL:
-                    return kefir_ast_storage_class_specifier_thread_local(mem);
+                    clone = kefir_ast_storage_class_specifier_thread_local(mem);
+                    break;
 
                 case KEFIR_AST_STORAGE_SPECIFIER_AUTO:
-                    return kefir_ast_storage_class_specifier_auto(mem);
+                    clone = kefir_ast_storage_class_specifier_auto(mem);
+                    break;
 
                 case KEFIR_AST_STORAGE_SPECIFIER_REGISTER:
-                    return kefir_ast_storage_class_specifier_register(mem);
+                    clone = kefir_ast_storage_class_specifier_register(mem);
+                    break;
 
                 default:
-                    return NULL;
+                    // Intentionally left blank
+                    break;
             }
         } break;
 
         case KEFIR_AST_FUNCTION_SPECIFIER: {
             switch (specifier->function_specifier) {
                 case KEFIR_AST_FUNCTION_SPECIFIER_TYPE_NORETURN:
-                    return kefir_ast_function_specifier_noreturn(mem);
+                    clone = kefir_ast_function_specifier_noreturn(mem);
+                    break;
 
                 case KEFIR_AST_FUNCTION_SPECIFIER_TYPE_INLINE:
-                    return kefir_ast_function_specifier_inline(mem);
+                    clone = kefir_ast_function_specifier_inline(mem);
+                    break;
 
                 default:
-                    return NULL;
+                    // Intentionally left blank
+                    break;
             }
         } break;
 
         case KEFIR_AST_ALIGNMENT_SPECIFIER:
-            return kefir_ast_alignment_specifier(mem, KEFIR_AST_NODE_CLONE(mem, specifier->alignment_specifier));
+            clone = kefir_ast_alignment_specifier(mem, KEFIR_AST_NODE_CLONE(mem, specifier->alignment_specifier));
+            break;
     }
-    return NULL;
+
+    if (clone != NULL) {
+        clone->source_location = specifier->source_location;
+    }
+    return clone;
 }
 
 kefir_result_t kefir_ast_declarator_specifier_free(struct kefir_mem *mem,

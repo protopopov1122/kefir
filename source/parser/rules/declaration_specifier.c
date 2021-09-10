@@ -26,6 +26,7 @@ static kefir_result_t scan_storage_class(struct kefir_mem *mem, struct kefir_par
     REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
 
+    struct kefir_source_location source_location = *PARSER_TOKEN_LOCATION(parser, 0);
     ASSIGN_DECL_CAST(struct kefir_ast_declarator_specifier_list *, specifiers, payload);
     struct kefir_ast_declarator_specifier *specifier = NULL;
     if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_TYPEDEF)) {
@@ -51,6 +52,7 @@ static kefir_result_t scan_storage_class(struct kefir_mem *mem, struct kefir_par
     }
 
     REQUIRE(specifier != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST declarator specifier"));
+    specifier->source_location = source_location;
     kefir_result_t res = kefir_ast_declarator_specifier_list_append(mem, specifiers, specifier);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_ast_declarator_specifier_free(mem, specifier);
@@ -357,6 +359,7 @@ static kefir_result_t scan_type_specifier(struct kefir_mem *mem, struct kefir_pa
     REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
 
+    struct kefir_source_location source_location = *PARSER_TOKEN_LOCATION(parser, 0);
     ASSIGN_DECL_CAST(struct kefir_ast_declarator_specifier_list *, specifiers, payload);
     struct kefir_ast_declarator_specifier *specifier = NULL;
     if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_VOID)) {
@@ -433,6 +436,7 @@ static kefir_result_t scan_type_specifier(struct kefir_mem *mem, struct kefir_pa
     }
 
     REQUIRE(specifier != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST declarator specifier"));
+    specifier->source_location = source_location;
     kefir_result_t res = kefir_ast_declarator_specifier_list_append(mem, specifiers, specifier);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_ast_declarator_specifier_free(mem, specifier);
@@ -447,6 +451,7 @@ static kefir_result_t scan_type_qualifier(struct kefir_mem *mem, struct kefir_pa
     REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
 
+    struct kefir_source_location source_location = *PARSER_TOKEN_LOCATION(parser, 0);
     ASSIGN_DECL_CAST(struct kefir_ast_declarator_specifier_list *, specifiers, payload);
     struct kefir_ast_declarator_specifier *specifier = NULL;
     if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_CONST)) {
@@ -466,6 +471,7 @@ static kefir_result_t scan_type_qualifier(struct kefir_mem *mem, struct kefir_pa
     }
 
     REQUIRE(specifier != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST declarator specifier"));
+    specifier->source_location = source_location;
     kefir_result_t res = kefir_ast_declarator_specifier_list_append(mem, specifiers, specifier);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_ast_declarator_specifier_free(mem, specifier);
@@ -480,6 +486,7 @@ static kefir_result_t scan_function_specifier(struct kefir_mem *mem, struct kefi
     REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
 
+    struct kefir_source_location source_location = *PARSER_TOKEN_LOCATION(parser, 0);
     ASSIGN_DECL_CAST(struct kefir_ast_declarator_specifier_list *, specifiers, payload);
     struct kefir_ast_declarator_specifier *specifier = NULL;
     if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_INLINE)) {
@@ -493,6 +500,7 @@ static kefir_result_t scan_function_specifier(struct kefir_mem *mem, struct kefi
     }
 
     REQUIRE(specifier != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST declarator specifier"));
+    specifier->source_location = source_location;
     kefir_result_t res = kefir_ast_declarator_specifier_list_append(mem, specifiers, specifier);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_ast_declarator_specifier_free(mem, specifier);
@@ -507,6 +515,7 @@ static kefir_result_t scan_alignment_specifier(struct kefir_mem *mem, struct kef
     REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
 
+    struct kefir_source_location source_location = *PARSER_TOKEN_LOCATION(parser, 0);
     ASSIGN_DECL_CAST(struct kefir_ast_declarator_specifier_list *, specifiers, payload);
     REQUIRE(PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_ALIGNAS),
             KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match alignment specifier"));
@@ -543,6 +552,8 @@ static kefir_result_t scan_alignment_specifier(struct kefir_mem *mem, struct kef
         KEFIR_AST_NODE_FREE(mem, alignment);
         return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST declarator specifier");
     });
+    specifier->source_location = source_location;
+
     res = kefir_ast_declarator_specifier_list_append(mem, specifiers, specifier);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_ast_declarator_specifier_free(mem, specifier);
