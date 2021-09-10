@@ -56,6 +56,7 @@ static kefir_result_t scan_initializer_list(struct kefir_mem *mem, struct kefir_
     REQUIRE_OK(PARSER_SHIFT(parser));
     *initializer = kefir_ast_new_list_initializer(mem);
     REQUIRE(initializer != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocae AST initializer list"));
+    (*initializer)->source_location = *PARSER_TOKEN_LOCATION(parser, 0);
 
     kefir_bool_t scan_initializers = true;
     while (scan_initializers) {

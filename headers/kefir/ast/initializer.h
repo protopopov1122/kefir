@@ -24,6 +24,7 @@
 #include "kefir/ast/base.h"
 #include "kefir/core/list.h"
 #include "kefir/ast/designator.h"
+#include "kefir/core/source_location.h"
 
 typedef struct kefir_ast_initializer_designation {
     kefir_bool_t indexed;
@@ -50,6 +51,7 @@ typedef struct kefir_ast_initializer {
         struct kefir_ast_node_base *expression;
         struct kefir_ast_initializer_list list;
     };
+    struct kefir_source_location source_location;
 } kefir_ast_initializer_t;
 
 typedef struct kefir_ast_initializer_list_entry {

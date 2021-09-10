@@ -1,0 +1,294 @@
+{
+    "class": "translation_unit",
+    "external_declarations": [
+        {
+            "class": "declaration",
+            "specifiers": [
+                {
+                    "class": "type_specifier",
+                    "specifier": "int",
+                    "source_location": {
+                        "source": "<stdin>",
+                        "line": 1,
+                        "column": 1
+                    }
+                }
+            ],
+            "init_declarators": [
+                {
+                    "class": "init_declarator",
+                    "declarator": {
+                        "class": "array",
+                        "declarator": {
+                            "class": "identifier",
+                            "identifier": "ints",
+                            "source_location": {
+                                "source": "<stdin>",
+                                "line": 1,
+                                "column": 5
+                            }
+                        },
+                        "type": "unbounded",
+                        "static": false,
+                        "type_qualifiers": [],
+                        "source_location": {
+                            "source": "<stdin>",
+                            "line": 1,
+                            "column": 9
+                        }
+                    },
+                    "initializer": {
+                        "type": "list",
+                        "list": [
+                            {
+                                "designation": null,
+                                "initializer": {
+                                    "type": "expression",
+                                    "expression": {
+                                        "class": "constant",
+                                        "type": "integer",
+                                        "value": 0,
+                                        "source_location": {
+                                            "source": "<stdin>",
+                                            "line": 1,
+                                            "column": 16
+                                        }
+                                    },
+                                    "source_location": {
+                                        "source": "<stdin>",
+                                        "line": 1,
+                                        "column": 16
+                                    }
+                                }
+                            },
+                            {
+                                "designation": null,
+                                "initializer": {
+                                    "type": "expression",
+                                    "expression": {
+                                        "class": "constant",
+                                        "type": "integer",
+                                        "value": 1,
+                                        "source_location": {
+                                            "source": "<stdin>",
+                                            "line": 1,
+                                            "column": 19
+                                        }
+                                    },
+                                    "source_location": {
+                                        "source": "<stdin>",
+                                        "line": 1,
+                                        "column": 19
+                                    }
+                                }
+                            },
+                            {
+                                "designation": null,
+                                "initializer": {
+                                    "type": "expression",
+                                    "expression": {
+                                        "class": "constant",
+                                        "type": "integer",
+                                        "value": 2,
+                                        "source_location": {
+                                            "source": "<stdin>",
+                                            "line": 1,
+                                            "column": 22
+                                        }
+                                    },
+                                    "source_location": {
+                                        "source": "<stdin>",
+                                        "line": 1,
+                                        "column": 22
+                                    }
+                                }
+                            },
+                            {
+                                "designation": null,
+                                "initializer": {
+                                    "type": "expression",
+                                    "expression": {
+                                        "class": "constant",
+                                        "type": "integer",
+                                        "value": 3,
+                                        "source_location": {
+                                            "source": "<stdin>",
+                                            "line": 1,
+                                            "column": 25
+                                        }
+                                    },
+                                    "source_location": {
+                                        "source": "<stdin>",
+                                        "line": 1,
+                                        "column": 25
+                                    }
+                                }
+                            },
+                            {
+                                "designation": {
+                                    "type": "index",
+                                    "index": {
+                                        "class": "constant",
+                                        "type": "integer",
+                                        "value": 100,
+                                        "source_location": {
+                                            "source": "<stdin>",
+                                            "line": 1,
+                                            "column": 29
+                                        }
+                                    },
+                                    "next": null
+                                },
+                                "initializer": {
+                                    "type": "expression",
+                                    "expression": {
+                                        "class": "constant",
+                                        "type": "integer",
+                                        "value": 100,
+                                        "source_location": {
+                                            "source": "<stdin>",
+                                            "line": 1,
+                                            "column": 36
+                                        }
+                                    },
+                                    "source_location": {
+                                        "source": "<stdin>",
+                                        "line": 1,
+                                        "column": 36
+                                    }
+                                }
+                            }
+                        ],
+                        "source_location": {
+                            "source": "<stdin>",
+                            "line": 1,
+                            "column": 16
+                        }
+                    },
+                    "source_location": {
+                        "source": "<stdin>",
+                        "line": 1,
+                        "column": 5
+                    }
+                }
+            ],
+            "source_location": {
+                "source": "<stdin>",
+                "line": 1,
+                "column": 1
+            }
+        },
+        {
+            "class": "declaration",
+            "specifiers": [
+                {
+                    "class": "type_specifier",
+                    "specifier": "char",
+                    "source_location": {
+                        "source": "<stdin>",
+                        "line": 2,
+                        "column": 1
+                    }
+                }
+            ],
+            "init_declarators": [
+                {
+                    "class": "init_declarator",
+                    "declarator": {
+                        "class": "array",
+                        "declarator": {
+                            "class": "identifier",
+                            "identifier": "string",
+                            "source_location": {
+                                "source": "<stdin>",
+                                "line": 2,
+                                "column": 6
+                            }
+                        },
+                        "type": "unbounded",
+                        "static": false,
+                        "type_qualifiers": [],
+                        "source_location": {
+                            "source": "<stdin>",
+                            "line": 2,
+                            "column": 12
+                        }
+                    },
+                    "initializer": {
+                        "type": "list",
+                        "list": [
+                            {
+                                "designation": null,
+                                "initializer": {
+                                    "type": "list",
+                                    "list": [
+                                        {
+                                            "designation": null,
+                                            "initializer": {
+                                                "type": "list",
+                                                "list": [
+                                                    {
+                                                        "designation": null,
+                                                        "initializer": {
+                                                            "type": "expression",
+                                                            "expression": {
+                                                                "class": "string_literal",
+                                                                "type": "multibyte",
+                                                                "content": "Hello world\0",
+                                                                "length": 12,
+                                                                "source_location": {
+                                                                    "source": "<stdin>",
+                                                                    "line": 2,
+                                                                    "column": 20
+                                                                }
+                                                            },
+                                                            "source_location": {
+                                                                "source": "<stdin>",
+                                                                "line": 2,
+                                                                "column": 20
+                                                            }
+                                                        }
+                                                    }
+                                                ],
+                                                "source_location": {
+                                                    "source": "<stdin>",
+                                                    "line": 2,
+                                                    "column": 20
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    "source_location": {
+                                        "source": "<stdin>",
+                                        "line": 2,
+                                        "column": 19
+                                    }
+                                }
+                            }
+                        ],
+                        "source_location": {
+                            "source": "<stdin>",
+                            "line": 2,
+                            "column": 18
+                        }
+                    },
+                    "source_location": {
+                        "source": "<stdin>",
+                        "line": 2,
+                        "column": 6
+                    }
+                }
+            ],
+            "source_location": {
+                "source": "<stdin>",
+                "line": 2,
+                "column": 1
+            }
+        }
+    ],
+    "source_location": {
+        "source": "<stdin>",
+        "line": 1,
+        "column": 1
+    }
+}

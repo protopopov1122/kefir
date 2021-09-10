@@ -46,6 +46,11 @@
                                 "line": 1,
                                 "column": 17
                             }
+                        },
+                        "source_location": {
+                            "source": "<stdin>",
+                            "line": 1,
+                            "column": 17
                         }
                     },
                     "source_location": {

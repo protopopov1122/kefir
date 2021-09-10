@@ -99,6 +99,11 @@
                                 "line": 1,
                                 "column": 48
                             }
+                        },
+                        "source_location": {
+                            "source": "<stdin>",
+                            "line": 1,
+                            "column": 48
                         }
                     },
                     "source_location": {

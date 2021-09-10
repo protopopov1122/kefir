@@ -38,6 +38,7 @@ static kefir_result_t scan_initializer(struct kefir_mem *mem, struct kefir_parse
             KEFIR_AST_NODE_FREE(mem, node);
             return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST expression initializer");
         });
+        (*initializer)->source_location = node->source_location;
     } else {
         REQUIRE_OK(res);
     }

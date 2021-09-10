@@ -196,6 +196,12 @@ struct kefir_ast_initializer *kefir_ast_new_expression_initializer(struct kefir_
     REQUIRE(initializer != NULL, NULL);
     initializer->type = KEFIR_AST_INITIALIZER_EXPRESSION;
     initializer->expression = expr;
+
+    kefir_result_t res = kefir_source_location_empty(&initializer->source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, initializer);
+        return NULL;
+    });
     return initializer;
 }
 
@@ -207,6 +213,13 @@ struct kefir_ast_initializer *kefir_ast_new_list_initializer(struct kefir_mem *m
     initializer->type = KEFIR_AST_INITIALIZER_LIST;
     kefir_result_t res = kefir_ast_initializer_list_init(&initializer->list);
     REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, initializer);
+        return NULL;
+    });
+
+    res = kefir_source_location_empty(&initializer->source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_ast_initializer_list_free(mem, &initializer->list);
         KEFIR_FREE(mem, initializer);
         return NULL;
     });
