@@ -36,6 +36,12 @@ struct kefir_ast_declarator *kefir_ast_declarator_identifier(struct kefir_mem *m
     REQUIRE(decl != NULL, NULL);
     decl->klass = KEFIR_AST_DECLARATOR_IDENTIFIER;
     decl->identifier = identifier;
+
+    kefir_result_t res = kefir_source_location_empty(&decl->source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, decl);
+        return NULL;
+    });
     return decl;
 }
 
@@ -54,6 +60,13 @@ struct kefir_ast_declarator *kefir_ast_declarator_pointer(struct kefir_mem *mem,
     });
 
     decl->pointer.declarator = direct;
+
+    res = kefir_source_location_empty(&decl->source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_ast_type_qualifier_list_free(mem, &decl->pointer.type_qualifiers);
+        KEFIR_FREE(mem, decl);
+        return NULL;
+    });
     return decl;
 }
 
@@ -82,6 +95,13 @@ struct kefir_ast_declarator *kefir_ast_declarator_array(struct kefir_mem *mem, k
     decl->array.length = length;
     decl->array.static_array = false;
     decl->array.declarator = direct;
+
+    res = kefir_source_location_empty(&decl->source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_ast_type_qualifier_list_free(mem, &decl->array.type_qualifiers);
+        KEFIR_FREE(mem, decl);
+        return NULL;
+    });
     return decl;
 }
 
@@ -119,6 +139,13 @@ struct kefir_ast_declarator *kefir_ast_declarator_function(struct kefir_mem *mem
 
     decl->function.ellipsis = false;
     decl->function.declarator = direct;
+
+    res = kefir_source_location_empty(&decl->source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_list_free(mem, &decl->function.parameters);
+        KEFIR_FREE(mem, decl);
+        return NULL;
+    });
     return decl;
 }
 
@@ -127,9 +154,11 @@ struct kefir_ast_declarator *kefir_ast_declarator_clone(struct kefir_mem *mem,
     REQUIRE(mem != NULL, NULL);
     REQUIRE(declarator != NULL, NULL);
 
+    struct kefir_ast_declarator *clone = NULL;
     switch (declarator->klass) {
         case KEFIR_AST_DECLARATOR_IDENTIFIER:
-            return kefir_ast_declarator_identifier(mem, NULL, declarator->identifier);
+            clone = kefir_ast_declarator_identifier(mem, NULL, declarator->identifier);
+            break;
 
         case KEFIR_AST_DECLARATOR_POINTER: {
             struct kefir_ast_declarator *decl =
@@ -142,8 +171,8 @@ struct kefir_ast_declarator *kefir_ast_declarator_clone(struct kefir_mem *mem,
                 kefir_ast_declarator_free(mem, decl);
                 return NULL;
             });
-            return decl;
-        }
+            clone = decl;
+        } break;
 
         case KEFIR_AST_DECLARATOR_ARRAY: {
             struct kefir_ast_declarator *decl = kefir_ast_declarator_array(
@@ -158,8 +187,8 @@ struct kefir_ast_declarator *kefir_ast_declarator_clone(struct kefir_mem *mem,
                 kefir_ast_declarator_free(mem, decl);
                 return NULL;
             });
-            return decl;
-        }
+            clone = decl;
+        } break;
 
         case KEFIR_AST_DECLARATOR_FUNCTION: {
             struct kefir_ast_declarator *decl =
@@ -184,10 +213,15 @@ struct kefir_ast_declarator *kefir_ast_declarator_clone(struct kefir_mem *mem,
                     return NULL;
                 });
             }
-            return decl;
-        }
+            clone = decl;
+        } break;
     }
-    return NULL;
+
+    if (clone != NULL) {
+        clone->source_location = declarator->source_location;
+    }
+
+    return clone;
 }
 
 kefir_result_t kefir_ast_declarator_free(struct kefir_mem *mem, struct kefir_ast_declarator *decl) {

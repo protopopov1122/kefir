@@ -89,6 +89,9 @@ static kefir_result_t scan_struct_field_declaration(struct kefir_mem *mem, struc
                 REQUIRE_CHAIN_SET(
                     &res, declarator != NULL,
                     KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate empty AST declarator identifier"));
+                if (declarator != NULL) {
+                    declarator->source_location = *PARSER_TOKEN_LOCATION(parser, 0);
+                }
             } else {
                 res = KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
                                              "Expected either a declarator or anonymous bit-field");

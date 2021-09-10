@@ -42,6 +42,7 @@ kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(type_name)(struct kefir_mem *mem, str
             kefir_ast_declarator_specifier_list_free(mem, &specifiers);
             return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate empty AST identifier declarator");
         });
+        declarator->source_location = *PARSER_TOKEN_LOCATION(parser, 0);
     } else {
         REQUIRE_ELSE(res == KEFIR_OK, {
             kefir_ast_declarator_specifier_list_free(mem, &specifiers);

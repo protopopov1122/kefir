@@ -35,6 +35,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                                "\t\tint a;\n"
                                "\t\tfloat b;\n"
                                "\t};\n"
+                               "\n\n\n"
+                               "    const void **fn(int, long unsigned);\n"
                                "};";
 
     struct kefir_symbol_table symbols;

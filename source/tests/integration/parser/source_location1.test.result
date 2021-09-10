@@ -28,7 +28,12 @@
                     "class": "init_declarator",
                     "declarator": {
                         "class": "identifier",
-                        "identifier": "X"
+                        "identifier": "X",
+                        "source_location": {
+                            "source": "<stdin>",
+                            "line": 1,
+                            "column": 13
+                        }
                     },
                     "initializer": {
                         "type": "expression",
@@ -73,7 +78,12 @@
                 "class": "function",
                 "declarator": {
                     "class": "identifier",
-                    "identifier": "fn"
+                    "identifier": "fn",
+                    "source_location": {
+                        "source": "<stdin>",
+                        "line": 3,
+                        "column": 5
+                    }
                 },
                 "ellipsis": false,
                 "parameters": [
@@ -95,7 +105,12 @@
                                 "class": "init_declarator",
                                 "declarator": {
                                     "class": "identifier",
-                                    "identifier": "x"
+                                    "identifier": "x",
+                                    "source_location": {
+                                        "source": "<stdin>",
+                                        "line": 3,
+                                        "column": 12
+                                    }
                                 },
                                 "initializer": null,
                                 "source_location": {
@@ -111,7 +126,12 @@
                             "column": 12
                         }
                     }
-                ]
+                ],
+                "source_location": {
+                    "source": "<stdin>",
+                    "line": 3,
+                    "column": 7
+                }
             },
             "declarations": [],
             "body": {
@@ -150,7 +170,12 @@
                                         }
                                     ],
                                     "declarator": {
-                                        "class": "abstract"
+                                        "class": "abstract",
+                                        "source_location": {
+                                            "source": "<stdin>",
+                                            "line": 4,
+                                            "column": 31
+                                        }
                                     },
                                     "source_location": {
                                         "source": "<stdin>",
@@ -223,7 +248,12 @@
                                 {
                                     "declarator": {
                                         "class": "identifier",
-                                        "identifier": "a"
+                                        "identifier": "a",
+                                        "source_location": {
+                                            "source": "<stdin>",
+                                            "line": 7,
+                                            "column": 6
+                                        }
                                     },
                                     "bitwidth": null
                                 }
@@ -246,7 +276,12 @@
                                 {
                                     "declarator": {
                                         "class": "identifier",
-                                        "identifier": "x"
+                                        "identifier": "x",
+                                        "source_location": {
+                                            "source": "<stdin>",
+                                            "line": 8,
+                                            "column": 7
+                                        }
                                     },
                                     "bitwidth": {
                                         "class": "constant",
@@ -274,7 +309,12 @@
                     "class": "init_declarator",
                     "declarator": {
                         "class": "identifier",
-                        "identifier": "X_t"
+                        "identifier": "X_t",
+                        "source_location": {
+                            "source": "<stdin>",
+                            "line": 9,
+                            "column": 3
+                        }
                     },
                     "initializer": null,
                     "source_location": {

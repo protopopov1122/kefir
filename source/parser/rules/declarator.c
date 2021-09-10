@@ -45,6 +45,7 @@ static kefir_result_t scan_pointer(struct kefir_mem *mem, struct kefir_parser *p
                                    kefir_result_t (*scan_declarator)(struct kefir_mem *, struct kefir_parser *,
                                                                      struct kefir_ast_declarator **),
                                    struct kefir_ast_declarator **declarator_ptr) {
+    struct kefir_source_location source_location = *PARSER_TOKEN_LOCATION(parser, 0);
     REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_STAR),
             KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Cannot match AST pointer declarator"));
     REQUIRE_OK(PARSER_SHIFT(parser));
@@ -70,6 +71,7 @@ static kefir_result_t scan_pointer(struct kefir_mem *mem, struct kefir_parser *p
         kefir_ast_type_qualifier_list_free(mem, &type_qualifiers);
         return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST pointer declarator");
     });
+    declarator->source_location = source_location;
 
     res = kefir_ast_type_qualifier_list_clone(mem, &declarator->pointer.type_qualifiers, &type_qualifiers);
     REQUIRE_ELSE(res == KEFIR_OK, {
@@ -108,6 +110,9 @@ static kefir_result_t scan_direct_declarator_base(struct kefir_mem *mem, struct 
                 mem, parser->symbols, kefir_parser_token_cursor_at(parser->cursor, 0)->identifier);
             REQUIRE_CHAIN_SET(&res, base_declarator != NULL,
                               KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST identifier declarator"));
+            if (base_declarator != NULL) {
+                base_declarator->source_location = *PARSER_TOKEN_LOCATION(parser, 0);
+            }
             REQUIRE_CHAIN(&res, PARSER_SHIFT(parser));
         }
     }
@@ -129,6 +134,7 @@ static kefir_result_t scan_array_impl(struct kefir_mem *mem, struct kefir_parser
     struct kefir_ast_node_base *length = NULL;
     kefir_ast_declarator_array_type_t array_type = KEFIR_AST_DECLARATOR_ARRAY_UNBOUNDED;
 
+    struct kefir_source_location source_location = *PARSER_TOKEN_LOCATION(parser, 0);
     REQUIRE_OK(PARSER_SHIFT(parser));
     if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_STATIC)) {
         REQUIRE_OK(PARSER_SHIFT(parser));
@@ -186,6 +192,8 @@ static kefir_result_t scan_array_impl(struct kefir_mem *mem, struct kefir_parser
         }
         return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST array declarator");
     });
+    declarator->source_location = source_location;
+
     declarator->array.static_array = static_array;
     *declarator_ptr = NULL;
 
@@ -233,6 +241,7 @@ static kefir_result_t scan_function_parameter_declarator(struct kefir_mem *mem, 
             declarator = kefir_ast_declarator_identifier(mem, NULL, NULL);
             REQUIRE(declarator != NULL,
                     KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate abstract AST identifier declarator"));
+            declarator->source_location = *PARSER_TOKEN_LOCATION(parser, 0);
             res = KEFIR_OK;
         }
     }
@@ -376,6 +385,7 @@ static kefir_result_t scan_function_impl(struct kefir_mem *mem, struct kefir_par
 
 static kefir_result_t scan_function(struct kefir_mem *mem, struct kefir_parser *parser, kefir_bool_t abstract,
                                     struct kefir_ast_declarator **declarator_ptr) {
+    struct kefir_source_location source_location = *PARSER_TOKEN_LOCATION(parser, 0);
     struct kefir_ast_declarator *declarator = kefir_ast_declarator_function(mem, *declarator_ptr);
     kefir_result_t res = scan_function_impl(mem, parser, abstract, declarator);
     REQUIRE_ELSE(res == KEFIR_OK, {
@@ -383,6 +393,7 @@ static kefir_result_t scan_function(struct kefir_mem *mem, struct kefir_parser *
         *declarator_ptr = NULL;
         return res;
     });
+    declarator->source_location = source_location;
     *declarator_ptr = declarator;
     return KEFIR_OK;
 }
@@ -468,6 +479,9 @@ static kefir_result_t scan_direct_abstract_declarator_base(struct kefir_mem *mem
             REQUIRE_CHAIN_SET(
                 &res, base_declarator != NULL,
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate empty AST abstract declarator"));
+            if (base_declarator != NULL) {
+                base_declarator->source_location = *PARSER_TOKEN_LOCATION(parser, 0);
+            }
         }
     }
     REQUIRE_ELSE(res == KEFIR_OK, {

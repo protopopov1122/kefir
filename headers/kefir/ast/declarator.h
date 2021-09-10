@@ -22,6 +22,7 @@
 #define KEFIR_AST_DECLARATOR_H_
 
 #include "kefir/ast/declarator_specifier.h"
+#include "kefir/core/source_location.h"
 
 typedef struct kefir_ast_declarator kefir_ast_declarator_t;  // Forward declaration
 
@@ -58,6 +59,8 @@ typedef struct kefir_ast_declarator {
         struct kefir_ast_declarator_array array;
         struct kefir_ast_declarator_function function;
     };
+
+    struct kefir_source_location source_location;
 } kefir_ast_declarator_t;
 
 struct kefir_ast_declarator *kefir_ast_declarator_identifier(struct kefir_mem *, struct kefir_symbol_table *,

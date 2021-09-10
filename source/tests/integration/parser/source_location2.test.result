@@ -29,7 +29,12 @@
                             }
                         ],
                         "declarator": {
-                            "class": "abstract"
+                            "class": "abstract",
+                            "source_location": {
+                                "source": "<stdin>",
+                                "line": 1,
+                                "column": 20
+                            }
                         },
                         "source_location": {
                             "source": "<stdin>",
@@ -76,7 +81,12 @@
                     "class": "init_declarator",
                     "declarator": {
                         "class": "identifier",
-                        "identifier": "chr"
+                        "identifier": "chr",
+                        "source_location": {
+                            "source": "<stdin>",
+                            "line": 1,
+                            "column": 42
+                        }
                     },
                     "initializer": {
                         "type": "expression",
@@ -176,7 +186,12 @@
                     "class": "init_declarator",
                     "declarator": {
                         "class": "identifier",
-                        "identifier": "test1"
+                        "identifier": "test1",
+                        "source_location": {
+                            "source": "<stdin>",
+                            "line": 2,
+                            "column": 50
+                        }
                     },
                     "initializer": null,
                     "source_location": {
@@ -226,7 +241,12 @@
                                 {
                                     "declarator": {
                                         "class": "identifier",
-                                        "identifier": "x"
+                                        "identifier": "x",
+                                        "source_location": {
+                                            "source": "<stdin>",
+                                            "line": 4,
+                                            "column": 15
+                                        }
                                     },
                                     "bitwidth": null
                                 }
@@ -267,7 +287,12 @@
                                 {
                                     "declarator": {
                                         "class": "identifier",
-                                        "identifier": "y"
+                                        "identifier": "y",
+                                        "source_location": {
+                                            "source": "<stdin>",
+                                            "line": 5,
+                                            "column": 20
+                                        }
                                     },
                                     "bitwidth": null
                                 }
@@ -298,7 +323,12 @@
                                                 {
                                                     "declarator": {
                                                         "class": "identifier",
-                                                        "identifier": "a"
+                                                        "identifier": "a",
+                                                        "source_location": {
+                                                            "source": "<stdin>",
+                                                            "line": 7,
+                                                            "column": 7
+                                                        }
                                                     },
                                                     "bitwidth": null
                                                 }
@@ -321,7 +351,12 @@
                                                 {
                                                     "declarator": {
                                                         "class": "identifier",
-                                                        "identifier": "b"
+                                                        "identifier": "b",
+                                                        "source_location": {
+                                                            "source": "<stdin>",
+                                                            "line": 8,
+                                                            "column": 9
+                                                        }
                                                     },
                                                     "bitwidth": null
                                                 }
@@ -336,6 +371,157 @@
                                 }
                             ],
                             "declarators": []
+                        },
+                        {
+                            "type": "declaration",
+                            "specifiers": [
+                                {
+                                    "class": "type_qualifier",
+                                    "qualifier": "const",
+                                    "source_location": {
+                                        "source": "<stdin>",
+                                        "line": 13,
+                                        "column": 5
+                                    }
+                                },
+                                {
+                                    "class": "type_specifier",
+                                    "specifier": "void",
+                                    "source_location": {
+                                        "source": "<stdin>",
+                                        "line": 13,
+                                        "column": 11
+                                    }
+                                }
+                            ],
+                            "declarators": [
+                                {
+                                    "declarator": {
+                                        "class": "pointer",
+                                        "declarator": {
+                                            "class": "pointer",
+                                            "declarator": {
+                                                "class": "function",
+                                                "declarator": {
+                                                    "class": "identifier",
+                                                    "identifier": "fn",
+                                                    "source_location": {
+                                                        "source": "<stdin>",
+                                                        "line": 13,
+                                                        "column": 18
+                                                    }
+                                                },
+                                                "ellipsis": false,
+                                                "parameters": [
+                                                    {
+                                                        "class": "declaration",
+                                                        "specifiers": [
+                                                            {
+                                                                "class": "type_specifier",
+                                                                "specifier": "int",
+                                                                "source_location": {
+                                                                    "source": "<stdin>",
+                                                                    "line": 13,
+                                                                    "column": 21
+                                                                }
+                                                            }
+                                                        ],
+                                                        "init_declarators": [
+                                                            {
+                                                                "class": "init_declarator",
+                                                                "declarator": {
+                                                                    "class": "abstract",
+                                                                    "source_location": {
+                                                                        "source": "<stdin>",
+                                                                        "line": 13,
+                                                                        "column": 24
+                                                                    }
+                                                                },
+                                                                "initializer": null,
+                                                                "source_location": {
+                                                                    "source": "<stdin>",
+                                                                    "line": 13,
+                                                                    "column": 24
+                                                                }
+                                                            }
+                                                        ],
+                                                        "source_location": {
+                                                            "source": "<stdin>",
+                                                            "line": 13,
+                                                            "column": 24
+                                                        }
+                                                    },
+                                                    {
+                                                        "class": "declaration",
+                                                        "specifiers": [
+                                                            {
+                                                                "class": "type_specifier",
+                                                                "specifier": "long",
+                                                                "source_location": {
+                                                                    "source": "<stdin>",
+                                                                    "line": 13,
+                                                                    "column": 26
+                                                                }
+                                                            },
+                                                            {
+                                                                "class": "type_specifier",
+                                                                "specifier": "unsigned",
+                                                                "source_location": {
+                                                                    "source": "<stdin>",
+                                                                    "line": 13,
+                                                                    "column": 31
+                                                                }
+                                                            }
+                                                        ],
+                                                        "init_declarators": [
+                                                            {
+                                                                "class": "init_declarator",
+                                                                "declarator": {
+                                                                    "class": "abstract",
+                                                                    "source_location": {
+                                                                        "source": "<stdin>",
+                                                                        "line": 13,
+                                                                        "column": 39
+                                                                    }
+                                                                },
+                                                                "initializer": null,
+                                                                "source_location": {
+                                                                    "source": "<stdin>",
+                                                                    "line": 13,
+                                                                    "column": 39
+                                                                }
+                                                            }
+                                                        ],
+                                                        "source_location": {
+                                                            "source": "<stdin>",
+                                                            "line": 13,
+                                                            "column": 39
+                                                        }
+                                                    }
+                                                ],
+                                                "source_location": {
+                                                    "source": "<stdin>",
+                                                    "line": 13,
+                                                    "column": 20
+                                                }
+                                            },
+                                            "type_qualifiers": [],
+                                            "source_location": {
+                                                "source": "<stdin>",
+                                                "line": 13,
+                                                "column": 17
+                                            }
+                                        },
+                                        "type_qualifiers": [],
+                                        "source_location": {
+                                            "source": "<stdin>",
+                                            "line": 13,
+                                            "column": 16
+                                        }
+                                    },
+                                    "bitwidth": null
+                                }
+                            ]
                         }
                     ],
                     "source_location": {
@@ -352,7 +538,7 @@
                     "initializer": null,
                     "source_location": {
                         "source": "<stdin>",
-                        "line": 10,
+                        "line": 14,
                         "column": 2
                     }
                 }

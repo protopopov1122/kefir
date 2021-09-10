@@ -125,6 +125,22 @@ kefir_result_t kefir_ast_format_declarator(struct kefir_json_output *json,
             REQUIRE_OK(kefir_json_output_array_end(json));
         } break;
     }
+
+    if (display_source_location) {
+        REQUIRE_OK(kefir_json_output_object_key(json, "source_location"));
+        if (kefir_source_location_get(&declarator->source_location, NULL, NULL, NULL)) {
+            REQUIRE_OK(kefir_json_output_object_begin(json));
+            REQUIRE_OK(kefir_json_output_object_key(json, "source"));
+            REQUIRE_OK(kefir_json_output_string(json, declarator->source_location.source));
+            REQUIRE_OK(kefir_json_output_object_key(json, "line"));
+            REQUIRE_OK(kefir_json_output_uinteger(json, declarator->source_location.line));
+            REQUIRE_OK(kefir_json_output_object_key(json, "column"));
+            REQUIRE_OK(kefir_json_output_uinteger(json, declarator->source_location.column));
+            REQUIRE_OK(kefir_json_output_object_end(json));
+        } else {
+            REQUIRE_OK(kefir_json_output_null(json));
+        }
+    }
     REQUIRE_OK(kefir_json_output_object_end(json));
     return KEFIR_OK;
 }
