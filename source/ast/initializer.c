@@ -147,31 +147,41 @@ kefir_result_t kefir_ast_evaluate_initializer_designation(struct kefir_mem *mem,
     if (designation->indexed) {
         kefir_result_t res = kefir_ast_analyze_node(mem, context, designation->index);
         REQUIRE_ELSE(res == KEFIR_OK, {
-            kefir_ast_designator_free(mem, next_designator);
+            if (next_designator != NULL) {
+                kefir_ast_designator_free(mem, next_designator);
+            }
             return res;
         });
 
         struct kefir_ast_constant_expression_value value;
         res = kefir_ast_constant_expression_value_evaluate(mem, context, designation->index, &value);
         REQUIRE_ELSE(res == KEFIR_OK, {
-            kefir_ast_designator_free(mem, next_designator);
+            if (next_designator != NULL) {
+                kefir_ast_designator_free(mem, next_designator);
+            }
             return res;
         });
         REQUIRE_ELSE(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER, {
-            kefir_ast_designator_free(mem, next_designator);
-            return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+            if (next_designator != NULL) {
+                kefir_ast_designator_free(mem, next_designator);
+            }
+            return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &designation->source_location,
                                           "AST designator index must be an integral constant expression");
         });
 
         designator = kefir_ast_new_index_designator(mem, value.integer, next_designator);
         REQUIRE_ELSE(designator != NULL, {
-            kefir_ast_designator_free(mem, next_designator);
+            if (next_designator != NULL) {
+                kefir_ast_designator_free(mem, next_designator);
+            }
             return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allicate AST index designator");
         });
     } else {
         designator = kefir_ast_new_member_designator(mem, context->symbols, designation->identifier, next_designator);
         REQUIRE_ELSE(designator != NULL, {
-            kefir_ast_designator_free(mem, next_designator);
+            if (next_designator != NULL) {
+                kefir_ast_designator_free(mem, next_designator);
+            }
             return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allicate AST member designator");
         });
     }
@@ -188,7 +198,9 @@ static kefir_result_t list_entry_removal(struct kefir_mem *mem, struct kefir_lis
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid list entry"));
     ASSIGN_DECL_CAST(struct kefir_ast_initializer_list_entry *, list_entry, entry->value);
     if (list_entry->designator != NULL) {
-        REQUIRE_OK(kefir_ast_designator_free(mem, list_entry->designator));
+        if (list_entry->designator != NULL) {
+            REQUIRE_OK(kefir_ast_designator_free(mem, list_entry->designator));
+        }
         list_entry->designator = NULL;
     }
     if (list_entry->designation != NULL) {

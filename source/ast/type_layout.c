@@ -201,8 +201,7 @@ static kefir_result_t resolve_member(struct kefir_ast_type_layout *current_layou
                                      kefir_ast_type_layout_resolver_callback_t callback, void *payload) {
     REQUIRE(current_layout->type != NULL && (current_layout->type->tag == KEFIR_AST_TYPE_STRUCTURE ||
                                              current_layout->type->tag == KEFIR_AST_TYPE_UNION),
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                   "Expected struct/union type to correspond to member designator"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Expected struct/union type to correspond to member designator"));
 
     struct kefir_hashtree_node *node = NULL;
     kefir_result_t res = kefir_hashtree_at(&current_layout->structure_layout.named_members,
@@ -234,7 +233,7 @@ static kefir_result_t resolve_subscript(struct kefir_ast_type_layout *current_la
                                         struct kefir_ast_type_layout **layout,
                                         kefir_ast_type_layout_resolver_callback_t callback, void *payload) {
     REQUIRE(current_layout->type != NULL && current_layout->type->tag == KEFIR_AST_TYPE_ARRAY,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected array type to resolve subscript"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Expected array type to resolve subscript"));
     struct kefir_ast_type_layout *next_layout = current_layout->array_layout.element_type;
     *layout = next_layout;
     if (callback != NULL) {
