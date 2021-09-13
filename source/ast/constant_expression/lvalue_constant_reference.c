@@ -126,9 +126,9 @@ static kefir_result_t visit_array_subscript(const struct kefir_ast_visitor *visi
 
     struct kefir_ast_constant_expression_value subscript_value;
     REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(param->mem, param->context, subscript, &subscript_value));
-    REQUIRE(
-        subscript_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
-        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected constant array subscript to have integral type"));
+    REQUIRE(subscript_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->subscript->source_location,
+                                   "Expected constant array subscript to have integral type"));
 
     struct kefir_ast_designator designator = {
         .type = KEFIR_AST_DESIGNATOR_SUBSCRIPT, .index = subscript_value.integer, .next = NULL};
@@ -162,7 +162,8 @@ static kefir_result_t visit_struct_indirect_member(const struct kefir_ast_visito
     struct kefir_ast_constant_expression_value base_expr;
     REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(param->mem, param->context, node->structure, &base_expr));
     REQUIRE(base_expr.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected constant expression to yield an address"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->structure->source_location,
+                                   "Expected constant expression to yield an address"));
 
     struct kefir_ast_designator designator = {
         .type = KEFIR_AST_DESIGNATOR_MEMBER, .member = node->member, .next = NULL};

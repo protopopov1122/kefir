@@ -61,12 +61,14 @@ kefir_result_t kefir_ast_constant_expression_value_evaluate(struct kefir_mem *me
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node"));
     REQUIRE(value != NULL,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected valid AST constant expression value pointer"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST constant expression value pointer"));
 
-    REQUIRE(node->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected constant expression AST node"));
-    REQUIRE(node->properties.expression_props.constant_expression,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_NOT_CONSTANT, NULL, "Expected constant expression AST node"));
+    REQUIRE(
+        node->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
+        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->source_location, "Expected constant expression AST node"));
+    REQUIRE(
+        node->properties.expression_props.constant_expression,
+        KEFIR_SET_SOURCE_ERROR(KEFIR_NOT_CONSTANT, &node->source_location, "Expected constant expression AST node"));
 
     struct eval_param param = {.mem = mem, .context = context, .value = value};
     struct kefir_ast_visitor visitor;

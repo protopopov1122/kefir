@@ -31,11 +31,13 @@ kefir_result_t kefir_ast_evaluate_generic_selection_node(struct kefir_mem *mem, 
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST string literalnode"));
     REQUIRE(value != NULL,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected valid AST constant expression value pointer"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST constant expression value pointer"));
     REQUIRE(node->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected constant expression AST node"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
+                                   "Expected constant expression AST node"));
     REQUIRE(node->base.properties.expression_props.constant_expression,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_NOT_CONSTANT, NULL, "Expected constant expression AST node"));
+            KEFIR_SET_SOURCE_ERROR(KEFIR_NOT_CONSTANT, &node->base.source_location,
+                                   "Expected constant expression AST node"));
 
     const struct kefir_ast_type *control_type =
         KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->control->properties.type);
@@ -50,7 +52,7 @@ kefir_result_t kefir_ast_evaluate_generic_selection_node(struct kefir_mem *mem, 
         return kefir_ast_constant_expression_value_evaluate(mem, context, node->default_assoc, value);
     }
 
-    return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+    return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
                                   "Expected at least one of associations in generic selection to be compatible"
                                   " with control expression type");
 }
