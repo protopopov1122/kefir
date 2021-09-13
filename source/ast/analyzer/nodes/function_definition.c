@@ -76,7 +76,7 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
     REQUIRE_OK(context->define_identifier(mem, context, NULL, base->properties.function_definition.identifier, type,
                                           storage, base->properties.function_definition.function, NULL, NULL,
-                                          &scoped_id));
+                                          &node->base.source_location, &scoped_id));
     REQUIRE(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION,
             KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Scoped identifier does not correspond to function definition type"));
 
@@ -159,7 +159,7 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
                 const struct kefir_ast_scoped_identifier *param_scoped_id = NULL;
                 REQUIRE_OK(local_context->context.define_identifier(mem, &local_context->context, true, identifier,
                                                                     type, storage, function_specifier, NULL, NULL,
-                                                                    &param_scoped_id));
+                                                                    &decl_node->source_location, &param_scoped_id));
 
                 decl->base.properties.category = KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR;
                 decl->base.properties.declaration_props.alignment = 0;

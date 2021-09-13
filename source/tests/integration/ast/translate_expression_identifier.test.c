@@ -43,7 +43,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_local_context_declare_external(mem, &local_context, "extern_variable1",
                                                         kefir_ast_type_signed_int(), NULL, NULL));
     REQUIRE_OK(kefir_ast_global_context_define_external(mem, &global_context, "extern_variable2", kefir_ast_type_char(),
-                                                        NULL, NULL, NULL));
+                                                        NULL, NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_define_static(mem, &local_context, "static_variable1", kefir_ast_type_float(),
                                                      NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, &local_context, "local_var1", kefir_ast_type_bool(), NULL, NULL,

@@ -64,9 +64,9 @@ DEFINE_CASE(ast_node_analysis_conditional_operator1, "AST node analysis - condit
     struct kefir_ast_struct_type *struct_type1 = NULL;
     const struct kefir_ast_type *type1 = kefir_ast_type_structure(&kft_mem, context->type_bundle, "", &struct_type1);
 
-    ASSERT_OK(kefir_ast_global_context_declare_external(&kft_mem, &global_context, "x", type1, NULL, NULL));
+    ASSERT_OK(kefir_ast_global_context_declare_external(&kft_mem, &global_context, "x", type1, NULL, NULL, NULL));
     ASSERT_OK(kefir_ast_global_context_declare_external(&kft_mem, &global_context, "y", kefir_ast_type_unsigned_int(),
-                                                        NULL, NULL));
+                                                        NULL, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_constant(&kft_mem, &local_context, "X",
                                                       kefir_ast_constant_expression_integer(&kft_mem, 101),
                                                       type_traits->underlying_enumeration_type, NULL));
@@ -178,10 +178,10 @@ DEFINE_CASE(ast_node_analysis_conditional_operator2, "AST node analysis - condit
     struct kefir_ast_context *context = &local_context.context;
 
     ASSERT_OK(kefir_ast_global_context_declare_external(&kft_mem, &global_context, "x", kefir_ast_type_signed_int(),
-                                                        NULL, NULL));
+                                                        NULL, NULL, NULL));
     ASSERT_OK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "X",
                                                        kefir_ast_constant_expression_integer(&kft_mem, 54),
-                                                       type_traits->underlying_enumeration_type, NULL));
+                                                       type_traits->underlying_enumeration_type, NULL, NULL));
 
     const struct kefir_ast_type *TYPES[] = {kefir_ast_type_bool(),
                                             kefir_ast_type_char(),

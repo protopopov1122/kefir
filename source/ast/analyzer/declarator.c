@@ -176,7 +176,7 @@ static kefir_result_t resolve_struct_type(struct kefir_mem *mem, const struct ke
     }
 
     if (specifier->identifier != NULL && !resolved) {
-        REQUIRE_OK(context->define_tag(mem, context, type));
+        REQUIRE_OK(context->define_tag(mem, context, type, &decl_specifier->source_location));
     }
     ASSIGN_PTR(base_type, type);
     return KEFIR_OK;
@@ -213,9 +213,9 @@ static kefir_result_t resolve_enum_type(struct kefir_mem *mem, const struct kefi
             } else {
                 REQUIRE_OK(kefir_ast_enumeration_type_constant_auto(mem, context->symbols, enum_type, entry->constant));
             }
-            REQUIRE_OK(context->define_constant(mem, context, entry->constant,
-                                                kefir_ast_constant_expression_integer(mem, constant_value++),
-                                                context->type_traits->underlying_enumeration_type));
+            REQUIRE_OK(context->define_constant(
+                mem, context, entry->constant, kefir_ast_constant_expression_integer(mem, constant_value++),
+                context->type_traits->underlying_enumeration_type, &decl_specifier->source_location));
         }
     } else {
         if (specifier->identifier != NULL) {
@@ -240,7 +240,7 @@ static kefir_result_t resolve_enum_type(struct kefir_mem *mem, const struct kefi
     }
 
     if (specifier->identifier != NULL && !resolved) {
-        REQUIRE_OK(context->define_tag(mem, context, type));
+        REQUIRE_OK(context->define_tag(mem, context, type, &decl_specifier->source_location));
     }
     ASSIGN_PTR(base_type, type);
     return KEFIR_OK;

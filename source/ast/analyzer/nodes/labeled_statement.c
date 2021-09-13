@@ -43,7 +43,8 @@ kefir_result_t kefir_ast_analyze_labeled_statement_node(struct kefir_mem *mem, c
                                    "Expected AST statement node to be associated with the label"));
 
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
-    REQUIRE_OK(context->reference_label(mem, context, node->label, true, &scoped_id));
+    REQUIRE_OK(
+        context->reference_label(mem, context, node->label, true, &node->statement->source_location, &scoped_id));
     base->properties.statement_props.flow_control_point = scoped_id->label.point;
     return KEFIR_OK;
 }

@@ -48,11 +48,12 @@ static kefir_result_t context_resolve_label_identifier(const struct kefir_ast_co
     UNUSED(context);
     UNUSED(identifier);
     UNUSED(scoped_id);
-    return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Label resolving is not possible in the global scope");
+    return KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Label resolving is not possible in the global scope");
 }
 
 static kefir_result_t context_allocate_temporary_value(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                        const struct kefir_ast_type *type,
+                                                       const struct kefir_source_location *location,
                                                        struct kefir_ast_temporary_identifier *temp_id) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
@@ -64,14 +65,16 @@ static kefir_result_t context_allocate_temporary_value(struct kefir_mem *mem, co
         REQUIRE(context->temporaries->type != NULL,
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to initialize a temporary type"));
         REQUIRE_OK(kefir_ast_global_context_define_static(mem, global_ctx, KEFIR_AST_TRANSLATOR_TEMPORARIES_IDENTIFIER,
-                                                          context->temporaries->type, NULL, NULL, NULL));
+                                                          context->temporaries->type, NULL, NULL, location, NULL));
     }
     REQUIRE_OK(kefir_ast_temporaries_new_temporary(mem, context, type, temp_id));
     return KEFIR_OK;
 }
 
 static kefir_result_t context_define_tag(struct kefir_mem *mem, const struct kefir_ast_context *context,
-                                         const struct kefir_ast_type *type) {
+                                         const struct kefir_ast_type *type,
+                                         const struct kefir_source_location *location) {
+    UNUSED(location);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
@@ -83,14 +86,15 @@ static kefir_result_t context_define_tag(struct kefir_mem *mem, const struct kef
 
 static kefir_result_t context_define_constant(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                               const char *identifier, struct kefir_ast_constant_expression *value,
-                                              const struct kefir_ast_type *type) {
+                                              const struct kefir_ast_type *type,
+                                              const struct kefir_source_location *location) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
     REQUIRE(value != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST constant expression"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_global_context *, global_ctx, context->payload);
-    REQUIRE_OK(kefir_ast_global_context_define_constant(mem, global_ctx, identifier, value, type, NULL));
+    REQUIRE_OK(kefir_ast_global_context_define_constant(mem, global_ctx, identifier, value, type, location, NULL));
     return KEFIR_OK;
 }
 
@@ -98,10 +102,12 @@ static kefir_result_t context_define_identifier(
     struct kefir_mem *mem, const struct kefir_ast_context *context, kefir_bool_t declaration, const char *identifier,
     const struct kefir_ast_type *type, kefir_ast_scoped_identifier_storage_t storage_class,
     kefir_ast_function_specifier_t function_specifier, struct kefir_ast_alignment *alignment,
-    struct kefir_ast_initializer *initializer, const struct kefir_ast_scoped_identifier **scoped_id) {
+    struct kefir_ast_initializer *initializer, const struct kefir_source_location *location,
+    const struct kefir_ast_scoped_identifier **scoped_id) {
+
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
-    REQUIRE(identifier != NULL, KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+    REQUIRE(identifier != NULL, KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                                        "Empty identifiers are not permitted in the global scope"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
 
@@ -110,38 +116,39 @@ static kefir_result_t context_define_identifier(
     kefir_bool_t is_function = type->tag == KEFIR_AST_TYPE_FUNCTION;
     if (is_function) {
         REQUIRE(strcmp(identifier, type->function_type.identifier) == 0,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "Provided identifier does not much identifier from function type"));
         REQUIRE(alignment == NULL,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "Alignment specifier is not permitted in the declaration of function"));
         REQUIRE(initializer == NULL,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Function cannot be defined with initializer"));
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location, "Function cannot be defined with initializer"));
         switch (storage_class) {
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
                 REQUIRE(function_specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE,
-                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                                "Functin specifiers may only be used in function declarations"));
                 REQUIRE(declaration,
-                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                                "Typedef specifier cannot be used for function definition"));
-                REQUIRE_OK(kefir_ast_global_context_define_type(mem, global_ctx, identifier, type, scoped_id));
+                REQUIRE_OK(
+                    kefir_ast_global_context_define_type(mem, global_ctx, identifier, type, location, scoped_id));
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN:
                 if (declaration) {
                     REQUIRE_OK(kefir_ast_global_context_declare_function(mem, global_ctx, function_specifier, type,
-                                                                         scoped_id));
+                                                                         location, scoped_id));
                 } else {
-                    REQUIRE_OK(
-                        kefir_ast_global_context_define_function(mem, global_ctx, function_specifier, type, scoped_id));
+                    REQUIRE_OK(kefir_ast_global_context_define_function(mem, global_ctx, function_specifier, type,
+                                                                        location, scoped_id));
                 }
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC:
                 REQUIRE_OK(kefir_ast_global_context_define_static_function(mem, global_ctx, function_specifier, type,
-                                                                           scoped_id));
+                                                                           location, scoped_id));
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL:
@@ -149,65 +156,67 @@ static kefir_result_t context_define_identifier(
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL:
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO:
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER:
-                return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Illegal function storage-class specifier");
+                return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
+                                              "Illegal function storage-class specifier");
         }
     } else {
         REQUIRE(function_specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "Function specifiers cannot be used for non-function types"));
         REQUIRE(declaration || initializer != NULL,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "Initializer must be provided to for identifier definition"));
         switch (storage_class) {
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
-                REQUIRE(alignment == NULL, KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                REQUIRE(alignment == NULL, KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                                                   "Alignment cannot be specifier to type definitions"));
-                REQUIRE_OK(kefir_ast_global_context_define_type(mem, global_ctx, identifier, type, scoped_id));
+                REQUIRE_OK(
+                    kefir_ast_global_context_define_type(mem, global_ctx, identifier, type, location, scoped_id));
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN:
                 if (declaration) {
                     REQUIRE_OK(kefir_ast_global_context_declare_external(mem, global_ctx, identifier, type, alignment,
-                                                                         scoped_id));
+                                                                         location, scoped_id));
                 } else {
                     REQUIRE_OK(kefir_ast_global_context_define_external(mem, global_ctx, identifier, type, alignment,
-                                                                        initializer, scoped_id));
+                                                                        initializer, location, scoped_id));
                 }
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC:
                 REQUIRE_OK(kefir_ast_global_context_define_static(mem, global_ctx, identifier, type, alignment,
-                                                                  initializer, scoped_id));
+                                                                  initializer, location, scoped_id));
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL:
-                REQUIRE_OK(kefir_ast_global_context_define_external_thread_local(mem, global_ctx, identifier, type,
-                                                                                 alignment, initializer, scoped_id));
+                REQUIRE_OK(kefir_ast_global_context_define_external_thread_local(
+                    mem, global_ctx, identifier, type, alignment, initializer, location, scoped_id));
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL:
                 if (declaration) {
                     REQUIRE_OK(kefir_ast_global_context_declare_external_thread_local(mem, global_ctx, identifier, type,
-                                                                                      alignment, scoped_id));
+                                                                                      alignment, location, scoped_id));
                 } else {
                     REQUIRE_OK(kefir_ast_global_context_define_external_thread_local(
-                        mem, global_ctx, identifier, type, alignment, initializer, scoped_id));
+                        mem, global_ctx, identifier, type, alignment, initializer, location, scoped_id));
                 }
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL:
-                REQUIRE_OK(kefir_ast_global_context_define_static_thread_local(mem, global_ctx, identifier, type,
-                                                                               alignment, initializer, scoped_id));
+                REQUIRE_OK(kefir_ast_global_context_define_static_thread_local(
+                    mem, global_ctx, identifier, type, alignment, initializer, location, scoped_id));
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
                 REQUIRE_OK(kefir_ast_global_context_define_external(mem, global_ctx, identifier, type, alignment,
-                                                                    initializer, scoped_id));
+                                                                    initializer, location, scoped_id));
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO:
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER:
-                return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                               "Illegal file-scope identifier storage class");
         }
     }
@@ -217,6 +226,7 @@ static kefir_result_t context_define_identifier(
 
 static kefir_result_t context_reference_label(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                               const char *label, kefir_bool_t definition,
+                                              const struct kefir_source_location *location,
                                               const struct kefir_ast_scoped_identifier **scoped_id) {
     UNUSED(mem);
     UNUSED(context);
@@ -224,7 +234,7 @@ static kefir_result_t context_reference_label(struct kefir_mem *mem, const struc
     UNUSED(definition);
     UNUSED(scoped_id);
 
-    return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+    return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                   "Labels cannot be defined or referenced in a global context");
 }
 
@@ -232,14 +242,14 @@ static kefir_result_t context_push_block(struct kefir_mem *mem, const struct kef
     UNUSED(mem);
     UNUSED(context);
 
-    return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Blocks cannot be pushed in a global context");
+    return KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Blocks cannot be pushed in a global context");
 }
 
 static kefir_result_t context_pop_block(struct kefir_mem *mem, const struct kefir_ast_context *context) {
     UNUSED(mem);
     UNUSED(context);
 
-    return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Blocks cannot be popped in a global context");
+    return KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Blocks cannot be popped in a global context");
 }
 
 static kefir_result_t free_func_decl_context(struct kefir_mem *mem, struct kefir_list *list,
@@ -364,12 +374,13 @@ static kefir_result_t insert_ordinary_identifier(struct kefir_mem *mem, struct k
 }
 
 static kefir_result_t require_ordinary_identifier_type(struct kefir_ast_global_context *context, const char *identifier,
-                                                       kefir_ast_scoped_identifier_class_t klass) {
+                                                       kefir_ast_scoped_identifier_class_t klass,
+                                                       const struct kefir_source_location *location) {
     struct kefir_ast_scoped_identifier *scoped_id = NULL;
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->ordinary_scope, identifier, &scoped_id);
     if (res == KEFIR_OK) {
         REQUIRE(scoped_id->klass == klass,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "Cannot redefine identifier with different kind of symbol"));
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
@@ -381,13 +392,14 @@ kefir_result_t kefir_ast_global_context_declare_external(struct kefir_mem *mem,
                                                          struct kefir_ast_global_context *context,
                                                          const char *identifier, const struct kefir_ast_type *type,
                                                          struct kefir_ast_alignment *alignment,
+                                                         const struct kefir_source_location *location,
                                                          const struct kefir_ast_scoped_identifier **scoped_id) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
 
-    REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_OBJECT));
+    REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_OBJECT, location));
 
     identifier = kefir_symbol_table_insert(mem, &context->symbols, identifier, NULL);
     REQUIRE(identifier != NULL,
@@ -398,10 +410,10 @@ kefir_result_t kefir_ast_global_context_declare_external(struct kefir_mem *mem,
     if (res == KEFIR_OK) {
         REQUIRE(ordinary_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN ||
                     ordinary_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "Cannot declare the same identifier with different storage class"));
         REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, ordinary_id->object.type, type),
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "All declarations of the same identifier shall have compatible types"));
         REQUIRE_OK(kefir_ast_context_merge_alignment(mem, &ordinary_id->object.alignment, alignment));
         ordinary_id->object.type =
@@ -426,13 +438,13 @@ kefir_result_t kefir_ast_global_context_declare_external(struct kefir_mem *mem,
 kefir_result_t kefir_ast_global_context_declare_external_thread_local(
     struct kefir_mem *mem, struct kefir_ast_global_context *context, const char *identifier,
     const struct kefir_ast_type *type, struct kefir_ast_alignment *alignment,
-    const struct kefir_ast_scoped_identifier **scoped_id) {
+    const struct kefir_source_location *location, const struct kefir_ast_scoped_identifier **scoped_id) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
 
-    REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_OBJECT));
+    REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_OBJECT, location));
 
     identifier = kefir_symbol_table_insert(mem, &context->symbols, identifier, NULL);
     REQUIRE(identifier != NULL,
@@ -443,10 +455,10 @@ kefir_result_t kefir_ast_global_context_declare_external_thread_local(
     if (res == KEFIR_OK) {
         REQUIRE(ordinary_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL ||
                     ordinary_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "Cannot declare the same identifier with different storage class"));
         REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, ordinary_id->object.type, type),
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "All declarations of the same identifier shall have compatible types"));
         REQUIRE_OK(kefir_ast_context_merge_alignment(mem, &ordinary_id->object.alignment, alignment));
         ordinary_id->object.type =
@@ -472,13 +484,14 @@ kefir_result_t kefir_ast_global_context_define_external(struct kefir_mem *mem, s
                                                         const char *identifier, const struct kefir_ast_type *type,
                                                         struct kefir_ast_alignment *alignment,
                                                         struct kefir_ast_initializer *initializer,
+                                                        const struct kefir_source_location *location,
                                                         const struct kefir_ast_scoped_identifier **scoped_id) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
 
-    REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_OBJECT));
+    REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_OBJECT, location));
 
     identifier = kefir_symbol_table_insert(mem, &context->symbols, identifier, NULL);
     REQUIRE(identifier != NULL,
@@ -488,13 +501,13 @@ kefir_result_t kefir_ast_global_context_define_external(struct kefir_mem *mem, s
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->object_identifiers, identifier, &ordinary_id);
     if (res == KEFIR_OK) {
         REQUIRE(ordinary_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "Cannot declare the same identifier with different storage class"));
         REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, ordinary_id->object.type, type),
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "All declarations of the same identifier shall have compatible types"));
         REQUIRE(initializer == NULL || ordinary_id->object.initializer == NULL,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Redefinition of identifier is not permitted"));
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location, "Redefinition of identifier is not permitted"));
         REQUIRE_OK(kefir_ast_context_merge_alignment(mem, &ordinary_id->object.alignment, alignment));
         ordinary_id->object.type =
             KEFIR_AST_TYPE_COMPOSITE(mem, &context->type_bundle, context->type_traits, ordinary_id->object.type, type);
@@ -520,7 +533,7 @@ kefir_result_t kefir_ast_global_context_define_external(struct kefir_mem *mem, s
         REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
         type = props.type;
         REQUIRE(props.constant,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "Initializers of object with static storage duration shall be constant"));
 
         if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
@@ -537,13 +550,13 @@ kefir_result_t kefir_ast_global_context_define_external(struct kefir_mem *mem, s
 kefir_result_t kefir_ast_global_context_define_external_thread_local(
     struct kefir_mem *mem, struct kefir_ast_global_context *context, const char *identifier,
     const struct kefir_ast_type *type, struct kefir_ast_alignment *alignment, struct kefir_ast_initializer *initializer,
-    const struct kefir_ast_scoped_identifier **scoped_id) {
+    const struct kefir_source_location *location, const struct kefir_ast_scoped_identifier **scoped_id) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
 
-    REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_OBJECT));
+    REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_OBJECT, location));
 
     identifier = kefir_symbol_table_insert(mem, &context->symbols, identifier, NULL);
     REQUIRE(identifier != NULL,
@@ -553,13 +566,13 @@ kefir_result_t kefir_ast_global_context_define_external_thread_local(
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->object_identifiers, identifier, &ordinary_id);
     if (res == KEFIR_OK) {
         REQUIRE(ordinary_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "Cannot declare the same identifier with different storage class"));
         REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, ordinary_id->object.type, type),
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "All declarations of the same identifier shall have compatible types"));
         REQUIRE(initializer == NULL || ordinary_id->object.initializer == NULL,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Redefinition of identifier is not permitted"));
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location, "Redefinition of identifier is not permitted"));
         REQUIRE_OK(kefir_ast_context_merge_alignment(mem, &ordinary_id->object.alignment, alignment));
         ordinary_id->object.type =
             KEFIR_AST_TYPE_COMPOSITE(mem, &context->type_bundle, context->type_traits, ordinary_id->object.type, type);
@@ -585,7 +598,7 @@ kefir_result_t kefir_ast_global_context_define_external_thread_local(
         REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
         type = props.type;
         REQUIRE(props.constant,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "Initializers of object with thread local storage duration shall be constant"));
 
         if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
@@ -602,13 +615,14 @@ kefir_result_t kefir_ast_global_context_define_static(struct kefir_mem *mem, str
                                                       const char *identifier, const struct kefir_ast_type *type,
                                                       struct kefir_ast_alignment *alignment,
                                                       struct kefir_ast_initializer *initializer,
+                                                      const struct kefir_source_location *location,
                                                       const struct kefir_ast_scoped_identifier **scoped_id) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
 
-    REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_OBJECT));
+    REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_OBJECT, location));
 
     identifier = kefir_symbol_table_insert(mem, &context->symbols, identifier, NULL);
     REQUIRE(identifier != NULL,
@@ -618,15 +632,15 @@ kefir_result_t kefir_ast_global_context_define_static(struct kefir_mem *mem, str
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->object_identifiers, identifier, &ordinary_id);
     if (res == KEFIR_OK) {
         REQUIRE(ordinary_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "Cannot declare the same identifier with different storage class"));
         REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, ordinary_id->object.type, type),
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "All declarations of the same identifier shall have compatible types"));
         REQUIRE(!ordinary_id->object.external,
                 KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Identifier with static storage duration cannot be external"));
         REQUIRE(initializer == NULL || ordinary_id->object.initializer == NULL,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Redefinition of identifier is not permitted"));
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location, "Redefinition of identifier is not permitted"));
         REQUIRE_OK(kefir_ast_context_merge_alignment(mem, &ordinary_id->object.alignment, alignment));
         ordinary_id->object.type =
             KEFIR_AST_TYPE_COMPOSITE(mem, &context->type_bundle, context->type_traits, ordinary_id->object.type, type);
@@ -634,7 +648,7 @@ kefir_result_t kefir_ast_global_context_define_static(struct kefir_mem *mem, str
         REQUIRE(res == KEFIR_NOT_FOUND, res);
         if (initializer == NULL) {
             REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
-                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                            "Tentative definition with internal linkage shall have complete type"));
         }
         ordinary_id = kefir_ast_context_allocate_scoped_object_identifier(
@@ -656,7 +670,7 @@ kefir_result_t kefir_ast_global_context_define_static(struct kefir_mem *mem, str
         REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
         type = props.type;
         REQUIRE(props.constant,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "Initializers of object with static storage duration shall be constant"));
 
         if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
@@ -672,13 +686,13 @@ kefir_result_t kefir_ast_global_context_define_static(struct kefir_mem *mem, str
 kefir_result_t kefir_ast_global_context_define_static_thread_local(
     struct kefir_mem *mem, struct kefir_ast_global_context *context, const char *identifier,
     const struct kefir_ast_type *type, struct kefir_ast_alignment *alignment, struct kefir_ast_initializer *initializer,
-    const struct kefir_ast_scoped_identifier **scoped_id) {
+    const struct kefir_source_location *location, const struct kefir_ast_scoped_identifier **scoped_id) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
 
-    REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_OBJECT));
+    REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_OBJECT, location));
 
     identifier = kefir_symbol_table_insert(mem, &context->symbols, identifier, NULL);
     REQUIRE(identifier != NULL,
@@ -688,15 +702,15 @@ kefir_result_t kefir_ast_global_context_define_static_thread_local(
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->object_identifiers, identifier, &ordinary_id);
     if (res == KEFIR_OK) {
         REQUIRE(ordinary_id->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "Cannot declare the same identifier with different storage class"));
         REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, ordinary_id->object.type, type),
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "All declarations of the same identifier shall have compatible types"));
         REQUIRE(!ordinary_id->object.external,
                 KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Identifier with static storage duration cannot be external"));
         REQUIRE(initializer == NULL || ordinary_id->object.initializer == NULL,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Redefinition of identifier is not permitted"));
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location, "Redefinition of identifier is not permitted"));
         REQUIRE_OK(kefir_ast_context_merge_alignment(mem, &ordinary_id->object.alignment, alignment));
         ordinary_id->object.type =
             KEFIR_AST_TYPE_COMPOSITE(mem, &context->type_bundle, context->type_traits, ordinary_id->object.type, type);
@@ -704,7 +718,7 @@ kefir_result_t kefir_ast_global_context_define_static_thread_local(
         REQUIRE(res == KEFIR_NOT_FOUND, res);
         if (initializer == NULL) {
             REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
-                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                            "Tentative definition with internal linkage shall have complete type"));
         }
         ordinary_id = kefir_ast_context_allocate_scoped_object_identifier(
@@ -726,7 +740,7 @@ kefir_result_t kefir_ast_global_context_define_static_thread_local(
         REQUIRE_OK(kefir_ast_analyze_initializer(mem, &context->context, type, initializer, &props));
         type = props.type;
         REQUIRE(props.constant,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "Initializers of object with thread local storage duration shall be constant"));
 
         if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&qualifications)) {
@@ -743,6 +757,7 @@ kefir_result_t kefir_ast_global_context_define_constant(struct kefir_mem *mem, s
                                                         const char *identifier,
                                                         struct kefir_ast_constant_expression *value,
                                                         const struct kefir_ast_type *type,
+                                                        const struct kefir_source_location *location,
                                                         const struct kefir_ast_scoped_identifier **scoped_id_ptr) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
@@ -756,7 +771,7 @@ kefir_result_t kefir_ast_global_context_define_constant(struct kefir_mem *mem, s
     struct kefir_ast_scoped_identifier *scoped_id = NULL;
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->ordinary_scope, identifier, &scoped_id);
     if (res == KEFIR_OK) {
-        return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Cannot redefine constant");
+        return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location, "Cannot redefine constant");
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
         scoped_id = kefir_ast_context_allocate_scoped_constant(mem, value, type);
@@ -805,13 +820,15 @@ kefir_result_t kefir_ast_global_context_define_tag(struct kefir_mem *mem, struct
 
 kefir_result_t kefir_ast_global_context_define_type(struct kefir_mem *mem, struct kefir_ast_global_context *context,
                                                     const char *identifier, const struct kefir_ast_type *type,
+                                                    const struct kefir_source_location *location,
                                                     const struct kefir_ast_scoped_identifier **scoped_id) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
 
-    REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION));
+    REQUIRE_OK(
+        require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION, location));
 
     identifier = kefir_symbol_table_insert(mem, &context->symbols, identifier, NULL);
     REQUIRE(identifier != NULL,
@@ -821,7 +838,7 @@ kefir_result_t kefir_ast_global_context_define_type(struct kefir_mem *mem, struc
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->type_identifiers, identifier, &ordinary_id);
     if (res == KEFIR_OK) {
         REQUIRE(KEFIR_AST_TYPE_SAME(type, ordinary_id->type),
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "Unable to redefine different type with the same identifier"));
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
@@ -844,6 +861,7 @@ kefir_result_t kefir_ast_global_context_declare_function(struct kefir_mem *mem,
                                                          struct kefir_ast_global_context *context,
                                                          kefir_ast_function_specifier_t specifier,
                                                          const struct kefir_ast_type *function,
+                                                         const struct kefir_source_location *location,
                                                          const struct kefir_ast_scoped_identifier **scoped_id) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
@@ -853,17 +871,17 @@ kefir_result_t kefir_ast_global_context_declare_function(struct kefir_mem *mem,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected function with non-empty identifier"));
 
     const char *identifier = function->function_type.identifier;
-    REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION));
+    REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION, location));
 
     struct kefir_ast_scoped_identifier *ordinary_id = NULL;
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->function_identifiers, identifier, &ordinary_id);
     if (res == KEFIR_OK) {
         REQUIRE(ordinary_id->function.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN ||
                     ordinary_id->function.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "Cannot declare the same identifier with different storage class"));
         REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, ordinary_id->function.type, function),
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "All declarations of the same identifier shall have compatible types"));
         ordinary_id->function.type = KEFIR_AST_TYPE_COMPOSITE(mem, &context->type_bundle, context->type_traits,
                                                               ordinary_id->function.type, function);
@@ -892,6 +910,7 @@ kefir_result_t kefir_ast_global_context_declare_function(struct kefir_mem *mem,
 kefir_result_t kefir_ast_global_context_define_function(struct kefir_mem *mem, struct kefir_ast_global_context *context,
                                                         kefir_ast_function_specifier_t specifier,
                                                         const struct kefir_ast_type *function,
+                                                        const struct kefir_source_location *location,
                                                         const struct kefir_ast_scoped_identifier **scoped_id) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
@@ -901,17 +920,17 @@ kefir_result_t kefir_ast_global_context_define_function(struct kefir_mem *mem, s
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected function with non-empty identifier"));
 
     const char *identifier = function->function_type.identifier;
-    REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION));
+    REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION, location));
 
     struct kefir_ast_scoped_identifier *ordinary_id = NULL;
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->function_identifiers, identifier, &ordinary_id);
     if (res == KEFIR_OK) {
         REQUIRE(ordinary_id->function.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN ||
                     ordinary_id->function.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "Cannot declare the same identifier with different storage class"));
         REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, ordinary_id->function.type, function),
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "All declarations of the same identifier shall have compatible types"));
         ordinary_id->function.type = KEFIR_AST_TYPE_COMPOSITE(mem, &context->type_bundle, context->type_traits,
                                                               ordinary_id->function.type, function);
@@ -942,6 +961,7 @@ kefir_result_t kefir_ast_global_context_define_static_function(struct kefir_mem 
                                                                struct kefir_ast_global_context *context,
                                                                kefir_ast_function_specifier_t specifier,
                                                                const struct kefir_ast_type *function,
+                                                               const struct kefir_source_location *location,
                                                                const struct kefir_ast_scoped_identifier **scoped_id) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
@@ -951,19 +971,19 @@ kefir_result_t kefir_ast_global_context_define_static_function(struct kefir_mem 
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected function with non-empty identifier"));
 
     const char *identifier = function->function_type.identifier;
-    REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION));
+    REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION, location));
 
     struct kefir_ast_scoped_identifier *ordinary_id = NULL;
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->function_identifiers, identifier, &ordinary_id);
     if (res == KEFIR_OK) {
         REQUIRE(ordinary_id->function.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "Cannot declare the same identifier with different storage class"));
         REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, ordinary_id->function.type, function),
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "All declarations of the same identifier shall have compatible types"));
         REQUIRE(!ordinary_id->function.external,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "Function identifier with static storage cannot be external"));
         ordinary_id->function.type = KEFIR_AST_TYPE_COMPOSITE(mem, &context->type_bundle, context->type_traits,
                                                               ordinary_id->function.type, function);

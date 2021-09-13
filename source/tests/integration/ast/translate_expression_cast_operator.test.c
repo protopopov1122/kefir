@@ -69,8 +69,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     REQUIRE_OK(kefir_ast_global_context_declare_external(
         mem, &global_context, "ptr", kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_void()), NULL,
-        NULL));
-    REQUIRE_OK(kefir_ast_global_context_declare_external(mem, &global_context, "structure", type1, NULL, NULL));
+        NULL, NULL));
+    REQUIRE_OK(kefir_ast_global_context_declare_external(mem, &global_context, "structure", type1, NULL, NULL, NULL));
 
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));

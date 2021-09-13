@@ -452,26 +452,26 @@ DEFINE_CASE(ast_ordinary_constant_scope1, "AST ordinary scope - constant scoping
 
     ASSERT_OK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "c1",
                                                        kefir_ast_constant_expression_integer(&kft_mem, 1),
-                                                       type_traits->underlying_enumeration_type, NULL));
+                                                       type_traits->underlying_enumeration_type, NULL, NULL));
     ASSERT_OK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "c2",
                                                        kefir_ast_constant_expression_integer(&kft_mem, 2),
-                                                       type_traits->underlying_enumeration_type, NULL));
+                                                       type_traits->underlying_enumeration_type, NULL, NULL));
     ASSERT_OK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "c3",
                                                        kefir_ast_constant_expression_integer(&kft_mem, 3),
-                                                       type_traits->underlying_enumeration_type, NULL));
+                                                       type_traits->underlying_enumeration_type, NULL, NULL));
 
     struct kefir_ast_constant_expression *cexpr = kefir_ast_constant_expression_integer(&kft_mem, 10);
     ASSERT_NOK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "c1", cexpr,
-                                                        type_traits->underlying_enumeration_type, NULL));
+                                                        type_traits->underlying_enumeration_type, NULL, NULL));
     ASSERT_NOK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "c2", cexpr,
-                                                        type_traits->underlying_enumeration_type, NULL));
+                                                        type_traits->underlying_enumeration_type, NULL, NULL));
     ASSERT_NOK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "c3", cexpr,
-                                                        type_traits->underlying_enumeration_type, NULL));
+                                                        type_traits->underlying_enumeration_type, NULL, NULL));
     ASSERT_OK(kefir_ast_constant_expression_free(&kft_mem, cexpr));
 
     ASSERT_OK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "c4",
                                                        kefir_ast_constant_expression_integer(&kft_mem, 40),
-                                                       type_traits->underlying_enumeration_type, NULL));
+                                                       type_traits->underlying_enumeration_type, NULL, NULL));
 
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
     ASSERT_OK(kefir_ast_local_context_resolve_scoped_ordinary_identifier(&context, "c1", &scoped_id));

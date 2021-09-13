@@ -47,7 +47,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_struct_type_field(mem, context->symbols, struct_type1, "self",
                                            kefir_ast_type_pointer(mem, context->type_bundle, type1), NULL));
 
-    REQUIRE_OK(kefir_ast_global_context_declare_external(mem, &global_context, "structure", type1, NULL, NULL));
+    REQUIRE_OK(kefir_ast_global_context_declare_external(mem, &global_context, "structure", type1, NULL, NULL, NULL));
 
     struct kefir_ast_node_base *node1 = KEFIR_AST_NODE_BASE(kefir_ast_new_struct_indirect_member(
         mem, context->symbols,

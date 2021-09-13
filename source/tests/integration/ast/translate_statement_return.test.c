@@ -39,7 +39,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ast_global_context global_context;
     REQUIRE_OK(kefir_ast_global_context_init(mem, kefir_ast_default_type_traits(), &env.target_env, &global_context));
     REQUIRE_OK(kefir_ast_global_context_declare_external(mem, &global_context, "variable", kefir_ast_type_signed_int(),
-                                                         NULL, NULL));
+                                                         NULL, NULL, NULL));
 
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
@@ -60,9 +60,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         const struct kefir_ast_type *type1 =
             kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_void(), "fn0", &function_type);
         const struct kefir_ast_scoped_identifier *scoped_id = NULL;
-        REQUIRE_OK(global_context.context.define_identifier(mem, &global_context.context, true, "fn0", type1,
-                                                            KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
-                                                            KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL, &scoped_id));
+        REQUIRE_OK(global_context.context.define_identifier(
+            mem, &global_context.context, true, "fn0", type1, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
+            KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL, NULL, &scoped_id));
         local_context.context.surrounding_function = scoped_id;
 
         struct kefir_ast_return_statement *return1 = kefir_ast_new_return_statement(mem, NULL);
@@ -84,9 +84,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         const struct kefir_ast_type *type1 =
             kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_long(), "fn1", &function_type);
         const struct kefir_ast_scoped_identifier *scoped_id = NULL;
-        REQUIRE_OK(global_context.context.define_identifier(mem, &global_context.context, true, "fn1", type1,
-                                                            KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
-                                                            KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL, &scoped_id));
+        REQUIRE_OK(global_context.context.define_identifier(
+            mem, &global_context.context, true, "fn1", type1, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
+            KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL, NULL, &scoped_id));
         local_context.context.surrounding_function = scoped_id;
 
         struct kefir_ast_return_statement *return1 =
@@ -118,9 +118,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         const struct kefir_ast_type *type1 =
             kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_float(), "fn2", &function_type);
         const struct kefir_ast_scoped_identifier *scoped_id = NULL;
-        REQUIRE_OK(global_context.context.define_identifier(mem, &global_context.context, true, "fn2", type1,
-                                                            KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
-                                                            KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL, &scoped_id));
+        REQUIRE_OK(global_context.context.define_identifier(
+            mem, &global_context.context, true, "fn2", type1, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
+            KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL, NULL, &scoped_id));
         local_context.context.surrounding_function = scoped_id;
 
         struct kefir_ast_return_statement *return1 =
@@ -169,9 +169,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         const struct kefir_ast_type *type1 =
             kefir_ast_type_function(mem, context->type_bundle, type_name1->base.properties.type, "fn3", &function_type);
         const struct kefir_ast_scoped_identifier *scoped_id = NULL;
-        REQUIRE_OK(global_context.context.define_identifier(mem, &global_context.context, true, "fn3", type1,
-                                                            KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
-                                                            KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL, &scoped_id));
+        REQUIRE_OK(global_context.context.define_identifier(
+            mem, &global_context.context, true, "fn3", type1, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
+            KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL, NULL, &scoped_id));
         local_context.context.surrounding_function = scoped_id;
 
         struct kefir_ast_compound_literal *literal1 = kefir_ast_new_compound_literal(mem, type_name1);
@@ -199,9 +199,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         const struct kefir_ast_type *type1 =
             kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_char(), "fn4", &function_type);
         const struct kefir_ast_scoped_identifier *scoped_id = NULL;
-        REQUIRE_OK(global_context.context.define_identifier(mem, &global_context.context, true, "fn4", type1,
-                                                            KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
-                                                            KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL, &scoped_id));
+        REQUIRE_OK(global_context.context.define_identifier(
+            mem, &global_context.context, true, "fn4", type1, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
+            KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL, NULL, &scoped_id));
         local_context.context.surrounding_function = scoped_id;
 
         struct kefir_ast_return_statement *return1 =

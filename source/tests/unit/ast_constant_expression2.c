@@ -291,7 +291,7 @@ DEFINE_CASE(ast_constant_expression_conditional_operator2, "AST constant express
     struct kefir_ast_context *context = &local_context.context;
 
     ASSERT_OK(kefir_ast_global_context_declare_external(&kft_mem, &global_context, "variableX",
-                                                        kefir_ast_type_signed_int(), NULL, NULL));
+                                                        kefir_ast_type_signed_int(), NULL, NULL, NULL));
 
     ASSERT_INTEGER_CONST_EXPR(
         &kft_mem, context,

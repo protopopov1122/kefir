@@ -44,7 +44,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         mem, &global_context, "array1",
         kefir_ast_type_unbounded_array(mem, context->type_bundle,
                                        kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_char()), NULL),
-        NULL, NULL));
+        NULL, NULL, NULL));
 
     struct kefir_ast_node_base *node1 = KEFIR_AST_NODE_BASE(kefir_ast_new_array_subscript(
         mem,

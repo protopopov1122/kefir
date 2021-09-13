@@ -52,9 +52,10 @@ kefir_result_t kefir_ast_analyze_init_declarator_node(struct kefir_mem *mem, con
         }
 
         const struct kefir_ast_scoped_identifier *scoped_id = NULL;
-        kefir_result_t res = context->define_identifier(
-            mem, context, node->initializer == NULL, base->properties.declaration_props.identifier, type, storage,
-            base->properties.declaration_props.function, alignment, node->initializer, &scoped_id);
+        kefir_result_t res = context->define_identifier(mem, context, node->initializer == NULL,
+                                                        base->properties.declaration_props.identifier, type, storage,
+                                                        base->properties.declaration_props.function, alignment,
+                                                        node->initializer, &base->source_location, &scoped_id);
         REQUIRE_ELSE(res == KEFIR_OK, {
             if (alignment != NULL) {
                 kefir_ast_alignment_free(mem, alignment);

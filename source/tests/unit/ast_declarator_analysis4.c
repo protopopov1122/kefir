@@ -310,11 +310,11 @@ DEFINE_CASE(ast_declarator_analysis19, "AST declarator analysis - typedefs #1") 
     struct kefir_ast_context *context = &local_context.context;
 
     ASSERT_OK(kefir_ast_global_context_define_type(&kft_mem, &global_context, "someint_t", kefir_ast_type_signed_long(),
-                                                   NULL));
+                                                   NULL, NULL));
     ASSERT_OK(kefir_ast_global_context_define_type(&kft_mem, &global_context, "someint2_t", kefir_ast_type_signed_int(),
-                                                   NULL));
-    ASSERT_OK(
-        kefir_ast_global_context_define_type(&kft_mem, &global_context, "somenonint_t", kefir_ast_type_double(), NULL));
+                                                   NULL, NULL));
+    ASSERT_OK(kefir_ast_global_context_define_type(&kft_mem, &global_context, "somenonint_t", kefir_ast_type_double(),
+                                                   NULL, NULL));
 
     ASSERT_IDENTIFIER_TYPE(
         &kft_mem, context,
