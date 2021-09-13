@@ -43,6 +43,12 @@ struct kefir_ast_initializer_designation *kefir_ast_new_initializer_member_desig
     designation->indexed = false;
     designation->identifier = identifier;
     designation->next = next;
+
+    kefir_result_t res = kefir_source_location_empty(&designation->source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, designation);
+        return NULL;
+    });
     return designation;
 }
 
@@ -58,6 +64,12 @@ struct kefir_ast_initializer_designation *kefir_ast_new_initializer_index_design
     designation->indexed = true;
     designation->index = index;
     designation->next = next;
+
+    kefir_result_t res = kefir_source_location_empty(&designation->source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, designation);
+        return NULL;
+    });
     return designation;
 }
 struct kefir_ast_initializer_designation *kefir_ast_initializer_designation_clone(
@@ -90,6 +102,7 @@ struct kefir_ast_initializer_designation *kefir_ast_initializer_designation_clon
     } else {
         clone->identifier = designation->identifier;
     }
+    clone->source_location = designation->source_location;
     return clone;
 }
 

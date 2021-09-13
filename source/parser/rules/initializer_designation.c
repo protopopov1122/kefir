@@ -3,6 +3,7 @@
 
 static kefir_result_t scan_index(struct kefir_mem *mem, struct kefir_parser *parser,
                                  struct kefir_ast_initializer_designation **designation) {
+    struct kefir_source_location location = *PARSER_TOKEN_LOCATION(parser, 0);
     REQUIRE_OK(PARSER_SHIFT(parser));
     struct kefir_ast_node_base *index = NULL;
     kefir_result_t res;
@@ -25,6 +26,7 @@ static kefir_result_t scan_index(struct kefir_mem *mem, struct kefir_parser *par
         KEFIR_AST_NODE_FREE(mem, index);
         return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST initializer index designation");
     });
+    new_designation->source_location = location;
 
     *designation = new_designation;
     return KEFIR_OK;
@@ -32,6 +34,7 @@ static kefir_result_t scan_index(struct kefir_mem *mem, struct kefir_parser *par
 
 static kefir_result_t scan_member(struct kefir_mem *mem, struct kefir_parser *parser,
                                   struct kefir_ast_initializer_designation **designation) {
+    struct kefir_source_location location = *PARSER_TOKEN_LOCATION(parser, 0);
     REQUIRE_OK(PARSER_SHIFT(parser));
     REQUIRE(PARSER_TOKEN_IS_IDENTIFIER(parser, 0),
             KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected identifier"));
@@ -41,6 +44,7 @@ static kefir_result_t scan_member(struct kefir_mem *mem, struct kefir_parser *pa
         kefir_ast_new_initializer_member_designation(mem, parser->symbols, identifier, *designation);
     REQUIRE(new_designation != NULL,
             KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST initializer index designation"));
+    new_designation->source_location = location;
     *designation = new_designation;
     return KEFIR_OK;
 }

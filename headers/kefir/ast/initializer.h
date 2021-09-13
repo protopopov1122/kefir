@@ -34,6 +34,7 @@ typedef struct kefir_ast_initializer_designation {
     };
 
     struct kefir_ast_initializer_designation *next;
+    struct kefir_source_location source_location;
 } kefir_ast_initializer_designation_t;
 
 typedef enum kefir_ast_initializer_type {

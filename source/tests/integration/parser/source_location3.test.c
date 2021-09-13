@@ -27,7 +27,12 @@
 
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     const char SOURCE_CODE[] = "int ints[] = { 0, 1, 2, 3, [100] = 100 };\n"
-                               "char string[] = {{{\"Hello world\"}}};";
+                               "char string[] = {{{\"Hello world\"}}};\n"
+                               "int ints[3][3] = {\n"
+                               "    [0][0] = 1,\n"
+                               "    [1][1] = 2,\n"
+                               "    [2] = { 1, 2, 3 }\n"
+                               "};";
 
     struct kefir_symbol_table symbols;
     struct kefir_lexer_source_cursor source_cursor;
