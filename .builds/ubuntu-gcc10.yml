@@ -1,0 +1,17 @@
+image: ubuntu/focal
+packages:
+  - build-essential
+  - gcc-10
+  - nasm
+  - valgrind
+  - xsltproc
+sources:
+  - https://git.sr.ht/~jprotopopov/kefir
+tasks:
+  - test: |
+      cd kefir
+      make test MEMCHECK=yes OPT=-O3 SANITIZE=undefined CC=gcc-10 -j$(nproc)
+  - build: |
+      cd kefir
+      make clean
+      make all OPT=-O3 CC=gcc-10
