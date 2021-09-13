@@ -422,7 +422,7 @@ DEFINE_CASE(ast_type_construction4, "AST Types - enum type") {
     ASSERT_OK(kefir_ast_enumeration_type_constant(&kft_mem, context->symbols, enum1_type, "c10",
                                                   kefir_ast_constant_expression_integer(&kft_mem, 0)));
     ASSERT(kefir_list_length(&enum1_type->enumerators) == 6);
-    ASSERT_OK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type1));
+    ASSERT_OK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type1, NULL));
     ASSERT_ENUM_CONSTANT(enum1_type, "c1", 10);
     ASSERT_ENUM_CONSTANT(enum1_type, "c2", 11);
     ASSERT_ENUM_CONSTANT(enum1_type, "c3", 12);

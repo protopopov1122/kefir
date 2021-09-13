@@ -279,7 +279,7 @@ DEFINE_CASE(ast_declarator_analysis9, "AST declarator analysis - enum declarator
     ASSERT_OK(kefir_ast_enumeration_type_constant_auto(&kft_mem, context->symbols, enum_type2, "D"));
     ASSERT_OK(kefir_ast_enumeration_type_constant(&kft_mem, context->symbols, enum_type2, "CONST1",
                                                   kefir_ast_constant_expression_integer(&kft_mem, 200)));
-    ASSERT_OK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type2));
+    ASSERT_OK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type2, NULL));
 
     ASSERT_IDENTIFIER_TYPE(
         &kft_mem, context,
@@ -308,7 +308,7 @@ DEFINE_CASE(ast_declarator_analysis9, "AST declarator analysis - enum declarator
     ASSERT_OK(kefir_ast_enumeration_type_constant_auto(&kft_mem, context->symbols, enum_type3, "THREE"));
     ASSERT_OK(kefir_ast_enumeration_type_constant(&kft_mem, context->symbols, enum_type3, "TEN",
                                                   kefir_ast_constant_expression_integer(&kft_mem, 10)));
-    ASSERT_OK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type3));
+    ASSERT_OK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type3, NULL));
 
     ASSERT_IDENTIFIER_TYPE(
         &kft_mem, context,

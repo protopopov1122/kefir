@@ -316,7 +316,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators5, "AST node analysis - declaratio
     ASSERT_OK(kefir_ast_enumeration_type_constant_auto(&kft_mem, context->symbols, enum_type1, "YVAL"));
     ASSERT_OK(kefir_ast_enumeration_type_constant(&kft_mem, context->symbols, enum_type1, "AVAL",
                                                   kefir_ast_constant_expression_integer(&kft_mem, 0)));
-    ASSERT_OK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type1));
+    ASSERT_OK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type1, NULL));
 
     ASSERT(decl1->base.properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR);
     ASSERT(KEFIR_AST_TYPE_SAME(decl1->base.properties.type, type1));
@@ -889,7 +889,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators11, "AST node analysis - declarati
                                kefir_ast_type_incomplete_union(&kft_mem, context->type_bundle, "UniOn")),
         &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN}));
     ASSERT_OK(kefir_ast_type_function_ellipsis(func_type2, true));
-    ASSERT_OK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type2));
+    ASSERT_OK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type2, NULL));
 
     ASSERT(scoped_id1->function.external);
     ASSERT(scoped_id1->function.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);

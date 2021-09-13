@@ -25,6 +25,7 @@
 #include "kefir/ast/node.h"
 #include "kefir/ast/context.h"
 #include "kefir/ast/alignment.h"
+#include "kefir/core/source_location.h"
 
 kefir_result_t kefir_ast_analyze_constant_expression(struct kefir_mem *, const struct kefir_ast_context *,
                                                      struct kefir_ast_constant_expression *);
@@ -45,6 +46,7 @@ kefir_result_t kefir_ast_analyze_node(struct kefir_mem *, const struct kefir_ast
                                       struct kefir_ast_node_base *);
 
 kefir_result_t kefir_ast_analyze_type(struct kefir_mem *, const struct kefir_ast_context *,
-                                      kefir_ast_type_analysis_context_t, const struct kefir_ast_type *);
+                                      kefir_ast_type_analysis_context_t, const struct kefir_ast_type *,
+                                      const struct kefir_source_location *);
 
 #endif

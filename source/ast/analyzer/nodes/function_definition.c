@@ -46,7 +46,7 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
     REQUIRE_OK(kefir_ast_analyze_declaration(mem, context, &node->specifiers, node->declarator,
                                              &base->properties.function_definition.identifier, &type, &storage,
                                              &base->properties.function_definition.function, &alignment));
-    REQUIRE_OK(kefir_ast_analyze_type(mem, context, context->type_analysis_context, type));
+    REQUIRE_OK(kefir_ast_analyze_type(mem, context, context->type_analysis_context, type, &node->base.source_location));
 
     REQUIRE(type->tag == KEFIR_AST_TYPE_FUNCTION,
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,

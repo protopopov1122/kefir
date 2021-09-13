@@ -58,7 +58,7 @@ kefir_result_t append_specifiers(struct kefir_mem *, struct kefir_ast_declarator
         const char *identifier = NULL;                                                                                 \
         ASSERT_OK(kefir_ast_analyze_declaration((_mem), (_context), &specifiers, declarator, &identifier, &type,       \
                                                 &storage, &function_specifier, &alignment));                           \
-        ASSERT_OK(kefir_ast_analyze_type((_mem), (_context), KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type));                  \
+        ASSERT_OK(kefir_ast_analyze_type((_mem), (_context), KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type, NULL));            \
                                                                                                                        \
         ASSERT(strcmp(identifier, "var") == 0);                                                                        \
         ASSERT(type != NULL);                                                                                          \
