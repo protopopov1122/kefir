@@ -34,7 +34,8 @@ static kefir_result_t visit_non_constant_expression(const struct kefir_ast_visit
     UNUSED(visitor);
     UNUSED(base);
     UNUSED(payload);
-    return KEFIR_SET_SOURCE_ERROR(KEFIR_NOT_CONSTANT, NULL, "Unable to evaluate non-constant AST node");
+    return KEFIR_SET_SOURCE_ERROR(KEFIR_NOT_CONSTANT, &base->source_location,
+                                  "Unable to evaluate non-constant AST node");
 }
 
 #define VISITOR(_id, _type)                                                                                    \

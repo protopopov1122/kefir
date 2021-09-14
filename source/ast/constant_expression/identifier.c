@@ -72,7 +72,8 @@ kefir_result_t kefir_ast_evaluate_identifier_node(struct kefir_mem *mem, const s
         case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_TAG:
         case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION:
         case KEFIR_AST_SCOPE_IDENTIFIER_LABEL:
-            return KEFIR_SET_SOURCE_ERROR(KEFIR_NOT_CONSTANT, NULL, "Expected object or constant identifier");
+            return KEFIR_SET_SOURCE_ERROR(KEFIR_NOT_CONSTANT, &node->base.source_location,
+                                          "Expected object or constant identifier");
     }
     return KEFIR_OK;
 }

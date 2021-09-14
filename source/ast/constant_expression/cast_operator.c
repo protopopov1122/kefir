@@ -107,7 +107,7 @@ kefir_result_t kefir_ast_evaluate_cast_operator_node(struct kefir_mem *mem, cons
                 return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Non-evaluated constant expression");
         }
     } else {
-        return KEFIR_SET_SOURCE_ERROR(KEFIR_NOT_CONSTANT, NULL, "Expected constant expression");
+        return KEFIR_SET_SOURCE_ERROR(KEFIR_NOT_CONSTANT, &node->base.source_location, "Expected constant expression");
     }
     return KEFIR_OK;
 }

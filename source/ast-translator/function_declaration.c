@@ -66,7 +66,7 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(
             REQUIRE(
                 param->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION ||
                     param->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &param->source_location,
                                        "Function declaration parameter shall be either expression, or declaration"));
             param_type = adjust_untyped_parameter(mem, type_bundle, type_traits, param->properties.type);
             REQUIRE(param_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unable to adjust untyped parameter"));
