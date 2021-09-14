@@ -31,6 +31,7 @@ kefir_result_t kefir_set_source_error(kefir_result_t code, const struct kefir_so
     }
 
     struct kefir_source_error *source_error = (struct kefir_source_error *) error->payload;
+    error->payload_type = KEFIR_ERROR_PAYLOAD_SOURCE_LOCATION;
     if (location != NULL) {
         source_error->source_location = *location;
         snprintf(source_error->message, KEFIR_SOURCE_ERROR_MESSAGE_LENGTH, "%s@%u:%u %s", location->source,

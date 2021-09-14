@@ -27,11 +27,19 @@
 #define KEFIR_ERROR_STACK_SIZE 32
 #define KEFIR_ERROR_PAYLOAD_LENGTH 256
 
+typedef enum kefir_error_payload_type {
+    KEFIR_ERROR_PAYLOAD_NONE,
+    KEFIR_ERROR_PAYLOAD_SOURCE_LOCATION,
+    KEFIR_ERROR_PAYLOAD_STRING,
+} kefir_error_payload_type_t;
+
 typedef struct kefir_error {
     kefir_result_t code;
     const char *message;
     const char *file;
     unsigned int line;
+
+    kefir_error_payload_type_t payload_type;
     _Alignas(max_align_t) char payload[KEFIR_ERROR_PAYLOAD_LENGTH];
 
     kefir_bool_t error_overflow;
@@ -43,5 +51,8 @@ void kefir_clear_error();
 kefir_result_t kefir_set_error(kefir_result_t, const char *, const char *, unsigned int, struct kefir_error **);
 
 #define KEFIR_SET_ERROR(code, message) kefir_set_error((code), (message), __FILE__, __LINE__, NULL)
+
+kefir_result_t kefir_set_errorf(kefir_result_t, const char *, const char *, unsigned int, struct kefir_error **, ...);
+#define KEFIR_SET_ERRORF(code, message, ...) kefir_set_errorf((code), (message), __FILE__, __LINE__, NULL, __VA_ARGS__)
 
 #endif

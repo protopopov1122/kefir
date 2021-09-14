@@ -20,6 +20,8 @@
 
 #include "kefir/core/error.h"
 #include <string.h>
+#include <stdarg.h>
+#include <stdio.h>
 
 static _Thread_local kefir_size_t next_error_index = 0;
 static _Thread_local struct kefir_error error_stack[KEFIR_ERROR_STACK_SIZE];
@@ -60,8 +62,29 @@ kefir_result_t kefir_set_error(kefir_result_t code, const char *message, const c
     }
     current_error->error_overflow = ++next_error_index == KEFIR_ERROR_STACK_SIZE;
     memset(current_error->payload, 0, KEFIR_ERROR_PAYLOAD_LENGTH);
+    current_error->payload_type = KEFIR_ERROR_PAYLOAD_NONE;
     if (error_ptr != NULL) {
         *error_ptr = current_error;
     }
     return code;
+}
+
+kefir_result_t kefir_set_errorf(kefir_result_t code, const char *fmt, const char *file, unsigned int line,
+                                struct kefir_error **error_ptr, ...) {
+    struct kefir_error *error = NULL;
+    kefir_result_t res = kefir_set_error(code, fmt, file, line, &error);
+    if (error == NULL) {
+        return res;
+    }
+
+    va_list args;
+    va_start(args, error_ptr);
+    vsnprintf(error->payload, KEFIR_ERROR_PAYLOAD_LENGTH, fmt, args);
+    va_end(args);
+    error->message = error->payload;
+
+    if (error_ptr != NULL) {
+        *error_ptr = error;
+    }
+    return res;
 }

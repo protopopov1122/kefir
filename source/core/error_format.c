@@ -145,6 +145,11 @@ void kefir_format_error(FILE *out, const struct kefir_error *error) {
                 subclass = "Out of space";
                 break;
 
+            case KEFIR_UI_ERROR:
+                class = "Error";
+                subclass = "Parameters";
+                break;
+
             case KEFIR_LEXER_ERROR:
                 class = "Error";
                 subclass = "Lexer";

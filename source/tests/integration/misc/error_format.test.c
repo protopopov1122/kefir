@@ -49,6 +49,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Feature is not supported");
     KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Feature is not implemented yet");
     KEFIR_SET_ERROR(KEFIR_OUT_OF_SPACE, "Out of space issue");
+    KEFIR_SET_ERROR(KEFIR_UI_ERROR, "Unexpected option");
     KEFIR_SET_ERROR(KEFIR_LEXER_ERROR, "Lexing issue");
     KEFIR_SET_ERROR(KEFIR_SYNTAX_ERROR, "Syntax error detected");
     KEFIR_SET_ERROR(KEFIR_ANALYSIS_ERROR, "Analysis error detected");
