@@ -1,0 +1,18 @@
+Kefir C11 compiler
+Usage: kefir [OPTIONS] [INPUT FILE]
+
+Options:
+    -h,--help               Print this help text
+    -o,--output file        Print output to the file instead of stdout
+    --dump-asm              Print assembly output
+    --dump-ir               Print intermediate representation (IR) bytecode
+    --dump-ast              Print abstract syntax tree (AST)
+    --dump-tokens           Print tokens
+    -D,--detailed-output    Include references to source file in AST and token dumps
+
+If no input file is provided, stdin will be used.
+
+License: GNU GPLv3
+Author: Jevgenijs Protopopovs
+Website: https://github.com/protopopov1122/Kefir
+Contacts: jprotopopov1122@gmail.com

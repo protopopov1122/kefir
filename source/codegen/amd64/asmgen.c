@@ -264,7 +264,7 @@ static kefir_result_t amd64_close(struct kefir_amd64_asmgen *asmgen) {
     REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator"));
     FILE *out = (FILE *) asmgen->data;
     REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid output file for AMD64 assembly"));
-    fclose(out);
+    fflush(out);
     return KEFIR_OK;
 }
 

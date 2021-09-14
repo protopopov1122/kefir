@@ -79,7 +79,8 @@ kefir_result_t kefir_compiler_context_free(struct kefir_mem *mem, struct kefir_c
 }
 
 kefir_result_t kefir_compiler_lex(struct kefir_mem *mem, struct kefir_compiler_context *context,
-                                  struct kefir_token_buffer *buffer, const char *content, kefir_size_t length) {
+                                  struct kefir_token_buffer *buffer, const char *content, kefir_size_t length,
+                                  const char *source_id) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler context"));
     REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));
@@ -87,7 +88,7 @@ kefir_result_t kefir_compiler_lex(struct kefir_mem *mem, struct kefir_compiler_c
 
     struct kefir_lexer_source_cursor source_cursor;
     struct kefir_lexer lexer;
-    REQUIRE_OK(kefir_lexer_source_cursor_init(&source_cursor, content, length, ""));
+    REQUIRE_OK(kefir_lexer_source_cursor_init(&source_cursor, content, length, source_id));
     REQUIRE_OK(kefir_lexer_init(mem, &lexer, &context->ast_global_context.symbols, &source_cursor,
                                 &context->profile->parser_integrals));
     kefir_result_t res = kefir_token_buffer_consume(mem, buffer, &lexer);
@@ -133,16 +134,17 @@ kefir_result_t kefir_compiler_parse(struct kefir_mem *mem, struct kefir_compiler
 }
 
 kefir_result_t kefir_compiler_parse_source(struct kefir_mem *mem, struct kefir_compiler_context *context,
-                                           const char *content, kefir_size_t length,
+                                           const char *content, kefir_size_t length, const char *source_id,
                                            struct kefir_ast_translation_unit **unit_ptr) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler context"));
     REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid content"));
+    REQUIRE(source_id != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid source identifier"));
     REQUIRE(unit_ptr != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer AST translation unit"));
 
     struct kefir_token_buffer tokens;
     REQUIRE_OK(kefir_token_buffer_init(mem, &tokens));
-    kefir_result_t res = kefir_compiler_lex(mem, context, &tokens, content, length);
+    kefir_result_t res = kefir_compiler_lex(mem, context, &tokens, content, length, source_id);
     REQUIRE_CHAIN(&res, kefir_compiler_parse(mem, context, &tokens, unit_ptr));
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_token_buffer_free(mem, &tokens);

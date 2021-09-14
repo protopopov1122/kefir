@@ -27,6 +27,7 @@
 #include "kefir/core/symbol_table.h"
 #include "kefir/core/trie.h"
 #include "kefir/parser/context.h"
+#include "kefir/util/json.h"
 
 typedef struct kefir_lexer {
     struct kefir_symbol_table *symbols;
