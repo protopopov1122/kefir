@@ -66,13 +66,14 @@ static kefir_result_t define_conditional_function(struct kefir_mem *mem, struct 
 
     REQUIRE_OK(kefir_ast_local_context_define_auto(
         mem, context_manager->local, "str",
-        KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context_manager->current->type_bundle, arg_type), NULL, NULL, NULL));
+        KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context_manager->current->type_bundle, arg_type), NULL, NULL, NULL,
+        NULL));
     REQUIRE_OK(kefir_list_insert_after(
         mem, &func->args, kefir_list_tail(&func->args),
         KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "str"))));
 
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "chr", kefir_ast_type_char(), NULL,
-                                                   NULL, NULL));
+                                                   NULL, NULL, NULL));
     REQUIRE_OK(kefir_list_insert_after(
         mem, &func->args, kefir_list_tail(&func->args),
         KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "chr"))));

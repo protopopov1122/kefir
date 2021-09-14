@@ -74,10 +74,11 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         NULL, NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_declare_external(
         mem, &local_context, "variable4", kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_float()),
-        NULL, NULL));
-    REQUIRE_OK(kefir_ast_local_context_define_static(mem, &local_context, "variable5", type1, NULL, NULL, NULL));
-    REQUIRE_OK(kefir_ast_local_context_define_auto(
-        mem, &local_context, "variable6", kefir_ast_type_pointer(mem, context->type_bundle, type2), NULL, NULL, NULL));
+        NULL, NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_define_static(mem, &local_context, "variable5", type1, NULL, NULL, NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, &local_context, "variable6",
+                                                   kefir_ast_type_pointer(mem, context->type_bundle, type2), NULL, NULL,
+                                                   NULL, NULL));
 
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));

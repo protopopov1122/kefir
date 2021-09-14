@@ -58,9 +58,10 @@ static kefir_result_t define_array_sum_function(struct kefir_mem *mem, struct fu
 
     REQUIRE_OK(kefir_ast_local_context_define_auto(
         mem, context_manager->local, "array",
-        kefir_ast_type_pointer(mem, context_manager->current->type_bundle, kefir_ast_type_float()), NULL, NULL, NULL));
+        kefir_ast_type_pointer(mem, context_manager->current->type_bundle, kefir_ast_type_float()), NULL, NULL, NULL,
+        NULL));
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "index", kefir_ast_type_signed_long(),
-                                                   NULL, NULL, NULL));
+                                                   NULL, NULL, NULL, NULL));
 
     REQUIRE_OK(kefir_list_insert_after(
         mem, &func->args, kefir_list_tail(&func->args),

@@ -418,7 +418,7 @@ DEFINE_CASE(ast_declarator_analysis20, "AST declarator analysis - typedefs #2") 
     ASSERT_OK(kefir_ast_structure_specifier_append_entry(&kft_mem, specifier1, entry5));
 
     ASSERT_NODECL_TYPE(&kft_mem, context, type1, 1, kefir_ast_type_specifier_struct(&kft_mem, specifier1));
-    ASSERT_OK(kefir_ast_local_context_define_type(&kft_mem, &local_context, "structure_one_t", type1, NULL));
+    ASSERT_OK(kefir_ast_local_context_define_type(&kft_mem, &local_context, "structure_one_t", type1, NULL, NULL));
 
     ASSERT_IDENTIFIER_TYPE(&kft_mem, context,
                            kefir_ast_type_qualified(&kft_mem, context->type_bundle, type1,

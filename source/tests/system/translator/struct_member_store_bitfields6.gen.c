@@ -57,9 +57,10 @@ static kefir_result_t define_modify_function(struct kefir_mem *mem, struct funct
     REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context));
     REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager));
 
-    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "param", param_type, NULL, NULL, NULL));
+    REQUIRE_OK(
+        kefir_ast_local_context_define_auto(mem, context_manager->local, "param", param_type, NULL, NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "value", kefir_ast_type_signed_long(),
-                                                   NULL, NULL, NULL));
+                                                   NULL, NULL, NULL, NULL));
 
     REQUIRE_OK(kefir_list_insert_after(
         mem, &func->args, kefir_list_tail(&func->args),

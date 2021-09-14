@@ -63,12 +63,12 @@ static kefir_result_t define_set_array_function(struct kefir_mem *mem, struct fu
     REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context));
     REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager));
 
-    REQUIRE_OK(
-        kefir_ast_local_context_define_auto(mem, context_manager->local, "array", pointer_type, NULL, NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "array", pointer_type, NULL, NULL, NULL,
+                                                   NULL));
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "index", kefir_ast_type_unsigned_int(),
-                                                   NULL, NULL, NULL));
-    REQUIRE_OK(
-        kefir_ast_local_context_define_auto(mem, context_manager->local, "value", element_type, NULL, NULL, NULL));
+                                                   NULL, NULL, NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "value", element_type, NULL, NULL, NULL,
+                                                   NULL));
 
     REQUIRE_OK(kefir_list_insert_after(
         mem, &func->args, kefir_list_tail(&func->args),
@@ -114,10 +114,10 @@ static kefir_result_t define_get_array_function(struct kefir_mem *mem, struct fu
     REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context));
     REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager));
 
-    REQUIRE_OK(
-        kefir_ast_local_context_define_auto(mem, context_manager->local, "array", pointer_type, NULL, NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "array", pointer_type, NULL, NULL, NULL,
+                                                   NULL));
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "index", kefir_ast_type_unsigned_int(),
-                                                   NULL, NULL, NULL));
+                                                   NULL, NULL, NULL, NULL));
 
     REQUIRE_OK(kefir_list_insert_after(
         mem, &func->args, kefir_list_tail(&func->args),

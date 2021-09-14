@@ -421,13 +421,13 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_local_external,
         &kft_mem, &global_context.type_bundle, function3, NULL,
         kefir_ast_type_pointer(&kft_mem, &global_context.type_bundle, kefir_ast_type_double()), NULL));
 
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &context, "func1", func1_type1, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &context, "func1", func1_type1, NULL, NULL, NULL));
 
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
     ASSERT_OK(kefir_ast_local_context_resolve_scoped_ordinary_identifier(&context, "func1", &scoped_id));
     ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->type, func1_type1));
 
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &context, "func1", func1_type2, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &context, "func1", func1_type2, NULL, NULL, NULL));
 
     ASSERT_OK(kefir_ast_local_context_resolve_scoped_ordinary_identifier(&context, "func1", &scoped_id));
     ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->type, func1_type3));
@@ -505,15 +505,15 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_local_thread_local_external,
         &kft_mem, &global_context.type_bundle, function3, NULL,
         kefir_ast_type_pointer(&kft_mem, &global_context.type_bundle, kefir_ast_type_double()), NULL));
 
-    ASSERT_OK(
-        kefir_ast_local_context_declare_external_thread_local(&kft_mem, &context, "func1", func1_type1, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external_thread_local(&kft_mem, &context, "func1", func1_type1, NULL,
+                                                                    NULL, NULL));
 
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
     ASSERT_OK(kefir_ast_local_context_resolve_scoped_ordinary_identifier(&context, "func1", &scoped_id));
     ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->type, func1_type1));
 
-    ASSERT_OK(
-        kefir_ast_local_context_declare_external_thread_local(&kft_mem, &context, "func1", func1_type2, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external_thread_local(&kft_mem, &context, "func1", func1_type2, NULL,
+                                                                    NULL, NULL));
 
     ASSERT_OK(kefir_ast_local_context_resolve_scoped_ordinary_identifier(&context, "func1", &scoped_id));
     ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->type, func1_type3));

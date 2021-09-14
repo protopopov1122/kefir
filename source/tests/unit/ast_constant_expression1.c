@@ -82,19 +82,19 @@ DEFINE_CASE(ast_constant_expression_identifier1, "AST constant expressions - ide
 
     ASSERT_OK(kefir_ast_local_context_define_constant(&kft_mem, &local_context, "x",
                                                       kefir_ast_constant_expression_integer(&kft_mem, 0),
-                                                      type_traits->underlying_enumeration_type, NULL));
+                                                      type_traits->underlying_enumeration_type, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_constant(&kft_mem, &local_context, "y",
                                                       kefir_ast_constant_expression_integer(&kft_mem, 1),
-                                                      type_traits->underlying_enumeration_type, NULL));
+                                                      type_traits->underlying_enumeration_type, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_constant(&kft_mem, &local_context, "z",
                                                       kefir_ast_constant_expression_integer(&kft_mem, 2),
-                                                      type_traits->underlying_enumeration_type, NULL));
+                                                      type_traits->underlying_enumeration_type, NULL, NULL));
 
     ASSERT_OK(kefir_ast_local_context_define_auto(
         &kft_mem, &local_context, "var1",
         kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_signed_char(),
                                  (struct kefir_ast_type_qualification){.constant = true}),
-        NULL, NULL, NULL));
+        NULL, NULL, NULL, NULL));
 
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context, kefir_ast_new_identifier(&kft_mem, context->symbols, "x"), 0);
     ASSERT_INTEGER_CONST_EXPR(&kft_mem, context, kefir_ast_new_identifier(&kft_mem, context->symbols, "y"), 1);

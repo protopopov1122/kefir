@@ -61,9 +61,10 @@ static kefir_result_t define_conditional_function(struct kefir_mem *mem, struct 
 
     func->local_context.context.surrounding_function = scoped_id;
 
-    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "matrix", arg_type, NULL, NULL, NULL));
+    REQUIRE_OK(
+        kefir_ast_local_context_define_auto(mem, context_manager->local, "matrix", arg_type, NULL, NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "dim", kefir_ast_type_unsigned_int(),
-                                                   NULL, NULL, NULL));
+                                                   NULL, NULL, NULL, NULL));
     REQUIRE_OK(kefir_list_insert_after(
         mem, &func->args, kefir_list_tail(&func->args),
         KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "matrix"))));

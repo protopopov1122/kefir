@@ -60,7 +60,7 @@ static kefir_result_t define_conditional_function(struct kefir_mem *mem, struct 
     REQUIRE_OK(kefir_ast_local_context_define_auto(
         mem, context_manager->local, "index",
         KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context_manager->current->type_bundle, kefir_ast_type_unsigned_long()),
-        NULL, NULL, NULL));
+        NULL, NULL, NULL, NULL));
     REQUIRE_OK(kefir_list_insert_after(
         mem, &func->args, kefir_list_tail(&func->args),
         KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "index"))));

@@ -41,20 +41,20 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     const struct kefir_ast_context *context = &local_context.context;
 
     REQUIRE_OK(kefir_ast_local_context_declare_external(mem, &local_context, "extern_variable1",
-                                                        kefir_ast_type_signed_int(), NULL, NULL));
+                                                        kefir_ast_type_signed_int(), NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_global_context_define_external(mem, &global_context, "extern_variable2", kefir_ast_type_char(),
                                                         NULL, NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_define_static(mem, &local_context, "static_variable1", kefir_ast_type_float(),
-                                                     NULL, NULL, NULL));
+                                                     NULL, NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, &local_context, "local_var1", kefir_ast_type_bool(), NULL, NULL,
-                                                   NULL));
+                                                   NULL, NULL));
 
     struct kefir_ast_constant_expression *const_expr_X =
         kefir_ast_new_constant_expression(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 10)));
     REQUIRE_OK(kefir_ast_analyze_constant_expression(mem, context, const_expr_X));
     REQUIRE_OK(kefir_ast_constant_expression_evaluate(mem, context, const_expr_X));
     REQUIRE_OK(kefir_ast_local_context_define_constant(mem, &local_context, "X", const_expr_X,
-                                                       context->type_traits->underlying_enumeration_type, NULL));
+                                                       context->type_traits->underlying_enumeration_type, NULL, NULL));
 
     struct kefir_ast_node_base *node1 =
         KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "extern_variable1"));

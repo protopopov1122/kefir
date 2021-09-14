@@ -73,7 +73,7 @@ DEFINE_CASE(ast_node_analysis_simple_assignment_operator1, "AST node analysis - 
     ASSERT_OK(kefir_ast_global_context_declare_external(&kft_mem, &global_context, "z", type1, NULL, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_define_constant(&kft_mem, &local_context, "X",
                                                       kefir_ast_constant_expression_integer(&kft_mem, 300),
-                                                      type_traits->underlying_enumeration_type, NULL));
+                                                      type_traits->underlying_enumeration_type, NULL, NULL));
     ASSERT_OK(kefir_ast_global_context_declare_external(&kft_mem, &global_context, "w", kefir_ast_type_unsigned_char(),
                                                         NULL, NULL, NULL));
     ASSERT_OK(kefir_ast_global_context_declare_external(&kft_mem, &global_context, "a", kefir_ast_type_float(), NULL,
@@ -284,14 +284,14 @@ DEFINE_CASE(ast_node_analysis_simple_assignment_operator3, "AST node analysis - 
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, union_type4, "l",
                                           kefir_ast_type_pointer(&kft_mem, context->type_bundle, type1), NULL));
 
-    ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context, "x1", type1, NULL, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context, "x2", type1, NULL, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context, "y1", type2, NULL, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context, "y2", type2, NULL, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context, "z1", type3, NULL, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context, "z2", type3, NULL, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context, "w1", type4, NULL, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context, "w2", type4, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context, "x1", type1, NULL, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context, "x2", type1, NULL, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context, "y1", type2, NULL, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context, "y2", type2, NULL, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context, "z1", type3, NULL, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context, "z2", type3, NULL, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context, "w1", type4, NULL, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &local_context, "w2", type4, NULL, NULL, NULL, NULL));
 
     ASSERT_SIMPLE_ASSIGNMENT(&kft_mem, context,
                              KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x1")),
@@ -397,12 +397,12 @@ DEFINE_CASE(ast_node_analysis_simple_assignment_operator4, "AST node analysis - 
             &kft_mem, context->type_bundle, kefir_ast_type_signed_int(),
             (struct kefir_ast_type_qualification){.constant = true, .restricted = true, .volatile_type = true}));
 
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "a", type1, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "b", type2, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "c", type3, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "d", type4, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "e", type5, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "f", type6, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "a", type1, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "b", type2, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "c", type3, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "d", type4, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "e", type5, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "f", type6, NULL, NULL, NULL));
 
     ASSERT_SIMPLE_ASSIGNMENT(&kft_mem, context,
                              KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "a")),
@@ -592,12 +592,12 @@ DEFINE_CASE(ast_node_analysis_simple_assignment_operator5, "AST node analysis - 
             &kft_mem, context->type_bundle, kefir_ast_type_void(),
             (struct kefir_ast_type_qualification){.constant = true, .restricted = true, .volatile_type = true}));
 
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "a", type1, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "b", type2, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "c", type3, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "x", type4, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "y", type5, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "z", type6, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "a", type1, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "b", type2, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "c", type3, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "x", type4, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "y", type5, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "z", type6, NULL, NULL, NULL));
 
     ASSERT_SIMPLE_ASSIGNMENT(&kft_mem, context,
                              KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "a")),
@@ -715,12 +715,12 @@ DEFINE_CASE(ast_node_analysis_simple_assignment_operator6, "AST node analysis - 
             &kft_mem, context->type_bundle, kefir_ast_type_void(),
             (struct kefir_ast_type_qualification){.constant = true, .restricted = true, .volatile_type = true}));
 
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "a", type1, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "b", type2, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "c", type3, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "x", type4, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "y", type5, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "z", type6, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "a", type1, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "b", type2, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "c", type3, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "x", type4, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "y", type5, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "z", type6, NULL, NULL, NULL));
 
     ASSERT_SIMPLE_ASSIGNMENT(&kft_mem, context,
                              KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "a")),
@@ -770,16 +770,16 @@ DEFINE_CASE(ast_node_analysis_simple_assignment_operator7, "AST node analysis - 
             &kft_mem, context->type_bundle, kefir_ast_type_void(),
             (struct kefir_ast_type_qualification){.constant = true, .restricted = true, .volatile_type = true}));
 
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "a", type1, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "b", type2, NULL, NULL));
-    ASSERT_OK(
-        kefir_ast_local_context_declare_external(&kft_mem, &local_context, "x", kefir_ast_type_bool(), NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "a", type1, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "b", type2, NULL, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "x", kefir_ast_type_bool(), NULL, NULL,
+                                                       NULL));
     ASSERT_OK(kefir_ast_local_context_declare_external(
         &kft_mem, &local_context, "y",
         kefir_ast_type_qualified(
             &kft_mem, context->type_bundle, kefir_ast_type_bool(),
             (struct kefir_ast_type_qualification){.constant = false, .restricted = true, .volatile_type = true}),
-        NULL, NULL));
+        NULL, NULL, NULL));
 
     ASSERT_SIMPLE_ASSIGNMENT(
         &kft_mem, context, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),

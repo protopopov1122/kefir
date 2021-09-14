@@ -115,9 +115,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, KEFIR_AST_NODE_BASE(type_name2)));
 
     REQUIRE_OK(kefir_ast_local_context_declare_external(mem, &local_context, "struct1",
-                                                        type_name1->base.properties.type, NULL, NULL));
+                                                        type_name1->base.properties.type, NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_declare_external(mem, &local_context, "union1", type_name2->base.properties.type,
-                                                        NULL, NULL));
+                                                        NULL, NULL, NULL));
 
     struct kefir_ast_node_base *node1 = KEFIR_AST_NODE_BASE(kefir_ast_new_simple_assignment(
         mem, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "struct1")),

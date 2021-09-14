@@ -51,35 +51,35 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     const struct kefir_ast_type *type2 = kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_void());
 
     REQUIRE_OK(
-        kefir_ast_local_context_declare_external(mem, &local_context, "bool", kefir_ast_type_bool(), NULL, NULL));
+        kefir_ast_local_context_declare_external(mem, &local_context, "bool", kefir_ast_type_bool(), NULL, NULL, NULL));
     REQUIRE_OK(
-        kefir_ast_local_context_declare_external(mem, &local_context, "char", kefir_ast_type_char(), NULL, NULL));
+        kefir_ast_local_context_declare_external(mem, &local_context, "char", kefir_ast_type_char(), NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_declare_external(mem, &local_context, "uchar", kefir_ast_type_unsigned_char(),
-                                                        NULL, NULL));
+                                                        NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_declare_external(mem, &local_context, "schar", kefir_ast_type_signed_char(),
-                                                        NULL, NULL));
+                                                        NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_declare_external(mem, &local_context, "ushort", kefir_ast_type_unsigned_short(),
-                                                        NULL, NULL));
+                                                        NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_declare_external(mem, &local_context, "sshort", kefir_ast_type_signed_short(),
-                                                        NULL, NULL));
+                                                        NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_declare_external(mem, &local_context, "uint", kefir_ast_type_unsigned_int(),
+                                                        NULL, NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_declare_external(mem, &local_context, "sint", kefir_ast_type_signed_int(), NULL,
                                                         NULL, NULL));
-    REQUIRE_OK(
-        kefir_ast_local_context_declare_external(mem, &local_context, "sint", kefir_ast_type_signed_int(), NULL, NULL));
-    REQUIRE_OK(
-        kefir_ast_local_context_declare_external(mem, &local_context, "float", kefir_ast_type_float(), NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_declare_external(mem, &local_context, "float", kefir_ast_type_float(), NULL,
+                                                        NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_declare_external(mem, &local_context, "ulong", kefir_ast_type_unsigned_long(),
-                                                        NULL, NULL));
+                                                        NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_declare_external(mem, &local_context, "slong", kefir_ast_type_signed_long(),
-                                                        NULL, NULL));
+                                                        NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_declare_external(mem, &local_context, "ullong",
-                                                        kefir_ast_type_unsigned_long_long(), NULL, NULL));
+                                                        kefir_ast_type_unsigned_long_long(), NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_declare_external(mem, &local_context, "sllong",
-                                                        kefir_ast_type_signed_long_long(), NULL, NULL));
-    REQUIRE_OK(
-        kefir_ast_local_context_declare_external(mem, &local_context, "double", kefir_ast_type_double(), NULL, NULL));
-    REQUIRE_OK(kefir_ast_local_context_declare_external(mem, &local_context, "enum", type1, NULL, NULL));
-    REQUIRE_OK(kefir_ast_local_context_declare_external(mem, &local_context, "ptr", type2, NULL, NULL));
+                                                        kefir_ast_type_signed_long_long(), NULL, NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_declare_external(mem, &local_context, "double", kefir_ast_type_double(), NULL,
+                                                        NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_declare_external(mem, &local_context, "enum", type1, NULL, NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_declare_external(mem, &local_context, "ptr", type2, NULL, NULL, NULL));
 
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));

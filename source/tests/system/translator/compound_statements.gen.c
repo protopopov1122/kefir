@@ -65,15 +65,15 @@ static kefir_result_t define_compound_function(struct kefir_mem *mem, struct fun
     func->local_context.context.surrounding_function = scoped_id;
 
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "base", kefir_ast_type_double(), NULL,
-                                                   NULL, NULL));
+                                                   NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "add", kefir_ast_type_double(), NULL,
-                                                   NULL, NULL));
+                                                   NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "multiply", kefir_ast_type_double(),
-                                                   NULL, NULL, NULL));
+                                                   NULL, NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "divide", kefir_ast_type_double(), NULL,
-                                                   NULL, NULL));
-    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "subtract", kefir_ast_type_double(),
                                                    NULL, NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "subtract", kefir_ast_type_double(),
+                                                   NULL, NULL, NULL, NULL));
 
     REQUIRE_OK(kefir_list_insert_after(
         mem, &func->args, kefir_list_tail(&func->args),

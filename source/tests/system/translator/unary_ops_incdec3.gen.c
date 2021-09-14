@@ -37,40 +37,40 @@
 
 #include "codegen.inc.c"
 
-#define DEFFUN(_id, _name, _oper, _type)                                                                            \
-    static kefir_result_t define_##_id##_function(struct kefir_mem *mem, struct function *func,                     \
-                                                  struct kefir_ast_context_manager *context_manager) {              \
-        REQUIRE_OK(kefir_list_init(&func->args));                                                                   \
-                                                                                                                    \
-        const struct kefir_ast_type *pointer_type =                                                                 \
-            kefir_ast_type_pointer(mem, context_manager->current->type_bundle, (_type));                            \
-        struct kefir_ast_function_type *func_type = NULL;                                                           \
-        func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle,                            \
-                                             pointer_type->referenced_type, (_name), &func_type);                   \
-        REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, NULL,   \
-                                                     pointer_type, NULL));                                          \
-                                                                                                                    \
-        REQUIRE_OK(kefir_ast_global_context_define_function(                                                        \
-            mem, context_manager->global, KEFIR_AST_FUNCTION_SPECIFIER_NONE, func->type, NULL, NULL));              \
-                                                                                                                    \
-        REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context));               \
-        REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager));                  \
-                                                                                                                    \
-        REQUIRE_OK(                                                                                                 \
-            kefir_ast_local_context_define_auto(mem, context_manager->local, "x", pointer_type, NULL, NULL, NULL)); \
-                                                                                                                    \
-        REQUIRE_OK(kefir_list_insert_after(                                                                         \
-            mem, &func->args, kefir_list_tail(&func->args),                                                         \
-            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "x"))));           \
-                                                                                                                    \
-        func->body = KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(                                             \
-            mem, (_oper),                                                                                           \
-            KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(                                                      \
-                mem, KEFIR_AST_OPERATION_INDIRECTION,                                                               \
-                KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "x"))))));     \
-                                                                                                                    \
-        REQUIRE_OK(kefir_ast_context_manager_detach_local(context_manager));                                        \
-        return KEFIR_OK;                                                                                            \
+#define DEFFUN(_id, _name, _oper, _type)                                                                           \
+    static kefir_result_t define_##_id##_function(struct kefir_mem *mem, struct function *func,                    \
+                                                  struct kefir_ast_context_manager *context_manager) {             \
+        REQUIRE_OK(kefir_list_init(&func->args));                                                                  \
+                                                                                                                   \
+        const struct kefir_ast_type *pointer_type =                                                                \
+            kefir_ast_type_pointer(mem, context_manager->current->type_bundle, (_type));                           \
+        struct kefir_ast_function_type *func_type = NULL;                                                          \
+        func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle,                           \
+                                             pointer_type->referenced_type, (_name), &func_type);                  \
+        REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, NULL,  \
+                                                     pointer_type, NULL));                                         \
+                                                                                                                   \
+        REQUIRE_OK(kefir_ast_global_context_define_function(                                                       \
+            mem, context_manager->global, KEFIR_AST_FUNCTION_SPECIFIER_NONE, func->type, NULL, NULL));             \
+                                                                                                                   \
+        REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context));              \
+        REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager));                 \
+                                                                                                                   \
+        REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "x", pointer_type, NULL, NULL, \
+                                                       NULL, NULL));                                               \
+                                                                                                                   \
+        REQUIRE_OK(kefir_list_insert_after(                                                                        \
+            mem, &func->args, kefir_list_tail(&func->args),                                                        \
+            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "x"))));          \
+                                                                                                                   \
+        func->body = KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(                                            \
+            mem, (_oper),                                                                                          \
+            KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(                                                     \
+                mem, KEFIR_AST_OPERATION_INDIRECTION,                                                              \
+                KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context_manager->current->symbols, "x"))))));    \
+                                                                                                                   \
+        REQUIRE_OK(kefir_ast_context_manager_detach_local(context_manager));                                       \
+        return KEFIR_OK;                                                                                           \
     }
 
 DEFFUN(preinc, "preinc", KEFIR_AST_OPERATION_PREFIX_INCREMENT, kefir_ast_type_float())

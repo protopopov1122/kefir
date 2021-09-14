@@ -57,7 +57,7 @@ static kefir_result_t define_factorial_function(struct kefir_mem *mem, struct fu
     func->local_context.context.surrounding_function = scoped_id;
 
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, context_manager->local, "x", kefir_ast_type_signed_int(), NULL,
-                                                   NULL, NULL));
+                                                   NULL, NULL, NULL));
 
     REQUIRE_OK(kefir_list_insert_after(
         mem, &func->args, kefir_list_tail(&func->args),

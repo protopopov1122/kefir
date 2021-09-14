@@ -112,7 +112,8 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
 
                 if (type->tag != KEFIR_AST_TYPE_VOID) {
                     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, local_context, param->identifier,
-                                                                   param->adjusted_type, NULL, NULL, NULL));
+                                                                   param->adjusted_type, NULL, NULL,
+                                                                   &node->base.source_location, NULL));
                 }
             }
             break;
