@@ -10,7 +10,7 @@ sources:
 tasks:
   - test: |
       cd kefir
-      gmake test PLATFORM=freebsd MEMCHECK=yes OPT=-O3 SANITIZE=undefined CC=clang -j$(nproc)
+      gmake test PLATFORM=freebsd MEMCHECK=yes OPT=-O3 SANITIZE=undefined CC=clang
   - build: |
       cd kefir
       gmake clean
