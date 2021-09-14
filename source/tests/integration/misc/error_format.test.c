@@ -90,11 +90,6 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_clear_error();
     printf("\n\n");
 
-    KEFIR_SET_OS_ERROR("OS Error");
-    kefir_format_error(stdout, kefir_current_error());
-    kefir_clear_error();
-    printf("\n\n");
-
     struct kefir_source_location location1 = {.source = "file1.c", .line = 100, .column = 5};
     KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &location1, "Lexer error detected");
     struct kefir_source_location location2 = {.source = "file2.c", .line = 1, .column = 10};

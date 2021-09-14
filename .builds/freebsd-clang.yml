@@ -1,0 +1,17 @@
+image: freebsd/13.x
+packages:
+  - gmake
+  - llvm
+  - nasm
+  - valgrind
+  - libxslt
+sources:
+  - https://git.sr.ht/~jprotopopov/kefir
+tasks:
+  - test: |
+      cd kefir
+      gmake test PLATFORM=freebsd MEMCHECK=yes OPT=-O3 SANITIZE=undefined CC=clang -j$(nproc)
+  - build: |
+      cd kefir
+      gmake clean
+      gmake all PLATFORM=freebsd OPT=-O3 CC=clang
