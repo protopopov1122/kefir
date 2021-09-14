@@ -197,8 +197,7 @@ static kefir_result_t translate_local_scoped_identifier_object(
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
-            return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                          "Unexpected storage class of local-scope variable");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Unexpected storage class of local-scope variable");
     }
     return KEFIR_OK;
 }

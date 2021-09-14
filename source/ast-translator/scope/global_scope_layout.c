@@ -224,13 +224,11 @@ static kefir_result_t translate_global_scoped_identifier_object(
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO:
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER:
-            return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                          "File-scope variable cannot have auto/register storage");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "File-scope variable cannot have auto/register storage");
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
-            return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                          "Unexpected storage class of file-scope variable");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Unexpected storage class of file-scope variable");
     }
     return KEFIR_OK;
 }

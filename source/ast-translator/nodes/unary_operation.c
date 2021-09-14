@@ -63,9 +63,9 @@ static kefir_result_t translate_arithmetic_unary(struct kefir_mem *mem, struct k
             break;
 
         default:
-            REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(normalized_type),
-                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                           "Expected integral type as operand of unary arithmetic operator"));
+            REQUIRE(
+                KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(normalized_type),
+                KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected integral type as operand of unary arithmetic operator"));
             switch (node->type) {
                 case KEFIR_AST_OPERATION_PLUS:
                     break;
@@ -178,7 +178,7 @@ static kefir_result_t incdec_impl(struct kefir_mem *mem, struct kefir_ast_transl
 
         default:
             REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(normalized_type),
-                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Expected value of an integral type"));
+                    KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected value of an integral type"));
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IADD1, diff));
             break;
     }

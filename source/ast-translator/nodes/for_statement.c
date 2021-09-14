@@ -39,10 +39,9 @@ kefir_result_t kefir_ast_translate_for_statement_node(struct kefir_mem *mem,
                                node->init->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR)) {
         REQUIRE_OK(kefir_ast_translate_declaration(mem, node->init, builder, context));
     } else if (node->init != NULL) {
-        REQUIRE(
-            node->init->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                   "Expected AST for statement first clause to be either declaration or expression"));
+        REQUIRE(node->init->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
+                KEFIR_SET_ERROR(KEFIR_INVALID_STATE,
+                                "Expected AST for statement first clause to be either declaration or expression"));
 
         const struct kefir_ast_type *clause1_type = kefir_ast_translator_normalize_type(node->init->properties.type);
         REQUIRE(clause1_type != NULL,

@@ -131,8 +131,7 @@ static kefir_result_t translate_array_type(struct kefir_mem *mem, const struct k
 
         case KEFIR_AST_ARRAY_BOUNDED_STATIC:
         case KEFIR_AST_ARRAY_VLA_STATIC:
-            return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                          "Static array type is not supported in that context");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Static array type is not supported in that context");
 
         case KEFIR_AST_ARRAY_VLA:
             return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Variable-length arrays are not supported yet");
@@ -259,8 +258,8 @@ static kefir_result_t translate_struct_type(struct kefir_mem *mem, const struct 
                                             struct kefir_irbuilder_type *builder,
                                             struct kefir_ast_type_layout **layout_ptr) {
     REQUIRE(type->structure_type.complete,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                   "Non-complete structure/union definitions cannot be translated into IR type"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_STATE,
+                            "Non-complete structure/union definitions cannot be translated into IR type"));
 
     kefir_size_t type_index = kefir_ir_type_total_length(builder->type);
     REQUIRE_OK(KEFIR_IRBUILDER_TYPE_APPEND_V(
@@ -354,8 +353,7 @@ kefir_result_t kefir_ast_translate_object_type(struct kefir_mem *mem, const stru
             break;
 
         case KEFIR_AST_TYPE_FUNCTION:
-            return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                          "Cannot translate AST function type into IR type");
+            return KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Cannot translate AST function type into IR type");
 
         case KEFIR_AST_TYPE_QUALIFIED:
             REQUIRE_OK(

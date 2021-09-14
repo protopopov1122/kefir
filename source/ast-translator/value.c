@@ -76,7 +76,7 @@ static kefir_result_t load_bitfield(struct kefir_mem *mem, struct kefir_ast_tran
     } else if (bits <= 64) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD64, 0));
     } else {
-        return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Bit-field exceeds storage unit width");
+        return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Bit-field exceeds storage unit width");
     }
     return KEFIR_OK;
 }
@@ -139,7 +139,7 @@ static kefir_result_t store_bitfield(struct kefir_mem *mem, struct kefir_ast_tra
     } else if (bits <= 64) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE64, 0));
     } else {
-        return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL, "Bit-field exceeds storage unit width");
+        return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Bit-field exceeds storage unit width");
     }
     return KEFIR_OK;
 }
@@ -156,8 +156,7 @@ kefir_result_t kefir_ast_translator_resolve_node_value(struct kefir_mem *mem,
     if (node->properties.expression_props.bitfield) {
         REQUIRE(
             node->klass->type == KEFIR_AST_STRUCTURE_MEMBER || node->klass->type == KEFIR_AST_STRUCTURE_INDIRECT_MEMBER,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                   "Expected bit-field node to be a direct/indirect structure member"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Expected bit-field node to be a direct/indirect structure member"));
         REQUIRE_OK(resolve_bitfield(mem, context, builder, (const struct kefir_ast_struct_member *) node->self));
     } else {
         REQUIRE_OK(kefir_ast_translator_load_value(node->properties.type, context->ast_context->type_traits, builder));
@@ -177,8 +176,7 @@ kefir_result_t kefir_ast_translator_store_node_value(struct kefir_mem *mem,
     if (node->properties.expression_props.bitfield) {
         REQUIRE(
             node->klass->type == KEFIR_AST_STRUCTURE_MEMBER || node->klass->type == KEFIR_AST_STRUCTURE_INDIRECT_MEMBER,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, NULL,
-                                   "Expected bit-field node to be a direct/indirect structure member"));
+            KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Expected bit-field node to be a direct/indirect structure member"));
         REQUIRE_OK(store_bitfield(mem, context, builder, (const struct kefir_ast_struct_member *) node->self));
     } else {
         REQUIRE_OK(kefir_ast_translator_store_value(mem, node->properties.type, context, builder));
