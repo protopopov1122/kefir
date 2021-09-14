@@ -22,7 +22,7 @@
 #include "kefir/test/util.h"
 #include "kefir/ast/type.h"
 
-#define ASSERT_DESIGNATOR_OFFSET(_mem, _env, _type, _designator, _size, _alignment, _offset)                  \
+#define ASSERT_DESIGNATOR_OFFSET(_mem, _env, _type, _designator, _size, _alignment, _offset, _max_bitfield)   \
     do {                                                                                                      \
         struct kefir_ast_designator *designator = (_designator);                                              \
         struct kefir_ast_target_environment_object_info type_info;                                            \
@@ -33,6 +33,7 @@
         ASSERT(type_info.size == (_size));                                                                    \
         ASSERT(type_info.alignment == (_alignment));                                                          \
         ASSERT(type_info.relative_offset == (_offset));                                                       \
+        ASSERT(type_info.max_bitfield_width == (_max_bitfield));                                              \
     } while (0)
 
 DEFINE_CASE(ast_translator_environment1, "AST translator - environment object info") {
@@ -66,50 +67,50 @@ DEFINE_CASE(ast_translator_environment1, "AST translator - environment object in
     kefir_ast_target_environment_opaque_type_t opaque_type;
     ASSERT_OK(KEFIR_AST_TARGET_ENVIRONMENT_GET_TYPE(&kft_mem, &env.target_env, type2, &opaque_type));
 
-    ASSERT_DESIGNATOR_OFFSET(&kft_mem, &env.target_env, opaque_type, NULL, 96, 8, 0);
+    ASSERT_DESIGNATOR_OFFSET(&kft_mem, &env.target_env, opaque_type, NULL, 96, 8, 0, 0);
 
     ASSERT_DESIGNATOR_OFFSET(&kft_mem, &env.target_env, opaque_type,
-                             kefir_ast_new_member_designator(&kft_mem, &symbols, "field1", NULL), 8, 8, 0);
+                             kefir_ast_new_member_designator(&kft_mem, &symbols, "field1", NULL), 8, 8, 0, 64);
 
     ASSERT_DESIGNATOR_OFFSET(&kft_mem, &env.target_env, opaque_type,
-                             kefir_ast_new_member_designator(&kft_mem, &symbols, "field2", NULL), 4, 4, 8);
+                             kefir_ast_new_member_designator(&kft_mem, &symbols, "field2", NULL), 4, 4, 8, 32);
 
     ASSERT_DESIGNATOR_OFFSET(&kft_mem, &env.target_env, opaque_type,
-                             kefir_ast_new_member_designator(&kft_mem, &symbols, "x", NULL), 1, 1, 12);
+                             kefir_ast_new_member_designator(&kft_mem, &symbols, "x", NULL), 1, 1, 12, 8);
 
     ASSERT_DESIGNATOR_OFFSET(&kft_mem, &env.target_env, opaque_type,
-                             kefir_ast_new_member_designator(&kft_mem, &symbols, "y", NULL), 4, 4, 16);
+                             kefir_ast_new_member_designator(&kft_mem, &symbols, "y", NULL), 4, 4, 16, 0);
 
     ASSERT_DESIGNATOR_OFFSET(&kft_mem, &env.target_env, opaque_type,
-                             kefir_ast_new_member_designator(&kft_mem, &symbols, "z", NULL), 32, 2, 20);
+                             kefir_ast_new_member_designator(&kft_mem, &symbols, "z", NULL), 32, 2, 20, 0);
 
     for (kefir_size_t i = 0; i < 16; i++) {
         ASSERT_DESIGNATOR_OFFSET(
             &kft_mem, &env.target_env, opaque_type,
             kefir_ast_new_index_designator(&kft_mem, i, kefir_ast_new_member_designator(&kft_mem, &symbols, "z", NULL)),
-            2, 2, 20 + i * 2);
+            2, 2, 20 + i * 2, 16);
     }
 
     ASSERT_DESIGNATOR_OFFSET(&kft_mem, &env.target_env, opaque_type,
-                             kefir_ast_new_member_designator(&kft_mem, &symbols, "field3", NULL), 40, 4, 52);
+                             kefir_ast_new_member_designator(&kft_mem, &symbols, "field3", NULL), 40, 4, 52, 0);
 
     ASSERT_DESIGNATOR_OFFSET(
         &kft_mem, &env.target_env, opaque_type,
         kefir_ast_new_member_designator(&kft_mem, &symbols, "x",
                                         kefir_ast_new_member_designator(&kft_mem, &symbols, "field3", NULL)),
-        1, 1, 52);
+        1, 1, 52, 8);
 
     ASSERT_DESIGNATOR_OFFSET(
         &kft_mem, &env.target_env, opaque_type,
         kefir_ast_new_member_designator(&kft_mem, &symbols, "y",
                                         kefir_ast_new_member_designator(&kft_mem, &symbols, "field3", NULL)),
-        4, 4, 56);
+        4, 4, 56, 0);
 
     ASSERT_DESIGNATOR_OFFSET(
         &kft_mem, &env.target_env, opaque_type,
         kefir_ast_new_member_designator(&kft_mem, &symbols, "z",
                                         kefir_ast_new_member_designator(&kft_mem, &symbols, "field3", NULL)),
-        32, 2, 60);
+        32, 2, 60, 0);
 
     for (kefir_size_t i = 0; i < 16; i++) {
         ASSERT_DESIGNATOR_OFFSET(
@@ -118,7 +119,7 @@ DEFINE_CASE(ast_translator_environment1, "AST translator - environment object in
                 &kft_mem, i,
                 kefir_ast_new_member_designator(&kft_mem, &symbols, "z",
                                                 kefir_ast_new_member_designator(&kft_mem, &symbols, "field3", NULL))),
-            2, 2, 60 + i * 2);
+            2, 2, 60 + i * 2, 16);
     }
 
     ASSERT_OK(KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(&kft_mem, &env.target_env, opaque_type));

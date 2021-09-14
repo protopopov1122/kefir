@@ -75,6 +75,29 @@ static kefir_result_t process_struct_declaration_entry(struct kefir_mem *mem, co
             REQUIRE(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER,
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &entry_declarator->bitwidth->source_location,
                                            "Bit-field width shall be an integral constant expression"));
+
+            kefir_ast_target_environment_opaque_type_t target_type;
+            struct kefir_ast_target_environment_object_info target_obj_info;
+            REQUIRE_OK(context->target_env->get_type(mem, context->target_env, kefir_ast_unqualified_type(field_type),
+                                                     &target_type));
+            kefir_result_t res =
+                context->target_env->object_info(mem, context->target_env, target_type, NULL, &target_obj_info);
+            REQUIRE_ELSE(res == KEFIR_OK, {
+                context->target_env->free_type(mem, context->target_env, target_type);
+                return res;
+            });
+            REQUIRE_ELSE(target_obj_info.max_bitfield_width > 0, {
+                context->target_env->free_type(mem, context->target_env, target_type);
+                return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &entry_declarator->declarator->source_location,
+                                              "Bit-field has invalid type");
+            });
+            REQUIRE_ELSE((kefir_size_t) value.integer <= target_obj_info.max_bitfield_width, {
+                context->target_env->free_type(mem, context->target_env, target_type);
+                return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &entry_declarator->declarator->source_location,
+                                              "Bit-field width exceeds undelying type");
+            });
+            REQUIRE_OK(context->target_env->free_type(mem, context->target_env, target_type));
+
             struct kefir_ast_alignment *ast_alignment = wrap_alignment(mem, alignment);
             REQUIRE(alignment == 0 || ast_alignment != NULL,
                     KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST alignment"));
@@ -86,8 +109,8 @@ static kefir_result_t process_struct_declaration_entry(struct kefir_mem *mem, co
                 }
                 return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST constant expression");
             });
-            kefir_result_t res = kefir_ast_struct_type_bitfield(mem, context->symbols, struct_type, identifier,
-                                                                field_type, ast_alignment, ast_bitwidth);
+            res = kefir_ast_struct_type_bitfield(mem, context->symbols, struct_type, identifier, field_type,
+                                                 ast_alignment, ast_bitwidth);
             REQUIRE_ELSE(res == KEFIR_OK, {
                 kefir_ast_constant_expression_free(mem, ast_bitwidth);
                 if (ast_alignment != NULL) {

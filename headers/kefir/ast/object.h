@@ -28,6 +28,7 @@ typedef struct kefir_ast_target_environment_object_info {
     kefir_size_t alignment;
     kefir_bool_t aligned;
     kefir_size_t relative_offset;
+    kefir_size_t max_bitfield_width;
 } kefir_ast_target_environment_object_info_t;
 
 #endif
