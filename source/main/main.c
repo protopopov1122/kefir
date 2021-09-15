@@ -30,6 +30,22 @@
 #include "kefir/ast/format.h"
 #include "kefir/ir/format.h"
 
+// ATTENTION: This is module is not a part of the core library, thus memory management
+//            is different here. While all the modules from core library shall correctly
+//            handle memory deallocations in all cases (leaks, use-after-free, double free,
+//            etc. are considered bugs), in standalone application part this rule is relaxed.
+//            Specifically, correct memory deallocation is not deemed necessary, as it is
+//            known that all the memory will be eventually deallocated by the OS. At the same time,
+//            it is beneficially to correctly deallocate memory when there are no runtime errors:
+//            it enables Valgrind use in end2end tests, thus increasing dynamic analysis coverage.
+//            Based on this idea, code below is written with following assumptions:
+//                - In case of happy-path, memory deallocations should happen correctly with no
+//                  Valgrind warnings.
+//                - In case of runtime errors, memory deallocations might be omitted. Valgrind
+//                  warnings are considered normal.
+//                - Other memory management issues (use-after-frees, double frees, etc.) are
+//                  considered unacceptable and should be fixed.
+
 static kefir_result_t open_output(const char *filepath, FILE **output) {
     if (filepath != NULL) {
         *output = fopen(filepath, "w");
