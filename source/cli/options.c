@@ -34,12 +34,12 @@ kefir_result_t kefir_cli_parse_options(struct kefir_cli_options *options, char *
 
     int long_option_index = 0;
     static const struct option long_options[] = {
-        {"output", required_argument, NULL, 'o'}, {"dump-tokens", no_argument, NULL, 0},
-        {"dump-ast", no_argument, NULL, 0},       {"dump-ir", no_argument, NULL, 0},
-        {"dump-asm", no_argument, NULL, 0},       {"json-errors", no_argument, NULL, 0},
-        {"tabular-errors", no_argument, NULL, 0}, {"detailed-output", no_argument, NULL, 'D'},
-        {"help", no_argument, NULL, 'h'},
-    };
+        {"output", required_argument, NULL, 'o'},  {"dump-tokens", no_argument, NULL, 0},
+        {"dump-ast", no_argument, NULL, 0},        {"dump-ir", no_argument, NULL, 0},
+        {"dump-asm", no_argument, NULL, 0},        {"json-errors", no_argument, NULL, 0},
+        {"tabular-errors", no_argument, NULL, 0},  {"target-profile", required_argument, NULL, 0},
+        {"source-id", required_argument, NULL, 0}, {"detailed-output", no_argument, NULL, 'D'},
+        {"help", no_argument, NULL, 'h'}};
     const char *options_string = "+:o:Dh";
 
     for (int c = getopt_long(argc, argv, options_string, long_options, &long_option_index); c != -1;
@@ -70,6 +70,14 @@ kefir_result_t kefir_cli_parse_options(struct kefir_cli_options *options, char *
 
                     case 6:
                         options->error_report_type = KEFIR_CLI_ERROR_REPORT_TABULAR;
+                        break;
+
+                    case 7:
+                        options->target_profile = optarg;
+                        break;
+
+                    case 8:
+                        options->source_id = optarg;
                         break;
 
                     default:

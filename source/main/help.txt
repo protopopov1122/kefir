@@ -1,18 +1,22 @@
 Kefir C11 compiler
 Usage: kefir [OPTIONS] [INPUT FILE]
 
-Options:
-    -h,--help               Print this help text
-    -o,--output file        Print output to the file instead of stdout
-    --dump-asm              Print assembly output
-    --dump-ir               Print intermediate representation (IR) bytecode
-    --dump-ast              Print abstract syntax tree (AST)
-    --dump-tokens           Print tokens
-    --json-errors           Print errors in JSON format to stderr
-    --tabular-errors        Print errors in tabular format to stderr
-    -D,--detailed-output    Include references to source file in AST and token dumps
-
 If no input file is provided, stdin will be used.
+Options:
+    -h,--help                   Print this help text
+    -o,--output file            Print output to the file instead of stdout
+    --dump-asm                  Print assembly output
+    --dump-ir                   Print intermediate representation (IR) bytecode
+    --dump-ast                  Print abstract syntax tree (AST)
+    --dump-tokens               Print tokens
+    --json-errors               Print errors in JSON format to stderr
+    --tabular-errors            Print errors in tabular format to stderr
+    --target-profile profile    Generate code for specified target (see targets section below)
+    --source-id identifier      Force use provided source file identifier
+    -D,--detailed-output        Include references to source file in AST and token dumps
+
+Targets:
+    amd64-sysv-nasm (default)   Produce NASM-syntax assembly adhering System-V AMD64 ABI
 
 License: GNU GPLv3
 Author: Jevgenijs Protopopovs

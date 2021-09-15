@@ -29,6 +29,7 @@ DEFINE_CASE(cli_options1, "CLI - options #1") {
 
     ASSERT(opts.action == KEFIR_CLI_ACTION_DUMP_AST);
     ASSERT(opts.detailed_output);
+    ASSERT(opts.source_id == NULL);
     ASSERT(opts.output_filepath != NULL);
     ASSERT(strcmp(opts.output_filepath, "file.out") == 0);
     ASSERT(opts.input_filepath != NULL);
@@ -43,6 +44,7 @@ DEFINE_CASE(cli_options2, "CLI - options #2") {
 
     ASSERT(opts.action == KEFIR_CLI_ACTION_DUMP_IR);
     ASSERT(opts.detailed_output);
+    ASSERT(opts.source_id == NULL);
     ASSERT(opts.output_filepath != NULL);
     ASSERT(strcmp(opts.output_filepath, "somefile") == 0);
     ASSERT(opts.input_filepath == NULL);
@@ -50,12 +52,14 @@ DEFINE_CASE(cli_options2, "CLI - options #2") {
 END_CASE
 
 DEFINE_CASE(cli_options3, "CLI - options #3") {
-    char *const argv[] = {"", "-o", "out.asm", "input.c"};
+    char *const argv[] = {"", "-o", "out.asm", "--source-id=source1", "input.c"};
     struct kefir_cli_options opts;
     ASSERT_OK(kefir_cli_parse_options(&opts, argv, sizeof(argv) / sizeof(argv[0])));
 
     ASSERT(opts.action == KEFIR_CLI_ACTION_DUMP_ASSEMBLY);
     ASSERT(!opts.detailed_output);
+    ASSERT(opts.source_id != NULL);
+    ASSERT(strcmp(opts.source_id, "source1") == 0);
     ASSERT(opts.output_filepath != NULL);
     ASSERT(strcmp(opts.output_filepath, "out.asm") == 0);
     ASSERT(opts.input_filepath != NULL);
@@ -70,6 +74,7 @@ DEFINE_CASE(cli_options4, "CLI - options #4") {
 
     ASSERT(opts.action == KEFIR_CLI_ACTION_HELP);
     ASSERT(!opts.detailed_output);
+    ASSERT(opts.source_id == NULL);
     ASSERT(opts.output_filepath == NULL);
     ASSERT(opts.input_filepath == NULL);
 }

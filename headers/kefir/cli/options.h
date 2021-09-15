@@ -37,9 +37,11 @@ typedef enum kefir_cli_error_report_type {
 } kefir_cli_error_report_type_t;
 
 typedef struct kefir_cli_options {
+    kefir_cli_action_t action;
     const char *input_filepath;
     const char *output_filepath;
-    kefir_cli_action_t action;
+    const char *target_profile;
+    const char *source_id;
     kefir_cli_error_report_type_t error_report_type;
     kefir_bool_t detailed_output;
 } kefir_cli_options_t;
