@@ -28,7 +28,8 @@ typedef enum kefir_cli_action {
     KEFIR_CLI_ACTION_DUMP_AST,
     KEFIR_CLI_ACTION_DUMP_IR,
     KEFIR_CLI_ACTION_DUMP_ASSEMBLY,
-    KEFIR_CLI_ACTION_HELP
+    KEFIR_CLI_ACTION_HELP,
+    KEFIR_CLI_ACTION_VERSION
 } kefir_cli_action_t;
 
 typedef enum kefir_cli_error_report_type {

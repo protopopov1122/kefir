@@ -29,6 +29,7 @@
 #include "kefir/parser/format.h"
 #include "kefir/ast/format.h"
 #include "kefir/ir/format.h"
+#include "kefir/core/version.h"
 
 // ATTENTION: This is module is not a part of the core library, thus memory management
 //            is different here. While all the modules from core library shall correctly
@@ -194,7 +195,14 @@ static kefir_result_t action_help(struct kefir_mem *mem, struct kefir_cli_option
     UNUSED(mem);
     UNUSED(options);
     extern const char KefirHelpContent[];
-    fprintf(stdout, "%s", KefirHelpContent);
+    printf("%s", KefirHelpContent);
+    return KEFIR_OK;
+}
+
+static kefir_result_t action_version(struct kefir_mem *mem, struct kefir_cli_options *options) {
+    UNUSED(mem);
+    UNUSED(options);
+    printf("%u.%u.%u\n", KEFIR_VERSION_MAJOR, KEFIR_VERSION_MINOR, KEFIR_VERSION_PATCH);
     return KEFIR_OK;
 }
 
@@ -203,7 +211,8 @@ static kefir_result_t (*Actions[])(struct kefir_mem *, struct kefir_cli_options 
     [KEFIR_CLI_ACTION_DUMP_AST] = action_dump_ast,
     [KEFIR_CLI_ACTION_DUMP_IR] = action_dump_ir,
     [KEFIR_CLI_ACTION_DUMP_ASSEMBLY] = action_dump_asm,
-    [KEFIR_CLI_ACTION_HELP] = action_help};
+    [KEFIR_CLI_ACTION_HELP] = action_help,
+    [KEFIR_CLI_ACTION_VERSION] = action_version};
 
 static kefir_result_t kefir_main(struct kefir_mem *mem, struct kefir_cli_options *options) {
     REQUIRE_OK(Actions[options->action](mem, options));

@@ -39,8 +39,8 @@ kefir_result_t kefir_cli_parse_options(struct kefir_cli_options *options, char *
         {"dump-asm", no_argument, NULL, 0},        {"json-errors", no_argument, NULL, 0},
         {"tabular-errors", no_argument, NULL, 0},  {"target-profile", required_argument, NULL, 0},
         {"source-id", required_argument, NULL, 0}, {"detailed-output", no_argument, NULL, 'D'},
-        {"help", no_argument, NULL, 'h'}};
-    const char *options_string = "+:o:Dh";
+        {"help", no_argument, NULL, 'h'},          {"version", no_argument, NULL, 'v'}};
+    const char *options_string = "+:o:Dhv";
 
     for (int c = getopt_long(argc, argv, options_string, long_options, &long_option_index); c != -1;
          c = getopt_long(argc, argv, options_string, long_options, &long_option_index)) {
@@ -95,6 +95,10 @@ kefir_result_t kefir_cli_parse_options(struct kefir_cli_options *options, char *
 
             case 'h':
                 options->action = KEFIR_CLI_ACTION_HELP;
+                break;
+
+            case 'v':
+                options->action = KEFIR_CLI_ACTION_VERSION;
                 break;
 
             case '?':

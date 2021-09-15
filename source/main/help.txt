@@ -4,6 +4,7 @@ Usage: kefir [OPTIONS] [INPUT FILE]
 If no input file is provided, stdin will be used.
 Options:
     -h,--help                   Print this help text
+    -v,--version                Print version
     -o,--output file            Print output to the file instead of stdout
     --dump-asm                  Print assembly output
     --dump-ir                   Print intermediate representation (IR) bytecode
