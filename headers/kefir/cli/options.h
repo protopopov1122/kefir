@@ -23,19 +23,25 @@
 
 #include "kefir/core/basic-types.h"
 
-typedef enum kefir_cli_output_type {
-    KEFIR_CLI_OUTPUT_TOKENS,
-    KEFIR_CLI_OUTPUT_AST,
-    KEFIR_CLI_OUTPUT_IR,
-    KEFIR_CLI_OUTPUT_ASSEMBLY
-} kefir_cli_output_type_t;
+typedef enum kefir_cli_action {
+    KEFIR_CLI_ACTION_DUMP_TOKENS,
+    KEFIR_CLI_ACTION_DUMP_AST,
+    KEFIR_CLI_ACTION_DUMP_IR,
+    KEFIR_CLI_ACTION_DUMP_ASSEMBLY,
+    KEFIR_CLI_ACTION_HELP
+} kefir_cli_action_t;
+
+typedef enum kefir_cli_error_report_type {
+    KEFIR_CLI_ERROR_REPORT_TABULAR,
+    KEFIR_CLI_ERROR_REPORT_JSON
+} kefir_cli_error_report_type_t;
 
 typedef struct kefir_cli_options {
     const char *input_filepath;
     const char *output_filepath;
-    kefir_cli_output_type_t output_type;
+    kefir_cli_action_t action;
+    kefir_cli_error_report_type_t error_report_type;
     kefir_bool_t detailed_output;
-    kefir_bool_t display_help;
 } kefir_cli_options_t;
 
 kefir_result_t kefir_cli_parse_options(struct kefir_cli_options *, char *const *, kefir_size_t);

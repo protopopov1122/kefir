@@ -89,15 +89,15 @@ static kefir_result_t process_code(struct kefir_mem *mem, const char *code, kefi
     REQUIRE_OK(kefir_compiler_lex(mem, &compiler, &tokens, code, length,
                                   options->input_filepath != NULL ? options->input_filepath : "<stdin>"));
 
-    switch (options->output_type) {
-        case KEFIR_CLI_OUTPUT_TOKENS: {
+    switch (options->action) {
+        case KEFIR_CLI_ACTION_DUMP_TOKENS: {
             struct kefir_json_output json;
             REQUIRE_OK(kefir_json_output_init(&json, output, 4));
             REQUIRE_OK(kefir_token_buffer_format(&json, &tokens, options->detailed_output));
             REQUIRE_OK(kefir_json_output_finalize(&json));
         } break;
 
-        case KEFIR_CLI_OUTPUT_AST: {
+        case KEFIR_CLI_ACTION_DUMP_AST: {
             struct kefir_ast_translation_unit *unit = NULL;
             REQUIRE_OK(kefir_compiler_parse(mem, &compiler, &tokens, &unit));
             REQUIRE_OK(kefir_compiler_analyze(mem, &compiler, KEFIR_AST_NODE_BASE(unit)));
@@ -108,7 +108,7 @@ static kefir_result_t process_code(struct kefir_mem *mem, const char *code, kefi
             REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(unit)));
         } break;
 
-        case KEFIR_CLI_OUTPUT_IR: {
+        case KEFIR_CLI_ACTION_DUMP_IR: {
             struct kefir_ast_translation_unit *unit = NULL;
             struct kefir_ir_module module;
             REQUIRE_OK(kefir_compiler_parse(mem, &compiler, &tokens, &unit));
@@ -120,7 +120,7 @@ static kefir_result_t process_code(struct kefir_mem *mem, const char *code, kefi
             REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(unit)));
         } break;
 
-        case KEFIR_CLI_OUTPUT_ASSEMBLY: {
+        case KEFIR_CLI_ACTION_DUMP_ASSEMBLY: {
             struct kefir_ast_translation_unit *unit = NULL;
             struct kefir_ir_module module;
             REQUIRE_OK(kefir_compiler_parse(mem, &compiler, &tokens, &unit));
@@ -131,6 +131,10 @@ static kefir_result_t process_code(struct kefir_mem *mem, const char *code, kefi
             REQUIRE_OK(kefir_ir_module_free(mem, &module));
             REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(unit)));
         } break;
+
+        default:
+            // Intentionally left blank
+            break;
     }
 
     REQUIRE_OK(kefir_token_buffer_free(mem, &tokens));
@@ -142,46 +146,53 @@ static kefir_result_t process_code(struct kefir_mem *mem, const char *code, kefi
     return KEFIR_OK;
 }
 
-static kefir_result_t process(struct kefir_mem *mem, struct kefir_cli_options *options) {
-    kefir_size_t file_length = 0;
-    if (options->input_filepath) {
-        const char *file_content = NULL;
-        REQUIRE_OK(mmap_file(options->input_filepath, &file_content, &file_length));
-        REQUIRE_OK(process_code(mem, file_content, file_length, options));
-        REQUIRE_OK(unmap_file(file_content, file_length));
-    } else {
-        char *file_content = NULL;
-        REQUIRE_OK(read_stream(mem, stdin, &file_content, &file_length));
-        kefir_result_t res = process_code(mem, file_content, file_length, options);
-        KEFIR_FREE(mem, file_content);
-        REQUIRE_OK(res);
-    }
-    return KEFIR_OK;
-}
-
-static int report_error(kefir_result_t res) {
-    if (res == KEFIR_OK) {
-        return EXIT_SUCCESS;
-    } else {
-        fprintf(stderr, "Failed to compile! Error stack:\n");
-        kefir_format_error_tabular(stderr, kefir_current_error());
-    }
-    return EXIT_FAILURE;
-}
-
 static void display_help(FILE *out) {
     extern const char KefirHelpContent[];
     fprintf(out, "%s", KefirHelpContent);
 }
 
+static kefir_result_t process(struct kefir_mem *mem, struct kefir_cli_options *options) {
+    if (options->action == KEFIR_CLI_ACTION_HELP) {
+        display_help(stdout);
+    } else {
+        kefir_size_t file_length = 0;
+        if (options->input_filepath) {
+            const char *file_content = NULL;
+            REQUIRE_OK(mmap_file(options->input_filepath, &file_content, &file_length));
+            REQUIRE_OK(process_code(mem, file_content, file_length, options));
+            REQUIRE_OK(unmap_file(file_content, file_length));
+        } else {
+            char *file_content = NULL;
+            REQUIRE_OK(read_stream(mem, stdin, &file_content, &file_length));
+            kefir_result_t res = process_code(mem, file_content, file_length, options);
+            KEFIR_FREE(mem, file_content);
+            REQUIRE_OK(res);
+        }
+    }
+    return KEFIR_OK;
+}
+
+static int report_error(kefir_result_t res, struct kefir_cli_options *options) {
+    if (res == KEFIR_OK) {
+        return EXIT_SUCCESS;
+    } else {
+        switch (options->error_report_type) {
+            case KEFIR_CLI_ERROR_REPORT_TABULAR:
+                fprintf(stderr, "Failed to compile! Error stack:\n");
+                kefir_format_error_tabular(stderr, kefir_current_error());
+                break;
+
+            case KEFIR_CLI_ERROR_REPORT_JSON:
+                kefir_format_error_json(stderr, kefir_current_error());
+                break;
+        }
+        return EXIT_FAILURE;
+    }
+}
+
 int main(int argc, char *const *argv) {
     struct kefir_cli_options options;
     kefir_result_t res = kefir_cli_parse_options(&options, argv, argc);
-    if (!options.display_help) {
-        REQUIRE_CHAIN(&res, process(kefir_system_memalloc(), &options));
-        return report_error(res);
-    } else {
-        display_help(stdout);
-        return KEFIR_OK;
-    }
+    REQUIRE_CHAIN(&res, process(kefir_system_memalloc(), &options));
+    return report_error(res, &options);
 }

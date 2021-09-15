@@ -419,6 +419,7 @@ DECLARE_CASE(lexer_source_location1);
 DECLARE_CASE(cli_options1);
 DECLARE_CASE(cli_options2);
 DECLARE_CASE(cli_options3);
+DECLARE_CASE(cli_options4);
 
 TEST_SUITE(
     mainSuite, &amd64_sysv_abi_data_test1, &amd64_sysv_abi_data_test2, &amd64_sysv_abi_data_test3,
@@ -563,7 +564,7 @@ TEST_SUITE(
 
     &lexer_source_cursor1, &lexer_source_location1,
 
-    &cli_options1, &cli_options2, &cli_options3);
+    &cli_options1, &cli_options2, &cli_options3, &cli_options4);
 
 int main(int argc, const char **argv) {
     UNUSED(argc);

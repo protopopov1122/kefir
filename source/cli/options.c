@@ -29,13 +29,15 @@ kefir_result_t kefir_cli_parse_options(struct kefir_cli_options *options, char *
 
     optind = 0;
     opterr = 0;
-    *options = (struct kefir_cli_options){.output_type = KEFIR_CLI_OUTPUT_ASSEMBLY};
+    *options = (struct kefir_cli_options){.action = KEFIR_CLI_ACTION_DUMP_ASSEMBLY,
+                                          .error_report_type = KEFIR_CLI_ERROR_REPORT_TABULAR};
 
     int long_option_index = 0;
     static const struct option long_options[] = {
         {"output", required_argument, NULL, 'o'}, {"dump-tokens", no_argument, NULL, 0},
         {"dump-ast", no_argument, NULL, 0},       {"dump-ir", no_argument, NULL, 0},
-        {"dump-asm", no_argument, NULL, 0},       {"detailed-output", no_argument, NULL, 'D'},
+        {"dump-asm", no_argument, NULL, 0},       {"json-errors", no_argument, NULL, 0},
+        {"tabular-errors", no_argument, NULL, 0}, {"detailed-output", no_argument, NULL, 'D'},
         {"help", no_argument, NULL, 'h'},
     };
     const char *options_string = "+:o:Dh";
@@ -47,19 +49,27 @@ kefir_result_t kefir_cli_parse_options(struct kefir_cli_options *options, char *
             case 0:
                 switch (long_option_index) {
                     case 1:
-                        options->output_type = KEFIR_CLI_OUTPUT_TOKENS;
+                        options->action = KEFIR_CLI_ACTION_DUMP_TOKENS;
                         break;
 
                     case 2:
-                        options->output_type = KEFIR_CLI_OUTPUT_AST;
+                        options->action = KEFIR_CLI_ACTION_DUMP_AST;
                         break;
 
                     case 3:
-                        options->output_type = KEFIR_CLI_OUTPUT_IR;
+                        options->action = KEFIR_CLI_ACTION_DUMP_IR;
                         break;
 
                     case 4:
-                        options->output_type = KEFIR_CLI_OUTPUT_ASSEMBLY;
+                        options->action = KEFIR_CLI_ACTION_DUMP_ASSEMBLY;
+                        break;
+
+                    case 5:
+                        options->error_report_type = KEFIR_CLI_ERROR_REPORT_JSON;
+                        break;
+
+                    case 6:
+                        options->error_report_type = KEFIR_CLI_ERROR_REPORT_TABULAR;
                         break;
 
                     default:
@@ -76,7 +86,7 @@ kefir_result_t kefir_cli_parse_options(struct kefir_cli_options *options, char *
                 break;
 
             case 'h':
-                options->display_help = true;
+                options->action = KEFIR_CLI_ACTION_HELP;
                 break;
 
             case '?':
@@ -89,7 +99,7 @@ kefir_result_t kefir_cli_parse_options(struct kefir_cli_options *options, char *
 
     for (kefir_size_t i = (kefir_size_t) optind; i < argc; i++) {
         REQUIRE(options->input_filepath == NULL,
-                KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Cannot specify more than one input file"));
+                KEFIR_SET_ERROR(KEFIR_UI_ERROR, "Cannot specify more than one input file"));
         options->input_filepath = argv[optind];
     }
 

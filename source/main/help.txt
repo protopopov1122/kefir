@@ -8,6 +8,8 @@ Options:
     --dump-ir               Print intermediate representation (IR) bytecode
     --dump-ast              Print abstract syntax tree (AST)
     --dump-tokens           Print tokens
+    --json-errors           Print errors in JSON format to stderr
+    --tabular-errors        Print errors in tabular format to stderr
     -D,--detailed-output    Include references to source file in AST and token dumps
 
 If no input file is provided, stdin will be used.
