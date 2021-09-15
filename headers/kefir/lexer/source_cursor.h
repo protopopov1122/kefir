@@ -1,7 +1,7 @@
-#ifndef KEFIR_PARSER_SOURCE_CURSOR_H_
-#define KEFIR_PARSER_SOURCE_CURSOR_H_
+#ifndef KEFIR_LEXER_SOURCE_CURSOR_H_
+#define KEFIR_LEXER_SOURCE_CURSOR_H_
 
-#include "kefir/parser/base.h"
+#include "kefir/lexer/base.h"
 #include "kefir/core/basic-types.h"
 #include "kefir/core/source_location.h"
 #include <uchar.h>

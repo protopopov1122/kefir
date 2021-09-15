@@ -23,13 +23,13 @@
 
 #include <stdio.h>
 #include "kefir/core/basic-types.h"
-#include "kefir/parser/context.h"
+#include "kefir/lexer/context.h"
 #include "kefir/ast/type.h"
 #include "kefir/codegen/codegen.h"
 #include "kefir/ir/platform.h"
 
 typedef struct kefir_compiler_profile {
-    struct kefir_parser_context parser_context;
+    struct kefir_lexer_context lexer_context;
     const struct kefir_ast_type_traits *type_traits;
     struct kefir_ir_target_platform ir_target_platform;
 

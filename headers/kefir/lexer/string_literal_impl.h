@@ -18,23 +18,13 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef KEFIR_PARSER_CONTEXT_H_
-#define KEFIR_PARSER_CONTEXT_H_
+#ifndef KEFIR_LEXER_STRING_LITERAL_IMPL_H_
+#define KEFIR_LEXER_STRING_LITERAL_IMPL_H_
 
-#include "kefir/parser/base.h"
-#include "kefir/core/basic-types.h"
+#include "kefir/lexer/lexer.h"
+#include "kefir/core/string_buffer.h"
 
-typedef struct kefir_parser_context {
-    kefir_uint64_t integer_max_value;
-    kefir_uint64_t uinteger_max_value;
-    kefir_uint64_t long_max_value;
-    kefir_uint64_t ulong_max_value;
-    kefir_uint64_t long_long_max_value;
-    kefir_uint64_t ulong_long_max_value;
-
-    kefir_char32_t newline;
-} kefir_parser_context_t;
-
-kefir_result_t kefir_parser_context_default(struct kefir_parser_context *);
+kefir_result_t kefir_lexer_next_string_literal_sequence_impl(struct kefir_mem *, struct kefir_lexer *,
+                                                             const kefir_char32_t *, struct kefir_string_buffer *);
 
 #endif

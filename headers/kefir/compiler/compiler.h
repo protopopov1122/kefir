@@ -24,7 +24,7 @@
 #include "kefir/compiler/profile.h"
 #include "kefir/ast/global_context.h"
 #include "kefir/ast-translator/environment.h"
-#include "kefir/parser/lexer.h"
+#include "kefir/lexer/lexer.h"
 #include "kefir/ast/node.h"
 #include "kefir/ir/module.h"
 #include "kefir/core/error.h"

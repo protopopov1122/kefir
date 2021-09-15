@@ -19,7 +19,7 @@
 */
 
 #include "kefir/test/unit_test.h"
-#include "kefir/parser/source_cursor.h"
+#include "kefir/lexer/source_cursor.h"
 
 DEFINE_CASE(lexer_source_cursor1, "Lexer - source cursor #1") {
     const char CONTENT[] = "123 {{(Hello\nworld\t,,,x!";

@@ -18,21 +18,21 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef KEFIR_PARSER_LEXER_H_
-#define KEFIR_PARSER_LEXER_H_
+#ifndef KEFIR_LEXER_LEXER_H_
+#define KEFIR_LEXER_LEXER_H_
 
-#include "kefir/parser/lexem.h"
-#include "kefir/parser/source_cursor.h"
+#include "kefir/lexer/lexem.h"
+#include "kefir/lexer/source_cursor.h"
 #include "kefir/core/mem.h"
 #include "kefir/core/symbol_table.h"
 #include "kefir/core/trie.h"
-#include "kefir/parser/context.h"
+#include "kefir/lexer/context.h"
 #include "kefir/util/json.h"
 
 typedef struct kefir_lexer {
     struct kefir_symbol_table *symbols;
     struct kefir_lexer_source_cursor *cursor;
-    const struct kefir_parser_context *context;
+    const struct kefir_lexer_context *context;
 
     struct kefir_trie punctuators;
     struct kefir_trie keywords;
@@ -41,12 +41,12 @@ typedef struct kefir_lexer {
 typedef kefir_result_t (*kefir_lexer_callback_fn_t)(struct kefir_mem *, struct kefir_lexer *, void *);
 
 kefir_result_t kefir_lexer_init(struct kefir_mem *, struct kefir_lexer *, struct kefir_symbol_table *,
-                                struct kefir_lexer_source_cursor *, const struct kefir_parser_context *);
+                                struct kefir_lexer_source_cursor *, const struct kefir_lexer_context *);
 kefir_result_t kefir_lexer_free(struct kefir_mem *, struct kefir_lexer *);
 kefir_result_t kefir_lexer_apply(struct kefir_mem *, struct kefir_lexer *, kefir_lexer_callback_fn_t, void *);
 kefir_result_t kefir_lexer_next(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
 
-kefir_result_t kefir_lexer_cursor_skip_insignificant_chars(const struct kefir_parser_context *,
+kefir_result_t kefir_lexer_cursor_skip_insignificant_chars(const struct kefir_lexer_context *,
                                                            struct kefir_lexer_source_cursor *);
 kefir_result_t kefir_lexer_cursor_next_universal_character(struct kefir_lexer_source_cursor *, kefir_char32_t *);
 kefir_result_t kefir_lexer_cursor_next_escape_sequence(struct kefir_lexer_source_cursor *, kefir_char32_t *);

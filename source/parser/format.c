@@ -18,7 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "kefir/parser/format.h"
+#include "kefir/lexer/format.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 

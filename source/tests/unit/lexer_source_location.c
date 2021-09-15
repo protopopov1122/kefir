@@ -19,7 +19,7 @@
 */
 
 #include "kefir/test/unit_test.h"
-#include "kefir/parser/source_cursor.h"
+#include "kefir/lexer/source_cursor.h"
 #include <string.h>
 
 #define ASSERT_LOCATION(_location, _source, _line, _column)  \

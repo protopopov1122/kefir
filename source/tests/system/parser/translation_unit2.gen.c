@@ -36,8 +36,8 @@
 #include "kefir/codegen/amd64-sysv.h"
 #include "kefir/parser/parser.h"
 #include "kefir/parser/rules.h"
-#include "kefir/parser/lexer.h"
-#include "kefir/parser/format.h"
+#include "kefir/lexer/lexer.h"
+#include "kefir/lexer/format.h"
 
 kefir_result_t make_unit(struct kefir_mem *mem, const struct kefir_ast_context *context,
                          struct kefir_ast_translation_unit **result) {
@@ -51,11 +51,11 @@ kefir_result_t make_unit(struct kefir_mem *mem, const struct kefir_ast_context *
                                "}";
 
     struct kefir_lexer_source_cursor source_cursor;
-    struct kefir_parser_context parser_context;
+    struct kefir_lexer_context parser_context;
     struct kefir_lexer lexer;
     struct kefir_token_buffer tokens;
     REQUIRE_OK(kefir_lexer_source_cursor_init(&source_cursor, SOURCE_CODE, sizeof(SOURCE_CODE), ""));
-    REQUIRE_OK(kefir_parser_context_default(&parser_context));
+    REQUIRE_OK(kefir_lexer_context_default(&parser_context));
     REQUIRE_OK(kefir_lexer_init(mem, &lexer, context->symbols, &source_cursor, &parser_context));
     REQUIRE_OK(kefir_token_buffer_init(mem, &tokens));
     REQUIRE_OK(kefir_token_buffer_consume(mem, &tokens, &lexer));

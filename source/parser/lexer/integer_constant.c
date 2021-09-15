@@ -18,7 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "kefir/parser/lexer.h"
+#include "kefir/lexer/lexer.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/util/char32.h"
@@ -96,9 +96,8 @@ static kefir_result_t get_permitted_constant_types(enum integer_constant_type or
     return KEFIR_OK;
 }
 
-static kefir_result_t make_integral_constant(const struct kefir_parser_context *context,
-                                             enum integer_constant_type type, kefir_uint64_t value,
-                                             struct kefir_token *token) {
+static kefir_result_t make_integral_constant(const struct kefir_lexer_context *context, enum integer_constant_type type,
+                                             kefir_uint64_t value, struct kefir_token *token) {
     switch (type) {
         case CONSTANT_INT:
             REQUIRE(value <= context->integer_max_value,
@@ -139,7 +138,7 @@ static kefir_result_t make_integral_constant(const struct kefir_parser_context *
     return KEFIR_OK;
 }
 
-static kefir_result_t build_integral_constant(const struct kefir_parser_context *context,
+static kefir_result_t build_integral_constant(const struct kefir_lexer_context *context,
                                               enum integer_constant_type type, kefir_bool_t decimal,
                                               kefir_uint64_t value, struct kefir_token *token) {
     const enum integer_constant_type *permitted_types = NULL;

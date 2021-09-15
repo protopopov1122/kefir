@@ -21,7 +21,7 @@
 #ifndef KEFIR_PARSER_CURSOR_H_
 #define KEFIR_PARSER_CURSOR_H_
 
-#include "kefir/parser/lexem.h"
+#include "kefir/lexer/lexem.h"
 
 typedef struct kefir_parser_token_cursor {
     struct kefir_token *tokens;

@@ -26,7 +26,7 @@
 #include "kefir/core/os_error.h"
 #include "kefir/core/error_format.h"
 #include "kefir/cli/options.h"
-#include "kefir/parser/format.h"
+#include "kefir/lexer/format.h"
 #include "kefir/ast/format.h"
 #include "kefir/ir/format.h"
 #include "kefir/core/version.h"

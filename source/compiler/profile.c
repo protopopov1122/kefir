@@ -53,7 +53,7 @@ static kefir_result_t amd64_sysv_free_codegen(struct kefir_mem *mem, struct kefi
 static kefir_result_t kefir_compiler_amd64_sysv_profile(struct kefir_compiler_profile *profile) {
     REQUIRE(profile != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler profile"));
 
-    REQUIRE_OK(kefir_parser_context_default(&profile->parser_context));
+    REQUIRE_OK(kefir_lexer_context_default(&profile->lexer_context));
     REQUIRE_OK(kefir_codegen_amd64_sysv_target_platform(&profile->ir_target_platform));
     profile->type_traits = kefir_ast_default_type_traits();
     profile->new_codegen = amd64_sysv_new_codegen;

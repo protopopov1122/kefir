@@ -18,10 +18,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef KEFIR_PARSER_LEXEM_H_
-#define KEFIR_PARSER_LEXEM_H_
+#ifndef KEFIR_LEXER_LEXEM_H_
+#define KEFIR_LEXER_LEXEM_H_
 
-#include "kefir/parser/base.h"
+#include "kefir/lexer/base.h"
 #include "kefir/core/mem.h"
 #include "kefir/core/basic-types.h"
 #include "kefir/core/symbol_table.h"

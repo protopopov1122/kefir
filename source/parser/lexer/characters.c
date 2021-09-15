@@ -1,4 +1,4 @@
-#include "kefir/parser/lexer.h"
+#include "kefir/lexer/lexer.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/util/char32.h"

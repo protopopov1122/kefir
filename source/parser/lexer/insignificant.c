@@ -18,7 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "kefir/parser/lexer.h"
+#include "kefir/lexer/lexer.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"
@@ -48,7 +48,7 @@ static kefir_result_t skip_multiline_comment(struct kefir_lexer_source_cursor *c
     return KEFIR_OK;
 }
 
-static kefir_result_t skip_oneline_comment(const struct kefir_parser_context *context,
+static kefir_result_t skip_oneline_comment(const struct kefir_lexer_context *context,
                                            struct kefir_lexer_source_cursor *cursor, kefir_bool_t *skip) {
     if (kefir_lexer_source_cursor_at(cursor, 0) == U'/' && kefir_lexer_source_cursor_at(cursor, 1) == U'/') {
         *skip = true;
@@ -66,7 +66,7 @@ static kefir_result_t skip_oneline_comment(const struct kefir_parser_context *co
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_lexer_cursor_skip_insignificant_chars(const struct kefir_parser_context *context,
+kefir_result_t kefir_lexer_cursor_skip_insignificant_chars(const struct kefir_lexer_context *context,
                                                            struct kefir_lexer_source_cursor *cursor) {
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser context"));
     REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer source cursor"));

@@ -19,8 +19,8 @@
 */
 
 #include "kefir/core/mem.h"
-#include "kefir/parser/lexer.h"
-#include "kefir/parser/format.h"
+#include "kefir/lexer/lexer.h"
+#include "kefir/lexer/format.h"
 #include "kefir/ast/format.h"
 #include <stdio.h>
 
@@ -31,11 +31,11 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     struct kefir_symbol_table symbols;
     struct kefir_lexer_source_cursor cursor;
-    struct kefir_parser_context parser_context;
+    struct kefir_lexer_context parser_context;
     struct kefir_lexer lexer;
     REQUIRE_OK(kefir_symbol_table_init(&symbols));
     REQUIRE_OK(kefir_lexer_source_cursor_init(&cursor, CONTENT, sizeof(CONTENT), ""));
-    REQUIRE_OK(kefir_parser_context_default(&parser_context));
+    REQUIRE_OK(kefir_lexer_context_default(&parser_context));
     REQUIRE_OK(kefir_lexer_init(mem, &lexer, &symbols, &cursor, &parser_context));
 
     struct kefir_json_output json;

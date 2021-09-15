@@ -18,7 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "kefir/parser/lexem.h"
+#include "kefir/lexer/lexem.h"
 #include "kefir/test/unit_test.h"
 #include "kefir/test/util.h"
 #include "kefir/util/char32.h"
