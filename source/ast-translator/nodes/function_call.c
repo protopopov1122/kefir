@@ -80,7 +80,7 @@ kefir_result_t kefir_ast_translate_function_call_node(struct kefir_mem *mem,
                 struct kefir_ast_translator_function_declaration *func_decl = NULL;
                 REQUIRE_OK(kefir_ast_translator_function_declaration_init(
                     mem, context->environment, context->ast_context->type_bundle, context->ast_context->type_traits,
-                    context->module, &context->type_cache.resolver, function_type, &node->arguments, &func_decl));
+                    context->module, NULL, function_type, &node->arguments, &func_decl));
                 ir_decl = func_decl->ir_function_decl;
                 if (ir_decl->name == NULL) {
                     REQUIRE_OK(kefir_ast_translate_expression(mem, node->function, builder, context));
@@ -106,7 +106,7 @@ kefir_result_t kefir_ast_translate_function_call_node(struct kefir_mem *mem,
             struct kefir_ast_translator_function_declaration *func_decl = NULL;
             REQUIRE_OK(kefir_ast_translator_function_declaration_init(
                 mem, context->environment, context->ast_context->type_bundle, context->ast_context->type_traits,
-                context->module, &context->type_cache.resolver, function_type, &node->arguments, &func_decl));
+                context->module, NULL, function_type, &node->arguments, &func_decl));
             ir_decl = func_decl->ir_function_decl;
             if (ir_decl->name == NULL) {
                 REQUIRE_OK(kefir_ast_translate_expression(mem, node->function, builder, context));
@@ -131,7 +131,7 @@ kefir_result_t kefir_ast_translate_function_call_node(struct kefir_mem *mem,
                 struct kefir_ast_translator_function_declaration *func_decl = NULL;
                 REQUIRE_OK(kefir_ast_translator_function_declaration_init(
                     mem, context->environment, context->ast_context->type_bundle, context->ast_context->type_traits,
-                    context->module, &context->type_cache.resolver, function_type, &node->arguments, &func_decl));
+                    context->module, NULL, function_type, &node->arguments, &func_decl));
                 ir_decl = func_decl->ir_function_decl;
                 if (ir_decl->name == NULL) {
                     REQUIRE_OK(kefir_ast_translate_expression(mem, node->function, builder, context));

@@ -105,7 +105,7 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(
             });
         }
 
-        if (parameter_layout != NULL) {
+        if (type_resolver != NULL && parameter_layout != NULL) {
             res = KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_REGISTER_OBJECT(mem, type_resolver, func_decl->ir_argument_type_id,
                                                                      func_decl->ir_argument_type, parameter_layout);
             REQUIRE_ELSE(res == KEFIR_OK, {
@@ -144,12 +144,14 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(
             return res;
         });
 
-        res = KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_REGISTER_OBJECT(mem, type_resolver, func_decl->ir_argument_type_id,
-                                                                 func_decl->ir_argument_type, parameter_layout);
-        REQUIRE_ELSE(res == KEFIR_OK, {
-            KEFIR_IRBUILDER_TYPE_FREE(&builder);
-            return res;
-        });
+        if (type_resolver != NULL) {
+            res = KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_REGISTER_OBJECT(mem, type_resolver, func_decl->ir_argument_type_id,
+                                                                     func_decl->ir_argument_type, parameter_layout);
+            REQUIRE_ELSE(res == KEFIR_OK, {
+                KEFIR_IRBUILDER_TYPE_FREE(&builder);
+                return res;
+            });
+        }
     }
     REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
     return KEFIR_OK;
@@ -173,7 +175,7 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_return(
         kefir_ast_type_layout_free(mem, func_decl->return_layout);
         return res;
     });
-    if (func_type->function_type.return_type->tag != KEFIR_AST_TYPE_VOID) {
+    if (type_resolver != NULL && func_type->function_type.return_type->tag != KEFIR_AST_TYPE_VOID) {
         REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_REGISTER_OBJECT(
             mem, type_resolver, func_decl->ir_return_type_id, func_decl->ir_return_type, func_decl->return_layout));
     }
@@ -243,8 +245,6 @@ kefir_result_t kefir_ast_translator_function_declaration_init(
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator environment"));
     REQUIRE(type_traits != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type traits"));
     REQUIRE(env != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR module"));
-    REQUIRE(type_resolver != NULL,
-            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator type resolver"));
     REQUIRE(func_type != NULL && func_type->tag == KEFIR_AST_TYPE_FUNCTION,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST function type"));
     REQUIRE(func_decl != NULL,

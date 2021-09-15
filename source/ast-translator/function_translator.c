@@ -95,8 +95,7 @@ static kefir_result_t init_function_declaration(struct kefir_mem *mem, struct ke
 
             res = kefir_ast_translator_function_declaration_init(
                 mem, context->environment, context->ast_context->type_bundle, context->ast_context->type_traits,
-                context->module, &context->type_cache.resolver, function->base.properties.type, &declaration_list,
-                &args->function_declaration);
+                context->module, NULL, function->base.properties.type, &declaration_list, &args->function_declaration);
             REQUIRE_ELSE(res == KEFIR_OK, {
                 kefir_list_free(mem, &declaration_list);
                 kefir_hashtree_free(mem, &declarations);
