@@ -23,6 +23,7 @@ GENERATED_DIR=$(BIN_DIR)/generated
 SOURCE_DIR=$(ROOT)/source
 HEADERS_DIR=$(ROOT)/headers
 RESOURCES_DIR=$(ROOT)/resources
+SCRIPTS_DIR=$(ROOT)/scripts
 
 LIBKEFIR_SO=$(LIB_DIR)/libkefir.so
 
