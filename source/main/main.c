@@ -20,10 +20,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
+#include "kefir/cli/input.h"
 #include "kefir/core/util.h"
 #include "kefir/compiler/compiler.h"
 #include "kefir/core/os_error.h"
@@ -32,45 +29,6 @@
 #include "kefir/parser/format.h"
 #include "kefir/ast/format.h"
 #include "kefir/ir/format.h"
-
-static kefir_result_t mmap_file(const char *filepath, const char **content, size_t *length) {
-    int fd = open(filepath, O_RDONLY);
-    REQUIRE(fd >= 0, KEFIR_SET_OS_ERROR("Failed to open file"));
-
-    struct stat statbuf;
-    REQUIRE(fstat(fd, &statbuf) >= 0, KEFIR_SET_OS_ERROR("Failed to fstat file"));
-
-    const char *ptr = mmap(NULL, statbuf.st_size, PROT_READ, MAP_SHARED, fd, 0);
-    REQUIRE(ptr != MAP_FAILED, KEFIR_SET_OS_ERROR("Failed to mmap file"));
-    *content = ptr;
-    *length = statbuf.st_size;
-    close(fd);
-    return KEFIR_OK;
-}
-
-static kefir_result_t unmap_file(const char *content, kefir_size_t length) {
-    int err = munmap((void *) content, length);
-    if (err != 0) {
-        return KEFIR_SET_OS_ERROR("Failed to unmap file");
-    }
-    return KEFIR_OK;
-}
-
-static kefir_result_t read_stream(struct kefir_mem *mem, FILE *input, char **content, kefir_size_t *length) {
-    *content = NULL;
-    *length = 0;
-
-    kefir_size_t file_capacity = 0;
-    for (char c = fgetc(input); c != EOF; c = fgetc(input)) {
-        if (*length == file_capacity) {
-            file_capacity += 1024;
-            *content = KEFIR_REALLOC(mem, *content, file_capacity);
-            REQUIRE(*content != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to reallocate input buffer"));
-        }
-        (*content)[(*length)++] = c;
-    }
-    return KEFIR_OK;
-}
 
 static kefir_result_t process_code(struct kefir_mem *mem, const char *code, kefir_size_t length,
                                    struct kefir_cli_options *options) {
@@ -155,19 +113,13 @@ static kefir_result_t process(struct kefir_mem *mem, struct kefir_cli_options *o
     if (options->action == KEFIR_CLI_ACTION_HELP) {
         display_help(stdout);
     } else {
+        struct kefir_cli_input input;
+        REQUIRE_OK(kefir_cli_input_open(mem, &input, options->input_filepath));
+        const char *file_content = NULL;
         kefir_size_t file_length = 0;
-        if (options->input_filepath) {
-            const char *file_content = NULL;
-            REQUIRE_OK(mmap_file(options->input_filepath, &file_content, &file_length));
-            REQUIRE_OK(process_code(mem, file_content, file_length, options));
-            REQUIRE_OK(unmap_file(file_content, file_length));
-        } else {
-            char *file_content = NULL;
-            REQUIRE_OK(read_stream(mem, stdin, &file_content, &file_length));
-            kefir_result_t res = process_code(mem, file_content, file_length, options);
-            KEFIR_FREE(mem, file_content);
-            REQUIRE_OK(res);
-        }
+        REQUIRE_OK(kefir_cli_input_get(&input, &file_content, &file_length));
+        REQUIRE_OK(process_code(mem, file_content, file_length, options));
+        REQUIRE_OK(kefir_cli_input_close(mem, &input));
     }
     return KEFIR_OK;
 }
