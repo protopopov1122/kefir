@@ -4,6 +4,7 @@
 #include "kefir/core/error.h"
 #include <stdio.h>
 
-void kefir_format_error(FILE *, const struct kefir_error *);
+void kefir_format_error_tabular(FILE *, const struct kefir_error *);
+void kefir_format_error_json(FILE *, const struct kefir_error *);
 
 #endif

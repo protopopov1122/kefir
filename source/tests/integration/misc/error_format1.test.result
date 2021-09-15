@@ -1,0 +1,82 @@
+
+
+No.  Message                              Class          Subclass   Compiler ref.
+  0| Static assertion failed        |     Error|    Static assert|  source/tests/integration/misc/error_format1.test.c:57
+  1| Constant expected              |     Error|         Constant|  source/tests/integration/misc/error_format1.test.c:56
+  2| Analysis error detected        |     Error|         Analysis|  source/tests/integration/misc/error_format1.test.c:55
+  3| Syntax error detected          |     Error|           Parser|  source/tests/integration/misc/error_format1.test.c:54
+  4| Lexing issue                   |     Error|            Lexer|  source/tests/integration/misc/error_format1.test.c:53
+  5| Unexpected option              |     Error|       Parameters|  source/tests/integration/misc/error_format1.test.c:52
+  6| Out of space issue             |     Fatal|     Out of space|  source/tests/integration/misc/error_format1.test.c:51
+  7| Feature is not implemented yet |     Fatal|  Not implemented|  source/tests/integration/misc/error_format1.test.c:50
+  8| Feature is not supported       |     Fatal|    Not supported|  source/tests/integration/misc/error_format1.test.c:49
+  9| Memory allocation failed       |     Fatal|  Mem. allocation|  source/tests/integration/misc/error_format1.test.c:48
+ 10| Object allocation failed       |     Fatal|  Obj. allocation|  source/tests/integration/misc/error_format1.test.c:47
+ 11| Out of bounds issue            |     Fatal|    Out of bounds|  source/tests/integration/misc/error_format1.test.c:46
+ 12| Invalid state was detected     |     Fatal|    Invalid state|  source/tests/integration/misc/error_format1.test.c:45
+ 13| Invalid request was made       |     Fatal|  Invalid request|  source/tests/integration/misc/error_format1.test.c:44
+ 14| Invalid change was requested   |     Fatal|   Invalid change|  source/tests/integration/misc/error_format1.test.c:43
+ 15| I've got invalid parameter     |     Fatal| Invalid parameter|  source/tests/integration/misc/error_format1.test.c:42
+ 16| Error from OS                  |     Fatal| Operating System|  source/tests/integration/misc/error_format1.test.c:41
+ 17| Total internal failure         |     Fatal|         Internal|  source/tests/integration/misc/error_format1.test.c:40
+ 18| Some unknown error here        |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:39
+
+
+No.  Message                    Class          Subclass   Compiler ref.
+  0| Entry already exists |  Internal|   Already exists|  source/tests/integration/misc/error_format1.test.c:65
+
+
+No.  Message               Class          Subclass   Compiler ref.
+  0| Entry not found |  Internal|        Not found|  source/tests/integration/misc/error_format1.test.c:73
+
+
+No.  Message              Class          Subclass   Compiler ref.
+  0| No match found |  Internal|         No match|  source/tests/integration/misc/error_format1.test.c:81
+
+
+No.  Message            Class          Subclass   Compiler ref.
+  0| Iterator end |  Internal|     Iterator end|  source/tests/integration/misc/error_format1.test.c:89
+
+
+No.  Message                                      Class          Subclass   Compiler ref.
+  0| file5.c@1:1 Static assertion failed    |     Error|    Static assert|  source/tests/integration/misc/error_format1.test.c:103
+  1| file4.c@91:1000 Expected constant      |     Error|         Constant|  source/tests/integration/misc/error_format1.test.c:101
+  2| file3.c@4739:1 Analyzer error detected |     Error|         Analysis|  source/tests/integration/misc/error_format1.test.c:99
+  3| file2.c@1:10 Parsing error detected    |     Error|           Parser|  source/tests/integration/misc/error_format1.test.c:97
+  4| file1.c@100:5 Lexer error detected     |     Error|            Lexer|  source/tests/integration/misc/error_format1.test.c:95
+
+
+No.  Message                                        Class          Subclass   Compiler ref.
+  -| [Error stack overflow. Skipping entries] |          |                 |
+  0| Some unknwon error #31                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+  1| Some unknwon error #30                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+  2| Some unknwon error #29                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+  3| Some unknwon error #28                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+  4| Some unknwon error #27                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+  5| Some unknwon error #26                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+  6| Some unknwon error #25                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+  7| Some unknwon error #24                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+  8| Some unknwon error #23                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+  9| Some unknwon error #22                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+ 10| Some unknwon error #21                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+ 11| Some unknwon error #20                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+ 12| Some unknwon error #19                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+ 13| Some unknwon error #18                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+ 14| Some unknwon error #17                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+ 15| Some unknwon error #16                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+ 16| Some unknwon error #15                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+ 17| Some unknwon error #14                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+ 18| Some unknwon error #13                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+ 19| Some unknwon error #12                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+ 20| Some unknwon error #11                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+ 21| Some unknwon error #10                   |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+ 22| Some unknwon error #9                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+ 23| Some unknwon error #8                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+ 24| Some unknwon error #7                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+ 25| Some unknwon error #6                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+ 26| Some unknwon error #5                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+ 27| Some unknwon error #4                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+ 28| Some unknwon error #3                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+ 29| Some unknwon error #2                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+ 30| Some unknwon error #1                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111
+ 31| Some unknwon error #0                    |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:111

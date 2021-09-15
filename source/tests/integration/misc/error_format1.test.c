@@ -27,7 +27,7 @@
 
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     UNUSED(mem);
-    kefir_format_error(stdout, kefir_current_error());
+    kefir_format_error_tabular(stdout, kefir_current_error());
     printf("\n\n");
 
     KEFIR_SET_ERROR(KEFIR_OK, "Should now show up #1");
@@ -55,7 +55,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     KEFIR_SET_ERROR(KEFIR_ANALYSIS_ERROR, "Analysis error detected");
     KEFIR_SET_ERROR(KEFIR_NOT_CONSTANT, "Constant expected");
     KEFIR_SET_ERROR(KEFIR_STATIC_ASSERT, "Static assertion failed");
-    kefir_format_error(stdout, kefir_current_error());
+    kefir_format_error_tabular(stdout, kefir_current_error());
     kefir_clear_error();
     printf("\n\n");
 
@@ -63,7 +63,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     KEFIR_SET_ERROR(KEFIR_NO_MATCH, "No match found");
     KEFIR_SET_ERROR(KEFIR_NOT_FOUND, "Entry not found");
     KEFIR_SET_ERROR(KEFIR_ALREADY_EXISTS, "Entry already exists");
-    kefir_format_error(stdout, kefir_current_error());
+    kefir_format_error_tabular(stdout, kefir_current_error());
     kefir_clear_error();
     printf("\n\n");
 
@@ -71,7 +71,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     KEFIR_SET_ERROR(KEFIR_NO_MATCH, "No match found");
     KEFIR_SET_ERROR(KEFIR_ITERATOR_END, "Iterator end");
     KEFIR_SET_ERROR(KEFIR_NOT_FOUND, "Entry not found");
-    kefir_format_error(stdout, kefir_current_error());
+    kefir_format_error_tabular(stdout, kefir_current_error());
     kefir_clear_error();
     printf("\n\n");
 
@@ -79,7 +79,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     KEFIR_SET_ERROR(KEFIR_ITERATOR_END, "Iterator end");
     KEFIR_SET_ERROR(KEFIR_ALREADY_EXISTS, "Entry already exists");
     KEFIR_SET_ERROR(KEFIR_NO_MATCH, "No match found");
-    kefir_format_error(stdout, kefir_current_error());
+    kefir_format_error_tabular(stdout, kefir_current_error());
     kefir_clear_error();
     printf("\n\n");
 
@@ -87,7 +87,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     KEFIR_SET_ERROR(KEFIR_NOT_FOUND, "Entry not found");
     KEFIR_SET_ERROR(KEFIR_NO_MATCH, "No match found");
     KEFIR_SET_ERROR(KEFIR_ITERATOR_END, "Iterator end");
-    kefir_format_error(stdout, kefir_current_error());
+    kefir_format_error_tabular(stdout, kefir_current_error());
     kefir_clear_error();
     printf("\n\n");
 
@@ -101,7 +101,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     KEFIR_SET_SOURCE_ERROR(KEFIR_NOT_CONSTANT, &location4, "Expected constant");
     struct kefir_source_location location5 = {.source = "file5.c", .line = 1, .column = 1};
     KEFIR_SET_SOURCE_ERROR(KEFIR_STATIC_ASSERT, &location5, "Static assertion failed");
-    kefir_format_error(stdout, kefir_current_error());
+    kefir_format_error_tabular(stdout, kefir_current_error());
     kefir_clear_error();
     printf("\n\n");
 
@@ -110,6 +110,6 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         snprintf(BUFFER[i], 256, "Some unknwon error #%zu", i);
         KEFIR_SET_ERROR(KEFIR_UNKNOWN_ERROR, BUFFER[i]);
     }
-    kefir_format_error(stdout, kefir_current_error());
+    kefir_format_error_tabular(stdout, kefir_current_error());
     return KEFIR_OK;
 }

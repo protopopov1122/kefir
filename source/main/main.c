@@ -164,7 +164,7 @@ static int report_error(kefir_result_t res) {
         return EXIT_SUCCESS;
     } else {
         fprintf(stderr, "Failed to compile! Error stack:\n");
-        kefir_format_error(stderr, kefir_current_error());
+        kefir_format_error_tabular(stderr, kefir_current_error());
     }
     return EXIT_FAILURE;
 }

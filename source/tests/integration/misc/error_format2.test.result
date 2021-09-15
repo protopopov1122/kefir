@@ -1,0 +1,642 @@
+
+
+[
+    {
+        "overflow": false,
+        "code": "static_assert",
+        "message": "Static assertion failed",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 57
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "not_constant",
+        "message": "Constant expected",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 56
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "analysis_error",
+        "message": "Analysis error detected",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 55
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "syntax_error",
+        "message": "Syntax error detected",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 54
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "lexer_error",
+        "message": "Lexing issue",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 53
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "ui_error",
+        "message": "Unexpected option",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 52
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "out_of_space",
+        "message": "Out of space issue",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 51
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "not_implemented",
+        "message": "Feature is not implemented yet",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 50
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "not_supported",
+        "message": "Feature is not supported",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 49
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "memalloc_failure",
+        "message": "Memory allocation failed",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 48
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "objalloc_failure",
+        "message": "Object allocation failed",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 47
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "out_of_bounds",
+        "message": "Out of bounds issue",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 46
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "invalid_state",
+        "message": "Invalid state was detected",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 45
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "invalid_request",
+        "message": "Invalid request was made",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 44
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "invalid_change",
+        "message": "Invalid change was requested",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 43
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "invalid_parameter",
+        "message": "I've got invalid parameter",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 42
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "os_error",
+        "message": "Error from OS",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 41
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "internal_error",
+        "message": "Total internal failure",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 40
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknown error here",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 39
+        },
+        "source_location": null
+    }
+]
+
+[
+    {
+        "overflow": false,
+        "code": "already_exists",
+        "message": "Entry already exists",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 65
+        },
+        "source_location": null
+    }
+]
+
+[
+    {
+        "overflow": false,
+        "code": "not_found",
+        "message": "Entry not found",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 73
+        },
+        "source_location": null
+    }
+]
+
+[
+    {
+        "overflow": false,
+        "code": "no_match",
+        "message": "No match found",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 81
+        },
+        "source_location": null
+    }
+]
+
+[
+    {
+        "overflow": false,
+        "code": "iterator_end",
+        "message": "Iterator end",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 89
+        },
+        "source_location": null
+    }
+]
+
+[
+    {
+        "overflow": false,
+        "code": "static_assert",
+        "message": "file5.c@1:1 Static assertion failed",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 103
+        },
+        "source_location": {
+            "source": "file5.c",
+            "line": 1,
+            "column": 1
+        }
+    },
+    {
+        "overflow": false,
+        "code": "not_constant",
+        "message": "file4.c@91:1000 Expected constant",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 101
+        },
+        "source_location": {
+            "source": "file4.c",
+            "line": 91,
+            "column": 1000
+        }
+    },
+    {
+        "overflow": false,
+        "code": "analysis_error",
+        "message": "file3.c@4739:1 Analyzer error detected",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 99
+        },
+        "source_location": {
+            "source": "file3.c",
+            "line": 4739,
+            "column": 1
+        }
+    },
+    {
+        "overflow": false,
+        "code": "syntax_error",
+        "message": "file2.c@1:10 Parsing error detected",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 97
+        },
+        "source_location": {
+            "source": "file2.c",
+            "line": 1,
+            "column": 10
+        }
+    },
+    {
+        "overflow": false,
+        "code": "lexer_error",
+        "message": "file1.c@100:5 Lexer error detected",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 95
+        },
+        "source_location": {
+            "source": "file1.c",
+            "line": 100,
+            "column": 5
+        }
+    }
+]
+
+[
+    {
+        "overflow": true,
+        "code": "unknown_error",
+        "message": "Some unknwon error #31",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #30",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #29",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #28",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #27",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #26",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #25",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #24",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #23",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #22",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #21",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #20",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #19",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #18",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #17",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #16",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #15",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #14",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #13",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #12",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #11",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #10",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #9",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #8",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #7",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #6",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #5",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #4",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #3",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #2",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #1",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    },
+    {
+        "overflow": false,
+        "code": "unknown_error",
+        "message": "Some unknwon error #0",
+        "origin": {
+            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
+            "line": 111
+        },
+        "source_location": null
+    }
+]
