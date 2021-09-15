@@ -96,42 +96,42 @@ static kefir_result_t get_permitted_constant_types(enum integer_constant_type or
     return KEFIR_OK;
 }
 
-static kefir_result_t make_integral_constant(const struct kefir_parser_integral_types *integral_types,
+static kefir_result_t make_integral_constant(const struct kefir_parser_context *context,
                                              enum integer_constant_type type, kefir_uint64_t value,
                                              struct kefir_token *token) {
     switch (type) {
         case CONSTANT_INT:
-            REQUIRE(value <= integral_types->integer_max_value,
+            REQUIRE(value <= context->integer_max_value,
                     KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Provided constant exceeds maximum value of its type"));
             REQUIRE_OK(kefir_token_new_constant_int((kefir_int64_t) value, token));
             break;
 
         case CONSTANT_UNSIGNED_INT:
-            REQUIRE(value <= integral_types->uinteger_max_value,
+            REQUIRE(value <= context->uinteger_max_value,
                     KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Provided constant exceeds maximum value of its type"));
             REQUIRE_OK(kefir_token_new_constant_uint(value, token));
             break;
 
         case CONSTANT_LONG:
-            REQUIRE(value <= integral_types->long_max_value,
+            REQUIRE(value <= context->long_max_value,
                     KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Provided constant exceeds maximum value of its type"));
             REQUIRE_OK(kefir_token_new_constant_long((kefir_int64_t) value, token));
             break;
 
         case CONSTANT_UNSIGNED_LONG:
-            REQUIRE(value <= integral_types->ulong_max_value,
+            REQUIRE(value <= context->ulong_max_value,
                     KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Provided constant exceeds maximum value of its type"));
             REQUIRE_OK(kefir_token_new_constant_ulong(value, token));
             break;
 
         case CONSTANT_LONG_LONG:
-            REQUIRE(value <= integral_types->long_long_max_value,
+            REQUIRE(value <= context->long_long_max_value,
                     KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Provided constant exceeds maximum value of its type"));
             REQUIRE_OK(kefir_token_new_constant_long_long((kefir_int64_t) value, token));
             break;
 
         case CONSTANT_UNSIGNED_LONG_LONG:
-            REQUIRE(value <= integral_types->ulong_long_max_value,
+            REQUIRE(value <= context->ulong_long_max_value,
                     KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Provided constant exceeds maximum value of its type"));
             REQUIRE_OK(kefir_token_new_constant_ulong_long(value, token));
             break;
@@ -139,14 +139,14 @@ static kefir_result_t make_integral_constant(const struct kefir_parser_integral_
     return KEFIR_OK;
 }
 
-static kefir_result_t build_integral_constant(const struct kefir_parser_integral_types *integral_types,
+static kefir_result_t build_integral_constant(const struct kefir_parser_context *context,
                                               enum integer_constant_type type, kefir_bool_t decimal,
                                               kefir_uint64_t value, struct kefir_token *token) {
     const enum integer_constant_type *permitted_types = NULL;
     kefir_size_t permitted_types_length = 0;
     REQUIRE_OK(get_permitted_constant_types(type, decimal, &permitted_types, &permitted_types_length));
     for (kefir_size_t i = 0; i < permitted_types_length; i++) {
-        kefir_result_t res = make_integral_constant(integral_types, permitted_types[i], value, token);
+        kefir_result_t res = make_integral_constant(context, permitted_types[i], value, token);
         if (res == KEFIR_OK) {
             return KEFIR_OK;
         } else {
@@ -244,9 +244,9 @@ static kefir_result_t scan_suffix(struct kefir_lexer *lexer, kefir_bool_t decima
     }
 
     if (matchedSuffix == NULL) {
-        REQUIRE_OK(build_integral_constant(lexer->integral_types, CONSTANT_INT, decimal, value, token));
+        REQUIRE_OK(build_integral_constant(lexer->context, CONSTANT_INT, decimal, value, token));
     } else {
-        REQUIRE_OK(build_integral_constant(lexer->integral_types, matchedSuffix->type, decimal, value, token));
+        REQUIRE_OK(build_integral_constant(lexer->context, matchedSuffix->type, decimal, value, token));
     }
     return KEFIR_OK;
 }

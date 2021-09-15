@@ -18,16 +18,16 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "kefir/parser/lexer.h"
-#include "kefir/core/util.h"
-#include "kefir/core/error.h"
-#include "kefir/util/char32.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <assert.h>
 
-kefir_result_t kefir_lexer_cursor_skip_whitespaces(struct kefir_lexer_source_cursor *cursor) {
-    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer source cursor"));
+extern const int Constant1;
+extern float getf();
 
-    while (kefir_isspace32(kefir_lexer_source_cursor_at(cursor, 0))) {
-        REQUIRE_OK(kefir_lexer_source_cursor_next(cursor, 1));
-    }
-    return KEFIR_OK;
+int main() {
+    assert(Constant1 == 2);
+    const float val = getf();
+    assert(val > 199.0f && val < 201.0f);
+    return EXIT_SUCCESS;
 }

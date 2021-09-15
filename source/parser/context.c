@@ -22,15 +22,15 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-kefir_result_t kefir_parser_integral_types_default(struct kefir_parser_integral_types *integral_types) {
-    REQUIRE(integral_types != NULL,
-            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to parser integral types"));
+kefir_result_t kefir_parser_context_default(struct kefir_parser_context *context) {
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to parser context"));
 
-    integral_types->integer_max_value = KEFIR_INT_MAX;
-    integral_types->uinteger_max_value = KEFIR_UINT_MAX;
-    integral_types->long_max_value = KEFIR_LONG_MAX;
-    integral_types->ulong_max_value = KEFIR_ULONG_MAX;
-    integral_types->long_long_max_value = KEFIR_LONG_LONG_MAX;
-    integral_types->ulong_long_max_value = KEFIR_ULONG_LONG_MAX;
+    context->integer_max_value = KEFIR_INT_MAX;
+    context->uinteger_max_value = KEFIR_UINT_MAX;
+    context->long_max_value = KEFIR_LONG_MAX;
+    context->ulong_max_value = KEFIR_ULONG_MAX;
+    context->long_long_max_value = KEFIR_LONG_LONG_MAX;
+    context->ulong_long_max_value = KEFIR_ULONG_LONG_MAX;
+    context->newline = U'\n';
     return KEFIR_OK;
 }

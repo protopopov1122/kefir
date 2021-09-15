@@ -1,0 +1,59 @@
+[
+    {
+        "class": "keyword",
+        "keyword": "int"
+    },
+    {
+        "class": "identifier",
+        "identifier": "i"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "="
+    },
+    {
+        "class": "constant",
+        "type": "integer",
+        "value": 1
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "keyword",
+        "keyword": "for"
+    },
+    {
+        "class": "identifier",
+        "identifier": "fn"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "("
+    },
+    {
+        "class": "constant",
+        "type": "integer",
+        "value": 2
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ")"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ","
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "!"
+    },
+    {
+        "class": "identifier",
+        "identifier": "def"
+    },
+    {
+        "class": "sentinel"
+    }
+]

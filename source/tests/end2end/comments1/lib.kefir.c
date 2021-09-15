@@ -18,23 +18,17 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef KEFIR_PARSER_CONTEXT_H_
-#define KEFIR_PARSER_CONTEXT_H_
+// const int Constant1 = 1;
+const int Constant1 = /* 100 */  // 200
+    2;
 
-#include "kefir/parser/base.h"
-#include "kefir/core/basic-types.h"
+/* int */ float getf() {
+    // return 100;
+    return 200 /*+1*/  //+2
+        ;
+}
 
-typedef struct kefir_parser_context {
-    kefir_uint64_t integer_max_value;
-    kefir_uint64_t uinteger_max_value;
-    kefir_uint64_t long_max_value;
-    kefir_uint64_t ulong_max_value;
-    kefir_uint64_t long_long_max_value;
-    kefir_uint64_t ulong_long_max_value;
+/*
 
-    kefir_char32_t newline;
-} kefir_parser_context_t;
 
-kefir_result_t kefir_parser_context_default(struct kefir_parser_context *);
-
-#endif
+*///

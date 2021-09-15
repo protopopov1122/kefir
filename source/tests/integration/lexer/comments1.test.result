@@ -1,0 +1,66 @@
+[
+    {
+        "class": "keyword",
+        "keyword": "int"
+    },
+    {
+        "class": "identifier",
+        "identifier": "i"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "="
+    },
+    {
+        "class": "constant",
+        "type": "integer",
+        "value": 0
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "keyword",
+        "keyword": "short"
+    },
+    {
+        "class": "keyword",
+        "keyword": "float"
+    },
+    {
+        "class": "keyword",
+        "keyword": "if"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "("
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "("
+    },
+    {
+        "class": "punctuator",
+        "punctuator": "("
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ")"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ")"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ")"
+    },
+    {
+        "class": "punctuator",
+        "punctuator": ";"
+    },
+    {
+        "class": "sentinel"
+    }
+]

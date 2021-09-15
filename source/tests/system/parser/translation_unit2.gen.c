@@ -51,12 +51,12 @@ kefir_result_t make_unit(struct kefir_mem *mem, const struct kefir_ast_context *
                                "}";
 
     struct kefir_lexer_source_cursor source_cursor;
-    struct kefir_parser_integral_types integral_types;
+    struct kefir_parser_context parser_context;
     struct kefir_lexer lexer;
     struct kefir_token_buffer tokens;
     REQUIRE_OK(kefir_lexer_source_cursor_init(&source_cursor, SOURCE_CODE, sizeof(SOURCE_CODE), ""));
-    REQUIRE_OK(kefir_parser_integral_types_default(&integral_types));
-    REQUIRE_OK(kefir_lexer_init(mem, &lexer, context->symbols, &source_cursor, &integral_types));
+    REQUIRE_OK(kefir_parser_context_default(&parser_context));
+    REQUIRE_OK(kefir_lexer_init(mem, &lexer, context->symbols, &source_cursor, &parser_context));
     REQUIRE_OK(kefir_token_buffer_init(mem, &tokens));
     REQUIRE_OK(kefir_token_buffer_consume(mem, &tokens, &lexer));
     REQUIRE_OK(kefir_lexer_free(mem, &lexer));
