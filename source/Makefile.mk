@@ -17,9 +17,10 @@ KEFIR_LIB_SOURCE := $(wildcard \
 	$(SOURCE_DIR)/codegen/amd64/system-v/abi/builtins/*.c \
 	$(SOURCE_DIR)/compiler/*.c \
 	$(SOURCE_DIR)/ir/*.c \
+	$(SOURCE_DIR)/lexer/*.c \
+	$(SOURCE_DIR)/lexer/tokens/*.c \
+	$(SOURCE_DIR)/lexer/tokens/string_literal/*.c \
 	$(SOURCE_DIR)/parser/*.c \
-	$(SOURCE_DIR)/parser/lexer/*.c \
-	$(SOURCE_DIR)/parser/lexer/string_literal/*.c \
 	$(SOURCE_DIR)/parser/rules/*.c \
 	$(SOURCE_DIR)/util/*.c)
 
