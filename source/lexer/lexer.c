@@ -22,6 +22,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"
+#include <string.h>
 
 kefir_result_t kefir_lexer_init(struct kefir_mem *mem, struct kefir_lexer *lexer, struct kefir_symbol_table *symbols,
                                 struct kefir_lexer_source_cursor *cursor, const struct kefir_lexer_context *context) {
@@ -106,5 +107,21 @@ kefir_result_t kefir_lexer_next(struct kefir_mem *mem, struct kefir_lexer *lexer
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to token"));
 
     REQUIRE_OK(kefir_lexer_apply(mem, lexer, lexer_next_impl, token));
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_lexer_populate_buffer(struct kefir_mem *mem, struct kefir_token_buffer *buffer,
+                                           struct kefir_lexer *lexer) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));
+    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer"));
+
+    kefir_bool_t scan_tokens = true;
+    while (scan_tokens) {
+        struct kefir_token token = {0};
+        REQUIRE_OK(kefir_lexer_next(mem, lexer, &token));
+        REQUIRE_OK(kefir_token_buffer_emplace(mem, buffer, &token));
+        scan_tokens = token.klass != KEFIR_TOKEN_SENTINEL;
+    }
     return KEFIR_OK;
 }

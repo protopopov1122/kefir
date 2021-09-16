@@ -22,6 +22,7 @@
 #define KEFIR_LEXER_LEXER_H_
 
 #include "kefir/lexer/lexem.h"
+#include "kefir/lexer/buffer.h"
 #include "kefir/lexer/source_cursor.h"
 #include "kefir/core/mem.h"
 #include "kefir/core/symbol_table.h"
@@ -71,14 +72,6 @@ kefir_result_t kefir_lexer_match_integer_constant(struct kefir_mem *, struct kef
 kefir_result_t kefir_lexer_match_character_constant(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
 kefir_result_t kefir_lexer_match_constant(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
 
-typedef struct kefir_token_buffer {
-    struct kefir_token *tokens;
-    kefir_size_t length;
-    kefir_size_t capacity;
-} kefir_token_buffer_t;
-
-kefir_result_t kefir_token_buffer_init(struct kefir_mem *, struct kefir_token_buffer *);
-kefir_result_t kefir_token_buffer_free(struct kefir_mem *, struct kefir_token_buffer *);
-kefir_result_t kefir_token_buffer_consume(struct kefir_mem *, struct kefir_token_buffer *, struct kefir_lexer *);
+kefir_result_t kefir_lexer_populate_buffer(struct kefir_mem *, struct kefir_token_buffer *, struct kefir_lexer *);
 
 #endif
