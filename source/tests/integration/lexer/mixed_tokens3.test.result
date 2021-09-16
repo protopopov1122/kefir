@@ -1,110 +1,135 @@
 [
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "double"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "a"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "="
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "float",
         "value": "0x1.e4ccccp+4"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "a"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "-="
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "double",
         "value": "0x1.82p+1"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "*"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "double",
         "value": "0x1p-1"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "function"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "("
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "a"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "\/"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "integer",
         "value": 5
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ","
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "integer",
         "value": 7
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ","
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "double",
         "value": "0x1p-5"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ")"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "string_literal",
+        "preprocessor": false,
         "type": "multibyte",
         "content": "What is 3.372 + 0x62p1\0",
         "length": 23
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "-"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "double",
         "value": "0x1.3333333333333p+0"
     },
     {
-        "class": "sentinel"
+        "class": "sentinel",
+        "preprocessor": false
     }
 ]

@@ -1,105 +1,126 @@
 [
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "double",
         "value": "0x1.921f9f01b866ep+1"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "double",
         "value": "0x1.ec6a7ef9db22dp+1"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "double",
         "value": "0x1.7810624dd2f1bp-1"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "double",
         "value": "0x1.0ep+10"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "double",
         "value": "0x1.ecp+6"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "double",
         "value": "0x1.ca35f0ep+36"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "double",
         "value": "0x1.61e4f765fd8aep-3"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "double",
         "value": "0x1.c714fce746cb9p-10"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "float",
         "value": "0x1.1295eap+0"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "float",
         "value": "0x1.af8p+10"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "double",
         "value": "0x1.3e255p+26"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "double",
         "value": "0x1.450efdc9c4da9p-12"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "double",
         "value": "0x1p+0"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "float",
         "value": "0x1.4p+3"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "double",
         "value": "0x1.5p+4"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "float",
         "value": "0x1.4738p+0"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "double",
         "value": "0x1.33p-5"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "float",
         "value": "0x1p+100"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "double",
         "value": "0x1p-4"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "double",
         "value": "0x1p-1"
     },
     {
-        "class": "sentinel"
+        "class": "sentinel",
+        "preprocessor": false
     }
 ]

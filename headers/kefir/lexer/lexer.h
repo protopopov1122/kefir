@@ -46,8 +46,7 @@ kefir_result_t kefir_lexer_free(struct kefir_mem *, struct kefir_lexer *);
 kefir_result_t kefir_lexer_apply(struct kefir_mem *, struct kefir_lexer *, kefir_lexer_callback_fn_t, void *);
 kefir_result_t kefir_lexer_next(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
 
-kefir_result_t kefir_lexer_cursor_skip_insignificant_chars(const struct kefir_lexer_context *,
-                                                           struct kefir_lexer_source_cursor *);
+kefir_result_t kefir_lexer_cursor_match_whitespace(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
 kefir_result_t kefir_lexer_cursor_next_universal_character(struct kefir_lexer_source_cursor *, kefir_char32_t *);
 kefir_result_t kefir_lexer_cursor_next_escape_sequence(struct kefir_lexer_source_cursor *, kefir_char32_t *);
 

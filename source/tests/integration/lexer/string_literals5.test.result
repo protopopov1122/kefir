@@ -1,6 +1,7 @@
 [
     {
         "class": "string_literal",
+        "preprocessor": false,
         "type": "wide",
         "content": [
             84,
@@ -39,10 +40,12 @@
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "string_literal",
+        "preprocessor": false,
         "type": "wide",
         "content": [
             64,
@@ -60,10 +63,12 @@
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ","
     },
     {
         "class": "string_literal",
+        "preprocessor": false,
         "type": "wide",
         "content": [
             13,
@@ -86,42 +91,51 @@
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ","
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ","
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ","
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "L"
     },
     {
         "class": "string_literal",
+        "preprocessor": false,
         "type": "multibyte",
         "content": "test\0",
         "length": 5
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "l"
     },
     {
         "class": "string_literal",
+        "preprocessor": false,
         "type": "multibyte",
         "content": " temp \0",
         "length": 7
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ","
     },
     {
         "class": "string_literal",
+        "preprocessor": false,
         "type": "wide",
         "content": [
             104,
@@ -133,6 +147,7 @@
         "length": 5
     },
     {
-        "class": "sentinel"
+        "class": "sentinel",
+        "preprocessor": false
     }
 ]

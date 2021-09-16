@@ -1,26 +1,31 @@
 [
     {
         "class": "string_literal",
+        "preprocessor": false,
         "type": "multibyte",
         "content": "Test...test.....test\0",
         "length": 21
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "string_literal",
+        "preprocessor": false,
         "type": "unicode8",
         "content": "Test...Here and thereEverywhere\0",
         "length": 32
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ","
     },
     {
         "class": "string_literal",
+        "preprocessor": false,
         "type": "unicode16",
         "content": [
             79,
@@ -42,10 +47,12 @@
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "+"
     },
     {
         "class": "string_literal",
+        "preprocessor": false,
         "type": "unicode32",
         "content": [
             84,
@@ -72,10 +79,12 @@
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "..."
     },
     {
         "class": "string_literal",
+        "preprocessor": false,
         "type": "wide",
         "content": [
             1,
@@ -100,10 +109,12 @@
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "L"
     },
     {
         "class": "string_literal",
+        "preprocessor": false,
         "type": "wide",
         "content": [
             49,
@@ -113,6 +124,7 @@
         "length": 3
     },
     {
-        "class": "sentinel"
+        "class": "sentinel",
+        "preprocessor": false
     }
 ]

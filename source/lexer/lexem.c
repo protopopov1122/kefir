@@ -264,6 +264,14 @@ kefir_result_t kefir_token_new_punctuator(kefir_punctuator_token_t punctuator, s
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_token_new_pp_whitespace(kefir_bool_t newline, struct kefir_token *token) {
+    REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to token"));
+    REQUIRE_OK(kefir_source_location_empty(&token->source_location));
+    token->klass = KEFIR_TOKEN_PP_WHITESPACE;
+    token->whitespace.newline = newline;
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_token_move(struct kefir_token *dst, struct kefir_token *src) {
     REQUIRE(dst != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to destination token"));
     REQUIRE(src != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to source token"));
@@ -327,6 +335,7 @@ kefir_result_t kefir_token_free(struct kefir_mem *mem, struct kefir_token *token
         case KEFIR_TOKEN_IDENTIFIER:
         case KEFIR_TOKEN_CONSTANT:
         case KEFIR_TOKEN_PUNCTUATOR:
+        case KEFIR_TOKEN_PP_WHITESPACE:
             break;
     }
     return KEFIR_OK;

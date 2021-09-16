@@ -1,92 +1,111 @@
 [
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "wide_char",
         "value": 97
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "wide_char",
         "value": 98
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "wide_char",
         "value": 99
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "wide_char",
         "value": 99
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "wide_char",
         "value": 0
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "wide_char",
         "value": 63
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "wide_char",
         "value": 39
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "wide_char",
         "value": 92
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "wide_char",
         "value": 34
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "wide_char",
         "value": 135
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "wide_char",
         "value": 150
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "wide_char",
         "value": 76
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "L"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "char",
         "value": 97
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "L"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "char",
         "value": 6382179
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "l"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "char",
         "value": 93
     },
     {
-        "class": "sentinel"
+        "class": "sentinel",
+        "preprocessor": false
     }
 ]

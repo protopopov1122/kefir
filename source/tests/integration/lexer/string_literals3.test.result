@@ -1,6 +1,7 @@
 [
     {
         "class": "string_literal",
+        "preprocessor": false,
         "type": "unicode16",
         "content": [
             72,
@@ -28,10 +29,12 @@
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "string_literal",
+        "preprocessor": false,
         "type": "unicode16",
         "content": [
             34,
@@ -61,20 +64,24 @@
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "u"
     },
     {
         "class": "string_literal",
+        "preprocessor": false,
         "type": "multibyte",
         "content": "\0\0",
         "length": 2
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "+"
     },
     {
         "class": "string_literal",
+        "preprocessor": false,
         "type": "unicode16",
         "content": [
             0,
@@ -94,6 +101,7 @@
         "length": 13
     },
     {
-        "class": "sentinel"
+        "class": "sentinel",
+        "preprocessor": false
     }
 ]

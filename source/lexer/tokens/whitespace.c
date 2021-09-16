@@ -24,17 +24,25 @@
 #include "kefir/core/source_error.h"
 #include "kefir/util/char32.h"
 
-static kefir_result_t skip_whitespaces(struct kefir_lexer_source_cursor *cursor, kefir_bool_t *skip) {
-    while (kefir_isspace32(kefir_lexer_source_cursor_at(cursor, 0))) {
-        *skip = true;
+enum whitespace_match { WHITESPACE_NO_MATCH = 0, WHITESPACE_MATCH, WHITESPACE_NEWLINE };
+
+static kefir_result_t skip_whitespaces(const struct kefir_lexer_context *context,
+                                       struct kefir_lexer_source_cursor *cursor, enum whitespace_match *match) {
+    kefir_char32_t chr;
+    while (kefir_isspace32((chr = kefir_lexer_source_cursor_at(cursor, 0)))) {
+        if (chr == context->newline) {
+            *match = MAX(*match, WHITESPACE_NEWLINE);
+        } else {
+            *match = MAX(*match, WHITESPACE_MATCH);
+        }
         REQUIRE_OK(kefir_lexer_source_cursor_next(cursor, 1));
     }
     return KEFIR_OK;
 }
 
-static kefir_result_t skip_multiline_comment(struct kefir_lexer_source_cursor *cursor, kefir_bool_t *skip) {
+static kefir_result_t skip_multiline_comment(struct kefir_lexer_source_cursor *cursor, enum whitespace_match *match) {
     if (kefir_lexer_source_cursor_at(cursor, 0) == U'/' && kefir_lexer_source_cursor_at(cursor, 1) == U'*') {
-        *skip = true;
+        *match = MAX(*match, WHITESPACE_MATCH);
 
         REQUIRE_OK(kefir_lexer_source_cursor_next(cursor, 2));
         while (!(kefir_lexer_source_cursor_at(cursor, 0) == U'*' && kefir_lexer_source_cursor_at(cursor, 1) == U'/') &&
@@ -49,9 +57,9 @@ static kefir_result_t skip_multiline_comment(struct kefir_lexer_source_cursor *c
 }
 
 static kefir_result_t skip_oneline_comment(const struct kefir_lexer_context *context,
-                                           struct kefir_lexer_source_cursor *cursor, kefir_bool_t *skip) {
+                                           struct kefir_lexer_source_cursor *cursor, enum whitespace_match *match) {
     if (kefir_lexer_source_cursor_at(cursor, 0) == U'/' && kefir_lexer_source_cursor_at(cursor, 1) == U'/') {
-        *skip = true;
+        *match = MAX(*match, WHITESPACE_MATCH);
 
         REQUIRE_OK(kefir_lexer_source_cursor_next(cursor, 2));
         while (kefir_lexer_source_cursor_at(cursor, 0) != context->newline &&
@@ -60,23 +68,32 @@ static kefir_result_t skip_oneline_comment(const struct kefir_lexer_context *con
         }
 
         if (kefir_lexer_source_cursor_at(cursor, 0) == context->newline) {
+            *match = MAX(*match, WHITESPACE_NEWLINE);
             REQUIRE_OK(kefir_lexer_source_cursor_next(cursor, 1));
         }
     }
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_lexer_cursor_skip_insignificant_chars(const struct kefir_lexer_context *context,
-                                                           struct kefir_lexer_source_cursor *cursor) {
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser context"));
-    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer source cursor"));
+kefir_result_t kefir_lexer_cursor_match_whitespace(struct kefir_mem *mem, struct kefir_lexer *lexer,
+                                                   struct kefir_token *token) {
+    UNUSED(mem);
+    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer"));
 
-    kefir_bool_t skip = true;
-    while (skip) {
-        skip = false;
-        REQUIRE_OK(skip_whitespaces(cursor, &skip));
-        REQUIRE_OK(skip_multiline_comment(cursor, &skip));
-        REQUIRE_OK(skip_oneline_comment(context, cursor, &skip));
+    kefir_bool_t continue_scan = true;
+    enum whitespace_match match = WHITESPACE_NO_MATCH;
+    while (continue_scan) {
+        enum whitespace_match matched = WHITESPACE_NO_MATCH;
+        REQUIRE_OK(skip_whitespaces(lexer->context, lexer->cursor, &matched));
+        REQUIRE_OK(skip_multiline_comment(lexer->cursor, &matched));
+        REQUIRE_OK(skip_oneline_comment(lexer->context, lexer->cursor, &matched));
+        continue_scan = matched != WHITESPACE_NO_MATCH;
+        match = MAX(match, matched);
+    }
+
+    if (token != NULL) {
+        REQUIRE(match != WHITESPACE_NO_MATCH, KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match whitespace"));
+        REQUIRE_OK(kefir_token_new_pp_whitespace(match == WHITESPACE_NEWLINE, token));
     }
     return KEFIR_OK;
 }

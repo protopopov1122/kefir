@@ -1,165 +1,198 @@
 [
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "integer",
         "value": 1000
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "unsigned",
         "value": 256
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "unsigned",
         "value": 16
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_integer",
         "value": 50338
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_integer",
         "value": 8273
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_unsigned",
         "value": 100500
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_unsigned",
         "value": 100373
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_unsigned",
         "value": 50
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_unsigned",
         "value": 150
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_long_integer",
         "value": 7058462
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_long_integer",
         "value": 5846268
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_long_unsigned",
         "value": 58270
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_long_unsigned",
         "value": 1627829
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_long_unsigned",
         "value": 84782
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_long_unsigned",
         "value": 1
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_long_unsigned",
         "value": 2
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "integer",
         "value": 0
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "integer",
         "value": 1
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "integer",
         "value": 57
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "unsigned",
         "value": 55
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "integer",
         "value": 0
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_integer",
         "value": 837
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_integer",
         "value": 63
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_long_unsigned",
         "value": 1
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "integer",
         "value": 1
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "integer",
         "value": 4094
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "integer",
         "value": 34632
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "unsigned",
         "value": 7
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_long_integer",
         "value": 2087
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_unsigned",
         "value": 115
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_unsigned",
         "value": 1830
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_long_unsigned",
         "value": 255
     },
     {
-        "class": "sentinel"
+        "class": "sentinel",
+        "preprocessor": false
     }
 ]

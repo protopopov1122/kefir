@@ -3,7 +3,8 @@ KEFIR_INTEGRATION_TESTS_SOURCES := $(wildcard \
 	$(SOURCE_DIR)/tests/integration/codegen_x86_64/*.test.c \
 	$(SOURCE_DIR)/tests/integration/lexer/*.test.c \
 	$(SOURCE_DIR)/tests/integration/misc/*.test.c \
-	$(SOURCE_DIR)/tests/integration/parser/*.test.c)
+	$(SOURCE_DIR)/tests/integration/parser/*.test.c \
+	$(SOURCE_DIR)/tests/integration/preprocessor/*.test.c)
 KEFIR_INTEGRATION_TEST_ALL_SOURCES := $(KEFIR_INTEGRATION_TESTS_SOURCES)
 KEFIR_INTEGRATION_TEST_ALL_SOURCES += $(SOURCE_DIR)/tests/int_test.c
 KEFIR_INTEGRATION_TEST_DEPENDENCIES := $(KEFIR_INTEGRATION_TEST_ALL_SOURCES:$(SOURCE_DIR)/%.c=$(BIN_DIR)/%.d)

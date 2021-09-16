@@ -1,101 +1,126 @@
 [
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "const"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "long"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "long"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "unsigned"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "int"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "ABC"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "integral"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "float"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "thread_local"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "_thread_local"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "void"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "voidy"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "voidiest"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "HelloThere"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "char"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "testestTestTeSt"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "complex"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "complex"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "__Complex"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "_Complex_"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "A1"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "A2"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "if"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "else"
     },
     {
-        "class": "sentinel"
+        "class": "sentinel",
+        "preprocessor": false
     }
 ]

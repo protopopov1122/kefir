@@ -1,116 +1,144 @@
 [
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "int"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "a"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "="
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "integer",
         "value": 2
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "+"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "integer",
         "value": 2
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "*"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "b"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "fn"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "("
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "a"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ")"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "-"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "("
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "c"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "--"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ")"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "for"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "a"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "while"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "abc"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "-="
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "bc"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "+"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "integer",
         "value": 85
     },
     {
-        "class": "sentinel"
+        "class": "sentinel",
+        "preprocessor": false
     }
 ]

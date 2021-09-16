@@ -1,45 +1,56 @@
 [
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "helloWorld"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "HeLoL123"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "__123identifier"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "i$"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "%onTwoThree____123"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "automatic"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "external"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "Thread_local"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "int_"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "feg"
     },
     {
-        "class": "sentinel"
+        "class": "sentinel",
+        "preprocessor": false
     }
 ]

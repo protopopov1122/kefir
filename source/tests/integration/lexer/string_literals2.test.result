@@ -1,50 +1,60 @@
 [
     {
         "class": "string_literal",
+        "preprocessor": false,
         "type": "unicode8",
         "content": "Hello, world!\0",
         "length": 14
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "string_literal",
+        "preprocessor": false,
         "type": "unicode8",
         "content": "abc\0",
         "length": 4
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "string_literal",
+        "preprocessor": false,
         "type": "unicode8",
         "content": "\0\0\t\v\f               eHllow,, onE two Three \\ \"'\0",
         "length": 48
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "u8"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "char",
         "value": 97
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "+"
     },
     {
         "class": "string_literal",
+        "preprocessor": false,
         "type": "unicode8",
         "content": "\"\\world!gyp\0",
         "length": 12
     },
     {
-        "class": "sentinel"
+        "class": "sentinel",
+        "preprocessor": false
     }
 ]

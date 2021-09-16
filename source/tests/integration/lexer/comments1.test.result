@@ -1,66 +1,82 @@
 [
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "int"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "i"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "="
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "integer",
         "value": 0
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "short"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "float"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "if"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "("
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "("
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "("
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ")"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ")"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ")"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
-        "class": "sentinel"
+        "class": "sentinel",
+        "preprocessor": false
     }
 ]

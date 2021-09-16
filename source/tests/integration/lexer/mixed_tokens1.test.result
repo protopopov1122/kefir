@@ -1,177 +1,221 @@
 [
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "a"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "+"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "b"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "*"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "c"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "--"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "void"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "fn"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "("
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "const"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "int"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "d"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ")"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "{"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "if"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "("
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "x"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ")"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "return"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "someVar"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "++"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "else"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "return"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "thread_local"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "thread_local"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "%="
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "all"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "}"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "for"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "("
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ")"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "while"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "do"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "Do"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "++"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
-        "class": "sentinel"
+        "class": "sentinel",
+        "preprocessor": false
     }
 ]

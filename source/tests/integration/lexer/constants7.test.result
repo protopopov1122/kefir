@@ -1,77 +1,93 @@
 [
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "unicode32_char",
         "value": 97
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "unicode32_char",
         "value": 98
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "unicode32_char",
         "value": 99
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "unicode32_char",
         "value": 99
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "unicode32_char",
         "value": 92
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "unicode32_char",
         "value": 39
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "unicode32_char",
         "value": 34
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "unicode32_char",
         "value": 86
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "unicode32_char",
         "value": 127
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "UU"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "unicode32_char",
         "value": 85
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "U"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "char",
         "value": 120
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "char",
         "value": 79
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "U"
     },
     {
-        "class": "sentinel"
+        "class": "sentinel",
+        "preprocessor": false
     }
 ]

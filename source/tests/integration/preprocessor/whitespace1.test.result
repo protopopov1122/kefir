@@ -1,0 +1,138 @@
+[
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "keyword",
+        "preprocessor": false,
+        "keyword": "int"
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "identifier",
+        "preprocessor": false,
+        "identifier": "i"
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": "="
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": true
+    },
+    {
+        "class": "constant",
+        "preprocessor": false,
+        "type": "integer",
+        "value": 0
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": ";"
+    },
+    {
+        "class": "constant",
+        "preprocessor": false,
+        "type": "integer",
+        "value": 1
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": true
+    },
+    {
+        "class": "constant",
+        "preprocessor": false,
+        "type": "integer",
+        "value": 2
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": true
+    },
+    {
+        "class": "constant",
+        "preprocessor": false,
+        "type": "integer",
+        "value": 3
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "constant",
+        "preprocessor": false,
+        "type": "integer",
+        "value": 4
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": ";"
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": true
+    },
+    {
+        "class": "constant",
+        "preprocessor": false,
+        "type": "integer",
+        "value": 5
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": true
+    },
+    {
+        "class": "string_literal",
+        "preprocessor": false,
+        "type": "unicode32",
+        "content": [
+            10,
+            10,
+            9,
+            10,
+            34,
+            49,
+            0
+        ],
+        "length": 7
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": ";"
+    },
+    {
+        "class": "constant",
+        "preprocessor": false,
+        "type": "char",
+        "value": 50
+    },
+    {
+        "class": "sentinel",
+        "preprocessor": false
+    }
+]

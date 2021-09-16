@@ -1,55 +1,66 @@
 [
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "integer",
         "value": 2147483647
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_integer",
         "value": 2147483648
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "unsigned",
         "value": 2147483647
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "unsigned",
         "value": 2147483648
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "integer",
         "value": 2147483647
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "unsigned",
         "value": 2147483648
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_integer",
         "value": 9223372036854775807
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_unsigned",
         "value": 9223372036854775808
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_integer",
         "value": 9223372036854775807
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "long_unsigned",
         "value": 9223372036854775808
     },
     {
-        "class": "sentinel"
+        "class": "sentinel",
+        "preprocessor": false
     }
 ]

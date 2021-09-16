@@ -22,6 +22,7 @@ KEFIR_LIB_SOURCE := $(wildcard \
 	$(SOURCE_DIR)/lexer/tokens/string_literal/*.c \
 	$(SOURCE_DIR)/parser/*.c \
 	$(SOURCE_DIR)/parser/rules/*.c \
+	$(SOURCE_DIR)/preprocessor/*.c \
 	$(SOURCE_DIR)/util/*.c)
 
 KEFIR_LIB_DEPENDENCIES := $(KEFIR_LIB_SOURCE:$(SOURCE_DIR)/%.c=$(BIN_DIR)/%.d)

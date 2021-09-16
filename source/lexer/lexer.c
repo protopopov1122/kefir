@@ -67,13 +67,13 @@ kefir_result_t kefir_lexer_apply(struct kefir_mem *mem, struct kefir_lexer *lexe
     return KEFIR_OK;
 }
 
-kefir_result_t lexer_next_impl(struct kefir_mem *mem, struct kefir_lexer *lexer, void *payload) {
+static kefir_result_t lexer_next_impl(struct kefir_mem *mem, struct kefir_lexer *lexer, void *payload) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
 
     ASSIGN_DECL_CAST(struct kefir_token *, token, payload);
-    REQUIRE_OK(kefir_lexer_cursor_skip_insignificant_chars(lexer->context, lexer->cursor));
+    REQUIRE_OK(kefir_lexer_cursor_match_whitespace(mem, lexer, NULL));
     struct kefir_source_location source_location = lexer->cursor->location;
     if (kefir_lexer_source_cursor_at(lexer->cursor, 0) == U'\0') {
         REQUIRE_OK(kefir_token_new_sentinel(token));

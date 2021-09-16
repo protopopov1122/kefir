@@ -1,221 +1,272 @@
 [
     {
         "class": "string_literal",
+        "preprocessor": false,
         "type": "multibyte",
         "content": "ABC-DEF-123\0",
         "length": 12
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "["
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "char",
         "value": 97
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "]"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "+"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "double",
         "value": "0x1.2147ae147ae14p+2"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "-"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "char",
         "value": 24954
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "+"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "fn"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "("
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "integer",
         "value": 1
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ","
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "sizeof"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "("
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "unsigned"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "int"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "*"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ")"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ","
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "++"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "y"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ","
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "char",
         "value": 10
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ")"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "char",
         "value": 7
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "char",
         "value": 8
     },
     {
         "class": "string_literal",
+        "preprocessor": false,
         "type": "multibyte",
         "content": "\a\b\0",
         "length": 3
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "float"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "b"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "="
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "float",
         "value": "0x1p+0"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "+"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "fn"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "("
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "char",
         "value": 45
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ","
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "char",
         "value": 32
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ","
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "integer",
         "value": 5
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ","
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "double",
         "value": "0x1p+1"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ")"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
-        "class": "sentinel"
+        "class": "sentinel",
+        "preprocessor": false
     }
 ]

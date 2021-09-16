@@ -1,181 +1,226 @@
 [
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "extern"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "static"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "alignof"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "restrict"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "struct"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "static_assert"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "break"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "default"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "unsigned"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "if"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "register"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "signed"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "union"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "return"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "for"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "imaginary"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "long"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "enum"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "case"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "double"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "complex"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "void"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "switch"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "sizeof"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "noreturn"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "alignas"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "char"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "inline"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "short"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "float"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "typedef"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "int"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "goto"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "thread_local"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "continue"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "bool"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "while"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "do"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "volatile"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "else"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "auto"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "atomic"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "generic"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "const"
     },
     {
-        "class": "sentinel"
+        "class": "sentinel",
+        "preprocessor": false
     }
 ]

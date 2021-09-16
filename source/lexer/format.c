@@ -569,32 +569,52 @@ kefir_result_t kefir_token_format(struct kefir_json_output *json, const struct k
     switch (token->klass) {
         case KEFIR_TOKEN_SENTINEL:
             REQUIRE_OK(kefir_json_output_string(json, "sentinel"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "preprocessor"));
+            REQUIRE_OK(kefir_json_output_boolean(json, false));
             break;
 
         case KEFIR_TOKEN_KEYWORD:
             REQUIRE_OK(kefir_json_output_string(json, "keyword"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "preprocessor"));
+            REQUIRE_OK(kefir_json_output_boolean(json, false));
             REQUIRE_OK(format_keyword(json, token->keyword));
             break;
 
         case KEFIR_TOKEN_IDENTIFIER:
             REQUIRE_OK(kefir_json_output_string(json, "identifier"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "preprocessor"));
+            REQUIRE_OK(kefir_json_output_boolean(json, false));
             REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
             REQUIRE_OK(kefir_json_output_string(json, token->identifier));
             break;
 
         case KEFIR_TOKEN_PUNCTUATOR:
             REQUIRE_OK(kefir_json_output_string(json, "punctuator"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "preprocessor"));
+            REQUIRE_OK(kefir_json_output_boolean(json, false));
             REQUIRE_OK(format_punctuator(json, token->punctuator));
             break;
 
         case KEFIR_TOKEN_STRING_LITERAL:
             REQUIRE_OK(kefir_json_output_string(json, "string_literal"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "preprocessor"));
+            REQUIRE_OK(kefir_json_output_boolean(json, false));
             REQUIRE_OK(format_string_literal(json, token));
             break;
 
         case KEFIR_TOKEN_CONSTANT:
             REQUIRE_OK(kefir_json_output_string(json, "constant"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "preprocessor"));
+            REQUIRE_OK(kefir_json_output_boolean(json, false));
             REQUIRE_OK(format_constant(json, &token->constant));
+            break;
+
+        case KEFIR_TOKEN_PP_WHITESPACE:
+            REQUIRE_OK(kefir_json_output_string(json, "whitespace"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "preprocessor"));
+            REQUIRE_OK(kefir_json_output_boolean(json, true));
+            REQUIRE_OK(kefir_json_output_object_key(json, "newline"));
+            REQUIRE_OK(kefir_json_output_boolean(json, token->whitespace.newline));
             break;
     }
 

@@ -1,217 +1,271 @@
 [
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ">>"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ">"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "<<"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "<"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ">>="
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "<<="
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ">"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ">>"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "<"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "<<"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ">>"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ">="
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "<<"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "<="
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "++"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "+"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "--"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "-"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "+"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "++"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "++"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "="
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "++"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "+="
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "+"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "+="
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "--"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "="
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "--"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "-="
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "-"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "-="
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "%"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "%="
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "%"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "%:"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "%"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "%:%:"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ":"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "*"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "*="
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "=="
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "="
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "="
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "=="
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "=="
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "="
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "+="
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "="
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "-="
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "=="
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "##"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "#"
     },
     {
-        "class": "sentinel"
+        "class": "sentinel",
+        "preprocessor": false
     }
 ]

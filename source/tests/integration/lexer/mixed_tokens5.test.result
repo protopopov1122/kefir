@@ -1,158 +1,195 @@
 [
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "a"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "="
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "wide_char",
         "value": 97
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "wide_char",
         "value": 98
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "L"
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "char",
         "value": 99
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "fn"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "("
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "unicode16_char",
         "value": 99
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ","
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "unicode16_char",
         "value": 85
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ","
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "unicode32_char",
         "value": 117
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ")"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "int"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "U"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ","
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "u"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ","
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "="
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "double",
         "value": "0x1.f4p+9"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "keyword",
+        "preprocessor": false,
         "keyword": "if"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "("
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "U"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "="
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "unicode16_char",
         "value": 92
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ")"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "{"
     },
     {
         "class": "identifier",
+        "preprocessor": false,
         "identifier": "def"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "="
     },
     {
         "class": "constant",
+        "preprocessor": false,
         "type": "char",
         "value": 99
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": ";"
     },
     {
         "class": "punctuator",
+        "preprocessor": false,
         "punctuator": "}"
     },
     {
-        "class": "sentinel"
+        "class": "sentinel",
+        "preprocessor": false
     }
 ]

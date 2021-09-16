@@ -71,7 +71,7 @@ kefir_result_t kefir_lexer_next_string_literal_sequence_impl(struct kefir_mem *m
     REQUIRE_OK(kefir_lexer_next_string_literal_impl(mem, lexer, prefix, buffer));
     kefir_bool_t scan_literals = true;
     while (scan_literals) {
-        REQUIRE_OK(kefir_lexer_cursor_skip_insignificant_chars(lexer->context, lexer->cursor));
+        REQUIRE_OK(kefir_lexer_cursor_match_whitespace(mem, lexer, NULL));
         kefir_result_t res = kefir_lexer_next_string_literal_impl(mem, lexer, prefix, buffer);
         if (res == KEFIR_NO_MATCH) {
             res = kefir_lexer_next_string_literal_impl(mem, lexer, U"\"", buffer);
