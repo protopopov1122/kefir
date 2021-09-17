@@ -19,7 +19,7 @@
 */
 
 #include "kefir/core/mem.h"
-#include "kefir/lexer/preprocessor.h"
+#include "kefir/preprocessor/tokenizer.h"
 #include "kefir/lexer/format.h"
 #include "kefir/ast/format.h"
 #include <stdio.h>
@@ -45,7 +45,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_bool_t scan_tokens = true;
     while (scan_tokens) {
         struct kefir_token token;
-        REQUIRE_OK(kefir_preprocessor_next(mem, &lexer, &token));
+        REQUIRE_OK(kefir_preprocessor_tokenize_next(mem, &lexer, &token));
         REQUIRE_OK(kefir_token_format(&json, &token, false));
         scan_tokens = token.klass != KEFIR_TOKEN_SENTINEL;
         REQUIRE_OK(kefir_token_free(mem, &token));

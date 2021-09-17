@@ -19,7 +19,7 @@
 */
 
 #include "kefir/core/mem.h"
-#include "kefir/lexer/preprocessor.h"
+#include "kefir/preprocessor/tokenizer.h"
 #include "kefir/lexer/format.h"
 #include "kefir/ast/format.h"
 #include <stdio.h>

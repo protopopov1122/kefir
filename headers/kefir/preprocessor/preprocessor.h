@@ -22,7 +22,15 @@
 #define KEFIR_PREPROCESSOR_PREPROCESSOR_H_
 
 #include "kefir/lexer/lexer.h"
+#include "kefir/preprocessor/macro.h"
 
-kefir_result_t kefir_preprocessor_next(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
+typedef struct kefir_preprocessor {
+    struct kefir_lexer lexer;
+    struct kefir_preprocessor_user_macro_scope macros;
+} kefir_preprocessor_t;
+
+kefir_result_t kefir_preprocessor_init(struct kefir_mem *, struct kefir_preprocessor *, struct kefir_symbol_table *,
+                                       struct kefir_lexer_source_cursor *, const struct kefir_lexer_context *);
+kefir_result_t kefir_preprocessor_free(struct kefir_mem *, struct kefir_preprocessor *);
 
 #endif
