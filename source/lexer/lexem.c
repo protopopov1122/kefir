@@ -268,7 +268,23 @@ kefir_result_t kefir_token_new_pp_whitespace(kefir_bool_t newline, struct kefir_
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to token"));
     REQUIRE_OK(kefir_source_location_empty(&token->source_location));
     token->klass = KEFIR_TOKEN_PP_WHITESPACE;
-    token->whitespace.newline = newline;
+    token->pp_whitespace.newline = newline;
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_token_new_pp_number(struct kefir_mem *mem, const char *number_literal, kefir_size_t length,
+                                         struct kefir_token *token) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(number_literal != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid number literal"));
+    REQUIRE(length > 0, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid non-zero length of the literal"));
+    REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to token"));
+
+    char *clone_number_literal = KEFIR_MALLOC(mem, length + 1);
+    REQUIRE(clone_number_literal != NULL,
+            KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate pp number literal"));
+    strncpy(clone_number_literal, number_literal, length);
+    token->klass = KEFIR_TOKEN_PP_NUMBER;
+    token->pp_number.number_literal = clone_number_literal;
     return KEFIR_OK;
 }
 
@@ -279,6 +295,8 @@ kefir_result_t kefir_token_move(struct kefir_token *dst, struct kefir_token *src
     if (src->klass == KEFIR_TOKEN_STRING_LITERAL) {
         src->string_literal.literal = NULL;
         src->string_literal.length = 0;
+    } else if (src->klass == KEFIR_TOKEN_PP_NUMBER) {
+        src->pp_number.number_literal = NULL;
     }
     return KEFIR_OK;
 }
@@ -316,6 +334,12 @@ kefir_result_t kefir_token_copy(struct kefir_mem *mem, struct kefir_token *dst, 
         dst->string_literal.type = src->string_literal.type;
         dst->string_literal.literal = content;
         dst->string_literal.length = src->string_literal.length;
+    } else if (src->klass == KEFIR_TOKEN_PP_NUMBER) {
+        char *clone_number_literal = KEFIR_MALLOC(mem, strlen(src->pp_number.number_literal) + 1);
+        REQUIRE(clone_number_literal != NULL,
+                KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate pp number literal"));
+        strcpy(clone_number_literal, src->pp_number.number_literal);
+        dst->pp_number.number_literal = clone_number_literal;
     }
     return KEFIR_OK;
 }
@@ -328,6 +352,11 @@ kefir_result_t kefir_token_free(struct kefir_mem *mem, struct kefir_token *token
             KEFIR_FREE(mem, token->string_literal.literal);
             token->string_literal.literal = NULL;
             token->string_literal.length = 0;
+            break;
+
+        case KEFIR_TOKEN_PP_NUMBER:
+            KEFIR_FREE(mem, (void *) token->pp_number.number_literal);
+            token->pp_number.number_literal = NULL;
             break;
 
         case KEFIR_TOKEN_SENTINEL:

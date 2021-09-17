@@ -392,6 +392,42 @@ DEFINE_CASE(parser_lexem_construction_punctuator, "Parser - punctuator tokens") 
 }
 END_CASE
 
+DEFINE_CASE(parser_lexem_construction_pp_whitespace, "Parser - pp whitespaces") {
+#define ASSERT_WHITESPACE(_newline)                                    \
+    do {                                                               \
+        struct kefir_token token;                                      \
+        REQUIRE_OK(kefir_token_new_pp_whitespace((_newline), &token)); \
+        ASSERT(token.klass == KEFIR_TOKEN_PP_WHITESPACE);              \
+        ASSERT(token.pp_whitespace.newline == (_newline));             \
+        REQUIRE_OK(kefir_token_free(&kft_mem, &token));                \
+    } while (0)
+
+    ASSERT_WHITESPACE(false);
+    ASSERT_WHITESPACE(true);
+
+#undef ASSERT_WHITESPACE
+}
+END_CASE
+
+DEFINE_CASE(parser_lexem_construction_pp_numbers, "Parser - pp numbers") {
+#define ASSERT_PP_NUMBER(_literal)                                                         \
+    do {                                                                                   \
+        const char LITERAL[] = _literal;                                                   \
+        struct kefir_token token;                                                          \
+        REQUIRE_OK(kefir_token_new_pp_number(&kft_mem, LITERAL, sizeof(LITERAL), &token)); \
+        ASSERT(token.klass == KEFIR_TOKEN_PP_NUMBER);                                      \
+        ASSERT(memcmp(token.pp_number.number_literal, LITERAL, sizeof(LITERAL)) == 0);     \
+        REQUIRE_OK(kefir_token_free(&kft_mem, &token));                                    \
+    } while (0)
+
+    ASSERT_PP_NUMBER("123123.454e54");
+    ASSERT_PP_NUMBER("1");
+    ASSERT_PP_NUMBER("148u2ie-829");
+
+#undef ASSERT_PP_NUMBER
+}
+END_CASE
+
 DEFINE_CASE(parser_lexem_move, "Parser - moving tokens") {
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
@@ -468,6 +504,19 @@ DEFINE_CASE(parser_lexem_move, "Parser - moving tokens") {
     ASSERT(dst.string_literal.type == KEFIR_STRING_LITERAL_TOKEN_WIDE);
     ASSERT(dst.string_literal.length == sizeof(MSG5) / sizeof(MSG5[0]));
     ASSERT(memcmp(MSG5, dst.string_literal.literal, sizeof(MSG5)) == 0);
+    ASSERT_OK(kefir_token_free(&kft_mem, &dst));
+
+    ASSERT_OK(kefir_token_new_pp_whitespace(true, &src));
+    ASSERT_OK(kefir_token_move(&dst, &src));
+    ASSERT(dst.klass == KEFIR_TOKEN_PP_WHITESPACE);
+    ASSERT(dst.pp_whitespace.newline);
+    ASSERT_OK(kefir_token_free(&kft_mem, &dst));
+
+    const char LITERAL1[] = "18336228P-81728e8h7";
+    ASSERT_OK(kefir_token_new_pp_number(&kft_mem, LITERAL1, sizeof(LITERAL1), &src));
+    ASSERT_OK(kefir_token_move(&dst, &src));
+    ASSERT(dst.klass == KEFIR_TOKEN_PP_NUMBER);
+    ASSERT(strcmp(LITERAL1, dst.pp_number.number_literal) == 0);
     ASSERT_OK(kefir_token_free(&kft_mem, &dst));
 
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
@@ -597,6 +646,28 @@ DEFINE_CASE(parser_lexem_copy, "Parser - copying tokens") {
     ASSERT(dst.string_literal.length == sizeof(MSG5) / sizeof(MSG5[0]));
     ASSERT(memcmp(MSG5, dst.string_literal.literal, sizeof(MSG5)) == 0);
     ASSERT(dst.string_literal.literal != MSG5);
+    ASSERT_OK(kefir_token_free(&kft_mem, &src));
+    ASSERT_OK(kefir_token_free(&kft_mem, &dst));
+
+    ASSERT_OK(kefir_token_new_pp_whitespace(false, &src));
+    ASSERT_OK(kefir_token_copy(&kft_mem, &dst, &src));
+    ASSERT(src.klass == KEFIR_TOKEN_PP_WHITESPACE);
+    ASSERT(!src.pp_whitespace.newline);
+    ASSERT(dst.klass == KEFIR_TOKEN_PP_WHITESPACE);
+    ASSERT(!dst.pp_whitespace.newline);
+    ASSERT_OK(kefir_token_free(&kft_mem, &src));
+    ASSERT_OK(kefir_token_free(&kft_mem, &dst));
+
+    const char LITERAL1[] = "18373.u83hje82P-1";
+    ASSERT_OK(kefir_token_new_pp_number(&kft_mem, LITERAL1, sizeof(LITERAL1), &src));
+    ASSERT_OK(kefir_token_copy(&kft_mem, &dst, &src));
+    ASSERT(src.klass == KEFIR_TOKEN_PP_NUMBER);
+    ASSERT(strcmp(LITERAL1, src.pp_number.number_literal) == 0);
+    ASSERT(src.pp_number.number_literal != LITERAL1);
+    ASSERT(dst.klass == KEFIR_TOKEN_PP_NUMBER);
+    ASSERT(strcmp(LITERAL1, dst.pp_number.number_literal) == 0);
+    ASSERT(dst.pp_number.number_literal != LITERAL1);
+    ASSERT(dst.pp_number.number_literal != src.pp_number.number_literal);
     ASSERT_OK(kefir_token_free(&kft_mem, &src));
     ASSERT_OK(kefir_token_free(&kft_mem, &dst));
 
