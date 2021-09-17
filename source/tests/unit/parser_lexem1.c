@@ -31,13 +31,13 @@ DEFINE_CASE(parser_lexem_construction_sentinel, "Parser - sentinel tokens") {
 END_CASE
 
 DEFINE_CASE(parser_lexem_construction_keyword, "Parser - keyword tokens") {
-#define ASSERT_KEYWORD(_keyword)                                 \
-    do {                                                         \
-        struct kefir_token token;                                \
-        REQUIRE_OK(kefir_token_new_keyword((_keyword), &token)); \
-        ASSERT(token.klass == KEFIR_TOKEN_KEYWORD);              \
-        ASSERT(token.keyword == (_keyword));                     \
-        REQUIRE_OK(kefir_token_free(&kft_mem, &token));          \
+#define ASSERT_KEYWORD(_keyword)                                \
+    do {                                                        \
+        struct kefir_token token;                               \
+        ASSERT_OK(kefir_token_new_keyword((_keyword), &token)); \
+        ASSERT(token.klass == KEFIR_TOKEN_KEYWORD);             \
+        ASSERT(token.keyword == (_keyword));                    \
+        ASSERT_OK(kefir_token_free(&kft_mem, &token));          \
     } while (0);
     ASSERT_KEYWORD(KEFIR_KEYWORD_AUTO);
     ASSERT_KEYWORD(KEFIR_KEYWORD_BREAK);
@@ -325,13 +325,13 @@ DEFINE_CASE(parser_lexem_construction_wide_string_literals, "Parser - wide strin
 END_CASE
 
 DEFINE_CASE(parser_lexem_construction_punctuator, "Parser - punctuator tokens") {
-#define ASSERT_PUNCTUATOR(_punctuator)                                 \
-    do {                                                               \
-        struct kefir_token token;                                      \
-        REQUIRE_OK(kefir_token_new_punctuator((_punctuator), &token)); \
-        ASSERT(token.klass == KEFIR_TOKEN_PUNCTUATOR);                 \
-        ASSERT(token.punctuator == (_punctuator));                     \
-        REQUIRE_OK(kefir_token_free(&kft_mem, &token));                \
+#define ASSERT_PUNCTUATOR(_punctuator)                                \
+    do {                                                              \
+        struct kefir_token token;                                     \
+        ASSERT_OK(kefir_token_new_punctuator((_punctuator), &token)); \
+        ASSERT(token.klass == KEFIR_TOKEN_PUNCTUATOR);                \
+        ASSERT(token.punctuator == (_punctuator));                    \
+        ASSERT_OK(kefir_token_free(&kft_mem, &token));                \
     } while (0);
 
     ASSERT_PUNCTUATOR(KEFIR_PUNCTUATOR_LEFT_BRACKET);
@@ -393,13 +393,13 @@ DEFINE_CASE(parser_lexem_construction_punctuator, "Parser - punctuator tokens") 
 END_CASE
 
 DEFINE_CASE(parser_lexem_construction_pp_whitespace, "Parser - pp whitespaces") {
-#define ASSERT_WHITESPACE(_newline)                                    \
-    do {                                                               \
-        struct kefir_token token;                                      \
-        REQUIRE_OK(kefir_token_new_pp_whitespace((_newline), &token)); \
-        ASSERT(token.klass == KEFIR_TOKEN_PP_WHITESPACE);              \
-        ASSERT(token.pp_whitespace.newline == (_newline));             \
-        REQUIRE_OK(kefir_token_free(&kft_mem, &token));                \
+#define ASSERT_WHITESPACE(_newline)                                   \
+    do {                                                              \
+        struct kefir_token token;                                     \
+        ASSERT_OK(kefir_token_new_pp_whitespace((_newline), &token)); \
+        ASSERT(token.klass == KEFIR_TOKEN_PP_WHITESPACE);             \
+        ASSERT(token.pp_whitespace.newline == (_newline));            \
+        ASSERT_OK(kefir_token_free(&kft_mem, &token));                \
     } while (0)
 
     ASSERT_WHITESPACE(false);
@@ -410,21 +410,52 @@ DEFINE_CASE(parser_lexem_construction_pp_whitespace, "Parser - pp whitespaces") 
 END_CASE
 
 DEFINE_CASE(parser_lexem_construction_pp_numbers, "Parser - pp numbers") {
-#define ASSERT_PP_NUMBER(_literal)                                                         \
-    do {                                                                                   \
-        const char LITERAL[] = _literal;                                                   \
-        struct kefir_token token;                                                          \
-        REQUIRE_OK(kefir_token_new_pp_number(&kft_mem, LITERAL, sizeof(LITERAL), &token)); \
-        ASSERT(token.klass == KEFIR_TOKEN_PP_NUMBER);                                      \
-        ASSERT(memcmp(token.pp_number.number_literal, LITERAL, sizeof(LITERAL)) == 0);     \
-        REQUIRE_OK(kefir_token_free(&kft_mem, &token));                                    \
+#define ASSERT_PP_NUMBER(_literal)                                                        \
+    do {                                                                                  \
+        const char LITERAL[] = _literal;                                                  \
+        struct kefir_token token;                                                         \
+        ASSERT_OK(kefir_token_new_pp_number(&kft_mem, LITERAL, sizeof(LITERAL), &token)); \
+        ASSERT(token.klass == KEFIR_TOKEN_PP_NUMBER);                                     \
+        ASSERT(memcmp(token.pp_number.number_literal, LITERAL, sizeof(LITERAL)) == 0);    \
+        ASSERT_OK(kefir_token_free(&kft_mem, &token));                                    \
     } while (0)
 
     ASSERT_PP_NUMBER("123123.454e54");
     ASSERT_PP_NUMBER("1");
     ASSERT_PP_NUMBER("148u2ie-829");
 
+    do {
+        struct kefir_token token;
+        ASSERT_NOK(kefir_token_new_pp_number(&kft_mem, "", 0, &token));
+    } while (0);
+
 #undef ASSERT_PP_NUMBER
+}
+END_CASE
+
+DEFINE_CASE(parser_lexem_construction_pp_header_name, "Parser - pp header names") {
+#define ASSERT_PP_HEADER_NAME(_system, _literal)                                                          \
+    do {                                                                                                  \
+        const char LITERAL[] = _literal;                                                                  \
+        struct kefir_token token;                                                                         \
+        ASSERT_OK(kefir_token_new_pp_header_name(&kft_mem, (_system), LITERAL, sizeof(LITERAL), &token)); \
+        ASSERT(token.klass == KEFIR_TOKEN_PP_HEADER_NAME);                                                \
+        ASSERT(token.pp_header_name.system == (_system));                                                 \
+        ASSERT(memcmp(token.pp_header_name.header_name, LITERAL, sizeof(LITERAL)) == 0);                  \
+        ASSERT_OK(kefir_token_free(&kft_mem, &token));                                                    \
+    } while (0)
+
+    ASSERT_PP_HEADER_NAME(true, "stdlib.h");
+    ASSERT_PP_HEADER_NAME(false, "kefir.h");
+    ASSERT_PP_HEADER_NAME(true, "test...test...test...h");
+    ASSERT_PP_HEADER_NAME(false, ".h");
+
+    do {
+        struct kefir_token token;
+        ASSERT_NOK(kefir_token_new_pp_header_name(&kft_mem, true, "", 0, &token));
+    } while (0);
+
+#undef ASSERT_PP_HEADER_NAME
 }
 END_CASE
 
@@ -517,6 +548,14 @@ DEFINE_CASE(parser_lexem_move, "Parser - moving tokens") {
     ASSERT_OK(kefir_token_move(&dst, &src));
     ASSERT(dst.klass == KEFIR_TOKEN_PP_NUMBER);
     ASSERT(strcmp(LITERAL1, dst.pp_number.number_literal) == 0);
+    ASSERT_OK(kefir_token_free(&kft_mem, &dst));
+
+    const char LITERAL2[] = "some/header.h";
+    ASSERT_OK(kefir_token_new_pp_header_name(&kft_mem, true, LITERAL2, sizeof(LITERAL2), &src));
+    ASSERT_OK(kefir_token_move(&dst, &src));
+    ASSERT(dst.klass == KEFIR_TOKEN_PP_HEADER_NAME);
+    ASSERT(dst.pp_header_name.system);
+    ASSERT(strcmp(LITERAL2, dst.pp_header_name.header_name) == 0);
     ASSERT_OK(kefir_token_free(&kft_mem, &dst));
 
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
@@ -668,6 +707,21 @@ DEFINE_CASE(parser_lexem_copy, "Parser - copying tokens") {
     ASSERT(strcmp(LITERAL1, dst.pp_number.number_literal) == 0);
     ASSERT(dst.pp_number.number_literal != LITERAL1);
     ASSERT(dst.pp_number.number_literal != src.pp_number.number_literal);
+    ASSERT_OK(kefir_token_free(&kft_mem, &src));
+    ASSERT_OK(kefir_token_free(&kft_mem, &dst));
+
+    const char LITERAL2[] = "directory/subdirectory1/header.ext";
+    ASSERT_OK(kefir_token_new_pp_header_name(&kft_mem, false, LITERAL2, sizeof(LITERAL2), &src));
+    ASSERT_OK(kefir_token_copy(&kft_mem, &dst, &src));
+    ASSERT(src.klass == KEFIR_TOKEN_PP_HEADER_NAME);
+    ASSERT(!src.pp_header_name.system);
+    ASSERT(strcmp(LITERAL2, src.pp_header_name.header_name) == 0);
+    ASSERT(src.pp_header_name.header_name != LITERAL2);
+    ASSERT(dst.klass == KEFIR_TOKEN_PP_HEADER_NAME);
+    ASSERT(!dst.pp_header_name.system);
+    ASSERT(strcmp(LITERAL2, dst.pp_header_name.header_name) == 0);
+    ASSERT(dst.pp_header_name.header_name != LITERAL2);
+    ASSERT(dst.pp_header_name.header_name != src.pp_header_name.header_name);
     ASSERT_OK(kefir_token_free(&kft_mem, &src));
     ASSERT_OK(kefir_token_free(&kft_mem, &dst));
 

@@ -624,6 +624,16 @@ kefir_result_t kefir_token_format(struct kefir_json_output *json, const struct k
             REQUIRE_OK(kefir_json_output_object_key(json, "literal"));
             REQUIRE_OK(kefir_json_output_string(json, token->pp_number.number_literal));
             break;
+
+        case KEFIR_TOKEN_PP_HEADER_NAME:
+            REQUIRE_OK(kefir_json_output_string(json, "pp_header_name"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "preprocessor"));
+            REQUIRE_OK(kefir_json_output_boolean(json, true));
+            REQUIRE_OK(kefir_json_output_object_key(json, "system_header"));
+            REQUIRE_OK(kefir_json_output_boolean(json, token->pp_header_name.system));
+            REQUIRE_OK(kefir_json_output_object_key(json, "header_name"));
+            REQUIRE_OK(kefir_json_output_string(json, token->pp_header_name.header_name));
+            break;
     }
 
     if (display_source_location) {

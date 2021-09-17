@@ -409,6 +409,7 @@ DECLARE_CASE(parser_lexem_construction_wide_string_literals);
 DECLARE_CASE(parser_lexem_construction_punctuator);
 DECLARE_CASE(parser_lexem_construction_pp_whitespace);
 DECLARE_CASE(parser_lexem_construction_pp_numbers);
+DECLARE_CASE(parser_lexem_construction_pp_header_name);
 DECLARE_CASE(parser_lexem_move);
 DECLARE_CASE(parser_lexem_copy);
 DECLARE_CASE(parser_token_cursor1);
@@ -562,8 +563,8 @@ TEST_SUITE(
     &parser_lexem_construction_unicode8_string_literals, &parser_lexem_construction_unicode16_string_literals,
     &parser_lexem_construction_unicode32_string_literals, &parser_lexem_construction_wide_string_literals,
     &parser_lexem_construction_punctuator, &parser_lexem_construction_pp_whitespace,
-    &parser_lexem_construction_pp_numbers, &parser_lexem_move, &parser_lexem_copy, &parser_token_cursor1,
-    &parser_block_scope1, &parser_scope1,
+    &parser_lexem_construction_pp_numbers, &parser_lexem_construction_pp_header_name, &parser_lexem_move,
+    &parser_lexem_copy, &parser_token_cursor1, &parser_block_scope1, &parser_scope1,
 
     &lexer_source_cursor1, &lexer_source_location1,
 

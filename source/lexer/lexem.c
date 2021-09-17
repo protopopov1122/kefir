@@ -289,6 +289,23 @@ kefir_result_t kefir_token_new_pp_number(struct kefir_mem *mem, const char *numb
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_token_new_pp_header_name(struct kefir_mem *mem, kefir_bool_t system, const char *header_name,
+                                              kefir_size_t length, struct kefir_token *token) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(header_name != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid header name"));
+    REQUIRE(length > 0, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid non-zero length of the literal"));
+    REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to token"));
+
+    char *clone_header_name = KEFIR_MALLOC(mem, length + 1);
+    REQUIRE(clone_header_name != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate pp header name"));
+    memcpy(clone_header_name, header_name, length);
+    clone_header_name[length] = '\0';
+    token->klass = KEFIR_TOKEN_PP_HEADER_NAME;
+    token->pp_header_name.system = system;
+    token->pp_header_name.header_name = clone_header_name;
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_token_move(struct kefir_token *dst, struct kefir_token *src) {
     REQUIRE(dst != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to destination token"));
     REQUIRE(src != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to source token"));
@@ -298,6 +315,8 @@ kefir_result_t kefir_token_move(struct kefir_token *dst, struct kefir_token *src
         src->string_literal.length = 0;
     } else if (src->klass == KEFIR_TOKEN_PP_NUMBER) {
         src->pp_number.number_literal = NULL;
+    } else if (src->klass == KEFIR_TOKEN_PP_HEADER_NAME) {
+        src->pp_header_name.header_name = NULL;
     }
     return KEFIR_OK;
 }
@@ -341,6 +360,12 @@ kefir_result_t kefir_token_copy(struct kefir_mem *mem, struct kefir_token *dst, 
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate pp number literal"));
         strcpy(clone_number_literal, src->pp_number.number_literal);
         dst->pp_number.number_literal = clone_number_literal;
+    } else if (src->klass == KEFIR_TOKEN_PP_HEADER_NAME) {
+        char *clone_header_name = KEFIR_MALLOC(mem, strlen(src->pp_header_name.header_name) + 1);
+        REQUIRE(clone_header_name != NULL,
+                KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate pp header name"));
+        strcpy(clone_header_name, src->pp_header_name.header_name);
+        dst->pp_header_name.header_name = clone_header_name;
     }
     return KEFIR_OK;
 }
@@ -358,6 +383,11 @@ kefir_result_t kefir_token_free(struct kefir_mem *mem, struct kefir_token *token
         case KEFIR_TOKEN_PP_NUMBER:
             KEFIR_FREE(mem, (void *) token->pp_number.number_literal);
             token->pp_number.number_literal = NULL;
+            break;
+
+        case KEFIR_TOKEN_PP_HEADER_NAME:
+            KEFIR_FREE(mem, (void *) token->pp_header_name.header_name);
+            token->pp_header_name.header_name = NULL;
             break;
 
         case KEFIR_TOKEN_SENTINEL:

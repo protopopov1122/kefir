@@ -37,7 +37,8 @@ typedef enum kefir_token_class {
 
     // Preprocessing tokens
     KEFIR_TOKEN_PP_WHITESPACE,
-    KEFIR_TOKEN_PP_NUMBER
+    KEFIR_TOKEN_PP_NUMBER,
+    KEFIR_TOKEN_PP_HEADER_NAME
 } kefir_token_class_t;
 
 typedef enum kefir_keyword_token {
@@ -195,6 +196,11 @@ typedef struct kefir_pptoken_pp_number {
     const char *number_literal;
 } kefir_pptoken_pp_number_t;
 
+typedef struct kefir_pptoken_pp_header_name {
+    kefir_bool_t system;
+    const char *header_name;
+} kefir_pptoken_pp_header_name_t;
+
 typedef struct kefir_token {
     kefir_token_class_t klass;
     union {
@@ -205,6 +211,7 @@ typedef struct kefir_token {
         kefir_punctuator_token_t punctuator;
         struct kefir_pptoken_pp_whitespace pp_whitespace;
         struct kefir_pptoken_pp_number pp_number;
+        struct kefir_pptoken_pp_header_name pp_header_name;
     };
 
     struct kefir_source_location source_location;
@@ -239,6 +246,8 @@ kefir_result_t kefir_token_new_string_literal_wide(struct kefir_mem *, const kef
 kefir_result_t kefir_token_new_punctuator(kefir_punctuator_token_t, struct kefir_token *);
 kefir_result_t kefir_token_new_pp_whitespace(kefir_bool_t, struct kefir_token *);
 kefir_result_t kefir_token_new_pp_number(struct kefir_mem *, const char *, kefir_size_t, struct kefir_token *);
+kefir_result_t kefir_token_new_pp_header_name(struct kefir_mem *, kefir_bool_t, const char *, kefir_size_t,
+                                              struct kefir_token *);
 
 kefir_result_t kefir_token_move(struct kefir_token *, struct kefir_token *);
 kefir_result_t kefir_token_copy(struct kefir_mem *, struct kefir_token *, const struct kefir_token *);
