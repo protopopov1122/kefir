@@ -1,0 +1,32 @@
+[
+    {
+        "class": "pp_header_name",
+        "preprocessor": true,
+        "system_header": true,
+        "header_name": "directory\/subdirectory\/another_subdirectory\/header.h"
+    },
+    {
+        "class": "pp_header_name",
+        "preprocessor": true,
+        "system_header": true,
+        "header_name": "1"
+    },
+    {
+        "class": "pp_header_name",
+        "preprocessor": true,
+        "system_header": false,
+        "header_name": "local\/directory\/with\/header_here.h"
+    },
+    {
+        "class": "pp_header_name",
+        "preprocessor": true,
+        "system_header": false,
+        "header_name": "\/absolute\/path.h"
+    },
+    {
+        "class": "pp_header_name",
+        "preprocessor": true,
+        "system_header": true,
+        "header_name": "\\Windows\\style.h"
+    }
+]
