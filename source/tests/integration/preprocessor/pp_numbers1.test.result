@@ -1,0 +1,81 @@
+[
+    {
+        "class": "pp_number",
+        "preprocessor": true,
+        "literal": "12345"
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "pp_number",
+        "preprocessor": true,
+        "literal": "0xef7368"
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": true
+    },
+    {
+        "class": "pp_number",
+        "preprocessor": true,
+        "literal": "918.816e8"
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": true
+    },
+    {
+        "class": "pp_number",
+        "preprocessor": true,
+        "literal": "1e-9"
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": true
+    },
+    {
+        "class": "pp_number",
+        "preprocessor": true,
+        "literal": ".1abcde918P+100e1"
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "identifier",
+        "preprocessor": false,
+        "identifier": "abc100e"
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": "-"
+    },
+    {
+        "class": "pp_number",
+        "preprocessor": true,
+        "literal": "1"
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "pp_number",
+        "preprocessor": true,
+        "literal": "2.2.2.3"
+    },
+    {
+        "class": "sentinel",
+        "preprocessor": false
+    }
+]

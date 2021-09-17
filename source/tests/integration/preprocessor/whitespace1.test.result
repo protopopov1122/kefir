@@ -35,10 +35,9 @@
         "newline": true
     },
     {
-        "class": "constant",
-        "preprocessor": false,
-        "type": "integer",
-        "value": 0
+        "class": "pp_number",
+        "preprocessor": true,
+        "literal": "0"
     },
     {
         "class": "punctuator",
@@ -46,10 +45,9 @@
         "punctuator": ";"
     },
     {
-        "class": "constant",
-        "preprocessor": false,
-        "type": "integer",
-        "value": 1
+        "class": "pp_number",
+        "preprocessor": true,
+        "literal": "1"
     },
     {
         "class": "whitespace",
@@ -57,10 +55,9 @@
         "newline": true
     },
     {
-        "class": "constant",
-        "preprocessor": false,
-        "type": "integer",
-        "value": 2
+        "class": "pp_number",
+        "preprocessor": true,
+        "literal": "2"
     },
     {
         "class": "whitespace",
@@ -68,10 +65,9 @@
         "newline": true
     },
     {
-        "class": "constant",
-        "preprocessor": false,
-        "type": "integer",
-        "value": 3
+        "class": "pp_number",
+        "preprocessor": true,
+        "literal": "3"
     },
     {
         "class": "whitespace",
@@ -79,10 +75,9 @@
         "newline": false
     },
     {
-        "class": "constant",
-        "preprocessor": false,
-        "type": "integer",
-        "value": 4
+        "class": "pp_number",
+        "preprocessor": true,
+        "literal": "4"
     },
     {
         "class": "punctuator",
@@ -95,10 +90,9 @@
         "newline": true
     },
     {
-        "class": "constant",
-        "preprocessor": false,
-        "type": "integer",
-        "value": 5
+        "class": "pp_number",
+        "preprocessor": true,
+        "literal": "5"
     },
     {
         "class": "whitespace",

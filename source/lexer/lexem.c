@@ -282,7 +282,8 @@ kefir_result_t kefir_token_new_pp_number(struct kefir_mem *mem, const char *numb
     char *clone_number_literal = KEFIR_MALLOC(mem, length + 1);
     REQUIRE(clone_number_literal != NULL,
             KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate pp number literal"));
-    strncpy(clone_number_literal, number_literal, length);
+    memcpy(clone_number_literal, number_literal, length);
+    clone_number_literal[length] = '\0';
     token->klass = KEFIR_TOKEN_PP_NUMBER;
     token->pp_number.number_literal = clone_number_literal;
     return KEFIR_OK;
