@@ -5,9 +5,9 @@
         "newline": false
     },
     {
-        "class": "keyword",
+        "class": "identifier",
         "preprocessor": false,
-        "keyword": "int"
+        "identifier": "int"
     },
     {
         "class": "whitespace",
@@ -124,6 +124,46 @@
         "preprocessor": false,
         "type": "char",
         "value": 50
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "identifier",
+        "preprocessor": false,
+        "identifier": "for"
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "identifier",
+        "preprocessor": false,
+        "identifier": "a"
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "identifier",
+        "preprocessor": false,
+        "identifier": "while"
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": true
+    },
+    {
+        "class": "identifier",
+        "preprocessor": false,
+        "identifier": "void"
     },
     {
         "class": "sentinel",

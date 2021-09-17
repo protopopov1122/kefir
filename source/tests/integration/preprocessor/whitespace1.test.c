@@ -27,7 +27,7 @@
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     const char CONTENT[] = "    /* Some comment */ int      i = // Test \n"
                            "0;1\n2\n   \n3  \t\t\v\f\r4;\n5\n"
-                           "\"\\n\\n\\t\\n\\\"\"      U\"1\"\n\n\n;\'2\'";
+                           "\"\\n\\n\\t\\n\\\"\"      U\"1\"\n\n\n;\'2\' for a    while\n\nvoid";
 
     struct kefir_symbol_table symbols;
     struct kefir_lexer_source_cursor cursor;

@@ -57,6 +57,7 @@ kefir_result_t kefir_lexer_match_punctuator(struct kefir_mem *, struct kefir_lex
 kefir_result_t kefir_lexer_init_keywords(struct kefir_mem *, struct kefir_lexer *);
 kefir_result_t kefir_lexer_get_keyword(struct kefir_lexer *, const kefir_char32_t *, kefir_keyword_token_t *);
 kefir_result_t kefir_lexer_match_identifier_or_keyword(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
+kefir_result_t kefir_lexer_match_identifier(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
 
 kefir_result_t kefir_lexer_next_narrow_string_literal(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
 kefir_result_t kefir_lexer_next_unicode8_string_literal(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
