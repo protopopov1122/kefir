@@ -29,7 +29,7 @@ enum whitespace_match { WHITESPACE_NO_MATCH = 0, WHITESPACE_MATCH, WHITESPACE_NE
 static kefir_result_t skip_whitespaces(const struct kefir_lexer_context *context,
                                        struct kefir_lexer_source_cursor *cursor, enum whitespace_match *match) {
     kefir_char32_t chr;
-    while (kefir_isspace32((chr = kefir_lexer_source_cursor_at(cursor, 0)))) {
+    if (kefir_isspace32((chr = kefir_lexer_source_cursor_at(cursor, 0)))) {
         if (chr == context->newline) {
             *match = MAX(*match, WHITESPACE_NEWLINE);
         } else {
@@ -87,7 +87,7 @@ kefir_result_t kefir_lexer_cursor_match_whitespace(struct kefir_mem *mem, struct
         REQUIRE_OK(skip_whitespaces(lexer->context, lexer->cursor, &matched));
         REQUIRE_OK(skip_multiline_comment(lexer->cursor, &matched));
         REQUIRE_OK(skip_oneline_comment(lexer->context, lexer->cursor, &matched));
-        continue_scan = matched != WHITESPACE_NO_MATCH;
+        continue_scan = matched != WHITESPACE_NO_MATCH && token == NULL;
         match = MAX(match, matched);
     }
 

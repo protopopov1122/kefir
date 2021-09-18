@@ -1,0 +1,217 @@
+[
+    {
+        "class": "identifier",
+        "preprocessor": false,
+        "identifier": "int"
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "identifier",
+        "preprocessor": false,
+        "identifier": "i"
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": "="
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "pp_number",
+        "preprocessor": true,
+        "literal": "2"
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": "+"
+    },
+    {
+        "class": "pp_number",
+        "preprocessor": true,
+        "literal": "2"
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": "*"
+    },
+    {
+        "class": "pp_number",
+        "preprocessor": true,
+        "literal": "2"
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": ";"
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": true
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "identifier",
+        "preprocessor": false,
+        "identifier": "for"
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "identifier",
+        "preprocessor": false,
+        "identifier": "while"
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": "("
+    },
+    {
+        "class": "pp_number",
+        "preprocessor": true,
+        "literal": "1"
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": "+"
+    },
+    {
+        "class": "identifier",
+        "preprocessor": false,
+        "identifier": "a"
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": "+"
+    },
+    {
+        "class": "identifier",
+        "preprocessor": false,
+        "identifier": "fn"
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": "("
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": ","
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": ","
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": ","
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": ")"
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": ")"
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": true
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": true
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": true
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "identifier",
+        "preprocessor": false,
+        "identifier": "test"
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "identifier",
+        "preprocessor": false,
+        "identifier": "test"
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "identifier",
+        "preprocessor": false,
+        "identifier": "test"
+    }
+]

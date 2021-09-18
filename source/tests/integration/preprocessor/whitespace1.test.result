@@ -5,9 +5,54 @@
         "newline": false
     },
     {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
         "class": "identifier",
         "preprocessor": false,
         "identifier": "int"
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
     },
     {
         "class": "whitespace",
@@ -65,9 +110,59 @@
         "newline": true
     },
     {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": true
+    },
+    {
         "class": "pp_number",
         "preprocessor": true,
         "literal": "3"
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
     },
     {
         "class": "whitespace",
@@ -151,9 +246,29 @@
         "newline": false
     },
     {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
         "class": "identifier",
         "preprocessor": false,
         "identifier": "while"
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": true
     },
     {
         "class": "whitespace",
