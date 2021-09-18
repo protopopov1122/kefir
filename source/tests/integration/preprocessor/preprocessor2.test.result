@@ -1,0 +1,5 @@
+int i = 2+2*  2;
+
+
+ for (int x = 0; x < i; ++x) fn(X, "xA\xa");
+       str = L"long string", xstr = U"\x55\x55\x55\x1111\x2d\x75\x75\x75\x75"
