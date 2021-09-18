@@ -31,13 +31,12 @@ kefir_result_t kefir_lexer_source_cursor_init(struct kefir_lexer_source_cursor *
     *cursor = (struct kefir_lexer_source_cursor){0};
     cursor->content = content;
     cursor->length = length;
+    cursor->newline_char = U'\n';
     REQUIRE_OK(kefir_source_location_init(&cursor->location, source_id, 1, 1));
     return KEFIR_OK;
 }
 
-kefir_char32_t kefir_lexer_source_cursor_at(const struct kefir_lexer_source_cursor *cursor, kefir_size_t count) {
-    REQUIRE(cursor != NULL, U'\0');
-
+static kefir_char32_t at_impl(const struct kefir_lexer_source_cursor *cursor, kefir_size_t count) {
     kefir_char32_t character = U'\0';
     kefir_size_t index = cursor->index;
     mbstate_t mbstate = cursor->mbstate;
@@ -54,14 +53,38 @@ kefir_char32_t kefir_lexer_source_cursor_at(const struct kefir_lexer_source_curs
 
             default:
                 index += rc;
+                if (character == U'\\' && index < cursor->length) {  // Convert physical line to logical
+                    kefir_char32_t character2;
+                    mbstate_t mbstate2 = {0};
+                    rc = mbrtoc32(&character2, cursor->content + index, cursor->length - index, &mbstate2);
+                    switch (rc) {
+                        case 0:
+                        case (size_t) -1:
+                        case (size_t) -2:
+                        case (size_t) -3:
+                            // Ignoring failure
+                            break;
+
+                        default:
+                            if (character2 == cursor->newline_char) {  // Skip line break
+                                index += rc;
+                                count++;
+                            }
+                            break;
+                    }
+                }
                 break;
         }
     } while (count--);
     return character;
 }
 
-kefir_result_t kefir_lexer_source_cursor_next(struct kefir_lexer_source_cursor *cursor, kefir_size_t count) {
-    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer source cursor"));
+kefir_char32_t kefir_lexer_source_cursor_at(const struct kefir_lexer_source_cursor *cursor, kefir_size_t count) {
+    REQUIRE(cursor != NULL, U'\0');
+    return at_impl(cursor, count);
+}
+
+static kefir_result_t next_impl(struct kefir_lexer_source_cursor *cursor, kefir_size_t count) {
     while (count--) {
         kefir_char32_t chr;
         size_t rc = mbrtoc32(&chr, cursor->content + cursor->index, cursor->length - cursor->index, &cursor->mbstate);
@@ -80,11 +103,43 @@ kefir_result_t kefir_lexer_source_cursor_next(struct kefir_lexer_source_cursor *
                     cursor->location.column = 1;
                     cursor->location.line++;
                 } else {
-                    cursor->location.column++;
+                    kefir_bool_t skip_line_break = false;
+                    if (chr == U'\\' && cursor->index < cursor->length) {  // Convert physical line to logical
+                        kefir_char32_t character2;
+                        mbstate_t mbstate2 = {0};
+                        rc = mbrtoc32(&character2, cursor->content + cursor->index, cursor->length - cursor->index,
+                                      &mbstate2);
+                        switch (rc) {
+                            case 0:
+                            case (size_t) -1:
+                            case (size_t) -2:
+                            case (size_t) -3:
+                                // Ignore failure
+                                break;
+
+                            default:
+                                if (character2 == cursor->newline_char) {  // Skip line break
+                                    cursor->index += rc;
+                                    count++;
+                                    skip_line_break = true;
+                                }
+                                break;
+                        }
+                    }
+
+                    if (!skip_line_break) {
+                        cursor->location.column++;
+                    }
                 }
                 break;
         }
     }
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_lexer_source_cursor_next(struct kefir_lexer_source_cursor *cursor, kefir_size_t count) {
+    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer source cursor"));
+    REQUIRE_OK(next_impl(cursor, count));
     return KEFIR_OK;
 }
 

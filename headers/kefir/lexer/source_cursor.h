@@ -12,6 +12,7 @@ typedef struct kefir_lexer_source_cursor {
     kefir_size_t length;
     mbstate_t mbstate;
     struct kefir_source_location location;
+    kefir_char32_t newline_char;
 } kefir_lexer_source_cursor_t;
 
 typedef struct kefir_lexer_source_cursor_state {
@@ -28,9 +29,10 @@ kefir_result_t kefir_lexer_source_cursor_save(const struct kefir_lexer_source_cu
                                               struct kefir_lexer_source_cursor_state *);
 kefir_result_t kefir_lexer_source_cursor_restore(struct kefir_lexer_source_cursor *,
                                                  const struct kefir_lexer_source_cursor_state *);
+kefir_result_t kefir_lexer_cursor_match_string(const struct kefir_lexer_source_cursor *, const kefir_char32_t *);
+// TODO Remove direct access to raw characters
 const char *kefir_lexer_source_cursor_begin(struct kefir_lexer_source_cursor *);
 const char *kefir_lexer_source_cursor_current(struct kefir_lexer_source_cursor *);
 const char *kefir_lexer_source_cursor_end(struct kefir_lexer_source_cursor *);
-kefir_result_t kefir_lexer_cursor_match_string(const struct kefir_lexer_source_cursor *, const kefir_char32_t *);
 
 #endif

@@ -418,6 +418,7 @@ DECLARE_CASE(parser_scope1);
 
 DECLARE_CASE(lexer_source_cursor1);
 DECLARE_CASE(lexer_source_location1);
+DECLARE_CASE(lexer_source_cursor_newlines);
 
 DECLARE_CASE(preprocessor_macro_construction1);
 DECLARE_CASE(preprocessor_macro_user_scope1);
@@ -569,7 +570,7 @@ TEST_SUITE(
     &parser_lexem_construction_pp_numbers, &parser_lexem_construction_pp_header_name, &parser_lexem_move,
     &parser_lexem_copy, &parser_token_cursor1, &parser_block_scope1, &parser_scope1,
 
-    &lexer_source_cursor1, &lexer_source_location1,
+    &lexer_source_cursor1, &lexer_source_location1, &lexer_source_cursor_newlines,
 
     &preprocessor_macro_construction1, &preprocessor_macro_user_scope1,
 
