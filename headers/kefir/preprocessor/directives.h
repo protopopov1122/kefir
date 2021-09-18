@@ -83,6 +83,8 @@ typedef struct kefir_preprocessor_directive {
     };
 } kefir_preprocessor_directive_t;
 
+kefir_result_t kefir_preprocessor_match_directive(struct kefir_mem *, struct kefir_preprocessor *,
+                                                  kefir_preprocessor_directive_type_t *);
 kefir_result_t kefir_preprocessor_next_directive(struct kefir_mem *, struct kefir_preprocessor *,
                                                  struct kefir_preprocessor_directive *);
 kefir_result_t kefir_preprocessor_directive_free(struct kefir_mem *, struct kefir_preprocessor_directive *);

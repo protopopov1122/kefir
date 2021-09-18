@@ -32,6 +32,11 @@ typedef struct kefir_preprocessor {
 kefir_result_t kefir_preprocessor_init(struct kefir_mem *, struct kefir_preprocessor *, struct kefir_symbol_table *,
                                        struct kefir_lexer_source_cursor *, const struct kefir_lexer_context *);
 kefir_result_t kefir_preprocessor_free(struct kefir_mem *, struct kefir_preprocessor *);
+
+kefir_result_t kefir_preprocessor_skip_line(struct kefir_preprocessor *);
+kefir_result_t kefir_preprocessor_skip_group(struct kefir_mem *, struct kefir_preprocessor *);
+kefir_result_t kefir_preprocessor_run_group(struct kefir_mem *, struct kefir_preprocessor *,
+                                            struct kefir_token_buffer *);
 kefir_result_t kefir_preprocessor_run(struct kefir_mem *, struct kefir_preprocessor *, struct kefir_token_buffer *);
 
 #endif
