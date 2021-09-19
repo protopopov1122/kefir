@@ -21,6 +21,7 @@
 #include "kefir/core/mem.h"
 #include "kefir/core/util.h"
 #include "kefir/preprocessor/preprocessor.h"
+#include "kefir/preprocessor/virtual_source_file.h"
 #include "kefir/preprocessor/format.h"
 #include <stdio.h>
 
@@ -47,30 +48,36 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_lexer_context_default(&parser_context));
     REQUIRE_OK(kefir_token_buffer_init(mem, &tokens));
 
-#define RUN_PREPROCESSOR(_init)                                                                      \
-    do {                                                                                             \
-        struct kefir_preprocessor preprocessor;                                                      \
-        struct kefir_lexer_source_cursor cursor;                                                     \
-        REQUIRE_OK(kefir_lexer_source_cursor_init(&cursor, CONTENT, sizeof(CONTENT), ""));           \
-        REQUIRE_OK(kefir_preprocessor_init(mem, &preprocessor, &symbols, &cursor, &parser_context)); \
-        _init REQUIRE_OK(kefir_preprocessor_run(mem, &preprocessor, &tokens));                       \
-        REQUIRE_OK(kefir_preprocessor_free(mem, &preprocessor));                                     \
+#define RUN_PREPROCESSOR(_init)                                                                                \
+    do {                                                                                                       \
+        struct kefir_preprocessor_virtual_source_locator virtual_source;                                       \
+        struct kefir_preprocessor_context context;                                                             \
+        struct kefir_preprocessor preprocessor;                                                                \
+        struct kefir_lexer_source_cursor cursor;                                                               \
+        REQUIRE_OK(kefir_preprocessor_virtual_source_locator_init(&virtual_source));                           \
+        REQUIRE_OK(kefir_preprocessor_context_init(&context, &virtual_source.locator));                        \
+        REQUIRE_OK(kefir_lexer_source_cursor_init(&cursor, CONTENT, sizeof(CONTENT), ""));                     \
+        REQUIRE_OK(kefir_preprocessor_init(mem, &preprocessor, &symbols, &cursor, &parser_context, &context)); \
+        _init REQUIRE_OK(kefir_preprocessor_run(mem, &preprocessor, &tokens));                                 \
+        REQUIRE_OK(kefir_preprocessor_free(mem, &preprocessor));                                               \
+        REQUIRE_OK(kefir_preprocessor_context_free(mem, &context));                                            \
+        REQUIRE_OK(kefir_preprocessor_virtual_source_locator_free(mem, &virtual_source));                      \
     } while (0)
 
     RUN_PREPROCESSOR({
-        REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(mem, &preprocessor.macros,
+        REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(mem, &context.macros,
                                                               kefir_preprocessor_macro_new(mem, &symbols, "A")));
-        REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(mem, &preprocessor.macros,
+        REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(mem, &context.macros,
                                                               kefir_preprocessor_macro_new(mem, &symbols, "ONE")));
     });
 
     RUN_PREPROCESSOR({
-        REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(mem, &preprocessor.macros,
+        REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(mem, &context.macros,
                                                               kefir_preprocessor_macro_new(mem, &symbols, "A")));
     });
 
     RUN_PREPROCESSOR({
-        REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(mem, &preprocessor.macros,
+        REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(mem, &context.macros,
                                                               kefir_preprocessor_macro_new(mem, &symbols, "ONE")));
     });
 

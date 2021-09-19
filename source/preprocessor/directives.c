@@ -111,9 +111,10 @@ kefir_result_t kefir_preprocessor_match_directive(struct kefir_mem *mem, struct 
         const kefir_char32_t *literal;
         kefir_preprocessor_directive_type_t directive;
     } KnownDirectives[] = {
-        {U"if", KEFIR_PREPROCESSOR_DIRECTIVE_IF},         {U"ifdef", KEFIR_PREPROCESSOR_DIRECTIVE_IFDEF},
-        {U"ifndef", KEFIR_PREPROCESSOR_DIRECTIVE_IFNDEF}, {U"elif", KEFIR_PREPROCESSOR_DIRECTIVE_ELIF},
-        {U"else", KEFIR_PREPROCESSOR_DIRECTIVE_ELSE},     {U"endif", KEFIR_PREPROCESSOR_DIRECTIVE_ENDIF}};
+        {U"if", KEFIR_PREPROCESSOR_DIRECTIVE_IF},          {U"ifdef", KEFIR_PREPROCESSOR_DIRECTIVE_IFDEF},
+        {U"ifndef", KEFIR_PREPROCESSOR_DIRECTIVE_IFNDEF},  {U"elif", KEFIR_PREPROCESSOR_DIRECTIVE_ELIF},
+        {U"else", KEFIR_PREPROCESSOR_DIRECTIVE_ELSE},      {U"endif", KEFIR_PREPROCESSOR_DIRECTIVE_ENDIF},
+        {U"include", KEFIR_PREPROCESSOR_DIRECTIVE_INCLUDE}};
     for (kefir_size_t i = 0; i < sizeof(KnownDirectives) / sizeof(KnownDirectives[0]); i++) {
         if (kefir_strcmp32(KnownDirectives[i].literal, directive_name) == 0) {
             *directive_type = KnownDirectives[i].directive;
@@ -184,6 +185,43 @@ static kefir_result_t next_endif(struct kefir_preprocessor *preprocessor,
                                  struct kefir_preprocessor_directive *directive) {
     directive->type = KEFIR_PREPROCESSOR_DIRECTIVE_ENDIF;
     REQUIRE_OK(kefir_preprocessor_skip_line(preprocessor));
+    return KEFIR_OK;
+}
+
+static kefir_result_t next_include(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                   struct kefir_preprocessor_directive *directive) {
+    directive->type = KEFIR_PREPROCESSOR_DIRECTIVE_INCLUDE;
+    REQUIRE_OK(kefir_token_buffer_init(mem, &directive->pp_tokens.pp_tokens));
+
+    struct kefir_lexer_source_cursor_state state;
+    struct kefir_token token;
+    kefir_result_t res = kefir_lexer_source_cursor_save(preprocessor->lexer.cursor, &state);
+    REQUIRE_CHAIN(&res, skip_whitespaces_until(preprocessor->lexer.cursor, preprocessor->lexer.context->newline));
+    REQUIRE_CHAIN(&res, kefir_lexer_match_pp_header_name(mem, &preprocessor->lexer, &token));
+    if (res == KEFIR_NO_MATCH) {
+        res = kefir_lexer_source_cursor_restore(preprocessor->lexer.cursor, &state);
+        REQUIRE_CHAIN(&res, scan_pp_tokens(mem, preprocessor, &directive->pp_tokens.pp_tokens));
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_token_buffer_free(mem, &directive->pp_tokens.pp_tokens);
+            return res;
+        });
+    } else {
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_token_buffer_free(mem, &directive->pp_tokens.pp_tokens);
+            return res;
+        });
+        res = kefir_token_buffer_emplace(mem, &directive->pp_tokens.pp_tokens, &token);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_token_free(mem, &token);
+            kefir_token_buffer_free(mem, &directive->pp_tokens.pp_tokens);
+            return res;
+        });
+        res = kefir_preprocessor_skip_line(preprocessor);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_token_buffer_free(mem, &directive->pp_tokens.pp_tokens);
+            return res;
+        });
+    }
     return KEFIR_OK;
 }
 
@@ -269,6 +307,9 @@ kefir_result_t kefir_preprocessor_next_directive(struct kefir_mem *mem, struct k
             break;
 
         case KEFIR_PREPROCESSOR_DIRECTIVE_INCLUDE:
+            REQUIRE_OK(next_include(mem, preprocessor, directive));
+            break;
+
         case KEFIR_PREPROCESSOR_DIRECTIVE_DEFINE_OBJECT:
         case KEFIR_PREPROCESSOR_DIRECTIVE_DEFINE_FUNCTION:
         case KEFIR_PREPROCESSOR_DIRECTIVE_UNDEF:

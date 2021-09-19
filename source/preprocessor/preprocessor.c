@@ -22,21 +22,43 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/preprocessor/directives.h"
+#include "kefir/core/source_error.h"
+
+kefir_result_t kefir_preprocessor_context_init(struct kefir_preprocessor_context *context,
+                                               const struct kefir_preprocessor_source_locator *locator) {
+    REQUIRE(context != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to preprocessor context"));
+    REQUIRE(locator != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to preprocessor source locator"));
+
+    REQUIRE_OK(kefir_preprocessor_user_macro_scope_init(NULL, &context->macros));
+    context->source_locator = locator;
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_preprocessor_context_free(struct kefir_mem *mem, struct kefir_preprocessor_context *context) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to preprocessor context"));
+
+    REQUIRE_OK(kefir_preprocessor_user_macro_scope_free(mem, &context->macros));
+    context->source_locator = NULL;
+    return KEFIR_OK;
+}
 
 kefir_result_t kefir_preprocessor_init(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
                                        struct kefir_symbol_table *symbols, struct kefir_lexer_source_cursor *cursor,
-                                       const struct kefir_lexer_context *context) {
+                                       const struct kefir_lexer_context *context,
+                                       struct kefir_preprocessor_context *preprocessor_context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(preprocessor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor"));
     REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer source cursor"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser context"));
+    REQUIRE(preprocessor_context != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor context"));
 
     REQUIRE_OK(kefir_lexer_init(mem, &preprocessor->lexer, symbols, cursor, context));
-    kefir_result_t res = kefir_preprocessor_user_macro_scope_init(NULL, &preprocessor->macros);
-    REQUIRE_ELSE(res == KEFIR_OK, {
-        kefir_lexer_free(mem, &preprocessor->lexer);
-        return res;
-    });
+    preprocessor->context = preprocessor_context;
     return KEFIR_OK;
 }
 
@@ -44,7 +66,6 @@ kefir_result_t kefir_preprocessor_free(struct kefir_mem *mem, struct kefir_prepr
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(preprocessor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor"));
 
-    REQUIRE_OK(kefir_preprocessor_user_macro_scope_free(mem, &preprocessor->macros));
     REQUIRE_OK(kefir_lexer_free(mem, &preprocessor->lexer));
     return KEFIR_OK;
 }
@@ -118,6 +139,54 @@ kefir_result_t kefir_preprocessor_skip_group(struct kefir_mem *mem, struct kefir
 
 enum if_condition_state { IF_CONDITION_NONE, IF_CONDITION_SUCCESS, IF_CONDITION_FAIL };
 
+static kefir_result_t process_include(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                      struct kefir_token_buffer *buffer,
+                                      struct kefir_preprocessor_directive *directive) {
+    // TODO Process directive tokens
+    REQUIRE(directive->pp_tokens.pp_tokens.length > 0,
+            KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, NULL, "Expected file path"));  // TODO Provide source location
+    struct kefir_token *token = &directive->pp_tokens.pp_tokens.tokens[0];
+    const char *include_path = NULL;
+    kefir_bool_t system_include = false;
+    if (token->klass == KEFIR_TOKEN_PP_HEADER_NAME) {
+        include_path = token->pp_header_name.header_name;
+        system_include = token->pp_header_name.system;
+    } else if (token->klass == KEFIR_TOKEN_STRING_LITERAL &&
+               token->string_literal.type == KEFIR_STRING_LITERAL_TOKEN_MULTIBYTE) {
+        include_path = token->string_literal.literal;
+    } else {
+        return KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, NULL, "Expected file path");
+    }
+
+    struct kefir_preprocessor_source_file source_file;
+    REQUIRE_OK(preprocessor->context->source_locator->open(mem, preprocessor->context->source_locator, include_path,
+                                                           system_include, &source_file));
+
+    struct kefir_preprocessor subpreprocessor;
+    kefir_result_t res =
+        kefir_preprocessor_init(mem, &subpreprocessor, preprocessor->lexer.symbols, &source_file.cursor,
+                                preprocessor->lexer.context, preprocessor->context);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        source_file.close(mem, &source_file);
+        return res;
+    });
+
+    res = kefir_preprocessor_run(mem, &subpreprocessor, buffer);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_preprocessor_free(mem, &subpreprocessor);
+        source_file.close(mem, &source_file);
+        return res;
+    });
+
+    res = kefir_preprocessor_free(mem, &subpreprocessor);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        source_file.close(mem, &source_file);
+        return res;
+    });
+    REQUIRE_OK(source_file.close(mem, &source_file));
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_preprocessor_run_group(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
                                             struct kefir_token_buffer *buffer) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
@@ -136,7 +205,7 @@ kefir_result_t kefir_preprocessor_run_group(struct kefir_mem *mem, struct kefir_
             case KEFIR_PREPROCESSOR_DIRECTIVE_IFDEF: {
                 const struct kefir_preprocessor_macro *macro = NULL;
                 kefir_result_t res = kefir_preprocessor_user_macro_scope_at(
-                    &preprocessor->macros, directive.ifdef_directive.identifier, &macro);
+                    &preprocessor->context->macros, directive.ifdef_directive.identifier, &macro);
                 if (res == KEFIR_NOT_FOUND) {
                     condition_state = IF_CONDITION_FAIL;
                     REQUIRE_OK(kefir_preprocessor_skip_group(mem, preprocessor));
@@ -150,7 +219,7 @@ kefir_result_t kefir_preprocessor_run_group(struct kefir_mem *mem, struct kefir_
             case KEFIR_PREPROCESSOR_DIRECTIVE_IFNDEF: {
                 const struct kefir_preprocessor_macro *macro = NULL;
                 kefir_result_t res = kefir_preprocessor_user_macro_scope_at(
-                    &preprocessor->macros, directive.ifdef_directive.identifier, &macro);
+                    &preprocessor->context->macros, directive.ifdef_directive.identifier, &macro);
                 if (res == KEFIR_NOT_FOUND) {
                     condition_state = IF_CONDITION_SUCCESS;
                     REQUIRE_OK(kefir_preprocessor_run_group(mem, preprocessor, buffer));
@@ -187,6 +256,9 @@ kefir_result_t kefir_preprocessor_run_group(struct kefir_mem *mem, struct kefir_
                 return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "If and elif directives are not implemented yet");
 
             case KEFIR_PREPROCESSOR_DIRECTIVE_INCLUDE:
+                REQUIRE_OK(process_include(mem, preprocessor, buffer, &directive));
+                break;
+
             case KEFIR_PREPROCESSOR_DIRECTIVE_DEFINE_OBJECT:
             case KEFIR_PREPROCESSOR_DIRECTIVE_DEFINE_FUNCTION:
             case KEFIR_PREPROCESSOR_DIRECTIVE_UNDEF:
