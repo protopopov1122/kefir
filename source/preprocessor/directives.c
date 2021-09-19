@@ -279,6 +279,7 @@ kefir_result_t kefir_preprocessor_next_directive(struct kefir_mem *mem, struct k
     REQUIRE(directive != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to preprocessor directive"));
 
+    struct kefir_source_location location = preprocessor->lexer.cursor->location;
     kefir_preprocessor_directive_type_t directive_type;
     REQUIRE_OK(kefir_preprocessor_match_directive(mem, preprocessor, &directive_type));
     switch (directive_type) {
@@ -334,6 +335,8 @@ kefir_result_t kefir_preprocessor_next_directive(struct kefir_mem *mem, struct k
             directive->type = KEFIR_PREPROCESSOR_DIRECTIVE_SENTINEL;
             break;
     }
+
+    directive->source_location = location;
     return KEFIR_OK;
 }
 

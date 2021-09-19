@@ -144,7 +144,8 @@ static kefir_result_t process_include(struct kefir_mem *mem, struct kefir_prepro
                                       struct kefir_preprocessor_directive *directive) {
     // TODO Process directive tokens
     REQUIRE(directive->pp_tokens.pp_tokens.length > 0,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, NULL, "Expected file path"));  // TODO Provide source location
+            KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &directive->source_location,
+                                   "Expected file path"));  // TODO Provide source location
     struct kefir_token *token = &directive->pp_tokens.pp_tokens.tokens[0];
     const char *include_path = NULL;
     kefir_bool_t system_include = false;
@@ -155,7 +156,7 @@ static kefir_result_t process_include(struct kefir_mem *mem, struct kefir_prepro
                token->string_literal.type == KEFIR_STRING_LITERAL_TOKEN_MULTIBYTE) {
         include_path = token->string_literal.literal;
     } else {
-        return KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, NULL, "Expected file path");
+        return KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &directive->source_location, "Expected file path");
     }
 
     struct kefir_preprocessor_source_file source_file;

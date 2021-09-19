@@ -22,6 +22,7 @@
 #define KEFIR_PREPROCESSOR_DIRECTIVES_H_
 
 #include "kefir/preprocessor/preprocessor.h"
+#include "kefir/core/source_location.h"
 
 typedef enum kefir_preprocessor_directive_type {
     KEFIR_PREPROCESSOR_DIRECTIVE_IF,
@@ -81,6 +82,7 @@ typedef struct kefir_preprocessor_directive {
         struct kefir_preprocessor_undef_directive undef_directive;
         struct kefir_preprocessor_pp_tokens_directive pp_tokens;
     };
+    struct kefir_source_location source_location;
 } kefir_preprocessor_directive_t;
 
 kefir_result_t kefir_preprocessor_match_directive(struct kefir_mem *, struct kefir_preprocessor *,
