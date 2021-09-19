@@ -167,21 +167,6 @@ kefir_result_t kefir_lexer_source_cursor_restore(struct kefir_lexer_source_curso
     return KEFIR_OK;
 }
 
-const char *kefir_lexer_source_cursor_begin(struct kefir_lexer_source_cursor *cursor) {
-    REQUIRE(cursor != NULL, NULL);
-    return cursor->content;
-}
-
-const char *kefir_lexer_source_cursor_current(struct kefir_lexer_source_cursor *cursor) {
-    REQUIRE(cursor != NULL, NULL);
-    return cursor->content + cursor->index;
-}
-
-const char *kefir_lexer_source_cursor_end(struct kefir_lexer_source_cursor *cursor) {
-    REQUIRE(cursor != NULL, NULL);
-    return cursor->content + cursor->length;
-}
-
 kefir_result_t kefir_lexer_cursor_match_string(const struct kefir_lexer_source_cursor *cursor,
                                                const kefir_char32_t *string) {
     REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer source cursor"));
