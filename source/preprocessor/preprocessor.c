@@ -204,7 +204,7 @@ kefir_result_t kefir_preprocessor_run_group(struct kefir_mem *mem, struct kefir_
         REQUIRE_OK(kefir_preprocessor_next_directive(mem, preprocessor, &directive));
         switch (directive.type) {
             case KEFIR_PREPROCESSOR_DIRECTIVE_IFDEF: {
-                const struct kefir_preprocessor_macro *macro = NULL;
+                const struct kefir_preprocessor_user_macro *macro = NULL;
                 kefir_result_t res = kefir_preprocessor_user_macro_scope_at(
                     &preprocessor->context->macros, directive.ifdef_directive.identifier, &macro);
                 if (res == KEFIR_NOT_FOUND) {
@@ -218,7 +218,7 @@ kefir_result_t kefir_preprocessor_run_group(struct kefir_mem *mem, struct kefir_
             } break;
 
             case KEFIR_PREPROCESSOR_DIRECTIVE_IFNDEF: {
-                const struct kefir_preprocessor_macro *macro = NULL;
+                const struct kefir_preprocessor_user_macro *macro = NULL;
                 kefir_result_t res = kefir_preprocessor_user_macro_scope_at(
                     &preprocessor->context->macros, directive.ifdef_directive.identifier, &macro);
                 if (res == KEFIR_NOT_FOUND) {

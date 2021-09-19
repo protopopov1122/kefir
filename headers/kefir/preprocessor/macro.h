@@ -18,24 +18,24 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef KEFIR_PREPROCESSOR_MACRO_H_
-#define KEFIR_PREPROCESSOR_MACRO_H_
+#ifndef kefir_preprocessor_user_macro_H_
+#define kefir_preprocessor_user_macro_H_
 
 #include "kefir/core/list.h"
 #include "kefir/core/hashtree.h"
 #include "kefir/core/symbol_table.h"
 #include "kefir/lexer/buffer.h"
 
-typedef struct kefir_preprocessor_macro {
+typedef struct kefir_preprocessor_user_macro {
     const char *identifier;
     struct kefir_list parameters;
     kefir_bool_t vararg;
     struct kefir_token_buffer replacement;
-} kefir_preprocessor_macro_t;
+} kefir_preprocessor_user_macro_t;
 
-struct kefir_preprocessor_macro *kefir_preprocessor_macro_new(struct kefir_mem *, struct kefir_symbol_table *,
-                                                              const char *);
-kefir_result_t kefir_preprocessor_macro_free(struct kefir_mem *, struct kefir_preprocessor_macro *);
+struct kefir_preprocessor_user_macro *kefir_preprocessor_user_macro_new(struct kefir_mem *, struct kefir_symbol_table *,
+                                                                        const char *);
+kefir_result_t kefir_preprocessor_user_macro_free(struct kefir_mem *, struct kefir_preprocessor_user_macro *);
 
 typedef struct kefir_preprocessor_user_macro_scope {
     const struct kefir_preprocessor_user_macro_scope *parent;
@@ -48,8 +48,8 @@ kefir_result_t kefir_preprocessor_user_macro_scope_free(struct kefir_mem *,
                                                         struct kefir_preprocessor_user_macro_scope *);
 kefir_result_t kefir_preprocessor_user_macro_scope_insert(struct kefir_mem *,
                                                           struct kefir_preprocessor_user_macro_scope *,
-                                                          struct kefir_preprocessor_macro *);
+                                                          struct kefir_preprocessor_user_macro *);
 kefir_result_t kefir_preprocessor_user_macro_scope_at(const struct kefir_preprocessor_user_macro_scope *, const char *,
-                                                      const struct kefir_preprocessor_macro **);
+                                                      const struct kefir_preprocessor_user_macro **);
 
 #endif

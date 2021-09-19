@@ -66,19 +66,19 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     RUN_PREPROCESSOR({
         REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(mem, &context.macros,
-                                                              kefir_preprocessor_macro_new(mem, &symbols, "A")));
+                                                              kefir_preprocessor_user_macro_new(mem, &symbols, "A")));
         REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(mem, &context.macros,
-                                                              kefir_preprocessor_macro_new(mem, &symbols, "ONE")));
+                                                              kefir_preprocessor_user_macro_new(mem, &symbols, "ONE")));
     });
 
     RUN_PREPROCESSOR({
         REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(mem, &context.macros,
-                                                              kefir_preprocessor_macro_new(mem, &symbols, "A")));
+                                                              kefir_preprocessor_user_macro_new(mem, &symbols, "A")));
     });
 
     RUN_PREPROCESSOR({
         REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(mem, &context.macros,
-                                                              kefir_preprocessor_macro_new(mem, &symbols, "ONE")));
+                                                              kefir_preprocessor_user_macro_new(mem, &symbols, "ONE")));
     });
 
     RUN_PREPROCESSOR({});
