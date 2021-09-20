@@ -21,8 +21,10 @@
 #ifndef KEFIR_PREPROCESSOR_DIRECTIVES_H_
 #define KEFIR_PREPROCESSOR_DIRECTIVES_H_
 
-#include "kefir/preprocessor/preprocessor.h"
 #include "kefir/core/source_location.h"
+#include "kefir/lexer/source_cursor.h"
+#include "kefir/core/list.h"
+#include "kefir/lexer/buffer.h"
 
 typedef enum kefir_preprocessor_directive_type {
     KEFIR_PREPROCESSOR_DIRECTIVE_IF,
@@ -40,7 +42,7 @@ typedef enum kefir_preprocessor_directive_type {
     KEFIR_PREPROCESSOR_DIRECTIVE_PRAGMA,
     KEFIR_PREPROCESSOR_DIRECTIVE_EMPTY,
     KEFIR_PREPROCESSOR_DIRECTIVE_NON,
-    KEFIR_PREPROCESSOR_DIRECTIVE_TEXT_LINE,
+    KEFIR_PREPROCESSOR_DIRECTIVE_PP_TOKEN,
     KEFIR_PREPROCESSOR_DIRECTIVE_SENTINEL
 } kefir_preprocessor_directive_type_t;
 
@@ -68,10 +70,6 @@ typedef struct kefir_preprocessor_undef_directive {
     const char *identifier;
 } kefir_preprocessor_undef_directive_t;
 
-typedef struct kefir_preprocessor_pp_tokens_directive {
-    struct kefir_token_buffer pp_tokens;
-} kefir_preprocessor_pp_tokens_directive_t;
-
 typedef struct kefir_preprocessor_directive {
     kefir_preprocessor_directive_type_t type;
     union {
@@ -80,15 +78,36 @@ typedef struct kefir_preprocessor_directive {
         struct kefir_preprocessor_define_object_directive define_obj_directive;
         struct kefir_preprocessor_define_function_directive define_fun_directive;
         struct kefir_preprocessor_undef_directive undef_directive;
-        struct kefir_preprocessor_pp_tokens_directive pp_tokens;
+        struct kefir_token_buffer pp_tokens;
+        struct kefir_token pp_token;
     };
     struct kefir_source_location source_location;
 } kefir_preprocessor_directive_t;
 
-kefir_result_t kefir_preprocessor_match_directive(struct kefir_mem *, struct kefir_preprocessor *,
-                                                  kefir_preprocessor_directive_type_t *);
-kefir_result_t kefir_preprocessor_next_directive(struct kefir_mem *, struct kefir_preprocessor *,
-                                                 struct kefir_preprocessor_directive *);
+typedef struct kefir_preprocessor_directive_scanner {
+    struct kefir_lexer *lexer;
+    kefir_bool_t newline_flag;
+} kefir_preprocessor_directive_scanner_t;
+
+typedef struct kefir_preprocessor_directive_scanner_state {
+    struct kefir_lexer_source_cursor_state cursor_state;
+    kefir_bool_t newline_flag;
+} kefir_preprocessor_directive_scanner_state_t;
+
+kefir_result_t kefir_preprocessor_directive_scanner_init(struct kefir_preprocessor_directive_scanner *,
+                                                         struct kefir_lexer *lexer);
+
+kefir_result_t kefir_preprocessor_directive_scanner_save(const struct kefir_preprocessor_directive_scanner *,
+                                                         struct kefir_preprocessor_directive_scanner_state *);
+kefir_result_t kefir_preprocessor_directive_scanner_restore(struct kefir_preprocessor_directive_scanner *,
+                                                            const struct kefir_preprocessor_directive_scanner_state *);
+kefir_result_t kefir_preprocessor_directive_scanner_skip_line(struct kefir_preprocessor_directive_scanner *);
+kefir_result_t kefir_preprocessor_directive_scanner_match(struct kefir_mem *,
+                                                          struct kefir_preprocessor_directive_scanner *,
+                                                          kefir_preprocessor_directive_type_t *);
+kefir_result_t kefir_preprocessor_directive_scanner_next(struct kefir_mem *,
+                                                         struct kefir_preprocessor_directive_scanner *,
+                                                         struct kefir_preprocessor_directive *);
 kefir_result_t kefir_preprocessor_directive_free(struct kefir_mem *, struct kefir_preprocessor_directive *);
 
 #endif

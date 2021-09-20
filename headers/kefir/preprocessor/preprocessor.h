@@ -24,6 +24,7 @@
 #include "kefir/lexer/lexer.h"
 #include "kefir/preprocessor/macro.h"
 #include "kefir/preprocessor/source_file.h"
+#include "kefir/preprocessor/directives.h"
 
 typedef struct kefir_preprocessor_context {
     struct kefir_preprocessor_user_macro_scope macros;
@@ -37,6 +38,7 @@ kefir_result_t kefir_preprocessor_context_free(struct kefir_mem *, struct kefir_
 typedef struct kefir_preprocessor {
     struct kefir_lexer lexer;
     struct kefir_preprocessor_context *context;
+    struct kefir_preprocessor_directive_scanner directive_scanner;
 } kefir_preprocessor_t;
 
 kefir_result_t kefir_preprocessor_init(struct kefir_mem *, struct kefir_preprocessor *, struct kefir_symbol_table *,
@@ -44,7 +46,6 @@ kefir_result_t kefir_preprocessor_init(struct kefir_mem *, struct kefir_preproce
                                        struct kefir_preprocessor_context *);
 kefir_result_t kefir_preprocessor_free(struct kefir_mem *, struct kefir_preprocessor *);
 
-kefir_result_t kefir_preprocessor_skip_line(struct kefir_preprocessor *);
 kefir_result_t kefir_preprocessor_skip_group(struct kefir_mem *, struct kefir_preprocessor *);
 kefir_result_t kefir_preprocessor_run_group(struct kefir_mem *, struct kefir_preprocessor *,
                                             struct kefir_token_buffer *);
