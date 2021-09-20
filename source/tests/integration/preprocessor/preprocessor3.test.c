@@ -46,7 +46,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_token_buffer tokens;
     REQUIRE_OK(kefir_symbol_table_init(&symbols));
     REQUIRE_OK(kefir_lexer_context_default(&parser_context));
-    REQUIRE_OK(kefir_token_buffer_init(mem, &tokens));
+    REQUIRE_OK(kefir_token_buffer_init(&tokens));
 
 #define RUN_PREPROCESSOR(_init)                                                                                \
     do {                                                                                                       \

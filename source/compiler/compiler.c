@@ -143,7 +143,7 @@ kefir_result_t kefir_compiler_parse_source(struct kefir_mem *mem, struct kefir_c
     REQUIRE(unit_ptr != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer AST translation unit"));
 
     struct kefir_token_buffer tokens;
-    REQUIRE_OK(kefir_token_buffer_init(mem, &tokens));
+    REQUIRE_OK(kefir_token_buffer_init(&tokens));
     kefir_result_t res = kefir_compiler_lex(mem, context, &tokens, content, length, source_id);
     REQUIRE_CHAIN(&res, kefir_compiler_parse(mem, context, &tokens, unit_ptr));
     REQUIRE_ELSE(res == KEFIR_OK, {

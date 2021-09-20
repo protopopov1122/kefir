@@ -29,7 +29,7 @@ typedef struct kefir_token_buffer {
     kefir_size_t capacity;
 } kefir_token_buffer_t;
 
-kefir_result_t kefir_token_buffer_init(struct kefir_mem *, struct kefir_token_buffer *);
+kefir_result_t kefir_token_buffer_init(struct kefir_token_buffer *);
 kefir_result_t kefir_token_buffer_free(struct kefir_mem *, struct kefir_token_buffer *);
 kefir_result_t kefir_token_buffer_emplace(struct kefir_mem *, struct kefir_token_buffer *, struct kefir_token *);
 kefir_result_t kefir_token_buffer_insert(struct kefir_mem *, struct kefir_token_buffer *, struct kefir_token_buffer *);

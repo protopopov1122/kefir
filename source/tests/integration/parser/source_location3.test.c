@@ -43,7 +43,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_lexer_source_cursor_init(&source_cursor, SOURCE_CODE, sizeof(SOURCE_CODE), "<stdin>"));
     REQUIRE_OK(kefir_lexer_context_default(&parser_context));
     REQUIRE_OK(kefir_lexer_init(mem, &lexer, &symbols, &source_cursor, &parser_context));
-    REQUIRE_OK(kefir_token_buffer_init(mem, &tokens));
+    REQUIRE_OK(kefir_token_buffer_init(&tokens));
     REQUIRE_OK(kefir_lexer_populate_buffer(mem, &tokens, &lexer));
     REQUIRE_OK(kefir_lexer_free(mem, &lexer));
 

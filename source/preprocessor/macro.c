@@ -41,7 +41,7 @@ struct kefir_preprocessor_user_macro *kefir_preprocessor_user_macro_new(struct k
         KEFIR_FREE(mem, macro);
         return NULL;
     });
-    res = kefir_token_buffer_init(mem, &macro->replacement);
+    res = kefir_token_buffer_init(&macro->replacement);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_list_free(mem, &macro->parameters);
         KEFIR_FREE(mem, macro);

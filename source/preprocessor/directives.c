@@ -130,7 +130,7 @@ kefir_result_t kefir_preprocessor_match_directive(struct kefir_mem *mem, struct 
 static kefir_result_t next_if(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
                               struct kefir_preprocessor_directive *directive) {
     directive->type = KEFIR_PREPROCESSOR_DIRECTIVE_IF;
-    REQUIRE_OK(kefir_token_buffer_init(mem, &directive->if_directive.condition));
+    REQUIRE_OK(kefir_token_buffer_init(&directive->if_directive.condition));
 
     kefir_result_t res = scan_pp_tokens(mem, preprocessor, &directive->if_directive.condition);
     REQUIRE_ELSE(res == KEFIR_OK, {
@@ -143,7 +143,7 @@ static kefir_result_t next_if(struct kefir_mem *mem, struct kefir_preprocessor *
 static kefir_result_t next_elif(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
                                 struct kefir_preprocessor_directive *directive) {
     directive->type = KEFIR_PREPROCESSOR_DIRECTIVE_ELIF;
-    REQUIRE_OK(kefir_token_buffer_init(mem, &directive->if_directive.condition));
+    REQUIRE_OK(kefir_token_buffer_init(&directive->if_directive.condition));
 
     kefir_result_t res = scan_pp_tokens(mem, preprocessor, &directive->if_directive.condition);
     REQUIRE_ELSE(res == KEFIR_OK, {
@@ -191,7 +191,7 @@ static kefir_result_t next_endif(struct kefir_preprocessor *preprocessor,
 static kefir_result_t next_include(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
                                    struct kefir_preprocessor_directive *directive) {
     directive->type = KEFIR_PREPROCESSOR_DIRECTIVE_INCLUDE;
-    REQUIRE_OK(kefir_token_buffer_init(mem, &directive->pp_tokens.pp_tokens));
+    REQUIRE_OK(kefir_token_buffer_init(&directive->pp_tokens.pp_tokens));
 
     struct kefir_lexer_source_cursor_state state;
     struct kefir_token token;
@@ -228,7 +228,7 @@ static kefir_result_t next_include(struct kefir_mem *mem, struct kefir_preproces
 static kefir_result_t next_non_directive(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
                                          struct kefir_preprocessor_directive *directive) {
     directive->type = KEFIR_PREPROCESSOR_DIRECTIVE_NON;
-    REQUIRE_OK(kefir_token_buffer_init(mem, &directive->pp_tokens.pp_tokens));
+    REQUIRE_OK(kefir_token_buffer_init(&directive->pp_tokens.pp_tokens));
 
     kefir_result_t res = scan_pp_tokens(mem, preprocessor, &directive->pp_tokens.pp_tokens);
     REQUIRE_ELSE(res == KEFIR_OK, {
@@ -241,7 +241,7 @@ static kefir_result_t next_non_directive(struct kefir_mem *mem, struct kefir_pre
 static kefir_result_t next_text_line(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
                                      struct kefir_preprocessor_directive *directive) {
     directive->type = KEFIR_PREPROCESSOR_DIRECTIVE_TEXT_LINE;
-    REQUIRE_OK(kefir_token_buffer_init(mem, &directive->pp_tokens.pp_tokens));
+    REQUIRE_OK(kefir_token_buffer_init(&directive->pp_tokens.pp_tokens));
 
     struct kefir_token token;
     kefir_bool_t scan_tokens = true;

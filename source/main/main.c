@@ -91,7 +91,7 @@ static kefir_result_t dump_tokens_impl(struct kefir_mem *mem, struct kefir_cli_o
                                        const char *source, kefir_size_t length, FILE *output) {
     UNUSED(options);
     struct kefir_token_buffer tokens;
-    REQUIRE_OK(kefir_token_buffer_init(mem, &tokens));
+    REQUIRE_OK(kefir_token_buffer_init(&tokens));
     REQUIRE_OK(kefir_compiler_lex(mem, compiler, &tokens, source, length, source_id));
 
     struct kefir_json_output json;
@@ -115,7 +115,7 @@ static kefir_result_t dump_ast_impl(struct kefir_mem *mem, struct kefir_cli_opti
     struct kefir_token_buffer tokens;
     struct kefir_ast_translation_unit *unit = NULL;
 
-    REQUIRE_OK(kefir_token_buffer_init(mem, &tokens));
+    REQUIRE_OK(kefir_token_buffer_init(&tokens));
     REQUIRE_OK(kefir_compiler_lex(mem, compiler, &tokens, source, length, source_id));
     REQUIRE_OK(kefir_compiler_parse(mem, compiler, &tokens, &unit));
     REQUIRE_OK(kefir_compiler_analyze(mem, compiler, KEFIR_AST_NODE_BASE(unit)));
@@ -144,7 +144,7 @@ static kefir_result_t dump_ir_impl(struct kefir_mem *mem, struct kefir_cli_optio
     struct kefir_ast_translation_unit *unit = NULL;
     struct kefir_ir_module module;
 
-    REQUIRE_OK(kefir_token_buffer_init(mem, &tokens));
+    REQUIRE_OK(kefir_token_buffer_init(&tokens));
     REQUIRE_OK(kefir_compiler_lex(mem, compiler, &tokens, source, length, source_id));
     REQUIRE_OK(kefir_compiler_parse(mem, compiler, &tokens, &unit));
     REQUIRE_OK(kefir_compiler_analyze(mem, compiler, KEFIR_AST_NODE_BASE(unit)));
@@ -172,7 +172,7 @@ static kefir_result_t dump_asm_impl(struct kefir_mem *mem, struct kefir_cli_opti
     struct kefir_ast_translation_unit *unit = NULL;
     struct kefir_ir_module module;
 
-    REQUIRE_OK(kefir_token_buffer_init(mem, &tokens));
+    REQUIRE_OK(kefir_token_buffer_init(&tokens));
     REQUIRE_OK(kefir_compiler_lex(mem, compiler, &tokens, source, length, source_id));
     REQUIRE_OK(kefir_compiler_parse(mem, compiler, &tokens, &unit));
     REQUIRE_OK(kefir_compiler_analyze(mem, compiler, KEFIR_AST_NODE_BASE(unit)));
