@@ -26,12 +26,12 @@ DEFINE_CASE(preprocessor_macro_construction1, "Preprocessor - macro construction
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
 
-    struct kefir_preprocessor_user_macro *macro1 = kefir_preprocessor_user_macro_new(&kft_mem, &symbols, "macro1");
+    struct kefir_preprocessor_user_macro *macro1 =
+        kefir_preprocessor_user_macro_new_function(&kft_mem, &symbols, "macro1");
     ASSERT(macro1 != NULL);
-    ASSERT(macro1->identifier != NULL);
-    ASSERT(strcmp(macro1->identifier, "macro1") == 0);
+    ASSERT(macro1->macro.identifier != NULL);
+    ASSERT(strcmp(macro1->macro.identifier, "macro1") == 0);
     ASSERT(!macro1->vararg);
-    ASSERT(kefir_list_length(&macro1->parameters) == 0);
     ASSERT(macro1->replacement.length == 0);
 
     ASSERT_OK(kefir_list_insert_after(&kft_mem, &macro1->parameters, kefir_list_tail(&macro1->parameters), "p1"));
@@ -47,12 +47,11 @@ DEFINE_CASE(preprocessor_macro_construction1, "Preprocessor - macro construction
 
     ASSERT_OK(kefir_preprocessor_user_macro_free(&kft_mem, macro1));
 
-    struct kefir_preprocessor_user_macro *macro2 = kefir_preprocessor_user_macro_new(&kft_mem, &symbols, "macro2");
+    struct kefir_preprocessor_user_macro *macro2 =
+        kefir_preprocessor_user_macro_new_object(&kft_mem, &symbols, "macro2");
     ASSERT(macro2 != NULL);
-    ASSERT(macro2->identifier != NULL);
-    ASSERT(strcmp(macro2->identifier, "macro2") == 0);
-    ASSERT(!macro2->vararg);
-    ASSERT(kefir_list_length(&macro2->parameters) == 0);
+    ASSERT(macro2->macro.identifier != NULL);
+    ASSERT(strcmp(macro2->macro.identifier, "macro2") == 0);
     ASSERT(macro2->replacement.length == 0);
     ASSERT_OK(kefir_preprocessor_user_macro_free(&kft_mem, macro2));
 
@@ -70,11 +69,16 @@ DEFINE_CASE(preprocessor_macro_user_scope1, "Preprocessor - user scope") {
     ASSERT_OK(kefir_preprocessor_user_macro_scope_init(&scope1, &scope2));
 
     const struct kefir_preprocessor_user_macro *macro = NULL;
-    struct kefir_preprocessor_user_macro *macro1 = kefir_preprocessor_user_macro_new(&kft_mem, &symbols, "macro1");
-    struct kefir_preprocessor_user_macro *macro2 = kefir_preprocessor_user_macro_new(&kft_mem, &symbols, "macro2");
-    struct kefir_preprocessor_user_macro *macro3 = kefir_preprocessor_user_macro_new(&kft_mem, &symbols, "macro3");
-    struct kefir_preprocessor_user_macro *macro4 = kefir_preprocessor_user_macro_new(&kft_mem, &symbols, "macro1");
-    struct kefir_preprocessor_user_macro *macro5 = kefir_preprocessor_user_macro_new(&kft_mem, &symbols, "macro3");
+    struct kefir_preprocessor_user_macro *macro1 =
+        kefir_preprocessor_user_macro_new_object(&kft_mem, &symbols, "macro1");
+    struct kefir_preprocessor_user_macro *macro2 =
+        kefir_preprocessor_user_macro_new_object(&kft_mem, &symbols, "macro2");
+    struct kefir_preprocessor_user_macro *macro3 =
+        kefir_preprocessor_user_macro_new_object(&kft_mem, &symbols, "macro3");
+    struct kefir_preprocessor_user_macro *macro4 =
+        kefir_preprocessor_user_macro_new_object(&kft_mem, &symbols, "macro1");
+    struct kefir_preprocessor_user_macro *macro5 =
+        kefir_preprocessor_user_macro_new_object(&kft_mem, &symbols, "macro3");
 
     ASSERT(kefir_preprocessor_user_macro_scope_at(&scope1, "macro1", &macro) == KEFIR_NOT_FOUND);
     ASSERT(kefir_preprocessor_user_macro_scope_at(&scope1, "macro2", &macro) == KEFIR_NOT_FOUND);

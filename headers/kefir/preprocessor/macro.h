@@ -26,18 +26,44 @@
 #include "kefir/core/symbol_table.h"
 #include "kefir/lexer/buffer.h"
 
-typedef struct kefir_preprocessor_user_macro {
+typedef enum kefir_preprocessor_macro_type {
+    KEFIR_PREPROCESSOR_MACRO_OBJECT,
+    KEFIR_PREPROCESSOR_MACRO_FUNCTION
+} kefir_preprocessor_macro_type_t;
+
+typedef struct kefir_preprocessor_macro {
     const char *identifier;
+    kefir_preprocessor_macro_type_t type;
+
+    kefir_result_t (*argc)(const struct kefir_preprocessor_macro *, kefir_size_t *);
+    kefir_result_t (*apply)(struct kefir_mem *, const struct kefir_preprocessor_macro *, const struct kefir_list *,
+                            struct kefir_token_buffer *);
+    void *payload;
+} kefir_preprocessor_macro_t;
+
+typedef struct kefir_preprocessor_macro_scope {
+    kefir_result_t (*locate)(const struct kefir_preprocessor_macro_scope *, const char *,
+                             const struct kefir_preprocessor_macro **);
+    void *payload;
+} kefir_preprocessor_macro_scope_t;
+
+typedef struct kefir_preprocessor_user_macro {
+    struct kefir_preprocessor_macro macro;
     struct kefir_list parameters;
     kefir_bool_t vararg;
     struct kefir_token_buffer replacement;
 } kefir_preprocessor_user_macro_t;
 
-struct kefir_preprocessor_user_macro *kefir_preprocessor_user_macro_new(struct kefir_mem *, struct kefir_symbol_table *,
-                                                                        const char *);
+struct kefir_preprocessor_user_macro *kefir_preprocessor_user_macro_new_object(struct kefir_mem *,
+                                                                               struct kefir_symbol_table *,
+                                                                               const char *);
+struct kefir_preprocessor_user_macro *kefir_preprocessor_user_macro_new_function(struct kefir_mem *,
+                                                                                 struct kefir_symbol_table *,
+                                                                                 const char *);
 kefir_result_t kefir_preprocessor_user_macro_free(struct kefir_mem *, struct kefir_preprocessor_user_macro *);
 
 typedef struct kefir_preprocessor_user_macro_scope {
+    struct kefir_preprocessor_macro_scope scope;
     const struct kefir_preprocessor_user_macro_scope *parent;
     struct kefir_hashtree macros;
 } kefir_preprocessor_user_macro_scope_t;

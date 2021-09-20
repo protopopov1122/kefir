@@ -65,20 +65,20 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     } while (0)
 
     RUN_PREPROCESSOR({
-        REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(mem, &context.macros,
-                                                              kefir_preprocessor_user_macro_new(mem, &symbols, "A")));
-        REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(mem, &context.macros,
-                                                              kefir_preprocessor_user_macro_new(mem, &symbols, "ONE")));
+        REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(
+            mem, &context.user_macros, kefir_preprocessor_user_macro_new_object(mem, &symbols, "A")));
+        REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(
+            mem, &context.user_macros, kefir_preprocessor_user_macro_new_object(mem, &symbols, "ONE")));
     });
 
     RUN_PREPROCESSOR({
-        REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(mem, &context.macros,
-                                                              kefir_preprocessor_user_macro_new(mem, &symbols, "A")));
+        REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(
+            mem, &context.user_macros, kefir_preprocessor_user_macro_new_object(mem, &symbols, "A")));
     });
 
     RUN_PREPROCESSOR({
-        REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(mem, &context.macros,
-                                                              kefir_preprocessor_user_macro_new(mem, &symbols, "ONE")));
+        REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(
+            mem, &context.user_macros, kefir_preprocessor_user_macro_new_object(mem, &symbols, "ONE")));
     });
 
     RUN_PREPROCESSOR({});

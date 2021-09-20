@@ -27,7 +27,8 @@
 #include "kefir/preprocessor/directives.h"
 
 typedef struct kefir_preprocessor_context {
-    struct kefir_preprocessor_user_macro_scope macros;
+    const struct kefir_preprocessor_macro_scope *macros;
+    struct kefir_preprocessor_user_macro_scope user_macros;
     const struct kefir_preprocessor_source_locator *source_locator;
 } kefir_preprocessor_context_t;
 
