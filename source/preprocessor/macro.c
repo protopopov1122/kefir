@@ -19,18 +19,126 @@
 */
 
 #include "kefir/preprocessor/macro.h"
+#include "kefir/preprocessor/macro.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/core/hashtree.h"
 #include <string.h>
 
-static kefir_result_t user_macro_argc(const struct kefir_preprocessor_macro *macro, kefir_size_t *argc_ptr) {
+static kefir_result_t user_macro_argc(const struct kefir_preprocessor_macro *macro, kefir_size_t *argc_ptr,
+                                      kefir_bool_t *vararg_ptr) {
     REQUIRE(macro != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor macro"));
     REQUIRE(argc_ptr != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to argument count"));
+    REQUIRE(vararg_ptr != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to vararg flag"));
     ASSIGN_DECL_CAST(struct kefir_preprocessor_user_macro *, user_macro, macro->payload);
 
     REQUIRE(macro->type == KEFIR_PREPROCESSOR_MACRO_FUNCTION,
             KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Unable to retrieve argument count of object macro"));
-    *argc_ptr = kefir_list_length(&user_macro->parameters) + (user_macro->vararg ? 1 : 0);
+    *argc_ptr = kefir_list_length(&user_macro->parameters);
+    *vararg_ptr = user_macro->vararg;
+    return KEFIR_OK;
+}
+
+static kefir_result_t apply_object_macro(struct kefir_mem *mem, const struct kefir_preprocessor_user_macro *user_macro,
+                                         struct kefir_token_buffer *buffer) {
+    struct kefir_token token;
+    for (kefir_size_t i = 0; i < user_macro->replacement.length; i++) {
+        REQUIRE_OK(kefir_token_copy(mem, &token, &user_macro->replacement.tokens[i]));
+        if (token.klass == KEFIR_TOKEN_IDENTIFIER && strcmp(token.identifier, user_macro->macro.identifier) == 0) {
+            token.preprocessor_props.skip_identifier_subst = true;
+        }
+        kefir_result_t res = kefir_token_buffer_emplace(mem, buffer, &token);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_token_free(mem, &token);
+            return res;
+        });
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t build_function_macro_args_tree(struct kefir_mem *mem,
+                                                     const struct kefir_preprocessor_user_macro *user_macro,
+                                                     const struct kefir_list *args, struct kefir_hashtree *arg_tree) {
+    const struct kefir_list_entry *id_iter = kefir_list_head(&user_macro->parameters);
+    const struct kefir_list_entry *arg_iter = kefir_list_head(args);
+    for (; id_iter != NULL; kefir_list_next(&id_iter), kefir_list_next(&arg_iter)) {
+        REQUIRE(arg_iter != NULL,
+                KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Provided macro arguments do no match macro parameters"));
+        const char *arg_identifier = id_iter->value;
+        struct kefir_token_buffer *arg_value = arg_iter->value;
+
+        REQUIRE_OK(kefir_hashtree_insert(mem, arg_tree, (kefir_hashtree_key_t) arg_identifier,
+                                         (kefir_hashtree_value_t) arg_value));
+    }
+
+    if (user_macro->vararg) {
+        REQUIRE(arg_iter != NULL,
+                KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Provided macro arguments do no match macro parameters"));
+        const struct kefir_token_buffer *arg_value = arg_iter->value;
+        REQUIRE_OK(kefir_hashtree_insert(mem, arg_tree, (kefir_hashtree_key_t) "__VA_LIST__",
+                                         (kefir_hashtree_value_t) arg_value));
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t run_function_macro_substitutions(struct kefir_mem *mem,
+                                                       const struct kefir_preprocessor_user_macro *user_macro,
+                                                       const struct kefir_hashtree *arg_tree,
+                                                       struct kefir_token_buffer *buffer) {
+
+    kefir_result_t res;
+    for (kefir_size_t i = 0; i < user_macro->replacement.length; i++) {
+        const struct kefir_token *current_token = &user_macro->replacement.tokens[i];
+
+        if (current_token->klass == KEFIR_TOKEN_IDENTIFIER) {
+            struct kefir_hashtree_node *node;
+            res = kefir_hashtree_at(arg_tree, (kefir_hashtree_key_t) current_token->identifier, &node);
+            if (res != KEFIR_NOT_FOUND) {
+                REQUIRE_OK(res);
+                current_token = NULL;
+
+                ASSIGN_DECL_CAST(const struct kefir_token_buffer *, arg_buffer, node->value);
+                for (kefir_size_t i = 0; i < arg_buffer->length; i++) {
+                    struct kefir_token token_copy;
+                    REQUIRE_OK(kefir_token_copy(mem, &token_copy, &arg_buffer->tokens[i]));
+                    res = kefir_token_buffer_emplace(mem, buffer, &token_copy);
+                    REQUIRE_ELSE(res == KEFIR_OK, {
+                        kefir_token_free(mem, &token_copy);
+                        return res;
+                    });
+                }
+            }
+        }
+
+        if (current_token != NULL) {
+            struct kefir_token token_copy;
+            REQUIRE_OK(kefir_token_copy(mem, &token_copy, current_token));
+            res = kefir_token_buffer_emplace(mem, buffer, &token_copy);
+            REQUIRE_ELSE(res == KEFIR_OK, {
+                kefir_token_free(mem, &token_copy);
+                return res;
+            });
+        }
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t apply_function_macro(struct kefir_mem *mem,
+                                           const struct kefir_preprocessor_user_macro *user_macro,
+                                           const struct kefir_list *args, struct kefir_token_buffer *buffer) {
+    REQUIRE(kefir_list_length(&user_macro->parameters) + (user_macro->vararg ? 1 : 0) <= kefir_list_length(args),
+            KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Argument list length mismatch"));
+    struct kefir_hashtree arg_tree;
+    REQUIRE_OK(kefir_hashtree_init(&arg_tree, &kefir_hashtree_str_ops));
+
+    kefir_result_t res = build_function_macro_args_tree(mem, user_macro, args, &arg_tree);
+    REQUIRE_CHAIN(&res, run_function_macro_substitutions(mem, user_macro, &arg_tree, buffer));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_hashtree_free(mem, &arg_tree);
+        return res;
+    });
+
+    REQUIRE_OK(kefir_hashtree_free(mem, &arg_tree));
     return KEFIR_OK;
 }
 
@@ -43,22 +151,10 @@ static kefir_result_t user_macro_apply(struct kefir_mem *mem, const struct kefir
 
     if (macro->type == KEFIR_PREPROCESSOR_MACRO_FUNCTION) {
         REQUIRE(args != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid macro argument list"));
-        return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Macro substitution is not implemented yet");
+        REQUIRE_OK(apply_function_macro(mem, user_macro, args, buffer));
     } else {
         REQUIRE(args == NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected empty macro argument list"));
-
-        struct kefir_token token;
-        for (kefir_size_t i = 0; i < user_macro->replacement.length; i++) {
-            REQUIRE_OK(kefir_token_copy(mem, &token, &user_macro->replacement.tokens[i]));
-            if (token.klass == KEFIR_TOKEN_IDENTIFIER && strcmp(token.identifier, macro->identifier) == 0) {
-                token.preprocessor_props.skip_identifier_subst = true;
-            }
-            kefir_result_t res = kefir_token_buffer_emplace(mem, buffer, &token);
-            REQUIRE_ELSE(res == KEFIR_OK, {
-                kefir_token_free(mem, &token);
-                return res;
-            });
-        }
+        REQUIRE_OK(apply_object_macro(mem, user_macro, buffer));
     }
 
     return KEFIR_OK;

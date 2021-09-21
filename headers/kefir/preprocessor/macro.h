@@ -35,7 +35,7 @@ typedef struct kefir_preprocessor_macro {
     const char *identifier;
     kefir_preprocessor_macro_type_t type;
 
-    kefir_result_t (*argc)(const struct kefir_preprocessor_macro *, kefir_size_t *);
+    kefir_result_t (*argc)(const struct kefir_preprocessor_macro *, kefir_size_t *, kefir_bool_t *);
     kefir_result_t (*apply)(struct kefir_mem *, const struct kefir_preprocessor_macro *, const struct kefir_list *,
                             struct kefir_token_buffer *);
     void *payload;
