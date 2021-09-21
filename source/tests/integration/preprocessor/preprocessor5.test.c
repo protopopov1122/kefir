@@ -33,7 +33,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                            "#include \"dir/file\"\n"
                            "extern variable_type var3;\n"
                            "#include INCLUDE\n"
-                           "int Y = sizeof(X);";
+                           "int Y = sizeof(X);\n"
+                           "double value= FN \n    +1;";
 
     struct kefir_symbol_table symbols;
     struct kefir_lexer_context parser_context;
@@ -93,6 +94,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "X", &token));
     REQUIRE_OK(kefir_token_buffer_emplace(mem, &macro6->replacement, &token));
     REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(mem, &context.user_macros, macro6));
+
+    struct kefir_preprocessor_user_macro *macro7 = kefir_preprocessor_user_macro_new_function(mem, &symbols, "FN");
+    REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(mem, &context.user_macros, macro7));
 
     REQUIRE_OK(kefir_preprocessor_virtual_source_locator_register(mem, &virtual_source, "dir/file", INC1));
     REQUIRE_OK(kefir_preprocessor_virtual_source_locator_register(mem, &virtual_source, "include1", INC2));

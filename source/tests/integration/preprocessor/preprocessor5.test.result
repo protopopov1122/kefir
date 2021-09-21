@@ -3,3 +3,5 @@ int var2 = 100*2
 const long unsigned int variable1 = sizeof(variable1) + 100; extern const long unsigned int var3;
 typedef float Type1;
 int X = sizeof(X);
+double value= FN 
+    +1;
