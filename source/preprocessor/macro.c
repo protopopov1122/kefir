@@ -21,6 +21,7 @@
 #include "kefir/preprocessor/macro.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include <string.h>
 
 static kefir_result_t user_macro_argc(const struct kefir_preprocessor_macro *macro, kefir_size_t *argc_ptr) {
     REQUIRE(macro != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor macro"));
@@ -38,13 +39,29 @@ static kefir_result_t user_macro_apply(struct kefir_mem *mem, const struct kefir
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(macro != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor macro"));
     REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));
+    ASSIGN_DECL_CAST(struct kefir_preprocessor_user_macro *, user_macro, macro->payload);
 
     if (macro->type == KEFIR_PREPROCESSOR_MACRO_FUNCTION) {
         REQUIRE(args != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid macro argument list"));
+        return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Macro substitution is not implemented yet");
     } else {
         REQUIRE(args == NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected empty macro argument list"));
+
+        struct kefir_token token;
+        for (kefir_size_t i = 0; i < user_macro->replacement.length; i++) {
+            REQUIRE_OK(kefir_token_copy(mem, &token, &user_macro->replacement.tokens[i]));
+            if (token.klass == KEFIR_TOKEN_IDENTIFIER && strcmp(token.identifier, macro->identifier) == 0) {
+                token.preprocessor_props.skip_identifier_subst = true;
+            }
+            kefir_result_t res = kefir_token_buffer_emplace(mem, buffer, &token);
+            REQUIRE_ELSE(res == KEFIR_OK, {
+                kefir_token_free(mem, &token);
+                return res;
+            });
+        }
     }
-    return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Macro substitution is not implemented yet");
+
+    return KEFIR_OK;
 }
 
 struct kefir_preprocessor_user_macro *kefir_preprocessor_user_macro_new_object(struct kefir_mem *mem,

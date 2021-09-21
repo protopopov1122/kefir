@@ -23,6 +23,34 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
+static kefir_result_t subst_identifier(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                       struct kefir_preprocessor_token_sequence *seq, struct kefir_token *token,
+                                       struct kefir_token_buffer *result) {
+    const struct kefir_preprocessor_macro *macro = NULL;
+    kefir_result_t res =
+        preprocessor->context->macros->locate(preprocessor->context->macros, token->identifier, &macro);
+    if (res != KEFIR_OK) {
+        REQUIRE(res == KEFIR_NOT_FOUND, res);
+        REQUIRE_OK(kefir_token_buffer_emplace(mem, result, token));
+        return KEFIR_OK;
+    }
+
+    if (macro->type == KEFIR_PREPROCESSOR_MACRO_OBJECT) {
+        struct kefir_token_buffer subst_buf;
+        REQUIRE_OK(kefir_token_buffer_init(&subst_buf));
+        kefir_result_t res = macro->apply(mem, macro, NULL, &subst_buf);
+        REQUIRE_CHAIN(&res, kefir_preprocessor_token_sequence_push_front(mem, seq, &subst_buf));
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_token_buffer_free(mem, &subst_buf);
+            return res;
+        });
+        REQUIRE_OK(kefir_token_buffer_free(mem, &subst_buf));
+    } else {
+        return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Function macros are not implemented yet");
+    }
+    return KEFIR_OK;
+}
+
 static kefir_result_t run_substitutions(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
                                         struct kefir_preprocessor_token_sequence *seq,
                                         struct kefir_token_buffer *result) {
@@ -35,7 +63,17 @@ static kefir_result_t run_substitutions(struct kefir_mem *mem, struct kefir_prep
             scan_tokens = false;
         } else {
             REQUIRE_OK(res);
-            REQUIRE_OK(kefir_token_buffer_emplace(mem, result, &token));
+
+            if (token.klass == KEFIR_TOKEN_IDENTIFIER && !token.preprocessor_props.skip_identifier_subst) {
+                res = subst_identifier(mem, preprocessor, seq, &token, result);
+                REQUIRE_CHAIN(&res, kefir_token_free(mem, &token));
+            } else {
+                res = kefir_token_buffer_emplace(mem, result, &token);
+            }
+            REQUIRE_ELSE(res == KEFIR_OK, {
+                kefir_token_free(mem, &token);
+                return res;
+            });
         }
     }
     return KEFIR_OK;

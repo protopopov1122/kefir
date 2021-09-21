@@ -137,10 +137,10 @@ enum if_condition_state { IF_CONDITION_NONE, IF_CONDITION_SUCCESS, IF_CONDITION_
 static kefir_result_t process_include(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
                                       struct kefir_token_buffer *buffer,
                                       struct kefir_preprocessor_directive *directive) {
-    // TODO Process directive tokens
     REQUIRE(directive->pp_tokens.length > 0,
             KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &directive->source_location,
                                    "Expected file path"));  // TODO Provide source location
+    REQUIRE_OK(kefir_preprocessor_run_substitutions(mem, preprocessor, &directive->pp_tokens));
     struct kefir_token *token = &directive->pp_tokens.tokens[0];
     const char *include_path = NULL;
     kefir_bool_t system_include = false;

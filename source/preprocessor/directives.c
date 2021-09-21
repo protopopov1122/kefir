@@ -265,6 +265,8 @@ static kefir_result_t next_include(struct kefir_mem *mem,
     REQUIRE_CHAIN(&res, kefir_lexer_match_pp_header_name(mem, directive_scanner->lexer, &token));
     if (res == KEFIR_NO_MATCH) {
         res = kefir_lexer_source_cursor_restore(directive_scanner->lexer->cursor, &state);
+        REQUIRE_CHAIN(
+            &res, skip_whitespaces_until(directive_scanner->lexer->cursor, directive_scanner->lexer->context->newline));
         REQUIRE_CHAIN(&res, scan_pp_tokens(mem, directive_scanner, &directive->pp_tokens));
         REQUIRE_ELSE(res == KEFIR_OK, {
             kefir_token_buffer_free(mem, &directive->pp_tokens);

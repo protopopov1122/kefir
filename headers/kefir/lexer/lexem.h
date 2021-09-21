@@ -215,6 +215,9 @@ typedef struct kefir_token {
     };
 
     struct kefir_source_location source_location;
+    struct {
+        kefir_bool_t skip_identifier_subst;
+    } preprocessor_props;
 } kefir_token_t;
 
 kefir_result_t kefir_token_new_sentinel(struct kefir_token *);

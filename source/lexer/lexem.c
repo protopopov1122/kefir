@@ -55,6 +55,7 @@ kefir_result_t kefir_token_new_identifier(struct kefir_mem *mem, struct kefir_sy
     }
     token->klass = KEFIR_TOKEN_IDENTIFIER;
     token->identifier = identifier;
+    token->preprocessor_props.skip_identifier_subst = false;
     return KEFIR_OK;
 }
 
