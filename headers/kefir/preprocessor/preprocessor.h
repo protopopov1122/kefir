@@ -50,6 +50,8 @@ kefir_result_t kefir_preprocessor_free(struct kefir_mem *, struct kefir_preproce
 kefir_result_t kefir_preprocessor_skip_group(struct kefir_mem *, struct kefir_preprocessor *);
 kefir_result_t kefir_preprocessor_run_group(struct kefir_mem *, struct kefir_preprocessor *,
                                             struct kefir_token_buffer *);
+kefir_result_t kefir_preprocessor_run_substitutions(struct kefir_mem *, struct kefir_preprocessor *,
+                                                    struct kefir_token_buffer *);
 kefir_result_t kefir_preprocessor_run(struct kefir_mem *, struct kefir_preprocessor *, struct kefir_token_buffer *);
 
 #endif

@@ -290,5 +290,6 @@ kefir_result_t kefir_preprocessor_run(struct kefir_mem *mem, struct kefir_prepro
     REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));
 
     REQUIRE_OK(kefir_preprocessor_run_group(mem, preprocessor, buffer));
+    REQUIRE_OK(kefir_preprocessor_run_substitutions(mem, preprocessor, buffer));
     return KEFIR_OK;
 }
