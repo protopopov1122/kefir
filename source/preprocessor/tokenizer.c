@@ -42,7 +42,7 @@ static kefir_result_t preprocessor_next_impl(struct kefir_mem *mem, struct kefir
         res = kefir_lexer_match_pp_number(mem, lexer, token);
     }
     if (res == KEFIR_NO_MATCH) {
-        res = kefir_lexer_match_string_literal(mem, lexer, token);
+        res = kefir_lexer_match_string_literal(mem, lexer, token, false);
     }
     if (res == KEFIR_NO_MATCH) {
         res = kefir_lexer_match_identifier(mem, lexer, token);

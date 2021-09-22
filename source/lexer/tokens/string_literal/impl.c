@@ -62,14 +62,15 @@ static kefir_result_t kefir_lexer_next_string_literal_impl(struct kefir_mem *mem
 
 kefir_result_t kefir_lexer_next_string_literal_sequence_impl(struct kefir_mem *mem, struct kefir_lexer *lexer,
                                                              const kefir_char32_t *prefix,
-                                                             struct kefir_string_buffer *buffer) {
+                                                             struct kefir_string_buffer *buffer,
+                                                             kefir_bool_t merge_adjacent) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer"));
     REQUIRE(prefix != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid prefix"));
     REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string buffer"));
 
     REQUIRE_OK(kefir_lexer_next_string_literal_impl(mem, lexer, prefix, buffer));
-    kefir_bool_t scan_literals = true;
+    kefir_bool_t scan_literals = merge_adjacent;
     while (scan_literals) {
         REQUIRE_OK(kefir_lexer_cursor_match_whitespace(mem, lexer, NULL));
         kefir_result_t res = kefir_lexer_next_string_literal_impl(mem, lexer, prefix, buffer);

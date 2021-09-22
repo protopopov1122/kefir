@@ -18,11 +18,15 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#define _POSIX_C_SOURCE 200809L
 #include "kefir/preprocessor/format.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/core/os_error.h"
 #include <ctype.h>
 #include <wctype.h>
+#include <string.h>
+#include <stdio.h>
 
 static kefir_result_t format_punctuator(FILE *out, kefir_punctuator_token_t punctuator) {
     static const char *const PUNCTUATORS[] = {[KEFIR_PUNCTUATOR_LEFT_BRACKET] = "[",
@@ -124,6 +128,67 @@ static kefir_result_t format_constant(FILE *out, const struct kefir_token *token
     return KEFIR_OK;
 }
 
+static kefir_result_t format_char(FILE *out, char chr) {
+    switch (chr) {
+        case '\'':
+            fprintf(out, "\\\'");
+            break;
+
+        case '\"':
+            fprintf(out, "\\\"");
+            break;
+
+        case '\?':
+            fprintf(out, "\\\?");
+            break;
+
+        case '\\':
+            fprintf(out, "\\\\");
+            break;
+
+        case '\a':
+            fprintf(out, "\\a");
+            break;
+
+        case '\b':
+            fprintf(out, "\\b");
+            break;
+
+        case '\f':
+            fprintf(out, "\\f");
+            break;
+
+        case '\n':
+            fprintf(out, "\\n");
+            break;
+
+        case '\r':
+            fprintf(out, "\\r");
+            break;
+
+        case '\t':
+            fprintf(out, "\\t");
+            break;
+
+        case '\v':
+            fprintf(out, "\\v");
+            break;
+
+        case '\0':
+            fprintf(out, "\\0");
+            break;
+
+        default:
+            if (isprint(chr)) {
+                fprintf(out, "%c", chr);
+            } else {
+                fprintf(out, "\\%03o", chr);
+            }
+            break;
+    }
+    return KEFIR_OK;
+}
+
 static kefir_result_t format_string_literal(FILE *out, const struct kefir_token *token) {
     switch (token->string_literal.type) {
         case KEFIR_STRING_LITERAL_TOKEN_UNICODE8:
@@ -133,11 +198,7 @@ static kefir_result_t format_string_literal(FILE *out, const struct kefir_token 
             fprintf(out, "\"");
             for (kefir_size_t i = 0; i < token->string_literal.length - 1; i++) {
                 char chr = ((const char *) token->string_literal.literal)[i];
-                if (isprint(chr)) {
-                    fprintf(out, "%c", chr);
-                } else {
-                    fprintf(out, "\\x%x", chr);
-                }
+                REQUIRE_OK(format_char(out, chr));
             }
             fprintf(out, "\"");
             break;
@@ -176,7 +237,8 @@ static kefir_result_t format_string_literal(FILE *out, const struct kefir_token 
     return KEFIR_OK;
 }
 
-static kefir_result_t format_token(FILE *out, const struct kefir_token *token) {
+static kefir_result_t format_token(FILE *out, const struct kefir_token *token,
+                                   kefir_preprocessor_whitespace_format_t ws_format) {
     switch (token->klass) {
         case KEFIR_TOKEN_SENTINEL:
             // Intentionally left blank
@@ -202,7 +264,7 @@ static kefir_result_t format_token(FILE *out, const struct kefir_token *token) {
             break;
 
         case KEFIR_TOKEN_PP_WHITESPACE:
-            if (token->pp_whitespace.newline) {
+            if (token->pp_whitespace.newline && ws_format == KEFIR_PREPROCESSOR_WHITESPACE_FORMAT_ORIGINAL) {
                 fprintf(out, "\n");
             } else {
                 fprintf(out, " ");
@@ -224,12 +286,47 @@ static kefir_result_t format_token(FILE *out, const struct kefir_token *token) {
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_preprocessor_format(FILE *out, const struct kefir_token_buffer *buffer) {
+kefir_result_t kefir_preprocessor_format(FILE *out, const struct kefir_token_buffer *buffer,
+                                         kefir_preprocessor_whitespace_format_t ws_format) {
     REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid FILE"));
     REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));
 
     for (kefir_size_t i = 0; i < buffer->length; i++) {
-        REQUIRE_OK(format_token(out, &buffer->tokens[i]));
+        REQUIRE_OK(format_token(out, &buffer->tokens[i], ws_format));
     }
+    return KEFIR_OK;
+}
+
+static kefir_result_t format_string_impl(struct kefir_mem *mem, char **string_ptr,
+                                         const struct kefir_token_buffer *buffer,
+                                         kefir_preprocessor_whitespace_format_t ws_format, FILE *fp, size_t *sz) {
+    REQUIRE_OK(kefir_preprocessor_format(fp, buffer, ws_format));
+    int rc = fclose(fp);
+    REQUIRE(rc == 0, KEFIR_SET_OS_ERROR("Failed to close in-memory file"));
+    *string_ptr = KEFIR_MALLOC(mem, *sz + 1);
+    REQUIRE(*string_ptr != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to close in-memory file"));
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_preprocessor_format_string(struct kefir_mem *mem, char **string_ptr, kefir_size_t *size_ptr,
+                                                const struct kefir_token_buffer *buffer,
+                                                kefir_preprocessor_whitespace_format_t ws_format) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(string_ptr != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to string"));
+    REQUIRE(size_ptr != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to size"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));
+
+    char *ptr = NULL;
+    size_t sz = 0;
+    FILE *fp = open_memstream(&ptr, &sz);
+    REQUIRE(fp != NULL, KEFIR_SET_OS_ERROR("Failed to construct in-memory file"));
+    kefir_result_t res = format_string_impl(mem, string_ptr, buffer, ws_format, fp, &sz);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        free(ptr);
+        return res;
+    });
+    memcpy(*string_ptr, ptr, sz + 1);
+    free(ptr);
+    *size_ptr = sz + 1;
     return KEFIR_OK;
 }

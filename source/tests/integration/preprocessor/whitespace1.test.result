@@ -197,17 +197,64 @@
     {
         "class": "string_literal",
         "preprocessor": false,
+        "type": "multibyte",
+        "content": "\n\n\t\n\"\0",
+        "length": 6
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": false
+    },
+    {
+        "class": "string_literal",
+        "preprocessor": false,
         "type": "unicode32",
         "content": [
-            10,
-            10,
-            9,
-            10,
-            34,
             49,
             0
         ],
-        "length": 7
+        "length": 2
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": true
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": true
+    },
+    {
+        "class": "whitespace",
+        "preprocessor": true,
+        "newline": true
     },
     {
         "class": "punctuator",

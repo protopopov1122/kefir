@@ -25,6 +25,7 @@
 #include "kefir/core/string_buffer.h"
 
 kefir_result_t kefir_lexer_next_string_literal_sequence_impl(struct kefir_mem *, struct kefir_lexer *,
-                                                             const kefir_char32_t *, struct kefir_string_buffer *);
+                                                             const kefir_char32_t *, struct kefir_string_buffer *,
+                                                             kefir_bool_t);
 
 #endif

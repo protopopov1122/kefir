@@ -22,31 +22,37 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
+struct params {
+    struct kefir_token *token;
+    kefir_bool_t merge_adjacent;
+};
+
 static kefir_result_t match_impl(struct kefir_mem *mem, struct kefir_lexer *lexer, void *payload) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
-    ASSIGN_DECL_CAST(struct kefir_token *, token, payload);
+    ASSIGN_DECL_CAST(struct params *, params, payload);
 
-    kefir_result_t res = kefir_lexer_next_narrow_string_literal(mem, lexer, token);
+    kefir_result_t res = kefir_lexer_next_narrow_string_literal(mem, lexer, params->token, params->merge_adjacent);
     REQUIRE(res == KEFIR_NO_MATCH, res);
-    res = kefir_lexer_next_unicode8_string_literal(mem, lexer, token);
+    res = kefir_lexer_next_unicode8_string_literal(mem, lexer, params->token, params->merge_adjacent);
     REQUIRE(res == KEFIR_NO_MATCH, res);
-    res = kefir_lexer_next_unicode16_string_literal(mem, lexer, token);
+    res = kefir_lexer_next_unicode16_string_literal(mem, lexer, params->token, params->merge_adjacent);
     REQUIRE(res == KEFIR_NO_MATCH, res);
-    res = kefir_lexer_next_unicode32_string_literal(mem, lexer, token);
+    res = kefir_lexer_next_unicode32_string_literal(mem, lexer, params->token, params->merge_adjacent);
     REQUIRE(res == KEFIR_NO_MATCH, res);
-    res = kefir_lexer_next_wide_string_literal(mem, lexer, token);
+    res = kefir_lexer_next_wide_string_literal(mem, lexer, params->token, params->merge_adjacent);
     REQUIRE(res == KEFIR_NO_MATCH, res);
     return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match string literal");
 }
 
 kefir_result_t kefir_lexer_match_string_literal(struct kefir_mem *mem, struct kefir_lexer *lexer,
-                                                struct kefir_token *token) {
+                                                struct kefir_token *token, kefir_bool_t merge_adjacent) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer"));
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token"));
 
-    REQUIRE_OK(kefir_lexer_apply(mem, lexer, match_impl, token));
+    struct params params = {.token = token, .merge_adjacent = merge_adjacent};
+    REQUIRE_OK(kefir_lexer_apply(mem, lexer, match_impl, &params));
     return KEFIR_OK;
 }

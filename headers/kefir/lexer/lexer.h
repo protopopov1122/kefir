@@ -59,14 +59,18 @@ kefir_result_t kefir_lexer_get_keyword(struct kefir_lexer *, const kefir_char32_
 kefir_result_t kefir_lexer_match_identifier_or_keyword(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
 kefir_result_t kefir_lexer_match_identifier(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
 
-kefir_result_t kefir_lexer_next_narrow_string_literal(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
-kefir_result_t kefir_lexer_next_unicode8_string_literal(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
-kefir_result_t kefir_lexer_next_unicode16_string_literal(struct kefir_mem *, struct kefir_lexer *,
-                                                         struct kefir_token *);
-kefir_result_t kefir_lexer_next_unicode32_string_literal(struct kefir_mem *, struct kefir_lexer *,
-                                                         struct kefir_token *);
-kefir_result_t kefir_lexer_next_wide_string_literal(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
-kefir_result_t kefir_lexer_match_string_literal(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
+kefir_result_t kefir_lexer_next_narrow_string_literal(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *,
+                                                      kefir_bool_t);
+kefir_result_t kefir_lexer_next_unicode8_string_literal(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *,
+                                                        kefir_bool_t);
+kefir_result_t kefir_lexer_next_unicode16_string_literal(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *,
+                                                         kefir_bool_t);
+kefir_result_t kefir_lexer_next_unicode32_string_literal(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *,
+                                                         kefir_bool_t);
+kefir_result_t kefir_lexer_next_wide_string_literal(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *,
+                                                    kefir_bool_t);
+kefir_result_t kefir_lexer_match_string_literal(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *,
+                                                kefir_bool_t);
 
 kefir_result_t kefir_lexer_match_floating_constant(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
 kefir_result_t kefir_lexer_match_integer_constant(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);

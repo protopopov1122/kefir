@@ -81,7 +81,7 @@ static kefir_result_t lexer_next_impl(struct kefir_mem *mem, struct kefir_lexer 
     } else {
         kefir_result_t res = kefir_lexer_match_constant(mem, lexer, token);
         if (res == KEFIR_NO_MATCH) {
-            res = kefir_lexer_match_string_literal(mem, lexer, token);
+            res = kefir_lexer_match_string_literal(mem, lexer, token, true);
         }
         if (res == KEFIR_NO_MATCH) {
             res = kefir_lexer_match_identifier_or_keyword(mem, lexer, token);

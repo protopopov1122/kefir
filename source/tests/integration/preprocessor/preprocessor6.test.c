@@ -189,7 +189,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_preprocessor_context_free(mem, &context));
     REQUIRE_OK(kefir_preprocessor_virtual_source_locator_free(mem, &virtual_source));
 
-    REQUIRE_OK(kefir_preprocessor_format(stdout, &tokens));
+    REQUIRE_OK(kefir_preprocessor_format(stdout, &tokens, KEFIR_PREPROCESSOR_WHITESPACE_FORMAT_ORIGINAL));
     REQUIRE_OK(kefir_token_buffer_free(mem, &tokens));
     REQUIRE_OK(kefir_symbol_table_free(mem, &symbols));
     return KEFIR_OK;

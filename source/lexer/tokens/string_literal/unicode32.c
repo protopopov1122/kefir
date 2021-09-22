@@ -26,7 +26,7 @@
 #include "kefir/lexer/string_literal_impl.h"
 
 kefir_result_t kefir_lexer_next_unicode32_string_literal(struct kefir_mem *mem, struct kefir_lexer *lexer,
-                                                         struct kefir_token *token) {
+                                                         struct kefir_token *token, kefir_bool_t merge_adjacent) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer"));
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token"));
@@ -38,7 +38,8 @@ kefir_result_t kefir_lexer_next_unicode32_string_literal(struct kefir_mem *mem, 
     struct kefir_string_buffer string_buffer;
     REQUIRE_OK(kefir_string_buffer_init(mem, &string_buffer, KEFIR_STRING_BUFFER_UNICODE32));
 
-    kefir_result_t res = kefir_lexer_next_string_literal_sequence_impl(mem, lexer, U"U\"", &string_buffer);
+    kefir_result_t res =
+        kefir_lexer_next_string_literal_sequence_impl(mem, lexer, U"U\"", &string_buffer, merge_adjacent);
 
     kefir_size_t literal_length;
     const kefir_char32_t *literal = kefir_string_buffer_value(&string_buffer, &literal_length);

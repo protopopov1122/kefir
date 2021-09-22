@@ -155,7 +155,7 @@ static kefir_result_t scan_function_macro_arguments(struct kefir_mem *mem, struc
             KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &token->source_location, "Expected right parenthese"));
     REQUIRE_OK(kefir_preprocessor_token_sequence_next(mem, seq, NULL));
 
-    if (kefir_list_length(args) == 0 && vararg) {
+    if (kefir_list_length(args) == 0 && (argc == 1 || vararg)) {
         REQUIRE_OK(function_macro_arguments_push(mem, args));
     }
     REQUIRE(kefir_list_length(args) == argc + (vararg ? 1 : 0),

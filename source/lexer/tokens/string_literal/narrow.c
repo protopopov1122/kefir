@@ -30,50 +30,52 @@ static kefir_result_t try_convert_string(struct kefir_mem *mem, struct kefir_lex
                                          kefir_string_buffer_mode_t newMode) {
     REQUIRE_OK(kefir_lexer_cursor_match_string(lexer->cursor, prefix));
     REQUIRE_OK(kefir_string_buffer_convert(mem, buffer, newMode));
-    REQUIRE_OK(kefir_lexer_next_string_literal_sequence_impl(mem, lexer, prefix, buffer));
+    REQUIRE_OK(kefir_lexer_next_string_literal_sequence_impl(mem, lexer, prefix, buffer, true));
     return KEFIR_OK;
 }
 
 static kefir_result_t next_string_literal(struct kefir_mem *mem, struct kefir_lexer *lexer, struct kefir_token *token,
-                                          struct kefir_string_buffer *buffer) {
-    REQUIRE_OK(kefir_lexer_next_string_literal_sequence_impl(mem, lexer, U"\"", buffer));
+                                          struct kefir_string_buffer *buffer, kefir_bool_t merge_adjacent) {
+    REQUIRE_OK(kefir_lexer_next_string_literal_sequence_impl(mem, lexer, U"\"", buffer, merge_adjacent));
     kefir_size_t literal_length;
     const void *literal = NULL;
 
-    kefir_result_t res = try_convert_string(mem, lexer, buffer, U"u8\"", KEFIR_STRING_BUFFER_UNICODE8);
-    if (res == KEFIR_OK) {
-        literal = kefir_string_buffer_value(buffer, &literal_length);
-        REQUIRE_OK(kefir_token_new_string_literal_unicode8(mem, literal, literal_length, token));
-        return KEFIR_OK;
-    } else {
-        REQUIRE(res == KEFIR_NO_MATCH, res);
-    }
+    if (merge_adjacent) {
+        kefir_result_t res = try_convert_string(mem, lexer, buffer, U"u8\"", KEFIR_STRING_BUFFER_UNICODE8);
+        if (res == KEFIR_OK) {
+            literal = kefir_string_buffer_value(buffer, &literal_length);
+            REQUIRE_OK(kefir_token_new_string_literal_unicode8(mem, literal, literal_length, token));
+            return KEFIR_OK;
+        } else {
+            REQUIRE(res == KEFIR_NO_MATCH, res);
+        }
 
-    res = try_convert_string(mem, lexer, buffer, U"u\"", KEFIR_STRING_BUFFER_UNICODE16);
-    if (res == KEFIR_OK) {
-        literal = kefir_string_buffer_value(buffer, &literal_length);
-        REQUIRE_OK(kefir_token_new_string_literal_unicode16(mem, literal, literal_length, token));
-        return KEFIR_OK;
-    } else {
-        REQUIRE(res == KEFIR_NO_MATCH, res);
-    }
+        res = try_convert_string(mem, lexer, buffer, U"u\"", KEFIR_STRING_BUFFER_UNICODE16);
+        if (res == KEFIR_OK) {
+            literal = kefir_string_buffer_value(buffer, &literal_length);
+            REQUIRE_OK(kefir_token_new_string_literal_unicode16(mem, literal, literal_length, token));
+            return KEFIR_OK;
+        } else {
+            REQUIRE(res == KEFIR_NO_MATCH, res);
+        }
 
-    res = try_convert_string(mem, lexer, buffer, U"U\"", KEFIR_STRING_BUFFER_UNICODE32);
-    if (res == KEFIR_OK) {
-        literal = kefir_string_buffer_value(buffer, &literal_length);
-        REQUIRE_OK(kefir_token_new_string_literal_unicode32(mem, literal, literal_length, token));
-        return KEFIR_OK;
-    } else {
-        REQUIRE(res == KEFIR_NO_MATCH, res);
-    }
+        res = try_convert_string(mem, lexer, buffer, U"U\"", KEFIR_STRING_BUFFER_UNICODE32);
+        if (res == KEFIR_OK) {
+            literal = kefir_string_buffer_value(buffer, &literal_length);
+            REQUIRE_OK(kefir_token_new_string_literal_unicode32(mem, literal, literal_length, token));
+            return KEFIR_OK;
+        } else {
+            REQUIRE(res == KEFIR_NO_MATCH, res);
+        }
 
-    res = try_convert_string(mem, lexer, buffer, U"L\"", KEFIR_STRING_BUFFER_WIDE);
-    if (res == KEFIR_OK) {
-        literal = kefir_string_buffer_value(buffer, &literal_length);
-        REQUIRE_OK(kefir_token_new_string_literal_wide(mem, literal, literal_length, token));
-        return KEFIR_OK;
-    } else {
-        REQUIRE(res == KEFIR_NO_MATCH, res);
+        res = try_convert_string(mem, lexer, buffer, U"L\"", KEFIR_STRING_BUFFER_WIDE);
+        if (res == KEFIR_OK) {
+            literal = kefir_string_buffer_value(buffer, &literal_length);
+            REQUIRE_OK(kefir_token_new_string_literal_wide(mem, literal, literal_length, token));
+            return KEFIR_OK;
+        } else {
+            REQUIRE(res == KEFIR_NO_MATCH, res);
+        }
     }
 
     literal = kefir_string_buffer_value(buffer, &literal_length);
@@ -82,7 +84,7 @@ static kefir_result_t next_string_literal(struct kefir_mem *mem, struct kefir_le
 }
 
 kefir_result_t kefir_lexer_next_narrow_string_literal(struct kefir_mem *mem, struct kefir_lexer *lexer,
-                                                      struct kefir_token *token) {
+                                                      struct kefir_token *token, kefir_bool_t merge_adjacent) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer"));
     REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token"));
@@ -93,7 +95,7 @@ kefir_result_t kefir_lexer_next_narrow_string_literal(struct kefir_mem *mem, str
     struct kefir_string_buffer string_buffer;
     REQUIRE_OK(kefir_string_buffer_init(mem, &string_buffer, KEFIR_STRING_BUFFER_MULTIBYTE));
 
-    kefir_result_t res = next_string_literal(mem, lexer, token, &string_buffer);
+    kefir_result_t res = next_string_literal(mem, lexer, token, &string_buffer, merge_adjacent);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_string_buffer_free(mem, &string_buffer);
         return res;
