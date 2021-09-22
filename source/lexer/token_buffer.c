@@ -91,3 +91,13 @@ kefir_result_t kefir_token_buffer_insert(struct kefir_mem *mem, struct kefir_tok
     src->capacity = 0;
     return KEFIR_OK;
 }
+
+kefir_result_t kefir_token_buffer_pop(struct kefir_mem *mem, struct kefir_token_buffer *buffer) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));
+    REQUIRE(buffer->length > 0, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Cannot pop token from empty buffer"));
+
+    REQUIRE_OK(kefir_token_free(mem, &buffer->tokens[buffer->length - 1]));
+    buffer->length--;
+    return KEFIR_OK;
+}

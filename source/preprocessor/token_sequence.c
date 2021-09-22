@@ -147,3 +147,34 @@ kefir_result_t kefir_preprocessor_token_sequence_current(struct kefir_mem *mem,
     *token_ptr = &buffer_elt->buffer.tokens[buffer_elt->index];
     return KEFIR_OK;
 }
+
+kefir_result_t kefir_preprocessor_token_sequence_skip_whitespaces(struct kefir_mem *mem,
+                                                                  struct kefir_preprocessor_token_sequence *seq,
+                                                                  const struct kefir_token **token_ptr,
+                                                                  struct kefir_token_buffer *buffer) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(seq != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token sequence"));
+
+    const struct kefir_token *current_token = NULL;
+    kefir_bool_t skip_whitespaces = true;
+    while (skip_whitespaces) {
+        kefir_result_t res = kefir_preprocessor_token_sequence_current(mem, seq, &current_token);
+        if (res == KEFIR_ITERATOR_END) {
+            skip_whitespaces = false;
+            current_token = NULL;
+        } else {
+            REQUIRE_OK(res);
+            if (current_token->klass != KEFIR_TOKEN_PP_WHITESPACE) {
+                skip_whitespaces = false;
+            } else {
+                if (buffer != NULL) {
+                    REQUIRE_OK(kefir_preprocessor_token_sequence_shift(mem, seq, buffer));
+                } else {
+                    REQUIRE_OK(kefir_preprocessor_token_sequence_next(mem, seq, NULL));
+                }
+            }
+        }
+    }
+    ASSIGN_PTR(token_ptr, current_token);
+    return KEFIR_OK;
+}

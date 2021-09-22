@@ -1,11 +1,7 @@
 int a = 100;
-int b = -(200 + 100  
-);
-int c = (200 + 100)*( -1)+(200 + 100);
-int d = sizeof(const long long
-
-
-  )+ 500 - (100 + 50) - fn1(1, 2, 3)/ test( );
+int b = -(200 + 100);
+int c = (200 + 100)*(-1)+(200 + 100);
+int d = sizeof(const long long)+500 - (100 + 50)-fn1(1, 2, 3)/test();
 int e = fn1()+_Alignof();
 int f = fn1(2+2 *2)+_Alignof(2+2 *2);
 int g = fn1((1, 2, 3), 4,
@@ -15,8 +11,8 @@ int g = fn1((1, 2, 3), 4,
 (5,
   6,
          7), ((8, 9, 10)));
-int h = (test+func(1, 2, func2(3)) + 2)[ 1]-callback( 3);
-int i = (test-- * func(1, 2, func2(3)) + 2)[     +100]-callback( fn(1, -100),,
+int h = (test+func(1, 2, func2(3)) + 2)[1]-callback(3);
+int i = (test-- * func(1, 2, func2(3)) + 2)[+100]-callback(fn(1, -100),,
 
-*tmp_ptr,  );
-int j = (100)*( -(100))+(100)
+*tmp_ptr,);
+int j = (100)*(-(100))+(100)

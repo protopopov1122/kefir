@@ -40,4 +40,9 @@ kefir_result_t kefir_preprocessor_token_sequence_shift(struct kefir_mem *, struc
 kefir_result_t kefir_preprocessor_token_sequence_current(struct kefir_mem *, struct kefir_preprocessor_token_sequence *,
                                                          const struct kefir_token **);
 
+kefir_result_t kefir_preprocessor_token_sequence_skip_whitespaces(struct kefir_mem *,
+                                                                  struct kefir_preprocessor_token_sequence *,
+                                                                  const struct kefir_token **,
+                                                                  struct kefir_token_buffer *);
+
 #endif
