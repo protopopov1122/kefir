@@ -34,8 +34,7 @@ typedef enum kefir_preprocessor_directive_type {
     KEFIR_PREPROCESSOR_DIRECTIVE_ELSE,
     KEFIR_PREPROCESSOR_DIRECTIVE_ENDIF,
     KEFIR_PREPROCESSOR_DIRECTIVE_INCLUDE,
-    KEFIR_PREPROCESSOR_DIRECTIVE_DEFINE_OBJECT,
-    KEFIR_PREPROCESSOR_DIRECTIVE_DEFINE_FUNCTION,
+    KEFIR_PREPROCESSOR_DIRECTIVE_DEFINE,
     KEFIR_PREPROCESSOR_DIRECTIVE_UNDEF,
     KEFIR_PREPROCESSOR_DIRECTIVE_LINE,
     KEFIR_PREPROCESSOR_DIRECTIVE_ERROR,
@@ -54,17 +53,13 @@ typedef struct kefir_preprocessor_ifdef_directive {
     const char *identifier;
 } kefir_preprocessor_ifdef_directive_t;
 
-typedef struct kefir_preprocessor_define_object_directive {
-    const char *identifier;
-    struct kefir_token_buffer replacement;
-} kefir_preprocessor_define_object_directive_t;
-
-typedef struct kefir_preprocessor_define_function_directive {
+typedef struct kefir_preprocessor_define_directive {
+    kefir_bool_t object;
     const char *identifier;
     struct kefir_list parameters;
     kefir_bool_t vararg;
     struct kefir_token_buffer replacement;
-} kefir_preprocessor_define_function_directive_t;
+} kefir_preprocessor_define_directive_t;
 
 typedef struct kefir_preprocessor_undef_directive {
     const char *identifier;
@@ -75,8 +70,7 @@ typedef struct kefir_preprocessor_directive {
     union {
         struct kefir_preprocessor_if_directive if_directive;
         struct kefir_preprocessor_ifdef_directive ifdef_directive;
-        struct kefir_preprocessor_define_object_directive define_obj_directive;
-        struct kefir_preprocessor_define_function_directive define_fun_directive;
+        struct kefir_preprocessor_define_directive define_directive;
         struct kefir_preprocessor_undef_directive undef_directive;
         struct kefir_token_buffer pp_tokens;
         struct kefir_token pp_token;

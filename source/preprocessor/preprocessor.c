@@ -116,8 +116,7 @@ kefir_result_t kefir_preprocessor_skip_group(struct kefir_mem *mem, struct kefir
                 break;
 
             case KEFIR_PREPROCESSOR_DIRECTIVE_INCLUDE:
-            case KEFIR_PREPROCESSOR_DIRECTIVE_DEFINE_OBJECT:
-            case KEFIR_PREPROCESSOR_DIRECTIVE_DEFINE_FUNCTION:
+            case KEFIR_PREPROCESSOR_DIRECTIVE_DEFINE:
             case KEFIR_PREPROCESSOR_DIRECTIVE_UNDEF:
             case KEFIR_PREPROCESSOR_DIRECTIVE_LINE:
             case KEFIR_PREPROCESSOR_DIRECTIVE_ERROR:
@@ -180,6 +179,26 @@ static kefir_result_t process_include(struct kefir_mem *mem, struct kefir_prepro
         return res;
     });
     REQUIRE_OK(source_file.close(mem, &source_file));
+    return KEFIR_OK;
+}
+
+static kefir_result_t process_define(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                     struct kefir_preprocessor_directive *directive) {
+    struct kefir_preprocessor_user_macro *macro = NULL;
+    if (directive->define_directive.object) {
+        macro = kefir_preprocessor_user_macro_new_object(mem, preprocessor->lexer.symbols,
+                                                         directive->define_directive.identifier);
+        kefir_result_t res =
+            kefir_token_buffer_insert(mem, &macro->replacement, &directive->define_directive.replacement);
+        REQUIRE_CHAIN(&res,
+                      kefir_preprocessor_user_macro_scope_insert(mem, &preprocessor->context->user_macros, macro));
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_preprocessor_user_macro_free(mem, macro);
+            return res;
+        });
+    } else {
+        return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Functional macros are not implemented yet");
+    }
     return KEFIR_OK;
 }
 
@@ -257,8 +276,10 @@ kefir_result_t kefir_preprocessor_run_group(struct kefir_mem *mem, struct kefir_
                 REQUIRE_OK(process_include(mem, preprocessor, buffer, &directive));
                 break;
 
-            case KEFIR_PREPROCESSOR_DIRECTIVE_DEFINE_OBJECT:
-            case KEFIR_PREPROCESSOR_DIRECTIVE_DEFINE_FUNCTION:
+            case KEFIR_PREPROCESSOR_DIRECTIVE_DEFINE:
+                REQUIRE_OK(process_define(mem, preprocessor, &directive));
+                break;
+
             case KEFIR_PREPROCESSOR_DIRECTIVE_UNDEF:
             case KEFIR_PREPROCESSOR_DIRECTIVE_LINE:
             case KEFIR_PREPROCESSOR_DIRECTIVE_ERROR:

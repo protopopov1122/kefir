@@ -385,6 +385,7 @@ static kefir_result_t run_function_macro_substitutions(struct kefir_mem *mem,
         if (i + 1 < user_macro->replacement.length &&
             user_macro->replacement.tokens[i + 1].klass == KEFIR_TOKEN_PUNCTUATOR &&
             user_macro->replacement.tokens[i + 1].punctuator == KEFIR_PUNCTUATOR_DOUBLE_HASH) {
+            // TODO Improve concatenation detection in case of present whitespaces
             REQUIRE(i + 2 < user_macro->replacement.length,
                     KEFIR_SET_SOURCE_ERROR(
                         KEFIR_LEXER_ERROR, &user_macro->replacement.tokens[i + 1].source_location,
