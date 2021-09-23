@@ -188,6 +188,7 @@ static kefir_result_t process_define(struct kefir_mem *mem, struct kefir_preproc
     if (directive->define_directive.object) {
         macro = kefir_preprocessor_user_macro_new_object(mem, preprocessor->lexer.symbols,
                                                          directive->define_directive.identifier);
+        REQUIRE(macro != NULL, KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate user macro"));
         kefir_result_t res =
             kefir_token_buffer_insert(mem, &macro->replacement, &directive->define_directive.replacement);
         REQUIRE_CHAIN(&res,
@@ -197,7 +198,21 @@ static kefir_result_t process_define(struct kefir_mem *mem, struct kefir_preproc
             return res;
         });
     } else {
-        return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Functional macros are not implemented yet");
+        macro = kefir_preprocessor_user_macro_new_function(mem, preprocessor->lexer.symbols,
+                                                           directive->define_directive.identifier);
+        REQUIRE(macro != NULL, KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate user macro"));
+        kefir_result_t res =
+            kefir_token_buffer_insert(mem, &macro->replacement, &directive->define_directive.replacement);
+        REQUIRE_CHAIN(&res, kefir_list_move_all(&macro->parameters, &directive->define_directive.parameters));
+        if (res == KEFIR_OK) {
+            macro->vararg = directive->define_directive.vararg;
+        }
+        REQUIRE_CHAIN(&res,
+                      kefir_preprocessor_user_macro_scope_insert(mem, &preprocessor->context->user_macros, macro));
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_preprocessor_user_macro_free(mem, macro);
+            return res;
+        });
     }
     return KEFIR_OK;
 }
