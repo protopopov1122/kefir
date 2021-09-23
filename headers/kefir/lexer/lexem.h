@@ -38,7 +38,8 @@ typedef enum kefir_token_class {
     // Preprocessing tokens
     KEFIR_TOKEN_PP_WHITESPACE,
     KEFIR_TOKEN_PP_NUMBER,
-    KEFIR_TOKEN_PP_HEADER_NAME
+    KEFIR_TOKEN_PP_HEADER_NAME,
+    KEFIR_TOKEN_PP_PLACEMAKER
 } kefir_token_class_t;
 
 typedef enum kefir_keyword_token {

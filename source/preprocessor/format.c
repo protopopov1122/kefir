@@ -87,47 +87,6 @@ static kefir_result_t format_punctuator(FILE *out, kefir_punctuator_token_t punc
     return KEFIR_OK;
 }
 
-static kefir_result_t format_constant(FILE *out, const struct kefir_token *token) {
-    switch (token->constant.type) {
-        case KEFIR_CONSTANT_TOKEN_INTEGER:
-        case KEFIR_CONSTANT_TOKEN_LONG_INTEGER:
-        case KEFIR_CONSTANT_TOKEN_LONG_LONG_INTEGER:
-        case KEFIR_CONSTANT_TOKEN_UNSIGNED_INTEGER:
-        case KEFIR_CONSTANT_TOKEN_UNSIGNED_LONG_INTEGER:
-        case KEFIR_CONSTANT_TOKEN_UNSIGNED_LONG_LONG_INTEGER:
-        case KEFIR_CONSTANT_TOKEN_FLOAT:
-        case KEFIR_CONSTANT_TOKEN_DOUBLE:
-            return KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Unexpected constant as preprocessor token");
-
-        case KEFIR_CONSTANT_TOKEN_CHAR:
-            fprintf(out, "%c", token->constant.character);
-            break;
-
-        case KEFIR_CONSTANT_TOKEN_WIDE_CHAR:
-            fprintf(out, "%lc", token->constant.character);
-            break;
-
-        case KEFIR_CONSTANT_TOKEN_UNICODE16_CHAR: {
-            char buffer[MB_CUR_MAX];
-            mbstate_t mbstate;
-            int sz = (int) c16rtomb(buffer, token->constant.unicode16_char, &mbstate);
-            REQUIRE(sz >= 0,
-                    KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Failed to convert Unicode16 character to multibyte"));
-            fprintf(out, "%*s", sz, buffer);
-        } break;
-
-        case KEFIR_CONSTANT_TOKEN_UNICODE32_CHAR: {
-            char buffer[MB_CUR_MAX];
-            mbstate_t mbstate;
-            int sz = (int) c32rtomb(buffer, token->constant.unicode32_char, &mbstate);
-            REQUIRE(sz >= 0,
-                    KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Failed to convert Unicode32 character to multibyte"));
-            fprintf(out, "%*s", sz, buffer);
-        } break;
-    }
-    return KEFIR_OK;
-}
-
 static kefir_result_t format_char(FILE *out, char chr) {
     switch (chr) {
         case '\'':
@@ -185,6 +144,112 @@ static kefir_result_t format_char(FILE *out, char chr) {
                 fprintf(out, "\\%03o", chr);
             }
             break;
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t format_wchar(FILE *out, wchar_t chr) {
+    switch (chr) {
+        case L'\'':
+            fprintf(out, "\\\'");
+            break;
+
+        case L'\"':
+            fprintf(out, "\\\"");
+            break;
+
+        case L'\?':
+            fprintf(out, "\\\?");
+            break;
+
+        case L'\\':
+            fprintf(out, "\\\\");
+            break;
+
+        case L'\a':
+            fprintf(out, "\\a");
+            break;
+
+        case L'\b':
+            fprintf(out, "\\b");
+            break;
+
+        case L'\f':
+            fprintf(out, "\\f");
+            break;
+
+        case L'\n':
+            fprintf(out, "\\n");
+            break;
+
+        case L'\r':
+            fprintf(out, "\\r");
+            break;
+
+        case L'\t':
+            fprintf(out, "\\t");
+            break;
+
+        case L'\v':
+            fprintf(out, "\\v");
+            break;
+
+        case L'\0':
+            fprintf(out, "\\0");
+            break;
+
+        default:
+            if (iswprint(chr)) {
+                fprintf(out, "%lc", chr);
+            } else {
+                fprintf(out, "\\x%x", chr);
+            }
+            break;
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t format_constant(FILE *out, const struct kefir_token *token) {
+    switch (token->constant.type) {
+        case KEFIR_CONSTANT_TOKEN_INTEGER:
+        case KEFIR_CONSTANT_TOKEN_LONG_INTEGER:
+        case KEFIR_CONSTANT_TOKEN_LONG_LONG_INTEGER:
+        case KEFIR_CONSTANT_TOKEN_UNSIGNED_INTEGER:
+        case KEFIR_CONSTANT_TOKEN_UNSIGNED_LONG_INTEGER:
+        case KEFIR_CONSTANT_TOKEN_UNSIGNED_LONG_LONG_INTEGER:
+        case KEFIR_CONSTANT_TOKEN_FLOAT:
+        case KEFIR_CONSTANT_TOKEN_DOUBLE:
+            return KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Unexpected constant as preprocessor token");
+
+        case KEFIR_CONSTANT_TOKEN_CHAR:
+            fprintf(out, "'");
+            REQUIRE_OK(format_char(out, token->constant.character));
+            fprintf(out, "'");
+            break;
+
+        case KEFIR_CONSTANT_TOKEN_WIDE_CHAR:
+            fprintf(out, "'");
+            REQUIRE_OK(format_wchar(out, token->constant.wide_char));
+            fprintf(out, "'");
+            break;
+
+        case KEFIR_CONSTANT_TOKEN_UNICODE16_CHAR: {
+            char buffer[MB_CUR_MAX];
+            mbstate_t mbstate;
+            int sz = (int) c16rtomb(buffer, token->constant.unicode16_char, &mbstate);
+            REQUIRE(sz >= 0,
+                    KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Failed to convert Unicode16 character to multibyte"));
+            fprintf(out, "%*s", sz, buffer);
+        } break;
+
+        case KEFIR_CONSTANT_TOKEN_UNICODE32_CHAR: {
+            char buffer[MB_CUR_MAX];
+            mbstate_t mbstate;
+            int sz = (int) c32rtomb(buffer, token->constant.unicode32_char, &mbstate);
+            REQUIRE(sz >= 0,
+                    KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Failed to convert Unicode32 character to multibyte"));
+            fprintf(out, "%*s", sz, buffer);
+        } break;
     }
     return KEFIR_OK;
 }
@@ -281,6 +346,9 @@ static kefir_result_t format_token(FILE *out, const struct kefir_token *token,
             } else {
                 fprintf(out, "\"%s\"", token->pp_header_name.header_name);
             }
+            break;
+
+        case KEFIR_TOKEN_PP_PLACEMAKER:
             break;
     }
     return KEFIR_OK;

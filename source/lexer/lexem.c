@@ -397,6 +397,7 @@ kefir_result_t kefir_token_free(struct kefir_mem *mem, struct kefir_token *token
         case KEFIR_TOKEN_CONSTANT:
         case KEFIR_TOKEN_PUNCTUATOR:
         case KEFIR_TOKEN_PP_WHITESPACE:
+        case KEFIR_TOKEN_PP_PLACEMAKER:
             break;
     }
     return KEFIR_OK;

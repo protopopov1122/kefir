@@ -24,11 +24,12 @@
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"
 
-static kefir_result_t substitute_object_macro(struct kefir_mem *mem, struct kefir_preprocessor_token_sequence *seq,
+static kefir_result_t substitute_object_macro(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                              struct kefir_preprocessor_token_sequence *seq,
                                               const struct kefir_preprocessor_macro *macro) {
     struct kefir_token_buffer subst_buf;
     REQUIRE_OK(kefir_token_buffer_init(&subst_buf));
-    kefir_result_t res = macro->apply(mem, macro, NULL, &subst_buf);
+    kefir_result_t res = macro->apply(mem, macro, preprocessor->lexer.symbols, NULL, &subst_buf);
     REQUIRE_CHAIN(&res, kefir_preprocessor_token_sequence_push_front(mem, seq, &subst_buf));
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_token_buffer_free(mem, &subst_buf);
@@ -140,6 +141,9 @@ static kefir_result_t scan_function_macro_arguments(struct kefir_mem *mem, struc
                 remaining_args--;
                 REQUIRE(remaining_args > 0 || vararg,
                         KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, NULL, "Unexpected comma"));
+                if (kefir_list_length(args) == 0) {
+                    REQUIRE_OK(function_macro_arguments_push(mem, args));
+                }
                 REQUIRE_OK(function_macro_arguments_push(mem, args));
                 REQUIRE_OK(kefir_preprocessor_token_sequence_next(mem, seq, NULL));
                 REQUIRE_OK(kefir_preprocessor_token_sequence_skip_whitespaces(mem, seq, NULL, NULL));
@@ -169,11 +173,12 @@ static kefir_result_t scan_function_macro_arguments(struct kefir_mem *mem, struc
 }
 
 static kefir_result_t apply_function_macro(struct kefir_mem *mem, struct kefir_preprocessor_token_sequence *seq,
+                                           struct kefir_preprocessor *preprocessor,
                                            const struct kefir_preprocessor_macro *macro,
                                            const struct kefir_list *args) {
     struct kefir_token_buffer subst_buf;
     REQUIRE_OK(kefir_token_buffer_init(&subst_buf));
-    kefir_result_t res = macro->apply(mem, macro, args, &subst_buf);
+    kefir_result_t res = macro->apply(mem, macro, preprocessor->lexer.symbols, args, &subst_buf);
     REQUIRE_CHAIN(&res, kefir_preprocessor_token_sequence_push_front(mem, seq, &subst_buf));
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_token_buffer_free(mem, &subst_buf);
@@ -194,7 +199,7 @@ static kefir_result_t substitute_function_macro_impl(struct kefir_mem *mem, stru
     REQUIRE_OK(kefir_list_init(&arguments));
     REQUIRE_OK(kefir_list_on_remove(&arguments, free_argument, NULL));
     kefir_result_t res = scan_function_macro_arguments(mem, preprocessor, seq, &arguments, argc, vararg);
-    REQUIRE_CHAIN(&res, apply_function_macro(mem, seq, macro, &arguments));
+    REQUIRE_CHAIN(&res, apply_function_macro(mem, seq, preprocessor, macro, &arguments));
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_list_free(mem, &arguments);
         return res;
@@ -241,7 +246,7 @@ static kefir_result_t substitute_identifier(struct kefir_mem *mem, struct kefir_
     }
 
     if (macro->type == KEFIR_PREPROCESSOR_MACRO_OBJECT) {
-        REQUIRE_OK(substitute_object_macro(mem, seq, macro));
+        REQUIRE_OK(substitute_object_macro(mem, preprocessor, seq, macro));
     } else {
         REQUIRE_OK(substitute_function_macro(mem, preprocessor, seq, macro));
     }
