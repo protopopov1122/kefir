@@ -41,20 +41,6 @@ static kefir_result_t user_macro_argc(const struct kefir_preprocessor_macro *mac
     return KEFIR_OK;
 }
 
-static kefir_result_t apply_object_macro(struct kefir_mem *mem, const struct kefir_preprocessor_user_macro *user_macro,
-                                         struct kefir_token_buffer *buffer) {
-    struct kefir_token token;
-    for (kefir_size_t i = 0; i < user_macro->replacement.length; i++) {
-        REQUIRE_OK(kefir_token_copy(mem, &token, &user_macro->replacement.tokens[i]));
-        kefir_result_t res = kefir_token_buffer_emplace(mem, buffer, &token);
-        REQUIRE_ELSE(res == KEFIR_OK, {
-            kefir_token_free(mem, &token);
-            return res;
-        });
-    }
-    return KEFIR_OK;
-}
-
 static kefir_result_t build_function_macro_args_tree(struct kefir_mem *mem,
                                                      const struct kefir_preprocessor_user_macro *user_macro,
                                                      const struct kefir_list *args, struct kefir_hashtree *arg_tree) {
@@ -141,7 +127,7 @@ static const struct kefir_token PlacemakerToken = {.klass = KEFIR_TOKEN_PP_PLACE
 static kefir_result_t concat_resolve_left_argument(struct kefir_mem *mem, const struct kefir_hashtree *arg_tree,
                                                    struct kefir_token_buffer *buffer, const struct kefir_token *arg,
                                                    const struct kefir_token **result) {
-    if (arg->klass == KEFIR_TOKEN_IDENTIFIER) {
+    if (arg->klass == KEFIR_TOKEN_IDENTIFIER && arg_tree != NULL) {
         struct kefir_hashtree_node *node;
         kefir_result_t res = kefir_hashtree_at(arg_tree, (kefir_hashtree_key_t) arg->identifier, &node);
         if (res != KEFIR_NOT_FOUND) {
@@ -173,7 +159,7 @@ static kefir_result_t concat_resolve_left_argument(struct kefir_mem *mem, const 
 static kefir_result_t concat_resolve_right_argument(struct kefir_mem *mem, const struct kefir_hashtree *arg_tree,
                                                     struct kefir_token_buffer *buffer, const struct kefir_token *arg,
                                                     const struct kefir_token **result) {
-    if (arg->klass == KEFIR_TOKEN_IDENTIFIER) {
+    if (arg->klass == KEFIR_TOKEN_IDENTIFIER && arg_tree != NULL) {
         struct kefir_hashtree_node *node;
         kefir_result_t res = kefir_hashtree_at(arg_tree, (kefir_hashtree_key_t) arg->identifier, &node);
         if (res != KEFIR_NOT_FOUND) {
@@ -244,9 +230,9 @@ static kefir_result_t concat_tokens_impl(struct kefir_mem *mem, struct kefir_sym
     return KEFIR_OK;
 }
 
-static kefir_result_t fn_macro_concat_punctuators(struct kefir_mem *mem, struct kefir_token_buffer *buffer,
-                                                  kefir_punctuator_token_t punctuator1,
-                                                  kefir_punctuator_token_t punctuator2) {
+static kefir_result_t macro_concat_punctuators(struct kefir_mem *mem, struct kefir_token_buffer *buffer,
+                                               kefir_punctuator_token_t punctuator1,
+                                               kefir_punctuator_token_t punctuator2) {
     static const struct {
         kefir_punctuator_token_t left;
         kefir_punctuator_token_t right;
@@ -296,9 +282,9 @@ static kefir_result_t fn_macro_concat_punctuators(struct kefir_mem *mem, struct 
     return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to concatenate punctuators");
 }
 
-static kefir_result_t fn_macro_concatenation_impl(struct kefir_mem *mem, struct kefir_symbol_table *symbols,
-                                                  struct kefir_token_buffer *buffer, const struct kefir_token *left,
-                                                  const struct kefir_token *right) {
+static kefir_result_t macro_concatenation_impl(struct kefir_mem *mem, struct kefir_symbol_table *symbols,
+                                               struct kefir_token_buffer *buffer, const struct kefir_token *left,
+                                               const struct kefir_token *right) {
     if (left->klass == KEFIR_TOKEN_PP_PLACEMAKER) {
         struct kefir_token token;
         REQUIRE_OK(kefir_token_copy(mem, &token, right));
@@ -338,7 +324,7 @@ static kefir_result_t fn_macro_concatenation_impl(struct kefir_mem *mem, struct 
                 REQUIRE(
                     right->klass == KEFIR_TOKEN_PUNCTUATOR,
                     KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &right->source_location, "Expected punctuator token"));
-                kefir_result_t res = fn_macro_concat_punctuators(mem, buffer, left->punctuator, right->punctuator);
+                kefir_result_t res = macro_concat_punctuators(mem, buffer, left->punctuator, right->punctuator);
                 if (res == KEFIR_NO_MATCH) {
                     return KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &left->source_location,
                                                   "Unable to concatenate punctuators");
@@ -367,16 +353,16 @@ static kefir_result_t fn_macro_concatenation_impl(struct kefir_mem *mem, struct 
     return KEFIR_OK;
 }
 
-static kefir_result_t fn_macro_concatenation(struct kefir_mem *mem, const struct kefir_hashtree *arg_tree,
-                                             struct kefir_symbol_table *symbols, struct kefir_token_buffer *buffer,
-                                             const struct kefir_token *arg1, const struct kefir_token *arg2) {
+static kefir_result_t macro_concatenation(struct kefir_mem *mem, const struct kefir_hashtree *arg_tree,
+                                          struct kefir_symbol_table *symbols, struct kefir_token_buffer *buffer,
+                                          const struct kefir_token *arg1, const struct kefir_token *arg2) {
     const struct kefir_token *left;
     const struct kefir_token *right;
     struct kefir_token_buffer tail;
     REQUIRE_OK(concat_resolve_left_argument(mem, arg_tree, buffer, arg1, &left));
     REQUIRE_OK(kefir_token_buffer_init(&tail));
     kefir_result_t res = concat_resolve_right_argument(mem, arg_tree, &tail, arg2, &right);
-    REQUIRE_CHAIN(&res, fn_macro_concatenation_impl(mem, symbols, buffer, left, right));
+    REQUIRE_CHAIN(&res, macro_concatenation_impl(mem, symbols, buffer, left, right));
     REQUIRE_CHAIN(&res, kefir_token_buffer_insert(mem, buffer, &tail));
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_token_buffer_free(mem, &tail);
@@ -403,8 +389,8 @@ static kefir_result_t run_function_macro_substitutions(struct kefir_mem *mem,
                     KEFIR_SET_SOURCE_ERROR(
                         KEFIR_LEXER_ERROR, &user_macro->replacement.tokens[i + 1].source_location,
                         "Preprocessor concatenation operator cannot be placed at the end of macro replacement list"));
-            REQUIRE_OK(fn_macro_concatenation(mem, arg_tree, symbols, buffer, current_token,
-                                              &user_macro->replacement.tokens[i + 2]));
+            REQUIRE_OK(macro_concatenation(mem, arg_tree, symbols, buffer, current_token,
+                                           &user_macro->replacement.tokens[i + 2]));
             current_token = NULL;
             i += 2;
         } else if (current_token->klass == KEFIR_TOKEN_IDENTIFIER) {
@@ -425,7 +411,7 @@ static kefir_result_t run_function_macro_substitutions(struct kefir_mem *mem,
             current_token = NULL;
             i++;
         } else if (current_token->klass == KEFIR_TOKEN_PUNCTUATOR &&
-                   current_token->punctuator == KEFIR_PUNCTUATOR_HASH) {
+                   current_token->punctuator == KEFIR_PUNCTUATOR_DOUBLE_HASH) {
             return KEFIR_SET_SOURCE_ERROR(
                 KEFIR_LEXER_ERROR, &user_macro->replacement.tokens[i + 1].source_location,
                 "Preprocessor concatenation operator cannot be placed at the beginning of macro replacement list");
@@ -464,6 +450,38 @@ static kefir_result_t apply_function_macro(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+static kefir_result_t apply_object_macro(struct kefir_mem *mem, const struct kefir_preprocessor_user_macro *user_macro,
+                                         struct kefir_symbol_table *symbols, struct kefir_token_buffer *buffer) {
+    struct kefir_token token;
+    for (kefir_size_t i = 0; i < user_macro->replacement.length; i++) {
+        const struct kefir_token *current_token = &user_macro->replacement.tokens[i];
+        if (i + 1 < user_macro->replacement.length &&
+            user_macro->replacement.tokens[i + 1].klass == KEFIR_TOKEN_PUNCTUATOR &&
+            user_macro->replacement.tokens[i + 1].punctuator == KEFIR_PUNCTUATOR_DOUBLE_HASH) {
+            REQUIRE(i + 2 < user_macro->replacement.length,
+                    KEFIR_SET_SOURCE_ERROR(
+                        KEFIR_LEXER_ERROR, &user_macro->replacement.tokens[i + 1].source_location,
+                        "Preprocessor concatenation operator cannot be placed at the end of macro replacement list"));
+            REQUIRE_OK(
+                macro_concatenation(mem, NULL, symbols, buffer, current_token, &user_macro->replacement.tokens[i + 2]));
+            i += 2;
+        } else if (current_token->klass == KEFIR_TOKEN_PUNCTUATOR &&
+                   current_token->punctuator == KEFIR_PUNCTUATOR_DOUBLE_HASH) {
+            return KEFIR_SET_SOURCE_ERROR(
+                KEFIR_LEXER_ERROR, &user_macro->replacement.tokens[i + 1].source_location,
+                "Preprocessor concatenation operator cannot be placed at the beginning of macro replacement list");
+        } else {
+            REQUIRE_OK(kefir_token_copy(mem, &token, current_token));
+            kefir_result_t res = kefir_token_buffer_emplace(mem, buffer, &token);
+            REQUIRE_ELSE(res == KEFIR_OK, {
+                kefir_token_free(mem, &token);
+                return res;
+            });
+        }
+    }
+    return KEFIR_OK;
+}
+
 static kefir_result_t user_macro_apply(struct kefir_mem *mem, const struct kefir_preprocessor_macro *macro,
                                        struct kefir_symbol_table *symbols, const struct kefir_list *args,
                                        struct kefir_token_buffer *buffer) {
@@ -481,7 +499,7 @@ static kefir_result_t user_macro_apply(struct kefir_mem *mem, const struct kefir
     } else {
         REQUIRE(args == NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected empty macro argument list"));
         REQUIRE_OK(kefir_token_buffer_init(&inner_buffer));
-        res = apply_object_macro(mem, user_macro, &inner_buffer);
+        res = apply_object_macro(mem, user_macro, symbols, &inner_buffer);
     }
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_token_buffer_free(mem, &inner_buffer);
