@@ -77,5 +77,7 @@ kefir_result_t kefir_preprocessor_user_macro_scope_insert(struct kefir_mem *,
                                                           struct kefir_preprocessor_user_macro *);
 kefir_result_t kefir_preprocessor_user_macro_scope_at(const struct kefir_preprocessor_user_macro_scope *, const char *,
                                                       const struct kefir_preprocessor_user_macro **);
+kefir_result_t kefir_preprocessor_user_macro_scope_remove(struct kefir_mem *,
+                                                          struct kefir_preprocessor_user_macro_scope *, const char *);
 
 #endif

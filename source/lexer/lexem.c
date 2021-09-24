@@ -49,9 +49,9 @@ kefir_result_t kefir_token_new_identifier(struct kefir_mem *mem, struct kefir_sy
     REQUIRE_OK(kefir_source_location_empty(&token->source_location));
 
     if (symbols != NULL) {
-        identifier = kefir_symbol_table_insert(mem, symbols, identifier, NULL);
-        REQUIRE(identifier != NULL,
-                KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to insert identifier into symbol table"));
+        const char *copy = kefir_symbol_table_insert(mem, symbols, identifier, NULL);
+        REQUIRE(copy != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to insert identifier into symbol table"));
+        identifier = copy;
     }
     token->klass = KEFIR_TOKEN_IDENTIFIER;
     token->identifier = identifier;

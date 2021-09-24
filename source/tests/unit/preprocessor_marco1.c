@@ -105,7 +105,6 @@ DEFINE_CASE(preprocessor_macro_user_scope1, "Preprocessor - user scope") {
     ASSERT(macro == macro3);
 
     ASSERT_OK(kefir_preprocessor_user_macro_scope_insert(&kft_mem, &scope2, macro4));
-    ASSERT(kefir_preprocessor_user_macro_scope_insert(&kft_mem, &scope2, macro5) == KEFIR_ALREADY_EXISTS);
     ASSERT_OK(kefir_preprocessor_user_macro_scope_insert(&kft_mem, &scope1, macro5));
 
     ASSERT_OK(kefir_preprocessor_user_macro_scope_at(&scope1, "macro1", &macro));

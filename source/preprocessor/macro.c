@@ -727,6 +727,9 @@ kefir_result_t kefir_preprocessor_user_macro_scope_insert(struct kefir_mem *mem,
     REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor macro scope"));
     REQUIRE(macro != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor macro"));
 
+    if (kefir_hashtree_has(&scope->macros, (kefir_hashtree_key_t) macro->macro.identifier)) {
+        REQUIRE_OK(kefir_hashtree_delete(mem, &scope->macros, (kefir_hashtree_key_t) macro->macro.identifier));
+    }
     REQUIRE_OK(kefir_hashtree_insert(mem, &scope->macros, (kefir_hashtree_key_t) macro->macro.identifier,
                                      (kefir_hashtree_value_t) macro));
     return KEFIR_OK;
@@ -747,6 +750,20 @@ kefir_result_t kefir_preprocessor_user_macro_scope_at(const struct kefir_preproc
     } else {
         REQUIRE_OK(res);
         *macro_ptr = (const struct kefir_preprocessor_user_macro *) node->value;
+    }
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_preprocessor_user_macro_scope_remove(struct kefir_mem *mem,
+                                                          struct kefir_preprocessor_user_macro_scope *scope,
+                                                          const char *identifier) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(scope != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor macro scope"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid dentifier"));
+
+    kefir_result_t res = kefir_hashtree_delete(mem, &scope->macros, (kefir_hashtree_key_t) identifier);
+    if (res != KEFIR_NOT_FOUND) {
+        REQUIRE_OK(res);
     }
     return KEFIR_OK;
 }
