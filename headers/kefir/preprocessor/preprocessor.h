@@ -25,15 +25,18 @@
 #include "kefir/preprocessor/macro.h"
 #include "kefir/preprocessor/source_file.h"
 #include "kefir/preprocessor/directives.h"
+#include "kefir/ast/context.h"
 
 typedef struct kefir_preprocessor_context {
     const struct kefir_preprocessor_macro_scope *macros;
     struct kefir_preprocessor_user_macro_scope user_macros;
     const struct kefir_preprocessor_source_locator *source_locator;
+    struct kefir_ast_context *ast_context;
 } kefir_preprocessor_context_t;
 
 kefir_result_t kefir_preprocessor_context_init(struct kefir_preprocessor_context *,
-                                               const struct kefir_preprocessor_source_locator *);
+                                               const struct kefir_preprocessor_source_locator *,
+                                               struct kefir_ast_context *);
 kefir_result_t kefir_preprocessor_context_free(struct kefir_mem *, struct kefir_preprocessor_context *);
 
 typedef struct kefir_preprocessor {
@@ -41,6 +44,11 @@ typedef struct kefir_preprocessor {
     struct kefir_preprocessor_context *context;
     struct kefir_preprocessor_directive_scanner directive_scanner;
 } kefir_preprocessor_t;
+
+typedef enum kefir_preprocessor_substitution_context {
+    KEFIR_PREPROCESSOR_SUBSTITUTION_NORMAL,
+    KEFIR_PREPROCESSOR_SUBSTITUTION_IF_CONDITION
+} kefir_preprocessor_substitution_context_t;
 
 kefir_result_t kefir_preprocessor_init(struct kefir_mem *, struct kefir_preprocessor *, struct kefir_symbol_table *,
                                        struct kefir_lexer_source_cursor *, const struct kefir_lexer_context *,
@@ -51,7 +59,8 @@ kefir_result_t kefir_preprocessor_skip_group(struct kefir_mem *, struct kefir_pr
 kefir_result_t kefir_preprocessor_run_group(struct kefir_mem *, struct kefir_preprocessor *,
                                             struct kefir_token_buffer *);
 kefir_result_t kefir_preprocessor_run_substitutions(struct kefir_mem *, struct kefir_preprocessor *,
-                                                    struct kefir_token_buffer *);
+                                                    struct kefir_token_buffer *,
+                                                    kefir_preprocessor_substitution_context_t);
 kefir_result_t kefir_preprocessor_run(struct kefir_mem *, struct kefir_preprocessor *, struct kefir_token_buffer *);
 
 kefir_result_t kefir_preprocessor_token_convert(struct kefir_mem *, struct kefir_preprocessor *, struct kefir_token *,

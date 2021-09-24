@@ -13,12 +13,15 @@ kefir_result_t kefir_preprocessor_token_convert(struct kefir_mem *mem, struct ke
 
     switch (src->klass) {
         case KEFIR_TOKEN_PP_NUMBER: {
+            struct kefir_lexer_source_cursor_state state;
             struct kefir_lexer_source_cursor cursor;
-            REQUIRE_OK(kefir_lexer_source_cursor_init(&cursor, src->identifier, strlen(src->identifier), NULL));
+            REQUIRE_OK(kefir_lexer_source_cursor_init(&cursor, src->identifier, strlen(src->identifier), ""));
             cursor.location = src->source_location;
+            REQUIRE_OK(kefir_lexer_source_cursor_save(&cursor, &state));
 
             kefir_result_t res = kefir_lexer_scan_floating_point_constant(mem, &cursor, dst);
             if (res == KEFIR_NO_MATCH) {
+                REQUIRE_OK(kefir_lexer_source_cursor_restore(&cursor, &state));
                 res = kefir_lexer_scan_integral_constant(&cursor, preprocessor->lexer.context, dst);
             }
             REQUIRE_OK(res);
@@ -31,7 +34,7 @@ kefir_result_t kefir_preprocessor_token_convert(struct kefir_mem *mem, struct ke
 
         case KEFIR_TOKEN_IDENTIFIER: {
             struct kefir_lexer_source_cursor cursor;
-            REQUIRE_OK(kefir_lexer_source_cursor_init(&cursor, src->identifier, strlen(src->identifier), NULL));
+            REQUIRE_OK(kefir_lexer_source_cursor_init(&cursor, src->identifier, strlen(src->identifier), ""));
             cursor.location = src->source_location;
 
             REQUIRE_OK(kefir_lexer_scan_identifier_or_keyword(mem, &cursor, preprocessor->lexer.symbols,
@@ -68,14 +71,33 @@ kefir_result_t kefir_preprocessor_token_convert_buffer(struct kefir_mem *mem, st
     REQUIRE(src != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid source token buffer"));
 
     for (kefir_size_t i = 0; i < src->length; i++) {
-        struct kefir_token token;
-        REQUIRE_OK(kefir_preprocessor_token_convert(mem, preprocessor, &token, &src->tokens[i]));
-        // TODO Join string literals
-        kefir_result_t res = kefir_token_buffer_emplace(mem, dst, &token);
-        REQUIRE_ELSE(res == KEFIR_OK, {
-            kefir_token_free(mem, &token);
-            return res;
-        });
+        switch (src->tokens[i].klass) {
+            case KEFIR_TOKEN_PP_NUMBER:
+            case KEFIR_TOKEN_IDENTIFIER:
+            case KEFIR_TOKEN_SENTINEL:
+            case KEFIR_TOKEN_KEYWORD:
+            case KEFIR_TOKEN_CONSTANT:
+            case KEFIR_TOKEN_STRING_LITERAL:
+            case KEFIR_TOKEN_PUNCTUATOR: {
+                struct kefir_token token;
+                REQUIRE_OK(kefir_preprocessor_token_convert(mem, preprocessor, &token, &src->tokens[i]));
+                // TODO Join string literals
+                kefir_result_t res = kefir_token_buffer_emplace(mem, dst, &token);
+                REQUIRE_ELSE(res == KEFIR_OK, {
+                    kefir_token_free(mem, &token);
+                    return res;
+                });
+            } break;
+
+            case KEFIR_TOKEN_PP_WHITESPACE:
+                // Skip whitespaces
+                break;
+
+            case KEFIR_TOKEN_PP_HEADER_NAME:
+            case KEFIR_TOKEN_PP_PLACEMAKER:
+                return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER,
+                                       "Encountered unexpected preprocessor token during conversion");
+        }
     }
     return KEFIR_OK;
 }

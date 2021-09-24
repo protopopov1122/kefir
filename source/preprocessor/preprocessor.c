@@ -23,17 +23,24 @@
 #include "kefir/core/error.h"
 #include "kefir/preprocessor/directives.h"
 #include "kefir/core/source_error.h"
+#include "kefir/parser/parser.h"
+#include "kefir/parser/rules.h"
+#include "kefir/ast/analyzer/analyzer.h"
+#include "kefir/ast/constant_expression.h"
 
 kefir_result_t kefir_preprocessor_context_init(struct kefir_preprocessor_context *context,
-                                               const struct kefir_preprocessor_source_locator *locator) {
+                                               const struct kefir_preprocessor_source_locator *locator,
+                                               struct kefir_ast_context *ast_context) {
     REQUIRE(context != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to preprocessor context"));
     REQUIRE(locator != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to preprocessor source locator"));
+    REQUIRE(ast_context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor AST context"));
 
     REQUIRE_OK(kefir_preprocessor_user_macro_scope_init(NULL, &context->user_macros));
     context->source_locator = locator;
     context->macros = &context->user_macros.scope;
+    context->ast_context = ast_context;
     return KEFIR_OK;
 }
 
@@ -139,7 +146,8 @@ static kefir_result_t process_include(struct kefir_mem *mem, struct kefir_prepro
     REQUIRE(directive->pp_tokens.length > 0,
             KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &directive->source_location,
                                    "Expected file path"));  // TODO Provide source location
-    REQUIRE_OK(kefir_preprocessor_run_substitutions(mem, preprocessor, &directive->pp_tokens));
+    REQUIRE_OK(kefir_preprocessor_run_substitutions(mem, preprocessor, &directive->pp_tokens,
+                                                    KEFIR_PREPROCESSOR_SUBSTITUTION_NORMAL));
     struct kefir_token *token = &directive->pp_tokens.tokens[0];
     const char *include_path = NULL;
     kefir_bool_t system_include = false;
@@ -224,9 +232,107 @@ static kefir_result_t process_undef(struct kefir_mem *mem, struct kefir_preproce
     return KEFIR_OK;
 }
 
+static kefir_result_t evaluate_pp_tokens(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                         struct kefir_token_buffer *pp_tokens,
+                                         struct kefir_source_location *source_location, kefir_bool_t *result) {
+    REQUIRE_OK(kefir_preprocessor_run_substitutions(mem, preprocessor, pp_tokens,
+                                                    KEFIR_PREPROCESSOR_SUBSTITUTION_IF_CONDITION));
+    struct kefir_token_buffer tokens;
+    struct kefir_parser_token_cursor cursor;
+    struct kefir_parser parser;
+    struct kefir_ast_node_base *expression = NULL;
+    struct kefir_ast_constant_expression_value expr_value;
+
+    REQUIRE_OK(kefir_token_buffer_init(&tokens));
+    kefir_result_t res = kefir_preprocessor_token_convert_buffer(mem, preprocessor, &tokens, pp_tokens);
+    REQUIRE_CHAIN(&res, kefir_parser_token_cursor_init(&cursor, tokens.tokens, tokens.length));
+    REQUIRE_CHAIN(&res, kefir_parser_init(mem, &parser, preprocessor->lexer.symbols, &cursor));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_token_buffer_free(mem, &tokens);
+        return res;
+    });
+
+    res = KEFIR_PARSER_NEXT_EXPRESSION(mem, &parser, &expression);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_parser_free(mem, &parser);
+        kefir_token_buffer_free(mem, &tokens);
+        return res;
+    });
+
+    res = kefir_parser_free(mem, &parser);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_token_buffer_free(mem, &tokens);
+        return res;
+    });
+
+    res = kefir_token_buffer_free(mem, &tokens);
+    REQUIRE_CHAIN(&res, kefir_ast_analyze_node(mem, preprocessor->context->ast_context, expression));
+    REQUIRE_CHAIN(&res, kefir_ast_constant_expression_value_evaluate(mem, preprocessor->context->ast_context,
+                                                                     expression, &expr_value));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, expression);
+        return res;
+    });
+    REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, expression));
+    switch (expr_value.klass) {
+        case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER:
+            *result = expr_value.integer != 0;
+            break;
+
+        case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT:
+            *result = expr_value.floating_point != 0;
+            break;
+
+        default:
+            return KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, source_location, "Unexpected constant expression type");
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t process_if(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                 struct kefir_preprocessor_directive *directive,
+                                 enum if_condition_state *condition_state, struct kefir_token_buffer *group_buffer) {
+    kefir_bool_t condition;
+    REQUIRE_OK(evaluate_pp_tokens(mem, preprocessor, &directive->pp_tokens, &directive->source_location, &condition));
+    if (!condition) {
+        *condition_state = IF_CONDITION_FAIL;
+        REQUIRE_OK(kefir_preprocessor_skip_group(mem, preprocessor));
+    } else {
+        *condition_state = IF_CONDITION_SUCCESS;
+        REQUIRE_OK(kefir_preprocessor_run_group(mem, preprocessor, group_buffer));
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t process_elif(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                   struct kefir_preprocessor_directive *directive,
+                                   enum if_condition_state *condition_state, kefir_bool_t *continue_scan,
+                                   struct kefir_token_buffer *group_buffer,
+                                   struct kefir_preprocessor_directive_scanner_state *scanner_state) {
+
+    if (*condition_state == IF_CONDITION_NONE) {
+        REQUIRE_OK(kefir_preprocessor_directive_scanner_restore(&preprocessor->directive_scanner, scanner_state));
+        *continue_scan = false;
+    } else if (*condition_state == IF_CONDITION_FAIL) {
+        kefir_bool_t condition;
+        REQUIRE_OK(
+            evaluate_pp_tokens(mem, preprocessor, &directive->pp_tokens, &directive->source_location, &condition));
+        if (condition) {
+            *condition_state = IF_CONDITION_SUCCESS;
+            REQUIRE_OK(kefir_preprocessor_run_group(mem, preprocessor, group_buffer));
+        } else {
+            REQUIRE_OK(kefir_preprocessor_skip_group(mem, preprocessor));
+        }
+    } else {
+        REQUIRE_OK(kefir_preprocessor_skip_group(mem, preprocessor));
+    }
+    return KEFIR_OK;
+}
+
 static kefir_result_t flush_group_buffer(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
                                          struct kefir_token_buffer *buffer, struct kefir_token_buffer *group_buffer) {
-    REQUIRE_OK(kefir_preprocessor_run_substitutions(mem, preprocessor, group_buffer));
+    REQUIRE_OK(
+        kefir_preprocessor_run_substitutions(mem, preprocessor, group_buffer, KEFIR_PREPROCESSOR_SUBSTITUTION_NORMAL));
     REQUIRE_OK(kefir_token_buffer_insert(mem, buffer, group_buffer));
     return KEFIR_OK;
 }
@@ -295,8 +401,13 @@ static kefir_result_t kefir_preprocessor_run_group_impl(struct kefir_mem *mem, s
                 break;
 
             case KEFIR_PREPROCESSOR_DIRECTIVE_IF:
+                REQUIRE_OK(process_if(mem, preprocessor, &directive, &condition_state, group_buffer));
+                break;
+
             case KEFIR_PREPROCESSOR_DIRECTIVE_ELIF:
-                return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "If and elif directives are not implemented yet");
+                REQUIRE_OK(process_elif(mem, preprocessor, &directive, &condition_state, &scan_directives, group_buffer,
+                                        &scanner_state));
+                break;
 
             case KEFIR_PREPROCESSOR_DIRECTIVE_INCLUDE:
                 REQUIRE_OK(flush_group_buffer(mem, preprocessor, buffer, group_buffer));
