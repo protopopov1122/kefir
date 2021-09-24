@@ -54,4 +54,9 @@ kefir_result_t kefir_preprocessor_run_substitutions(struct kefir_mem *, struct k
                                                     struct kefir_token_buffer *);
 kefir_result_t kefir_preprocessor_run(struct kefir_mem *, struct kefir_preprocessor *, struct kefir_token_buffer *);
 
+kefir_result_t kefir_preprocessor_token_convert(struct kefir_mem *, struct kefir_preprocessor *, struct kefir_token *,
+                                                const struct kefir_token *);
+kefir_result_t kefir_preprocessor_token_convert_buffer(struct kefir_mem *, struct kefir_preprocessor *,
+                                                       struct kefir_token_buffer *, const struct kefir_token_buffer *);
+
 #endif
