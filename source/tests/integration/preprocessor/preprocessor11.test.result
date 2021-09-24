@@ -3,3 +3,4 @@
 SUM MUL (x, y) x            -   y(1, 2)
 "100 + 200,     test, \'t\'" printf("TEST", 1, 2, 3, 400000)
     12000   forint
+100200300  abcdef

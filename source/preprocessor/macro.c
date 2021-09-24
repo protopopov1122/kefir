@@ -25,6 +25,8 @@
 #include "kefir/core/hashtree.h"
 #include "kefir/core/source_error.h"
 #include "kefir/preprocessor/format.h"
+#include "kefir/preprocessor/token_sequence.h"
+#include "kefir/lexer/format.h"
 #include <string.h>
 
 static kefir_result_t user_macro_argc(const struct kefir_preprocessor_macro *macro, kefir_size_t *argc_ptr,
@@ -372,62 +374,150 @@ static kefir_result_t macro_concatenation(struct kefir_mem *mem, const struct ke
     return KEFIR_OK;
 }
 
-static kefir_result_t run_function_macro_substitutions(struct kefir_mem *mem,
-                                                       const struct kefir_preprocessor_user_macro *user_macro,
-                                                       struct kefir_symbol_table *symbols,
-                                                       const struct kefir_hashtree *arg_tree,
-                                                       struct kefir_token_buffer *buffer) {
+static kefir_result_t match_concatenation(struct kefir_mem *mem, struct kefir_symbol_table *symbols,
+                                          struct kefir_preprocessor_token_sequence *seq,
+                                          const struct kefir_hashtree *arg_tree, struct kefir_token *left_operand) {
+    if (left_operand->klass == KEFIR_TOKEN_PP_WHITESPACE) {
+        return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match preprocessor concatenation");
+    }
 
-    kefir_result_t res;
-    for (kefir_size_t i = 0; i < user_macro->replacement.length; i++) {
-        const struct kefir_token *current_token = &user_macro->replacement.tokens[i];
+    const struct kefir_token *next_nonws_token = NULL;
+    struct kefir_token_buffer whitespaces;
+    REQUIRE_OK(kefir_token_buffer_init(&whitespaces));
+    kefir_result_t res = kefir_preprocessor_token_sequence_skip_whitespaces(mem, seq, &next_nonws_token, &whitespaces);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_token_buffer_free(mem, &whitespaces);
+        return res;
+    });
+    if (next_nonws_token == NULL || next_nonws_token->klass != KEFIR_TOKEN_PUNCTUATOR ||
+        next_nonws_token->punctuator != KEFIR_PUNCTUATOR_DOUBLE_HASH) {
+        res = kefir_preprocessor_token_sequence_push_front(mem, seq, &whitespaces);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_token_buffer_free(mem, &whitespaces);
+            return res;
+        });
+        REQUIRE_OK(kefir_token_buffer_free(mem, &whitespaces));
+        return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match preprocessor concatenation");
+    }
+    struct kefir_source_location source_location = next_nonws_token->source_location;
+    REQUIRE_OK(kefir_token_buffer_free(mem, &whitespaces));
+    REQUIRE_OK(kefir_preprocessor_token_sequence_next(mem, seq, NULL));
 
-        if (i + 1 < user_macro->replacement.length &&
-            user_macro->replacement.tokens[i + 1].klass == KEFIR_TOKEN_PUNCTUATOR &&
-            user_macro->replacement.tokens[i + 1].punctuator == KEFIR_PUNCTUATOR_DOUBLE_HASH) {
-            // TODO Improve concatenation detection in case of present whitespaces
-            REQUIRE(i + 2 < user_macro->replacement.length,
-                    KEFIR_SET_SOURCE_ERROR(
-                        KEFIR_LEXER_ERROR, &user_macro->replacement.tokens[i + 1].source_location,
-                        "Preprocessor concatenation operator cannot be placed at the end of macro replacement list"));
-            REQUIRE_OK(macro_concatenation(mem, arg_tree, symbols, buffer, current_token,
-                                           &user_macro->replacement.tokens[i + 2]));
-            current_token = NULL;
-            i += 2;
-        } else if (current_token->klass == KEFIR_TOKEN_IDENTIFIER) {
-            res = fn_macro_parameter_substitution(mem, arg_tree, buffer, current_token->identifier);
-            if (res != KEFIR_NO_MATCH) {
-                REQUIRE_OK(res);
-                current_token = NULL;
-            }
-        } else if (current_token->klass == KEFIR_TOKEN_PUNCTUATOR &&
-                   current_token->punctuator == KEFIR_PUNCTUATOR_HASH) {
-            REQUIRE(i + 1 < user_macro->replacement.length &&
-                        user_macro->replacement.tokens[i + 1].klass == KEFIR_TOKEN_IDENTIFIER,
-                    KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &current_token->source_location,
-                                           "Expected # to be followed by macro parameter"));
-            const char *identifier = user_macro->replacement.tokens[i + 1].identifier;
-            REQUIRE_OK(
-                fn_macro_parameter_stringification(mem, arg_tree, buffer, identifier, &current_token->source_location));
-            current_token = NULL;
-            i++;
-        } else if (current_token->klass == KEFIR_TOKEN_PUNCTUATOR &&
-                   current_token->punctuator == KEFIR_PUNCTUATOR_DOUBLE_HASH) {
-            return KEFIR_SET_SOURCE_ERROR(
-                KEFIR_LEXER_ERROR, &user_macro->replacement.tokens[i + 1].source_location,
-                "Preprocessor concatenation operator cannot be placed at the beginning of macro replacement list");
+    const struct kefir_token *right_operand = NULL;
+    REQUIRE_OK(kefir_preprocessor_token_sequence_skip_whitespaces(mem, seq, &right_operand, NULL));
+    REQUIRE(
+        right_operand != NULL,
+        KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &source_location,
+                               "Preprocessor concatenation operator cannot be placed at the end of replacement list"));
+
+    struct kefir_token_buffer result;
+    REQUIRE_OK(kefir_token_buffer_init(&result));
+    res = macro_concatenation(mem, arg_tree, symbols, &result, left_operand, right_operand);
+    REQUIRE_CHAIN(&res, kefir_preprocessor_token_sequence_next(mem, seq, NULL));
+    REQUIRE_CHAIN(&res, kefir_preprocessor_token_sequence_push_front(mem, seq, &result));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_token_buffer_free(mem, &result);
+        return res;
+    });
+    REQUIRE_OK(kefir_token_buffer_free(mem, &result));
+    REQUIRE_OK(kefir_token_free(mem, left_operand));
+    return KEFIR_OK;
+}
+
+static kefir_result_t run_replacement_list_substitutions_impl(struct kefir_mem *mem, struct kefir_symbol_table *symbols,
+                                                              struct kefir_preprocessor_token_sequence *seq,
+                                                              const struct kefir_hashtree *arg_tree,
+                                                              struct kefir_token_buffer *result) {
+    while (true) {
+        struct kefir_token current_token;
+        kefir_result_t res = kefir_preprocessor_token_sequence_next(mem, seq, &current_token);
+        if (res == KEFIR_ITERATOR_END) {
+            break;
+        } else {
+            REQUIRE_OK(res);
         }
 
-        if (current_token != NULL) {
-            struct kefir_token token_copy;
-            REQUIRE_OK(kefir_token_copy(mem, &token_copy, current_token));
-            res = kefir_token_buffer_emplace(mem, buffer, &token_copy);
+        kefir_bool_t matched = false;
+        res = match_concatenation(mem, symbols, seq, arg_tree, &current_token);
+        if (res != KEFIR_NO_MATCH) {
             REQUIRE_ELSE(res == KEFIR_OK, {
-                kefir_token_free(mem, &token_copy);
+                kefir_token_free(mem, &current_token);
+                return res;
+            });
+            matched = true;
+        }
+
+        if (!matched && arg_tree != NULL && current_token.klass == KEFIR_TOKEN_IDENTIFIER) {
+            res = fn_macro_parameter_substitution(mem, arg_tree, result, current_token.identifier);
+            if (res != KEFIR_NO_MATCH) {
+                REQUIRE_ELSE(res == KEFIR_OK, {
+                    kefir_token_free(mem, &current_token);
+                    return res;
+                });
+                REQUIRE_OK(kefir_token_free(mem, &current_token));
+                matched = true;
+            }
+        }
+
+        if (!matched && arg_tree != NULL && current_token.klass == KEFIR_TOKEN_PUNCTUATOR &&
+            current_token.punctuator == KEFIR_PUNCTUATOR_HASH) {
+            struct kefir_source_location source_location = current_token.source_location;
+            const struct kefir_token *param_token = NULL;
+            REQUIRE_OK(kefir_token_free(mem, &current_token));
+            REQUIRE_OK(kefir_preprocessor_token_sequence_skip_whitespaces(mem, seq, &param_token, NULL));
+            REQUIRE(param_token != NULL && param_token->klass == KEFIR_TOKEN_IDENTIFIER,
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &source_location,
+                                           "Expected # to be followed by macro parameter"));
+            const char *identifier = param_token->identifier;
+            REQUIRE_OK(fn_macro_parameter_stringification(mem, arg_tree, result, identifier, &source_location));
+            REQUIRE_OK(kefir_preprocessor_token_sequence_next(mem, seq, NULL));
+            matched = true;
+        }
+
+        if (!matched) {
+            res = kefir_token_buffer_emplace(mem, result, &current_token);
+            REQUIRE_ELSE(res == KEFIR_OK, {
+                kefir_token_free(mem, &current_token);
                 return res;
             });
         }
     }
+    return KEFIR_OK;
+}
+
+static kefir_result_t run_replacement_list_substitutions(struct kefir_mem *mem, struct kefir_symbol_table *symbols,
+                                                         const struct kefir_token_buffer *replacement,
+                                                         const struct kefir_hashtree *arg_tree,
+                                                         struct kefir_token_buffer *buffer) {
+
+    struct kefir_token_buffer replacement_copy;
+    REQUIRE_OK(kefir_token_buffer_init(&replacement_copy));
+    kefir_result_t res = kefir_token_buffer_copy(mem, &replacement_copy, replacement);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_token_buffer_free(mem, &replacement_copy);
+        return res;
+    });
+
+    struct kefir_preprocessor_token_sequence seq;
+    res = kefir_preprocessor_token_sequence_init(&seq);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_token_buffer_free(mem, &replacement_copy);
+        return res;
+    });
+    res = kefir_preprocessor_token_sequence_push_front(mem, &seq, &replacement_copy);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_preprocessor_token_sequence_free(mem, &seq);
+        kefir_token_buffer_free(mem, &replacement_copy);
+        return res;
+    });
+    res = kefir_token_buffer_free(mem, &replacement_copy);
+    REQUIRE_CHAIN(&res, run_replacement_list_substitutions_impl(mem, symbols, &seq, arg_tree, buffer));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_preprocessor_token_sequence_free(mem, &seq);
+        return res;
+    });
+
+    REQUIRE_OK(kefir_preprocessor_token_sequence_free(mem, &seq));
     return KEFIR_OK;
 }
 
@@ -441,7 +531,7 @@ static kefir_result_t apply_function_macro(struct kefir_mem *mem,
     REQUIRE_OK(kefir_hashtree_init(&arg_tree, &kefir_hashtree_str_ops));
 
     kefir_result_t res = build_function_macro_args_tree(mem, user_macro, args, &arg_tree);
-    REQUIRE_CHAIN(&res, run_function_macro_substitutions(mem, user_macro, symbols, &arg_tree, buffer));
+    REQUIRE_CHAIN(&res, run_replacement_list_substitutions(mem, symbols, &user_macro->replacement, &arg_tree, buffer));
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_hashtree_free(mem, &arg_tree);
         return res;
@@ -453,33 +543,7 @@ static kefir_result_t apply_function_macro(struct kefir_mem *mem,
 
 static kefir_result_t apply_object_macro(struct kefir_mem *mem, const struct kefir_preprocessor_user_macro *user_macro,
                                          struct kefir_symbol_table *symbols, struct kefir_token_buffer *buffer) {
-    struct kefir_token token;
-    for (kefir_size_t i = 0; i < user_macro->replacement.length; i++) {
-        const struct kefir_token *current_token = &user_macro->replacement.tokens[i];
-        if (i + 1 < user_macro->replacement.length &&
-            user_macro->replacement.tokens[i + 1].klass == KEFIR_TOKEN_PUNCTUATOR &&
-            user_macro->replacement.tokens[i + 1].punctuator == KEFIR_PUNCTUATOR_DOUBLE_HASH) {
-            REQUIRE(i + 2 < user_macro->replacement.length,
-                    KEFIR_SET_SOURCE_ERROR(
-                        KEFIR_LEXER_ERROR, &user_macro->replacement.tokens[i + 1].source_location,
-                        "Preprocessor concatenation operator cannot be placed at the end of macro replacement list"));
-            REQUIRE_OK(
-                macro_concatenation(mem, NULL, symbols, buffer, current_token, &user_macro->replacement.tokens[i + 2]));
-            i += 2;
-        } else if (current_token->klass == KEFIR_TOKEN_PUNCTUATOR &&
-                   current_token->punctuator == KEFIR_PUNCTUATOR_DOUBLE_HASH) {
-            return KEFIR_SET_SOURCE_ERROR(
-                KEFIR_LEXER_ERROR, &user_macro->replacement.tokens[i + 1].source_location,
-                "Preprocessor concatenation operator cannot be placed at the beginning of macro replacement list");
-        } else {
-            REQUIRE_OK(kefir_token_copy(mem, &token, current_token));
-            kefir_result_t res = kefir_token_buffer_emplace(mem, buffer, &token);
-            REQUIRE_ELSE(res == KEFIR_OK, {
-                kefir_token_free(mem, &token);
-                return res;
-            });
-        }
-    }
+    REQUIRE_OK(run_replacement_list_substitutions(mem, symbols, &user_macro->replacement, NULL, buffer));
     return KEFIR_OK;
 }
 

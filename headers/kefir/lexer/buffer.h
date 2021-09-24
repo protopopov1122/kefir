@@ -34,5 +34,7 @@ kefir_result_t kefir_token_buffer_free(struct kefir_mem *, struct kefir_token_bu
 kefir_result_t kefir_token_buffer_emplace(struct kefir_mem *, struct kefir_token_buffer *, struct kefir_token *);
 kefir_result_t kefir_token_buffer_insert(struct kefir_mem *, struct kefir_token_buffer *, struct kefir_token_buffer *);
 kefir_result_t kefir_token_buffer_pop(struct kefir_mem *, struct kefir_token_buffer *);
+kefir_result_t kefir_token_buffer_copy(struct kefir_mem *, struct kefir_token_buffer *,
+                                       const struct kefir_token_buffer *);
 
 #endif

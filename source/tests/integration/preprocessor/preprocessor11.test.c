@@ -26,17 +26,20 @@
 #include <stdio.h>
 
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
-    const char CONTENT[] = "#define SUM(x, y) (x) + (y)\n"
-                           "SUM(100, 200)\n"
-                           "#      define MUL(x\t\t, \vy)(x)*\t\t\t(y)\n"
-                           "MUL(SUM(1, 2), 3)\n"
-                           "#define    \t FAKE (x, y) x\v           - \t\ty\n"
-                           "SUM MUL FAKE(1, 2)\n"
-                           "#define STR(...) #__VA_LIST__\n"
-                           "#define PRINTF(fmt    , ...) printf(fmt, __VA_LIST__)\n"
-                           "STR(100 + 200,     test,\n't') PRINTF(\"TEST\", 1, 2, 3, 400000)\n"
-                           "#define     CONCAT(    arg1,    arg2)\t arg1##arg2\n"
-                           "    CONCAT(     1,     2000)  CONCAT(,) CONCAT(for, int)";
+    const char CONTENT[] =
+        "#define SUM(x, y) (x) + (y)\n"
+        "SUM(100, 200)\n"
+        "#      define MUL(x\t\t, \vy)(x)*\t\t\t(y)\n"
+        "MUL(SUM(1, 2), 3)\n"
+        "#define    \t FAKE (x, y) x\v           - \t\ty\n"
+        "SUM MUL FAKE(1, 2)\n"
+        "#define STR(...) #__VA_LIST__\n"
+        "#define PRINTF(fmt    , ...) printf(fmt, __VA_LIST__)\n"
+        "STR(100 + 200,     test,\n't') PRINTF(\"TEST\", 1, 2, 3, 400000)\n"
+        "#define     CONCAT(    arg1,    arg2)\t arg1   \t##          \t\v\farg2\n"
+        "    CONCAT(     1,     2000)  CONCAT(,) CONCAT(for, int)\n"
+        "\t#   define CONCAT2(    \targ1,arg2\t\t\t\v\f\r   ,   arg3   )   \t\t\targ1     ##arg2 \t\t\t##arg3   \n"
+        "CONCAT2(100,  200   , \t300)\tCONCAT2(,,)\tCONCAT2(abc,,def)";
 
     struct kefir_symbol_table symbols;
     struct kefir_lexer_context parser_context;

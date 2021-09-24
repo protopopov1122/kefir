@@ -34,7 +34,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                            "EXPR\n"
                            "#define EMPTY \t\t\t                \v\f\r  \n"
                            "#define EMPTY2 EMPTY##EMPTY  \n"
-                           "EMPTY; EMPTY; EMPTY; EMPTY2";
+                           "EMPTY; EMPTY; EMPTY; EMPTY2\n"
+                           "#define EMPTY3 E    \t##M##  \t\t\t\t   P ## T\r##Y##2\n"
+                           "EMPTY3";
 
     struct kefir_symbol_table symbols;
     struct kefir_lexer_context parser_context;
