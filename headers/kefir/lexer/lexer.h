@@ -55,7 +55,10 @@ kefir_result_t kefir_lexer_init_punctuators(struct kefir_mem *, struct kefir_lex
 kefir_result_t kefir_lexer_match_punctuator(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
 
 kefir_result_t kefir_lexer_init_keywords(struct kefir_mem *, struct kefir_lexer *);
-kefir_result_t kefir_lexer_get_keyword(struct kefir_lexer *, const kefir_char32_t *, kefir_keyword_token_t *);
+kefir_result_t kefir_lexer_get_keyword(const struct kefir_trie *, const kefir_char32_t *, kefir_keyword_token_t *);
+kefir_result_t kefir_lexer_scan_identifier_or_keyword(struct kefir_mem *, struct kefir_lexer_source_cursor *,
+                                                      struct kefir_symbol_table *, const struct kefir_trie *,
+                                                      struct kefir_token *);
 kefir_result_t kefir_lexer_match_identifier_or_keyword(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
 kefir_result_t kefir_lexer_match_identifier(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
 
@@ -71,6 +74,11 @@ kefir_result_t kefir_lexer_next_wide_string_literal(struct kefir_mem *, struct k
                                                     kefir_bool_t);
 kefir_result_t kefir_lexer_match_string_literal(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *,
                                                 kefir_bool_t);
+
+kefir_result_t kefir_lexer_scan_integral_constant(struct kefir_lexer_source_cursor *,
+                                                  const struct kefir_lexer_context *, struct kefir_token *);
+kefir_result_t kefir_lexer_scan_floating_point_constant(struct kefir_mem *, struct kefir_lexer_source_cursor *,
+                                                        struct kefir_token *);
 
 kefir_result_t kefir_lexer_match_floating_constant(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
 kefir_result_t kefir_lexer_match_integer_constant(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);

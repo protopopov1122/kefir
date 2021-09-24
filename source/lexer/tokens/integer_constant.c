@@ -155,52 +155,53 @@ static kefir_result_t build_integral_constant(const struct kefir_lexer_context *
     return KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Provided constant exceeds maximum value of its type");
 }
 
-static kefir_result_t next_decimal_constant(struct kefir_lexer *lexer, kefir_uint64_t *value) {
-    kefir_char32_t chr = kefir_lexer_source_cursor_at(lexer->cursor, 0);
+static kefir_result_t next_decimal_constant(struct kefir_lexer_source_cursor *cursor, kefir_uint64_t *value) {
+    kefir_char32_t chr = kefir_lexer_source_cursor_at(cursor, 0);
     REQUIRE(kefir_isdigit32(chr) && chr != U'0',
             KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match decimal integer constant"));
 
     *value = 0;
     for (; kefir_isdigit32(chr);
-         kefir_lexer_source_cursor_next(lexer->cursor, 1), chr = kefir_lexer_source_cursor_at(lexer->cursor, 0)) {
+         kefir_lexer_source_cursor_next(cursor, 1), chr = kefir_lexer_source_cursor_at(cursor, 0)) {
         *value *= 10;
         *value += chr - U'0';
     }
     return KEFIR_OK;
 }
 
-static kefir_result_t next_hexadecimal_constant(struct kefir_lexer *lexer, kefir_uint64_t *value) {
-    kefir_char32_t init_chr = kefir_lexer_source_cursor_at(lexer->cursor, 0);
-    kefir_char32_t init_chr2 = kefir_lexer_source_cursor_at(lexer->cursor, 1);
-    kefir_char32_t chr = kefir_lexer_source_cursor_at(lexer->cursor, 2);
+static kefir_result_t next_hexadecimal_constant(struct kefir_lexer_source_cursor *cursor, kefir_uint64_t *value) {
+    kefir_char32_t init_chr = kefir_lexer_source_cursor_at(cursor, 0);
+    kefir_char32_t init_chr2 = kefir_lexer_source_cursor_at(cursor, 1);
+    kefir_char32_t chr = kefir_lexer_source_cursor_at(cursor, 2);
     REQUIRE(init_chr == U'0' && (init_chr2 == U'x' || init_chr2 == U'X') && kefir_ishexdigit32(chr),
             KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match hexadecimal integer constant"));
-    REQUIRE_OK(kefir_lexer_source_cursor_next(lexer->cursor, 2));
+    REQUIRE_OK(kefir_lexer_source_cursor_next(cursor, 2));
 
     *value = 0;
     for (; kefir_ishexdigit32(chr);
-         kefir_lexer_source_cursor_next(lexer->cursor, 1), chr = kefir_lexer_source_cursor_at(lexer->cursor, 0)) {
+         kefir_lexer_source_cursor_next(cursor, 1), chr = kefir_lexer_source_cursor_at(cursor, 0)) {
         *value <<= 4;
         *value += kefir_hex32todec(chr);
     }
     return KEFIR_OK;
 }
 
-static kefir_result_t next_octal_constant(struct kefir_lexer *lexer, kefir_uint64_t *value) {
-    kefir_char32_t chr = kefir_lexer_source_cursor_at(lexer->cursor, 0);
+static kefir_result_t next_octal_constant(struct kefir_lexer_source_cursor *cursor, kefir_uint64_t *value) {
+    kefir_char32_t chr = kefir_lexer_source_cursor_at(cursor, 0);
     REQUIRE(chr == U'0', KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match octal integer constant"));
 
     *value = 0;
     for (; kefir_isoctdigit32(chr);
-         kefir_lexer_source_cursor_next(lexer->cursor, 1), chr = kefir_lexer_source_cursor_at(lexer->cursor, 0)) {
+         kefir_lexer_source_cursor_next(cursor, 1), chr = kefir_lexer_source_cursor_at(cursor, 0)) {
         *value <<= 3;
         *value += chr - U'0';
     }
     return KEFIR_OK;
 }
 
-static kefir_result_t scan_suffix(struct kefir_lexer *lexer, kefir_bool_t decimal, kefir_uint64_t value,
-                                  struct kefir_token *token) {
+static kefir_result_t scan_suffix(struct kefir_lexer_source_cursor *cursor,
+                                  const struct kefir_lexer_context *lexer_context, kefir_bool_t decimal,
+                                  kefir_uint64_t value, struct kefir_token *token) {
     static const struct Suffix {
         const kefir_char32_t *suffix;
         enum integer_constant_type type;
@@ -233,20 +234,45 @@ static kefir_result_t scan_suffix(struct kefir_lexer *lexer, kefir_bool_t decima
     const struct Suffix *matchedSuffix = NULL;
     for (kefir_size_t i = 0; matchedSuffix == NULL && i < SUFFIXES_LENGTH; i++) {
         const struct Suffix *suffix = &SUFFIXES[i];
-        kefir_result_t res = kefir_lexer_cursor_match_string(lexer->cursor, suffix->suffix);
+        kefir_result_t res = kefir_lexer_cursor_match_string(cursor, suffix->suffix);
         if (res == KEFIR_OK) {
             matchedSuffix = suffix;
-            REQUIRE_OK(kefir_lexer_source_cursor_next(lexer->cursor, kefir_strlen32(suffix->suffix)));
+            REQUIRE_OK(kefir_lexer_source_cursor_next(cursor, kefir_strlen32(suffix->suffix)));
         } else {
             REQUIRE(res == KEFIR_NO_MATCH, res);
         }
     }
 
     if (matchedSuffix == NULL) {
-        REQUIRE_OK(build_integral_constant(lexer->context, CONSTANT_INT, decimal, value, token));
+        REQUIRE_OK(build_integral_constant(lexer_context, CONSTANT_INT, decimal, value, token));
     } else {
-        REQUIRE_OK(build_integral_constant(lexer->context, matchedSuffix->type, decimal, value, token));
+        REQUIRE_OK(build_integral_constant(lexer_context, matchedSuffix->type, decimal, value, token));
     }
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_lexer_scan_integral_constant(struct kefir_lexer_source_cursor *cursor,
+                                                  const struct kefir_lexer_context *lexer_context,
+                                                  struct kefir_token *token) {
+    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid source cursor"));
+    REQUIRE(lexer_context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer context"));
+    REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to token"));
+
+    kefir_uint64_t value = 0;
+    kefir_bool_t decimal = true;
+    kefir_result_t res = next_decimal_constant(cursor, &value);
+    if (res == KEFIR_NO_MATCH) {
+        decimal = false;
+        res = next_hexadecimal_constant(cursor, &value);
+    }
+    if (res == KEFIR_NO_MATCH) {
+        res = next_octal_constant(cursor, &value);
+    }
+    if (res == KEFIR_NO_MATCH) {
+        return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match integer constant");
+    }
+    REQUIRE_OK(res);
+    REQUIRE_OK(scan_suffix(cursor, lexer_context, decimal, value, token));
     return KEFIR_OK;
 }
 
@@ -256,21 +282,7 @@ static kefir_result_t match_impl(struct kefir_mem *mem, struct kefir_lexer *lexe
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct kefir_token *, token, payload);
 
-    kefir_uint64_t value = 0;
-    kefir_bool_t decimal = true;
-    kefir_result_t res = next_decimal_constant(lexer, &value);
-    if (res == KEFIR_NO_MATCH) {
-        decimal = false;
-        res = next_hexadecimal_constant(lexer, &value);
-    }
-    if (res == KEFIR_NO_MATCH) {
-        res = next_octal_constant(lexer, &value);
-    }
-    if (res == KEFIR_NO_MATCH) {
-        return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match integer constant");
-    }
-    REQUIRE_OK(res);
-    REQUIRE_OK(scan_suffix(lexer, decimal, value, token));
+    REQUIRE_OK(kefir_lexer_scan_integral_constant(lexer->cursor, lexer->context, token));
     return KEFIR_OK;
 }
 

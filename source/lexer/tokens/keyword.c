@@ -115,7 +115,7 @@ kefir_result_t kefir_lexer_init_keywords(struct kefir_mem *mem, struct kefir_lex
     return KEFIR_OK;
 }
 
-static kefir_result_t match_keyword(const kefir_char32_t *string, struct kefir_trie *trie,
+static kefir_result_t match_keyword(const kefir_char32_t *string, const struct kefir_trie *trie,
                                     kefir_keyword_token_t *keyword) {
     if (*string == U'\0') {
         REQUIRE(trie->value != KEYWORD_NONE, KEFIR_SET_ERROR(KEFIR_NOT_FOUND, "Unable to match keyword"));
@@ -129,13 +129,13 @@ static kefir_result_t match_keyword(const kefir_char32_t *string, struct kefir_t
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_lexer_get_keyword(struct kefir_lexer *lexer, const kefir_char32_t *string,
+kefir_result_t kefir_lexer_get_keyword(const struct kefir_trie *keywords, const kefir_char32_t *string,
                                        kefir_keyword_token_t *keyword) {
-    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer"));
+    REQUIRE(keywords != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid keyword trie"));
     REQUIRE(string != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string"));
     REQUIRE(keyword != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to keyword"));
 
-    kefir_result_t res = match_keyword(string, &lexer->keywords, keyword);
+    kefir_result_t res = match_keyword(string, keywords, keyword);
     if (res == KEFIR_NOT_FOUND) {
         res = KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match keyword");
     }

@@ -53,21 +53,22 @@ struct match_payload {
     kefir_bool_t map_keywords;
 };
 
-static kefir_result_t match_impl(struct kefir_mem *mem, struct kefir_lexer *lexer, void *payload) {
+kefir_result_t kefir_lexer_scan_identifier_or_keyword(struct kefir_mem *mem, struct kefir_lexer_source_cursor *cursor,
+                                                      struct kefir_symbol_table *symbols,
+                                                      const struct kefir_trie *keywords, struct kefir_token *token) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
-    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer"));
-    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
-    ASSIGN_DECL_CAST(struct match_payload *, param, payload);
+    REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid source cursor"));
+    REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to token"));
 
-    struct kefir_source_location identifier_location = lexer->cursor->location;
+    struct kefir_source_location identifier_location = cursor->location;
     kefir_char32_t identifier[MAX_IDENTIFIER_LENGTH + 1] = {U'\0'};
-    REQUIRE_OK(scan_identifier_nondigit(lexer->cursor, &identifier[0]));
+    REQUIRE_OK(scan_identifier_nondigit(cursor, &identifier[0]));
 
     kefir_size_t length = 1;
     kefir_bool_t scan_identifier = true;
     for (; scan_identifier;) {
         kefir_char32_t chr;
-        kefir_result_t res = scan_identifier_digit(lexer->cursor, &chr);
+        kefir_result_t res = scan_identifier_digit(cursor, &chr);
         if (res == KEFIR_NO_MATCH) {
             scan_identifier = false;
         } else {
@@ -79,7 +80,7 @@ static kefir_result_t match_impl(struct kefir_mem *mem, struct kefir_lexer *lexe
     }
 
     kefir_keyword_token_t keyword;
-    kefir_result_t res = param->map_keywords ? kefir_lexer_get_keyword(lexer, identifier, &keyword) : KEFIR_NO_MATCH;
+    kefir_result_t res = keywords != NULL ? kefir_lexer_get_keyword(keywords, identifier, &keyword) : KEFIR_NO_MATCH;
     if (res == KEFIR_NO_MATCH) {
         char mb_identifier[MB_CUR_MAX * MAX_IDENTIFIER_LENGTH];
         char *mb_identifier_ptr = &mb_identifier[0];
@@ -90,11 +91,22 @@ static kefir_result_t match_impl(struct kefir_mem *mem, struct kefir_lexer *lexe
                     KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Unable to convert wide character to multibyte character"));
             mb_identifier_ptr += sz;
         }
-        REQUIRE_OK(kefir_token_new_identifier(mem, lexer->symbols, mb_identifier, param->token));
+        REQUIRE_OK(kefir_token_new_identifier(mem, symbols, mb_identifier, token));
     } else {
         REQUIRE_OK(res);
-        REQUIRE_OK(kefir_token_new_keyword(keyword, param->token));
+        REQUIRE_OK(kefir_token_new_keyword(keyword, token));
     }
+    return KEFIR_OK;
+}
+
+static kefir_result_t match_impl(struct kefir_mem *mem, struct kefir_lexer *lexer, void *payload) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct match_payload *, param, payload);
+
+    REQUIRE_OK(kefir_lexer_scan_identifier_or_keyword(mem, lexer->cursor, lexer->symbols,
+                                                      param->map_keywords ? &lexer->keywords : NULL, param->token));
     return KEFIR_OK;
 }
 
