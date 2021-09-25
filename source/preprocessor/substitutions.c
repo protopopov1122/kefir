@@ -236,45 +236,116 @@ static kefir_result_t substitute_function_macro(struct kefir_mem *mem, struct ke
     return KEFIR_OK;
 }
 
-static kefir_result_t substitute_identifier(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
-                                            struct kefir_preprocessor_token_sequence *seq, const char *identifier,
-                                            kefir_preprocessor_substitution_context_t subst_context) {
-    const struct kefir_preprocessor_macro *macro = NULL;
-    kefir_result_t res = preprocessor->context->macros->locate(preprocessor->context->macros, identifier, &macro);
-    if (res != KEFIR_OK) {
-        REQUIRE(res == KEFIR_NOT_FOUND, res);
+static kefir_result_t insert_pp_number(struct kefir_mem *mem, struct kefir_preprocessor_token_sequence *seq,
+                                       const char *number_literal) {
+    struct kefir_token number;
+    struct kefir_token_buffer buffer;
+    REQUIRE_OK(kefir_token_buffer_init(&buffer));
+    kefir_result_t res = kefir_token_new_pp_number(mem, number_literal, strlen(number_literal), &number);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_token_buffer_free(mem, &buffer);
+        return res;
+    });
+    res = kefir_token_buffer_emplace(mem, &buffer, &number);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_token_free(mem, &number);
+        kefir_token_buffer_free(mem, &buffer);
+        return res;
+    });
+    res = kefir_preprocessor_token_sequence_push_front(mem, seq, &buffer);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_token_buffer_free(mem, &buffer);
+        return res;
+    });
+    REQUIRE_OK(kefir_token_buffer_free(mem, &buffer));
+    return KEFIR_OK;
+}
 
-        if (subst_context == KEFIR_PREPROCESSOR_SUBSTITUTION_NORMAL) {
-            return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Macro not found for specified identifier");
-        } else {
-            struct kefir_token zero;
-            struct kefir_token_buffer buffer;
-            REQUIRE_OK(kefir_token_buffer_init(&buffer));
-            kefir_result_t res = kefir_token_new_pp_number(mem, "0", 1, &zero);
-            REQUIRE_ELSE(res == KEFIR_OK, {
-                kefir_token_buffer_free(mem, &buffer);
-                return res;
-            });
-            res = kefir_token_buffer_emplace(mem, &buffer, &zero);
-            REQUIRE_ELSE(res == KEFIR_OK, {
-                kefir_token_free(mem, &zero);
-                kefir_token_buffer_free(mem, &buffer);
-                return res;
-            });
-            res = kefir_preprocessor_token_sequence_push_front(mem, seq, &buffer);
-            REQUIRE_ELSE(res == KEFIR_OK, {
-                kefir_token_buffer_free(mem, &buffer);
-                return res;
-            });
-            REQUIRE_OK(kefir_token_buffer_free(mem, &buffer));
-            return KEFIR_OK;
+static kefir_result_t substitute_unknown_identifier(struct kefir_mem *mem,
+                                                    struct kefir_preprocessor_token_sequence *seq,
+                                                    kefir_preprocessor_substitution_context_t subst_context) {
+    REQUIRE(subst_context == KEFIR_PREPROCESSOR_SUBSTITUTION_IF_CONDITION,
+            KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Macro not found for specified identifier"));
+    REQUIRE_OK(insert_pp_number(mem, seq, "0"));
+    return KEFIR_OK;
+}
+
+static kefir_result_t substitute_defined_operator(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                                  struct kefir_preprocessor_token_sequence *seq,
+                                                  const struct kefir_source_location *source_location) {
+    const struct kefir_token *current_token = NULL;
+    REQUIRE_OK(kefir_preprocessor_token_sequence_skip_whitespaces(mem, seq, &current_token, NULL));
+    REQUIRE(current_token != NULL, KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, source_location,
+                                                          "Expected either identifier or left parenthese"));
+
+    const struct kefir_preprocessor_macro *macro = NULL;
+    kefir_bool_t found_identifier = false;
+    if (current_token->klass == KEFIR_TOKEN_IDENTIFIER) {
+        kefir_result_t res =
+            preprocessor->context->macros->locate(preprocessor->context->macros, current_token->identifier, &macro);
+        if (res != KEFIR_NOT_FOUND) {
+            REQUIRE_OK(res);
+            found_identifier = true;
         }
+        REQUIRE_OK(kefir_preprocessor_token_sequence_next(mem, seq, NULL));
+    } else {
+        REQUIRE(current_token->klass == KEFIR_TOKEN_PUNCTUATOR &&
+                    current_token->punctuator == KEFIR_PUNCTUATOR_LEFT_PARENTHESE,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &current_token->source_location,
+                                       "Expected either identifier or left parenthese"));
+        REQUIRE_OK(kefir_preprocessor_token_sequence_next(mem, seq, NULL));
+        REQUIRE_OK(kefir_preprocessor_token_sequence_skip_whitespaces(mem, seq, &current_token, NULL));
+        REQUIRE(current_token != NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, source_location, "Expected identifier"));
+        REQUIRE(current_token->klass == KEFIR_TOKEN_IDENTIFIER,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &current_token->source_location, "Expected identifier"));
+
+        kefir_result_t res =
+            preprocessor->context->macros->locate(preprocessor->context->macros, current_token->identifier, &macro);
+        if (res != KEFIR_NOT_FOUND) {
+            REQUIRE_OK(res);
+            found_identifier = true;
+        }
+
+        REQUIRE_OK(kefir_preprocessor_token_sequence_next(mem, seq, NULL));
+        REQUIRE_OK(kefir_preprocessor_token_sequence_skip_whitespaces(mem, seq, &current_token, NULL));
+        REQUIRE(current_token != NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, source_location, "Expected right parenthese"));
+        REQUIRE(
+            current_token->klass == KEFIR_TOKEN_PUNCTUATOR &&
+                current_token->punctuator == KEFIR_PUNCTUATOR_RIGHT_PARENTHESE,
+            KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &current_token->source_location, "Expected right parenthese"));
+        REQUIRE_OK(kefir_preprocessor_token_sequence_next(mem, seq, NULL));
     }
 
-    if (macro->type == KEFIR_PREPROCESSOR_MACRO_OBJECT) {
-        REQUIRE_OK(substitute_object_macro(mem, preprocessor, seq, macro));
+    if (found_identifier) {
+        REQUIRE_OK(insert_pp_number(mem, seq, "1"));
     } else {
-        REQUIRE_OK(substitute_function_macro(mem, preprocessor, seq, macro));
+        REQUIRE_OK(insert_pp_number(mem, seq, "0"));
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t substitute_identifier(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                            struct kefir_preprocessor_token_sequence *seq, const char *identifier,
+                                            kefir_preprocessor_substitution_context_t subst_context,
+                                            const struct kefir_source_location *source_location) {
+    if (strcmp(identifier, "defined") == 0 && subst_context == KEFIR_PREPROCESSOR_SUBSTITUTION_IF_CONDITION) {
+        REQUIRE_OK(substitute_defined_operator(mem, preprocessor, seq, source_location));
+    } else {
+        const struct kefir_preprocessor_macro *macro = NULL;
+        kefir_result_t res = preprocessor->context->macros->locate(preprocessor->context->macros, identifier, &macro);
+        if (res != KEFIR_OK) {
+            REQUIRE(res == KEFIR_NOT_FOUND, res);
+            REQUIRE_OK(substitute_unknown_identifier(mem, seq, subst_context));
+            return KEFIR_OK;
+        }
+
+        if (macro->type == KEFIR_PREPROCESSOR_MACRO_OBJECT) {
+            REQUIRE_OK(substitute_object_macro(mem, preprocessor, seq, macro));
+        } else {
+            REQUIRE_OK(substitute_function_macro(mem, preprocessor, seq, macro));
+        }
     }
     return KEFIR_OK;
 }
@@ -296,7 +367,8 @@ static kefir_result_t run_substitutions(struct kefir_mem *mem, struct kefir_prep
             if (token.klass == KEFIR_TOKEN_IDENTIFIER &&
                 (!token.preprocessor_props.skip_identifier_subst ||
                  subst_context == KEFIR_PREPROCESSOR_SUBSTITUTION_IF_CONDITION)) {
-                res = substitute_identifier(mem, preprocessor, seq, token.identifier, subst_context);
+                res = substitute_identifier(mem, preprocessor, seq, token.identifier, subst_context,
+                                            &token.source_location);
                 REQUIRE_CHAIN(&res, kefir_token_free(mem, &token));
             }
 
