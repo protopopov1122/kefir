@@ -27,6 +27,7 @@
 #include "kefir/parser/rules.h"
 #include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/ast/constant_expression.h"
+#include "kefir/preprocessor/format.h"
 
 kefir_result_t kefir_preprocessor_context_init(struct kefir_preprocessor_context *context,
                                                const struct kefir_preprocessor_source_locator *locator,
@@ -329,11 +330,125 @@ static kefir_result_t process_elif(struct kefir_mem *mem, struct kefir_preproces
     return KEFIR_OK;
 }
 
+static kefir_result_t process_error(struct kefir_mem *mem, struct kefir_preprocessor_directive *directive) {
+    char *error_message;
+    kefir_size_t error_length;
+    REQUIRE_OK(kefir_preprocessor_format_string(mem, &error_message, &error_length, &directive->pp_tokens,
+                                                KEFIR_PREPROCESSOR_WHITESPACE_FORMAT_SINGLE_SPACE));
+    kefir_result_t res =
+        KEFIR_SET_SOURCE_ERRORF(KEFIR_PREPROCESSOR_ERROR_DIRECTIVE, &directive->source_location, "%s", error_message);
+    KEFIR_FREE(mem, error_message);
+    return res;
+}
+
 static kefir_result_t flush_group_buffer(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
                                          struct kefir_token_buffer *buffer, struct kefir_token_buffer *group_buffer) {
     REQUIRE_OK(
         kefir_preprocessor_run_substitutions(mem, preprocessor, group_buffer, KEFIR_PREPROCESSOR_SUBSTITUTION_NORMAL));
     REQUIRE_OK(kefir_token_buffer_insert(mem, buffer, group_buffer));
+    return KEFIR_OK;
+}
+
+static kefir_result_t run_directive(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                    struct kefir_token_buffer *buffer, struct kefir_token_buffer *group_buffer,
+                                    struct kefir_preprocessor_directive *directive, kefir_bool_t *scan_directives,
+                                    enum if_condition_state *condition_state,
+                                    struct kefir_preprocessor_directive_scanner_state *scanner_state) {
+    switch (directive->type) {
+        case KEFIR_PREPROCESSOR_DIRECTIVE_IFDEF: {
+            const struct kefir_preprocessor_macro *macro = NULL;
+            kefir_result_t res = preprocessor->context->macros->locate(preprocessor->context->macros,
+                                                                       directive->ifdef_directive.identifier, &macro);
+            if (res == KEFIR_NOT_FOUND) {
+                *condition_state = IF_CONDITION_FAIL;
+                REQUIRE_OK(kefir_preprocessor_skip_group(mem, preprocessor));
+            } else {
+                *condition_state = IF_CONDITION_SUCCESS;
+                REQUIRE_OK(res);
+                REQUIRE_OK(kefir_preprocessor_run_group(mem, preprocessor, group_buffer));
+            }
+        } break;
+
+        case KEFIR_PREPROCESSOR_DIRECTIVE_IFNDEF: {
+            const struct kefir_preprocessor_macro *macro = NULL;
+            kefir_result_t res = preprocessor->context->macros->locate(preprocessor->context->macros,
+                                                                       directive->ifdef_directive.identifier, &macro);
+            if (res == KEFIR_NOT_FOUND) {
+                *condition_state = IF_CONDITION_SUCCESS;
+                REQUIRE_OK(kefir_preprocessor_run_group(mem, preprocessor, group_buffer));
+            } else {
+                REQUIRE_OK(res);
+                *condition_state = IF_CONDITION_FAIL;
+                REQUIRE_OK(kefir_preprocessor_skip_group(mem, preprocessor));
+            }
+        } break;
+
+        case KEFIR_PREPROCESSOR_DIRECTIVE_ENDIF:
+            if (*condition_state == IF_CONDITION_NONE) {
+                REQUIRE_OK(
+                    kefir_preprocessor_directive_scanner_restore(&preprocessor->directive_scanner, scanner_state));
+                *scan_directives = false;
+            } else {
+                *condition_state = IF_CONDITION_NONE;
+            }
+            break;
+
+        case KEFIR_PREPROCESSOR_DIRECTIVE_ELSE:
+            if (*condition_state == IF_CONDITION_NONE) {
+                REQUIRE_OK(
+                    kefir_preprocessor_directive_scanner_restore(&preprocessor->directive_scanner, scanner_state));
+                *scan_directives = false;
+            } else if (*condition_state == IF_CONDITION_FAIL) {
+                *condition_state = IF_CONDITION_SUCCESS;
+                REQUIRE_OK(kefir_preprocessor_run_group(mem, preprocessor, group_buffer));
+            } else {
+                REQUIRE_OK(kefir_preprocessor_skip_group(mem, preprocessor));
+            }
+            break;
+
+        case KEFIR_PREPROCESSOR_DIRECTIVE_IF:
+            REQUIRE_OK(process_if(mem, preprocessor, directive, condition_state, group_buffer));
+            break;
+
+        case KEFIR_PREPROCESSOR_DIRECTIVE_ELIF:
+            REQUIRE_OK(process_elif(mem, preprocessor, directive, condition_state, scan_directives, group_buffer,
+                                    scanner_state));
+            break;
+
+        case KEFIR_PREPROCESSOR_DIRECTIVE_INCLUDE:
+            REQUIRE_OK(flush_group_buffer(mem, preprocessor, buffer, group_buffer));
+            REQUIRE_OK(process_include(mem, preprocessor, buffer, directive));
+            break;
+
+        case KEFIR_PREPROCESSOR_DIRECTIVE_DEFINE:
+            REQUIRE_OK(flush_group_buffer(mem, preprocessor, buffer, group_buffer));
+            REQUIRE_OK(process_define(mem, preprocessor, directive));
+            break;
+
+        case KEFIR_PREPROCESSOR_DIRECTIVE_UNDEF:
+            REQUIRE_OK(flush_group_buffer(mem, preprocessor, buffer, group_buffer));
+            REQUIRE_OK(process_undef(mem, preprocessor, directive));
+            break;
+
+        case KEFIR_PREPROCESSOR_DIRECTIVE_ERROR:
+            REQUIRE_OK(process_error(mem, directive));
+            break;
+
+        case KEFIR_PREPROCESSOR_DIRECTIVE_LINE:
+        case KEFIR_PREPROCESSOR_DIRECTIVE_PRAGMA:
+        case KEFIR_PREPROCESSOR_DIRECTIVE_EMPTY:
+        case KEFIR_PREPROCESSOR_DIRECTIVE_NON:
+            // Not implemented
+            break;
+
+        case KEFIR_PREPROCESSOR_DIRECTIVE_PP_TOKEN:
+            REQUIRE_OK(kefir_token_buffer_emplace(mem, group_buffer, &directive->pp_token));
+            break;
+
+        case KEFIR_PREPROCESSOR_DIRECTIVE_SENTINEL:
+            *scan_directives = false;
+            break;
+    }
     return KEFIR_OK;
 }
 
@@ -348,99 +463,12 @@ static kefir_result_t kefir_preprocessor_run_group_impl(struct kefir_mem *mem, s
         struct kefir_preprocessor_directive_scanner_state scanner_state;
         REQUIRE_OK(kefir_preprocessor_directive_scanner_save(&preprocessor->directive_scanner, &scanner_state));
         REQUIRE_OK(kefir_preprocessor_directive_scanner_next(mem, &preprocessor->directive_scanner, &directive));
-        switch (directive.type) {
-            case KEFIR_PREPROCESSOR_DIRECTIVE_IFDEF: {
-                const struct kefir_preprocessor_macro *macro = NULL;
-                kefir_result_t res = preprocessor->context->macros->locate(
-                    preprocessor->context->macros, directive.ifdef_directive.identifier, &macro);
-                if (res == KEFIR_NOT_FOUND) {
-                    condition_state = IF_CONDITION_FAIL;
-                    REQUIRE_OK(kefir_preprocessor_skip_group(mem, preprocessor));
-                } else {
-                    condition_state = IF_CONDITION_SUCCESS;
-                    REQUIRE_OK(res);
-                    REQUIRE_OK(kefir_preprocessor_run_group(mem, preprocessor, group_buffer));
-                }
-            } break;
-
-            case KEFIR_PREPROCESSOR_DIRECTIVE_IFNDEF: {
-                const struct kefir_preprocessor_macro *macro = NULL;
-                kefir_result_t res = preprocessor->context->macros->locate(
-                    preprocessor->context->macros, directive.ifdef_directive.identifier, &macro);
-                if (res == KEFIR_NOT_FOUND) {
-                    condition_state = IF_CONDITION_SUCCESS;
-                    REQUIRE_OK(kefir_preprocessor_run_group(mem, preprocessor, group_buffer));
-                } else {
-                    REQUIRE_OK(res);
-                    condition_state = IF_CONDITION_FAIL;
-                    REQUIRE_OK(kefir_preprocessor_skip_group(mem, preprocessor));
-                }
-            } break;
-
-            case KEFIR_PREPROCESSOR_DIRECTIVE_ENDIF:
-                if (condition_state == IF_CONDITION_NONE) {
-                    REQUIRE_OK(
-                        kefir_preprocessor_directive_scanner_restore(&preprocessor->directive_scanner, &scanner_state));
-                    scan_directives = false;
-                } else {
-                    condition_state = IF_CONDITION_NONE;
-                }
-                break;
-
-            case KEFIR_PREPROCESSOR_DIRECTIVE_ELSE:
-                if (condition_state == IF_CONDITION_NONE) {
-                    REQUIRE_OK(
-                        kefir_preprocessor_directive_scanner_restore(&preprocessor->directive_scanner, &scanner_state));
-                    scan_directives = false;
-                } else if (condition_state == IF_CONDITION_FAIL) {
-                    condition_state = IF_CONDITION_SUCCESS;
-                    REQUIRE_OK(kefir_preprocessor_run_group(mem, preprocessor, group_buffer));
-                } else {
-                    REQUIRE_OK(kefir_preprocessor_skip_group(mem, preprocessor));
-                }
-                break;
-
-            case KEFIR_PREPROCESSOR_DIRECTIVE_IF:
-                REQUIRE_OK(process_if(mem, preprocessor, &directive, &condition_state, group_buffer));
-                break;
-
-            case KEFIR_PREPROCESSOR_DIRECTIVE_ELIF:
-                REQUIRE_OK(process_elif(mem, preprocessor, &directive, &condition_state, &scan_directives, group_buffer,
-                                        &scanner_state));
-                break;
-
-            case KEFIR_PREPROCESSOR_DIRECTIVE_INCLUDE:
-                REQUIRE_OK(flush_group_buffer(mem, preprocessor, buffer, group_buffer));
-                REQUIRE_OK(process_include(mem, preprocessor, buffer, &directive));
-                break;
-
-            case KEFIR_PREPROCESSOR_DIRECTIVE_DEFINE:
-                REQUIRE_OK(flush_group_buffer(mem, preprocessor, buffer, group_buffer));
-                REQUIRE_OK(process_define(mem, preprocessor, &directive));
-                break;
-
-            case KEFIR_PREPROCESSOR_DIRECTIVE_UNDEF:
-                REQUIRE_OK(flush_group_buffer(mem, preprocessor, buffer, group_buffer));
-                REQUIRE_OK(process_undef(mem, preprocessor, &directive));
-                break;
-
-            case KEFIR_PREPROCESSOR_DIRECTIVE_LINE:
-            case KEFIR_PREPROCESSOR_DIRECTIVE_ERROR:
-            case KEFIR_PREPROCESSOR_DIRECTIVE_PRAGMA:
-            case KEFIR_PREPROCESSOR_DIRECTIVE_EMPTY:
-            case KEFIR_PREPROCESSOR_DIRECTIVE_NON:
-                // Not implemented
-                break;
-
-            case KEFIR_PREPROCESSOR_DIRECTIVE_PP_TOKEN:
-                REQUIRE_OK(kefir_token_buffer_emplace(mem, group_buffer, &directive.pp_token));
-                break;
-
-            case KEFIR_PREPROCESSOR_DIRECTIVE_SENTINEL:
-                scan_directives = false;
-                break;
-        }
-
+        kefir_result_t res = run_directive(mem, preprocessor, buffer, group_buffer, &directive, &scan_directives,
+                                           &condition_state, &scanner_state);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_preprocessor_directive_free(mem, &directive);
+            return res;
+        });
         REQUIRE_OK(kefir_preprocessor_directive_free(mem, &directive));
     }
     REQUIRE_OK(flush_group_buffer(mem, preprocessor, buffer, group_buffer));

@@ -153,7 +153,8 @@ typedef enum kefir_result {
     KEFIR_SYNTAX_ERROR,
     KEFIR_ANALYSIS_ERROR,
     KEFIR_NOT_CONSTANT,
-    KEFIR_STATIC_ASSERT
+    KEFIR_STATIC_ASSERT,
+    KEFIR_PREPROCESSOR_ERROR_DIRECTIVE
 } kefir_result_t;
 
 typedef enum kefir_result_category {

@@ -25,23 +25,14 @@
 #include "kefir/preprocessor/format.h"
 #include "kefir/preprocessor/ast_context.h"
 #include "kefir/test/util.h"
+#include "kefir/core/error_format.h"
 #include <stdio.h>
 
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
-    const char CONTENT[] =
-        "#define SUM(x, y) (x) + (y)\n"
-        "SUM(100, 200)\n"
-        "#      define MUL(x\t\t, \vy)(x)*\t\t\t(y)\n"
-        "MUL(SUM(1, 2), 3)\n"
-        "#define    \t FAKE (x, y) x\v           - \t\ty\n"
-        "SUM MUL FAKE(1, 2)\n"
-        "#define STR(...) #__VA_ARGS__\n"
-        "#define PRINTF(fmt    , ...) printf(fmt, __VA_ARGS__)\n"
-        "STR(100 + 200,     test,\n't') PRINTF(\"TEST\", 1, 2, 3, 400000)\n"
-        "#define     CONCAT(    arg1,    arg2)\t arg1   \t##          \t\v\farg2\n"
-        "    CONCAT(     1,     2000)  CONCAT(,) CONCAT(for, int)\n"
-        "\t#   define CONCAT2(    \targ1,arg2\t\t\t\v\f\r   ,   arg3   )   \t\t\targ1     ##arg2 \t\t\t##arg3   \n"
-        "CONCAT2(100,  200   , \t300)\tCONCAT2(,,)\tCONCAT2(abc,,def)";
+    const char CONTENT[] = "#ifdef noerr\n"
+                           "#else\n"
+                           "#error \"Test error was encountered\"\n"
+                           "#endif";
 
     struct kefir_symbol_table symbols;
     struct kefir_lexer_context parser_context;
@@ -61,10 +52,13 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_preprocessor_ast_context_init(&ast_context, &symbols, kefir_ast_default_type_traits(), &env.target_env));
     REQUIRE_OK(kefir_preprocessor_virtual_source_locator_init(&virtual_source));
     REQUIRE_OK(kefir_preprocessor_context_init(&context, &virtual_source.locator, &ast_context.context));
-
-    REQUIRE_OK(kefir_lexer_source_cursor_init(&cursor, CONTENT, sizeof(CONTENT), ""));
+    kefir_format_error_tabular(stdout, kefir_current_error());
+    REQUIRE_OK(kefir_lexer_source_cursor_init(&cursor, CONTENT, sizeof(CONTENT), "fileName"));
     REQUIRE_OK(kefir_preprocessor_init(mem, &preprocessor, &symbols, &cursor, &parser_context, &context));
-    REQUIRE_OK(kefir_preprocessor_run(mem, &preprocessor, &tokens));
+    kefir_preprocessor_run(mem, &preprocessor, &tokens);
+    kefir_format_error_tabular(stdout, kefir_current_error());
+    kefir_format_error_json(stdout, kefir_current_error());
+
     REQUIRE_OK(kefir_preprocessor_free(mem, &preprocessor));
     REQUIRE_OK(kefir_preprocessor_context_free(mem, &context));
     REQUIRE_OK(kefir_preprocessor_virtual_source_locator_free(mem, &virtual_source));

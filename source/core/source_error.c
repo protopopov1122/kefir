@@ -20,6 +20,7 @@
 
 #include "kefir/core/source_error.h"
 #include <stdio.h>
+#include <stdarg.h>
 
 kefir_result_t kefir_set_source_error(kefir_result_t code, const struct kefir_source_location *location,
                                       const char *message, const char *file, unsigned int line,
@@ -40,6 +41,38 @@ kefir_result_t kefir_set_source_error(kefir_result_t code, const struct kefir_so
     } else {
         kefir_source_location_empty(&source_error->source_location);
     }
+    if (error_ptr != NULL) {
+        *error_ptr = error;
+    }
+    return res;
+}
+
+kefir_result_t kefir_set_source_errorf(kefir_result_t code, const struct kefir_source_location *location,
+                                       const char *fmt, const char *file, unsigned int line,
+                                       struct kefir_error **error_ptr, ...) {
+    struct kefir_error *error = NULL;
+    kefir_result_t res = kefir_set_source_error(code, location, fmt, file, line, &error);
+    if (error == NULL) {
+        return res;
+    }
+
+    va_list args;
+    va_start(args, error_ptr);
+    struct kefir_source_error *source_error = (struct kefir_source_error *) error->payload;
+
+    char *message_buf = source_error->message;
+    kefir_size_t message_max_len = KEFIR_SOURCE_ERROR_MESSAGE_LENGTH;
+    if (location != NULL) {
+        int diff;
+        snprintf(source_error->message, KEFIR_SOURCE_ERROR_MESSAGE_LENGTH, "%s@%u:%u %n", location->source,
+                 location->line, location->column, &diff);
+        message_buf += diff;
+        message_max_len -= diff;
+    }
+    vsnprintf(message_buf, message_max_len, fmt, args);
+    va_end(args);
+    error->message = source_error->message;
+
     if (error_ptr != NULL) {
         *error_ptr = error;
     }

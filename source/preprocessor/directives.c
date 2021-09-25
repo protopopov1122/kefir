@@ -176,7 +176,7 @@ kefir_result_t kefir_preprocessor_directive_scanner_match(
         {U"ifndef", KEFIR_PREPROCESSOR_DIRECTIVE_IFNDEF},   {U"elif", KEFIR_PREPROCESSOR_DIRECTIVE_ELIF},
         {U"else", KEFIR_PREPROCESSOR_DIRECTIVE_ELSE},       {U"endif", KEFIR_PREPROCESSOR_DIRECTIVE_ENDIF},
         {U"include", KEFIR_PREPROCESSOR_DIRECTIVE_INCLUDE}, {U"define", KEFIR_PREPROCESSOR_DIRECTIVE_DEFINE},
-        {U"undef", KEFIR_PREPROCESSOR_DIRECTIVE_UNDEF}};
+        {U"undef", KEFIR_PREPROCESSOR_DIRECTIVE_UNDEF},     {U"error", KEFIR_PREPROCESSOR_DIRECTIVE_ERROR}};
     for (kefir_size_t i = 0; i < sizeof(KnownDirectives) / sizeof(KnownDirectives[0]); i++) {
         if (kefir_strcmp32(KnownDirectives[i].literal, directive_name) == 0) {
             *directive_type = KnownDirectives[i].directive;
@@ -439,6 +439,19 @@ static kefir_result_t next_undef(struct kefir_mem *mem, struct kefir_preprocesso
     return KEFIR_OK;
 }
 
+static kefir_result_t next_error(struct kefir_mem *mem, struct kefir_preprocessor_directive_scanner *directive_scanner,
+                                 struct kefir_preprocessor_directive *directive) {
+    directive->type = KEFIR_PREPROCESSOR_DIRECTIVE_ERROR;
+    REQUIRE_OK(kefir_token_buffer_init(&directive->pp_tokens));
+
+    kefir_result_t res = scan_pp_tokens(mem, directive_scanner, &directive->pp_tokens);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_token_buffer_free(mem, &directive->pp_tokens);
+        return res;
+    });
+    return KEFIR_OK;
+}
+
 static kefir_result_t next_non_directive(struct kefir_mem *mem,
                                          struct kefir_preprocessor_directive_scanner *directive_scanner,
                                          struct kefir_preprocessor_directive *directive) {
@@ -524,8 +537,11 @@ kefir_result_t kefir_preprocessor_directive_scanner_next(struct kefir_mem *mem,
             REQUIRE_OK(next_undef(mem, directive_scanner, directive));
             break;
 
-        case KEFIR_PREPROCESSOR_DIRECTIVE_LINE:
         case KEFIR_PREPROCESSOR_DIRECTIVE_ERROR:
+            REQUIRE_OK(next_error(mem, directive_scanner, directive));
+            break;
+
+        case KEFIR_PREPROCESSOR_DIRECTIVE_LINE:
         case KEFIR_PREPROCESSOR_DIRECTIVE_PRAGMA:
             return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Preprocessor directive is not implemented yet");
 

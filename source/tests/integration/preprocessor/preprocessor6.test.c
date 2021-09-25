@@ -144,7 +144,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_token_buffer_emplace(mem, &macro5->replacement, &token));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_LEFT_PARENTHESE, &token));
     REQUIRE_OK(kefir_token_buffer_emplace(mem, &macro5->replacement, &token));
-    REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "__VA_LIST__", &token));
+    REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "__VA_ARGS__", &token));
     REQUIRE_OK(kefir_token_buffer_emplace(mem, &macro5->replacement, &token));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_RIGHT_PARENTHESE, &token));
     REQUIRE_OK(kefir_token_buffer_emplace(mem, &macro5->replacement, &token));
@@ -154,7 +154,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_token_buffer_emplace(mem, &macro5->replacement, &token));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_LEFT_PARENTHESE, &token));
     REQUIRE_OK(kefir_token_buffer_emplace(mem, &macro5->replacement, &token));
-    REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "__VA_LIST__", &token));
+    REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "__VA_ARGS__", &token));
     REQUIRE_OK(kefir_token_buffer_emplace(mem, &macro5->replacement, &token));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_RIGHT_PARENTHESE, &token));
     REQUIRE_OK(kefir_token_buffer_emplace(mem, &macro5->replacement, &token));
@@ -183,7 +183,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_token_buffer_emplace(mem, &macro6->replacement, &token));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_LEFT_PARENTHESE, &token));
     REQUIRE_OK(kefir_token_buffer_emplace(mem, &macro6->replacement, &token));
-    REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "__VA_LIST__", &token));
+    REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "__VA_ARGS__", &token));
     REQUIRE_OK(kefir_token_buffer_emplace(mem, &macro6->replacement, &token));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_RIGHT_PARENTHESE, &token));
     REQUIRE_OK(kefir_token_buffer_emplace(mem, &macro6->replacement, &token));

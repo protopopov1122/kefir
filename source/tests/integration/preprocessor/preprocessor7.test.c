@@ -60,7 +60,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     macro1->vararg = true;
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_HASH, &token));
     REQUIRE_OK(kefir_token_buffer_emplace(mem, &macro1->replacement, &token));
-    REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "__VA_LIST__", &token));
+    REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "__VA_ARGS__", &token));
     REQUIRE_OK(kefir_token_buffer_emplace(mem, &macro1->replacement, &token));
     REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(mem, &context.user_macros, macro1));
 

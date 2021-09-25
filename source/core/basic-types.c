@@ -33,6 +33,7 @@ kefir_result_category_t kefir_result_get_category(kefir_result_t res) {
         case KEFIR_ANALYSIS_ERROR:
         case KEFIR_NOT_CONSTANT:
         case KEFIR_STATIC_ASSERT:
+        case KEFIR_PREPROCESSOR_ERROR_DIRECTIVE:
             return KEFIR_RESULT_CATEGORY_LANGUAGE_ERROR;
     }
     return KEFIR_RESULT_CATEGORY_UNKNOWN;

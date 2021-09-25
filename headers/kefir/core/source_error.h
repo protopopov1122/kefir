@@ -36,7 +36,13 @@ typedef struct kefir_source_error {
 kefir_result_t kefir_set_source_error(kefir_result_t, const struct kefir_source_location *, const char *, const char *,
                                       unsigned int, struct kefir_error **);
 
+kefir_result_t kefir_set_source_errorf(kefir_result_t, const struct kefir_source_location *, const char *, const char *,
+                                       unsigned int, struct kefir_error **, ...);
+
 #define KEFIR_SET_SOURCE_ERROR(_code, _location, _msg) \
     kefir_set_source_error((_code), (_location), (_msg), __FILE__, __LINE__, NULL)
+
+#define KEFIR_SET_SOURCE_ERRORF(_code, _location, _msg, ...) \
+    kefir_set_source_errorf((_code), (_location), (_msg), __FILE__, __LINE__, NULL, __VA_ARGS__)
 
 #endif

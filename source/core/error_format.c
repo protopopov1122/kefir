@@ -176,6 +176,11 @@ void kefir_format_error_tabular(FILE *out, const struct kefir_error *error) {
                 class = "Error";
                 subclass = "Static assert";
                 break;
+
+            case KEFIR_PREPROCESSOR_ERROR_DIRECTIVE:
+                class = "Error";
+                subclass = "Preprocessor directive";
+                break;
         }
 
         fprintf(out, ROW_FMT, i, -max_msg_length, error->message, class, subclass, error->file, error->line);
@@ -291,6 +296,10 @@ static kefir_result_t format_json(FILE *out, const struct kefir_error *error) {
 
             case KEFIR_STATIC_ASSERT:
                 REQUIRE_OK(kefir_json_output_string(&json, "static_assert"));
+                break;
+
+            case KEFIR_PREPROCESSOR_ERROR_DIRECTIVE:
+                REQUIRE_OK(kefir_json_output_string(&json, "preprocessor_error_directive"));
                 break;
         }
 
