@@ -452,6 +452,19 @@ static kefir_result_t next_error(struct kefir_mem *mem, struct kefir_preprocesso
     return KEFIR_OK;
 }
 
+static kefir_result_t next_pragma(struct kefir_mem *mem, struct kefir_preprocessor_directive_scanner *directive_scanner,
+                                  struct kefir_preprocessor_directive *directive) {
+    directive->type = KEFIR_PREPROCESSOR_DIRECTIVE_PRAGMA;
+    REQUIRE_OK(kefir_token_buffer_init(&directive->pp_tokens));
+
+    kefir_result_t res = scan_pp_tokens(mem, directive_scanner, &directive->pp_tokens);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_token_buffer_free(mem, &directive->pp_tokens);
+        return res;
+    });
+    return KEFIR_OK;
+}
+
 static kefir_result_t next_non_directive(struct kefir_mem *mem,
                                          struct kefir_preprocessor_directive_scanner *directive_scanner,
                                          struct kefir_preprocessor_directive *directive) {
@@ -541,8 +554,11 @@ kefir_result_t kefir_preprocessor_directive_scanner_next(struct kefir_mem *mem,
             REQUIRE_OK(next_error(mem, directive_scanner, directive));
             break;
 
-        case KEFIR_PREPROCESSOR_DIRECTIVE_LINE:
         case KEFIR_PREPROCESSOR_DIRECTIVE_PRAGMA:
+            REQUIRE_OK(next_pragma(mem, directive_scanner, directive));
+            break;
+
+        case KEFIR_PREPROCESSOR_DIRECTIVE_LINE:
             return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Preprocessor directive is not implemented yet");
 
         case KEFIR_PREPROCESSOR_DIRECTIVE_EMPTY:

@@ -434,8 +434,11 @@ static kefir_result_t run_directive(struct kefir_mem *mem, struct kefir_preproce
             REQUIRE_OK(process_error(mem, directive));
             break;
 
-        case KEFIR_PREPROCESSOR_DIRECTIVE_LINE:
         case KEFIR_PREPROCESSOR_DIRECTIVE_PRAGMA:
+            // TODO Implement STDC pragmas
+            break;
+
+        case KEFIR_PREPROCESSOR_DIRECTIVE_LINE:
         case KEFIR_PREPROCESSOR_DIRECTIVE_EMPTY:
         case KEFIR_PREPROCESSOR_DIRECTIVE_NON:
             // Not implemented

@@ -25,14 +25,14 @@
 #include "kefir/preprocessor/format.h"
 #include "kefir/preprocessor/ast_context.h"
 #include "kefir/test/util.h"
-#include "kefir/core/error_format.h"
 #include <stdio.h>
 
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
-    const char CONTENT[] = "#ifdef noerr\n"
-                           "#else\n"
-                           "#error \"Test error was encountered\"\n"
-                           "#endif";
+    const char CONTENT[] = "#pragma 123 test\n"
+                           "    # pragma STDC Hello\n"
+                           "pragma _Pragma   ( \"Here\"   )\n"
+                           "  # define X \"XYZ\"\n"
+                           "_Pragma(X)\t pragma Pragma _pragma XYZ";
 
     struct kefir_symbol_table symbols;
     struct kefir_lexer_context parser_context;
@@ -54,9 +54,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_preprocessor_context_init(&context, &virtual_source.locator, &ast_context.context));
     REQUIRE_OK(kefir_lexer_source_cursor_init(&cursor, CONTENT, sizeof(CONTENT), "fileName"));
     REQUIRE_OK(kefir_preprocessor_init(mem, &preprocessor, &symbols, &cursor, &parser_context, &context));
-    kefir_preprocessor_run(mem, &preprocessor, &tokens);
-    kefir_format_error_tabular(stdout, kefir_current_error());
-    kefir_format_error_json(stdout, kefir_current_error());
+    REQUIRE_OK(kefir_preprocessor_run(mem, &preprocessor, &tokens));
 
     REQUIRE_OK(kefir_preprocessor_free(mem, &preprocessor));
     REQUIRE_OK(kefir_preprocessor_context_free(mem, &context));
