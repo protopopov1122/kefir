@@ -22,13 +22,14 @@
 #define KEFIR_PREPROCESSOR_PREPROCESSOR_H_
 
 #include "kefir/lexer/lexer.h"
-#include "kefir/preprocessor/macro.h"
+#include "kefir/preprocessor/user_macro.h"
+#include "kefir/preprocessor/predefined_macro.h"
+#include "kefir/preprocessor/macro_scope.h"
 #include "kefir/preprocessor/source_file.h"
 #include "kefir/preprocessor/directives.h"
 #include "kefir/ast/context.h"
 
 typedef struct kefir_preprocessor_context {
-    const struct kefir_preprocessor_macro_scope *macros;
     struct kefir_preprocessor_user_macro_scope user_macros;
     const struct kefir_preprocessor_source_locator *source_locator;
     struct kefir_ast_context *ast_context;
@@ -43,6 +44,8 @@ typedef struct kefir_preprocessor {
     struct kefir_lexer lexer;
     struct kefir_preprocessor_context *context;
     struct kefir_preprocessor_directive_scanner directive_scanner;
+    struct kefir_preprocessor_predefined_macro_scope predefined_macros;
+    struct kefir_preprocessor_overlay_macro_scope macros;
 } kefir_preprocessor_t;
 
 typedef enum kefir_preprocessor_substitution_context {

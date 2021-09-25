@@ -40,7 +40,6 @@ kefir_result_t kefir_preprocessor_context_init(struct kefir_preprocessor_context
 
     REQUIRE_OK(kefir_preprocessor_user_macro_scope_init(NULL, &context->user_macros));
     context->source_locator = locator;
-    context->macros = &context->user_macros.scope;
     context->ast_context = ast_context;
     return KEFIR_OK;
 }
@@ -52,7 +51,6 @@ kefir_result_t kefir_preprocessor_context_free(struct kefir_mem *mem, struct kef
 
     REQUIRE_OK(kefir_preprocessor_user_macro_scope_free(mem, &context->user_macros));
     context->source_locator = NULL;
-    context->macros = NULL;
     return KEFIR_OK;
 }
 
@@ -67,6 +65,9 @@ kefir_result_t kefir_preprocessor_init(struct kefir_mem *mem, struct kefir_prepr
     REQUIRE(preprocessor_context != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor context"));
 
+    REQUIRE_OK(kefir_preprocessor_predefined_macro_scope_init(&preprocessor->predefined_macros, preprocessor));
+    REQUIRE_OK(kefir_preprocessor_overlay_macro_scope_init(
+        &preprocessor->macros, &preprocessor->predefined_macros.scope, &preprocessor_context->user_macros.scope));
     REQUIRE_OK(kefir_lexer_init(mem, &preprocessor->lexer, symbols, cursor, context));
     kefir_result_t res =
         kefir_preprocessor_directive_scanner_init(&preprocessor->directive_scanner, &preprocessor->lexer);
@@ -357,8 +358,8 @@ static kefir_result_t run_directive(struct kefir_mem *mem, struct kefir_preproce
     switch (directive->type) {
         case KEFIR_PREPROCESSOR_DIRECTIVE_IFDEF: {
             const struct kefir_preprocessor_macro *macro = NULL;
-            kefir_result_t res = preprocessor->context->macros->locate(preprocessor->context->macros,
-                                                                       directive->ifdef_directive.identifier, &macro);
+            kefir_result_t res = preprocessor->macros.scope.locate(&preprocessor->macros.scope,
+                                                                   directive->ifdef_directive.identifier, &macro);
             if (res == KEFIR_NOT_FOUND) {
                 *condition_state = IF_CONDITION_FAIL;
                 REQUIRE_OK(kefir_preprocessor_skip_group(mem, preprocessor));
@@ -371,8 +372,8 @@ static kefir_result_t run_directive(struct kefir_mem *mem, struct kefir_preproce
 
         case KEFIR_PREPROCESSOR_DIRECTIVE_IFNDEF: {
             const struct kefir_preprocessor_macro *macro = NULL;
-            kefir_result_t res = preprocessor->context->macros->locate(preprocessor->context->macros,
-                                                                       directive->ifdef_directive.identifier, &macro);
+            kefir_result_t res = preprocessor->macros.scope.locate(&preprocessor->macros.scope,
+                                                                   directive->ifdef_directive.identifier, &macro);
             if (res == KEFIR_NOT_FOUND) {
                 *condition_state = IF_CONDITION_SUCCESS;
                 REQUIRE_OK(kefir_preprocessor_run_group(mem, preprocessor, group_buffer));

@@ -18,7 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "kefir/preprocessor/macro.h"
+#include "kefir/preprocessor/user_macro.h"
 #include "kefir/test/unit_test.h"
 #include <string.h>
 

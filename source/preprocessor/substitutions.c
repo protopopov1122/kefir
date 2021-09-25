@@ -282,7 +282,7 @@ static kefir_result_t substitute_defined_operator(struct kefir_mem *mem, struct 
     kefir_bool_t found_identifier = false;
     if (current_token->klass == KEFIR_TOKEN_IDENTIFIER) {
         kefir_result_t res =
-            preprocessor->context->macros->locate(preprocessor->context->macros, current_token->identifier, &macro);
+            preprocessor->macros.scope.locate(&preprocessor->macros.scope, current_token->identifier, &macro);
         if (res != KEFIR_NOT_FOUND) {
             REQUIRE_OK(res);
             found_identifier = true;
@@ -301,7 +301,7 @@ static kefir_result_t substitute_defined_operator(struct kefir_mem *mem, struct 
                 KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &current_token->source_location, "Expected identifier"));
 
         kefir_result_t res =
-            preprocessor->context->macros->locate(preprocessor->context->macros, current_token->identifier, &macro);
+            preprocessor->macros.scope.locate(&preprocessor->macros.scope, current_token->identifier, &macro);
         if (res != KEFIR_NOT_FOUND) {
             REQUIRE_OK(res);
             found_identifier = true;
@@ -334,7 +334,7 @@ static kefir_result_t substitute_identifier(struct kefir_mem *mem, struct kefir_
         REQUIRE_OK(substitute_defined_operator(mem, preprocessor, seq, source_location));
     } else {
         const struct kefir_preprocessor_macro *macro = NULL;
-        kefir_result_t res = preprocessor->context->macros->locate(preprocessor->context->macros, identifier, &macro);
+        kefir_result_t res = preprocessor->macros.scope.locate(&preprocessor->macros.scope, identifier, &macro);
         if (res != KEFIR_OK) {
             REQUIRE(res == KEFIR_NOT_FOUND, res);
             REQUIRE_OK(substitute_unknown_identifier(mem, seq, subst_context));
