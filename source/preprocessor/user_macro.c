@@ -548,7 +548,9 @@ static kefir_result_t apply_object_macro(struct kefir_mem *mem, const struct kef
 
 static kefir_result_t user_macro_apply(struct kefir_mem *mem, const struct kefir_preprocessor_macro *macro,
                                        struct kefir_symbol_table *symbols, const struct kefir_list *args,
-                                       struct kefir_token_buffer *buffer) {
+                                       struct kefir_token_buffer *buffer,
+                                       const struct kefir_source_location *source_location) {
+    UNUSED(source_location);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(macro != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor macro"));
     REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));

@@ -8,6 +8,11 @@ typedef struct kefir_preprocessor kefir_preprocessor_t;
 typedef struct kefir_preprocessor_predefined_macro_scope {
     struct kefir_preprocessor_macro_scope scope;
     struct kefir_preprocessor *preprocessor;
+
+    struct {
+        struct kefir_preprocessor_macro file;
+        struct kefir_preprocessor_macro line;
+    } macros;
 } kefir_preprocessor_predefined_macro_scope_t;
 
 kefir_result_t kefir_preprocessor_predefined_macro_scope_init(struct kefir_preprocessor_predefined_macro_scope *,
