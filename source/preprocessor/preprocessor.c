@@ -145,11 +145,10 @@ enum if_condition_state { IF_CONDITION_NONE, IF_CONDITION_SUCCESS, IF_CONDITION_
 static kefir_result_t process_include(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
                                       struct kefir_token_buffer *buffer,
                                       struct kefir_preprocessor_directive *directive) {
-    REQUIRE(directive->pp_tokens.length > 0,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &directive->source_location,
-                                   "Expected file path"));  // TODO Provide source location
     REQUIRE_OK(kefir_preprocessor_run_substitutions(mem, preprocessor, &directive->pp_tokens,
                                                     KEFIR_PREPROCESSOR_SUBSTITUTION_NORMAL));
+    REQUIRE(directive->pp_tokens.length > 0,
+            KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &directive->source_location, "Expected file path"));
     struct kefir_token *token = &directive->pp_tokens.tokens[0];
     const char *include_path = NULL;
     kefir_bool_t system_include = false;
@@ -342,6 +341,43 @@ static kefir_result_t process_error(struct kefir_mem *mem, struct kefir_preproce
     return res;
 }
 
+static kefir_result_t process_line(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                   struct kefir_preprocessor_directive *directive) {
+    REQUIRE_OK(kefir_preprocessor_run_substitutions(mem, preprocessor, &directive->pp_tokens,
+                                                    KEFIR_PREPROCESSOR_SUBSTITUTION_NORMAL));
+    REQUIRE(directive->pp_tokens.length > 0,
+            KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &directive->source_location, "Expected line number"));
+    struct kefir_token *token = &directive->pp_tokens.tokens[0];
+    REQUIRE(token->klass == KEFIR_TOKEN_PP_NUMBER,
+            KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &token->source_location, "Expected line number"));
+
+    char *linenum_end;
+    unsigned long line = strtoul(token->pp_number.number_literal, &linenum_end, 10);
+    REQUIRE(linenum_end == token->pp_number.number_literal + strlen(token->pp_number.number_literal),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &token->source_location,
+                                   "Unable to parse line number as unsigned integer"));
+
+    const char *source_file = NULL;
+    for (kefir_size_t i = 1; i < directive->pp_tokens.length && source_file == NULL; i++) {
+        token = &directive->pp_tokens.tokens[i];
+        if (token->klass != KEFIR_TOKEN_PP_WHITESPACE) {
+            REQUIRE(token->klass == KEFIR_TOKEN_STRING_LITERAL &&
+                        token->string_literal.type == KEFIR_AST_STRING_LITERAL_MULTIBYTE,
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &token->source_location, "Expected valid file name"));
+            source_file =
+                kefir_symbol_table_insert(mem, preprocessor->lexer.symbols, token->string_literal.literal, NULL);
+            REQUIRE(source_file != NULL,
+                    KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to insert file name into symbol table"));
+        }
+    }
+
+    preprocessor->lexer.cursor->location.line = line;
+    if (source_file != NULL) {
+        preprocessor->lexer.cursor->location.source = source_file;
+    }
+    return KEFIR_OK;
+}
+
 static kefir_result_t flush_group_buffer(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
                                          struct kefir_token_buffer *buffer, struct kefir_token_buffer *group_buffer) {
     REQUIRE_OK(
@@ -440,9 +476,12 @@ static kefir_result_t run_directive(struct kefir_mem *mem, struct kefir_preproce
             break;
 
         case KEFIR_PREPROCESSOR_DIRECTIVE_LINE:
+            REQUIRE_OK(process_line(mem, preprocessor, directive));
+            break;
+
         case KEFIR_PREPROCESSOR_DIRECTIVE_EMPTY:
         case KEFIR_PREPROCESSOR_DIRECTIVE_NON:
-            // Not implemented
+            // Skip empty and unknown directives
             break;
 
         case KEFIR_PREPROCESSOR_DIRECTIVE_PP_TOKEN:

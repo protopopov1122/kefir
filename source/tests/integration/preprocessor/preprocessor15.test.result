@@ -1,10 +1,10 @@
-No.  Message                                          Class          Subclass   Compiler ref.
-  0| fileName@3:1  "Test error was encountered" |     Error| Preprocessor directive|  source/preprocessor/preprocessor.c:340
+No.  Message                                         Class          Subclass   Compiler ref.
+  0| fileName@3:1 "Test error was encountered" |     Error| Preprocessor directive|  source/preprocessor/preprocessor.c:340
 [
     {
         "overflow": false,
         "code": "preprocessor_error_directive",
-        "message": "fileName@3:1  \"Test error was encountered\"",
+        "message": "fileName@3:1 \"Test error was encountered\"",
         "origin": {
             "file": "source\/preprocessor\/preprocessor.c",
             "line": 340
