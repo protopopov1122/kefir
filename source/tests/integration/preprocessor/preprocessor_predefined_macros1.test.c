@@ -30,7 +30,21 @@
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     const char CONTENT[] = "__FILE__ __LINE__\n"
                            "__FILE__ __LINE__\t__LINE__\n"
-                           "__FILE__ __LINE__\n";
+                           "__FILE__ __LINE__\n"
+                           "__DATE__ __TIME__\n"
+                           "__STDC__ __STDC_HOSTED__ __STDC_VERSION__\n"
+                           "iso10646 = __STDC_ISO_10646__\n"
+                           "mb_might_neq_wc = __STDC_MB_MIGHT_NEQ_WC__\n"
+                           "utf16 = __STDC_UTF_16__\n"
+                           "utf32 = __STDC_UTF_32__\n"
+                           "analyzable = __STDC_ANALYZABLE__\n"
+                           "iec559 = __STDC_IEC_559__\n"
+                           "iec559_complex = __STDC_IEC_559_COMPLEX__\n"
+                           "lib_ext1 = __STDC_LIB_EXT1__\n"
+                           "no_atomics = __STDC_NO_ATOMICS__\n"
+                           "no_complex = __STDC_NO_COMPLEX__\n"
+                           "no_threads = __STDC_NO_THREADS__\n"
+                           "no_vla = __STDC_NO_VLA__";
 
     struct kefir_symbol_table symbols;
     struct kefir_lexer_context parser_context;
@@ -50,6 +64,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_preprocessor_ast_context_init(&ast_context, &symbols, kefir_ast_default_type_traits(), &env.target_env));
     REQUIRE_OK(kefir_preprocessor_virtual_source_locator_init(&virtual_source));
     REQUIRE_OK(kefir_preprocessor_context_init(&context, &virtual_source.locator, &ast_context.context));
+    context.environment.timestamp = 1632642179;
     REQUIRE_OK(kefir_lexer_source_cursor_init(&cursor, CONTENT, sizeof(CONTENT), "fileName"));
     REQUIRE_OK(kefir_preprocessor_init(mem, &preprocessor, &symbols, &cursor, &parser_context, &context));
     REQUIRE_OK(kefir_preprocessor_run(mem, &preprocessor, &tokens));

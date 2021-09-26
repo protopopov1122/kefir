@@ -22,6 +22,7 @@
 #define KEFIR_PREPROCESSOR_PREDEFINED_MACRO_H_
 
 #include "kefir/preprocessor/macro.h"
+#include "kefir/core/hashtree.h"
 
 typedef struct kefir_preprocessor kefir_preprocessor_t;
 
@@ -32,10 +33,32 @@ typedef struct kefir_preprocessor_predefined_macro_scope {
     struct {
         struct kefir_preprocessor_macro file;
         struct kefir_preprocessor_macro line;
+        struct kefir_preprocessor_macro date;
+        struct kefir_preprocessor_macro time;
+        struct kefir_preprocessor_macro stdc;
+        struct kefir_preprocessor_macro stdc_hosted;
+        struct kefir_preprocessor_macro stdc_version;
+        struct kefir_preprocessor_macro stdc_iso_10646;
+        struct kefir_preprocessor_macro stdc_mb_might_neq_wc;
+        struct kefir_preprocessor_macro stdc_utf16;
+        struct kefir_preprocessor_macro stdc_utf32;
+        struct kefir_preprocessor_macro stdc_analyzable;
+        struct kefir_preprocessor_macro stdc_iec559;
+        struct kefir_preprocessor_macro stdc_iec559_complex;
+        struct kefir_preprocessor_macro stdc_lib_ext1;
+        struct kefir_preprocessor_macro stdc_no_atomics;
+        struct kefir_preprocessor_macro stdc_no_complex;
+        struct kefir_preprocessor_macro stdc_no_threads;
+        struct kefir_preprocessor_macro stdc_no_vla;
     } macros;
+    struct kefir_hashtree macro_tree;
 } kefir_preprocessor_predefined_macro_scope_t;
 
-kefir_result_t kefir_preprocessor_predefined_macro_scope_init(struct kefir_preprocessor_predefined_macro_scope *,
+kefir_result_t kefir_preprocessor_predefined_macro_scope_init(struct kefir_mem *mem,
+                                                              struct kefir_preprocessor_predefined_macro_scope *,
                                                               struct kefir_preprocessor *);
+
+kefir_result_t kefir_preprocessor_predefined_macro_scope_free(struct kefir_mem *mem,
+                                                              struct kefir_preprocessor_predefined_macro_scope *);
 
 #endif

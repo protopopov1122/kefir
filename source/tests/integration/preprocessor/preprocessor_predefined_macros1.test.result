@@ -1,3 +1,17 @@
 "fileName" 1
 "fileName" 2 2
 "fileName" 3
+"Sep 26 2021" "10:42:59"
+1 1 201112L
+iso10646 = 201706L
+mb_might_neq_wc = __STDC_MB_MIGHT_NEQ_WC__
+utf16 = 1
+utf32 = 1
+analyzable = __STDC_ANALYZABLE__
+iec559 = 1
+iec559_complex = __STDC_IEC_559_COMPLEX__
+lib_ext1 = __STDC_LIB_EXT1__
+no_atomics = 1
+no_complex = 1
+no_threads = __STDC_NO_THREADS__
+no_vla = 1

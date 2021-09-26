@@ -41,6 +41,40 @@ kefir_result_t kefir_preprocessor_context_init(struct kefir_preprocessor_context
     REQUIRE_OK(kefir_preprocessor_user_macro_scope_init(NULL, &context->user_macros));
     context->source_locator = locator;
     context->ast_context = ast_context;
+
+    // Predefined macros
+    context->environment.timestamp = time(NULL);
+    context->environment.hosted = true;
+    context->environment.version = 201112L;
+
+    // Environment macros
+    context->environment.stdc_iso10646 = 0;
+    context->environment.stdc_mb_might_neq_wc = false;
+    context->environment.stdc_utf16 = false;
+    context->environment.stdc_utf32 = false;
+
+#ifdef __STDC_ISO_10646__
+    context->environment.stdc_iso10646 = __STDC_ISO_10646__;
+#endif
+#ifdef __STDC_MB_MIGHT_NEQ_WC__
+    context->environment.stdc_mb_might_neq_wc = true;
+#endif
+#ifdef __STDC_UTF_16__
+    context->environment.stdc_utf16 = true;
+#endif
+#ifdef __STDC_UTF_32__
+    context->environment.stdc_utf32 = true;
+#endif
+
+    // Conditional macros
+    context->environment.stdc_analyzable = false;
+    context->environment.stdc_iec559 = true;
+    context->environment.stdc_iec559_complex = false;
+    context->environment.stdc_lib_ext1 = 0;
+    context->environment.stdc_no_atomics = true;
+    context->environment.stdc_no_complex = true;
+    context->environment.stdc_no_threads = false;
+    context->environment.stdc_no_vla = true;
     return KEFIR_OK;
 }
 
@@ -65,17 +99,23 @@ kefir_result_t kefir_preprocessor_init(struct kefir_mem *mem, struct kefir_prepr
     REQUIRE(preprocessor_context != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor context"));
 
-    REQUIRE_OK(kefir_preprocessor_predefined_macro_scope_init(&preprocessor->predefined_macros, preprocessor));
-    REQUIRE_OK(kefir_preprocessor_overlay_macro_scope_init(
-        &preprocessor->macros, &preprocessor->predefined_macros.scope, &preprocessor_context->user_macros.scope));
+    preprocessor->context = preprocessor_context;
     REQUIRE_OK(kefir_lexer_init(mem, &preprocessor->lexer, symbols, cursor, context));
     kefir_result_t res =
         kefir_preprocessor_directive_scanner_init(&preprocessor->directive_scanner, &preprocessor->lexer);
+    REQUIRE_CHAIN(&res,
+                  kefir_preprocessor_predefined_macro_scope_init(mem, &preprocessor->predefined_macros, preprocessor));
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_lexer_free(mem, &preprocessor->lexer);
         return res;
     });
-    preprocessor->context = preprocessor_context;
+    res = kefir_preprocessor_overlay_macro_scope_init(&preprocessor->macros, &preprocessor->predefined_macros.scope,
+                                                      &preprocessor_context->user_macros.scope);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_preprocessor_predefined_macro_scope_free(mem, &preprocessor->predefined_macros);
+        kefir_lexer_free(mem, &preprocessor->lexer);
+        return res;
+    });
     return KEFIR_OK;
 }
 
@@ -83,6 +123,7 @@ kefir_result_t kefir_preprocessor_free(struct kefir_mem *mem, struct kefir_prepr
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(preprocessor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor"));
 
+    REQUIRE_OK(kefir_preprocessor_predefined_macro_scope_free(mem, &preprocessor->predefined_macros));
     REQUIRE_OK(kefir_lexer_free(mem, &preprocessor->lexer));
     return KEFIR_OK;
 }
@@ -362,7 +403,7 @@ static kefir_result_t process_line(struct kefir_mem *mem, struct kefir_preproces
         token = &directive->pp_tokens.tokens[i];
         if (token->klass != KEFIR_TOKEN_PP_WHITESPACE) {
             REQUIRE(token->klass == KEFIR_TOKEN_STRING_LITERAL &&
-                        token->string_literal.type == KEFIR_AST_STRING_LITERAL_MULTIBYTE,
+                        token->string_literal.type == KEFIR_STRING_LITERAL_TOKEN_MULTIBYTE,
                     KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &token->source_location, "Expected valid file name"));
             source_file =
                 kefir_symbol_table_insert(mem, preprocessor->lexer.symbols, token->string_literal.literal, NULL);

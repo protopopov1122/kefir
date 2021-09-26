@@ -28,11 +28,31 @@
 #include "kefir/preprocessor/source_file.h"
 #include "kefir/preprocessor/directives.h"
 #include "kefir/ast/context.h"
+#include <time.h>
+
+typedef struct kefir_preprocessor_environment {
+    time_t timestamp;
+    kefir_bool_t hosted;
+    kefir_ulong_t version;
+    kefir_ulong_t stdc_iso10646;
+    kefir_bool_t stdc_mb_might_neq_wc;
+    kefir_bool_t stdc_utf16;
+    kefir_bool_t stdc_utf32;
+    kefir_bool_t stdc_analyzable;
+    kefir_bool_t stdc_iec559;
+    kefir_bool_t stdc_iec559_complex;
+    kefir_ulong_t stdc_lib_ext1;
+    kefir_bool_t stdc_no_atomics;
+    kefir_bool_t stdc_no_complex;
+    kefir_bool_t stdc_no_threads;
+    kefir_bool_t stdc_no_vla;
+} kefir_preprocessor_environment_t;
 
 typedef struct kefir_preprocessor_context {
     struct kefir_preprocessor_user_macro_scope user_macros;
     const struct kefir_preprocessor_source_locator *source_locator;
     struct kefir_ast_context *ast_context;
+    struct kefir_preprocessor_environment environment;
 } kefir_preprocessor_context_t;
 
 kefir_result_t kefir_preprocessor_context_init(struct kefir_preprocessor_context *,
