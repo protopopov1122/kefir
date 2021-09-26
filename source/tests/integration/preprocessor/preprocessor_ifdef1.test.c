@@ -33,7 +33,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                            "        int a = 0; // A = 0\n"
                            "    #else\n"
                            "        int a = 1; // A = 1\n"
-                           "    #endif"
+                           "    #endif\n"
                            "#endif\n"
                            "#ifndef A\n"
                            "    #ifdef ONE\n"

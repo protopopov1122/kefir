@@ -150,6 +150,13 @@ kefir_result_t kefir_preprocessor_skip_group(struct kefir_mem *mem, struct kefir
 
             case KEFIR_PREPROCESSOR_DIRECTIVE_ELIF:
             case KEFIR_PREPROCESSOR_DIRECTIVE_ELSE:
+                if (nested_ifs == 0) {
+                    REQUIRE_OK(
+                        kefir_preprocessor_directive_scanner_restore(&preprocessor->directive_scanner, &scanner_state));
+                    skip = false;
+                }
+                break;
+
             case KEFIR_PREPROCESSOR_DIRECTIVE_ENDIF:
                 if (nested_ifs > 0) {
                     nested_ifs--;
@@ -583,5 +590,14 @@ kefir_result_t kefir_preprocessor_run(struct kefir_mem *mem, struct kefir_prepro
     REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));
 
     REQUIRE_OK(kefir_preprocessor_run_group(mem, preprocessor, buffer));
+
+    struct kefir_preprocessor_directive directive;
+    REQUIRE_OK(kefir_preprocessor_directive_scanner_next(mem, &preprocessor->directive_scanner, &directive));
+    REQUIRE_ELSE(directive.type == KEFIR_PREPROCESSOR_DIRECTIVE_SENTINEL, {
+        kefir_preprocessor_directive_free(mem, &directive);
+        return KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &directive.source_location,
+                                      "Unexpected preprocessor directive/token");
+    });
+    REQUIRE_OK(kefir_preprocessor_directive_free(mem, &directive));
     return KEFIR_OK;
 }
