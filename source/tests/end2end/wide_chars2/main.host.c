@@ -23,22 +23,7 @@
 #include <wchar.h>
 #include <uchar.h>
 #include <assert.h>
-
-struct wide_string {
-    wchar_t content[32];
-};
-
-struct char16_string {
-    char16_t content[32];
-};
-
-struct char32_string {
-    char32_t content[32];
-};
-
-void wide_greet(struct wide_string *);
-void char16_greet(struct char16_string *);
-void char32_greet(struct char32_string *);
+#include "./definitions.h"
 
 int main() {
     const wchar_t wexpected[] = L"Hello, world!";

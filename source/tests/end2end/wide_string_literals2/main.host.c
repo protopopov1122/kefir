@@ -24,17 +24,7 @@
 #include <uchar.h>
 #include <assert.h>
 #include <string.h>
-
-struct content {
-    const char16_t *literal1;
-    char16_t literal2[32];
-    const char32_t *literal3;
-    char32_t literal4[32];
-    const wchar_t *literal5;
-    wchar_t literal6[32];
-};
-
-struct content init_content();
+#include "./definitions.h"
 
 int main() {
     const char16_t Expected1[] = u"String literal#1.";

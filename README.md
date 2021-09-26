@@ -29,17 +29,19 @@ terms of semantics, thus making implementation of the compiler feasible. C11 sta
 features. Project can be relatively easily extended to comply with C17 once the original plan is finished.
 
 ## Progress
-|Module                     |Status         |Comments                                                                       |
-|---------------------------|---------------|-------------------------------------------------------------------------------|
-|Code generator             |Done           |IR translator targetting System-V AMD64 ABI                                    |
-|Intermediate representation|Done           |Stack-based bytecode abstracting out calling convention and data layout details|
-|AST structure and analysis |Done           |See exceptions section below                                                   |
-|AST translator             |Done           |See exceptions section below                                                   |
-|Parser                     |Done           |Recursive descent parser with backtracking. See exceptions section below       |
-|Lexer                      |Done           |See exceptions ection below                                                    |
-|Preprocessor               |Not planned    |Out-of-scope of initial effort                                                 |
-|Standard library           |Not planned    |Out-of-scope of initial effort                                                 |
-|Command-line interface     |In progress    |Very rudimentary implementation available                                      |
+Table below lists progress on various compiler components. 'Implemenataion done' in the status field means that the main body of component
+is implemented, however refactoring and bug-fixes are still on-going.
+|Module                     |Status              |Comments                                                                       |
+|---------------------------|--------------------|-------------------------------------------------------------------------------|
+|Code generator             |Implementation done |IR translator targetting System-V AMD64 ABI                                    |
+|Intermediate representation|Implementation done |Stack-based bytecode abstracting out calling convention and data layout details|
+|AST structure and analysis |Implementation done |See exceptions section below                                                   |
+|AST translator             |Implementation done |See exceptions section below                                                   |
+|Parser                     |Implementation done |Recursive descent parser with backtracking. See exceptions section below       |
+|Lexer                      |Implementation done |See exceptions ection below                                                    |
+|Preprocessor               |Implementation done |Basic preprocessor with no support for pragmasm                                |
+|Standard library           |Not planned         |Out-of-scope of initial effort                                                 |
+|Command-line interface     |In progress         |Rudimentary implementation available                                           |
 
 
 ### Exceptions
@@ -56,6 +58,8 @@ to omit in initial implementation. VLAs are implemented on AST level, however th
 no translator and code generator support yet.
 * Unicode and wide strings are supported under the assumption that source and target character sets are the same.
 No re-encoding is performed.
+* No `STDC` pragmas are implemented in preprocessor. Respective standard library parts are out-of-scope, thus implementing
+these pragmas have no value at the moment.
 
 ## Design notes
 In order to simplify translation and facilitate portability, intermediate representation
@@ -66,6 +70,8 @@ generation and AST analysis and translation. IR layer provides several interface
 AST analyzer to retrieve necessary target type layout information (for instance, for
 constant expression analysis). AST analysis and translation are separate stages to 
 improve code structure and reusability. Parser uses recursive descent approach with back-tracking.
+Lexer was implemented before preprocessor and can be used independently of it (preprocessing stage
+can be completely omitted), thus both lexer and preprocessor modules share the same lexing facilities.
 
 ## Author and license
 Author: Jevgenijs Protopopovs \

@@ -22,8 +22,11 @@
 #define KEFIR_CLI_OPTIONS_H_
 
 #include "kefir/core/basic-types.h"
+#include "kefir/core/mem.h"
+#include "kefir/core/list.h"
 
 typedef enum kefir_cli_action {
+    KEFIR_CLI_ACTION_PREPROCESS,
     KEFIR_CLI_ACTION_DUMP_TOKENS,
     KEFIR_CLI_ACTION_DUMP_AST,
     KEFIR_CLI_ACTION_DUMP_IR,
@@ -45,8 +48,11 @@ typedef struct kefir_cli_options {
     const char *source_id;
     kefir_cli_error_report_type_t error_report_type;
     kefir_bool_t detailed_output;
+    kefir_bool_t skip_preprocessor;
+    struct kefir_list include_path;
 } kefir_cli_options_t;
 
-kefir_result_t kefir_cli_parse_options(struct kefir_cli_options *, char *const *, kefir_size_t);
+kefir_result_t kefir_cli_parse_options(struct kefir_mem *, struct kefir_cli_options *, char *const *, kefir_size_t);
+kefir_result_t kefir_cli_options_free(struct kefir_mem *, struct kefir_cli_options *);
 
 #endif

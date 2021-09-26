@@ -23,10 +23,7 @@
 #include <wchar.h>
 #include <uchar.h>
 #include <assert.h>
-
-void wstring_uppercase(wchar_t *);
-void u16string_uppercase(char16_t *);
-void u32string_uppercase(char32_t *);
+#include "./definitions.h"
 
 int main() {
     wchar_t wstr[] = L"abcdefghijklmnopqrstuvwxyz"

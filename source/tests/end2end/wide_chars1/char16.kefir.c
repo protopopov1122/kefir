@@ -1,4 +1,5 @@
-typedef unsigned short char16_t;
+#define INTERNAL
+#include "./definitions.h"
 
 void u16string_uppercase(char16_t string[]) {
     for (; *string != u'\0'; ++string) {

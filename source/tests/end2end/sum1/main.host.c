@@ -21,8 +21,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-
-int sum(int, int);
+#include "./definitions.h"
 
 int main() {
     for (int i = -100; i < 100; i++) {

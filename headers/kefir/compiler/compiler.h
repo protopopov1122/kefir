@@ -24,6 +24,9 @@
 #include "kefir/compiler/profile.h"
 #include "kefir/ast/global_context.h"
 #include "kefir/ast-translator/environment.h"
+#include "kefir/preprocessor/preprocessor.h"
+#include "kefir/preprocessor/ast_context.h"
+#include "kefir/preprocessor/source_file.h"
 #include "kefir/lexer/lexer.h"
 #include "kefir/ast/node.h"
 #include "kefir/ir/module.h"
@@ -31,14 +34,22 @@
 
 typedef struct kefir_compiler_context {
     struct kefir_compiler_profile *profile;
+    const struct kefir_preprocessor_source_locator *source_locator;
     struct kefir_ast_translator_environment translator_env;
     struct kefir_ast_global_context ast_global_context;
+    struct kefir_preprocessor_context preprocessor_context;
+    struct kefir_preprocessor_ast_context preprocessor_ast_context;
 } kefir_compiler_context_t;
 
 struct kefir_mem *kefir_system_memalloc();
 kefir_result_t kefir_compiler_context_init(struct kefir_mem *, struct kefir_compiler_context *,
-                                           struct kefir_compiler_profile *);
+                                           struct kefir_compiler_profile *,
+                                           const struct kefir_preprocessor_source_locator *);
 kefir_result_t kefir_compiler_context_free(struct kefir_mem *, struct kefir_compiler_context *);
+kefir_result_t kefir_compiler_preprocess(struct kefir_mem *, struct kefir_compiler_context *,
+                                         struct kefir_token_buffer *, const char *, kefir_size_t, const char *);
+kefir_result_t kefir_compiler_preprocess_lex(struct kefir_mem *, struct kefir_compiler_context *,
+                                             struct kefir_token_buffer *, const char *, kefir_size_t, const char *);
 kefir_result_t kefir_compiler_lex(struct kefir_mem *, struct kefir_compiler_context *, struct kefir_token_buffer *,
                                   const char *, kefir_size_t, const char *);
 kefir_result_t kefir_compiler_parse(struct kefir_mem *, struct kefir_compiler_context *, struct kefir_token_buffer *,

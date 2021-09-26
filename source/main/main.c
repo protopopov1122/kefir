@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "kefir/cli/input.h"
+#include "kefir/cli/filesystem_source.h"
 #include "kefir/core/util.h"
 #include "kefir/compiler/compiler.h"
 #include "kefir/core/os_error.h"
@@ -29,6 +30,7 @@
 #include "kefir/lexer/format.h"
 #include "kefir/ast/format.h"
 #include "kefir/ir/format.h"
+#include "kefir/preprocessor/format.h"
 #include "kefir/core/version.h"
 
 // ATTENTION: This is module is not a part of the core library, thus memory management
@@ -65,6 +67,7 @@ static kefir_result_t dump_action_impl(struct kefir_mem *mem, struct kefir_cli_o
     struct kefir_cli_input input;
     struct kefir_compiler_profile profile;
     struct kefir_compiler_context compiler;
+    struct kefir_preprocessor_filesystem_source_locator source_locator;
 
     const char *source_id = NULL;
     if (options->source_id != NULL) {
@@ -77,12 +80,49 @@ static kefir_result_t dump_action_impl(struct kefir_mem *mem, struct kefir_cli_o
 
     REQUIRE_OK(open_output(options->output_filepath, &output));
     REQUIRE_OK(kefir_cli_input_open(mem, &input, options->input_filepath));
+    REQUIRE_OK(
+        kefir_preprocessor_filesystem_source_locator_init(&source_locator, &compiler.ast_global_context.symbols));
+    for (const struct kefir_list_entry *iter = kefir_list_head(&options->include_path); iter != NULL;
+         kefir_list_next(&iter)) {
+        REQUIRE_OK(
+            kefir_preprocessor_filesystem_source_locator_append(mem, &source_locator, (const char *) iter->value));
+    }
     REQUIRE_OK(kefir_compiler_profile(&profile, options->target_profile));
-    REQUIRE_OK(kefir_compiler_context_init(mem, &compiler, &profile));
+    REQUIRE_OK(kefir_compiler_context_init(mem, &compiler, &profile, &source_locator.locator));
     REQUIRE_OK(action(mem, options, &compiler, source_id, input.content, input.length, output));
     fclose(output);
     REQUIRE_OK(kefir_compiler_context_free(mem, &compiler));
+    REQUIRE_OK(kefir_preprocessor_filesystem_source_locator_free(mem, &source_locator));
     REQUIRE_OK(kefir_cli_input_close(mem, &input));
+    return KEFIR_OK;
+}
+
+static kefir_result_t lex_file(struct kefir_mem *mem, struct kefir_cli_options *options,
+                               struct kefir_compiler_context *compiler, const char *source_id, const char *source,
+                               kefir_size_t length, struct kefir_token_buffer *tokens) {
+    if (options->skip_preprocessor) {
+        REQUIRE_OK(kefir_compiler_lex(mem, compiler, tokens, source, length, source_id));
+    } else {
+        REQUIRE_OK(kefir_compiler_preprocess_lex(mem, compiler, tokens, source, length, source_id));
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t dump_preprocessed_impl(struct kefir_mem *mem, struct kefir_cli_options *options,
+                                             struct kefir_compiler_context *compiler, const char *source_id,
+                                             const char *source, kefir_size_t length, FILE *output) {
+    UNUSED(options);
+    struct kefir_token_buffer tokens;
+    REQUIRE_OK(kefir_token_buffer_init(&tokens));
+    REQUIRE_OK(kefir_compiler_preprocess(mem, compiler, &tokens, source, length, source_id));
+    REQUIRE_OK(open_output(options->output_filepath, &output));
+    REQUIRE_OK(kefir_preprocessor_format(output, &tokens, KEFIR_PREPROCESSOR_WHITESPACE_FORMAT_ORIGINAL));
+    REQUIRE_OK(kefir_token_buffer_free(mem, &tokens));
+    return KEFIR_OK;
+}
+
+static kefir_result_t action_dump_preprocessed(struct kefir_mem *mem, struct kefir_cli_options *options) {
+    REQUIRE_OK(dump_action_impl(mem, options, dump_preprocessed_impl));
     return KEFIR_OK;
 }
 
@@ -92,7 +132,7 @@ static kefir_result_t dump_tokens_impl(struct kefir_mem *mem, struct kefir_cli_o
     UNUSED(options);
     struct kefir_token_buffer tokens;
     REQUIRE_OK(kefir_token_buffer_init(&tokens));
-    REQUIRE_OK(kefir_compiler_lex(mem, compiler, &tokens, source, length, source_id));
+    REQUIRE_OK(lex_file(mem, options, compiler, source_id, source, length, &tokens));
 
     struct kefir_json_output json;
     REQUIRE_OK(open_output(options->output_filepath, &output));
@@ -116,7 +156,7 @@ static kefir_result_t dump_ast_impl(struct kefir_mem *mem, struct kefir_cli_opti
     struct kefir_ast_translation_unit *unit = NULL;
 
     REQUIRE_OK(kefir_token_buffer_init(&tokens));
-    REQUIRE_OK(kefir_compiler_lex(mem, compiler, &tokens, source, length, source_id));
+    REQUIRE_OK(lex_file(mem, options, compiler, source_id, source, length, &tokens));
     REQUIRE_OK(kefir_compiler_parse(mem, compiler, &tokens, &unit));
     REQUIRE_OK(kefir_compiler_analyze(mem, compiler, KEFIR_AST_NODE_BASE(unit)));
 
@@ -145,7 +185,7 @@ static kefir_result_t dump_ir_impl(struct kefir_mem *mem, struct kefir_cli_optio
     struct kefir_ir_module module;
 
     REQUIRE_OK(kefir_token_buffer_init(&tokens));
-    REQUIRE_OK(kefir_compiler_lex(mem, compiler, &tokens, source, length, source_id));
+    REQUIRE_OK(lex_file(mem, options, compiler, source_id, source, length, &tokens));
     REQUIRE_OK(kefir_compiler_parse(mem, compiler, &tokens, &unit));
     REQUIRE_OK(kefir_compiler_analyze(mem, compiler, KEFIR_AST_NODE_BASE(unit)));
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
@@ -173,7 +213,7 @@ static kefir_result_t dump_asm_impl(struct kefir_mem *mem, struct kefir_cli_opti
     struct kefir_ir_module module;
 
     REQUIRE_OK(kefir_token_buffer_init(&tokens));
-    REQUIRE_OK(kefir_compiler_lex(mem, compiler, &tokens, source, length, source_id));
+    REQUIRE_OK(lex_file(mem, options, compiler, source_id, source, length, &tokens));
     REQUIRE_OK(kefir_compiler_parse(mem, compiler, &tokens, &unit));
     REQUIRE_OK(kefir_compiler_analyze(mem, compiler, KEFIR_AST_NODE_BASE(unit)));
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
@@ -207,6 +247,7 @@ static kefir_result_t action_version(struct kefir_mem *mem, struct kefir_cli_opt
 }
 
 static kefir_result_t (*Actions[])(struct kefir_mem *, struct kefir_cli_options *) = {
+    [KEFIR_CLI_ACTION_PREPROCESS] = action_dump_preprocessed,
     [KEFIR_CLI_ACTION_DUMP_TOKENS] = action_dump_tokens,
     [KEFIR_CLI_ACTION_DUMP_AST] = action_dump_ast,
     [KEFIR_CLI_ACTION_DUMP_IR] = action_dump_ir,
@@ -238,8 +279,10 @@ static int kefir_report_error(kefir_result_t res, struct kefir_cli_options *opti
 }
 
 int main(int argc, char *const *argv) {
+    struct kefir_mem *mem = kefir_system_memalloc();
     struct kefir_cli_options options;
-    kefir_result_t res = kefir_cli_parse_options(&options, argv, argc);
-    REQUIRE_CHAIN(&res, kefir_main(kefir_system_memalloc(), &options));
+    kefir_result_t res = kefir_cli_parse_options(mem, &options, argv, argc);
+    REQUIRE_CHAIN(&res, kefir_main(mem, &options));
+    REQUIRE_CHAIN(&res, kefir_cli_options_free(mem, &options));
     return kefir_report_error(res, &options);
 }

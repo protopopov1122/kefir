@@ -57,15 +57,27 @@ struct kefir_mem *kefir_system_memalloc() {
 }
 
 kefir_result_t kefir_compiler_context_init(struct kefir_mem *mem, struct kefir_compiler_context *context,
-                                           struct kefir_compiler_profile *profile) {
+                                           struct kefir_compiler_profile *profile,
+                                           const struct kefir_preprocessor_source_locator *source_locator) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler context"));
     REQUIRE(profile != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler profile"));
+    REQUIRE(source_locator != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler source locator"));
 
     REQUIRE_OK(kefir_ast_translator_environment_init(&context->translator_env, &profile->ir_target_platform));
     REQUIRE_OK(kefir_ast_global_context_init(mem, profile->type_traits, &context->translator_env.target_env,
                                              &context->ast_global_context));
+    kefir_result_t res =
+        kefir_preprocessor_ast_context_init(&context->preprocessor_ast_context, &context->ast_global_context.symbols,
+                                            profile->type_traits, &context->translator_env.target_env);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_ast_global_context_free(mem, &context->ast_global_context);
+        return res;
+    });
+    res = kefir_preprocessor_context_init(&context->preprocessor_context, source_locator,
+                                          &context->preprocessor_ast_context.context);
     context->profile = profile;
+    context->source_locator = source_locator;
     return KEFIR_OK;
 }
 
@@ -73,8 +85,77 @@ kefir_result_t kefir_compiler_context_free(struct kefir_mem *mem, struct kefir_c
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler context"));
 
+    REQUIRE_OK(kefir_preprocessor_context_free(mem, &context->preprocessor_context));
+    REQUIRE_OK(kefir_preprocessor_ast_context_free(mem, &context->preprocessor_ast_context));
     REQUIRE_OK(kefir_ast_global_context_free(mem, &context->ast_global_context));
     context->profile = NULL;
+    context->source_locator = NULL;
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_compiler_preprocess(struct kefir_mem *mem, struct kefir_compiler_context *context,
+                                         struct kefir_token_buffer *buffer, const char *content, kefir_size_t length,
+                                         const char *source_id) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler context"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));
+    REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid content"));
+
+    struct kefir_lexer_source_cursor source_cursor;
+    struct kefir_preprocessor preprocessor;
+    REQUIRE_OK(kefir_lexer_source_cursor_init(&source_cursor, content, length, source_id));
+    REQUIRE_OK(kefir_preprocessor_init(mem, &preprocessor, &context->ast_global_context.symbols, &source_cursor,
+                                       &context->profile->lexer_context, &context->preprocessor_context));
+    kefir_result_t res = kefir_preprocessor_run(mem, &preprocessor, buffer);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_preprocessor_free(mem, &preprocessor);
+        return res;
+    });
+    REQUIRE_OK(kefir_preprocessor_free(mem, &preprocessor));
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_compiler_preprocess_lex(struct kefir_mem *mem, struct kefir_compiler_context *context,
+                                             struct kefir_token_buffer *buffer, const char *content,
+                                             kefir_size_t length, const char *source_id) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler context"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));
+    REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid content"));
+
+    struct kefir_lexer_source_cursor source_cursor;
+    struct kefir_preprocessor preprocessor;
+    struct kefir_token_buffer pp_tokens;
+    REQUIRE_OK(kefir_lexer_source_cursor_init(&source_cursor, content, length, source_id));
+    REQUIRE_OK(kefir_preprocessor_init(mem, &preprocessor, &context->ast_global_context.symbols, &source_cursor,
+                                       &context->profile->lexer_context, &context->preprocessor_context));
+    kefir_result_t res = kefir_token_buffer_init(&pp_tokens);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_preprocessor_free(mem, &preprocessor);
+        return res;
+    });
+
+    res = kefir_preprocessor_run(mem, &preprocessor, &pp_tokens);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_token_buffer_free(mem, &pp_tokens);
+        kefir_preprocessor_free(mem, &preprocessor);
+        return res;
+    });
+
+    res = kefir_preprocessor_token_convert_buffer(mem, &preprocessor, buffer, &pp_tokens);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_token_buffer_free(mem, &pp_tokens);
+        kefir_preprocessor_free(mem, &preprocessor);
+        return res;
+    });
+
+    res = kefir_token_buffer_free(mem, &pp_tokens);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_preprocessor_free(mem, &preprocessor);
+        return res;
+    });
+
+    REQUIRE_OK(kefir_preprocessor_free(mem, &preprocessor));
     return KEFIR_OK;
 }
 

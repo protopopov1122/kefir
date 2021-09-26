@@ -1,4 +1,5 @@
-typedef unsigned int char32_t;
+#define INTERNAL
+#include "./definitions.h"
 
 void u32string_uppercase(char32_t string[static 1]) {
     for (; *string != U'\0'; ++string) {

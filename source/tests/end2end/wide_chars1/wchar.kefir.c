@@ -1,4 +1,5 @@
-typedef int wchar_t;
+#define INTERNAL
+#include "./definitions.h"
 
 void wstring_uppercase(wchar_t *string) {
     for (; *string != L'\0'; ++string) {

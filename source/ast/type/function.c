@@ -222,8 +222,10 @@ const struct kefir_ast_type *composite_function_types(struct kefir_mem *mem, str
             mem, type_bundle, type_traits, type1->function_type.return_type, type2->function_type.return_type);
         REQUIRE(composite_return_type != NULL, NULL);
         struct kefir_ast_function_type *composite_function = NULL;
+        const char *func_identifier =
+            type1->function_type.identifier != NULL ? type1->function_type.identifier : type2->function_type.identifier;
         const struct kefir_ast_type *composite_type =
-            kefir_ast_type_function(mem, type_bundle, composite_return_type, "", &composite_function);
+            kefir_ast_type_function(mem, type_bundle, composite_return_type, func_identifier, &composite_function);
         REQUIRE(composite_type != NULL, NULL);
         for (kefir_size_t i = 0; i < kefir_ast_type_function_parameter_count(&type1->function_type); i++) {
             const struct kefir_ast_function_type_parameter *param1 = NULL;
@@ -234,8 +236,13 @@ const struct kefir_ast_type *composite_function_types(struct kefir_mem *mem, str
                 mem, type_bundle, type_traits, kefir_ast_unqualified_type(param1->adjusted_type),
                 kefir_ast_unqualified_type(param2->adjusted_type));
             REQUIRE(composite_parameter != NULL, NULL);
-            REQUIRE(kefir_ast_type_function_parameter(mem, type_bundle, composite_function, NULL, composite_parameter,
-                                                      NULL) == KEFIR_OK,
+
+            const char *identifier = param1->identifier;
+            if (identifier == NULL) {
+                identifier = param2->identifier;
+            }
+            REQUIRE(kefir_ast_type_function_parameter(mem, type_bundle, composite_function, identifier,
+                                                      composite_parameter, NULL) == KEFIR_OK,
                     NULL);
         }
         return composite_type;
