@@ -18,6 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#define _XOPEN_SOURCE
 #include "kefir/core/mem.h"
 #include "kefir/core/util.h"
 #include "kefir/preprocessor/virtual_source_file.h"
@@ -25,6 +26,7 @@
 #include "kefir/preprocessor/format.h"
 #include "kefir/preprocessor/ast_context.h"
 #include "kefir/test/util.h"
+#include <time.h>
 #include <stdio.h>
 
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
@@ -64,7 +66,18 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_preprocessor_ast_context_init(&ast_context, &symbols, kefir_ast_default_type_traits(), &env.target_env));
     REQUIRE_OK(kefir_preprocessor_virtual_source_locator_init(&virtual_source));
     REQUIRE_OK(kefir_preprocessor_context_init(&context, &virtual_source.locator, &ast_context.context));
-    context.environment.timestamp = 1632642179;
+
+    time_t current_timestamp;
+    time(&current_timestamp);
+    struct tm *current_time = localtime(&current_timestamp);
+    int isdst = current_time->tm_isdst;
+    const char *DATETIME = "Sep 26 2021 10:42:59";
+    const char *FMT = "%b %e %Y %H:%M:%S";
+    struct tm time = {0};
+    strptime(DATETIME, FMT, &time);
+    time.tm_isdst = isdst;
+
+    context.environment.timestamp = mktime(&time);
     REQUIRE_OK(kefir_lexer_source_cursor_init(&cursor, CONTENT, sizeof(CONTENT), "fileName"));
     REQUIRE_OK(kefir_preprocessor_init(mem, &preprocessor, &symbols, &cursor, &parser_context, &context));
     REQUIRE_OK(kefir_preprocessor_run(mem, &preprocessor, &tokens));
