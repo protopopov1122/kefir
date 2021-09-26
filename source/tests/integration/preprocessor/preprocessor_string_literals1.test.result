@@ -1,0 +1,237 @@
+[
+    {
+        "class": "string_literal",
+        "preprocessor": false,
+        "type": "multibyte",
+        "content": "Hello,  cruel\0 world!!!\0\0\n\0",
+        "length": 27,
+        "source_location": null
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": ";",
+        "source_location": {
+            "source": "",
+            "line": 2,
+            "column": 18
+        }
+    },
+    {
+        "class": "string_literal",
+        "preprocessor": false,
+        "type": "unicode8",
+        "content": "Test...test...test...\0\"\0test!\0\n\0",
+        "length": 32,
+        "source_location": null
+    },
+    {
+        "class": "string_literal",
+        "preprocessor": false,
+        "type": "unicode16",
+        "content": [
+            72,
+            101,
+            121,
+            33,
+            13,
+            9,
+            10,
+            13,
+            12,
+            0,
+            0,
+            0,
+            0,
+            11,
+            34,
+            39,
+            32,
+            32,
+            32,
+            32,
+            0
+        ],
+        "length": 21,
+        "source_location": null
+    },
+    {
+        "class": "string_literal",
+        "preprocessor": false,
+        "type": "unicode32",
+        "content": [
+            0,
+            1,
+            97,
+            98,
+            99,
+            46,
+            33,
+            0,
+            10,
+            32,
+            72,
+            101,
+            108,
+            108,
+            111,
+            44,
+            32,
+            119,
+            111,
+            114,
+            108,
+            100,
+            33,
+            0
+        ],
+        "length": 24,
+        "source_location": null
+    },
+    {
+        "class": "string_literal",
+        "preprocessor": false,
+        "type": "unicode8",
+        "content": "test!\0test\0",
+        "length": 11,
+        "source_location": {
+            "source": "",
+            "line": 8,
+            "column": 1
+        }
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": ",",
+        "source_location": {
+            "source": "",
+            "line": 8,
+            "column": 16
+        }
+    },
+    {
+        "class": "string_literal",
+        "preprocessor": false,
+        "type": "unicode8",
+        "content": "test2   \0",
+        "length": 9,
+        "source_location": {
+            "source": "",
+            "line": 8,
+            "column": 18
+        }
+    },
+    {
+        "class": "string_literal",
+        "preprocessor": false,
+        "type": "unicode32",
+        "content": [
+            49,
+            0,
+            50,
+            0,
+            51,
+            0
+        ],
+        "length": 6,
+        "source_location": {
+            "source": "",
+            "line": 8,
+            "column": 30
+        }
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": ";",
+        "source_location": {
+            "source": "",
+            "line": 8,
+            "column": 44
+        }
+    },
+    {
+        "class": "string_literal",
+        "preprocessor": false,
+        "type": "multibyte",
+        "content": "This is 2+2\0",
+        "length": 12,
+        "source_location": null
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": ",",
+        "source_location": {
+            "source": "",
+            "line": 12,
+            "column": 12
+        }
+    },
+    {
+        "class": "string_literal",
+        "preprocessor": false,
+        "type": "unicode8",
+        "content": "This is 100\0",
+        "length": 12,
+        "source_location": null
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": ",",
+        "source_location": {
+            "source": "",
+            "line": 12,
+            "column": 29
+        }
+    },
+    {
+        "class": "string_literal",
+        "preprocessor": false,
+        "type": "unicode16",
+        "content": [
+            84,
+            104,
+            105,
+            115,
+            32,
+            105,
+            115,
+            32,
+            72,
+            101,
+            108,
+            108,
+            111,
+            0
+        ],
+        "length": 14,
+        "source_location": null
+    },
+    {
+        "class": "string_literal",
+        "preprocessor": false,
+        "type": "unicode32",
+        "content": [
+            84,
+            104,
+            105,
+            115,
+            32,
+            105,
+            115,
+            32,
+            34,
+            116,
+            101,
+            115,
+            116,
+            34,
+            0
+        ],
+        "length": 15,
+        "source_location": null
+    }
+]
