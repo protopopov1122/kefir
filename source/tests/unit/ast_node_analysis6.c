@@ -59,11 +59,11 @@ DEFINE_CASE(ast_node_analysis_function_calls1, "AST node analysis - function cal
 
     struct kefir_ast_function_type *function1 = NULL;
     const struct kefir_ast_type *type1 =
-        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_float(), "func1", &function1);
+        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_float(), &function1);
 
     struct kefir_ast_function_type *function2 = NULL;
     const struct kefir_ast_type *type2 =
-        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_void(), "func2", &function2);
+        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_void(), &function2);
 
     ASSERT_OK(kefir_ast_local_context_declare_function(&kft_mem, &local_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
                                                        "func1", type1, NULL, NULL));
@@ -111,7 +111,7 @@ DEFINE_CASE(ast_node_analysis_function_calls2, "AST node analysis - function cal
 
     struct kefir_ast_function_type *function1 = NULL;
     const struct kefir_ast_type *type1 =
-        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_signed_short(), "func1", &function1);
+        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_signed_short(), &function1);
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, function1, NULL,
                                                 kefir_ast_type_signed_long(), NULL));
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, function1, NULL,
@@ -121,7 +121,7 @@ DEFINE_CASE(ast_node_analysis_function_calls2, "AST node analysis - function cal
 
     struct kefir_ast_function_type *function2 = NULL;
     const struct kefir_ast_type *type2 =
-        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_short(), "func2", &function2);
+        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_short(), &function2);
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, function2, NULL,
                                                 kefir_ast_type_signed_long(), NULL));
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, function2, NULL,
@@ -216,7 +216,7 @@ DEFINE_CASE(ast_node_analysis_function_calls3, "AST node analysis - function cal
 
     struct kefir_ast_function_type *function1 = NULL;
     const struct kefir_ast_type *type1 =
-        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_signed_int(), "func1", &function1);
+        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_signed_int(), &function1);
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, function1, "a", NULL, NULL));
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, function1, "b", NULL, NULL));
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, function1, "c", NULL, NULL));
@@ -273,7 +273,7 @@ DEFINE_CASE(ast_node_analysis_function_calls4, "AST node analysis - function cal
 
     struct kefir_ast_function_type *function1 = NULL;
     const struct kefir_ast_type *type1 =
-        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_float(), "func1", &function1);
+        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_float(), &function1);
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, function1, NULL, kefir_ast_type_void(),
                                                 NULL));
 

@@ -603,7 +603,7 @@ DEFINE_CASE(ast_node_analysis_return_statements1, "AST node analysis - return st
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
 
     const struct kefir_ast_type *type1 =
-        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_void(), "fn0", &function_type);
+        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_void(), &function_type);
     REQUIRE_OK(global_context.context.define_identifier(
         &kft_mem, &global_context.context, true, "fn0", type1, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
         KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL, NULL, &scoped_id));
@@ -618,7 +618,7 @@ DEFINE_CASE(ast_node_analysis_return_statements1, "AST node analysis - return st
     ASSERT(KEFIR_AST_TYPE_SAME(return1->base.properties.statement_props.return_type, kefir_ast_type_void()));
 
     const struct kefir_ast_type *type2 =
-        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_short(), "fn1", &function_type);
+        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_short(), &function_type);
     REQUIRE_OK(global_context.context.define_identifier(
         &kft_mem, &global_context.context, true, "fn1", type2, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
         KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL, NULL, &scoped_id));

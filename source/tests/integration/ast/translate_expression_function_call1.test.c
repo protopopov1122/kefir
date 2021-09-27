@@ -43,7 +43,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     struct kefir_ast_function_type *func_type1 = NULL;
     const struct kefir_ast_type *type1 =
-        kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_int(), "sum", &func_type1);
+        kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_int(), &func_type1);
     REQUIRE_OK(kefir_ast_type_function_parameter(mem, context->type_bundle, func_type1, NULL,
                                                  kefir_ast_type_signed_int(), NULL));
     REQUIRE_OK(kefir_ast_type_function_parameter(mem, context->type_bundle, func_type1, NULL,
@@ -51,11 +51,11 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     struct kefir_ast_function_type *func_type2 = NULL;
     const struct kefir_ast_type *type2 =
-        kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_int(), "test", &func_type2);
+        kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_int(), &func_type2);
 
     struct kefir_ast_function_type *func_type3 = NULL;
     const struct kefir_ast_type *type3 =
-        kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_int(), "test2", &func_type3);
+        kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_int(), &func_type3);
     REQUIRE_OK(
         kefir_ast_type_function_parameter(mem, context->type_bundle, func_type3, NULL, kefir_ast_type_void(), NULL));
 
@@ -70,7 +70,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     struct kefir_ast_function_type *func_type5 = NULL;
     const struct kefir_ast_type *type5 =
-        kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_int(), "test3", &func_type5);
+        kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_int(), &func_type5);
     REQUIRE_OK(kefir_ast_type_function_parameter(mem, context->type_bundle, func_type5, NULL,
                                                  type_name4->base.properties.type, NULL));
 

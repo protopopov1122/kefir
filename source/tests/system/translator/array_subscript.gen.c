@@ -49,8 +49,7 @@ static kefir_result_t define_set_array_function(struct kefir_mem *mem, struct fu
 
     struct kefir_ast_function_type *func_type = NULL;
     func->identifier = name;
-    func->type =
-        kefir_ast_type_function(mem, context_manager->current->type_bundle, kefir_ast_type_void(), name, &func_type);
+    func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle, kefir_ast_type_void(), &func_type);
     REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, NULL,
                                                  array_type, NULL));
     REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, NULL,
@@ -104,7 +103,7 @@ static kefir_result_t define_get_array_function(struct kefir_mem *mem, struct fu
 
     struct kefir_ast_function_type *func_type = NULL;
     func->identifier = name;
-    func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle, element_type, name, &func_type);
+    func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle, element_type, &func_type);
     REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, NULL,
                                                  array_type, NULL));
     REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, NULL,

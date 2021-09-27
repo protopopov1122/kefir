@@ -50,8 +50,8 @@ static kefir_result_t define_conditional_function(struct kefir_mem *mem, struct 
         NULL);
     struct kefir_ast_function_type *func_type = NULL;
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
-    func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle, kefir_ast_type_unsigned_long(),
-                                         func->identifier, &func_type);
+    func->type =
+        kefir_ast_type_function(mem, context_manager->current->type_bundle, kefir_ast_type_unsigned_long(), &func_type);
     REQUIRE_OK(
         kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, NULL, arg_type, NULL));
 

@@ -787,8 +787,7 @@ static kefir_result_t resolve_function_declarator(struct kefir_mem *mem, const s
     }
 
     struct kefir_ast_function_type *func_type = NULL;
-    const struct kefir_ast_type *type =
-        kefir_ast_type_function(mem, context->type_bundle, *base_type, identifier, &func_type);
+    const struct kefir_ast_type *type = kefir_ast_type_function(mem, context->type_bundle, *base_type, &func_type);
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocated AST type"));
 
     struct kefir_ast_function_declaration_context *decl_context =

@@ -46,8 +46,7 @@
         const struct kefir_ast_type *pointer_type =                                                                   \
             kefir_ast_type_pointer(mem, context_manager->current->type_bundle, (_type));                              \
         struct kefir_ast_function_type *func_type = NULL;                                                             \
-        func->type =                                                                                                  \
-            kefir_ast_type_function(mem, context_manager->current->type_bundle, pointer_type, (_name), &func_type);   \
+        func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle, pointer_type, &func_type);   \
         REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, NULL,     \
                                                      kefir_ast_type_signed_int(), NULL));                             \
                                                                                                                       \

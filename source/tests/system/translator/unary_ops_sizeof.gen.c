@@ -64,8 +64,7 @@ static kefir_result_t define_get_sizeof_function(struct kefir_mem *mem, struct f
     const struct kefir_ast_type *struct_type = type_name16->base.properties.type;
 
     struct kefir_ast_function_type *func_type = NULL;
-    func->type =
-        kefir_ast_type_function(mem, context_manager->current->type_bundle, struct_type, func->identifier, &func_type);
+    func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle, struct_type, &func_type);
 
     REQUIRE_OK(kefir_ast_global_context_define_function(mem, context_manager->global, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
                                                         func->identifier, func->type, NULL, NULL));

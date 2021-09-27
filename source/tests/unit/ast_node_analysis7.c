@@ -677,7 +677,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators9, "AST node analysis - declaratio
 
     struct kefir_ast_function_type *func_type1 = NULL;
     const struct kefir_ast_type *type1 =
-        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_float(), "func1", &func_type1);
+        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_float(), &func_type1);
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, context->type_bundle, func_type1, NULL, kefir_ast_type_float(),
         &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN}));
@@ -769,7 +769,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators10, "AST node analysis - declarati
 
     struct kefir_ast_function_type *func_type2 = NULL;
     const struct kefir_ast_type *type2 =
-        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_void(), "function", &func_type2);
+        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_void(), &func_type2);
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, context->type_bundle, func_type2, NULL, kefir_ast_type_float(),
         &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN}));
@@ -872,7 +872,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators11, "AST node analysis - declarati
         kefir_ast_type_pointer(&kft_mem, context->type_bundle,
                                kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_char(),
                                                         (struct kefir_ast_type_qualification){.constant = true})),
-        "fun", &func_type2);
+        &func_type2);
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, context->type_bundle, func_type2, "p1",
         kefir_ast_type_qualified(&kft_mem, context->type_bundle, type1,
@@ -951,7 +951,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators12, "AST node analysis - declarati
     struct kefir_ast_function_type *func_type1 = NULL;
     const struct kefir_ast_type *type1 = kefir_ast_type_function(
         &kft_mem, context->type_bundle, kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()),
-        "array_processor", &func_type1);
+        &func_type1);
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, context->type_bundle, func_type1, "array",
         kefir_ast_type_array_static(
@@ -1026,7 +1026,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators13, "AST node analysis - declarati
     struct kefir_ast_function_type *func_type1 = NULL;
     const struct kefir_ast_type *type1 = kefir_ast_type_function(
         &kft_mem, context->type_bundle, kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_float()),
-        "array_processor2", &func_type1);
+        &func_type1);
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, context->type_bundle, func_type1, "length", kefir_ast_type_signed_long(),
         &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN}));

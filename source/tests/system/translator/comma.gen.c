@@ -48,15 +48,15 @@ static kefir_result_t define_comma_function(struct kefir_mem *mem, struct functi
 
     struct kefir_ast_function_type *callback_func_type = NULL;
     const struct kefir_ast_type *callback_type = kefir_ast_type_function(
-        mem, context_manager->current->type_bundle, kefir_ast_type_signed_int(), NULL, &callback_func_type);
+        mem, context_manager->current->type_bundle, kefir_ast_type_signed_int(), &callback_func_type);
     REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, callback_func_type, NULL,
                                                  payload_type, NULL));
     const struct kefir_ast_type *callback_ptr_type =
         kefir_ast_type_pointer(mem, context_manager->current->type_bundle, callback_type);
 
     struct kefir_ast_function_type *func_type = NULL;
-    func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle, kefir_ast_type_signed_int(), name,
-                                         &func_type);
+    func->type =
+        kefir_ast_type_function(mem, context_manager->current->type_bundle, kefir_ast_type_signed_int(), &func_type);
     REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, NULL,
                                                  callback_ptr_type, NULL));
     REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, NULL,

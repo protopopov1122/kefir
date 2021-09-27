@@ -44,8 +44,8 @@ static kefir_result_t define_sum_vararg_function(struct kefir_mem *mem, struct f
     REQUIRE_OK(kefir_list_init(&func->args));
 
     struct kefir_ast_function_type *func_type = NULL;
-    func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle, kefir_ast_type_signed_long(), name,
-                                         &func_type);
+    func->type =
+        kefir_ast_type_function(mem, context_manager->current->type_bundle, kefir_ast_type_signed_long(), &func_type);
     REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, NULL,
                                                  kefir_ast_type_signed_long(), NULL));
 
@@ -92,8 +92,8 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
     REQUIRE_OK(kefir_ast_context_manager_init(&global_context, &context_manager));
 
     struct kefir_ast_function_type *function_type1 = NULL;
-    const struct kefir_ast_type *type1 = kefir_ast_type_function(
-        mem, context_manager.current->type_bundle, kefir_ast_type_signed_long(), "sumall", &function_type1);
+    const struct kefir_ast_type *type1 = kefir_ast_type_function(mem, context_manager.current->type_bundle,
+                                                                 kefir_ast_type_signed_long(), &function_type1);
     REQUIRE_OK(kefir_ast_type_function_ellipsis(function_type1, true));
     REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager.current->type_bundle, function_type1, NULL,
                                                  kefir_ast_type_signed_int(), NULL));

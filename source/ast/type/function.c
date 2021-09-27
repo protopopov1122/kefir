@@ -219,7 +219,7 @@ const struct kefir_ast_type *composite_function_types(struct kefir_mem *mem, str
         REQUIRE(composite_return_type != NULL, NULL);
         struct kefir_ast_function_type *composite_function = NULL;
         const struct kefir_ast_type *composite_type =
-            kefir_ast_type_function(mem, type_bundle, composite_return_type, NULL, &composite_function);
+            kefir_ast_type_function(mem, type_bundle, composite_return_type, &composite_function);
         REQUIRE(composite_type != NULL, NULL);
         for (kefir_size_t i = 0; i < kefir_ast_type_function_parameter_count(&type1->function_type); i++) {
             const struct kefir_ast_function_type_parameter *param1 = NULL;
@@ -268,7 +268,7 @@ static kefir_result_t function_parameter_free(struct kefir_mem *mem, struct kefi
 }
 
 const struct kefir_ast_type *kefir_ast_type_function(struct kefir_mem *mem, struct kefir_ast_type_bundle *type_bundle,
-                                                     const struct kefir_ast_type *return_type, const char *identifier,
+                                                     const struct kefir_ast_type *return_type,
                                                      struct kefir_ast_function_type **function_type) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(return_type != NULL, NULL);
@@ -276,13 +276,6 @@ const struct kefir_ast_type *kefir_ast_type_function(struct kefir_mem *mem, stru
     struct kefir_ast_type *type = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_type));
     REQUIRE(type != NULL, NULL);
     if (type_bundle != NULL) {
-        if (identifier != NULL) {
-            identifier = kefir_symbol_table_insert(mem, type_bundle->symbols, identifier, NULL);
-            REQUIRE_ELSE(identifier != NULL, {
-                KEFIR_FREE(mem, type);
-                return NULL;
-            });
-        }
         kefir_result_t res =
             kefir_list_insert_after(mem, &type_bundle->types, kefir_list_tail(&type_bundle->types), type);
         REQUIRE_ELSE(res == KEFIR_OK, {

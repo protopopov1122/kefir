@@ -43,18 +43,18 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     struct kefir_ast_function_type *func_type1 = NULL;
     const struct kefir_ast_type *type1 =
-        kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_int(), "sum", &func_type1);
+        kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_int(), &func_type1);
     REQUIRE_OK(kefir_ast_type_function_parameter(mem, context->type_bundle, func_type1, "x", NULL, NULL));
     REQUIRE_OK(kefir_ast_type_function_parameter(mem, context->type_bundle, func_type1, "y", NULL, NULL));
     REQUIRE_OK(kefir_ast_type_function_parameter(mem, context->type_bundle, func_type1, "z", NULL, NULL));
 
     struct kefir_ast_function_type *func_type2 = NULL;
     const struct kefir_ast_type *type2 =
-        kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_int(), "sum2", &func_type2);
+        kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_int(), &func_type2);
 
     struct kefir_ast_function_type *func_type3 = NULL;
     const struct kefir_ast_type *type3 =
-        kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_int(), "sum3", &func_type3);
+        kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_int(), &func_type3);
     REQUIRE_OK(kefir_ast_type_function_parameter(mem, context->type_bundle, func_type3, "x", NULL, NULL));
     REQUIRE_OK(kefir_ast_type_function_ellipsis(func_type3, true));
 

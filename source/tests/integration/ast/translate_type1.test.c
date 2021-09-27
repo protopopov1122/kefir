@@ -53,7 +53,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(type3 != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ast_function_type *function_type4 = NULL;
     const struct kefir_ast_type *type4 =
-        kefir_ast_type_function(mem, &type_bundle, kefir_ast_type_void(), "func1", &function_type4);
+        kefir_ast_type_function(mem, &type_bundle, kefir_ast_type_void(), &function_type4);
 
     REQUIRE_OK(kefir_ast_struct_type_field(mem, &symbols, struct_type2, "field1", kefir_ast_type_float(), NULL));
     REQUIRE_OK(kefir_ast_struct_type_field(

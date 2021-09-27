@@ -43,7 +43,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     struct kefir_ast_function_type *func_type1 = NULL;
     const struct kefir_ast_type *type1 =
-        kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_int(), "sum", &func_type1);
+        kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_int(), &func_type1);
     REQUIRE_OK(kefir_ast_type_function_parameter(mem, context->type_bundle, func_type1, NULL,
                                                  kefir_ast_type_signed_int(), NULL));
     REQUIRE_OK(kefir_ast_type_function_ellipsis(func_type1, true));

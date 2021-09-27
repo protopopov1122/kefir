@@ -44,7 +44,7 @@
         REQUIRE_OK(kefir_list_init(&func->args));                                                                      \
                                                                                                                        \
         struct kefir_ast_function_type *func_type = NULL;                                                              \
-        func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle, (_ret), (_name), &func_type); \
+        func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle, (_ret), &func_type);          \
         REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, NULL,      \
                                                      kefir_ast_type_float(), NULL));                                   \
         REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, NULL,      \

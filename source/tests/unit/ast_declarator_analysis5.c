@@ -106,7 +106,7 @@ DEFINE_CASE(ast_declarator_analysis21, "AST declarator analysis - function decla
     struct kefir_ast_function_type *func_type2 = NULL;
     const struct kefir_ast_type *type2 = kefir_ast_type_function(
         &kft_mem, context->type_bundle, kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()),
-        "someFunc", &func_type2);
+        &func_type2);
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, context->type_bundle, func_type2, "param1", type1,
         &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN}));
@@ -241,14 +241,14 @@ DEFINE_CASE(ast_declarator_analysis22, "AST declarator analysis - function decla
 
     struct kefir_ast_function_type *func_type2 = NULL;
     const struct kefir_ast_type *type2 =
-        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_int(), "callback", &func_type2);
+        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_int(), &func_type2);
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, context->type_bundle, func_type2, "num", kefir_ast_type_float(),
         &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN}));
 
     struct kefir_ast_function_type *func_type3 = NULL;
     const struct kefir_ast_type *type3 =
-        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_signed_long(), "modify", &func_type3);
+        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_signed_long(), &func_type3);
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, context->type_bundle, func_type3, "param1", type1,
         &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN}));
@@ -331,7 +331,7 @@ DEFINE_CASE(ast_declarator_analysis23, "AST declarator analysis - function decla
 
     struct kefir_ast_function_type *func_type2 = NULL;
     const struct kefir_ast_type *type2 =
-        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_char(), NULL, &func_type2);
+        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_char(), &func_type2);
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, context->type_bundle, func_type2, NULL, type1,
         &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN}));

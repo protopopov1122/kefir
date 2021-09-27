@@ -297,32 +297,32 @@ DEFINE_CASE(ast_declarator_analysis4, "AST declarator analysis - function declar
 
     struct kefir_ast_function_type *func_type1 = NULL;
     const struct kefir_ast_type *type1 =
-        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_char(), "func", &func_type1);
+        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_char(), &func_type1);
 
     struct kefir_ast_function_type *func_type2 = NULL;
     const struct kefir_ast_type *type2 =
         kefir_ast_type_function(&kft_mem, context->type_bundle,
                                 kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_signed_int(),
                                                          (struct kefir_ast_type_qualification){.constant = true}),
-                                "func", &func_type2);
+                                &func_type2);
 
     struct kefir_ast_function_type *func_type3 = NULL;
     const struct kefir_ast_type *type3 =
         kefir_ast_type_function(&kft_mem, context->type_bundle,
                                 kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_float(),
                                                          (struct kefir_ast_type_qualification){.volatile_type = true}),
-                                "func", &func_type3);
+                                &func_type3);
 
     struct kefir_ast_function_type *func_type4 = NULL;
     const struct kefir_ast_type *type4 =
-        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_short(), "func", &func_type4);
+        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_short(), &func_type4);
 
     struct kefir_ast_function_type *func_type5 = NULL;
     const struct kefir_ast_type *type5 = kefir_ast_type_function(
         &kft_mem, context->type_bundle,
         kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_long_long(),
                                  (struct kefir_ast_type_qualification){.restricted = true, .constant = true}),
-        "func", &func_type5);
+        &func_type5);
 
     ASSERT_FUNCTION_TYPE(&kft_mem, context, type1, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
                          KEFIR_AST_FUNCTION_SPECIFIER_NONE, 1, kefir_ast_type_specifier_char(&kft_mem));

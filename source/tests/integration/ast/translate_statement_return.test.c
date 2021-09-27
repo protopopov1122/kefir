@@ -58,7 +58,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     FUNC2("return0", {
         struct kefir_ast_function_type *function_type = NULL;
         const struct kefir_ast_type *type1 =
-            kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_void(), "fn0", &function_type);
+            kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_void(), &function_type);
         const struct kefir_ast_scoped_identifier *scoped_id = NULL;
         REQUIRE_OK(global_context.context.define_identifier(
             mem, &global_context.context, true, "fn0", type1, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
@@ -82,7 +82,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     FUNC2("return1", {
         struct kefir_ast_function_type *function_type = NULL;
         const struct kefir_ast_type *type1 =
-            kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_long(), "fn1", &function_type);
+            kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_long(), &function_type);
         const struct kefir_ast_scoped_identifier *scoped_id = NULL;
         REQUIRE_OK(global_context.context.define_identifier(
             mem, &global_context.context, true, "fn1", type1, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
@@ -116,7 +116,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     FUNC2("return2", {
         struct kefir_ast_function_type *function_type = NULL;
         const struct kefir_ast_type *type1 =
-            kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_float(), "fn2", &function_type);
+            kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_float(), &function_type);
         const struct kefir_ast_scoped_identifier *scoped_id = NULL;
         REQUIRE_OK(global_context.context.define_identifier(
             mem, &global_context.context, true, "fn2", type1, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
@@ -167,7 +167,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
         struct kefir_ast_function_type *function_type = NULL;
         const struct kefir_ast_type *type1 =
-            kefir_ast_type_function(mem, context->type_bundle, type_name1->base.properties.type, "fn3", &function_type);
+            kefir_ast_type_function(mem, context->type_bundle, type_name1->base.properties.type, &function_type);
         const struct kefir_ast_scoped_identifier *scoped_id = NULL;
         REQUIRE_OK(global_context.context.define_identifier(
             mem, &global_context.context, true, "fn3", type1, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
@@ -197,7 +197,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     FUNC2("return4", {
         struct kefir_ast_function_type *function_type = NULL;
         const struct kefir_ast_type *type1 =
-            kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_char(), "fn4", &function_type);
+            kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_char(), &function_type);
         const struct kefir_ast_scoped_identifier *scoped_id = NULL;
         REQUIRE_OK(global_context.context.define_identifier(
             mem, &global_context.context, true, "fn4", type1, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,

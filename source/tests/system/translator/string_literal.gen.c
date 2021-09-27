@@ -50,7 +50,7 @@ static kefir_result_t define_literal_function(struct kefir_mem *mem, struct func
             mem, context_manager->current->type_bundle,
             kefir_ast_type_qualified(mem, context_manager->current->type_bundle, kefir_ast_type_char(),
                                      (struct kefir_ast_type_qualification){.constant = true})),
-        name, &func_type);
+        &func_type);
     REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, NULL,
                                                  kefir_ast_type_signed_int(), NULL));
 

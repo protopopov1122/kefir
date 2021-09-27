@@ -117,7 +117,7 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_thread_local_external,
     struct kefir_ast_function_type *function1 = NULL;
     const struct kefir_ast_type *func1_type1 = kefir_ast_type_pointer(
         &kft_mem, &global_context.type_bundle,
-        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), "", &function1));
+        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), &function1));
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &global_context.type_bundle, function1, "x", NULL, NULL));
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &global_context.type_bundle, function1, "y", NULL, NULL));
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &global_context.type_bundle, function1, "z", NULL, NULL));
@@ -125,7 +125,7 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_thread_local_external,
     struct kefir_ast_function_type *function2 = NULL;
     const struct kefir_ast_type *func1_type2 = kefir_ast_type_pointer(
         &kft_mem, &global_context.type_bundle,
-        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), "", &function2));
+        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), &function2));
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &global_context.type_bundle, function2, NULL,
                                                 kefir_ast_type_unsigned_int(), NULL));
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &global_context.type_bundle, function2, NULL,
@@ -166,7 +166,7 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_thread_local_external_declarati
     struct kefir_ast_function_type *function1 = NULL;
     const struct kefir_ast_type *func1_type1 = kefir_ast_type_pointer(
         &kft_mem, &global_context.type_bundle,
-        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), "", &function1));
+        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), &function1));
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &global_context.type_bundle, function1, "x", NULL, NULL));
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &global_context.type_bundle, function1, "y", NULL, NULL));
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &global_context.type_bundle, function1, "z", NULL, NULL));
@@ -174,7 +174,7 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_thread_local_external_declarati
     struct kefir_ast_function_type *function2 = NULL;
     const struct kefir_ast_type *func1_type2 = kefir_ast_type_pointer(
         &kft_mem, &global_context.type_bundle,
-        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), "", &function2));
+        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), &function2));
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, &global_context.type_bundle, function2, NULL,
         kefir_ast_type_pointer(&kft_mem, &global_context.type_bundle, kefir_ast_type_void()), NULL));
@@ -215,7 +215,7 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_static, "AST ordinary scope - c
     struct kefir_ast_function_type *function1 = NULL;
     const struct kefir_ast_type *func1_type1 = kefir_ast_type_pointer(
         &kft_mem, &global_context.type_bundle,
-        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), "", &function1));
+        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), &function1));
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, &global_context.type_bundle, function1, NULL,
         kefir_ast_type_array_static(&kft_mem, &global_context.type_bundle, kefir_ast_type_signed_int(),
@@ -230,7 +230,7 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_static, "AST ordinary scope - c
     struct kefir_ast_function_type *function2 = NULL;
     const struct kefir_ast_type *func1_type2 = kefir_ast_type_pointer(
         &kft_mem, &global_context.type_bundle,
-        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), "", &function2));
+        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), &function2));
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, &global_context.type_bundle, function2, NULL,
         kefir_ast_type_unbounded_array(&kft_mem, &global_context.type_bundle, kefir_ast_type_signed_int(), NULL),
@@ -246,7 +246,7 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_static, "AST ordinary scope - c
     struct kefir_ast_function_type *function3 = NULL;
     const struct kefir_ast_type *func1_type3 = kefir_ast_type_pointer(
         &kft_mem, &global_context.type_bundle,
-        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), "", &function3));
+        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), &function3));
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, &global_context.type_bundle, function3, NULL,
         kefir_ast_type_pointer(&kft_mem, &global_context.type_bundle, kefir_ast_type_signed_int()), NULL));
@@ -287,7 +287,7 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_static_thread_local,
     struct kefir_ast_function_type *function1 = NULL;
     const struct kefir_ast_type *func1_type1 = kefir_ast_type_pointer(
         &kft_mem, &global_context.type_bundle,
-        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), "", &function1));
+        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), &function1));
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, &global_context.type_bundle, function1, NULL,
         kefir_ast_type_pointer(
@@ -304,7 +304,7 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_static_thread_local,
     struct kefir_ast_function_type *function2 = NULL;
     const struct kefir_ast_type *func1_type2 = kefir_ast_type_pointer(
         &kft_mem, &global_context.type_bundle,
-        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), "", &function2));
+        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), &function2));
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, &global_context.type_bundle, function2, NULL,
         kefir_ast_type_pointer(
@@ -323,7 +323,7 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_static_thread_local,
     struct kefir_ast_function_type *function3 = NULL;
     const struct kefir_ast_type *func1_type3 = kefir_ast_type_pointer(
         &kft_mem, &global_context.type_bundle,
-        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), "", &function3));
+        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), &function3));
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, &global_context.type_bundle, function3, NULL,
         kefir_ast_type_pointer(&kft_mem, &global_context.type_bundle,
@@ -366,12 +366,12 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_local_external,
 
     struct kefir_ast_function_type *function_aux = NULL;
     const struct kefir_ast_type *aux_type =
-        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_signed_int(), "", &function_aux);
+        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_signed_int(), &function_aux);
 
     struct kefir_ast_function_type *function1 = NULL;
     const struct kefir_ast_type *func1_type1 = kefir_ast_type_pointer(
         &kft_mem, &global_context.type_bundle,
-        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), "", &function1));
+        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), &function1));
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, &global_context.type_bundle, function1, NULL,
         kefir_ast_type_pointer(
@@ -388,7 +388,7 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_local_external,
     struct kefir_ast_function_type *function2 = NULL;
     const struct kefir_ast_type *func1_type2 = kefir_ast_type_pointer(
         &kft_mem, &global_context.type_bundle,
-        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), "", &function2));
+        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), &function2));
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, &global_context.type_bundle, function2, NULL,
         kefir_ast_type_pointer(
@@ -407,7 +407,7 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_local_external,
     struct kefir_ast_function_type *function3 = NULL;
     const struct kefir_ast_type *func1_type3 = kefir_ast_type_pointer(
         &kft_mem, &global_context.type_bundle,
-        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), "", &function3));
+        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), &function3));
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, &global_context.type_bundle, function3, NULL,
         kefir_ast_type_pointer(&kft_mem, &global_context.type_bundle,
@@ -450,12 +450,12 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_local_thread_local_external,
 
     struct kefir_ast_function_type *function_aux = NULL;
     const struct kefir_ast_type *aux_type =
-        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_signed_int(), "", &function_aux);
+        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_signed_int(), &function_aux);
 
     struct kefir_ast_function_type *function1 = NULL;
     const struct kefir_ast_type *func1_type1 = kefir_ast_type_pointer(
         &kft_mem, &global_context.type_bundle,
-        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), "", &function1));
+        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), &function1));
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, &global_context.type_bundle, function1, NULL,
         kefir_ast_type_pointer(
@@ -472,7 +472,7 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_local_thread_local_external,
     struct kefir_ast_function_type *function2 = NULL;
     const struct kefir_ast_type *func1_type2 = kefir_ast_type_pointer(
         &kft_mem, &global_context.type_bundle,
-        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), "", &function2));
+        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), &function2));
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, &global_context.type_bundle, function2, NULL,
         kefir_ast_type_pointer(
@@ -491,7 +491,7 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_local_thread_local_external,
     struct kefir_ast_function_type *function3 = NULL;
     const struct kefir_ast_type *func1_type3 = kefir_ast_type_pointer(
         &kft_mem, &global_context.type_bundle,
-        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), "", &function3));
+        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), &function3));
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, &global_context.type_bundle, function3, NULL,
         kefir_ast_type_pointer(&kft_mem, &global_context.type_bundle,

@@ -688,7 +688,7 @@ DEFINE_CASE(ast_type_construction8, "AST Types - function type") {
 
     struct kefir_ast_function_type *func_type1 = NULL;
     const struct kefir_ast_type *type1 =
-        kefir_ast_type_function(&kft_mem, &type_bundle, kefir_ast_type_unsigned_long_long(), "func1", &func_type1);
+        kefir_ast_type_function(&kft_mem, &type_bundle, kefir_ast_type_unsigned_long_long(), &func_type1);
     ASSERT(type1 != NULL);
     ASSERT(func_type1 != NULL);
     ASSERT(KEFIR_AST_TYPE_SAME(func_type1->return_type, kefir_ast_type_unsigned_long_long()));
@@ -718,7 +718,7 @@ DEFINE_CASE(ast_type_construction8, "AST Types - function type") {
 
     struct kefir_ast_function_type *func_type2 = NULL;
     const struct kefir_ast_type *type2 =
-        kefir_ast_type_function(&kft_mem, &type_bundle, kefir_ast_type_void(), "func2", &func_type2);
+        kefir_ast_type_function(&kft_mem, &type_bundle, kefir_ast_type_void(), &func_type2);
     ASSERT(type2 != NULL);
     ASSERT(func_type2 != NULL);
     ASSERT(KEFIR_AST_TYPE_SAME(func_type2->return_type, kefir_ast_type_void()));
