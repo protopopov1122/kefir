@@ -30,6 +30,18 @@
         },
         {
             "identifier": 4,
+            "type": []
+        },
+        {
+            "identifier": 5,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 6,
             "type": [
                 {
                     "type": "struct",
@@ -66,11 +78,22 @@
                     "type": "int"
                 }
             ]
+        },
+        {
+            "identifier": 1,
+            "name": "fn",
+            "parameters": [],
+            "vararg": false,
+            "returns": [
+                {
+                    "type": "int"
+                }
+            ]
         }
     ],
     "functions": [
         {
-            "identifier": 0,
+            "identifier": 1,
             "name": "fn",
             "locals": [
                 {

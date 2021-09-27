@@ -38,6 +38,18 @@
             "identifier": 5,
             "type": [
                 {
+                    "type": "word"
+                }
+            ]
+        },
+        {
+            "identifier": 6,
+            "type": []
+        },
+        {
+            "identifier": 7,
+            "type": [
+                {
                     "type": "struct",
                     "fields": [
                         {
@@ -48,7 +60,7 @@
             ]
         },
         {
-            "identifier": 6,
+            "identifier": 8,
             "type": [
                 {
                     "type": "struct",
@@ -80,11 +92,22 @@
             ],
             "vararg": false,
             "returns": []
+        },
+        {
+            "identifier": 1,
+            "name": "sum",
+            "parameters": [
+                {
+                    "type": "word"
+                }
+            ],
+            "vararg": false,
+            "returns": []
         }
     ],
     "functions": [
         {
-            "identifier": 0,
+            "identifier": 1,
             "name": "sum",
             "locals": [
                 {
@@ -116,7 +139,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 6,
+                        "type": 8,
                         "index": 3
                     }
                 },
@@ -129,7 +152,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 6,
+                        "type": 8,
                         "index": 1
                     }
                 },
@@ -145,7 +168,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 6,
+                        "type": 8,
                         "index": 2
                     }
                 },

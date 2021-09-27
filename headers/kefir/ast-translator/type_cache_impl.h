@@ -55,17 +55,9 @@ kefir_result_t kefir_ast_translator_type_cache_insert_unowned_object(struct kefi
                                                                      kefir_id_t, struct kefir_ir_type *,
                                                                      struct kefir_ast_type_layout *);
 
-kefir_result_t kefir_ast_translator_type_cache_insert_unowned_function(
-    struct kefir_mem *, struct kefir_ast_translator_type_cache *, struct kefir_ast_translator_function_declaration *);
-
 kefir_result_t kefir_ast_translator_type_cache_generate_owned_object(
     struct kefir_mem *, const struct kefir_ast_type *, kefir_size_t, struct kefir_ast_translator_type_cache *,
     const struct kefir_ast_translator_environment *, struct kefir_ir_module *,
     const struct kefir_ast_translator_resolved_type **);
-
-kefir_result_t kefir_ast_translator_type_cache_generate_owned_function(
-    struct kefir_mem *, const struct kefir_ast_type *, struct kefir_ast_translator_type_cache *,
-    const struct kefir_ast_translator_environment *, struct kefir_ast_type_bundle *,
-    const struct kefir_ast_type_traits *, struct kefir_ir_module *, const struct kefir_ast_translator_resolved_type **);
 
 #endif

@@ -40,6 +40,7 @@
 static kefir_result_t define_comma_function(struct kefir_mem *mem, struct function *func,
                                             struct kefir_ast_context_manager *context_manager, const char *name,
                                             kefir_size_t count) {
+    func->identifier = name;
     REQUIRE_OK(kefir_list_init(&func->args));
 
     const struct kefir_ast_type *payload_type =
@@ -62,7 +63,7 @@ static kefir_result_t define_comma_function(struct kefir_mem *mem, struct functi
                                                  payload_type, NULL));
 
     REQUIRE_OK(kefir_ast_global_context_define_function(mem, context_manager->global, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
-                                                        func->type, NULL, NULL));
+                                                        name, func->type, NULL, NULL));
 
     REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context));
     REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager));

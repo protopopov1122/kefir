@@ -217,8 +217,7 @@ static kefir_result_t translate_identifier_node(const struct kefir_ast_visitor *
 
         case KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION:
             REQUIRE_OK(
-                kefir_ast_translator_function_lvalue(param->mem, param->context, param->builder,
-                                                     scoped_identifier->function.type->function_type.identifier));
+                kefir_ast_translator_function_lvalue(param->mem, param->context, param->builder, node->identifier));
             break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_TAG:

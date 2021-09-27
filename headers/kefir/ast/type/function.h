@@ -42,7 +42,6 @@ typedef struct kefir_ast_function_type_parameter {
 
 typedef struct kefir_ast_function_type {
     const struct kefir_ast_type *return_type;
-    const char *identifier;
     kefir_ast_function_type_mode_t mode;
     struct kefir_list parameters;
     struct kefir_hashtree parameter_index;

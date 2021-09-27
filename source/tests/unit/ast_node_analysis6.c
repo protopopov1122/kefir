@@ -66,9 +66,9 @@ DEFINE_CASE(ast_node_analysis_function_calls1, "AST node analysis - function cal
         kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_void(), "func2", &function2);
 
     ASSERT_OK(kefir_ast_local_context_declare_function(&kft_mem, &local_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
-                                                       type1, NULL, NULL));
+                                                       "func1", type1, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_declare_function(&kft_mem, &local_context, KEFIR_AST_FUNCTION_SPECIFIER_INLINE,
-                                                       type2, NULL, NULL));
+                                                       "func2", type2, NULL, NULL));
 
     ASSERT_FUNCTION_CALL(&kft_mem, context, "func1", kefir_ast_type_float(), {});
     ASSERT_FUNCTION_CALL(&kft_mem, context, "func1", kefir_ast_type_float(), {
@@ -131,9 +131,9 @@ DEFINE_CASE(ast_node_analysis_function_calls2, "AST node analysis - function cal
     ASSERT_OK(kefir_ast_type_function_ellipsis(function2, true));
 
     ASSERT_OK(kefir_ast_local_context_declare_function(&kft_mem, &local_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
-                                                       type1, NULL, NULL));
+                                                       "func1", type1, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_declare_function(&kft_mem, &local_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
-                                                       type2, NULL, NULL));
+                                                       "func2", type2, NULL, NULL));
 
     ASSERT_FUNCTION_CALL_NOK(&kft_mem, context, "func1", {});
     ASSERT_FUNCTION_CALL_NOK(&kft_mem, context, "func1", {
@@ -222,7 +222,7 @@ DEFINE_CASE(ast_node_analysis_function_calls3, "AST node analysis - function cal
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, function1, "c", NULL, NULL));
 
     ASSERT_OK(kefir_ast_local_context_declare_function(&kft_mem, &local_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
-                                                       type1, NULL, NULL));
+                                                       "func1", type1, NULL, NULL));
 
     ASSERT_FUNCTION_CALL(&kft_mem, context, "func1", kefir_ast_type_signed_int(), {});
     ASSERT_FUNCTION_CALL(&kft_mem, context, "func1", kefir_ast_type_signed_int(), {
@@ -278,7 +278,7 @@ DEFINE_CASE(ast_node_analysis_function_calls4, "AST node analysis - function cal
                                                 NULL));
 
     ASSERT_OK(kefir_ast_local_context_declare_function(&kft_mem, &local_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
-                                                       type1, NULL, NULL));
+                                                       "func1", type1, NULL, NULL));
 
     ASSERT_FUNCTION_CALL(&kft_mem, context, "func1", kefir_ast_type_float(), {});
     ASSERT_FUNCTION_CALL_NOK(&kft_mem, context, "func1", {

@@ -53,6 +53,7 @@ static kefir_result_t append_specifiers(struct kefir_mem *mem, struct kefir_ast_
 static kefir_result_t define_get_alignof_function(struct kefir_mem *mem, struct function *func,
                                                   struct kefir_ast_context_manager *context_manager,
                                                   struct kefir_ast_declarator_specifier *specifier) {
+    func->identifier = "get_alignof";
     REQUIRE_OK(kefir_list_init(&func->args));
 
     struct kefir_ast_type_name *type_name16 =
@@ -64,10 +65,10 @@ static kefir_result_t define_get_alignof_function(struct kefir_mem *mem, struct 
 
     struct kefir_ast_function_type *func_type = NULL;
     func->type =
-        kefir_ast_type_function(mem, context_manager->current->type_bundle, struct_type, "get_alignof", &func_type);
+        kefir_ast_type_function(mem, context_manager->current->type_bundle, struct_type, func->identifier, &func_type);
 
     REQUIRE_OK(kefir_ast_global_context_define_function(mem, context_manager->global, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
-                                                        func->type, NULL, NULL));
+                                                        func->identifier, func->type, NULL, NULL));
 
     REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context));
     REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager));

@@ -103,6 +103,18 @@
             "identifier": 14,
             "type": [
                 {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 15,
+            "type": []
+        },
+        {
+            "identifier": 16,
+            "type": [
+                {
                     "type": "struct",
                     "fields": [
                         {
@@ -113,16 +125,64 @@
             ]
         },
         {
-            "identifier": 15,
-            "type": []
-        },
-        {
-            "identifier": 16,
-            "type": []
-        },
-        {
             "identifier": 17,
             "type": []
+        },
+        {
+            "identifier": 18,
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 19,
+            "type": []
+        },
+        {
+            "identifier": 20,
+            "type": []
+        },
+        {
+            "identifier": 21,
+            "type": []
+        },
+        {
+            "identifier": 22,
+            "type": []
+        },
+        {
+            "identifier": 23,
+            "type": []
+        },
+        {
+            "identifier": 24,
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 25,
+            "type": []
+        },
+        {
+            "identifier": 26,
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 27,
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
         }
     ],
     "data": [
@@ -193,11 +253,66 @@
                     "type": "long"
                 }
             ]
+        },
+        {
+            "identifier": 5,
+            "name": "set_value",
+            "parameters": [
+                {
+                    "type": "long"
+                }
+            ],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 6,
+            "name": "get_value",
+            "parameters": [],
+            "vararg": false,
+            "returns": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 7,
+            "name": "add_value",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 8,
+            "name": "invoke_callback",
+            "parameters": [],
+            "vararg": false,
+            "returns": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 9,
+            "name": "value_callback",
+            "parameters": [
+                {
+                    "type": "long"
+                }
+            ],
+            "vararg": false,
+            "returns": [
+                {
+                    "type": "long"
+                }
+            ]
         }
     ],
     "functions": [
         {
-            "identifier": 0,
+            "identifier": 7,
             "name": "add_value",
             "locals": [],
             "body": [
@@ -243,7 +358,7 @@
             ]
         },
         {
-            "identifier": 1,
+            "identifier": 6,
             "name": "get_value",
             "locals": [],
             "body": [
@@ -262,7 +377,7 @@
             ]
         },
         {
-            "identifier": 2,
+            "identifier": 5,
             "name": "set_value",
             "locals": [
                 {
@@ -314,7 +429,7 @@
             ]
         },
         {
-            "identifier": 4,
+            "identifier": 8,
             "name": "invoke_callback",
             "locals": [],
             "body": [
@@ -330,7 +445,7 @@
                 {
                     "opcode": "invoke",
                     "arg": {
-                        "identifier": 3,
+                        "identifier": 9,
                         "name": "value_callback"
                     }
                 },

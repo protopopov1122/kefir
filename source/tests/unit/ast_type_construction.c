@@ -692,7 +692,6 @@ DEFINE_CASE(ast_type_construction8, "AST Types - function type") {
     ASSERT(type1 != NULL);
     ASSERT(func_type1 != NULL);
     ASSERT(KEFIR_AST_TYPE_SAME(func_type1->return_type, kefir_ast_type_unsigned_long_long()));
-    ASSERT(func_type1->identifier != NULL && strcmp(func_type1->identifier, "func1") == 0);
     ASSERT(func_type1->mode == KEFIR_AST_FUNCTION_TYPE_PARAM_EMPTY);
     ASSERT(kefir_list_length(&func_type1->parameters) == 0);
     ASSERT(!func_type1->ellipsis);
@@ -723,7 +722,6 @@ DEFINE_CASE(ast_type_construction8, "AST Types - function type") {
     ASSERT(type2 != NULL);
     ASSERT(func_type2 != NULL);
     ASSERT(KEFIR_AST_TYPE_SAME(func_type2->return_type, kefir_ast_type_void()));
-    ASSERT(func_type2->identifier != NULL && strcmp(func_type2->identifier, "func2") == 0);
     ASSERT(func_type2->mode == KEFIR_AST_FUNCTION_TYPE_PARAM_EMPTY);
     ASSERT(kefir_list_length(&func_type2->parameters) == 0);
     ASSERT(!func_type2->ellipsis);

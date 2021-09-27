@@ -55,11 +55,11 @@ static kefir_result_t translate_function(struct kefir_mem *mem, struct function 
                                          struct kefir_ast_translator_context *translator_context) {
     REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager));
 
-    const struct kefir_ast_translator_resolved_type *function_type = NULL;
-    REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_FUNCTION(
-        mem, &translator_context->type_cache.resolver, translator_context->environment,
-        context_manager->current->type_bundle, context_manager->current->type_traits, translator_context->module,
-        func->type, &function_type));
+    struct kefir_ast_translator_function_declaration *func_declaration = NULL;
+    REQUIRE_OK(kefir_ast_translator_function_declaration_init(
+        mem, translator_context->environment, translator_context->ast_context->type_bundle,
+        translator_context->ast_context->type_traits, translator_context->module,
+        &translator_context->type_cache.resolver, func->identifier, func->type, NULL, &func_declaration));
 
     struct kefir_ast_translator_context local_translator_context;
     REQUIRE_OK(kefir_ast_translator_context_init_local(&local_translator_context, &func->local_context.context,
@@ -74,8 +74,7 @@ static kefir_result_t translate_function(struct kefir_mem *mem, struct function 
     REQUIRE_OK(kefir_ast_translator_flow_control_tree_init(mem, func->local_context.context.flow_control_tree));
 
     struct kefir_ir_function *ir_func = kefir_ir_module_new_function(
-        mem, local_translator_context.module, function_type->function.declaration->ir_function_decl,
-        local_scope.local_layout, 0);
+        mem, local_translator_context.module, func_declaration->ir_function_decl, local_scope.local_layout, 0);
 
     struct kefir_irbuilder_block builder;
     REQUIRE_OK(kefir_irbuilder_block_init(mem, &builder, &ir_func->body));
@@ -94,6 +93,7 @@ static kefir_result_t translate_function(struct kefir_mem *mem, struct function 
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_FREE(&builder));
 
     REQUIRE_OK(kefir_ast_translator_local_scope_layout_free(mem, &local_scope));
+    REQUIRE_OK(kefir_ast_translator_function_declaration_free(mem, func_declaration));
     REQUIRE_OK(kefir_ast_translator_context_free(mem, &local_translator_context));
     REQUIRE_OK(kefir_ast_context_manager_detach_local(context_manager));
     return KEFIR_OK;

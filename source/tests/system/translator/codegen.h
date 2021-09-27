@@ -36,6 +36,7 @@
     } while (0)
 
 struct function {
+    const char *identifier;
     const struct kefir_ast_type *type;
     struct kefir_ast_local_context local_context;
     struct kefir_list args;

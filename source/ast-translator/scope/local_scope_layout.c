@@ -203,7 +203,7 @@ static kefir_result_t translate_local_scoped_identifier_object(
 }
 
 static kefir_result_t translate_local_scoped_identifier_function(
-    struct kefir_mem *mem, const struct kefir_ast_scoped_identifier *scoped_identifier,
+    struct kefir_mem *mem, const char *identifier, const struct kefir_ast_scoped_identifier *scoped_identifier,
     const struct kefir_ast_translator_environment *env, struct kefir_ast_type_bundle *type_bundle,
     const struct kefir_ast_type_traits *type_traits, struct kefir_ir_module *module,
     struct kefir_ast_translator_type_resolver *type_resolver) {
@@ -211,10 +211,8 @@ static kefir_result_t translate_local_scoped_identifier_function(
                      scoped_identifier->payload.ptr);
     KEFIR_AST_SCOPE_SET_CLEANUP(scoped_identifier, kefir_ast_translator_scoped_identifer_payload_free, NULL);
     REQUIRE_OK(kefir_ast_translator_function_declaration_init(mem, env, type_bundle, type_traits, module, type_resolver,
-                                                              scoped_identifier->function.type, NULL,
+                                                              identifier, scoped_identifier->function.type, NULL,
                                                               &scoped_identifier_func->declaration));
-    REQUIRE_OK(
-        KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_REGISTER_FUNCTION(mem, type_resolver, scoped_identifier_func->declaration));
     return KEFIR_OK;
 }
 
@@ -231,8 +229,8 @@ static kefir_result_t translate_local_scoped_identifier(
             break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION:
-            REQUIRE_OK(translate_local_scoped_identifier_function(mem, scoped_identifier, env, type_bundle, type_traits,
-                                                                  module, type_resolver));
+            REQUIRE_OK(translate_local_scoped_identifier_function(mem, identifier, scoped_identifier, env, type_bundle,
+                                                                  type_traits, module, type_resolver));
             break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT:

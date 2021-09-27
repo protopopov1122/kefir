@@ -75,6 +75,14 @@
         },
         {
             "identifier": 9,
+            "type": []
+        },
+        {
+            "identifier": 10,
+            "type": []
+        },
+        {
+            "identifier": 11,
             "type": [
                 {
                     "type": "struct",
@@ -97,11 +105,23 @@
             ]
         },
         {
-            "identifier": 10,
+            "identifier": 12,
             "type": []
         },
         {
-            "identifier": 11,
+            "identifier": 13,
+            "type": [
+                {
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "identifier": 14,
+            "type": []
+        },
+        {
+            "identifier": 15,
             "type": [
                 {
                     "type": "bool"
@@ -142,13 +162,31 @@
         },
         {
             "identifier": 4,
-            "name": "for3",
+            "name": "body",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
             "identifier": 5,
+            "name": "for3",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 6,
+            "name": "body2",
+            "parameters": [],
+            "vararg": false,
+            "returns": [
+                {
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "identifier": 7,
             "name": "body2",
             "parameters": [],
             "vararg": false,
@@ -252,7 +290,7 @@
                 {
                     "opcode": "invoke",
                     "arg": {
-                        "identifier": 3,
+                        "identifier": 4,
                         "name": "body"
                     }
                 },
@@ -291,7 +329,7 @@
             ]
         },
         {
-            "identifier": 4,
+            "identifier": 5,
             "name": "for3",
             "locals": [
                 {
@@ -358,7 +396,7 @@
                 {
                     "opcode": "invoke",
                     "arg": {
-                        "identifier": 5,
+                        "identifier": 7,
                         "name": "body2"
                     }
                 },

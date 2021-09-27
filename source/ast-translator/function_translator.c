@@ -40,15 +40,19 @@ struct function_translator_ctx {
 static kefir_result_t init_function_declaration(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
                                                 struct kefir_ast_function_definition *function,
                                                 struct function_translator_ctx *args) {
+    const char *identifier = NULL;
+    REQUIRE_OK(kefir_ast_declarator_unpack_identifier(function->declarator, &identifier));
+    REQUIRE(identifier != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected function definition to have valid identifier"));
+
     args->resolved_function_type = NULL;
     switch (function->base.properties.type->function_type.mode) {
         case KEFIR_AST_FUNCTION_TYPE_PARAMETERS:
         case KEFIR_AST_FUNCTION_TYPE_PARAM_EMPTY:
-            REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_FUNCTION(
-                mem, &context->type_cache.resolver, context->environment, context->ast_context->type_bundle,
-                context->ast_context->type_traits, context->module,
-                function->base.properties.function_definition.scoped_id->type, &args->resolved_function_type));
-            args->function_declaration = args->resolved_function_type->function.declaration;
+            REQUIRE_OK(kefir_ast_translator_function_declaration_init(
+                mem, context->environment, context->ast_context->type_bundle, context->ast_context->type_traits,
+                context->module, &context->type_cache.resolver, identifier,
+                function->base.properties.function_definition.scoped_id->type, NULL, &args->function_declaration));
             break;
 
         case KEFIR_AST_FUNCTION_TYPE_PARAM_IDENTIFIERS: {
@@ -95,7 +99,8 @@ static kefir_result_t init_function_declaration(struct kefir_mem *mem, struct ke
 
             res = kefir_ast_translator_function_declaration_init(
                 mem, context->environment, context->ast_context->type_bundle, context->ast_context->type_traits,
-                context->module, NULL, function->base.properties.type, &declaration_list, &args->function_declaration);
+                context->module, NULL, identifier, function->base.properties.type, &declaration_list,
+                &args->function_declaration);
             REQUIRE_ELSE(res == KEFIR_OK, {
                 kefir_list_free(mem, &declaration_list);
                 kefir_hashtree_free(mem, &declarations);

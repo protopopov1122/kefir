@@ -163,17 +163,15 @@ static kefir_result_t scoped_context_declare_function(struct kefir_mem *mem,
                                                       struct kefir_ast_function_declaration_context *context,
                                                       kefir_ast_function_specifier_t specifier,
                                                       kefir_ast_scoped_identifier_storage_t storage_class,
-                                                      const struct kefir_ast_type *function,
+                                                      const char *identifier, const struct kefir_ast_type *function,
                                                       const struct kefir_source_location *location,
                                                       const struct kefir_ast_scoped_identifier **scoped_id_ptr) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     REQUIRE(function != NULL && function->tag == KEFIR_AST_TYPE_FUNCTION,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST function type"));
-    REQUIRE(function->function_type.identifier != NULL && strlen(function->function_type.identifier) > 0,
+    REQUIRE(identifier != NULL && strlen(identifier) > 0,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected function with non-empty identifier"));
-
-    const char *identifier = function->function_type.identifier;
 
     struct kefir_ast_scoped_identifier *ordinary_id = NULL;
 
@@ -275,24 +273,14 @@ static kefir_result_t context_define_identifier(
 
     kefir_bool_t is_function = type->tag == KEFIR_AST_TYPE_FUNCTION;
     if (is_function) {
-        if (identifier != NULL) {
-            REQUIRE(type->function_type.identifier != NULL && strcmp(identifier, type->function_type.identifier) == 0,
-                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
-                                           "Provided identifier does not match identifier from function type"));
-        } else {
-            REQUIRE(type->function_type.identifier == NULL,
-                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
-                                           "Provided identifier does not match identifier from function type"));
-        }
-
         switch (storage_class) {
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER:
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
                 REQUIRE(declaration, KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                                             "Function cannot be defined in local scope"));
-                if (type->function_type.identifier != NULL) {
-                    REQUIRE_OK(scoped_context_declare_function(mem, fn_ctx, function_specifier, storage_class, type,
-                                                               location, scoped_id));
+                if (identifier != NULL) {
+                    REQUIRE_OK(scoped_context_declare_function(mem, fn_ctx, function_specifier, storage_class,
+                                                               identifier, type, location, scoped_id));
                 }
                 break;
 

@@ -54,6 +54,7 @@ static kefir_result_t define_cast_function(struct kefir_mem *mem, struct functio
                                            struct kefir_ast_context_manager *context_manager, const char *name,
                                            const struct kefir_ast_type *param_type,
                                            struct kefir_ast_type_name *return_type_name) {
+    func->identifier = name;
     REQUIRE_OK(kefir_list_init(&func->args));
 
     REQUIRE_OK(kefir_ast_analyze_node(mem, context_manager->current, KEFIR_AST_NODE_BASE(return_type_name)));
@@ -65,7 +66,7 @@ static kefir_result_t define_cast_function(struct kefir_mem *mem, struct functio
                                                  param_type, NULL));
 
     REQUIRE_OK(kefir_ast_global_context_define_function(mem, context_manager->global, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
-                                                        func->type, NULL, NULL));
+                                                        name, func->type, NULL, NULL));
 
     REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context));
     REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager));

@@ -129,10 +129,6 @@ static kefir_bool_t same_function_type(const struct kefir_ast_type *type1, const
     REQUIRE(type2 != NULL, false);
     REQUIRE(type1->tag == KEFIR_AST_TYPE_FUNCTION && type2->tag == KEFIR_AST_TYPE_FUNCTION, false);
     REQUIRE(KEFIR_AST_TYPE_SAME(type1->function_type.return_type, type2->function_type.return_type), false);
-    REQUIRE((type1->function_type.identifier == NULL && type2->function_type.identifier == NULL) ||
-                (type1->function_type.identifier != NULL && type2->function_type.identifier != NULL &&
-                 strcmp(type1->function_type.identifier, type2->function_type.identifier) == 0),
-            false);
     REQUIRE(type1->function_type.mode == type2->function_type.mode, false);
     REQUIRE(kefir_list_length(&type1->function_type.parameters) == kefir_list_length(&type2->function_type.parameters),
             false);
@@ -222,10 +218,8 @@ const struct kefir_ast_type *composite_function_types(struct kefir_mem *mem, str
             mem, type_bundle, type_traits, type1->function_type.return_type, type2->function_type.return_type);
         REQUIRE(composite_return_type != NULL, NULL);
         struct kefir_ast_function_type *composite_function = NULL;
-        const char *func_identifier =
-            type1->function_type.identifier != NULL ? type1->function_type.identifier : type2->function_type.identifier;
         const struct kefir_ast_type *composite_type =
-            kefir_ast_type_function(mem, type_bundle, composite_return_type, func_identifier, &composite_function);
+            kefir_ast_type_function(mem, type_bundle, composite_return_type, NULL, &composite_function);
         REQUIRE(composite_type != NULL, NULL);
         for (kefir_size_t i = 0; i < kefir_ast_type_function_parameter_count(&type1->function_type); i++) {
             const struct kefir_ast_function_type_parameter *param1 = NULL;
@@ -303,7 +297,6 @@ const struct kefir_ast_type *kefir_ast_type_function(struct kefir_mem *mem, stru
     type->ops.composite = composite_function_types;
     type->ops.free = free_function_type;
     type->function_type.return_type = return_type;
-    type->function_type.identifier = identifier;
     type->function_type.mode = KEFIR_AST_FUNCTION_TYPE_PARAM_EMPTY;
     type->function_type.ellipsis = false;
     kefir_result_t res = kefir_hashtree_init(&type->function_type.parameter_index, &kefir_hashtree_str_ops);

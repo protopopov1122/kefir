@@ -98,7 +98,8 @@ kefir_result_t kefir_ast_local_context_define_type(struct kefir_mem *, struct ke
                                                    const struct kefir_ast_type *, const struct kefir_source_location *,
                                                    const struct kefir_ast_scoped_identifier **);
 kefir_result_t kefir_ast_local_context_declare_function(struct kefir_mem *, struct kefir_ast_local_context *,
-                                                        kefir_ast_function_specifier_t, const struct kefir_ast_type *,
+                                                        kefir_ast_function_specifier_t, const char *,
+                                                        const struct kefir_ast_type *,
                                                         const struct kefir_source_location *,
                                                         const struct kefir_ast_scoped_identifier **);
 kefir_result_t kefir_ast_local_context_reference_label(struct kefir_mem *, struct kefir_ast_local_context *,

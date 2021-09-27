@@ -58,6 +58,18 @@
         {
             "identifier": 6,
             "type": []
+        },
+        {
+            "identifier": 7,
+            "type": [
+                {
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "identifier": 8,
+            "type": []
         }
     ],
     "data": [],
@@ -83,6 +95,17 @@
         },
         {
             "identifier": 2,
+            "name": "eval",
+            "parameters": [],
+            "vararg": false,
+            "returns": [
+                {
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "identifier": 3,
             "name": "do_while2",
             "parameters": [],
             "vararg": false,
@@ -137,7 +160,7 @@
                 {
                     "opcode": "invoke",
                     "arg": {
-                        "identifier": 1,
+                        "identifier": 2,
                         "name": "eval"
                     }
                 },
@@ -171,7 +194,7 @@
             ]
         },
         {
-            "identifier": 2,
+            "identifier": 3,
             "name": "do_while2",
             "locals": [],
             "body": [

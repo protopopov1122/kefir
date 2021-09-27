@@ -48,6 +48,7 @@ static kefir_result_t define_assign_function_impl(struct kefir_mem *mem, struct 
         kefir_ast_type_pointer(mem, context_manager->current->type_bundle, param_type);
 
     struct kefir_ast_function_type *func_type = NULL;
+    func->identifier = name;
     func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle, param_type, name, &func_type);
     REQUIRE_OK(
         kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, NULL, ptr_type, NULL));
@@ -55,7 +56,7 @@ static kefir_result_t define_assign_function_impl(struct kefir_mem *mem, struct 
                                                  param2_type, NULL));
 
     REQUIRE_OK(kefir_ast_global_context_define_function(mem, context_manager->global, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
-                                                        func->type, NULL, NULL));
+                                                        name, func->type, NULL, NULL));
 
     REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context));
     REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager));

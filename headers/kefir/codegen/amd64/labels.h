@@ -26,7 +26,7 @@
 #define KEFIR_AMD64_SYSV_PROCEDURE_LABEL "%s"
 #define KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL "__%s_body"
 #define KEFIR_AMD64_SYSV_PROCEDURE_EPILOGUE_LABEL "__%s_epilogue"
-#define KEFIR_AMD64_SYSV_FUNCTION_GATE_NAMED_LABEL "__kefirrt_sfunction_%s_gate"
+#define KEFIR_AMD64_SYSV_FUNCTION_GATE_NAMED_LABEL "__kefirrt_sfunction_%s_gate" KEFIR_ID_FMT
 #define KEFIR_AMD64_SYSV_FUNCTION_GATE_ID_LABEL "__kefirrt_ifunction_gate" KEFIR_ID_FMT
 #define KEFIR_AMD64_SYSV_FUNCTION_VIRTUAL_GATE_NAMED_LABEL "__kefirrt_sfunction_%s_vgate"
 #define KEFIR_AMD64_SYSV_FUNCTION_VIRTUAL_GATE_ID_LABEL "__kefirrt_ifunction_vgate" KEFIR_ID_FMT

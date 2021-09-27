@@ -42,6 +42,7 @@ static kefir_result_t define_array_sum_function(struct kefir_mem *mem, struct fu
     REQUIRE_OK(kefir_list_init(&func->args));
 
     struct kefir_ast_function_type *func_type = NULL;
+    func->identifier = "array_sum";
     func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle, kefir_ast_type_float(),
                                          "array_sum", &func_type);
     REQUIRE_OK(kefir_ast_type_function_parameter(
@@ -51,7 +52,7 @@ static kefir_result_t define_array_sum_function(struct kefir_mem *mem, struct fu
                                                  kefir_ast_type_signed_long(), NULL));
 
     REQUIRE_OK(kefir_ast_global_context_define_function(mem, context_manager->global, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
-                                                        func->type, NULL, NULL));
+                                                        "array_sum", func->type, NULL, NULL));
 
     REQUIRE_OK(kefir_ast_local_context_init(mem, context_manager->global, &func->local_context));
     REQUIRE_OK(kefir_ast_context_manager_attach_local(&func->local_context, context_manager));
