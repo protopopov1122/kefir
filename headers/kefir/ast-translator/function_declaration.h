@@ -38,7 +38,6 @@ typedef struct kefir_ast_translator_function_declaration {
     struct kefir_ir_type *ir_return_type;
 
     struct kefir_list argument_layouts;
-    struct kefir_hashtree named_argument_layouts;
     struct kefir_ast_type_layout *return_layout;
 } kefir_ast_translator_function_declaration_t;
 

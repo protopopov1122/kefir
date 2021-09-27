@@ -468,7 +468,7 @@ DEFINE_CASE(ast_type_analysis_functions, "AST type analysis - functions") {
         kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_void(), &func_type4);
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, func_type4, "somethin",
                                                 kefir_ast_type_void(), NULL));
-    ASSERT_NOK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type4, NULL));
+    ASSERT_OK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type4, NULL));
 
     struct kefir_ast_function_type *func_type5 = NULL;
     const struct kefir_ast_type *type5 =

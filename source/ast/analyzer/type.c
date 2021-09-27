@@ -164,9 +164,6 @@ static kefir_result_t analyze_function(struct kefir_mem *mem, const struct kefir
             REQUIRE_OK(kefir_ast_analyze_type(mem, context, KEFIR_AST_TYPE_ANALYSIS_FUNCTION_PARAMETER,
                                               param->adjusted_type, location));
             if (param->adjusted_type->tag == KEFIR_AST_TYPE_VOID) {
-                REQUIRE(param->identifier == NULL,
-                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
-                                               "Void type function parameter shall be unnamed"));
                 REQUIRE(kefir_list_length(&func_type->parameters) == 1,
                         KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                                "Void type parameter shall be the only function parameter"));

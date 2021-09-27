@@ -311,3 +311,32 @@ kefir_result_t kefir_ast_declarator_unpack_identifier(struct kefir_ast_declarato
     }
     return KEFIR_OK;
 }
+
+kefir_result_t kefir_ast_declarator_unpack_function(struct kefir_ast_declarator *decl,
+                                                    const struct kefir_ast_declarator_function **func_ptr) {
+    REQUIRE(func_ptr != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to function declarator"));
+    if (decl == NULL) {
+        *func_ptr = NULL;
+        return KEFIR_OK;
+    }
+
+    switch (decl->klass) {
+        case KEFIR_AST_DECLARATOR_IDENTIFIER:
+            *func_ptr = NULL;
+            break;
+
+        case KEFIR_AST_DECLARATOR_POINTER:
+            REQUIRE_OK(kefir_ast_declarator_unpack_function(decl->pointer.declarator, func_ptr));
+            break;
+
+        case KEFIR_AST_DECLARATOR_ARRAY:
+            REQUIRE_OK(kefir_ast_declarator_unpack_function(decl->array.declarator, func_ptr));
+            break;
+
+        case KEFIR_AST_DECLARATOR_FUNCTION:
+            *func_ptr = &decl->function;
+            break;
+    }
+    return KEFIR_OK;
+}

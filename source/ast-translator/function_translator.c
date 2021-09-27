@@ -45,6 +45,10 @@ static kefir_result_t init_function_declaration(struct kefir_mem *mem, struct ke
     REQUIRE(identifier != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected function definition to have valid identifier"));
 
+    const struct kefir_ast_declarator_function *decl_func = NULL;
+    REQUIRE_OK(kefir_ast_declarator_unpack_function(function->declarator, &decl_func));
+    REQUIRE(decl_func != NULL,
+            KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected function definition to have function declarator"));
     args->resolved_function_type = NULL;
     switch (function->base.properties.type->function_type.mode) {
         case KEFIR_AST_FUNCTION_TYPE_PARAMETERS:
@@ -78,14 +82,16 @@ static kefir_result_t init_function_declaration(struct kefir_mem *mem, struct ke
                 return res;
             });
 
-            for (const struct kefir_list_entry *iter =
-                     kefir_list_head(&function->base.properties.type->function_type.parameters);
+            for (const struct kefir_list_entry *iter = kefir_list_head(&decl_func->parameters);
                  res == KEFIR_OK && iter != NULL; kefir_list_next(&iter)) {
 
-                ASSIGN_DECL_CAST(struct kefir_ast_function_type_parameter *, param, iter->value);
-
                 struct kefir_hashtree_node *tree_node = NULL;
-                res = kefir_hashtree_at(&declarations, (kefir_hashtree_key_t) param->identifier, &tree_node);
+                ASSIGN_DECL_CAST(struct kefir_ast_node_base *, param, iter->value);
+                ASSIGN_DECL_CAST(struct kefir_ast_identifier *, id_node, param->self);
+                REQUIRE_CHAIN_SET(&res, param->klass->type == KEFIR_AST_IDENTIFIER,
+                                  KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected parameter to be AST identifier"));
+                REQUIRE_CHAIN(&res,
+                              kefir_hashtree_at(&declarations, (kefir_hashtree_key_t) id_node->identifier, &tree_node));
 
                 REQUIRE_CHAIN(&res, kefir_list_insert_after(mem, &declaration_list, kefir_list_tail(&declaration_list),
                                                             (struct kefir_ast_node_base *) tree_node->value));
@@ -225,21 +231,46 @@ static kefir_result_t translate_function_impl(struct kefir_mem *mem, struct kefi
                                               struct kefir_ast_translator_context *context) {
     struct kefir_ast_local_context *local_context =
         function->base.properties.function_definition.scoped_id->function.local_context;
-    for (const struct kefir_list_entry *iter =
-             kefir_list_tail(&function->base.properties.type->function_type.parameters);
-         iter != NULL; iter = iter->prev) {
+    const struct kefir_ast_declarator_function *decl_func = NULL;
+    REQUIRE_OK(kefir_ast_declarator_unpack_function(function->declarator, &decl_func));
+    REQUIRE(decl_func != NULL,
+            KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected function definition to have function declarator"));
+    for (const struct kefir_list_entry *iter = kefir_list_tail(&decl_func->parameters); iter != NULL;
+         iter = iter->prev) {
 
-        ASSIGN_DECL_CAST(struct kefir_ast_function_type_parameter *, param, iter->value);
+        ASSIGN_DECL_CAST(struct kefir_ast_node_base *, param, iter->value);
         const struct kefir_ast_scoped_identifier *scoped_id = NULL;
 
-        if (param->identifier != NULL) {
-            REQUIRE_OK(local_context->context.resolve_ordinary_identifier(&local_context->context, param->identifier,
+        if (param->klass->type == KEFIR_AST_DECLARATION) {
+            ASSIGN_DECL_CAST(struct kefir_ast_declaration *, decl_node, param->self);
+            REQUIRE(kefir_list_length(&decl_node->init_declarators) == 1,
+                    KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected function parameter to have exactly one declarator"));
+
+            ASSIGN_DECL_CAST(struct kefir_ast_init_declarator *, init_decl,
+                             kefir_list_head(&decl_node->init_declarators)->value);
+            const char *param_identifier = NULL;
+            REQUIRE_OK(kefir_ast_declarator_unpack_identifier(init_decl->declarator, &param_identifier));
+            REQUIRE(init_decl->base.properties.type != NULL,
+                    KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Function definition parameters shall have definite types"));
+            if (init_decl->base.properties.type->tag != KEFIR_AST_TYPE_VOID && param_identifier != NULL) {
+                REQUIRE_OK(local_context->context.resolve_ordinary_identifier(&local_context->context, param_identifier,
+                                                                              &scoped_id));
+                REQUIRE_OK(kefir_ast_translator_object_lvalue(mem, context, builder, param_identifier, scoped_id));
+                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_XCHG, 1));
+                REQUIRE_OK(kefir_ast_translator_store_value(mem, scoped_id->type, context, builder));
+            } else {
+                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POP, 0));
+            }
+        } else if (param->klass->type == KEFIR_AST_IDENTIFIER) {
+            ASSIGN_DECL_CAST(struct kefir_ast_identifier *, id_node, param->self);
+            REQUIRE_OK(local_context->context.resolve_ordinary_identifier(&local_context->context, id_node->identifier,
                                                                           &scoped_id));
-            REQUIRE_OK(kefir_ast_translator_object_lvalue(mem, context, builder, param->identifier, scoped_id));
+            REQUIRE_OK(kefir_ast_translator_object_lvalue(mem, context, builder, id_node->identifier, scoped_id));
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_XCHG, 1));
             REQUIRE_OK(kefir_ast_translator_store_value(mem, scoped_id->type, context, builder));
         } else {
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POP, 0));
+            return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR,
+                                   "Expected function parameter to be either AST declaration or identifier");
         }
     }
 

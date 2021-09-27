@@ -45,6 +45,7 @@ kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem, struct k
                                                  struct kefir_ast_function_type *function_type, const char *identifier,
                                                  const struct kefir_ast_type *type,
                                                  const kefir_ast_scoped_identifier_storage_t *storage) {
+    UNUSED(identifier);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(type_bundle != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type storage"));
     REQUIRE(function_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST finction type"));
@@ -86,7 +87,6 @@ kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem, struct k
             return KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate parameter identifier");
         });
     }
-    param->identifier = identifier;
     param->type = type;
     if (type) {
         param->adjusted_type = kefir_ast_type_conv_adjust_function_parameter(mem, type_bundle, type);
@@ -137,10 +137,6 @@ static kefir_bool_t same_function_type(const struct kefir_ast_type *type1, const
     for (; iter1 != NULL && iter2 != NULL; kefir_list_next(&iter1), kefir_list_next(&iter2)) {
         ASSIGN_DECL_CAST(const struct kefir_ast_function_type_parameter *, param1, iter1->value);
         ASSIGN_DECL_CAST(const struct kefir_ast_function_type_parameter *, param2, iter2->value);
-        REQUIRE((param1->identifier == NULL && param2->identifier == NULL) ||
-                    (param1->identifier != NULL && param2->identifier != NULL &&
-                     strcmp(param1->identifier, param2->identifier) == 0),
-                false);
         REQUIRE((param1->type == NULL && param2->type == NULL) ||
                     (param1->type != NULL && param2->type != NULL && KEFIR_AST_TYPE_SAME(param1->type, param2->type)),
                 false);
@@ -230,13 +226,8 @@ const struct kefir_ast_type *composite_function_types(struct kefir_mem *mem, str
                 mem, type_bundle, type_traits, kefir_ast_unqualified_type(param1->adjusted_type),
                 kefir_ast_unqualified_type(param2->adjusted_type));
             REQUIRE(composite_parameter != NULL, NULL);
-
-            const char *identifier = param1->identifier;
-            if (identifier == NULL) {
-                identifier = param2->identifier;
-            }
-            REQUIRE(kefir_ast_type_function_parameter(mem, type_bundle, composite_function, identifier,
-                                                      composite_parameter, NULL) == KEFIR_OK,
+            REQUIRE(kefir_ast_type_function_parameter(mem, type_bundle, composite_function, NULL, composite_parameter,
+                                                      NULL) == KEFIR_OK,
                     NULL);
         }
         return composite_type;

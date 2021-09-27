@@ -74,5 +74,7 @@ kefir_result_t kefir_ast_declarator_free(struct kefir_mem *, struct kefir_ast_de
 
 kefir_result_t kefir_ast_declarator_is_abstract(struct kefir_ast_declarator *, kefir_bool_t *);
 kefir_result_t kefir_ast_declarator_unpack_identifier(struct kefir_ast_declarator *, const char **);
+kefir_result_t kefir_ast_declarator_unpack_function(struct kefir_ast_declarator *,
+                                                    const struct kefir_ast_declarator_function **);
 
 #endif

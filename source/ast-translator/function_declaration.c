@@ -95,16 +95,6 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(
             return res;
         });
 
-        if (parameter->identifier != NULL) {
-            res = kefir_hashtree_insert(mem, &func_decl->named_argument_layouts,
-                                        (kefir_hashtree_key_t) parameter->identifier,
-                                        (kefir_hashtree_value_t) parameter_layout);
-            REQUIRE_ELSE(res == KEFIR_OK, {
-                KEFIR_IRBUILDER_TYPE_FREE(&builder);
-                return res;
-            });
-        }
-
         if (type_resolver != NULL && parameter_layout != NULL) {
             res = KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_REGISTER_OBJECT(mem, type_resolver, func_decl->ir_argument_type_id,
                                                                      func_decl->ir_argument_type, parameter_layout);
@@ -203,7 +193,6 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc(
     struct kefir_ast_translator_function_declaration *func_decl) {
     func_decl->function_type = func_type;
     REQUIRE_OK(kefir_list_init(&func_decl->argument_layouts));
-    REQUIRE_OK(kefir_hashtree_init(&func_decl->named_argument_layouts, &kefir_hashtree_str_ops));
     REQUIRE_OK(kefir_list_on_remove(&func_decl->argument_layouts, free_argument_layout, NULL));
     func_decl->ir_argument_type = kefir_ir_module_new_type(mem, module, 0, &func_decl->ir_argument_type_id);
     REQUIRE(func_decl->ir_argument_type != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR type"));
@@ -212,14 +201,12 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc(
     kefir_result_t res = kefir_ast_translator_function_declaration_alloc_args(
         mem, env, type_bundle, type_traits, type_resolver, func_type, parameters, func_decl);
     REQUIRE_ELSE(res == KEFIR_OK, {
-        kefir_hashtree_free(mem, &func_decl->named_argument_layouts);
         kefir_list_free(mem, &func_decl->argument_layouts);
         return res;
     });
 
     res = kefir_ast_translator_function_declaration_alloc_return(mem, env, type_resolver, func_type, func_decl);
     REQUIRE_ELSE(res == KEFIR_OK, {
-        kefir_hashtree_free(mem, &func_decl->named_argument_layouts);
         kefir_list_free(mem, &func_decl->argument_layouts);
         return res;
     });
@@ -228,7 +215,6 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc(
         kefir_ir_module_new_function_declaration(mem, module, identifier, func_decl->ir_argument_type,
                                                  func_type->function_type.ellipsis, func_decl->ir_return_type);
     REQUIRE_ELSE(func_decl->ir_function_decl != NULL, {
-        kefir_hashtree_free(mem, &func_decl->named_argument_layouts);
         kefir_list_free(mem, &func_decl->argument_layouts);
         return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR function declaration");
     });
@@ -274,7 +260,6 @@ kefir_result_t kefir_ast_translator_function_declaration_free(
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator function declaration pointer"));
 
     REQUIRE_OK(kefir_ast_type_layout_free(mem, func_decl->return_layout));
-    REQUIRE_OK(kefir_hashtree_free(mem, &func_decl->named_argument_layouts));
     REQUIRE_OK(kefir_list_free(mem, &func_decl->argument_layouts));
     func_decl->ir_argument_type = NULL;
     func_decl->ir_return_type = NULL;
