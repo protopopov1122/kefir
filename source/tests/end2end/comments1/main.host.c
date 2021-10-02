@@ -21,9 +21,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-
-extern const int Constant1;
-extern float getf();
+#include "./definitions.h"
 
 int main() {
     assert(Constant1 == 2);

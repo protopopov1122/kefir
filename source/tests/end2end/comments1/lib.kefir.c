@@ -18,6 +18,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "./definitions.h"
+
 // const int Constant1 = 1;
 const int Constant1 = /* 100 */  // 200
     2;
