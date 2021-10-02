@@ -22,6 +22,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include <getopt.h>
+#include <string.h>
 
 static kefir_result_t parse_impl(struct kefir_mem *mem, struct kefir_cli_options *options, char *const *argv,
                                  kefir_size_t argc) {
@@ -37,11 +38,12 @@ static kefir_result_t parse_impl(struct kefir_mem *mem, struct kefir_cli_options
                                                  {"tabular-errors", no_argument, NULL, 0},
                                                  {"target-profile", required_argument, NULL, 0},
                                                  {"source-id", required_argument, NULL, 0},
-                                                 {"detailed-output", no_argument, NULL, 'D'},
+                                                 {"detailed-output", no_argument, NULL, 0},
+                                                 {"define", required_argument, NULL, 'D'},
                                                  {"include-dir", required_argument, NULL, 'I'},
                                                  {"help", no_argument, NULL, 'h'},
                                                  {"version", no_argument, NULL, 'v'}};
-    const char *options_string = "+:o:I:DpPhv";
+    const char *options_string = "+:o:I:D:pPhv";
 
     for (int c = getopt_long(argc, argv, options_string, long_options, &long_option_index); c != -1;
          c = getopt_long(argc, argv, options_string, long_options, &long_option_index)) {
@@ -81,6 +83,10 @@ static kefir_result_t parse_impl(struct kefir_mem *mem, struct kefir_cli_options
                         options->source_id = optarg;
                         break;
 
+                    case 11:
+                        options->detailed_output = true;
+                        break;
+
                     default:
                         return KEFIR_SET_ERRORF(KEFIR_INTERNAL_ERROR, "Unexpected option %s", argv[optind - 1]);
                 }
@@ -90,9 +96,22 @@ static kefir_result_t parse_impl(struct kefir_mem *mem, struct kefir_cli_options
                 options->output_filepath = optarg;
                 break;
 
-            case 'D':
-                options->detailed_output = true;
-                break;
+            case 'D': {
+                const char *iter = optarg;
+                while (*iter != '\0' && *iter != '=') {
+                    ++iter;
+                }
+
+                kefir_size_t identifier_length = iter - optarg;
+                char *identifier = KEFIR_MALLOC(mem, identifier_length + 1);
+                REQUIRE(identifier != NULL,
+                        KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate macro identifier"));
+                strncpy(identifier, optarg, identifier_length);
+                identifier[identifier_length] = '\0';
+                const char *value = optarg[identifier_length] != '\0' ? optarg + identifier_length + 1 : NULL;
+                REQUIRE_OK(kefir_hashtree_insert(mem, &options->defines, (kefir_hashtree_key_t) identifier,
+                                                 (kefir_hashtree_value_t) value));
+            } break;
 
             case 'p':
                 REQUIRE(
@@ -137,6 +156,19 @@ static kefir_result_t parse_impl(struct kefir_mem *mem, struct kefir_cli_options
     return KEFIR_OK;
 }
 
+static kefir_result_t free_define_identifier(struct kefir_mem *mem, struct kefir_hashtree *tree,
+                                             kefir_hashtree_key_t key, kefir_hashtree_value_t value, void *payload) {
+    UNUSED(tree);
+    UNUSED(value);
+    UNUSED(payload);
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    ASSIGN_DECL_CAST(char *, identifier, key);
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
+
+    KEFIR_FREE(mem, identifier);
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_cli_parse_options(struct kefir_mem *mem, struct kefir_cli_options *options, char *const *argv,
                                        kefir_size_t argc) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
@@ -149,9 +181,12 @@ kefir_result_t kefir_cli_parse_options(struct kefir_mem *mem, struct kefir_cli_o
                                           .error_report_type = KEFIR_CLI_ERROR_REPORT_TABULAR,
                                           .skip_preprocessor = false};
     REQUIRE_OK(kefir_list_init(&options->include_path));
+    REQUIRE_OK(kefir_hashtree_init(&options->defines, &kefir_hashtree_str_ops));
+    REQUIRE_OK(kefir_hashtree_on_removal(&options->defines, free_define_identifier, NULL));
     kefir_result_t res = parse_impl(mem, options, argv, argc);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_list_free(mem, &options->include_path);
+        kefir_hashtree_free(mem, &options->defines);
         return res;
     });
 
@@ -163,5 +198,6 @@ kefir_result_t kefir_cli_options_free(struct kefir_mem *mem, struct kefir_cli_op
     REQUIRE(options != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to cli options"));
 
     REQUIRE_OK(kefir_list_free(mem, &options->include_path));
+    REQUIRE_OK(kefir_hashtree_free(mem, &options->defines));
     return KEFIR_OK;
 }

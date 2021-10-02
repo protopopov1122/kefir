@@ -28,6 +28,7 @@
 #include "kefir/ast-translator/scope/global_scope_layout.h"
 #include "kefir/ast-translator/scope/translator.h"
 #include "kefir/ast-translator/translator.h"
+#include "kefir/preprocessor/tokenizer.h"
 
 static void *kefir_malloc(struct kefir_mem *mem, kefir_size_t sz) {
     UNUSED(mem);
@@ -93,6 +94,54 @@ kefir_result_t kefir_compiler_context_free(struct kefir_mem *mem, struct kefir_c
     return KEFIR_OK;
 }
 
+static kefir_result_t preprocessor_tokenize_impl(struct kefir_mem *mem, struct kefir_token_buffer *buffer,
+                                                 struct kefir_lexer *lexer) {
+    struct kefir_token token;
+    kefir_bool_t skip_whitespaces = true;
+    while (skip_whitespaces) {
+        REQUIRE_OK(kefir_preprocessor_tokenize_next(mem, lexer, &token));
+        if (token.klass != KEFIR_TOKEN_PP_WHITESPACE || token.pp_whitespace.newline) {
+            skip_whitespaces = false;
+        } else {
+            REQUIRE_OK(kefir_token_free(mem, &token));
+        }
+    }
+
+    while (token.klass != KEFIR_TOKEN_SENTINEL) {
+        REQUIRE_OK(kefir_token_buffer_emplace(mem, buffer, &token));
+        REQUIRE_OK(kefir_preprocessor_tokenize_next(mem, lexer, &token));
+    }
+    REQUIRE_OK(kefir_token_free(mem, &token));
+
+    while (buffer->length > 0 && buffer->tokens[buffer->length - 1].klass == KEFIR_TOKEN_PP_WHITESPACE) {
+        REQUIRE_OK(kefir_token_buffer_pop(mem, buffer));
+    }
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_compiler_preprocessor_tokenize(struct kefir_mem *mem, struct kefir_compiler_context *context,
+                                                    struct kefir_token_buffer *buffer, const char *content,
+                                                    kefir_size_t length, const char *source_id) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler context"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));
+    REQUIRE(content != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid content"));
+
+    struct kefir_lexer_source_cursor source_cursor;
+    struct kefir_lexer lexer;
+    REQUIRE_OK(kefir_lexer_source_cursor_init(&source_cursor, content, length, source_id));
+    REQUIRE_OK(kefir_lexer_init(mem, &lexer, &context->ast_global_context.symbols, &source_cursor,
+                                &context->profile->lexer_context));
+
+    kefir_result_t res = preprocessor_tokenize_impl(mem, buffer, &lexer);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_lexer_free(mem, &lexer);
+        return res;
+    });
+    REQUIRE_OK(kefir_lexer_free(mem, &lexer));
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_compiler_preprocess(struct kefir_mem *mem, struct kefir_compiler_context *context,
                                          struct kefir_token_buffer *buffer, const char *content, kefir_size_t length,
                                          const char *source_id, const char *filepath) {
@@ -106,6 +155,7 @@ kefir_result_t kefir_compiler_preprocess(struct kefir_mem *mem, struct kefir_com
     REQUIRE_OK(kefir_lexer_source_cursor_init(&source_cursor, content, length, source_id));
     REQUIRE_OK(kefir_preprocessor_init(mem, &preprocessor, &context->ast_global_context.symbols, &source_cursor,
                                        &context->profile->lexer_context, &context->preprocessor_context, filepath));
+
     kefir_result_t res = kefir_preprocessor_run(mem, &preprocessor, buffer);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_preprocessor_free(mem, &preprocessor);

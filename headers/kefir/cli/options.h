@@ -24,6 +24,7 @@
 #include "kefir/core/basic-types.h"
 #include "kefir/core/mem.h"
 #include "kefir/core/list.h"
+#include "kefir/core/hashtree.h"
 
 typedef enum kefir_cli_action {
     KEFIR_CLI_ACTION_PREPROCESS,
@@ -50,6 +51,7 @@ typedef struct kefir_cli_options {
     kefir_bool_t detailed_output;
     kefir_bool_t skip_preprocessor;
     struct kefir_list include_path;
+    struct kefir_hashtree defines;
 } kefir_cli_options_t;
 
 kefir_result_t kefir_cli_parse_options(struct kefir_mem *, struct kefir_cli_options *, char *const *, kefir_size_t);

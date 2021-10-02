@@ -46,6 +46,9 @@ kefir_result_t kefir_compiler_context_init(struct kefir_mem *, struct kefir_comp
                                            struct kefir_compiler_profile *,
                                            const struct kefir_preprocessor_source_locator *);
 kefir_result_t kefir_compiler_context_free(struct kefir_mem *, struct kefir_compiler_context *);
+kefir_result_t kefir_compiler_preprocessor_tokenize(struct kefir_mem *, struct kefir_compiler_context *,
+                                                    struct kefir_token_buffer *, const char *, kefir_size_t,
+                                                    const char *);
 kefir_result_t kefir_compiler_preprocess(struct kefir_mem *, struct kefir_compiler_context *,
                                          struct kefir_token_buffer *, const char *, kefir_size_t, const char *,
                                          const char *);

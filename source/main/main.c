@@ -97,12 +97,41 @@ static kefir_result_t dump_action_impl(struct kefir_mem *mem, struct kefir_cli_o
     return KEFIR_OK;
 }
 
+static kefir_result_t build_predefined_macros(struct kefir_mem *mem, struct kefir_cli_options *options,
+                                              struct kefir_compiler_context *compiler) {
+    struct kefir_hashtree_node_iterator macro_iter;
+    const struct kefir_hashtree_node *macro_node = kefir_hashtree_iter(&options->defines, &macro_iter);
+    for (; macro_node != NULL; macro_node = kefir_hashtree_next(&macro_iter)) {
+        ASSIGN_DECL_CAST(const char *, identifier, macro_node->key);
+        ASSIGN_DECL_CAST(const char *, raw_value, macro_node->value);
+
+        struct kefir_preprocessor_user_macro *macro =
+            kefir_preprocessor_user_macro_new_object(mem, &compiler->ast_global_context.symbols, identifier);
+        REQUIRE(macro != NULL, KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate preprocessor macro"));
+        kefir_result_t res = KEFIR_OK;
+
+        if (raw_value != NULL) {
+            res = kefir_compiler_preprocessor_tokenize(mem, compiler, &macro->replacement, raw_value, strlen(raw_value),
+                                                       identifier);
+        }
+        REQUIRE_CHAIN(
+            &res, kefir_preprocessor_user_macro_scope_insert(mem, &compiler->preprocessor_context.user_macros, macro));
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_preprocessor_user_macro_free(mem, macro);
+            return res;
+        });
+    }
+
+    return KEFIR_OK;
+}
+
 static kefir_result_t lex_file(struct kefir_mem *mem, struct kefir_cli_options *options,
                                struct kefir_compiler_context *compiler, const char *source_id, const char *source,
                                kefir_size_t length, struct kefir_token_buffer *tokens) {
     if (options->skip_preprocessor) {
         REQUIRE_OK(kefir_compiler_lex(mem, compiler, tokens, source, length, source_id));
     } else {
+        REQUIRE_OK(build_predefined_macros(mem, options, compiler));
         REQUIRE_OK(
             kefir_compiler_preprocess_lex(mem, compiler, tokens, source, length, source_id, options->input_filepath));
     }
@@ -115,6 +144,7 @@ static kefir_result_t dump_preprocessed_impl(struct kefir_mem *mem, struct kefir
     UNUSED(options);
     struct kefir_token_buffer tokens;
     REQUIRE_OK(kefir_token_buffer_init(&tokens));
+    REQUIRE_OK(build_predefined_macros(mem, options, compiler));
     REQUIRE_OK(kefir_compiler_preprocess(mem, compiler, &tokens, source, length, source_id, options->input_filepath));
     REQUIRE_OK(open_output(options->output_filepath, &output));
     REQUIRE_OK(kefir_preprocessor_format(output, &tokens, KEFIR_PREPROCESSOR_WHITESPACE_FORMAT_ORIGINAL));

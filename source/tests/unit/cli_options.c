@@ -23,7 +23,7 @@
 #include <string.h>
 
 DEFINE_CASE(cli_options1, "CLI - options #1") {
-    char *const argv[] = {"", "-o", "file.out", "-D", "--dump-ast", "test.c"};
+    char *const argv[] = {"", "-o", "file.out", "--detailed-output", "--dump-ast", "test.c"};
     struct kefir_cli_options opts;
     ASSERT_OK(kefir_cli_parse_options(&kft_mem, &opts, argv, sizeof(argv) / sizeof(argv[0])));
 
@@ -56,7 +56,12 @@ DEFINE_CASE(cli_options2, "CLI - options #2") {
 END_CASE
 
 DEFINE_CASE(cli_options3, "CLI - options #3") {
-    char *const argv[] = {"", "-o", "out.asm", "--source-id=source1", "input.c"};
+    char *const argv[] = {"",         "-o",
+                          "out.asm",  "--source-id=source1",
+                          "--define", "X",
+                          "-D",       "Y=X",
+                          "--define", "TEST=   test123=test3,,,   ===",
+                          "input.c"};
     struct kefir_cli_options opts;
     ASSERT_OK(kefir_cli_parse_options(&kft_mem, &opts, argv, sizeof(argv) / sizeof(argv[0])));
 
@@ -69,6 +74,17 @@ DEFINE_CASE(cli_options3, "CLI - options #3") {
     ASSERT(strcmp(opts.output_filepath, "out.asm") == 0);
     ASSERT(opts.input_filepath != NULL);
     ASSERT(strcmp(opts.input_filepath, "input.c") == 0);
+
+    struct kefir_hashtree_node *node = NULL;
+    ASSERT_OK(kefir_hashtree_at(&opts.defines, (kefir_hashtree_key_t) "X", &node));
+    ASSERT((const char *) node->value == NULL);
+    ASSERT_OK(kefir_hashtree_at(&opts.defines, (kefir_hashtree_key_t) "Y", &node));
+    ASSERT((const char *) node->value != NULL);
+    ASSERT(strcmp((const char *) node->value, "X") == 0);
+    ASSERT_OK(kefir_hashtree_at(&opts.defines, (kefir_hashtree_key_t) "TEST", &node));
+    ASSERT((const char *) node->value != NULL);
+    ASSERT(strcmp((const char *) node->value, "   test123=test3,,,   ===") == 0);
+    ASSERT(!kefir_hashtree_has(&opts.defines, (kefir_hashtree_key_t) "Z"));
     ASSERT_OK(kefir_cli_options_free(&kft_mem, &opts));
 }
 END_CASE
