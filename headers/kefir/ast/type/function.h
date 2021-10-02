@@ -43,7 +43,6 @@ typedef struct kefir_ast_function_type {
     const struct kefir_ast_type *return_type;
     kefir_ast_function_type_mode_t mode;
     struct kefir_list parameters;
-    struct kefir_hashtree parameter_index;
     kefir_bool_t ellipsis;
 } kefir_ast_function_type_t;
 

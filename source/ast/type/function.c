@@ -73,10 +73,6 @@ kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem, struct k
             }
             break;
     }
-    if (identifier != NULL && strlen(identifier) > 0 &&
-        kefir_hashtree_has(&function_type->parameter_index, (kefir_hashtree_key_t) identifier)) {
-        return KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Duplicate function parameter identifier");
-    }
     struct kefir_ast_function_type_parameter *param =
         KEFIR_MALLOC(mem, sizeof(struct kefir_ast_function_type_parameter));
     REQUIRE(param != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate memory for function parameter"));
@@ -100,18 +96,9 @@ kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem, struct k
     } else {
         KEFIR_OPTIONAL_SET_VALUE(&param->storage, *storage);
     }
-    kefir_result_t res = KEFIR_OK;
-    if (identifier != NULL && strlen(identifier) > 0) {
-        res = kefir_hashtree_insert(mem, &function_type->parameter_index, (kefir_hashtree_key_t) identifier,
-                                    (kefir_hashtree_value_t) param);
-        REQUIRE_ELSE(res == KEFIR_OK, {
-            KEFIR_FREE(mem, param);
-            return res;
-        });
-    }
-    res = kefir_list_insert_after(mem, &function_type->parameters, kefir_list_tail(&function_type->parameters), param);
+    kefir_result_t res =
+        kefir_list_insert_after(mem, &function_type->parameters, kefir_list_tail(&function_type->parameters), param);
     REQUIRE_ELSE(res == KEFIR_OK, {
-        kefir_hashtree_delete(mem, &function_type->parameter_index, (kefir_hashtree_key_t) identifier);
         KEFIR_FREE(mem, param);
         return res;
     });
@@ -241,7 +228,6 @@ const struct kefir_ast_type *composite_function_types(struct kefir_mem *mem, str
 static kefir_result_t free_function_type(struct kefir_mem *mem, const struct kefir_ast_type *type) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
-    REQUIRE_OK(kefir_hashtree_free(mem, (struct kefir_hashtree *) &type->function_type.parameter_index));
     REQUIRE_OK(kefir_list_free(mem, (struct kefir_list *) &type->function_type.parameters));
     KEFIR_FREE(mem, (void *) type);
     return KEFIR_OK;
@@ -283,20 +269,13 @@ const struct kefir_ast_type *kefir_ast_type_function(struct kefir_mem *mem, stru
     type->function_type.return_type = return_type;
     type->function_type.mode = KEFIR_AST_FUNCTION_TYPE_PARAM_EMPTY;
     type->function_type.ellipsis = false;
-    kefir_result_t res = kefir_hashtree_init(&type->function_type.parameter_index, &kefir_hashtree_str_ops);
+    kefir_result_t res = kefir_list_init(&type->function_type.parameters);
     REQUIRE_ELSE(res == KEFIR_OK, {
-        KEFIR_FREE(mem, type);
-        return NULL;
-    });
-    res = kefir_list_init(&type->function_type.parameters);
-    REQUIRE_ELSE(res == KEFIR_OK, {
-        kefir_hashtree_free(mem, &type->function_type.parameter_index);
         KEFIR_FREE(mem, type);
         return NULL;
     });
     res = kefir_list_on_remove(&type->function_type.parameters, function_parameter_free, NULL);
     REQUIRE_ELSE(res == KEFIR_OK, {
-        kefir_hashtree_free(mem, &type->function_type.parameter_index);
         kefir_list_free(mem, &type->function_type.parameters);
         KEFIR_FREE(mem, type);
         return NULL;
