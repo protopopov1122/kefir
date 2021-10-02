@@ -690,11 +690,10 @@ DEFINE_CASE(ast_type_construction8, "AST Types - function type") {
     ASSERT(!func_type1->ellipsis);
 
     ASSERT_OK(kefir_ast_type_function_parameter(
-        &kft_mem, &type_bundle, func_type1, "arg1",
+        &kft_mem, &type_bundle, func_type1,
         kefir_ast_type_unbounded_array(&kft_mem, &type_bundle, kefir_ast_type_unsigned_char(), NULL), NULL));
-    ASSERT_OK(
-        kefir_ast_type_function_parameter(&kft_mem, &type_bundle, func_type1, "arg2", kefir_ast_type_float(), NULL));
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_bundle, func_type1, NULL,
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_bundle, func_type1, kefir_ast_type_float(), NULL));
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_bundle, func_type1,
                                                 kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_void()),
                                                 &REGISTER));
     ASSERT_OK(kefir_ast_type_function_ellipsis(func_type1, true));
@@ -719,11 +718,11 @@ DEFINE_CASE(ast_type_construction8, "AST Types - function type") {
     ASSERT(kefir_list_length(&func_type2->parameters) == 0);
     ASSERT(!func_type2->ellipsis);
 
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_bundle, func_type2, "arg1", NULL, NULL));
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_bundle, func_type2, "arg2", NULL, NULL));
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_bundle, func_type2, "arg3", NULL, NULL));
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_bundle, func_type2, "arg4", NULL, NULL));
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_bundle, func_type2, "arg5", NULL, NULL));
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_bundle, func_type2, NULL, NULL));
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_bundle, func_type2, NULL, NULL));
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_bundle, func_type2, NULL, NULL));
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_bundle, func_type2, NULL, NULL));
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_bundle, func_type2, NULL, NULL));
 
     ASSERT(func_type2->mode == KEFIR_AST_FUNCTION_TYPE_PARAM_IDENTIFIERS);
     ASSERT(kefir_ast_type_function_parameter_count(func_type2) == 5);

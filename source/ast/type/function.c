@@ -42,10 +42,9 @@ kefir_result_t kefir_ast_type_function_get_parameter(const struct kefir_ast_func
 }
 
 kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem, struct kefir_ast_type_bundle *type_bundle,
-                                                 struct kefir_ast_function_type *function_type, const char *identifier,
+                                                 struct kefir_ast_function_type *function_type,
                                                  const struct kefir_ast_type *type,
                                                  const kefir_ast_scoped_identifier_storage_t *storage) {
-    UNUSED(identifier);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(type_bundle != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type storage"));
     REQUIRE(function_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST finction type"));
@@ -56,8 +55,6 @@ kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem, struct k
             break;
 
         case KEFIR_AST_FUNCTION_TYPE_PARAM_IDENTIFIERS:
-            REQUIRE(identifier != NULL && strlen(identifier) > 0,
-                    KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST function parameter identifier"));
             REQUIRE(type == NULL,
                     KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected empty AST function parameter identifier type"));
             break;
@@ -65,24 +62,14 @@ kefir_result_t kefir_ast_type_function_parameter(struct kefir_mem *mem, struct k
         case KEFIR_AST_FUNCTION_TYPE_PARAM_EMPTY:
             if (type != NULL) {
                 function_type->mode = KEFIR_AST_FUNCTION_TYPE_PARAMETERS;
-            } else if (identifier != NULL && strlen(identifier) > 0) {
-                function_type->mode = KEFIR_AST_FUNCTION_TYPE_PARAM_IDENTIFIERS;
             } else {
-                return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER,
-                                       "Expected either valid AST function parameter type or identifier");
+                function_type->mode = KEFIR_AST_FUNCTION_TYPE_PARAM_IDENTIFIERS;
             }
             break;
     }
     struct kefir_ast_function_type_parameter *param =
         KEFIR_MALLOC(mem, sizeof(struct kefir_ast_function_type_parameter));
     REQUIRE(param != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate memory for function parameter"));
-    if (identifier != NULL && strlen(identifier) > 0) {
-        identifier = kefir_symbol_table_insert(mem, type_bundle->symbols, identifier, NULL);
-        REQUIRE_ELSE(identifier != NULL, {
-            KEFIR_FREE(mem, param);
-            return KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate parameter identifier");
-        });
-    }
     param->type = type;
     if (type) {
         param->adjusted_type = kefir_ast_type_conv_adjust_function_parameter(mem, type_bundle, type);
@@ -213,7 +200,7 @@ const struct kefir_ast_type *composite_function_types(struct kefir_mem *mem, str
                 mem, type_bundle, type_traits, kefir_ast_unqualified_type(param1->adjusted_type),
                 kefir_ast_unqualified_type(param2->adjusted_type));
             REQUIRE(composite_parameter != NULL, NULL);
-            REQUIRE(kefir_ast_type_function_parameter(mem, type_bundle, composite_function, NULL, composite_parameter,
+            REQUIRE(kefir_ast_type_function_parameter(mem, type_bundle, composite_function, composite_parameter,
                                                       NULL) == KEFIR_OK,
                     NULL);
         }

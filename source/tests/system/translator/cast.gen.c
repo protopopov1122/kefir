@@ -62,8 +62,8 @@ static kefir_result_t define_cast_function(struct kefir_mem *mem, struct functio
     struct kefir_ast_function_type *func_type = NULL;
     func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle,
                                          return_type_name->base.properties.type, &func_type);
-    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, NULL,
-                                                 param_type, NULL));
+    REQUIRE_OK(
+        kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, param_type, NULL));
 
     REQUIRE_OK(kefir_ast_global_context_define_function(mem, context_manager->global, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
                                                         name, func->type, NULL, NULL));

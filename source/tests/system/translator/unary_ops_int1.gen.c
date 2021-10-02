@@ -46,7 +46,7 @@
         struct kefir_ast_function_type *func_type = NULL;                                                             \
         func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle, kefir_ast_type_signed_int(), \
                                              &func_type);                                                             \
-        REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, NULL,     \
+        REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type,           \
                                                      kefir_ast_type_signed_int(), NULL));                             \
                                                                                                                       \
         REQUIRE_OK(kefir_ast_global_context_define_function(                                                          \

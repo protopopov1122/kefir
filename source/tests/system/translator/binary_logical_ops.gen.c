@@ -49,7 +49,7 @@
         struct kefir_ast_function_type *param_func = NULL;                                                           \
         const struct kefir_ast_type *param_func_type =                                                               \
             kefir_ast_type_function(mem, context_manager->current->type_bundle, kefir_ast_type_bool(), &param_func); \
-        REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, param_func, NULL,   \
+        REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, param_func,         \
                                                      payload_type, NULL));                                           \
         const struct kefir_ast_type *param_type =                                                                    \
             kefir_ast_type_pointer(mem, context_manager->current->type_bundle, param_func_type);                     \
@@ -57,11 +57,11 @@
         struct kefir_ast_function_type *func_type = NULL;                                                            \
         func->type =                                                                                                 \
             kefir_ast_type_function(mem, context_manager->current->type_bundle, kefir_ast_type_bool(), &func_type);  \
-        REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, NULL,    \
+        REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type,          \
                                                      param_type, NULL));                                             \
-        REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, NULL,    \
+        REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type,          \
                                                      param_type, NULL));                                             \
-        REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, NULL,    \
+        REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type,          \
                                                      payload_type, NULL));                                           \
                                                                                                                      \
         REQUIRE_OK(kefir_ast_global_context_define_function(                                                         \

@@ -459,23 +459,23 @@ DEFINE_CASE(ast_type_analysis_functions, "AST type analysis - functions") {
     struct kefir_ast_function_type *func_type3 = NULL;
     const struct kefir_ast_type *type3 =
         kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_void(), &func_type3);
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, func_type3, NULL, kefir_ast_type_void(),
-                                                NULL));
+    ASSERT_OK(
+        kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, func_type3, kefir_ast_type_void(), NULL));
     ASSERT_OK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type3, NULL));
 
     struct kefir_ast_function_type *func_type4 = NULL;
     const struct kefir_ast_type *type4 =
         kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_void(), &func_type4);
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, func_type4, "somethin",
-                                                kefir_ast_type_void(), NULL));
+    ASSERT_OK(
+        kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, func_type4, kefir_ast_type_void(), NULL));
     ASSERT_OK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type4, NULL));
 
     struct kefir_ast_function_type *func_type5 = NULL;
     const struct kefir_ast_type *type5 =
         kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_void(), &func_type5);
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, func_type5, NULL, kefir_ast_type_void(),
-                                                NULL));
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, func_type5, NULL,
+    ASSERT_OK(
+        kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, func_type5, kefir_ast_type_void(), NULL));
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, func_type5,
                                                 kefir_ast_type_signed_long(), NULL));
     ASSERT_NOK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type5, NULL));
 
@@ -484,7 +484,7 @@ DEFINE_CASE(ast_type_analysis_functions, "AST type analysis - functions") {
     struct kefir_ast_function_type *func_type6 = NULL;
     const struct kefir_ast_type *type6 =
         kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_void(), &func_type6);
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, func_type6, NULL, struct_type6, NULL));
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, func_type6, struct_type6, NULL));
     ASSERT_NOK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type6, NULL));
 
     struct kefir_ast_struct_type *structure7 = NULL;
@@ -493,14 +493,14 @@ DEFINE_CASE(ast_type_analysis_functions, "AST type analysis - functions") {
     struct kefir_ast_function_type *func_type7 = NULL;
     const struct kefir_ast_type *type7 =
         kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_void(), &func_type7);
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, func_type7, NULL, struct_type7, NULL));
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, func_type7, struct_type7, NULL));
     ASSERT_OK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type7, NULL));
 
     struct kefir_ast_function_type *func_type8 = NULL;
     const struct kefir_ast_type *type8 =
         kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_void(), &func_type8);
     ASSERT_OK(kefir_ast_type_function_parameter(
-        &kft_mem, context->type_bundle, func_type8, NULL,
+        &kft_mem, context->type_bundle, func_type8,
         kefir_ast_type_unbounded_array(&kft_mem, context->type_bundle, kefir_ast_type_bool(), NULL), NULL));
     ASSERT_OK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type8, NULL));
 
@@ -508,7 +508,7 @@ DEFINE_CASE(ast_type_analysis_functions, "AST type analysis - functions") {
     const struct kefir_ast_type *type9 =
         kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_void(), &func_type9);
     ASSERT_OK(kefir_ast_type_function_parameter(
-        &kft_mem, context->type_bundle, func_type9, NULL, kefir_ast_type_signed_int(),
+        &kft_mem, context->type_bundle, func_type9, kefir_ast_type_signed_int(),
         &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO}));
     ASSERT_NOK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type9, NULL));
 
@@ -516,19 +516,19 @@ DEFINE_CASE(ast_type_analysis_functions, "AST type analysis - functions") {
     const struct kefir_ast_type *type10 =
         kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_void(), &func_type10);
     ASSERT_OK(kefir_ast_type_function_parameter(
-        &kft_mem, context->type_bundle, func_type10, NULL, kefir_ast_type_signed_int(),
+        &kft_mem, context->type_bundle, func_type10, kefir_ast_type_signed_int(),
         &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER}));
     ASSERT_OK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type10, NULL));
 
     struct kefir_ast_function_type *func_type11 = NULL;
     const struct kefir_ast_type *type11 =
         kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_void(), &func_type11);
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, func_type11, NULL,
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, func_type11,
                                                 kefir_ast_type_signed_int(), NULL));
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, func_type11, NULL,
-                                                kefir_ast_type_float(), NULL));
+    ASSERT_OK(
+        kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, func_type11, kefir_ast_type_float(), NULL));
     ASSERT_OK(kefir_ast_type_function_parameter(
-        &kft_mem, context->type_bundle, func_type11, NULL,
+        &kft_mem, context->type_bundle, func_type11,
         kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()), NULL));
     ASSERT_OK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type11, NULL));
 

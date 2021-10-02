@@ -82,10 +82,10 @@ DEFINE_CASE(ast_node_analysis_function_definitions1, "AST node analysis - functi
         &kft_mem, global_context.context.type_bundle,
         kefir_ast_type_pointer(&kft_mem, global_context.context.type_bundle, kefir_ast_type_signed_int()), &func_type);
     ASSERT_OK(kefir_ast_type_function_parameter(
-        &kft_mem, global_context.context.type_bundle, func_type, "param1", kefir_ast_type_unsigned_int(),
+        &kft_mem, global_context.context.type_bundle, func_type, kefir_ast_type_unsigned_int(),
         &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER}));
     ASSERT_OK(kefir_ast_type_function_parameter(
-        &kft_mem, global_context.context.type_bundle, func_type, "param2",
+        &kft_mem, global_context.context.type_bundle, func_type,
         kefir_ast_type_pointer(&kft_mem, global_context.context.type_bundle, kefir_ast_type_signed_int()),
         &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN}));
 
@@ -286,10 +286,8 @@ DEFINE_CASE(ast_node_analysis_function_definitions3, "AST node analysis - functi
     const struct kefir_ast_type *type = kefir_ast_type_function(
         &kft_mem, global_context.context.type_bundle,
         kefir_ast_type_pointer(&kft_mem, global_context.context.type_bundle, kefir_ast_type_signed_int()), &func_type);
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, global_context.context.type_bundle, func_type, "param1", NULL,
-                                                NULL));
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, global_context.context.type_bundle, func_type, "param2", NULL,
-                                                NULL));
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, global_context.context.type_bundle, func_type, NULL, NULL));
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, global_context.context.type_bundle, func_type, NULL, NULL));
 
     ASSERT(func->base.properties.category == KEFIR_AST_NODE_CATEGORY_FUNCTION_DEFINITION);
     ASSERT(func->base.properties.function_definition.function == KEFIR_AST_FUNCTION_SPECIFIER_NONE);

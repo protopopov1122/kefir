@@ -44,10 +44,10 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ast_function_type *func_type1 = NULL;
     const struct kefir_ast_type *type1 =
         kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_int(), &func_type1);
-    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context->type_bundle, func_type1, NULL,
-                                                 kefir_ast_type_signed_int(), NULL));
-    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context->type_bundle, func_type1, NULL,
-                                                 kefir_ast_type_signed_int(), NULL));
+    REQUIRE_OK(
+        kefir_ast_type_function_parameter(mem, context->type_bundle, func_type1, kefir_ast_type_signed_int(), NULL));
+    REQUIRE_OK(
+        kefir_ast_type_function_parameter(mem, context->type_bundle, func_type1, kefir_ast_type_signed_int(), NULL));
 
     struct kefir_ast_function_type *func_type2 = NULL;
     const struct kefir_ast_type *type2 =
@@ -56,8 +56,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ast_function_type *func_type3 = NULL;
     const struct kefir_ast_type *type3 =
         kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_int(), &func_type3);
-    REQUIRE_OK(
-        kefir_ast_type_function_parameter(mem, context->type_bundle, func_type3, NULL, kefir_ast_type_void(), NULL));
+    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context->type_bundle, func_type3, kefir_ast_type_void(), NULL));
 
     struct kefir_ast_type_name *type_name4 = kefir_ast_new_type_name(
         mem, kefir_ast_declarator_array(mem, KEFIR_AST_DECLARATOR_ARRAY_BOUNDED,
@@ -71,7 +70,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ast_function_type *func_type5 = NULL;
     const struct kefir_ast_type *type5 =
         kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_int(), &func_type5);
-    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context->type_bundle, func_type5, NULL,
+    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context->type_bundle, func_type5,
                                                  type_name4->base.properties.type, NULL));
 
     REQUIRE_OK(kefir_ast_global_context_declare_function(mem, &global_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE, "sum",

@@ -603,15 +603,14 @@ static const struct kefir_ast_type *build_function_type(struct kefir_mem *mem,
     const struct kefir_ast_type *type = kefir_ast_type_function(mem, type_bundle, return_type, function_type);
     ASSERT(type != NULL);
     ASSERT(*function_type != NULL);
-    ASSERT_OK(
-        kefir_ast_type_function_parameter(mem, type_bundle, *function_type, "param1", kefir_ast_type_double(), NULL));
+    ASSERT_OK(kefir_ast_type_function_parameter(mem, type_bundle, *function_type, kefir_ast_type_double(), NULL));
     ASSERT_OK(kefir_ast_type_function_parameter(
-        mem, type_bundle, *function_type, "param2",
+        mem, type_bundle, *function_type,
         kefir_ast_type_array_static(mem, type_bundle, kefir_ast_type_char(),
                                     kefir_ast_constant_expression_integer(&kft_mem, 140), NULL),
         NULL));
     ASSERT_OK(kefir_ast_type_function_parameter(
-        mem, type_bundle, *function_type, "param3",
+        mem, type_bundle, *function_type,
         kefir_ast_type_pointer(
             mem, type_bundle,
             kefir_ast_type_qualified(
@@ -631,9 +630,9 @@ static const struct kefir_ast_type *build_function_type2(struct kefir_mem *mem,
     const struct kefir_ast_type *type = kefir_ast_type_function(mem, type_bundle, return_type, function_type);
     ASSERT(type != NULL);
     ASSERT(*function_type != NULL);
-    ASSERT_OK(kefir_ast_type_function_parameter(mem, type_bundle, *function_type, "param1", NULL, NULL));
-    ASSERT_OK(kefir_ast_type_function_parameter(mem, type_bundle, *function_type, "param2", NULL, NULL));
-    ASSERT_OK(kefir_ast_type_function_parameter(mem, type_bundle, *function_type, "param3", NULL, NULL));
+    ASSERT_OK(kefir_ast_type_function_parameter(mem, type_bundle, *function_type, NULL, NULL));
+    ASSERT_OK(kefir_ast_type_function_parameter(mem, type_bundle, *function_type, NULL, NULL));
+    ASSERT_OK(kefir_ast_type_function_parameter(mem, type_bundle, *function_type, NULL, NULL));
 
     return kefir_ast_type_qualified(
         mem, type_bundle, kefir_ast_type_pointer(mem, type_bundle, type),
@@ -660,8 +659,8 @@ DEFINE_CASE(ast_type_function_composite, "AST types - function composite type") 
     struct kefir_ast_function_type *function_type4 = NULL;
     const struct kefir_ast_type *type4 =
         build_function_type(&kft_mem, &type_bundle, kefir_ast_type_void(), &function_type4);
-    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &type_bundle, function_type4, "param10",
-                                                kefir_ast_type_signed_int(), NULL));
+    ASSERT_OK(
+        kefir_ast_type_function_parameter(&kft_mem, &type_bundle, function_type4, kefir_ast_type_signed_int(), NULL));
     struct kefir_ast_function_type *function_type5 = NULL;
     const struct kefir_ast_type *type5 =
         build_function_type2(&kft_mem, &type_bundle, kefir_ast_type_void(), &function_type5);

@@ -51,9 +51,9 @@ static kefir_result_t define_assign_function_impl(struct kefir_mem *mem, struct 
     func->identifier = name;
     func->type = kefir_ast_type_function(mem, context_manager->current->type_bundle, param_type, &func_type);
     REQUIRE_OK(
-        kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, NULL, ptr_type, NULL));
-    REQUIRE_OK(kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, NULL,
-                                                 param2_type, NULL));
+        kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, ptr_type, NULL));
+    REQUIRE_OK(
+        kefir_ast_type_function_parameter(mem, context_manager->current->type_bundle, func_type, param2_type, NULL));
 
     REQUIRE_OK(kefir_ast_global_context_define_function(mem, context_manager->global, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
                                                         name, func->type, NULL, NULL));
