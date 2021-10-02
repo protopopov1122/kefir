@@ -39,6 +39,7 @@ static kefir_result_t parse_impl(struct kefir_mem *mem, struct kefir_cli_options
                                                  {"target-profile", required_argument, NULL, 0},
                                                  {"source-id", required_argument, NULL, 0},
                                                  {"detailed-output", no_argument, NULL, 0},
+                                                 {"pp-timestamp", required_argument, NULL, 0},
                                                  {"define", required_argument, NULL, 'D'},
                                                  {"include-dir", required_argument, NULL, 'I'},
                                                  {"help", no_argument, NULL, 'h'},
@@ -85,6 +86,11 @@ static kefir_result_t parse_impl(struct kefir_mem *mem, struct kefir_cli_options
 
                     case 11:
                         options->detailed_output = true;
+                        break;
+
+                    case 12:
+                        options->pp_timestamp = strtoull(optarg, NULL, 10);
+                        options->default_pp_timestamp = false;
                         break;
 
                     default:
@@ -179,7 +185,8 @@ kefir_result_t kefir_cli_parse_options(struct kefir_mem *mem, struct kefir_cli_o
     opterr = 0;
     *options = (struct kefir_cli_options){.action = KEFIR_CLI_ACTION_DUMP_ASSEMBLY,
                                           .error_report_type = KEFIR_CLI_ERROR_REPORT_TABULAR,
-                                          .skip_preprocessor = false};
+                                          .skip_preprocessor = false,
+                                          .default_pp_timestamp = true};
     REQUIRE_OK(kefir_list_init(&options->include_path));
     REQUIRE_OK(kefir_hashtree_init(&options->defines, &kefir_hashtree_str_ops));
     REQUIRE_OK(kefir_hashtree_on_removal(&options->defines, free_define_identifier, NULL));

@@ -36,5 +36,5 @@ function cleanup {
 trap cleanup EXIT HUP INT QUIT PIPE TERM
 set -e
 
-valgrind $VALGRIND_OPTIONS "$KEFIRCC" -I "$(dirname $SRC_FILE)" -D KEFIR_END2END_TEST --define "KEFIR_END2END=   101   " "$SRC_FILE" > "$TMPDIR/module.asm"
+valgrind $VALGRIND_OPTIONS "$KEFIRCC" -I "$(dirname $SRC_FILE)" -D KEFIR_END2END_TEST --define "KEFIR_END2END=   101   " --pp-timestamp=1633204489  "$SRC_FILE" > "$TMPDIR/module.asm"
 nasm -f elf64 -o "$DST_FILE" "$TMPDIR/module.asm"

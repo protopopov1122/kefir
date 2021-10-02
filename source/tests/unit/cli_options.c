@@ -36,11 +36,13 @@ DEFINE_CASE(cli_options1, "CLI - options #1") {
     ASSERT(opts.input_filepath != NULL);
     ASSERT(strcmp(opts.input_filepath, "test.c") == 0);
     ASSERT_OK(kefir_cli_options_free(&kft_mem, &opts));
+    ASSERT(opts.default_pp_timestamp);
 }
 END_CASE
 
 DEFINE_CASE(cli_options2, "CLI - options #2") {
-    char *const argv[] = {"", "--detailed-output", "--dump-tokens", "--dump-ir", "-P", "--output", "somefile"};
+    char *const argv[] = {"",   "--detailed-output", "--dump-tokens", "--dump-ir",
+                          "-P", "--output",          "somefile",      "--pp-timestamp=10"};
     struct kefir_cli_options opts;
     ASSERT_OK(kefir_cli_parse_options(&kft_mem, &opts, argv, sizeof(argv) / sizeof(argv[0])));
 
@@ -52,6 +54,8 @@ DEFINE_CASE(cli_options2, "CLI - options #2") {
     ASSERT(strcmp(opts.output_filepath, "somefile") == 0);
     ASSERT(opts.input_filepath == NULL);
     ASSERT_OK(kefir_cli_options_free(&kft_mem, &opts));
+    ASSERT(!opts.default_pp_timestamp);
+    ASSERT(opts.pp_timestamp == 10);
 }
 END_CASE
 
@@ -86,6 +90,7 @@ DEFINE_CASE(cli_options3, "CLI - options #3") {
     ASSERT(strcmp((const char *) node->value, "   test123=test3,,,   ===") == 0);
     ASSERT(!kefir_hashtree_has(&opts.defines, (kefir_hashtree_key_t) "Z"));
     ASSERT_OK(kefir_cli_options_free(&kft_mem, &opts));
+    ASSERT(opts.default_pp_timestamp);
 }
 END_CASE
 
@@ -101,5 +106,6 @@ DEFINE_CASE(cli_options4, "CLI - options #4") {
     ASSERT(opts.output_filepath == NULL);
     ASSERT(opts.input_filepath == NULL);
     ASSERT_OK(kefir_cli_options_free(&kft_mem, &opts));
+    ASSERT(opts.default_pp_timestamp);
 }
 END_CASE

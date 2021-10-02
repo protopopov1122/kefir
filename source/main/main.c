@@ -132,6 +132,9 @@ static kefir_result_t lex_file(struct kefir_mem *mem, struct kefir_cli_options *
         REQUIRE_OK(kefir_compiler_lex(mem, compiler, tokens, source, length, source_id));
     } else {
         REQUIRE_OK(build_predefined_macros(mem, options, compiler));
+        if (!options->default_pp_timestamp) {
+            compiler->preprocessor_context.environment.timestamp = options->pp_timestamp;
+        }
         REQUIRE_OK(
             kefir_compiler_preprocess_lex(mem, compiler, tokens, source, length, source_id, options->input_filepath));
     }

@@ -14,6 +14,7 @@ Options:
     -P,--skip-preprocessor          Skip preprocessing stage. Cannot be specified along with -p
     -I,--include-path dir           Add directory to include search path
     -D,--define identifier[=macro]  Define macro
+    --pp-timestamp                  Override preprocessor timestamp
     --json-errors                   Print errors in JSON format to stderr
     --tabular-errors                Print errors in tabular format to stderr
     --target-profile profile        Generate code for specified target (see targets section below)
