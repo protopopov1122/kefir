@@ -95,7 +95,7 @@ kefir_result_t kefir_compiler_context_free(struct kefir_mem *mem, struct kefir_c
 
 kefir_result_t kefir_compiler_preprocess(struct kefir_mem *mem, struct kefir_compiler_context *context,
                                          struct kefir_token_buffer *buffer, const char *content, kefir_size_t length,
-                                         const char *source_id) {
+                                         const char *source_id, const char *filepath) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler context"));
     REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));
@@ -105,7 +105,7 @@ kefir_result_t kefir_compiler_preprocess(struct kefir_mem *mem, struct kefir_com
     struct kefir_preprocessor preprocessor;
     REQUIRE_OK(kefir_lexer_source_cursor_init(&source_cursor, content, length, source_id));
     REQUIRE_OK(kefir_preprocessor_init(mem, &preprocessor, &context->ast_global_context.symbols, &source_cursor,
-                                       &context->profile->lexer_context, &context->preprocessor_context));
+                                       &context->profile->lexer_context, &context->preprocessor_context, filepath));
     kefir_result_t res = kefir_preprocessor_run(mem, &preprocessor, buffer);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_preprocessor_free(mem, &preprocessor);
@@ -117,7 +117,7 @@ kefir_result_t kefir_compiler_preprocess(struct kefir_mem *mem, struct kefir_com
 
 kefir_result_t kefir_compiler_preprocess_lex(struct kefir_mem *mem, struct kefir_compiler_context *context,
                                              struct kefir_token_buffer *buffer, const char *content,
-                                             kefir_size_t length, const char *source_id) {
+                                             kefir_size_t length, const char *source_id, const char *filepath) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler context"));
     REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));
@@ -128,7 +128,7 @@ kefir_result_t kefir_compiler_preprocess_lex(struct kefir_mem *mem, struct kefir
     struct kefir_token_buffer pp_tokens;
     REQUIRE_OK(kefir_lexer_source_cursor_init(&source_cursor, content, length, source_id));
     REQUIRE_OK(kefir_preprocessor_init(mem, &preprocessor, &context->ast_global_context.symbols, &source_cursor,
-                                       &context->profile->lexer_context, &context->preprocessor_context));
+                                       &context->profile->lexer_context, &context->preprocessor_context, filepath));
     kefir_result_t res = kefir_token_buffer_init(&pp_tokens);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_preprocessor_free(mem, &preprocessor);

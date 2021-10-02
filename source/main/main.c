@@ -103,7 +103,8 @@ static kefir_result_t lex_file(struct kefir_mem *mem, struct kefir_cli_options *
     if (options->skip_preprocessor) {
         REQUIRE_OK(kefir_compiler_lex(mem, compiler, tokens, source, length, source_id));
     } else {
-        REQUIRE_OK(kefir_compiler_preprocess_lex(mem, compiler, tokens, source, length, source_id));
+        REQUIRE_OK(
+            kefir_compiler_preprocess_lex(mem, compiler, tokens, source, length, source_id, options->input_filepath));
     }
     return KEFIR_OK;
 }
@@ -114,7 +115,7 @@ static kefir_result_t dump_preprocessed_impl(struct kefir_mem *mem, struct kefir
     UNUSED(options);
     struct kefir_token_buffer tokens;
     REQUIRE_OK(kefir_token_buffer_init(&tokens));
-    REQUIRE_OK(kefir_compiler_preprocess(mem, compiler, &tokens, source, length, source_id));
+    REQUIRE_OK(kefir_compiler_preprocess(mem, compiler, &tokens, source, length, source_id, options->input_filepath));
     REQUIRE_OK(open_output(options->output_filepath, &output));
     REQUIRE_OK(kefir_preprocessor_format(output, &tokens, KEFIR_PREPROCESSOR_WHITESPACE_FORMAT_ORIGINAL));
     REQUIRE_OK(kefir_token_buffer_free(mem, &tokens));

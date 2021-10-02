@@ -35,7 +35,7 @@ typedef struct kefir_preprocessor_source_file {
 
 typedef struct kefir_preprocessor_source_locator {
     kefir_result_t (*open)(struct kefir_mem *, const struct kefir_preprocessor_source_locator *, const char *,
-                           kefir_bool_t, struct kefir_preprocessor_source_file *);
+                           kefir_bool_t, const char *, struct kefir_preprocessor_source_file *);
     void *payload;
 } kefir_preprocessor_source_locator_t;
 

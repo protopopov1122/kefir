@@ -31,9 +31,10 @@ static kefir_result_t close_source(struct kefir_mem *mem, struct kefir_preproces
 }
 
 static kefir_result_t open_source(struct kefir_mem *mem, const struct kefir_preprocessor_source_locator *source_locator,
-                                  const char *filepath, kefir_bool_t system,
+                                  const char *filepath, kefir_bool_t system, const char *current_filepath,
                                   struct kefir_preprocessor_source_file *source_file) {
     UNUSED(mem);
+    UNUSED(current_filepath);
     REQUIRE(source_locator != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid virtual source locator"));
     REQUIRE(filepath != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid file path"));
     REQUIRE(filepath != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to source file"));

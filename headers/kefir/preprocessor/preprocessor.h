@@ -61,6 +61,7 @@ kefir_result_t kefir_preprocessor_context_init(struct kefir_preprocessor_context
 kefir_result_t kefir_preprocessor_context_free(struct kefir_mem *, struct kefir_preprocessor_context *);
 
 typedef struct kefir_preprocessor {
+    const char *current_filepath;
     struct kefir_lexer lexer;
     struct kefir_preprocessor_context *context;
     struct kefir_preprocessor_directive_scanner directive_scanner;
@@ -75,7 +76,7 @@ typedef enum kefir_preprocessor_substitution_context {
 
 kefir_result_t kefir_preprocessor_init(struct kefir_mem *, struct kefir_preprocessor *, struct kefir_symbol_table *,
                                        struct kefir_lexer_source_cursor *, const struct kefir_lexer_context *,
-                                       struct kefir_preprocessor_context *);
+                                       struct kefir_preprocessor_context *, const char *);
 kefir_result_t kefir_preprocessor_free(struct kefir_mem *, struct kefir_preprocessor *);
 
 kefir_result_t kefir_preprocessor_skip_group(struct kefir_mem *, struct kefir_preprocessor *);

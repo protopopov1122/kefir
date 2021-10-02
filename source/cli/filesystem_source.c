@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <unistd.h>
+#include <libgen.h>
 
 static kefir_result_t close_source(struct kefir_mem *mem, struct kefir_preprocessor_source_file *source_file) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
@@ -73,8 +74,28 @@ static kefir_result_t open_file(struct kefir_mem *mem, const char *filepath, kef
     return KEFIR_OK;
 }
 
+static kefir_result_t try_open_file(struct kefir_mem *mem, const char *root, const char *filepath, kefir_bool_t system,
+                                    struct kefir_preprocessor_source_file *source_file,
+                                    struct kefir_preprocessor_filesystem_source_locator *locator) {
+    char *path = KEFIR_MALLOC(mem, strlen(root) + strlen(filepath) + 2);
+    REQUIRE(path != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate filesystem path"));
+    strcpy(path, root);
+    strcat(path, "/");
+    strcat(path, filepath);
+    char *resolved_path = realpath(path, NULL);
+    KEFIR_FREE(mem, path);
+    kefir_result_t res = open_file(mem, resolved_path, system, source_file, locator->symbols);
+    KEFIR_FREE(mem, resolved_path);
+    if (res != KEFIR_NOT_FOUND) {
+        REQUIRE_OK(res);
+        return KEFIR_OK;
+    } else {
+        return res;
+    }
+}
+
 static kefir_result_t open_source(struct kefir_mem *mem, const struct kefir_preprocessor_source_locator *source_locator,
-                                  const char *filepath, kefir_bool_t system,
+                                  const char *filepath, kefir_bool_t system, const char *current_filepath,
                                   struct kefir_preprocessor_source_file *source_file) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(source_locator != NULL,
@@ -83,20 +104,29 @@ static kefir_result_t open_source(struct kefir_mem *mem, const struct kefir_prep
     REQUIRE(filepath != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to source file"));
     ASSIGN_DECL_CAST(struct kefir_preprocessor_filesystem_source_locator *, locator, source_locator);
 
+    if (current_filepath != NULL && !system) {
+        char *current_clone = KEFIR_MALLOC(mem, strlen(current_filepath) + 1);
+        REQUIRE(current_clone != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate directory name"));
+        strcpy(current_clone, current_filepath);
+        char *directory = dirname(current_clone);
+        REQUIRE_ELSE(directory != NULL, {
+            KEFIR_FREE(mem, current_clone);
+            return KEFIR_SET_OS_ERROR("Failed to obtain dirname");
+        });
+
+        kefir_result_t res = try_open_file(mem, directory, filepath, system, source_file, locator);
+        KEFIR_FREE(mem, current_clone);
+        if (res != KEFIR_NOT_FOUND) {
+            REQUIRE_OK(res);
+            return KEFIR_OK;
+        }
+    }
+
     for (const struct kefir_list_entry *iter = kefir_list_head(&locator->include_roots); iter != NULL;
          kefir_list_next(&iter)) {
 
         ASSIGN_DECL_CAST(const char *, root, iter->value);
-
-        char *path = KEFIR_MALLOC(mem, strlen(root) + strlen(filepath) + 2);
-        REQUIRE(path != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate filesystem path"));
-        strcpy(path, root);
-        strcat(path, "/");
-        strcat(path, filepath);
-        char *resolved_path = realpath(path, NULL);
-        KEFIR_FREE(mem, path);
-        kefir_result_t res = open_file(mem, resolved_path, system, source_file, locator->symbols);
-        KEFIR_FREE(mem, resolved_path);
+        kefir_result_t res = try_open_file(mem, root, filepath, system, source_file, locator);
         if (res != KEFIR_NOT_FOUND) {
             REQUIRE_OK(res);
             return KEFIR_OK;

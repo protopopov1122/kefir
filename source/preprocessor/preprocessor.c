@@ -91,7 +91,8 @@ kefir_result_t kefir_preprocessor_context_free(struct kefir_mem *mem, struct kef
 kefir_result_t kefir_preprocessor_init(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
                                        struct kefir_symbol_table *symbols, struct kefir_lexer_source_cursor *cursor,
                                        const struct kefir_lexer_context *context,
-                                       struct kefir_preprocessor_context *preprocessor_context) {
+                                       struct kefir_preprocessor_context *preprocessor_context,
+                                       const char *current_filepath) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(preprocessor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor"));
     REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer source cursor"));
@@ -116,6 +117,7 @@ kefir_result_t kefir_preprocessor_init(struct kefir_mem *mem, struct kefir_prepr
         kefir_lexer_free(mem, &preprocessor->lexer);
         return res;
     });
+    preprocessor->current_filepath = current_filepath;
     return KEFIR_OK;
 }
 
@@ -212,12 +214,13 @@ static kefir_result_t process_include(struct kefir_mem *mem, struct kefir_prepro
 
     struct kefir_preprocessor_source_file source_file;
     REQUIRE_OK(preprocessor->context->source_locator->open(mem, preprocessor->context->source_locator, include_path,
-                                                           system_include, &source_file));
+                                                           system_include, preprocessor->current_filepath,
+                                                           &source_file));
 
     struct kefir_preprocessor subpreprocessor;
     kefir_result_t res =
         kefir_preprocessor_init(mem, &subpreprocessor, preprocessor->lexer.symbols, &source_file.cursor,
-                                preprocessor->lexer.context, preprocessor->context);
+                                preprocessor->lexer.context, preprocessor->context, source_file.filepath);
     REQUIRE_ELSE(res == KEFIR_OK, {
         source_file.close(mem, &source_file);
         return res;
