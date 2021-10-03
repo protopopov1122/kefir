@@ -204,6 +204,7 @@ const struct kefir_ast_type *composite_function_types(struct kefir_mem *mem, str
                                                       NULL) == KEFIR_OK,
                     NULL);
         }
+        composite_function->ellipsis = type1->function_type.ellipsis;
         return composite_type;
     } else if (type2->function_type.mode == KEFIR_AST_FUNCTION_TYPE_PARAMETERS) {
         return type2;

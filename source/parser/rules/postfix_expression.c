@@ -109,10 +109,11 @@ static kefir_result_t scan_builtin(struct kefir_mem *mem, struct kefir_parser_as
             KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected left parenthese"));
     REQUIRE_OK(PARSER_SHIFT(builder->parser));
     while (!PARSER_TOKEN_IS_PUNCTUATOR(builder->parser, 0, KEFIR_PUNCTUATOR_RIGHT_PARENTHESE)) {
-        kefir_result_t res = kefir_parser_ast_builder_scan(
-            mem, builder, KEFIR_PARSER_RULE_FN(builder->parser, assignment_expression), NULL);
+        kefir_result_t res =
+            kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(builder->parser, type_name), NULL);
         if (res == KEFIR_NO_MATCH) {
-            res = kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(builder->parser, type_name), NULL);
+            res = kefir_parser_ast_builder_scan(mem, builder,
+                                                KEFIR_PARSER_RULE_FN(builder->parser, assignment_expression), NULL);
         }
         if (res == KEFIR_NO_MATCH) {
             return KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(builder->parser, 0),

@@ -51,10 +51,9 @@ kefir_result_t kefir_ast_analyze_builtin_node(struct kefir_mem *mem, const struc
                                            "va_start builtin invocation should have exactly two parameters"));
             const struct kefir_list_entry *iter = kefir_list_head(&node->arguments);
             ASSIGN_DECL_CAST(struct kefir_ast_node_base *, vararg_list, iter->value);
-            REQUIRE(vararg_list->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION &&
-                        vararg_list->properties.expression_props.lvalue,
+            REQUIRE(vararg_list->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &vararg_list->source_location,
-                                           "Expected an lvalue referencing va_list"));
+                                           "Expected an expression referencing va_list"));
             kefir_list_next(&iter);
             ASSIGN_DECL_CAST(struct kefir_ast_node_base *, paramN, iter->value);
             REQUIRE(paramN->klass->type == KEFIR_AST_IDENTIFIER,
@@ -69,10 +68,9 @@ kefir_result_t kefir_ast_analyze_builtin_node(struct kefir_mem *mem, const struc
                                            "va_end builtin invocation should have exactly one parameter"));
             const struct kefir_list_entry *iter = kefir_list_head(&node->arguments);
             ASSIGN_DECL_CAST(struct kefir_ast_node_base *, vararg_list, iter->value);
-            REQUIRE(vararg_list->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION &&
-                        vararg_list->properties.expression_props.lvalue,
+            REQUIRE(vararg_list->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &vararg_list->source_location,
-                                           "Expected an lvalue referencing va_list"));
+                                           "Expected an expression referencing va_list"));
             base->properties.type = kefir_ast_type_void();
         } break;
 
@@ -82,10 +80,9 @@ kefir_result_t kefir_ast_analyze_builtin_node(struct kefir_mem *mem, const struc
                                            "va_arg builtin invocation should have exactly two parameters"));
             const struct kefir_list_entry *iter = kefir_list_head(&node->arguments);
             ASSIGN_DECL_CAST(struct kefir_ast_node_base *, vararg_list, iter->value);
-            REQUIRE(vararg_list->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION &&
-                        vararg_list->properties.expression_props.lvalue,
+            REQUIRE(vararg_list->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &vararg_list->source_location,
-                                           "Expected an lvalue referencing va_list"));
+                                           "Expected an expression referencing va_list"));
             kefir_list_next(&iter);
             ASSIGN_DECL_CAST(struct kefir_ast_node_base *, type, iter->value);
             REQUIRE(type->properties.category == KEFIR_AST_NODE_CATEGORY_TYPE,
@@ -99,16 +96,14 @@ kefir_result_t kefir_ast_analyze_builtin_node(struct kefir_mem *mem, const struc
                                            "va_copy builtin invocation should have exactly two parameters"));
             const struct kefir_list_entry *iter = kefir_list_head(&node->arguments);
             ASSIGN_DECL_CAST(struct kefir_ast_node_base *, vararg_list, iter->value);
-            REQUIRE(vararg_list->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION &&
-                        vararg_list->properties.expression_props.lvalue,
+            REQUIRE(vararg_list->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &vararg_list->source_location,
-                                           "Expected an lvalue referencing va_list"));
+                                           "Expected an expression referencing va_list"));
             kefir_list_next(&iter);
             ASSIGN_DECL_CAST(struct kefir_ast_node_base *, vararg2_list, iter->value);
-            REQUIRE(vararg2_list->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION &&
-                        vararg2_list->properties.expression_props.lvalue,
+            REQUIRE(vararg2_list->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &vararg2_list->source_location,
-                                           "Expected an lvalue referencing va_list"));
+                                           "Expected an expression referencing va_list"));
             base->properties.type = kefir_ast_type_void();
         } break;
     }
