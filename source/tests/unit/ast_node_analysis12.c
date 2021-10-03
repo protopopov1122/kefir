@@ -497,3 +497,157 @@ DEFINE_CASE(ast_node_analysis_declaration1, "AST node analysis - declaration lis
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 }
 END_CASE
+
+DEFINE_CASE(ast_node_analysis_builtins1, "AST node analysis - va_start builtin") {
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
+                                            &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    const struct kefir_ast_scoped_identifier *scoped_id = NULL;
+    struct kefir_ast_function_type *func1_type = NULL;
+    const struct kefir_ast_type *func1 =
+        kefir_ast_type_function(&kft_mem, &global_context.type_bundle, kefir_ast_type_void(), &func1_type);
+    func1_type->ellipsis = true;
+    REQUIRE_OK(kefir_ast_global_context_define_function(&kft_mem, &global_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+                                                        "func1", func1, NULL, &scoped_id));
+
+    ASSERT_OK(context->define_identifier(&kft_mem, context, true, "vararg", kefir_ast_type_signed_int(),
+                                         KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+                                         NULL, NULL, NULL, NULL));
+    ASSERT_OK(context->define_identifier(&kft_mem, context, true, "x", kefir_ast_type_signed_int(),
+                                         KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+                                         NULL, NULL, NULL, NULL));
+
+    do {
+        struct kefir_ast_builtin *builtin1 = kefir_ast_new_builtin(&kft_mem, KEFIR_AST_BUILTIN_VA_START);
+        ASSERT_OK(kefir_ast_builtin_append(
+            &kft_mem, builtin1, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "vararg"))));
+        ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(builtin1)));
+        ASSERT_OK(kefir_ast_builtin_append(
+            &kft_mem, builtin1, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x"))));
+        ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(builtin1)));
+        local_context.context.surrounding_function = scoped_id;
+        ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(builtin1)));
+        ASSERT(builtin1->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);
+        ASSERT(KEFIR_AST_TYPE_SAME(builtin1->base.properties.type, kefir_ast_type_void()));
+        ASSERT(!builtin1->base.properties.expression_props.constant_expression);
+        ASSERT(!builtin1->base.properties.expression_props.lvalue);
+        ASSERT(!builtin1->base.properties.expression_props.addressable);
+        KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(builtin1));
+    } while (0);
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+}
+END_CASE
+
+DEFINE_CASE(ast_node_analysis_builtins2, "AST node analysis - va_end builtin") {
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
+                                            &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+    ASSERT_OK(context->define_identifier(&kft_mem, context, true, "vararg", kefir_ast_type_signed_int(),
+                                         KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+                                         NULL, NULL, NULL, NULL));
+
+    do {
+        struct kefir_ast_builtin *builtin1 = kefir_ast_new_builtin(&kft_mem, KEFIR_AST_BUILTIN_VA_END);
+        ASSERT_OK(kefir_ast_builtin_append(
+            &kft_mem, builtin1, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "vararg"))));
+        ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(builtin1)));
+        ASSERT(builtin1->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);
+        ASSERT(KEFIR_AST_TYPE_SAME(builtin1->base.properties.type, kefir_ast_type_void()));
+        ASSERT(!builtin1->base.properties.expression_props.constant_expression);
+        ASSERT(!builtin1->base.properties.expression_props.lvalue);
+        ASSERT(!builtin1->base.properties.expression_props.addressable);
+        KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(builtin1));
+    } while (0);
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+}
+END_CASE
+
+DEFINE_CASE(ast_node_analysis_builtins3, "AST node analysis - va_copy builtin") {
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
+                                            &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+    ASSERT_OK(context->define_identifier(&kft_mem, context, true, "vararg", kefir_ast_type_signed_int(),
+                                         KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+                                         NULL, NULL, NULL, NULL));
+    ASSERT_OK(context->define_identifier(&kft_mem, context, true, "vararg2", kefir_ast_type_signed_int(),
+                                         KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+                                         NULL, NULL, NULL, NULL));
+
+    do {
+        struct kefir_ast_builtin *builtin1 = kefir_ast_new_builtin(&kft_mem, KEFIR_AST_BUILTIN_VA_COPY);
+        ASSERT_OK(kefir_ast_builtin_append(
+            &kft_mem, builtin1, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "vararg"))));
+        ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(builtin1)));
+        ASSERT_OK(kefir_ast_builtin_append(
+            &kft_mem, builtin1, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "vararg2"))));
+        ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(builtin1)));
+        ASSERT(builtin1->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);
+        ASSERT(KEFIR_AST_TYPE_SAME(builtin1->base.properties.type, kefir_ast_type_void()));
+        ASSERT(!builtin1->base.properties.expression_props.constant_expression);
+        ASSERT(!builtin1->base.properties.expression_props.lvalue);
+        ASSERT(!builtin1->base.properties.expression_props.addressable);
+        KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(builtin1));
+    } while (0);
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+}
+END_CASE
+
+DEFINE_CASE(ast_node_analysis_builtins4, "AST node analysis - va_arg builtin") {
+    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
+                                            &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+    ASSERT_OK(context->define_identifier(&kft_mem, context, true, "vararg", kefir_ast_type_signed_int(),
+                                         KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+                                         NULL, NULL, NULL, NULL));
+
+    struct kefir_ast_type_name *type_name1 =
+        kefir_ast_new_type_name(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name1->type_decl.specifiers,
+                                                         kefir_ast_type_specifier_int(&kft_mem)));
+
+    do {
+        struct kefir_ast_builtin *builtin1 = kefir_ast_new_builtin(&kft_mem, KEFIR_AST_BUILTIN_VA_ARG);
+        ASSERT_OK(kefir_ast_builtin_append(
+            &kft_mem, builtin1, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "vararg"))));
+        ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(builtin1)));
+        ASSERT_OK(kefir_ast_builtin_append(&kft_mem, builtin1, KEFIR_AST_NODE_BASE(type_name1)));
+        ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(builtin1)));
+        ASSERT(builtin1->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);
+        ASSERT(KEFIR_AST_TYPE_SAME(builtin1->base.properties.type, type_name1->base.properties.type));
+        ASSERT(!builtin1->base.properties.expression_props.constant_expression);
+        ASSERT(!builtin1->base.properties.expression_props.lvalue);
+        ASSERT(!builtin1->base.properties.expression_props.addressable);
+        KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(builtin1));
+    } while (0);
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+}
+END_CASE

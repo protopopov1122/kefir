@@ -79,6 +79,7 @@ VISITOR(break_statement, struct kefir_ast_break_statement)
 VISITOR(return_statement, struct kefir_ast_return_statement)
 VISITOR(function_definition, struct kefir_ast_function_definition)
 VISITOR(translation_unit, struct kefir_ast_translation_unit)
+VISITOR(builtin, struct kefir_ast_builtin)
 
 #undef VISITOR
 
@@ -124,5 +125,6 @@ kefir_result_t kefir_ast_analyze_node(struct kefir_mem *mem, const struct kefir_
     visitor.return_statement = visit_return_statement;
     visitor.function_definition = visit_function_definition;
     visitor.translation_unit = visit_translation_unit;
+    visitor.builtin = visit_builtin;
     return KEFIR_AST_NODE_VISIT(&visitor, base, &param);
 }
