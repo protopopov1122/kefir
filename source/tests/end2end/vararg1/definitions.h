@@ -22,13 +22,7 @@
 #define DEFINITIONS_H_
 
 #ifdef INTERNAL
-typedef struct {
-    unsigned int gp_offset;
-    unsigned int fp_offset;
-    void *overflow_arg_area;
-    void *reg_save_area;
-} va_list[1];
-
+#define va_list __builtin_va_list
 #define va_start(vararg, paramN) __builtin_va_start((vararg), paramN)
 #define va_arg(vararg, type) __builtin_va_arg((vararg), type)
 #define va_copy(dest, src) __builtin_va_copy((dest), (src))

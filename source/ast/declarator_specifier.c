@@ -538,6 +538,7 @@ TYPE_SPECIFIER(signed, KEFIR_AST_TYPE_SPECIFIER_SIGNED)
 TYPE_SPECIFIER(unsigned, KEFIR_AST_TYPE_SPECIFIER_UNSIGNED)
 TYPE_SPECIFIER(bool, KEFIR_AST_TYPE_SPECIFIER_BOOL)
 TYPE_SPECIFIER(complex, KEFIR_AST_TYPE_SPECIFIER_COMPLEX)
+TYPE_SPECIFIER(va_list, KEFIR_AST_TYPE_SPECIFIER_VA_LIST)
 
 #undef TYPE_SPECIFIER
 
@@ -807,6 +808,10 @@ struct kefir_ast_declarator_specifier *kefir_ast_declarator_specifier_clone(
 
                 case KEFIR_AST_TYPE_SPECIFIER_TYPEDEF:
                     clone = kefir_ast_type_specifier_typedef(mem, NULL, specifier->type_specifier.value.type_name);
+                    break;
+
+                case KEFIR_AST_TYPE_SPECIFIER_VA_LIST:
+                    clone = kefir_ast_type_specifier_va_list(mem);
                     break;
 
                 default:

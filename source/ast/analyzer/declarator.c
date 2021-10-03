@@ -426,7 +426,7 @@ static kefir_result_t resolve_type(struct kefir_mem *mem, const struct kefir_ast
         case KEFIR_AST_TYPE_SPECIFIER_ENUM:
             REQUIRE(*seq_state == TYPE_SPECIFIER_SEQUENCE_EMPTY,
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &decl_specifier->source_location,
-                                           "Cannot combine struct/union type specifier with others"));
+                                           "Cannot combine enum type specifier with others"));
             REQUIRE_OK(resolve_enum_type(mem, context, decl_specifier, base_type));
             *seq_state = TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
@@ -438,6 +438,17 @@ static kefir_result_t resolve_type(struct kefir_mem *mem, const struct kefir_ast
             REQUIRE_OK(
                 resolve_typedef(context, specifier->value.type_name, &decl_specifier->source_location, base_type));
             *seq_state = TYPE_SPECIFIER_SEQUENCE_TYPEDEF;
+            break;
+
+        case KEFIR_AST_TYPE_SPECIFIER_VA_LIST:
+            REQUIRE(*seq_state == TYPE_SPECIFIER_SEQUENCE_EMPTY,
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &decl_specifier->source_location,
+                                           "Cannot combine va_list type specifier with others"));
+            REQUIRE(*base_type == NULL,
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &decl_specifier->source_location,
+                                           "va_list type specifier cannot be combined with others"));
+            *base_type = kefir_ast_type_va_list();
+            *seq_state = TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
 
         default:
@@ -491,6 +502,7 @@ static kefir_result_t apply_type_signedness(struct kefir_mem *mem, struct kefir_
                 case KEFIR_AST_TYPE_ARRAY:
                 case KEFIR_AST_TYPE_FUNCTION:
                 case KEFIR_AST_TYPE_QUALIFIED:
+                case KEFIR_AST_TYPE_VA_LIST:
                     return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, source_location,
                                                   "Signed type specifier cannot be applied to the type");
             }
@@ -539,6 +551,7 @@ static kefir_result_t apply_type_signedness(struct kefir_mem *mem, struct kefir_
                 case KEFIR_AST_TYPE_ARRAY:
                 case KEFIR_AST_TYPE_FUNCTION:
                 case KEFIR_AST_TYPE_QUALIFIED:
+                case KEFIR_AST_TYPE_VA_LIST:
                     return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, source_location,
                                                   "Unsigned type specifier cannot be applied to the type");
             }

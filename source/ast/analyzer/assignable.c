@@ -56,6 +56,9 @@ kefir_result_t kefir_ast_type_assignable(struct kefir_mem *mem, const struct kef
                     (!value_qualification.volatile_type || target_qualification.volatile_type),
                 KEFIR_SET_ERROR(KEFIR_NO_MATCH,
                                 "Left assignable operand shall point to the type with all qualifications from right"));
+    } else if (target_type->tag == KEFIR_AST_TYPE_VA_LIST) {
+        REQUIRE(value_type->tag == KEFIR_AST_TYPE_VA_LIST,
+                KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Both assignable operands shall be va lists"));
     } else {
         REQUIRE(target_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER,
                 KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Left assignable operand shall be a pointer"));

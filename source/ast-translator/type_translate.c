@@ -23,6 +23,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"
+#include "kefir/ir/builtins.h"
 
 static kefir_result_t scalar_typeentry(const struct kefir_ast_type *type, kefir_size_t alignment,
                                        struct kefir_ir_typeentry *typeentry) {
@@ -70,6 +71,11 @@ static kefir_result_t scalar_typeentry(const struct kefir_ast_type *type, kefir_
 
         case KEFIR_AST_TYPE_SCALAR_POINTER:
             typeentry->typecode = KEFIR_IR_TYPE_WORD;
+            break;
+
+        case KEFIR_AST_TYPE_VA_LIST:
+            typeentry->typecode = KEFIR_IR_TYPE_BUILTIN;
+            typeentry->param = KEFIR_IR_TYPE_BUILTIN_VARARG;
             break;
 
         default:
@@ -335,6 +341,7 @@ kefir_result_t kefir_ast_translate_object_type(struct kefir_mem *mem, const stru
         case KEFIR_AST_TYPE_SCALAR_FLOAT:
         case KEFIR_AST_TYPE_SCALAR_DOUBLE:
         case KEFIR_AST_TYPE_SCALAR_POINTER:
+        case KEFIR_AST_TYPE_VA_LIST:
             REQUIRE_OK(translate_scalar_type(mem, type, alignment, builder, layout_ptr));
             break;
 

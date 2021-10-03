@@ -249,6 +249,7 @@ kefir_result_t kefir_ast_translator_load_value(const struct kefir_ast_type *type
         case KEFIR_AST_TYPE_UNION:
         case KEFIR_AST_TYPE_ARRAY:
         case KEFIR_AST_TYPE_FUNCTION:
+        case KEFIR_AST_TYPE_VA_LIST:
             // Intentionally left blank
             break;
 
@@ -320,6 +321,10 @@ kefir_result_t kefir_ast_translator_store_value(struct kefir_mem *mem, const str
 
         case KEFIR_AST_TYPE_QUALIFIED:
             return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected qualified type");
+
+        case KEFIR_AST_TYPE_VA_LIST:
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_VARARG_COPY, 0));
+            break;
     }
     return KEFIR_OK;
 }

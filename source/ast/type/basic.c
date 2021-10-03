@@ -105,6 +105,17 @@ SCALAR_TYPE(double, KEFIR_AST_TYPE_SCALAR_DOUBLE, 6)
 
 #undef SCALAR_TYPE
 
+static const struct kefir_ast_type VA_LIST = {.tag = KEFIR_AST_TYPE_VA_LIST,
+                                              .basic = false,
+                                              .ops = {.same = same_basic_type,
+                                                      .compatible = compatible_basic_types,
+                                                      .composite = composite_basic_types,
+                                                      .free = free_nothing}};
+
+const struct kefir_ast_type *kefir_ast_type_va_list() {
+    return &VA_LIST;
+}
+
 const struct kefir_ast_type *kefir_ast_type_flip_integer_singedness(const struct kefir_ast_type_traits *type_traits,
                                                                     const struct kefir_ast_type *type) {
     REQUIRE(type_traits != NULL, NULL);

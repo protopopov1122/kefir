@@ -169,6 +169,8 @@ struct kefir_ast_declarator_specifier *kefir_ast_type_specifier_enum(struct kefi
 struct kefir_ast_declarator_specifier *kefir_ast_type_specifier_typedef(struct kefir_mem *, struct kefir_symbol_table *,
                                                                         const char *);
 
+struct kefir_ast_declarator_specifier *kefir_ast_type_specifier_va_list(struct kefir_mem *);
+
 struct kefir_ast_declarator_specifier *kefir_ast_storage_class_specifier_typedef(struct kefir_mem *);
 struct kefir_ast_declarator_specifier *kefir_ast_storage_class_specifier_extern(struct kefir_mem *);
 struct kefir_ast_declarator_specifier *kefir_ast_storage_class_specifier_static(struct kefir_mem *);

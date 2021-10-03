@@ -45,6 +45,8 @@ SCALAR_TYPE(float);
 SCALAR_TYPE(double);
 #undef SCALAR_TYPE
 
+const struct kefir_ast_type *kefir_ast_type_va_list();
+
 #define KEFIR_AST_TYPE_IS_CHARACTER(base)                                                             \
     ((base)->tag == KEFIR_AST_TYPE_SCALAR_CHAR || (base)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_CHAR || \
      (base)->tag == KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR)

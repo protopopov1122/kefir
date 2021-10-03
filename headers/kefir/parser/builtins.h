@@ -28,7 +28,8 @@
 #define KEFIR_PARSER_BUILTIN_VA_END "__builtin_va_end"
 #define KEFIR_PARSER_BUILTIN_VA_ARG "__builtin_va_arg"
 #define KEFIR_PARSER_BUILTIN_VA_COPY "__builtin_va_copy"
+#define KEFIR_PARSER_BUILTIN_VA_LIST "__builtin_va_list"
 
-kefir_result_t kefir_parser_get_builtin(const char *, kefir_ast_builtin_operator_t *);
+kefir_result_t kefir_parser_get_builtin_operation(const char *, kefir_ast_builtin_operator_t *);
 
 #endif

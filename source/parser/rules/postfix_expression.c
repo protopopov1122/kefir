@@ -143,7 +143,7 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
     kefir_result_t res = KEFIR_NOT_FOUND;
     if (PARSER_TOKEN_IS_IDENTIFIER(builder->parser, 0)) {
         kefir_ast_builtin_operator_t builtin_op;
-        res = kefir_parser_get_builtin(PARSER_CURSOR(builder->parser, 0)->identifier, &builtin_op);
+        res = kefir_parser_get_builtin_operation(PARSER_CURSOR(builder->parser, 0)->identifier, &builtin_op);
         if (res != KEFIR_NOT_FOUND) {
             REQUIRE_OK(res);
             REQUIRE_OK(scan_builtin(mem, builder, builtin_op));

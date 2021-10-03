@@ -32,7 +32,7 @@ static const struct {
                 {KEFIR_PARSER_BUILTIN_VA_ARG, KEFIR_AST_BUILTIN_VA_ARG}};
 static const kefir_size_t BUILTIN_COUNT = sizeof(BUILTINS) / sizeof(BUILTINS[0]);
 
-kefir_result_t kefir_parser_get_builtin(const char *identifier, kefir_ast_builtin_operator_t *builtin_op) {
+kefir_result_t kefir_parser_get_builtin_operation(const char *identifier, kefir_ast_builtin_operator_t *builtin_op) {
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
     REQUIRE(builtin_op != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to builtin operator"));
 

@@ -49,7 +49,8 @@ typedef enum kefir_ast_type_tag {
     KEFIR_AST_TYPE_UNION,
     KEFIR_AST_TYPE_ARRAY,
     KEFIR_AST_TYPE_FUNCTION,
-    KEFIR_AST_TYPE_QUALIFIED
+    KEFIR_AST_TYPE_QUALIFIED,
+    KEFIR_AST_TYPE_VA_LIST
 } kefir_ast_type_tag_t;
 
 typedef struct kefir_ast_type_qualification {
