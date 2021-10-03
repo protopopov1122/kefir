@@ -793,12 +793,6 @@ static kefir_result_t resolve_array_declarator(struct kefir_mem *mem, const stru
 static kefir_result_t resolve_function_declarator(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                   const struct kefir_ast_declarator *declarator,
                                                   const struct kefir_ast_type **base_type) {
-    const char *identifier = NULL;
-    if (declarator->function.declarator != NULL &&
-        declarator->function.declarator->klass == KEFIR_AST_DECLARATOR_IDENTIFIER) {
-        identifier = declarator->function.declarator->identifier;
-    }
-
     struct kefir_ast_function_type *func_type = NULL;
     const struct kefir_ast_type *type = kefir_ast_type_function(mem, context->type_bundle, *base_type, &func_type);
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocated AST type"));
