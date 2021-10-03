@@ -1,7 +1,11 @@
 # Kefir C compiler
-This repository contains results of on-going work on implementation of C11 language compiler from scratch. No existing open source compiler
+This repository contains implementation of C11 language compiler from scratch. No existing open source compiler
 infrastructure is being reused. The main priority is self-sufficiency of the project, compatibility with platform ABI and compliance with
-C11 language standard.
+C11 language standard. Some exceptions to the standard were made (see `Exceptions` section below).
+At the moment, the initial scope of work is effectively finished, and the main concern is stabilization, bugfixes and UX improvements. 
+Kefir supports modern x86-64 Linux and FreeBSD environments.
+Compiler is also able to produce JSON streams containing program representation on various stages of compilation (tokens, AST, IR).
+By default, the compiler outputs NASM assembly. At the moment, position-independent code generation is not supported.
 
 ## Motivation & goals
 The main motivation of the project is deeper understanding of C programming language, as well as practical experience in
@@ -30,19 +34,18 @@ features. Project can be relatively easily extended to comply with C17 once the 
 
 ## Progress
 Table below lists progress on various compiler components. 'Implemenataion done' in the status field means that the main body of component
-is implemented, however refactoring and bug-fixes are still on-going.
-|Module                     |Status              |Comments                                                                       |
-|---------------------------|--------------------|-------------------------------------------------------------------------------|
-|Code generator             |Implementation done |IR translator targetting System-V AMD64 ABI                                    |
-|Intermediate representation|Implementation done |Stack-based bytecode abstracting out calling convention and data layout details|
-|AST structure and analysis |Implementation done |See exceptions section below                                                   |
-|AST translator             |Implementation done |See exceptions section below                                                   |
-|Parser                     |Implementation done |Recursive descent parser with backtracking. See exceptions section below       |
-|Lexer                      |Implementation done |See exceptions ection below                                                    |
-|Preprocessor               |Implementation done |Basic preprocessor with no support for pragmasm                                |
-|Standard library           |Not planned         |Out-of-scope of initial effort                                                 |
-|Command-line interface     |In progress         |Rudimentary implementation available                                           |
-
+is implemented, however refactoring and bug-fixes are still on-going. At the moment, initial development effort is mostly finished.
+|Module                     |Status                    |Comments                                                                       |
+|---------------------------|--------------------------|-------------------------------------------------------------------------------|
+|Code generator             |Implementation done       |IR translator targetting System-V AMD64 ABI                                    |
+|Intermediate representation|Implementation done       |Stack-based bytecode abstracting out calling convention and data layout details|
+|AST structure and analysis |Implementation done       |See exceptions section below                                                   |
+|AST translator             |Implementation done       |See exceptions section below                                                   |
+|Parser                     |Implementation done       |Recursive descent parser with backtracking. See exceptions section below       |
+|Lexer                      |Implementation done       |See exceptions section below                                                   |
+|Preprocessor               |Implementation done       |Basic preprocessor with no support for pragmas                                 |
+|Standard library           |Not planned               |Out-of-scope of initial effort                                                 |
+|Command-line interface     |Implementation done       |Minimal useful implementation                                                  |
 
 ### Exceptions
 Following exceptions were made in C11 implementation:
@@ -60,6 +63,26 @@ no translator and code generator support yet.
 No re-encoding is performed.
 * No `STDC` pragmas are implemented in preprocessor. Respective standard library parts are out-of-scope, thus implementing
 these pragmas have no value at the moment.
+
+### Built-ins
+At the moment, Kefir supports following builtins for compatibility with GCC:
+`__builtin_va_list`, `__builtin_va_start`, `__builtin_va_end`, `__builtin_va_copy`, `__builtin_va_arg`
+
+## Build & Usage
+**Usage is strongly discouraged. This is experimental project which is not meant for production purposes.**
+
+Kefir depends on following third-party components: existing C11-compatible compiler (tested with `gcc` and `clang`), `nasm`, `valgrind`,
+`xsltproc`, `clang-format`. After installing these components, Kefir can be built with a single command: `make ./bin/kefir -j$(nproc)`.
+It is also strongly advised to run test suite: `make test all -j$(nproc)`.
+
+Optionally, Kefir can be installed via: `make install DESTDIR=/opt/kefir`. Short reference on compiler options can be obtained by
+running `kefir --help`.
+
+At the moment, Kefir is automatically tested in Ubuntu 20.04 and FreeBSD 13.0 environments.
+Arch Linux is used as primary development environment.
+
+Please note, that assembly modules produced by Kefir shall be linked with `source/runtime/amd64_sysv.asm` in order to produce working
+executable.
 
 ## Design notes
 In order to simplify translation and facilitate portability, intermediate representation
@@ -85,3 +108,13 @@ License:
 * [Compiler explorer](https://godbolt.org/)
 * [C reference](https://en.cppreference.com/w/c)
 * [AMD64 instruction set reference](https://www.amd.com/system/files/TechDocs/24594.pdf)
+
+## Further developments
+Following things can be focus of further development (in order of feasibility and priority):
+* Bugfixes.
+* Improvements in error reporting.
+* Optimization and refactoring of compiler source.
+* Adaptation of third-party standard library implementations to Kefir.
+* Implementing missing bits from `Exceptions` section, migration to C17 as target standard.
+* Improvements to code generation - support PIE, extend supported platform list.
+* Introduction of SSA optimization stage to code generator.
