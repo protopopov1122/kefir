@@ -117,7 +117,8 @@ DEFINE_CASE(ast_type_basic_compatibility, "AST Types - basic type compatibility"
                                                   kefir_ast_type_unsigned_long_long(),
                                                   kefir_ast_type_signed_long_long(),
                                                   kefir_ast_type_float(),
-                                                  kefir_ast_type_double()};
+                                                  kefir_ast_type_double(),
+                                                  kefir_ast_type_va_list()};
     const kefir_size_t BASIC_TYPES_LENGTH = sizeof(BASIC_TYPES) / sizeof(BASIC_TYPES[0]);
     for (kefir_size_t i = 0; i < BASIC_TYPES_LENGTH; i++) {
         ASSERT(BASIC_TYPES[i] != NULL);

@@ -1,0 +1,9 @@
+[
+    {
+        "type": "builtin",
+        "class": "vararg"
+    },
+    {
+        "type": "word"
+    }
+]

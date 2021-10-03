@@ -273,6 +273,16 @@ static kefir_result_t vararg_get_sse(struct kefir_codegen_amd64 *codegen,
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_CALL);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_VARARG_SSE);
 
+    if (scalar_type->typeentry.typecode == KEFIR_IR_TYPE_FLOAT64) {
+        ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOVQ);
+        ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA2_REG);
+        ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_XMM0);
+    } else {
+        ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOVD);
+        ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA2_REG);
+        ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_XMM0);
+    }
+
     REQUIRE_OK(mask_argument(codegen, &scalar_type->typeentry, KEFIR_AMD64_SYSV_ABI_DATA2_REG));
 
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_PUSH);
