@@ -91,6 +91,7 @@ DECLARE_CASE(ast_nodes_string_literals_wide);
 DECLARE_CASE(ast_nodes_type_name);
 DECLARE_CASE(ast_nodes_array_subscripts);
 DECLARE_CASE(ast_nodes_function_calls);
+DECLARE_CASE(ast_nodes_builtins);
 DECLARE_CASE(ast_nodes_struct_members);
 DECLARE_CASE(ast_nodes_unary_operations);
 DECLARE_CASE(ast_nodes_binary_operations);
@@ -451,8 +452,8 @@ TEST_SUITE(
     &ast_type_construction7, &ast_type_construction8, &ast_nodes_constants, &ast_nodes_identifiers,
     &ast_nodes_string_literals_multibyte, &ast_nodes_string_literals_unicode8, &ast_nodes_string_literals_unicode16,
     &ast_nodes_string_literals_unicode32, &ast_nodes_string_literals_wide, &ast_nodes_type_name,
-    &ast_nodes_array_subscripts, &ast_nodes_function_calls, &ast_nodes_struct_members, &ast_nodes_unary_operations,
-    &ast_nodes_binary_operations, &ast_nodes_generic_selections, &ast_nodes_cast_operators,
+    &ast_nodes_array_subscripts, &ast_nodes_function_calls, &ast_nodes_builtins, &ast_nodes_struct_members,
+    &ast_nodes_unary_operations, &ast_nodes_binary_operations, &ast_nodes_generic_selections, &ast_nodes_cast_operators,
     &ast_nodes_conditional_operators, &ast_nodes_assignment_operators, &ast_nodes_comma_operators,
     &ast_nodes_compound_literals, &ast_nodes_init_declarators1, &ast_nodes_static_assertions1,
     &ast_nodes_labeled_statements1, &ast_nodes_case_statements1, &ast_nodes_expression_statements1,

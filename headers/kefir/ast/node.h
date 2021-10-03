@@ -200,6 +200,11 @@ KEFIR_AST_NODE_STRUCT(kefir_ast_function_definition, {
 
 KEFIR_AST_NODE_STRUCT(kefir_ast_translation_unit, { struct kefir_list external_definitions; });
 
+KEFIR_AST_NODE_STRUCT(kefir_ast_builtin, {
+    kefir_ast_builtin_operator_t builtin;
+    struct kefir_list arguments;
+});
+
 struct kefir_ast_constant *kefir_ast_new_constant_bool(struct kefir_mem *, kefir_bool_t);
 struct kefir_ast_constant *kefir_ast_new_constant_char(struct kefir_mem *, kefir_int_t);
 struct kefir_ast_constant *kefir_ast_new_constant_wide_char(struct kefir_mem *, kefir_wchar_t);
@@ -319,6 +324,8 @@ struct kefir_ast_function_definition *kefir_ast_new_function_definition(struct k
 
 struct kefir_ast_translation_unit *kefir_ast_new_translation_unit(struct kefir_mem *);
 
+struct kefir_ast_builtin *kefir_ast_new_builtin(struct kefir_mem *, kefir_ast_builtin_operator_t);
+
 typedef struct kefir_ast_visitor {
     KEFIR_AST_VISITOR_METHOD(generic_handler, kefir_ast_node_base);
     KEFIR_AST_VISITOR_METHOD(constant, kefir_ast_constant);
@@ -355,6 +362,7 @@ typedef struct kefir_ast_visitor {
     KEFIR_AST_VISITOR_METHOD(return_statement, kefir_ast_return_statement);
     KEFIR_AST_VISITOR_METHOD(function_definition, kefir_ast_function_definition);
     KEFIR_AST_VISITOR_METHOD(translation_unit, kefir_ast_translation_unit);
+    KEFIR_AST_VISITOR_METHOD(builtin, kefir_ast_builtin);
 } kefir_ast_visitor_t;
 
 #define KEFIR_AST_NODE_INTERNAL_DEF

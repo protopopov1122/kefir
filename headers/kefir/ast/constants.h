@@ -67,7 +67,9 @@ typedef enum kefir_ast_node_type {
     KEFIR_AST_RETURN_STATEMENT,
 
     KEFIR_AST_FUNCTION_DEFINITION,
-    KEFIR_AST_TRANSLATION_UNIT
+    KEFIR_AST_TRANSLATION_UNIT,
+
+    KEFIR_AST_BUILTIN
 } kefir_ast_node_type_t;
 
 typedef enum kefir_ast_node_category {
@@ -78,7 +80,8 @@ typedef enum kefir_ast_node_category {
     KEFIR_AST_NODE_CATEGORY_DECLARATION,
     KEFIR_AST_NODE_CATEGORY_STATEMENT,
     KEFIR_AST_NODE_CATEGORY_FUNCTION_DEFINITION,
-    KEFIR_AST_NODE_CATEGORY_TRANSLATION_UNIT
+    KEFIR_AST_NODE_CATEGORY_TRANSLATION_UNIT,
+    KEFIR_AST_NODE_CATEGORY_BUILTIN
 } kefir_ast_node_category_t;
 
 typedef enum kefir_ast_constant_type {
@@ -274,5 +277,12 @@ typedef enum kefir_ast_type_analysis_context {
     KEFIR_AST_TYPE_ANALYSIS_DEFAULT,
     KEFIR_AST_TYPE_ANALYSIS_FUNCTION_PARAMETER
 } kefir_ast_type_analysis_context_t;
+
+typedef enum kefir_ast_builtin_operator {
+    KEFIR_AST_BUILTIN_VA_START,
+    KEFIR_AST_BUILTIN_VA_END,
+    KEFIR_AST_BUILTIN_VA_ARG,
+    KEFIR_AST_BUILTIN_VA_COPY
+} kefir_ast_builtin_operator_t;
 
 #endif
