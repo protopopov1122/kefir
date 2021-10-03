@@ -1,0 +1,74 @@
+[
+    {
+        "class": "builtin",
+        "builtin": "va_start",
+        "arguments": [
+            {
+                "class": "identifier",
+                "identifier": "vararg"
+            },
+            {
+                "class": "identifier",
+                "identifier": "X"
+            }
+        ]
+    },
+    {
+        "class": "builtin",
+        "builtin": "va_copy",
+        "arguments": [
+            {
+                "class": "identifier",
+                "identifier": "vararg"
+            },
+            {
+                "class": "identifier",
+                "identifier": "vararg2"
+            }
+        ]
+    },
+    {
+        "class": "builtin",
+        "builtin": "va_args",
+        "arguments": [
+            {
+                "class": "identifier",
+                "identifier": "vararg"
+            },
+            {
+                "class": "type_name",
+                "specifiers": [
+                    {
+                        "class": "type_specifier",
+                        "specifier": "long"
+                    },
+                    {
+                        "class": "type_specifier",
+                        "specifier": "long"
+                    },
+                    {
+                        "class": "type_specifier",
+                        "specifier": "unsigned"
+                    },
+                    {
+                        "class": "type_specifier",
+                        "specifier": "int"
+                    }
+                ],
+                "declarator": {
+                    "class": "abstract"
+                }
+            }
+        ]
+    },
+    {
+        "class": "builtin",
+        "builtin": "va_end",
+        "arguments": [
+            {
+                "class": "identifier",
+                "identifier": "vararg"
+            }
+        ]
+    }
+]

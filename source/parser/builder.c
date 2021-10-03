@@ -1153,3 +1153,53 @@ kefir_result_t kefir_parser_ast_builder_translation_unit_append(struct kefir_mem
     });
     return KEFIR_OK;
 }
+
+kefir_result_t kefir_parser_ast_builder_builtin(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder,
+                                                kefir_ast_builtin_operator_t builtin_op) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
+
+    struct kefir_ast_builtin *builtin = kefir_ast_new_builtin(mem, builtin_op);
+    REQUIRE_ELSE(builtin != NULL,
+                 { return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST builtin"); });
+
+    kefir_result_t res = kefir_parser_ast_builder_push(mem, builder, KEFIR_AST_NODE_BASE(builtin));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(builtin));
+        return res;
+    });
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_parser_ast_builder_builtin_append(struct kefir_mem *mem,
+                                                       struct kefir_parser_ast_builder *builder) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
+
+    struct kefir_ast_node_base *builtin = NULL, *arg = NULL;
+    REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &arg));
+    kefir_result_t res = kefir_parser_ast_builder_pop(mem, builder, &builtin);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, arg);
+        return res;
+    });
+    REQUIRE_ELSE(builtin->klass->type == KEFIR_AST_BUILTIN, {
+        KEFIR_AST_NODE_FREE(mem, builtin);
+        KEFIR_AST_NODE_FREE(mem, arg);
+        return KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Expected builtin node");
+    });
+
+    res = kefir_ast_builtin_append(mem, (struct kefir_ast_builtin *) builtin->self, arg);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, builtin);
+        KEFIR_AST_NODE_FREE(mem, arg);
+        return res;
+    });
+
+    res = kefir_parser_ast_builder_push(mem, builder, builtin);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, builtin);
+        return res;
+    });
+    return KEFIR_OK;
+}

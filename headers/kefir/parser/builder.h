@@ -92,4 +92,8 @@ kefir_result_t kefir_parser_ast_builder_break_statement(struct kefir_mem *, stru
 kefir_result_t kefir_parser_ast_builder_translation_unit(struct kefir_mem *, struct kefir_parser_ast_builder *);
 kefir_result_t kefir_parser_ast_builder_translation_unit_append(struct kefir_mem *, struct kefir_parser_ast_builder *);
 
+kefir_result_t kefir_parser_ast_builder_builtin(struct kefir_mem *, struct kefir_parser_ast_builder *,
+                                                kefir_ast_builtin_operator_t);
+kefir_result_t kefir_parser_ast_builder_builtin_append(struct kefir_mem *, struct kefir_parser_ast_builder *);
+
 #endif

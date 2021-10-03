@@ -272,6 +272,50 @@ static kefir_result_t visit_function_call(const struct kefir_ast_visitor *visito
     return KEFIR_OK;
 }
 
+static kefir_result_t visit_builtin(const struct kefir_ast_visitor *visitor, const struct kefir_ast_builtin *node,
+                                    void *payload) {
+    UNUSED(visitor);
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builtin node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
+    struct kefir_json_output *json = param->json;
+
+    REQUIRE_OK(kefir_json_output_object_begin(json));
+    REQUIRE_OK(kefir_json_output_object_key(json, "class"));
+    REQUIRE_OK(kefir_json_output_string(json, "builtin"));
+    REQUIRE_OK(kefir_json_output_object_key(json, "builtin"));
+    switch (node->builtin) {
+        case KEFIR_AST_BUILTIN_VA_START:
+            REQUIRE_OK(kefir_json_output_string(json, "va_start"));
+            break;
+
+        case KEFIR_AST_BUILTIN_VA_END:
+            REQUIRE_OK(kefir_json_output_string(json, "va_end"));
+            break;
+
+        case KEFIR_AST_BUILTIN_VA_COPY:
+            REQUIRE_OK(kefir_json_output_string(json, "va_copy"));
+            break;
+
+        case KEFIR_AST_BUILTIN_VA_ARG:
+            REQUIRE_OK(kefir_json_output_string(json, "va_args"));
+            break;
+    }
+    REQUIRE_OK(kefir_json_output_object_key(json, "arguments"));
+    REQUIRE_OK(kefir_json_output_array_begin(json));
+    for (const struct kefir_list_entry *iter = kefir_list_head(&node->arguments); iter != NULL;
+         kefir_list_next(&iter)) {
+        ASSIGN_DECL_CAST(struct kefir_ast_node_base *, arg, iter->value);
+        REQUIRE_OK(kefir_ast_format(json, arg, param->display_source_location));
+    }
+    REQUIRE_OK(kefir_json_output_array_end(json));
+    if (param->display_source_location) {
+        REQUIRE_OK(format_source_location(json, KEFIR_AST_NODE_BASE(node)));
+    }
+    REQUIRE_OK(kefir_json_output_object_end(json));
+    return KEFIR_OK;
+}
+
 static kefir_result_t visit_struct_member(const struct kefir_ast_visitor *visitor,
                                           const struct kefir_ast_struct_member *node, void *payload) {
     UNUSED(visitor);
@@ -1180,6 +1224,7 @@ kefir_result_t kefir_ast_format(struct kefir_json_output *json, const struct kef
     visitor.break_statement = visit_break_statement;
     visitor.function_definition = visit_function_definitions;
     visitor.translation_unit = visit_translation_unit;
+    visitor.builtin = visit_builtin;
     REQUIRE_OK(node->klass->visit(node, &visitor, &param));
     return KEFIR_OK;
 }
