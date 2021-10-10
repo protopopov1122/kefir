@@ -5,7 +5,11 @@
         "type": "multibyte",
         "content": "Hello,  cruel\0 world!!!\0\0\n\0",
         "length": 27,
-        "source_location": null
+        "source_location": {
+            "source": "",
+            "line": 1,
+            "column": 1
+        }
     },
     {
         "class": "punctuator",
@@ -23,7 +27,11 @@
         "type": "unicode8",
         "content": "Test...test...test...\0\"\0test!\0\n\0",
         "length": 32,
-        "source_location": null
+        "source_location": {
+            "source": "",
+            "line": 3,
+            "column": 1
+        }
     },
     {
         "class": "string_literal",
@@ -53,7 +61,11 @@
             0
         ],
         "length": 21,
-        "source_location": null
+        "source_location": {
+            "source": "",
+            "line": 4,
+            "column": 1
+        }
     },
     {
         "class": "string_literal",
@@ -86,7 +98,11 @@
             0
         ],
         "length": 24,
-        "source_location": null
+        "source_location": {
+            "source": "",
+            "line": 6,
+            "column": 1
+        }
     },
     {
         "class": "string_literal",
@@ -157,7 +173,11 @@
         "type": "multibyte",
         "content": "This is 2+2\0",
         "length": 12,
-        "source_location": null
+        "source_location": {
+            "source": "",
+            "line": 11,
+            "column": 21
+        }
     },
     {
         "class": "punctuator",
@@ -175,7 +195,11 @@
         "type": "unicode8",
         "content": "This is 100\0",
         "length": 12,
-        "source_location": null
+        "source_location": {
+            "source": "",
+            "line": 12,
+            "column": 14
+        }
     },
     {
         "class": "punctuator",
@@ -208,7 +232,11 @@
             0
         ],
         "length": 14,
-        "source_location": null
+        "source_location": {
+            "source": "",
+            "line": 12,
+            "column": 31
+        }
     },
     {
         "class": "string_literal",
@@ -232,6 +260,19 @@
             0
         ],
         "length": 15,
-        "source_location": null
+        "source_location": {
+            "source": "",
+            "line": 12,
+            "column": 49
+        }
+    },
+    {
+        "class": "sentinel",
+        "preprocessor": false,
+        "source_location": {
+            "source": "",
+            "line": 12,
+            "column": 67
+        }
     }
 ]

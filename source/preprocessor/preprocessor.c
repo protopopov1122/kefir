@@ -227,6 +227,9 @@ static kefir_result_t process_include(struct kefir_mem *mem, struct kefir_prepro
     });
 
     res = kefir_preprocessor_run(mem, &subpreprocessor, buffer);
+    if (buffer->length > 0 && buffer->tokens[buffer->length - 1].klass == KEFIR_TOKEN_SENTINEL) {
+        REQUIRE_CHAIN(&res, kefir_token_buffer_pop(mem, buffer));
+    }
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_preprocessor_free(mem, &subpreprocessor);
         source_file.close(mem, &source_file);
@@ -586,6 +589,15 @@ kefir_result_t kefir_preprocessor_run_group(struct kefir_mem *mem, struct kefir_
     return KEFIR_OK;
 }
 
+static kefir_result_t insert_sentinel(struct kefir_mem *mem, struct kefir_preprocessor_directive *directive,
+                                      struct kefir_token_buffer *buffer) {
+    struct kefir_token token;
+    REQUIRE_OK(kefir_token_new_sentinel(&token));
+    token.source_location = directive->source_location;
+    REQUIRE_OK(kefir_token_buffer_emplace(mem, buffer, &token));
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_preprocessor_run(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
                                       struct kefir_token_buffer *buffer) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
@@ -600,6 +612,11 @@ kefir_result_t kefir_preprocessor_run(struct kefir_mem *mem, struct kefir_prepro
         kefir_preprocessor_directive_free(mem, &directive);
         return KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &directive.source_location,
                                       "Unexpected preprocessor directive/token");
+    });
+    kefir_result_t res = insert_sentinel(mem, &directive, buffer);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_preprocessor_directive_free(mem, &directive);
+        return res;
     });
     REQUIRE_OK(kefir_preprocessor_directive_free(mem, &directive));
     return KEFIR_OK;

@@ -120,8 +120,8 @@ kefir_result_t kefir_lexer_populate_buffer(struct kefir_mem *mem, struct kefir_t
     while (scan_tokens) {
         struct kefir_token token = {0};
         REQUIRE_OK(kefir_lexer_next(mem, lexer, &token));
-        REQUIRE_OK(kefir_token_buffer_emplace(mem, buffer, &token));
         scan_tokens = token.klass != KEFIR_TOKEN_SENTINEL;
+        REQUIRE_OK(kefir_token_buffer_emplace(mem, buffer, &token));
     }
     return KEFIR_OK;
 }

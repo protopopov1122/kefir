@@ -213,5 +213,9 @@
         "class": "identifier",
         "preprocessor": false,
         "identifier": "test"
+    },
+    {
+        "class": "sentinel",
+        "preprocessor": false
     }
 ]

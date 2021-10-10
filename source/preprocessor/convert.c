@@ -200,8 +200,10 @@ static kefir_result_t append_string_literal(struct kefir_mem *mem, struct kefir_
             break;
     }
 
+    struct kefir_source_location source_location = literal1->source_location;
     struct kefir_token result;
     REQUIRE_OK(join_string_literals_impl(mem, literal1, literal2, &result));
+    result.source_location = source_location;
     kefir_result_t res = kefir_token_buffer_pop(mem, dst);
     REQUIRE_CHAIN(&res, kefir_token_buffer_emplace(mem, dst, &result));
     REQUIRE_ELSE(res == KEFIR_OK, {
