@@ -44,7 +44,7 @@ is implemented, however refactoring and bug-fixes are still on-going. At the mom
 |Parser                     |Implementation done       |Recursive descent parser with backtracking. See exceptions section below       |
 |Lexer                      |Implementation done       |See exceptions section below                                                   |
 |Preprocessor               |Implementation done       |Basic preprocessor with no support for pragmas                                 |
-|Standard library           |Not planned               |Out-of-scope of initial effort                                                 |
+|Standard library           |Third-party library       |See `Standard library` section below                                           |
 |Command-line interface     |Implementation done       |Minimal useful implementation                                                  |
 
 ### Exceptions
@@ -67,6 +67,12 @@ these pragmas have no value at the moment.
 ### Built-ins
 At the moment, Kefir supports following builtins for compatibility with GCC:
 `__builtin_va_list`, `__builtin_va_start`, `__builtin_va_end`, `__builtin_va_copy`, `__builtin_va_arg`
+
+### Standard library
+Quick and dirty patch for [musl libc](https://musl.libc.org) was prepared in order to make it more compatible with kefir.
+The patch is available in [kefir-musl repository](https://github.com/protopopov1122/kefir-musl). Most of musl source was left
+intact, introducing a few `ifdef`s disabling features not supported by Kefir. Patched library undergone minimal number of smoke tests,
+thus it's not guaranteed to work for any real-world scenario.
 
 ## Build & Usage
 **Usage is strongly discouraged. This is experimental project which is not meant for production purposes.**
@@ -114,7 +120,6 @@ Following things can be focus of further development (in order of feasibility an
 * Bugfixes.
 * Improvements in error reporting.
 * Optimization and refactoring of compiler source.
-* Adaptation of third-party standard library implementations to Kefir.
 * Implementing missing bits from `Exceptions` section, migration to C17 as target standard.
 * Improvements to code generation - support PIE, extend supported platform list.
 * Introduction of SSA optimization stage to code generator.
