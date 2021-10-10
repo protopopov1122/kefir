@@ -46,7 +46,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                            "no_atomics = __STDC_NO_ATOMICS__\n"
                            "no_complex = __STDC_NO_COMPLEX__\n"
                            "no_threads = __STDC_NO_THREADS__\n"
-                           "no_vla = __STDC_NO_VLA__";
+                           "no_vla = __STDC_NO_VLA__\n"
+                           "kefircc = __KEFIRCC__";
 
     struct kefir_symbol_table symbols;
     struct kefir_lexer_context parser_context;

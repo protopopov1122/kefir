@@ -15,3 +15,4 @@ no_atomics = 1
 no_complex = 1
 no_threads = __STDC_NO_THREADS__
 no_vla = 1
+kefircc = 1

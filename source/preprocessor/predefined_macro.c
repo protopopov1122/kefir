@@ -355,6 +355,8 @@ kefir_result_t kefir_preprocessor_predefined_macro_scope_init(struct kefir_mem *
         REQUIRE_CHAIN(&res, define_predefined_macro(mem, scope, &scope->macros.stdc_no_vla, "__STDC_NO_VLA__",
                                                     macro_produce_one_apply));
     }
+    REQUIRE_CHAIN(&res,
+                  define_predefined_macro(mem, scope, &scope->macros.kefircc, "__KEFIRCC__", macro_produce_one_apply));
 
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_hashtree_free(mem, &scope->macro_tree);
