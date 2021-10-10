@@ -195,6 +195,9 @@ kefir_result_t kefir_hashtree_delete(struct kefir_mem *mem, struct kefir_hashtre
             if (replacement->right_child != NULL) {
                 replacement->parent->left_child = replacement->right_child;
                 replacement->right_child = NULL;
+                replacement->parent->left_child->parent = replacement->parent;
+            } else {
+                replacement->parent->left_child = NULL;
             }
             replacement->right_child = node->right_child;
             replacement->right_child->parent = replacement;
