@@ -140,6 +140,7 @@ declare_opcode uintcf32
 declare_opcode uintcf64
 declare_opcode f32cf64
 declare_opcode f64cf32
+declare_opcode alloca
 ; Runtime
 global __kefirrt_preserve_state
 global __kefirrt_restore_state
@@ -875,6 +876,29 @@ define_opcode f64cf32
     movsd xmm0, [rsp]
     cvtsd2ss xmm0, xmm0
     movss [rsp], xmm0
+    end_opcode
+
+define_opcode alloca
+    pop r12             ; Alignment
+    pop r13             ; Size
+    mov rsi, [r14 - 8]  ; Current stack base
+    mov rax, rsi        ; Pointer to allocation
+    sub rax, r13
+    cmp r12, 0
+    je __kefirrt_alloca_aligned
+    neg r12
+    and rax, r12
+__kefirrt_alloca_aligned:
+    mov rcx, rsi        ; Count
+    sub rcx, rsp
+    mov rdi, rax
+    sub rdi, rcx
+    mov rsi, rsp
+    mov rsp, rdi
+    cld
+    rep movsb
+    mov [r14 - 8], rdi
+    push rax
     end_opcode
 
 ; Runtime helpers

@@ -87,6 +87,7 @@ extern __kefirrt_uintcf32_impl
 extern __kefirrt_uintcf64_impl
 extern __kefirrt_f32cf64_impl
 extern __kefirrt_f64cf32_impl
+extern __kefirrt_alloca_impl
 extern __kefirrt_preserve_state
 extern __kefirrt_restore_state
 extern __kefirrt_save_registers
@@ -100,6 +101,8 @@ func1:
 call __kefirrt_preserve_state
 sub rsp, 16
 mov r14, rsp
+lea r12, [r14 - 8]
+push r12
 mov rbx, __func1_body
 jmp [rbx]
 __func1_body:

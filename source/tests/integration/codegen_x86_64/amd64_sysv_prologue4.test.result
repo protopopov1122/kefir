@@ -1,6 +1,8 @@
 call __kefirrt_preserve_state
 sub rsp, 48
 mov r14, rsp
+lea r12, [r14 - 8]
+push r12
 mov [r14 + 16], rdi
 mov [r14 + 24], rsi
 lea r12, [r14 + 16]

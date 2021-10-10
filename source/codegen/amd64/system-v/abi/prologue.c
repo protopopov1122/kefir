@@ -258,6 +258,11 @@ static kefir_result_t load_arguments(struct kefir_codegen_amd64 *codegen,
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_STACK_BASE_REG);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RSP);
+    ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_LEA);
+    ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
+    ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_INDIRECT_NEG_OFFSET, KEFIR_AMD64_SYSV_ABI_STACK_BASE_REG, 8);
+    ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_PUSH);
+    ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
     const struct kefir_ir_function_decl *func = sysv_func->func->declaration;
     ASMGEN_COMMENT(&codegen->asmgen, "Load parameters of %s", func->name);
     if (sysv_func->decl.returns.implicit_parameter) {

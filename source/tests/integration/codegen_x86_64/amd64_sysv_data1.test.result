@@ -87,6 +87,7 @@ extern __kefirrt_uintcf32_impl
 extern __kefirrt_uintcf64_impl
 extern __kefirrt_f32cf64_impl
 extern __kefirrt_f64cf32_impl
+extern __kefirrt_alloca_impl
 extern __kefirrt_preserve_state
 extern __kefirrt_restore_state
 extern __kefirrt_save_registers

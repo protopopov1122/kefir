@@ -1,6 +1,8 @@
 call __kefirrt_preserve_state
 sub rsp, 16
 mov r14, rsp
+lea r12, [r14 - 8]
+push r12
 pextrq r12, xmm0, 0
 push r12
 push rdi

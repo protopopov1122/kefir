@@ -109,6 +109,7 @@
     <opcode id="vararg_copy"  mnemonic="copyvarg"   code="0x71" type="none" />
     <opcode id="vararg_get"   mnemonic="getvarg"    code="0x72" type="typeref" />
     <opcode id="vararg_end"   mnemonic="endvarg"    code="0x73" type="none" />
+    <opcode id="alloca"       mnemonic="alloca"     code="0x74" type="none" />
 
     <!-- Floating-point basics -->
     <opcode id="pushf32"      mnemonic="pushf32"    code="0x80" type="f32" />
