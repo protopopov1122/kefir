@@ -35,6 +35,7 @@ features. Project can be relatively easily extended to comply with C17 once the 
 ## Progress
 Table below lists progress on various compiler components. 'Implemenataion done' in the status field means that the main body of component
 is implemented, however refactoring and bug-fixes are still on-going. At the moment, initial development effort is mostly finished.
+
 |Module                     |Status                    |Comments                                                                       |
 |---------------------------|--------------------------|-------------------------------------------------------------------------------|
 |Code generator             |Implementation done       |IR translator targetting System-V AMD64 ABI                                    |
@@ -66,7 +67,8 @@ these pragmas have no value at the moment.
 
 ### Built-ins
 At the moment, Kefir supports following builtins for compatibility with GCC:
-`__builtin_va_list`, `__builtin_va_start`, `__builtin_va_end`, `__builtin_va_copy`, `__builtin_va_arg`
+`__builtin_va_list`, `__builtin_va_start`, `__builtin_va_end`, `__builtin_va_copy`, `__builtin_va_arg`,
+`__builtin_alloca`, `__builtin_alloca_with_align`, `__builtin_alloca_with_align_and_max`
 
 ### Standard library
 Quick and dirty patch for [musl libc](https://musl.libc.org) was prepared in order to make it more compatible with kefir.

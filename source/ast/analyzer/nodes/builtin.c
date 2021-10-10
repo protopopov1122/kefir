@@ -106,6 +106,58 @@ kefir_result_t kefir_ast_analyze_builtin_node(struct kefir_mem *mem, const struc
                                            "Expected an expression referencing va_list"));
             base->properties.type = kefir_ast_type_void();
         } break;
+
+        case KEFIR_AST_BUILTIN_ALLOCA: {
+            REQUIRE(kefir_list_length(&node->arguments) == 1,
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &base->source_location,
+                                           "alloca builtin invocation should have exactly one parameter"));
+            const struct kefir_list_entry *iter = kefir_list_head(&node->arguments);
+            ASSIGN_DECL_CAST(struct kefir_ast_node_base *, size, iter->value);
+            REQUIRE(size->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION &&
+                        KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(size->properties.type),
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &size->source_location,
+                                           "Expected an integral expression"));
+            base->properties.type = kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_void());
+        } break;
+
+        case KEFIR_AST_BUILTIN_ALLOCA_WITH_ALIGN: {
+            REQUIRE(kefir_list_length(&node->arguments) == 2,
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &base->source_location,
+                                           "alloca_with_align builtin invocation should have exactly two parameters"));
+            const struct kefir_list_entry *iter = kefir_list_head(&node->arguments);
+            ASSIGN_DECL_CAST(struct kefir_ast_node_base *, size, iter->value);
+            REQUIRE(size->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION &&
+                        KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(size->properties.type),
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &size->source_location,
+                                           "Expected an integral expression"));
+            kefir_list_next(&iter);
+            ASSIGN_DECL_CAST(struct kefir_ast_node_base *, alignment, iter->value);
+            REQUIRE(alignment->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION &&
+                        KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(alignment->properties.type),
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &alignment->source_location,
+                                           "Expected an integral expression"));
+            base->properties.type = kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_void());
+        } break;
+
+        case KEFIR_AST_BUILTIN_ALLOCA_WITH_ALIGN_AND_MAX: {
+            REQUIRE(kefir_list_length(&node->arguments) == 3,
+                    KEFIR_SET_SOURCE_ERROR(
+                        KEFIR_ANALYSIS_ERROR, &base->source_location,
+                        "alloca_with_align_and_max builtin invocation should have exactly three parameters"));
+            const struct kefir_list_entry *iter = kefir_list_head(&node->arguments);
+            ASSIGN_DECL_CAST(struct kefir_ast_node_base *, size, iter->value);
+            REQUIRE(size->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION &&
+                        KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(size->properties.type),
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &size->source_location,
+                                           "Expected an integral expression"));
+            kefir_list_next(&iter);
+            ASSIGN_DECL_CAST(struct kefir_ast_node_base *, alignment, iter->value);
+            REQUIRE(alignment->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION &&
+                        KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(alignment->properties.type),
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &alignment->source_location,
+                                           "Expected an integral expression"));
+            base->properties.type = kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_void());
+        } break;
     }
     return KEFIR_OK;
 }

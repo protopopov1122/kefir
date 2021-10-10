@@ -84,6 +84,23 @@ kefir_result_t kefir_ast_translate_builtin_node(struct kefir_mem *mem, struct ke
             REQUIRE_OK(resolve_vararg(mem, context, builder, src_vararg));
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_VARARG_COPY, 0));
         } break;
+
+        case KEFIR_AST_BUILTIN_ALLOCA: {
+            ASSIGN_DECL_CAST(struct kefir_ast_node_base *, size, iter->value);
+            REQUIRE_OK(kefir_ast_translate_expression(mem, size, builder, context));
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHI64, 0));
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_ALLOCA, 0));
+        } break;
+
+        case KEFIR_AST_BUILTIN_ALLOCA_WITH_ALIGN:
+        case KEFIR_AST_BUILTIN_ALLOCA_WITH_ALIGN_AND_MAX: {
+            ASSIGN_DECL_CAST(struct kefir_ast_node_base *, size, iter->value);
+            REQUIRE_OK(kefir_ast_translate_expression(mem, size, builder, context));
+            kefir_list_next(&iter);
+            ASSIGN_DECL_CAST(struct kefir_ast_node_base *, alignment, iter->value);
+            REQUIRE_OK(kefir_ast_translate_expression(mem, alignment, builder, context));
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_ALLOCA, 0));
+        } break;
     }
     return KEFIR_OK;
 }

@@ -300,6 +300,18 @@ static kefir_result_t visit_builtin(const struct kefir_ast_visitor *visitor, con
         case KEFIR_AST_BUILTIN_VA_ARG:
             REQUIRE_OK(kefir_json_output_string(json, "va_args"));
             break;
+
+        case KEFIR_AST_BUILTIN_ALLOCA:
+            REQUIRE_OK(kefir_json_output_string(json, "alloca"));
+            break;
+
+        case KEFIR_AST_BUILTIN_ALLOCA_WITH_ALIGN:
+            REQUIRE_OK(kefir_json_output_string(json, "alloca_with_align"));
+            break;
+
+        case KEFIR_AST_BUILTIN_ALLOCA_WITH_ALIGN_AND_MAX:
+            REQUIRE_OK(kefir_json_output_string(json, "alloca_with_align_and_max"));
+            break;
     }
     REQUIRE_OK(kefir_json_output_object_key(json, "arguments"));
     REQUIRE_OK(kefir_json_output_array_begin(json));
