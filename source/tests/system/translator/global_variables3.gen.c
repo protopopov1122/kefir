@@ -29,6 +29,7 @@
 #include "kefir/ast-translator/translator.h"
 #include "kefir/ast-translator/scope/global_scope_layout.h"
 #include "kefir/ast-translator/scope/local_scope_layout.h"
+#include "kefir/ast-translator/function_definition.h"
 #include "kefir/ast/context_manager.h"
 #include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/ast-translator/context.h"
@@ -373,7 +374,12 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
     for (const struct kefir_list_entry *iter = kefir_list_head(&unit); iter != NULL; kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, node, iter->value);
         if (node->properties.category == KEFIR_AST_NODE_CATEGORY_FUNCTION_DEFINITION) {
-            REQUIRE_OK(kefir_ast_translate_function(mem, node, &translator_context));
+            struct kefir_ast_translator_function_context func_ctx;
+            REQUIRE_OK(kefir_ast_translator_function_context_init(
+                mem, &translator_context, (struct kefir_ast_function_definition *) node->self, &func_ctx));
+            REQUIRE_OK(kefir_ast_translator_function_context_translate(mem, &func_ctx));
+            REQUIRE_OK(kefir_ast_translator_function_context_finalize(mem, &func_ctx));
+            REQUIRE_OK(kefir_ast_translator_function_context_free(mem, &func_ctx));
         }
     }
 

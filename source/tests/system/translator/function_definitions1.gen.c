@@ -29,6 +29,7 @@
 #include "kefir/ast-translator/translator.h"
 #include "kefir/ast-translator/scope/global_scope_layout.h"
 #include "kefir/ast-translator/scope/local_scope_layout.h"
+#include "kefir/ast-translator/function_definition.h"
 #include "kefir/ast/context_manager.h"
 #include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/ast-translator/context.h"
@@ -103,7 +104,12 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
     REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(mem, module, &global_context,
                                                               translator_context.environment,
                                                               &translator_context.type_cache.resolver, &global_scope));
-    REQUIRE_OK(kefir_ast_translate_function(mem, KEFIR_AST_NODE_BASE(function), &translator_context));
+
+    struct kefir_ast_translator_function_context func_ctx;
+    REQUIRE_OK(kefir_ast_translator_function_context_init(mem, &translator_context, function, &func_ctx));
+    REQUIRE_OK(kefir_ast_translator_function_context_translate(mem, &func_ctx));
+    REQUIRE_OK(kefir_ast_translator_function_context_finalize(mem, &func_ctx));
+    REQUIRE_OK(kefir_ast_translator_function_context_free(mem, &func_ctx));
     REQUIRE_OK(kefir_ast_translate_global_scope(mem, &global_context.context, module, &global_scope));
 
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(function)));

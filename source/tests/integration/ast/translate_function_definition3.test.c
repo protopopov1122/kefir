@@ -25,6 +25,7 @@
 #include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/ast-translator/context.h"
 #include "kefir/ast-translator/scope/local_scope_layout.h"
+#include "kefir/ast-translator/function_definition.h"
 #include "kefir/test/util.h"
 #include "kefir/ir/builder.h"
 #include "kefir/ir/format.h"
@@ -109,7 +110,11 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         mem, &module, &global_context, &env, kefir_ast_translator_context_type_resolver(&global_translator_context),
         &translator_global_scope));
 
-    REQUIRE_OK(kefir_ast_translate_function(mem, KEFIR_AST_NODE_BASE(function1), &global_translator_context));
+    struct kefir_ast_translator_function_context func_ctx;
+    REQUIRE_OK(kefir_ast_translator_function_context_init(mem, &global_translator_context, function1, &func_ctx));
+    REQUIRE_OK(kefir_ast_translator_function_context_translate(mem, &func_ctx));
+    REQUIRE_OK(kefir_ast_translator_function_context_finalize(mem, &func_ctx));
+    REQUIRE_OK(kefir_ast_translator_function_context_free(mem, &func_ctx));
     REQUIRE_OK(kefir_ast_translate_global_scope(mem, &global_context.context, &module, &translator_global_scope));
 
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(function1)));

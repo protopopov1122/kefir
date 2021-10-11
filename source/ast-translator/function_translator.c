@@ -26,20 +26,11 @@
 #include "kefir/ast-translator/scope/translator.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
-
-struct function_translator_ctx {
-    const struct kefir_ast_translator_resolved_type *resolved_function_type;
-    struct kefir_ast_translator_function_declaration *function_declaration;
-    struct kefir_ast_local_context *local_context;
-    struct kefir_ast_translator_context local_translator_context;
-    struct kefir_ast_translator_local_scope_layout local_scope_layout;
-    struct kefir_ir_function *ir_func;
-    struct kefir_irbuilder_block builder;
-};
+#include "kefir/ast-translator/function_definition.h"
 
 static kefir_result_t init_function_declaration(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
                                                 struct kefir_ast_function_definition *function,
-                                                struct function_translator_ctx *args) {
+                                                struct kefir_ast_translator_function_context *args) {
     const char *identifier = NULL;
     REQUIRE_OK(kefir_ast_declarator_unpack_identifier(function->declarator, &identifier));
     REQUIRE(identifier != NULL,
@@ -131,7 +122,8 @@ static kefir_result_t init_function_declaration(struct kefir_mem *mem, struct ke
     return KEFIR_OK;
 }
 
-static kefir_result_t free_function_declaration(struct kefir_mem *mem, struct function_translator_ctx *args) {
+static kefir_result_t free_function_declaration(struct kefir_mem *mem,
+                                                struct kefir_ast_translator_function_context *args) {
     if (args->resolved_function_type == NULL) {
         REQUIRE_OK(kefir_ast_translator_function_declaration_free(mem, args->function_declaration));
     }
@@ -140,95 +132,115 @@ static kefir_result_t free_function_declaration(struct kefir_mem *mem, struct fu
     return KEFIR_OK;
 }
 
-static kefir_result_t function_translator_ctx_init(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
-                                                   struct kefir_ast_function_definition *function,
-                                                   struct function_translator_ctx *args) {
+kefir_result_t kefir_ast_translator_function_context_init(struct kefir_mem *mem,
+                                                          struct kefir_ast_translator_context *context,
+                                                          struct kefir_ast_function_definition *function,
+                                                          struct kefir_ast_translator_function_context *ctx) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator context"));
+    REQUIRE(function != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST function definition"));
+    REQUIRE(ctx != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to AST translator function context"));
 
-    REQUIRE_OK(init_function_declaration(mem, context, function, args));
+    REQUIRE_OK(init_function_declaration(mem, context, function, ctx));
 
-    args->local_context = function->base.properties.function_definition.scoped_id->function.local_context;
-    kefir_result_t res = kefir_ast_translator_context_init_local(&args->local_translator_context,
-                                                                 &args->local_context->context, context);
+    ctx->function_definition = function;
+    ctx->module = context->module;
+    ctx->local_context = function->base.properties.function_definition.scoped_id->function.local_context;
+    kefir_result_t res =
+        kefir_ast_translator_context_init_local(&ctx->local_translator_context, &ctx->local_context->context, context);
     REQUIRE_ELSE(res == KEFIR_OK, {
-        free_function_declaration(mem, args);
+        free_function_declaration(mem, ctx);
         return res;
     });
 
     res = kefir_ast_translator_local_scope_layout_init(mem, context->module, context->global_scope_layout,
-                                                       &args->local_scope_layout);
+                                                       &ctx->local_scope_layout);
     REQUIRE_ELSE(res == KEFIR_OK, {
-        kefir_ast_translator_context_free(mem, &args->local_translator_context);
-        free_function_declaration(mem, args);
+        kefir_ast_translator_context_free(mem, &ctx->local_translator_context);
+        free_function_declaration(mem, ctx);
         return res;
     });
 
     res = kefir_ast_translator_build_local_scope_layout(
-        mem, args->local_context, args->local_translator_context.environment, args->local_translator_context.module,
-        &args->local_translator_context.type_cache.resolver, &args->local_scope_layout);
+        mem, ctx->local_context, ctx->local_translator_context.environment, ctx->local_translator_context.module,
+        &ctx->local_translator_context.type_cache.resolver, &ctx->local_scope_layout);
     REQUIRE_ELSE(res == KEFIR_OK, {
-        kefir_ast_translator_local_scope_layout_free(mem, &args->local_scope_layout);
-        kefir_ast_translator_context_free(mem, &args->local_translator_context);
-        free_function_declaration(mem, args);
+        kefir_ast_translator_local_scope_layout_free(mem, &ctx->local_scope_layout);
+        kefir_ast_translator_context_free(mem, &ctx->local_translator_context);
+        free_function_declaration(mem, ctx);
         return res;
     });
 
-    res = kefir_ast_translator_flow_control_tree_init(mem, args->local_context->context.flow_control_tree);
+    res = kefir_ast_translator_flow_control_tree_init(mem, ctx->local_context->context.flow_control_tree);
     REQUIRE_ELSE(res == KEFIR_OK, {
-        kefir_ast_translator_local_scope_layout_free(mem, &args->local_scope_layout);
-        kefir_ast_translator_context_free(mem, &args->local_translator_context);
-        free_function_declaration(mem, args);
+        kefir_ast_translator_local_scope_layout_free(mem, &ctx->local_scope_layout);
+        kefir_ast_translator_context_free(mem, &ctx->local_translator_context);
+        free_function_declaration(mem, ctx);
         return res;
     });
 
-    args->ir_func = kefir_ir_module_new_function(mem, context->module, args->function_declaration->ir_function_decl,
-                                                 args->local_scope_layout.local_layout, 0);
-    REQUIRE_ELSE(args->ir_func != NULL, {
-        kefir_ast_translator_local_scope_layout_free(mem, &args->local_scope_layout);
-        kefir_ast_translator_context_free(mem, &args->local_translator_context);
-        free_function_declaration(mem, args);
+    ctx->ir_func = kefir_ir_module_new_function(mem, context->module, ctx->function_declaration->ir_function_decl,
+                                                ctx->local_scope_layout.local_layout, 0);
+    REQUIRE_ELSE(ctx->ir_func != NULL, {
+        kefir_ast_translator_local_scope_layout_free(mem, &ctx->local_scope_layout);
+        kefir_ast_translator_context_free(mem, &ctx->local_translator_context);
+        free_function_declaration(mem, ctx);
         return KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate IR function");
     });
 
-    res = kefir_irbuilder_block_init(mem, &args->builder, &args->ir_func->body);
+    res = kefir_irbuilder_block_init(mem, &ctx->builder, &ctx->ir_func->body);
     REQUIRE_ELSE(res == KEFIR_OK, {
-        kefir_ast_translator_local_scope_layout_free(mem, &args->local_scope_layout);
-        kefir_ast_translator_context_free(mem, &args->local_translator_context);
-        free_function_declaration(mem, args);
+        kefir_ast_translator_local_scope_layout_free(mem, &ctx->local_scope_layout);
+        kefir_ast_translator_context_free(mem, &ctx->local_translator_context);
+        free_function_declaration(mem, ctx);
         return res;
     });
 
     return KEFIR_OK;
 }
 
-static kefir_result_t function_translator_ctx_free(struct kefir_mem *mem, struct function_translator_ctx *args) {
-    kefir_result_t res = KEFIR_IRBUILDER_BLOCK_FREE(&args->builder);
+kefir_result_t kefir_ast_translator_function_context_free(struct kefir_mem *mem,
+                                                          struct kefir_ast_translator_function_context *ctx) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(ctx != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator function context"));
+
+    kefir_result_t res = KEFIR_IRBUILDER_BLOCK_FREE(&ctx->builder);
     REQUIRE_ELSE(res == KEFIR_OK, {
-        kefir_ast_translator_local_scope_layout_free(mem, &args->local_scope_layout);
-        kefir_ast_translator_context_free(mem, &args->local_translator_context);
-        free_function_declaration(mem, args);
+        kefir_ast_translator_local_scope_layout_free(mem, &ctx->local_scope_layout);
+        kefir_ast_translator_context_free(mem, &ctx->local_translator_context);
+        free_function_declaration(mem, ctx);
         return res;
     });
 
-    res = kefir_ast_translator_local_scope_layout_free(mem, &args->local_scope_layout);
+    res = kefir_ast_translator_local_scope_layout_free(mem, &ctx->local_scope_layout);
     REQUIRE_ELSE(res == KEFIR_OK, {
-        kefir_ast_translator_context_free(mem, &args->local_translator_context);
-        free_function_declaration(mem, args);
+        kefir_ast_translator_context_free(mem, &ctx->local_translator_context);
+        free_function_declaration(mem, ctx);
         return res;
     });
 
-    res = kefir_ast_translator_context_free(mem, &args->local_translator_context);
+    res = kefir_ast_translator_context_free(mem, &ctx->local_translator_context);
     REQUIRE_ELSE(res == KEFIR_OK, {
-        free_function_declaration(mem, args);
+        free_function_declaration(mem, ctx);
         return res;
     });
 
-    REQUIRE_OK(free_function_declaration(mem, args));
+    REQUIRE_OK(free_function_declaration(mem, ctx));
+    ctx->function_definition = NULL;
     return KEFIR_OK;
 }
 
-static kefir_result_t translate_function_impl(struct kefir_mem *mem, struct kefir_ast_function_definition *function,
-                                              struct kefir_irbuilder_block *builder,
-                                              struct kefir_ast_translator_context *context) {
+kefir_result_t kefir_ast_translator_function_context_translate(
+    struct kefir_mem *mem, struct kefir_ast_translator_function_context *function_context) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(function_context != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator function context"));
+
+    struct kefir_ast_function_definition *function = function_context->function_definition;
+    struct kefir_irbuilder_block *builder = &function_context->builder;
+    struct kefir_ast_translator_context *context = &function_context->local_translator_context;
+
     struct kefir_ast_local_context *local_context =
         function->base.properties.function_definition.scoped_id->function.local_context;
     const struct kefir_ast_declarator_function *decl_func = NULL;
@@ -291,34 +303,13 @@ static kefir_result_t translate_function_impl(struct kefir_mem *mem, struct kefi
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_translate_function(struct kefir_mem *mem, const struct kefir_ast_node_base *node,
-                                            struct kefir_ast_translator_context *context) {
+kefir_result_t kefir_ast_translator_function_context_finalize(
+    struct kefir_mem *mem, struct kefir_ast_translator_function_context *function_context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node base"));
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator context"));
-    REQUIRE(context->global_scope_layout != NULL,
-            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator global scope layout"));
-    REQUIRE(node->properties.category == KEFIR_AST_NODE_CATEGORY_FUNCTION_DEFINITION &&
-                node->klass->type == KEFIR_AST_FUNCTION_DEFINITION,
-            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected function definition AST node"));
+    REQUIRE(function_context != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator function context"));
 
-    ASSIGN_DECL_CAST(struct kefir_ast_function_definition *, function, node->self);
-
-    struct function_translator_ctx ctx;
-    REQUIRE_OK(function_translator_ctx_init(mem, context, function, &ctx));
-
-    kefir_result_t res = translate_function_impl(mem, function, &ctx.builder, &ctx.local_translator_context);
-    REQUIRE_ELSE(res == KEFIR_OK, {
-        function_translator_ctx_free(mem, &ctx);
-        return res;
-    });
-
-    res = kefir_ast_translate_local_scope(mem, &ctx.local_context->context, context->module, &ctx.local_scope_layout);
-    REQUIRE_ELSE(res == KEFIR_OK, {
-        function_translator_ctx_free(mem, &ctx);
-        return res;
-    });
-
-    REQUIRE_OK(function_translator_ctx_free(mem, &ctx));
+    REQUIRE_OK(kefir_ast_translate_local_scope(mem, &function_context->local_context->context, function_context->module,
+                                               &function_context->local_scope_layout));
     return KEFIR_OK;
 }
