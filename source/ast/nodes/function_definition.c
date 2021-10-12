@@ -131,6 +131,74 @@ struct kefir_ast_node_base *ast_function_definition_clone(struct kefir_mem *mem,
     return KEFIR_AST_NODE_BASE(clone);
 }
 
+static kefir_result_t insert_function_name_builtin(struct kefir_mem *mem, struct kefir_ast_declarator *declarator,
+                                                   struct kefir_ast_compound_statement *body) {
+    const char *function_identifier = NULL;
+    REQUIRE_OK(kefir_ast_declarator_unpack_identifier(declarator, &function_identifier));
+
+    struct kefir_ast_declarator *func_name_id_declarator = kefir_ast_declarator_identifier(mem, NULL, "__func__");
+    REQUIRE(func_name_id_declarator != NULL,
+            KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate __func__ declarator"));
+    struct kefir_ast_declarator *func_name_declarator =
+        kefir_ast_declarator_array(mem, KEFIR_AST_DECLARATOR_ARRAY_UNBOUNDED, NULL, func_name_id_declarator);
+    REQUIRE_ELSE(func_name_declarator != NULL, {
+        kefir_ast_declarator_free(mem, func_name_id_declarator);
+        return KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate __func__ declarator");
+    });
+
+    struct kefir_ast_string_literal *func_name_value =
+        kefir_ast_new_string_literal_multibyte(mem, function_identifier, strlen(function_identifier) + 1);
+    REQUIRE_ELSE(func_name_value != NULL, {
+        kefir_ast_declarator_free(mem, func_name_declarator);
+        return KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate __func__ string literal");
+    });
+
+    struct kefir_ast_initializer *func_name_initializer =
+        kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(func_name_value));
+    REQUIRE_ELSE(func_name_initializer != NULL, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(func_name_value));
+        kefir_ast_declarator_free(mem, func_name_declarator);
+        return KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate __func__ initializer");
+    });
+
+    struct kefir_ast_declaration *func_name_declaration =
+        kefir_ast_new_single_declaration(mem, func_name_declarator, func_name_initializer, NULL);
+    REQUIRE_ELSE(func_name_declaration != NULL, {
+        kefir_ast_initializer_free(mem, func_name_initializer);
+        kefir_ast_declarator_free(mem, func_name_declarator);
+        return KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Faile to allocate __func__ declaration");
+    });
+
+#define APPEND_SPECIFIER(_spec)                                                                                \
+    do {                                                                                                       \
+        struct kefir_ast_declarator_specifier *specifier1 = (_spec);                                           \
+        REQUIRE_ELSE(specifier1 != NULL, {                                                                     \
+            KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(func_name_declaration));                              \
+            return KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Faile to allocate __func__ declarator specifier"); \
+        });                                                                                                    \
+        kefir_result_t res =                                                                                   \
+            kefir_ast_declarator_specifier_list_append(mem, &func_name_declaration->specifiers, specifier1);   \
+        REQUIRE_ELSE(res == KEFIR_OK, {                                                                        \
+            kefir_ast_declarator_specifier_free(mem, specifier1);                                              \
+            KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(func_name_declaration));                              \
+            return res;                                                                                        \
+        });                                                                                                    \
+    } while (0)
+
+    APPEND_SPECIFIER(kefir_ast_storage_class_specifier_static(mem));
+    APPEND_SPECIFIER(kefir_ast_type_qualifier_const(mem));
+    APPEND_SPECIFIER(kefir_ast_type_specifier_char(mem));
+#undef APPEND_SPECIFIER
+
+    kefir_result_t res =
+        kefir_list_insert_after(mem, &body->block_items, NULL, KEFIR_AST_NODE_BASE(func_name_declaration));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(func_name_declaration));
+        return res;
+    });
+    return KEFIR_OK;
+}
+
 struct kefir_ast_function_definition *kefir_ast_new_function_definition(struct kefir_mem *mem,
                                                                         struct kefir_ast_declarator *declarator,
                                                                         struct kefir_ast_compound_statement *body) {
@@ -138,11 +206,14 @@ struct kefir_ast_function_definition *kefir_ast_new_function_definition(struct k
     REQUIRE(declarator != NULL, NULL);
     REQUIRE(body != NULL, NULL);
 
+    kefir_result_t res = insert_function_name_builtin(mem, declarator, body);
+    REQUIRE(res == KEFIR_OK, NULL);
+
     struct kefir_ast_function_definition *func = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_function_definition));
     REQUIRE(func != NULL, NULL);
     func->base.klass = &AST_FUNCTION_DEFINITION_CLASS;
     func->base.self = func;
-    kefir_result_t res = kefir_ast_node_properties_init(&func->base.properties);
+    res = kefir_ast_node_properties_init(&func->base.properties);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, func);
         return NULL;

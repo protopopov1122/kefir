@@ -16,6 +16,34 @@
             "type": [
                 {
                     "type": "long"
+                },
+                {
+                    "type": "array",
+                    "length": 10,
+                    "element_type": {
+                        "type": "char"
+                    }
+                },
+                {
+                    "type": "array",
+                    "length": 10,
+                    "element_type": {
+                        "type": "char"
+                    }
+                },
+                {
+                    "type": "array",
+                    "length": 10,
+                    "element_type": {
+                        "type": "char"
+                    }
+                },
+                {
+                    "type": "array",
+                    "length": 16,
+                    "element_type": {
+                        "type": "char"
+                    }
                 }
             ]
         },
@@ -193,11 +221,76 @@
                 {
                     "class": "integer",
                     "value": 0
+                },
+                {
+                    "class": "string",
+                    "content": "set_value\0",
+                    "length": 10
+                },
+                {
+                    "class": "undefined",
+                    "count": 10
+                },
+                {
+                    "class": "string",
+                    "content": "get_value\0",
+                    "length": 10
+                },
+                {
+                    "class": "undefined",
+                    "count": 10
+                },
+                {
+                    "class": "string",
+                    "content": "add_value\0",
+                    "length": 10
+                },
+                {
+                    "class": "undefined",
+                    "count": 10
+                },
+                {
+                    "class": "string",
+                    "content": "invoke_callback\0",
+                    "length": 16
+                },
+                {
+                    "class": "undefined",
+                    "count": 16
                 }
             ]
         }
     ],
-    "string_literals": [],
+    "string_literals": [
+        {
+            "id": 0,
+            "public": false,
+            "type": "multibyte",
+            "literal": "set_value\0",
+            "length": 10
+        },
+        {
+            "id": 1,
+            "public": false,
+            "type": "multibyte",
+            "literal": "get_value\0",
+            "length": 10
+        },
+        {
+            "id": 2,
+            "public": false,
+            "type": "multibyte",
+            "literal": "add_value\0",
+            "length": 10
+        },
+        {
+            "id": 3,
+            "public": false,
+            "type": "multibyte",
+            "literal": "invoke_callback\0",
+            "length": 16
+        }
+    ],
     "function_declarations": [
         {
             "identifier": 0,

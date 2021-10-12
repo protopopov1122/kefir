@@ -76,8 +76,14 @@ kefir_result_t kefir_list_insert_after(struct kefir_mem *mem, struct kefir_list 
     entry->next = NULL;
     entry->value = value;
     if (iter == NULL) {
+        entry->next = list->head;
+        if (entry->next != NULL) {
+            entry->next->prev = entry;
+        }
         list->head = entry;
-        list->tail = entry;
+        if (list->tail == NULL) {
+            list->tail = entry;
+        }
     } else {
         entry->prev = iter;
         entry->next = iter->next;

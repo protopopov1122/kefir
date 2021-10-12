@@ -93,6 +93,47 @@
                         "class": "declaration",
                         "specifiers": [
                             {
+                                "class": "storage_class",
+                                "storage": "static"
+                            },
+                            {
+                                "class": "type_qualifier",
+                                "qualifier": "const"
+                            },
+                            {
+                                "class": "type_specifier",
+                                "specifier": "char"
+                            }
+                        ],
+                        "init_declarators": [
+                            {
+                                "class": "init_declarator",
+                                "declarator": {
+                                    "class": "array",
+                                    "declarator": {
+                                        "class": "identifier",
+                                        "identifier": "__func__"
+                                    },
+                                    "type": "unbounded",
+                                    "static": false,
+                                    "type_qualifiers": []
+                                },
+                                "initializer": {
+                                    "type": "expression",
+                                    "expression": {
+                                        "class": "string_literal",
+                                        "type": "multibyte",
+                                        "content": "Function\0",
+                                        "length": 9
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "class": "declaration",
+                        "specifiers": [
+                            {
                                 "class": "type_specifier",
                                 "specifier": "int"
                             }

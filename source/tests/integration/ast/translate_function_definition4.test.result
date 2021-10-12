@@ -6,7 +6,15 @@
     "types": [
         {
             "identifier": 0,
-            "type": []
+            "type": [
+                {
+                    "type": "array",
+                    "length": 10,
+                    "element_type": {
+                        "type": "char"
+                    }
+                }
+            ]
         },
         {
             "identifier": 1,
@@ -57,8 +65,32 @@
             ]
         }
     ],
-    "data": [],
-    "string_literals": [],
+    "data": [
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "type": 0,
+            "value": [
+                {
+                    "class": "string",
+                    "content": "factorial\0",
+                    "length": 10
+                },
+                {
+                    "class": "undefined",
+                    "count": 10
+                }
+            ]
+        }
+    ],
+    "string_literals": [
+        {
+            "id": 0,
+            "public": false,
+            "type": "multibyte",
+            "literal": "factorial\0",
+            "length": 10
+        }
+    ],
     "function_declarations": [
         {
             "identifier": 0,

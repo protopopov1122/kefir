@@ -9,6 +9,13 @@
             "type": [
                 {
                     "type": "int"
+                },
+                {
+                    "type": "array",
+                    "length": 3,
+                    "element_type": {
+                        "type": "char"
+                    }
                 }
             ]
         },
@@ -62,11 +69,28 @@
                 {
                     "class": "integer",
                     "value": 1
+                },
+                {
+                    "class": "string",
+                    "content": "fn\0",
+                    "length": 3
+                },
+                {
+                    "class": "undefined",
+                    "count": 3
                 }
             ]
         }
     ],
-    "string_literals": [],
+    "string_literals": [
+        {
+            "id": 0,
+            "public": false,
+            "type": "multibyte",
+            "literal": "fn\0",
+            "length": 3
+        }
+    ],
     "function_declarations": [
         {
             "identifier": 0,

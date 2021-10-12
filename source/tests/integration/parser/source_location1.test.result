@@ -143,6 +143,56 @@
                 "class": "compound_statement",
                 "items": [
                     {
+                        "class": "declaration",
+                        "specifiers": [
+                            {
+                                "class": "storage_class",
+                                "storage": "static",
+                                "source_location": null
+                            },
+                            {
+                                "class": "type_qualifier",
+                                "qualifier": "const",
+                                "source_location": null
+                            },
+                            {
+                                "class": "type_specifier",
+                                "specifier": "char",
+                                "source_location": null
+                            }
+                        ],
+                        "init_declarators": [
+                            {
+                                "class": "init_declarator",
+                                "declarator": {
+                                    "class": "array",
+                                    "declarator": {
+                                        "class": "identifier",
+                                        "identifier": "__func__",
+                                        "source_location": null
+                                    },
+                                    "type": "unbounded",
+                                    "static": false,
+                                    "type_qualifiers": [],
+                                    "source_location": null
+                                },
+                                "initializer": {
+                                    "type": "expression",
+                                    "expression": {
+                                        "class": "string_literal",
+                                        "type": "multibyte",
+                                        "content": "fn\0",
+                                        "length": 3,
+                                        "source_location": null
+                                    },
+                                    "source_location": null
+                                },
+                                "source_location": null
+                            }
+                        ],
+                        "source_location": null
+                    },
+                    {
                         "class": "return_statement",
                         "expression": {
                             "class": "binary_operation",

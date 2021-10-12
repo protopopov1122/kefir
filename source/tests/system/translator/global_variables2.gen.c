@@ -387,17 +387,6 @@ static kefir_result_t define_unit(struct kefir_mem *mem, const struct kefir_ast_
     return KEFIR_OK;
 }
 
-static kefir_result_t free_variable(struct kefir_mem *mem, struct kefir_list *list, struct kefir_list_entry *entry,
-                                    void *payload) {
-    UNUSED(list);
-    UNUSED(payload);
-    REQUIRE(mem != NULL, KEFIR_INTERNAL_ERROR);
-    REQUIRE(entry != NULL, KEFIR_INTERNAL_ERROR);
-    ASSIGN_DECL_CAST(struct kefir_ast_node_base *, node, entry->value);
-    REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
-    return KEFIR_OK;
-}
-
 static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module *module,
                                   struct kefir_ir_target_platform *ir_platform) {
     struct kefir_ast_translator_environment env;
@@ -406,16 +395,11 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
     struct kefir_ast_global_context global_context;
     REQUIRE_OK(kefir_ast_global_context_init(mem, kefir_ast_default_type_traits(), &env.target_env, &global_context));
 
-    struct kefir_list unit;
-    REQUIRE_OK(kefir_list_init(&unit));
-    REQUIRE_OK(kefir_list_on_remove(&unit, free_variable, NULL));
+    struct kefir_ast_translation_unit *unit_node = kefir_ast_new_translation_unit(mem);
 
-    REQUIRE_OK(define_unit(mem, &global_context.context, &unit));
+    REQUIRE_OK(define_unit(mem, &global_context.context, &unit_node->external_definitions));
 
-    for (const struct kefir_list_entry *iter = kefir_list_head(&unit); iter != NULL; kefir_list_next(&iter)) {
-        ASSIGN_DECL_CAST(struct kefir_ast_node_base *, node, iter->value);
-        REQUIRE_OK(kefir_ast_analyze_node(mem, &global_context.context, node));
-    }
+    REQUIRE_OK(kefir_ast_analyze_node(mem, &global_context.context, KEFIR_AST_NODE_BASE(unit_node)));
 
     struct kefir_ast_translator_context translator_context;
     REQUIRE_OK(kefir_ast_translator_context_init(&translator_context, &global_context.context, &env, module));
@@ -424,25 +408,15 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
     REQUIRE_OK(kefir_ast_translator_global_scope_layout_init(mem, module, &global_scope));
     translator_context.global_scope_layout = &global_scope;
 
-    REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(mem, module, &global_context,
-                                                              translator_context.environment,
-                                                              &translator_context.type_cache.resolver, &global_scope));
+    REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(
+        mem, translator_context.module, &global_context, &env,
+        kefir_ast_translator_context_type_resolver(&translator_context), &global_scope));
+    REQUIRE_OK(kefir_ast_translate_unit(mem, KEFIR_AST_NODE_BASE(unit_node), &translator_context));
+    REQUIRE_OK(
+        kefir_ast_translate_global_scope(mem, &global_context.context, translator_context.module, &global_scope));
 
-    for (const struct kefir_list_entry *iter = kefir_list_head(&unit); iter != NULL; kefir_list_next(&iter)) {
-        ASSIGN_DECL_CAST(struct kefir_ast_node_base *, node, iter->value);
-        if (node->properties.category == KEFIR_AST_NODE_CATEGORY_FUNCTION_DEFINITION) {
-            struct kefir_ast_translator_function_context func_ctx;
-            REQUIRE_OK(kefir_ast_translator_function_context_init(
-                mem, &translator_context, (struct kefir_ast_function_definition *) node->self, &func_ctx));
-            REQUIRE_OK(kefir_ast_translator_function_context_translate(mem, &func_ctx));
-            REQUIRE_OK(kefir_ast_translator_function_context_finalize(mem, &func_ctx));
-            REQUIRE_OK(kefir_ast_translator_function_context_free(mem, &func_ctx));
-        }
-    }
+    REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(unit_node)));
 
-    REQUIRE_OK(kefir_ast_translate_global_scope(mem, &global_context.context, module, &global_scope));
-
-    REQUIRE_OK(kefir_list_free(mem, &unit));
     REQUIRE_OK(kefir_ast_translator_global_scope_layout_free(mem, &global_scope));
     REQUIRE_OK(kefir_ast_translator_context_free(mem, &translator_context));
     REQUIRE_OK(kefir_ast_global_context_free(mem, &global_context));
