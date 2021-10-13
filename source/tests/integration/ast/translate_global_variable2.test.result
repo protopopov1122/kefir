@@ -43,6 +43,7 @@
     "data": [
         {
             "identifier": "__kefirrt_module_static_vars",
+            "storage": "global",
             "type": 0,
             "value": [
                 {

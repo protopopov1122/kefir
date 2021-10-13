@@ -73,7 +73,7 @@ static kefir_result_t translate_unit_impl(struct kefir_mem *mem, struct kefir_as
                 break;
 
             case KEFIR_AST_NODE_CATEGORY_FUNCTION_DEFINITION: {
-                struct kefir_ast_translator_function_context *func_ctx;
+                struct kefir_ast_translator_function_context *func_ctx = NULL;
                 REQUIRE_OK(allocate_function_context(mem, context, external_definition, &func_ctx));
                 kefir_result_t res = kefir_list_insert_after(mem, function_translator_contexts,
                                                              kefir_list_tail(function_translator_contexts), func_ctx);

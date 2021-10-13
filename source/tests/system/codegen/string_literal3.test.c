@@ -34,7 +34,7 @@ int main(int argc, const char **argv) {
     UNUSED(argv);
     const char32_t LITERAL1[] = U"Hello, world!";
     const char32_t LITERAL2[] = U"\n\n\t\tHey there\'\"!\v\n";
-    const char32_t LITERAL3[] = U"\0\0\0\0";
+    const char32_t LITERAL3[] = U"\0\0\0";
 
     ASSERT(memcmp(string1(), LITERAL1, sizeof(LITERAL1)) == 0);
     ASSERT(memcmp(string2(), LITERAL2, sizeof(LITERAL2)) == 0);

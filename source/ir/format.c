@@ -641,6 +641,16 @@ static kefir_result_t format_data(struct kefir_json_output *json, const struct k
         REQUIRE_OK(kefir_json_output_object_begin(json));
         REQUIRE_OK(kefir_json_output_object_key(json, "identifier"));
         REQUIRE_OK(kefir_json_output_string(json, identifier));
+        REQUIRE_OK(kefir_json_output_object_key(json, "storage"));
+        switch (data->storage) {
+            case KEFIR_IR_DATA_GLOBAL_STORAGE:
+                REQUIRE_OK(kefir_json_output_string(json, "global"));
+                break;
+
+            case KEFIR_IR_DATA_THREAD_LOCAL_STORAGE:
+                REQUIRE_OK(kefir_json_output_string(json, "thread_local"));
+                break;
+        }
         REQUIRE_OK(kefir_json_output_object_key(json, "type"));
         REQUIRE_OK(kefir_json_output_uinteger(json, data->type_id));
         REQUIRE_OK(kefir_json_output_object_key(json, "value"));

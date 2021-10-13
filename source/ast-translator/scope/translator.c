@@ -69,8 +69,9 @@ static kefir_result_t translate_externals(struct kefir_mem *mem, const struct ke
                 if (scoped_identifier->value->object.external) {
                     REQUIRE_OK(kefir_ir_module_declare_external(mem, module, scoped_identifier->identifier));
                 } else {
-                    struct kefir_ir_data *data = kefir_ir_module_new_named_data(
-                        mem, module, scoped_identifier->identifier, identifier_data->type_id);
+                    struct kefir_ir_data *data =
+                        kefir_ir_module_new_named_data(mem, module, scoped_identifier->identifier,
+                                                       KEFIR_IR_DATA_GLOBAL_STORAGE, identifier_data->type_id);
                     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate IR named data"));
                     if (scoped_identifier->value->object.initializer != NULL) {
                         REQUIRE_OK(initialize_data(mem, context, module, identifier_data->type, identifier_data->layout,
@@ -101,7 +102,8 @@ static kefir_result_t get_static_data(struct kefir_mem *mem, struct kefir_ir_mod
                                       struct kefir_ir_data **data) {
     *data = kefir_ir_module_get_named_data(module, KEFIR_AST_TRANSLATOR_STATIC_VARIABLES_IDENTIFIER);
     if (*data == NULL) {
-        *data = kefir_ir_module_new_named_data(mem, module, KEFIR_AST_TRANSLATOR_STATIC_VARIABLES_IDENTIFIER, type_id);
+        *data = kefir_ir_module_new_named_data(mem, module, KEFIR_AST_TRANSLATOR_STATIC_VARIABLES_IDENTIFIER,
+                                               KEFIR_IR_DATA_GLOBAL_STORAGE, type_id);
         REQUIRE(*data != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR data"));
     } else {
         REQUIRE((*data)->type_id == type_id,

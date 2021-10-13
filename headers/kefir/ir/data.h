@@ -26,7 +26,13 @@
 #include "kefir/core/vector.h"
 #include "kefir/core/mem.h"
 
+typedef enum kefir_ir_data_storage {
+    KEFIR_IR_DATA_GLOBAL_STORAGE,
+    KEFIR_IR_DATA_THREAD_LOCAL_STORAGE
+} kefir_ir_data_storage_t;
+
 typedef struct kefir_ir_data {
+    kefir_ir_data_storage_t storage;
     kefir_id_t type_id;
     const struct kefir_ir_type *type;
     struct kefir_vector value;
@@ -72,8 +78,8 @@ typedef struct kefir_ir_data_value {
     } value;
 } kefir_ir_data_value_t;
 
-kefir_result_t kefir_ir_data_alloc(struct kefir_mem *, const struct kefir_ir_type *, kefir_id_t,
-                                   struct kefir_ir_data *);
+kefir_result_t kefir_ir_data_alloc(struct kefir_mem *, kefir_ir_data_storage_t, const struct kefir_ir_type *,
+                                   kefir_id_t, struct kefir_ir_data *);
 
 kefir_result_t kefir_ir_data_free(struct kefir_mem *, struct kefir_ir_data *);
 

@@ -22,11 +22,13 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-kefir_result_t kefir_ir_data_alloc(struct kefir_mem *mem, const struct kefir_ir_type *type, kefir_id_t type_id,
-                                   struct kefir_ir_data *data) {
+kefir_result_t kefir_ir_data_alloc(struct kefir_mem *mem, kefir_ir_data_storage_t storage,
+                                   const struct kefir_ir_type *type, kefir_id_t type_id, struct kefir_ir_data *data) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type pointer"));
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data pointer"));
+
+    data->storage = storage;
     const kefir_size_t slots = kefir_ir_type_total_slots(type);
     REQUIRE_OK(kefir_vector_alloc(mem, sizeof(struct kefir_ir_data_value), slots, &data->value));
     REQUIRE_OK(kefir_vector_extend(&data->value, slots));

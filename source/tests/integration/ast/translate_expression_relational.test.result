@@ -37,6 +37,7 @@
     "data": [
         {
             "identifier": "ptr1",
+            "storage": "global",
             "type": 3,
             "value": [
                 {

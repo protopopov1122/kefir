@@ -117,7 +117,7 @@ mov rsp, r14
 add rsp, 16
 jmp __kefirrt_restore_state
 
-SECTION .data
+SECTION .rodata
 __kefirrt_string_literal0:
 dw 72, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100, 33, 0
 __kefirrt_string_literal1:

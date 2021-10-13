@@ -75,6 +75,7 @@
     "data": [
         {
             "identifier": "W",
+            "storage": "global",
             "type": 3,
             "value": [
                 {
@@ -85,6 +86,7 @@
         },
         {
             "identifier": "X",
+            "storage": "global",
             "type": 4,
             "value": [
                 {
@@ -94,6 +96,7 @@
         },
         {
             "identifier": "Y",
+            "storage": "global",
             "type": 5,
             "value": [
                 {
@@ -104,6 +107,7 @@
         },
         {
             "identifier": "Z",
+            "storage": "global",
             "type": 6,
             "value": [
                 {

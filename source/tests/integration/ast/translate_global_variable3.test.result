@@ -81,6 +81,7 @@
     "data": [
         {
             "identifier": "array1",
+            "storage": "global",
             "type": 2,
             "value": [
                 {
@@ -111,6 +112,7 @@
         },
         {
             "identifier": "array2",
+            "storage": "global",
             "type": 3,
             "value": [
                 {
@@ -139,6 +141,7 @@
         },
         {
             "identifier": "structure",
+            "storage": "global",
             "type": 5,
             "value": [
                 {

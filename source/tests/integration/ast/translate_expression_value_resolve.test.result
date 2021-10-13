@@ -241,6 +241,7 @@
     "data": [
         {
             "identifier": "char",
+            "storage": "global",
             "type": 3,
             "value": [
                 {
@@ -250,6 +251,7 @@
         },
         {
             "identifier": "enum",
+            "storage": "global",
             "type": 4,
             "value": [
                 {
@@ -259,6 +261,7 @@
         },
         {
             "identifier": "float",
+            "storage": "global",
             "type": 5,
             "value": [
                 {
@@ -268,6 +271,7 @@
         },
         {
             "identifier": "union",
+            "storage": "global",
             "type": 6,
             "value": [
                 {
@@ -278,6 +282,7 @@
         },
         {
             "identifier": "array1",
+            "storage": "global",
             "type": 7,
             "value": [
                 {
@@ -288,6 +293,7 @@
         },
         {
             "identifier": "array2",
+            "storage": "global",
             "type": 8,
             "value": [
                 {
@@ -297,6 +303,7 @@
         },
         {
             "identifier": "double",
+            "storage": "global",
             "type": 9,
             "value": [
                 {
@@ -306,6 +313,7 @@
         },
         {
             "identifier": "boolean",
+            "storage": "global",
             "type": 10,
             "value": [
                 {
@@ -315,6 +323,7 @@
         },
         {
             "identifier": "void_ptr",
+            "storage": "global",
             "type": 11,
             "value": [
                 {
@@ -324,6 +333,7 @@
         },
         {
             "identifier": "qualified",
+            "storage": "global",
             "type": 12,
             "value": [
                 {
@@ -333,6 +343,7 @@
         },
         {
             "identifier": "structure",
+            "storage": "global",
             "type": 13,
             "value": [
                 {
@@ -343,6 +354,7 @@
         },
         {
             "identifier": "signed_int",
+            "storage": "global",
             "type": 14,
             "value": [
                 {
@@ -352,6 +364,7 @@
         },
         {
             "identifier": "signed_char",
+            "storage": "global",
             "type": 15,
             "value": [
                 {
@@ -361,6 +374,7 @@
         },
         {
             "identifier": "signed_long",
+            "storage": "global",
             "type": 16,
             "value": [
                 {
@@ -370,6 +384,7 @@
         },
         {
             "identifier": "unsigned_char",
+            "storage": "global",
             "type": 17,
             "value": [
                 {
@@ -379,6 +394,7 @@
         },
         {
             "identifier": "unsigned_long",
+            "storage": "global",
             "type": 18,
             "value": [
                 {
@@ -388,6 +404,7 @@
         },
         {
             "identifier": "signed_short",
+            "storage": "global",
             "type": 19,
             "value": [
                 {
@@ -397,6 +414,7 @@
         },
         {
             "identifier": "unsigned_int",
+            "storage": "global",
             "type": 20,
             "value": [
                 {
@@ -406,6 +424,7 @@
         },
         {
             "identifier": "signed_long_long",
+            "storage": "global",
             "type": 21,
             "value": [
                 {
@@ -415,6 +434,7 @@
         },
         {
             "identifier": "unsigned_short",
+            "storage": "global",
             "type": 22,
             "value": [
                 {
@@ -424,6 +444,7 @@
         },
         {
             "identifier": "unsigned_long_long",
+            "storage": "global",
             "type": 23,
             "value": [
                 {

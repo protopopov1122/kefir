@@ -53,6 +53,7 @@
     "data": [
         {
             "identifier": "arr1",
+            "storage": "global",
             "type": 2,
             "value": [
                 {

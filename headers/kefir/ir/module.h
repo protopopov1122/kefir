@@ -70,7 +70,7 @@ struct kefir_ir_function *kefir_ir_module_new_function(struct kefir_mem *, struc
                                                        kefir_size_t);
 
 struct kefir_ir_data *kefir_ir_module_new_named_data(struct kefir_mem *, struct kefir_ir_module *, const char *,
-                                                     kefir_id_t);
+                                                     kefir_ir_data_storage_t, kefir_id_t);
 
 struct kefir_ir_data *kefir_ir_module_get_named_data(struct kefir_ir_module *, const char *);
 

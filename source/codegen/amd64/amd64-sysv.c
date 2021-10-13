@@ -160,20 +160,11 @@ static kefir_result_t cg_translate_function_gates(struct kefir_codegen_amd64 *co
     return KEFIR_OK;
 }
 
-static kefir_result_t cg_translate_data(struct kefir_mem *mem, struct kefir_codegen_amd64 *codegen,
-                                        struct kefir_codegen_amd64_sysv_module *module) {
-    bool first = true;
-    struct kefir_hashtree_node_iterator iter;
-    const char *identifier = NULL;
-    for (const struct kefir_ir_data *data = kefir_ir_module_named_data_iter(module->module, &iter, &identifier);
-         data != NULL; data = kefir_ir_module_named_data_next(&iter, &identifier)) {
-        if (first) {
-            ASMGEN_SECTION(&codegen->asmgen, ".data");
-            first = false;
-        }
-        REQUIRE_OK(kefir_amd64_sysv_static_data(mem, codegen, data, identifier));
-    }
+static kefir_result_t cg_translate_strings(struct kefir_codegen_amd64 *codegen,
+                                           struct kefir_codegen_amd64_sysv_module *module) {
 
+    kefir_bool_t first = true;
+    struct kefir_hashtree_node_iterator iter;
     kefir_id_t id;
     kefir_ir_string_literal_type_t literal_type;
     kefir_bool_t public;
@@ -188,7 +179,7 @@ static kefir_result_t cg_translate_data(struct kefir_mem *mem, struct kefir_code
             continue;
         }
         if (first) {
-            ASMGEN_SECTION(&codegen->asmgen, ".data");
+            ASMGEN_SECTION(&codegen->asmgen, ".rodata");
             first = false;
         }
 
@@ -217,6 +208,34 @@ static kefir_result_t cg_translate_data(struct kefir_mem *mem, struct kefir_code
         }
     }
     REQUIRE(res == KEFIR_ITERATOR_END, res);
+    return KEFIR_OK;
+}
+
+static kefir_result_t cg_translate_data_storage(struct kefir_mem *mem, struct kefir_codegen_amd64 *codegen,
+                                                struct kefir_codegen_amd64_sysv_module *module,
+                                                kefir_ir_data_storage_t storage, const char *section) {
+    bool first = true;
+    struct kefir_hashtree_node_iterator iter;
+    const char *identifier = NULL;
+    for (const struct kefir_ir_data *data = kefir_ir_module_named_data_iter(module->module, &iter, &identifier);
+         data != NULL; data = kefir_ir_module_named_data_next(&iter, &identifier)) {
+        if (data->storage != storage) {
+            continue;
+        }
+        if (first) {
+            ASMGEN_SECTION(&codegen->asmgen, section);
+            first = false;
+        }
+        REQUIRE_OK(kefir_amd64_sysv_static_data(mem, codegen, data, identifier));
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t cg_translate_data(struct kefir_mem *mem, struct kefir_codegen_amd64 *codegen,
+                                        struct kefir_codegen_amd64_sysv_module *module) {
+    REQUIRE_OK(cg_translate_data_storage(mem, codegen, module, KEFIR_IR_DATA_GLOBAL_STORAGE, ".data"));
+    REQUIRE_OK(cg_translate_data_storage(mem, codegen, module, KEFIR_IR_DATA_THREAD_LOCAL_STORAGE, ".tdata"));
+    REQUIRE_OK(cg_translate_strings(codegen, module));
     return KEFIR_OK;
 }
 

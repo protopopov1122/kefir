@@ -51,6 +51,7 @@
     "data": [
         {
             "identifier": "extern_variable2",
+            "storage": "global",
             "type": 4,
             "value": [
                 {
@@ -60,6 +61,7 @@
         },
         {
             "identifier": "__kefirrt_module_static_vars",
+            "storage": "global",
             "type": 0,
             "value": [
                 {

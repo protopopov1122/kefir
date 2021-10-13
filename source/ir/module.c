@@ -393,7 +393,8 @@ kefir_result_t kefir_ir_module_string_literal_next(struct kefir_hashtree_node_it
 }
 
 struct kefir_ir_data *kefir_ir_module_new_named_data(struct kefir_mem *mem, struct kefir_ir_module *module,
-                                                     const char *identifier, kefir_id_t type_id) {
+                                                     const char *identifier, kefir_ir_data_storage_t storage,
+                                                     kefir_id_t type_id) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(module != NULL, NULL);
 
@@ -404,7 +405,7 @@ struct kefir_ir_data *kefir_ir_module_new_named_data(struct kefir_mem *mem, stru
     REQUIRE(symbol != NULL, NULL);
     struct kefir_ir_data *data = KEFIR_MALLOC(mem, sizeof(struct kefir_ir_data));
     REQUIRE(data != NULL, NULL);
-    kefir_result_t res = kefir_ir_data_alloc(mem, type, type_id, data);
+    kefir_result_t res = kefir_ir_data_alloc(mem, storage, type, type_id, data);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, data);
         return NULL;
