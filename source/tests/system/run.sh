@@ -39,7 +39,7 @@ function cleanup {
 trap cleanup EXIT HUP INT QUIT PIPE TERM
 
 mkdir -p "$TMPDIR"
-nasm -f elf64 -o "$LIB_OBJ" "$DIR/../../runtime/amd64_sysv.asm"
+as -o "$LIB_OBJ" "$DIR/../../runtime/amd64_sysv.s"
 if [[ "x$?" != "x0" ]]; then
     exit 126
 fi

@@ -1,9 +1,9 @@
 END2END_BIN_PATH=$(BIN_DIR)/tests/end2end
 
-$(END2END_BIN_PATH)/runtime.o: $(SOURCE_DIR)/runtime/amd64_sysv.asm
+$(END2END_BIN_PATH)/runtime.o: $(SOURCE_DIR)/runtime/amd64_sysv.s
 	@mkdir -p $(shell dirname "$@")
 	@echo "Assemble $@"
-	@nasm -f elf64 -o $@ $<
+	@as -o $@ $<
 
 $(BIN_DIR)/%.kefir.o: $(SOURCE_DIR)/%.kefir.c $(BIN_DIR)/kefir
 	@mkdir -p $(shell dirname "$@")

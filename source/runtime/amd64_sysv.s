@@ -1,58 +1,60 @@
-; SPDX-License-Identifier: BSD-3-Clause
-;
-; Copyright 2020-2021 Jevgenijs Protopopovs
-;
-; Redistribution and use in source and binary forms, with or without modification,
-; are permitted provided that the following conditions are met:
-;
-; 1. Redistributions of source code must retain the above copyright notice,
-; this list of conditions and the following disclaimer.
-;
-; 2. Redistributions in binary form must reproduce the above copyright notice,
-; this list of conditions and the following disclaimer in the documentation
-; and/or other materials provided with the distribution.
-;
-; 3. Neither the name of the copyright holder nor the names of its contributors
-; may be used to endorse or promote products derived from this software without
-; specific prior written permission.
-;
-; THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
-; OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-; AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
-; CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-; DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
-; OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-; STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# SPDX-License-Identifier: BSD-3-Clause
+#
+# Copyright 2020-2021 Jevgenijs Protopopovs
+#
+# Redistribution and use in source and binary forms, with or without modification,
+# are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# 3. Neither the name of the copyright holder nor the names of its contributors
+# may be used to endorse or promote products derived from this software without
+# specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+# OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+# OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+# STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-SECTION .text
+.intel_syntax noprefix
+.section .text
 
-%macro declare_opcode 1
-global __kefirrt_%1_impl
-%endmacro
+.macro declare_opcode identifier
+.global __kefirrt_\identifier\()_impl
+.endm
 
-%macro define_opcode 1
-__kefirrt_%1_impl:
-%endmacro
+.macro define_opcode identifier
+__kefirrt_\identifier\()_impl:
+.endm
 
-%macro define_opcode_stub 1
-define_opcode %1
+.macro define_opcode_stub identifier
+define_opcode \identifier
     end_opcode
-%endmacro
+.endm
 
-%define PROGRAM_REG rbx
-%define TMP_REG r11
-%define DATA_REG r12
-%define DATA2_REG r13
-%define STACK_BASE_REG r14
-%define INSTR_ARG_PTR PROGRAM_REG + 8
+.equ PROGRAM_REG, rbx
+.equ TMP_REG, r11
+.equ DATA_REG, r12
+.equ DATA2_REG, r13
+.equ STACK_BASE_REG, r14
+.equ INSTR_ARG_PTR, PROGRAM_REG + 8
+.equ INSTR_ARG_PTR4, PROGRAM_REG + 12
 
-%macro end_opcode 0
+.macro end_opcode
     add PROGRAM_REG, 16
     jmp [PROGRAM_REG]
-%endmacro
+.endm
 
-; Opcode definitions
+# Opcode definitions
 declare_opcode nop
 declare_opcode jmp
 declare_opcode branch
@@ -141,13 +143,13 @@ declare_opcode uintcf64
 declare_opcode f32cf64
 declare_opcode f64cf32
 declare_opcode alloca
-; Runtime
-global __kefirrt_preserve_state
-global __kefirrt_restore_state
-global __kefirrt_save_registers
-global __kefirrt_load_integer_vararg
-global __kefirrt_load_sse_vararg
-global __kefirrt_copy_vararg
+# Runtime
+.global __kefirrt_preserve_state
+.global __kefirrt_restore_state
+.global __kefirrt_save_registers
+.global __kefirrt_load_integer_vararg
+.global __kefirrt_load_sse_vararg
+.global __kefirrt_copy_vararg
 
 define_opcode nop
     end_opcode
@@ -444,32 +446,32 @@ define_opcode elementptr
 
 define_opcode load8u
     pop DATA2_REG
-    movzx DATA_REG, byte [DATA2_REG]
+    movzxb DATA_REG, [DATA2_REG]
     push DATA_REG
     end_opcode
 
 define_opcode load8i
     pop DATA2_REG
-    movsx DATA_REG, byte [DATA2_REG]
+    movsxb DATA_REG, [DATA2_REG]
     push DATA_REG
     end_opcode
 
 define_opcode load16u
     pop DATA2_REG
-    movzx DATA_REG, word [DATA2_REG]
+    movzxw DATA_REG, [DATA2_REG]
     push DATA_REG
     end_opcode
 
 define_opcode load16i
     pop DATA2_REG
-    movsx DATA_REG, word [DATA2_REG]
+    movsxw DATA_REG, [DATA2_REG]
     push DATA_REG
     end_opcode
 
 define_opcode load24u
     pop TMP_REG
-    movzx DATA_REG, word [TMP_REG]
-    movzx DATA2_REG, byte [TMP_REG + 2]
+    movzxw DATA_REG, [TMP_REG]
+    movzxb DATA2_REG, [TMP_REG + 2]
     shl DATA2_REG, 16
     or DATA_REG, DATA2_REG
     push DATA_REG
@@ -490,8 +492,8 @@ define_opcode load32i
 
 define_opcode load40u
     pop TMP_REG
-    mov eax, dword [TMP_REG]
-    movzx DATA2_REG, byte [TMP_REG + 4]
+    mov eax, [TMP_REG]
+    movzxb DATA2_REG, [TMP_REG + 4]
     shl DATA2_REG, 32
     or rax, DATA2_REG
     push rax
@@ -499,8 +501,8 @@ define_opcode load40u
 
 define_opcode load48u
     pop TMP_REG
-    mov eax, dword [TMP_REG]
-    movzx DATA2_REG, word [TMP_REG + 4]
+    mov eax, [TMP_REG]
+    movzxw DATA2_REG, [TMP_REG + 4]
     shl DATA2_REG, 32
     or rax, DATA2_REG
     push rax
@@ -508,11 +510,11 @@ define_opcode load48u
 
 define_opcode load56u
     pop TMP_REG
-    mov eax, dword [TMP_REG]
-    movzx DATA2_REG, word [TMP_REG + 4]
+    mov eax, [TMP_REG]
+    movzxw DATA2_REG, [TMP_REG + 4]
     shl DATA2_REG, 32
     or rax, DATA2_REG
-    movzx DATA2_REG, byte [TMP_REG + 6]
+    movzxb DATA2_REG, [TMP_REG + 6]
     shl DATA2_REG, 48
     or rax, DATA2_REG
     push rax
@@ -552,24 +554,24 @@ define_opcode store32
 
 define_opcode store40
     pop rax
-    pop DATA2_REG,
-    mov [DATA2_REG], eax,
+    pop DATA2_REG
+    mov [DATA2_REG], eax
     shr rax, 32
     mov [DATA2_REG + 4], al
     end_opcode
 
 define_opcode store48
     pop rax
-    pop DATA2_REG,
-    mov [DATA2_REG], eax,
+    pop DATA2_REG
+    mov [DATA2_REG], eax
     shr rax, 32
     mov [DATA2_REG + 4], ax
     end_opcode
 
 define_opcode store56
     pop rax
-    pop DATA2_REG,
-    mov [DATA2_REG], eax,
+    pop DATA2_REG
+    mov [DATA2_REG], eax
     shr rax, 32
     mov [DATA2_REG + 4], ax
     shr rax, 16
@@ -588,7 +590,7 @@ define_opcode bzero
 __kefirrt_bzero_loop_begin:
     cmp rcx, 0
     je __kefirrt_bzero_loop_end
-    mov byte [rdi], 0
+    movb [rdi], 0
     inc rdi
     dec rcx
     jmp __kefirrt_bzero_loop_begin
@@ -603,45 +605,45 @@ define_opcode bcopy
     end_opcode
 
 define_opcode extubits
-    mov edx, dword [INSTR_ARG_PTR]      ; Offset
-    mov ecx, dword [INSTR_ARG_PTR + 4]  ; Width
-    mov r11, 1                          ; Mask = (1 << Width) - 1
+    mov edx, [INSTR_ARG_PTR]            # Offset
+    mov ecx, [INSTR_ARG_PTR4]           # Width
+    mov r11, 1                          # Mask = (1 << Width) - 1
     shlx r11, r11, rcx
     sub r11, 1
-    pop rax                             ; Value = (Bitfield >> Offset) & Mask
+    pop rax                             # Value = (Bitfield >> Offset) & Mask
     shrx rax, rax, rdx
     and rax, r11
     push rax
     end_opcode
 
 define_opcode extsbits
-    mov edx, dword [INSTR_ARG_PTR]      ; Offset
-    mov ecx, dword [INSTR_ARG_PTR + 4]  ; Width
-    add rdx, rcx                        ; rdx = 64 - (Width + Offset)
-    neg rdx,
+    mov edx, [INSTR_ARG_PTR]            # Offset
+    mov ecx, [INSTR_ARG_PTR4]           # Width
+    add rdx, rcx                        # rdx = 64 - (Width + Offset)
+    neg rdx
     add rdx, 64
-    neg rcx                             ; rcx = 64 - Width
+    neg rcx                             # rcx = 64 - Width
     add rcx, 64
-    pop rax                             ; Value = (Bitfield << rdx)) >> rcx
+    pop rax                             # Value = (Bitfield << rdx)) >> rcx
     shlx rax, rax, rdx
     sarx rax, rax, rcx
     push rax
     end_opcode
 
 define_opcode insertbits
-    mov edx, dword [INSTR_ARG_PTR]      ; Offset
-    mov ecx, dword [INSTR_ARG_PTR + 4]  ; Width
-    pop rsi                             ; Value
-    pop rdi                             ; Bit-field
+    mov edx, [INSTR_ARG_PTR]            # Offset
+    mov ecx, [INSTR_ARG_PTR4]           # Width
+    pop rsi                             # Value
+    pop rdi                             # Bit-field
 
-    ; Mask value: Value = Value << (64 - Width) >> (64 - Width - Offset)
-    mov rax, 64                        ; RAX = 64 - Width
+    # Mask value: Value = Value << (64 - Width) >> (64 - Width - Offset)
+    mov rax, 64                        # RAX = 64 - Width
     sub rax, rcx
     shlx rsi, rsi, rax
-    sub rax, rdx                        ; RAX = 64 - Width - Offset
+    sub rax, rdx                        # RAX = 64 - Width - Offset
     shrx rsi, rsi, rax
 
-    ; Mask bit-field: Bit-field = Bit-field & ~(((1 << Width) - 1) << Offset)
+    # Mask bit-field: Bit-field = Bit-field & ~(((1 << Width) - 1) << Offset)
     mov rax, 1
     shlx rax, rax, rcx
     sub rax, 1
@@ -649,7 +651,7 @@ define_opcode insertbits
     not rax
     and rdi, rax
 
-    ; Bit-field = Bit-field | Value
+    # Bit-field = Bit-field | Value
     or rdi, rsi
     push rdi
     end_opcode
@@ -694,14 +696,14 @@ define_opcode f32div
 
 define_opcode f32neg
     movss xmm0, [rsp]
-    xorps xmm0, oword [__kefirrt_f32neg_constant]
+    xorps xmm0, [__kefirrt_f32neg_constant]
     movss [rsp], xmm0
     end_opcode
 __kefirrt_f32neg_constant:
-    dd 0x80000000
-    dd 0x80000000
-    dd 0x80000000
-    dd 0x80000000
+    .long 0x80000000
+    .long 0x80000000
+    .long 0x80000000
+    .long 0x80000000
 
 define_opcode f64add
     movsd xmm0, [rsp]
@@ -737,12 +739,12 @@ define_opcode f64div
 
 define_opcode f64neg
     movsd xmm0, [rsp]
-    xorps xmm0, oword [__kefirrt_f64neg_constant]
+    xorps xmm0, [__kefirrt_f64neg_constant]
     movsd [rsp], xmm0
     end_opcode
 __kefirrt_f64neg_constant:
-    dq 0x8000000000000000
-    dq 0x8000000000000000
+    .quad 0x8000000000000000
+    .quad 0x8000000000000000
 
 define_opcode f32equals
     movss xmm0, [rsp + 8]
@@ -835,7 +837,7 @@ define_opcode uintcf32
     pxor xmm0, xmm0
     test DATA_REG, DATA_REG
     js __kefirrt_uintcf32_signed
-    cvtsi2ss        xmm0, DATA_REG
+    cvtsi2ss xmm0, DATA_REG
     movss [rsp], xmm0
     end_opcode
 __kefirrt_uintcf32_signed:
@@ -879,17 +881,17 @@ define_opcode f64cf32
     end_opcode
 
 define_opcode alloca
-    pop r12             ; Alignment
-    pop r13             ; Size
-    mov rsi, [r14 - 8]  ; Current stack base
-    mov rax, rsi        ; Pointer to allocation
+    pop r12             # Alignment
+    pop r13             # Size
+    mov rsi, [r14 - 8]  # Current stack base
+    mov rax, rsi        # Pointer to allocation
     sub rax, r13
     cmp r12, 0
     je __kefirrt_alloca_aligned
     neg r12
     and rax, r12
 __kefirrt_alloca_aligned:
-    mov rcx, rsi        ; Count
+    mov rcx, rsi        # Count
     sub rcx, rsp
     mov rdi, rax
     sub rdi, rcx
@@ -901,7 +903,7 @@ __kefirrt_alloca_aligned:
     push rax
     end_opcode
 
-; Runtime helpers
+# Runtime helpers
 __kefirrt_preserve_state:
     pop r11
     push rbp
@@ -931,25 +933,25 @@ __kefirrt_restore_state:
 __kefirrt_save_registers:
     test    al, al
     je      __kefirrt_save_int_registers
-    movaps  oword [r12 + 48], xmm0
-    movaps  oword [r12 + 64], xmm1
-    movaps  oword [r12 + 80], xmm2
-    movaps  oword [r12 + 96], xmm3
-    movaps  oword [r12 + 112], xmm4
-    movaps  oword [r12 + 128], xmm5
-    movaps  oword [r12 + 144], xmm6
-    movaps  oword [r12 + 160], xmm7
+    movaps  [r12 + 48], xmm0
+    movaps  [r12 + 64], xmm1
+    movaps  [r12 + 80], xmm2
+    movaps  [r12 + 96], xmm3
+    movaps  [r12 + 112], xmm4
+    movaps  [r12 + 128], xmm5
+    movaps  [r12 + 144], xmm6
+    movaps  [r12 + 160], xmm7
 __kefirrt_save_int_registers:
-    mov     qword [r12], rdi
-    mov     qword [r12 + 8], rsi
-    mov     qword [r12 + 16], rdx
-    mov     qword [r12 + 24], rcx
-    mov     qword [r12 + 32], r8
-    mov     qword [r12 + 40], r9
+    mov     [r12], rdi
+    mov     [r12 + 8], rsi
+    mov     [r12 + 16], rdx
+    mov     [r12 + 24], rcx
+    mov     [r12 + 32], r8
+    mov     [r12 + 40], r9
     ret
 
 __kefirrt_load_integer_vararg:
-    mov eax, dword [DATA_REG]
+    mov eax, [DATA_REG]
     cmp eax, 48
     jae __kefirrt_load_integer_vararg_stack
     lea edx, [eax + 8]
@@ -965,19 +967,19 @@ __kefirrt_load_integer_vararg_fetch:
     ret
 
 __kefirrt_load_sse_vararg:
-    mov eax, dword [DATA_REG + 4]
+    mov eax, [DATA_REG + 4]
     cmp eax, 176
     jae __kefirrt_load_sse_vararg_stack
     lea edx, [eax + 16]
     add rax, [DATA_REG + 2*8]
     mov [DATA_REG + 4], edx
-    movaps xmm0, oword [rax]
+    movaps xmm0, [rax]
     ret
 __kefirrt_load_sse_vararg_stack:
     mov rax, [DATA_REG + 8]
     lea rdx, [rax + 8]
     mov [DATA_REG + 8], rdx
-    movlps xmm0, qword [rax]
+    movlps xmm0, [rax]
     ret
 
 __kefirrt_copy_vararg:
