@@ -79,7 +79,7 @@ thus it's not guaranteed to work for any real-world scenario.
 ## Build & Usage
 **Usage is strongly discouraged. This is experimental project which is not meant for production purposes.**
 
-Kefir depends on following third-party components: existing C11-compatible compiler (tested with `gcc` and `clang`), `nasm`, `valgrind`,
+Kefir depends on following third-party components: existing C11-compatible compiler (tested with `gcc` and `clang`), `gas`, `valgrind`,
 `xsltproc`, `clang-format`. After installing these components, Kefir can be built with a single command: `make ./bin/kefir -j$(nproc)`.
 It is also strongly advised to run test suite: `make test all -j$(nproc)`.
 

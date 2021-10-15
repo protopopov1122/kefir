@@ -64,7 +64,7 @@ static kefir_result_t kefir_compiler_amd64_sysv_profile(struct kefir_compiler_pr
 const struct Profile {
     const char *identifier;
     kefir_result_t (*init)(struct kefir_compiler_profile *);
-} Profiles[] = {{"amd64-sysv-nasm", kefir_compiler_amd64_sysv_profile}, {NULL, kefir_compiler_amd64_sysv_profile}};
+} Profiles[] = {{"amd64-sysv-gas", kefir_compiler_amd64_sysv_profile}, {NULL, kefir_compiler_amd64_sysv_profile}};
 const kefir_size_t ProfileCount = sizeof(Profiles) / sizeof(Profiles[0]);
 
 kefir_result_t kefir_compiler_profile(struct kefir_compiler_profile *profile, const char *identifier) {

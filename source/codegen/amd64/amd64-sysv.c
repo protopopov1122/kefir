@@ -270,7 +270,7 @@ static kefir_result_t cg_close(struct kefir_codegen *cg) {
 
 kefir_result_t kefir_codegen_amd64_sysv_init(struct kefir_codegen_amd64 *codegen, FILE *out) {
     REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 code generator pointer"));
-    REQUIRE_OK(kefir_amd64_nasm_gen_init(&codegen->asmgen, out));
+    REQUIRE_OK(kefir_amd64_gas_gen_init(&codegen->asmgen, out));
     codegen->iface.translate = cg_translate;
     codegen->iface.close = cg_close;
     codegen->iface.data = codegen;

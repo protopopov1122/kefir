@@ -3,7 +3,6 @@ packages:
   - build-essential
   - gcc-10
   - clang-format
-  - nasm
   - valgrind
   - xsltproc
 sources:

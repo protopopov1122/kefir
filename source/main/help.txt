@@ -22,7 +22,7 @@ Options:
     --detailed-output               Include references to source file in AST and token dumps
 
 Targets:
-    amd64-sysv-nasm (default)   Produce NASM-syntax assembly adhering System-V AMD64 ABI
+    amd64-sysv-gas (default)   Produce GNU As-compatible assembly adhering System-V AMD64 ABI
 
 License: GNU GPLv3
 Author: Jevgenijs Protopopovs

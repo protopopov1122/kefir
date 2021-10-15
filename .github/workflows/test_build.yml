@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install dependencies
-        run: sudo apt install build-essential gcc-10 nasm valgrind xsltproc
+        run: sudo apt install build-essential gcc-10 valgrind xsltproc
       - name: Checkout ${{ github.ref }}
         uses: actions/checkout@master
         with:
@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install dependencies
-        run: sudo apt install build-essential clang-10 nasm valgrind xsltproc
+        run: sudo apt install build-essential clang-10 valgrind xsltproc
       - name: Checkout ${{ github.ref }}
         uses: actions/checkout@master
         with:

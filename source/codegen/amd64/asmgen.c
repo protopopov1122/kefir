@@ -305,7 +305,7 @@ static kefir_result_t amd64_close(struct kefir_amd64_asmgen *asmgen) {
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_amd64_nasm_gen_init(struct kefir_amd64_asmgen *asmgen, FILE *out) {
+kefir_result_t kefir_amd64_gas_gen_init(struct kefir_amd64_asmgen *asmgen, FILE *out) {
     REQUIRE(asmgen != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator pointer"));
     REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid output file for AMD64 assembly"));

@@ -2,7 +2,6 @@ image: ubuntu/focal
 packages:
   - build-essential
   - clang-10
-  - nasm
   - valgrind
   - xsltproc
 sources:

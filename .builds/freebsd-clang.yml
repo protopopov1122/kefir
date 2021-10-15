@@ -2,7 +2,6 @@ image: freebsd/13.x
 packages:
   - gmake
   - llvm
-  - nasm
   - valgrind
   - libxslt
 sources:

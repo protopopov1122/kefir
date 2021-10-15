@@ -60,7 +60,7 @@ typedef struct kefir_amd64_asmgen {
     } settings;
 } kefir_amd64_asmgen_t;
 
-kefir_result_t kefir_amd64_nasm_gen_init(struct kefir_amd64_asmgen *, FILE *);
+kefir_result_t kefir_amd64_gas_gen_init(struct kefir_amd64_asmgen *, FILE *);
 
 #define KEFIR_AMD64_ASMGEN_PROLOGUE(asmgen) ((asmgen)->prologue((asmgen)))
 #define KEFIR_AMD64_ASMGEN_NEWLINE(asmgen, count) ((asmgen)->newline((asmgen), (count)))
