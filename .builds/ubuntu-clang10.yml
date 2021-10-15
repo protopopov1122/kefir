@@ -2,6 +2,7 @@ image: ubuntu/focal
 packages:
   - build-essential
   - clang-10
+  - clang-format
   - valgrind
   - xsltproc
 sources:
