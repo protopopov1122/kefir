@@ -15,3 +15,7 @@ tasks:
       cd kefir
       make clean
       make all OPT=-O3 CC=clang-10
+triggers:
+  - action: email
+    condition: failure
+    to: jprotopopov1122@gmail.com
