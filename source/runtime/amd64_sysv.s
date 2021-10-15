@@ -446,32 +446,32 @@ define_opcode elementptr
 
 define_opcode load8u
     pop DATA2_REG
-    movzxb DATA_REG, [DATA2_REG]
+    movzx DATA_REG, byte ptr [DATA2_REG]
     push DATA_REG
     end_opcode
 
 define_opcode load8i
     pop DATA2_REG
-    movsxb DATA_REG, [DATA2_REG]
+    movsx DATA_REG, byte ptr [DATA2_REG]
     push DATA_REG
     end_opcode
 
 define_opcode load16u
     pop DATA2_REG
-    movzxw DATA_REG, [DATA2_REG]
+    movzx DATA_REG, word ptr [DATA2_REG]
     push DATA_REG
     end_opcode
 
 define_opcode load16i
     pop DATA2_REG
-    movsxw DATA_REG, [DATA2_REG]
+    movsx DATA_REG, word ptr [DATA2_REG]
     push DATA_REG
     end_opcode
 
 define_opcode load24u
     pop TMP_REG
-    movzxw DATA_REG, [TMP_REG]
-    movzxb DATA2_REG, [TMP_REG + 2]
+    movzx DATA_REG, word ptr [TMP_REG]
+    movzx DATA2_REG, byte ptr [TMP_REG + 2]
     shl DATA2_REG, 16
     or DATA_REG, DATA2_REG
     push DATA_REG
@@ -493,7 +493,7 @@ define_opcode load32i
 define_opcode load40u
     pop TMP_REG
     mov eax, [TMP_REG]
-    movzxb DATA2_REG, [TMP_REG + 4]
+    movzx DATA2_REG, byte ptr [TMP_REG + 4]
     shl DATA2_REG, 32
     or rax, DATA2_REG
     push rax
@@ -502,7 +502,7 @@ define_opcode load40u
 define_opcode load48u
     pop TMP_REG
     mov eax, [TMP_REG]
-    movzxw DATA2_REG, [TMP_REG + 4]
+    movzx DATA2_REG, word ptr [TMP_REG + 4]
     shl DATA2_REG, 32
     or rax, DATA2_REG
     push rax
@@ -511,10 +511,10 @@ define_opcode load48u
 define_opcode load56u
     pop TMP_REG
     mov eax, [TMP_REG]
-    movzxw DATA2_REG, [TMP_REG + 4]
+    movzx DATA2_REG, word ptr [TMP_REG + 4]
     shl DATA2_REG, 32
     or rax, DATA2_REG
-    movzxb DATA2_REG, [TMP_REG + 6]
+    movzx DATA2_REG, byte ptr [TMP_REG + 6]
     shl DATA2_REG, 48
     or rax, DATA2_REG
     push rax
@@ -590,7 +590,7 @@ define_opcode bzero
 __kefirrt_bzero_loop_begin:
     cmp rcx, 0
     je __kefirrt_bzero_loop_end
-    movb [rdi], 0
+    mov byte ptr [rdi], 0
     inc rdi
     dec rcx
     jmp __kefirrt_bzero_loop_begin

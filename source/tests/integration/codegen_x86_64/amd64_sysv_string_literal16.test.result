@@ -1,99 +1,101 @@
-SECTION .text
+.intel_syntax noprefix
 
-extern __kefirrt_nop_impl
-extern __kefirrt_jmp_impl
-extern __kefirrt_branch_impl
-extern __kefirrt_push_impl
-extern __kefirrt_pop_impl
-extern __kefirrt_pick_impl
-extern __kefirrt_put_impl
-extern __kefirrt_insert_impl
-extern __kefirrt_xchg_impl
-extern __kefirrt_drop_impl
-extern __kefirrt_iadd_impl
-extern __kefirrt_iadd1_impl
-extern __kefirrt_isub_impl
-extern __kefirrt_imul_impl
-extern __kefirrt_idiv_impl
-extern __kefirrt_imod_impl
-extern __kefirrt_ineg_impl
-extern __kefirrt_inot_impl
-extern __kefirrt_iand_impl
-extern __kefirrt_ior_impl
-extern __kefirrt_ixor_impl
-extern __kefirrt_ishr_impl
-extern __kefirrt_isar_impl
-extern __kefirrt_ishl_impl
-extern __kefirrt_iequals_impl
-extern __kefirrt_igreater_impl
-extern __kefirrt_ilesser_impl
-extern __kefirrt_iabove_impl
-extern __kefirrt_ibelow_impl
-extern __kefirrt_band_impl
-extern __kefirrt_bor_impl
-extern __kefirrt_bnot_impl
-extern __kefirrt_trunc1_impl
-extern __kefirrt_extend8_impl
-extern __kefirrt_extend16_impl
-extern __kefirrt_extend32_impl
-extern __kefirrt_offsetptr_impl
-extern __kefirrt_elementptr_impl
-extern __kefirrt_load8u_impl
-extern __kefirrt_load8i_impl
-extern __kefirrt_load16u_impl
-extern __kefirrt_load16i_impl
-extern __kefirrt_load24u_impl
-extern __kefirrt_load32u_impl
-extern __kefirrt_load32i_impl
-extern __kefirrt_load40u_impl
-extern __kefirrt_load48u_impl
-extern __kefirrt_load56u_impl
-extern __kefirrt_load64_impl
-extern __kefirrt_store8_impl
-extern __kefirrt_store16_impl
-extern __kefirrt_store24_impl
-extern __kefirrt_store32_impl
-extern __kefirrt_store40_impl
-extern __kefirrt_store48_impl
-extern __kefirrt_store56_impl
-extern __kefirrt_store64_impl
-extern __kefirrt_bzero_impl
-extern __kefirrt_bcopy_impl
-extern __kefirrt_extubits_impl
-extern __kefirrt_extsbits_impl
-extern __kefirrt_insertbits_impl
-extern __kefirrt_getlocals_impl
-extern __kefirrt_f32add_impl
-extern __kefirrt_f32sub_impl
-extern __kefirrt_f32mul_impl
-extern __kefirrt_f32div_impl
-extern __kefirrt_f32neg_impl
-extern __kefirrt_f64add_impl
-extern __kefirrt_f64sub_impl
-extern __kefirrt_f64mul_impl
-extern __kefirrt_f64div_impl
-extern __kefirrt_f64neg_impl
-extern __kefirrt_f32equals_impl
-extern __kefirrt_f32greater_impl
-extern __kefirrt_f32lesser_impl
-extern __kefirrt_f64equals_impl
-extern __kefirrt_f64greater_impl
-extern __kefirrt_f64lesser_impl
-extern __kefirrt_f32cint_impl
-extern __kefirrt_f64cint_impl
-extern __kefirrt_intcf32_impl
-extern __kefirrt_intcf64_impl
-extern __kefirrt_uintcf32_impl
-extern __kefirrt_uintcf64_impl
-extern __kefirrt_f32cf64_impl
-extern __kefirrt_f64cf32_impl
-extern __kefirrt_alloca_impl
-extern __kefirrt_preserve_state
-extern __kefirrt_restore_state
-extern __kefirrt_save_registers
-extern __kefirrt_load_integer_vararg
-extern __kefirrt_load_sse_vararg
-extern __kefirrt_copy_vararg
+.section .text
+
+.extern __kefirrt_nop_impl
+.extern __kefirrt_jmp_impl
+.extern __kefirrt_branch_impl
+.extern __kefirrt_push_impl
+.extern __kefirrt_pop_impl
+.extern __kefirrt_pick_impl
+.extern __kefirrt_put_impl
+.extern __kefirrt_insert_impl
+.extern __kefirrt_xchg_impl
+.extern __kefirrt_drop_impl
+.extern __kefirrt_iadd_impl
+.extern __kefirrt_iadd1_impl
+.extern __kefirrt_isub_impl
+.extern __kefirrt_imul_impl
+.extern __kefirrt_idiv_impl
+.extern __kefirrt_imod_impl
+.extern __kefirrt_ineg_impl
+.extern __kefirrt_inot_impl
+.extern __kefirrt_iand_impl
+.extern __kefirrt_ior_impl
+.extern __kefirrt_ixor_impl
+.extern __kefirrt_ishr_impl
+.extern __kefirrt_isar_impl
+.extern __kefirrt_ishl_impl
+.extern __kefirrt_iequals_impl
+.extern __kefirrt_igreater_impl
+.extern __kefirrt_ilesser_impl
+.extern __kefirrt_iabove_impl
+.extern __kefirrt_ibelow_impl
+.extern __kefirrt_band_impl
+.extern __kefirrt_bor_impl
+.extern __kefirrt_bnot_impl
+.extern __kefirrt_trunc1_impl
+.extern __kefirrt_extend8_impl
+.extern __kefirrt_extend16_impl
+.extern __kefirrt_extend32_impl
+.extern __kefirrt_offsetptr_impl
+.extern __kefirrt_elementptr_impl
+.extern __kefirrt_load8u_impl
+.extern __kefirrt_load8i_impl
+.extern __kefirrt_load16u_impl
+.extern __kefirrt_load16i_impl
+.extern __kefirrt_load24u_impl
+.extern __kefirrt_load32u_impl
+.extern __kefirrt_load32i_impl
+.extern __kefirrt_load40u_impl
+.extern __kefirrt_load48u_impl
+.extern __kefirrt_load56u_impl
+.extern __kefirrt_load64_impl
+.extern __kefirrt_store8_impl
+.extern __kefirrt_store16_impl
+.extern __kefirrt_store24_impl
+.extern __kefirrt_store32_impl
+.extern __kefirrt_store40_impl
+.extern __kefirrt_store48_impl
+.extern __kefirrt_store56_impl
+.extern __kefirrt_store64_impl
+.extern __kefirrt_bzero_impl
+.extern __kefirrt_bcopy_impl
+.extern __kefirrt_extubits_impl
+.extern __kefirrt_extsbits_impl
+.extern __kefirrt_insertbits_impl
+.extern __kefirrt_getlocals_impl
+.extern __kefirrt_f32add_impl
+.extern __kefirrt_f32sub_impl
+.extern __kefirrt_f32mul_impl
+.extern __kefirrt_f32div_impl
+.extern __kefirrt_f32neg_impl
+.extern __kefirrt_f64add_impl
+.extern __kefirrt_f64sub_impl
+.extern __kefirrt_f64mul_impl
+.extern __kefirrt_f64div_impl
+.extern __kefirrt_f64neg_impl
+.extern __kefirrt_f32equals_impl
+.extern __kefirrt_f32greater_impl
+.extern __kefirrt_f32lesser_impl
+.extern __kefirrt_f64equals_impl
+.extern __kefirrt_f64greater_impl
+.extern __kefirrt_f64lesser_impl
+.extern __kefirrt_f32cint_impl
+.extern __kefirrt_f64cint_impl
+.extern __kefirrt_intcf32_impl
+.extern __kefirrt_intcf64_impl
+.extern __kefirrt_uintcf32_impl
+.extern __kefirrt_uintcf64_impl
+.extern __kefirrt_f32cf64_impl
+.extern __kefirrt_f64cf32_impl
+.extern __kefirrt_alloca_impl
+.extern __kefirrt_preserve_state
+.extern __kefirrt_restore_state
+.extern __kefirrt_save_registers
+.extern __kefirrt_load_integer_vararg
+.extern __kefirrt_load_sse_vararg
+.extern __kefirrt_copy_vararg
 
 
 
@@ -103,28 +105,28 @@ sub rsp, 16
 mov r14, rsp
 lea r12, [r14 - 8]
 push r12
-mov rbx, __func1_body
+lea rbx, [__func1_body]
 jmp [rbx]
 __func1_body:
-dq __kefirrt_push_impl, __kefirrt_string_literal0
-dq __kefirrt_push_impl, __kefirrt_string_literal1
-dq __kefirrt_push_impl, __kefirrt_string_literal2
-dq __kefirrt_push_impl, __kefirrt_string_literal3
-dq __kefirrt_push_impl, __kefirrt_string_literal4
-dq __func1_epilogue, 0
+.quad __kefirrt_push_impl, __kefirrt_string_literal0
+.quad __kefirrt_push_impl, __kefirrt_string_literal1
+.quad __kefirrt_push_impl, __kefirrt_string_literal2
+.quad __kefirrt_push_impl, __kefirrt_string_literal3
+.quad __kefirrt_push_impl, __kefirrt_string_literal4
+.quad __func1_epilogue, 0
 __func1_epilogue:
 mov rsp, r14
 add rsp, 16
 jmp __kefirrt_restore_state
 
-SECTION .rodata
+.section .rodata
 __kefirrt_string_literal0:
-dw 72, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100, 33, 0
+.word 72, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100, 33, 0
 __kefirrt_string_literal1:
-dw 72, 101, 108, 108, 111, 44, 10, 99, 114, 117, 101, 108, 9, 119, 111, 114, 108, 100, 33, 0
+.word 72, 101, 108, 108, 111, 44, 10, 99, 114, 117, 101, 108, 9, 119, 111, 114, 108, 100, 33, 0
 __kefirrt_string_literal2:
-dw 10, 10, 10, 9, 9, 9, 32, 32, 32, 9, 9, 9, 11, 11, 11, 10, 0
+.word 10, 10, 10, 9, 9, 9, 32, 32, 32, 9, 9, 9, 11, 11, 11, 10, 0
 __kefirrt_string_literal3:
-dw 39, 34, 72, 101, 121, 32, 104, 111, 33, 34, 39, 92, 34, 0
+.word 39, 34, 72, 101, 121, 32, 104, 111, 33, 34, 39, 92, 34, 0
 __kefirrt_string_literal4:
-dw 0, 0, 0, 10, 0, 0
+.word 0, 0, 0, 10, 0, 0

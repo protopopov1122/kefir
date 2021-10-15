@@ -1,5 +1,5 @@
 CC=gcc
-AS=nasm
+AS=as
 XSLTPROC=xsltproc
 CLANG_FORMAT=clang-format
 

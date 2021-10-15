@@ -40,6 +40,7 @@ static kefir_result_t cg_declare_opcode_handler(kefir_iropcode_t opcode, const c
 
 static kefir_result_t cg_module_prologue(struct kefir_codegen_amd64_sysv_module *module,
                                          struct kefir_codegen_amd64 *codegen) {
+    ASMGEN_PROLOGUE(&codegen->asmgen);
     ASMGEN_SECTION(&codegen->asmgen, ".text");
     ASMGEN_NEWLINE(&codegen->asmgen, 1);
     ASMGEN_COMMENT0(&codegen->asmgen, "Opcode handlers");
@@ -82,9 +83,9 @@ static kefir_result_t cg_function_epilogue(struct kefir_codegen_amd64 *codegen,
 static kefir_result_t cg_function_body(struct kefir_mem *mem, struct kefir_codegen_amd64 *codegen,
                                        struct kefir_codegen_amd64_sysv_module *sysv_module,
                                        struct kefir_amd64_sysv_function *sysv_func) {
-    ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
+    ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_LEA);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_PROGRAM_REG);
-    ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL, sysv_func->func->name);
+    ASMGEN_ARG(&codegen->asmgen, "[" KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL "]", sysv_func->func->name);
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_JMP);
     ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_INDIRECT, KEFIR_AMD64_SYSV_ABI_PROGRAM_REG);
     ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL, sysv_func->func->name);
@@ -186,7 +187,7 @@ static kefir_result_t cg_translate_strings(struct kefir_codegen_amd64 *codegen,
         ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_STRING_LITERAL, id);
         switch (literal_type) {
             case KEFIR_IR_STRING_LITERAL_MULTIBYTE:
-                ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_BYTE);
+                ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_ASCIi);
                 ASMGEN_STRING_LITERAL(&codegen->asmgen, content, length);
                 break;
 

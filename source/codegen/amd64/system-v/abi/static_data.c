@@ -205,13 +205,16 @@ static kefir_result_t float32_static_data(const struct kefir_ir_type *type, kefi
     ASSIGN_DECL_CAST(struct static_data_param *, param, payload);
     ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid entry for index"));
-    kefir_float32_t value = 0.0f;
+    union {
+        kefir_float32_t fp32;
+        kefir_uint32_t uint32;
+    } value = {.fp32 = 0.0f};
     switch (entry->type) {
         case KEFIR_IR_DATA_VALUE_UNDEFINED:
             break;
 
         case KEFIR_IR_DATA_VALUE_FLOAT32:
-            value = entry->value.float32;
+            value.fp32 = entry->value.float32;
             break;
 
         default:
@@ -223,7 +226,7 @@ static kefir_result_t float32_static_data(const struct kefir_ir_type *type, kefi
     switch (typeentry->typecode) {
         case KEFIR_IR_TYPE_FLOAT32:
             ASMGEN_RAW(&param->codegen->asmgen, KEFIR_AMD64_DOUBLE);
-            ASMGEN_ARG(&param->codegen->asmgen, "%a", value);
+            ASMGEN_ARG(&param->codegen->asmgen, "0x%08" KEFIR_UINT32_XFMT, value.uint32);
             break;
 
         default:
@@ -243,13 +246,16 @@ static kefir_result_t float64_static_data(const struct kefir_ir_type *type, kefi
     ASSIGN_DECL_CAST(struct static_data_param *, param, payload);
     ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid entry for index"));
-    kefir_float64_t value = 0.0;
+    union {
+        kefir_float64_t fp64;
+        kefir_uint64_t uint64;
+    } value = {.fp64 = 0.0};
     switch (entry->type) {
         case KEFIR_IR_DATA_VALUE_UNDEFINED:
             break;
 
         case KEFIR_IR_DATA_VALUE_FLOAT64:
-            value = entry->value.float64;
+            value.fp64 = entry->value.float64;
             break;
 
         default:
@@ -261,7 +267,7 @@ static kefir_result_t float64_static_data(const struct kefir_ir_type *type, kefi
     switch (typeentry->typecode) {
         case KEFIR_IR_TYPE_FLOAT64:
             ASMGEN_RAW(&param->codegen->asmgen, KEFIR_AMD64_QUAD);
-            ASMGEN_ARG(&param->codegen->asmgen, "%a", value);
+            ASMGEN_ARG(&param->codegen->asmgen, "0x%016" KEFIR_UINT64_XFMT, value.uint64);
             break;
 
         default:

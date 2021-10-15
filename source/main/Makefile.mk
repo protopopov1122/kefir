@@ -7,10 +7,10 @@ ifeq ($(SANITIZE),undefined)
 KEFIR_MAIN_LINKED_LIBS=-fsanitize=undefined
 endif
 
-$(BIN_DIR)/main/help.o: $(SOURCE_DIR)/main/help.txt $(SOURCE_DIR)/main/help.asm
+$(BIN_DIR)/main/help.o: $(SOURCE_DIR)/main/help.txt $(SOURCE_DIR)/main/help.s
 	@mkdir -p $(shell dirname "$@")
 	@echo "Building $@"
-	@$(AS) -f elf64 -o $@ $(SOURCE_DIR)/main/help.asm
+	@$(AS) -o $@ $(SOURCE_DIR)/main/help.s
 
 $(BIN_DIR)/kefir: $(KEFIR_MAIN_OBJECT_FILES) $(LIBKEFIR_SO)
 	@mkdir -p $(shell dirname "$@")

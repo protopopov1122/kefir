@@ -28,6 +28,13 @@
 
 #define INDENTATION "    "
 
+static kefir_result_t amd64_prologue(struct kefir_amd64_asmgen *asmgen) {
+    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator"));
+    FILE *out = (FILE *) asmgen->data;
+    fprintf(out, ".intel_syntax noprefix\n\n");
+    return KEFIR_OK;
+}
+
 static kefir_result_t amd64_newline(struct kefir_amd64_asmgen *asmgen, unsigned int count) {
     REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator"));
     FILE *out = (FILE *) asmgen->data;
@@ -47,7 +54,7 @@ static kefir_result_t amd64_comment(struct kefir_amd64_asmgen *asmgen, const cha
             fprintf(out, "\n");
         }
         asmgen->state.empty = false;
-        fprintf(out, "; ");
+        fprintf(out, "# ");
         va_list args;
         va_start(args, format);
         vfprintf(out, format, args);
@@ -80,7 +87,7 @@ static kefir_result_t amd64_global(struct kefir_amd64_asmgen *asmgen, const char
         fprintf(out, "\n");
     }
     asmgen->state.empty = false;
-    fprintf(out, "global ");
+    fprintf(out, ".global ");
     va_list args;
     va_start(args, format);
     vfprintf(out, format, args);
@@ -96,7 +103,7 @@ static kefir_result_t amd64_external(struct kefir_amd64_asmgen *asmgen, const ch
         fprintf(out, "\n");
     }
     asmgen->state.empty = false;
-    fprintf(out, "extern %s", identifier);
+    fprintf(out, ".extern %s", identifier);
     return KEFIR_OK;
 }
 
@@ -108,7 +115,7 @@ static kefir_result_t amd64_section(struct kefir_amd64_asmgen *asmgen, const cha
         fprintf(out, "\n");
     }
     asmgen->state.empty = false;
-    fprintf(out, "SECTION %s", identifier);
+    fprintf(out, ".section %s", identifier);
     return KEFIR_OK;
 }
 
@@ -139,7 +146,27 @@ static kefir_result_t amd64_rawdata(struct kefir_amd64_asmgen *asmgen, kefir_amd
     if (asmgen->settings.enable_identation) {
         fprintf(out, "%s", INDENTATION);
     }
-    fprintf(out, "d%c", (char) width);
+    switch (width) {
+        case KEFIR_AMD64_BYTE:
+            fprintf(out, ".byte");
+            break;
+
+        case KEFIR_AMD64_WORD:
+            fprintf(out, ".word");
+            break;
+
+        case KEFIR_AMD64_DOUBLE:
+            fprintf(out, ".long");
+            break;
+
+        case KEFIR_AMD64_QUAD:
+            fprintf(out, ".quad");
+            break;
+
+        case KEFIR_AMD64_ASCIi:
+            fprintf(out, ".ascii");
+            break;
+    }
     asmgen->state.arguments = 0;
     return KEFIR_OK;
 }
@@ -156,7 +183,28 @@ static kefir_result_t amd64_multrawdata(struct kefir_amd64_asmgen *asmgen, kefir
     if (asmgen->settings.enable_identation) {
         fprintf(out, "%s", INDENTATION);
     }
-    fprintf(out, "times " KEFIR_SIZE_FMT " d%c", times, (char) width);
+    fprintf(out, ".fill " KEFIR_SIZE_FMT ", ", times);
+    switch (width) {
+        case KEFIR_AMD64_BYTE:
+            fprintf(out, "1");
+            break;
+
+        case KEFIR_AMD64_WORD:
+            fprintf(out, "2");
+            break;
+
+        case KEFIR_AMD64_DOUBLE:
+            fprintf(out, "4");
+            break;
+
+        case KEFIR_AMD64_QUAD:
+            fprintf(out, "8");
+            break;
+
+        case KEFIR_AMD64_ASCIi:
+            return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "ASCIIZ data is not supported in mulrawdata context");
+    }
+    fprintf(out, ",");
     asmgen->state.arguments = 0;
     return KEFIR_OK;
 }
@@ -189,7 +237,7 @@ kefir_result_t amd64_string_literal(struct kefir_amd64_asmgen *asmgen, const cha
         fprintf(out, " ");
     }
     asmgen->state.arguments++;
-    fprintf(out, "`");
+    fprintf(out, "\"");
 
     mbstate_t state = {0};
     const char *end = literal + length;
@@ -202,28 +250,16 @@ kefir_result_t amd64_string_literal(struct kefir_amd64_asmgen *asmgen, const cha
             continue;
         }
         switch (wide_char) {
-            case U'\'':
-                fprintf(out, "\\\'");
-                break;
-
             case U'\"':
                 fprintf(out, "\\\"");
-                break;
-
-            case U'`':
-                fprintf(out, "\\`");
                 break;
 
             case U'\\':
                 fprintf(out, "\\\\");
                 break;
 
-            case U'\?':
-                fprintf(out, "\\?");
-                break;
-
             case U'\a':
-                fprintf(out, "\\a");
+                fprintf(out, "\\%03o", '\a');
                 break;
 
             case U'\b':
@@ -239,7 +275,7 @@ kefir_result_t amd64_string_literal(struct kefir_amd64_asmgen *asmgen, const cha
                 break;
 
             case U'\v':
-                fprintf(out, "\\v");
+                fprintf(out, "\\%03o", '\v');
                 break;
 
             case U'\f':
@@ -256,7 +292,7 @@ kefir_result_t amd64_string_literal(struct kefir_amd64_asmgen *asmgen, const cha
         }
         literal += sz;
     }
-    fprintf(out, "`");
+    fprintf(out, "\"");
     return KEFIR_OK;
 }
 
@@ -264,6 +300,7 @@ static kefir_result_t amd64_close(struct kefir_amd64_asmgen *asmgen) {
     REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator"));
     FILE *out = (FILE *) asmgen->data;
     REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid output file for AMD64 assembly"));
+    fprintf(out, "\n");
     fflush(out);
     return KEFIR_OK;
 }
@@ -272,6 +309,7 @@ kefir_result_t kefir_amd64_nasm_gen_init(struct kefir_amd64_asmgen *asmgen, FILE
     REQUIRE(asmgen != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator pointer"));
     REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid output file for AMD64 assembly"));
+    asmgen->prologue = amd64_prologue;
     asmgen->newline = amd64_newline;
     asmgen->comment = amd64_comment;
     asmgen->label = amd64_label;

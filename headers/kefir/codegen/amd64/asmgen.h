@@ -30,10 +30,12 @@ typedef enum kefir_amd64_asmgen_datawidth {
     KEFIR_AMD64_BYTE = 'b',
     KEFIR_AMD64_WORD = 'w',
     KEFIR_AMD64_DOUBLE = 'd',
-    KEFIR_AMD64_QUAD = 'q'
+    KEFIR_AMD64_QUAD = 'q',
+    KEFIR_AMD64_ASCIi = 'a'
 } kefir_amd64_asmgen_datawidth_t;
 
 typedef struct kefir_amd64_asmgen {
+    kefir_result_t (*prologue)(struct kefir_amd64_asmgen *);
     kefir_result_t (*newline)(struct kefir_amd64_asmgen *, unsigned int);
     kefir_result_t (*comment)(struct kefir_amd64_asmgen *, const char *, ...);
     kefir_result_t (*label)(struct kefir_amd64_asmgen *, const char *, ...);
@@ -60,6 +62,7 @@ typedef struct kefir_amd64_asmgen {
 
 kefir_result_t kefir_amd64_nasm_gen_init(struct kefir_amd64_asmgen *, FILE *);
 
+#define KEFIR_AMD64_ASMGEN_PROLOGUE(asmgen) ((asmgen)->prologue((asmgen)))
 #define KEFIR_AMD64_ASMGEN_NEWLINE(asmgen, count) ((asmgen)->newline((asmgen), (count)))
 #define KEFIR_AMD64_ASMGEN_COMMENT(asmgen, format, ...) ((asmgen)->comment((asmgen), (format), __VA_ARGS__))
 #define KEFIR_AMD64_ASMGEN_LABEL(asmgen, format, ...) ((asmgen)->label((asmgen), (format), __VA_ARGS__))
@@ -129,9 +132,9 @@ kefir_result_t kefir_amd64_nasm_gen_init(struct kefir_amd64_asmgen *, FILE *);
 #define KEFIR_AMD64_INDIRECT "[%s]"
 #define KEFIR_AMD64_INDIRECT_OFFSET "[%s + " KEFIR_SIZE_FMT "]"
 #define KEFIR_AMD64_INDIRECT_NEG_OFFSET "[%s - " KEFIR_SIZE_FMT "]"
-#define KEFIR_AMD64_ALIGN "align"
+#define KEFIR_AMD64_ALIGN ".align"
 
-#define KEFIR_AMD64_DWORD "dword "
-#define KEFIR_AMD64_QWORD "qword "
+#define KEFIR_AMD64_DWORD "DWORD PTR "
+#define KEFIR_AMD64_QWORD "QWORD PTR "
 
 #endif

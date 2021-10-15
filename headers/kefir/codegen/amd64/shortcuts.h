@@ -24,6 +24,7 @@
 #include "kefir/core/util.h"
 #include "kefir/codegen/amd64/asmgen.h"
 
+#define ASMGEN_PROLOGUE(asmgen) REQUIRE_OK(KEFIR_AMD64_ASMGEN_PROLOGUE((asmgen)))
 #define ASMGEN_NEWLINE(asmgen, count) REQUIRE_OK(KEFIR_AMD64_ASMGEN_NEWLINE((asmgen), (count)))
 #define ASMGEN_COMMENT(asmgen, format, ...) REQUIRE_OK(KEFIR_AMD64_ASMGEN_COMMENT((asmgen), (format), __VA_ARGS__))
 #define ASMGEN_COMMENT0(asmgen, comment) REQUIRE_OK(KEFIR_AMD64_ASMGEN_COMMENT((asmgen), "%s", (comment)))

@@ -188,7 +188,11 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem, struct kefir_
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
             ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_DOUBLE);
-            ASMGEN_ARG(&codegen->asmgen, "%a", instr->arg.f32[0]);
+            union {
+                kefir_float32_t fp32;
+                kefir_uint32_t uint32;
+            } value = {.fp32 = instr->arg.f32[0]};
+            ASMGEN_ARG(&codegen->asmgen, "0x%08" KEFIR_UINT32_XFMT, value.uint32);
             ASMGEN_ARG0(&codegen->asmgen, "0");
         } break;
 
@@ -197,7 +201,11 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem, struct kefir_
             REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_PUSHI64, &opcode_symbol));
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
             ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
-            ASMGEN_ARG(&codegen->asmgen, "%a", instr->arg.f64);
+            union {
+                kefir_float64_t fp64;
+                kefir_uint64_t uint64;
+            } value = {.fp64 = instr->arg.f64};
+            ASMGEN_ARG(&codegen->asmgen, "0x%016" KEFIR_UINT64_XFMT, value.uint64);
         } break;
 
         case KEFIR_IROPCODE_PUSHU64: {

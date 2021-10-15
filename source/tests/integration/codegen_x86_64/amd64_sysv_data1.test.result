@@ -1,202 +1,204 @@
-SECTION .text
+.intel_syntax noprefix
 
-extern __kefirrt_nop_impl
-extern __kefirrt_jmp_impl
-extern __kefirrt_branch_impl
-extern __kefirrt_push_impl
-extern __kefirrt_pop_impl
-extern __kefirrt_pick_impl
-extern __kefirrt_put_impl
-extern __kefirrt_insert_impl
-extern __kefirrt_xchg_impl
-extern __kefirrt_drop_impl
-extern __kefirrt_iadd_impl
-extern __kefirrt_iadd1_impl
-extern __kefirrt_isub_impl
-extern __kefirrt_imul_impl
-extern __kefirrt_idiv_impl
-extern __kefirrt_imod_impl
-extern __kefirrt_ineg_impl
-extern __kefirrt_inot_impl
-extern __kefirrt_iand_impl
-extern __kefirrt_ior_impl
-extern __kefirrt_ixor_impl
-extern __kefirrt_ishr_impl
-extern __kefirrt_isar_impl
-extern __kefirrt_ishl_impl
-extern __kefirrt_iequals_impl
-extern __kefirrt_igreater_impl
-extern __kefirrt_ilesser_impl
-extern __kefirrt_iabove_impl
-extern __kefirrt_ibelow_impl
-extern __kefirrt_band_impl
-extern __kefirrt_bor_impl
-extern __kefirrt_bnot_impl
-extern __kefirrt_trunc1_impl
-extern __kefirrt_extend8_impl
-extern __kefirrt_extend16_impl
-extern __kefirrt_extend32_impl
-extern __kefirrt_offsetptr_impl
-extern __kefirrt_elementptr_impl
-extern __kefirrt_load8u_impl
-extern __kefirrt_load8i_impl
-extern __kefirrt_load16u_impl
-extern __kefirrt_load16i_impl
-extern __kefirrt_load24u_impl
-extern __kefirrt_load32u_impl
-extern __kefirrt_load32i_impl
-extern __kefirrt_load40u_impl
-extern __kefirrt_load48u_impl
-extern __kefirrt_load56u_impl
-extern __kefirrt_load64_impl
-extern __kefirrt_store8_impl
-extern __kefirrt_store16_impl
-extern __kefirrt_store24_impl
-extern __kefirrt_store32_impl
-extern __kefirrt_store40_impl
-extern __kefirrt_store48_impl
-extern __kefirrt_store56_impl
-extern __kefirrt_store64_impl
-extern __kefirrt_bzero_impl
-extern __kefirrt_bcopy_impl
-extern __kefirrt_extubits_impl
-extern __kefirrt_extsbits_impl
-extern __kefirrt_insertbits_impl
-extern __kefirrt_getlocals_impl
-extern __kefirrt_f32add_impl
-extern __kefirrt_f32sub_impl
-extern __kefirrt_f32mul_impl
-extern __kefirrt_f32div_impl
-extern __kefirrt_f32neg_impl
-extern __kefirrt_f64add_impl
-extern __kefirrt_f64sub_impl
-extern __kefirrt_f64mul_impl
-extern __kefirrt_f64div_impl
-extern __kefirrt_f64neg_impl
-extern __kefirrt_f32equals_impl
-extern __kefirrt_f32greater_impl
-extern __kefirrt_f32lesser_impl
-extern __kefirrt_f64equals_impl
-extern __kefirrt_f64greater_impl
-extern __kefirrt_f64lesser_impl
-extern __kefirrt_f32cint_impl
-extern __kefirrt_f64cint_impl
-extern __kefirrt_intcf32_impl
-extern __kefirrt_intcf64_impl
-extern __kefirrt_uintcf32_impl
-extern __kefirrt_uintcf64_impl
-extern __kefirrt_f32cf64_impl
-extern __kefirrt_f64cf32_impl
-extern __kefirrt_alloca_impl
-extern __kefirrt_preserve_state
-extern __kefirrt_restore_state
-extern __kefirrt_save_registers
-extern __kefirrt_load_integer_vararg
-extern __kefirrt_load_sse_vararg
-extern __kefirrt_copy_vararg
+.section .text
+
+.extern __kefirrt_nop_impl
+.extern __kefirrt_jmp_impl
+.extern __kefirrt_branch_impl
+.extern __kefirrt_push_impl
+.extern __kefirrt_pop_impl
+.extern __kefirrt_pick_impl
+.extern __kefirrt_put_impl
+.extern __kefirrt_insert_impl
+.extern __kefirrt_xchg_impl
+.extern __kefirrt_drop_impl
+.extern __kefirrt_iadd_impl
+.extern __kefirrt_iadd1_impl
+.extern __kefirrt_isub_impl
+.extern __kefirrt_imul_impl
+.extern __kefirrt_idiv_impl
+.extern __kefirrt_imod_impl
+.extern __kefirrt_ineg_impl
+.extern __kefirrt_inot_impl
+.extern __kefirrt_iand_impl
+.extern __kefirrt_ior_impl
+.extern __kefirrt_ixor_impl
+.extern __kefirrt_ishr_impl
+.extern __kefirrt_isar_impl
+.extern __kefirrt_ishl_impl
+.extern __kefirrt_iequals_impl
+.extern __kefirrt_igreater_impl
+.extern __kefirrt_ilesser_impl
+.extern __kefirrt_iabove_impl
+.extern __kefirrt_ibelow_impl
+.extern __kefirrt_band_impl
+.extern __kefirrt_bor_impl
+.extern __kefirrt_bnot_impl
+.extern __kefirrt_trunc1_impl
+.extern __kefirrt_extend8_impl
+.extern __kefirrt_extend16_impl
+.extern __kefirrt_extend32_impl
+.extern __kefirrt_offsetptr_impl
+.extern __kefirrt_elementptr_impl
+.extern __kefirrt_load8u_impl
+.extern __kefirrt_load8i_impl
+.extern __kefirrt_load16u_impl
+.extern __kefirrt_load16i_impl
+.extern __kefirrt_load24u_impl
+.extern __kefirrt_load32u_impl
+.extern __kefirrt_load32i_impl
+.extern __kefirrt_load40u_impl
+.extern __kefirrt_load48u_impl
+.extern __kefirrt_load56u_impl
+.extern __kefirrt_load64_impl
+.extern __kefirrt_store8_impl
+.extern __kefirrt_store16_impl
+.extern __kefirrt_store24_impl
+.extern __kefirrt_store32_impl
+.extern __kefirrt_store40_impl
+.extern __kefirrt_store48_impl
+.extern __kefirrt_store56_impl
+.extern __kefirrt_store64_impl
+.extern __kefirrt_bzero_impl
+.extern __kefirrt_bcopy_impl
+.extern __kefirrt_extubits_impl
+.extern __kefirrt_extsbits_impl
+.extern __kefirrt_insertbits_impl
+.extern __kefirrt_getlocals_impl
+.extern __kefirrt_f32add_impl
+.extern __kefirrt_f32sub_impl
+.extern __kefirrt_f32mul_impl
+.extern __kefirrt_f32div_impl
+.extern __kefirrt_f32neg_impl
+.extern __kefirrt_f64add_impl
+.extern __kefirrt_f64sub_impl
+.extern __kefirrt_f64mul_impl
+.extern __kefirrt_f64div_impl
+.extern __kefirrt_f64neg_impl
+.extern __kefirrt_f32equals_impl
+.extern __kefirrt_f32greater_impl
+.extern __kefirrt_f32lesser_impl
+.extern __kefirrt_f64equals_impl
+.extern __kefirrt_f64greater_impl
+.extern __kefirrt_f64lesser_impl
+.extern __kefirrt_f32cint_impl
+.extern __kefirrt_f64cint_impl
+.extern __kefirrt_intcf32_impl
+.extern __kefirrt_intcf64_impl
+.extern __kefirrt_uintcf32_impl
+.extern __kefirrt_uintcf64_impl
+.extern __kefirrt_f32cf64_impl
+.extern __kefirrt_f64cf32_impl
+.extern __kefirrt_alloca_impl
+.extern __kefirrt_preserve_state
+.extern __kefirrt_restore_state
+.extern __kefirrt_save_registers
+.extern __kefirrt_load_integer_vararg
+.extern __kefirrt_load_sse_vararg
+.extern __kefirrt_copy_vararg
 
 
-global float32_1
-global float32_2
-global float64_1
-global float64_2
-global struct1_1
-global array1_1
-global union1_1
-global memory1_1
-global memory1_2
-global memory1_3
-global pointer1_1
+.global float32_1
+.global float32_2
+.global float64_1
+.global float64_2
+.global struct1_1
+.global array1_1
+.global union1_1
+.global memory1_1
+.global memory1_2
+.global memory1_3
+.global pointer1_1
 
-SECTION .data
+.section .data
 int8_1:
-db 0x68
+.byte 0x68
 
 int8_2:
-db 0x00
+.byte 0x00
 
-align 2
+.align 2
 int16_1:
-dw 0x0a1d
+.word 0x0a1d
 
-align 2
+.align 2
 int16_2:
-dw 0x0000
+.word 0x0000
 
-align 4
+.align 4
 int32_1:
-dd 0x0001ffff
+.long 0x0001ffff
 
-align 4
+.align 4
 int32_2:
-dd 0x00000000
+.long 0x00000000
 
-align 8
+.align 8
 int64_1:
-dq 0x00000001ffffffff
+.quad 0x00000001ffffffff
 
-align 8
+.align 8
 int64_2:
-dq 0x0000000000000000
+.quad 0x0000000000000000
 
-align 4
+.align 4
 array1_1:
-db 0x0a
-db 0x14
-times 2 db 0
-dd 0x1.b33334p+1
-dd 0x1.2p+2
-db 0x00
-db 0x00
-times 2 db 0
-dd 0x0p+0
-dd 0x0p+0
-db 0x6e
-db 0x78
-times 2 db 0
-dd 0x1.447ae2p+5
-dd 0x1.c5eb86p+5
+.byte 0x0a
+.byte 0x14
+.fill 2, 1, 0
+.long 0x4059999a
+.long 0x40900000
+.byte 0x00
+.byte 0x00
+.fill 2, 1, 0
+.long 0x00000000
+.long 0x00000000
+.byte 0x6e
+.byte 0x78
+.fill 2, 1, 0
+.long 0x42223d71
+.long 0x4262f5c3
 
-align 4
+.align 4
 union1_1:
-dd 0x1.91eb86p+1
-dd 0x00018894
+.long 0x4048f5c3
+.long 0x00018894
 
-align 4
+.align 4
 float32_1:
-dd 0x1.921fap+1
+.long 0x40490fd0
 
-align 4
+.align 4
 float32_2:
-dd 0x0p+0
+.long 0x00000000
 
-align 8
+.align 8
 float64_1:
-dq 0x1.5bf0a8b04919bp+1
+.quad 0x4005bf0a8b04919b
 
-align 8
+.align 8
 float64_2:
-dq 0x0p+0
+.quad 0x0000000000000000
 
 memory1_1:
-db 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2c, 0x20, 0x63, 0x72, 0x75, 0x65, 0x6c, 0x20, 0x77, 0x6f, 0x72, 0x6c, 0x64, 0x21
-times 1 db 0
+.byte 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2c, 0x20, 0x63, 0x72, 0x75, 0x65, 0x6c, 0x20, 0x77, 0x6f, 0x72, 0x6c, 0x64, 0x21, 0x00
 
 memory1_2:
-db 0x54, 0x00, 0x77, 0x00, 0x6f, 0x00, 0x2d, 0x00, 0x62, 0x00, 0x79, 0x00, 0x74, 0x00, 0x65, 0x00, 0x20, 0x00, 0x65, 0x00, 0x6e, 0x00, 0x63, 0x00, 0x6f, 0x00, 0x64, 0x00, 0x65, 0x00, 0x64, 0x00, 0x20, 0x00, 0x6d, 0x00, 0x65, 0x00, 0x73, 0x00, 0x73, 0x00, 0x61, 0x00, 0x67, 0x00, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00
+.byte 0x54, 0x00, 0x77, 0x00, 0x6f, 0x00, 0x2d, 0x00, 0x62, 0x00, 0x79, 0x00, 0x74, 0x00, 0x65, 0x00, 0x20, 0x00, 0x65, 0x00, 0x6e, 0x00, 0x63, 0x00, 0x6f, 0x00, 0x64, 0x00, 0x65, 0x00, 0x64, 0x00, 0x20, 0x00, 0x6d, 0x00, 0x65, 0x00, 0x73, 0x00, 0x73, 0x00, 0x61, 0x00, 0x67, 0x00, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00
 
 memory1_3:
-db 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x41, 0x00, 0x00, 0x00, 0x6e, 0x00, 0x00, 0x00, 0x6f, 0x00, 0x00, 0x00, 0x74, 0x00, 0x00, 0x00, 0x68, 0x00, 0x00, 0x00, 0x65, 0x00, 0x00, 0x00, 0x72, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x73, 0x00, 0x00, 0x00, 0x74, 0x00, 0x00, 0x00, 0x72, 0x00, 0x00, 0x00, 0x69, 0x00, 0x00, 0x00, 0x6e, 0x00, 0x00, 0x00, 0x67, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x6c, 0x00, 0x00, 0x00, 0x69, 0x00, 0x00, 0x00, 0x74, 0x00, 0x00, 0x00, 0x65, 0x00, 0x00, 0x00, 0x72, 0x00, 0x00, 0x00, 0x61, 0x00, 0x00, 0x00, 0x6c, 0x00, 0x00, 0x00, 0x22, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+.byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x41, 0x00, 0x00, 0x00, 0x6e, 0x00, 0x00, 0x00, 0x6f, 0x00, 0x00, 0x00, 0x74, 0x00, 0x00, 0x00, 0x68, 0x00, 0x00, 0x00, 0x65, 0x00, 0x00, 0x00, 0x72, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x73, 0x00, 0x00, 0x00, 0x74, 0x00, 0x00, 0x00, 0x72, 0x00, 0x00, 0x00, 0x69, 0x00, 0x00, 0x00, 0x6e, 0x00, 0x00, 0x00, 0x67, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x6c, 0x00, 0x00, 0x00, 0x69, 0x00, 0x00, 0x00, 0x74, 0x00, 0x00, 0x00, 0x65, 0x00, 0x00, 0x00, 0x72, 0x00, 0x00, 0x00, 0x61, 0x00, 0x00, 0x00, 0x6c, 0x00, 0x00, 0x00, 0x22, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-align 8
+.align 8
 struct1_1:
-db 0x7f
-times 7 db 0
-dq 0x00000002ffffffff
-dw 0x1000
-times 2 db 0
-dd 0x1.abff62p+6
+.byte 0x7f
+.fill 7, 1, 0
+.quad 0x00000002ffffffff
+.word 0x1000
+.fill 2, 1, 0
+.long 0x42d5ffb1
 
-align 8
+.align 8
 pointer1_1:
-dq memory1_1 + 2
+.quad memory1_1 + 2
+

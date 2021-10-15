@@ -25,7 +25,7 @@ LIB_OBJ="$TMPDIR/lib.o"
 TEST_EXE="$TMPDIR/test"
 VALGRIND_FILE="$TMPDIR/gen.log"
 VALGRIND="valgrind $VALGRIND_OPTIONS --log-file=$VALGRIND_FILE"
-NASM="nasm -f elf64 -o $ASM_OBJ"
+AS="as -o $ASM_OBJ"
 COMPILE="$CC -std=c11 -Wall -Wextra -pedantic -Wno-overlength-strings $OPT $DBG -I$DIR/../../../headers $CC_TEST_FLAGS -o $TEST_EXE -lm -pthread"
 
 if [[ "x$SANITIZE" == "xundefined" ]]; then
@@ -54,7 +54,7 @@ do
         cat "$VALGRIND_FILE"
         exit 127
     fi
-    $NASM "$ASM_FILE"
+    $AS "$ASM_FILE"
     if [[ "x$?" != "x0" ]]; then
         exit 128
     fi

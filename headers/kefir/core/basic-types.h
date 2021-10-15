@@ -99,6 +99,7 @@ typedef uint32_t kefir_uint32_t;
 #define KEFIR_UINT32_MIN 0
 #define KEFIR_UINT32_MAX UINT32_MAX
 #define KEFIR_UINT32_FMT "%" PRIu32
+#define KEFIR_UINT32_XFMT PRIx32
 
 typedef int64_t kefir_int64_t;
 typedef uint64_t kefir_uint64_t;
@@ -108,6 +109,7 @@ typedef uint64_t kefir_uint64_t;
 #define KEFIR_UINT64_MIN 0
 #define KEFIR_UINT64_MAX UINT64_MAX
 #define KEFIR_UINT64_FMT "%" PRIu64
+#define KEFIR_UINT64_XFMT PRIx64
 
 typedef size_t kefir_size_t;
 typedef uintptr_t kefir_uptr_t;
