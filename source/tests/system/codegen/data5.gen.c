@@ -169,6 +169,14 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_data_finalize(memory1_data));
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "memory1_1"));
 
+    kefir_id_t memory2_type_id;
+    struct kefir_ir_type *memory2_type = kefir_ir_module_new_type(mem, &module, 1, &memory2_type_id);
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, memory2_type, KEFIR_IR_TYPE_MEMORY, 0, strlen(MSG) + 1));
+    struct kefir_ir_data *memory2_data =
+        kefir_ir_module_new_named_data(mem, &module, "memory2_1", KEFIR_IR_DATA_GLOBAL_STORAGE, memory2_type_id);
+    REQUIRE_OK(kefir_ir_data_set_string(memory2_data, 0, KEFIR_IR_STRING_LITERAL_MULTIBYTE, MSG, strlen(MSG)));
+    REQUIRE_OK(kefir_ir_data_finalize(memory2_data));
+
     kefir_id_t pad1_type_id;
     struct kefir_ir_type *pad1_type = kefir_ir_module_new_type(mem, &module, 1, &pad1_type_id);
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, pad1_type, KEFIR_IR_TYPE_PAD, 0, 10));
@@ -183,7 +191,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, pointer1_type, KEFIR_IR_TYPE_WORD, 0, 0));
     struct kefir_ir_data *pointer1_data = kefir_ir_module_new_named_data(
         mem, &module, "pointer1_1", KEFIR_IR_DATA_THREAD_LOCAL_STORAGE, pointer1_type_id);
-    REQUIRE_OK(kefir_ir_data_set_pointer(pointer1_data, 0, "memory1_1", 2));
+    REQUIRE_OK(kefir_ir_data_set_pointer(pointer1_data, 0, "memory2_1", 2));
     REQUIRE_OK(kefir_ir_data_finalize(pointer1_data));
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "pointer1_1"));
 

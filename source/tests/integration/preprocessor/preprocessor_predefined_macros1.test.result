@@ -3,8 +3,6 @@
 "fileName" 3
 "Sep 26 2021" "10:42:59"
 1 1 201112L
-iso10646 = 201706L
-mb_might_neq_wc = __STDC_MB_MIGHT_NEQ_WC__
 utf16 = 1
 utf32 = 1
 analyzable = __STDC_ANALYZABLE__

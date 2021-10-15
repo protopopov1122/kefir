@@ -18,7 +18,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "kefir/core/platform.h"
+#ifdef KEFIR_LINUX_HOST_PLATFORM
 #define _POSIX_C_SOURCE 200809L
+#endif
+
 #include "kefir/preprocessor/format.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"

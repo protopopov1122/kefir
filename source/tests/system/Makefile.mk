@@ -23,7 +23,7 @@ $(BIN_DIR)/tests/system/%.gen: $(BIN_DIR)/tests/system/%.gen.o \
 	@$(CC) -o $@ $(BIN_DIR)/tests/int_test.o $< $(KEFIR_SYSTEM_TEST_LINKED_LIBS) -L $(LIB_DIR) -lkefir
 
 $(BIN_DIR)/tests/system/%.test.done: $(BIN_DIR)/tests/system/%.gen
-	@CC="$(CC)" LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(LIB_DIR) SANITIZE="$(SANITIZE)" OPT="$(OPT)" DBG="$(DBG)" VALGRIND_OPTIONS="$(VALGRIND_OPTIONS)" CC_TEST_FLAGS="$(CC_TEST_FLAGS)" "$(SOURCE_DIR)/tests/system/run.sh" $^
+	@CC="$(CC)" LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(LIB_DIR) SANITIZE="$(SANITIZE)" OPT="$(OPT)" DBG="$(DBG)" VALGRIND_OPTIONS="$(VALGRIND_OPTIONS)" CC_TEST_FLAGS="$(CC_TEST_FLAGS)" PLATFORM="$(PLATFORM)" "$(SOURCE_DIR)/tests/system/run.sh" $^
 	@touch $@
 
 DEPENDENCIES += $(KEFIR_SYSTEM_TESTS_DEPENDENCIES)

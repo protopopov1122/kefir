@@ -18,7 +18,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "kefir/core/platform.h"
+#ifdef KEFIR_LINUX_HOST_PLATFORM
 #define _XOPEN_SOURCE
+#endif
+
 #include "kefir/core/mem.h"
 #include "kefir/core/util.h"
 #include "kefir/preprocessor/virtual_source_file.h"
@@ -35,8 +39,6 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                            "__FILE__ __LINE__\n"
                            "__DATE__ __TIME__\n"
                            "__STDC__ __STDC_HOSTED__ __STDC_VERSION__\n"
-                           "iso10646 = __STDC_ISO_10646__\n"
-                           "mb_might_neq_wc = __STDC_MB_MIGHT_NEQ_WC__\n"
                            "utf16 = __STDC_UTF_16__\n"
                            "utf32 = __STDC_UTF_32__\n"
                            "analyzable = __STDC_ANALYZABLE__\n"

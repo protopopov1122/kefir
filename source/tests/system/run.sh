@@ -28,6 +28,10 @@ VALGRIND="valgrind $VALGRIND_OPTIONS --log-file=$VALGRIND_FILE"
 AS="as -o $ASM_OBJ"
 COMPILE="$CC -std=c11 -Wall -Wextra -pedantic -Wno-overlength-strings $OPT $DBG -I$DIR/../../../headers $CC_TEST_FLAGS -o $TEST_EXE -lm -pthread"
 
+if [[ "x$PLATFORM" == "xfreebsd" ]]; then
+    COMPILE="$COMPILE -lstdthreads"
+fi
+
 if [[ "x$SANITIZE" == "xundefined" ]]; then
     COMPILE="$COMPILE -fsanitize=undefined -fno-sanitize-recover=all"
 fi
