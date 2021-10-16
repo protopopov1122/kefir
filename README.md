@@ -5,7 +5,8 @@ C11 language standard. Some exceptions to the standard were made (see `Exception
 At the moment, the initial scope of work is effectively finished, and the main concern is stabilization, bugfixes and UX improvements. 
 Kefir supports modern x86-64 Linux and FreeBSD environments.
 Compiler is also able to produce JSON streams containing program representation on various stages of compilation (tokens, AST, IR).
-By default, the compiler outputs NASM assembly. At the moment, position-independent code generation is not supported.
+By default, the compiler outputs GNU As-compatible assembly (Intel syntax).
+At the moment, position-independent code generation is not supported.
 
 ## Motivation & goals
 The main motivation of the project is deeper understanding of C programming language, as well as practical experience in
