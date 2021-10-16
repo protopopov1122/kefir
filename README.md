@@ -53,8 +53,6 @@ is implemented, however refactoring and bug-fixes are still on-going. At the mom
 Following exceptions were made in C11 implementation:
 * Absence of `_Complex` floating-point number support. This feature is not being used
 particularly frequently, at the same time, it complicates target code generator.
-* Absence of thread-local storage. Even though it is implemented on AST structure
-and analysis level, code generator lacks support of thread-local data. 
 * Absence of atomics. C11 standard defines them as optional feature, which I decided
 to omit in initial implementation. Support of atomics would complicate both IR and
 target code generation.
