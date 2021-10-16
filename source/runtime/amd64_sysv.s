@@ -118,6 +118,7 @@ declare_opcode extubits
 declare_opcode extsbits
 declare_opcode insertbits
 declare_opcode getlocals
+declare_opcode getthrlocal
 declare_opcode f32add
 declare_opcode f32sub
 declare_opcode f32mul
@@ -659,6 +660,12 @@ define_opcode insertbits
 define_opcode getlocals
     mov DATA_REG, [INSTR_ARG_PTR]
     add DATA_REG, STACK_BASE_REG
+    push DATA_REG
+    end_opcode
+
+define_opcode getthrlocal
+    mov DATA_REG, [INSTR_ARG_PTR]
+    add DATA_REG, fs:0
     push DATA_REG
     end_opcode
 

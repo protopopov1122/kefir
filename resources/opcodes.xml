@@ -103,6 +103,7 @@
     <opcode id="extubits"    mnemonic="extubits"    code="0x69" type="u32" />
     <opcode id="extsbits"    mnemonic="extsbits"    code="0x6a" type="u32" />
     <opcode id="insertbits"  mnemonic="insertbits"  code="0x6b" type="u32" />
+    <opcode id="getthrlocal" mnemonic="getthrlocal" code="0x6c" type="identifier" />
 
     <!-- Built-ins -->
     <opcode id="vararg_start" mnemonic="startvarg"  code="0x70" type="none" />

@@ -176,6 +176,18 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem, struct kefir_
             ASMGEN_ARG0(&codegen->asmgen, symbol);
         } break;
 
+        case KEFIR_IROPCODE_GETTHRLOCAL: {
+            const kefir_id_t named_symbol = (kefir_id_t) instr->arg.u64;
+            const char *symbol = kefir_ir_module_get_named_symbol(sysv_module->module, named_symbol);
+            REQUIRE(symbol != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unable to find named symbol"));
+
+            const char *opcode_symbol = NULL;
+            REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_GETTHRLOCAL, &opcode_symbol));
+            ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
+            ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
+            ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_THREAD_LOCAL, symbol);
+        } break;
+
         case KEFIR_IROPCODE_VARARG_START:
         case KEFIR_IROPCODE_VARARG_COPY:
         case KEFIR_IROPCODE_VARARG_GET:

@@ -65,6 +65,7 @@
 .extern __kefirrt_extsbits_impl
 .extern __kefirrt_insertbits_impl
 .extern __kefirrt_getlocals_impl
+.extern __kefirrt_getthrlocal_impl
 .extern __kefirrt_f32add_impl
 .extern __kefirrt_f32sub_impl
 .extern __kefirrt_f32mul_impl
