@@ -1,0 +1,169 @@
+{
+    "globals": [
+        "chars",
+        "string",
+        "integer",
+        "struct1",
+        "floatingPoint"
+    ],
+    "externals": [
+        "variable"
+    ],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 14,
+                    "element_type": {
+                        "type": "char"
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "word"
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 5,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "int"
+                        },
+                        {
+                            "type": "float"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 6,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 7,
+            "type": [
+                {
+                    "type": "double"
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "identifier": "chars",
+            "storage": "thread_local",
+            "type": 2,
+            "value": [
+                {
+                    "class": "string",
+                    "content": "Hello, world!\0",
+                    "length": 14
+                },
+                {
+                    "class": "undefined",
+                    "count": 14
+                }
+            ]
+        },
+        {
+            "identifier": "string",
+            "storage": "thread_local",
+            "type": 3,
+            "value": [
+                {
+                    "class": "string_pointer",
+                    "string": 1,
+                    "offset": 0
+                }
+            ]
+        },
+        {
+            "identifier": "integer",
+            "storage": "thread_local",
+            "type": 4,
+            "value": [
+                {
+                    "class": "integer",
+                    "value": 10
+                }
+            ]
+        },
+        {
+            "identifier": "struct1",
+            "storage": "thread_local",
+            "type": 5,
+            "value": [
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "float32",
+                    "value": 20.719700
+                }
+            ]
+        },
+        {
+            "identifier": "floatingPoint",
+            "storage": "thread_local",
+            "type": 7,
+            "value": [
+                {
+                    "class": "float64",
+                    "value": 1.640000
+                }
+            ]
+        }
+    ],
+    "string_literals": [
+        {
+            "id": 0,
+            "public": false,
+            "type": "multibyte",
+            "literal": "Hello, world!\0",
+            "length": 14
+        },
+        {
+            "id": 1,
+            "public": true,
+            "type": "multibyte",
+            "literal": "Goodbye, world!\0",
+            "length": 16
+        }
+    ],
+    "function_declarations": [],
+    "functions": []
+}

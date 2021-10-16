@@ -1,0 +1,111 @@
+{
+    "globals": [],
+    "externals": [
+        "variable"
+    ],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 14,
+                    "element_type": {
+                        "type": "char"
+                    }
+                },
+                {
+                    "type": "word"
+                },
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "int"
+                        },
+                        {
+                            "type": "float"
+                        }
+                    ]
+                },
+                {
+                    "type": "double"
+                }
+            ]
+        },
+        {
+            "identifier": 2,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "identifier": "__kefirrt_module_static_tlocal_vars",
+            "storage": "thread_local",
+            "type": 1,
+            "value": [
+                {
+                    "class": "string",
+                    "content": "Hello, world!\0",
+                    "length": 14
+                },
+                {
+                    "class": "undefined",
+                    "count": 14
+                },
+                {
+                    "class": "string_pointer",
+                    "string": 1,
+                    "offset": 0
+                },
+                {
+                    "class": "integer",
+                    "value": 10
+                },
+                {
+                    "class": "aggregate"
+                },
+                {
+                    "class": "undefined"
+                },
+                {
+                    "class": "float32",
+                    "value": 20.719700
+                },
+                {
+                    "class": "float64",
+                    "value": 1.640000
+                }
+            ]
+        }
+    ],
+    "string_literals": [
+        {
+            "id": 0,
+            "public": false,
+            "type": "multibyte",
+            "literal": "Hello, world!\0",
+            "length": 14
+        },
+        {
+            "id": 1,
+            "public": true,
+            "type": "multibyte",
+            "literal": "Goodbye, world!\0",
+            "length": 16
+        }
+    ],
+    "function_declarations": [],
+    "functions": []
+}

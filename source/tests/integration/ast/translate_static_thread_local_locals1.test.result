@@ -1,0 +1,210 @@
+{
+    "globals": [
+        "fn"
+    ],
+    "externals": [],
+    "types": [
+        {
+            "identifier": 0,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 3,
+                    "element_type": {
+                        "type": "char"
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": 1,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 2,
+            "type": []
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "type": []
+        },
+        {
+            "identifier": 5,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 6,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "int"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "data": [
+        {
+            "identifier": "__kefirrt_module_static_vars",
+            "storage": "global",
+            "type": 0,
+            "value": [
+                {
+                    "class": "string",
+                    "content": "fn\0",
+                    "length": 3
+                },
+                {
+                    "class": "undefined",
+                    "count": 3
+                }
+            ]
+        },
+        {
+            "identifier": "__kefirrt_module_static_tlocal_vars",
+            "storage": "thread_local",
+            "type": 1,
+            "value": [
+                {
+                    "class": "integer",
+                    "value": 1
+                }
+            ]
+        }
+    ],
+    "string_literals": [
+        {
+            "id": 0,
+            "public": false,
+            "type": "multibyte",
+            "literal": "fn\0",
+            "length": 3
+        }
+    ],
+    "function_declarations": [
+        {
+            "identifier": 0,
+            "name": "fn",
+            "parameters": [],
+            "vararg": false,
+            "returns": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 1,
+            "name": "fn",
+            "parameters": [],
+            "vararg": false,
+            "returns": [
+                {
+                    "type": "int"
+                }
+            ]
+        }
+    ],
+    "functions": [
+        {
+            "identifier": 1,
+            "name": "fn",
+            "locals": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "int"
+                        }
+                    ]
+                }
+            ],
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store32"
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "getthrlocal",
+                    "arg": {
+                        "data": "__kefirrt_module_static_tlocal_vars"
+                    }
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load32i"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "load32i"
+                },
+                {
+                    "opcode": "iadd"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store32"
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "getthrlocal",
+                    "arg": {
+                        "data": "__kefirrt_module_static_tlocal_vars"
+                    }
+                },
+                {
+                    "opcode": "load32i"
+                },
+                {
+                    "opcode": "ret"
+                }
+            ]
+        }
+    ]
+}

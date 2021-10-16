@@ -73,9 +73,24 @@ kefir_result_t kefir_ast_translator_object_lvalue(struct kefir_mem *mem, struct 
         } break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL:
-        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL:
-        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL:
-            return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Thread_local variable support is not implemented yet");
+        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL: {
+            kefir_id_t id;
+            REQUIRE(kefir_ir_module_symbol(mem, context->module, identifier, &id) != NULL,
+                    KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR module symbol"));
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_GETTHRLOCAL, id));
+        } break;
+
+        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL: {
+            ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, identifier_data,
+                             scoped_identifier->payload.ptr);
+            kefir_id_t id;
+            REQUIRE(kefir_ir_module_symbol(mem, context->module,
+                                           KEFIR_AST_TRANSLATOR_STATIC_THREAD_LOCAL_VARIABLES_IDENTIFIER, &id) != NULL,
+                    KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR module symbol"));
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_GETTHRLOCAL, id));
+            REQUIRE_OK(resolve_type_layout(builder, identifier_data->type_id, identifier_data->layout));
+
+        } break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO:
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER: {

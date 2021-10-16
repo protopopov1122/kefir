@@ -1,4 +1,9 @@
 END2END_BIN_PATH=$(BIN_DIR)/tests/end2end
+END2END_LIBS=-pthread
+
+ifeq ($(PLATFORM),freebsd)
+END2END_LIBS+=-lstdthreads
+endif
 
 $(END2END_BIN_PATH)/runtime.o: $(SOURCE_DIR)/runtime/amd64_sysv.s
 	@mkdir -p $(shell dirname "$@")
@@ -13,7 +18,7 @@ $(BIN_DIR)/%.kefir.o: $(SOURCE_DIR)/%.kefir.c $(BIN_DIR)/kefir
 $(END2END_BIN_PATH)/%.test: $(END2END_BIN_PATH)/runtime.o
 	@mkdir -p $(shell dirname "$@")
 	@echo "Linking $@"
-	@$(CC) $(CC_TEST_FLAGS) $(SANFLAGS) $(END2END_TEST_OBJS) $(END2END_BIN_PATH)/runtime.o -o $@
+	@$(CC) $(CC_TEST_FLAGS) $(SANFLAGS) $(END2END_TEST_OBJS) $(END2END_BIN_PATH)/runtime.o -o $@ $(END2END_LIBS)
 
 $(END2END_BIN_PATH)/%.test.done: $(END2END_BIN_PATH)/%.test
 	@echo "Running $<"

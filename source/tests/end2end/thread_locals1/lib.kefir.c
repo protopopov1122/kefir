@@ -18,15 +18,34 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef KEFIR_AST_RUNTIME_H_
-#define KEFIR_AST_RUNTIME_H_
+#include "./definitions.h"
 
-#include "kefir/core/basic-types.h"
+_Thread_local long counter = 0;
+extern _Thread_local long external_counter;
+static _Thread_local long saved_counter;
 
-#define KEFIR_AST_TRANSLATOR_STATIC_VARIABLES_IDENTIFIER "__kefirrt_module_static_vars"
-#define KEFIR_AST_TRANSLATOR_STATIC_THREAD_LOCAL_VARIABLES_IDENTIFIER "__kefirrt_module_static_tlocal_vars"
-#define KEFIR_AST_TRANSLATOR_TEMPORARIES_IDENTIFIER "__kefirrt_temporaries"
-#define KEFIR_AST_TRANSLATOR_TEMPORARY_VALUE_IDENTIFIER "__kefirrt_temporary_" KEFIR_ID_FMT
-#define KEFIR_AST_TRANSLATOR_TEMPORARY_MEMBER_IDENTIFIER "__kefirrt_temporary_member_" KEFIR_ID_FMT
+long get_counter() {
+    return counter;
+}
 
-#endif
+void advance_counter() {
+    counter++;
+}
+
+void import_counter() {
+    counter = external_counter;
+}
+
+void save_counter() {
+    saved_counter = counter;
+}
+
+void restore_counter() {
+    counter = saved_counter;
+}
+
+int reset_counter() {
+    static _Thread_local int resets = 0;
+    counter = 0;
+    return ++resets;
+}
