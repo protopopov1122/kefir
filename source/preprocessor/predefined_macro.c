@@ -45,6 +45,7 @@ static kefir_result_t macro_file_apply(struct kefir_mem *mem, const struct kefir
     const char *file = source_location->source;
     struct kefir_token token;
     REQUIRE_OK(kefir_token_new_string_literal_multibyte(mem, file, strlen(file) + 1, &token));
+    token.source_location = *source_location;
     kefir_result_t res = kefir_token_buffer_emplace(mem, buffer, &token);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_token_free(mem, &token);
@@ -69,6 +70,7 @@ static kefir_result_t macro_line_apply(struct kefir_mem *mem, const struct kefir
     snprintf(strbuf, sizeof(strbuf), KEFIR_UINT_FMT, line);
     struct kefir_token token;
     REQUIRE_OK(kefir_token_new_pp_number(mem, strbuf, strlen(strbuf) + 1, &token));
+    token.source_location = *source_location;
     kefir_result_t res = kefir_token_buffer_emplace(mem, buffer, &token);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_token_free(mem, &token);
@@ -96,6 +98,7 @@ static kefir_result_t macro_date_apply(struct kefir_mem *mem, const struct kefir
 
     struct kefir_token token;
     REQUIRE_OK(kefir_token_new_string_literal_multibyte(mem, strbuf, count + 1, &token));
+    token.source_location = *source_location;
     kefir_result_t res = kefir_token_buffer_emplace(mem, buffer, &token);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_token_free(mem, &token);
@@ -123,6 +126,7 @@ static kefir_result_t macro_time_apply(struct kefir_mem *mem, const struct kefir
 
     struct kefir_token token;
     REQUIRE_OK(kefir_token_new_string_literal_multibyte(mem, strbuf, count + 1, &token));
+    token.source_location = *source_location;
     kefir_result_t res = kefir_token_buffer_emplace(mem, buffer, &token);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_token_free(mem, &token);
@@ -146,6 +150,7 @@ static kefir_result_t macro_stdc_hosted_apply(struct kefir_mem *mem, const struc
     struct kefir_token token;
     REQUIRE_OK(kefir_token_new_pp_number(mem, predefined_scope->preprocessor->context->environment.hosted ? "1" : "0",
                                          1, &token));
+    token.source_location = *source_location;
     kefir_result_t res = kefir_token_buffer_emplace(mem, buffer, &token);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_token_free(mem, &token);
@@ -170,6 +175,7 @@ static kefir_result_t macro_stdc_version_apply(struct kefir_mem *mem, const stru
     snprintf(strbuf, sizeof(strbuf), KEFIR_ULONG_FMT "L", predefined_scope->preprocessor->context->environment.version);
     struct kefir_token token;
     REQUIRE_OK(kefir_token_new_pp_number(mem, strbuf, strlen(strbuf) + 1, &token));
+    token.source_location = *source_location;
     kefir_result_t res = kefir_token_buffer_emplace(mem, buffer, &token);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_token_free(mem, &token);
@@ -220,6 +226,7 @@ static kefir_result_t macro_stdc_lib_ext1_apply(struct kefir_mem *mem, const str
              predefined_scope->preprocessor->context->environment.stdc_lib_ext1);
     struct kefir_token token;
     REQUIRE_OK(kefir_token_new_pp_number(mem, strbuf, strlen(strbuf) + 1, &token));
+    token.source_location = *source_location;
     kefir_result_t res = kefir_token_buffer_emplace(mem, buffer, &token);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_token_free(mem, &token);
@@ -241,6 +248,7 @@ static kefir_result_t macro_produce_one_apply(struct kefir_mem *mem, const struc
 
     struct kefir_token token;
     REQUIRE_OK(kefir_token_new_pp_number(mem, "1", 1, &token));
+    token.source_location = *source_location;
     kefir_result_t res = kefir_token_buffer_emplace(mem, buffer, &token);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_token_free(mem, &token);

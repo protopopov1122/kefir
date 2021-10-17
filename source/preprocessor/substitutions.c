@@ -240,7 +240,8 @@ static kefir_result_t substitute_function_macro(struct kefir_mem *mem, struct ke
 }
 
 static kefir_result_t insert_pp_number(struct kefir_mem *mem, struct kefir_preprocessor_token_sequence *seq,
-                                       const char *number_literal) {
+                                       const char *number_literal,
+                                       const struct kefir_source_location *source_location) {
     struct kefir_token number;
     struct kefir_token_buffer buffer;
     REQUIRE_OK(kefir_token_buffer_init(&buffer));
@@ -249,6 +250,7 @@ static kefir_result_t insert_pp_number(struct kefir_mem *mem, struct kefir_prepr
         kefir_token_buffer_free(mem, &buffer);
         return res;
     });
+    number.source_location = *source_location;
     res = kefir_token_buffer_emplace(mem, &buffer, &number);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_token_free(mem, &number);
@@ -266,10 +268,11 @@ static kefir_result_t insert_pp_number(struct kefir_mem *mem, struct kefir_prepr
 
 static kefir_result_t substitute_unknown_identifier(struct kefir_mem *mem,
                                                     struct kefir_preprocessor_token_sequence *seq,
-                                                    kefir_preprocessor_substitution_context_t subst_context) {
+                                                    kefir_preprocessor_substitution_context_t subst_context,
+                                                    const struct kefir_source_location *source_location) {
     REQUIRE(subst_context == KEFIR_PREPROCESSOR_SUBSTITUTION_IF_CONDITION,
             KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Macro not found for specified identifier"));
-    REQUIRE_OK(insert_pp_number(mem, seq, "0"));
+    REQUIRE_OK(insert_pp_number(mem, seq, "0", source_location));
     return KEFIR_OK;
 }
 
@@ -322,9 +325,9 @@ static kefir_result_t substitute_defined_operator(struct kefir_mem *mem, struct 
     }
 
     if (found_identifier) {
-        REQUIRE_OK(insert_pp_number(mem, seq, "1"));
+        REQUIRE_OK(insert_pp_number(mem, seq, "1", source_location));
     } else {
-        REQUIRE_OK(insert_pp_number(mem, seq, "0"));
+        REQUIRE_OK(insert_pp_number(mem, seq, "0", source_location));
     }
     return KEFIR_OK;
 }
@@ -340,7 +343,7 @@ static kefir_result_t substitute_identifier(struct kefir_mem *mem, struct kefir_
         kefir_result_t res = preprocessor->macros.scope.locate(&preprocessor->macros.scope, identifier, &macro);
         if (res != KEFIR_OK) {
             REQUIRE(res == KEFIR_NOT_FOUND, res);
-            REQUIRE_OK(substitute_unknown_identifier(mem, seq, subst_context));
+            REQUIRE_OK(substitute_unknown_identifier(mem, seq, subst_context, source_location));
             return KEFIR_OK;
         }
 

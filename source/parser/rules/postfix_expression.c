@@ -77,21 +77,27 @@ static kefir_result_t scan_postfixes(struct kefir_mem *mem, struct kefir_parser_
 
     REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, primary_expression), NULL));
     do {
+        struct kefir_source_location location = *PARSER_TOKEN_LOCATION(builder->parser, 0);
         if (PARSER_TOKEN_IS_LEFT_BRACKET(parser, 0)) {
             REQUIRE_OK(scan_subscript(mem, builder));
             REQUIRE_OK(kefir_parser_ast_builder_array_subscript(mem, builder));
+            REQUIRE_OK(kefir_parser_ast_builder_set_source_location(mem, builder, &location));
         } else if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_PARENTHESE)) {
             REQUIRE_OK(kefir_parser_ast_builder_function_call(mem, builder));
             REQUIRE_OK(scan_argument_list(mem, builder));
+            REQUIRE_OK(kefir_parser_ast_builder_set_source_location(mem, builder, &location));
         } else if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_DOT) ||
                    PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_ARROW)) {
             REQUIRE_OK(scan_member(mem, builder));
+            REQUIRE_OK(kefir_parser_ast_builder_set_source_location(mem, builder, &location));
         } else if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_DOUBLE_PLUS)) {
             REQUIRE_OK(PARSER_SHIFT(parser));
             REQUIRE_OK(kefir_parser_ast_builder_unary_operation(mem, builder, KEFIR_AST_OPERATION_POSTFIX_INCREMENT));
+            REQUIRE_OK(kefir_parser_ast_builder_set_source_location(mem, builder, &location));
         } else if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_DOUBLE_MINUS)) {
             REQUIRE_OK(PARSER_SHIFT(parser));
             REQUIRE_OK(kefir_parser_ast_builder_unary_operation(mem, builder, KEFIR_AST_OPERATION_POSTFIX_DECREMENT));
+            REQUIRE_OK(kefir_parser_ast_builder_set_source_location(mem, builder, &location));
         } else {
             scan_postfix = false;
         }

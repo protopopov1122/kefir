@@ -26,6 +26,7 @@
 
 static kefir_result_t match_pp_number(struct kefir_mem *mem, struct kefir_lexer *lexer, struct kefir_token *token,
                                       struct kefir_string_buffer *strbuf) {
+    struct kefir_source_location location = lexer->cursor->location;
     kefir_char32_t chr1 = kefir_lexer_source_cursor_at(lexer->cursor, 0);
     kefir_char32_t chr2 = kefir_lexer_source_cursor_at(lexer->cursor, 1);
     if (kefir_isdigit32(chr1)) {
@@ -65,6 +66,7 @@ static kefir_result_t match_pp_number(struct kefir_mem *mem, struct kefir_lexer 
     kefir_size_t pp_number_length;
     const char *pp_number = kefir_string_buffer_value(strbuf, &pp_number_length);
     REQUIRE_OK(kefir_token_new_pp_number(mem, pp_number, pp_number_length, token));
+    token->source_location = location;
     return KEFIR_OK;
 }
 

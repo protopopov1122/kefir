@@ -115,6 +115,7 @@ static kefir_result_t fn_macro_parameter_stringification(struct kefir_mem *mem, 
         return res;
     });
     KEFIR_FREE(mem, string);
+    token.source_location = *source_location;
     res = kefir_token_buffer_emplace(mem, buffer, &token);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_token_free(mem, &token);
@@ -222,6 +223,7 @@ static kefir_result_t concat_tokens_impl(struct kefir_mem *mem, struct kefir_sym
         KEFIR_FREE(mem, result);
         return res;
     });
+    token.source_location = left->source_location;
     KEFIR_FREE(mem, result);
     res = kefir_token_buffer_emplace(mem, buffer, &token);
     REQUIRE_ELSE(res == KEFIR_OK, {

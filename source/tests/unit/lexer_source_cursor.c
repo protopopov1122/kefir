@@ -172,8 +172,8 @@ DEFINE_CASE(lexer_source_cursor_newlines, "Lexer - source cursor newlines") {
     ASSERT(kefir_lexer_source_cursor_at(&cursor, 3) == U'h');
     ASSERT(kefir_lexer_source_cursor_at(&cursor, 4) == U'i');
     ASSERT(kefir_lexer_source_cursor_at(&cursor, 5) == U'\n');
-    ASSERT(cursor.location.line == 1);
-    ASSERT(cursor.location.column == 5);
+    ASSERT(cursor.location.line == 2);
+    ASSERT(cursor.location.column == 2);
 
     ASSERT_OK(kefir_lexer_source_cursor_next(&cursor, 3));
     ASSERT(kefir_lexer_source_cursor_at(&cursor, 0) == U'h');
@@ -184,8 +184,8 @@ DEFINE_CASE(lexer_source_cursor_newlines, "Lexer - source cursor newlines") {
     ASSERT(kefir_lexer_source_cursor_at(&cursor, 5) == U'\\');
     ASSERT(kefir_lexer_source_cursor_at(&cursor, 6) == U'\\');
     ASSERT(kefir_lexer_source_cursor_at(&cursor, 7) == U'l');
-    ASSERT(cursor.location.line == 1);
-    ASSERT(cursor.location.column == 8);
+    ASSERT(cursor.location.line == 6);
+    ASSERT(cursor.location.column == 2);
 
     ASSERT_OK(kefir_lexer_source_cursor_next(&cursor, 3));
     ASSERT(kefir_lexer_source_cursor_at(&cursor, 0) == U'j');
@@ -197,7 +197,7 @@ DEFINE_CASE(lexer_source_cursor_newlines, "Lexer - source cursor newlines") {
     ASSERT(kefir_lexer_source_cursor_at(&cursor, 6) == U'\n');
     ASSERT(kefir_lexer_source_cursor_at(&cursor, 7) == U'\n');
     ASSERT(kefir_lexer_source_cursor_at(&cursor, 8) == U'\\');
-    ASSERT(cursor.location.line == 2);
+    ASSERT(cursor.location.line == 7);
     ASSERT(cursor.location.column == 1);
 
     ASSERT_OK(kefir_lexer_source_cursor_next(&cursor, 5));
@@ -208,7 +208,7 @@ DEFINE_CASE(lexer_source_cursor_newlines, "Lexer - source cursor newlines") {
     ASSERT(kefir_lexer_source_cursor_at(&cursor, 4) == U'\0');
     ASSERT(kefir_lexer_source_cursor_at(&cursor, 5) == U'\0');
     ASSERT(kefir_lexer_source_cursor_at(&cursor, 6) == U'\0');
-    ASSERT(cursor.location.line == 2);
+    ASSERT(cursor.location.line == 7);
     ASSERT(cursor.location.column == 6);
 
     ASSERT_OK(kefir_lexer_source_cursor_next(&cursor, 5));

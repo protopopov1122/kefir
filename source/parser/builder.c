@@ -127,6 +127,25 @@ kefir_result_t kefir_parser_ast_builder_wrap(struct kefir_mem *mem, struct kefir
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_parser_ast_builder_set_source_location(struct kefir_mem *mem,
+                                                            struct kefir_parser_ast_builder *builder,
+                                                            const struct kefir_source_location *source_location) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
+    REQUIRE(source_location != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid source location"));
+
+    struct kefir_ast_node_base *node = NULL;
+    REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &node));
+    node->source_location = *source_location;
+
+    kefir_result_t res = kefir_parser_ast_builder_push(mem, builder, node);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, node);
+        return res;
+    });
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_parser_ast_builder_array_subscript(struct kefir_mem *mem,
                                                         struct kefir_parser_ast_builder *builder) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));

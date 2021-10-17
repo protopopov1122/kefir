@@ -384,6 +384,7 @@ kefir_result_t kefir_ast_struct_type_get_field(const struct kefir_ast_struct_typ
     REQUIRE(identifier == NULL || strlen(identifier) > 0,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid field identifier"));
     REQUIRE(field != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST structure field pointer"));
+    REQUIRE(struct_type->complete, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected complete AST structure type"));
 
     struct kefir_hashtree_node *node = NULL;
     REQUIRE_OK(kefir_hashtree_at(&struct_type->field_index, (kefir_hashtree_key_t) identifier, &node));
@@ -398,6 +399,7 @@ kefir_result_t kefir_ast_struct_type_resolve_field(const struct kefir_ast_struct
     REQUIRE(identifier == NULL || strlen(identifier) > 0,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid field identifier"));
     REQUIRE(field != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST structure field pointer"));
+    REQUIRE(struct_type->complete, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected complete AST structure type"));
 
     *field = NULL;
     struct kefir_hashtree_node *node = NULL;

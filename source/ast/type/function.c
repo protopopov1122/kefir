@@ -140,6 +140,7 @@ static kefir_bool_t compatible_function_types(const struct kefir_ast_type_traits
                                               const struct kefir_ast_type *type1, const struct kefir_ast_type *type2) {
     REQUIRE(type1 != NULL, false);
     REQUIRE(type2 != NULL, false);
+    REQUIRE(type1->tag == KEFIR_AST_TYPE_FUNCTION && type2->tag == KEFIR_AST_TYPE_FUNCTION, false);
     REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(type_traits, kefir_ast_unqualified_type(type1->function_type.return_type),
                                       kefir_ast_unqualified_type(type2->function_type.return_type)),
             false);

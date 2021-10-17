@@ -122,6 +122,8 @@ static kefir_result_t next_impl(struct kefir_lexer_source_cursor *cursor, kefir_
                                     cursor->index += rc;
                                     count++;
                                     skip_line_break = true;
+                                    cursor->location.column = 1;
+                                    cursor->location.line++;
                                 }
                                 break;
                         }

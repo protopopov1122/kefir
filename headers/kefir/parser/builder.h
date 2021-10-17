@@ -43,6 +43,8 @@ typedef kefir_result_t kefir_parser_ast_builder_callback_t(struct kefir_mem *, s
 kefir_result_t kefir_parser_ast_builder_wrap(struct kefir_mem *, struct kefir_parser *, struct kefir_ast_node_base **,
                                              kefir_parser_ast_builder_callback_t, void *);
 
+kefir_result_t kefir_parser_ast_builder_set_source_location(struct kefir_mem *, struct kefir_parser_ast_builder *,
+                                                            const struct kefir_source_location *);
 kefir_result_t kefir_parser_ast_builder_array_subscript(struct kefir_mem *, struct kefir_parser_ast_builder *);
 kefir_result_t kefir_parser_ast_builder_function_call(struct kefir_mem *, struct kefir_parser_ast_builder *);
 kefir_result_t kefir_parser_ast_builder_function_call_append(struct kefir_mem *, struct kefir_parser_ast_builder *);

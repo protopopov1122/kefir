@@ -31,6 +31,7 @@ kefir_result_t kefir_preprocessor_token_convert(struct kefir_mem *mem, struct ke
                 return KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &cursor.location,
                                               "Unexpected character in numeric token");
             });
+            dst->source_location = src->source_location;
         } break;
 
         case KEFIR_TOKEN_IDENTIFIER: {

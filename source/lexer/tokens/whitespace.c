@@ -80,6 +80,7 @@ kefir_result_t kefir_lexer_cursor_match_whitespace(struct kefir_mem *mem, struct
     UNUSED(mem);
     REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer"));
 
+    struct kefir_source_location source_location = lexer->cursor->location;
     kefir_bool_t continue_scan = true;
     enum whitespace_match match = WHITESPACE_NO_MATCH;
     while (continue_scan) {
@@ -94,6 +95,7 @@ kefir_result_t kefir_lexer_cursor_match_whitespace(struct kefir_mem *mem, struct
     if (token != NULL) {
         REQUIRE(match != WHITESPACE_NO_MATCH, KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match whitespace"));
         REQUIRE_OK(kefir_token_new_pp_whitespace(match == WHITESPACE_NEWLINE, token));
+        token->source_location = source_location;
     }
     return KEFIR_OK;
 }
