@@ -23,6 +23,7 @@
 #include "kefir/ast-translator/flow_control.h"
 #include "kefir/ast-translator/util.h"
 #include "kefir/ast-translator/typeconv.h"
+#include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -36,6 +37,13 @@ kefir_result_t kefir_ast_translate_return_statement_node(struct kefir_mem *mem,
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST return statement node"));
 
     if (node->expression != NULL) {
+        const struct kefir_ast_type *return_init_normalized_type =
+            kefir_ast_translator_normalize_type(node->expression->properties.type);
+        const struct kefir_ast_type *return_normalized_type =
+            KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, return_init_normalized_type);
+        REQUIRE(return_normalized_type != NULL,
+                KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to perform lvalue conversions"));
+
         REQUIRE_OK(kefir_ast_translate_expression(mem, node->expression, builder, context));
         if (KEFIR_AST_TYPE_IS_SCALAR_TYPE(node->expression->properties.type)) {
             REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits,

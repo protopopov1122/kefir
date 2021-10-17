@@ -42,7 +42,11 @@ static kefir_result_t next_character(struct kefir_lexer_source_cursor *cursor, k
         char multibyte[MB_CUR_MAX];
         mbstate_t mbstate = {0};
         size_t sz = c32rtomb(multibyte, chr, &mbstate);
-        REQUIRE(sz != (size_t) -1, KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &char_location, "Invalid character"));
+        if (sz == (size_t) -1) {
+            REQUIRE(chr <= 0xff, KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &char_location, "Invalid character"));
+            sz = 1;
+            multibyte[0] = (char) chr;
+        }
         char *iter = multibyte;
         while (sz--) {
             *value <<= 8;

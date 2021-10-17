@@ -835,9 +835,13 @@ kefir_result_t kefir_ast_global_context_define_type(struct kefir_mem *mem, struc
     struct kefir_ast_scoped_identifier *ordinary_id = NULL;
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->type_identifiers, identifier, &ordinary_id);
     if (res == KEFIR_OK) {
-        REQUIRE(KEFIR_AST_TYPE_SAME(type, ordinary_id->type),
+        REQUIRE(ordinary_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION &&
+                    KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, ordinary_id->type, type),
                 KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "Unable to redefine different type with the same identifier"));
+        if (KEFIR_AST_TYPE_IS_INCOMPLETE(ordinary_id->type) && !KEFIR_AST_TYPE_IS_INCOMPLETE(type)) {
+            ordinary_id->type = type;
+        }
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
         ordinary_id = kefir_ast_context_allocate_scoped_type_definition(mem, type);
@@ -848,9 +852,9 @@ kefir_result_t kefir_ast_global_context_define_type(struct kefir_mem *mem, struc
             kefir_ast_context_free_scoped_identifier(mem, ordinary_id, NULL);
             return res;
         });
+        REQUIRE_OK(insert_ordinary_identifier(mem, context, identifier, ordinary_id));
     }
 
-    REQUIRE_OK(insert_ordinary_identifier(mem, context, identifier, ordinary_id));
     ASSIGN_PTR(scoped_id, ordinary_id);
     return KEFIR_OK;
 }

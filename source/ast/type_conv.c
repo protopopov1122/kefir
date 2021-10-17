@@ -25,7 +25,10 @@
 const struct kefir_ast_type *kefir_ast_type_int_promotion(const struct kefir_ast_type_traits *type_traits,
                                                           const struct kefir_ast_type *type) {
     REQUIRE(type != NULL, NULL);
-    REQUIRE(KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(type), NULL);
+    REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type), NULL);
+    if (type->tag == KEFIR_AST_TYPE_ENUMERATION) {
+        type = kefir_ast_enumeration_underlying_type(&type->enumeration_type);
+    }
 
     const struct kefir_ast_type *SIGNED_INT = kefir_ast_type_signed_int();
     const struct kefir_ast_type *UNSIGNED_INT = kefir_ast_type_unsigned_int();

@@ -38,10 +38,17 @@ static kefir_result_t translate_parameters(struct kefir_mem *mem, struct kefir_a
         ASSIGN_DECL_CAST(struct kefir_ast_type_layout *, parameter_layout, decl_arg_iter->value);
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, parameter_value, arg_value_iter->value);
 
+        const struct kefir_ast_type *param_init_normalized_type =
+            kefir_ast_translator_normalize_type(parameter_value->properties.type);
+        const struct kefir_ast_type *param_normalized_type =
+            KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, param_init_normalized_type);
+        REQUIRE(param_normalized_type != NULL,
+                KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to perform lvalue conversions"));
+
         REQUIRE_OK(kefir_ast_translate_expression(mem, parameter_value, builder, context));
-        if (KEFIR_AST_TYPE_IS_SCALAR_TYPE(parameter_value->properties.type)) {
-            REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits,
-                                                    parameter_value->properties.type, parameter_layout->type));
+        if (KEFIR_AST_TYPE_IS_SCALAR_TYPE(param_normalized_type)) {
+            REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits, param_normalized_type,
+                                                    parameter_layout->type));
         }
     }
     return KEFIR_OK;

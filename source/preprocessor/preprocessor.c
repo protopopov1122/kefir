@@ -456,7 +456,8 @@ static kefir_result_t run_directive(struct kefir_mem *mem, struct kefir_preproce
             } else {
                 *condition_state = IF_CONDITION_SUCCESS;
                 REQUIRE_OK(res);
-                REQUIRE_OK(kefir_preprocessor_run_group(mem, preprocessor, group_buffer));
+                REQUIRE_OK(flush_group_buffer(mem, preprocessor, buffer, group_buffer));
+                REQUIRE_OK(kefir_preprocessor_run_group(mem, preprocessor, buffer));
             }
         } break;
 
@@ -466,7 +467,8 @@ static kefir_result_t run_directive(struct kefir_mem *mem, struct kefir_preproce
                                                                    directive->ifdef_directive.identifier, &macro);
             if (res == KEFIR_NOT_FOUND) {
                 *condition_state = IF_CONDITION_SUCCESS;
-                REQUIRE_OK(kefir_preprocessor_run_group(mem, preprocessor, group_buffer));
+                REQUIRE_OK(flush_group_buffer(mem, preprocessor, buffer, group_buffer));
+                REQUIRE_OK(kefir_preprocessor_run_group(mem, preprocessor, buffer));
             } else {
                 REQUIRE_OK(res);
                 *condition_state = IF_CONDITION_FAIL;
@@ -491,19 +493,22 @@ static kefir_result_t run_directive(struct kefir_mem *mem, struct kefir_preproce
                 *scan_directives = false;
             } else if (*condition_state == IF_CONDITION_FAIL) {
                 *condition_state = IF_CONDITION_SUCCESS;
-                REQUIRE_OK(kefir_preprocessor_run_group(mem, preprocessor, group_buffer));
+                REQUIRE_OK(flush_group_buffer(mem, preprocessor, buffer, group_buffer));
+                REQUIRE_OK(kefir_preprocessor_run_group(mem, preprocessor, buffer));
             } else {
                 REQUIRE_OK(kefir_preprocessor_skip_group(mem, preprocessor));
             }
             break;
 
         case KEFIR_PREPROCESSOR_DIRECTIVE_IF:
-            REQUIRE_OK(process_if(mem, preprocessor, directive, condition_state, group_buffer));
+            REQUIRE_OK(flush_group_buffer(mem, preprocessor, buffer, group_buffer));
+            REQUIRE_OK(process_if(mem, preprocessor, directive, condition_state, buffer));
             break;
 
         case KEFIR_PREPROCESSOR_DIRECTIVE_ELIF:
-            REQUIRE_OK(process_elif(mem, preprocessor, directive, condition_state, scan_directives, group_buffer,
-                                    scanner_state));
+            REQUIRE_OK(flush_group_buffer(mem, preprocessor, buffer, group_buffer));
+            REQUIRE_OK(
+                process_elif(mem, preprocessor, directive, condition_state, scan_directives, buffer, scanner_state));
             break;
 
         case KEFIR_PREPROCESSOR_DIRECTIVE_INCLUDE:

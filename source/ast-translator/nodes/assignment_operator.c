@@ -31,8 +31,12 @@
 static kefir_result_t translate_simple(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
                                        struct kefir_irbuilder_block *builder,
                                        const struct kefir_ast_assignment_operator *node) {
-    const struct kefir_ast_type *value_normalized_type =
+    const struct kefir_ast_type *value_init_normalized_type =
         kefir_ast_translator_normalize_type(node->value->properties.type);
+    const struct kefir_ast_type *value_normalized_type =
+        KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, value_init_normalized_type);
+    REQUIRE(value_normalized_type != NULL,
+            KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to perform lvalue conversions"));
     const struct kefir_ast_type *result_normalized_type =
         kefir_ast_translator_normalize_type(node->base.properties.type);
 
@@ -53,8 +57,12 @@ static kefir_result_t translate_multiplication(struct kefir_mem *mem, struct kef
                                                const struct kefir_ast_assignment_operator *node) {
     const struct kefir_ast_type *target_normalized_type =
         kefir_ast_translator_normalize_type(node->target->properties.type);
-    const struct kefir_ast_type *value_normalized_type =
+    const struct kefir_ast_type *value_init_normalized_type =
         kefir_ast_translator_normalize_type(node->value->properties.type);
+    const struct kefir_ast_type *value_normalized_type =
+        KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, value_init_normalized_type);
+    REQUIRE(value_normalized_type != NULL,
+            KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to perform lvalue conversions"));
     const struct kefir_ast_type *common_type = kefir_ast_type_common_arithmetic(
         context->ast_context->type_traits, target_normalized_type, value_normalized_type);
     const struct kefir_ast_type *result_normalized_type =
@@ -94,8 +102,12 @@ static kefir_result_t translate_divide(struct kefir_mem *mem, struct kefir_ast_t
                                        const struct kefir_ast_assignment_operator *node) {
     const struct kefir_ast_type *target_normalized_type =
         kefir_ast_translator_normalize_type(node->target->properties.type);
-    const struct kefir_ast_type *value_normalized_type =
+    const struct kefir_ast_type *value_init_normalized_type =
         kefir_ast_translator_normalize_type(node->value->properties.type);
+    const struct kefir_ast_type *value_normalized_type =
+        KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, value_init_normalized_type);
+    REQUIRE(value_normalized_type != NULL,
+            KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to perform lvalue conversions"));
     const struct kefir_ast_type *common_type = kefir_ast_type_common_arithmetic(
         context->ast_context->type_traits, target_normalized_type, value_normalized_type);
     const struct kefir_ast_type *result_normalized_type =
@@ -135,8 +147,12 @@ static kefir_result_t translate_modulo_bitwise(struct kefir_mem *mem, struct kef
                                                const struct kefir_ast_assignment_operator *node) {
     const struct kefir_ast_type *target_normalized_type =
         kefir_ast_translator_normalize_type(node->target->properties.type);
-    const struct kefir_ast_type *value_normalized_type =
+    const struct kefir_ast_type *value_init_normalized_type =
         kefir_ast_translator_normalize_type(node->value->properties.type);
+    const struct kefir_ast_type *value_normalized_type =
+        KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, value_init_normalized_type);
+    REQUIRE(value_normalized_type != NULL,
+            KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to perform lvalue conversions"));
     const struct kefir_ast_type *common_type = kefir_ast_type_common_arithmetic(
         context->ast_context->type_traits, target_normalized_type, value_normalized_type);
     const struct kefir_ast_type *result_normalized_type =
@@ -200,8 +216,12 @@ static kefir_result_t translate_add(struct kefir_mem *mem, struct kefir_ast_tran
                                     const struct kefir_ast_assignment_operator *node) {
     const struct kefir_ast_type *target_normalized_type =
         kefir_ast_translator_normalize_type(node->target->properties.type);
-    const struct kefir_ast_type *value_normalized_type =
+    const struct kefir_ast_type *value_init_normalized_type =
         kefir_ast_translator_normalize_type(node->value->properties.type);
+    const struct kefir_ast_type *value_normalized_type =
+        KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, value_init_normalized_type);
+    REQUIRE(value_normalized_type != NULL,
+            KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to perform lvalue conversions"));
     const struct kefir_ast_type *result_normalized_type =
         kefir_ast_translator_normalize_type(node->base.properties.type);
 
@@ -263,8 +283,12 @@ static kefir_result_t translate_subtract(struct kefir_mem *mem, struct kefir_ast
                                          const struct kefir_ast_assignment_operator *node) {
     const struct kefir_ast_type *target_normalized_type =
         kefir_ast_translator_normalize_type(node->target->properties.type);
-    const struct kefir_ast_type *value_normalized_type =
+    const struct kefir_ast_type *value_init_normalized_type =
         kefir_ast_translator_normalize_type(node->value->properties.type);
+    const struct kefir_ast_type *value_normalized_type =
+        KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, value_init_normalized_type);
+    REQUIRE(value_normalized_type != NULL,
+            KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to perform lvalue conversions"));
     const struct kefir_ast_type *result_normalized_type =
         kefir_ast_translator_normalize_type(node->base.properties.type);
 

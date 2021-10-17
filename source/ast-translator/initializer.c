@@ -27,6 +27,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/ast/initializer_traversal.h"
+#include "kefir/ast/type_conv.h"
 
 struct traversal_param {
     struct kefir_mem *mem;
@@ -88,9 +89,13 @@ static kefir_result_t traverse_scalar(const struct kefir_ast_designator *designa
     }
 
     REQUIRE_OK(kefir_ast_translate_expression(param->mem, expression, param->builder, param->context));
-    if (KEFIR_AST_TYPE_IS_SCALAR_TYPE(expression->properties.type)) {
-        REQUIRE_OK(kefir_ast_translate_typeconv(param->builder, param->context->ast_context->type_traits,
-                                                expression->properties.type, type_layout->type));
+
+    const struct kefir_ast_type *expr_type = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(
+        param->mem, param->context->ast_context->type_bundle, expression->properties.type);
+    REQUIRE(expr_type != NULL, KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to perform lvalue conversions"));
+    if (KEFIR_AST_TYPE_IS_SCALAR_TYPE(expr_type)) {
+        REQUIRE_OK(kefir_ast_translate_typeconv(param->builder, param->context->ast_context->type_traits, expr_type,
+                                                type_layout->type));
     }
     REQUIRE_OK(kefir_ast_translator_store_value(param->mem, type_layout->type, param->context, param->builder));
     return KEFIR_OK;

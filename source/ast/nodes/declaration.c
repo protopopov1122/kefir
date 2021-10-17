@@ -106,6 +106,10 @@ struct kefir_ast_node_base *ast_declaration_clone(struct kefir_mem *mem, struct 
             KEFIR_FREE(mem, clone);
             return NULL;
         });
+        if (declaration_clone->klass->type == KEFIR_AST_INIT_DECLARATOR) {
+            ASSIGN_DECL_CAST(struct kefir_ast_init_declarator *, init_decl, declaration_clone->self);
+            init_decl->declaration = clone;
+        }
         res = kefir_list_insert_after(mem, &clone->init_declarators, kefir_list_tail(&clone->init_declarators),
                                       declaration_clone);
         REQUIRE_ELSE(res == KEFIR_OK, {

@@ -858,13 +858,13 @@ kefir_result_t kefir_ast_local_context_define_type(struct kefir_mem *mem, struct
         kefir_ast_identifier_flat_scope_at(kefir_ast_identifier_block_scope_top(&context->ordinary_scope), identifier,
                                            (struct kefir_ast_scoped_identifier **) &scoped_id);
     if (res == KEFIR_OK) {
-        REQUIRE(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
-                                       "Unable to redefine identifier with different kind of symbol"));
-        REQUIRE(KEFIR_AST_TYPE_SAME(type, scoped_id->type),
+        REQUIRE(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION &&
+                    KEFIR_AST_TYPE_COMPATIBLE(context->global->type_traits, scoped_id->type, type),
                 KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "Unable to redefine different type with the same identifier"));
-        return KEFIR_OK;
+        if (KEFIR_AST_TYPE_IS_INCOMPLETE(scoped_id->type) && !KEFIR_AST_TYPE_IS_INCOMPLETE(type)) {
+            scoped_id->type = type;
+        }
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
         scoped_id = kefir_ast_context_allocate_scoped_type_definition(mem, type);

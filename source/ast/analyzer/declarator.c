@@ -690,7 +690,7 @@ static kefir_result_t type_alignment(struct kefir_mem *mem, const struct kefir_a
 static kefir_result_t evaluate_alignment(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                          struct kefir_ast_node_base *node, kefir_size_t *alignment) {
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node));
-    if (node->klass->type == KEFIR_AST_TYPE_NAME) {
+    if (node->properties.category == KEFIR_AST_NODE_CATEGORY_TYPE) {
         kefir_size_t new_alignment = 0;
         REQUIRE_OK(type_alignment(mem, context, node->properties.type, &new_alignment));
         *alignment = MAX(*alignment, new_alignment);

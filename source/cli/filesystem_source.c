@@ -33,6 +33,7 @@
 #include <limits.h>
 #include <unistd.h>
 #include <libgen.h>
+#include <errno.h>
 
 static kefir_result_t close_source(struct kefir_mem *mem, struct kefir_preprocessor_source_file *source_file) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
@@ -88,6 +89,11 @@ static kefir_result_t try_open_file(struct kefir_mem *mem, const char *root, con
     strcat(path, filepath);
     char *resolved_path = realpath(path, NULL);
     KEFIR_FREE(mem, path);
+    if (resolved_path == NULL && errno == ENOENT) {
+        return KEFIR_SET_ERROR(KEFIR_NOT_FOUND, "Cannot find requested file");
+    } else if (resolved_path == NULL) {
+        return KEFIR_SET_OS_ERROR("Failed to determine real path");
+    }
     kefir_result_t res = open_file(mem, resolved_path, system, source_file, locator->symbols);
     KEFIR_FREE(mem, resolved_path);
     if (res != KEFIR_NOT_FOUND) {
