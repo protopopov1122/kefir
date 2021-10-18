@@ -68,8 +68,7 @@ kefir_result_t kefir_list_insert_after(struct kefir_mem *mem, struct kefir_list 
                                        void *value) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(list != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-NULL list pointer"));
-    REQUIRE_ELSE((iter == NULL && list->head == NULL) || (iter != NULL && list->head != NULL),
-                 KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-NULL iterator for non-empty list"));
+
     struct kefir_list_entry *entry = KEFIR_MALLOC(mem, sizeof(struct kefir_list_entry));
     REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate list entry"));
     entry->prev = NULL;

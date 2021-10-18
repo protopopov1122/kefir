@@ -64,4 +64,9 @@ const struct kefir_ast_type *kefir_ast_type_structure(struct kefir_mem *, struct
 const struct kefir_ast_type *kefir_ast_type_union(struct kefir_mem *, struct kefir_ast_type_bundle *, const char *,
                                                   struct kefir_ast_struct_type **);
 
+typedef struct kefir_ast_named_structure_resolver {
+    kefir_result_t (*resolve)(const char *, const struct kefir_ast_type **, void *);
+    void *payload;
+} kefir_ast_named_structure_resolver_t;
+
 #endif

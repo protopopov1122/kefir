@@ -27,6 +27,7 @@
 #include "kefir/ast/target_environment.h"
 #include "kefir/ast/temporaries.h"
 #include "kefir/ast/flow_control.h"
+#include "kefir/ast/type/struct.h"
 
 typedef struct kefir_ast_context {
     kefir_result_t (*resolve_ordinary_identifier)(const struct kefir_ast_context *, const char *,

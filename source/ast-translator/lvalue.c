@@ -23,6 +23,7 @@
 #include "kefir/ast-translator/lvalue.h"
 #include "kefir/ast-translator/temporaries.h"
 #include "kefir/ast-translator/initializer.h"
+#include "kefir/ast/named_struct_resolver.h"
 #include "kefir/ast/runtime.h"
 #include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
@@ -166,6 +167,21 @@ kefir_result_t kefir_ast_translate_struct_member_lvalue(struct kefir_mem *mem,
         KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, node->structure->properties.type);
     if (structure_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
         structure_type = kefir_ast_unqualified_type(structure_type->referenced_type);
+    }
+
+    if (!structure_type->structure_type.complete) {
+        REQUIRE(structure_type->structure_type.identifier != NULL,
+                KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected expression of complete structure/union type"));
+
+        struct kefir_ast_named_structure_resolver resolver;
+        REQUIRE_OK(kefir_ast_context_named_structure_resolver_init(context->ast_context, &resolver));
+        kefir_result_t res =
+            resolver.resolve(structure_type->structure_type.identifier, &structure_type, resolver.payload);
+        if (res == KEFIR_NOT_FOUND) {
+            return KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected expression of complete structure/union type");
+        } else {
+            REQUIRE_OK(res);
+        }
     }
 
     const struct kefir_ast_translator_resolved_type *cached_type = NULL;

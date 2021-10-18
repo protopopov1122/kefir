@@ -49,6 +49,7 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(
     struct kefir_ast_type_bundle *type_bundle, const struct kefir_ast_type_traits *type_traits,
     struct kefir_ast_translator_type_resolver *type_resolver, const struct kefir_ast_type *func_type,
     const struct kefir_list *parameters, struct kefir_ast_translator_function_declaration *func_decl) {
+
     struct kefir_irbuilder_type builder;
     REQUIRE_OK(kefir_irbuilder_type_init(mem, &builder, func_decl->ir_argument_type));
 

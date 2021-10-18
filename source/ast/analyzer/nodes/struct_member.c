@@ -20,6 +20,7 @@
 
 #include "kefir/ast/analyzer/nodes.h"
 #include "kefir/ast/analyzer/analyzer.h"
+#include "kefir/ast/named_struct_resolver.h"
 #include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
@@ -59,6 +60,22 @@ kefir_result_t kefir_ast_analyze_struct_member_node(struct kefir_mem *mem, const
         REQUIRE(struct_type->tag == KEFIR_AST_TYPE_STRUCTURE || struct_type->tag == KEFIR_AST_TYPE_UNION,
                 KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->structure->source_location,
                                        "Expected structure or union type on the left side"));
+    }
+
+    if (!struct_type->structure_type.complete) {
+        REQUIRE(struct_type->structure_type.identifier != NULL,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->structure->source_location,
+                                       "Expected expression of complete structure/union type"));
+
+        struct kefir_ast_named_structure_resolver resolver;
+        REQUIRE_OK(kefir_ast_context_named_structure_resolver_init(context, &resolver));
+        kefir_result_t res = resolver.resolve(struct_type->structure_type.identifier, &struct_type, resolver.payload);
+        if (res == KEFIR_NOT_FOUND) {
+            return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->structure->source_location,
+                                          "Expected expression of complete structure/union type");
+        } else {
+            REQUIRE_OK(res);
+        }
     }
 
     const struct kefir_ast_struct_field *field = NULL;
