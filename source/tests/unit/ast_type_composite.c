@@ -33,7 +33,7 @@ DEFINE_CASE(ast_type_basic_composite, "AST types - basic composite type") {
     ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
 
     const struct kefir_ast_type *BASIC_TYPES[] = {kefir_ast_type_void(),
-                                                  kefir_ast_type_bool(),
+                                                  kefir_ast_type_boolean(),
                                                   kefir_ast_type_char(),
                                                   kefir_ast_type_unsigned_char(),
                                                   kefir_ast_type_signed_char(),
@@ -82,7 +82,7 @@ DEFINE_CASE(ast_type_pointer_composite, "AST types - pointer composite type") {
 
     const struct kefir_ast_type *BASE_TYPES[] = {
         kefir_ast_type_void(),
-        kefir_ast_type_bool(),
+        kefir_ast_type_boolean(),
         kefir_ast_type_char(),
         kefir_ast_type_unsigned_char(),
         kefir_ast_type_signed_char(),
@@ -97,7 +97,7 @@ DEFINE_CASE(ast_type_pointer_composite, "AST types - pointer composite type") {
         kefir_ast_type_float(),
         kefir_ast_type_double(),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_void()),
-        kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_bool()),
+        kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_boolean()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_char()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_unsigned_char()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_signed_char()),
@@ -231,7 +231,7 @@ DEFINE_CASE(ast_type_qualified_composite, "AST types - qualified composite type"
 
     const struct kefir_ast_type *BASE_TYPES[] = {
         kefir_ast_type_void(),
-        kefir_ast_type_bool(),
+        kefir_ast_type_boolean(),
         kefir_ast_type_char(),
         kefir_ast_type_unsigned_char(),
         kefir_ast_type_signed_char(),
@@ -246,7 +246,7 @@ DEFINE_CASE(ast_type_qualified_composite, "AST types - qualified composite type"
         kefir_ast_type_float(),
         kefir_ast_type_double(),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_void()),
-        kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_bool()),
+        kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_boolean()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_char()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_unsigned_char()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_signed_char()),

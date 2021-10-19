@@ -89,10 +89,10 @@ DEFINE_CASE(ast_node_analysis_generic_selections, "AST node analysis - generic s
         NULL, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "r", kefir_ast_type_signed_long_long(),
                                                        NULL, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "bool", kefir_ast_type_bool(), NULL,
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "bool", kefir_ast_type_boolean(), NULL,
                                                        NULL, NULL));
 
-    ASSERT_GENERIC_SELECTION(&kft_mem, context, "x", kefir_ast_type_bool(), true, false, true);
+    ASSERT_GENERIC_SELECTION(&kft_mem, context, "x", kefir_ast_type_boolean(), true, false, true);
     ASSERT_GENERIC_SELECTION(&kft_mem, context, "y", kefir_ast_type_float(), false, true, false);
     ASSERT_GENERIC_SELECTION(&kft_mem, context, "z", kefir_ast_type_signed_int(), false, true, false);
     ASSERT_GENERIC_SELECTION(&kft_mem, context, "w", kefir_ast_type_unsigned_int(), false, true, false);
@@ -276,18 +276,11 @@ DEFINE_CASE(ast_node_analysis_multiplicative_operators, "AST node analysis - mul
     MULDIV(KEFIR_AST_OPERATION_MULTIPLY)
     MULDIV(KEFIR_AST_OPERATION_DIVIDE)
 
-    const struct kefir_ast_type *TYPES[] = {kefir_ast_type_bool(),
-                                            kefir_ast_type_char(),
-                                            kefir_ast_type_unsigned_char(),
-                                            kefir_ast_type_signed_char(),
-                                            kefir_ast_type_unsigned_int(),
-                                            kefir_ast_type_signed_int(),
-                                            kefir_ast_type_unsigned_long(),
-                                            kefir_ast_type_signed_long(),
-                                            kefir_ast_type_unsigned_long_long(),
-                                            kefir_ast_type_signed_long_long(),
-                                            kefir_ast_type_float(),
-                                            kefir_ast_type_double()};
+    const struct kefir_ast_type *TYPES[] = {
+        kefir_ast_type_boolean(),          kefir_ast_type_char(),         kefir_ast_type_unsigned_char(),
+        kefir_ast_type_signed_char(),      kefir_ast_type_unsigned_int(), kefir_ast_type_signed_int(),
+        kefir_ast_type_unsigned_long(),    kefir_ast_type_signed_long(),  kefir_ast_type_unsigned_long_long(),
+        kefir_ast_type_signed_long_long(), kefir_ast_type_float(),        kefir_ast_type_double()};
     const kefir_size_t TYPES_LEN = sizeof(TYPES) / sizeof(TYPES[0]);
 
     for (kefir_size_t i = 0; i < TYPES_LEN; i++) {
@@ -366,18 +359,11 @@ DEFINE_CASE(ast_node_analysis_add_operator, "AST node analysis - add operator") 
                                                        kefir_ast_constant_expression_integer(&kft_mem, 100),
                                                        type_traits->underlying_enumeration_type, NULL, NULL));
 
-    const struct kefir_ast_type *TYPES[] = {kefir_ast_type_bool(),
-                                            kefir_ast_type_char(),
-                                            kefir_ast_type_unsigned_char(),
-                                            kefir_ast_type_signed_char(),
-                                            kefir_ast_type_unsigned_int(),
-                                            kefir_ast_type_signed_int(),
-                                            kefir_ast_type_unsigned_long(),
-                                            kefir_ast_type_signed_long(),
-                                            kefir_ast_type_unsigned_long_long(),
-                                            kefir_ast_type_signed_long_long(),
-                                            kefir_ast_type_float(),
-                                            kefir_ast_type_double()};
+    const struct kefir_ast_type *TYPES[] = {
+        kefir_ast_type_boolean(),          kefir_ast_type_char(),         kefir_ast_type_unsigned_char(),
+        kefir_ast_type_signed_char(),      kefir_ast_type_unsigned_int(), kefir_ast_type_signed_int(),
+        kefir_ast_type_unsigned_long(),    kefir_ast_type_signed_long(),  kefir_ast_type_unsigned_long_long(),
+        kefir_ast_type_signed_long_long(), kefir_ast_type_float(),        kefir_ast_type_double()};
     const kefir_size_t TYPES_LEN = sizeof(TYPES) / sizeof(TYPES[0]);
 
     for (kefir_size_t i = 0; i < TYPES_LEN; i++) {
@@ -445,18 +431,11 @@ DEFINE_CASE(ast_node_analysis_subtract_operator, "AST node analysis - subtractio
                                                        kefir_ast_constant_expression_integer(&kft_mem, 100),
                                                        type_traits->underlying_enumeration_type, NULL, NULL));
 
-    const struct kefir_ast_type *TYPES[] = {kefir_ast_type_bool(),
-                                            kefir_ast_type_char(),
-                                            kefir_ast_type_unsigned_char(),
-                                            kefir_ast_type_signed_char(),
-                                            kefir_ast_type_unsigned_int(),
-                                            kefir_ast_type_signed_int(),
-                                            kefir_ast_type_unsigned_long(),
-                                            kefir_ast_type_signed_long(),
-                                            kefir_ast_type_unsigned_long_long(),
-                                            kefir_ast_type_signed_long_long(),
-                                            kefir_ast_type_float(),
-                                            kefir_ast_type_double()};
+    const struct kefir_ast_type *TYPES[] = {
+        kefir_ast_type_boolean(),          kefir_ast_type_char(),         kefir_ast_type_unsigned_char(),
+        kefir_ast_type_signed_char(),      kefir_ast_type_unsigned_int(), kefir_ast_type_signed_int(),
+        kefir_ast_type_unsigned_long(),    kefir_ast_type_signed_long(),  kefir_ast_type_unsigned_long_long(),
+        kefir_ast_type_signed_long_long(), kefir_ast_type_float(),        kefir_ast_type_double()};
     const kefir_size_t TYPES_LEN = sizeof(TYPES) / sizeof(TYPES[0]);
 
     for (kefir_size_t i = 0; i < TYPES_LEN; i++) {
@@ -540,16 +519,11 @@ DEFINE_CASE(ast_node_analysis_shift_operator, "AST node analysis - shift operato
                                                        kefir_ast_constant_expression_integer(&kft_mem, 100),
                                                        type_traits->underlying_enumeration_type, NULL, NULL));
 
-    const struct kefir_ast_type *TYPES[] = {kefir_ast_type_bool(),
-                                            kefir_ast_type_char(),
-                                            kefir_ast_type_unsigned_char(),
-                                            kefir_ast_type_signed_char(),
-                                            kefir_ast_type_unsigned_int(),
-                                            kefir_ast_type_signed_int(),
-                                            kefir_ast_type_unsigned_long(),
-                                            kefir_ast_type_signed_long(),
-                                            kefir_ast_type_unsigned_long_long(),
-                                            kefir_ast_type_signed_long_long()};
+    const struct kefir_ast_type *TYPES[] = {
+        kefir_ast_type_boolean(),         kefir_ast_type_char(),         kefir_ast_type_unsigned_char(),
+        kefir_ast_type_signed_char(),     kefir_ast_type_unsigned_int(), kefir_ast_type_signed_int(),
+        kefir_ast_type_unsigned_long(),   kefir_ast_type_signed_long(),  kefir_ast_type_unsigned_long_long(),
+        kefir_ast_type_signed_long_long()};
     const kefir_size_t TYPES_LEN = sizeof(TYPES) / sizeof(TYPES[0]);
 
     for (kefir_size_t i = 0; i < TYPES_LEN; i++) {
@@ -645,18 +619,11 @@ DEFINE_CASE(ast_node_analysis_relational_operators, "AST node analysis - relatio
                                                        kefir_ast_constant_expression_integer(&kft_mem, 100),
                                                        type_traits->underlying_enumeration_type, NULL, NULL));
 
-    const struct kefir_ast_type *TYPES[] = {kefir_ast_type_bool(),
-                                            kefir_ast_type_char(),
-                                            kefir_ast_type_unsigned_char(),
-                                            kefir_ast_type_signed_char(),
-                                            kefir_ast_type_unsigned_int(),
-                                            kefir_ast_type_signed_int(),
-                                            kefir_ast_type_unsigned_long(),
-                                            kefir_ast_type_signed_long(),
-                                            kefir_ast_type_unsigned_long_long(),
-                                            kefir_ast_type_signed_long_long(),
-                                            kefir_ast_type_float(),
-                                            kefir_ast_type_double()};
+    const struct kefir_ast_type *TYPES[] = {
+        kefir_ast_type_boolean(),          kefir_ast_type_char(),         kefir_ast_type_unsigned_char(),
+        kefir_ast_type_signed_char(),      kefir_ast_type_unsigned_int(), kefir_ast_type_signed_int(),
+        kefir_ast_type_unsigned_long(),    kefir_ast_type_signed_long(),  kefir_ast_type_unsigned_long_long(),
+        kefir_ast_type_signed_long_long(), kefir_ast_type_float(),        kefir_ast_type_double()};
     const kefir_size_t TYPES_LEN = sizeof(TYPES) / sizeof(TYPES[0]);
 
     for (kefir_size_t i = 0; i < TYPES_LEN; i++) {
@@ -812,18 +779,11 @@ DEFINE_CASE(ast_node_analysis_equality_operators, "AST node analysis - equality 
         &kft_mem, &local_context, "z", kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()),
         NULL, NULL, NULL));
 
-    const struct kefir_ast_type *TYPES[] = {kefir_ast_type_bool(),
-                                            kefir_ast_type_char(),
-                                            kefir_ast_type_unsigned_char(),
-                                            kefir_ast_type_signed_char(),
-                                            kefir_ast_type_unsigned_int(),
-                                            kefir_ast_type_signed_int(),
-                                            kefir_ast_type_unsigned_long(),
-                                            kefir_ast_type_signed_long(),
-                                            kefir_ast_type_unsigned_long_long(),
-                                            kefir_ast_type_signed_long_long(),
-                                            kefir_ast_type_float(),
-                                            kefir_ast_type_double()};
+    const struct kefir_ast_type *TYPES[] = {
+        kefir_ast_type_boolean(),          kefir_ast_type_char(),         kefir_ast_type_unsigned_char(),
+        kefir_ast_type_signed_char(),      kefir_ast_type_unsigned_int(), kefir_ast_type_signed_int(),
+        kefir_ast_type_unsigned_long(),    kefir_ast_type_signed_long(),  kefir_ast_type_unsigned_long_long(),
+        kefir_ast_type_signed_long_long(), kefir_ast_type_float(),        kefir_ast_type_double()};
     const kefir_size_t TYPES_LEN = sizeof(TYPES) / sizeof(TYPES[0]);
 
     for (kefir_size_t i = 0; i < TYPES_LEN; i++) {
@@ -963,18 +923,11 @@ DEFINE_CASE(ast_node_analysis_bitwise_operators, "AST node analysis - bitwise op
                                                        kefir_ast_constant_expression_integer(&kft_mem, 100),
                                                        type_traits->underlying_enumeration_type, NULL, NULL));
 
-    const struct kefir_ast_type *TYPES[] = {kefir_ast_type_bool(),
-                                            kefir_ast_type_char(),
-                                            kefir_ast_type_unsigned_char(),
-                                            kefir_ast_type_signed_char(),
-                                            kefir_ast_type_unsigned_int(),
-                                            kefir_ast_type_signed_int(),
-                                            kefir_ast_type_unsigned_long(),
-                                            kefir_ast_type_signed_long(),
-                                            kefir_ast_type_unsigned_long_long(),
-                                            kefir_ast_type_signed_long_long(),
-                                            kefir_ast_type_float(),
-                                            kefir_ast_type_double()};
+    const struct kefir_ast_type *TYPES[] = {
+        kefir_ast_type_boolean(),          kefir_ast_type_char(),         kefir_ast_type_unsigned_char(),
+        kefir_ast_type_signed_char(),      kefir_ast_type_unsigned_int(), kefir_ast_type_signed_int(),
+        kefir_ast_type_unsigned_long(),    kefir_ast_type_signed_long(),  kefir_ast_type_unsigned_long_long(),
+        kefir_ast_type_signed_long_long(), kefir_ast_type_float(),        kefir_ast_type_double()};
     const kefir_size_t TYPES_LEN = sizeof(TYPES) / sizeof(TYPES[0]);
 
     for (kefir_size_t i = 0; i < TYPES_LEN; i++) {
@@ -1132,18 +1085,11 @@ DEFINE_CASE(ast_node_analysis_logical_operators, "AST node analysis - logical op
                                                        kefir_ast_constant_expression_integer(&kft_mem, 100),
                                                        type_traits->underlying_enumeration_type, NULL, NULL));
 
-    const struct kefir_ast_type *TYPES[] = {kefir_ast_type_bool(),
-                                            kefir_ast_type_char(),
-                                            kefir_ast_type_unsigned_char(),
-                                            kefir_ast_type_signed_char(),
-                                            kefir_ast_type_unsigned_int(),
-                                            kefir_ast_type_signed_int(),
-                                            kefir_ast_type_unsigned_long(),
-                                            kefir_ast_type_signed_long(),
-                                            kefir_ast_type_unsigned_long_long(),
-                                            kefir_ast_type_signed_long_long(),
-                                            kefir_ast_type_float(),
-                                            kefir_ast_type_double()};
+    const struct kefir_ast_type *TYPES[] = {
+        kefir_ast_type_boolean(),          kefir_ast_type_char(),         kefir_ast_type_unsigned_char(),
+        kefir_ast_type_signed_char(),      kefir_ast_type_unsigned_int(), kefir_ast_type_signed_int(),
+        kefir_ast_type_unsigned_long(),    kefir_ast_type_signed_long(),  kefir_ast_type_unsigned_long_long(),
+        kefir_ast_type_signed_long_long(), kefir_ast_type_float(),        kefir_ast_type_double()};
     const kefir_size_t TYPES_LEN = sizeof(TYPES) / sizeof(TYPES[0]);
 
     for (kefir_size_t i = 0; i < TYPES_LEN; i++) {

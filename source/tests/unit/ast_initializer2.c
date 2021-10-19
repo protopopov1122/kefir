@@ -37,7 +37,7 @@ DEFINE_CASE(ast_initializer_analysis1, "AST initializer - analysis #1") {
     struct kefir_ast_context *context = &local_context.context;
 
     const struct kefir_ast_type *TYPES[] = {
-        kefir_ast_type_bool(),
+        kefir_ast_type_boolean(),
         kefir_ast_type_char(),
         kefir_ast_type_signed_char(),
         kefir_ast_type_unsigned_char(),
@@ -168,7 +168,7 @@ DEFINE_CASE(ast_initializer_analysis3, "AST initializer - analysis #3") {
                                     kefir_ast_type_array(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_int(),
                                                          kefir_ast_constant_expression_integer(&kft_mem, 5), NULL),
                                     NULL));
-    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, structure1, "z", kefir_ast_type_bool(), NULL));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, structure1, "z", kefir_ast_type_boolean(), NULL));
 
     struct kefir_ast_struct_type *union2 = NULL;
     const struct kefir_ast_type *type2 = kefir_ast_type_union(&kft_mem, context->type_bundle, "", &union2);

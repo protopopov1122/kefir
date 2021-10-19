@@ -354,18 +354,11 @@ DEFINE_CASE(ast_node_analysis_compound_literal1, "AST node analysis - compound l
     };
     const kefir_size_t TYPES_LEN = sizeof(TYPES) / sizeof(TYPES[0]);
 
-    const struct kefir_ast_type *TYPES2[] = {kefir_ast_type_bool(),
-                                             kefir_ast_type_char(),
-                                             kefir_ast_type_unsigned_char(),
-                                             kefir_ast_type_signed_char(),
-                                             kefir_ast_type_unsigned_int(),
-                                             kefir_ast_type_signed_int(),
-                                             kefir_ast_type_unsigned_long(),
-                                             kefir_ast_type_signed_long(),
-                                             kefir_ast_type_unsigned_long_long(),
-                                             kefir_ast_type_signed_long_long(),
-                                             kefir_ast_type_float(),
-                                             kefir_ast_type_double()};
+    const struct kefir_ast_type *TYPES2[] = {
+        kefir_ast_type_boolean(),          kefir_ast_type_char(),         kefir_ast_type_unsigned_char(),
+        kefir_ast_type_signed_char(),      kefir_ast_type_unsigned_int(), kefir_ast_type_signed_int(),
+        kefir_ast_type_unsigned_long(),    kefir_ast_type_signed_long(),  kefir_ast_type_unsigned_long_long(),
+        kefir_ast_type_signed_long_long(), kefir_ast_type_float(),        kefir_ast_type_double()};
     _Static_assert(sizeof(TYPES2) / sizeof(TYPES2[0]) == sizeof(TYPES) / sizeof(TYPES[0]),
                    "Type array length mismatch");
 

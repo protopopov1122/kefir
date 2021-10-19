@@ -69,7 +69,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                                                         NULL, NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_global_context_define_static(
         mem, &global_context, "variable3",
-        kefir_ast_type_array(mem, context->type_bundle, kefir_ast_type_bool(),
+        kefir_ast_type_array(mem, context->type_bundle, kefir_ast_type_boolean(),
                              kefir_ast_constant_expression_integer(mem, 3), NULL),
         NULL, NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_declare_external(

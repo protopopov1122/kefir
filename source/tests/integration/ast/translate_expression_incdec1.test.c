@@ -49,7 +49,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ast_local_context_define_auto(mem, &local_context, "double", kefir_ast_type_double(), NULL, NULL,
                                                    NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_define_auto(
-        mem, &local_context, "ptr1", kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_bool()), NULL,
+        mem, &local_context, "ptr1", kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_boolean()), NULL,
         NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_define_auto(
         mem, &local_context, "ptr2",

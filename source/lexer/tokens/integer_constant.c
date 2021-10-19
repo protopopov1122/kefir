@@ -101,37 +101,37 @@ static kefir_result_t make_integral_constant(const struct kefir_lexer_context *c
     switch (type) {
         case CONSTANT_INT:
             REQUIRE(value <= context->integer_max_value,
-                    KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Provided constant exceeds maximum value of its type"));
+                    KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Provided constant exceeds maximum value of its type"));
             REQUIRE_OK(kefir_token_new_constant_int((kefir_int64_t) value, token));
             break;
 
         case CONSTANT_UNSIGNED_INT:
             REQUIRE(value <= context->uinteger_max_value,
-                    KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Provided constant exceeds maximum value of its type"));
+                    KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Provided constant exceeds maximum value of its type"));
             REQUIRE_OK(kefir_token_new_constant_uint(value, token));
             break;
 
         case CONSTANT_LONG:
             REQUIRE(value <= context->long_max_value,
-                    KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Provided constant exceeds maximum value of its type"));
+                    KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Provided constant exceeds maximum value of its type"));
             REQUIRE_OK(kefir_token_new_constant_long((kefir_int64_t) value, token));
             break;
 
         case CONSTANT_UNSIGNED_LONG:
             REQUIRE(value <= context->ulong_max_value,
-                    KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Provided constant exceeds maximum value of its type"));
+                    KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Provided constant exceeds maximum value of its type"));
             REQUIRE_OK(kefir_token_new_constant_ulong(value, token));
             break;
 
         case CONSTANT_LONG_LONG:
             REQUIRE(value <= context->long_long_max_value,
-                    KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Provided constant exceeds maximum value of its type"));
+                    KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Provided constant exceeds maximum value of its type"));
             REQUIRE_OK(kefir_token_new_constant_long_long((kefir_int64_t) value, token));
             break;
 
         case CONSTANT_UNSIGNED_LONG_LONG:
             REQUIRE(value <= context->ulong_long_max_value,
-                    KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Provided constant exceeds maximum value of its type"));
+                    KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Provided constant exceeds maximum value of its type"));
             REQUIRE_OK(kefir_token_new_constant_ulong_long(value, token));
             break;
     }
@@ -149,7 +149,7 @@ static kefir_result_t build_integral_constant(const struct kefir_lexer_context *
         if (res == KEFIR_OK) {
             return KEFIR_OK;
         } else {
-            REQUIRE(res == KEFIR_OUT_OF_BOUNDS, res);
+            REQUIRE(res == KEFIR_NO_MATCH, res);
         }
     }
     return KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Provided constant exceeds maximum value of its type");

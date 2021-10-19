@@ -88,7 +88,7 @@ const struct kefir_ast_type *kefir_ast_type_void() {
         return &DEFAULT_SCALAR_##id;                                                                        \
     }
 
-SCALAR_TYPE(bool, KEFIR_AST_TYPE_SCALAR_BOOL, 0)
+SCALAR_TYPE(boolean, KEFIR_AST_TYPE_SCALAR_BOOL, 0)
 SCALAR_TYPE(char, KEFIR_AST_TYPE_SCALAR_CHAR, 1)
 SCALAR_TYPE(unsigned_char, KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR, 1)
 SCALAR_TYPE(signed_char, KEFIR_AST_TYPE_SCALAR_SIGNED_CHAR, 1)

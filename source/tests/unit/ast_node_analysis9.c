@@ -45,7 +45,7 @@ DEFINE_CASE(valueast_node_analysis_conditional_statements1, "AST node analysis -
     ASSERT(stmt1->base.properties.statement_props.flow_control_statement != NULL);
     ASSERT(stmt1->base.properties.statement_props.flow_control_statement->type == KEFIR_AST_FLOW_CONTROL_STATEMENT_IF);
     ASSERT(stmt1->condition->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);
-    ASSERT(KEFIR_AST_TYPE_SAME(stmt1->condition->properties.type, kefir_ast_type_bool()));
+    ASSERT(KEFIR_AST_TYPE_SAME(stmt1->condition->properties.type, kefir_ast_type_boolean()));
     ASSERT(stmt1->thenBranch->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(stmt1->elseBranch == NULL);
     ASSERT(stmt1->base.properties.statement_props.flow_control_statement->value.conditional.thenBranchEnd != NULL);
@@ -62,7 +62,7 @@ DEFINE_CASE(valueast_node_analysis_conditional_statements1, "AST node analysis -
     ASSERT(stmt2->base.properties.statement_props.flow_control_statement != NULL);
     ASSERT(stmt2->base.properties.statement_props.flow_control_statement->type == KEFIR_AST_FLOW_CONTROL_STATEMENT_IF);
     ASSERT(stmt2->condition->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);
-    ASSERT(KEFIR_AST_TYPE_SAME(stmt2->condition->properties.type, kefir_ast_type_bool()));
+    ASSERT(KEFIR_AST_TYPE_SAME(stmt2->condition->properties.type, kefir_ast_type_boolean()));
     ASSERT(stmt2->thenBranch->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(stmt2->elseBranch->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(stmt2->base.properties.statement_props.flow_control_statement->value.conditional.thenBranchEnd != NULL);

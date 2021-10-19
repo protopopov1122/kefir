@@ -29,7 +29,7 @@ typedef struct kefir_ast_basic_type_properties {
 
 #define SCALAR_TYPE(id) const struct kefir_ast_type *kefir_ast_type_##id()
 SCALAR_TYPE(void);
-SCALAR_TYPE(bool);
+SCALAR_TYPE(boolean);
 SCALAR_TYPE(char);
 SCALAR_TYPE(unsigned_char);
 SCALAR_TYPE(signed_char);

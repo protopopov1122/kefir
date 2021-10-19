@@ -49,7 +49,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     struct kefir_ast_struct_type *struct_type = NULL;
     const struct kefir_ast_type *type3 = kefir_ast_type_structure(mem, context->type_bundle, "", &struct_type);
-    REQUIRE_OK(kefir_ast_struct_type_field(mem, context->symbols, struct_type, "x", kefir_ast_type_bool(), NULL));
+    REQUIRE_OK(kefir_ast_struct_type_field(mem, context->symbols, struct_type, "x", kefir_ast_type_boolean(), NULL));
 
     struct kefir_ast_struct_type *union_type = NULL;
     const struct kefir_ast_type *type4 = kefir_ast_type_union(mem, context->type_bundle, "", &union_type);
@@ -69,7 +69,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         const char *identifier;
         const struct kefir_ast_type *type;
     } VARS[] = {
-        {"boolean", kefir_ast_type_bool()},
+        {"boolean", kefir_ast_type_boolean()},
         {"char", kefir_ast_type_char()},
         {"unsigned_char", kefir_ast_type_unsigned_char()},
         {"signed_char", kefir_ast_type_signed_char()},

@@ -183,18 +183,11 @@ DEFINE_CASE(ast_node_analysis_conditional_operator2, "AST node analysis - condit
                                                        kefir_ast_constant_expression_integer(&kft_mem, 54),
                                                        type_traits->underlying_enumeration_type, NULL, NULL));
 
-    const struct kefir_ast_type *TYPES[] = {kefir_ast_type_bool(),
-                                            kefir_ast_type_char(),
-                                            kefir_ast_type_unsigned_char(),
-                                            kefir_ast_type_signed_char(),
-                                            kefir_ast_type_unsigned_int(),
-                                            kefir_ast_type_signed_int(),
-                                            kefir_ast_type_unsigned_long(),
-                                            kefir_ast_type_signed_long(),
-                                            kefir_ast_type_unsigned_long_long(),
-                                            kefir_ast_type_signed_long_long(),
-                                            kefir_ast_type_float(),
-                                            kefir_ast_type_double()};
+    const struct kefir_ast_type *TYPES[] = {
+        kefir_ast_type_boolean(),          kefir_ast_type_char(),         kefir_ast_type_unsigned_char(),
+        kefir_ast_type_signed_char(),      kefir_ast_type_unsigned_int(), kefir_ast_type_signed_int(),
+        kefir_ast_type_unsigned_long(),    kefir_ast_type_signed_long(),  kefir_ast_type_unsigned_long_long(),
+        kefir_ast_type_signed_long_long(), kefir_ast_type_float(),        kefir_ast_type_double()};
     const kefir_size_t TYPES_LEN = sizeof(TYPES) / sizeof(TYPES[0]);
 
     for (kefir_size_t i = 0; i < TYPES_LEN; i++) {

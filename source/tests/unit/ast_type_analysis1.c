@@ -34,7 +34,7 @@ DEFINE_CASE(ast_type_analysis_scalars, "AST type analysis - scalars") {
     struct kefir_ast_context *context = &local_context.context;
 
     const struct kefir_ast_type *TYPES[] = {kefir_ast_type_void(),
-                                            kefir_ast_type_bool(),
+                                            kefir_ast_type_boolean(),
                                             kefir_ast_type_char(),
                                             kefir_ast_type_unsigned_char(),
                                             kefir_ast_type_signed_char(),
@@ -87,7 +87,7 @@ DEFINE_CASE(ast_type_analysis_pointers_qualifications, "AST type analysis - poin
 
     const struct kefir_ast_type *TYPES[] = {
         kefir_ast_type_void(),
-        kefir_ast_type_bool(),
+        kefir_ast_type_boolean(),
         kefir_ast_type_char(),
         kefir_ast_type_unsigned_char(),
         kefir_ast_type_signed_char(),
@@ -394,13 +394,14 @@ DEFINE_CASE(ast_type_analysis_structs, "AST type analysis - structures/unions") 
     ASSERT_OK(kefir_ast_struct_type_field(
         &kft_mem, context->symbols, struct_type5, "a",
         kefir_ast_type_unbounded_array(&kft_mem, context->type_bundle, kefir_ast_type_char(), NULL), NULL));
-    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type5, "b", kefir_ast_type_bool(), NULL));
+    ASSERT_OK(
+        kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type5, "b", kefir_ast_type_boolean(), NULL));
     ASSERT_NOK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type5, NULL));
 
     struct kefir_ast_struct_type *struct_type6 = NULL;
     const struct kefir_ast_type *type6 = kefir_ast_type_union(&kft_mem, context->type_bundle, NULL, &struct_type6);
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type6, "union_field_one",
-                                          kefir_ast_type_bool(), NULL));
+                                          kefir_ast_type_boolean(), NULL));
     ASSERT_OK(kefir_ast_struct_type_field(
         &kft_mem, context->symbols, struct_type6, "union_field_two",
         kefir_ast_type_unbounded_array(&kft_mem, context->type_bundle, kefir_ast_type_char(), NULL), NULL));
@@ -501,7 +502,7 @@ DEFINE_CASE(ast_type_analysis_functions, "AST type analysis - functions") {
         kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_void(), &func_type8);
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, context->type_bundle, func_type8,
-        kefir_ast_type_unbounded_array(&kft_mem, context->type_bundle, kefir_ast_type_bool(), NULL), NULL));
+        kefir_ast_type_unbounded_array(&kft_mem, context->type_bundle, kefir_ast_type_boolean(), NULL), NULL));
     ASSERT_OK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type8, NULL));
 
     struct kefir_ast_function_type *func_type9 = NULL;

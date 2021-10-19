@@ -764,8 +764,8 @@ DEFINE_CASE(ast_node_analysis_init_declarators10, "AST node analysis - declarati
     ASSERT_OK(kefir_ast_struct_type_bitfield(&kft_mem, context->symbols, struct_type1, "another_field",
                                              kefir_ast_type_signed_long_long(), NULL,
                                              kefir_ast_constant_expression_integer(&kft_mem, 2)));
-    ASSERT_OK(
-        kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type1, "payload", kefir_ast_type_bool(), NULL));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct_type1, "payload", kefir_ast_type_boolean(),
+                                          NULL));
 
     struct kefir_ast_function_type *func_type2 = NULL;
     const struct kefir_ast_type *type2 =

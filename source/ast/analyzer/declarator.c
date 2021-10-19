@@ -404,7 +404,7 @@ static kefir_result_t resolve_type(struct kefir_mem *mem, const struct kefir_ast
             REQUIRE(*base_type == NULL,
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &decl_specifier->source_location,
                                            "Boolean type specifier cannot be combined with others"));
-            *base_type = kefir_ast_type_bool();
+            *base_type = kefir_ast_type_boolean();
             *seq_state = TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;
 

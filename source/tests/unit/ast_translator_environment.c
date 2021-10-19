@@ -192,7 +192,8 @@ DEFINE_CASE(ast_translator_environment2, "AST translator - environment object of
     const struct kefir_ast_type *type1 = kefir_ast_type_structure(&kft_mem, &type_bundle, "", &struct_type1);
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, struct_type1, "x", kefir_ast_type_unsigned_long(), NULL));
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, &symbols, struct_type1, "y",
-                                          kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_bool()), NULL));
+                                          kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_boolean()),
+                                          NULL));
     ASSERT_OK(
         kefir_ast_struct_type_field(&kft_mem, &symbols, struct_type1, "z",
                                     kefir_ast_type_array(&kft_mem, &type_bundle, kefir_ast_type_float(),

@@ -647,7 +647,7 @@ DEFINE_CASE(ast_ordinary_scope_objects13, "AST Declaration scoping - block scopi
                                                                      kefir_ast_type_signed_long(), NULL, NULL, NULL));
     ASSERT_OK(kefir_ast_global_context_define_external(&kft_mem, &global_context, "variable1",
                                                        kefir_ast_type_signed_int(), NULL, NULL, NULL, NULL));
-    ASSERT_OK(kefir_ast_global_context_define_external(&kft_mem, &global_context, "variable3", kefir_ast_type_bool(),
+    ASSERT_OK(kefir_ast_global_context_define_external(&kft_mem, &global_context, "variable3", kefir_ast_type_boolean(),
                                                        NULL, NULL, NULL, NULL));
     ASSERT_OK(kefir_ast_global_context_define_static(&kft_mem, &global_context, "variable4",
                                                      kefir_ast_type_signed_int(), NULL, NULL, NULL, NULL));
@@ -659,8 +659,8 @@ DEFINE_CASE(ast_ordinary_scope_objects13, "AST Declaration scoping - block scopi
                                kefir_ast_type_signed_int(), KEFIR_AST_SCOPED_IDENTIFIER_EXTERNAL_LINKAGE);
     ASSERT_RESOLVED_IDENTIFIER(&context, "variable2", KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL,
                                kefir_ast_type_signed_long(), KEFIR_AST_SCOPED_IDENTIFIER_EXTERNAL_LINKAGE);
-    ASSERT_RESOLVED_IDENTIFIER(&context, "variable3", KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN, kefir_ast_type_bool(),
-                               KEFIR_AST_SCOPED_IDENTIFIER_EXTERNAL_LINKAGE);
+    ASSERT_RESOLVED_IDENTIFIER(&context, "variable3", KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
+                               kefir_ast_type_boolean(), KEFIR_AST_SCOPED_IDENTIFIER_EXTERNAL_LINKAGE);
     ASSERT_RESOLVED_IDENTIFIER(&context, "variable4", KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC,
                                kefir_ast_type_signed_int(), KEFIR_AST_SCOPED_IDENTIFIER_INTERNAL_LINKAGE);
     ASSERT_RESOLVED_IDENTIFIER(&context, "variable5", KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL,
@@ -703,8 +703,8 @@ DEFINE_CASE(ast_ordinary_scope_objects13, "AST Declaration scoping - block scopi
                                kefir_ast_type_signed_int(), KEFIR_AST_SCOPED_IDENTIFIER_EXTERNAL_LINKAGE);
     ASSERT_RESOLVED_IDENTIFIER(&context, "variable2", KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL,
                                kefir_ast_type_signed_long(), KEFIR_AST_SCOPED_IDENTIFIER_EXTERNAL_LINKAGE);
-    ASSERT_RESOLVED_IDENTIFIER(&context, "variable3", KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN, kefir_ast_type_bool(),
-                               KEFIR_AST_SCOPED_IDENTIFIER_EXTERNAL_LINKAGE);
+    ASSERT_RESOLVED_IDENTIFIER(&context, "variable3", KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
+                               kefir_ast_type_boolean(), KEFIR_AST_SCOPED_IDENTIFIER_EXTERNAL_LINKAGE);
     ASSERT_RESOLVED_IDENTIFIER(&context, "variable4", KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC,
                                kefir_ast_type_signed_int(), KEFIR_AST_SCOPED_IDENTIFIER_INTERNAL_LINKAGE);
     ASSERT_RESOLVED_IDENTIFIER(&context, "variable5", KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL,

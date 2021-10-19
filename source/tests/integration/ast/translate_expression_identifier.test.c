@@ -46,8 +46,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                                                         NULL, NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_define_static(mem, &local_context, "static_variable1", kefir_ast_type_float(),
                                                      NULL, NULL, NULL, NULL));
-    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, &local_context, "local_var1", kefir_ast_type_bool(), NULL, NULL,
-                                                   NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_define_auto(mem, &local_context, "local_var1", kefir_ast_type_boolean(), NULL,
+                                                   NULL, NULL, NULL));
 
     struct kefir_ast_constant_expression *const_expr_X =
         kefir_ast_new_constant_expression(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 10)));

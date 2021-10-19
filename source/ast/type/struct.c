@@ -91,14 +91,16 @@ const struct kefir_ast_type *composite_struct_types(struct kefir_mem *mem, struc
     REQUIRE(type2 != NULL, NULL);
     REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(type_traits, type1, type2), NULL);
     struct kefir_ast_struct_type *composite_struct = NULL;
-    const struct kefir_ast_type *composite_type =
-        kefir_ast_type_structure(mem, type_bundle, type1->structure_type.identifier, &composite_struct);
-    REQUIRE(composite_type != NULL && composite_struct != NULL, NULL);
+    const struct kefir_ast_type *composite_type = NULL;
     struct kefir_symbol_table *symbols = NULL;
     if (type_bundle != NULL) {
         symbols = type_bundle->symbols;
     }
     if (type1->structure_type.complete && type2->structure_type.complete) {
+        composite_type =
+            kefir_ast_type_structure(mem, type_bundle, type1->structure_type.identifier, &composite_struct);
+        REQUIRE(composite_type != NULL && composite_struct != NULL, NULL);
+
         const struct kefir_list_entry *iter1 = kefir_list_head(&type1->structure_type.fields);
         const struct kefir_list_entry *iter2 = kefir_list_head(&type2->structure_type.fields);
         for (; iter1 != NULL && iter2 != NULL; kefir_list_next(&iter1), kefir_list_next(&iter2)) {
@@ -122,6 +124,9 @@ const struct kefir_ast_type *composite_struct_types(struct kefir_mem *mem, struc
             }
             REQUIRE(res == KEFIR_OK, NULL);
         }
+    } else {
+        composite_type = kefir_ast_type_incomplete_structure(mem, type_bundle, type1->structure_type.identifier);
+        REQUIRE(composite_type != NULL, NULL);
     }
     return composite_type;
 }
@@ -194,14 +199,15 @@ const struct kefir_ast_type *composite_union_types(struct kefir_mem *mem, struct
     REQUIRE(type2 != NULL, NULL);
     REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(type_traits, type1, type2), NULL);
     struct kefir_ast_struct_type *composite_union = NULL;
-    const struct kefir_ast_type *composite_type =
-        kefir_ast_type_union(mem, type_bundle, type1->structure_type.identifier, &composite_union);
-    REQUIRE(composite_type != NULL && composite_union != NULL, NULL);
+    const struct kefir_ast_type *composite_type = NULL;
     struct kefir_symbol_table *symbols = NULL;
     if (type_bundle != NULL) {
         symbols = type_bundle->symbols;
     }
     if (type1->structure_type.complete && type2->structure_type.complete) {
+        composite_type = kefir_ast_type_union(mem, type_bundle, type1->structure_type.identifier, &composite_union);
+        REQUIRE(composite_type != NULL && composite_union != NULL, NULL);
+
         struct kefir_hashtree_node_iterator iter;
         for (const struct kefir_hashtree_node *node1 = kefir_hashtree_iter(&type1->structure_type.field_index, &iter);
              node1 != NULL; node1 = kefir_hashtree_next(&iter)) {
@@ -227,6 +233,9 @@ const struct kefir_ast_type *composite_union_types(struct kefir_mem *mem, struct
             }
             REQUIRE(res == KEFIR_OK, NULL);
         }
+    } else {
+        composite_type = kefir_ast_type_incomplete_union(mem, type_bundle, type1->structure_type.identifier);
+        REQUIRE(composite_type != NULL, NULL);
     }
     return composite_type;
 }

@@ -49,7 +49,7 @@ DEFINE_CASE(ast_node_analysis_while_statements1, "AST node analysis - while stat
     ASSERT(stmt1->base.properties.statement_props.flow_control_statement->value.loop.continuation != NULL);
     ASSERT(stmt1->base.properties.statement_props.flow_control_statement->value.loop.end != NULL);
     ASSERT(stmt1->controlling_expr->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);
-    ASSERT(KEFIR_AST_TYPE_SAME(stmt1->controlling_expr->properties.type, kefir_ast_type_bool()));
+    ASSERT(KEFIR_AST_TYPE_SAME(stmt1->controlling_expr->properties.type, kefir_ast_type_boolean()));
     ASSERT(stmt1->body->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
 
     struct kefir_ast_declaration *decl1 = kefir_ast_new_single_declaration(
@@ -171,7 +171,7 @@ DEFINE_CASE(ast_node_analysis_do_while_statements1, "AST node analysis - do whil
     ASSERT(stmt1->base.properties.statement_props.flow_control_statement->value.loop.continuation != NULL);
     ASSERT(stmt1->base.properties.statement_props.flow_control_statement->value.loop.end != NULL);
     ASSERT(stmt1->controlling_expr->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);
-    ASSERT(KEFIR_AST_TYPE_SAME(stmt1->controlling_expr->properties.type, kefir_ast_type_bool()));
+    ASSERT(KEFIR_AST_TYPE_SAME(stmt1->controlling_expr->properties.type, kefir_ast_type_boolean()));
     ASSERT(stmt1->body->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
 
     struct kefir_ast_declaration *decl1 = kefir_ast_new_single_declaration(

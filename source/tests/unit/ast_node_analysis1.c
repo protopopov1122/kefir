@@ -47,8 +47,8 @@ DEFINE_CASE(ast_node_analysis_constants, "AST node analysis - constant types") {
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
-    ASSERT_CONSTANT(&kft_mem, context, kefir_ast_new_constant_bool(&kft_mem, false), kefir_ast_type_bool());
-    ASSERT_CONSTANT(&kft_mem, context, kefir_ast_new_constant_bool(&kft_mem, true), kefir_ast_type_bool());
+    ASSERT_CONSTANT(&kft_mem, context, kefir_ast_new_constant_bool(&kft_mem, false), kefir_ast_type_boolean());
+    ASSERT_CONSTANT(&kft_mem, context, kefir_ast_new_constant_bool(&kft_mem, true), kefir_ast_type_boolean());
 
     for (kefir_char_t i = KEFIR_CHAR_MIN; i < KEFIR_CHAR_MAX; i++) {
         ASSERT_CONSTANT(&kft_mem, context, kefir_ast_new_constant_char(&kft_mem, i), kefir_ast_type_signed_int());
@@ -516,12 +516,12 @@ DEFINE_CASE(ast_node_analysis_struct_members2, "AST node analysis - struct membe
     const struct kefir_ast_type *struct3_type =
         kefir_ast_type_structure(&kft_mem, context->type_bundle, "type3", &struct3);
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct3, NULL, struct2_type, NULL));
-    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct3, "test", kefir_ast_type_bool(), NULL));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct3, "test", kefir_ast_type_boolean(), NULL));
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct3, "test2", struct2_type, NULL));
 
     ASSERT_OK(kefir_ast_global_context_define_external(&kft_mem, &global_context, "var2", struct3_type, NULL, NULL,
                                                        NULL, NULL));
-    ASSERT_STRUCT_MEMBER(&kft_mem, context, "var2", "test", kefir_ast_type_bool());
+    ASSERT_STRUCT_MEMBER(&kft_mem, context, "var2", "test", kefir_ast_type_boolean());
     ASSERT_STRUCT_MEMBER(&kft_mem, context, "var2", "test2", struct2_type);
     ASSERT_STRUCT_MEMBER(&kft_mem, context, "var2", "field1", kefir_ast_type_float());
     ASSERT_STRUCT_MEMBER(&kft_mem, context, "var2", "field2", kefir_ast_type_unsigned_int());
@@ -609,13 +609,13 @@ DEFINE_CASE(ast_node_analysis_indirect_struct_members2, "AST node analysis - ind
     const struct kefir_ast_type *struct3_type =
         kefir_ast_type_structure(&kft_mem, context->type_bundle, "type3", &struct3);
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct3, NULL, struct2_type, NULL));
-    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct3, "test", kefir_ast_type_bool(), NULL));
+    ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct3, "test", kefir_ast_type_boolean(), NULL));
     ASSERT_OK(kefir_ast_struct_type_field(&kft_mem, context->symbols, struct3, "test2", struct2_type, NULL));
 
     ASSERT_OK(kefir_ast_global_context_define_external(
         &kft_mem, &global_context, "var2", kefir_ast_type_pointer(&kft_mem, context->type_bundle, struct3_type), NULL,
         NULL, NULL, NULL));
-    ASSERT_INDIRECT_STRUCT_MEMBER(&kft_mem, context, "var2", "test", kefir_ast_type_bool());
+    ASSERT_INDIRECT_STRUCT_MEMBER(&kft_mem, context, "var2", "test", kefir_ast_type_boolean());
     ASSERT_INDIRECT_STRUCT_MEMBER(&kft_mem, context, "var2", "test2", struct2_type);
     ASSERT_INDIRECT_STRUCT_MEMBER(&kft_mem, context, "var2", "field1", kefir_ast_type_float());
     ASSERT_INDIRECT_STRUCT_MEMBER(&kft_mem, context, "var2", "field2", kefir_ast_type_unsigned_int());
@@ -859,7 +859,7 @@ DEFINE_CASE(ast_node_analysis_unary_operation_indirect, "AST node analysis - una
     const struct kefir_ast_type *function_type3 =
         kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_double(), &function3);
     ASSERT_OK(
-        kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, function3, kefir_ast_type_bool(), NULL));
+        kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, function3, kefir_ast_type_boolean(), NULL));
 
     ASSERT_OK(kefir_ast_local_context_declare_external(
         &kft_mem, &local_context, "var1",
@@ -904,7 +904,7 @@ DEFINE_CASE(ast_node_analysis_unary_operation_incdec, "AST node analysis - unary
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "var1", kefir_ast_type_bool(), NULL,
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "var1", kefir_ast_type_boolean(), NULL,
                                                        NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "var2", kefir_ast_type_signed_int(),
                                                        NULL, NULL, NULL));
@@ -917,8 +917,8 @@ DEFINE_CASE(ast_node_analysis_unary_operation_incdec, "AST node analysis - unary
         kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_float()), NULL, NULL, NULL));
 
     ASSERT_UNARY_OPERATION(&kft_mem, context, KEFIR_AST_OPERATION_POSTFIX_DECREMENT,
-                           kefir_ast_new_identifier(&kft_mem, context->symbols, "var1"), kefir_ast_type_bool(), false,
-                           false, false);
+                           kefir_ast_new_identifier(&kft_mem, context->symbols, "var1"), kefir_ast_type_boolean(),
+                           false, false, false);
     ASSERT_UNARY_OPERATION(&kft_mem, context, KEFIR_AST_OPERATION_POSTFIX_DECREMENT,
                            kefir_ast_new_identifier(&kft_mem, context->symbols, "var2"), kefir_ast_type_signed_int(),
                            false, false, false);
@@ -934,8 +934,8 @@ DEFINE_CASE(ast_node_analysis_unary_operation_incdec, "AST node analysis - unary
                            false);
 
     ASSERT_UNARY_OPERATION(&kft_mem, context, KEFIR_AST_OPERATION_POSTFIX_INCREMENT,
-                           kefir_ast_new_identifier(&kft_mem, context->symbols, "var1"), kefir_ast_type_bool(), false,
-                           false, false);
+                           kefir_ast_new_identifier(&kft_mem, context->symbols, "var1"), kefir_ast_type_boolean(),
+                           false, false, false);
     ASSERT_UNARY_OPERATION(&kft_mem, context, KEFIR_AST_OPERATION_POSTFIX_INCREMENT,
                            kefir_ast_new_identifier(&kft_mem, context->symbols, "var2"), kefir_ast_type_signed_int(),
                            false, false, false);
@@ -951,8 +951,8 @@ DEFINE_CASE(ast_node_analysis_unary_operation_incdec, "AST node analysis - unary
                            false);
 
     ASSERT_UNARY_OPERATION(&kft_mem, context, KEFIR_AST_OPERATION_PREFIX_DECREMENT,
-                           kefir_ast_new_identifier(&kft_mem, context->symbols, "var1"), kefir_ast_type_bool(), false,
-                           false, false);
+                           kefir_ast_new_identifier(&kft_mem, context->symbols, "var1"), kefir_ast_type_boolean(),
+                           false, false, false);
     ASSERT_UNARY_OPERATION(&kft_mem, context, KEFIR_AST_OPERATION_PREFIX_DECREMENT,
                            kefir_ast_new_identifier(&kft_mem, context->symbols, "var2"), kefir_ast_type_signed_int(),
                            false, false, false);
@@ -968,8 +968,8 @@ DEFINE_CASE(ast_node_analysis_unary_operation_incdec, "AST node analysis - unary
                            false);
 
     ASSERT_UNARY_OPERATION(&kft_mem, context, KEFIR_AST_OPERATION_PREFIX_INCREMENT,
-                           kefir_ast_new_identifier(&kft_mem, context->symbols, "var1"), kefir_ast_type_bool(), false,
-                           false, false);
+                           kefir_ast_new_identifier(&kft_mem, context->symbols, "var1"), kefir_ast_type_boolean(),
+                           false, false, false);
     ASSERT_UNARY_OPERATION(&kft_mem, context, KEFIR_AST_OPERATION_PREFIX_INCREMENT,
                            kefir_ast_new_identifier(&kft_mem, context->symbols, "var2"), kefir_ast_type_signed_int(),
                            false, false, false);
@@ -1140,7 +1140,7 @@ DEFINE_CASE(ast_node_analysis_type_name, "AST node analysis - type names") {
     ASSERT_OK(
         append_specifiers(&kft_mem, &type_name8->type_decl.specifiers, 1, kefir_ast_type_specifier_void(&kft_mem)));
 
-    ASSERT_TYPE_NAME(&kft_mem, context, type_name1, kefir_ast_type_bool());
+    ASSERT_TYPE_NAME(&kft_mem, context, type_name1, kefir_ast_type_boolean());
     ASSERT_TYPE_NAME(&kft_mem, context, type_name2, kefir_ast_type_signed_char());
     ASSERT_TYPE_NAME(&kft_mem, context, type_name3, kefir_ast_type_signed_int());
     ASSERT_TYPE_NAME(&kft_mem, context, type_name4, kefir_ast_type_unsigned_long_long());

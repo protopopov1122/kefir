@@ -50,8 +50,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     const struct kefir_ast_type *type2 = kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_void());
 
-    REQUIRE_OK(
-        kefir_ast_local_context_declare_external(mem, &local_context, "bool", kefir_ast_type_bool(), NULL, NULL, NULL));
+    REQUIRE_OK(kefir_ast_local_context_declare_external(mem, &local_context, "bool", kefir_ast_type_boolean(), NULL,
+                                                        NULL, NULL));
     REQUIRE_OK(
         kefir_ast_local_context_declare_external(mem, &local_context, "char", kefir_ast_type_char(), NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_declare_external(mem, &local_context, "uchar", kefir_ast_type_unsigned_char(),

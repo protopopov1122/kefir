@@ -245,7 +245,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     REQUIRE_OK(kefir_ast_local_context_define_static_thread_local(
         mem, &local_context, "local_static_var3",
-        kefir_ast_type_qualified(mem, context->type_bundle, kefir_ast_type_bool(),
+        kefir_ast_type_qualified(mem, context->type_bundle, kefir_ast_type_boolean(),
                                  (struct kefir_ast_type_qualification){.restricted = true}),
         kefir_ast_alignment_const_expression(mem, kefir_ast_constant_expression_integer(mem, 8)), NULL, NULL, NULL));
     REQUIRE_OK(kefir_ast_local_context_define_static_thread_local(mem, &local_context, "local_static_var4",

@@ -126,7 +126,7 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
     REQUIRE_OK(kefir_ast_struct_type_field(mem, context_manager.current->symbols, struct_type1, "field2",
                                            kefir_ast_type_unsigned_long(), NULL));
     REQUIRE_OK(kefir_ast_struct_type_field(mem, context_manager.current->symbols, struct_type1, "field3",
-                                           kefir_ast_type_bool(), NULL));
+                                           kefir_ast_type_boolean(), NULL));
     REQUIRE_OK(kefir_ast_struct_type_field(mem, context_manager.current->symbols, struct_type1, "field4",
                                            kefir_ast_type_float(), NULL));
 

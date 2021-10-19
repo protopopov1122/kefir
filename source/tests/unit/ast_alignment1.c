@@ -65,7 +65,7 @@ DEFINE_CASE(ast_alignment_as_type, "AST alignment - as type") {
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
-    ASSERT_ALIGN_AS_TYPE(&kft_mem, context, kefir_ast_type_bool(), 1);
+    ASSERT_ALIGN_AS_TYPE(&kft_mem, context, kefir_ast_type_boolean(), 1);
     ASSERT_ALIGN_AS_TYPE(&kft_mem, context, kefir_ast_type_char(), 1);
     ASSERT_ALIGN_AS_TYPE(&kft_mem, context, kefir_ast_type_unsigned_char(), 1);
     ASSERT_ALIGN_AS_TYPE(&kft_mem, context, kefir_ast_type_signed_char(), 1);

@@ -38,7 +38,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     for (unsigned int i = 0; i <= 4; i++) {
         unsigned int alignment = 1 << i;
         REQUIRE_OK(kefir_ast_translate_object_type(mem, kefir_ast_type_void(), alignment, &env, &builder, NULL));
-        REQUIRE_OK(kefir_ast_translate_object_type(mem, kefir_ast_type_bool(), alignment, &env, &builder, NULL));
+        REQUIRE_OK(kefir_ast_translate_object_type(mem, kefir_ast_type_boolean(), alignment, &env, &builder, NULL));
         REQUIRE_OK(
             kefir_ast_translate_object_type(mem, kefir_ast_type_unsigned_char(), alignment, &env, &builder, NULL));
         REQUIRE_OK(kefir_ast_translate_object_type(mem, kefir_ast_type_signed_char(), alignment, &env, &builder, NULL));

@@ -124,7 +124,7 @@ DEFINE_CASE(ast_declarator_analysis1, "AST declarator analysis - declarator type
                            KEFIR_AST_FUNCTION_SPECIFIER_NONE, 0, 1, kefir_ast_type_specifier_float(&kft_mem));
     ASSERT_IDENTIFIER_TYPE(&kft_mem, context, kefir_ast_type_double(), KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
                            KEFIR_AST_FUNCTION_SPECIFIER_NONE, 0, 1, kefir_ast_type_specifier_double(&kft_mem));
-    ASSERT_IDENTIFIER_TYPE(&kft_mem, context, kefir_ast_type_bool(), KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
+    ASSERT_IDENTIFIER_TYPE(&kft_mem, context, kefir_ast_type_boolean(), KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
                            KEFIR_AST_FUNCTION_SPECIFIER_NONE, 0, 1, kefir_ast_type_specifier_bool(&kft_mem));
     ASSERT_IDENTIFIER_TYPE(&kft_mem, context, kefir_ast_type_va_list(), KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
                            KEFIR_AST_FUNCTION_SPECIFIER_NONE, 0, 1, kefir_ast_type_specifier_va_list(&kft_mem));

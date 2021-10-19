@@ -124,18 +124,11 @@ DEFINE_CASE(ast_node_analysis_simple_assignment_operator2, "AST node analysis - 
     ASSERT_OK(kefir_ast_global_context_declare_external(&kft_mem, &global_context, "x", kefir_ast_type_signed_int(),
                                                         NULL, NULL, NULL));
 
-    const struct kefir_ast_type *TYPES[] = {kefir_ast_type_bool(),
-                                            kefir_ast_type_char(),
-                                            kefir_ast_type_unsigned_char(),
-                                            kefir_ast_type_signed_char(),
-                                            kefir_ast_type_unsigned_int(),
-                                            kefir_ast_type_signed_int(),
-                                            kefir_ast_type_unsigned_long(),
-                                            kefir_ast_type_signed_long(),
-                                            kefir_ast_type_unsigned_long_long(),
-                                            kefir_ast_type_signed_long_long(),
-                                            kefir_ast_type_float(),
-                                            kefir_ast_type_double()};
+    const struct kefir_ast_type *TYPES[] = {
+        kefir_ast_type_boolean(),          kefir_ast_type_char(),         kefir_ast_type_unsigned_char(),
+        kefir_ast_type_signed_char(),      kefir_ast_type_unsigned_int(), kefir_ast_type_signed_int(),
+        kefir_ast_type_unsigned_long(),    kefir_ast_type_signed_long(),  kefir_ast_type_unsigned_long_long(),
+        kefir_ast_type_signed_long_long(), kefir_ast_type_float(),        kefir_ast_type_double()};
     const kefir_size_t TYPES_LEN = sizeof(TYPES) / sizeof(TYPES[0]);
 
     struct kefir_ast_type_name *TYPES2[] = {
@@ -772,30 +765,30 @@ DEFINE_CASE(ast_node_analysis_simple_assignment_operator7, "AST node analysis - 
 
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "a", type1, NULL, NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "b", type2, NULL, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "x", kefir_ast_type_bool(), NULL, NULL,
-                                                       NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &local_context, "x", kefir_ast_type_boolean(), NULL,
+                                                       NULL, NULL));
     ASSERT_OK(kefir_ast_local_context_declare_external(
         &kft_mem, &local_context, "y",
         kefir_ast_type_qualified(
-            &kft_mem, context->type_bundle, kefir_ast_type_bool(),
+            &kft_mem, context->type_bundle, kefir_ast_type_boolean(),
             (struct kefir_ast_type_qualification){.constant = false, .restricted = true, .volatile_type = true}),
         NULL, NULL, NULL));
 
     ASSERT_SIMPLE_ASSIGNMENT(
         &kft_mem, context, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
-        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "a")), kefir_ast_type_bool());
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "a")), kefir_ast_type_boolean());
 
     ASSERT_SIMPLE_ASSIGNMENT(
         &kft_mem, context, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
-        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "b")), kefir_ast_type_bool());
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "b")), kefir_ast_type_boolean());
 
     ASSERT_SIMPLE_ASSIGNMENT(
         &kft_mem, context, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "y")),
-        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "a")), kefir_ast_type_bool());
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "a")), kefir_ast_type_boolean());
 
     ASSERT_SIMPLE_ASSIGNMENT(
         &kft_mem, context, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "y")),
-        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "b")), kefir_ast_type_bool());
+        KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "b")), kefir_ast_type_boolean());
 
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));

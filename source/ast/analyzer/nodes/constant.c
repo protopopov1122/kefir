@@ -34,7 +34,7 @@ kefir_result_t kefir_ast_analyze_constant_node(struct kefir_mem *mem, const stru
     base->properties.expression_props.constant_expression = true;
     switch (node->type) {
         case KEFIR_AST_BOOL_CONSTANT:
-            base->properties.type = kefir_ast_type_bool();
+            base->properties.type = kefir_ast_type_boolean();
             break;
 
         case KEFIR_AST_CHAR_CONSTANT:
