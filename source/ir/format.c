@@ -492,7 +492,7 @@ static kefir_result_t format_globals(struct kefir_json_output *json, const struc
     REQUIRE_OK(kefir_json_output_array_begin(json));
     const struct kefir_list_entry *entry = NULL;
     for (const char *global = kefir_ir_module_globals_iter(module, &entry); global != NULL;
-         global = kefir_ir_module_symbol_iter_next(&entry)) {
+         global = kefir_ir_module_globals_iter_next(&entry)) {
         REQUIRE_OK(kefir_json_output_string(json, global));
     }
     REQUIRE_OK(kefir_json_output_array_end(json));
@@ -501,9 +501,9 @@ static kefir_result_t format_globals(struct kefir_json_output *json, const struc
 
 static kefir_result_t format_externals(struct kefir_json_output *json, const struct kefir_ir_module *module) {
     REQUIRE_OK(kefir_json_output_array_begin(json));
-    const struct kefir_list_entry *entry = NULL;
-    for (const char *external = kefir_ir_module_externals_iter(module, &entry); external != NULL;
-         external = kefir_ir_module_symbol_iter_next(&entry)) {
+    struct kefir_hashtree_node_iterator externals_iter;
+    for (const char *external = kefir_ir_module_externals_iter(module, &externals_iter); external != NULL;
+         external = kefir_ir_module_externals_iter_next(&externals_iter)) {
         REQUIRE_OK(kefir_json_output_string(json, external));
     }
     REQUIRE_OK(kefir_json_output_array_end(json));

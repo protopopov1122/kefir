@@ -18,23 +18,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef KEFIR_CODEGEN_CODEGEN_H_
-#define KEFIR_CODEGEN_CODEGEN_H_
+#ifndef KEFIR_CODEGEN_AMD64_SYSTEM_V_ABI_TLS_H_
+#define KEFIR_CODEGEN_AMD64_SYSTEM_V_ABI_TLS_H_
 
-#include <stdio.h>
-#include "kefir/core/mem.h"
-#include "kefir/core/basic-types.h"
-#include "kefir/ir/module.h"
+#include "kefir/codegen/amd64-sysv.h"
 
-typedef struct kefir_codegen {
-    kefir_result_t (*translate)(struct kefir_mem *, struct kefir_codegen *, struct kefir_ir_module *);
-    kefir_result_t (*close)(struct kefir_codegen *);
-
-    void *data;
-    void *self;
-} kefir_codegen_t;
-
-#define KEFIR_CODEGEN_TRANSLATE(mem, codegen, module) ((codegen)->translate((mem), (codegen), (module)))
-#define KEFIR_CODEGEN_CLOSE(codegen) ((codegen)->close((codegen)))
+kefir_result_t kefir_amd64_sysv_thread_local_reference(struct kefir_codegen_amd64 *, const char *, kefir_bool_t);
 
 #endif

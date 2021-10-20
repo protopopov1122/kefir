@@ -105,6 +105,8 @@ kefir_result_t kefir_amd64_gas_gen_init(struct kefir_amd64_asmgen *, FILE *);
 #define KEFIR_AMD64_XMM6 "xmm6"
 #define KEFIR_AMD64_XMM7 "xmm7"
 
+#define KEFIR_AMD64_FS "fs:"
+
 #define KEFIR_AMD64_PUSH "push"
 #define KEFIR_AMD64_POP "pop"
 #define KEFIR_AMD64_MOV "mov"
@@ -133,7 +135,8 @@ kefir_result_t kefir_amd64_gas_gen_init(struct kefir_amd64_asmgen *, FILE *);
 #define KEFIR_AMD64_INDIRECT_OFFSET "[%s + " KEFIR_SIZE_FMT "]"
 #define KEFIR_AMD64_INDIRECT_NEG_OFFSET "[%s - " KEFIR_SIZE_FMT "]"
 #define KEFIR_AMD64_ALIGN ".align"
-#define KEFIR_AMD64_THREAD_LOCAL "%s@tpoff"
+#define KEFIR_AMD64_THREAD_LOCAL "[%s@tpoff]"
+#define KEFIR_AMD64_THREAD_LOCAL_GOT "%s@gottpoff[rip]"
 
 #define KEFIR_AMD64_DWORD "DWORD PTR "
 #define KEFIR_AMD64_QWORD "QWORD PTR "

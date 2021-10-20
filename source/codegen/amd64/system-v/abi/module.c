@@ -55,7 +55,7 @@ kefir_result_t type_layout_removal(struct kefir_mem *mem, struct kefir_hashtree 
 
 kefir_result_t kefir_codegen_amd64_sysv_module_alloc(struct kefir_mem *mem,
                                                      struct kefir_codegen_amd64_sysv_module *sysv_module,
-                                                     const struct kefir_ir_module *module) {
+                                                     struct kefir_ir_module *module) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(sysv_module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 System-V module"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR module"));
@@ -66,6 +66,7 @@ kefir_result_t kefir_codegen_amd64_sysv_module_alloc(struct kefir_mem *mem,
     REQUIRE_OK(kefir_hashtree_on_removal(&sysv_module->function_vgates, function_gate_removal, NULL));
     REQUIRE_OK(kefir_hashtree_init(&sysv_module->type_layouts, &kefir_hashtree_uint_ops));
     REQUIRE_OK(kefir_hashtree_on_removal(&sysv_module->type_layouts, type_layout_removal, NULL));
+    REQUIRE_OK(kefir_hashtree_init(&sysv_module->tls_entries, &kefir_hashtree_str_ops));
     return KEFIR_OK;
 }
 
@@ -73,6 +74,8 @@ kefir_result_t kefir_codegen_amd64_sysv_module_free(struct kefir_mem *mem,
                                                     struct kefir_codegen_amd64_sysv_module *sysv_module) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(sysv_module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 System-V module"));
+
+    REQUIRE_OK(kefir_hashtree_free(mem, &sysv_module->tls_entries));
     REQUIRE_OK(kefir_hashtree_free(mem, &sysv_module->type_layouts));
     REQUIRE_OK(kefir_hashtree_free(mem, &sysv_module->function_gates));
     REQUIRE_OK(kefir_hashtree_free(mem, &sysv_module->function_vgates));
@@ -82,6 +85,9 @@ kefir_result_t kefir_codegen_amd64_sysv_module_free(struct kefir_mem *mem,
 
 struct kefir_amd64_sysv_function_decl *kefir_codegen_amd64_sysv_module_function_decl(
     struct kefir_mem *mem, struct kefir_codegen_amd64_sysv_module *sysv_module, kefir_id_t func_id, bool virtualDecl) {
+    REQUIRE(mem != NULL, NULL);
+    REQUIRE(sysv_module != NULL, NULL);
+
     struct kefir_hashtree_node *node = NULL;
     struct kefir_hashtree *tree = virtualDecl ? &sysv_module->function_vgates : &sysv_module->function_gates;
     kefir_result_t res = kefir_hashtree_at(tree, (kefir_hashtree_key_t) func_id, &node);
@@ -114,6 +120,9 @@ struct kefir_amd64_sysv_function_decl *kefir_codegen_amd64_sysv_module_function_
 struct kefir_vector *kefir_codegen_amd64_sysv_module_type_layout(struct kefir_mem *mem,
                                                                  struct kefir_codegen_amd64_sysv_module *sysv_module,
                                                                  kefir_id_t id) {
+    REQUIRE(mem != NULL, NULL);
+    REQUIRE(sysv_module != NULL, NULL);
+
     struct kefir_hashtree_node *node = NULL;
     kefir_result_t res = kefir_hashtree_at(&sysv_module->type_layouts, (kefir_hashtree_key_t) id, &node);
     if (res == KEFIR_OK) {
@@ -138,4 +147,23 @@ struct kefir_vector *kefir_codegen_amd64_sysv_module_type_layout(struct kefir_me
         return NULL;
     });
     return layout;
+}
+
+kefir_result_t kefir_codegen_amd64_sysv_module_declare_tls(struct kefir_mem *mem,
+                                                           struct kefir_codegen_amd64_sysv_module *sysv_module,
+                                                           const char *identifier) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(sysv_module != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 System-V codegen module"));
+    REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
+
+    identifier = kefir_symbol_table_insert(mem, &sysv_module->module->symbols, identifier, NULL);
+    REQUIRE(identifier != NULL,
+            KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to insert identifier into symbol table"));
+    kefir_result_t res = kefir_hashtree_insert(mem, &sysv_module->tls_entries, (kefir_hashtree_key_t) identifier,
+                                               (kefir_hashtree_value_t) 0);
+    if (res != KEFIR_ALREADY_EXISTS) {
+        REQUIRE_OK(res);
+    }
+    return KEFIR_OK;
 }

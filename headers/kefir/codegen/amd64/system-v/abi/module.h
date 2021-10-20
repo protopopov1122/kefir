@@ -28,18 +28,21 @@
 #include "kefir/core/hashtree.h"
 
 typedef struct kefir_codegen_amd64_sysv_module {
-    const struct kefir_ir_module *module;
+    struct kefir_ir_module *module;
     struct kefir_hashtree function_gates;
     struct kefir_hashtree function_vgates;
     struct kefir_hashtree type_layouts;
+    struct kefir_hashtree tls_entries;
 } kefir_codegen_amd64_sysv_module_t;
 
 kefir_result_t kefir_codegen_amd64_sysv_module_alloc(struct kefir_mem *, struct kefir_codegen_amd64_sysv_module *,
-                                                     const struct kefir_ir_module *);
+                                                     struct kefir_ir_module *);
 kefir_result_t kefir_codegen_amd64_sysv_module_free(struct kefir_mem *, struct kefir_codegen_amd64_sysv_module *);
 struct kefir_amd64_sysv_function_decl *kefir_codegen_amd64_sysv_module_function_decl(
     struct kefir_mem *, struct kefir_codegen_amd64_sysv_module *, kefir_id_t, bool);
 struct kefir_vector *kefir_codegen_amd64_sysv_module_type_layout(struct kefir_mem *,
                                                                  struct kefir_codegen_amd64_sysv_module *, kefir_id_t);
+kefir_result_t kefir_codegen_amd64_sysv_module_declare_tls(struct kefir_mem *, struct kefir_codegen_amd64_sysv_module *,
+                                                           const char *);
 
 #endif
