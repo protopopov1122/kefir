@@ -8,12 +8,12 @@ endif
 $(END2END_BIN_PATH)/runtime.o: $(SOURCE_DIR)/runtime/amd64_sysv.s
 	@mkdir -p $(shell dirname "$@")
 	@echo "Assemble $@"
-	@as -o $@ $<
+	@$(AS) -o $@ $<
 
 $(BIN_DIR)/%.kefir.o: $(SOURCE_DIR)/%.kefir.c $(BIN_DIR)/kefir
 	@mkdir -p $(shell dirname "$@")
 	@echo "Kefir-Compile $@"
-	@VALGRIND_OPTIONS="$(VALGRIND_OPTIONS)" $(SOURCE_DIR)/tests/end2end/compile.sh $(BIN_DIR) $< $@
+	@VALGRIND_OPTIONS="$(VALGRIND_OPTIONS)" AS="$(AS)" $(SOURCE_DIR)/tests/end2end/compile.sh $(BIN_DIR) $< $@
 
 $(END2END_BIN_PATH)/%.test: $(END2END_BIN_PATH)/runtime.o
 	@mkdir -p $(shell dirname "$@")

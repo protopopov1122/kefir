@@ -25,7 +25,6 @@ LIB_OBJ="$TMPDIR/lib.o"
 TEST_EXE="$TMPDIR/test"
 VALGRIND_FILE="$TMPDIR/gen.log"
 VALGRIND="valgrind $VALGRIND_OPTIONS --log-file=$VALGRIND_FILE"
-AS="as -o $ASM_OBJ"
 COMPILE="$CC -std=c11 -Wall -Wextra -pedantic -Wno-overlength-strings $OPT $DBG -I$DIR/../../../headers $CC_TEST_FLAGS -o $TEST_EXE -lm -pthread"
 
 if [[ "x$PLATFORM" == "xfreebsd" ]]; then
@@ -43,7 +42,7 @@ function cleanup {
 trap cleanup EXIT HUP INT QUIT PIPE TERM
 
 mkdir -p "$TMPDIR"
-as -o "$LIB_OBJ" "$DIR/../../runtime/amd64_sysv.s"
+$AS -o "$LIB_OBJ" "$DIR/../../runtime/amd64_sysv.s"
 if [[ "x$?" != "x0" ]]; then
     exit 126
 fi
@@ -58,7 +57,7 @@ do
         cat "$VALGRIND_FILE"
         exit 127
     fi
-    $AS "$ASM_FILE"
+    $AS -o "$ASM_OBJ" "$ASM_FILE"
     if [[ "x$?" != "x0" ]]; then
         exit 128
     fi
