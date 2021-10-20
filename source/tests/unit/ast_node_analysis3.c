@@ -536,7 +536,7 @@ DEFINE_CASE(ast_node_analysis_conditional_operator4, "AST node analysis - condit
             &kft_mem,
             (struct kefir_ast_type_name *) KEFIR_AST_NODE_CLONE(&kft_mem, KEFIR_AST_NODE_BASE(type_name5))->self,
             KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0)))),
-        true, { ASSERT(KEFIR_AST_TYPE_SAME(oper->base.properties.type, type_5)); });
+        true, { ASSERT(KEFIR_AST_TYPE_SAME(oper->base.properties.type, type_1)); });
 
     ASSERT_CONDITIONAL(
         &kft_mem, context, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(&kft_mem, true)),

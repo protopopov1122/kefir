@@ -363,7 +363,7 @@ kefir_result_t kefir_json_output_raw_string(struct kefir_json_output *json, cons
                 break;
 
             case U'\0':
-                fprintf(json->file, "\\0");
+                fprintf(json->file, "\\u0000");
                 break;
 
             default:

@@ -105,7 +105,7 @@
             "id": 0,
             "public": true,
             "type": "multibyte",
-            "literal": "WTF\?\0",
+            "literal": "WTF\?\u0000",
             "length": 5
         }
     ],

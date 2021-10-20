@@ -75,14 +75,14 @@
             "id": 0,
             "public": true,
             "type": "multibyte",
-            "literal": "Hello, world!\0",
+            "literal": "Hello, world!\u0000",
             "length": 14
         },
         {
             "id": 1,
             "public": true,
             "type": "multibyte",
-            "literal": "test...\0",
+            "literal": "test...\u0000",
             "length": 8
         }
     ],

@@ -181,7 +181,7 @@
                                     "expression": {
                                         "class": "string_literal",
                                         "type": "multibyte",
-                                        "content": "fn\0",
+                                        "content": "fn\u0000",
                                         "length": 3,
                                         "source_location": null
                                     },

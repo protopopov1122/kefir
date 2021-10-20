@@ -198,7 +198,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "multibyte",
-        "content": "\n\n\t\n\"\0",
+        "content": "\n\n\t\n\"\u0000",
         "length": 6
     },
     {

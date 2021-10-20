@@ -58,7 +58,7 @@
             "value": [
                 {
                     "class": "string",
-                    "content": "Hello, world!\0",
+                    "content": "Hello, world!\u0000",
                     "length": 14
                 },
                 {
@@ -74,7 +74,7 @@
             "value": [
                 {
                     "class": "string",
-                    "content": "Goodbye, world!\0",
+                    "content": "Goodbye, world!\u0000",
                     "length": 16
                 },
                 {
@@ -83,7 +83,7 @@
                 },
                 {
                     "class": "string",
-                    "content": "WTF world\?\0",
+                    "content": "WTF world\?\u0000",
                     "length": 11
                 },
                 {
@@ -98,21 +98,21 @@
             "id": 0,
             "public": false,
             "type": "multibyte",
-            "literal": "Hello, world!\0",
+            "literal": "Hello, world!\u0000",
             "length": 14
         },
         {
             "id": 1,
             "public": false,
             "type": "multibyte",
-            "literal": "Goodbye, world!\0",
+            "literal": "Goodbye, world!\u0000",
             "length": 16
         },
         {
             "id": 2,
             "public": false,
             "type": "multibyte",
-            "literal": "WTF world\?\0",
+            "literal": "WTF world\?\u0000",
             "length": 11
         }
     ],

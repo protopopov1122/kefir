@@ -318,8 +318,8 @@ static kefir_result_t union_static_data(const struct kefir_ir_type *type, kefir_
             defined = true;
         } else {
             param->slot += kefir_ir_type_node_slots(type, subindex);
-            subindex += kefir_ir_type_subnodes(type, subindex);
         }
+        subindex += kefir_ir_type_node_total_length(type, subindex);
     }
 
     REQUIRE_OK(trailing_padding(start_offset, layout, param));

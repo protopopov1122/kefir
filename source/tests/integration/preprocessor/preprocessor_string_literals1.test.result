@@ -3,7 +3,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "multibyte",
-        "content": "Hello,  cruel\0 world!!!\0\0\n\0",
+        "content": "Hello,  cruel\u0000 world!!!\u0000\u0000\n\u0000",
         "length": 27,
         "source_location": {
             "source": "",
@@ -25,7 +25,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "unicode8",
-        "content": "Test...test...test...\0\"\0test!\0\n\0",
+        "content": "Test...test...test...\u0000\"\u0000test!\u0000\n\u0000",
         "length": 32,
         "source_location": {
             "source": "",
@@ -108,7 +108,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "unicode8",
-        "content": "test!\0test\0",
+        "content": "test!\u0000test\u0000",
         "length": 11,
         "source_location": {
             "source": "",
@@ -130,7 +130,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "unicode8",
-        "content": "test2   \0",
+        "content": "test2   \u0000",
         "length": 9,
         "source_location": {
             "source": "",
@@ -171,7 +171,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "multibyte",
-        "content": "This is 2+2\0",
+        "content": "This is 2+2\u0000",
         "length": 12,
         "source_location": {
             "source": "",
@@ -193,7 +193,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "unicode8",
-        "content": "This is 100\0",
+        "content": "This is 100\u0000",
         "length": 12,
         "source_location": {
             "source": "",

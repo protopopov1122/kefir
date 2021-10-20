@@ -56,7 +56,7 @@
                                     "expression": {
                                         "class": "string_literal",
                                         "type": "multibyte",
-                                        "content": "Fn1\0",
+                                        "content": "Fn1\u0000",
                                         "length": 4
                                     }
                                 }
@@ -281,7 +281,7 @@
                                     "expression": {
                                         "class": "string_literal",
                                         "type": "multibyte",
-                                        "content": "Fn2\0",
+                                        "content": "Fn2\u0000",
                                         "length": 4
                                     }
                                 }
@@ -609,7 +609,7 @@
                                     "expression": {
                                         "class": "string_literal",
                                         "type": "multibyte",
-                                        "content": "SomeFn\0",
+                                        "content": "SomeFn\u0000",
                                         "length": 7
                                     }
                                 }

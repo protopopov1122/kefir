@@ -3,7 +3,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "unicode8",
-        "content": "Hello, world!\0",
+        "content": "Hello, world!\u0000",
         "length": 14
     },
     {
@@ -15,7 +15,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "unicode8",
-        "content": "abc\0",
+        "content": "abc\u0000",
         "length": 4
     },
     {
@@ -27,7 +27,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "unicode8",
-        "content": "\0\0\t\v\f               eHllow,, onE two Three \\ \"'\0",
+        "content": "\u0000\u0000\t\v\f               eHllow,, onE two Three \\ \"'\u0000",
         "length": 48
     },
     {
@@ -50,7 +50,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "unicode8",
-        "content": "\"\\world!gyp\0",
+        "content": "\"\\world!gyp\u0000",
         "length": 12
     },
     {

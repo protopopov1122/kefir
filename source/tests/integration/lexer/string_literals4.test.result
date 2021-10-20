@@ -70,7 +70,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "multibyte",
-        "content": "123\0",
+        "content": "123\u0000",
         "length": 4
     },
     {

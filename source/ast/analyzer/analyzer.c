@@ -23,6 +23,7 @@
 #include "kefir/core/error.h"
 #include "kefir/core/util.h"
 #include "kefir/ast/analyzer/nodes.h"
+#include "kefir/ast/constant_expression.h"
 
 struct assign_param {
     struct kefir_mem *mem;
@@ -127,4 +128,49 @@ kefir_result_t kefir_ast_analyze_node(struct kefir_mem *mem, const struct kefir_
     visitor.translation_unit = visit_translation_unit;
     visitor.builtin = visit_builtin;
     return KEFIR_AST_NODE_VISIT(&visitor, base, &param);
+}
+
+kefir_result_t kefir_ast_is_null_pointer_constant(struct kefir_mem *mem, const struct kefir_ast_context *context,
+                                                  const struct kefir_ast_node_base *node, kefir_bool_t *is_null) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node"));
+    REQUIRE(is_null != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to boolean"));
+
+    *is_null = false;
+    REQUIRE(node->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION &&
+                node->properties.expression_props.constant_expression,
+            KEFIR_OK);
+    REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(node->properties.type) ||
+                (node->properties.type->tag == KEFIR_AST_TYPE_SCALAR_POINTER &&
+                 node->properties.type->referenced_type->tag == KEFIR_AST_TYPE_VOID),
+            KEFIR_OK);
+
+    struct kefir_ast_constant_expression_value value;
+    kefir_result_t res = kefir_ast_constant_expression_value_evaluate(mem, context, node, &value);
+    if (res == KEFIR_NOT_CONSTANT) {
+        return KEFIR_OK;
+    } else {
+        REQUIRE_OK(res);
+    }
+    switch (value.klass) {
+        case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER:
+            if (value.integer == 0) {
+                *is_null = true;
+            }
+            break;
+
+        case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS:
+            if (value.pointer.type == KEFIR_AST_CONSTANT_EXPRESSION_POINTER_INTEGER &&
+                value.pointer.base.integral == 0 && value.pointer.offset == 0) {
+                *is_null = true;
+            }
+            break;
+
+        case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_NONE:
+        case KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT:
+            // Intentionally left blank
+            break;
+    }
+    return KEFIR_OK;
 }

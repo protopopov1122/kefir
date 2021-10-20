@@ -65,7 +65,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "multibyte",
-        "content": "Hello, world!\0",
+        "content": "Hello, world!\u0000",
         "length": 14,
         "source_location": {
             "source": "source_file_identifier",

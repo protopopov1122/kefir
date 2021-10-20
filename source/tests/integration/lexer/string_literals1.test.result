@@ -3,7 +3,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "multibyte",
-        "content": "Hello\0, \n\n\tworld!HELLO THERE\0",
+        "content": "Hello\u0000, \n\n\tworld!HELLO THERE\u0000",
         "length": 29
     },
     {
@@ -15,7 +15,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "multibyte",
-        "content": "\0",
+        "content": "\u0000",
         "length": 1
     },
     {
@@ -27,7 +27,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "multibyte",
-        "content": "hxr\v\f\r\?\a\\\0",
+        "content": "hxr\v\f\r\?\a\\\u0000",
         "length": 10
     },
     {
@@ -74,7 +74,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "multibyte",
-        "content": "ooo876Hello\n\n\0",
+        "content": "ooo876Hello\n\n\u0000",
         "length": 14
     },
     {

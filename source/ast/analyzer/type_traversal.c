@@ -278,20 +278,31 @@ static kefir_result_t navigate_member(struct kefir_mem *mem, struct kefir_ast_ty
             for (const struct kefir_list_entry *iter = kefir_list_head(&layer->object_type->structure_type.fields);
                  iter != NULL; kefir_list_next(&iter)) {
                 ASSIGN_DECL_CAST(struct kefir_ast_struct_field *, field, iter->value);
-                if (strcmp(member, field->identifier) == 0) {
-                    layer->init = false;
-                    if (push) {
-                        layer->structure.iterator = iter;
-                        REQUIRE_OK(push_layer(mem, traversal, field->type, layer));
-                    } else {
-                        if (iter->prev != NULL) {
-                            layer->structure.iterator = iter->prev;
-                        } else {
+                if (field->identifier != NULL) {
+                    if (strcmp(member, field->identifier) == 0) {
+                        layer->init = false;
+                        if (push) {
                             layer->structure.iterator = iter;
-                            layer->init = true;
+                            REQUIRE_OK(push_layer(mem, traversal, field->type, layer));
+                        } else {
+                            if (iter->prev != NULL) {
+                                layer->structure.iterator = iter->prev;
+                            } else {
+                                layer->structure.iterator = iter;
+                                layer->init = true;
+                            }
                         }
+                        return KEFIR_OK;
                     }
-                    return KEFIR_OK;
+                } else {
+                    REQUIRE_OK(push_layer(mem, traversal, field->type, layer));
+                    kefir_result_t res = navigate_member(mem, traversal, member, push);
+                    if (res == KEFIR_NOT_FOUND) {
+                        REQUIRE_OK(pop_layer(mem, traversal));
+                    } else {
+                        REQUIRE_OK(res);
+                        return KEFIR_OK;
+                    }
                 }
             }
             return KEFIR_SET_ERROR(KEFIR_NOT_FOUND, "Unable to find specified structure member");
@@ -301,15 +312,26 @@ static kefir_result_t navigate_member(struct kefir_mem *mem, struct kefir_ast_ty
             for (const struct kefir_list_entry *iter = kefir_list_head(&layer->object_type->structure_type.fields);
                  iter != NULL; kefir_list_next(&iter)) {
                 ASSIGN_DECL_CAST(struct kefir_ast_struct_field *, field, iter->value);
-                if (strcmp(member, field->identifier) == 0) {
-                    layer->structure.iterator = iter;
-                    if (push) {
-                        layer->init = false;
-                        REQUIRE_OK(push_layer(mem, traversal, field->type, layer));
-                    } else {
-                        layer->init = true;
+                if (field->identifier != NULL) {
+                    if (strcmp(member, field->identifier) == 0) {
+                        layer->structure.iterator = iter;
+                        if (push) {
+                            layer->init = false;
+                            REQUIRE_OK(push_layer(mem, traversal, field->type, layer));
+                        } else {
+                            layer->init = true;
+                        }
+                        return KEFIR_OK;
                     }
-                    return KEFIR_OK;
+                } else {
+                    REQUIRE_OK(push_layer(mem, traversal, field->type, layer));
+                    kefir_result_t res = navigate_member(mem, traversal, member, push);
+                    if (res == KEFIR_NOT_FOUND) {
+                        REQUIRE_OK(pop_layer(mem, traversal));
+                    } else {
+                        REQUIRE_OK(res);
+                        return KEFIR_OK;
+                    }
                 }
             }
             return KEFIR_SET_ERROR(KEFIR_NOT_FOUND, "Unable to find specified union member");

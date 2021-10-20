@@ -38,7 +38,7 @@
                         "string_literal": {
                             "class": "string_literal",
                             "type": "multibyte",
-                            "content": "Hello, world!\0",
+                            "content": "Hello, world!\u0000",
                             "length": 14
                         }
                     }
@@ -112,7 +112,7 @@
                                         "string_literal": {
                                             "class": "string_literal",
                                             "type": "multibyte",
-                                            "content": "Goodbye, world!\0",
+                                            "content": "Goodbye, world!\u0000",
                                             "length": 16
                                         }
                                     }
@@ -146,7 +146,7 @@
                         "string_literal": {
                             "class": "string_literal",
                             "type": "multibyte",
-                            "content": "What is this\?\n\n\0",
+                            "content": "What is this\?\n\n\u0000",
                             "length": 16
                         }
                     }

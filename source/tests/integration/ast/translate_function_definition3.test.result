@@ -95,7 +95,7 @@
             "value": [
                 {
                     "class": "string",
-                    "content": "sum\0",
+                    "content": "sum\u0000",
                     "length": 4
                 },
                 {
@@ -110,7 +110,7 @@
             "id": 0,
             "public": false,
             "type": "multibyte",
-            "literal": "sum\0",
+            "literal": "sum\u0000",
             "length": 4
         }
     ],

@@ -113,7 +113,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "multibyte",
-        "content": "test\0",
+        "content": "test\u0000",
         "length": 5
     },
     {
@@ -125,7 +125,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "multibyte",
-        "content": " temp \0",
+        "content": " temp \u0000",
         "length": 7
     },
     {

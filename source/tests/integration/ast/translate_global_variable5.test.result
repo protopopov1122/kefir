@@ -110,7 +110,7 @@
                 },
                 {
                     "class": "string",
-                    "content": "hey ho\0",
+                    "content": "hey ho\u0000",
                     "length": 7
                 },
                 {
@@ -150,7 +150,7 @@
             "id": 0,
             "public": false,
             "type": "multibyte",
-            "literal": "hey ho\0",
+            "literal": "hey ho\u0000",
             "length": 7
         }
     ],

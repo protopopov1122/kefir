@@ -123,7 +123,7 @@
                                     "expression": {
                                         "class": "string_literal",
                                         "type": "multibyte",
-                                        "content": "Function\0",
+                                        "content": "Function\u0000",
                                         "length": 9
                                     }
                                 }

@@ -3,7 +3,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "multibyte",
-        "content": "ABC-DEF-123\0",
+        "content": "ABC-DEF-123\u0000",
         "length": 12
     },
     {
@@ -172,7 +172,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "multibyte",
-        "content": "\a\b\0",
+        "content": "\a\b\u0000",
         "length": 3
     },
     {

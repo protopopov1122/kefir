@@ -192,14 +192,14 @@
             "id": 0,
             "public": true,
             "type": "multibyte",
-            "literal": "Some ordinary string\0",
+            "literal": "Some ordinary string\u0000",
             "length": 21
         },
         {
             "id": 1,
             "public": true,
             "type": "multibyte",
-            "literal": "Another ordinary string\0",
+            "literal": "Another ordinary string\u0000",
             "length": 24
         }
     ],

@@ -53,7 +53,7 @@ kefir_result_t kefir_cli_input_open(struct kefir_mem *mem, struct kefir_cli_inpu
         kefir_size_t buffer_capacity = 0;
         char chunk[256];
         ssize_t sz;
-        while ((sz = read(fd, chunk, sizeof(chunk))) > 0) {
+        while ((sz = read(fd, chunk, sizeof chunk)) > 0) {
             if (input->length + sz >= buffer_capacity) {
                 buffer_capacity = input->length + sz + 1024;
                 input->content = KEFIR_REALLOC(mem, input->content, buffer_capacity);

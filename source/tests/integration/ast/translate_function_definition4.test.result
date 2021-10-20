@@ -73,7 +73,7 @@
             "value": [
                 {
                     "class": "string",
-                    "content": "factorial\0",
+                    "content": "factorial\u0000",
                     "length": 10
                 },
                 {
@@ -88,7 +88,7 @@
             "id": 0,
             "public": false,
             "type": "multibyte",
-            "literal": "factorial\0",
+            "literal": "factorial\u0000",
             "length": 10
         }
     ],

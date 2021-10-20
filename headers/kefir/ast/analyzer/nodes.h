@@ -65,4 +65,7 @@ ANALYZE_NODE(builtin, struct kefir_ast_builtin);
 
 #undef ANALYZE_NODE
 
+kefir_result_t kefir_ast_is_null_pointer_constant(struct kefir_mem *, const struct kefir_ast_context *,
+                                                  const struct kefir_ast_node_base *, kefir_bool_t *);
+
 #endif

@@ -11,7 +11,7 @@
     {
         "class": "string_literal",
         "type": "multibyte",
-        "content": "HELLO, WORLD!\n\n\0\0",
+        "content": "HELLO, WORLD!\n\n\u0000\u0000",
         "length": 17
     },
     {

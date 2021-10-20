@@ -71,7 +71,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "multibyte",
-        "content": "\0\0",
+        "content": "\u0000\u0000",
         "length": 2
     },
     {

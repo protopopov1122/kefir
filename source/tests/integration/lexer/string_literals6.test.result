@@ -3,7 +3,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "multibyte",
-        "content": "Test...test.....test\0",
+        "content": "Test...test.....test\u0000",
         "length": 21
     },
     {
@@ -15,7 +15,7 @@
         "class": "string_literal",
         "preprocessor": false,
         "type": "unicode8",
-        "content": "Test...Here and thereEverywhere\0",
+        "content": "Test...Here and thereEverywhere\u0000",
         "length": 32
     },
     {

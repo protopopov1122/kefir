@@ -76,7 +76,7 @@
             "value": [
                 {
                     "class": "string",
-                    "content": "intat\0",
+                    "content": "intat\u0000",
                     "length": 6
                 },
                 {
@@ -91,7 +91,7 @@
             "id": 0,
             "public": false,
             "type": "multibyte",
-            "literal": "intat\0",
+            "literal": "intat\u0000",
             "length": 6
         }
     ],

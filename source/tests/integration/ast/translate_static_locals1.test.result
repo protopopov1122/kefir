@@ -73,7 +73,7 @@
                 },
                 {
                     "class": "string",
-                    "content": "fn\0",
+                    "content": "fn\u0000",
                     "length": 3
                 },
                 {
@@ -88,7 +88,7 @@
             "id": 0,
             "public": false,
             "type": "multibyte",
-            "literal": "fn\0",
+            "literal": "fn\u0000",
             "length": 3
         }
     ],

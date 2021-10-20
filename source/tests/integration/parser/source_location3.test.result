@@ -239,7 +239,7 @@
                                                             "expression": {
                                                                 "class": "string_literal",
                                                                 "type": "multibyte",
-                                                                "content": "Hello world\0",
+                                                                "content": "Hello world\u0000",
                                                                 "length": 12,
                                                                 "source_location": {
                                                                     "source": "<stdin>",
