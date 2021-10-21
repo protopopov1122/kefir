@@ -4,6 +4,7 @@ include source/Makefile.mk
 include source/tests/Makefile.mk
 include source/main/Makefile.mk
 include install.mk
+include self.mk
 
 .GENERATED_SOURCES: $(GENERATED_SOURCES)
 .DEPENDENCIES: $(DEPENDENCIES)
