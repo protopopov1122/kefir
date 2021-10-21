@@ -51,6 +51,22 @@
         "class": "unary_operation",
         "type": "sizeof",
         "argument": {
+            "class": "indirect_struct_member",
+            "structure": {
+                "class": "struct_member",
+                "structure": {
+                    "class": "identifier",
+                    "identifier": "someobj"
+                },
+                "member": "field1"
+            },
+            "member": "field2"
+        }
+    },
+    {
+        "class": "unary_operation",
+        "type": "sizeof",
+        "argument": {
             "class": "type_name",
             "specifiers": [
                 {
