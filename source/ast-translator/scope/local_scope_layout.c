@@ -335,6 +335,13 @@ static kefir_result_t traverse_local_scope(
                                            kefir_list_tail(&(*scope_type_layout)->custom_layout.sublayouts),
                                            sublocal_scopes_type_layout));
         sublocal_scopes_type_layout->parent = *scope_type_layout;
+    } else {
+        for (struct kefir_tree_node *child = kefir_tree_first_child(root); child != NULL;
+             child = kefir_tree_next_sibling(child)) {
+            struct kefir_ast_type_layout *sublocal_type_layout = NULL;
+            REQUIRE_OK(traverse_local_scope(mem, child, builder, env, type_bundle, type_traits, module, type_resolver,
+                                            local_layout, &sublocal_type_layout));
+        }
     }
     return KEFIR_OK;
 }

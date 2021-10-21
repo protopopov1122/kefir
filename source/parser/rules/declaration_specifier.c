@@ -395,7 +395,7 @@ static kefir_result_t scan_type_specifier(struct kefir_mem *mem, struct kefir_pa
         specifier = kefir_ast_type_specifier_unsigned(mem);
     } else if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_BOOL)) {
         REQUIRE_OK(PARSER_SHIFT(parser));
-        specifier = kefir_ast_type_specifier_bool(mem);
+        specifier = kefir_ast_type_specifier_boolean(mem);
     } else if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_COMPLEX)) {
         REQUIRE_OK(PARSER_SHIFT(parser));
         specifier = kefir_ast_type_specifier_complex(mem);

@@ -50,7 +50,17 @@ const struct kefir_ast_type *kefir_ast_type_int_promotion(const struct kefir_ast
 const struct kefir_ast_type *kefir_ast_type_common_arithmetic(const struct kefir_ast_type_traits *type_traits,
                                                               const struct kefir_ast_type *type1,
                                                               const struct kefir_ast_type *type2) {
-    REQUIRE(type1->basic && type2->basic, NULL);
+    REQUIRE(type1 != NULL, NULL);
+    REQUIRE(type2 != NULL, NULL);
+    REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1) && KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type2), NULL);
+
+    if (type1->tag == KEFIR_AST_TYPE_ENUMERATION) {
+        type1 = kefir_ast_enumeration_underlying_type(&type1->enumeration_type);
+    }
+    if (type2->tag == KEFIR_AST_TYPE_ENUMERATION) {
+        type2 = kefir_ast_enumeration_underlying_type(&type2->enumeration_type);
+    }
+
     if (ANY_OF(type1, type2, kefir_ast_type_double())) {
         return kefir_ast_type_double();
     }

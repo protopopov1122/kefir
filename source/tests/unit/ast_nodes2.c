@@ -419,7 +419,7 @@ DEFINE_CASE(ast_nodes_compound_literals, "AST nodes - compound literals") {
 
     struct kefir_ast_structure_declaration_entry *entry3 = kefir_ast_structure_declaration_entry_alloc(&kft_mem);
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &entry3->declaration.specifiers,
-                                                         kefir_ast_type_specifier_bool(&kft_mem)));
+                                                         kefir_ast_type_specifier_boolean(&kft_mem)));
     ASSERT_OK(kefir_ast_structure_declaration_entry_append(
         &kft_mem, entry3, kefir_ast_declarator_identifier(&kft_mem, &symbols, "z"), NULL));
     ASSERT_OK(kefir_ast_structure_specifier_append_entry(&kft_mem, specifier1, entry3));

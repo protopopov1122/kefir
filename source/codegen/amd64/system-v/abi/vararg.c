@@ -231,8 +231,8 @@ static kefir_result_t vararg_visit_integer(const struct kefir_ir_type *type, kef
                                            const struct kefir_ir_typeentry *typeentry, void *payload) {
     UNUSED(type);
     UNUSED(index);
-    const kefir_size_t BUF_SIZE = 256;
-    char buffer[BUF_SIZE];
+    char buffer[256];
+    const kefir_size_t BUF_SIZE = sizeof(buffer);
 
     ASSIGN_DECL_CAST(struct vararg_getter *, param, payload);
     snprintf(buffer, BUF_SIZE - 1, KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_SCALAR_LABEL, param->sysv_func->func->name,
@@ -302,8 +302,8 @@ static kefir_result_t vararg_visit_sse(const struct kefir_ir_type *type, kefir_s
     UNUSED(type);
     UNUSED(index);
     UNUSED(typeentry);
-    const kefir_size_t BUF_SIZE = 256;
-    char buffer[BUF_SIZE];
+    char buffer[256];
+    const kefir_size_t BUF_SIZE = sizeof(buffer);
 
     ASSIGN_DECL_CAST(struct vararg_getter *, param, payload);
     snprintf(buffer, BUF_SIZE - 1, KEFIR_AMD64_SYSV_FUNCTION_VARARG_ARG_SCALAR_LABEL, param->sysv_func->func->name,
@@ -724,8 +724,8 @@ kefir_result_t kefir_codegen_amd64_sysv_vararg_instruction(struct kefir_mem *mem
     UNUSED(sysv_module);
     UNUSED(sysv_func);
 
-    const kefir_size_t BUF_SIZE = 256;
-    char buffer[BUF_SIZE];
+    char buffer[256];
+    const kefir_size_t BUF_SIZE = sizeof(buffer);
 
     switch (instr->opcode) {
         case KEFIR_IROPCODE_VARARG_START: {

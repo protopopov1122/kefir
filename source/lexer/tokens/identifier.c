@@ -82,7 +82,7 @@ kefir_result_t kefir_lexer_scan_identifier_or_keyword(struct kefir_mem *mem, str
     kefir_keyword_token_t keyword;
     kefir_result_t res = keywords != NULL ? kefir_lexer_get_keyword(keywords, identifier, &keyword) : KEFIR_NO_MATCH;
     if (res == KEFIR_NO_MATCH) {
-        char mb_identifier[MB_CUR_MAX * MAX_IDENTIFIER_LENGTH];
+        char mb_identifier[MB_LEN_MAX * MAX_IDENTIFIER_LENGTH];
         char *mb_identifier_ptr = &mb_identifier[0];
         mbstate_t mbstate = {0};
         for (kefir_size_t i = 0; i <= length; i++) {

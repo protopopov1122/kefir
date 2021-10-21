@@ -238,7 +238,7 @@ static kefir_result_t format_constant(FILE *out, const struct kefir_token *token
             break;
 
         case KEFIR_CONSTANT_TOKEN_UNICODE16_CHAR: {
-            char buffer[MB_CUR_MAX];
+            char buffer[MB_LEN_MAX];
             mbstate_t mbstate;
             int sz = (int) c16rtomb(buffer, token->constant.unicode16_char, &mbstate);
             REQUIRE(sz >= 0,
@@ -247,7 +247,7 @@ static kefir_result_t format_constant(FILE *out, const struct kefir_token *token
         } break;
 
         case KEFIR_CONSTANT_TOKEN_UNICODE32_CHAR: {
-            char buffer[MB_CUR_MAX];
+            char buffer[MB_LEN_MAX];
             mbstate_t mbstate;
             int sz = (int) c32rtomb(buffer, token->constant.unicode32_char, &mbstate);
             REQUIRE(sz >= 0,

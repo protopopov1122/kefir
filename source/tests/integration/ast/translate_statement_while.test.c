@@ -118,7 +118,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl1->specifiers,
                                                               kefir_ast_type_qualifier_volatile(mem)));
         REQUIRE_OK(
-            kefir_ast_declarator_specifier_list_append(mem, &decl1->specifiers, kefir_ast_type_specifier_bool(mem)));
+            kefir_ast_declarator_specifier_list_append(mem, &decl1->specifiers, kefir_ast_type_specifier_boolean(mem)));
 
         struct kefir_ast_compound_statement *body = kefir_ast_new_compound_statement(mem);
         REQUIRE_OK(kefir_list_insert_after(

@@ -34,6 +34,14 @@
         },
         {
             "identifier": 6,
+            "type": []
+        },
+        {
+            "identifier": 7,
+            "type": []
+        },
+        {
+            "identifier": 8,
             "type": [
                 {
                     "type": "struct",
@@ -66,14 +74,6 @@
             ]
         },
         {
-            "identifier": 7,
-            "type": []
-        },
-        {
-            "identifier": 8,
-            "type": []
-        },
-        {
             "identifier": 9,
             "type": []
         },
@@ -83,6 +83,14 @@
         },
         {
             "identifier": 11,
+            "type": []
+        },
+        {
+            "identifier": 12,
+            "type": []
+        },
+        {
+            "identifier": 13,
             "type": [
                 {
                     "type": "struct",
@@ -105,11 +113,11 @@
             ]
         },
         {
-            "identifier": 12,
+            "identifier": 14,
             "type": []
         },
         {
-            "identifier": 13,
+            "identifier": 15,
             "type": [
                 {
                     "type": "bool"
@@ -117,11 +125,11 @@
             ]
         },
         {
-            "identifier": 14,
+            "identifier": 16,
             "type": []
         },
         {
-            "identifier": 15,
+            "identifier": 17,
             "type": [
                 {
                     "type": "bool"
@@ -148,14 +156,14 @@
         },
         {
             "identifier": 2,
-            "name": "for2",
+            "name": "body",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
             "identifier": 3,
-            "name": "body",
+            "name": "for2",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -169,13 +177,20 @@
         },
         {
             "identifier": 5,
-            "name": "for3",
+            "name": "body",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
             "identifier": 6,
+            "name": "for3",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 7,
             "name": "body2",
             "parameters": [],
             "vararg": false,
@@ -186,7 +201,7 @@
             ]
         },
         {
-            "identifier": 7,
+            "identifier": 8,
             "name": "body2",
             "parameters": [],
             "vararg": false,
@@ -206,7 +221,7 @@
                 {
                     "opcode": "invoke",
                     "arg": {
-                        "identifier": 1,
+                        "identifier": 2,
                         "name": "body"
                     }
                 },
@@ -217,7 +232,7 @@
             ]
         },
         {
-            "identifier": 2,
+            "identifier": 3,
             "name": "for2",
             "locals": [
                 {
@@ -290,7 +305,7 @@
                 {
                     "opcode": "invoke",
                     "arg": {
-                        "identifier": 4,
+                        "identifier": 5,
                         "name": "body"
                     }
                 },
@@ -329,7 +344,7 @@
             ]
         },
         {
-            "identifier": 5,
+            "identifier": 6,
             "name": "for3",
             "locals": [
                 {
@@ -396,7 +411,7 @@
                 {
                     "opcode": "invoke",
                     "arg": {
-                        "identifier": 7,
+                        "identifier": 8,
                         "name": "body2"
                     }
                 },

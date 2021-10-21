@@ -363,7 +363,7 @@ DEFINE_CASE(ast_node_analysis_compound_literal1, "AST node analysis - compound l
                    "Type array length mismatch");
 
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &TYPES[0]->type_decl.specifiers,
-                                                         kefir_ast_type_specifier_bool(&kft_mem)));
+                                                         kefir_ast_type_specifier_boolean(&kft_mem)));
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &TYPES[1]->type_decl.specifiers,
                                                          kefir_ast_type_specifier_char(&kft_mem)));
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &TYPES[2]->type_decl.specifiers,
@@ -1210,7 +1210,7 @@ DEFINE_CASE(ast_node_analysis_compound_literal4, "AST node analysis - compound l
         &kft_mem, kefir_ast_declarator_array(&kft_mem, KEFIR_AST_DECLARATOR_ARRAY_UNBOUNDED, NULL,
                                              kefir_ast_declarator_identifier(&kft_mem, NULL, NULL)));
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name7->type_decl.specifiers,
-                                                         kefir_ast_type_specifier_bool(&kft_mem)));
+                                                         kefir_ast_type_specifier_boolean(&kft_mem)));
 
     struct kefir_ast_type_name *type_name8 =
         kefir_ast_new_type_name(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL));

@@ -61,7 +61,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
             kefir_ast_new_expression_initializer(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(mem, true))),
             NULL);
         REQUIRE_OK(
-            kefir_ast_declarator_specifier_list_append(mem, &decl1->specifiers, kefir_ast_type_specifier_bool(mem)));
+            kefir_ast_declarator_specifier_list_append(mem, &decl1->specifiers, kefir_ast_type_specifier_boolean(mem)));
 
         struct kefir_ast_declaration *decl2 = kefir_ast_new_single_declaration(
             mem, kefir_ast_declarator_function(mem, kefir_ast_declarator_identifier(mem, context->symbols, "eval")),
@@ -69,7 +69,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl2->specifiers,
                                                               kefir_ast_storage_class_specifier_extern(mem)));
         REQUIRE_OK(
-            kefir_ast_declarator_specifier_list_append(mem, &decl2->specifiers, kefir_ast_type_specifier_bool(mem)));
+            kefir_ast_declarator_specifier_list_append(mem, &decl2->specifiers, kefir_ast_type_specifier_boolean(mem)));
 
         struct kefir_ast_expression_statement *body = kefir_ast_new_expression_statement(
             mem, KEFIR_AST_NODE_BASE(kefir_ast_new_simple_assignment(
@@ -113,7 +113,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &decl1->specifiers,
                                                               kefir_ast_type_qualifier_volatile(mem)));
         REQUIRE_OK(
-            kefir_ast_declarator_specifier_list_append(mem, &decl1->specifiers, kefir_ast_type_specifier_bool(mem)));
+            kefir_ast_declarator_specifier_list_append(mem, &decl1->specifiers, kefir_ast_type_specifier_boolean(mem)));
 
         struct kefir_ast_compound_statement *body = kefir_ast_new_compound_statement(mem);
         REQUIRE_OK(kefir_list_insert_after(

@@ -39,7 +39,7 @@ static kefir_result_t next_character(struct kefir_lexer_source_cursor *cursor, k
     }
 
     if (*continueScan) {
-        char multibyte[MB_CUR_MAX];
+        char multibyte[MB_LEN_MAX];
         mbstate_t mbstate = {0};
         size_t sz = c32rtomb(multibyte, chr, &mbstate);
         if (sz == (size_t) -1) {

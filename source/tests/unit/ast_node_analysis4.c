@@ -159,7 +159,7 @@ DEFINE_CASE(ast_node_analysis_simple_assignment_operator2, "AST node analysis - 
     };
 
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &TYPES2[0]->type_decl.specifiers,
-                                                         kefir_ast_type_specifier_bool(&kft_mem)));
+                                                         kefir_ast_type_specifier_boolean(&kft_mem)));
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &TYPES2[1]->type_decl.specifiers,
                                                          kefir_ast_type_specifier_char(&kft_mem)));
     ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &TYPES2[2]->type_decl.specifiers,

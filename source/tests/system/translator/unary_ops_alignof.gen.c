@@ -85,7 +85,7 @@ static kefir_result_t define_get_alignof_function(struct kefir_mem *mem, struct 
     struct kefir_ast_type_name *_id = kefir_ast_new_type_name(mem, kefir_ast_declarator_identifier(mem, NULL, NULL)); \
     REQUIRE_OK(append_specifiers(mem, &_id->type_decl.specifiers, (_spec_count), __VA_ARGS__));
 
-    MAKE_TYPENAME(type_name1, 1, kefir_ast_type_specifier_bool(mem))
+    MAKE_TYPENAME(type_name1, 1, kefir_ast_type_specifier_boolean(mem))
     MAKE_TYPENAME(type_name2, 1, kefir_ast_type_specifier_char(mem))
     MAKE_TYPENAME(type_name3, 2, kefir_ast_type_specifier_unsigned(mem), kefir_ast_type_specifier_char(mem))
     MAKE_TYPENAME(type_name4, 2, kefir_ast_type_specifier_signed(mem), kefir_ast_type_specifier_char(mem))

@@ -106,7 +106,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ast_type_name *_id = kefir_ast_new_type_name(mem, kefir_ast_declarator_identifier(mem, NULL, NULL)); \
     REQUIRE_OK(append_specifiers(mem, &_id->type_decl.specifiers, (_spec_count), __VA_ARGS__));
 
-    MAKE_TYPENAME(type_name1, 1, kefir_ast_type_specifier_bool(mem));
+    MAKE_TYPENAME(type_name1, 1, kefir_ast_type_specifier_boolean(mem));
     MAKE_TYPENAME(type_name2, 1, kefir_ast_type_specifier_int(mem));
     MAKE_TYPENAME(type_name3, 1, kefir_ast_type_specifier_int(mem));
     MAKE_TYPENAME(type_name4, 1, kefir_ast_type_specifier_short(mem));
@@ -167,7 +167,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ast_type_name *type_name28 = kefir_ast_new_type_name(
         mem, kefir_ast_declarator_pointer(mem, kefir_ast_declarator_identifier(mem, NULL, NULL)));
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name28->type_decl.specifiers,
-                                                          kefir_ast_type_specifier_bool(mem)));
+                                                          kefir_ast_type_specifier_boolean(mem)));
 
     struct kefir_ast_type_name *type_name29 = kefir_ast_new_type_name(
         mem, kefir_ast_declarator_pointer(mem, kefir_ast_declarator_identifier(mem, NULL, NULL)));

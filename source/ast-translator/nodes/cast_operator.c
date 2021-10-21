@@ -35,6 +35,9 @@ kefir_result_t kefir_ast_translate_cast_operator_node(struct kefir_mem *mem,
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR block builder"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST cast operator node"));
 
+    const struct kefir_ast_type *expr_type =
+        KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, node->expr->properties.type);
+
     const struct kefir_ast_type *arg_init_normalized_type =
         kefir_ast_translator_normalize_type(node->type_name->base.properties.type);
     const struct kefir_ast_type *arg_normalized_type =
@@ -43,7 +46,7 @@ kefir_result_t kefir_ast_translate_cast_operator_node(struct kefir_mem *mem,
             KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to perform lvalue conversions"));
 
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->expr, builder, context));
-    REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits, node->expr->properties.type,
-                                            arg_normalized_type));
+    REQUIRE_OK(
+        kefir_ast_translate_typeconv(builder, context->ast_context->type_traits, expr_type, arg_normalized_type));
     return KEFIR_OK;
 }

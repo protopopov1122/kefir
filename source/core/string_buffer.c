@@ -180,7 +180,7 @@ kefir_result_t kefir_string_buffer_insert_multibyte(struct kefir_mem *mem, struc
     REQUIRE(buffer->mode == KEFIR_STRING_BUFFER_MULTIBYTE,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected mulibyte string buffer"));
 
-    char narrow_string[MB_CUR_MAX];
+    char narrow_string[MB_LEN_MAX];
     mbstate_t mbstate = {0};
     size_t sz = c32rtomb(narrow_string, character, &mbstate);
     REQUIRE(sz != (size_t) -1,
@@ -196,7 +196,7 @@ kefir_result_t kefir_string_buffer_insert_unicode8_character(struct kefir_mem *m
     REQUIRE(buffer->mode == KEFIR_STRING_BUFFER_UNICODE8,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected unicode8 string buffer"));
 
-    char narrow_string[MB_CUR_MAX];
+    char narrow_string[MB_LEN_MAX];
     mbstate_t mbstate = {0};
     size_t sz = c32rtomb(narrow_string, character, &mbstate);
     REQUIRE(sz != (size_t) -1,
@@ -212,7 +212,7 @@ kefir_result_t kefir_string_buffer_insert_unicode16_character(struct kefir_mem *
     REQUIRE(buffer->mode == KEFIR_STRING_BUFFER_UNICODE16,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected unicode16 string buffer"));
 
-    char narrow_string[MB_CUR_MAX];
+    char narrow_string[MB_LEN_MAX];
     mbstate_t mbstate = {0};
     size_t sz = c32rtomb(narrow_string, character, &mbstate);
     REQUIRE(sz != (size_t) -1,
@@ -274,7 +274,7 @@ kefir_result_t kefir_string_buffer_insert_wide_character(struct kefir_mem *mem, 
     REQUIRE(buffer->mode == KEFIR_STRING_BUFFER_WIDE,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected wide string buffer"));
 
-    char narrow_string[MB_CUR_MAX];
+    char narrow_string[MB_LEN_MAX];
     mbstate_t mbstate = {0};
     size_t sz = c32rtomb(narrow_string, character, &mbstate);
     REQUIRE(sz != (size_t) -1, KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Failed to convert unicode32 character into wide"));
@@ -384,7 +384,7 @@ kefir_result_t kefir_string_buffer_merge(struct kefir_mem *mem, struct kefir_str
 
         case KEFIR_STRING_BUFFER_UNICODE16: {
             const kefir_char16_t *begin = src->buffer;
-            char buf[MB_CUR_MAX];
+            char buf[MB_LEN_MAX];
             mbstate_t mbstate = {0};
             for (kefir_size_t i = 0; i < src->length / sizeof(kefir_char16_t); i++) {
                 size_t rc = c16rtomb(buf, begin[i], &mbstate);
@@ -412,7 +412,7 @@ kefir_result_t kefir_string_buffer_merge(struct kefir_mem *mem, struct kefir_str
 
         case KEFIR_STRING_BUFFER_WIDE: {
             const kefir_wchar_t *begin = src->buffer;
-            char buf[MB_CUR_MAX];
+            char buf[MB_LEN_MAX];
             mbstate_t mbstate = {0};
             for (kefir_size_t i = 0; i < src->length / sizeof(kefir_wchar_t); i++) {
                 size_t rc = wcrtomb(buf, begin[i], &mbstate);

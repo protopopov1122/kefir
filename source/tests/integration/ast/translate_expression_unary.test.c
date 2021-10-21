@@ -189,7 +189,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     const kefir_size_t TYPES_LEN = sizeof(TYPES) / sizeof(TYPES[0]);
 
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &TYPES[0]->type_decl.specifiers,
-                                                          kefir_ast_type_specifier_bool(mem)));
+                                                          kefir_ast_type_specifier_boolean(mem)));
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &TYPES[1]->type_decl.specifiers,
                                                           kefir_ast_type_specifier_char(mem)));
     REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &TYPES[2]->type_decl.specifiers,
@@ -328,7 +328,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
             mem, kefir_ast_declarator_pointer(
                      mem, kefir_ast_declarator_pointer(mem, kefir_ast_declarator_identifier(mem, NULL, NULL))));
         REQUIRE_OK(kefir_ast_declarator_specifier_list_append(mem, &type_name5->type_decl.specifiers,
-                                                              kefir_ast_type_specifier_bool(mem)));
+                                                              kefir_ast_type_specifier_boolean(mem)));
 
         UNARY_NODE(KEFIR_AST_OPERATION_INDIRECTION,
                    KEFIR_AST_NODE_BASE(kefir_ast_new_unary_operation(

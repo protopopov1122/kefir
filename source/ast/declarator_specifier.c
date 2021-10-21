@@ -536,7 +536,7 @@ TYPE_SPECIFIER(float, KEFIR_AST_TYPE_SPECIFIER_FLOAT)
 TYPE_SPECIFIER(double, KEFIR_AST_TYPE_SPECIFIER_DOUBLE)
 TYPE_SPECIFIER(signed, KEFIR_AST_TYPE_SPECIFIER_SIGNED)
 TYPE_SPECIFIER(unsigned, KEFIR_AST_TYPE_SPECIFIER_UNSIGNED)
-TYPE_SPECIFIER(bool, KEFIR_AST_TYPE_SPECIFIER_BOOL)
+TYPE_SPECIFIER(boolean, KEFIR_AST_TYPE_SPECIFIER_BOOL)
 TYPE_SPECIFIER(complex, KEFIR_AST_TYPE_SPECIFIER_COMPLEX)
 TYPE_SPECIFIER(va_list, KEFIR_AST_TYPE_SPECIFIER_VA_LIST)
 
@@ -779,7 +779,7 @@ struct kefir_ast_declarator_specifier *kefir_ast_declarator_specifier_clone(
                     break;
 
                 case KEFIR_AST_TYPE_SPECIFIER_BOOL:
-                    clone = kefir_ast_type_specifier_bool(mem);
+                    clone = kefir_ast_type_specifier_boolean(mem);
                     break;
 
                 case KEFIR_AST_TYPE_SPECIFIER_COMPLEX:
