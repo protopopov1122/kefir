@@ -27,7 +27,10 @@ KEFIR_SELF_SOURCE := $(wildcard \
 	$(SOURCE_DIR)/util/*.c \
 	$(SOURCE_DIR)/main/*.c)
 
+KEFIR_SELF_ASM_FILES := $(KEFIR_SELF_SOURCE:$(SOURCE_DIR)/%.c=$(BIN_DIR)/self/%.s)
 KEFIR_SELF_OBJECT_FILES := $(KEFIR_SELF_SOURCE:$(SOURCE_DIR)/%.c=$(BIN_DIR)/self/%.o)
+KEFIR_SELF_OBJECT_FILES += $(BIN_DIR)/self/runtime.o
+KEFIR_SELF_OBJECT_FILES += $(BIN_DIR)/self/main/help.o
 
 $(BIN_DIR)/self/%.s: $(SOURCE_DIR)/%.c $(KEFIRCC)
 	@mkdir -p $(shell dirname "$@")
@@ -43,15 +46,18 @@ $(BIN_DIR)/self/runtime.o: $(SOURCE_DIR)/runtime/amd64_sysv.s
 	@echo "Assemble $@"
 	@$(AS) -o $@ $<
 
-$(BIN_DIR)/main/help.o: $(SOURCE_DIR)/main/help.txt $(SOURCE_DIR)/main/help.s
+$(BIN_DIR)/self/main/help.o: $(SOURCE_DIR)/main/help.txt $(SOURCE_DIR)/main/help.s
 	@mkdir -p $(shell dirname "$@")
 	@echo "Building $@"
 	@$(AS) -o $@ $(SOURCE_DIR)/main/help.s
 
-$(BIN_DIR)/self/kefir: $(BIN_DIR)/self/runtime.o $(BIN_DIR)/main/help.o $(KEFIR_SELF_OBJECT_FILES)
+$(BIN_DIR)/self/kefir: $(KEFIR_SELF_OBJECT_FILES)
 	@echo "Linking $@"
-	@$(LD) -o $@ $(BIN_DIR)/self/runtime.o $(BIN_DIR)/main/help.o $(KEFIR_SELF_OBJECT_FILES)
+	@$(LD) -o $@ $^
 
 self: $(BIN_DIR)/self/kefir
+
+ASM_FILES += $(KEFIR_SELF_ASM_FILES)
+OBJECT_FILES += $(KEFIR_SELF_OBJECT_FILES)
 
 .PHONY: self
