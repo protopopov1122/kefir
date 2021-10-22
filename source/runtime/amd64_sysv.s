@@ -28,8 +28,13 @@
 .intel_syntax noprefix
 .section .text
 
+.macro declare_runtime identifier
+.global \identifier
+.hidden \identifier
+.endm
+
 .macro declare_opcode identifier
-.global __kefirrt_\identifier\()_impl
+declare_runtime __kefirrt_\identifier\()_impl
 .endm
 
 .macro define_opcode identifier
@@ -144,12 +149,12 @@ declare_opcode f32cf64
 declare_opcode f64cf32
 declare_opcode alloca
 # Runtime
-.global __kefirrt_preserve_state
-.global __kefirrt_restore_state
-.global __kefirrt_save_registers
-.global __kefirrt_load_integer_vararg
-.global __kefirrt_load_sse_vararg
-.global __kefirrt_copy_vararg
+declare_runtime __kefirrt_preserve_state
+declare_runtime __kefirrt_restore_state
+declare_runtime __kefirrt_save_registers
+declare_runtime __kefirrt_load_integer_vararg
+declare_runtime __kefirrt_load_sse_vararg
+declare_runtime __kefirrt_copy_vararg
 
 define_opcode nop
     end_opcode
