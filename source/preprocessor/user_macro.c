@@ -579,6 +579,7 @@ static kefir_result_t user_macro_apply(struct kefir_mem *mem, const struct kefir
         if (token->klass == KEFIR_TOKEN_IDENTIFIER && strcmp(token->identifier, macro->identifier) == 0) {
             token->preprocessor_props.skip_identifier_subst = true;
         }
+        token->source_location = *source_location;
 
         if (token->klass != KEFIR_TOKEN_PP_PLACEMAKER) {
             res = kefir_token_buffer_emplace(mem, buffer, token);

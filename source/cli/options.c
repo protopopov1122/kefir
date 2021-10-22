@@ -43,7 +43,8 @@ static kefir_result_t parse_impl(struct kefir_mem *mem, struct kefir_cli_options
                                                  {"define", required_argument, NULL, 'D'},
                                                  {"include-dir", required_argument, NULL, 'I'},
                                                  {"help", no_argument, NULL, 'h'},
-                                                 {"version", no_argument, NULL, 'v'}};
+                                                 {"version", no_argument, NULL, 'v'},
+                                                 {0}};
     const char *options_string = "+:o:I:D:pPhv";
 
     for (int c = getopt_long(argc, argv, options_string, long_options, &long_option_index); c != -1;
