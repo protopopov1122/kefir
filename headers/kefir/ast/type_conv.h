@@ -37,6 +37,9 @@ const struct kefir_ast_type *kefir_ast_type_lvalue_conversion(const struct kefir
 const struct kefir_ast_type *kefir_ast_type_array_conversion(struct kefir_mem *, struct kefir_ast_type_bundle *,
                                                              const struct kefir_ast_type *);
 
+const struct kefir_ast_type *kefir_ast_type_va_list_conversion(struct kefir_mem *, struct kefir_ast_type_bundle *,
+                                                               const struct kefir_ast_type *);
+
 const struct kefir_ast_type *kefir_ast_type_function_conversion(struct kefir_mem *, struct kefir_ast_type_bundle *,
                                                                 const struct kefir_ast_type *);
 
@@ -45,7 +48,8 @@ typedef enum kefir_ast_type_conv_expression_wrapper_param {
     KEFIR_AST_TYPE_CONV_EXPRESSION_WRAPPER_PARAM_LVALUE = 1u,
     KEFIR_AST_TYPE_CONV_EXPRESSION_WRAPPER_PARAM_ARRAY = 1u << 1,
     KEFIR_AST_TYPE_CONV_EXPRESSION_WRAPPER_PARAM_FUNCTION = 1u << 2,
-    KEFIR_AST_TYPE_CONV_EXPRESSION_WRAPPER_PARAM_ALL = (1u << 3) - 1u
+    KEFIR_AST_TYPE_CONV_EXPRESSION_WRAPPER_PARAM_VA_LIST = 1u << 3,
+    KEFIR_AST_TYPE_CONV_EXPRESSION_WRAPPER_PARAM_ALL = (1u << 4) - 1u
 } kefir_ast_type_conv_expression_wrapper_param_t;
 
 const struct kefir_ast_type *kefir_ast_type_conv_expression_wrapper(struct kefir_mem *, struct kefir_ast_type_bundle *,

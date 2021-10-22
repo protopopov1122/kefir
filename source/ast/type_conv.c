@@ -133,6 +133,15 @@ const struct kefir_ast_type *kefir_ast_type_array_conversion(struct kefir_mem *m
     return kefir_ast_type_pointer(mem, type_bundle, type->array_type.element_type);
 }
 
+const struct kefir_ast_type *kefir_ast_type_va_list_conversion(struct kefir_mem *mem,
+                                                               struct kefir_ast_type_bundle *type_bundle,
+                                                               const struct kefir_ast_type *type) {
+    REQUIRE(mem != NULL, NULL);
+    REQUIRE(type != NULL, NULL);
+    REQUIRE(type->tag == KEFIR_AST_TYPE_VA_LIST, type);
+    return kefir_ast_type_pointer(mem, type_bundle, type);
+}
+
 const struct kefir_ast_type *kefir_ast_type_function_conversion(struct kefir_mem *mem,
                                                                 struct kefir_ast_type_bundle *type_bundle,
                                                                 const struct kefir_ast_type *type) {
@@ -157,6 +166,9 @@ const struct kefir_ast_type *kefir_ast_type_conv_expression_wrapper(struct kefir
     if ((param & KEFIR_AST_TYPE_CONV_EXPRESSION_WRAPPER_PARAM_FUNCTION) != 0) {
         type = kefir_ast_type_function_conversion(mem, type_bundle, type);
     }
+    if ((param & KEFIR_AST_TYPE_CONV_EXPRESSION_WRAPPER_PARAM_VA_LIST) != 0) {
+        type = kefir_ast_type_va_list_conversion(mem, type_bundle, type);
+    }
     return type;
 }
 
@@ -177,6 +189,11 @@ const struct kefir_ast_type *kefir_ast_type_conv_adjust_function_parameter(struc
             if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&type->array_type.qualifications)) {
                 adjusted = kefir_ast_type_qualified(mem, type_bundle, adjusted, type->array_type.qualifications);
             }
+            return adjusted;
+        }
+
+        case KEFIR_AST_TYPE_VA_LIST: {
+            const struct kefir_ast_type *adjusted = kefir_ast_type_pointer(mem, type_bundle, type);
             return adjusted;
         }
 
