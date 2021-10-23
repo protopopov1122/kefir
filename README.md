@@ -91,6 +91,10 @@ Arch Linux is used as primary development environment.
 Please note, that assembly modules produced by Kefir shall be linked with `source/runtime/amd64_sysv.asm` in order to produce working
 executable.
 
+## Bootstrap
+Kefir is capable of bootstraping itself (that is, compiling it's own source code). At the moment, the feature is under testing, however
+initial smoke tests (compiling arbitrary C files with bootstrapped binary) pass.
+
 ## Design notes
 In order to simplify translation and facilitate portability, intermediate representation
 (IR) layer was introduced. It defines architecture-agnostic 64-bit stack machine
