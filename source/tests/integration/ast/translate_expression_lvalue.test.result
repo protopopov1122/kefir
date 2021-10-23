@@ -263,13 +263,6 @@
                     }
                 },
                 {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 0,
-                        "index": 3
-                    }
-                },
-                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "__kefirrt_module_static_vars"
@@ -310,13 +303,6 @@
                 },
                 {
                     "opcode": "load64"
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 7,
-                        "index": 1
-                    }
                 },
                 {
                     "opcode": "load64"

@@ -78,13 +78,6 @@
                     }
                 },
                 {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 1
-                    }
-                },
-                {
                     "opcode": "iadd1",
                     "arg": 0
                 },
@@ -105,13 +98,6 @@
                     }
                 },
                 {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 1
-                    }
-                },
-                {
                     "opcode": "iadd1",
                     "arg": 1
                 },
@@ -129,13 +115,6 @@
                     "opcode": "getglobal",
                     "arg": {
                         "data": "structure1"
-                    }
-                },
-                {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 3,
-                        "index": 1
                     }
                 },
                 {

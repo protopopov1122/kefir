@@ -30,9 +30,10 @@
 #include "kefir/core/error.h"
 
 static kefir_result_t resolve_type_layout(struct kefir_irbuilder_block *builder, kefir_id_t type_id,
-                                          const struct kefir_ast_type_layout *layout) {
-    if (layout->parent != NULL) {
-        REQUIRE_OK(resolve_type_layout(builder, type_id, layout->parent));
+                                          const struct kefir_ast_type_layout *layout,
+                                          const struct kefir_ast_type_layout *root) {
+    if (layout->parent != NULL && layout->parent != root) {
+        REQUIRE_OK(resolve_type_layout(builder, type_id, layout->parent, root));
     }
 
     if (layout->properties.relative_offset != 0) {
@@ -69,7 +70,7 @@ kefir_result_t kefir_ast_translator_object_lvalue(struct kefir_mem *mem, struct 
                                            &id) != NULL,
                     KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR module symbol"));
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_GETGLOBAL, id));
-            REQUIRE_OK(resolve_type_layout(builder, identifier_data->type_id, identifier_data->layout));
+            REQUIRE_OK(resolve_type_layout(builder, identifier_data->type_id, identifier_data->layout, NULL));
 
         } break;
 
@@ -89,7 +90,7 @@ kefir_result_t kefir_ast_translator_object_lvalue(struct kefir_mem *mem, struct 
                                            KEFIR_AST_TRANSLATOR_STATIC_THREAD_LOCAL_VARIABLES_IDENTIFIER, &id) != NULL,
                     KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR module symbol"));
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_GETTHRLOCAL, id));
-            REQUIRE_OK(resolve_type_layout(builder, identifier_data->type_id, identifier_data->layout));
+            REQUIRE_OK(resolve_type_layout(builder, identifier_data->type_id, identifier_data->layout, NULL));
 
         } break;
 
@@ -98,7 +99,7 @@ kefir_result_t kefir_ast_translator_object_lvalue(struct kefir_mem *mem, struct 
             ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, identifier_data,
                              scoped_identifier->payload.ptr);
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_GETLOCALS, 0));
-            REQUIRE_OK(resolve_type_layout(builder, identifier_data->type_id, identifier_data->layout));
+            REQUIRE_OK(resolve_type_layout(builder, identifier_data->type_id, identifier_data->layout, NULL));
         } break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
@@ -196,8 +197,7 @@ kefir_result_t kefir_ast_translate_struct_member_lvalue(struct kefir_mem *mem,
     REQUIRE_OK(kefir_ast_type_layout_resolve(cached_type->object.layout, &designator, &member_layout, NULL, NULL));
 
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->structure, builder, context));
-    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_OFFSETPTR, cached_type->object.ir_type_id,
-                                               member_layout->value));
+    REQUIRE_OK(resolve_type_layout(builder, cached_type->object.ir_type_id, member_layout, cached_type->object.layout));
     return KEFIR_OK;
 }
 

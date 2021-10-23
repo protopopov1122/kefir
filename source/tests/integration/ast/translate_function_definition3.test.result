@@ -183,13 +183,6 @@
                     "opcode": "load64"
                 },
                 {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 8,
-                        "index": 1
-                    }
-                },
-                {
                     "opcode": "load64"
                 },
                 {
