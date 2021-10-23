@@ -58,3 +58,4 @@ vgcore.*
 compile_commands.json
 .vscode
 *.core
+bootstrap
