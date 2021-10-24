@@ -1,0 +1,26 @@
+image: ubuntu/focal
+packages:
+  - build-essential
+  - gcc-10
+  - clang-format
+  - valgrind
+  - xsltproc
+sources:
+  - https://git.sr.ht/~jprotopopov/kefir
+  - https://github.com/protopopov1122/kefir-musl.git
+tasks:
+  - build_musl: |
+      cd kefir-musl
+      ./configure --prefix=/opt/kefir-musl
+      make -j$(nproc)
+      sudo make install
+  - bootstrap: |
+      cd kefir
+      make clean clean_bootstrap
+      make bootstrap MUSL=/opt/kefir-musl -j$(nproc)
+triggers:
+  - action: email
+    condition: failure
+    to: jprotopopov1122@gmail.com
+artifacts:
+ - kefir/bootstrap/stage2/kefir
