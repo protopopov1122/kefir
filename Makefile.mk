@@ -24,6 +24,7 @@ SOURCE_DIR=$(ROOT)/source
 HEADERS_DIR=$(ROOT)/headers
 RESOURCES_DIR=$(ROOT)/resources
 SCRIPTS_DIR=$(ROOT)/scripts
+BOOTSTRAP_DIR=$(ROOT)/bootstrap
 
 LIBKEFIR_SO=$(LIB_DIR)/libkefir.so
 

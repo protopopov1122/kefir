@@ -41,16 +41,16 @@ KEFIR_OBJECT_FILES += $(BOOTSTRAP)/main/help.o
 
 $(BOOTSTRAP)/%.s: $(SOURCE)/%.c
 	@mkdir -p $(shell dirname "$@")
-	@echo "Kefir-Compile $@"
+	@echo "Kefir-Compile $^"
 	@$(KEFIRCC) -I $(LIBC_HEADERS) -I $(HEADERS) -o $@ $<
 
 $(BOOTSTRAP)/%.o: $(BOOTSTRAP)/%.s
-	@echo "Assemble $@"
+	@echo "Assemble $^"
 	@$(AS) -o $@ $<
 
 $(BOOTSTRAP)/runtime.o: $(SOURCE)/runtime/amd64_sysv.s
 	@mkdir -p $(shell dirname "$@")
-	@echo "Assemble $@"
+	@echo "Assemble $^"
 	@$(AS) -o $@ $<
 
 $(BOOTSTRAP)/main/help.o: $(SOURCE)/main/help.txt $(SOURCE)/main/help.s
