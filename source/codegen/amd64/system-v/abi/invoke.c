@@ -93,6 +93,40 @@ static kefir_result_t scalar_argument(const struct kefir_ir_type *type, kefir_si
     return KEFIR_OK;
 }
 
+static kefir_result_t long_double_argument(const struct kefir_ir_type *type, kefir_size_t index,
+                                           const struct kefir_ir_typeentry *typeentry, void *payload) {
+
+    UNUSED(typeentry);
+    ASSIGN_DECL_CAST(struct invoke_info *, info, payload);
+    struct kefir_ir_type_iterator iter;
+    REQUIRE_OK(kefir_ir_type_iterator_init(type, &iter));
+    REQUIRE_OK(kefir_ir_type_iterator_goto(&iter, index));
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, allocation,
+                     kefir_vector_at(&info->decl->parameters.allocation, iter.slot));
+    REQUIRE(allocation->klass == KEFIR_AMD64_SYSV_PARAM_MEMORY,
+            KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected long double argument to have memory allocation class"));
+
+    ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_MOV);
+    ASMGEN_ARG0(&info->codegen->asmgen, KEFIR_AMD64_SYSV_ABI_TMP_REG);
+    ASMGEN_ARG(&info->codegen->asmgen, KEFIR_AMD64_INDIRECT_OFFSET, KEFIR_AMD64_SYSV_ABI_DATA_REG,
+               (info->total_arguments - info->argument - 2) * KEFIR_AMD64_SYSV_ABI_QWORD);
+    ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_MOV);
+    ASMGEN_ARG(&info->codegen->asmgen, KEFIR_AMD64_INDIRECT_OFFSET, KEFIR_AMD64_RSP, allocation->location.stack_offset);
+    ASMGEN_ARG0(&info->codegen->asmgen, KEFIR_AMD64_SYSV_ABI_TMP_REG);
+
+    ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_MOV);
+    ASMGEN_ARG0(&info->codegen->asmgen, KEFIR_AMD64_SYSV_ABI_TMP_REG);
+    ASMGEN_ARG(&info->codegen->asmgen, KEFIR_AMD64_INDIRECT_OFFSET, KEFIR_AMD64_SYSV_ABI_DATA_REG,
+               (info->total_arguments - info->argument - 1) * KEFIR_AMD64_SYSV_ABI_QWORD);
+    ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_MOV);
+    ASMGEN_ARG(&info->codegen->asmgen, KEFIR_AMD64_INDIRECT_OFFSET, KEFIR_AMD64_RSP,
+               allocation->location.stack_offset + KEFIR_AMD64_SYSV_ABI_QWORD);
+    ASMGEN_ARG0(&info->codegen->asmgen, KEFIR_AMD64_SYSV_ABI_TMP_REG);
+
+    info->argument += 2;
+    return KEFIR_OK;
+}
+
 static kefir_result_t memory_aggregate_argument(struct invoke_info *info, struct kefir_amd64_sysv_data_layout *layout,
                                                 struct kefir_amd64_sysv_parameter_allocation *allocation) {
     if (layout->size > 0) {
@@ -211,6 +245,7 @@ kefir_result_t invoke_prologue(struct kefir_codegen_amd64 *codegen, const struct
     REQUIRE_OK(kefir_ir_type_visitor_init(&visitor, visitor_not_supported));
     KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS(&visitor, scalar_argument);
     KEFIR_IR_TYPE_VISITOR_INIT_FIXED_FP(&visitor, scalar_argument);
+    visitor.visit[KEFIR_IR_TYPE_LONG_DOUBLE] = long_double_argument;
     visitor.visit[KEFIR_IR_TYPE_STRUCT] = aggregate_argument;
     visitor.visit[KEFIR_IR_TYPE_ARRAY] = aggregate_argument;
     visitor.visit[KEFIR_IR_TYPE_UNION] = aggregate_argument;
@@ -267,6 +302,20 @@ static kefir_result_t sse_return(const struct kefir_ir_type *type, kefir_size_t 
     ASMGEN_ARG0(&info->codegen->asmgen, "0");
     ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_PUSH);
     ASMGEN_ARG0(&info->codegen->asmgen, KEFIR_AMD64_SYSV_ABI_TMP_REG);
+    return KEFIR_OK;
+}
+
+static kefir_result_t long_double_return(const struct kefir_ir_type *type, kefir_size_t index,
+                                         const struct kefir_ir_typeentry *typeentry, void *payload) {
+    UNUSED(type);
+    UNUSED(index);
+    UNUSED(typeentry);
+    ASSIGN_DECL_CAST(struct invoke_info *, info, payload);
+    ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_ADD);
+    ASMGEN_ARG0(&info->codegen->asmgen, KEFIR_AMD64_RSP);
+    ASMGEN_ARG0(&info->codegen->asmgen, "16");
+    ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_FSTP);
+    ASMGEN_ARG(&info->codegen->asmgen, KEFIR_AMD64_TBYTE KEFIR_AMD64_INDIRECT, KEFIR_AMD64_RSP);
     return KEFIR_OK;
 }
 
@@ -362,6 +411,7 @@ kefir_result_t invoke_epilogue(struct kefir_codegen_amd64 *codegen, const struct
     REQUIRE_OK(kefir_ir_type_visitor_init(&visitor, visitor_not_supported));
     KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS(&visitor, integer_return);
     KEFIR_IR_TYPE_VISITOR_INIT_FIXED_FP(&visitor, sse_return);
+    visitor.visit[KEFIR_IR_TYPE_LONG_DOUBLE] = long_double_return;
     visitor.visit[KEFIR_IR_TYPE_STRUCT] = aggregate_return;
     visitor.visit[KEFIR_IR_TYPE_UNION] = aggregate_return;
     visitor.visit[KEFIR_IR_TYPE_ARRAY] = aggregate_return;
@@ -374,10 +424,34 @@ kefir_result_t invoke_epilogue(struct kefir_codegen_amd64 *codegen, const struct
     return KEFIR_OK;
 }
 
+static kefir_result_t argument_counter(const struct kefir_ir_type *type, kefir_size_t index,
+                                       const struct kefir_ir_typeentry *typeentry, void *payload) {
+    UNUSED(type);
+    UNUSED(index);
+    REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid typeentry"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected payload"));
+
+    ASSIGN_DECL_CAST(kefir_size_t *, counter, payload);
+    switch (typeentry->typecode) {
+        case KEFIR_IR_TYPE_LONG_DOUBLE:
+            (*counter) += 2;
+            break;
+
+        default:
+            (*counter)++;
+            break;
+    }
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_amd64_sysv_function_invoke(struct kefir_codegen_amd64 *codegen,
                                                 const struct kefir_amd64_sysv_function_decl *decl, bool virtualDecl) {
-    struct invoke_info info = {
-        .codegen = codegen, .decl = decl, .total_arguments = kefir_ir_type_nodes(decl->decl->params), .argument = 0};
+    struct invoke_info info = {.codegen = codegen, .decl = decl, .total_arguments = 0, .argument = 0};
+    struct kefir_ir_type_visitor visitor;
+    kefir_ir_type_visitor_init(&visitor, argument_counter);
+    REQUIRE_OK(kefir_ir_type_visitor_list_nodes(decl->decl->params, &visitor, (void *) &info.total_arguments, 0,
+                                                kefir_ir_type_total_length(decl->decl->params)));
+
     REQUIRE_OK(invoke_prologue(codegen, decl, &info));
     if (virtualDecl) {
         ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_CALL);

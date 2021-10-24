@@ -47,6 +47,7 @@ typedef enum kefir_ir_typecode {
     KEFIR_IR_TYPE_INT,
     KEFIR_IR_TYPE_LONG,
     KEFIR_IR_TYPE_WORD,
+    KEFIR_IR_TYPE_LONG_DOUBLE,
     KEFIR_IR_TYPE_BITS,
     // Built-ins
     KEFIR_IR_TYPE_BUILTIN,
@@ -129,6 +130,7 @@ kefir_result_t kefir_ir_type_visitor_list_nodes(const struct kefir_ir_type *, co
     do {                                                            \
         KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS((visitor), (callback)); \
         KEFIR_IR_TYPE_VISITOR_INIT_FIXED_FP((visitor), (callback)); \
+        (visitor)->visit[KEFIR_IR_TYPE_LONG_DOUBLE] = (callback);   \
     } while (0)
 
 typedef struct kefir_ir_type_iterator {

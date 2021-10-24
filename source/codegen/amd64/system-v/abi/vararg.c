@@ -326,6 +326,15 @@ static kefir_result_t vararg_visit_sse(const struct kefir_ir_type *type, kefir_s
     return KEFIR_OK;
 }
 
+static kefir_result_t vararg_visit_long_double(const struct kefir_ir_type *type, kefir_size_t index,
+                                               const struct kefir_ir_typeentry *typeentry, void *payload) {
+    UNUSED(type);
+    UNUSED(index);
+    UNUSED(typeentry);
+    UNUSED(payload);
+    return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Long double varargs are not implemented yet");
+}
+
 struct vararg_aggregate_info {
     struct kefir_amd64_sysv_data_layout *arg_layout;
     struct kefir_amd64_sysv_parameter_allocation *arg_alloc;
@@ -757,6 +766,7 @@ kefir_result_t kefir_codegen_amd64_sysv_vararg_instruction(struct kefir_mem *mem
             REQUIRE_OK(kefir_ir_type_visitor_init(&visitor, visitor_not_supported));
             KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS(&visitor, vararg_visit_integer);
             KEFIR_IR_TYPE_VISITOR_INIT_FIXED_FP(&visitor, vararg_visit_sse);
+            visitor.visit[KEFIR_IR_TYPE_LONG_DOUBLE] = vararg_visit_long_double;
             visitor.visit[KEFIR_IR_TYPE_STRUCT] = vararg_visit_aggregate;
             visitor.visit[KEFIR_IR_TYPE_UNION] = vararg_visit_aggregate;
             visitor.visit[KEFIR_IR_TYPE_ARRAY] = vararg_visit_aggregate;

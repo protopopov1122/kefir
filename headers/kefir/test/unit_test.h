@@ -94,5 +94,9 @@ kefir_size_t kft_run_test_suite(const struct kft_test_case **, kefir_size_t, voi
     (fabs((x) - (y)) <= (epsilon) || (isinf((x)) && isinf((y)) && signbit((x)) == signbit((y))) || \
      (isnan((x)) && isnan((y))))
 #define DOUBLE_EPSILON 1e-10
+#define LONG_DOUBLE_EQUALS(x, y, epsilon)                                                           \
+    (fabsl((x) - (y)) <= (epsilon) || (isinf((x)) && isinf((y)) && signbit((x)) == signbit((y))) || \
+     (isnan((x)) && isnan((y))))
+#define LONG_DOUBLE_EPSILON 1e-10
 
 #endif

@@ -251,6 +251,9 @@ static const char *typecode_to_string(kefir_ir_typecode_t typecode) {
         case KEFIR_IR_TYPE_FLOAT64:
             return "double";
 
+        case KEFIR_IR_TYPE_LONG_DOUBLE:
+            return "long_double";
+
         case KEFIR_IR_TYPE_BOOL:
             return "bool";
 
@@ -316,6 +319,7 @@ static kefir_result_t format_type_default(const struct kefir_ir_type *type, kefi
         case KEFIR_IR_TYPE_LONG:
         case KEFIR_IR_TYPE_FLOAT32:
         case KEFIR_IR_TYPE_FLOAT64:
+        case KEFIR_IR_TYPE_LONG_DOUBLE:
         case KEFIR_IR_TYPE_WORD:
             break;
 

@@ -163,6 +163,34 @@ static kefir_result_t load_sse_argument(const struct kefir_ir_type *type, kefir_
     return KEFIR_OK;
 }
 
+static kefir_result_t load_long_double_argument(const struct kefir_ir_type *type, kefir_size_t index,
+                                                const struct kefir_ir_typeentry *typeentry, void *payload) {
+    UNUSED(typeentry);
+    struct argument_load *param = (struct argument_load *) payload;
+    struct kefir_ir_type_iterator iter;
+    REQUIRE_OK(kefir_ir_type_iterator_init(type, &iter));
+    REQUIRE_OK(kefir_ir_type_iterator_goto(&iter, index));
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_parameter_allocation *, alloc,
+                     kefir_vector_at(&param->sysv_func->decl.parameters.allocation, iter.slot));
+    REQUIRE(alloc->klass == KEFIR_AMD64_SYSV_PARAM_MEMORY,
+            KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected long double argument to be allocated in memory"));
+
+    ASMGEN_INSTR(&param->codegen->asmgen, KEFIR_AMD64_MOV);
+    ASMGEN_ARG0(&param->codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
+    ASMGEN_ARG(&param->codegen->asmgen, KEFIR_AMD64_INDIRECT_OFFSET, KEFIR_AMD64_RBP,
+               alloc->location.stack_offset + 2 * KEFIR_AMD64_SYSV_ABI_QWORD + KEFIR_AMD64_SYSV_ABI_QWORD);
+    ASMGEN_INSTR(&param->codegen->asmgen, KEFIR_AMD64_PUSH);
+    ASMGEN_ARG0(&param->codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
+
+    ASMGEN_INSTR(&param->codegen->asmgen, KEFIR_AMD64_MOV);
+    ASMGEN_ARG0(&param->codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
+    ASMGEN_ARG(&param->codegen->asmgen, KEFIR_AMD64_INDIRECT_OFFSET, KEFIR_AMD64_RBP,
+               alloc->location.stack_offset + 2 * KEFIR_AMD64_SYSV_ABI_QWORD);
+    ASMGEN_INSTR(&param->codegen->asmgen, KEFIR_AMD64_PUSH);
+    ASMGEN_ARG0(&param->codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
+    return KEFIR_OK;
+}
+
 static kefir_result_t load_reg_aggregate(struct argument_load *param, struct kefir_amd64_sysv_data_layout *layout,
                                          struct kefir_amd64_sysv_parameter_allocation *alloc) {
     param->frame_offset = kefir_codegen_pad_aligned(param->frame_offset, layout->alignment);
@@ -277,6 +305,7 @@ static kefir_result_t load_arguments(struct kefir_codegen_amd64 *codegen,
     REQUIRE_OK(kefir_ir_type_visitor_init(&visitor, visitor_not_supported));
     KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS(&visitor, load_integer_argument);
     KEFIR_IR_TYPE_VISITOR_INIT_FIXED_FP(&visitor, load_sse_argument);
+    visitor.visit[KEFIR_IR_TYPE_LONG_DOUBLE] = load_long_double_argument;
     visitor.visit[KEFIR_IR_TYPE_STRUCT] = load_aggregate_argument;
     visitor.visit[KEFIR_IR_TYPE_UNION] = load_aggregate_argument;
     visitor.visit[KEFIR_IR_TYPE_ARRAY] = load_aggregate_argument;

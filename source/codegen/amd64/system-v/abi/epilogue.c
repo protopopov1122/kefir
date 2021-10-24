@@ -69,6 +69,20 @@ static kefir_result_t return_float(const struct kefir_ir_type *type, kefir_size_
     return KEFIR_OK;
 }
 
+static kefir_result_t return_long_double(const struct kefir_ir_type *type, kefir_size_t index,
+                                         const struct kefir_ir_typeentry *typeentry, void *payload) {
+    UNUSED(type);
+    UNUSED(index);
+    UNUSED(typeentry);
+    struct result_return *param = (struct result_return *) payload;
+    ASMGEN_INSTR(&param->codegen->asmgen, KEFIR_AMD64_FLD);
+    ASMGEN_ARG(&param->codegen->asmgen, KEFIR_AMD64_TBYTE KEFIR_AMD64_INDIRECT, KEFIR_AMD64_RSP);
+    ASMGEN_INSTR(&param->codegen->asmgen, KEFIR_AMD64_ADD);
+    ASMGEN_ARG0(&param->codegen->asmgen, KEFIR_AMD64_RSP);
+    ASMGEN_ARG0(&param->codegen->asmgen, "16");
+    return KEFIR_OK;
+}
+
 static kefir_result_t return_memory_aggregate(struct kefir_codegen_amd64 *codegen,
                                               struct kefir_amd64_sysv_data_layout *layout) {
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
@@ -179,6 +193,7 @@ static kefir_result_t return_values(struct kefir_codegen_amd64 *codegen, const s
     REQUIRE_OK(kefir_ir_type_visitor_init(&visitor, visitor_not_supported));
     KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS(&visitor, return_integer);
     KEFIR_IR_TYPE_VISITOR_INIT_FIXED_FP(&visitor, return_float);
+    visitor.visit[KEFIR_IR_TYPE_LONG_DOUBLE] = return_long_double;
     visitor.visit[KEFIR_IR_TYPE_STRUCT] = return_aggregate;
     visitor.visit[KEFIR_IR_TYPE_UNION] = return_aggregate;
     visitor.visit[KEFIR_IR_TYPE_ARRAY] = return_aggregate;

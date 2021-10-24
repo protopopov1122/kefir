@@ -59,6 +59,7 @@ typedef struct kefir_amd64_sysv_parameter_location_requirements {
     kefir_size_t integer;
     kefir_size_t sse;
     kefir_size_t sseup;
+    kefir_size_t x87;
     struct {
         kefir_size_t size;
         kefir_size_t alignment;

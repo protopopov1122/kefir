@@ -129,6 +129,8 @@ kefir_result_t kefir_amd64_gas_gen_init(struct kefir_amd64_asmgen *, FILE *);
 #define KEFIR_AMD64_SHL "shl"
 #define KEFIR_AMD64_SHR "shr"
 #define KEFIR_AMD64_MOVD "movd"
+#define KEFIR_AMD64_FSTP "fstp"
+#define KEFIR_AMD64_FLD "fld"
 
 #define KEFIR_AMD64_REP "rep "
 #define KEFIR_AMD64_INDIRECT "[%s]"
@@ -140,5 +142,6 @@ kefir_result_t kefir_amd64_gas_gen_init(struct kefir_amd64_asmgen *, FILE *);
 
 #define KEFIR_AMD64_DWORD "DWORD PTR "
 #define KEFIR_AMD64_QWORD "QWORD PTR "
+#define KEFIR_AMD64_TBYTE "TBYTE PTR "
 
 #endif

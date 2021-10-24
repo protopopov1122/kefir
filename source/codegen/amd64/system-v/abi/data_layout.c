@@ -141,6 +141,11 @@ static kefir_result_t calculate_sse_layout(const struct kefir_ir_type *type, kef
             data->alignment = 8;
             break;
 
+        case KEFIR_IR_TYPE_LONG_DOUBLE:
+            data->size = 16;
+            data->alignment = 16;
+            break;
+
         default:
             return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, KEFIR_AMD64_SYSV_ABI_ERROR_PREFIX
                                    "Unexpectedly encountered non-floating point type");
@@ -240,6 +245,7 @@ static kefir_result_t calculate_layout(const struct kefir_ir_type *type, kefir_s
     REQUIRE_OK(kefir_ir_type_visitor_init(&visitor, visitor_not_supported));
     KEFIR_IR_TYPE_VISITOR_INIT_INTEGERS(&visitor, calculate_integer_layout);
     KEFIR_IR_TYPE_VISITOR_INIT_FIXED_FP(&visitor, calculate_sse_layout);
+    visitor.visit[KEFIR_IR_TYPE_LONG_DOUBLE] = calculate_sse_layout;
     visitor.visit[KEFIR_IR_TYPE_PAD] = calculate_amorphous_layout;
     visitor.visit[KEFIR_IR_TYPE_MEMORY] = calculate_amorphous_layout;
     visitor.visit[KEFIR_IR_TYPE_STRUCT] = calculate_struct_union_layout;
