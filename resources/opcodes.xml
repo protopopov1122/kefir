@@ -125,22 +125,37 @@
     <opcode id="f64mul"       mnemonic="f64mul"     code="0x89" type="none" />
     <opcode id="f64div"       mnemonic="f64div"     code="0x8a" type="none" />
     <opcode id="f64neg"       mnemonic="f64neg"     code="0x8b" type="none" />
+    <opcode id="ldadd"        mnemonic="ldadd"      code="0x8c" type="none" />
+    <opcode id="ldsub"        mnemonic="ldsub"      code="0x8d" type="none" />
+    <opcode id="ldmul"        mnemonic="ldmul"      code="0x8e" type="none" />
+    <opcode id="lddiv"        mnemonic="lddiv"      code="0x8f" type="none" />
+    <opcode id="ldneg"        mnemonic="ldneg"      code="0x90" type="none" />
 
     <!-- Floating-point comparison -->
-    <opcode id="f32equals"    mnemonic="f32equals"  code="0x90" type="none" />
-    <opcode id="f32greater"   mnemonic="f32greater" code="0x91" type="none" />
-    <opcode id="f32lesser"    mnemonic="f32lesser"  code="0x92" type="none" />
-    <opcode id="f64equals"    mnemonic="f64equals"  code="0x93" type="none" />
-    <opcode id="f64greater"   mnemonic="f64greater" code="0x94" type="none" />
-    <opcode id="f64lesser"    mnemonic="f64lesser"  code="0x95" type="none" />
+    <opcode id="f32equals"    mnemonic="f32equals"  code="0xa0" type="none" />
+    <opcode id="f32greater"   mnemonic="f32greater" code="0xa1" type="none" />
+    <opcode id="f32lesser"    mnemonic="f32lesser"  code="0xa2" type="none" />
+    <opcode id="f64equals"    mnemonic="f64equals"  code="0xa3" type="none" />
+    <opcode id="f64greater"   mnemonic="f64greater" code="0xa4" type="none" />
+    <opcode id="f64lesser"    mnemonic="f64lesser"  code="0xa5" type="none" />
+    <opcode id="ldequals"     mnemonic="ldequals"   code="0xa6" type="none" />
+    <opcode id="ldgreater"    mnemonic="ldgreater"  code="0xa7" type="none" />
+    <opcode id="ldlesser"     mnemonic="ldlesser"   code="0xa8" type="none" />
 
     <!-- Floating-point conversions -->
-    <opcode id="f32cint"      mnemonic="f32cint"    code="0xa0" type="none" />
-    <opcode id="f64cint"      mnemonic="f64cint"    code="0xa1" type="none" />
-    <opcode id="intcf32"      mnemonic="intcf32"    code="0xa2" type="none" />
-    <opcode id="intcf64"      mnemonic="intcf64"    code="0xa3" type="none" />
-    <opcode id="uintcf32"     mnemonic="uintcf32"   code="0xa4" type="none" />
-    <opcode id="uintcf64"     mnemonic="uintcf64"   code="0xa5" type="none" />
-    <opcode id="f32cf64"      mnemonic="f32cf64"    code="0xa6" type="none" />
-    <opcode id="f64cf32"      mnemonic="f64cf32"    code="0xa7" type="none" />
+    <opcode id="f32cint"      mnemonic="f32cint"    code="0xb0" type="none" />
+    <opcode id="f64cint"      mnemonic="f64cint"    code="0xb1" type="none" />
+    <opcode id="ldcint"       mnemonic="ldcint"     code="0xb2" type="none" />
+    <opcode id="intcf32"      mnemonic="intcf32"    code="0xb3" type="none" />
+    <opcode id="intcf64"      mnemonic="intcf64"    code="0xb4" type="none" />
+    <opcode id="intcld"       mnemonic="intcld"     code="0xb5" type="none" />
+    <opcode id="uintcf32"     mnemonic="uintcf32"   code="0xb6" type="none" />
+    <opcode id="uintcf64"     mnemonic="uintcf64"   code="0xb7" type="none" />
+    <opcode id="uintcld"      mnemonic="uintcld"    code="0xb8" type="none" />
+    <opcode id="f32cf64"      mnemonic="f32cf64"    code="0xb9" type="none" />
+    <opcode id="f32cld"       mnemonic="f32cld"     code="0xba" type="none" />
+    <opcode id="f64cf32"      mnemonic="f64cf32"    code="0xbb" type="none" />
+    <opcode id="f64cld"       mnemonic="f64cld"     code="0xbc" type="none" />
+    <opcode id="ldcf32"       mnemonic="ldcf32"     code="0xbd" type="none" />
+    <opcode id="ldcf64"       mnemonic="ldcf64"     code="0xbe" type="none" />
 </opcodes>

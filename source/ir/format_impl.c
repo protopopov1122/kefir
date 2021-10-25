@@ -205,6 +205,16 @@ kefir_result_t kefir_ir_format_instr(struct kefir_json_output *json, const struc
             return kefir_ir_format_instr_none(json, module, instr);
         case KEFIR_IROPCODE_F64NEG:
             return kefir_ir_format_instr_none(json, module, instr);
+        case KEFIR_IROPCODE_LDADD:
+            return kefir_ir_format_instr_none(json, module, instr);
+        case KEFIR_IROPCODE_LDSUB:
+            return kefir_ir_format_instr_none(json, module, instr);
+        case KEFIR_IROPCODE_LDMUL:
+            return kefir_ir_format_instr_none(json, module, instr);
+        case KEFIR_IROPCODE_LDDIV:
+            return kefir_ir_format_instr_none(json, module, instr);
+        case KEFIR_IROPCODE_LDNEG:
+            return kefir_ir_format_instr_none(json, module, instr);
         case KEFIR_IROPCODE_F32EQUALS:
             return kefir_ir_format_instr_none(json, module, instr);
         case KEFIR_IROPCODE_F32GREATER:
@@ -217,21 +227,41 @@ kefir_result_t kefir_ir_format_instr(struct kefir_json_output *json, const struc
             return kefir_ir_format_instr_none(json, module, instr);
         case KEFIR_IROPCODE_F64LESSER:
             return kefir_ir_format_instr_none(json, module, instr);
+        case KEFIR_IROPCODE_LDEQUALS:
+            return kefir_ir_format_instr_none(json, module, instr);
+        case KEFIR_IROPCODE_LDGREATER:
+            return kefir_ir_format_instr_none(json, module, instr);
+        case KEFIR_IROPCODE_LDLESSER:
+            return kefir_ir_format_instr_none(json, module, instr);
         case KEFIR_IROPCODE_F32CINT:
             return kefir_ir_format_instr_none(json, module, instr);
         case KEFIR_IROPCODE_F64CINT:
+            return kefir_ir_format_instr_none(json, module, instr);
+        case KEFIR_IROPCODE_LDCINT:
             return kefir_ir_format_instr_none(json, module, instr);
         case KEFIR_IROPCODE_INTCF32:
             return kefir_ir_format_instr_none(json, module, instr);
         case KEFIR_IROPCODE_INTCF64:
             return kefir_ir_format_instr_none(json, module, instr);
+        case KEFIR_IROPCODE_INTCLD:
+            return kefir_ir_format_instr_none(json, module, instr);
         case KEFIR_IROPCODE_UINTCF32:
             return kefir_ir_format_instr_none(json, module, instr);
         case KEFIR_IROPCODE_UINTCF64:
             return kefir_ir_format_instr_none(json, module, instr);
+        case KEFIR_IROPCODE_UINTCLD:
+            return kefir_ir_format_instr_none(json, module, instr);
         case KEFIR_IROPCODE_F32CF64:
             return kefir_ir_format_instr_none(json, module, instr);
+        case KEFIR_IROPCODE_F32CLD:
+            return kefir_ir_format_instr_none(json, module, instr);
         case KEFIR_IROPCODE_F64CF32:
+            return kefir_ir_format_instr_none(json, module, instr);
+        case KEFIR_IROPCODE_F64CLD:
+            return kefir_ir_format_instr_none(json, module, instr);
+        case KEFIR_IROPCODE_LDCF32:
+            return kefir_ir_format_instr_none(json, module, instr);
+        case KEFIR_IROPCODE_LDCF64:
             return kefir_ir_format_instr_none(json, module, instr);
     }
     return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unknown opcode");

@@ -133,12 +133,20 @@ declare_opcode f64sub
 declare_opcode f64mul
 declare_opcode f64div
 declare_opcode f64neg
+declare_opcode ldadd
+declare_opcode ldsub
+declare_opcode ldmul
+declare_opcode lddiv
+declare_opcode ldneg
 declare_opcode f32equals
 declare_opcode f32greater
 declare_opcode f32lesser
 declare_opcode f64equals
 declare_opcode f64greater
 declare_opcode f64lesser
+declare_opcode ldequals
+declare_opcode ldgreater
+declare_opcode ldlesser
 declare_opcode f32cint
 declare_opcode f64cint
 declare_opcode intcf32
@@ -147,6 +155,13 @@ declare_opcode uintcf32
 declare_opcode uintcf64
 declare_opcode f32cf64
 declare_opcode f64cf32
+declare_opcode ldcint
+declare_opcode intcld
+declare_opcode uintcld
+declare_opcode f32cld
+declare_opcode f64cld
+declare_opcode ldcf32
+declare_opcode ldcf64
 declare_opcode alloca
 # Runtime
 declare_runtime __kefirrt_preserve_state
@@ -155,6 +170,14 @@ declare_runtime __kefirrt_save_registers
 declare_runtime __kefirrt_load_integer_vararg
 declare_runtime __kefirrt_load_sse_vararg
 declare_runtime __kefirrt_copy_vararg
+
+define_opcode_stub ldcint
+define_opcode_stub intcld
+define_opcode_stub uintcld
+define_opcode_stub f32cld
+define_opcode_stub f64cld
+define_opcode_stub ldcf32
+define_opcode_stub ldcf64
 
 define_opcode nop
     end_opcode
@@ -751,6 +774,44 @@ __kefirrt_f64neg_constant:
     .quad 0x8000000000000000
     .quad 0x8000000000000000
 
+define_opcode ldadd
+    fld TBYTE PTR [rsp + 16]
+    fld TBYTE PTR [rsp]
+    faddp
+    fstp TBYTE PTR [rsp + 16]
+    add rsp, 16
+    end_opcode
+
+define_opcode ldsub
+    fld TBYTE PTR [rsp + 16]
+    fld TBYTE PTR [rsp]
+    fsubp
+    fstp TBYTE PTR [rsp + 16]
+    add rsp, 16
+    end_opcode
+
+define_opcode ldmul
+    fld TBYTE PTR [rsp + 16]
+    fld TBYTE PTR [rsp]
+    fmulp
+    fstp TBYTE PTR [rsp + 16]
+    add rsp, 16
+    end_opcode
+
+define_opcode lddiv
+    fld TBYTE PTR [rsp + 16]
+    fld TBYTE PTR [rsp]
+    fdivp
+    fstp TBYTE PTR [rsp + 16]
+    add rsp, 16
+    end_opcode
+
+define_opcode ldneg
+    fld TBYTE PTR [rsp]
+    fchs
+    fstp TBYTE PTR [rsp]
+    end_opcode
+
 define_opcode f32equals
     movss xmm0, [rsp + 8]
     movss xmm1, [rsp]
@@ -809,6 +870,41 @@ define_opcode f64lesser
     and eax, 1
     add rsp, 8
     mov [rsp], rax
+    end_opcode
+
+define_opcode ldequals
+    xor rax, rax
+    fld TBYTE PTR [rsp + 16]
+    fld TBYTE PTR [rsp]
+    fucomip st(0), st(1)
+    fstp st(0)
+    setnp dl
+    sete al
+    and al, dl
+    mov [rsp + 24], rax
+    add rsp, 24
+    end_opcode
+
+define_opcode ldgreater
+    xor rax, rax
+    fld TBYTE PTR [rsp]
+    fld TBYTE PTR [rsp + 16]
+    fucomip st(0), st(1)
+    fstp st(0)
+    seta al
+    mov [rsp + 24], rax
+    add rsp, 24
+    end_opcode
+
+define_opcode ldlesser
+    xor rax, rax
+    fld TBYTE PTR [rsp + 16]
+    fld TBYTE PTR [rsp]
+    fucomip st(0), st(1)
+    fstp st(0)
+    seta al
+    mov [rsp + 24], rax
+    add rsp, 24
     end_opcode
 
 define_opcode f32cint
