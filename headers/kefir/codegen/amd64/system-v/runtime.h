@@ -28,6 +28,7 @@
 #define KEFIR_AMD64_SYSTEM_V_RUNTIME_SAVE_REGISTERS "__kefirrt_save_registers"
 #define KEFIR_AMD64_SYSTEM_V_RUNTIME_VARARG_INT "__kefirrt_load_integer_vararg"
 #define KEFIR_AMD64_SYSTEM_V_RUNTIME_VARARG_SSE "__kefirrt_load_sse_vararg"
+#define KEFIR_AMD64_SYSTEM_V_RUNTIME_VARARG_LONG_DOUBLE "__kefirrt_load_long_double_vararg"
 #define KEFIR_AMD64_SYSTEM_V_RUNTIME_VARARG_COPY "__kefirrt_copy_vararg"
 #define KEFIR_AMD64_SYSTEM_V_RUNTIME_STRING_LITERAL "__kefirrt_string_literal" KEFIR_ID_FMT
 

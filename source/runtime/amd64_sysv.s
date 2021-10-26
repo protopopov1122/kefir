@@ -170,6 +170,7 @@ declare_runtime __kefirrt_save_registers
 declare_runtime __kefirrt_load_integer_vararg
 declare_runtime __kefirrt_load_sse_vararg
 declare_runtime __kefirrt_copy_vararg
+declare_runtime __kefirrt_load_long_double_vararg
 
 define_opcode nop
     end_opcode
@@ -1133,6 +1134,17 @@ __kefirrt_load_sse_vararg_stack:
     mov [DATA_REG + 8], rdx
     movlps xmm0, [rax]
     ret
+
+__kefirrt_load_long_double_vararg:
+    pop DATA_REG
+    mov rax, [DATA_REG + 8]
+    lea rdx, [rax + 16]
+    mov [DATA_REG + 8], rdx
+    mov DATA_REG, [rax + 8]
+    push DATA_REG
+    mov DATA_REG, [rax]
+    push DATA_REG
+    end_opcode
 
 __kefirrt_copy_vararg:
     pop rsi

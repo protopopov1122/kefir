@@ -331,8 +331,13 @@ static kefir_result_t vararg_visit_long_double(const struct kefir_ir_type *type,
     UNUSED(type);
     UNUSED(index);
     UNUSED(typeentry);
-    UNUSED(payload);
-    return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Long double varargs are not implemented yet");
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct vararg_getter *, param, payload);
+
+    ASMGEN_RAW(&param->codegen->asmgen, KEFIR_AMD64_QUAD);
+    ASMGEN_ARG0(&param->codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_VARARG_LONG_DOUBLE);
+    ASMGEN_ARG0(&param->codegen->asmgen, "0");
+    return KEFIR_OK;
 }
 
 struct vararg_aggregate_info {
