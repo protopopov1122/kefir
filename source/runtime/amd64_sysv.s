@@ -171,14 +171,6 @@ declare_runtime __kefirrt_load_integer_vararg
 declare_runtime __kefirrt_load_sse_vararg
 declare_runtime __kefirrt_copy_vararg
 
-define_opcode_stub ldcint
-define_opcode_stub intcld
-define_opcode_stub uintcld
-define_opcode_stub f32cld
-define_opcode_stub f64cld
-define_opcode_stub ldcf32
-define_opcode_stub ldcf64
-
 define_opcode nop
     end_opcode
 
@@ -979,6 +971,65 @@ define_opcode f64cf32
     movsd xmm0, [rsp]
     cvtsd2ss xmm0, xmm0
     movss [rsp], xmm0
+    end_opcode
+
+define_opcode ldcint    
+    fld TBYTE PTR [rsp]
+    fnstcw WORD PTR [rsp]
+    movzx eax, WORD PTR [rsp]
+    or eax, 3072
+    mov WORD PTR [rsp + 8], ax
+    fldcw WORD PTR [rsp + 8]
+    fistp QWORD PTR [rsp + 8]
+    fldcw WORD PTR [rsp]
+    add rsp, 8
+    end_opcode
+
+define_opcode intcld
+    fild QWORD PTR [rsp]
+    sub rsp, 8
+    fstp TBYTE PTR [rsp]
+    end_opcode
+
+define_opcode uintcld
+    fild QWORD PTR [rsp]
+    mov rax, [rsp]
+    sub rsp, 8
+    test rax, rax
+    js __kefirrt_uintcld_signed
+    fstp TBYTE PTR [rsp]
+    end_opcode
+__kefirrt_uintcld_signed:
+    fadd DWORD PTR [__kefirrt_uintcld_constant]
+    fstp TBYTE PTR [rsp]
+    end_opcode
+__kefirrt_uintcld_constant:
+    .long   1602224128
+
+define_opcode f32cld
+    fld DWORD PTR [rsp]
+    sub rsp, 8
+    fstp TBYTE PTR [rsp]
+    end_opcode
+
+define_opcode f64cld
+    fld QWORD PTR [rsp]
+    sub rsp, 8
+    fstp TBYTE PTR [rsp]
+    end_opcode
+
+define_opcode ldcf32
+    fld TBYTE PTR [rsp]
+    add rsp, 8
+    fstp DWORD PTR [rsp]
+    xor eax, eax
+    mov DWORD PTR [rsp + 4], eax
+    end_opcode
+
+define_opcode ldcf64
+    fld TBYTE PTR [rsp]
+    add rsp, 8
+    fstp QWORD PTR [rsp]
     end_opcode
 
 define_opcode alloca
