@@ -24,20 +24,18 @@
 #include "kefir/test/unit_test.h"
 
 struct param {
-    int index;
     long double array[8];
 };
-long double long_double_at(struct param);
+
+void long_double_set(long double *, long double);
 
 int main(int argc, const char **argv) {
     UNUSED(argc);
     UNUSED(argv);
     for (long double d = -100.0; d < 100.0; d += 0.1) {
-        struct param p = {.index = 0, .array = {d, d + 1, d + 2, d + 3, d + 4, d + 5, d + 6, d + 7}};
-        for (int i = 0; i < 8; i++) {
-            ASSERT(LONG_DOUBLE_EQUALS(long_double_at(p), d + i, LONG_DOUBLE_EPSILON));
-            p.index++;
-        }
+        long double x;
+        long_double_set(&x, d);
+        ASSERT(LONG_DOUBLE_EQUALS(x, d, LONG_DOUBLE_EPSILON));
     }
     return EXIT_SUCCESS;
 }

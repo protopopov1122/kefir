@@ -34,30 +34,21 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_id_t locals_id, params_id;
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
-    struct kefir_ir_type *decl_params = kefir_ir_module_new_type(mem, &module, 4, &params_id),
-                         *decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL),
+    struct kefir_ir_type *decl_params = kefir_ir_module_new_type(mem, &module, 2, &params_id),
+                         *decl_result = kefir_ir_module_new_type(mem, &module, 0, NULL),
                          *func_locals = kefir_ir_module_new_type(mem, &module, 0, &locals_id);
     REQUIRE(decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "long_double_at", decl_params, false, decl_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "long_double_set", decl_params, false, decl_result);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *func = kefir_ir_module_new_function(mem, &module, decl, func_locals, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl->name));
-    kefir_irbuilder_type_append_v(mem, func->declaration->params, KEFIR_IR_TYPE_STRUCT, 0, 2);
-    kefir_irbuilder_type_append_v(mem, func->declaration->params, KEFIR_IR_TYPE_INT32, 0, 0);
-    kefir_irbuilder_type_append_v(mem, func->declaration->params, KEFIR_IR_TYPE_ARRAY, 0, 8);
+    kefir_irbuilder_type_append_v(mem, func->declaration->params, KEFIR_IR_TYPE_WORD, 0, 0);
     kefir_irbuilder_type_append_v(mem, func->declaration->params, KEFIR_IR_TYPE_LONG_DOUBLE, 0, 0);
-    kefir_irbuilder_type_append_v(mem, func->declaration->result, KEFIR_IR_TYPE_LONG_DOUBLE, 0, 0);
 
-    kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_PICK, 0);
-    kefir_irbuilder_block_appendu32(mem, &func->body, KEFIR_IROPCODE_OFFSETPTR, params_id, 2);
-    kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_XCHG, 1);
-    kefir_irbuilder_block_appendu32(mem, &func->body, KEFIR_IROPCODE_OFFSETPTR, params_id, 1);
-    kefir_irbuilder_block_appendu64(mem, &func->body, KEFIR_IROPCODE_LOAD32I, 0);
-    kefir_irbuilder_block_appendu32(mem, &func->body, KEFIR_IROPCODE_ELEMENTPTR, params_id, 3);
-    kefir_irbuilder_block_appendu64(mem, &func->body, KEFIR_IROPCODE_LOADLD, 0);
+    kefir_irbuilder_block_appendu64(mem, &func->body, KEFIR_IROPCODE_STORELD, 0);
 
     KEFIR_CODEGEN_TRANSLATE(mem, &codegen.iface, &module);
 

@@ -90,20 +90,22 @@
     <opcode id="load48u"     mnemonic="load48u"     code="0x5c" type="none" />
     <opcode id="load56u"     mnemonic="load56u"     code="0x5d" type="none" />
     <opcode id="load64"      mnemonic="load64"      code="0x5e" type="none" />
-    <opcode id="store8"      mnemonic="store8"      code="0x5f" type="none" />
-    <opcode id="store16"     mnemonic="store16"     code="0x60" type="none" />
-    <opcode id="store24"     mnemonic="store24"     code="0x61" type="none" />
-    <opcode id="store32"     mnemonic="store32"     code="0x62" type="none" />
-    <opcode id="store40"     mnemonic="store40"     code="0x63" type="none" />
-    <opcode id="store48"     mnemonic="store48"     code="0x64" type="none" />
-    <opcode id="store56"     mnemonic="store56"     code="0x65" type="none" />
-    <opcode id="store64"     mnemonic="store64"     code="0x66" type="none" />
-    <opcode id="bzero"       mnemonic="bzero"       code="0x67" type="typeref" />
-    <opcode id="bcopy"       mnemonic="bcopy"       code="0x68" type="typeref" />
-    <opcode id="extubits"    mnemonic="extubits"    code="0x69" type="u32" />
-    <opcode id="extsbits"    mnemonic="extsbits"    code="0x6a" type="u32" />
-    <opcode id="insertbits"  mnemonic="insertbits"  code="0x6b" type="u32" />
-    <opcode id="getthrlocal" mnemonic="getthrlocal" code="0x6c" type="identifier" />
+    <opcode id="loadld"      mnemonic="loadld"      code="0x5f" type="none" />
+    <opcode id="store8"      mnemonic="store8"      code="0x60" type="none" />
+    <opcode id="store16"     mnemonic="store16"     code="0x61" type="none" />
+    <opcode id="store24"     mnemonic="store24"     code="0x62" type="none" />
+    <opcode id="store32"     mnemonic="store32"     code="0x63" type="none" />
+    <opcode id="store40"     mnemonic="store40"     code="0x64" type="none" />
+    <opcode id="store48"     mnemonic="store48"     code="0x65" type="none" />
+    <opcode id="store56"     mnemonic="store56"     code="0x66" type="none" />
+    <opcode id="store64"     mnemonic="store64"     code="0x67" type="none" />
+    <opcode id="storeld"     mnemonic="storeld"     code="0x68" type="none" />
+    <opcode id="bzero"       mnemonic="bzero"       code="0x69" type="typeref" />
+    <opcode id="bcopy"       mnemonic="bcopy"       code="0x6a" type="typeref" />
+    <opcode id="extubits"    mnemonic="extubits"    code="0x6b" type="u32" />
+    <opcode id="extsbits"    mnemonic="extsbits"    code="0x6c" type="u32" />
+    <opcode id="insertbits"  mnemonic="insertbits"  code="0x6d" type="u32" />
+    <opcode id="getthrlocal" mnemonic="getthrlocal" code="0x6e" type="identifier" />
 
     <!-- Built-ins -->
     <opcode id="vararg_start" mnemonic="startvarg"  code="0x70" type="none" />

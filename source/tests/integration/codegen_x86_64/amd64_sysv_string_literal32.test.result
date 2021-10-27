@@ -51,6 +51,7 @@
 .extern __kefirrt_load48u_impl
 .extern __kefirrt_load56u_impl
 .extern __kefirrt_load64_impl
+.extern __kefirrt_loadld_impl
 .extern __kefirrt_store8_impl
 .extern __kefirrt_store16_impl
 .extern __kefirrt_store24_impl
@@ -59,6 +60,7 @@
 .extern __kefirrt_store48_impl
 .extern __kefirrt_store56_impl
 .extern __kefirrt_store64_impl
+.extern __kefirrt_storeld_impl
 .extern __kefirrt_bzero_impl
 .extern __kefirrt_bcopy_impl
 .extern __kefirrt_extubits_impl

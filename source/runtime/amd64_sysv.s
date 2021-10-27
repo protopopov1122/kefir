@@ -109,6 +109,7 @@ declare_opcode load40u
 declare_opcode load48u
 declare_opcode load56u
 declare_opcode load64
+declare_opcode loadld
 declare_opcode store8
 declare_opcode store16
 declare_opcode store24
@@ -117,6 +118,7 @@ declare_opcode store40
 declare_opcode store48
 declare_opcode store56
 declare_opcode store64
+declare_opcode storeld
 declare_opcode bzero
 declare_opcode bcopy
 declare_opcode extubits
@@ -547,6 +549,14 @@ define_opcode load64
     push DATA_REG
     end_opcode
 
+define_opcode loadld
+    pop DATA2_REG
+    mov DATA_REG, [DATA2_REG + 8]
+    push DATA_REG
+    mov DATA_REG, [DATA2_REG]
+    push DATA_REG
+    end_opcode
+
 define_opcode store8
     pop rax
     pop DATA2_REG
@@ -603,6 +613,14 @@ define_opcode store64
     pop rax
     pop DATA2_REG
     mov [DATA2_REG], rax
+    end_opcode
+
+define_opcode storeld
+    pop DATA_REG
+    pop DATA2_REG
+    pop rax
+    mov [rax], DATA_REG
+    mov [rax + 8], DATA2_REG
     end_opcode
 
 define_opcode bzero
