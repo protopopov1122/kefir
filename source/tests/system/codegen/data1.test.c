@@ -30,6 +30,7 @@ extern int32_t int32_1, int32_2;
 extern int64_t int64_1, int64_2;
 extern float float32_1, float32_2;
 extern double float64_1, float64_2;
+extern long double long_double_1, long_double_2;
 extern struct {
     int8_t f1;
     int64_t f2;
@@ -70,6 +71,8 @@ int main(int argc, const char **argv) {
     ASSERT(FLOAT_EQUALS(float32_2, 0.0f, FLOAT_EPSILON));
     ASSERT(DOUBLE_EQUALS(float64_1, 2.718281828, DOUBLE_EPSILON));
     ASSERT(DOUBLE_EQUALS(float64_2, 0.0, DOUBLE_EPSILON));
+    ASSERT(LONG_DOUBLE_EQUALS(long_double_1, 6.02214076e23l, LONG_DOUBLE_EPSILON));
+    ASSERT(LONG_DOUBLE_EQUALS(long_double_2, 0.0l, LONG_DOUBLE_EPSILON));
     ASSERT(struct1_1.f1 == 127);
     ASSERT(struct1_1.f2 == 0x2ffffffff);
     ASSERT(struct1_1.f3 == 4096);

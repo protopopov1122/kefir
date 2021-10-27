@@ -81,6 +81,17 @@ kefir_result_t kefir_ir_data_set_float64(struct kefir_ir_data *data, kefir_size_
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_ir_data_set_long_double(struct kefir_ir_data *data, kefir_size_t index,
+                                             kefir_long_double_t value) {
+    REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data pointer"));
+    REQUIRE(!data->finalized, KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot modify finalized data"));
+    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&data->value, index));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to find specified index"));
+    entry->type = KEFIR_IR_DATA_VALUE_LONG_DOUBLE;
+    entry->value.long_double = value;
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ir_data_set_string(struct kefir_ir_data *data, kefir_size_t index,
                                         kefir_ir_string_literal_type_t type, const void *value, kefir_size_t length) {
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data pointer"));

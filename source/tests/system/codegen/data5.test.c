@@ -31,6 +31,7 @@ extern _Thread_local int32_t int32_1, int32_2;
 extern _Thread_local int64_t int64_1, int64_2;
 extern _Thread_local float float32_1, float32_2;
 extern _Thread_local double float64_1, float64_2;
+extern _Thread_local long double long_double_1, long_double_2;
 extern _Thread_local struct {
     int8_t f1;
     int64_t f2;
@@ -56,10 +57,11 @@ extern _Thread_local const char pad1_1[];
 extern _Thread_local const char *pointer1_1;
 extern _Thread_local const char *strpointer1_1;
 
-#define PTRLIST                                                                                                        \
-    {                                                                                                                  \
-        &int8_1, &int8_2, &int16_1, &int16_2, &int32_1, &int32_2, &int64_1, &int64_2, &float32_1, &float32_2,          \
-            &float64_1, &float64_2, &struct1_1, &array1_1, &union1_1, &memory1_1, &pad1_1, &pointer1_1, &strpointer1_1 \
+#define PTRLIST                                                                                                   \
+    {                                                                                                             \
+        &int8_1, &int8_2, &int16_1, &int16_2, &int32_1, &int32_2, &int64_1, &int64_2, &float32_1, &float32_2,     \
+            &float64_1, &float64_2, &long_double_1, &long_double_2, &struct1_1, &array1_1, &union1_1, &memory1_1, \
+            &pad1_1, &pointer1_1, &strpointer1_1                                                                  \
     }
 
 static int cmp_pointers(void *payload) {
@@ -87,6 +89,8 @@ int main(int argc, const char **argv) {
     ASSERT(FLOAT_EQUALS(float32_2, 0.0f, FLOAT_EPSILON));
     ASSERT(DOUBLE_EQUALS(float64_1, 2.718281828, DOUBLE_EPSILON));
     ASSERT(DOUBLE_EQUALS(float64_2, 0.0, DOUBLE_EPSILON));
+    ASSERT(LONG_DOUBLE_EQUALS(long_double_1, 6.02214076e23l, LONG_DOUBLE_EPSILON));
+    ASSERT(LONG_DOUBLE_EQUALS(long_double_2, 0.0l, LONG_DOUBLE_EPSILON));
     ASSERT(struct1_1.f1 == 127);
     ASSERT(struct1_1.f2 == 0x2ffffffff);
     ASSERT(struct1_1.f3 == 4096);

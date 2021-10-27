@@ -278,6 +278,48 @@ static kefir_result_t float64_static_data(const struct kefir_ir_type *type, kefi
     return KEFIR_OK;
 }
 
+static kefir_result_t long_double_static_data(const struct kefir_ir_type *type, kefir_size_t index,
+                                              const struct kefir_ir_typeentry *typeentry, void *payload) {
+    UNUSED(type);
+    REQUIRE(typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type entry"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+
+    ASSIGN_DECL_CAST(struct static_data_param *, param, payload);
+    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid entry for index"));
+    union {
+        kefir_long_double_t long_double;
+        kefir_uint64_t uint64[2];
+    } value = {.uint64 = {0, 0}};
+    switch (entry->type) {
+        case KEFIR_IR_DATA_VALUE_UNDEFINED:
+            break;
+
+        case KEFIR_IR_DATA_VALUE_LONG_DOUBLE:
+            value.long_double = entry->value.long_double;
+            break;
+
+        default:
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected value of long double type field");
+    }
+
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout, kefir_vector_at(&param->layout, index));
+    REQUIRE_OK(align_offset(layout, param));
+    switch (typeentry->typecode) {
+        case KEFIR_IR_TYPE_LONG_DOUBLE:
+            ASMGEN_RAW(&param->codegen->asmgen, KEFIR_AMD64_QUAD);
+            ASMGEN_ARG(&param->codegen->asmgen, "0x%016" KEFIR_UINT64_XFMT, value.uint64[0]);
+            ASMGEN_ARG(&param->codegen->asmgen, "0x%016" KEFIR_UINT64_XFMT, value.uint64[1]);
+            break;
+
+        default:
+            return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR,
+                                   KEFIR_AMD64_SYSV_ABI_ERROR_PREFIX "Unexpectedly encountered non-long double type");
+    }
+    param->offset += layout->size;
+    return KEFIR_OK;
+}
+
 static kefir_result_t struct_static_data(const struct kefir_ir_type *type, kefir_size_t index,
                                          const struct kefir_ir_typeentry *typeentry, void *payload) {
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type"));
@@ -469,6 +511,7 @@ kefir_result_t kefir_amd64_sysv_static_data(struct kefir_mem *mem, struct kefir_
     visitor.visit[KEFIR_IR_TYPE_WORD] = word_static_data;
     visitor.visit[KEFIR_IR_TYPE_FLOAT32] = float32_static_data;
     visitor.visit[KEFIR_IR_TYPE_FLOAT64] = float64_static_data;
+    visitor.visit[KEFIR_IR_TYPE_LONG_DOUBLE] = long_double_static_data;
     visitor.visit[KEFIR_IR_TYPE_ARRAY] = array_static_data;
     visitor.visit[KEFIR_IR_TYPE_STRUCT] = struct_static_data;
     visitor.visit[KEFIR_IR_TYPE_UNION] = union_static_data;

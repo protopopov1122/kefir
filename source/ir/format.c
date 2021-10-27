@@ -576,6 +576,12 @@ static kefir_result_t format_datum(struct kefir_json_output *json, const struct 
                 REQUIRE_OK(kefir_json_output_float(json, value->value.float64));
                 break;
 
+            case KEFIR_IR_DATA_VALUE_LONG_DOUBLE:
+                REQUIRE_OK(kefir_json_output_string(json, "long_double"));
+                REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+                REQUIRE_OK(kefir_json_output_long_double(json, value->value.long_double));
+                break;
+
             case KEFIR_IR_DATA_VALUE_STRING:
                 REQUIRE_OK(kefir_json_output_string(json, "string"));
                 REQUIRE_OK(kefir_json_output_object_key(json, "content"));

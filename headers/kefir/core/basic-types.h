@@ -115,12 +115,14 @@ typedef size_t kefir_size_t;
 typedef uintptr_t kefir_uptr_t;
 typedef float kefir_float32_t;
 typedef double kefir_float64_t;
+typedef long double kefir_long_double_t;
 typedef kefir_uint32_t kefir_id_t;
 
 #define KEFIR_ID_FMT KEFIR_UINT32_FMT
 
 #define KEFIR_FLOAT32_FMT "%f"
 #define KEFIR_FLOAT64_FMT "%lf"
+#define KEFIR_LONG_DOUBLE_FMT "%Lf"
 
 #define KEFIR_SIZE_MIN SIZE_MIN
 #define KEFIR_SIZE_MAX SIZE_MAX

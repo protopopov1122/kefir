@@ -107,6 +107,18 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ir_module_new_named_data(mem, &module, "float64_2", KEFIR_IR_DATA_GLOBAL_STORAGE, float64type_id)));
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "float64_2"));
 
+    kefir_id_t long_double_type_id;
+    struct kefir_ir_type *long_double_type = kefir_ir_module_new_type(mem, &module, 1, &long_double_type_id);
+    REQUIRE_OK(kefir_irbuilder_type_append_v(mem, long_double_type, KEFIR_IR_TYPE_LONG_DOUBLE, 0, 0));
+    struct kefir_ir_data *long_double_data1 = kefir_ir_module_new_named_data(
+        mem, &module, "long_double_1", KEFIR_IR_DATA_GLOBAL_STORAGE, long_double_type_id);
+    REQUIRE_OK(kefir_ir_data_set_long_double(long_double_data1, 0, 6.02214076e23l));
+    REQUIRE_OK(kefir_ir_data_finalize(long_double_data1));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "long_double_1"));
+    REQUIRE_OK(kefir_ir_data_finalize(kefir_ir_module_new_named_data(
+        mem, &module, "long_double_2", KEFIR_IR_DATA_GLOBAL_STORAGE, long_double_type_id)));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "long_double_2"));
+
     kefir_id_t struct1_type_id;
     struct kefir_ir_type *struct1_type = kefir_ir_module_new_type(mem, &module, 5, &struct1_type_id);
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, struct1_type, KEFIR_IR_TYPE_STRUCT, 0, 4));
