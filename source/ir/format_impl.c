@@ -185,6 +185,8 @@ kefir_result_t kefir_ir_format_instr(struct kefir_json_output *json, const struc
             return kefir_ir_format_instr_f32(json, module, instr);
         case KEFIR_IROPCODE_PUSHF64:
             return kefir_ir_format_instr_f64(json, module, instr);
+        case KEFIR_IROPCODE_PUSHLD:
+            return kefir_ir_format_instr_u64(json, module, instr);
         case KEFIR_IROPCODE_F32ADD:
             return kefir_ir_format_instr_none(json, module, instr);
         case KEFIR_IROPCODE_F32SUB:

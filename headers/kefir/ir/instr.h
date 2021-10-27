@@ -57,4 +57,7 @@ kefir_result_t kefir_irblock_alloc(struct kefir_mem *, kefir_size_t, struct kefi
 kefir_result_t kefir_irblock_realloc(struct kefir_mem *, kefir_size_t, struct kefir_irblock *);
 kefir_result_t kefir_irblock_free(struct kefir_mem *, struct kefir_irblock *);
 
+kefir_uint64_t kefir_ir_long_double_upper_half(kefir_long_double_t);
+kefir_uint64_t kefir_ir_long_double_lower_half(kefir_long_double_t);
+
 #endif

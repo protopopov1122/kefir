@@ -29,15 +29,16 @@ long double sumldouble(int, ...);
 int main(int argc, const char **argv) {
     UNUSED(argc);
     UNUSED(argv);
-    ASSERT(LONG_DOUBLE_EQUALS(sumldouble(0), 0.0, LONG_DOUBLE_EPSILON));
-    ASSERT(LONG_DOUBLE_EQUALS(sumldouble(0, 1000.05l), 0.0, LONG_DOUBLE_EPSILON));
-    ASSERT(LONG_DOUBLE_EQUALS(sumldouble(1, 0.0l), 0.0, LONG_DOUBLE_EPSILON));
-    ASSERT(LONG_DOUBLE_EQUALS(sumldouble(1, 12.452l), 12.452, LONG_DOUBLE_EPSILON));
-    ASSERT(LONG_DOUBLE_EQUALS(sumldouble(2, 0.0714e-6l, 100.2651e2l), 0.0714e-6l + 100.2651e2l, LONG_DOUBLE_EPSILON));
-    ASSERT(LONG_DOUBLE_EQUALS(sumldouble(4, 1.0l, 2.0l, 3.0l, 4.0l), 10.0l, LONG_DOUBLE_EPSILON));
+    ASSERT(LONG_DOUBLE_EQUALS(sumldouble(0), 1.0, LONG_DOUBLE_EPSILON));
+    ASSERT(LONG_DOUBLE_EQUALS(sumldouble(0, 1000.05l), 1.0, LONG_DOUBLE_EPSILON));
+    ASSERT(LONG_DOUBLE_EQUALS(sumldouble(1, 0.0l), 1.0, LONG_DOUBLE_EPSILON));
+    ASSERT(LONG_DOUBLE_EQUALS(sumldouble(1, 12.452l), 13.452, LONG_DOUBLE_EPSILON));
+    ASSERT(LONG_DOUBLE_EQUALS(sumldouble(2, 0.0714e-6l, 100.2651e2l), 0.0714e-6l + 100.2651e2l + 1.0l,
+                              LONG_DOUBLE_EPSILON));
+    ASSERT(LONG_DOUBLE_EQUALS(sumldouble(4, 1.0l, 2.0l, 3.0l, 4.0l), 11.0l, LONG_DOUBLE_EPSILON));
     ASSERT(LONG_DOUBLE_EQUALS(
         sumldouble(10, 10.0001l, 11.0001l, 12.0001l, -100.0l, 0.0l, 0.0001e-2l, -5.1l, 10281.011l, -1.123l, 5820.0l),
-        10.0001l + 11.0001l + 12.0001l + -100.0l + 0.0l + 0.0001e-2l + -5.1l + 10281.011l + -1.123l + 5820.0l,
+        10.0001l + 11.0001l + 12.0001l + -100.0l + 0.0l + 0.0001e-2l + -5.1l + 10281.011l + -1.123l + 5820.0l + 1.0l,
         LONG_DOUBLE_EPSILON));
     return EXIT_SUCCESS;
 }

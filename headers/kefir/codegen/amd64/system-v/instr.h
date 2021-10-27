@@ -27,6 +27,6 @@
 kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *, struct kefir_codegen_amd64 *,
                                             struct kefir_amd64_sysv_function *,
                                             struct kefir_codegen_amd64_sysv_module *sysv_module,
-                                            const struct kefir_irinstr *);
+                                            const struct kefir_irblock *, kefir_size_t, kefir_size_t *);
 
 #endif

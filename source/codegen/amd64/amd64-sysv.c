@@ -91,11 +91,10 @@ static kefir_result_t cg_function_body(struct kefir_mem *mem, struct kefir_codeg
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_JMP);
     ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_INDIRECT, KEFIR_AMD64_SYSV_ABI_PROGRAM_REG);
     ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL, sysv_func->func->name);
-    const struct kefir_irinstr *instr = NULL;
-    for (kefir_size_t pc = 0; pc < kefir_irblock_length(&sysv_func->func->body); pc++) {
-        instr = kefir_irblock_at(&sysv_func->func->body, pc);
-        REQUIRE(instr != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to fetch instruction from IR block"));
-        REQUIRE_OK(kefir_amd64_sysv_instruction(mem, codegen, sysv_func, sysv_module, instr));
+    kefir_size_t instr_width;
+    for (kefir_size_t pc = 0; pc < kefir_irblock_length(&sysv_func->func->body); pc += instr_width) {
+        REQUIRE_OK(kefir_amd64_sysv_instruction(mem, codegen, sysv_func, sysv_module, &sysv_func->func->body, pc,
+                                                &instr_width));
     }
     ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
     ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_EPILOGUE_LABEL, sysv_func->func->name);

@@ -36,7 +36,19 @@ static kefir_result_t cg_symbolic_opcode(kefir_iropcode_t opcode, const char **s
 kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem, struct kefir_codegen_amd64 *codegen,
                                             struct kefir_amd64_sysv_function *sysv_func,
                                             struct kefir_codegen_amd64_sysv_module *sysv_module,
-                                            const struct kefir_irinstr *instr) {
+                                            const struct kefir_irblock *block, kefir_size_t instr_index,
+                                            kefir_size_t *instr_width) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 codegen"));
+    REQUIRE(sysv_func != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 System-V function"));
+    REQUIRE(sysv_module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 System-V module"));
+    REQUIRE(block != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR block"));
+    REQUIRE(instr_width != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to instruction width"));
+
+    const struct kefir_irinstr *instr = kefir_irblock_at(&sysv_func->func->body, instr_index);
+    REQUIRE(instr != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to fetch instruction from IR block"));
+    *instr_width = 1;
     switch (instr->opcode) {
         case KEFIR_IROPCODE_JMP:
         case KEFIR_IROPCODE_BRANCH: {
@@ -226,6 +238,23 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem, struct kefir_
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
             ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
             ASMGEN_ARG(&codegen->asmgen, KEFIR_UINT64_FMT, instr->arg.u64);
+        } break;
+
+        case KEFIR_IROPCODE_PUSHLD: {
+            const struct kefir_irinstr *instr_half2 = kefir_irblock_at(block, instr_index + 1);
+            REQUIRE(instr_half2 != NULL && instr_half2->opcode == KEFIR_IROPCODE_PUSHU64,
+                    KEFIR_SET_ERROR(KEFIR_INVALID_STATE,
+                                    "Pushld instruction shall be succeeded by unsigned integral push opcode"));
+
+            *instr_width = 2;
+            const char *opcode_symbol = NULL;
+            REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_PUSHI64, &opcode_symbol));
+            ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
+            ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
+            ASMGEN_ARG(&codegen->asmgen, KEFIR_UINT64_FMT, instr->arg.u64);
+            ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
+            ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
+            ASMGEN_ARG(&codegen->asmgen, KEFIR_UINT64_FMT, instr_half2->arg.u64);
         } break;
 
         default: {
