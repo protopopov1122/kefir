@@ -61,6 +61,9 @@ const struct kefir_ast_type *kefir_ast_type_common_arithmetic(const struct kefir
         type2 = kefir_ast_enumeration_underlying_type(&type2->enumeration_type);
     }
 
+    if (ANY_OF(type1, type2, kefir_ast_type_long_double())) {
+        return kefir_ast_type_long_double();
+    }
     if (ANY_OF(type1, type2, kefir_ast_type_double())) {
         return kefir_ast_type_double();
     }

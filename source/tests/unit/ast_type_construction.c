@@ -51,6 +51,7 @@ DEFINE_CASE(ast_type_construction1, "AST Types - basic types") {
                                                   kefir_ast_type_signed_long_long(),
                                                   kefir_ast_type_float(),
                                                   kefir_ast_type_double(),
+                                                  kefir_ast_type_long_double(),
                                                   kefir_ast_type_va_list()};
     const kefir_size_t BASIC_TYPES_LENGTH = sizeof(BASIC_TYPES) / sizeof(BASIC_TYPES[0]);
     for (kefir_size_t i = 0; i < BASIC_TYPES_LENGTH; i++) {
@@ -81,6 +82,7 @@ DEFINE_CASE(ast_type_construction1, "AST Types - basic types") {
     ASSERT(!KEFIR_AST_TYPE_IS_CHARACTER(kefir_ast_type_boolean()));
     ASSERT(!KEFIR_AST_TYPE_IS_CHARACTER(kefir_ast_type_float()));
     ASSERT(!KEFIR_AST_TYPE_IS_CHARACTER(kefir_ast_type_double()));
+    ASSERT(!KEFIR_AST_TYPE_IS_CHARACTER(kefir_ast_type_long_double()));
 
     ASSERT(is_signed(kefir_ast_type_char()) == kefir_ast_default_type_traits()->character_type_signedness);
     ASSERT(!is_signed(kefir_ast_type_unsigned_char()));
@@ -123,6 +125,7 @@ DEFINE_CASE(ast_type_construction1, "AST Types - basic types") {
     ASSERT(KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(kefir_ast_type_boolean()));
     ASSERT(!KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(kefir_ast_type_float()));
     ASSERT(!KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(kefir_ast_type_double()));
+    ASSERT(!KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(kefir_ast_type_long_double()));
 
     ASSERT(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(kefir_ast_type_char()));
     ASSERT(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(kefir_ast_type_unsigned_char()));
@@ -139,6 +142,7 @@ DEFINE_CASE(ast_type_construction1, "AST Types - basic types") {
     ASSERT(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(kefir_ast_type_boolean()));
     ASSERT(!KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(kefir_ast_type_float()));
     ASSERT(!KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(kefir_ast_type_double()));
+    ASSERT(!KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(kefir_ast_type_long_double()));
 
     ASSERT(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(kefir_ast_type_char()));
     ASSERT(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(kefir_ast_type_unsigned_char()));
@@ -155,6 +159,7 @@ DEFINE_CASE(ast_type_construction1, "AST Types - basic types") {
     ASSERT(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(kefir_ast_type_boolean()));
     ASSERT(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(kefir_ast_type_float()));
     ASSERT(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(kefir_ast_type_double()));
+    ASSERT(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(kefir_ast_type_long_double()));
 
     ASSERT(KEFIR_AST_TYPE_IS_SCALAR_TYPE(kefir_ast_type_char()));
     ASSERT(KEFIR_AST_TYPE_IS_SCALAR_TYPE(kefir_ast_type_unsigned_char()));
@@ -171,6 +176,7 @@ DEFINE_CASE(ast_type_construction1, "AST Types - basic types") {
     ASSERT(KEFIR_AST_TYPE_IS_SCALAR_TYPE(kefir_ast_type_boolean()));
     ASSERT(KEFIR_AST_TYPE_IS_SCALAR_TYPE(kefir_ast_type_float()));
     ASSERT(KEFIR_AST_TYPE_IS_SCALAR_TYPE(kefir_ast_type_double()));
+    ASSERT(KEFIR_AST_TYPE_IS_SCALAR_TYPE(kefir_ast_type_long_double()));
 }
 END_CASE
 
@@ -196,6 +202,7 @@ DEFINE_CASE(ast_type_construction2, "AST Types - pointer type") {
         kefir_ast_type_signed_long_long(),
         kefir_ast_type_float(),
         kefir_ast_type_double(),
+        kefir_ast_type_long_double(),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_void()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_boolean()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_char()),
@@ -211,6 +218,7 @@ DEFINE_CASE(ast_type_construction2, "AST Types - pointer type") {
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_signed_long_long()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_float()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_double()),
+        kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_long_double()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle,
                                kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_void())),
         kefir_ast_type_pointer(&kft_mem, &type_bundle,
@@ -240,7 +248,9 @@ DEFINE_CASE(ast_type_construction2, "AST Types - pointer type") {
         kefir_ast_type_pointer(&kft_mem, &type_bundle,
                                kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_float())),
         kefir_ast_type_pointer(&kft_mem, &type_bundle,
-                               kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_double()))};
+                               kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_double())),
+        kefir_ast_type_pointer(&kft_mem, &type_bundle,
+                               kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_long_double()))};
     const kefir_size_t BASE_TYPES_LENGTH = sizeof(BASE_TYPES) / sizeof(BASE_TYPES[0]);
     for (kefir_size_t i = 0; i < BASE_TYPES_LENGTH; i++) {
         ASSERT(BASE_TYPES[i] != NULL);
@@ -279,6 +289,7 @@ DEFINE_CASE(ast_type_construction3, "AST Types - qualified type") {
         kefir_ast_type_signed_long_long(),
         kefir_ast_type_float(),
         kefir_ast_type_double(),
+        kefir_ast_type_long_double(),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_void()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_boolean()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_char()),
@@ -294,6 +305,7 @@ DEFINE_CASE(ast_type_construction3, "AST Types - qualified type") {
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_signed_long_long()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_float()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_double()),
+        kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_long_double()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle,
                                kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_void())),
         kefir_ast_type_pointer(&kft_mem, &type_bundle,
@@ -323,7 +335,9 @@ DEFINE_CASE(ast_type_construction3, "AST Types - qualified type") {
         kefir_ast_type_pointer(&kft_mem, &type_bundle,
                                kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_float())),
         kefir_ast_type_pointer(&kft_mem, &type_bundle,
-                               kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_double()))};
+                               kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_double())),
+        kefir_ast_type_pointer(&kft_mem, &type_bundle,
+                               kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_long_double()))};
     const kefir_size_t BASE_TYPES_LENGTH = sizeof(BASE_TYPES) / sizeof(BASE_TYPES[0]);
     for (kefir_size_t i = 0; i < BASE_TYPES_LENGTH; i++) {
         ASSERT(BASE_TYPES[i] != NULL);

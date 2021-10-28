@@ -47,7 +47,8 @@ DEFINE_CASE(ast_type_analysis_scalars, "AST type analysis - scalars") {
                                             kefir_ast_type_unsigned_long_long(),
                                             kefir_ast_type_signed_long_long(),
                                             kefir_ast_type_float(),
-                                            kefir_ast_type_double()};
+                                            kefir_ast_type_double(),
+                                            kefir_ast_type_long_double()};
     const kefir_size_t TYPES_LEN = sizeof(TYPES) / sizeof(TYPES[0]);
 
     for (kefir_size_t i = 0; i < TYPES_LEN; i++) {
@@ -101,6 +102,7 @@ DEFINE_CASE(ast_type_analysis_pointers_qualifications, "AST type analysis - poin
         kefir_ast_type_signed_long_long(),
         kefir_ast_type_float(),
         kefir_ast_type_double(),
+        kefir_ast_type_long_double(),
         kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()),
         kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_char()),
         kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_float()),

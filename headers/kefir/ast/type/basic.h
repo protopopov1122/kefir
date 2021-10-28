@@ -43,6 +43,7 @@ SCALAR_TYPE(unsigned_long_long);
 SCALAR_TYPE(signed_long_long);
 SCALAR_TYPE(float);
 SCALAR_TYPE(double);
+SCALAR_TYPE(long_double);
 #undef SCALAR_TYPE
 
 const struct kefir_ast_type *kefir_ast_type_va_list();
@@ -63,8 +64,9 @@ const struct kefir_ast_type *kefir_ast_type_va_list();
      KEFIR_INTERNAL_AST_TYPE_IS_UNSIGNED_INTEGER(base))
 #define KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(base) \
     (KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(base) || (base)->tag == KEFIR_AST_TYPE_ENUMERATION)
-#define KEFIR_AST_TYPE_IS_FLOATING_POINT(base) \
-    ((base)->tag == KEFIR_AST_TYPE_SCALAR_FLOAT || (base)->tag == KEFIR_AST_TYPE_SCALAR_DOUBLE)
+#define KEFIR_AST_TYPE_IS_FLOATING_POINT(base)                                                    \
+    ((base)->tag == KEFIR_AST_TYPE_SCALAR_FLOAT || (base)->tag == KEFIR_AST_TYPE_SCALAR_DOUBLE || \
+     (base)->tag == KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE)
 #define KEFIR_AST_TYPE_IS_REAL_TYPE(base) \
     (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(base) || KEFIR_AST_TYPE_IS_FLOATING_POINT(base))
 #define KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(base) \

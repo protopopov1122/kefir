@@ -55,6 +55,7 @@ DEFINE_CASE(ast_type_analysis_integer_promotion1, "AST Type analysis - integer p
     ASSERT(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_void()) == NULL);
     ASSERT(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_float()) == NULL);
     ASSERT(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_double()) == NULL);
+    ASSERT(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_long_double()) == NULL);
 }
 END_CASE
 
@@ -94,7 +95,8 @@ DEFINE_CASE(ast_type_analysis_arithmetic_conversion2, "AST Type analysis - arith
     const kefir_size_t TYPES_LEN = sizeof(TYPES) / sizeof(TYPES[0]);
     const struct kefir_ast_type *TYPES2[] = {
         kefir_ast_type_unsigned_long(),    kefir_ast_type_signed_long(), kefir_ast_type_unsigned_long_long(),
-        kefir_ast_type_signed_long_long(), kefir_ast_type_float(),       kefir_ast_type_double()};
+        kefir_ast_type_signed_long_long(), kefir_ast_type_float(),       kefir_ast_type_double(),
+        kefir_ast_type_long_double()};
     const kefir_size_t TYPES2_LEN = sizeof(TYPES2) / sizeof(TYPES2[0]);
     for (kefir_size_t i = 0; i < TYPES_LEN; i++) {
         for (kefir_size_t j = 0; j < TYPES2_LEN; j++) {
@@ -120,7 +122,8 @@ DEFINE_CASE(ast_type_analysis_arithmetic_conversion3, "AST Type analysis - arith
                                             kefir_ast_type_signed_long_long(),
                                             kefir_ast_type_float()};
     const kefir_size_t TYPES_LEN = sizeof(TYPES) / sizeof(TYPES[0]);
-    const struct kefir_ast_type *TYPES2[] = {kefir_ast_type_float(), kefir_ast_type_double()};
+    const struct kefir_ast_type *TYPES2[] = {kefir_ast_type_float(), kefir_ast_type_double(),
+                                             kefir_ast_type_long_double()};
     const kefir_size_t TYPES2_LEN = sizeof(TYPES2) / sizeof(TYPES2[0]);
     for (kefir_size_t i = 0; i < TYPES_LEN; i++) {
         for (kefir_size_t j = 0; j < TYPES2_LEN; j++) {

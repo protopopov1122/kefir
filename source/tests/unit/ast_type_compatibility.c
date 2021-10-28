@@ -118,6 +118,7 @@ DEFINE_CASE(ast_type_basic_compatibility, "AST Types - basic type compatibility"
                                                   kefir_ast_type_signed_long_long(),
                                                   kefir_ast_type_float(),
                                                   kefir_ast_type_double(),
+                                                  kefir_ast_type_long_double(),
                                                   kefir_ast_type_va_list()};
     const kefir_size_t BASIC_TYPES_LENGTH = sizeof(BASIC_TYPES) / sizeof(BASIC_TYPES[0]);
     for (kefir_size_t i = 0; i < BASIC_TYPES_LENGTH; i++) {
@@ -210,7 +211,8 @@ DEFINE_CASE(ast_type_pointer_compatibility, "AST Types - pointer type compatibil
                                                   kefir_ast_type_unsigned_long_long(),
                                                   kefir_ast_type_signed_long_long(),
                                                   kefir_ast_type_float(),
-                                                  kefir_ast_type_double()};
+                                                  kefir_ast_type_double(),
+                                                  kefir_ast_type_long_double()};
 
     const struct kefir_ast_type *POINTER_TYPES[] = {
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_void()),
@@ -227,7 +229,8 @@ DEFINE_CASE(ast_type_pointer_compatibility, "AST Types - pointer type compatibil
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_unsigned_long_long()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_signed_long_long()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_float()),
-        kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_double())};
+        kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_double()),
+        kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_long_double())};
     const struct kefir_ast_type *enum_ptr = kefir_ast_type_pointer(&kft_mem, &type_bundle, type1);
 
     const kefir_size_t BASIC_TYPES_LENGTH = sizeof(BASIC_TYPES) / sizeof(BASIC_TYPES[0]);
@@ -283,6 +286,7 @@ DEFINE_CASE(ast_type_qualified_compatibility, "AST Types - qualified type compat
         kefir_ast_type_signed_long_long(),
         kefir_ast_type_float(),
         kefir_ast_type_double(),
+        kefir_ast_type_long_double(),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_void()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_boolean()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_char()),

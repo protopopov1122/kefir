@@ -47,6 +47,7 @@ DEFINE_CASE(ast_type_basic_composite, "AST types - basic composite type") {
                                                   kefir_ast_type_signed_long_long(),
                                                   kefir_ast_type_float(),
                                                   kefir_ast_type_double(),
+                                                  kefir_ast_type_long_double(),
                                                   kefir_ast_type_va_list()};
 
     const kefir_size_t BASIC_TYPES_LENGTH = sizeof(BASIC_TYPES) / sizeof(BASIC_TYPES[0]);
@@ -96,6 +97,7 @@ DEFINE_CASE(ast_type_pointer_composite, "AST types - pointer composite type") {
         kefir_ast_type_signed_long_long(),
         kefir_ast_type_float(),
         kefir_ast_type_double(),
+        kefir_ast_type_long_double(),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_void()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_boolean()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_char()),
@@ -110,7 +112,8 @@ DEFINE_CASE(ast_type_pointer_composite, "AST types - pointer composite type") {
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_unsigned_long_long()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_signed_long_long()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_float()),
-        kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_double())};
+        kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_double()),
+        kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_long_double())};
 
     const kefir_size_t BASE_TYPES_LENGTH = sizeof(BASE_TYPES) / sizeof(BASE_TYPES[0]);
     for (kefir_size_t i = 0; i < BASE_TYPES_LENGTH; i++) {
@@ -245,6 +248,7 @@ DEFINE_CASE(ast_type_qualified_composite, "AST types - qualified composite type"
         kefir_ast_type_signed_long_long(),
         kefir_ast_type_float(),
         kefir_ast_type_double(),
+        kefir_ast_type_long_double(),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_void()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_boolean()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_char()),
@@ -259,7 +263,8 @@ DEFINE_CASE(ast_type_qualified_composite, "AST types - qualified composite type"
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_unsigned_long_long()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_signed_long_long()),
         kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_float()),
-        kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_double())};
+        kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_double()),
+        kefir_ast_type_pointer(&kft_mem, &type_bundle, kefir_ast_type_long_double())};
     const kefir_size_t BASE_TYPES_LENGTH = sizeof(BASE_TYPES) / sizeof(BASE_TYPES[0]);
 
     struct kefir_ast_type_qualification QUALIFICATIONS[] = {
