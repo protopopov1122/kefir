@@ -76,6 +76,21 @@ DEFINE_CASE(ast_constant_expression_unary_operations1, "AST constant expressions
             kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_LOGICAL_NEGATE,
                                           KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(&kft_mem, f))),
             !f);
+        ASSERT_FLOAT_CONST_EXPR(
+            &kft_mem, context,
+            kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_PLUS,
+                                          KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long_double(&kft_mem, f))),
+            +f);
+        ASSERT_FLOAT_CONST_EXPR(
+            &kft_mem, context,
+            kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_NEGATE,
+                                          KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long_double(&kft_mem, f))),
+            -f);
+        ASSERT_INTEGER_CONST_EXPR(
+            &kft_mem, context,
+            kefir_ast_new_unary_operation(&kft_mem, KEFIR_AST_OPERATION_LOGICAL_NEGATE,
+                                          KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long_double(&kft_mem, f))),
+            !f);
     }
 
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));

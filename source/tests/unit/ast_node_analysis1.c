@@ -80,6 +80,8 @@ DEFINE_CASE(ast_node_analysis_constants, "AST node analysis - constant types") {
         ASSERT_CONSTANT(&kft_mem, context, kefir_ast_new_constant_float(&kft_mem, f), kefir_ast_type_float());
         ASSERT_CONSTANT(&kft_mem, context, kefir_ast_new_constant_double(&kft_mem, (kefir_float64_t) f),
                         kefir_ast_type_double());
+        ASSERT_CONSTANT(&kft_mem, context, kefir_ast_new_constant_long_double(&kft_mem, (kefir_long_double_t) f),
+                        kefir_ast_type_long_double());
     }
 
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
@@ -750,11 +752,17 @@ DEFINE_CASE(ast_node_analysis_unary_operation_arithmetic, "AST node analysis - u
     ASSERT_UNARY_OPERATION(&kft_mem, context, KEFIR_AST_OPERATION_PLUS,
                            kefir_ast_new_constant_double(&kft_mem, 2.71828), kefir_ast_type_double(), true, false,
                            false);
+    ASSERT_UNARY_OPERATION(&kft_mem, context, KEFIR_AST_OPERATION_PLUS,
+                           kefir_ast_new_constant_long_double(&kft_mem, -1.298l), kefir_ast_type_long_double(), true,
+                           false, false);
     ASSERT_UNARY_OPERATION(&kft_mem, context, KEFIR_AST_OPERATION_NEGATE, kefir_ast_new_constant_float(&kft_mem, 3.14f),
                            kefir_ast_type_float(), true, false, false);
     ASSERT_UNARY_OPERATION(&kft_mem, context, KEFIR_AST_OPERATION_NEGATE,
                            kefir_ast_new_constant_double(&kft_mem, 2.71828), kefir_ast_type_double(), true, false,
                            false);
+    ASSERT_UNARY_OPERATION(&kft_mem, context, KEFIR_AST_OPERATION_NEGATE,
+                           kefir_ast_new_constant_long_double(&kft_mem, -0.286l), kefir_ast_type_long_double(), true,
+                           false, false);
 
     ASSERT_UNARY_OPERATION(&kft_mem, context, KEFIR_AST_OPERATION_LOGICAL_NEGATE,
                            kefir_ast_new_constant_bool(&kft_mem, false), kefir_ast_type_signed_int(), true, false,

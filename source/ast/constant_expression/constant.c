@@ -103,6 +103,11 @@ kefir_result_t kefir_ast_evaluate_scalar_node(struct kefir_mem *mem, const struc
             value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT;
             value->floating_point = node->value.float64;
             break;
+
+        case KEFIR_AST_LONG_DOUBLE_CONSTANT:
+            value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT;
+            value->floating_point = node->value.long_double;
+            break;
     }
     return KEFIR_OK;
 }

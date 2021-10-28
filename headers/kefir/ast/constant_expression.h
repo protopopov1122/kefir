@@ -39,7 +39,7 @@ typedef enum kefir_ast_constant_expression_pointer_base_type {
 } kefir_ast_constant_expression_pointer_base_type_t;
 
 typedef kefir_int64_t kefir_ast_constant_expression_int_t;
-typedef kefir_float64_t kefir_ast_constant_expression_float_t;
+typedef kefir_long_double_t kefir_ast_constant_expression_float_t;
 
 typedef struct kefir_ast_constant_expression_pointer {
     const struct kefir_ast_node_base *pointer_node;

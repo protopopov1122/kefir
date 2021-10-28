@@ -42,6 +42,7 @@ KEFIR_AST_NODE_STRUCT(kefir_ast_constant, {
         kefir_ulong_long_t ulong_long;
         kefir_float32_t float32;
         kefir_float64_t float64;
+        kefir_long_double_t long_double;
     } value;
 });
 
@@ -218,6 +219,7 @@ struct kefir_ast_constant *kefir_ast_new_constant_long_long(struct kefir_mem *, 
 struct kefir_ast_constant *kefir_ast_new_constant_ulong_long(struct kefir_mem *, kefir_ulong_long_t);
 struct kefir_ast_constant *kefir_ast_new_constant_float(struct kefir_mem *, kefir_float32_t);
 struct kefir_ast_constant *kefir_ast_new_constant_double(struct kefir_mem *, kefir_float64_t);
+struct kefir_ast_constant *kefir_ast_new_constant_long_double(struct kefir_mem *, kefir_long_double_t);
 struct kefir_ast_identifier *kefir_ast_new_identifier(struct kefir_mem *, struct kefir_symbol_table *, const char *);
 
 struct kefir_ast_string_literal *kefir_ast_new_string_literal_multibyte(struct kefir_mem *, const char *, kefir_size_t);

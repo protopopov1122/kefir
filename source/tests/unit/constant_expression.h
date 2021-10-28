@@ -41,7 +41,7 @@
         struct kefir_ast_constant_expression_value value;                                          \
         ASSERT_OK(kefir_ast_constant_expression_value_evaluate((_mem), (_context), base, &value)); \
         ASSERT(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT);                          \
-        ASSERT(DOUBLE_EQUALS(value.floating_point, (_value), DOUBLE_EPSILON));                     \
+        ASSERT(DOUBLE_EQUALS((double) value.floating_point, (_value), DOUBLE_EPSILON));            \
         ASSERT_OK(KEFIR_AST_NODE_FREE((_mem), base));                                              \
     } while (0)
 

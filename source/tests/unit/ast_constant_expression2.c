@@ -258,7 +258,7 @@ DEFINE_CASE(ast_constant_expression_conditional_operator1, "AST constant express
         &kft_mem, context,
         kefir_ast_new_conditional_operator(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(&kft_mem, false)),
                                            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(&kft_mem, -27.5)),
-                                           KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(&kft_mem, 19.01))),
+                                           KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long_double(&kft_mem, 19.01))),
         19.01);
 
     ASSERT_INTEGER_CONST_EXPR(

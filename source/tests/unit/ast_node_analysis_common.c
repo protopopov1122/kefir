@@ -58,6 +58,9 @@ struct kefir_ast_constant *make_constant(struct kefir_mem *mem, const struct kef
         case KEFIR_AST_TYPE_SCALAR_DOUBLE:
             return kefir_ast_new_constant_double(mem, 2.718281828);
 
+        case KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE:
+            return kefir_ast_new_constant_long_double(mem, 6.02e23l);
+
         default:
             return NULL;
     }

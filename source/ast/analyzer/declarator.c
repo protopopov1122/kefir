@@ -368,7 +368,7 @@ static kefir_result_t resolve_type(struct kefir_mem *mem, const struct kefir_ast
                 REQUIRE((*base_type)->tag == KEFIR_AST_TYPE_SCALAR_SIGNED_LONG,
                         KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &decl_specifier->source_location,
                                                "Double type specifier can only be combined with complex and long"));
-                return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Long and complex doubles are not supported yet");
+                *base_type = kefir_ast_type_long_double();
             }
             *seq_state = TYPE_SPECIFIER_SEQUENCE_SPECIFIERS;
             break;

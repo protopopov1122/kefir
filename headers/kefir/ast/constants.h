@@ -96,7 +96,8 @@ typedef enum kefir_ast_constant_type {
     KEFIR_AST_LONG_LONG_CONSTANT,
     KEFIR_AST_ULONG_LONG_CONSTANT,
     KEFIR_AST_FLOAT_CONSTANT,
-    KEFIR_AST_DOUBLE_CONSTANT
+    KEFIR_AST_DOUBLE_CONSTANT,
+    KEFIR_AST_LONG_DOUBLE_CONSTANT
 } kefir_ast_constant_type_t;
 
 typedef enum kefir_ast_string_literal_type {

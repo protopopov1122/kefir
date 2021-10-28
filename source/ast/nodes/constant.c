@@ -329,3 +329,24 @@ struct kefir_ast_constant *kefir_ast_new_constant_double(struct kefir_mem *mem, 
     constant->value.float64 = value;
     return constant;
 }
+
+struct kefir_ast_constant *kefir_ast_new_constant_long_double(struct kefir_mem *mem, kefir_long_double_t value) {
+    REQUIRE(mem != NULL, NULL);
+    struct kefir_ast_constant *constant = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_constant));
+    REQUIRE(constant != NULL, NULL);
+    constant->base.klass = &AST_CONSTANT_CLASS;
+    constant->base.self = constant;
+    kefir_result_t res = kefir_ast_node_properties_init(&constant->base.properties);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, constant);
+        return NULL;
+    });
+    res = kefir_source_location_empty(&constant->base.source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, constant);
+        return NULL;
+    });
+    constant->type = KEFIR_AST_LONG_DOUBLE_CONSTANT;
+    constant->value.long_double = value;
+    return constant;
+}
