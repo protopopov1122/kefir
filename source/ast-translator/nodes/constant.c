@@ -33,56 +33,77 @@ kefir_result_t kefir_ast_translate_constant_node(struct kefir_mem *mem, struct k
 
     switch (node->type) {
         case KEFIR_AST_BOOL_CONSTANT:
-            return KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_PUSHU64,
-                                                   (kefir_uint64_t) node->value.boolean);
+            REQUIRE_OK(
+                KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_PUSHU64, (kefir_uint64_t) node->value.boolean));
+            break;
 
         case KEFIR_AST_CHAR_CONSTANT:
-            return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHI64,
-                                                   (kefir_int64_t) node->value.character);
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHI64,
+                                                       (kefir_int64_t) node->value.character));
+            break;
 
         case KEFIR_AST_WIDE_CHAR_CONSTANT:
-            return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHI64,
-                                                   (kefir_int64_t) node->value.wide_character);
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHI64,
+                                                       (kefir_int64_t) node->value.wide_character));
+            break;
 
         case KEFIR_AST_UNICODE16_CHAR_CONSTANT:
-            return KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_PUSHU64,
-                                                   (kefir_uint64_t) node->value.unicode16_character);
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_PUSHU64,
+                                                       (kefir_uint64_t) node->value.unicode16_character));
+            break;
 
         case KEFIR_AST_UNICODE32_CHAR_CONSTANT:
-            return KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_PUSHU64,
-                                                   (kefir_uint64_t) node->value.unicode32_character);
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_PUSHU64,
+                                                       (kefir_uint64_t) node->value.unicode32_character));
+            break;
 
         case KEFIR_AST_INT_CONSTANT:
-            return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHI64,
-                                                   (kefir_int64_t) node->value.integer);
+            REQUIRE_OK(
+                KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHI64, (kefir_int64_t) node->value.integer));
+            break;
 
         case KEFIR_AST_UINT_CONSTANT:
-            return KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_PUSHU64,
-                                                   (kefir_uint64_t) node->value.uinteger);
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_PUSHU64,
+                                                       (kefir_uint64_t) node->value.uinteger));
+            break;
 
         case KEFIR_AST_LONG_CONSTANT:
-            return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHI64,
-                                                   (kefir_int64_t) node->value.long_integer);
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHI64,
+                                                       (kefir_int64_t) node->value.long_integer));
+            break;
 
         case KEFIR_AST_ULONG_CONSTANT:
-            return KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_PUSHU64,
-                                                   (kefir_uint64_t) node->value.ulong_integer);
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_PUSHU64,
+                                                       (kefir_uint64_t) node->value.ulong_integer));
+            break;
 
         case KEFIR_AST_LONG_LONG_CONSTANT:
-            return KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHI64,
-                                                   (kefir_int64_t) node->value.long_long);
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHI64,
+                                                       (kefir_int64_t) node->value.long_long));
+            break;
 
         case KEFIR_AST_ULONG_LONG_CONSTANT:
-            return KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_PUSHU64,
-                                                   (kefir_uint64_t) node->value.ulong_long);
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_PUSHU64,
+                                                       (kefir_uint64_t) node->value.ulong_long));
+            break;
 
         case KEFIR_AST_FLOAT_CONSTANT:
-            return KEFIR_IRBUILDER_BLOCK_APPENDF32(builder, KEFIR_IROPCODE_PUSHF32, node->value.float32, 0.0f);
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDF32(builder, KEFIR_IROPCODE_PUSHF32, node->value.float32, 0.0f));
+            break;
 
         case KEFIR_AST_DOUBLE_CONSTANT:
-            return KEFIR_IRBUILDER_BLOCK_APPENDF64(builder, KEFIR_IROPCODE_PUSHF64, node->value.float64);
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDF64(builder, KEFIR_IROPCODE_PUSHF64, node->value.float64));
+            break;
+
+        case KEFIR_AST_LONG_DOUBLE_CONSTANT:
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDF64(builder, KEFIR_IROPCODE_PUSHLD,
+                                                       kefir_ir_long_double_upper_half(node->value.long_double)));
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDF64(builder, KEFIR_IROPCODE_PUSHU64,
+                                                       kefir_ir_long_double_lower_half(node->value.long_double)));
+            break;
 
         default:
             return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected AST constant type");
     }
+    return KEFIR_OK;
 }

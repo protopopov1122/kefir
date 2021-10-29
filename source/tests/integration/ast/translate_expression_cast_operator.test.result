@@ -241,6 +241,78 @@
                 },
                 {
                     "opcode": "pop"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -8716
+                },
+                {
+                    "opcode": "intcld"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
+                    "opcode": "uintcld"
+                },
+                {
+                    "opcode": "pushf32",
+                    "arg": -18.120001
+                },
+                {
+                    "opcode": "f32cld"
+                },
+                {
+                    "opcode": "pushf64",
+                    "arg": 9381.180000
+                },
+                {
+                    "opcode": "f64cld"
+                },
+                {
+                    "opcode": "pushld",
+                    "arg": 4670235012606459904
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4895203110343750409
+                },
+                {
+                    "opcode": "ldcint"
+                },
+                {
+                    "opcode": "pushld",
+                    "arg": 4676983952416702464
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4891483084139369603
+                },
+                {
+                    "opcode": "ldcint"
+                },
+                {
+                    "opcode": "pushld",
+                    "arg": 4676992198753910784
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4893642028388188160
+                },
+                {
+                    "opcode": "ldcf32"
+                },
+                {
+                    "opcode": "pushld",
+                    "arg": 4670226766269251584
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4891017281715415548
+                },
+                {
+                    "opcode": "ldcf64"
                 }
             ]
         }

@@ -133,6 +133,14 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     MAKE_TYPENAME(type_name24, 1, kefir_ast_type_specifier_void(mem));
     MAKE_TYPENAME(type_name25, 1, kefir_ast_type_specifier_void(mem));
     MAKE_TYPENAME(type_name26, 1, kefir_ast_type_specifier_void(mem));
+    MAKE_TYPENAME(type_name30, 2, kefir_ast_type_specifier_long(mem), kefir_ast_type_specifier_double(mem));
+    MAKE_TYPENAME(type_name31, 2, kefir_ast_type_specifier_long(mem), kefir_ast_type_specifier_double(mem));
+    MAKE_TYPENAME(type_name32, 2, kefir_ast_type_specifier_long(mem), kefir_ast_type_specifier_double(mem));
+    MAKE_TYPENAME(type_name33, 2, kefir_ast_type_specifier_long(mem), kefir_ast_type_specifier_double(mem));
+    MAKE_TYPENAME(type_name34, 2, kefir_ast_type_specifier_long(mem), kefir_ast_type_specifier_long(mem));
+    MAKE_TYPENAME(type_name35, 2, kefir_ast_type_specifier_unsigned(mem), kefir_ast_type_specifier_int(mem));
+    MAKE_TYPENAME(type_name36, 1, kefir_ast_type_specifier_float(mem));
+    MAKE_TYPENAME(type_name37, 1, kefir_ast_type_specifier_double(mem));
 #undef MAKE_TYPENAME
 
     CAST_NODE(type_name1, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(mem, -150)));
@@ -184,6 +192,15 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     CAST_NODE(type_name24, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 982.0001)));
     CAST_NODE(type_name25, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "ptr")));
     CAST_NODE(type_name26, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "structure")));
+
+    CAST_NODE(type_name30, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, -8716)));
+    CAST_NODE(type_name31, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_uint(mem, 1)));
+    CAST_NODE(type_name32, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, -18.12f)));
+    CAST_NODE(type_name33, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 9381.18)));
+    CAST_NODE(type_name34, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long_double(mem, 1000.16162l)));
+    CAST_NODE(type_name35, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long_double(mem, -1.05e-9l)));
+    CAST_NODE(type_name36, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long_double(mem, -0.17253e10l)));
+    CAST_NODE(type_name37, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long_double(mem, 0.01e-1l)));
 
 #undef CAST_NODE
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_FREE(&builder));

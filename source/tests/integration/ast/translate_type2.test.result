@@ -52,6 +52,10 @@
         "alignment": 1
     },
     {
+        "type": "long_double",
+        "alignment": 1
+    },
+    {
         "type": "bool",
         "alignment": 2
     },
@@ -104,6 +108,10 @@
         "alignment": 2
     },
     {
+        "type": "long_double",
+        "alignment": 2
+    },
+    {
         "type": "bool",
         "alignment": 4
     },
@@ -156,6 +164,10 @@
         "alignment": 4
     },
     {
+        "type": "long_double",
+        "alignment": 4
+    },
+    {
         "type": "bool",
         "alignment": 8
     },
@@ -208,6 +220,10 @@
         "alignment": 8
     },
     {
+        "type": "long_double",
+        "alignment": 8
+    },
+    {
         "type": "bool",
         "alignment": 16
     },
@@ -257,6 +273,10 @@
     },
     {
         "type": "double",
+        "alignment": 16
+    },
+    {
+        "type": "long_double",
         "alignment": 16
     }
 ]

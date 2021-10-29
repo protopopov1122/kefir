@@ -37,6 +37,8 @@ static kefir_result_t cast_to_float32(struct kefir_irbuilder_block *builder,
         }
     } else if (origin->tag == KEFIR_AST_TYPE_SCALAR_DOUBLE) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64CF32, 0));
+    } else if (origin->tag == KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_LDCF32, 0));
     } else {
         return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Cannot cast pointers to floating-point values");
     }
@@ -57,6 +59,30 @@ static kefir_result_t cast_to_float64(struct kefir_irbuilder_block *builder,
         }
     } else if (origin->tag == KEFIR_AST_TYPE_SCALAR_FLOAT) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32CF64, 0));
+    } else if (origin->tag == KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_LDCF64, 0));
+    } else {
+        return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Cannot cast pointers to floating-point values");
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t cast_to_long_double(struct kefir_irbuilder_block *builder,
+                                          const struct kefir_ast_type_traits *type_traits,
+                                          const struct kefir_ast_type *origin) {
+    if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(origin)) {
+        kefir_bool_t origin_sign;
+        REQUIRE_OK(kefir_ast_type_is_signed(type_traits, origin, &origin_sign));
+
+        if (origin_sign) {
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_INTCLD, 0));
+        } else {
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_UINTCLD, 0));
+        }
+    } else if (origin->tag == KEFIR_AST_TYPE_SCALAR_FLOAT) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32CLD, 0));
+    } else if (origin->tag == KEFIR_AST_TYPE_SCALAR_DOUBLE) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64CLD, 0));
     } else {
         return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Cannot cast pointers to floating-point values");
     }
@@ -70,6 +96,8 @@ static kefir_result_t cast_to_integer(struct kefir_irbuilder_block *builder, con
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32CINT, 0));
     } else if (origin->tag == KEFIR_AST_TYPE_SCALAR_DOUBLE) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64CINT, 0));
+    } else if (origin->tag == KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_LDCINT, 0));
     } else {
         return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected type in integral conversion");
     }
@@ -111,6 +139,10 @@ kefir_result_t kefir_ast_translate_typeconv(struct kefir_irbuilder_block *builde
 
         case KEFIR_AST_TYPE_SCALAR_DOUBLE:
             REQUIRE_OK(cast_to_float64(builder, type_traits, normalized_origin));
+            break;
+
+        case KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE:
+            REQUIRE_OK(cast_to_long_double(builder, type_traits, normalized_origin));
             break;
 
         default:

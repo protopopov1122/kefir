@@ -77,6 +77,10 @@ static kefir_result_t translate_multiplication(struct kefir_mem *mem, struct kef
     REQUIRE_OK(
         kefir_ast_translate_typeconv(builder, context->ast_context->type_traits, value_normalized_type, common_type));
     switch (common_type->tag) {
+        case KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE:
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_LDMUL, 0));
+            break;
+
         case KEFIR_AST_TYPE_SCALAR_DOUBLE:
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64MUL, 0));
             break;
@@ -122,6 +126,10 @@ static kefir_result_t translate_divide(struct kefir_mem *mem, struct kefir_ast_t
     REQUIRE_OK(
         kefir_ast_translate_typeconv(builder, context->ast_context->type_traits, value_normalized_type, common_type));
     switch (common_type->tag) {
+        case KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE:
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_LDDIV, 0));
+            break;
+
         case KEFIR_AST_TYPE_SCALAR_DOUBLE:
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64DIV, 0));
             break;
@@ -240,6 +248,10 @@ static kefir_result_t translate_add(struct kefir_mem *mem, struct kefir_ast_tran
         REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits, value_normalized_type,
                                                 common_type));
         switch (common_type->tag) {
+            case KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE:
+                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_LDADD, 0));
+                break;
+
             case KEFIR_AST_TYPE_SCALAR_DOUBLE:
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64ADD, 0));
                 break;
@@ -307,6 +319,10 @@ static kefir_result_t translate_subtract(struct kefir_mem *mem, struct kefir_ast
         REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits, value_normalized_type,
                                                 common_type));
         switch (common_type->tag) {
+            case KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE:
+                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_LDSUB, 0));
+                break;
+
             case KEFIR_AST_TYPE_SCALAR_DOUBLE:
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64SUB, 0));
                 break;

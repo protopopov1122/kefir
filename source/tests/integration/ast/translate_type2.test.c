@@ -58,6 +58,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
             kefir_ast_translate_object_type(mem, kefir_ast_type_signed_long_long(), alignment, &env, &builder, NULL));
         REQUIRE_OK(kefir_ast_translate_object_type(mem, kefir_ast_type_float(), alignment, &env, &builder, NULL));
         REQUIRE_OK(kefir_ast_translate_object_type(mem, kefir_ast_type_double(), alignment, &env, &builder, NULL));
+        REQUIRE_OK(kefir_ast_translate_object_type(mem, kefir_ast_type_long_double(), alignment, &env, &builder, NULL));
     }
     REQUIRE_OK(kefir_ir_format_type(stdout, &ir_type));
 
