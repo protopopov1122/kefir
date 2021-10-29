@@ -81,6 +81,9 @@ static kefir_result_t translate_function(struct kefir_mem *mem, struct function 
     for (const struct kefir_list_entry *iter = kefir_list_tail(&func->args); iter != NULL; iter = iter->prev) {
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, arg, iter->value);
         REQUIRE_OK(kefir_ast_translate_lvalue(mem, &local_translator_context, &builder, arg));
+        if (arg->properties.type->tag == KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE) {
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(&builder, KEFIR_IROPCODE_XCHG, 2));
+        }
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(&builder, KEFIR_IROPCODE_XCHG, 1));
         REQUIRE_OK(kefir_ast_translator_store_value(mem, arg->properties.type, translator_context, &builder));
     }

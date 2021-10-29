@@ -231,6 +231,14 @@ kefir_result_t kefir_ast_translator_function_context_free(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+static kefir_result_t xchg_param_address(struct kefir_irbuilder_block *builder, const struct kefir_ast_type *type) {
+    if (type->tag == KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_XCHG, 2));
+    }
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_XCHG, 1));
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_translator_function_context_translate(
     struct kefir_mem *mem, struct kefir_ast_translator_function_context *function_context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
@@ -268,9 +276,12 @@ kefir_result_t kefir_ast_translator_function_context_translate(
                 REQUIRE_OK(local_context->context.resolve_ordinary_identifier(&local_context->context, param_identifier,
                                                                               &scoped_id));
                 REQUIRE_OK(kefir_ast_translator_object_lvalue(mem, context, builder, param_identifier, scoped_id));
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_XCHG, 1));
+                REQUIRE_OK(xchg_param_address(builder, scoped_id->object.type));
                 REQUIRE_OK(kefir_ast_translator_store_value(mem, scoped_id->type, context, builder));
             } else {
+                if (init_decl->base.properties.type->tag == KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE) {
+                    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POP, 0));
+                }
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POP, 0));
             }
         } else if (param->klass->type == KEFIR_AST_IDENTIFIER) {
@@ -278,7 +289,7 @@ kefir_result_t kefir_ast_translator_function_context_translate(
             REQUIRE_OK(local_context->context.resolve_ordinary_identifier(&local_context->context, id_node->identifier,
                                                                           &scoped_id));
             REQUIRE_OK(kefir_ast_translator_object_lvalue(mem, context, builder, id_node->identifier, scoped_id));
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_XCHG, 1));
+            REQUIRE_OK(xchg_param_address(builder, scoped_id->object.type));
             REQUIRE_OK(kefir_ast_translator_store_value(mem, scoped_id->type, context, builder));
         } else {
             return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR,
