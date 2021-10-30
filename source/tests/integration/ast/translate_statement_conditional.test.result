@@ -31,6 +31,10 @@
         {
             "identifier": 5,
             "type": []
+        },
+        {
+            "identifier": 6,
+            "type": []
         }
     ],
     "data": [],
@@ -53,6 +57,13 @@
         {
             "identifier": 2,
             "name": "conditional3",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 3,
+            "name": "conditional4",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -308,6 +319,63 @@
                 },
                 {
                     "opcode": "store32"
+                },
+                {
+                    "opcode": "pop"
+                }
+            ]
+        },
+        {
+            "identifier": 3,
+            "name": "conditional4",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "pushld",
+                    "arg": 4676988625341120512
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4891755646874322941
+                },
+                {
+                    "opcode": "ldtrunc1"
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "branch",
+                    "arg": 10
+                },
+                {
+                    "opcode": "pushld",
+                    "arg": 4670232263827390464
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4890909195324358656
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "jmp",
+                    "arg": 14
+                },
+                {
+                    "opcode": "pushld",
+                    "arg": 4676988075585306624
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4890909195324358656
+                },
+                {
+                    "opcode": "pop"
                 },
                 {
                     "opcode": "pop"

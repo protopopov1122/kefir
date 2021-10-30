@@ -155,6 +155,32 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
     });
 
+    FUNC2("while3", {
+        struct kefir_ast_expression_statement *body =
+            kefir_ast_new_expression_statement(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_uint(mem, 1)));
+
+        struct kefir_ast_node_base *condition =
+            KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long_double(mem, 100.1283e1l));
+
+        struct kefir_ast_while_statement *while1 =
+            kefir_ast_new_while_statement(mem, condition, KEFIR_AST_NODE_BASE(body));
+
+        struct kefir_ast_compound_statement *compound1 = kefir_ast_new_compound_statement(mem);
+        REQUIRE_OK(kefir_list_insert_after(mem, &compound1->block_items, kefir_list_tail(&compound1->block_items),
+                                           KEFIR_AST_NODE_BASE(while1)));
+
+        struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(compound1);
+        REQUIRE_OK(kefir_ast_analyze_node(mem, context, node));
+
+        REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(
+            mem, &local_context, &env, &module, kefir_ast_translator_context_type_resolver(&local_translator_context),
+            &translator_local_scope));
+        REQUIRE_OK(kefir_ast_translator_flow_control_tree_init(mem, context->flow_control_tree));
+
+        REQUIRE_OK(kefir_ast_translate_statement(mem, node, &builder, &local_translator_context));
+        REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
+    });
+
     REQUIRE_OK(kefir_ir_format_module(stdout, &module));
 
     REQUIRE_OK(kefir_ast_translator_context_free(mem, &global_translator_context));

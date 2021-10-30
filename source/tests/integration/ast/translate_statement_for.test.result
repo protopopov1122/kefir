@@ -135,6 +135,26 @@
                     "type": "bool"
                 }
             ]
+        },
+        {
+            "identifier": 18,
+            "type": []
+        },
+        {
+            "identifier": 19,
+            "type": []
+        },
+        {
+            "identifier": 20,
+            "type": []
+        },
+        {
+            "identifier": 21,
+            "type": []
+        },
+        {
+            "identifier": 22,
+            "type": []
         }
     ],
     "data": [],
@@ -210,6 +230,27 @@
                     "type": "bool"
                 }
             ]
+        },
+        {
+            "identifier": 9,
+            "name": "for4",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 10,
+            "name": "body",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 11,
+            "name": "body",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
         }
     ],
     "functions": [
@@ -465,6 +506,56 @@
                 {
                     "opcode": "jmp",
                     "arg": 6
+                }
+            ]
+        },
+        {
+            "identifier": 9,
+            "name": "for4",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "pushld",
+                    "arg": 4670232263827390464
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4890909195324358656
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "pushld",
+                    "arg": 0
+                },
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "ldtrunc1"
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "branch",
+                    "arg": 11
+                },
+                {
+                    "opcode": "invoke",
+                    "arg": {
+                        "identifier": 11,
+                        "name": "body"
+                    }
+                },
+                {
+                    "opcode": "jmp",
+                    "arg": 4
                 }
             ]
         }

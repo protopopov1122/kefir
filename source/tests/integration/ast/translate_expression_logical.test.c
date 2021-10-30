@@ -82,6 +82,13 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                         mem, type_name1, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 1)))));
     });
 
+    FUNC("logical_and4", {
+        BINARY_NODE(KEFIR_AST_OPERATION_LOGICAL_AND, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long_double(mem, 1.0l)),
+                    KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 100)));
+        BINARY_NODE(KEFIR_AST_OPERATION_LOGICAL_AND, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long_double(mem, 2.0l)),
+                    KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long_double(mem, 3.0l)));
+    });
+
     FUNC("logical_or1", {
         BINARY_NODE(KEFIR_AST_OPERATION_LOGICAL_OR, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(mem, false)),
                     KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(mem, false)));
@@ -101,6 +108,14 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         BINARY_NODE(KEFIR_AST_OPERATION_LOGICAL_OR, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(mem, 8192)),
                     KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(
                         mem, type_name2, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 0)))));
+    });
+
+    FUNC("logical_or4", {
+        BINARY_NODE(KEFIR_AST_OPERATION_LOGICAL_OR, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long_double(mem, -1.0l)),
+                    KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 200)));
+        BINARY_NODE(KEFIR_AST_OPERATION_LOGICAL_OR,
+                    KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long_double(mem, 2.0e10l)),
+                    KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long_double(mem, 3.0e-20l)));
     });
 
     REQUIRE_OK(kefir_ir_format_module(stdout, &module));

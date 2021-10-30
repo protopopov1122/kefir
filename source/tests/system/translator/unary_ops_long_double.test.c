@@ -35,5 +35,7 @@ int main(int argc, const char **argv) {
         ASSERT(LONG_DOUBLE_EQUALS(negate(i), -i, LONG_DOUBLE_EPSILON));
         ASSERT(logical_negate(i) == !i);
     }
+    ASSERT(logical_negate(0.0l));
+    ASSERT(!logical_negate(1.0l));
     return EXIT_SUCCESS;
 }

@@ -33,6 +33,8 @@ int greater(long double, long double);
 int greatereq(long double, long double);
 int equals(long double, long double);
 int noteq(long double, long double);
+int logical_and(long double, long double);
+int logical_or(long double, long double);
 
 int main(int argc, const char **argv) {
     UNUSED(argc);
@@ -50,6 +52,9 @@ int main(int argc, const char **argv) {
             ASSERT(greatereq(i, j) == (i >= j));
             ASSERT(equals(i, j) == (i == j));
             ASSERT(noteq(i, j) == (i != j));
+
+            ASSERT(logical_and(i, j) == (i && j));
+            ASSERT(logical_or(i, j) == (i || j));
         }
         ASSERT(lesseq(i, i - 1) == (i <= i - 1));
         ASSERT(lesseq(i, i + 1) == (i <= i + 1));

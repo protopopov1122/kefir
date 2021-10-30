@@ -74,6 +74,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     FUNC("comma2", {
         struct kefir_ast_comma_operator *comma = kefir_ast_new_comma_operator(mem);
         REQUIRE_OK(kefir_ast_comma_append(mem, comma, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(mem, true))));
+        REQUIRE_OK(
+            kefir_ast_comma_append(mem, comma, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long_double(mem, 1e10l))));
         REQUIRE_OK(kefir_ast_comma_append(mem, comma, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 21e4))));
 
         struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(comma);
@@ -108,6 +110,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                 KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(mem, true))))));
         REQUIRE_OK(kefir_ast_comma_append(mem, comma, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 21e4))));
         REQUIRE_OK(kefir_ast_comma_append(mem, comma, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(mem, 66536))));
+        REQUIRE_OK(kefir_ast_comma_append(mem, comma,
+                                          KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long_double(mem, 12.182e-5l))));
 
         struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(comma);
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, node));

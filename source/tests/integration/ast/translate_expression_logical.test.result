@@ -41,21 +41,35 @@
         },
         {
             "identifier": 3,
-            "name": "logical_or1",
+            "name": "logical_and4",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
             "identifier": 4,
-            "name": "logical_or2",
+            "name": "logical_or1",
             "parameters": [],
             "vararg": false,
             "returns": []
         },
         {
             "identifier": 5,
+            "name": "logical_or2",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 6,
             "name": "logical_or3",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 7,
+            "name": "logical_or4",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -63,7 +77,7 @@
     ],
     "functions": [
         {
-            "identifier": 3,
+            "identifier": 4,
             "name": "logical_or1",
             "locals": [],
             "body": [
@@ -95,7 +109,7 @@
             ]
         },
         {
-            "identifier": 4,
+            "identifier": 5,
             "name": "logical_or2",
             "locals": [],
             "body": [
@@ -127,7 +141,7 @@
             ]
         },
         {
-            "identifier": 5,
+            "identifier": 6,
             "name": "logical_or3",
             "locals": [],
             "body": [
@@ -152,6 +166,75 @@
                 },
                 {
                     "opcode": "trunc1"
+                },
+                {
+                    "opcode": "bor"
+                }
+            ]
+        },
+        {
+            "identifier": 7,
+            "name": "logical_or4",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "pushld",
+                    "arg": 4676988075585306624
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4890909195324358656
+                },
+                {
+                    "opcode": "ldtrunc1"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "branch",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 200
+                },
+                {
+                    "opcode": "trunc1"
+                },
+                {
+                    "opcode": "bor"
+                },
+                {
+                    "opcode": "pushld",
+                    "arg": 4670241884554133504
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4891648475696988160
+                },
+                {
+                    "opcode": "ldtrunc1"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "branch",
+                    "arg": 17
+                },
+                {
+                    "opcode": "pushld",
+                    "arg": 4670196529699487744
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4891390200681181595
+                },
+                {
+                    "opcode": "ldtrunc1"
                 },
                 {
                     "opcode": "bor"
@@ -257,6 +340,81 @@
                 },
                 {
                     "opcode": "trunc1"
+                },
+                {
+                    "opcode": "band"
+                }
+            ]
+        },
+        {
+            "identifier": 3,
+            "name": "logical_and4",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "pushld",
+                    "arg": 4670232263827390464
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4890909195324358656
+                },
+                {
+                    "opcode": "ldtrunc1"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "branch",
+                    "arg": 9
+                },
+                {
+                    "opcode": "push",
+                    "arg": 100
+                },
+                {
+                    "opcode": "trunc1"
+                },
+                {
+                    "opcode": "band"
+                },
+                {
+                    "opcode": "pushld",
+                    "arg": 4670232813583204352
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4890909195324358656
+                },
+                {
+                    "opcode": "ldtrunc1"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "branch",
+                    "arg": 19
+                },
+                {
+                    "opcode": "pushld",
+                    "arg": 4670232813583204352
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4893160995138043904
+                },
+                {
+                    "opcode": "ldtrunc1"
                 },
                 {
                     "opcode": "band"

@@ -70,6 +70,10 @@
         {
             "identifier": 8,
             "type": []
+        },
+        {
+            "identifier": 9,
+            "type": []
         }
     ],
     "data": [],
@@ -107,6 +111,13 @@
         {
             "identifier": 3,
             "name": "do_while2",
+            "parameters": [],
+            "vararg": false,
+            "returns": []
+        },
+        {
+            "identifier": 4,
+            "name": "do_while3",
             "parameters": [],
             "vararg": false,
             "returns": []
@@ -228,6 +239,35 @@
                 {
                     "opcode": "push",
                     "arg": 1
+                },
+                {
+                    "opcode": "branch",
+                    "arg": 0
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "name": "do_while3",
+            "locals": [],
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "pushld",
+                    "arg": 4676993985460305920
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4891525595696988160
+                },
+                {
+                    "opcode": "ldtrunc1"
                 },
                 {
                     "opcode": "branch",

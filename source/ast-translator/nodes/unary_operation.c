@@ -108,7 +108,11 @@ static kefir_result_t translate_logical_not_inversion(struct kefir_mem *mem,
                                                       struct kefir_ast_translator_context *context,
                                                       struct kefir_irbuilder_block *builder,
                                                       const struct kefir_ast_unary_operation *node) {
+    const struct kefir_ast_type *normalized_type = kefir_ast_translator_normalize_type(node->arg->properties.type);
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg, builder, context));
+    if (normalized_type->tag == KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_LDTRUNC1, 0));
+    }
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_BNOT, 0));
     return KEFIR_OK;
 }

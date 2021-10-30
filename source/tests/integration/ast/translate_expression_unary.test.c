@@ -159,6 +159,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         UNARY_NODE(KEFIR_AST_OPERATION_LOGICAL_NEGATE,
                    KEFIR_AST_NODE_BASE(kefir_ast_new_constant_double(mem, 1.23456)));
         UNARY_NODE(KEFIR_AST_OPERATION_LOGICAL_NEGATE,
+                   KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long_double(mem, 9876.54321e1l)));
+        UNARY_NODE(KEFIR_AST_OPERATION_LOGICAL_NEGATE,
                    KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, context->symbols, "X")));
     });
 

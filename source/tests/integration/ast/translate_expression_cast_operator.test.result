@@ -313,6 +313,20 @@
                 },
                 {
                     "opcode": "ldcf64"
+                },
+                {
+                    "opcode": "pushld",
+                    "arg": 4670235287484366848
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4891832785091690496
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "pop"
                 }
             ]
         }

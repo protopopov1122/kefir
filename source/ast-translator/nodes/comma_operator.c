@@ -20,6 +20,7 @@
 
 #include "kefir/ast-translator/translator_impl.h"
 #include "kefir/ast-translator/translator.h"
+#include "kefir/ast-translator/util.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -36,7 +37,11 @@ kefir_result_t kefir_ast_translate_comma_operator_node(struct kefir_mem *mem,
          kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, expr, iter->value);
         REQUIRE_OK(kefir_ast_translate_expression(mem, expr, builder, context));
-        if (iter->next != NULL && expr->properties.type->tag != KEFIR_AST_TYPE_VOID) {
+        const struct kefir_ast_type *normalized_type = kefir_ast_translator_normalize_type(expr->properties.type);
+        if (iter->next != NULL && normalized_type->tag != KEFIR_AST_TYPE_VOID) {
+            if (normalized_type->tag == KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE) {
+                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POP, 0));
+            }
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POP, 0));
         }
     }

@@ -22,6 +22,7 @@
 #include "kefir/ast-translator/translator.h"
 #include "kefir/ast-translator/flow_control.h"
 #include "kefir/ast-translator/util.h"
+#include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -40,6 +41,11 @@ kefir_result_t kefir_ast_translate_while_statement_node(struct kefir_mem *mem,
                                                                KEFIR_IRBUILDER_BLOCK_CURRENT_INDEX(builder)));
 
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->controlling_expr, builder, context));
+    const struct kefir_ast_type *controlling_expr_type = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(
+        mem, context->ast_context->type_bundle, node->controlling_expr->properties.type);
+    if (controlling_expr_type->tag == KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_LDTRUNC1, 0));
+    }
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_BNOT, 0));
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_BRANCH, 0));
     REQUIRE_OK(kefir_ast_translator_flow_control_point_reference(mem, flow_control_stmt->value.loop.end, builder->block,

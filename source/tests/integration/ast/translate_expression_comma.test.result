@@ -86,6 +86,20 @@
                     "opcode": "pop"
                 },
                 {
+                    "opcode": "pushld",
+                    "arg": 4670241609676226560
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4891648475696988160
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
                     "opcode": "pushf32",
                     "arg": 210000.000000
                 }
@@ -138,6 +152,17 @@
                 {
                     "opcode": "push",
                     "arg": 66536
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "pushld",
+                    "arg": 4670224567245996032
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4895394325149225350
                 }
             ]
         },

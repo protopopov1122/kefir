@@ -191,6 +191,20 @@
                     "opcode": "pop"
                 },
                 {
+                    "opcode": "pushld",
+                    "arg": 4670226766269251584
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4894245461928314719
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
                     "opcode": "getlocals"
                 },
                 {

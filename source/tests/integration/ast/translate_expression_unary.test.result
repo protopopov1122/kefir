@@ -623,6 +623,20 @@
                     "opcode": "bnot"
                 },
                 {
+                    "opcode": "pushld",
+                    "arg": 4670236936751808512
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4893192704510505098
+                },
+                {
+                    "opcode": "ldtrunc1"
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "X"

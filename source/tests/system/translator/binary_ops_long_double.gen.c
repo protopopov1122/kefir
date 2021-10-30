@@ -86,6 +86,8 @@ DEFFUN(greater, "greater", KEFIR_AST_OPERATION_GREATER, kefir_ast_type_signed_in
 DEFFUN(greatereq, "greatereq", KEFIR_AST_OPERATION_GREATER_EQUAL, kefir_ast_type_signed_int())
 DEFFUN(equals, "equals", KEFIR_AST_OPERATION_EQUAL, kefir_ast_type_signed_int())
 DEFFUN(noteq, "noteq", KEFIR_AST_OPERATION_NOT_EQUAL, kefir_ast_type_signed_int())
+DEFFUN(logical_and, "logical_and", KEFIR_AST_OPERATION_LOGICAL_AND, kefir_ast_type_signed_int())
+DEFFUN(logical_or, "logical_or", KEFIR_AST_OPERATION_LOGICAL_OR, kefir_ast_type_signed_int())
 
 static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module *module,
                                   struct kefir_ir_target_platform *ir_platform) {
@@ -98,7 +100,7 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
     REQUIRE_OK(kefir_ast_context_manager_init(&global_context, &context_manager));
 
     struct function sum_func, sub_func, mul_func, div_func, less_func, lesseq_func, greater_func, greatereq_func,
-        equals_func, noteq_func;
+        equals_func, noteq_func, logical_and_func, logical_or_func;
     REQUIRE_OK(define_sum_function(mem, &sum_func, &context_manager));
     REQUIRE_OK(define_sub_function(mem, &sub_func, &context_manager));
     REQUIRE_OK(define_mul_function(mem, &mul_func, &context_manager));
@@ -109,6 +111,8 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
     REQUIRE_OK(define_greatereq_function(mem, &greatereq_func, &context_manager));
     REQUIRE_OK(define_equals_function(mem, &equals_func, &context_manager));
     REQUIRE_OK(define_noteq_function(mem, &noteq_func, &context_manager));
+    REQUIRE_OK(define_logical_and_function(mem, &logical_and_func, &context_manager));
+    REQUIRE_OK(define_logical_or_function(mem, &logical_or_func, &context_manager));
 
     REQUIRE_OK(analyze_function(mem, &sum_func, &context_manager));
     REQUIRE_OK(analyze_function(mem, &sub_func, &context_manager));
@@ -120,6 +124,8 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
     REQUIRE_OK(analyze_function(mem, &greatereq_func, &context_manager));
     REQUIRE_OK(analyze_function(mem, &equals_func, &context_manager));
     REQUIRE_OK(analyze_function(mem, &noteq_func, &context_manager));
+    REQUIRE_OK(analyze_function(mem, &logical_and_func, &context_manager));
+    REQUIRE_OK(analyze_function(mem, &logical_or_func, &context_manager));
 
     struct kefir_ast_translator_context translator_context;
     REQUIRE_OK(kefir_ast_translator_context_init(&translator_context, &global_context.context, &env, module));
@@ -140,6 +146,8 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
     REQUIRE_OK(translate_function(mem, &greatereq_func, &context_manager, &global_scope, &translator_context));
     REQUIRE_OK(translate_function(mem, &equals_func, &context_manager, &global_scope, &translator_context));
     REQUIRE_OK(translate_function(mem, &noteq_func, &context_manager, &global_scope, &translator_context));
+    REQUIRE_OK(translate_function(mem, &logical_and_func, &context_manager, &global_scope, &translator_context));
+    REQUIRE_OK(translate_function(mem, &logical_or_func, &context_manager, &global_scope, &translator_context));
 
     REQUIRE_OK(kefir_ast_translate_global_scope(mem, &global_context.context, module, &global_scope));
 
@@ -153,6 +161,8 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
     REQUIRE_OK(free_function(mem, &greatereq_func));
     REQUIRE_OK(free_function(mem, &equals_func));
     REQUIRE_OK(free_function(mem, &noteq_func));
+    REQUIRE_OK(free_function(mem, &logical_and_func));
+    REQUIRE_OK(free_function(mem, &logical_or_func));
     REQUIRE_OK(kefir_ast_translator_global_scope_layout_free(mem, &global_scope));
     REQUIRE_OK(kefir_ast_translator_context_free(mem, &translator_context));
     REQUIRE_OK(kefir_ast_global_context_free(mem, &global_context));

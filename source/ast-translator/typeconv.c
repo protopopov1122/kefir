@@ -124,6 +124,9 @@ kefir_result_t kefir_ast_translate_typeconv(struct kefir_irbuilder_block *builde
 
     switch (normalized_destination->tag) {
         case KEFIR_AST_TYPE_VOID:
+            if (normalized_origin->tag == KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE) {
+                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POP, 0));
+            }
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POP, 0));
             break;
 
