@@ -144,6 +144,7 @@
     <opcode id="ldequals"     mnemonic="ldequals"   code="0xa6" type="none" />
     <opcode id="ldgreater"    mnemonic="ldgreater"  code="0xa7" type="none" />
     <opcode id="ldlesser"     mnemonic="ldlesser"   code="0xa8" type="none" />
+    <opcode id="ldtrunc1"     mnemonic="ldtrunc1"   code="0xa9" type="none" />
 
     <!-- Floating-point conversions -->
     <opcode id="f32cint"      mnemonic="f32cint"    code="0xb0" type="none" />

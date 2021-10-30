@@ -26,6 +26,7 @@
 kefir_bool_t ldouble_equals(long double, long double);
 kefir_bool_t ldouble_greater(long double, long double);
 kefir_bool_t ldouble_lesser(long double, long double);
+int ldouble_trunc1(long double);
 
 int main(int argc, const char **argv) {
     UNUSED(argc);
@@ -50,6 +51,8 @@ int main(int argc, const char **argv) {
         } else {
             ASSERT(ldouble_lesser(x, x / 10));
         }
+
+        ASSERT(ldouble_trunc1(x) == (x && 1));
     }
     return EXIT_SUCCESS;
 }

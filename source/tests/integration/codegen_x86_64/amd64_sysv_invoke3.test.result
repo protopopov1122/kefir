@@ -91,6 +91,7 @@
 .extern __kefirrt_ldequals_impl
 .extern __kefirrt_ldgreater_impl
 .extern __kefirrt_ldlesser_impl
+.extern __kefirrt_ldtrunc1_impl
 .extern __kefirrt_f32cint_impl
 .extern __kefirrt_f64cint_impl
 .extern __kefirrt_intcf32_impl

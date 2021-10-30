@@ -149,6 +149,7 @@ declare_opcode f64lesser
 declare_opcode ldequals
 declare_opcode ldgreater
 declare_opcode ldlesser
+declare_opcode ldtrunc1
 declare_opcode f32cint
 declare_opcode f64cint
 declare_opcode intcf32
@@ -916,6 +917,20 @@ define_opcode ldlesser
     seta al
     mov [rsp + 24], rax
     add rsp, 24
+    end_opcode
+
+define_opcode ldtrunc1
+    xor rax, rax
+    fldz
+    fld TBYTE PTR [rsp]
+    fucomip st(0), st(1)
+    fstp st(0)
+    setnp dl
+    sete al
+    and al, dl
+    xor rax, 1
+    mov [rsp + 8], rax
+    add rsp, 8
     end_opcode
 
 define_opcode f32cint
