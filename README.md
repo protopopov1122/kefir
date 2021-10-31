@@ -70,10 +70,8 @@ At the moment, Kefir supports following builtins for compatibility with GCC:
 `__builtin_alloca`, `__builtin_alloca_with_align`, `__builtin_alloca_with_align_and_max`
 
 ### Standard library
-Quick and dirty patch for [musl libc](https://musl.libc.org) was prepared in order to make it more compatible with kefir.
-The patch is available in [kefir-musl repository](https://github.com/protopopov1122/kefir-musl). Most of musl source was left
-intact, introducing a few `ifdef`s disabling features not supported by Kefir. Patched library undergone minimal number of smoke tests,
-thus it's not guaranteed to work for any real-world scenario.
+Kefir can be used along with [musl libc](https://musl.libc.org) standard library, with the exception for
+`<complex.h>` and `<tgmath.h>` headers which are not available due to lacking support of `_Complex` types.
 
 ## Build & Usage
 **Usage is strongly discouraged. This is experimental project which is not meant for production purposes.**
@@ -95,7 +93,7 @@ executable.
 Kefir is capable of bootstraping itself (that is, compiling it's own source code). At the moment, the feature is under testing, however
 stage 2 bootstrap is working well. It can be performed as follows:
 ```bash
-make bootstrap MUSL=$MUSL -j$(nproc) # Replace $MUSL with actual path to patched musl installation
+make bootstrap MUSL=$MUSL -j$(nproc) # Replace $MUSL with actual path to musl installation
 ```
 
 Alternatively, bootstrap can be performed manually:
@@ -106,13 +104,13 @@ Alternatively, bootstrap can be performed manually:
 make test all -j$(nproc)
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/bin/libs
 # Stage 1: Use previously built Kefir to compile itself.
-#          Replace $MUSL with actual path to patched musl installation.
+#          Replace $MUSL with actual path to musl installation.
 #          Produces statically-linked binary bin/bootstrap1/kefir
 make -f bootstrap.mk bootstrap SOURCE=$(pwd)/source HEADERS=$(pwd)/headers BOOTSTRAP=$(pwd)/bootstrap/stage1 KEFIRCC=./bin/kefir \
 LIBC_HEADERS="$MUSL/include" LIBC_LIBS="$MUSL/lib" -j$(nproc)
 rm -rf bin # Remove kefir version produced by stage 0
 # Stage 2: Use bootstrapped Kefir version to compile itself once again.
-#          Replace $MUSL with actual path to patched musl installation.
+#          Replace $MUSL with actual path to musl installation.
 #          Produces statically-linked binary bin/bootstrap2/kefir
 make -f bootstrap.mk bootstrap SOURCE=$(pwd)/source HEADERS=$(pwd)/headers BOOTSTRAP=$(pwd)/bootstrap/stage2 KEFIRCC=./bootstrap/stage1/kefir \
 LIBC_HEADERS="$MUSL/include" LIBC_LIBS="$MUSL/lib" -j$(nproc)
