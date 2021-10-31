@@ -21,6 +21,7 @@
 #include "kefir/core/platform.h"
 #ifdef KEFIR_LINUX_HOST_PLATFORM
 #define _XOPEN_SOURCE
+#define _POSIX_C_SOURCE 200112L
 #endif
 
 #include "kefir/core/mem.h"
@@ -30,10 +31,14 @@
 #include "kefir/preprocessor/format.h"
 #include "kefir/preprocessor/ast_context.h"
 #include "kefir/test/util.h"
+#include <stdlib.h>
 #include <time.h>
 #include <stdio.h>
 
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
+    setenv("TZ", "UTC", 1);
+    tzset();
+
     const char CONTENT[] = "__FILE__ __LINE__\n"
                            "__FILE__ __LINE__\t__LINE__\n"
                            "__FILE__ __LINE__\n"
@@ -70,11 +75,10 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_preprocessor_virtual_source_locator_init(&virtual_source));
     REQUIRE_OK(kefir_preprocessor_context_init(&context, &virtual_source.locator, &ast_context.context));
 
-    const char *DATETIME = "Sep 26 2021 10:42:59";
-    const char *FMT = "%b %e %Y %H:%M:%S";
+    const char *DATETIME = "Sep 26 2021 10:42:59 UTC";
+    const char *FMT = "%b %e %Y %H:%M:%S %Z";
     struct tm time = {0};
     strptime(DATETIME, FMT, &time);
-    time.tm_isdst = true;
 
     context.environment.timestamp = mktime(&time);
     REQUIRE_OK(kefir_lexer_source_cursor_init(&cursor, CONTENT, sizeof(CONTENT), "fileName"));
