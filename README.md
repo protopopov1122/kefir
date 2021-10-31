@@ -93,7 +93,7 @@ executable.
 Kefir is capable of bootstraping itself (that is, compiling it's own source code). At the moment, the feature is under testing, however
 stage 2 bootstrap is working well. It can be performed as follows:
 ```bash
-make bootstrap MUSL=$MUSL -j$(nproc) # Replace $MUSL with actual path to musl installation
+make bootstrap LIBC_HEADERS="$MUSL/include" LIBC_LIBS="$MUSL/lib" -j$(nproc) # Replace $MUSL with actual path to musl installation
 ```
 
 Alternatively, bootstrap can be performed manually:

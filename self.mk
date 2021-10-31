@@ -1,4 +1,5 @@
-MUSL=
+LIBC_HEADERS=
+LIBC_LIBS=
 
 $(BOOTSTRAP_DIR)/stage1/kefir: $(BIN_DIR)/kefir
 	@echo "Bootstrapping $@"
@@ -7,8 +8,8 @@ $(BOOTSTRAP_DIR)/stage1/kefir: $(BIN_DIR)/kefir
 		HEADERS=$(HEADERS_DIR) \
 		BOOTSTRAP=$(BOOTSTRAP_DIR)/stage1 \
 		KEFIRCC=$(BIN_DIR)/kefir \
-		LIBC_HEADERS="$(MUSL)/include" \
-		LIBC_LIBS="$(MUSL)/lib"
+		LIBC_HEADERS="$(LIBC_HEADERS)" \
+		LIBC_LIBS="$(LIBC_LIBS)"
 
 $(BOOTSTRAP_DIR)/stage2/kefir: $(BOOTSTRAP_DIR)/stage1/kefir
 	@echo "Bootstrapping $@"
@@ -17,8 +18,8 @@ $(BOOTSTRAP_DIR)/stage2/kefir: $(BOOTSTRAP_DIR)/stage1/kefir
 		HEADERS=$(HEADERS_DIR) \
 		BOOTSTRAP=$(BOOTSTRAP_DIR)/stage2 \
 		KEFIRCC=$(BOOTSTRAP_DIR)/stage1/kefir \
-		LIBC_HEADERS="$(MUSL)/include" \
-		LIBC_LIBS="$(MUSL)/lib"
+		LIBC_HEADERS="$(LIBC_HEADERS)" \
+		LIBC_LIBS="$(LIBC_LIBS)"
 
 $(BOOTSTRAP_DIR)/stage2/comparison.done: $(BOOTSTRAP_DIR)/stage1/kefir $(BOOTSTRAP_DIR)/stage2/kefir
 	@echo "Comparing stage1 and stage2 results"
