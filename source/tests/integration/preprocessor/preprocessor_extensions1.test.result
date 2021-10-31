@@ -1,0 +1,8 @@
+static const unsigned TOTAL_LINES;
+
+int get_total_lines() {
+    return total_lines + 100;
+}
+
+
+static const unsigned TOTAL_LINES=7;

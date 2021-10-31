@@ -30,6 +30,36 @@
 #include "kefir/ast/context.h"
 #include <time.h>
 
+typedef struct kefir_preprocessor kefir_preprocessor_t;
+
+typedef struct kefir_preprocessor_extensions {
+    kefir_result_t (*on_init)(struct kefir_mem *, struct kefir_preprocessor *);
+    kefir_result_t (*on_free)(struct kefir_mem *, struct kefir_preprocessor *);
+    kefir_result_t (*on_next_directive)(struct kefir_mem *, struct kefir_preprocessor *,
+                                        struct kefir_preprocessor_directive *);
+    kefir_result_t (*before_run)(struct kefir_mem *, struct kefir_preprocessor *, struct kefir_token_buffer *);
+    kefir_result_t (*after_run)(struct kefir_mem *, struct kefir_preprocessor *, struct kefir_token_buffer *);
+    void *payload;
+} kefir_preprocessor_extensions_t;
+
+#define KEFIR_PREPROCESSOR_RUN_EXTENSION(_res, _mem, _preprocessor, _ext, ...)                  \
+    do {                                                                                        \
+        if ((_preprocessor)->extensions != NULL && (_preprocessor)->extensions->_ext != NULL) { \
+            *(_res) = (_preprocessor)->extensions->_ext((_mem), (_preprocessor), __VA_ARGS__);  \
+        } else {                                                                                \
+            *(_res) = KEFIR_OK;                                                                 \
+        }                                                                                       \
+    } while (0);
+
+#define KEFIR_PREPROCESSOR_RUN_EXTENSION0(_res, _mem, _preprocessor, _ext)                      \
+    do {                                                                                        \
+        if ((_preprocessor)->extensions != NULL && (_preprocessor)->extensions->_ext != NULL) { \
+            *(_res) = (_preprocessor)->extensions->_ext((_mem), (_preprocessor));               \
+        } else {                                                                                \
+            *(_res) = KEFIR_OK;                                                                 \
+        }                                                                                       \
+    } while (0);
+
 typedef struct kefir_preprocessor_environment {
     time_t timestamp;
     kefir_bool_t hosted;
@@ -66,7 +96,10 @@ typedef struct kefir_preprocessor {
     struct kefir_preprocessor_context *context;
     struct kefir_preprocessor_directive_scanner directive_scanner;
     struct kefir_preprocessor_predefined_macro_scope predefined_macros;
-    struct kefir_preprocessor_overlay_macro_scope macros;
+    struct kefir_preprocessor_overlay_macro_scope macro_overlay;
+    struct kefir_preprocessor_macro_scope *macros;
+    const struct kefir_preprocessor_extensions *extensions;
+    void *extension_payload;
 } kefir_preprocessor_t;
 
 typedef enum kefir_preprocessor_substitution_context {
@@ -76,7 +109,8 @@ typedef enum kefir_preprocessor_substitution_context {
 
 kefir_result_t kefir_preprocessor_init(struct kefir_mem *, struct kefir_preprocessor *, struct kefir_symbol_table *,
                                        struct kefir_lexer_source_cursor *, const struct kefir_lexer_context *,
-                                       struct kefir_preprocessor_context *, const char *);
+                                       struct kefir_preprocessor_context *, const char *,
+                                       const struct kefir_preprocessor_extensions *);
 kefir_result_t kefir_preprocessor_free(struct kefir_mem *, struct kefir_preprocessor *);
 
 kefir_result_t kefir_preprocessor_skip_group(struct kefir_mem *, struct kefir_preprocessor *);

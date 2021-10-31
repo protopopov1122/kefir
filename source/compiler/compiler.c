@@ -154,7 +154,8 @@ kefir_result_t kefir_compiler_preprocess(struct kefir_mem *mem, struct kefir_com
     struct kefir_preprocessor preprocessor;
     REQUIRE_OK(kefir_lexer_source_cursor_init(&source_cursor, content, length, source_id));
     REQUIRE_OK(kefir_preprocessor_init(mem, &preprocessor, &context->ast_global_context.symbols, &source_cursor,
-                                       &context->profile->lexer_context, &context->preprocessor_context, filepath));
+                                       &context->profile->lexer_context, &context->preprocessor_context, filepath,
+                                       NULL));
 
     kefir_result_t res = kefir_preprocessor_run(mem, &preprocessor, buffer);
     REQUIRE_ELSE(res == KEFIR_OK, {
@@ -178,7 +179,8 @@ kefir_result_t kefir_compiler_preprocess_lex(struct kefir_mem *mem, struct kefir
     struct kefir_token_buffer pp_tokens;
     REQUIRE_OK(kefir_lexer_source_cursor_init(&source_cursor, content, length, source_id));
     REQUIRE_OK(kefir_preprocessor_init(mem, &preprocessor, &context->ast_global_context.symbols, &source_cursor,
-                                       &context->profile->lexer_context, &context->preprocessor_context, filepath));
+                                       &context->profile->lexer_context, &context->preprocessor_context, filepath,
+                                       NULL));
     kefir_result_t res = kefir_token_buffer_init(&pp_tokens);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_preprocessor_free(mem, &preprocessor);

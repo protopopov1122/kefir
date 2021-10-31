@@ -50,7 +50,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_preprocessor_ast_context_init(&ast_context, &symbols, kefir_ast_default_type_traits(), &env.target_env));
     REQUIRE_OK(kefir_preprocessor_virtual_source_locator_init(&virtual_source));
     REQUIRE_OK(kefir_preprocessor_context_init(&context, &virtual_source.locator, &ast_context.context));
-    REQUIRE_OK(kefir_preprocessor_init(mem, &preprocessor, &symbols, &cursor, &parser_context, &context, NULL));
+    REQUIRE_OK(kefir_preprocessor_init(mem, &preprocessor, &symbols, &cursor, &parser_context, &context, NULL, NULL));
     REQUIRE_OK(kefir_token_buffer_init(&tokens));
     REQUIRE_OK(kefir_preprocessor_run(mem, &preprocessor, &tokens));
     REQUIRE_OK(kefir_preprocessor_format(stdout, &tokens, KEFIR_PREPROCESSOR_WHITESPACE_FORMAT_ORIGINAL));
