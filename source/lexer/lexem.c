@@ -166,6 +166,15 @@ kefir_result_t kefir_token_new_constant_double(kefir_float64_t value, struct kef
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_token_new_constant_long_double(kefir_long_double_t value, struct kefir_token *token) {
+    REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to token"));
+    REQUIRE_OK(kefir_source_location_empty(&token->source_location));
+    token->klass = KEFIR_TOKEN_CONSTANT;
+    token->constant.type = KEFIR_CONSTANT_TOKEN_LONG_DOUBLE;
+    token->constant.long_double = value;
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_token_new_string_literal_multibyte(struct kefir_mem *mem, const char *content, kefir_size_t length,
                                                         struct kefir_token *token) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));

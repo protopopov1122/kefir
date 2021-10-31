@@ -80,18 +80,21 @@ static kefir_result_t match_exponent(struct kefir_mem *mem, struct kefir_lexer_s
     return KEFIR_OK;
 }
 
-static kefir_result_t match_suffix(struct kefir_lexer_source_cursor *cursor, kefir_bool_t *double_constant) {
+enum fp_constant_type { FLOAT_CONSTANT = 0, DOUBLE_CONSTANT, LONG_DOUBLE_CONSTANT };
+
+static kefir_result_t match_suffix(struct kefir_lexer_source_cursor *cursor, enum fp_constant_type *constant_type) {
     kefir_char32_t chr = kefir_lexer_source_cursor_at(cursor, 0);
-    *double_constant = true;
+    *constant_type = DOUBLE_CONSTANT;
     switch (chr) {
         case U'l':
         case U'L':
+            *constant_type = LONG_DOUBLE_CONSTANT;
             REQUIRE_OK(kefir_lexer_source_cursor_next(cursor, 1));
             break;
 
         case U'f':
         case U'F':
-            *double_constant = false;
+            *constant_type = FLOAT_CONSTANT;
             REQUIRE_OK(kefir_lexer_source_cursor_next(cursor, 1));
             break;
 
@@ -104,20 +107,27 @@ static kefir_result_t match_suffix(struct kefir_lexer_source_cursor *cursor, kef
 
 static kefir_result_t match_decimal_impl(struct kefir_mem *mem, struct kefir_lexer_source_cursor *cursor,
                                          struct kefir_token *token, struct kefir_string_buffer *strbuf) {
-    kefir_bool_t double_constant = true;
+    enum fp_constant_type type;
 
     REQUIRE_OK(match_fractional_part(mem, cursor, strbuf));
     REQUIRE_OK(match_exponent(mem, cursor, strbuf));
-    REQUIRE_OK(match_suffix(cursor, &double_constant));
+    REQUIRE_OK(match_suffix(cursor, &type));
 
     kefir_size_t length;
     const char *literal = kefir_string_buffer_value(strbuf, &length);
-    if (double_constant) {
-        kefir_float64_t value = strtod(literal, NULL);
-        REQUIRE_OK(kefir_token_new_constant_double(value, token));
-    } else {
-        kefir_float32_t value = strtof(literal, NULL);
-        REQUIRE_OK(kefir_token_new_constant_float(value, token));
+
+    switch (type) {
+        case FLOAT_CONSTANT:
+            REQUIRE_OK(kefir_token_new_constant_float(strtof(literal, NULL), token));
+            break;
+
+        case DOUBLE_CONSTANT:
+            REQUIRE_OK(kefir_token_new_constant_double(strtod(literal, NULL), token));
+            break;
+
+        case LONG_DOUBLE_CONSTANT:
+            REQUIRE_OK(kefir_token_new_constant_long_double(strtold(literal, NULL), token));
+            break;
     }
     return KEFIR_OK;
 }
@@ -195,7 +205,7 @@ static kefir_result_t match_hexadecimal_exponent(struct kefir_mem *mem, struct k
 
 static kefir_result_t match_hexadecimal_impl(struct kefir_mem *mem, struct kefir_lexer_source_cursor *cursor,
                                              struct kefir_token *token, struct kefir_string_buffer *strbuf) {
-    kefir_bool_t double_constant = true;
+    enum fp_constant_type type;
 
     kefir_char32_t chr = kefir_lexer_source_cursor_at(cursor, 0);
     kefir_char32_t chr2 = kefir_lexer_source_cursor_at(cursor, 1);
@@ -206,16 +216,23 @@ static kefir_result_t match_hexadecimal_impl(struct kefir_mem *mem, struct kefir
     REQUIRE_OK(kefir_lexer_source_cursor_next(cursor, 2));
     REQUIRE_OK(match_hexadecimal_fractional_part(mem, cursor, strbuf));
     REQUIRE_OK(match_hexadecimal_exponent(mem, cursor, strbuf));
-    REQUIRE_OK(match_suffix(cursor, &double_constant));
+    REQUIRE_OK(match_suffix(cursor, &type));
 
     kefir_size_t length;
     const char *literal = kefir_string_buffer_value(strbuf, &length);
-    if (double_constant) {
-        kefir_float64_t value = strtod(literal, NULL);
-        REQUIRE_OK(kefir_token_new_constant_double(value, token));
-    } else {
-        kefir_float32_t value = strtof(literal, NULL);
-        REQUIRE_OK(kefir_token_new_constant_float(value, token));
+
+    switch (type) {
+        case FLOAT_CONSTANT:
+            REQUIRE_OK(kefir_token_new_constant_float(strtof(literal, NULL), token));
+            break;
+
+        case DOUBLE_CONSTANT:
+            REQUIRE_OK(kefir_token_new_constant_double(strtod(literal, NULL), token));
+            break;
+
+        case LONG_DOUBLE_CONSTANT:
+            REQUIRE_OK(kefir_token_new_constant_long_double(strtold(literal, NULL), token));
+            break;
     }
     return KEFIR_OK;
 }

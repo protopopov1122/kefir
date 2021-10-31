@@ -62,13 +62,13 @@
     {
         "class": "constant",
         "preprocessor": false,
-        "type": "double",
+        "type": "long_double",
         "value": "0x1.3e255p+26"
     },
     {
         "class": "constant",
         "preprocessor": false,
-        "type": "double",
+        "type": "long_double",
         "value": "0x1.450efdc9c4da9p-12"
     },
     {
@@ -98,7 +98,7 @@
     {
         "class": "constant",
         "preprocessor": false,
-        "type": "double",
+        "type": "long_double",
         "value": "0x1.33p-5"
     },
     {

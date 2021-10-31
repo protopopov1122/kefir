@@ -58,5 +58,10 @@
         "class": "constant",
         "type": "double",
         "value": 10028.800000
+    },
+    {
+        "class": "constant",
+        "type": "long_double",
+        "value": -10023000000.000000
     }
 ]

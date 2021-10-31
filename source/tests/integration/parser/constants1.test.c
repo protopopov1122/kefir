@@ -46,6 +46,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_token_new_constant_ulong_long(183191, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_constant_float(0.182f, &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_constant_double(10028.8, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_constant_long_double(-1.0023e10, &TOKENS[counter++]));
 
     REQUIRE_OK(kefir_parser_token_cursor_init(&cursor, TOKENS, counter));
     REQUIRE_OK(kefir_parser_init(mem, &parser, &symbols, &cursor));

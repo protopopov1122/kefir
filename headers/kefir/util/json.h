@@ -56,6 +56,7 @@ kefir_result_t kefir_json_output_uinteger(struct kefir_json_output *, kefir_uint
 kefir_result_t kefir_json_output_float(struct kefir_json_output *, kefir_float64_t);
 kefir_result_t kefir_json_output_long_double(struct kefir_json_output *, kefir_long_double_t);
 kefir_result_t kefir_json_output_hexfloat(struct kefir_json_output *, kefir_float64_t);
+kefir_result_t kefir_json_output_hex_long_double(struct kefir_json_output *, kefir_long_double_t);
 kefir_result_t kefir_json_output_string(struct kefir_json_output *, const char *);
 kefir_result_t kefir_json_output_raw_string(struct kefir_json_output *, const char *, kefir_size_t);
 kefir_result_t kefir_json_output_boolean(struct kefir_json_output *, kefir_bool_t);

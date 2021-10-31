@@ -70,15 +70,11 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_preprocessor_virtual_source_locator_init(&virtual_source));
     REQUIRE_OK(kefir_preprocessor_context_init(&context, &virtual_source.locator, &ast_context.context));
 
-    time_t current_timestamp;
-    time(&current_timestamp);
-    struct tm *current_time = localtime(&current_timestamp);
-    int isdst = current_time->tm_isdst;
     const char *DATETIME = "Sep 26 2021 10:42:59";
     const char *FMT = "%b %e %Y %H:%M:%S";
     struct tm time = {0};
     strptime(DATETIME, FMT, &time);
-    time.tm_isdst = isdst;
+    time.tm_isdst = true;
 
     context.environment.timestamp = mktime(&time);
     REQUIRE_OK(kefir_lexer_source_cursor_init(&cursor, CONTENT, sizeof(CONTENT), "fileName"));

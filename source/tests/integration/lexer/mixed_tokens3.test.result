@@ -125,7 +125,7 @@
     {
         "class": "constant",
         "preprocessor": false,
-        "type": "double",
+        "type": "long_double",
         "value": "0x1.3333333333333p+0"
     },
     {

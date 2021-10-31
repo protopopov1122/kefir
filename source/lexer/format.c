@@ -477,6 +477,12 @@ static kefir_result_t format_constant(struct kefir_json_output *json, const stru
             REQUIRE_OK(kefir_json_output_hexfloat(json, constant->float64));
             break;
 
+        case KEFIR_CONSTANT_TOKEN_LONG_DOUBLE:
+            REQUIRE_OK(kefir_json_output_string(json, "long_double"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "value"));
+            REQUIRE_OK(kefir_json_output_hex_long_double(json, constant->long_double));
+            break;
+
         case KEFIR_CONSTANT_TOKEN_CHAR:
             REQUIRE_OK(kefir_json_output_string(json, "char"));
             REQUIRE_OK(kefir_json_output_object_key(json, "value"));
