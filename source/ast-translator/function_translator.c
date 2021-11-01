@@ -232,7 +232,7 @@ kefir_result_t kefir_ast_translator_function_context_free(struct kefir_mem *mem,
 }
 
 static kefir_result_t xchg_param_address(struct kefir_irbuilder_block *builder, const struct kefir_ast_type *type) {
-    if (type->tag == KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE) {
+    if (KEFIR_AST_TYPE_IS_LONG_DOUBLE(type)) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_XCHG, 2));
     }
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_XCHG, 1));
@@ -279,7 +279,7 @@ kefir_result_t kefir_ast_translator_function_context_translate(
                 REQUIRE_OK(xchg_param_address(builder, scoped_id->object.type));
                 REQUIRE_OK(kefir_ast_translator_store_value(mem, scoped_id->type, context, builder));
             } else {
-                if (init_decl->base.properties.type->tag == KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE) {
+                if (KEFIR_AST_TYPE_IS_LONG_DOUBLE(init_decl->base.properties.type)) {
                     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POP, 0));
                 }
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POP, 0));

@@ -32,7 +32,7 @@ static kefir_result_t store_value(struct kefir_mem *mem, struct kefir_ast_transl
                                   struct kefir_irbuilder_block *builder,
                                   const struct kefir_ast_assignment_operator *node,
                                   const struct kefir_ast_type *result_normalized_type) {
-    if (result_normalized_type->tag == KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE) {
+    if (KEFIR_AST_TYPE_IS_LONG_DOUBLE(result_normalized_type)) {
         // [V*, V1, V2]
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_XCHG, 1));  // [V*, V2, V1]
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_XCHG, 2));  // [V1, V2, V*]

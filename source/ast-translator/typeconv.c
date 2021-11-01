@@ -37,7 +37,7 @@ static kefir_result_t cast_to_float32(struct kefir_irbuilder_block *builder,
         }
     } else if (origin->tag == KEFIR_AST_TYPE_SCALAR_DOUBLE) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64CF32, 0));
-    } else if (origin->tag == KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE) {
+    } else if (KEFIR_AST_TYPE_IS_LONG_DOUBLE(origin)) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_LDCF32, 0));
     } else {
         return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Cannot cast pointers to floating-point values");
@@ -59,7 +59,7 @@ static kefir_result_t cast_to_float64(struct kefir_irbuilder_block *builder,
         }
     } else if (origin->tag == KEFIR_AST_TYPE_SCALAR_FLOAT) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32CF64, 0));
-    } else if (origin->tag == KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE) {
+    } else if (KEFIR_AST_TYPE_IS_LONG_DOUBLE(origin)) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_LDCF64, 0));
     } else {
         return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Cannot cast pointers to floating-point values");
@@ -96,7 +96,7 @@ static kefir_result_t cast_to_integer(struct kefir_irbuilder_block *builder, con
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32CINT, 0));
     } else if (origin->tag == KEFIR_AST_TYPE_SCALAR_DOUBLE) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F64CINT, 0));
-    } else if (origin->tag == KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE) {
+    } else if (KEFIR_AST_TYPE_IS_LONG_DOUBLE(origin)) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_LDCINT, 0));
     } else {
         return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected type in integral conversion");
@@ -124,7 +124,7 @@ kefir_result_t kefir_ast_translate_typeconv(struct kefir_irbuilder_block *builde
 
     switch (normalized_destination->tag) {
         case KEFIR_AST_TYPE_VOID:
-            if (normalized_origin->tag == KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE) {
+            if (KEFIR_AST_TYPE_IS_LONG_DOUBLE(normalized_origin)) {
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POP, 0));
             }
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POP, 0));

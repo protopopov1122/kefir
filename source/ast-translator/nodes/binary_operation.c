@@ -432,7 +432,7 @@ static kefir_result_t translate_relational_equality(struct kefir_mem *mem, struc
             break;
 
         case KEFIR_AST_OPERATION_LESS_EQUAL:
-            if (common_type->tag == KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE) {
+            if (KEFIR_AST_TYPE_IS_LONG_DOUBLE(common_type)) {
                 // Initial: [A1, A2, B1, B2]
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 3));  // [A1, A2, B1, B2, A1]
                 REQUIRE_OK(
@@ -468,7 +468,7 @@ static kefir_result_t translate_relational_equality(struct kefir_mem *mem, struc
             break;
 
         case KEFIR_AST_OPERATION_GREATER_EQUAL:
-            if (common_type->tag == KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE) {
+            if (KEFIR_AST_TYPE_IS_LONG_DOUBLE(common_type)) {
                 // Initial: [A1, A2, B1, B2]
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 3));  // [A1, A2, B1, B2, A1]
                 REQUIRE_OK(
@@ -513,7 +513,7 @@ static kefir_result_t truncate_value(struct kefir_mem *mem, struct kefir_ast_tra
                                      struct kefir_irbuilder_block *builder, const struct kefir_ast_type *type) {
     const struct kefir_ast_type *normalized_type =
         KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, type);
-    if (normalized_type->tag == KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE) {
+    if (KEFIR_AST_TYPE_IS_LONG_DOUBLE(normalized_type)) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_LDTRUNC1, 0));
     } else {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_TRUNCATE1, 0));

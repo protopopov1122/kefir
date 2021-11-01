@@ -46,7 +46,7 @@ kefir_result_t kefir_ast_translate_do_while_statement_node(struct kefir_mem *mem
 
     const struct kefir_ast_type *controlling_expr_type =
         kefir_ast_translator_normalize_type(node->controlling_expr->properties.type);
-    if (controlling_expr_type->tag == KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE) {
+    if (KEFIR_AST_TYPE_IS_LONG_DOUBLE(controlling_expr_type)) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_LDTRUNC1, 0));
     }
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_BRANCH, beginning));

@@ -38,7 +38,7 @@ kefir_result_t kefir_ast_translate_conditional_statement_node(struct kefir_mem *
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->condition, builder, context));
     const struct kefir_ast_type *condition_type =
         KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, node->condition->properties.type);
-    if (condition_type->tag == KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE) {
+    if (KEFIR_AST_TYPE_IS_LONG_DOUBLE(condition_type)) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_LDTRUNC1, 0));
     }
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_BNOT, 0));
