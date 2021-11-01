@@ -32,6 +32,17 @@
 #include "kefir/ir/module.h"
 #include "kefir/core/error.h"
 
+typedef struct kefir_compiler_context kefir_compiler_context_t;
+
+typedef struct kefir_compiler_extensions {
+    kefir_result_t (*on_init)(struct kefir_mem *, struct kefir_compiler_context *);
+    kefir_result_t (*on_free)(struct kefir_mem *, struct kefir_compiler_context *);
+
+    const struct kefir_preprocessor_extensions *preprocessor;
+    const struct kefir_preprocessor_context_extensions *preprocessor_context;
+    void *payload;
+} kefir_compiler_extensions_t;
+
 typedef struct kefir_compiler_context {
     struct kefir_compiler_profile *profile;
     const struct kefir_preprocessor_source_locator *source_locator;
@@ -39,12 +50,15 @@ typedef struct kefir_compiler_context {
     struct kefir_ast_global_context ast_global_context;
     struct kefir_preprocessor_context preprocessor_context;
     struct kefir_preprocessor_ast_context preprocessor_ast_context;
+    const struct kefir_compiler_extensions *extensions;
+    void *extension_payload;
 } kefir_compiler_context_t;
 
 struct kefir_mem *kefir_system_memalloc();
 kefir_result_t kefir_compiler_context_init(struct kefir_mem *, struct kefir_compiler_context *,
                                            struct kefir_compiler_profile *,
-                                           const struct kefir_preprocessor_source_locator *);
+                                           const struct kefir_preprocessor_source_locator *,
+                                           const struct kefir_compiler_extensions *);
 kefir_result_t kefir_compiler_context_free(struct kefir_mem *, struct kefir_compiler_context *);
 kefir_result_t kefir_compiler_preprocessor_tokenize(struct kefir_mem *, struct kefir_compiler_context *,
                                                     struct kefir_token_buffer *, const char *, kefir_size_t,

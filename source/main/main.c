@@ -88,7 +88,7 @@ static kefir_result_t dump_action_impl(struct kefir_mem *mem, struct kefir_cli_o
             kefir_preprocessor_filesystem_source_locator_append(mem, &source_locator, (const char *) iter->value));
     }
     REQUIRE_OK(kefir_compiler_profile(&profile, options->target_profile));
-    REQUIRE_OK(kefir_compiler_context_init(mem, &compiler, &profile, &source_locator.locator));
+    REQUIRE_OK(kefir_compiler_context_init(mem, &compiler, &profile, &source_locator.locator, NULL));
     REQUIRE_OK(action(mem, options, &compiler, source_id, input.content, input.length, output));
     fclose(output);
     REQUIRE_OK(kefir_compiler_context_free(mem, &compiler));

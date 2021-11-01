@@ -59,7 +59,8 @@ struct kefir_mem *kefir_system_memalloc() {
 
 kefir_result_t kefir_compiler_context_init(struct kefir_mem *mem, struct kefir_compiler_context *context,
                                            struct kefir_compiler_profile *profile,
-                                           const struct kefir_preprocessor_source_locator *source_locator) {
+                                           const struct kefir_preprocessor_source_locator *source_locator,
+                                           const struct kefir_compiler_extensions *extensions) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler context"));
     REQUIRE(profile != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler profile"));
@@ -76,15 +77,39 @@ kefir_result_t kefir_compiler_context_init(struct kefir_mem *mem, struct kefir_c
         return res;
     });
     res = kefir_preprocessor_context_init(mem, &context->preprocessor_context, source_locator,
-                                          &context->preprocessor_ast_context.context, NULL);
+                                          &context->preprocessor_ast_context.context,
+                                          extensions != NULL ? extensions->preprocessor_context : NULL);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_preprocessor_ast_context_free(mem, &context->preprocessor_ast_context);
+        kefir_ast_global_context_free(mem, &context->ast_global_context);
+        return res;
+    });
     context->profile = profile;
     context->source_locator = source_locator;
+
+    context->extensions = extensions;
+    context->extension_payload = NULL;
+    if (context->extensions != NULL && context->extensions->on_init != NULL) {
+        res = context->extensions->on_init(mem, context);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_preprocessor_context_free(mem, &context->preprocessor_context);
+            kefir_preprocessor_ast_context_free(mem, &context->preprocessor_ast_context);
+            kefir_ast_global_context_free(mem, &context->ast_global_context);
+            return res;
+        });
+    }
     return KEFIR_OK;
 }
 
 kefir_result_t kefir_compiler_context_free(struct kefir_mem *mem, struct kefir_compiler_context *context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler context"));
+
+    if (context->extensions != NULL && context->extensions->on_free != NULL) {
+        REQUIRE_OK(context->extensions->on_free(mem, context));
+        context->extensions = NULL;
+        context->extension_payload = NULL;
+    }
 
     REQUIRE_OK(kefir_preprocessor_context_free(mem, &context->preprocessor_context));
     REQUIRE_OK(kefir_preprocessor_ast_context_free(mem, &context->preprocessor_ast_context));
@@ -155,7 +180,7 @@ kefir_result_t kefir_compiler_preprocess(struct kefir_mem *mem, struct kefir_com
     REQUIRE_OK(kefir_lexer_source_cursor_init(&source_cursor, content, length, source_id));
     REQUIRE_OK(kefir_preprocessor_init(mem, &preprocessor, &context->ast_global_context.symbols, &source_cursor,
                                        &context->profile->lexer_context, &context->preprocessor_context, filepath,
-                                       NULL));
+                                       context->extensions != NULL ? context->extensions->preprocessor : NULL));
 
     kefir_result_t res = kefir_preprocessor_run(mem, &preprocessor, buffer);
     REQUIRE_ELSE(res == KEFIR_OK, {
@@ -180,7 +205,7 @@ kefir_result_t kefir_compiler_preprocess_lex(struct kefir_mem *mem, struct kefir
     REQUIRE_OK(kefir_lexer_source_cursor_init(&source_cursor, content, length, source_id));
     REQUIRE_OK(kefir_preprocessor_init(mem, &preprocessor, &context->ast_global_context.symbols, &source_cursor,
                                        &context->profile->lexer_context, &context->preprocessor_context, filepath,
-                                       NULL));
+                                       context->extensions != NULL ? context->extensions->preprocessor : NULL));
     kefir_result_t res = kefir_token_buffer_init(&pp_tokens);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_preprocessor_free(mem, &preprocessor);
