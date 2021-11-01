@@ -75,8 +75,8 @@ kefir_result_t kefir_compiler_context_init(struct kefir_mem *mem, struct kefir_c
         kefir_ast_global_context_free(mem, &context->ast_global_context);
         return res;
     });
-    res = kefir_preprocessor_context_init(&context->preprocessor_context, source_locator,
-                                          &context->preprocessor_ast_context.context);
+    res = kefir_preprocessor_context_init(mem, &context->preprocessor_context, source_locator,
+                                          &context->preprocessor_ast_context.context, NULL);
     context->profile = profile;
     context->source_locator = source_locator;
     return KEFIR_OK;

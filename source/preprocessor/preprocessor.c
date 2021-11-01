@@ -29,9 +29,11 @@
 #include "kefir/ast/constant_expression.h"
 #include "kefir/preprocessor/format.h"
 
-kefir_result_t kefir_preprocessor_context_init(struct kefir_preprocessor_context *context,
+kefir_result_t kefir_preprocessor_context_init(struct kefir_mem *mem, struct kefir_preprocessor_context *context,
                                                const struct kefir_preprocessor_source_locator *locator,
-                                               struct kefir_ast_context *ast_context) {
+                                               struct kefir_ast_context *ast_context,
+                                               const struct kefir_preprocessor_context_extensions *extensions) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to preprocessor context"));
     REQUIRE(locator != NULL,
@@ -75,6 +77,12 @@ kefir_result_t kefir_preprocessor_context_init(struct kefir_preprocessor_context
     context->environment.stdc_no_complex = true;
     context->environment.stdc_no_threads = false;
     context->environment.stdc_no_vla = true;
+
+    context->extensions = extensions;
+    context->extensions_payload = NULL;
+    kefir_result_t res;
+    KEFIR_PREPROCESSOR_RUN_EXTENSION0(&res, mem, context, on_init);
+    REQUIRE_OK(res);
     return KEFIR_OK;
 }
 
@@ -82,6 +90,12 @@ kefir_result_t kefir_preprocessor_context_free(struct kefir_mem *mem, struct kef
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to preprocessor context"));
+
+    kefir_result_t res;
+    KEFIR_PREPROCESSOR_RUN_EXTENSION0(&res, mem, context, on_free);
+    REQUIRE_OK(res);
+    context->extensions = NULL;
+    context->extensions_payload = NULL;
 
     REQUIRE_OK(kefir_preprocessor_user_macro_scope_free(mem, &context->user_macros));
     context->source_locator = NULL;
@@ -120,6 +134,7 @@ kefir_result_t kefir_preprocessor_init(struct kefir_mem *mem, struct kefir_prepr
     });
     preprocessor->macros = &preprocessor->macro_overlay.scope;
     preprocessor->current_filepath = current_filepath;
+    preprocessor->parent = NULL;
 
     preprocessor->extensions = extensions;
     preprocessor->extension_payload = NULL;
@@ -245,6 +260,7 @@ static kefir_result_t process_include(struct kefir_mem *mem, struct kefir_prepro
         source_file.close(mem, &source_file);
         return res;
     });
+    subpreprocessor.parent = preprocessor;
 
     res = kefir_preprocessor_run(mem, &subpreprocessor, buffer);
     if (buffer->length > 0 && buffer->tokens[buffer->length - 1].klass == KEFIR_TOKEN_SENTINEL) {

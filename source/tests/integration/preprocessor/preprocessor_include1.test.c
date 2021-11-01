@@ -66,7 +66,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_preprocessor_virtual_source_locator_register(mem, &virtual_source, "file2", FILE2));
     REQUIRE_OK(kefir_preprocessor_virtual_source_locator_register(mem, &virtual_source, "file3", FILE3));
     REQUIRE_OK(kefir_preprocessor_virtual_source_locator_register(mem, &virtual_source, "file4", FILE4));
-    REQUIRE_OK(kefir_preprocessor_context_init(&context, &virtual_source.locator, &ast_context.context));
+    REQUIRE_OK(kefir_preprocessor_context_init(mem, &context, &virtual_source.locator, &ast_context.context, NULL));
     REQUIRE_OK(kefir_preprocessor_user_macro_scope_insert(
         mem, &context.user_macros, kefir_preprocessor_user_macro_new_object(mem, &symbols, "REVERSE")));
     REQUIRE_OK(kefir_lexer_source_cursor_init(&cursor, CONTENT, sizeof(CONTENT), ""));

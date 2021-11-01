@@ -60,6 +60,9 @@ static kefir_result_t on_free(struct kefir_mem *mem, struct kefir_preprocessor *
 
 static kefir_result_t before_run(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
                                  struct kefir_token_buffer *buffer) {
+    if (preprocessor->parent != NULL) {
+        return KEFIR_OK;
+    }
     struct kefir_token token;
     REQUIRE_OK(kefir_token_new_identifier(mem, preprocessor->lexer.symbols, "static", &token));
     REQUIRE_OK(kefir_token_buffer_emplace(mem, buffer, &token));
@@ -86,6 +89,9 @@ static kefir_result_t before_run(struct kefir_mem *mem, struct kefir_preprocesso
 
 static kefir_result_t after_run(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
                                 struct kefir_token_buffer *buffer) {
+    if (preprocessor->parent != NULL) {
+        return KEFIR_OK;
+    }
     char BUF[256] = {0};
     int buflen = snprintf(BUF, sizeof(BUF) - 1, "%u", preprocessor->lexer.cursor->location.line);
 
@@ -128,6 +134,50 @@ static kefir_result_t on_directive(struct kefir_mem *mem, struct kefir_preproces
     return KEFIR_OK;
 }
 
+struct context_payload {
+    struct kefir_preprocessor_source_locator locator;
+};
+
+static kefir_result_t close_source(struct kefir_mem *mem, struct kefir_preprocessor_source_file *source_file) {
+    UNUSED(mem);
+    *source_file = (struct kefir_preprocessor_source_file){0};
+    return KEFIR_OK;
+}
+
+static kefir_result_t open_source(struct kefir_mem *mem, const struct kefir_preprocessor_source_locator *source_locator,
+                                  const char *filepath, kefir_bool_t system, const char *current_filepath,
+                                  struct kefir_preprocessor_source_file *source_file) {
+    static const char CONTENT[] = "void some_function();\n";
+    if (strcmp(filepath, "some_include") == 0) {
+        source_file->filepath = filepath;
+        source_file->system = system;
+        source_file->payload = NULL;
+        source_file->close = close_source;
+        REQUIRE_OK(kefir_lexer_source_cursor_init(&source_file->cursor, CONTENT, sizeof(CONTENT), filepath));
+    } else {
+        struct kefir_preprocessor_source_locator *original = source_locator->payload;
+        REQUIRE_OK(original->open(mem, original, filepath, system, current_filepath, source_file));
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t on_context_init(struct kefir_mem *mem, struct kefir_preprocessor_context *context) {
+    struct context_payload *payload = KEFIR_MALLOC(mem, sizeof(struct context_payload));
+    payload->locator.payload = (void *) context->source_locator;
+    payload->locator.open = open_source;
+    context->source_locator = &payload->locator;
+    context->extensions_payload = payload;
+    return KEFIR_OK;
+}
+
+static kefir_result_t on_context_free(struct kefir_mem *mem, struct kefir_preprocessor_context *context) {
+    struct context_payload *payload = context->extensions_payload;
+    context->source_locator = payload->locator.payload;
+    KEFIR_FREE(mem, payload);
+    context->extensions_payload = NULL;
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     const char CONTENT[] = "#define HAS_TOTAL_LINES 0\n"
                            "#define SOME_OTHER_MACRO 100\n"
@@ -135,6 +185,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                            "int get_total_lines() {\n"
                            "    return total_lines + SOME_OTHER_MACRO;\n"
                            "}\n"
+                           "#include <some_include>\n"
                            "#endif";
 
     struct kefir_preprocessor_extensions extensions = {.on_init = on_init,
@@ -142,6 +193,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                                                        .before_run = before_run,
                                                        .after_run = after_run,
                                                        .on_next_directive = on_directive};
+
+    struct kefir_preprocessor_context_extensions context_extensions = {.on_init = on_context_init,
+                                                                       .on_free = on_context_free};
 
     struct kefir_symbol_table symbols;
     struct kefir_lexer_context parser_context;
@@ -160,7 +214,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(
         kefir_preprocessor_ast_context_init(&ast_context, &symbols, kefir_ast_default_type_traits(), &env.target_env));
     REQUIRE_OK(kefir_preprocessor_virtual_source_locator_init(&virtual_source));
-    REQUIRE_OK(kefir_preprocessor_context_init(&context, &virtual_source.locator, &ast_context.context));
+    REQUIRE_OK(kefir_preprocessor_context_init(mem, &context, &virtual_source.locator, &ast_context.context,
+                                               &context_extensions));
 
     REQUIRE_OK(kefir_lexer_source_cursor_init(&cursor, CONTENT, sizeof(CONTENT), ""));
     REQUIRE_OK(

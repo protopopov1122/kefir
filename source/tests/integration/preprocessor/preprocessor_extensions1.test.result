@@ -3,6 +3,7 @@ static const unsigned TOTAL_LINES;
 int get_total_lines() {
     return total_lines + 100;
 }
+void some_function();
 
 
-static const unsigned TOTAL_LINES=7;
+static const unsigned TOTAL_LINES=8;

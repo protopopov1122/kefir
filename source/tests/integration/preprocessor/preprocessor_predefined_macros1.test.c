@@ -73,7 +73,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(
         kefir_preprocessor_ast_context_init(&ast_context, &symbols, kefir_ast_default_type_traits(), &env.target_env));
     REQUIRE_OK(kefir_preprocessor_virtual_source_locator_init(&virtual_source));
-    REQUIRE_OK(kefir_preprocessor_context_init(&context, &virtual_source.locator, &ast_context.context));
+    REQUIRE_OK(kefir_preprocessor_context_init(mem, &context, &virtual_source.locator, &ast_context.context, NULL));
 
     const char *DATETIME = "Sep 26 2021 10:42:59 UTC";
     const char *FMT = "%b %e %Y %H:%M:%S %Z";

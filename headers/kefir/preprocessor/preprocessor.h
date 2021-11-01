@@ -30,6 +30,7 @@
 #include "kefir/ast/context.h"
 #include <time.h>
 
+typedef struct kefir_preprocessor_context kefir_preprocessor_context_t;
 typedef struct kefir_preprocessor kefir_preprocessor_t;
 
 typedef struct kefir_preprocessor_extensions {
@@ -41,6 +42,12 @@ typedef struct kefir_preprocessor_extensions {
     kefir_result_t (*after_run)(struct kefir_mem *, struct kefir_preprocessor *, struct kefir_token_buffer *);
     void *payload;
 } kefir_preprocessor_extensions_t;
+
+typedef struct kefir_preprocessor_context_extensions {
+    kefir_result_t (*on_init)(struct kefir_mem *, struct kefir_preprocessor_context *);
+    kefir_result_t (*on_free)(struct kefir_mem *, struct kefir_preprocessor_context *);
+    void *payload;
+} kefir_preprocessor_context_extensions_t;
 
 #define KEFIR_PREPROCESSOR_RUN_EXTENSION(_res, _mem, _preprocessor, _ext, ...)                  \
     do {                                                                                        \
@@ -83,11 +90,14 @@ typedef struct kefir_preprocessor_context {
     const struct kefir_preprocessor_source_locator *source_locator;
     struct kefir_ast_context *ast_context;
     struct kefir_preprocessor_environment environment;
+    const struct kefir_preprocessor_context_extensions *extensions;
+    void *extensions_payload;
 } kefir_preprocessor_context_t;
 
-kefir_result_t kefir_preprocessor_context_init(struct kefir_preprocessor_context *,
+kefir_result_t kefir_preprocessor_context_init(struct kefir_mem *, struct kefir_preprocessor_context *,
                                                const struct kefir_preprocessor_source_locator *,
-                                               struct kefir_ast_context *);
+                                               struct kefir_ast_context *,
+                                               const struct kefir_preprocessor_context_extensions *);
 kefir_result_t kefir_preprocessor_context_free(struct kefir_mem *, struct kefir_preprocessor_context *);
 
 typedef struct kefir_preprocessor {
@@ -98,6 +108,7 @@ typedef struct kefir_preprocessor {
     struct kefir_preprocessor_predefined_macro_scope predefined_macros;
     struct kefir_preprocessor_overlay_macro_scope macro_overlay;
     struct kefir_preprocessor_macro_scope *macros;
+    const struct kefir_preprocessor *parent;
     const struct kefir_preprocessor_extensions *extensions;
     void *extension_payload;
 } kefir_preprocessor_t;
