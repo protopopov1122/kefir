@@ -106,6 +106,25 @@ kefir_bool_t kefir_ast_type_is_complete(const struct kefir_ast_type *type) {
     }
 }
 
+kefir_bool_t kefir_ast_type_is_variably_modified(const struct kefir_ast_type *type) {
+    switch (type->tag) {
+        case KEFIR_AST_TYPE_ARRAY:
+            return type->array_type.boundary == KEFIR_AST_ARRAY_VLA ||
+                   type->array_type.boundary == KEFIR_AST_ARRAY_VLA_STATIC ||
+                   kefir_ast_type_is_variably_modified(type->array_type.element_type);
+
+        case KEFIR_AST_TYPE_SCALAR_POINTER:
+            return kefir_ast_type_is_variably_modified(type->referenced_type);
+
+        case KEFIR_AST_TYPE_QUALIFIED:
+            return kefir_ast_type_is_variably_modified(type->qualified_type.type);
+
+        default:
+            // All other types cannot be variably-modified
+            return false;
+    }
+}
+
 static kefir_result_t free_type_bundle(struct kefir_mem *mem, struct kefir_list *list, struct kefir_list_entry *entry,
                                        void *payload) {
     UNUSED(list);

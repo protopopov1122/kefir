@@ -126,6 +126,9 @@ DECLARE_CASE(ast_type_function_composite);
 DECLARE_CASE(ast_type_scope1);
 DECLARE_CASE(ast_type_scope2);
 DECLARE_CASE(ast_type_scope3);
+DECLARE_CASE(ast_type_variably_modified1);
+DECLARE_CASE(ast_type_variably_modified2);
+DECLARE_CASE(ast_type_variably_modified_analysis1);
 DECLARE_CASE(ast_ordinary_constant_scope1);
 DECLARE_CASE(ast_ordinary_typedef_scope1);
 DECLARE_CASE(ast_ordinary_scope_composite_objects_external);
@@ -466,7 +469,8 @@ TEST_SUITE(
     &ast_type_union_compatibility, &ast_type_array_compatibility, &ast_type_function_compatibility,
     &ast_type_basic_composite, &ast_type_pointer_composite, &ast_type_enum_composite, &ast_type_qualified_composite,
     &ast_type_struct_composite, &ast_type_union_composite, &ast_type_array_composite, &ast_type_function_composite,
-    &ast_type_scope1, &ast_type_scope2, &ast_type_scope3, &ast_ordinary_constant_scope1, &ast_ordinary_typedef_scope1,
+    &ast_type_scope1, &ast_type_scope2, &ast_type_scope3, &ast_type_variably_modified1, &ast_type_variably_modified2,
+    &ast_type_variably_modified_analysis1, &ast_ordinary_constant_scope1, &ast_ordinary_typedef_scope1,
     &ast_ordinary_scope_composite_objects_external, &ast_ordinary_scope_composite_objects_external_declaration,
     &ast_ordinary_scope_composite_objects_thread_local_external,
     &ast_ordinary_scope_composite_objects_thread_local_external_declaration,

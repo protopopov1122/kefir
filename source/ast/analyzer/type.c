@@ -104,6 +104,9 @@ static kefir_result_t analyze_structure(struct kefir_mem *mem, const struct kefi
              kefir_list_next(&iter)) {
             ASSIGN_DECL_CAST(struct kefir_ast_struct_field *, field, iter->value);
             REQUIRE_OK(kefir_ast_analyze_type(mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, field->type, location));
+            REQUIRE(!kefir_ast_type_is_variably_modified(field->type),
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
+                                           "Structure/union field cannot have variably-modified type"));
             REQUIRE_OK(kefir_ast_analyze_alignment(mem, context, field->alignment));
             REQUIRE_OK(kefir_ast_alignment_evaluate(mem, context, field->alignment));
             if (field->bitfield) {
