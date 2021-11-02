@@ -55,6 +55,9 @@ static kefir_result_t process_struct_declaration_entry(struct kefir_mem *mem, co
         REQUIRE(storage_class == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN,
                 KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &entry_declarator->declarator->source_location,
                                        "Structure/union field cannot have storage class specifiers"));
+        REQUIRE(!kefir_ast_type_is_variably_modified(field_type),
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &entry_declarator->declarator->source_location,
+                                       "Structure/union field cannot have variably-modified type"));
 
         if (entry_declarator->bitwidth == NULL) {
             struct kefir_ast_alignment *ast_alignment = wrap_alignment(mem, alignment);
