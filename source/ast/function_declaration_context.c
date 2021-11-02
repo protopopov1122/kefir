@@ -109,6 +109,8 @@ static kefir_result_t scoped_context_define_constant(
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
     REQUIRE(value != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST constant expression"));
+    REQUIRE(!kefir_ast_type_is_variably_modified(type),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location, "Constant cannot have variably-modified type"));
 
     struct kefir_ast_scoped_identifier *scoped_id = NULL;
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->ordinary_scope, identifier, &scoped_id);
@@ -130,10 +132,13 @@ static kefir_result_t scoped_context_define_constant(
 static kefir_result_t scoped_context_define_tag(struct kefir_mem *mem,
                                                 struct kefir_ast_function_declaration_context *context,
                                                 const struct kefir_ast_type *type,
+                                                const struct kefir_source_location *location,
                                                 const struct kefir_ast_scoped_identifier **scoped_id_ptr) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
+    REQUIRE(!kefir_ast_type_is_variably_modified(type),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location, "Type tag cannot refer to variably-modified type"));
 
     const char *identifier = NULL;
     REQUIRE_OK(kefir_ast_context_type_retrieve_tag(type, &identifier));
@@ -172,6 +177,8 @@ static kefir_result_t scoped_context_declare_function(struct kefir_mem *mem,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST function type"));
     REQUIRE(identifier != NULL && strlen(identifier) > 0,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected function with non-empty identifier"));
+    REQUIRE(!kefir_ast_type_is_variably_modified(function),
+            KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Function type cannot be variably-modified"));
 
     struct kefir_ast_scoped_identifier *ordinary_id = NULL;
 
@@ -235,7 +242,7 @@ static kefir_result_t context_define_tag(struct kefir_mem *mem, const struct kef
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_function_declaration_context *, fn_ctx, context->payload);
-    REQUIRE_OK(scoped_context_define_tag(mem, fn_ctx, type, NULL));
+    REQUIRE_OK(scoped_context_define_tag(mem, fn_ctx, type, location, NULL));
     return KEFIR_OK;
 }
 

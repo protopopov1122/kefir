@@ -1014,11 +1014,11 @@ DEFINE_CASE(ast_node_analysis_unary_operation_sizeof, "AST node analysis - unary
         kefir_ast_type_array(&kft_mem, context->type_bundle, kefir_ast_type_char(),
                              kefir_ast_constant_expression_integer(&kft_mem, 1), NULL),
         NULL, NULL, NULL));
-    ASSERT_OK(kefir_ast_local_context_declare_external(
+    ASSERT_OK(kefir_ast_local_context_define_auto(
         &kft_mem, &local_context, "z",
         kefir_ast_type_vlen_array(&kft_mem, context->type_bundle, kefir_ast_type_char(),
                                   KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 128)), NULL),
-        NULL, NULL, NULL));
+        NULL, NULL, NULL, NULL));
 
     ASSERT_UNARY_OPERATION(&kft_mem, context, KEFIR_AST_OPERATION_SIZEOF, kefir_ast_new_constant_bool(&kft_mem, false),
                            kefir_ast_type_signed_int(), true, false, false);

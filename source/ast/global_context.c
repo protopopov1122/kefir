@@ -394,6 +394,10 @@ kefir_result_t kefir_ast_global_context_declare_external(struct kefir_mem *mem,
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
+    REQUIRE(!kefir_ast_type_is_variably_modified(type),
+            KEFIR_SET_SOURCE_ERROR(
+                KEFIR_ANALYSIS_ERROR, location,
+                "Declarations with variably-modified types shall have block or function prototype scope"));
 
     REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_OBJECT, location));
 
@@ -439,6 +443,10 @@ kefir_result_t kefir_ast_global_context_declare_external_thread_local(
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
+    REQUIRE(!kefir_ast_type_is_variably_modified(type),
+            KEFIR_SET_SOURCE_ERROR(
+                KEFIR_ANALYSIS_ERROR, location,
+                "Declarations with variably-modified types shall have block or function prototype scope"));
 
     REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_OBJECT, location));
 
@@ -486,6 +494,10 @@ kefir_result_t kefir_ast_global_context_define_external(struct kefir_mem *mem, s
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
+    REQUIRE(!kefir_ast_type_is_variably_modified(type),
+            KEFIR_SET_SOURCE_ERROR(
+                KEFIR_ANALYSIS_ERROR, location,
+                "Declarations with variably-modified types shall have block or function prototype scope"));
 
     REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_OBJECT, location));
 
@@ -551,6 +563,10 @@ kefir_result_t kefir_ast_global_context_define_external_thread_local(
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
+    REQUIRE(!kefir_ast_type_is_variably_modified(type),
+            KEFIR_SET_SOURCE_ERROR(
+                KEFIR_ANALYSIS_ERROR, location,
+                "Declarations with variably-modified types shall have block or function prototype scope"));
 
     REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_OBJECT, location));
 
@@ -617,6 +633,10 @@ kefir_result_t kefir_ast_global_context_define_static(struct kefir_mem *mem, str
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
+    REQUIRE(!kefir_ast_type_is_variably_modified(type),
+            KEFIR_SET_SOURCE_ERROR(
+                KEFIR_ANALYSIS_ERROR, location,
+                "Declarations with variably-modified types shall have block or function prototype scope"));
 
     REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_OBJECT, location));
 
@@ -687,6 +707,10 @@ kefir_result_t kefir_ast_global_context_define_static_thread_local(
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
+    REQUIRE(!kefir_ast_type_is_variably_modified(type),
+            KEFIR_SET_SOURCE_ERROR(
+                KEFIR_ANALYSIS_ERROR, location,
+                "Declarations with variably-modified types shall have block or function prototype scope"));
 
     REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_OBJECT, location));
 
@@ -759,6 +783,9 @@ kefir_result_t kefir_ast_global_context_define_constant(struct kefir_mem *mem, s
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
     REQUIRE(value != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST constant expression"));
+    REQUIRE(!kefir_ast_type_is_variably_modified(type),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
+                                   "Constant definition cannot have variably-modified type"));
 
     identifier = kefir_symbol_table_insert(mem, &context->symbols, identifier, NULL);
     REQUIRE(identifier != NULL,
@@ -791,6 +818,9 @@ kefir_result_t kefir_ast_global_context_define_tag(struct kefir_mem *mem, struct
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
+    REQUIRE(!kefir_ast_type_is_variably_modified(type),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
+                                   "Tag definition cannot refer to variably-modified type"));
 
     const char *identifier = NULL;
     REQUIRE_OK(kefir_ast_context_type_retrieve_tag(type, &identifier));
@@ -824,6 +854,9 @@ kefir_result_t kefir_ast_global_context_define_type(struct kefir_mem *mem, struc
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
+    REQUIRE(!kefir_ast_type_is_variably_modified(type),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
+                                   "Type definition in file scope cannot be variably-modified"));
 
     REQUIRE_OK(
         require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION, location));
@@ -871,6 +904,8 @@ kefir_result_t kefir_ast_global_context_declare_function(struct kefir_mem *mem,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST function type"));
     REQUIRE(identifier != NULL && strlen(identifier) > 0,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected function with non-empty identifier"));
+    REQUIRE(!kefir_ast_type_is_variably_modified(function),
+            KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Function type cannot be variably-modified"));
 
     REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION, location));
 
@@ -919,6 +954,8 @@ kefir_result_t kefir_ast_global_context_define_function(struct kefir_mem *mem, s
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST function type"));
     REQUIRE(identifier != NULL && strlen(identifier) > 0,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected function with non-empty identifier"));
+    REQUIRE(!kefir_ast_type_is_variably_modified(function),
+            KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Function type cannot be variably-modified"));
 
     REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION, location));
 
@@ -967,6 +1004,8 @@ kefir_result_t kefir_ast_global_context_define_static_function(
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST function type"));
     REQUIRE(identifier != NULL && strlen(identifier) > 0,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected function with non-empty identifier"));
+    REQUIRE(!kefir_ast_type_is_variably_modified(function),
+            KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Function type cannot be variably-modified"));
 
     REQUIRE_OK(require_ordinary_identifier_type(context, identifier, KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION, location));
 
