@@ -106,23 +106,31 @@ kefir_bool_t kefir_ast_type_is_complete(const struct kefir_ast_type *type) {
     }
 }
 
-kefir_bool_t kefir_ast_type_is_variably_modified(const struct kefir_ast_type *type) {
+const struct kefir_ast_node_base *kefir_ast_type_get_variable_modificator(const struct kefir_ast_type *type) {
+    REQUIRE(type != NULL, NULL);
     switch (type->tag) {
         case KEFIR_AST_TYPE_ARRAY:
-            return type->array_type.boundary == KEFIR_AST_ARRAY_VLA ||
-                   type->array_type.boundary == KEFIR_AST_ARRAY_VLA_STATIC ||
-                   kefir_ast_type_is_variably_modified(type->array_type.element_type);
+            if (type->array_type.boundary == KEFIR_AST_ARRAY_VLA ||
+                type->array_type.boundary == KEFIR_AST_ARRAY_VLA_STATIC) {
+                return type->array_type.vla_length;
+            } else {
+                return kefir_ast_type_get_variable_modificator(type->array_type.element_type);
+            }
 
         case KEFIR_AST_TYPE_SCALAR_POINTER:
-            return kefir_ast_type_is_variably_modified(type->referenced_type);
+            return kefir_ast_type_get_variable_modificator(type->referenced_type);
 
         case KEFIR_AST_TYPE_QUALIFIED:
-            return kefir_ast_type_is_variably_modified(type->qualified_type.type);
+            return kefir_ast_type_get_variable_modificator(type->qualified_type.type);
 
         default:
             // All other types cannot be variably-modified
-            return false;
+            return NULL;
     }
+}
+
+kefir_bool_t kefir_ast_type_is_variably_modified(const struct kefir_ast_type *type) {
+    return kefir_ast_type_get_variable_modificator(type) != NULL;
 }
 
 static kefir_result_t free_type_bundle(struct kefir_mem *mem, struct kefir_list *list, struct kefir_list_entry *entry,
