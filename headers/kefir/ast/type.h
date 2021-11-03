@@ -104,7 +104,7 @@ kefir_ast_function_specifier_t kefir_ast_context_merge_function_specifiers(kefir
      (((type)->tag == KEFIR_AST_TYPE_STRUCTURE || (type->tag) == KEFIR_AST_TYPE_UNION) &&                 \
       !(type)->structure_type.complete))
 #define KEFIR_AST_TYPE_IS_INCOMPLETE(type) KEFIR_AST_TYPE_IS_INCOMPLETE_IMPL(kefir_ast_unqualified_type((type)))
-#define KEFIR_AST_TYPE_IS_VARIABLY_MODIFIED(type)                                                  \
+#define KEFIR_AST_TYPE_IS_VL_ARRAY(type)                                                           \
     ((type)->tag == KEFIR_AST_TYPE_ARRAY && ((type)->array_type.boundary == KEFIR_AST_ARRAY_VLA || \
                                              (type)->array_type.boundary == KEFIR_AST_ARRAY_VLA_STATIC))
 #define KEFIR_AST_TYPE_HASH(type) ((kefir_ast_type_hash_t) type)

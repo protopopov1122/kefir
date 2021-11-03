@@ -23,6 +23,27 @@
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"
 
+static kefir_result_t unwrap_vla_type(struct kefir_mem *mem, const struct kefir_ast_context *context,
+                                      const struct kefir_ast_type *type, const struct kefir_ast_type **result) {
+    if (KEFIR_AST_TYPE_IS_VL_ARRAY(type)) {
+        const struct kefir_ast_type *element_type = NULL;
+        REQUIRE_OK(unwrap_vla_type(mem, context, type->array_type.element_type, &element_type));
+        struct kefir_ast_constant_expression *len_expr = kefir_ast_constant_expression_integer(mem, 1);
+        REQUIRE(len_expr != NULL,
+                KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate integral constant expression"));
+        const struct kefir_ast_type *array_type =
+            kefir_ast_type_array(mem, context->type_bundle, element_type, len_expr, NULL);
+        REQUIRE_ELSE(array_type != NULL, {
+            kefir_ast_constant_expression_free(mem, len_expr);
+            return KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed toa allocate AST array type");
+        });
+        *result = array_type;
+    } else {
+        *result = type;
+    }
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                        const struct kefir_ast_unary_operation *node,
                                                        struct kefir_ast_constant_expression_value *value) {
@@ -136,8 +157,9 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem, co
         case KEFIR_AST_OPERATION_ALIGNOF: {
             kefir_ast_target_environment_opaque_type_t opaque_type;
             struct kefir_ast_target_environment_object_info type_info;
-            REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_GET_TYPE(mem, context->target_env, node->arg->properties.type,
-                                                             &opaque_type));
+            const struct kefir_ast_type *type = NULL;
+            REQUIRE_OK(unwrap_vla_type(mem, context, node->arg->properties.type, &type));
+            REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_GET_TYPE(mem, context->target_env, type, &opaque_type));
             kefir_result_t res =
                 KEFIR_AST_TARGET_ENVIRONMENT_OBJECT_INFO(mem, context->target_env, opaque_type, NULL, &type_info);
             REQUIRE_ELSE(res == KEFIR_OK, {

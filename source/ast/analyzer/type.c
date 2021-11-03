@@ -137,7 +137,7 @@ static kefir_result_t analyze_structure(struct kefir_mem *mem, const struct kefi
                             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                                    "Flexible member is not allowed in otherwise empty structure"));
                 } else {
-                    REQUIRE(!KEFIR_AST_TYPE_IS_VARIABLY_MODIFIED(field->type),
+                    REQUIRE(!KEFIR_AST_TYPE_IS_VL_ARRAY(field->type),
                             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                                    "Structure/union cannot have variably modified members"));
                 }
