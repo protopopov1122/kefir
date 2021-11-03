@@ -58,7 +58,7 @@ static kefir_result_t translate_pointer_to_identifier(struct kefir_mem *mem,
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL:
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL:
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL:
-                return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Addressing thread-local variables is not supported yet");
+                return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected non-constant initializer element");
 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO:

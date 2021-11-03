@@ -794,5 +794,3 @@ DEFINE_CASE(ast_node_analysis_simple_assignment_operator7, "AST node analysis - 
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 }
 END_CASE
-
-// TODO: Implement compound assignment tests
