@@ -766,6 +766,9 @@ static kefir_result_t resolve_array_declarator(struct kefir_mem *mem, const stru
                 kefir_ast_constant_expression_value_evaluate(mem, context, declarator->array.length, &value);
             if (res == KEFIR_NOT_CONSTANT) {
                 kefir_clear_error();
+                REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(declarator->array.length->properties.type),
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &declarator->array.length->source_location,
+                                               "Variable-length array declaration length shall have integral type"));
                 if (declarator->array.static_array) {
                     *base_type = kefir_ast_type_vlen_array_static(mem, context->type_bundle, *base_type,
                                                                   KEFIR_AST_NODE_CLONE(mem, declarator->array.length),
