@@ -1085,7 +1085,7 @@ __kefirrt_alloca_aligned:
     mov rsp, rdi
     cld
     rep movsb
-    mov [r14 - 8], rdi
+    mov [r14 - 8], rax
     push rax
     end_opcode
 
