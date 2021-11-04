@@ -139,12 +139,22 @@ static kefir_result_t translate_array_type(struct kefir_mem *mem, const struct k
             }
             break;
 
+        case KEFIR_AST_ARRAY_VLA:
+            REQUIRE_OK(KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_STRUCT, 0, 2));
+            REQUIRE_OK(KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_WORD, 0, 0));
+            REQUIRE_OK(KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_WORD, 0, 0));
+            if (layout_ptr != NULL) {
+                *layout_ptr = kefir_ast_new_type_layout(mem, type, 0, type_index);
+                REQUIRE(*layout_ptr != NULL,
+                        KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST type layout"));
+                (*layout_ptr)->vl_array.array_ptr_field = type_index + 1;
+                (*layout_ptr)->vl_array.array_size_field = type_index + 2;
+            }
+            break;
+
         case KEFIR_AST_ARRAY_BOUNDED_STATIC:
         case KEFIR_AST_ARRAY_VLA_STATIC:
             return KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Static array type is not supported in that context");
-
-        case KEFIR_AST_ARRAY_VLA:
-            return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Variable-length arrays are not supported yet");
     }
 
     if (layout_ptr != NULL && element_layout != NULL) {

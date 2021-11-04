@@ -75,7 +75,9 @@ static kefir_result_t traverse_layout(struct kefir_mem *mem, struct kefir_ast_ty
             } break;
 
             case KEFIR_AST_TYPE_ARRAY:
-                REQUIRE_OK(traverse_layout(mem, layout->array_layout.element_type, param));
+                if (!KEFIR_AST_TYPE_IS_VL_ARRAY(layout->type)) {
+                    REQUIRE_OK(traverse_layout(mem, layout->array_layout.element_type, param));
+                }
                 break;
 
             default:

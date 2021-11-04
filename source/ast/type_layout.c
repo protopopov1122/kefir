@@ -95,7 +95,12 @@ struct kefir_ast_type_layout *kefir_ast_new_type_layout(struct kefir_mem *mem, c
             } break;
 
             case KEFIR_AST_TYPE_ARRAY:
-                layout->array_layout.element_type = NULL;
+                if (KEFIR_AST_TYPE_IS_VL_ARRAY(type)) {
+                    layout->vl_array.array_ptr_field = 0;
+                    layout->vl_array.array_size_field = 0;
+                } else {
+                    layout->array_layout.element_type = NULL;
+                }
                 break;
 
             default:
@@ -120,7 +125,9 @@ kefir_result_t kefir_ast_type_layout_free(struct kefir_mem *mem, struct kefir_as
                 break;
 
             case KEFIR_AST_TYPE_ARRAY:
-                REQUIRE_OK(kefir_ast_type_layout_free(mem, type_layout->array_layout.element_type));
+                if (!KEFIR_AST_TYPE_IS_VL_ARRAY(type_layout->type)) {
+                    REQUIRE_OK(kefir_ast_type_layout_free(mem, type_layout->array_layout.element_type));
+                }
                 break;
 
             default:

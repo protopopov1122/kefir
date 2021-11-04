@@ -308,14 +308,16 @@ static kefir_result_t traverse_object_type_layout(struct kefir_mem *mem, struct 
         } break;
 
         case KEFIR_AST_TYPE_ARRAY: {
-            REQUIRE_OK(clone_cached_type(mem, cached_type, cached_type->object.layout->array_layout.element_type,
-                                         &cached_subtype));
-            kefir_result_t res = kefir_ast_translator_type_cache_insert(mem, cache, cached_subtype);
-            if (res == KEFIR_ALREADY_EXISTS) {
-                free_cached_type(mem, cached_subtype);
-            } else {
-                REQUIRE_OK(res);
-            };
+            if (!KEFIR_AST_TYPE_IS_VL_ARRAY(cached_type->object.layout->type)) {
+                REQUIRE_OK(clone_cached_type(mem, cached_type, cached_type->object.layout->array_layout.element_type,
+                                             &cached_subtype));
+                kefir_result_t res = kefir_ast_translator_type_cache_insert(mem, cache, cached_subtype);
+                if (res == KEFIR_ALREADY_EXISTS) {
+                    free_cached_type(mem, cached_subtype);
+                } else {
+                    REQUIRE_OK(res);
+                }
+            }
         } break;
 
         default:
