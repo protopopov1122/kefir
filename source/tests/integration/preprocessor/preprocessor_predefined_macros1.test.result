@@ -12,5 +12,5 @@ lib_ext1 = __STDC_LIB_EXT1__
 no_atomics = 1
 no_complex = 1
 no_threads = __STDC_NO_THREADS__
-no_vla = 1
+no_vla = __STDC_NO_VLA__
 kefircc = 1

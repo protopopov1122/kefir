@@ -76,7 +76,7 @@ kefir_result_t kefir_preprocessor_context_init(struct kefir_mem *mem, struct kef
     context->environment.stdc_no_atomics = true;
     context->environment.stdc_no_complex = true;
     context->environment.stdc_no_threads = false;
-    context->environment.stdc_no_vla = true;
+    context->environment.stdc_no_vla = false;
 
     context->extensions = extensions;
     context->extensions_payload = NULL;
