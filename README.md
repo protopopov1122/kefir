@@ -56,9 +56,8 @@ particularly frequently, at the same time, it complicates target code generator.
 * Absence of atomics. C11 standard defines them as optional feature, which I decided
 to omit in initial implementation. Support of atomics would complicate both IR and
 target code generation.
-* Absence of VLAs. C11 standard defines them as optional feature, which I decided
-to omit in initial implementation. VLAs are implemented on AST level, however there is
-no translator and code generator support yet.
+* Variable-length arrays are supported with limitations. Namely, VLAs are deallocated upon exit from the function
+rather than at the end of block (as major compilers do).
 * Unicode and wide strings are supported under the assumption that source and target character sets are the same.
 No re-encoding is performed.
 * No `STDC` pragmas are implemented in preprocessor. Respective standard library parts are out-of-scope, thus implementing
