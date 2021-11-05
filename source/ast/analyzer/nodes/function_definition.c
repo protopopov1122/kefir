@@ -55,6 +55,7 @@ static kefir_result_t analyze_function_parameters(struct kefir_mem *mem, const s
         if (init_decl->base.properties.type->tag != KEFIR_AST_TYPE_VOID && param_identifier != NULL) {
             const struct kefir_ast_type *adjusted_type = kefir_ast_type_conv_adjust_function_parameter(
                 mem, context->type_bundle, init_decl->base.properties.type);
+
             REQUIRE_OK(kefir_ast_local_context_define_auto(mem, local_context, param_identifier, adjusted_type, NULL,
                                                            NULL, &init_decl->base.source_location, NULL));
         }
@@ -80,15 +81,15 @@ static kefir_result_t analyze_function_parameter_identifiers_impl(struct kefir_m
         REQUIRE_OK(kefir_ast_declaration_unpack_single(decl_list, &decl));
 
         const char *identifier = NULL;
-        const struct kefir_ast_type *type = NULL;
+        const struct kefir_ast_type *type = NULL, *original_type = NULL;
         kefir_ast_scoped_identifier_storage_t storage = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN;
         kefir_ast_function_specifier_t function_specifier = KEFIR_AST_FUNCTION_SPECIFIER_NONE;
         kefir_size_t alignment = 0;
         REQUIRE_OK(kefir_ast_analyze_declaration(mem, &local_context->context, &decl->declaration->specifiers,
-                                                 decl->declarator, &identifier, &type, &storage, &function_specifier,
-                                                 &alignment));
+                                                 decl->declarator, &identifier, &original_type, &storage,
+                                                 &function_specifier, &alignment));
 
-        type = kefir_ast_type_conv_adjust_function_parameter(mem, context->type_bundle, type);
+        type = kefir_ast_type_conv_adjust_function_parameter(mem, context->type_bundle, original_type);
 
         REQUIRE(
             kefir_hashtree_has(argtree, (kefir_hashtree_key_t) identifier),
@@ -115,7 +116,7 @@ static kefir_result_t analyze_function_parameter_identifiers_impl(struct kefir_m
         decl->base.properties.declaration_props.scoped_id = param_scoped_id;
         decl->base.properties.declaration_props.static_assertion = false;
         decl->base.properties.declaration_props.storage = storage;
-        decl->base.properties.type = type;
+        decl->base.properties.type = original_type;
 
         decl_list->base.properties.category = KEFIR_AST_NODE_CATEGORY_DECLARATION;
     }

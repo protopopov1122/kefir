@@ -239,6 +239,22 @@ static kefir_result_t xchg_param_address(struct kefir_irbuilder_block *builder, 
     return KEFIR_OK;
 }
 
+struct vl_modified_param {
+    struct kefir_mem *mem;
+    struct kefir_irbuilder_block *builder;
+    struct kefir_ast_translator_context *context;
+};
+
+static kefir_result_t translate_variably_modified(const struct kefir_ast_node_base *node, void *payload) {
+    REQUIRE(node != NULL, KEFIR_OK);
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct vl_modified_param *, param, payload);
+
+    REQUIRE_OK(kefir_ast_translate_expression(param->mem, node, param->builder, param->context));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(param->builder, KEFIR_IROPCODE_POP, 0));
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_translator_function_context_translate(
     struct kefir_mem *mem, struct kefir_ast_translator_function_context *function_context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
@@ -284,17 +300,36 @@ kefir_result_t kefir_ast_translator_function_context_translate(
                 }
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POP, 0));
             }
+
+            REQUIRE_OK(kefir_ast_type_list_variable_modificators(
+                init_decl->base.properties.type, translate_variably_modified,
+                &(struct vl_modified_param){.mem = mem, .context = context, .builder = builder}));
         } else if (param->klass->type == KEFIR_AST_IDENTIFIER) {
             ASSIGN_DECL_CAST(struct kefir_ast_identifier *, id_node, param->self);
             REQUIRE_OK(local_context->context.resolve_ordinary_identifier(&local_context->context, id_node->identifier,
                                                                           &scoped_id));
             REQUIRE_OK(kefir_ast_translator_object_lvalue(mem, context, builder, id_node->identifier, scoped_id));
             REQUIRE_OK(xchg_param_address(builder, scoped_id->object.type));
-            REQUIRE_OK(kefir_ast_translator_store_value(mem, scoped_id->type, context, builder));
+            REQUIRE_OK(kefir_ast_translator_store_value(mem, scoped_id->object.type, context, builder));
         } else {
             return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR,
                                    "Expected function parameter to be either AST declaration or identifier");
         }
+    }
+
+    for (const struct kefir_list_entry *iter = kefir_list_head(&function_context->function_definition->declarations);
+         iter != NULL; kefir_list_next(&iter)) {
+
+        ASSIGN_DECL_CAST(struct kefir_ast_node_base *, decl_node, iter->value);
+        REQUIRE(decl_node->klass->type == KEFIR_AST_DECLARATION,
+                KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected AST declaration node"));
+        ASSIGN_DECL_CAST(struct kefir_ast_declaration *, decl_list, decl_node->self);
+        struct kefir_ast_init_declarator *decl = NULL;
+        REQUIRE_OK(kefir_ast_declaration_unpack_single(decl_list, &decl));
+
+        REQUIRE_OK(kefir_ast_type_list_variable_modificators(
+            decl->base.properties.type, translate_variably_modified,
+            &(struct vl_modified_param){.mem = mem, .context = context, .builder = builder}));
     }
 
     for (const struct kefir_list_entry *iter = kefir_list_head(&function->body->block_items); iter != NULL;
