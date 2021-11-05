@@ -24,12 +24,28 @@
 #include <math.h>
 #include "./definitions.h"
 
+static unsigned int ARR[2] = {0, 0};
+
+void callback1(unsigned int val) {
+    ARR[0] = val;
+}
+
+void callback2(unsigned int val) {
+    ARR[1] = val;
+}
+
 int main() {
     assert(int_at(0, 0) == 0);
     assert(int_at(1, 0) == 1);
+    assert(ARR[0] == 1);
+    assert(ARR[1] == 0);
     assert(int_at(1, 1) == 0);
+    assert(ARR[0] == 1);
+    assert(ARR[1] == 1);
     for (unsigned int i = 0; i < 256; i++) {
         assert(int_at(256, i) == i + 1);
+        assert(ARR[0] == 256);
+        assert(ARR[1] == i);
     }
     return EXIT_SUCCESS;
 }

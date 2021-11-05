@@ -82,7 +82,10 @@ typedef struct kefir_ast_type_bundle {
 
 const struct kefir_ast_type_traits *kefir_ast_default_type_traits();
 kefir_bool_t kefir_ast_type_is_complete(const struct kefir_ast_type *);
-const struct kefir_ast_node_base *kefir_ast_type_get_variable_modificator(const struct kefir_ast_type *);
+kefir_result_t kefir_ast_type_list_variable_modificators(const struct kefir_ast_type *,
+                                                         kefir_result_t (*)(const struct kefir_ast_node_base *, void *),
+                                                         void *);
+const struct kefir_ast_node_base *kefir_ast_type_get_top_variable_modificator(const struct kefir_ast_type *);
 kefir_bool_t kefir_ast_type_is_variably_modified(const struct kefir_ast_type *);
 
 kefir_result_t kefir_ast_type_bundle_init(struct kefir_ast_type_bundle *, struct kefir_symbol_table *);

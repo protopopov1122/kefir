@@ -106,31 +106,63 @@ kefir_bool_t kefir_ast_type_is_complete(const struct kefir_ast_type *type) {
     }
 }
 
-const struct kefir_ast_node_base *kefir_ast_type_get_variable_modificator(const struct kefir_ast_type *type) {
-    REQUIRE(type != NULL, NULL);
+kefir_result_t kefir_ast_type_list_variable_modificators(const struct kefir_ast_type *type,
+                                                         kefir_result_t (*callback)(const struct kefir_ast_node_base *,
+                                                                                    void *),
+                                                         void *payload) {
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
+    REQUIRE(callback != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node callback"));
+
     switch (type->tag) {
         case KEFIR_AST_TYPE_ARRAY:
-            if (type->array_type.boundary == KEFIR_AST_ARRAY_VLA ||
-                type->array_type.boundary == KEFIR_AST_ARRAY_VLA_STATIC) {
-                return type->array_type.vla_length;
+            if (KEFIR_AST_TYPE_IS_VL_ARRAY(type)) {
+                kefir_result_t res = callback(type->array_type.vla_length, payload);
+                if (res != KEFIR_YIELD) {
+                    REQUIRE_OK(res);
+                    REQUIRE_OK(
+                        kefir_ast_type_list_variable_modificators(type->array_type.element_type, callback, payload));
+                }
             } else {
-                return kefir_ast_type_get_variable_modificator(type->array_type.element_type);
+                REQUIRE_OK(kefir_ast_type_list_variable_modificators(type->array_type.element_type, callback, payload));
             }
+            break;
 
         case KEFIR_AST_TYPE_SCALAR_POINTER:
-            return kefir_ast_type_get_variable_modificator(type->referenced_type);
+            REQUIRE_OK(kefir_ast_type_list_variable_modificators(type->referenced_type, callback, payload));
+            break;
 
         case KEFIR_AST_TYPE_QUALIFIED:
-            return kefir_ast_type_get_variable_modificator(type->qualified_type.type);
+            REQUIRE_OK(kefir_ast_type_list_variable_modificators(type->qualified_type.type, callback, payload));
+            break;
 
         default:
             // All other types cannot be variably-modified
-            return NULL;
+            break;
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t list_vl_modifiers(const struct kefir_ast_node_base *node, void *payload) {
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
+    ASSIGN_DECL_CAST(const struct kefir_ast_node_base **, found, payload);
+    if (node != NULL) {
+        *found = node;
+        return KEFIR_YIELD;
+    } else {
+        return KEFIR_OK;
     }
 }
 
+const struct kefir_ast_node_base *kefir_ast_type_get_top_variable_modificator(const struct kefir_ast_type *type) {
+    REQUIRE(type != NULL, NULL);
+    const struct kefir_ast_node_base *node = NULL;
+    kefir_ast_type_list_variable_modificators(type, list_vl_modifiers, &node);
+    kefir_clear_error();
+    return node;
+}
+
 kefir_bool_t kefir_ast_type_is_variably_modified(const struct kefir_ast_type *type) {
-    return kefir_ast_type_get_variable_modificator(type) != NULL;
+    return kefir_ast_type_get_top_variable_modificator(type) != NULL;
 }
 
 static kefir_result_t free_type_bundle(struct kefir_mem *mem, struct kefir_list *list, struct kefir_list_entry *entry,

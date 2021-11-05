@@ -30,6 +30,7 @@ unsigned int int_at(unsigned int x, unsigned int idx) {
         array[i] = i + 1;
     }
 
+    void *(*callback_trigger)[(callback1(x), 1)][(callback2(idx), 1)];
     if (idx < x) {
         return array[idx];
     } else {

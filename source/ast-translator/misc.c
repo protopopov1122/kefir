@@ -48,7 +48,7 @@ kefir_result_t kefir_ast_translate_sizeof(struct kefir_mem *mem, struct kefir_as
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
 
     if (KEFIR_AST_TYPE_IS_VL_ARRAY(type)) {
-        const struct kefir_ast_node_base *vlen = kefir_ast_type_get_variable_modificator(type);
+        const struct kefir_ast_node_base *vlen = kefir_ast_type_get_top_variable_modificator(type);
         REQUIRE(vlen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_STATE,
                                               "Unable to determine size of VLA with unspecified variable modifier"));
         REQUIRE_OK(kefir_ast_translate_sizeof(mem, context, builder, type->array_type.element_type));

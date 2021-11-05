@@ -21,6 +21,8 @@
 #ifndef DEFINITIONS_H_
 #define DEFINITIONS_H_
 
+void callback1(unsigned int);
+void callback2(unsigned int);
 unsigned int int_at(unsigned int, unsigned int);
 
 #endif

@@ -25,6 +25,53 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
+static kefir_result_t translate_vla_declaration(struct kefir_mem *mem, const struct kefir_ast_node_base *node,
+                                                struct kefir_irbuilder_block *builder,
+                                                struct kefir_ast_translator_context *context) {
+    REQUIRE(node->properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO ||
+                node->properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER,
+            KEFIR_SET_ERROR(KEFIR_INVALID_STATE,
+                            "Variable-length array can only have either automatic or register storage specifier"));
+
+    ASSIGN_DECL_CAST(struct kefir_ast_init_declarator *, declaration, node->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, identifier_data,
+                     declaration->base.properties.declaration_props.scoped_id->payload.ptr);
+
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_GETLOCALS, 0));
+    REQUIRE_OK(
+        kefir_ast_translator_resolve_type_layout(builder, identifier_data->type_id, identifier_data->layout, NULL));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_OFFSETPTR, identifier_data->type_id,
+                                               identifier_data->layout->vl_array.array_ptr_field));
+    REQUIRE_OK(kefir_ast_translate_sizeof(mem, context, builder, node->properties.type));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_GETLOCALS, 0));
+    REQUIRE_OK(
+        kefir_ast_translator_resolve_type_layout(builder, identifier_data->type_id, identifier_data->layout, NULL));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_OFFSETPTR, identifier_data->type_id,
+                                               identifier_data->layout->vl_array.array_size_field));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_PICK, 1));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE64, 0));
+    REQUIRE_OK(kefir_ast_translate_alignof(mem, context, builder, node->properties.type));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_ALLOCA, 0));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE64, 0));
+    return KEFIR_OK;
+}
+
+struct vl_modified_param {
+    struct kefir_mem *mem;
+    struct kefir_irbuilder_block *builder;
+    struct kefir_ast_translator_context *context;
+};
+
+static kefir_result_t translate_variably_modified(const struct kefir_ast_node_base *node, void *payload) {
+    REQUIRE(node != NULL, KEFIR_OK);
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct vl_modified_param *, param, payload);
+
+    REQUIRE_OK(kefir_ast_translate_expression(param->mem, node, param->builder, param->context));
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(param->builder, KEFIR_IROPCODE_POP, 0));
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_translate_declaration(struct kefir_mem *mem, const struct kefir_ast_node_base *node,
                                                struct kefir_irbuilder_block *builder,
                                                struct kefir_ast_translator_context *context) {
@@ -45,35 +92,13 @@ kefir_result_t kefir_ast_translate_declaration(struct kefir_mem *mem, const stru
             node->properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF) {
             // Deliberately left blank
         } else if (KEFIR_AST_TYPE_IS_VL_ARRAY(node->properties.type)) {
-            REQUIRE(
-                node->properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO ||
-                    node->properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER,
-                KEFIR_SET_ERROR(KEFIR_INVALID_STATE,
-                                "Variable-length array can only have either automatic or register storage specifier"));
-
-            ASSIGN_DECL_CAST(struct kefir_ast_init_declarator *, declaration, node->self);
-            ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, identifier_data,
-                             declaration->base.properties.declaration_props.scoped_id->payload.ptr);
-
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_GETLOCALS, 0));
-            REQUIRE_OK(kefir_ast_translator_resolve_type_layout(builder, identifier_data->type_id,
-                                                                identifier_data->layout, NULL));
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_OFFSETPTR,
-                                                       identifier_data->layout->vl_array.array_ptr_field));
-            REQUIRE_OK(kefir_ast_translate_sizeof(mem, context, builder, node->properties.type));
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_GETLOCALS, 0));
-            REQUIRE_OK(kefir_ast_translator_resolve_type_layout(builder, identifier_data->type_id,
-                                                                identifier_data->layout, NULL));
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_OFFSETPTR,
-                                                       identifier_data->layout->vl_array.array_size_field));
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_PICK, 1));
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE64, 0));
-            REQUIRE_OK(kefir_ast_translate_alignof(mem, context, builder, node->properties.type));
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_ALLOCA, 0));
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_STORE64, 0));
+            REQUIRE_OK(translate_vla_declaration(mem, node, builder, context));
         } else {
-            // TODO Translate variable-modified parts
             ASSIGN_DECL_CAST(struct kefir_ast_init_declarator *, declaration, node->self);
+            struct vl_modified_param vl_param = {.mem = mem, .context = context, .builder = builder};
+            REQUIRE_OK(kefir_ast_type_list_variable_modificators(declaration->base.properties.type,
+                                                                 translate_variably_modified, &vl_param));
+
             REQUIRE(declaration->initializer != NULL, KEFIR_OK);
 
             kefir_ast_scoped_identifier_storage_t storage = declaration->base.properties.declaration_props.storage;
