@@ -121,8 +121,17 @@ static kefir_result_t translate_logical_not_inversion(struct kefir_mem *mem,
 static kefir_result_t translate_sizeof(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
                                        struct kefir_irbuilder_block *builder,
                                        const struct kefir_ast_unary_operation *node) {
-    if (KEFIR_AST_TYPE_IS_VL_ARRAY(node->arg->properties.type) && node->arg->properties.expression_props.lvalue) {
-        return KEFIR_SET_ERROR(KEFIR_NOT_IMPLEMENTED, "Sizeof of lvalue VL arrays is not implemented yet");
+    if (KEFIR_AST_TYPE_IS_VL_ARRAY(node->arg->properties.type) &&
+        node->arg->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION &&
+        node->arg->properties.expression_props.scoped_id != NULL) {
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, identifier_data,
+                         node->arg->properties.expression_props.scoped_id->payload.ptr);
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_GETLOCALS, 0));
+        REQUIRE_OK(
+            kefir_ast_translator_resolve_type_layout(builder, identifier_data->type_id, identifier_data->layout, NULL));
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_OFFSETPTR, identifier_data->type_id,
+                                                   identifier_data->layout->vl_array.array_size_field));
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD64, 0));
     } else {
         REQUIRE_OK(kefir_ast_translate_sizeof(mem, context, builder, node->arg->properties.type));
     }
