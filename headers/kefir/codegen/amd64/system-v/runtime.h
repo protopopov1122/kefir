@@ -24,6 +24,7 @@
 #include "kefir/core/basic-types.h"
 
 #define KEFIR_AMD64_SYSTEM_V_RUNTIME_PRESERVE_STATE "__kefirrt_preserve_state"
+#define KEFIR_AMD64_SYSTEM_V_RUNTIME_GENERIC_PROLOGUE "__kefirrt_generic_prologue"
 #define KEFIR_AMD64_SYSTEM_V_RUNTIME_RESTORE_STATE "__kefirrt_restore_state"
 #define KEFIR_AMD64_SYSTEM_V_RUNTIME_SAVE_REGISTERS "__kefirrt_save_registers"
 #define KEFIR_AMD64_SYSTEM_V_RUNTIME_VARARG_INT "__kefirrt_load_integer_vararg"

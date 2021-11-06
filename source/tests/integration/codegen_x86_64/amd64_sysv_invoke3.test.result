@@ -121,9 +121,7 @@
 proxyadd:
     call __kefirrt_preserve_state
     sub rsp, 48
-    mov r14, rsp
-    lea r12, [r14 - 8]
-    push r12
+    call __kefirrt_generic_prologue
     push rdi
     mov [r14 + 32], rsi
     pextrq r12, xmm0, 0

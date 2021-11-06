@@ -120,9 +120,7 @@
 insert:
 call __kefirrt_preserve_state
 sub rsp, 16
-mov r14, rsp
-lea r12, [r14 - 8]
-push r12
+call __kefirrt_generic_prologue
 lea rbx, [__insert_body]
 jmp [rbx]
 __insert_body:
@@ -179,9 +177,7 @@ jmp __kefirrt_restore_state
 extracts:
 call __kefirrt_preserve_state
 sub rsp, 16
-mov r14, rsp
-lea r12, [r14 - 8]
-push r12
+call __kefirrt_generic_prologue
 lea rbx, [__extracts_body]
 jmp [rbx]
 __extracts_body:
@@ -238,9 +234,7 @@ jmp __kefirrt_restore_state
 extractu:
 call __kefirrt_preserve_state
 sub rsp, 16
-mov r14, rsp
-lea r12, [r14 - 8]
-push r12
+call __kefirrt_generic_prologue
 lea rbx, [__extractu_body]
 jmp [rbx]
 __extractu_body:

@@ -168,6 +168,7 @@ declare_opcode ldcf64
 declare_opcode alloca
 # Runtime
 declare_runtime __kefirrt_preserve_state
+declare_runtime __kefirrt_generic_prologue
 declare_runtime __kefirrt_restore_state
 declare_runtime __kefirrt_save_registers
 declare_runtime __kefirrt_load_integer_vararg
@@ -1072,6 +1073,7 @@ define_opcode alloca
     mov rsi, [r14 - 8]  # Current stack base
     mov rax, rsi        # Pointer to allocation
     sub rax, r13
+    and rax, -8
     cmp r12, 0
     je __kefirrt_alloca_aligned
     neg r12
@@ -1102,6 +1104,15 @@ __kefirrt_preserve_state:
     sub rsp, 24
     fstcw [rsp + 16]
     stmxcsr [rsp + 8]
+    jmp r11
+
+__kefirrt_generic_prologue:
+    pop r11
+    mov r14, rsp
+    sub rsp, 16
+    mov [r14 - 8], rsp
+    xor r12, r12
+    mov [r14 - 16], r12
     jmp r11
 
 __kefirrt_restore_state:

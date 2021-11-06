@@ -121,9 +121,7 @@
 func1:
     call __kefirrt_preserve_state
     sub rsp, 16
-    mov r14, rsp
-    lea r12, [r14 - 8]
-    push r12
+    call __kefirrt_generic_prologue
     lea rbx, [__func1_body]
     jmp [rbx]
 __func1_body:
