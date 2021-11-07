@@ -34,6 +34,8 @@ kefir_result_t kefir_ir_format_instr_i64(struct kefir_json_output *, const struc
                                          const struct kefir_irinstr *);
 kefir_result_t kefir_ir_format_instr_u64(struct kefir_json_output *, const struct kefir_ir_module *,
                                          const struct kefir_irinstr *);
+kefir_result_t kefir_ir_format_instr_bool(struct kefir_json_output *, const struct kefir_ir_module *,
+                                          const struct kefir_irinstr *);
 kefir_result_t kefir_ir_format_instr_u32(struct kefir_json_output *, const struct kefir_ir_module *,
                                          const struct kefir_irinstr *);
 kefir_result_t kefir_ir_format_instr_f32(struct kefir_json_output *, const struct kefir_ir_module *,

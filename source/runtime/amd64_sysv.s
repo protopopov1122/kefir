@@ -166,6 +166,8 @@ declare_opcode f64cld
 declare_opcode ldcf32
 declare_opcode ldcf64
 declare_opcode alloca
+declare_opcode pushscope
+declare_opcode popscope
 # Runtime
 declare_runtime __kefirrt_preserve_state
 declare_runtime __kefirrt_generic_prologue
@@ -1068,6 +1070,12 @@ define_opcode ldcf64
     end_opcode
 
 define_opcode alloca
+    mov r12, [INSTR_ARG_PTR]
+    cmp r12, 0
+    je __kefirrt_alloca_noreset
+    xor r12, r12
+    mov [r14 - 16], r12
+__kefirrt_alloca_noreset:
     pop r12             # Alignment
     pop r13             # Size
     mov rsi, [r14 - 8]  # Current stack base
@@ -1089,6 +1097,33 @@ __kefirrt_alloca_aligned:
     rep movsb
     mov [r14 - 8], rax
     push rax
+    end_opcode
+
+define_opcode pushscope
+    mov r12, [r14 - 16]
+    push r12
+    mov r12, [r14 - 8]
+    mov [r14 - 16], r12
+    end_opcode
+
+define_opcode popscope
+    pop rax
+    mov rdi, [r14 - 16]
+    cmp rdi, 0
+    je __kefirrt_popscope_end
+    mov rsi, [r14 - 8]
+    mov rcx, rsi
+    sub rcx, rsp
+    dec rsi
+    dec rdi
+    std
+    rep movsb
+    cld
+    mov r12, [r14 - 16]
+    lea rsp, [rdi + 1]
+    mov [r14 - 8], r12
+    mov [r14 - 16], rax
+__kefirrt_popscope_end:
     end_opcode
 
 # Runtime helpers

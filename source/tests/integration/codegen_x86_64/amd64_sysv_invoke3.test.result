@@ -108,6 +108,8 @@
 .extern __kefirrt_f64cld_impl
 .extern __kefirrt_ldcf32_impl
 .extern __kefirrt_ldcf64_impl
+.extern __kefirrt_pushscope_impl
+.extern __kefirrt_popscope_impl
 .extern __kefirrt_preserve_state
 .extern __kefirrt_restore_state
 .extern __kefirrt_save_registers

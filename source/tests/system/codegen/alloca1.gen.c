@@ -48,7 +48,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_type_append_v(mem, func->declaration->result, KEFIR_IR_TYPE_LONG, 0, 0);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_PUSHI64, 128);  // [A1, A2, 128]
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_PUSHI64, 0);    // [A1, A2, 128, 0]
-    kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_ALLOCA, 0);     // [A1, A2, PTR1]
+    kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_ALLOCA, 1);     // [A1, A2, PTR1]
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_PICK, 2);       // [A1, A2, PTR1, A1]
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_PICK, 1);       // [A1, A2, PTR1, A1, PTR1]
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_XCHG, 1);       // [A1, A2, PTR1, PTR1, A1]
@@ -67,7 +67,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_IADD, 0);       // [A1, A2, RES]
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_PUSHI64, 30);   // [A1, A2, RES, 30]
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_PUSHI64, 4);    // [A1, A2, RES, 30, 4]
-    kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_ALLOCA, 0);     // [A1, A2, RES, PTR]
+    kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_ALLOCA, 1);     // [A1, A2, RES, PTR]
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_PICK, 0);       // [A1, A2, RES, PTR, PTR]
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_PICK, 2);       // [A1, A2, RES, PTR, PTR, RES]
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_STORE64, 0);    // [A1, A2, RES, PTR]

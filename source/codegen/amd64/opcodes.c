@@ -51,7 +51,7 @@ static struct {
     HANDLER(F32CINT),   HANDLER(F64CINT),    HANDLER(INTCF32),    HANDLER(INTCF64),    HANDLER(UINTCF32),
     HANDLER(UINTCF64),  HANDLER(F32CF64),    HANDLER(F64CF32),    HANDLER(ALLOCA),     HANDLER(INTCLD),
     HANDLER(UINTCLD),   HANDLER(LDCINT),     HANDLER(F32CLD),     HANDLER(F64CLD),     HANDLER(LDCF32),
-    HANDLER(LDCF64)};
+    HANDLER(LDCF64),    HANDLER(PUSHSCOPE),  HANDLER(POPSCOPE)};
 
 const char *kefir_amd64_iropcode_handler(kefir_iropcode_t opcode) {
     for (kefir_size_t i = 0; i < sizeof(OPCODE_HANDLERS) / sizeof(OPCODE_HANDLERS[0]); i++) {
