@@ -145,9 +145,6 @@
             "locals": [],
             "body": [
                 {
-                    "opcode": "pushscope"
-                },
-                {
                     "opcode": "push",
                     "arg": 10
                 },
@@ -163,9 +160,6 @@
                 },
                 {
                     "opcode": "ret"
-                },
-                {
-                    "opcode": "popscope"
                 }
             ]
         },
@@ -174,9 +168,6 @@
             "name": "return2",
             "locals": [],
             "body": [
-                {
-                    "opcode": "pushscope"
-                },
                 {
                     "opcode": "push",
                     "arg": 10
@@ -196,9 +187,6 @@
                 },
                 {
                     "opcode": "ret"
-                },
-                {
-                    "opcode": "popscope"
                 }
             ]
         },

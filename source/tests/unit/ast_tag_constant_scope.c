@@ -145,7 +145,7 @@ DEFINE_CASE(ast_type_scope2, "AST Declaration scoping - tagged type scoping #2")
     ASSERT(scoped_id->type->structure_type.complete);
     ASSERT(&scoped_id->type->structure_type == union_type1);
 
-    ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context));
+    ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context, NULL));
 
     ASSERT_OK(kefir_ast_local_context_resolve_scoped_tag_identifier(&context, "type1", &scoped_id));
     ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_TYPE_TAG);
@@ -185,7 +185,7 @@ DEFINE_CASE(ast_type_scope2, "AST Declaration scoping - tagged type scoping #2")
     ASSERT(scoped_id->type->enumeration_type.complete);
     ASSERT(&scoped_id->type->enumeration_type == enum_type1);
 
-    ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context));
+    ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context, NULL));
 
     ASSERT_OK(kefir_ast_local_context_resolve_scoped_tag_identifier(&context, "type1", &scoped_id));
     ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_TYPE_TAG);
@@ -194,8 +194,8 @@ DEFINE_CASE(ast_type_scope2, "AST Declaration scoping - tagged type scoping #2")
     ASSERT(scoped_id->type->enumeration_type.complete);
     ASSERT(&scoped_id->type->enumeration_type == enum_type1);
 
-    ASSERT_OK(kefir_ast_local_context_pop_block_scope(&context));
-    ASSERT_OK(kefir_ast_local_context_pop_block_scope(&context));
+    ASSERT_OK(kefir_ast_local_context_pop_block_scope(&kft_mem, &context));
+    ASSERT_OK(kefir_ast_local_context_pop_block_scope(&kft_mem, &context));
 
     ASSERT_OK(kefir_ast_local_context_resolve_scoped_tag_identifier(&context, "type1", &scoped_id));
     ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_TYPE_TAG);
@@ -261,7 +261,7 @@ DEFINE_CASE(ast_type_scope3, "AST Declaration scoping - tagged type scoping #3")
     ASSERT(&scoped_id->type->structure_type == struct_type1);
 
     do {
-        ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context));
+        ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context, NULL));
 
         ASSERT_OK(kefir_ast_local_context_resolve_scoped_tag_identifier(&context, "struct1", &scoped_id));
         ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_TYPE_TAG);
@@ -308,7 +308,7 @@ DEFINE_CASE(ast_type_scope3, "AST Declaration scoping - tagged type scoping #3")
         ASSERT(&scoped_id->type->structure_type == union_type1);
 
         do {
-            ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context));
+            ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context, NULL));
 
             ASSERT_OK(kefir_ast_local_context_resolve_scoped_tag_identifier(&context, "struct1", &scoped_id));
             ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_TYPE_TAG);
@@ -368,7 +368,7 @@ DEFINE_CASE(ast_type_scope3, "AST Declaration scoping - tagged type scoping #3")
                                        type_traits->underlying_enumeration_type));
 
             do {
-                ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context));
+                ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context, NULL));
 
                 ASSERT_OK(kefir_ast_local_context_define_tag(
                     &kft_mem, &context, kefir_ast_type_incomplete_structure(&kft_mem, &type_bundle, "enum1"), NULL,
@@ -400,7 +400,7 @@ DEFINE_CASE(ast_type_scope3, "AST Declaration scoping - tagged type scoping #3")
                 ASSERT(strcmp(scoped_id->type->enumeration_type.identifier, "union1") == 0);
                 ASSERT(!scoped_id->type->enumeration_type.complete);
 
-                ASSERT_OK(kefir_ast_local_context_pop_block_scope(&context));
+                ASSERT_OK(kefir_ast_local_context_pop_block_scope(&kft_mem, &context));
             } while (0);
 
             ASSERT_OK(kefir_ast_local_context_resolve_scoped_tag_identifier(&context, "enum1", &scoped_id));
@@ -410,7 +410,7 @@ DEFINE_CASE(ast_type_scope3, "AST Declaration scoping - tagged type scoping #3")
             ASSERT(scoped_id->type->enumeration_type.complete);
             ASSERT(&scoped_id->type->enumeration_type == enum_type1);
 
-            ASSERT_OK(kefir_ast_local_context_pop_block_scope(&context));
+            ASSERT_OK(kefir_ast_local_context_pop_block_scope(&kft_mem, &context));
         } while (0);
 
         ASSERT_OK(kefir_ast_local_context_resolve_scoped_tag_identifier(&context, "union1", &scoped_id));
@@ -422,7 +422,7 @@ DEFINE_CASE(ast_type_scope3, "AST Declaration scoping - tagged type scoping #3")
 
         ASSERT_NOK(kefir_ast_local_context_resolve_scoped_tag_identifier(&context, "enum1", &scoped_id));
 
-        ASSERT_OK(kefir_ast_local_context_pop_block_scope(&context));
+        ASSERT_OK(kefir_ast_local_context_pop_block_scope(&kft_mem, &context));
     } while (0);
 
     ASSERT_OK(kefir_ast_local_context_resolve_scoped_tag_identifier(&context, "struct1", &scoped_id));
@@ -500,7 +500,7 @@ DEFINE_CASE(ast_ordinary_constant_scope1, "AST ordinary scope - constant scoping
     ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type, type_traits->underlying_enumeration_type));
 
     do {
-        ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context));
+        ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context, NULL));
 
         ASSERT_OK(kefir_ast_local_context_resolve_scoped_ordinary_identifier(&context, "c1", &scoped_id));
         ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
@@ -558,7 +558,7 @@ DEFINE_CASE(ast_ordinary_constant_scope1, "AST ordinary scope - constant scoping
         ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type, type_traits->underlying_enumeration_type));
 
         do {
-            ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context));
+            ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context, NULL));
 
             ASSERT_OK(kefir_ast_local_context_resolve_scoped_ordinary_identifier(&context, "c3", &scoped_id));
             ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_ENUM_CONSTANT);
@@ -603,7 +603,7 @@ DEFINE_CASE(ast_ordinary_constant_scope1, "AST ordinary scope - constant scoping
             ASSERT(scoped_id->enum_constant.value->value.integer == 500);
             ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->enum_constant.type, type_traits->underlying_enumeration_type));
 
-            ASSERT_OK(kefir_ast_local_context_pop_block_scope(&context));
+            ASSERT_OK(kefir_ast_local_context_pop_block_scope(&kft_mem, &context));
         } while (0);
 
         struct kefir_ast_constant_expression *cexpr = kefir_ast_constant_expression_integer(&kft_mem, 100);
@@ -615,7 +615,7 @@ DEFINE_CASE(ast_ordinary_constant_scope1, "AST ordinary scope - constant scoping
                                                            type_traits->underlying_enumeration_type, NULL, NULL));
         ASSERT_OK(kefir_ast_constant_expression_free(&kft_mem, cexpr));
 
-        ASSERT_OK(kefir_ast_local_context_pop_block_scope(&context));
+        ASSERT_OK(kefir_ast_local_context_pop_block_scope(&kft_mem, &context));
     } while (0);
 
     ASSERT_OK(kefir_ast_local_context_resolve_scoped_ordinary_identifier(&context, "c1", &scoped_id));

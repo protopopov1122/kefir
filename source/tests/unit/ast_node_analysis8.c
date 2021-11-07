@@ -435,7 +435,7 @@ DEFINE_CASE(ast_node_analysis_labeled_statements2, "AST node analysis - labeled 
     struct kefir_ast_labeled_statement *stmt5;
     struct kefir_ast_labeled_statement *stmt6;
     do {
-        ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &local_context));
+        ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &local_context, NULL));
         stmt4 = kefir_ast_new_labeled_statement(
             &kft_mem, context->symbols, "label3",
             KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(
@@ -443,7 +443,7 @@ DEFINE_CASE(ast_node_analysis_labeled_statements2, "AST node analysis - labeled 
         ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(stmt4)));
 
         do {
-            ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &local_context));
+            ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &local_context, NULL));
             stmt5 = kefir_ast_new_labeled_statement(
                 &kft_mem, context->symbols, "label4",
                 KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(
@@ -455,10 +455,10 @@ DEFINE_CASE(ast_node_analysis_labeled_statements2, "AST node analysis - labeled 
                 KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(
                     &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 'f')))));
             ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(stmt6)));
-            ASSERT_OK(kefir_ast_local_context_pop_block_scope(&local_context));
+            ASSERT_OK(kefir_ast_local_context_pop_block_scope(&kft_mem, &local_context));
         } while (0);
 
-        ASSERT_OK(kefir_ast_local_context_pop_block_scope(&local_context));
+        ASSERT_OK(kefir_ast_local_context_pop_block_scope(&kft_mem, &local_context));
     } while (0);
 
     ASSERT_OK(context->resolve_label_identifier(context, "label3", &scoped_id));

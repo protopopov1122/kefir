@@ -234,9 +234,11 @@ static kefir_result_t context_reference_label(struct kefir_mem *mem, const struc
                                   "Labels cannot be defined or referenced in a global context");
 }
 
-static kefir_result_t context_push_block(struct kefir_mem *mem, const struct kefir_ast_context *context) {
+static kefir_result_t context_push_block(struct kefir_mem *mem, const struct kefir_ast_context *context,
+                                         struct kefir_ast_context_block_descriptor *block_descr) {
     UNUSED(mem);
     UNUSED(context);
+    UNUSED(block_descr);
 
     return KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Blocks cannot be pushed in a global context");
 }

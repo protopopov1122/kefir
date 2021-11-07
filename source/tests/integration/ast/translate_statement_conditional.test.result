@@ -76,8 +76,52 @@
             "locals": [],
             "body": [
                 {
-                    "opcode": "pushscope"
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "condition"
+                    }
                 },
+                {
+                    "opcode": "load32i"
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "branch",
+                    "arg": 10
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "result"
+                    }
+                },
+                {
+                    "opcode": "push",
+                    "arg": -1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store32"
+                },
+                {
+                    "opcode": "pop"
+                }
+            ]
+        },
+        {
+            "identifier": 1,
+            "name": "conditional2",
+            "locals": [],
+            "body": [
                 {
                     "opcode": "getglobal",
                     "arg": {
@@ -102,59 +146,6 @@
                 },
                 {
                     "opcode": "push",
-                    "arg": -1
-                },
-                {
-                    "opcode": "xchg",
-                    "arg": 1
-                },
-                {
-                    "opcode": "pick",
-                    "arg": 1
-                },
-                {
-                    "opcode": "store32"
-                },
-                {
-                    "opcode": "pop"
-                },
-                {
-                    "opcode": "popscope"
-                }
-            ]
-        },
-        {
-            "identifier": 1,
-            "name": "conditional2",
-            "locals": [],
-            "body": [
-                {
-                    "opcode": "pushscope"
-                },
-                {
-                    "opcode": "getglobal",
-                    "arg": {
-                        "data": "condition"
-                    }
-                },
-                {
-                    "opcode": "load32i"
-                },
-                {
-                    "opcode": "bnot"
-                },
-                {
-                    "opcode": "branch",
-                    "arg": 12
-                },
-                {
-                    "opcode": "getglobal",
-                    "arg": {
-                        "data": "result"
-                    }
-                },
-                {
-                    "opcode": "push",
                     "arg": 1
                 },
                 {
@@ -173,7 +164,7 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 18
+                    "arg": 17
                 },
                 {
                     "opcode": "getglobal",
@@ -198,9 +189,6 @@
                 },
                 {
                     "opcode": "pop"
-                },
-                {
-                    "opcode": "popscope"
                 }
             ]
         },
@@ -210,9 +198,6 @@
             "locals": [],
             "body": [
                 {
-                    "opcode": "pushscope"
-                },
-                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "condition"
@@ -233,7 +218,7 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 14
+                    "arg": 13
                 },
                 {
                     "opcode": "getglobal",
@@ -261,7 +246,7 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 33
+                    "arg": 32
                 },
                 {
                     "opcode": "getglobal",
@@ -284,7 +269,7 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 27
+                    "arg": 26
                 },
                 {
                     "opcode": "getglobal",
@@ -312,7 +297,7 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 33
+                    "arg": 32
                 },
                 {
                     "opcode": "getglobal",
@@ -337,9 +322,6 @@
                 },
                 {
                     "opcode": "pop"
-                },
-                {
-                    "opcode": "popscope"
                 }
             ]
         },
@@ -348,9 +330,6 @@
             "name": "conditional4",
             "locals": [],
             "body": [
-                {
-                    "opcode": "pushscope"
-                },
                 {
                     "opcode": "pushld",
                     "arg": 4676988625341120512
@@ -367,7 +346,7 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 11
+                    "arg": 10
                 },
                 {
                     "opcode": "pushld",
@@ -385,7 +364,7 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 15
+                    "arg": 14
                 },
                 {
                     "opcode": "pushld",
@@ -400,9 +379,6 @@
                 },
                 {
                     "opcode": "pop"
-                },
-                {
-                    "opcode": "popscope"
                 }
             ]
         }

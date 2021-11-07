@@ -117,14 +117,7 @@
             "identifier": 0,
             "name": "compound1",
             "locals": [],
-            "body": [
-                {
-                    "opcode": "pushscope"
-                },
-                {
-                    "opcode": "popscope"
-                }
-            ]
+            "body": []
         },
         {
             "identifier": 1,
@@ -156,9 +149,6 @@
                 }
             ],
             "body": [
-                {
-                    "opcode": "pushscope"
-                },
                 {
                     "opcode": "getlocals"
                 },
@@ -361,9 +351,6 @@
                 },
                 {
                     "opcode": "pop"
-                },
-                {
-                    "opcode": "popscope"
                 }
             ]
         },
@@ -402,9 +389,6 @@
             ],
             "body": [
                 {
-                    "opcode": "pushscope"
-                },
-                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "something"
@@ -429,9 +413,6 @@
                     "opcode": "pop"
                 },
                 {
-                    "opcode": "pushscope"
-                },
-                {
                     "opcode": "getlocals"
                 },
                 {
@@ -451,9 +432,6 @@
                 },
                 {
                     "opcode": "pop"
-                },
-                {
-                    "opcode": "popscope"
                 },
                 {
                     "opcode": "getglobal",
@@ -481,9 +459,6 @@
                 },
                 {
                     "opcode": "pop"
-                },
-                {
-                    "opcode": "popscope"
                 }
             ]
         }

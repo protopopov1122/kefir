@@ -74,7 +74,7 @@ DEFINE_CASE(ast_ordinary_typedef_scope1, "AST ordinary scope - type definitions 
     ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_OBJECT);
 
     do {
-        ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context));
+        ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context, NULL));
 
         ASSERT_OK(kefir_ast_local_context_define_static(&kft_mem, &context, "type1", kefir_ast_type_unsigned_char(),
                                                         NULL, NULL, NULL, NULL));
@@ -94,7 +94,7 @@ DEFINE_CASE(ast_ordinary_typedef_scope1, "AST ordinary scope - type definitions 
             kefir_ast_type_unbounded_array(&kft_mem, &type_bundle, kefir_ast_type_unsigned_long_long(), NULL)));
 
         do {
-            ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context));
+            ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context, NULL));
 
             ASSERT_OK(kefir_ast_local_context_define_type(
                 &kft_mem, &context, "type2",
@@ -111,14 +111,14 @@ DEFINE_CASE(ast_ordinary_typedef_scope1, "AST ordinary scope - type definitions 
                                          (const struct kefir_ast_type_qualification){
                                              .constant = false, .restricted = true, .volatile_type = false})));
 
-            ASSERT_OK(kefir_ast_local_context_pop_block_scope(&context));
+            ASSERT_OK(kefir_ast_local_context_pop_block_scope(&kft_mem, &context));
         } while (0);
 
         ASSERT_OK(kefir_ast_local_context_resolve_scoped_ordinary_identifier(&context, "type2", &scoped_id));
         ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION);
         ASSERT(KEFIR_AST_TYPE_SAME(scoped_id->type, kefir_ast_type_signed_long()));
 
-        ASSERT_OK(kefir_ast_local_context_pop_block_scope(&context));
+        ASSERT_OK(kefir_ast_local_context_pop_block_scope(&kft_mem, &context));
     } while (0);
 
     ASSERT_OK(kefir_ast_local_context_resolve_scoped_ordinary_identifier(&context, "type1", &scoped_id));

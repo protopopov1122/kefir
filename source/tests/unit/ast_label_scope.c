@@ -172,25 +172,25 @@ DEFINE_CASE(ast_label_scope4, "AST ordinary scope - label scope #4") {
     ASSERT_LABEL(&kft_mem, &context.context, "label1", false, false);
 
     do {
-        ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context));
+        ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context, NULL));
         ASSERT_LABEL(&kft_mem, &context.context, "label1", false, false);
         ASSERT_LABEL(&kft_mem, &context.context, "label1", true, true);
         ASSERT_LABEL(&kft_mem, &context.context, "label2", true, true);
 
         do {
-            ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context));
+            ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context, NULL));
             ASSERT_LABEL(&kft_mem, &context.context, "label1", false, true);
             ASSERT_LABEL(&kft_mem, &context.context, "label2", false, true);
             ASSERT_LABEL(&kft_mem, &context.context, "label3", false, false);
             ASSERT_LABEL(&kft_mem, &context.context, "label4", false, false);
             ASSERT_LABEL_NOK(&kft_mem, &context.context, "label2", true);
-            ASSERT_OK(kefir_ast_local_context_pop_block_scope(&context));
+            ASSERT_OK(kefir_ast_local_context_pop_block_scope(&kft_mem, &context));
         } while (0);
 
         ASSERT_LABEL(&kft_mem, &context.context, "label3", false, false);
         ASSERT_LABEL(&kft_mem, &context.context, "label4", false, false);
         ASSERT_LABEL(&kft_mem, &context.context, "label4", true, true);
-        ASSERT_OK(kefir_ast_local_context_pop_block_scope(&context));
+        ASSERT_OK(kefir_ast_local_context_pop_block_scope(&kft_mem, &context));
     } while (0);
 
     ASSERT_LABEL(&kft_mem, &context.context, "label1", false, true);

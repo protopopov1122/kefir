@@ -39,7 +39,8 @@ kefir_result_t kefir_ast_analyze_compound_statement_node(struct kefir_mem *mem, 
     REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
     base->properties.category = KEFIR_AST_NODE_CATEGORY_STATEMENT;
 
-    REQUIRE_OK(context->push_block(mem, context));
+    struct kefir_ast_context_block_descriptor block_descr;
+    REQUIRE_OK(context->push_block(mem, context, &block_descr));
     for (const struct kefir_list_entry *iter = kefir_list_head(&node->block_items); iter != NULL;
          kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, item, iter->value);
@@ -51,5 +52,6 @@ kefir_result_t kefir_ast_analyze_compound_statement_node(struct kefir_mem *mem, 
                                        "Compound statement items shall be either statements or declarations"));
     }
     REQUIRE_OK(context->pop_block(mem, context));
+    base->properties.statement_props.vla_block = block_descr.contains_vla;
     return KEFIR_OK;
 }

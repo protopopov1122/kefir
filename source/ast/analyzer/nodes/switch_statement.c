@@ -42,7 +42,7 @@ kefir_result_t kefir_ast_analyze_switch_statement_node(struct kefir_mem *mem, co
     REQUIRE(context->flow_control_tree != NULL,
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
                                    "Unable to use switch statement in current context"));
-    REQUIRE_OK(context->push_block(mem, context));
+    REQUIRE_OK(context->push_block(mem, context, NULL));
 
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->expression));
     REQUIRE(node->expression->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,

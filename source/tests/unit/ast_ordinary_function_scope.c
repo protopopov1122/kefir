@@ -207,7 +207,7 @@ DEFINE_CASE(ast_ordinary_function_scope3, "AST ordinary scope - block scope func
     ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, &global_context.type_bundle, function2, NULL, NULL));
 
     do {
-        ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context));
+        ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context, NULL));
         ASSERT_OK(kefir_ast_local_context_declare_function(&kft_mem, &context, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
                                                            "function1", type1, NULL, NULL));
 
@@ -218,7 +218,7 @@ DEFINE_CASE(ast_ordinary_function_scope3, "AST ordinary scope - block scope func
         ASSERT(scoped_id->function.specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
         ASSERT(scoped_id->function.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);
         ASSERT(scoped_id->function.external);
-        ASSERT_OK(kefir_ast_local_context_pop_block_scope(&context));
+        ASSERT_OK(kefir_ast_local_context_pop_block_scope(&kft_mem, &context));
     } while (0);
 
     ASSERT_OK(kefir_ast_global_context_declare_function(&kft_mem, &global_context, KEFIR_AST_FUNCTION_SPECIFIER_INLINE,
@@ -281,7 +281,7 @@ DEFINE_CASE(ast_ordinary_function_scope4, "AST ordinary scope - block scope func
     ASSERT(!scoped_id->function.external);
 
     do {
-        ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context));
+        ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context, NULL));
 
         ASSERT_OK(kefir_ast_local_context_resolve_scoped_ordinary_identifier(&context, "function1", &scoped_id));
         ASSERT(scoped_id != NULL);
@@ -301,7 +301,7 @@ DEFINE_CASE(ast_ordinary_function_scope4, "AST ordinary scope - block scope func
         ASSERT(scoped_id->function.specifier == KEFIR_AST_FUNCTION_SPECIFIER_NORETURN);
         ASSERT(scoped_id->function.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);
         ASSERT(!scoped_id->function.external);
-        ASSERT_OK(kefir_ast_local_context_pop_block_scope(&context));
+        ASSERT_OK(kefir_ast_local_context_pop_block_scope(&kft_mem, &context));
     } while (0);
 
     ASSERT_OK(kefir_ast_global_context_declare_function(&kft_mem, &global_context, KEFIR_AST_FUNCTION_SPECIFIER_INLINE,
@@ -354,7 +354,7 @@ DEFINE_CASE(ast_ordinary_function_scope5, "AST ordinary scope - block scope func
     ASSERT(!scoped_id->function.external);
 
     do {
-        ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context));
+        ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context, NULL));
 
         ASSERT_OK(kefir_ast_local_context_resolve_scoped_ordinary_identifier(&context, "function1", &scoped_id));
         ASSERT(scoped_id != NULL);
@@ -374,7 +374,7 @@ DEFINE_CASE(ast_ordinary_function_scope5, "AST ordinary scope - block scope func
         ASSERT(scoped_id->function.specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
         ASSERT(scoped_id->function.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC);
         ASSERT(!scoped_id->function.external);
-        ASSERT_OK(kefir_ast_local_context_pop_block_scope(&context));
+        ASSERT_OK(kefir_ast_local_context_pop_block_scope(&kft_mem, &context));
     } while (0);
 
     ASSERT_OK(kefir_ast_global_context_declare_function(&kft_mem, &global_context, KEFIR_AST_FUNCTION_SPECIFIER_INLINE,

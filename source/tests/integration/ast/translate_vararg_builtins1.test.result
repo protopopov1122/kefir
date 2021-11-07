@@ -95,9 +95,6 @@
             ],
             "body": [
                 {
-                    "opcode": "pushscope"
-                },
-                {
                     "opcode": "getlocals"
                 },
                 {
@@ -199,9 +196,6 @@
                 },
                 {
                     "opcode": "pop"
-                },
-                {
-                    "opcode": "popscope"
                 }
             ]
         }

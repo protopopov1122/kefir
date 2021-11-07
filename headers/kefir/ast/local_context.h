@@ -38,6 +38,7 @@ typedef struct kefir_ast_local_context {
     struct kefir_ast_identifier_block_scope ordinary_scope;
     struct kefir_ast_identifier_block_scope tag_scope;
     struct kefir_ast_identifier_flat_scope label_scope;
+    struct kefir_list block_decriptors;
 
     struct kefir_ast_context_temporaries temporaries;
     struct kefir_ast_flow_control_tree flow_control_tree;
@@ -55,8 +56,9 @@ kefir_result_t kefir_ast_local_context_resolve_scoped_tag_identifier(const struc
                                                                      const char *,
                                                                      const struct kefir_ast_scoped_identifier **);
 
-kefir_result_t kefir_ast_local_context_push_block_scope(struct kefir_mem *, struct kefir_ast_local_context *);
-kefir_result_t kefir_ast_local_context_pop_block_scope(struct kefir_ast_local_context *);
+kefir_result_t kefir_ast_local_context_push_block_scope(struct kefir_mem *, struct kefir_ast_local_context *,
+                                                        struct kefir_ast_context_block_descriptor *);
+kefir_result_t kefir_ast_local_context_pop_block_scope(struct kefir_mem *, struct kefir_ast_local_context *);
 
 kefir_result_t kefir_ast_local_context_declare_external(struct kefir_mem *, struct kefir_ast_local_context *,
                                                         const char *, const struct kefir_ast_type *,
