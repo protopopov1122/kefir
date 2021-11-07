@@ -33,7 +33,7 @@ kefir_result_t kefir_ast_translate_compound_statement_node(struct kefir_mem *mem
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR block builder"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST compound statement node"));
 
-    if (node->base.properties.statement_props.vla_block) {
+    if (node->base.properties.statement_props.flow_control_statement->value.block.contains_vla) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHSCOPE, 0));
     }
     for (const struct kefir_list_entry *iter = kefir_list_head(&node->block_items); iter != NULL;
@@ -49,7 +49,7 @@ kefir_result_t kefir_ast_translate_compound_statement_node(struct kefir_mem *mem
             return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected compound statement item");
         }
     }
-    if (node->base.properties.statement_props.vla_block) {
+    if (node->base.properties.statement_props.flow_control_statement->value.block.contains_vla) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POPSCOPE, 0));
     }
     return KEFIR_OK;

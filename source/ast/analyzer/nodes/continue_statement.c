@@ -34,6 +34,7 @@ static kefir_result_t resolve_loop(const struct kefir_ast_flow_control_statement
     REQUIRE(result != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to boolean"));
 
     switch (stmt->type) {
+        case KEFIR_AST_FLOW_CONTROL_STATEMENT_BLOCK:
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_IF:
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH:
             *result = false;

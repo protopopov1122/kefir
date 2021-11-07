@@ -64,6 +64,10 @@ static kefir_result_t flow_control_statement_free(struct kefir_mem *mem, void *n
     statement->payload.ptr = NULL;
 
     switch (statement->type) {
+        case KEFIR_AST_FLOW_CONTROL_STATEMENT_BLOCK:
+            // Intentionally left blank
+            break;
+
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_IF:
             if (statement->value.conditional.thenBranchEnd != NULL) {
                 REQUIRE_OK(kefir_ast_flow_control_point_free(mem, statement->value.conditional.thenBranchEnd));
@@ -153,6 +157,10 @@ kefir_result_t kefir_ast_flow_control_tree_push(struct kefir_mem *mem, struct ke
     memset(&stmt->payload.content[0], 0, KEFIR_AST_FLOW_CONTROL_PAYLOAD_SIZE);
 
     switch (type) {
+        case KEFIR_AST_FLOW_CONTROL_STATEMENT_BLOCK:
+            stmt->value.block.contains_vla = false;
+            break;
+
         case KEFIR_AST_FLOW_CONTROL_STATEMENT_IF:
             stmt->value.conditional.thenBranchEnd = NULL;
             stmt->value.conditional.elseBranchEnd = NULL;

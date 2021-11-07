@@ -39,6 +39,12 @@ kefir_result_t kefir_ast_analyze_compound_statement_node(struct kefir_mem *mem, 
     REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
     base->properties.category = KEFIR_AST_NODE_CATEGORY_STATEMENT;
 
+    REQUIRE(context->flow_control_tree != NULL,
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
+                                   "Unable to use compound statement in current context"));
+    REQUIRE_OK(kefir_ast_flow_control_tree_push(mem, context->flow_control_tree, KEFIR_AST_FLOW_CONTROL_STATEMENT_BLOCK,
+                                                &base->properties.statement_props.flow_control_statement));
+
     struct kefir_ast_context_block_descriptor block_descr;
     REQUIRE_OK(context->push_block(mem, context, &block_descr));
     for (const struct kefir_list_entry *iter = kefir_list_head(&node->block_items); iter != NULL;
@@ -52,6 +58,7 @@ kefir_result_t kefir_ast_analyze_compound_statement_node(struct kefir_mem *mem, 
                                        "Compound statement items shall be either statements or declarations"));
     }
     REQUIRE_OK(context->pop_block(mem, context));
-    base->properties.statement_props.vla_block = block_descr.contains_vla;
+    REQUIRE_OK(kefir_ast_flow_control_tree_pop(context->flow_control_tree));
+    base->properties.statement_props.flow_control_statement->value.block.contains_vla = block_descr.contains_vla;
     return KEFIR_OK;
 }

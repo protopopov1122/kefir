@@ -603,7 +603,7 @@ DEFINE_CASE(ast_node_analysis_switch_statements4, "AST node analysis - switch st
     ASSERT((void *) tree_node->value == case6->properties.statement_props.flow_control_point);
 
     ASSERT(switch2_statement->value.switchStatement.end != NULL);
-    ASSERT(switch1_statement->parent == switch2_statement);
+    ASSERT(switch1_statement->parent->parent == switch2_statement);
 
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(switch2)));
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));

@@ -46,6 +46,7 @@ struct kefir_ast_flow_control_point *kefir_ast_flow_control_point_alloc(struct k
 kefir_result_t kefir_ast_flow_control_point_free(struct kefir_mem *, struct kefir_ast_flow_control_point *);
 
 typedef enum kefir_ast_flow_control_statement_type {
+    KEFIR_AST_FLOW_CONTROL_STATEMENT_BLOCK,
     KEFIR_AST_FLOW_CONTROL_STATEMENT_IF,
     KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH,
     KEFIR_AST_FLOW_CONTROL_STATEMENT_FOR,
@@ -68,6 +69,10 @@ typedef struct kefir_ast_flow_control_statement {
     } payload;
 
     union {
+        struct {
+            kefir_bool_t contains_vla;
+        } block;
+
         struct {
             struct kefir_ast_flow_control_point *thenBranchEnd;
             struct kefir_ast_flow_control_point *elseBranchEnd;

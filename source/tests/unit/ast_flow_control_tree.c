@@ -102,6 +102,21 @@ DEFINE_CASE(ast_flow_control_tree3, "AST Flow control tree - local context #1") 
     ASSERT_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree, &stmt2));
     ASSERT(stmt == stmt2);
 
+    ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
+                                               KEFIR_AST_FLOW_CONTROL_STATEMENT_BLOCK, &stmt));
+    ASSERT(stmt != NULL);
+    ASSERT(stmt->type == KEFIR_AST_FLOW_CONTROL_STATEMENT_BLOCK);
+    ASSERT(stmt->parent != NULL);
+    ASSERT(stmt->parent->type == KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH);
+    ASSERT(stmt->parent->parent != NULL);
+    ASSERT(stmt->parent->parent->type == KEFIR_AST_FLOW_CONTROL_STATEMENT_FOR);
+    ASSERT(stmt->parent->parent->parent != NULL);
+    ASSERT(stmt->parent->parent->parent->type == KEFIR_AST_FLOW_CONTROL_STATEMENT_IF);
+    ASSERT(stmt->parent->parent->parent->parent == NULL);
+    ASSERT_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree, &stmt2));
+    ASSERT(stmt == stmt2);
+
+    ASSERT_OK(kefir_ast_flow_control_tree_pop(context->flow_control_tree));
     ASSERT_OK(kefir_ast_flow_control_tree_pop(context->flow_control_tree));
     ASSERT_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree, &stmt2));
     ASSERT(stmt2 != NULL);
@@ -180,9 +195,14 @@ DEFINE_CASE(ast_flow_control_tree3, "AST Flow control tree - local context #1") 
     ASSERT(stmt2 == NULL);
 
     ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
+                                               KEFIR_AST_FLOW_CONTROL_STATEMENT_BLOCK, &stmt));
+
+    ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
                                                KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH, &stmt));
     ASSERT(stmt->type == KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH);
-    ASSERT(stmt->parent == NULL);
+    ASSERT(stmt->parent != NULL);
+    ASSERT(stmt->parent->type == KEFIR_AST_FLOW_CONTROL_STATEMENT_BLOCK);
+    ASSERT(stmt->parent->parent == NULL);
     ASSERT_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree, &stmt2));
     ASSERT(stmt == stmt2);
 

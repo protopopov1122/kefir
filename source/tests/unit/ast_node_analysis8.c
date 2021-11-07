@@ -542,6 +542,9 @@ DEFINE_CASE(ast_node_analysis_compound_statements3, "AST node analysis - compoun
     struct kefir_ast_compound_statement *stmt1 = kefir_ast_new_compound_statement(&kft_mem);
     ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(stmt1)));
     ASSERT(stmt1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
+    ASSERT(stmt1->base.properties.statement_props.flow_control_statement != NULL);
+    ASSERT(stmt1->base.properties.statement_props.flow_control_statement->type ==
+           KEFIR_AST_FLOW_CONTROL_STATEMENT_BLOCK);
 
     struct kefir_ast_declaration *decl1 = kefir_ast_new_single_declaration(
         &kft_mem, kefir_ast_declarator_identifier(&kft_mem, context->symbols, "var1"),
@@ -596,6 +599,9 @@ DEFINE_CASE(ast_node_analysis_compound_statements3, "AST node analysis - compoun
                                       KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(&kft_mem, NULL))));
     ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(stmt2)));
     ASSERT(stmt2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
+    ASSERT(stmt2->base.properties.statement_props.flow_control_statement != NULL);
+    ASSERT(stmt2->base.properties.statement_props.flow_control_statement->type ==
+           KEFIR_AST_FLOW_CONTROL_STATEMENT_BLOCK);
 
     const struct kefir_list_entry *iter = kefir_list_head(&stmt2->block_items);
     ASSERT(iter != NULL);
