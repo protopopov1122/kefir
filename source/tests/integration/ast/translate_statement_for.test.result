@@ -260,6 +260,9 @@
             "locals": [],
             "body": [
                 {
+                    "opcode": "pushscope"
+                },
+                {
                     "opcode": "invoke",
                     "arg": {
                         "identifier": 2,
@@ -268,7 +271,10 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 0
+                    "arg": 1
+                },
+                {
+                    "opcode": "popscope"
                 }
             ]
         },
@@ -307,6 +313,9 @@
             ],
             "body": [
                 {
+                    "opcode": "pushscope"
+                },
+                {
                     "opcode": "getlocals"
                 },
                 {
@@ -341,7 +350,7 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 21
+                    "arg": 22
                 },
                 {
                     "opcode": "invoke",
@@ -380,7 +389,10 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 5
+                    "arg": 6
+                },
+                {
+                    "opcode": "popscope"
                 }
             ]
         },
@@ -408,6 +420,9 @@
                 }
             ],
             "body": [
+                {
+                    "opcode": "pushscope"
+                },
                 {
                     "opcode": "getlocals"
                 },
@@ -447,7 +462,7 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 27
+                    "arg": 28
                 },
                 {
                     "opcode": "invoke",
@@ -461,19 +476,19 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 17
-                },
-                {
-                    "opcode": "jmp",
                     "arg": 18
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 18
+                    "arg": 19
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 27
+                    "arg": 19
+                },
+                {
+                    "opcode": "jmp",
+                    "arg": 28
                 },
                 {
                     "opcode": "getlocals"
@@ -505,7 +520,10 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 6
+                    "arg": 7
+                },
+                {
+                    "opcode": "popscope"
                 }
             ]
         },
@@ -514,6 +532,9 @@
             "name": "for4",
             "locals": [],
             "body": [
+                {
+                    "opcode": "pushscope"
+                },
                 {
                     "opcode": "pushld",
                     "arg": 4670232263827390464
@@ -544,7 +565,7 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 11
+                    "arg": 12
                 },
                 {
                     "opcode": "invoke",
@@ -555,7 +576,10 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 4
+                    "arg": 5
+                },
+                {
+                    "opcode": "popscope"
                 }
             ]
         }

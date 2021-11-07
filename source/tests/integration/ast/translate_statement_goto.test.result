@@ -92,6 +92,9 @@
             ],
             "body": [
                 {
+                    "opcode": "pushscope"
+                },
+                {
                     "opcode": "getlocals"
                 },
                 {
@@ -154,15 +157,15 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 20
-                },
-                {
-                    "opcode": "jmp",
                     "arg": 21
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 5
+                    "arg": 22
+                },
+                {
+                    "opcode": "jmp",
+                    "arg": 6
                 },
                 {
                     "opcode": "getlocals"
@@ -194,6 +197,9 @@
                 },
                 {
                     "opcode": "pop"
+                },
+                {
+                    "opcode": "popscope"
                 }
             ]
         },
@@ -203,8 +209,11 @@
             "locals": [],
             "body": [
                 {
+                    "opcode": "pushscope"
+                },
+                {
                     "opcode": "jmp",
-                    "arg": 4
+                    "arg": 5
                 },
                 {
                     "opcode": "push",
@@ -215,19 +224,22 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 6
+                    "arg": 7
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 6
+                    "arg": 7
+                },
+                {
+                    "opcode": "jmp",
+                    "arg": 2
                 },
                 {
                     "opcode": "jmp",
                     "arg": 1
                 },
                 {
-                    "opcode": "jmp",
-                    "arg": 0
+                    "opcode": "popscope"
                 }
             ]
         }

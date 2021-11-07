@@ -149,6 +149,9 @@
             ],
             "body": [
                 {
+                    "opcode": "pushscope"
+                },
+                {
                     "opcode": "getlocals"
                 },
                 {
@@ -200,7 +203,10 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 5
+                    "arg": 6
+                },
+                {
+                    "opcode": "popscope"
                 }
             ]
         },
@@ -209,6 +215,12 @@
             "name": "do_while2",
             "locals": [],
             "body": [
+                {
+                    "opcode": "pushscope"
+                },
+                {
+                    "opcode": "pushscope"
+                },
                 {
                     "opcode": "getglobal",
                     "arg": {
@@ -226,15 +238,18 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 6
+                    "arg": 8
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 7
+                    "arg": 10
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 9
+                    "arg": 12
+                },
+                {
+                    "opcode": "popscope"
                 },
                 {
                     "opcode": "push",
@@ -242,7 +257,10 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 0
+                    "arg": 1
+                },
+                {
+                    "opcode": "popscope"
                 }
             ]
         },
@@ -251,6 +269,9 @@
             "name": "do_while3",
             "locals": [],
             "body": [
+                {
+                    "opcode": "pushscope"
+                },
                 {
                     "opcode": "push",
                     "arg": 0
@@ -271,7 +292,10 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 0
+                    "arg": 1
+                },
+                {
+                    "opcode": "popscope"
                 }
             ]
         }

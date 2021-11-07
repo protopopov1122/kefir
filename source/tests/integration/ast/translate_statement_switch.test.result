@@ -54,6 +54,9 @@
             "locals": [],
             "body": [
                 {
+                    "opcode": "pushscope"
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "request"
@@ -78,14 +81,14 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 9
+                    "arg": 10
                 },
                 {
                     "opcode": "pop"
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 24
+                    "arg": 26
                 },
                 {
                     "opcode": "pick",
@@ -103,14 +106,14 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 16
+                    "arg": 17
                 },
                 {
                     "opcode": "pop"
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 31
+                    "arg": 33
                 },
                 {
                     "opcode": "pick",
@@ -128,18 +131,21 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 23
+                    "arg": 24
                 },
                 {
                     "opcode": "pop"
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 38
+                    "arg": 40
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 45
+                    "arg": 47
+                },
+                {
+                    "opcode": "pushscope"
                 },
                 {
                     "opcode": "getglobal",
@@ -167,7 +173,7 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 52
+                    "arg": 55
                 },
                 {
                     "opcode": "getglobal",
@@ -195,7 +201,7 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 52
+                    "arg": 55
                 },
                 {
                     "opcode": "getglobal",
@@ -223,7 +229,7 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 52
+                    "arg": 55
                 },
                 {
                     "opcode": "getglobal",
@@ -251,7 +257,13 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 52
+                    "arg": 55
+                },
+                {
+                    "opcode": "popscope"
+                },
+                {
+                    "opcode": "popscope"
                 }
             ]
         },
@@ -260,6 +272,9 @@
             "name": "switch2",
             "locals": [],
             "body": [
+                {
+                    "opcode": "pushscope"
+                },
                 {
                     "opcode": "getglobal",
                     "arg": {
@@ -285,18 +300,21 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 9
+                    "arg": 10
                 },
                 {
                     "opcode": "pop"
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 10
+                    "arg": 12
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 17
+                    "arg": 19
+                },
+                {
+                    "opcode": "pushscope"
                 },
                 {
                     "opcode": "getglobal",
@@ -324,7 +342,7 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 49
+                    "arg": 54
                 },
                 {
                     "opcode": "getglobal",
@@ -351,14 +369,14 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 26
+                    "arg": 28
                 },
                 {
                     "opcode": "pop"
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 41
+                    "arg": 44
                 },
                 {
                     "opcode": "pick",
@@ -376,18 +394,21 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 33
+                    "arg": 35
                 },
                 {
                     "opcode": "pop"
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 34
+                    "arg": 37
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 48
+                    "arg": 52
+                },
+                {
+                    "opcode": "pushscope"
                 },
                 {
                     "opcode": "getglobal",
@@ -415,7 +436,7 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 48
+                    "arg": 52
                 },
                 {
                     "opcode": "getglobal",
@@ -443,11 +464,20 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 48
+                    "arg": 52
+                },
+                {
+                    "opcode": "popscope"
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 49
+                    "arg": 54
+                },
+                {
+                    "opcode": "popscope"
+                },
+                {
+                    "opcode": "popscope"
                 }
             ]
         }
