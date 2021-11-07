@@ -38,12 +38,18 @@ kefir_result_t kefir_ast_analyze_goto_statement_node(struct kefir_mem *mem, cons
     REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
     base->properties.category = KEFIR_AST_NODE_CATEGORY_STATEMENT;
 
+    REQUIRE(context->flow_control_tree != NULL,
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
+                                   "Break statement is not allowed in current context"));
+
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
     REQUIRE_OK(
         context->reference_label(mem, context, node->identifier, false, &node->base.source_location, &scoped_id));
     REQUIRE(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL,
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
                                    "Goto statement identifier should reference a label"));
+    REQUIRE_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree,
+                                               &base->properties.statement_props.flow_control_statement));
     base->properties.statement_props.flow_control_point = scoped_id->label.point;
     return KEFIR_OK;
 }

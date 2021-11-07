@@ -79,6 +79,7 @@ kefir_result_t kefir_ast_analyze_break_statement_node(struct kefir_mem *mem, con
     } else {
         base->properties.statement_props.flow_control_point = flow_control_stmt->value.loop.end;
     }
-    base->properties.statement_props.flow_control_statement = flow_control_stmt;
+    REQUIRE_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree,
+                                               &base->properties.statement_props.flow_control_statement));
     return KEFIR_OK;
 }

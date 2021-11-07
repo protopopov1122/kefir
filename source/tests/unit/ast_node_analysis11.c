@@ -69,28 +69,32 @@ DEFINE_CASE(ast_node_analysis_goto_statements1, "AST node analysis - goto statem
     ASSERT(labeled4->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(goto1->base.properties.statement_props.flow_control_point ==
            labeled4->base.properties.statement_props.flow_control_point);
-    ASSERT(goto1->base.properties.statement_props.flow_control_statement == NULL);
+    ASSERT(goto1->base.properties.statement_props.flow_control_statement ==
+           compound1->base.properties.statement_props.flow_control_statement);
     ASSERT(labeled4->base.properties.statement_props.flow_control_statement == NULL);
 
     ASSERT(goto2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(labeled3->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(goto2->base.properties.statement_props.flow_control_point ==
            labeled3->base.properties.statement_props.flow_control_point);
-    ASSERT(goto2->base.properties.statement_props.flow_control_statement == NULL);
+    ASSERT(goto2->base.properties.statement_props.flow_control_statement ==
+           compound1->base.properties.statement_props.flow_control_statement);
     ASSERT(labeled3->base.properties.statement_props.flow_control_statement == NULL);
 
     ASSERT(goto3->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(labeled2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(goto3->base.properties.statement_props.flow_control_point ==
            labeled2->base.properties.statement_props.flow_control_point);
-    ASSERT(goto3->base.properties.statement_props.flow_control_statement == NULL);
+    ASSERT(goto3->base.properties.statement_props.flow_control_statement ==
+           compound1->base.properties.statement_props.flow_control_statement);
     ASSERT(labeled2->base.properties.statement_props.flow_control_statement == NULL);
 
     ASSERT(goto4->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(labeled1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(goto4->base.properties.statement_props.flow_control_point ==
            labeled1->base.properties.statement_props.flow_control_point);
-    ASSERT(goto4->base.properties.statement_props.flow_control_statement == NULL);
+    ASSERT(goto4->base.properties.statement_props.flow_control_statement ==
+           compound1->base.properties.statement_props.flow_control_statement);
     ASSERT(labeled1->base.properties.statement_props.flow_control_statement == NULL);
 
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(compound1)));
@@ -283,21 +287,21 @@ DEFINE_CASE(ast_node_analysis_break_statements4, "AST node analysis - break stat
     ASSERT(break1->base.properties.statement_props.flow_control_point ==
            switch1->base.properties.statement_props.flow_control_statement->value.switchStatement.end);
     ASSERT(break1->base.properties.statement_props.flow_control_statement ==
-           switch1->base.properties.statement_props.flow_control_statement);
+           compound1->base.properties.statement_props.flow_control_statement);
 
     ASSERT(break2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(switch1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(break2->base.properties.statement_props.flow_control_point ==
            switch1->base.properties.statement_props.flow_control_statement->value.switchStatement.end);
     ASSERT(break2->base.properties.statement_props.flow_control_statement ==
-           switch1->base.properties.statement_props.flow_control_statement);
+           compound1->base.properties.statement_props.flow_control_statement);
 
     ASSERT(break3->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(switch1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(break3->base.properties.statement_props.flow_control_point ==
            switch1->base.properties.statement_props.flow_control_statement->value.switchStatement.end);
     ASSERT(break3->base.properties.statement_props.flow_control_statement ==
-           switch1->base.properties.statement_props.flow_control_statement);
+           compound1->base.properties.statement_props.flow_control_statement);
 
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(switch1)));
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
@@ -349,7 +353,7 @@ DEFINE_CASE(ast_node_analysis_break_statements5, "AST node analysis - break stat
     ASSERT(break1->base.properties.statement_props.flow_control_point ==
            switch1->base.properties.statement_props.flow_control_statement->value.switchStatement.end);
     ASSERT(break1->base.properties.statement_props.flow_control_statement ==
-           switch1->base.properties.statement_props.flow_control_statement);
+           compound1->base.properties.statement_props.flow_control_statement);
     ASSERT(break1->base.properties.statement_props.flow_control_point !=
            switch2->base.properties.statement_props.flow_control_statement->value.switchStatement.end);
     ASSERT(break1->base.properties.statement_props.flow_control_statement !=
@@ -358,7 +362,7 @@ DEFINE_CASE(ast_node_analysis_break_statements5, "AST node analysis - break stat
     ASSERT(break2->base.properties.statement_props.flow_control_point ==
            switch2->base.properties.statement_props.flow_control_statement->value.switchStatement.end);
     ASSERT(break2->base.properties.statement_props.flow_control_statement ==
-           switch2->base.properties.statement_props.flow_control_statement);
+           compound2->base.properties.statement_props.flow_control_statement);
     ASSERT(break2->base.properties.statement_props.flow_control_point !=
            switch1->base.properties.statement_props.flow_control_statement->value.switchStatement.end);
     ASSERT(break2->base.properties.statement_props.flow_control_statement !=
