@@ -27,13 +27,13 @@
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"
 
-static kefir_result_t match_switch_statement(const struct kefir_ast_flow_control_statement *statement, void *payload,
+static kefir_result_t match_switch_statement(const struct kefir_ast_flow_control_structure *statement, void *payload,
                                              kefir_bool_t *result) {
     UNUSED(payload);
     REQUIRE(statement != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST flow control statement"));
     REQUIRE(result != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid pointer to result"));
 
-    *result = statement->type == KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH;
+    *result = statement->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH;
     return KEFIR_OK;
 }
 
@@ -52,7 +52,7 @@ kefir_result_t kefir_ast_analyze_case_statement_node(struct kefir_mem *mem, cons
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
                                    "Unable to use case statement in current context"));
 
-    struct kefir_ast_flow_control_statement *switch_statement = NULL;
+    struct kefir_ast_flow_control_structure *switch_statement = NULL;
     kefir_result_t res = kefir_ast_flow_control_tree_traverse(context->flow_control_tree, match_switch_statement, NULL,
                                                               &switch_statement);
     if (res == KEFIR_NOT_FOUND) {

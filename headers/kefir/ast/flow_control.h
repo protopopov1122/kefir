@@ -26,7 +26,7 @@
 #include "kefir/core/hashtree.h"
 #include "kefir/ast/type.h"
 
-typedef struct kefir_ast_flow_control_statement kefir_ast_flow_control_statement_t;
+typedef struct kefir_ast_flow_control_structure kefir_ast_flow_control_structure_t;
 typedef struct kefir_ast_flow_control_point kefir_ast_flow_control_point_t;
 
 #define KEFIR_AST_FLOW_CONTROL_PAYLOAD_SIZE (sizeof(kefir_uptr_t) * 4)
@@ -45,24 +45,24 @@ typedef struct kefir_ast_flow_control_point {
 struct kefir_ast_flow_control_point *kefir_ast_flow_control_point_alloc(struct kefir_mem *);
 kefir_result_t kefir_ast_flow_control_point_free(struct kefir_mem *, struct kefir_ast_flow_control_point *);
 
-typedef enum kefir_ast_flow_control_statement_type {
-    KEFIR_AST_FLOW_CONTROL_STATEMENT_BLOCK,
-    KEFIR_AST_FLOW_CONTROL_STATEMENT_IF,
-    KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH,
-    KEFIR_AST_FLOW_CONTROL_STATEMENT_FOR,
-    KEFIR_AST_FLOW_CONTROL_STATEMENT_WHILE,
-    KEFIR_AST_FLOW_CONTROL_STATEMENT_DO
-} kefir_ast_flow_control_statement_type_t;
+typedef enum kefir_ast_flow_control_structure_type {
+    KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK,
+    KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF,
+    KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH,
+    KEFIR_AST_FLOW_CONTROL_STRUCTURE_FOR,
+    KEFIR_AST_FLOW_CONTROL_STRUCTURE_WHILE,
+    KEFIR_AST_FLOW_CONTROL_STRUCTURE_DO
+} kefir_ast_flow_control_structure_type_t;
 
-typedef struct kefir_ast_flow_control_statement_cleanup {
-    kefir_result_t (*callback)(struct kefir_mem *, struct kefir_ast_flow_control_statement *, void *);
+typedef struct kefir_ast_flow_control_structure_cleanup {
+    kefir_result_t (*callback)(struct kefir_mem *, struct kefir_ast_flow_control_structure *, void *);
     void *payload;
-} kefir_ast_flow_control_statement_cleanup_t;
+} kefir_ast_flow_control_structure_cleanup_t;
 
-typedef struct kefir_ast_flow_control_statement {
-    struct kefir_ast_flow_control_statement *parent;
-    kefir_ast_flow_control_statement_type_t type;
-    struct kefir_ast_flow_control_statement_cleanup cleanup;
+typedef struct kefir_ast_flow_control_structure {
+    struct kefir_ast_flow_control_structure *parent;
+    kefir_ast_flow_control_structure_type_t type;
+    struct kefir_ast_flow_control_structure_cleanup cleanup;
     struct {
         unsigned char content[KEFIR_AST_FLOW_CONTROL_PAYLOAD_SIZE];
         void *ptr;
@@ -90,7 +90,7 @@ typedef struct kefir_ast_flow_control_statement {
             struct kefir_ast_flow_control_point *end;
         } loop;
     } value;
-} kefir_ast_flow_control_statement_t;
+} kefir_ast_flow_control_structure_t;
 
 typedef struct kefir_ast_flow_control_tree {
     struct kefir_tree_node root;
@@ -106,14 +106,14 @@ typedef struct kefir_ast_flow_control_tree {
 kefir_result_t kefir_ast_flow_control_tree_init(struct kefir_ast_flow_control_tree *);
 kefir_result_t kefir_ast_flow_control_tree_free(struct kefir_mem *, struct kefir_ast_flow_control_tree *);
 kefir_result_t kefir_ast_flow_control_tree_push(struct kefir_mem *, struct kefir_ast_flow_control_tree *,
-                                                kefir_ast_flow_control_statement_type_t,
-                                                struct kefir_ast_flow_control_statement **);
+                                                kefir_ast_flow_control_structure_type_t,
+                                                struct kefir_ast_flow_control_structure **);
 kefir_result_t kefir_ast_flow_control_tree_pop(struct kefir_ast_flow_control_tree *);
 kefir_result_t kefir_ast_flow_control_tree_top(struct kefir_ast_flow_control_tree *,
-                                               struct kefir_ast_flow_control_statement **);
+                                               struct kefir_ast_flow_control_structure **);
 kefir_result_t kefir_ast_flow_control_tree_traverse(struct kefir_ast_flow_control_tree *,
-                                                    kefir_result_t (*)(const struct kefir_ast_flow_control_statement *,
+                                                    kefir_result_t (*)(const struct kefir_ast_flow_control_structure *,
                                                                        void *, kefir_bool_t *),
-                                                    void *, struct kefir_ast_flow_control_statement **);
+                                                    void *, struct kefir_ast_flow_control_structure **);
 
 #endif

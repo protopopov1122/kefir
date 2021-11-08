@@ -41,7 +41,7 @@ kefir_result_t kefir_ast_analyze_do_while_statement_node(struct kefir_mem *mem, 
     REQUIRE(context->flow_control_tree != NULL,
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
                                    "Unable to use do while statement in current context"));
-    REQUIRE_OK(kefir_ast_flow_control_tree_push(mem, context->flow_control_tree, KEFIR_AST_FLOW_CONTROL_STATEMENT_DO,
+    REQUIRE_OK(kefir_ast_flow_control_tree_push(mem, context->flow_control_tree, KEFIR_AST_FLOW_CONTROL_STRUCTURE_DO,
                                                 &base->properties.statement_props.flow_control_statement));
 
     base->properties.statement_props.flow_control_statement->value.loop.continuation =

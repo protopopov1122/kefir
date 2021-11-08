@@ -56,7 +56,7 @@ kefir_result_t kefir_ast_translate_for_statement_node(struct kefir_mem *mem,
         }
     }
 
-    struct kefir_ast_flow_control_statement *flow_control_stmt =
+    struct kefir_ast_flow_control_structure *flow_control_stmt =
         node->base.properties.statement_props.flow_control_statement;
 
     kefir_size_t begin = KEFIR_IRBUILDER_BLOCK_CURRENT_INDEX(builder);

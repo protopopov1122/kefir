@@ -27,22 +27,22 @@
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"
 
-static kefir_result_t resolve_loop(const struct kefir_ast_flow_control_statement *stmt, void *payload,
+static kefir_result_t resolve_loop(const struct kefir_ast_flow_control_structure *stmt, void *payload,
                                    kefir_bool_t *result) {
     UNUSED(payload);
     REQUIRE(stmt != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST flow control statement"));
     REQUIRE(result != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to boolean"));
 
     switch (stmt->type) {
-        case KEFIR_AST_FLOW_CONTROL_STATEMENT_BLOCK:
-        case KEFIR_AST_FLOW_CONTROL_STATEMENT_IF:
-        case KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH:
+        case KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK:
+        case KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF:
+        case KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH:
             *result = false;
             break;
 
-        case KEFIR_AST_FLOW_CONTROL_STATEMENT_FOR:
-        case KEFIR_AST_FLOW_CONTROL_STATEMENT_WHILE:
-        case KEFIR_AST_FLOW_CONTROL_STATEMENT_DO:
+        case KEFIR_AST_FLOW_CONTROL_STRUCTURE_FOR:
+        case KEFIR_AST_FLOW_CONTROL_STRUCTURE_WHILE:
+        case KEFIR_AST_FLOW_CONTROL_STRUCTURE_DO:
             *result = true;
             break;
     }
@@ -65,7 +65,7 @@ kefir_result_t kefir_ast_analyze_continue_statement_node(struct kefir_mem *mem, 
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
                                    "Continue statement is not allowed in current context"));
 
-    struct kefir_ast_flow_control_statement *flow_control_stmt = NULL;
+    struct kefir_ast_flow_control_structure *flow_control_stmt = NULL;
     kefir_result_t res =
         kefir_ast_flow_control_tree_traverse(context->flow_control_tree, resolve_loop, NULL, &flow_control_stmt);
     if (res == KEFIR_NOT_FOUND) {

@@ -36,7 +36,7 @@ kefir_result_t kefir_ast_translate_switch_statement_node(struct kefir_mem *mem,
 
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->expression, builder, context));
 
-    struct kefir_ast_flow_control_statement *flow_control_stmt =
+    struct kefir_ast_flow_control_structure *flow_control_stmt =
         node->base.properties.statement_props.flow_control_statement;
     struct kefir_hashtree_node_iterator iter;
     for (const struct kefir_hashtree_node *switchCase =

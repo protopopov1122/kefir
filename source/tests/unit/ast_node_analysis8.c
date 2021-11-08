@@ -214,9 +214,9 @@ DEFINE_CASE(ast_node_analysis_case_statements1, "AST node analysis - case statem
                                                        kefir_ast_type_signed_int(), NULL, NULL, NULL));
 
     struct kefir_hashtree_node *tree_node = NULL;
-    struct kefir_ast_flow_control_statement *switch_statement = NULL;
+    struct kefir_ast_flow_control_structure *switch_statement = NULL;
     REQUIRE_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
-                                                KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH, &switch_statement));
+                                                KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH, &switch_statement));
 
     struct kefir_ast_case_statement *stmt1 =
         kefir_ast_new_case_statement(&kft_mem, NULL,
@@ -326,9 +326,9 @@ DEFINE_CASE(ast_node_analysis_case_statements1, "AST node analysis - case statem
             &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, '\t')))));
     ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(stmt10)));
 
-    struct kefir_ast_flow_control_statement *switch_statement2 = NULL;
+    struct kefir_ast_flow_control_structure *switch_statement2 = NULL;
     REQUIRE_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
-                                                KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH, &switch_statement2));
+                                                KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH, &switch_statement2));
 
     struct kefir_ast_case_statement *stmt11 =
         kefir_ast_new_case_statement(&kft_mem, NULL,
@@ -544,7 +544,7 @@ DEFINE_CASE(ast_node_analysis_compound_statements3, "AST node analysis - compoun
     ASSERT(stmt1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(stmt1->base.properties.statement_props.flow_control_statement != NULL);
     ASSERT(stmt1->base.properties.statement_props.flow_control_statement->type ==
-           KEFIR_AST_FLOW_CONTROL_STATEMENT_BLOCK);
+           KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK);
 
     struct kefir_ast_declaration *decl1 = kefir_ast_new_single_declaration(
         &kft_mem, kefir_ast_declarator_identifier(&kft_mem, context->symbols, "var1"),
@@ -601,7 +601,7 @@ DEFINE_CASE(ast_node_analysis_compound_statements3, "AST node analysis - compoun
     ASSERT(stmt2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(stmt2->base.properties.statement_props.flow_control_statement != NULL);
     ASSERT(stmt2->base.properties.statement_props.flow_control_statement->type ==
-           KEFIR_AST_FLOW_CONTROL_STATEMENT_BLOCK);
+           KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK);
 
     const struct kefir_list_entry *iter = kefir_list_head(&stmt2->block_items);
     ASSERT(iter != NULL);

@@ -35,7 +35,7 @@ kefir_result_t kefir_ast_translate_while_statement_node(struct kefir_mem *mem,
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR block builder"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST while statement node"));
 
-    struct kefir_ast_flow_control_statement *flow_control_stmt =
+    struct kefir_ast_flow_control_structure *flow_control_stmt =
         node->base.properties.statement_props.flow_control_statement;
     REQUIRE_OK(kefir_ast_translator_flow_control_point_resolve(mem, flow_control_stmt->value.loop.continuation,
                                                                KEFIR_IRBUILDER_BLOCK_CURRENT_INDEX(builder)));

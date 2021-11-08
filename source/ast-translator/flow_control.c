@@ -155,13 +155,13 @@ kefir_result_t kefir_ast_translator_flow_control_point_resolve(struct kefir_mem 
 
 static kefir_result_t flow_control_tree_init(struct kefir_mem *mem, struct kefir_tree_node *node) {
     if (node->value != NULL) {
-        ASSIGN_DECL_CAST(struct kefir_ast_flow_control_statement *, stmt, node->value);
+        ASSIGN_DECL_CAST(struct kefir_ast_flow_control_structure *, stmt, node->value);
         switch (stmt->type) {
-            case KEFIR_AST_FLOW_CONTROL_STATEMENT_BLOCK:
+            case KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK:
                 // Intentionally left blank
                 break;
 
-            case KEFIR_AST_FLOW_CONTROL_STATEMENT_IF:
+            case KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF:
                 REQUIRE_OK(
                     kefir_ast_translator_flow_control_point_init(mem, stmt->value.conditional.thenBranchEnd, NULL));
                 if (stmt->value.conditional.elseBranchEnd != NULL) {
@@ -170,7 +170,7 @@ static kefir_result_t flow_control_tree_init(struct kefir_mem *mem, struct kefir
                 }
                 break;
 
-            case KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH: {
+            case KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH: {
                 struct kefir_hashtree_node_iterator iter;
                 for (const struct kefir_hashtree_node *node =
                          kefir_hashtree_iter(&stmt->value.switchStatement.cases, &iter);
@@ -185,9 +185,9 @@ static kefir_result_t flow_control_tree_init(struct kefir_mem *mem, struct kefir
                 REQUIRE_OK(kefir_ast_translator_flow_control_point_init(mem, stmt->value.switchStatement.end, NULL));
             } break;
 
-            case KEFIR_AST_FLOW_CONTROL_STATEMENT_FOR:
-            case KEFIR_AST_FLOW_CONTROL_STATEMENT_WHILE:
-            case KEFIR_AST_FLOW_CONTROL_STATEMENT_DO:
+            case KEFIR_AST_FLOW_CONTROL_STRUCTURE_FOR:
+            case KEFIR_AST_FLOW_CONTROL_STRUCTURE_WHILE:
+            case KEFIR_AST_FLOW_CONTROL_STRUCTURE_DO:
                 REQUIRE_OK(kefir_ast_translator_flow_control_point_init(mem, stmt->value.loop.continuation, NULL));
                 REQUIRE_OK(kefir_ast_translator_flow_control_point_init(mem, stmt->value.loop.end, NULL));
                 break;

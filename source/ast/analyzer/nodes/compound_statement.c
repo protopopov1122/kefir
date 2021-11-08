@@ -42,7 +42,7 @@ kefir_result_t kefir_ast_analyze_compound_statement_node(struct kefir_mem *mem, 
     REQUIRE(context->flow_control_tree != NULL,
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
                                    "Unable to use compound statement in current context"));
-    REQUIRE_OK(kefir_ast_flow_control_tree_push(mem, context->flow_control_tree, KEFIR_AST_FLOW_CONTROL_STATEMENT_BLOCK,
+    REQUIRE_OK(kefir_ast_flow_control_tree_push(mem, context->flow_control_tree, KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK,
                                                 &base->properties.statement_props.flow_control_statement));
 
     struct kefir_ast_context_block_descriptor block_descr;

@@ -54,7 +54,7 @@ static kefir_result_t flow_control_statement_free(struct kefir_mem *mem, void *n
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(node != NULL, KEFIR_OK);
 
-    ASSIGN_DECL_CAST(struct kefir_ast_flow_control_statement *, statement, node);
+    ASSIGN_DECL_CAST(struct kefir_ast_flow_control_structure *, statement, node);
     if (statement->cleanup.callback != NULL) {
         statement->cleanup.callback(mem, statement, statement->cleanup.payload);
         statement->cleanup.callback = NULL;
@@ -64,11 +64,11 @@ static kefir_result_t flow_control_statement_free(struct kefir_mem *mem, void *n
     statement->payload.ptr = NULL;
 
     switch (statement->type) {
-        case KEFIR_AST_FLOW_CONTROL_STATEMENT_BLOCK:
+        case KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK:
             // Intentionally left blank
             break;
 
-        case KEFIR_AST_FLOW_CONTROL_STATEMENT_IF:
+        case KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF:
             if (statement->value.conditional.thenBranchEnd != NULL) {
                 REQUIRE_OK(kefir_ast_flow_control_point_free(mem, statement->value.conditional.thenBranchEnd));
                 statement->value.conditional.thenBranchEnd = NULL;
@@ -79,7 +79,7 @@ static kefir_result_t flow_control_statement_free(struct kefir_mem *mem, void *n
             }
             break;
 
-        case KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH:
+        case KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH:
             REQUIRE_OK(kefir_hashtree_free(mem, &statement->value.switchStatement.cases));
             if (statement->value.switchStatement.defaultCase != NULL) {
                 REQUIRE_OK(kefir_ast_flow_control_point_free(mem, statement->value.switchStatement.defaultCase));
@@ -92,9 +92,9 @@ static kefir_result_t flow_control_statement_free(struct kefir_mem *mem, void *n
             }
             break;
 
-        case KEFIR_AST_FLOW_CONTROL_STATEMENT_FOR:
-        case KEFIR_AST_FLOW_CONTROL_STATEMENT_WHILE:
-        case KEFIR_AST_FLOW_CONTROL_STATEMENT_DO:
+        case KEFIR_AST_FLOW_CONTROL_STRUCTURE_FOR:
+        case KEFIR_AST_FLOW_CONTROL_STRUCTURE_WHILE:
+        case KEFIR_AST_FLOW_CONTROL_STRUCTURE_DO:
             if (statement->value.loop.continuation != NULL) {
                 REQUIRE_OK(kefir_ast_flow_control_point_free(mem, statement->value.loop.continuation));
                 statement->value.loop.continuation = NULL;
@@ -140,14 +140,14 @@ static kefir_result_t point_tree_free(struct kefir_mem *mem, struct kefir_hashtr
 }
 
 kefir_result_t kefir_ast_flow_control_tree_push(struct kefir_mem *mem, struct kefir_ast_flow_control_tree *tree,
-                                                kefir_ast_flow_control_statement_type_t type,
-                                                struct kefir_ast_flow_control_statement **statement) {
+                                                kefir_ast_flow_control_structure_type_t type,
+                                                struct kefir_ast_flow_control_structure **statement) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST flow control tree"));
 
-    struct kefir_ast_flow_control_statement *parent = NULL;
+    struct kefir_ast_flow_control_structure *parent = NULL;
     REQUIRE_OK(kefir_ast_flow_control_tree_top(tree, &parent));
-    struct kefir_ast_flow_control_statement *stmt = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_flow_control_statement));
+    struct kefir_ast_flow_control_structure *stmt = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_flow_control_structure));
     REQUIRE(stmt != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST flow control statement"));
     stmt->type = type;
     stmt->parent = parent;
@@ -157,16 +157,16 @@ kefir_result_t kefir_ast_flow_control_tree_push(struct kefir_mem *mem, struct ke
     memset(&stmt->payload.content[0], 0, KEFIR_AST_FLOW_CONTROL_PAYLOAD_SIZE);
 
     switch (type) {
-        case KEFIR_AST_FLOW_CONTROL_STATEMENT_BLOCK:
+        case KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK:
             stmt->value.block.contains_vla = false;
             break;
 
-        case KEFIR_AST_FLOW_CONTROL_STATEMENT_IF:
+        case KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF:
             stmt->value.conditional.thenBranchEnd = NULL;
             stmt->value.conditional.elseBranchEnd = NULL;
             break;
 
-        case KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH: {
+        case KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH: {
             kefir_result_t res = kefir_hashtree_init(&stmt->value.switchStatement.cases, &kefir_hashtree_uint_ops);
             REQUIRE_ELSE(res == KEFIR_OK, {
                 KEFIR_FREE(mem, stmt);
@@ -185,9 +185,9 @@ kefir_result_t kefir_ast_flow_control_tree_push(struct kefir_mem *mem, struct ke
             stmt->value.switchStatement.end = NULL;
         } break;
 
-        case KEFIR_AST_FLOW_CONTROL_STATEMENT_FOR:
-        case KEFIR_AST_FLOW_CONTROL_STATEMENT_WHILE:
-        case KEFIR_AST_FLOW_CONTROL_STATEMENT_DO:
+        case KEFIR_AST_FLOW_CONTROL_STRUCTURE_FOR:
+        case KEFIR_AST_FLOW_CONTROL_STRUCTURE_WHILE:
+        case KEFIR_AST_FLOW_CONTROL_STRUCTURE_DO:
             stmt->value.loop.continuation = NULL;
             stmt->value.loop.end = NULL;
             break;
@@ -195,7 +195,7 @@ kefir_result_t kefir_ast_flow_control_tree_push(struct kefir_mem *mem, struct ke
 
     kefir_result_t res = kefir_tree_insert_child(mem, tree->current, stmt, &tree->current);
     REQUIRE_ELSE(res == KEFIR_OK, {
-        if (type == KEFIR_AST_FLOW_CONTROL_STATEMENT_SWITCH) {
+        if (type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH) {
             kefir_hashtree_free(mem, &stmt->value.switchStatement.cases);
         }
         KEFIR_FREE(mem, stmt);
@@ -215,26 +215,26 @@ kefir_result_t kefir_ast_flow_control_tree_pop(struct kefir_ast_flow_control_tre
 }
 
 kefir_result_t kefir_ast_flow_control_tree_top(struct kefir_ast_flow_control_tree *tree,
-                                               struct kefir_ast_flow_control_statement **stmt) {
+                                               struct kefir_ast_flow_control_structure **stmt) {
     REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST flow control tree"));
     REQUIRE(stmt != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to AST flow control tree statement"));
 
-    ASSIGN_DECL_CAST(struct kefir_ast_flow_control_statement *, statement, tree->current->value);
+    ASSIGN_DECL_CAST(struct kefir_ast_flow_control_structure *, statement, tree->current->value);
     ASSIGN_PTR(stmt, statement);
     return KEFIR_OK;
 }
 
 kefir_result_t kefir_ast_flow_control_tree_traverse(
     struct kefir_ast_flow_control_tree *tree,
-    kefir_result_t (*callback)(const struct kefir_ast_flow_control_statement *, void *, kefir_bool_t *), void *payload,
-    struct kefir_ast_flow_control_statement **stmt) {
+    kefir_result_t (*callback)(const struct kefir_ast_flow_control_structure *, void *, kefir_bool_t *), void *payload,
+    struct kefir_ast_flow_control_structure **stmt) {
     REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST flow control tree"));
     REQUIRE(callback != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid traversal callback"));
     REQUIRE(stmt != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to AST flow control tree statement"));
 
-    struct kefir_ast_flow_control_statement *current = NULL;
+    struct kefir_ast_flow_control_structure *current = NULL;
     REQUIRE_OK(kefir_ast_flow_control_tree_top(tree, &current));
 
     while (current != NULL) {
