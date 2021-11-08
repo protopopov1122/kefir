@@ -22,6 +22,7 @@
 #include "kefir/ast-translator/translator.h"
 #include "kefir/ast-translator/flow_control.h"
 #include "kefir/ast-translator/util.h"
+#include "kefir/ast-translator/jump.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -34,9 +35,8 @@ kefir_result_t kefir_ast_translate_goto_statement_node(struct kefir_mem *mem,
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR block builder"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST goto statement node"));
 
-    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_JMP, 0));
-    REQUIRE_OK(kefir_ast_translator_flow_control_point_reference(
-        mem, node->base.properties.statement_props.flow_control_point, builder->block,
-        KEFIR_IRBUILDER_BLOCK_CURRENT_INDEX(builder) - 1));
+    REQUIRE_OK(kefir_ast_translate_jump(
+        mem, context, builder, node->base.properties.statement_props.flow_control_statement,
+        node->base.properties.statement_props.flow_control_point, &node->base.source_location));
     return KEFIR_OK;
 }
