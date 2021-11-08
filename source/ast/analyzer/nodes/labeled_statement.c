@@ -35,6 +35,12 @@ kefir_result_t kefir_ast_analyze_labeled_statement_node(struct kefir_mem *mem, c
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST labeled statement"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST base node"));
 
+    REQUIRE(context->flow_control_tree != NULL,
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
+                                   "Break statement is not allowed in current context"));
+    struct kefir_ast_flow_control_structure *parent = NULL;
+    REQUIRE_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree, &parent));
+
     REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
     base->properties.category = KEFIR_AST_NODE_CATEGORY_STATEMENT;
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->statement));
@@ -44,7 +50,7 @@ kefir_result_t kefir_ast_analyze_labeled_statement_node(struct kefir_mem *mem, c
 
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
     REQUIRE_OK(
-        context->reference_label(mem, context, node->label, true, &node->statement->source_location, &scoped_id));
+        context->reference_label(mem, context, node->label, parent, &node->statement->source_location, &scoped_id));
     base->properties.statement_props.flow_control_point = scoped_id->label.point;
     return KEFIR_OK;
 }

@@ -72,7 +72,6 @@ typedef struct kefir_ast_scoped_identifier {
         const struct kefir_ast_type *type;
 
         struct {
-            kefir_bool_t defined;
             struct kefir_ast_flow_control_point *point;
         } label;
     };

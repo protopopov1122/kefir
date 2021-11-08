@@ -263,7 +263,7 @@ static kefir_result_t context_define_identifier(
 }
 
 kefir_result_t context_reference_label(struct kefir_mem *mem, const struct kefir_ast_context *context,
-                                       const char *label, kefir_bool_t definition,
+                                       const char *label, struct kefir_ast_flow_control_structure *parent,
                                        const struct kefir_source_location *location,
                                        const struct kefir_ast_scoped_identifier **scoped_id) {
     UNUSED(location);
@@ -272,8 +272,8 @@ kefir_result_t context_reference_label(struct kefir_mem *mem, const struct kefir
     REQUIRE(label != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Labels are not permittedalid AST type"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_local_context *, local_ctx, context->payload);
-    if (definition) {
-        REQUIRE_OK(kefir_ast_local_context_define_label(mem, local_ctx, label, location, scoped_id));
+    if (parent != NULL) {
+        REQUIRE_OK(kefir_ast_local_context_define_label(mem, local_ctx, label, parent, location, scoped_id));
     } else {
         REQUIRE_OK(kefir_ast_local_context_reference_label(mem, local_ctx, label, scoped_id));
     }
@@ -1034,7 +1034,7 @@ kefir_result_t kefir_ast_local_context_reference_label(struct kefir_mem *mem, st
     struct kefir_ast_scoped_identifier *label_id = NULL;
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->label_scope, label, &label_id);
     if (res == KEFIR_NOT_FOUND) {
-        label_id = kefir_ast_context_allocate_scoped_label(mem, false);
+        label_id = kefir_ast_context_allocate_scoped_label(mem, NULL);
         REQUIRE(label_id != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST scoped identifier"));
         res = kefir_ast_identifier_flat_scope_insert(mem, &context->label_scope, label, label_id);
         REQUIRE_ELSE(res == KEFIR_OK, {
@@ -1050,11 +1050,13 @@ kefir_result_t kefir_ast_local_context_reference_label(struct kefir_mem *mem, st
 }
 
 kefir_result_t kefir_ast_local_context_define_label(struct kefir_mem *mem, struct kefir_ast_local_context *context,
-                                                    const char *label, const struct kefir_source_location *location,
+                                                    const char *label, struct kefir_ast_flow_control_structure *parent,
+                                                    const struct kefir_source_location *location,
                                                     const struct kefir_ast_scoped_identifier **scoped_id) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST local context"));
     REQUIRE(label != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid label"));
+    REQUIRE(parent != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST flow control structure"));
 
     label = kefir_symbol_table_insert(mem, context->context.symbols, label, NULL);
     REQUIRE(label != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate label"));
@@ -1062,7 +1064,7 @@ kefir_result_t kefir_ast_local_context_define_label(struct kefir_mem *mem, struc
     struct kefir_ast_scoped_identifier *label_id = NULL;
     kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->label_scope, label, &label_id);
     if (res == KEFIR_NOT_FOUND) {
-        label_id = kefir_ast_context_allocate_scoped_label(mem, true);
+        label_id = kefir_ast_context_allocate_scoped_label(mem, parent);
         REQUIRE(label_id != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST scoped identifier"));
         res = kefir_ast_identifier_flat_scope_insert(mem, &context->label_scope, label, label_id);
         REQUIRE_ELSE(res == KEFIR_OK, {
@@ -1071,9 +1073,9 @@ kefir_result_t kefir_ast_local_context_define_label(struct kefir_mem *mem, struc
         });
     } else {
         REQUIRE_OK(res);
-        REQUIRE(!label_id->label.defined,
+        REQUIRE(label_id->label.point != NULL && label_id->label.point->parent == NULL,
                 KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location, "Cannot redefine a label"));
-        label_id->label.defined = true;
+        label_id->label.point->parent = parent;
     }
 
     ASSIGN_PTR(scoped_id, label_id);

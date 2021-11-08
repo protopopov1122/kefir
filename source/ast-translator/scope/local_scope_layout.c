@@ -239,7 +239,7 @@ static kefir_result_t translate_local_scoped_identifier(
             break;
 
         case KEFIR_AST_SCOPE_IDENTIFIER_LABEL:
-            REQUIRE(scoped_identifier->label.defined,
+            REQUIRE(scoped_identifier->label.point != NULL && scoped_identifier->label.point->parent != NULL,
                     KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Cannot translate undefined label"));
             REQUIRE_OK(kefir_ast_translator_flow_control_point_init(mem, scoped_identifier->label.point, NULL));
             break;
@@ -383,7 +383,8 @@ kefir_result_t kefir_ast_translator_build_local_scope_layout(struct kefir_mem *m
 
         REQUIRE(iter.value->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL,
                 KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected label scope to contain only labels"));
-        REQUIRE(iter.value->label.defined, KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Cannot translate undefined label"));
+        REQUIRE(iter.value->label.point->parent != NULL,
+                KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Cannot translate undefined label"));
         REQUIRE_OK(kefir_ast_translator_flow_control_point_init(mem, iter.value->label.point, NULL));
     }
     return KEFIR_OK;

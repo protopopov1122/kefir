@@ -42,17 +42,19 @@ kefir_result_t kefir_ast_analyze_conditional_statement_node(struct kefir_mem *me
     REQUIRE(context->flow_control_tree != NULL,
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
                                    "Unable to use conditional statement in current context"));
+    struct kefir_ast_flow_control_structure *direct_parent = NULL;
+    REQUIRE_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree, &direct_parent));
     REQUIRE_OK(kefir_ast_flow_control_tree_push(mem, context->flow_control_tree, KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF,
                                                 &base->properties.statement_props.flow_control_statement));
 
     base->properties.statement_props.flow_control_statement->value.conditional.thenBranchEnd =
-        kefir_ast_flow_control_point_alloc(mem);
+        kefir_ast_flow_control_point_alloc(mem, direct_parent);
     REQUIRE(base->properties.statement_props.flow_control_statement->value.conditional.thenBranchEnd != NULL,
             KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST flow control point"));
 
     if (node->elseBranch != NULL) {
         base->properties.statement_props.flow_control_statement->value.conditional.elseBranchEnd =
-            kefir_ast_flow_control_point_alloc(mem);
+            kefir_ast_flow_control_point_alloc(mem, direct_parent);
         REQUIRE(base->properties.statement_props.flow_control_statement->value.conditional.elseBranchEnd != NULL,
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST flow control point"));
     }

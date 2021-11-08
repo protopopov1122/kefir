@@ -107,6 +107,7 @@ kefir_result_t kefir_ast_local_context_declare_function(struct kefir_mem *, stru
 kefir_result_t kefir_ast_local_context_reference_label(struct kefir_mem *, struct kefir_ast_local_context *,
                                                        const char *, const struct kefir_ast_scoped_identifier **);
 kefir_result_t kefir_ast_local_context_define_label(struct kefir_mem *, struct kefir_ast_local_context *, const char *,
+                                                    struct kefir_ast_flow_control_structure *,
                                                     const struct kefir_source_location *,
                                                     const struct kefir_ast_scoped_identifier **);
 

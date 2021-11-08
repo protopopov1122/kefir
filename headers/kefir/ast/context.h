@@ -55,8 +55,8 @@ typedef struct kefir_ast_context {
                                         struct kefir_ast_alignment *, struct kefir_ast_initializer *,
                                         const struct kefir_source_location *,
                                         const struct kefir_ast_scoped_identifier **);
-    kefir_result_t (*reference_label)(struct kefir_mem *, const struct kefir_ast_context *, const char *, kefir_bool_t,
-                                      const struct kefir_source_location *,
+    kefir_result_t (*reference_label)(struct kefir_mem *, const struct kefir_ast_context *, const char *,
+                                      struct kefir_ast_flow_control_structure *, const struct kefir_source_location *,
                                       const struct kefir_ast_scoped_identifier **);
     kefir_result_t (*push_block)(struct kefir_mem *, const struct kefir_ast_context *,
                                  struct kefir_ast_context_block_descriptor *);

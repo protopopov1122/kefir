@@ -43,8 +43,7 @@ kefir_result_t kefir_ast_analyze_goto_statement_node(struct kefir_mem *mem, cons
                                    "Break statement is not allowed in current context"));
 
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
-    REQUIRE_OK(
-        context->reference_label(mem, context, node->identifier, false, &node->base.source_location, &scoped_id));
+    REQUIRE_OK(context->reference_label(mem, context, node->identifier, NULL, &node->base.source_location, &scoped_id));
     REQUIRE(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL,
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
                                    "Goto statement identifier should reference a label"));

@@ -136,7 +136,10 @@ DEFINE_CASE(ast_node_analysis_function_definitions1, "AST node analysis - functi
 
     ASSERT(body->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(body->base.properties.statement_props.flow_control_point == NULL);
-    ASSERT(body->base.properties.statement_props.flow_control_statement == NULL);
+    ASSERT(body->base.properties.statement_props.flow_control_statement != NULL);
+    ASSERT(body->base.properties.statement_props.flow_control_statement->type ==
+           KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK);
+    ASSERT(body->base.properties.statement_props.flow_control_statement->parent == NULL);
 
     ASSERT(stmt1->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(stmt1->properties.statement_props.flow_control_point == NULL);
@@ -202,7 +205,10 @@ DEFINE_CASE(ast_node_analysis_function_definitions2, "AST node analysis - functi
 
     ASSERT(body->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(body->base.properties.statement_props.flow_control_point == NULL);
-    ASSERT(body->base.properties.statement_props.flow_control_statement == NULL);
+    ASSERT(body->base.properties.statement_props.flow_control_statement != NULL);
+    ASSERT(body->base.properties.statement_props.flow_control_statement->type ==
+           KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK);
+    ASSERT(body->base.properties.statement_props.flow_control_statement->parent == NULL);
 
     ASSERT(stmt1->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(stmt1->properties.statement_props.flow_control_point == NULL);
@@ -308,7 +314,10 @@ DEFINE_CASE(ast_node_analysis_function_definitions3, "AST node analysis - functi
 
     ASSERT(body->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(body->base.properties.statement_props.flow_control_point == NULL);
-    ASSERT(body->base.properties.statement_props.flow_control_statement == NULL);
+    ASSERT(body->base.properties.statement_props.flow_control_statement != NULL);
+    ASSERT(body->base.properties.statement_props.flow_control_statement->type ==
+           KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK);
+    ASSERT(body->base.properties.statement_props.flow_control_statement->parent == NULL);
 
     ASSERT(stmt1->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(stmt1->properties.statement_props.flow_control_point == NULL);

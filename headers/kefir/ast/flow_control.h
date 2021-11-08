@@ -37,12 +37,14 @@ typedef struct kefir_ast_flow_control_point_cleanup {
 } kefir_ast_flow_control_point_cleanup_t;
 
 typedef struct kefir_ast_flow_control_point {
+    struct kefir_ast_flow_control_structure *parent;
     unsigned char content[KEFIR_AST_FLOW_CONTROL_PAYLOAD_SIZE];
     void *ptr;
     struct kefir_ast_flow_control_point_cleanup cleanup;
 } kefir_ast_flow_control_point_t;
 
-struct kefir_ast_flow_control_point *kefir_ast_flow_control_point_alloc(struct kefir_mem *);
+struct kefir_ast_flow_control_point *kefir_ast_flow_control_point_alloc(struct kefir_mem *,
+                                                                        struct kefir_ast_flow_control_structure *);
 kefir_result_t kefir_ast_flow_control_point_free(struct kefir_mem *, struct kefir_ast_flow_control_point *);
 
 typedef enum kefir_ast_flow_control_structure_type {

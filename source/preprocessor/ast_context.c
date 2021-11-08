@@ -83,13 +83,13 @@ static kefir_result_t pp_define_identifier(
 }
 
 static kefir_result_t pp_reference_label(struct kefir_mem *mem, const struct kefir_ast_context *context,
-                                         const char *identifier, kefir_bool_t defintion,
+                                         const char *identifier, struct kefir_ast_flow_control_structure *parent,
                                          const struct kefir_source_location *source_location,
                                          const struct kefir_ast_scoped_identifier **scoped_id) {
     UNUSED(mem);
     UNUSED(context);
     UNUSED(identifier);
-    UNUSED(defintion);
+    UNUSED(parent);
     UNUSED(source_location);
     UNUSED(scoped_id);
     return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Preprocessor AST context does not implement labels");

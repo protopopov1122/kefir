@@ -330,13 +330,13 @@ static kefir_result_t context_define_identifier(
 }
 
 static kefir_result_t context_reference_label(struct kefir_mem *mem, const struct kefir_ast_context *context,
-                                              const char *label, kefir_bool_t definition,
+                                              const char *label, struct kefir_ast_flow_control_structure *parent,
                                               const struct kefir_source_location *location,
                                               const struct kefir_ast_scoped_identifier **scoped_id) {
     UNUSED(mem);
     UNUSED(context);
     UNUSED(label);
-    UNUSED(definition);
+    UNUSED(parent);
     UNUSED(scoped_id);
 
     return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,

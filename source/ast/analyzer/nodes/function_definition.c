@@ -234,6 +234,16 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
     local_context->context.surrounding_function = scoped_id;
     *scoped_id->function.local_context_ptr = local_context;
 
+    REQUIRE_OK(kefir_ast_node_properties_init(&node->body->base.properties));
+    node->body->base.properties.category = KEFIR_AST_NODE_CATEGORY_STATEMENT;
+
+    REQUIRE(local_context->context.flow_control_tree != NULL,
+            KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR,
+                            "Expected function definition local context to have valid flow control tree"));
+    REQUIRE_OK(kefir_ast_flow_control_tree_push(mem, local_context->context.flow_control_tree,
+                                                KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK,
+                                                &node->body->base.properties.statement_props.flow_control_statement));
+
     const struct kefir_ast_declarator_function *decl_func = NULL;
     REQUIRE_OK(kefir_ast_declarator_unpack_function(node->declarator, &decl_func));
     REQUIRE(decl_func != NULL,
@@ -255,9 +265,6 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
             break;
     }
 
-    REQUIRE_OK(kefir_ast_node_properties_init(&node->body->base.properties));
-    node->body->base.properties.category = KEFIR_AST_NODE_CATEGORY_STATEMENT;
-
     for (const struct kefir_list_entry *iter = kefir_list_head(&node->body->block_items); iter != NULL;
          kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, item, iter->value);
@@ -268,6 +275,6 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
                 KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &item->source_location,
                                        "Compound statement items shall be either statements or declarations"));
     }
-
+    REQUIRE_OK(kefir_ast_flow_control_tree_pop(local_context->context.flow_control_tree));
     return KEFIR_OK;
 }

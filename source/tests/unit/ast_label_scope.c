@@ -28,20 +28,27 @@ DEFINE_CASE(ast_label_scope1, "AST ordinary scope - label scope #1") {
     struct kefir_symbol_table symbols;
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
 
     ASSERT_OK(kefir_symbol_table_init(&symbols));
     ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
                                             &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+
+    struct kefir_ast_flow_control_structure *parent = NULL;
+    ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, &local_context.flow_control_tree,
+                                               KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK, &parent));
 
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
-    ASSERT_NOK(global_context.context.reference_label(&kft_mem, &global_context.context, "label1", false, NULL, NULL));
-    ASSERT_NOK(global_context.context.reference_label(&kft_mem, &global_context.context, "label1", true, NULL, NULL));
+    ASSERT_NOK(global_context.context.reference_label(&kft_mem, &global_context.context, "label1", NULL, NULL, NULL));
+    ASSERT_NOK(global_context.context.reference_label(&kft_mem, &global_context.context, "label1", parent, NULL, NULL));
     ASSERT_NOK(
-        global_context.context.reference_label(&kft_mem, &global_context.context, "label1", false, NULL, &scoped_id));
+        global_context.context.reference_label(&kft_mem, &global_context.context, "label1", NULL, NULL, &scoped_id));
     ASSERT_NOK(
-        global_context.context.reference_label(&kft_mem, &global_context.context, "label1", true, NULL, &scoped_id));
+        global_context.context.reference_label(&kft_mem, &global_context.context, "label1", parent, NULL, &scoped_id));
 
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
     ASSERT_OK(kefir_ast_type_bundle_free(&kft_mem, &type_bundle));
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
@@ -53,25 +60,32 @@ DEFINE_CASE(ast_label_scope2, "AST ordinary scope - label scope #2") {
     struct kefir_symbol_table symbols;
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
     struct kefir_ast_function_declaration_context func_decl_context;
 
     ASSERT_OK(kefir_symbol_table_init(&symbols));
     ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
                                             &global_context));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     ASSERT_OK(kefir_ast_function_declaration_context_init(&kft_mem, &global_context.context, &func_decl_context));
+
+    struct kefir_ast_flow_control_structure *parent = NULL;
+    ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, &local_context.flow_control_tree,
+                                               KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK, &parent));
 
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
     ASSERT_NOK(
-        func_decl_context.context.reference_label(&kft_mem, &func_decl_context.context, "label1", false, NULL, NULL));
+        func_decl_context.context.reference_label(&kft_mem, &func_decl_context.context, "label1", NULL, NULL, NULL));
     ASSERT_NOK(
-        func_decl_context.context.reference_label(&kft_mem, &func_decl_context.context, "label1", true, NULL, NULL));
-    ASSERT_NOK(func_decl_context.context.reference_label(&kft_mem, &func_decl_context.context, "label1", false, NULL,
+        func_decl_context.context.reference_label(&kft_mem, &func_decl_context.context, "label1", parent, NULL, NULL));
+    ASSERT_NOK(func_decl_context.context.reference_label(&kft_mem, &func_decl_context.context, "label1", NULL, NULL,
                                                          &scoped_id));
-    ASSERT_NOK(func_decl_context.context.reference_label(&kft_mem, &func_decl_context.context, "label1", true, NULL,
+    ASSERT_NOK(func_decl_context.context.reference_label(&kft_mem, &func_decl_context.context, "label1", parent, NULL,
                                                          &scoped_id));
 
     ASSERT_OK(kefir_ast_function_declaration_context_free(&kft_mem, &func_decl_context));
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
     ASSERT_OK(kefir_ast_type_bundle_free(&kft_mem, &type_bundle));
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
@@ -85,18 +99,18 @@ DEFINE_CASE(ast_label_scope3, "AST ordinary scope - label scope #3") {
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
 
-#define ASSERT_LABEL(_mem, _context, _label, _define, _defined)                                            \
-    do {                                                                                                   \
-        const struct kefir_ast_scoped_identifier *scoped_id = NULL;                                        \
-        ASSERT_OK((_context)->reference_label((_mem), (_context), (_label), (_define), NULL, &scoped_id)); \
-        ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL);                                      \
-        ASSERT(scoped_id->label.defined == (_defined));                                                    \
-        ASSERT(scoped_id->label.point != NULL);                                                            \
+#define ASSERT_LABEL(_mem, _context, _label, _parent, _defined)                                               \
+    do {                                                                                                      \
+        const struct kefir_ast_scoped_identifier *scoped_id = NULL;                                           \
+        ASSERT_OK((_context)->reference_label((_mem), (_context), (_label), (_parent), NULL, &scoped_id));    \
+        ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL);                                         \
+        ASSERT((_defined) ? scoped_id->label.point->parent != NULL : scoped_id->label.point->parent == NULL); \
+        ASSERT(scoped_id->label.point != NULL);                                                               \
     } while (0)
 
-#define ASSERT_LABEL_NOK(_mem, _context, _label, _define)                                             \
+#define ASSERT_LABEL_NOK(_mem, _context, _label, _parent)                                             \
     do {                                                                                              \
-        ASSERT_NOK((_context)->reference_label((_mem), (_context), (_label), (_define), NULL, NULL)); \
+        ASSERT_NOK((_context)->reference_label((_mem), (_context), (_label), (_parent), NULL, NULL)); \
     } while (0)
 
     ASSERT_OK(kefir_symbol_table_init(&symbols));
@@ -105,31 +119,35 @@ DEFINE_CASE(ast_label_scope3, "AST ordinary scope - label scope #3") {
                                             &global_context));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
+    struct kefir_ast_flow_control_structure *parent = NULL;
+    ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, &context.flow_control_tree,
+                                               KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK, &parent));
+
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
     ASSERT(context.context.resolve_label_identifier(&context.context, "label1", &scoped_id) == KEFIR_NOT_FOUND);
     ASSERT(context.context.resolve_label_identifier(&context.context, "label2", &scoped_id) == KEFIR_NOT_FOUND);
     ASSERT(context.context.resolve_label_identifier(&context.context, "label3", &scoped_id) == KEFIR_NOT_FOUND);
 
-    ASSERT_LABEL(&kft_mem, &context.context, "label1", false, false);
-    ASSERT_LABEL(&kft_mem, &context.context, "label1", false, false);
-    ASSERT_LABEL(&kft_mem, &context.context, "label1", false, false);
-    ASSERT_LABEL(&kft_mem, &context.context, "label1", true, true);
-    ASSERT_LABEL_NOK(&kft_mem, &context.context, "label1", true);
-    ASSERT_LABEL(&kft_mem, &context.context, "label1", false, true);
-    ASSERT_LABEL_NOK(&kft_mem, &context.context, "label1", true);
-    ASSERT_LABEL(&kft_mem, &context.context, "label2", true, true);
-    ASSERT_LABEL(&kft_mem, &context.context, "label1", false, true);
-    ASSERT_LABEL_NOK(&kft_mem, &context.context, "label1", true);
-    ASSERT_LABEL_NOK(&kft_mem, &context.context, "label2", true);
-    ASSERT_LABEL(&kft_mem, &context.context, "label2", false, true);
-    ASSERT_LABEL(&kft_mem, &context.context, "label3", false, false);
-    ASSERT_LABEL(&kft_mem, &context.context, "label3", true, true);
-    ASSERT_LABEL_NOK(&kft_mem, &context.context, "label1", true);
-    ASSERT_LABEL_NOK(&kft_mem, &context.context, "label2", true);
-    ASSERT_LABEL_NOK(&kft_mem, &context.context, "label3", true);
-    ASSERT_LABEL(&kft_mem, &context.context, "label1", false, true);
-    ASSERT_LABEL(&kft_mem, &context.context, "label2", false, true);
-    ASSERT_LABEL(&kft_mem, &context.context, "label3", false, true);
+    ASSERT_LABEL(&kft_mem, &context.context, "label1", NULL, false);
+    ASSERT_LABEL(&kft_mem, &context.context, "label1", NULL, false);
+    ASSERT_LABEL(&kft_mem, &context.context, "label1", NULL, false);
+    ASSERT_LABEL(&kft_mem, &context.context, "label1", parent, true);
+    ASSERT_LABEL_NOK(&kft_mem, &context.context, "label1", parent);
+    ASSERT_LABEL(&kft_mem, &context.context, "label1", NULL, true);
+    ASSERT_LABEL_NOK(&kft_mem, &context.context, "label1", parent);
+    ASSERT_LABEL(&kft_mem, &context.context, "label2", parent, true);
+    ASSERT_LABEL(&kft_mem, &context.context, "label1", NULL, true);
+    ASSERT_LABEL_NOK(&kft_mem, &context.context, "label1", parent);
+    ASSERT_LABEL_NOK(&kft_mem, &context.context, "label2", parent);
+    ASSERT_LABEL(&kft_mem, &context.context, "label2", NULL, true);
+    ASSERT_LABEL(&kft_mem, &context.context, "label3", NULL, false);
+    ASSERT_LABEL(&kft_mem, &context.context, "label3", parent, true);
+    ASSERT_LABEL_NOK(&kft_mem, &context.context, "label1", parent);
+    ASSERT_LABEL_NOK(&kft_mem, &context.context, "label2", parent);
+    ASSERT_LABEL_NOK(&kft_mem, &context.context, "label3", parent);
+    ASSERT_LABEL(&kft_mem, &context.context, "label1", NULL, true);
+    ASSERT_LABEL(&kft_mem, &context.context, "label2", NULL, true);
+    ASSERT_LABEL(&kft_mem, &context.context, "label3", NULL, true);
 
     ASSERT_OK(context.context.resolve_label_identifier(&context.context, "label1", &scoped_id));
     ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL);
@@ -163,62 +181,76 @@ DEFINE_CASE(ast_label_scope4, "AST ordinary scope - label scope #4") {
                                             &global_context));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
+    struct kefir_ast_flow_control_structure *parent = NULL;
+    ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, &context.flow_control_tree,
+                                               KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK, &parent));
+
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
     ASSERT(context.context.resolve_label_identifier(&context.context, "label1", &scoped_id) == KEFIR_NOT_FOUND);
     ASSERT(context.context.resolve_label_identifier(&context.context, "label2", &scoped_id) == KEFIR_NOT_FOUND);
     ASSERT(context.context.resolve_label_identifier(&context.context, "label3", &scoped_id) == KEFIR_NOT_FOUND);
     ASSERT(context.context.resolve_label_identifier(&context.context, "label4", &scoped_id) == KEFIR_NOT_FOUND);
 
-    ASSERT_LABEL(&kft_mem, &context.context, "label1", false, false);
+    ASSERT_LABEL(&kft_mem, &context.context, "label1", NULL, false);
 
     do {
         ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context, NULL));
-        ASSERT_LABEL(&kft_mem, &context.context, "label1", false, false);
-        ASSERT_LABEL(&kft_mem, &context.context, "label1", true, true);
-        ASSERT_LABEL(&kft_mem, &context.context, "label2", true, true);
+        struct kefir_ast_flow_control_structure *parent = NULL;
+        ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, &context.flow_control_tree,
+                                                   KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK, &parent));
+
+        ASSERT_LABEL(&kft_mem, &context.context, "label1", NULL, false);
+        ASSERT_LABEL(&kft_mem, &context.context, "label1", parent, true);
+        ASSERT_LABEL(&kft_mem, &context.context, "label2", parent, true);
 
         do {
             ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context, NULL));
-            ASSERT_LABEL(&kft_mem, &context.context, "label1", false, true);
-            ASSERT_LABEL(&kft_mem, &context.context, "label2", false, true);
-            ASSERT_LABEL(&kft_mem, &context.context, "label3", false, false);
-            ASSERT_LABEL(&kft_mem, &context.context, "label4", false, false);
-            ASSERT_LABEL_NOK(&kft_mem, &context.context, "label2", true);
+            struct kefir_ast_flow_control_structure *parent = NULL;
+            ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, &context.flow_control_tree,
+                                                       KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK, &parent));
+            ASSERT_LABEL(&kft_mem, &context.context, "label1", NULL, true);
+            ASSERT_LABEL(&kft_mem, &context.context, "label2", NULL, true);
+            ASSERT_LABEL(&kft_mem, &context.context, "label3", NULL, false);
+            ASSERT_LABEL(&kft_mem, &context.context, "label4", NULL, false);
+            ASSERT_LABEL_NOK(&kft_mem, &context.context, "label2", parent);
+            ASSERT_OK(kefir_ast_flow_control_tree_pop(&context.flow_control_tree));
             ASSERT_OK(kefir_ast_local_context_pop_block_scope(&kft_mem, &context));
         } while (0);
 
-        ASSERT_LABEL(&kft_mem, &context.context, "label3", false, false);
-        ASSERT_LABEL(&kft_mem, &context.context, "label4", false, false);
-        ASSERT_LABEL(&kft_mem, &context.context, "label4", true, true);
+        ASSERT_LABEL(&kft_mem, &context.context, "label3", NULL, false);
+        ASSERT_LABEL(&kft_mem, &context.context, "label4", NULL, false);
+        ASSERT_LABEL(&kft_mem, &context.context, "label4", parent, true);
+
+        ASSERT_OK(kefir_ast_flow_control_tree_pop(&context.flow_control_tree));
         ASSERT_OK(kefir_ast_local_context_pop_block_scope(&kft_mem, &context));
     } while (0);
 
-    ASSERT_LABEL(&kft_mem, &context.context, "label1", false, true);
-    ASSERT_LABEL(&kft_mem, &context.context, "label2", false, true);
-    ASSERT_LABEL_NOK(&kft_mem, &context.context, "label2", true);
-    ASSERT_LABEL(&kft_mem, &context.context, "label3", false, false);
-    ASSERT_LABEL(&kft_mem, &context.context, "label4", false, true);
-    ASSERT_LABEL_NOK(&kft_mem, &context.context, "label4", true);
+    ASSERT_LABEL(&kft_mem, &context.context, "label1", NULL, true);
+    ASSERT_LABEL(&kft_mem, &context.context, "label2", NULL, true);
+    ASSERT_LABEL_NOK(&kft_mem, &context.context, "label2", parent);
+    ASSERT_LABEL(&kft_mem, &context.context, "label3", NULL, false);
+    ASSERT_LABEL(&kft_mem, &context.context, "label4", NULL, true);
+    ASSERT_LABEL_NOK(&kft_mem, &context.context, "label4", parent);
 
     ASSERT_OK(context.context.resolve_label_identifier(&context.context, "label1", &scoped_id));
     ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL);
-    ASSERT(scoped_id->label.defined);
     ASSERT(scoped_id->label.point != NULL);
+    ASSERT(scoped_id->label.point->parent != NULL);
 
     ASSERT_OK(context.context.resolve_label_identifier(&context.context, "label2", &scoped_id));
     ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL);
-    ASSERT(scoped_id->label.defined);
     ASSERT(scoped_id->label.point != NULL);
+    ASSERT(scoped_id->label.point->parent != NULL);
 
     ASSERT_OK(context.context.resolve_label_identifier(&context.context, "label3", &scoped_id));
     ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL);
-    ASSERT(!scoped_id->label.defined);
     ASSERT(scoped_id->label.point != NULL);
+    ASSERT(scoped_id->label.point->parent == NULL);
 
     ASSERT_OK(context.context.resolve_label_identifier(&context.context, "label4", &scoped_id));
     ASSERT(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL);
-    ASSERT(scoped_id->label.defined);
     ASSERT(scoped_id->label.point != NULL);
+    ASSERT(scoped_id->label.point->parent != NULL);
 
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &context));
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));

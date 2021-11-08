@@ -22,7 +22,7 @@
 #include "kefir/test/unit_test.h"
 
 DEFINE_CASE(ast_translator_flow_control_point1, "AST Translator - flow control points #1") {
-    struct kefir_ast_flow_control_point *point1 = kefir_ast_flow_control_point_alloc(&kft_mem);
+    struct kefir_ast_flow_control_point *point1 = kefir_ast_flow_control_point_alloc(&kft_mem, NULL);
     ASSERT(point1 != NULL);
 
     struct kefir_ast_translator_flow_control_point *translator_point1 = NULL;

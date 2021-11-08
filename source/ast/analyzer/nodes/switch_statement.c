@@ -43,6 +43,8 @@ kefir_result_t kefir_ast_analyze_switch_statement_node(struct kefir_mem *mem, co
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
                                    "Unable to use switch statement in current context"));
     REQUIRE_OK(context->push_block(mem, context, NULL));
+    struct kefir_ast_flow_control_structure *direct_parent = NULL;
+    REQUIRE_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree, &direct_parent));
 
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->expression));
     REQUIRE(node->expression->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
@@ -64,7 +66,7 @@ kefir_result_t kefir_ast_analyze_switch_statement_node(struct kefir_mem *mem, co
     REQUIRE_OK(kefir_ast_flow_control_tree_push(mem, context->flow_control_tree,
                                                 KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH, &stmt));
     stmt->value.switchStatement.controlling_expression_type = controlling_expr_type;
-    stmt->value.switchStatement.end = kefir_ast_flow_control_point_alloc(mem);
+    stmt->value.switchStatement.end = kefir_ast_flow_control_point_alloc(mem, direct_parent);
     REQUIRE(stmt->value.switchStatement.end != NULL,
             KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST flow control point"));
 

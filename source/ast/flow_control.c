@@ -23,7 +23,8 @@
 #include "kefir/core/error.h"
 #include <string.h>
 
-struct kefir_ast_flow_control_point *kefir_ast_flow_control_point_alloc(struct kefir_mem *mem) {
+struct kefir_ast_flow_control_point *kefir_ast_flow_control_point_alloc(
+    struct kefir_mem *mem, struct kefir_ast_flow_control_structure *parent) {
     REQUIRE(mem != NULL, NULL);
 
     struct kefir_ast_flow_control_point *point = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_flow_control_point));
@@ -32,6 +33,7 @@ struct kefir_ast_flow_control_point *kefir_ast_flow_control_point_alloc(struct k
     memset(point->content, 0, KEFIR_AST_FLOW_CONTROL_PAYLOAD_SIZE);
     point->cleanup.callback = NULL;
     point->cleanup.payload = NULL;
+    point->parent = parent;
     return point;
 }
 
