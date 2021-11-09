@@ -1,0 +1,93 @@
+[
+    {
+        "class": "constant",
+        "preprocessor": false,
+        "type": "integer",
+        "value": 2
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": "+"
+    },
+    {
+        "class": "constant",
+        "preprocessor": false,
+        "type": "integer",
+        "value": 3
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": "*"
+    },
+    {
+        "class": "constant",
+        "preprocessor": false,
+        "type": "integer",
+        "value": 4
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": "+"
+    },
+    {
+        "class": "constant",
+        "preprocessor": false,
+        "type": "char",
+        "value": 64
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": "\/"
+    },
+    {
+        "class": "identifier",
+        "preprocessor": false,
+        "identifier": "fn"
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": "("
+    },
+    {
+        "class": "constant",
+        "preprocessor": false,
+        "type": "integer",
+        "value": 1
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": ")"
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": ";"
+    },
+    {
+        "class": "constant",
+        "preprocessor": false,
+        "type": "char",
+        "value": 64
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": "-"
+    },
+    {
+        "class": "constant",
+        "preprocessor": false,
+        "type": "integer",
+        "value": 1
+    },
+    {
+        "class": "sentinel",
+        "preprocessor": false
+    }
+]

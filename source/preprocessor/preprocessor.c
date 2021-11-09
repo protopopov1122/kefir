@@ -81,7 +81,7 @@ kefir_result_t kefir_preprocessor_context_init(struct kefir_mem *mem, struct kef
     context->extensions = extensions;
     context->extensions_payload = NULL;
     kefir_result_t res;
-    KEFIR_PREPROCESSOR_RUN_EXTENSION0(&res, mem, context, on_init);
+    KEFIR_RUN_EXTENSION0(&res, mem, context, on_init);
     REQUIRE_OK(res);
     return KEFIR_OK;
 }
@@ -92,7 +92,7 @@ kefir_result_t kefir_preprocessor_context_free(struct kefir_mem *mem, struct kef
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to preprocessor context"));
 
     kefir_result_t res;
-    KEFIR_PREPROCESSOR_RUN_EXTENSION0(&res, mem, context, on_free);
+    KEFIR_RUN_EXTENSION0(&res, mem, context, on_free);
     REQUIRE_OK(res);
     context->extensions = NULL;
     context->extensions_payload = NULL;
@@ -116,7 +116,7 @@ kefir_result_t kefir_preprocessor_init(struct kefir_mem *mem, struct kefir_prepr
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor context"));
 
     preprocessor->context = preprocessor_context;
-    REQUIRE_OK(kefir_lexer_init(mem, &preprocessor->lexer, symbols, cursor, context));
+    REQUIRE_OK(kefir_lexer_init(mem, &preprocessor->lexer, symbols, cursor, context, NULL));
     kefir_result_t res =
         kefir_preprocessor_directive_scanner_init(&preprocessor->directive_scanner, &preprocessor->lexer);
     REQUIRE_CHAIN(&res,
@@ -139,7 +139,7 @@ kefir_result_t kefir_preprocessor_init(struct kefir_mem *mem, struct kefir_prepr
     preprocessor->extensions = extensions;
     preprocessor->extension_payload = NULL;
     if (preprocessor->extensions != NULL) {
-        KEFIR_PREPROCESSOR_RUN_EXTENSION0(&res, mem, preprocessor, on_init);
+        KEFIR_RUN_EXTENSION0(&res, mem, preprocessor, on_init);
         REQUIRE_ELSE(res == KEFIR_OK, {
             kefir_preprocessor_predefined_macro_scope_free(mem, &preprocessor->predefined_macros);
             kefir_lexer_free(mem, &preprocessor->lexer);
@@ -155,7 +155,7 @@ kefir_result_t kefir_preprocessor_free(struct kefir_mem *mem, struct kefir_prepr
 
     if (preprocessor->extensions != NULL) {
         kefir_result_t res;
-        KEFIR_PREPROCESSOR_RUN_EXTENSION0(&res, mem, preprocessor, on_free);
+        KEFIR_RUN_EXTENSION0(&res, mem, preprocessor, on_free);
         REQUIRE_OK(res);
         preprocessor->extensions = NULL;
         preprocessor->extension_payload = NULL;
@@ -602,7 +602,7 @@ static kefir_result_t kefir_preprocessor_run_group_impl(struct kefir_mem *mem, s
         REQUIRE_OK(kefir_preprocessor_directive_scanner_save(&preprocessor->directive_scanner, &scanner_state));
         REQUIRE_OK(kefir_preprocessor_directive_scanner_next(mem, &preprocessor->directive_scanner, &directive));
         kefir_result_t res;
-        KEFIR_PREPROCESSOR_RUN_EXTENSION(&res, mem, preprocessor, on_next_directive, &directive);
+        KEFIR_RUN_EXTENSION(&res, mem, preprocessor, on_next_directive, &directive);
         REQUIRE_CHAIN(&res, run_directive(mem, preprocessor, buffer, group_buffer, &directive, &scan_directives,
                                           &condition_state, &scanner_state));
         REQUIRE_ELSE(res == KEFIR_OK, {
@@ -648,7 +648,7 @@ kefir_result_t kefir_preprocessor_run(struct kefir_mem *mem, struct kefir_prepro
     REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));
 
     kefir_result_t res;
-    KEFIR_PREPROCESSOR_RUN_EXTENSION(&res, mem, preprocessor, before_run, buffer);
+    KEFIR_RUN_EXTENSION(&res, mem, preprocessor, before_run, buffer);
     REQUIRE_OK(res);
 
     REQUIRE_OK(kefir_preprocessor_run_group(mem, preprocessor, buffer));
@@ -667,7 +667,7 @@ kefir_result_t kefir_preprocessor_run(struct kefir_mem *mem, struct kefir_prepro
     });
     REQUIRE_OK(kefir_preprocessor_directive_free(mem, &directive));
 
-    KEFIR_PREPROCESSOR_RUN_EXTENSION(&res, mem, preprocessor, after_run, buffer);
+    KEFIR_RUN_EXTENSION(&res, mem, preprocessor, after_run, buffer);
     REQUIRE_OK(res);
     return KEFIR_OK;
 }

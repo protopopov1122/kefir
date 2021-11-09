@@ -18,6 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "kefir/core/extensions.h"
 #include "kefir/lexer/lexer.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
@@ -25,7 +26,8 @@
 #include <string.h>
 
 kefir_result_t kefir_lexer_init(struct kefir_mem *mem, struct kefir_lexer *lexer, struct kefir_symbol_table *symbols,
-                                struct kefir_lexer_source_cursor *cursor, const struct kefir_lexer_context *context) {
+                                struct kefir_lexer_source_cursor *cursor, const struct kefir_lexer_context *context,
+                                const struct kefir_lexer_extensions *extensions) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer"));
     REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer source cursor"));
@@ -40,6 +42,15 @@ kefir_result_t kefir_lexer_init(struct kefir_mem *mem, struct kefir_lexer *lexer
         kefir_trie_free(mem, &lexer->punctuators);
         return res;
     });
+
+    lexer->extensions = extensions;
+    lexer->extension_payload = NULL;
+    KEFIR_RUN_EXTENSION0(&res, mem, lexer, on_init);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_trie_free(mem, &lexer->keywords);
+        kefir_trie_free(mem, &lexer->punctuators);
+        return res;
+    });
     return KEFIR_OK;
 }
 
@@ -47,6 +58,10 @@ kefir_result_t kefir_lexer_free(struct kefir_mem *mem, struct kefir_lexer *lexer
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(lexer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer"));
 
+    kefir_result_t res;
+    KEFIR_RUN_EXTENSION0(&res, mem, lexer, on_free);
+    lexer->extensions = NULL;
+    lexer->extension_payload = NULL;
     REQUIRE_OK(kefir_trie_free(mem, &lexer->keywords));
     REQUIRE_OK(kefir_trie_free(mem, &lexer->punctuators));
     return KEFIR_OK;
@@ -74,12 +89,23 @@ static kefir_result_t lexer_next_impl(struct kefir_mem *mem, struct kefir_lexer 
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
 
     ASSIGN_DECL_CAST(struct kefir_token *, token, payload);
+
+    kefir_result_t res = KEFIR_NO_MATCH;
+    if (lexer->extensions != NULL && lexer->extensions->before_token_lex != NULL) {
+        KEFIR_RUN_EXTENSION(&res, mem, lexer, before_token_lex, token);
+    }
+    if (res == KEFIR_YIELD) {
+        return KEFIR_OK;
+    } else if (res != KEFIR_NO_MATCH) {
+        REQUIRE_OK(res);
+    }
+
     REQUIRE_OK(kefir_lexer_cursor_match_whitespace(mem, lexer, NULL));
     struct kefir_source_location source_location = lexer->cursor->location;
     if (kefir_lexer_source_cursor_at(lexer->cursor, 0) == U'\0') {
         REQUIRE_OK(kefir_token_new_sentinel(token));
     } else {
-        kefir_result_t res = kefir_lexer_match_constant(mem, lexer, token);
+        res = kefir_lexer_match_constant(mem, lexer, token);
         if (res == KEFIR_NO_MATCH) {
             res = kefir_lexer_match_string_literal(mem, lexer, token, true);
         }
@@ -90,6 +116,10 @@ static kefir_result_t lexer_next_impl(struct kefir_mem *mem, struct kefir_lexer 
             res = kefir_lexer_match_punctuator(mem, lexer, token);
         }
 
+        if (res == KEFIR_NO_MATCH && lexer->extensions != NULL && lexer->extensions->failed_token_lex != NULL) {
+            KEFIR_RUN_EXTENSION(&res, mem, lexer, failed_token_lex, token);
+        }
+
         if (res == KEFIR_NO_MATCH) {
             return KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &source_location,
                                           "Expected constant, string literal, identifier, keyword or punctuator");
@@ -98,6 +128,12 @@ static kefir_result_t lexer_next_impl(struct kefir_mem *mem, struct kefir_lexer 
         }
     }
     token->source_location = source_location;
+
+    KEFIR_RUN_EXTENSION(&res, mem, lexer, after_token_lex, token);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_token_free(mem, token);
+        return res;
+    });
     return KEFIR_OK;
 }
 

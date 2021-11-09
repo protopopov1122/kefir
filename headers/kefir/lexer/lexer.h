@@ -30,6 +30,17 @@
 #include "kefir/lexer/context.h"
 #include "kefir/util/json.h"
 
+typedef struct kefir_lexer kefir_lexer_t;
+
+typedef struct kefir_lexer_extensions {
+    kefir_result_t (*on_init)(struct kefir_mem *, struct kefir_lexer *);
+    kefir_result_t (*on_free)(struct kefir_mem *, struct kefir_lexer *);
+    kefir_result_t (*before_token_lex)(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
+    kefir_result_t (*after_token_lex)(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
+    kefir_result_t (*failed_token_lex)(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);
+    void *payload;
+} kefir_lexer_extensions_t;
+
 typedef struct kefir_lexer {
     struct kefir_symbol_table *symbols;
     struct kefir_lexer_source_cursor *cursor;
@@ -37,12 +48,16 @@ typedef struct kefir_lexer {
 
     struct kefir_trie punctuators;
     struct kefir_trie keywords;
+
+    const struct kefir_lexer_extensions *extensions;
+    void *extension_payload;
 } kefir_lexer_t;
 
 typedef kefir_result_t (*kefir_lexer_callback_fn_t)(struct kefir_mem *, struct kefir_lexer *, void *);
 
 kefir_result_t kefir_lexer_init(struct kefir_mem *, struct kefir_lexer *, struct kefir_symbol_table *,
-                                struct kefir_lexer_source_cursor *, const struct kefir_lexer_context *);
+                                struct kefir_lexer_source_cursor *, const struct kefir_lexer_context *,
+                                const struct kefir_lexer_extensions *);
 kefir_result_t kefir_lexer_free(struct kefir_mem *, struct kefir_lexer *);
 kefir_result_t kefir_lexer_apply(struct kefir_mem *, struct kefir_lexer *, kefir_lexer_callback_fn_t, void *);
 kefir_result_t kefir_lexer_next(struct kefir_mem *, struct kefir_lexer *, struct kefir_token *);

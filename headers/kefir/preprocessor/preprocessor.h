@@ -21,6 +21,7 @@
 #ifndef KEFIR_PREPROCESSOR_PREPROCESSOR_H_
 #define KEFIR_PREPROCESSOR_PREPROCESSOR_H_
 
+#include "kefir/core/extensions.h"
 #include "kefir/lexer/lexer.h"
 #include "kefir/preprocessor/user_macro.h"
 #include "kefir/preprocessor/predefined_macro.h"
@@ -48,24 +49,6 @@ typedef struct kefir_preprocessor_context_extensions {
     kefir_result_t (*on_free)(struct kefir_mem *, struct kefir_preprocessor_context *);
     void *payload;
 } kefir_preprocessor_context_extensions_t;
-
-#define KEFIR_PREPROCESSOR_RUN_EXTENSION(_res, _mem, _preprocessor, _ext, ...)                  \
-    do {                                                                                        \
-        if ((_preprocessor)->extensions != NULL && (_preprocessor)->extensions->_ext != NULL) { \
-            *(_res) = (_preprocessor)->extensions->_ext((_mem), (_preprocessor), __VA_ARGS__);  \
-        } else {                                                                                \
-            *(_res) = KEFIR_OK;                                                                 \
-        }                                                                                       \
-    } while (0);
-
-#define KEFIR_PREPROCESSOR_RUN_EXTENSION0(_res, _mem, _preprocessor, _ext)                      \
-    do {                                                                                        \
-        if ((_preprocessor)->extensions != NULL && (_preprocessor)->extensions->_ext != NULL) { \
-            *(_res) = (_preprocessor)->extensions->_ext((_mem), (_preprocessor));               \
-        } else {                                                                                \
-            *(_res) = KEFIR_OK;                                                                 \
-        }                                                                                       \
-    } while (0);
 
 typedef struct kefir_preprocessor_environment {
     time_t timestamp;
