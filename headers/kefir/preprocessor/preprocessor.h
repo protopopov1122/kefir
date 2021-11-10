@@ -41,6 +41,7 @@ typedef struct kefir_preprocessor_extensions {
                                         struct kefir_preprocessor_directive *);
     kefir_result_t (*before_run)(struct kefir_mem *, struct kefir_preprocessor *, struct kefir_token_buffer *);
     kefir_result_t (*after_run)(struct kefir_mem *, struct kefir_preprocessor *, struct kefir_token_buffer *);
+    const struct kefir_lexer_extensions *lexer_extensions;
     void *payload;
 } kefir_preprocessor_extensions_t;
 

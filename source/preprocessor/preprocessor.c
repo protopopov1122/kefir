@@ -116,7 +116,8 @@ kefir_result_t kefir_preprocessor_init(struct kefir_mem *mem, struct kefir_prepr
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor context"));
 
     preprocessor->context = preprocessor_context;
-    REQUIRE_OK(kefir_lexer_init(mem, &preprocessor->lexer, symbols, cursor, context, NULL));
+    REQUIRE_OK(kefir_lexer_init(mem, &preprocessor->lexer, symbols, cursor, context,
+                                extensions != NULL ? extensions->lexer_extensions : NULL));
     kefir_result_t res =
         kefir_preprocessor_directive_scanner_init(&preprocessor->directive_scanner, &preprocessor->lexer);
     REQUIRE_CHAIN(&res,

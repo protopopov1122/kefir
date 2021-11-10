@@ -18,6 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "kefir/core/extensions.h"
 #include "kefir/preprocessor/tokenizer.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
@@ -31,7 +32,17 @@ static kefir_result_t preprocessor_next_impl(struct kefir_mem *mem, struct kefir
     ASSIGN_DECL_CAST(struct kefir_token *, token, payload);
     struct kefir_source_location source_location = lexer->cursor->location;
 
-    kefir_result_t res = kefir_lexer_cursor_match_whitespace(mem, lexer, token);
+    kefir_result_t res = KEFIR_NO_MATCH;
+    if (lexer->extensions != NULL && lexer->extensions->before_token_lex != NULL) {
+        KEFIR_RUN_EXTENSION(&res, mem, lexer, before_token_lex, token);
+    }
+    if (res == KEFIR_YIELD) {
+        return KEFIR_OK;
+    } else if (res != KEFIR_NO_MATCH) {
+        REQUIRE_OK(res);
+    }
+
+    res = kefir_lexer_cursor_match_whitespace(mem, lexer, token);
     if (res == KEFIR_NO_MATCH && kefir_lexer_source_cursor_at(lexer->cursor, 0) == U'\0') {
         res = kefir_token_new_sentinel(token);
     }
@@ -51,6 +62,10 @@ static kefir_result_t preprocessor_next_impl(struct kefir_mem *mem, struct kefir
         res = kefir_lexer_match_punctuator(mem, lexer, token);
     }
 
+    if (res == KEFIR_NO_MATCH && lexer->extensions != NULL && lexer->extensions->failed_token_lex != NULL) {
+        KEFIR_RUN_EXTENSION(&res, mem, lexer, failed_token_lex, token);
+    }
+
     if (res == KEFIR_NO_MATCH) {
         return KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &source_location,
                                       "Expected constant, string literal, identifier, keyword or punctuator");
@@ -59,6 +74,12 @@ static kefir_result_t preprocessor_next_impl(struct kefir_mem *mem, struct kefir
     }
 
     token->source_location = source_location;
+
+    KEFIR_RUN_EXTENSION(&res, mem, lexer, after_token_lex, token);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_token_free(mem, token);
+        return res;
+    });
     return KEFIR_OK;
 }
 
