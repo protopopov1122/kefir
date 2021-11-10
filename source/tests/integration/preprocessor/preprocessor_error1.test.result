@@ -1,5 +1,5 @@
 No.  Message                                         Class          Subclass   Compiler ref.
-  0| fileName@3:1 "Test error was encountered" |     Error| Preprocessor directive|  source/preprocessor/preprocessor.c:429
+  0| fileName@3:1 "Test error was encountered" |     Error| Preprocessor directive|  source/preprocessor/preprocessor.c:430
 [
     {
         "overflow": false,
@@ -7,7 +7,7 @@ No.  Message                                         Class          Subclass   C
         "message": "fileName@3:1 \"Test error was encountered\"",
         "origin": {
             "file": "source\/preprocessor\/preprocessor.c",
-            "line": 429
+            "line": 430
         },
         "source_location": {
             "source": "fileName",
