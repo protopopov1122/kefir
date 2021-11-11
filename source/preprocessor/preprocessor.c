@@ -338,7 +338,7 @@ static kefir_result_t evaluate_pp_tokens(struct kefir_mem *mem, struct kefir_pre
     REQUIRE_OK(kefir_token_buffer_init(&tokens));
     kefir_result_t res = kefir_preprocessor_token_convert_buffer(mem, preprocessor, &tokens, pp_tokens);
     REQUIRE_CHAIN(&res, kefir_parser_token_cursor_init(&cursor, tokens.tokens, tokens.length));
-    REQUIRE_CHAIN(&res, kefir_parser_init(mem, &parser, preprocessor->lexer.symbols, &cursor));
+    REQUIRE_CHAIN(&res, kefir_parser_init(mem, &parser, preprocessor->lexer.symbols, &cursor, NULL));
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_token_buffer_free(mem, &tokens);
         return res;

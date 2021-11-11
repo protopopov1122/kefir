@@ -65,7 +65,7 @@ kefir_result_t make_unit(struct kefir_mem *mem, const struct kefir_ast_context *
     struct kefir_parser parser;
 
     REQUIRE_OK(kefir_parser_token_cursor_init(&cursor, tokens.tokens, tokens.length));
-    REQUIRE_OK(kefir_parser_init(mem, &parser, context->symbols, &cursor));
+    REQUIRE_OK(kefir_parser_init(mem, &parser, context->symbols, &cursor, NULL));
     struct kefir_ast_node_base *node = NULL;
     REQUIRE_OK(KEFIR_PARSER_NEXT_TRANSLATION_UNIT(mem, &parser, &node));
     *result = node->self;

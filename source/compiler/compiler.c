@@ -269,7 +269,7 @@ kefir_result_t kefir_compiler_parse(struct kefir_mem *mem, struct kefir_compiler
     struct kefir_parser parser;
 
     REQUIRE_OK(kefir_parser_token_cursor_init(&cursor, buffer->tokens, buffer->length));
-    REQUIRE_OK(kefir_parser_init(mem, &parser, &context->ast_global_context.symbols, &cursor));
+    REQUIRE_OK(kefir_parser_init(mem, &parser, &context->ast_global_context.symbols, &cursor, NULL));
     struct kefir_ast_node_base *node = NULL;
     kefir_result_t res = KEFIR_PARSER_NEXT_TRANSLATION_UNIT(mem, &parser, &node);
     REQUIRE_ELSE(res == KEFIR_OK, {

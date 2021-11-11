@@ -73,7 +73,7 @@ kefir_result_t make_unit(struct kefir_mem *mem, const struct kefir_ast_context *
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_RIGHT_BRACE, &TOKENS[counter++]));
 
     REQUIRE_OK(kefir_parser_token_cursor_init(&cursor, TOKENS, counter));
-    REQUIRE_OK(kefir_parser_init(mem, &parser, context->symbols, &cursor));
+    REQUIRE_OK(kefir_parser_init(mem, &parser, context->symbols, &cursor, NULL));
     struct kefir_ast_node_base *node = NULL;
     REQUIRE_OK(KEFIR_PARSER_NEXT_TRANSLATION_UNIT(mem, &parser, &node));
     *result = node->self;

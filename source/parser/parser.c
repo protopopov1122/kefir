@@ -22,9 +22,11 @@
 #include "kefir/parser/rules.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/core/extensions.h"
 
 kefir_result_t kefir_parser_init(struct kefir_mem *mem, struct kefir_parser *parser, struct kefir_symbol_table *symbols,
-                                 struct kefir_parser_token_cursor *cursor) {
+                                 struct kefir_parser_token_cursor *cursor,
+                                 const struct kefir_parser_extensions *extensions) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser"));
     REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token cursor"));
@@ -32,12 +34,25 @@ kefir_result_t kefir_parser_init(struct kefir_mem *mem, struct kefir_parser *par
     REQUIRE_OK(kefir_parser_scope_init(mem, &parser->scope, symbols));
     parser->symbols = symbols;
     parser->cursor = cursor;
+    parser->extensions = extensions;
+    parser->extension_payload = NULL;
+
+    kefir_result_t res;
+    KEFIR_RUN_EXTENSION0(&res, mem, parser, on_init);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_parser_scope_free(mem, &parser->scope);
+        return res;
+    });
     return KEFIR_OK;
 }
 
 kefir_result_t kefir_parser_free(struct kefir_mem *mem, struct kefir_parser *parser) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser"));
+
+    kefir_result_t res;
+    KEFIR_RUN_EXTENSION0(&res, mem, parser, on_free);
+    REQUIRE_OK(res);
 
     REQUIRE_OK(kefir_parser_scope_free(mem, &parser->scope));
     parser->cursor = NULL;

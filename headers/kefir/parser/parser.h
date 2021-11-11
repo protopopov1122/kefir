@@ -28,10 +28,19 @@
 
 typedef struct kefir_parser kefir_parser_t;
 
+typedef struct kefir_parser_extensions {
+    kefir_result_t (*on_init)(struct kefir_mem *, struct kefir_parser *);
+    kefir_result_t (*on_free)(struct kefir_mem *, struct kefir_parser *);
+    void *payload;
+} kefir_parser_extensions_t;
+
 typedef struct kefir_parser {
     struct kefir_symbol_table *symbols;
     struct kefir_parser_token_cursor *cursor;
     struct kefir_parser_scope scope;
+
+    const struct kefir_parser_extensions *extensions;
+    void *extension_payload;
 } kefir_parser_t;
 
 typedef kefir_result_t (*kefir_parser_rule_fn_t)(struct kefir_mem *, struct kefir_parser *,
@@ -39,7 +48,7 @@ typedef kefir_result_t (*kefir_parser_rule_fn_t)(struct kefir_mem *, struct kefi
 typedef kefir_result_t (*kefir_parser_invocable_fn_t)(struct kefir_mem *, struct kefir_parser *, void *);
 
 kefir_result_t kefir_parser_init(struct kefir_mem *, struct kefir_parser *, struct kefir_symbol_table *,
-                                 struct kefir_parser_token_cursor *);
+                                 struct kefir_parser_token_cursor *, const struct kefir_parser_extensions *);
 kefir_result_t kefir_parser_free(struct kefir_mem *, struct kefir_parser *);
 kefir_result_t kefir_parser_apply(struct kefir_mem *, struct kefir_parser *, struct kefir_ast_node_base **,
                                   kefir_parser_rule_fn_t, void *);
