@@ -155,7 +155,8 @@ kefir_result_t kefir_compiler_preprocessor_tokenize(struct kefir_mem *mem, struc
     struct kefir_lexer lexer;
     REQUIRE_OK(kefir_lexer_source_cursor_init(&source_cursor, content, length, source_id));
     REQUIRE_OK(kefir_lexer_init(mem, &lexer, &context->ast_global_context.symbols, &source_cursor,
-                                &context->profile->lexer_context, NULL));
+                                &context->profile->lexer_context,
+                                context->extensions != NULL ? context->extensions->lexer : NULL));
 
     kefir_result_t res = preprocessor_tokenize_impl(mem, buffer, &lexer);
     REQUIRE_ELSE(res == KEFIR_OK, {
@@ -247,7 +248,8 @@ kefir_result_t kefir_compiler_lex(struct kefir_mem *mem, struct kefir_compiler_c
     struct kefir_lexer lexer;
     REQUIRE_OK(kefir_lexer_source_cursor_init(&source_cursor, content, length, source_id));
     REQUIRE_OK(kefir_lexer_init(mem, &lexer, &context->ast_global_context.symbols, &source_cursor,
-                                &context->profile->lexer_context, NULL));
+                                &context->profile->lexer_context,
+                                context->extensions != NULL ? context->extensions->lexer : NULL));
     kefir_result_t res = kefir_lexer_populate_buffer(mem, buffer, &lexer);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_lexer_free(mem, &lexer);
@@ -268,7 +270,8 @@ kefir_result_t kefir_compiler_parse(struct kefir_mem *mem, struct kefir_compiler
     struct kefir_parser parser;
 
     REQUIRE_OK(kefir_parser_token_cursor_init(&cursor, buffer->tokens, buffer->length));
-    REQUIRE_OK(kefir_parser_init(mem, &parser, &context->ast_global_context.symbols, &cursor, NULL));
+    REQUIRE_OK(kefir_parser_init(mem, &parser, &context->ast_global_context.symbols, &cursor,
+                                 context->extensions != NULL ? context->extensions->parser : NULL));
     struct kefir_ast_node_base *node = NULL;
     kefir_result_t res = KEFIR_PARSER_NEXT_TRANSLATION_UNIT(mem, &parser, &node);
     REQUIRE_ELSE(res == KEFIR_OK, {
