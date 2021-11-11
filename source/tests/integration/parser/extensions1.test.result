@@ -1,0 +1,60 @@
+[
+    {
+        "class": "expression_statement",
+        "expression": null
+    },
+    {
+        "class": "expression_statement",
+        "expression": {
+            "class": "function_call",
+            "function": {
+                "class": "identifier",
+                "identifier": "__runtime_entry_point"
+            },
+            "arguments": [
+                {
+                    "class": "identifier",
+                    "identifier": "var1"
+                },
+                {
+                    "class": "binary_operation",
+                    "type": "add",
+                    "left": {
+                        "class": "identifier",
+                        "identifier": "var2"
+                    },
+                    "right": {
+                        "class": "function_call",
+                        "function": {
+                            "class": "identifier",
+                            "identifier": "__runtime_entry_point"
+                        },
+                        "arguments": []
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "class": "expression_statement",
+        "expression": {
+            "class": "array_subscript",
+            "array": {
+                "class": "function_call",
+                "function": {
+                    "class": "identifier",
+                    "identifier": "__runtime_entry_point"
+                },
+                "arguments": []
+            },
+            "subscript": {
+                "class": "function_call",
+                "function": {
+                    "class": "identifier",
+                    "identifier": "__runtime_entry_point"
+                },
+                "arguments": []
+            }
+        }
+    }
+]
