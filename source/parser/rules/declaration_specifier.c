@@ -73,7 +73,7 @@ static kefir_result_t scan_struct_field_declaration(struct kefir_mem *mem, struc
     struct kefir_ast_structure_declaration_entry *entry = kefir_ast_structure_declaration_entry_alloc(mem);
     REQUIRE(entry != NULL,
             KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST structure declaration entry"));
-    kefir_result_t res = kefir_parser_scan_declaration_specifier_list(mem, parser, &entry->declaration.specifiers);
+    kefir_result_t res = parser->ruleset.declaration_specifier_list(mem, parser, &entry->declaration.specifiers);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_ast_structure_declaration_entry_free(mem, entry);
         return res;
@@ -82,7 +82,7 @@ static kefir_result_t scan_struct_field_declaration(struct kefir_mem *mem, struc
     kefir_bool_t scan_declarators = !PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_SEMICOLON);
     while (scan_declarators) {
         struct kefir_ast_declarator *declarator = NULL;
-        kefir_result_t res = kefir_parser_scan_declarator(mem, parser, &declarator);
+        kefir_result_t res = parser->ruleset.declarator(mem, parser, &declarator);
         if (res == KEFIR_NO_MATCH) {
             if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COLON)) {
                 res = KEFIR_OK;
@@ -598,7 +598,7 @@ kefir_result_t kefir_parser_scan_declaration_specifier_list(struct kefir_mem *me
 
     kefir_bool_t scan_specifiers = true;
     while (scan_specifiers) {
-        kefir_result_t res = kefir_parser_scan_declaration_specifier(mem, parser, specifiers);
+        kefir_result_t res = parser->ruleset.declaration_specifier(mem, parser, specifiers);
         if (res == KEFIR_NO_MATCH) {
             scan_specifiers = false;
         } else {

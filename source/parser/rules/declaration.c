@@ -27,7 +27,7 @@
 static kefir_result_t scan_specifiers(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder) {
     struct kefir_ast_declarator_specifier_list list;
     REQUIRE_OK(kefir_ast_declarator_specifier_list_init(&list));
-    kefir_result_t res = kefir_parser_scan_declaration_specifier_list(mem, builder->parser, &list);
+    kefir_result_t res = builder->parser->ruleset.declaration_specifier_list(mem, builder->parser, &list);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_ast_declarator_specifier_list_free(mem, &list);
         return res;
@@ -48,10 +48,10 @@ static kefir_result_t scan_init_declaration(struct kefir_mem *mem, struct kefir_
 
     struct kefir_source_location source_location =
         kefir_parser_token_cursor_at(builder->parser->cursor, 0)->source_location;
-    REQUIRE_OK(kefir_parser_scan_declarator(mem, builder->parser, &declarator));
+    REQUIRE_OK(builder->parser->ruleset.declarator(mem, builder->parser, &declarator));
     if (PARSER_TOKEN_IS_PUNCTUATOR(builder->parser, 0, KEFIR_PUNCTUATOR_ASSIGN)) {
         REQUIRE_CHAIN(&res, PARSER_SHIFT(builder->parser));
-        REQUIRE_CHAIN(&res, kefir_parser_scan_initializer(mem, builder->parser, &initializer));
+        REQUIRE_CHAIN(&res, builder->parser->ruleset.initializer(mem, builder->parser, &initializer));
         REQUIRE_ELSE(res == KEFIR_OK, {
             kefir_ast_declarator_free(mem, declarator);
             return res;

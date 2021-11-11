@@ -35,7 +35,6 @@
 #include "kefir/ast-translator/scope/translator.h"
 #include "kefir/codegen/amd64-sysv.h"
 #include "kefir/parser/parser.h"
-#include "kefir/parser/rules.h"
 
 kefir_result_t make_unit(struct kefir_mem *mem, const struct kefir_ast_context *context,
                          struct kefir_ast_translation_unit **result) {

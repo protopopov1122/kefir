@@ -24,7 +24,6 @@
 #include "kefir/preprocessor/directives.h"
 #include "kefir/core/source_error.h"
 #include "kefir/parser/parser.h"
-#include "kefir/parser/rules.h"
 #include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/ast/constant_expression.h"
 #include "kefir/preprocessor/format.h"

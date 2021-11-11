@@ -23,7 +23,7 @@
 static kefir_result_t scan_specifiers(struct kefir_mem *mem, struct kefir_parser *parser,
                                       struct kefir_ast_declarator_specifier_list *specifiers) {
     REQUIRE_OK(kefir_ast_declarator_specifier_list_init(specifiers));
-    kefir_result_t res = kefir_parser_scan_declaration_specifier_list(mem, parser, specifiers);
+    kefir_result_t res = parser->ruleset.declaration_specifier_list(mem, parser, specifiers);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_ast_declarator_specifier_list_free(mem, specifiers);
         return res;
@@ -76,7 +76,7 @@ static kefir_result_t scan_components(struct kefir_mem *mem, struct kefir_parser
                                       struct kefir_ast_declarator **declarator, struct kefir_list *declaration_list,
                                       struct kefir_ast_node_base **compound_statement) {
     REQUIRE_OK(scan_specifiers(mem, parser, specifiers));
-    kefir_result_t res = kefir_parser_scan_declarator(mem, parser, declarator);
+    kefir_result_t res = parser->ruleset.declarator(mem, parser, declarator);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_ast_declarator_specifier_list_free(mem, specifiers);
         return res;

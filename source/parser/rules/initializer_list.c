@@ -26,9 +26,9 @@ static kefir_result_t scan_initializer(struct kefir_mem *mem, struct kefir_parse
     struct kefir_ast_initializer_designation *designation = NULL;
     struct kefir_ast_initializer *subinitializer = NULL;
 
-    kefir_result_t res = kefir_parser_scan_initializer_designation(mem, parser, &designation);
+    kefir_result_t res = parser->ruleset.initializer_designation(mem, parser, &designation);
     REQUIRE(res == KEFIR_OK || res == KEFIR_NO_MATCH, res);
-    res = kefir_parser_scan_initializer(mem, parser, &subinitializer);
+    res = parser->ruleset.initializer(mem, parser, &subinitializer);
     REQUIRE_ELSE(res == KEFIR_OK, {
         if (designation != NULL) {
             kefir_ast_initializer_designation_free(mem, designation);

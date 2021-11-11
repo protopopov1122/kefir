@@ -97,7 +97,7 @@ static kefir_result_t scan_direct_declarator_base(struct kefir_mem *mem, struct 
 
     if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_PARENTHESE)) {
         REQUIRE_CHAIN(&res, PARSER_SHIFT(parser));
-        REQUIRE_CHAIN(&res, kefir_parser_scan_declarator(mem, parser, &base_declarator));
+        REQUIRE_CHAIN(&res, parser->ruleset.declarator(mem, parser, &base_declarator));
         REQUIRE_CHAIN_SET(
             &res, PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_PARENTHESE),
             KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected right parenthese"));
@@ -231,11 +231,11 @@ static kefir_result_t scan_function_parameter_declarator(struct kefir_mem *mem, 
     kefir_size_t checkpoint;
     REQUIRE_OK(kefir_parser_token_cursor_save(parser->cursor, &checkpoint));
 
-    kefir_result_t res = kefir_parser_scan_declarator(mem, parser, &declarator);
+    kefir_result_t res = parser->ruleset.declarator(mem, parser, &declarator);
     if (res == KEFIR_NO_MATCH) {
         REQUIRE_OK(kefir_parser_token_cursor_restore(parser->cursor, checkpoint));
 
-        res = kefir_parser_scan_abstract_declarator(mem, parser, &declarator);
+        res = parser->ruleset.abstract_declarator(mem, parser, &declarator);
         if (res == KEFIR_NO_MATCH) {
             REQUIRE_OK(kefir_parser_token_cursor_restore(parser->cursor, checkpoint));
             declarator = kefir_ast_declarator_identifier(mem, NULL, NULL);
@@ -256,7 +256,7 @@ static kefir_result_t scan_function_parameter(struct kefir_mem *mem, struct kefi
                                               struct kefir_ast_declarator *func_declarator) {
     struct kefir_ast_declarator_specifier_list specifiers;
     REQUIRE_OK(kefir_ast_declarator_specifier_list_init(&specifiers));
-    kefir_result_t res = kefir_parser_scan_declaration_specifier_list(mem, parser, &specifiers);
+    kefir_result_t res = parser->ruleset.declaration_specifier_list(mem, parser, &specifiers);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_ast_declarator_specifier_list_free(mem, &specifiers);
         return res;
@@ -440,7 +440,7 @@ kefir_result_t kefir_parser_scan_declarator(struct kefir_mem *mem, struct kefir_
     kefir_result_t res = KEFIR_OK;
     REQUIRE_OK(kefir_parser_token_cursor_save(parser->cursor, &checkpoint));
     if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_STAR)) {
-        res = scan_pointer(mem, parser, kefir_parser_scan_declarator, declarator_ptr);
+        res = scan_pointer(mem, parser, parser->ruleset.declarator, declarator_ptr);
     } else {
         res = scan_direct(mem, parser, declarator_ptr);
     }
@@ -465,7 +465,7 @@ static kefir_result_t scan_direct_abstract_declarator_base(struct kefir_mem *mem
     if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_PARENTHESE)) {
         res = KEFIR_OK;
         REQUIRE_CHAIN(&res, PARSER_SHIFT(parser));
-        REQUIRE_CHAIN(&res, kefir_parser_scan_abstract_declarator(mem, parser, &base_declarator));
+        REQUIRE_CHAIN(&res, parser->ruleset.abstract_declarator(mem, parser, &base_declarator));
         REQUIRE_CHAIN_SET(
             &res, PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_RIGHT_PARENTHESE),
             KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected right parenthese"));

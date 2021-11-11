@@ -29,13 +29,13 @@ kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(type_name)(struct kefir_mem *mem, str
     struct kefir_ast_declarator *declarator = NULL;
 
     REQUIRE_OK(kefir_ast_declarator_specifier_list_init(&specifiers));
-    kefir_result_t res = kefir_parser_scan_declaration_specifier_list(mem, parser, &specifiers);
+    kefir_result_t res = parser->ruleset.declaration_specifier_list(mem, parser, &specifiers);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_ast_declarator_specifier_list_free(mem, &specifiers);
         return res;
     });
 
-    res = kefir_parser_scan_abstract_declarator(mem, parser, &declarator);
+    res = parser->ruleset.abstract_declarator(mem, parser, &declarator);
     if (res == KEFIR_NO_MATCH) {
         declarator = kefir_ast_declarator_identifier(mem, NULL, NULL);
         REQUIRE_ELSE(declarator != NULL, {

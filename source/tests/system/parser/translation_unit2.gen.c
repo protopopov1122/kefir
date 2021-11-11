@@ -35,7 +35,6 @@
 #include "kefir/ast-translator/scope/translator.h"
 #include "kefir/codegen/amd64-sysv.h"
 #include "kefir/parser/parser.h"
-#include "kefir/parser/rules.h"
 #include "kefir/lexer/lexer.h"
 #include "kefir/lexer/format.h"
 

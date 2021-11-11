@@ -20,7 +20,6 @@
 
 #include "kefir/core/mem.h"
 #include "kefir/parser/parser.h"
-#include "kefir/parser/rules.h"
 #include "kefir/ast/format.h"
 #include <stdio.h>
 

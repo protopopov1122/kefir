@@ -27,7 +27,7 @@ static kefir_result_t scan_initializer(struct kefir_mem *mem, struct kefir_parse
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_initializer **, initializer, payload);
-    kefir_result_t res = kefir_parser_scan_initializer_list(mem, parser, initializer);
+    kefir_result_t res = parser->ruleset.initializer_list(mem, parser, initializer);
     if (res == KEFIR_NO_MATCH) {
         struct kefir_ast_node_base *node = NULL;
         REQUIRE_MATCH_OK(&res, KEFIR_PARSER_RULE_APPLY(mem, parser, assignment_expression, &node),

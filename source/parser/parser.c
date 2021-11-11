@@ -19,7 +19,6 @@
 */
 
 #include "kefir/parser/parser.h"
-#include "kefir/parser/rules.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/core/extensions.h"
@@ -31,6 +30,7 @@ kefir_result_t kefir_parser_init(struct kefir_mem *mem, struct kefir_parser *par
     REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser"));
     REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token cursor"));
 
+    REQUIRE_OK(kefir_parser_ruleset_init(&parser->ruleset));
     REQUIRE_OK(kefir_parser_scope_init(mem, &parser->scope, symbols));
     parser->symbols = symbols;
     parser->cursor = cursor;

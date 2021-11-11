@@ -19,7 +19,6 @@
 */
 
 #include "kefir/parser/parser.h"
-#include "kefir/parser/rules.h"
 #include "kefir/test/unit_test.h"
 #include "kefir/test/util.h"
 #include "kefir/util/char32.h"

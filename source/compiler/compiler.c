@@ -22,7 +22,6 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/parser/parser.h"
-#include "kefir/parser/rules.h"
 #include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/ast-translator/context.h"
 #include "kefir/ast-translator/scope/global_scope_layout.h"
