@@ -26,6 +26,10 @@
 #include "kefir/core/basic-types.h"
 #include "kefir/core/symbol_table.h"
 #include "kefir/core/source_location.h"
+#include <stdio.h>
+
+typedef struct kefir_token kefir_token_t;
+typedef struct kefir_json_output kefir_json_output_t;
 
 typedef enum kefir_token_class {
     KEFIR_TOKEN_SENTINEL,
@@ -39,7 +43,10 @@ typedef enum kefir_token_class {
     KEFIR_TOKEN_PP_WHITESPACE,
     KEFIR_TOKEN_PP_NUMBER,
     KEFIR_TOKEN_PP_HEADER_NAME,
-    KEFIR_TOKEN_PP_PLACEMAKER
+    KEFIR_TOKEN_PP_PLACEMAKER,
+
+    // Extension tokens
+    KEFIR_TOKEN_EXTENSION
 } kefir_token_class_t;
 
 typedef enum kefir_keyword_token {
@@ -204,6 +211,21 @@ typedef struct kefir_pptoken_pp_header_name {
     const char *header_name;
 } kefir_pptoken_pp_header_name_t;
 
+typedef struct kefir_token_extension_class {
+    kefir_result_t (*free)(struct kefir_mem *, struct kefir_token *);
+    kefir_result_t (*copy)(struct kefir_mem *, struct kefir_token *, const struct kefir_token *);
+    kefir_result_t (*format_json)(struct kefir_json_output *, const struct kefir_token *, kefir_bool_t);
+    kefir_result_t (*format)(FILE *, const struct kefir_token *);
+    kefir_result_t (*concat)(struct kefir_mem *, const struct kefir_token *, const struct kefir_token *,
+                             struct kefir_token *);
+    void *payload;
+} kefir_token_extension_class_t;
+
+typedef struct kefir_token_extension {
+    const struct kefir_token_extension_class *klass;
+    void *payload;
+} kefir_token_extension_t;
+
 typedef struct kefir_token {
     kefir_token_class_t klass;
     union {
@@ -215,6 +237,7 @@ typedef struct kefir_token {
         struct kefir_pptoken_pp_whitespace pp_whitespace;
         struct kefir_pptoken_pp_number pp_number;
         struct kefir_pptoken_pp_header_name pp_header_name;
+        struct kefir_token_extension extension;
     };
 
     struct kefir_source_location source_location;
@@ -255,6 +278,7 @@ kefir_result_t kefir_token_new_pp_whitespace(kefir_bool_t, struct kefir_token *)
 kefir_result_t kefir_token_new_pp_number(struct kefir_mem *, const char *, kefir_size_t, struct kefir_token *);
 kefir_result_t kefir_token_new_pp_header_name(struct kefir_mem *, kefir_bool_t, const char *, kefir_size_t,
                                               struct kefir_token *);
+kefir_result_t kefir_token_new_extension(const struct kefir_token_extension_class *, void *, struct kefir_token *);
 
 kefir_result_t kefir_token_move(struct kefir_token *, struct kefir_token *);
 kefir_result_t kefir_token_copy(struct kefir_mem *, struct kefir_token *, const struct kefir_token *);

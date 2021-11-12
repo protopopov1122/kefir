@@ -285,6 +285,20 @@ static kefir_result_t macro_concat_punctuators(struct kefir_mem *mem, struct kef
     return KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to concatenate punctuators");
 }
 
+static kefir_result_t concat_extension(struct kefir_mem *mem, const struct kefir_token *left,
+                                       const struct kefir_token *right, struct kefir_token_buffer *buffer,
+                                       const struct kefir_token_extension_class *klass) {
+    REQUIRE(klass != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Invalid extension token"));
+    struct kefir_token result;
+    REQUIRE_OK(klass->concat(mem, left, right, &result));
+    kefir_result_t res = kefir_token_buffer_emplace(mem, buffer, &result);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_token_free(mem, &result);
+        return res;
+    });
+    return KEFIR_OK;
+}
+
 static kefir_result_t macro_concatenation_impl(struct kefir_mem *mem, struct kefir_symbol_table *symbols,
                                                struct kefir_token_buffer *buffer, const struct kefir_token *left,
                                                const struct kefir_token *right) {
@@ -313,7 +327,11 @@ static kefir_result_t macro_concatenation_impl(struct kefir_mem *mem, struct kef
                 return KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &left->source_location, "Unexpected keyword token");
 
             case KEFIR_TOKEN_IDENTIFIER:
-                REQUIRE_OK(concat_tokens_impl(mem, symbols, left, right, buffer));
+                if (right->klass != KEFIR_TOKEN_EXTENSION) {
+                    REQUIRE_OK(concat_tokens_impl(mem, symbols, left, right, buffer));
+                } else {
+                    REQUIRE_OK(concat_extension(mem, left, right, buffer, right->extension.klass));
+                }
                 break;
 
             case KEFIR_TOKEN_CONSTANT:
@@ -324,15 +342,19 @@ static kefir_result_t macro_concatenation_impl(struct kefir_mem *mem, struct kef
                                               "Unexpected string literal token");
 
             case KEFIR_TOKEN_PUNCTUATOR: {
-                REQUIRE(
-                    right->klass == KEFIR_TOKEN_PUNCTUATOR,
-                    KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &right->source_location, "Expected punctuator token"));
-                kefir_result_t res = macro_concat_punctuators(mem, buffer, left->punctuator, right->punctuator);
-                if (res == KEFIR_NO_MATCH) {
-                    return KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &left->source_location,
-                                                  "Unable to concatenate punctuators");
+                if (right->klass != KEFIR_TOKEN_EXTENSION) {
+                    REQUIRE(right->klass == KEFIR_TOKEN_PUNCTUATOR,
+                            KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &right->source_location,
+                                                   "Expected punctuator token"));
+                    kefir_result_t res = macro_concat_punctuators(mem, buffer, left->punctuator, right->punctuator);
+                    if (res == KEFIR_NO_MATCH) {
+                        return KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &left->source_location,
+                                                      "Unable to concatenate punctuators");
+                    } else {
+                        REQUIRE_OK(res);
+                    }
                 } else {
-                    REQUIRE_OK(res);
+                    REQUIRE_OK(concat_extension(mem, left, right, buffer, right->extension.klass));
                 }
             } break;
 
@@ -341,7 +363,11 @@ static kefir_result_t macro_concatenation_impl(struct kefir_mem *mem, struct kef
                                               "Unexpected preprocessor whitespace token");
 
             case KEFIR_TOKEN_PP_NUMBER:
-                REQUIRE_OK(concat_tokens_impl(mem, symbols, left, right, buffer));
+                if (right->klass != KEFIR_TOKEN_EXTENSION) {
+                    REQUIRE_OK(concat_tokens_impl(mem, symbols, left, right, buffer));
+                } else {
+                    REQUIRE_OK(concat_extension(mem, left, right, buffer, right->extension.klass));
+                }
                 break;
 
             case KEFIR_TOKEN_PP_HEADER_NAME:
@@ -351,6 +377,10 @@ static kefir_result_t macro_concatenation_impl(struct kefir_mem *mem, struct kef
             case KEFIR_TOKEN_PP_PLACEMAKER:
                 return KEFIR_SET_SOURCE_ERROR(KEFIR_INTERNAL_ERROR, &left->source_location,
                                               "Unexpected placemaker token");
+
+            case KEFIR_TOKEN_EXTENSION:
+                REQUIRE_OK(concat_extension(mem, left, right, buffer, left->extension.klass));
+                break;
         }
     }
     return KEFIR_OK;

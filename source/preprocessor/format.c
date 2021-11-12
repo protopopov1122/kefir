@@ -355,6 +355,11 @@ static kefir_result_t format_token(FILE *out, const struct kefir_token *token,
 
         case KEFIR_TOKEN_PP_PLACEMAKER:
             break;
+
+        case KEFIR_TOKEN_EXTENSION:
+            REQUIRE(token->extension.klass != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Invalid extension token"));
+            REQUIRE_OK(token->extension.klass->format(out, token));
+            break;
     }
     return KEFIR_OK;
 }

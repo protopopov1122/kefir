@@ -646,6 +646,18 @@ kefir_result_t kefir_token_format(struct kefir_json_output *json, const struct k
             REQUIRE_OK(kefir_json_output_object_key(json, "preprocessor"));
             REQUIRE_OK(kefir_json_output_boolean(json, true));
             break;
+
+        case KEFIR_TOKEN_EXTENSION:
+            REQUIRE_OK(kefir_json_output_string(json, "extension"));
+            REQUIRE_OK(kefir_json_output_object_key(json, "data"));
+            if (token->extension.klass != NULL) {
+                REQUIRE_OK(kefir_json_output_object_begin(json));
+                REQUIRE_OK(token->extension.klass->format_json(json, token, display_source_location));
+                REQUIRE_OK(kefir_json_output_object_end(json));
+            } else {
+                REQUIRE_OK(kefir_json_output_null(json));
+            }
+            break;
     }
 
     if (display_source_location) {

@@ -1,0 +1,87 @@
+[
+    {
+        "class": "constant",
+        "preprocessor": false,
+        "type": "integer",
+        "value": 20
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": "+"
+    },
+    {
+        "class": "extension",
+        "data": {
+            "type": "at"
+        }
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": "\/"
+    },
+    {
+        "class": "constant",
+        "preprocessor": false,
+        "type": "integer",
+        "value": 3
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": "-"
+    },
+    {
+        "class": "extension",
+        "data": {
+            "type": "at"
+        }
+    },
+    {
+        "class": "identifier",
+        "preprocessor": false,
+        "identifier": "at"
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": "("
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": ")"
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": ","
+    },
+    {
+        "class": "identifier",
+        "preprocessor": false,
+        "identifier": "test"
+    },
+    {
+        "class": "punctuator",
+        "preprocessor": false,
+        "punctuator": "="
+    },
+    {
+        "class": "extension",
+        "data": {
+            "type": "at"
+        }
+    },
+    {
+        "class": "constant",
+        "preprocessor": false,
+        "type": "integer",
+        "value": 1
+    },
+    {
+        "class": "sentinel",
+        "preprocessor": false
+    }
+]

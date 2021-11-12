@@ -316,6 +316,17 @@ kefir_result_t kefir_token_new_pp_header_name(struct kefir_mem *mem, kefir_bool_
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_token_new_extension(const struct kefir_token_extension_class *extension_class, void *payload,
+                                         struct kefir_token *token) {
+    REQUIRE(extension_class != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid extension class"));
+    REQUIRE(token != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to token"));
+
+    token->klass = KEFIR_TOKEN_EXTENSION;
+    token->extension.klass = extension_class;
+    token->extension.payload = payload;
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_token_move(struct kefir_token *dst, struct kefir_token *src) {
     REQUIRE(dst != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to destination token"));
     REQUIRE(src != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to source token"));
@@ -327,6 +338,9 @@ kefir_result_t kefir_token_move(struct kefir_token *dst, struct kefir_token *src
         src->pp_number.number_literal = NULL;
     } else if (src->klass == KEFIR_TOKEN_PP_HEADER_NAME) {
         src->pp_header_name.header_name = NULL;
+    } else if (src->klass == KEFIR_TOKEN_EXTENSION) {
+        src->extension.klass = NULL;
+        src->extension.payload = NULL;
     }
     return KEFIR_OK;
 }
@@ -376,6 +390,9 @@ kefir_result_t kefir_token_copy(struct kefir_mem *mem, struct kefir_token *dst, 
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate pp header name"));
         strcpy(clone_header_name, src->pp_header_name.header_name);
         dst->pp_header_name.header_name = clone_header_name;
+    } else if (src->klass == KEFIR_TOKEN_EXTENSION) {
+        REQUIRE(src->extension.klass != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Invalid extension token"));
+        REQUIRE_OK(src->extension.klass->copy(mem, dst, src));
     }
     return KEFIR_OK;
 }
@@ -398,6 +415,14 @@ kefir_result_t kefir_token_free(struct kefir_mem *mem, struct kefir_token *token
         case KEFIR_TOKEN_PP_HEADER_NAME:
             KEFIR_FREE(mem, (void *) token->pp_header_name.header_name);
             token->pp_header_name.header_name = NULL;
+            break;
+
+        case KEFIR_TOKEN_EXTENSION:
+            if (token->extension.klass != NULL) {
+                REQUIRE_OK(token->extension.klass->free(mem, token));
+                token->extension.klass = NULL;
+                token->extension.payload = NULL;
+            }
             break;
 
         case KEFIR_TOKEN_SENTINEL:
