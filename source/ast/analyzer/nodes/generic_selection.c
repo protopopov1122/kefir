@@ -37,6 +37,7 @@ kefir_result_t kefir_ast_analyze_generic_selection_node(struct kefir_mem *mem, c
     const struct kefir_ast_type *control_type =
         KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->control->properties.type);
 
+    base->properties.category = KEFIR_AST_NODE_CATEGORY_EXPRESSION;
     kefir_bool_t matched = false;
     for (const struct kefir_list_entry *iter = kefir_list_head(&node->associations); iter != NULL;
          kefir_list_next(&iter)) {
@@ -45,13 +46,15 @@ kefir_result_t kefir_ast_analyze_generic_selection_node(struct kefir_mem *mem, c
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, assoc->expr));
         if (!matched &&
             KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, control_type, assoc->type_name->base.properties.type)) {
-            REQUIRE_OK(kefir_ast_node_properties_clone(&base->properties, &assoc->expr->properties));
+            base->properties.type = assoc->expr->properties.type;
+            base->properties.expression_props = assoc->expr->properties.expression_props;
             matched = true;
         }
     }
     if (!matched && node->default_assoc != NULL) {
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->default_assoc));
-        REQUIRE_OK(kefir_ast_node_properties_clone(&base->properties, &node->default_assoc->properties));
+        base->properties.type = node->default_assoc->properties.type;
+        base->properties.expression_props = node->default_assoc->properties.expression_props;
         matched = true;
     }
 

@@ -71,11 +71,12 @@ kefir_result_t kefir_ast_translate_function_call_node(struct kefir_mem *mem,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected callable function"));
 
     const char *function_name = NULL;
-    if (node->function->klass->type == KEFIR_AST_IDENTIFIER &&
+    if (node->function->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION &&
+        node->function->properties.expression_props.identifier != NULL &&
         node->function->properties.expression_props.scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION &&
         node->function->properties.expression_props.scoped_id->function.storage ==
             KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN) {
-        function_name = ((struct kefir_ast_identifier *) node->function->self)->identifier;
+        function_name = node->function->properties.expression_props.identifier;
     }
 
     struct kefir_ir_function_decl *ir_decl = NULL;

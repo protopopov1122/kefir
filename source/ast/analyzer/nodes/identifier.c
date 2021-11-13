@@ -70,6 +70,10 @@ kefir_result_t kefir_ast_analyze_identifier_node(struct kefir_mem *mem, const st
             return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected scoped identifier type");
     }
 
+    base->properties.expression_props.identifier =
+        kefir_symbol_table_insert(mem, context->symbols, node->identifier, NULL);
+    REQUIRE(base->properties.expression_props.identifier != NULL,
+            KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to insert identifier into symbol table"));
     base->properties.expression_props.scoped_id = scoped_id;
     return KEFIR_OK;
 }

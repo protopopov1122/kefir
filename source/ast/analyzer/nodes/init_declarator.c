@@ -38,9 +38,16 @@ kefir_result_t kefir_ast_analyze_init_declarator_node(struct kefir_mem *mem, con
     kefir_ast_scoped_identifier_storage_t storage = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN;
     REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
     base->properties.category = KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR;
-    REQUIRE_OK(kefir_ast_analyze_declaration(
-        mem, context, &node->declaration->specifiers, node->declarator, &base->properties.declaration_props.identifier,
-        &type, &storage, &base->properties.declaration_props.function, &base->properties.declaration_props.alignment));
+    const char *identifier = NULL;
+    REQUIRE_OK(kefir_ast_analyze_declaration(mem, context, &node->declaration->specifiers, node->declarator,
+                                             &identifier, &type, &storage, &base->properties.declaration_props.function,
+                                             &base->properties.declaration_props.alignment));
+    if (identifier != NULL) {
+        identifier = kefir_symbol_table_insert(mem, context->symbols, identifier, NULL);
+        REQUIRE(identifier != NULL,
+                KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to insert declarator identifier into symbol table"));
+    }
+    base->properties.declaration_props.identifier = identifier;
     REQUIRE_OK(kefir_ast_analyze_type(mem, context, context->type_analysis_context, type, &node->base.source_location));
 
     if (base->properties.declaration_props.identifier != NULL) {

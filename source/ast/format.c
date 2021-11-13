@@ -344,11 +344,29 @@ static kefir_result_t visit_struct_member(const struct kefir_ast_visitor *visito
 
     REQUIRE_OK(kefir_json_output_object_begin(json));
     REQUIRE_OK(kefir_json_output_object_key(json, "class"));
-    if (node->base.klass->type == KEFIR_AST_STRUCTURE_INDIRECT_MEMBER) {
-        REQUIRE_OK(kefir_json_output_string(json, "indirect_struct_member"));
-    } else {
-        REQUIRE_OK(kefir_json_output_string(json, "struct_member"));
+    REQUIRE_OK(kefir_json_output_string(json, "struct_member"));
+    REQUIRE_OK(kefir_json_output_object_key(json, "structure"));
+    REQUIRE_OK(kefir_ast_format(json, node->structure, param->display_source_location));
+    REQUIRE_OK(kefir_json_output_object_key(json, "member"));
+    REQUIRE_OK(kefir_json_output_string(json, node->member));
+    if (param->display_source_location) {
+        REQUIRE_OK(format_source_location(json, KEFIR_AST_NODE_BASE(node)));
     }
+    REQUIRE_OK(kefir_json_output_object_end(json));
+    return KEFIR_OK;
+}
+
+static kefir_result_t visit_indirect_struct_member(const struct kefir_ast_visitor *visitor,
+                                                   const struct kefir_ast_struct_member *node, void *payload) {
+    UNUSED(visitor);
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST struct member node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
+    struct kefir_json_output *json = param->json;
+
+    REQUIRE_OK(kefir_json_output_object_begin(json));
+    REQUIRE_OK(kefir_json_output_object_key(json, "class"));
+    REQUIRE_OK(kefir_json_output_string(json, "indirect_struct_member"));
     REQUIRE_OK(kefir_json_output_object_key(json, "structure"));
     REQUIRE_OK(kefir_ast_format(json, node->structure, param->display_source_location));
     REQUIRE_OK(kefir_json_output_object_key(json, "member"));
@@ -1214,7 +1232,7 @@ kefir_result_t kefir_ast_format(struct kefir_json_output *json, const struct kef
     visitor.array_subscript = visit_array_subscript;
     visitor.function_call = visit_function_call;
     visitor.struct_member = visit_struct_member;
-    visitor.struct_indirect_member = visit_struct_member;
+    visitor.struct_indirect_member = visit_indirect_struct_member;
     visitor.unary_operation = visit_unary_operation;
     visitor.cast_operator = visit_cast_operator;
     visitor.binary_operation = visit_binary_operation;

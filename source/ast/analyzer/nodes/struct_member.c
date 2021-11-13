@@ -42,7 +42,7 @@ kefir_result_t kefir_ast_analyze_struct_member_node(struct kefir_mem *mem, const
 
     const struct kefir_ast_type *struct_type = node->structure->properties.type;
     const struct kefir_ast_type_qualification *qualification = NULL;
-    if (node->base.klass->type == KEFIR_AST_STRUCTURE_INDIRECT_MEMBER) {
+    if (base->klass->type == KEFIR_AST_STRUCTURE_INDIRECT_MEMBER) {
         struct_type = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, struct_type);
         REQUIRE(struct_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER,
                 KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->structure->source_location,

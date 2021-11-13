@@ -309,8 +309,10 @@ DEFINE_CASE(ast_node_analysis_function_definitions3, "AST node analysis - functi
     ASSERT(KEFIR_AST_TYPE_SAME(func->base.properties.function_definition.scoped_id->function.type, type));
     ASSERT(func->base.properties.function_definition.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);
 
-    ASSERT(param1->properties.category == KEFIR_AST_NODE_CATEGORY_UNKNOWN);
-    ASSERT(param2->properties.category == KEFIR_AST_NODE_CATEGORY_UNKNOWN);
+    ASSERT(param1->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);
+    ASSERT(param1->properties.expression_props.identifier != NULL);
+    ASSERT(param2->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);
+    ASSERT(param2->properties.expression_props.identifier != NULL);
 
     ASSERT(body->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(body->base.properties.statement_props.flow_control_point == NULL);

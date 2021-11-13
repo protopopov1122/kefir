@@ -819,25 +819,23 @@ static kefir_result_t resolve_function_declarator(struct kefir_mem *mem, const s
     for (const struct kefir_list_entry *iter = kefir_list_head(&declarator->function.parameters);
          iter != NULL && res == KEFIR_OK; kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, node, iter->value);
+        res = kefir_ast_analyze_node(mem, &decl_context->context, node);
 
         if (node->klass->type == KEFIR_AST_DECLARATION) {
             ASSIGN_DECL_CAST(struct kefir_ast_declaration *, decl_list, node->self);
             struct kefir_ast_init_declarator *declaration = NULL;
-            res = kefir_ast_analyze_node(mem, &decl_context->context, node);
             REQUIRE_CHAIN(&res, kefir_ast_declaration_unpack_single(decl_list, &declaration));
             REQUIRE_CHAIN(&res, kefir_ast_type_function_parameter(
                                     mem, context->type_bundle, func_type, declaration->base.properties.type,
                                     &declaration->base.properties.declaration_props.storage));
         } else if (node->klass->type == KEFIR_AST_IDENTIFIER) {
-            res = kefir_ast_analyze_node(mem, &decl_context->context, node);
             if (res == KEFIR_OK) {
-                if (node->properties.category != KEFIR_AST_NODE_CATEGORY_TYPE) {
-                    res = KEFIR_SET_SOURCE_ERROR(
-                        KEFIR_ANALYSIS_ERROR, &node->source_location,
-                        "Function declaration parameter shall be either declaration, or identifier");
+                if (node->properties.category == KEFIR_AST_NODE_CATEGORY_TYPE) {
+                    REQUIRE_CHAIN(&res, kefir_ast_type_function_parameter(mem, context->type_bundle, func_type,
+                                                                          node->properties.type, NULL));
+                } else {
+                    res = kefir_ast_type_function_parameter(mem, context->type_bundle, func_type, NULL, NULL);
                 }
-                REQUIRE_CHAIN(&res, kefir_ast_type_function_parameter(mem, context->type_bundle, func_type,
-                                                                      node->properties.type, NULL));
             } else if (res == KEFIR_NOT_FOUND) {
                 res = kefir_ast_type_function_parameter(mem, context->type_bundle, func_type, NULL, NULL);
             }

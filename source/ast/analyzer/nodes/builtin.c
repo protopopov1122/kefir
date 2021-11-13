@@ -56,7 +56,8 @@ kefir_result_t kefir_ast_analyze_builtin_node(struct kefir_mem *mem, const struc
                                            "Expected an expression referencing va_list"));
             kefir_list_next(&iter);
             ASSIGN_DECL_CAST(struct kefir_ast_node_base *, paramN, iter->value);
-            REQUIRE(paramN->klass->type == KEFIR_AST_IDENTIFIER,
+            REQUIRE(paramN->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION &&
+                        paramN->properties.expression_props.identifier != NULL,
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &paramN->source_location,
                                            "Expected parameter identifier"));
             base->properties.type = kefir_ast_type_void();

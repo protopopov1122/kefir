@@ -24,6 +24,7 @@
 #include "kefir/ast-translator/lvalue.h"
 #include "kefir/ast-translator/value.h"
 #include "kefir/ast-translator/scope/translator.h"
+#include "kefir/ast/downcast.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/ast-translator/function_definition.h"
@@ -78,11 +79,14 @@ static kefir_result_t init_function_declaration(struct kefir_mem *mem, struct ke
 
                 struct kefir_hashtree_node *tree_node = NULL;
                 ASSIGN_DECL_CAST(struct kefir_ast_node_base *, param, iter->value);
-                ASSIGN_DECL_CAST(struct kefir_ast_identifier *, id_node, param->self);
-                REQUIRE_CHAIN_SET(&res, param->klass->type == KEFIR_AST_IDENTIFIER,
+                REQUIRE_CHAIN_SET(&res,
+                                  param->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION &&
+                                      param->properties.expression_props.identifier != NULL,
                                   KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected parameter to be AST identifier"));
                 REQUIRE_CHAIN(&res,
-                              kefir_hashtree_at(&declarations, (kefir_hashtree_key_t) id_node->identifier, &tree_node));
+                              kefir_hashtree_at(&declarations,
+                                                (kefir_hashtree_key_t) param->properties.expression_props.identifier,
+                                                &tree_node));
 
                 REQUIRE_CHAIN(&res, kefir_list_insert_after(mem, &declaration_list, kefir_list_tail(&declaration_list),
                                                             (struct kefir_ast_node_base *) tree_node->value));
@@ -277,13 +281,14 @@ kefir_result_t kefir_ast_translator_function_context_translate(
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, param, iter->value);
         const struct kefir_ast_scoped_identifier *scoped_id = NULL;
 
-        if (param->klass->type == KEFIR_AST_DECLARATION) {
-            ASSIGN_DECL_CAST(struct kefir_ast_declaration *, decl_node, param->self);
-            REQUIRE(kefir_list_length(&decl_node->init_declarators) == 1,
+        if (param->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION) {
+            struct kefir_ast_declaration *param_decl = NULL;
+            REQUIRE_OK(kefir_ast_downcast_declaration(param, &param_decl));
+            REQUIRE(kefir_list_length(&param_decl->init_declarators) == 1,
                     KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected function parameter to have exactly one declarator"));
 
             ASSIGN_DECL_CAST(struct kefir_ast_init_declarator *, init_decl,
-                             kefir_list_head(&decl_node->init_declarators)->value);
+                             kefir_list_head(&param_decl->init_declarators)->value);
             const char *param_identifier = NULL;
             REQUIRE_OK(kefir_ast_declarator_unpack_identifier(init_decl->declarator, &param_identifier));
             REQUIRE(init_decl->base.properties.type != NULL,
@@ -304,11 +309,12 @@ kefir_result_t kefir_ast_translator_function_context_translate(
             REQUIRE_OK(kefir_ast_type_list_variable_modificators(
                 init_decl->base.properties.type, translate_variably_modified,
                 &(struct vl_modified_param){.mem = mem, .context = context, .builder = builder}));
-        } else if (param->klass->type == KEFIR_AST_IDENTIFIER) {
-            ASSIGN_DECL_CAST(struct kefir_ast_identifier *, id_node, param->self);
-            REQUIRE_OK(local_context->context.resolve_ordinary_identifier(&local_context->context, id_node->identifier,
-                                                                          &scoped_id));
-            REQUIRE_OK(kefir_ast_translator_object_lvalue(mem, context, builder, id_node->identifier, scoped_id));
+        } else if (param->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION &&
+                   param->properties.expression_props.identifier != NULL) {
+            REQUIRE_OK(local_context->context.resolve_ordinary_identifier(
+                &local_context->context, param->properties.expression_props.identifier, &scoped_id));
+            REQUIRE_OK(kefir_ast_translator_object_lvalue(mem, context, builder,
+                                                          param->properties.expression_props.identifier, scoped_id));
             REQUIRE_OK(xchg_param_address(builder, scoped_id->object.type));
             REQUIRE_OK(kefir_ast_translator_store_value(mem, scoped_id->object.type, context, builder));
         } else {

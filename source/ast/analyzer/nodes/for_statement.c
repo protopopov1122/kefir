@@ -74,7 +74,7 @@ kefir_result_t kefir_ast_analyze_for_statement_node(struct kefir_mem *mem, const
                         "Expected the first clause of for statement to declare only auto or register identifiers"));
             }
         } else if (node->init->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR &&
-                   node->base.klass->type == KEFIR_AST_STATIC_ASSERTION) {
+                   node->init->properties.declaration_props.static_assertion) {
             // Intentionally left blank
         } else {
             REQUIRE(node->init->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,

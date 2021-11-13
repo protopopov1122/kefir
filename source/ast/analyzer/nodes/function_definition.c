@@ -24,6 +24,7 @@
 #include "kefir/ast/analyzer/declarator.h"
 #include "kefir/ast/local_context.h"
 #include "kefir/ast/type_conv.h"
+#include "kefir/ast/downcast.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"
@@ -40,14 +41,16 @@ static kefir_result_t analyze_function_parameters(struct kefir_mem *mem, const s
     for (const struct kefir_list_entry *iter = kefir_list_head(&decl_func->parameters); iter != NULL;
          kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, param, iter->value);
-        REQUIRE(param->klass->type == KEFIR_AST_DECLARATION,
+        REQUIRE(param->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION,
                 KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected function parameter to be declaration"));
-        ASSIGN_DECL_CAST(struct kefir_ast_declaration *, decl_node, param->self);
-        REQUIRE(kefir_list_length(&decl_node->init_declarators) == 1,
+
+        struct kefir_ast_declaration *param_decl = NULL;
+        REQUIRE_OK(kefir_ast_downcast_declaration(param, &param_decl));
+        REQUIRE(kefir_list_length(&param_decl->init_declarators) == 1,
                 KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected function parameter to have exactly one declarator"));
 
         ASSIGN_DECL_CAST(struct kefir_ast_init_declarator *, init_decl,
-                         kefir_list_head(&decl_node->init_declarators)->value);
+                         kefir_list_head(&param_decl->init_declarators)->value);
         const char *param_identifier = NULL;
         REQUIRE_OK(kefir_ast_declarator_unpack_identifier(init_decl->declarator, &param_identifier));
         REQUIRE(init_decl->base.properties.type != NULL,
@@ -88,6 +91,12 @@ static kefir_result_t analyze_function_parameter_identifiers_impl(struct kefir_m
         REQUIRE_OK(kefir_ast_analyze_declaration(mem, &local_context->context, &decl->declaration->specifiers,
                                                  decl->declarator, &identifier, &original_type, &storage,
                                                  &function_specifier, &alignment));
+
+        if (identifier != NULL) {
+            identifier = kefir_symbol_table_insert(mem, context->symbols, identifier, NULL);
+            REQUIRE(identifier != NULL,
+                    KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to insert parameter identifier into symbol table"));
+        }
 
         type = kefir_ast_type_conv_adjust_function_parameter(mem, context->type_bundle, original_type);
 
@@ -133,6 +142,11 @@ static kefir_result_t analyze_function_parameter_identifiers_impl(struct kefir_m
         const struct kefir_ast_scoped_identifier *scoped_id = NULL;
         REQUIRE_OK(local_context->context.resolve_ordinary_identifier(&local_context->context, id_node->identifier,
                                                                       &scoped_id));
+        param->properties.category = KEFIR_AST_NODE_CATEGORY_EXPRESSION;
+        param->properties.expression_props.identifier =
+            kefir_symbol_table_insert(mem, context->symbols, id_node->identifier, NULL);
+        REQUIRE(param->properties.expression_props.identifier != NULL,
+                KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to insert parameter identifier into symbol table"));
     }
     return KEFIR_OK;
 }
@@ -182,19 +196,24 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
     const struct kefir_ast_type *type = NULL;
     kefir_ast_scoped_identifier_storage_t storage = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN;
     kefir_size_t alignment = 0;
-    REQUIRE_OK(kefir_ast_analyze_declaration(mem, context, &node->specifiers, node->declarator,
-                                             &base->properties.function_definition.identifier, &type, &storage,
-                                             &base->properties.function_definition.function, &alignment));
+    const char *function_identifier = NULL;
+    REQUIRE_OK(kefir_ast_analyze_declaration(mem, context, &node->specifiers, node->declarator, &function_identifier,
+                                             &type, &storage, &base->properties.function_definition.function,
+                                             &alignment));
     REQUIRE_OK(kefir_ast_analyze_type(mem, context, context->type_analysis_context, type, &node->base.source_location));
 
     REQUIRE(type->tag == KEFIR_AST_TYPE_FUNCTION,
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
                                    "Function definition declarator shall have function type"));
-    REQUIRE(base->properties.function_definition.identifier != NULL,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
-                                   "Function definition shall have non-empty identifier"));
+    REQUIRE(function_identifier != NULL, KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
+                                                                "Function definition shall have non-empty identifier"));
     REQUIRE(alignment == 0, KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
                                                    "Function definition cannot have non-zero alignment"));
+    base->properties.function_definition.identifier =
+        kefir_symbol_table_insert(mem, context->symbols, function_identifier, NULL);
+    REQUIRE(base->properties.function_definition.identifier != NULL,
+            KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to insert function identifier into symbol table"));
+
     switch (storage) {
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
         case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL:

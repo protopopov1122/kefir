@@ -85,6 +85,8 @@ struct kefir_ast_node_base *ast_string_literal_clone(struct kefir_mem *mem, stru
     memcpy(clone->literal, node->literal, sz);
     clone->type = node->type;
     clone->length = node->length;
+
+    clone->base.properties.expression_props.string_literal.content = clone->literal;
     return KEFIR_AST_NODE_BASE(clone);
 }
 
