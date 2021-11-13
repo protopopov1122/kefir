@@ -88,8 +88,10 @@ static kefir_result_t translate_init_declarator(struct kefir_mem *mem, const str
         REQUIRE_OK(
             kefir_ast_type_list_variable_modificators(node->properties.type, translate_variably_modified, &vl_param));
 
+        kefir_result_t res;
         struct kefir_ast_init_declarator *init_decl = NULL;
-        REQUIRE_OK(kefir_ast_downcast_init_declarator(node, &init_decl));
+        REQUIRE_MATCH_OK(&res, kefir_ast_downcast_init_declarator(node, &init_decl),
+                         KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected node to be init declarator"));
         REQUIRE(init_decl->initializer != NULL, KEFIR_OK);
 
         kefir_ast_scoped_identifier_storage_t storage = node->properties.declaration_props.storage;

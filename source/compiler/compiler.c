@@ -28,6 +28,7 @@
 #include "kefir/ast-translator/scope/translator.h"
 #include "kefir/ast-translator/translator.h"
 #include "kefir/preprocessor/tokenizer.h"
+#include "kefir/ast/downcast.h"
 
 static void *kefir_malloc(struct kefir_mem *mem, kefir_size_t sz) {
     UNUSED(mem);
@@ -278,18 +279,21 @@ kefir_result_t kefir_compiler_parse(struct kefir_mem *mem, struct kefir_compiler
         kefir_parser_free(mem, &parser);
         return res;
     });
-    REQUIRE_ELSE(node->klass->type == KEFIR_AST_TRANSLATION_UNIT, {
+
+    REQUIRE_MATCH(&res, kefir_ast_downcast_translation_unit(node, unit_ptr),
+                  KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected parser to produce AST translation unit"));
+    REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_AST_NODE_FREE(mem, node);
         kefir_parser_free(mem, &parser);
-        return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected parser to produce AST translation unit");
+        return res;
     });
 
     res = kefir_parser_free(mem, &parser);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_AST_NODE_FREE(mem, node);
+        *unit_ptr = NULL;
         return res;
     });
-    *unit_ptr = node->self;
     return KEFIR_OK;
 }
 

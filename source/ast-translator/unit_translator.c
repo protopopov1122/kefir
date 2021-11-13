@@ -39,8 +39,7 @@ static kefir_result_t free_function_context(struct kefir_mem *mem, struct kefir_
 static kefir_result_t allocate_function_context(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
                                                 struct kefir_ast_node_base *external_definition,
                                                 struct kefir_ast_translator_function_context **function_context) {
-    REQUIRE(external_definition->properties.category == KEFIR_AST_NODE_CATEGORY_FUNCTION_DEFINITION &&
-                external_definition->klass->type == KEFIR_AST_FUNCTION_DEFINITION,
+    REQUIRE(external_definition->properties.category == KEFIR_AST_NODE_CATEGORY_FUNCTION_DEFINITION,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected function definition AST node"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_function_definition *, function_definition, external_definition->self);
@@ -102,8 +101,7 @@ static kefir_result_t translate_unit_impl(struct kefir_mem *mem, struct kefir_as
 kefir_result_t kefir_ast_translate_unit(struct kefir_mem *mem, const struct kefir_ast_node_base *node,
                                         struct kefir_ast_translator_context *context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
-    REQUIRE(node != NULL && node->properties.category == KEFIR_AST_NODE_CATEGORY_TRANSLATION_UNIT &&
-                node->klass->type == KEFIR_AST_TRANSLATION_UNIT,
+    REQUIRE(node != NULL && node->properties.category == KEFIR_AST_NODE_CATEGORY_TRANSLATION_UNIT,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translation unit"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator context"));
 

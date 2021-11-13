@@ -275,6 +275,7 @@ kefir_result_t kefir_ast_translator_function_context_translate(
     REQUIRE_OK(kefir_ast_declarator_unpack_function(function->declarator, &decl_func));
     REQUIRE(decl_func != NULL,
             KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected function definition to have function declarator"));
+    kefir_result_t res;
     for (const struct kefir_list_entry *iter = kefir_list_tail(&decl_func->parameters); iter != NULL;
          iter = iter->prev) {
 
@@ -283,7 +284,9 @@ kefir_result_t kefir_ast_translator_function_context_translate(
 
         if (param->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION) {
             struct kefir_ast_declaration *param_decl = NULL;
-            REQUIRE_OK(kefir_ast_downcast_declaration(param, &param_decl));
+            REQUIRE_MATCH_OK(
+                &res, kefir_ast_downcast_declaration(param, &param_decl),
+                KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected function parameter to be an AST declaration"));
             REQUIRE(kefir_list_length(&param_decl->init_declarators) == 1,
                     KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected function parameter to have exactly one declarator"));
 
@@ -327,10 +330,10 @@ kefir_result_t kefir_ast_translator_function_context_translate(
          iter != NULL; kefir_list_next(&iter)) {
 
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, decl_node, iter->value);
-        REQUIRE(decl_node->klass->type == KEFIR_AST_DECLARATION,
-                KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected AST declaration node"));
-        ASSIGN_DECL_CAST(struct kefir_ast_declaration *, decl_list, decl_node->self);
+        struct kefir_ast_declaration *decl_list = NULL;
         struct kefir_ast_init_declarator *decl = NULL;
+        REQUIRE_MATCH_OK(&res, kefir_ast_downcast_declaration(decl_node, &decl_list),
+                         KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected AST node to be a declaration"));
         REQUIRE_OK(kefir_ast_declaration_unpack_single(decl_list, &decl));
 
         REQUIRE_OK(kefir_ast_type_list_variable_modificators(

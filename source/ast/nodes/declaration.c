@@ -22,6 +22,7 @@
 #include "kefir/ast/node_internal.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/ast/downcast.h"
 
 NODE_VISIT_IMPL(ast_declaration_visit, kefir_ast_declaration, declaration)
 
@@ -106,12 +107,16 @@ struct kefir_ast_node_base *ast_declaration_clone(struct kefir_mem *mem, struct 
             KEFIR_FREE(mem, clone);
             return NULL;
         });
-        if (declaration_clone->klass->type == KEFIR_AST_INIT_DECLARATOR) {
-            ASSIGN_DECL_CAST(struct kefir_ast_init_declarator *, init_decl, declaration_clone->self);
+
+        struct kefir_ast_init_declarator *init_decl = NULL;
+        res = kefir_ast_downcast_init_declarator(declaration_clone, &init_decl);
+        if (res == KEFIR_OK) {
             init_decl->declaration = clone;
+        } else if (res == KEFIR_NO_MATCH) {
+            res = KEFIR_OK;
         }
-        res = kefir_list_insert_after(mem, &clone->init_declarators, kefir_list_tail(&clone->init_declarators),
-                                      declaration_clone);
+        REQUIRE_CHAIN(&res, kefir_list_insert_after(mem, &clone->init_declarators,
+                                                    kefir_list_tail(&clone->init_declarators), declaration_clone));
         REQUIRE_ELSE(res == KEFIR_OK, {
             kefir_list_free(mem, &clone->init_declarators);
             kefir_ast_declarator_specifier_list_free(mem, &clone->specifiers);
@@ -192,8 +197,11 @@ kefir_result_t kefir_ast_declaration_unpack_single(struct kefir_ast_declaration 
     REQUIRE(kefir_list_length(&list->init_declarators) == 1,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected declaration list to contain a single declaration"));
     struct kefir_ast_node_base *node = kefir_list_head(&list->init_declarators)->value;
-    REQUIRE(node->klass->type == KEFIR_AST_INIT_DECLARATOR,
-            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected declaration list to contain a single declaration"));
+
+    kefir_result_t res;
+    REQUIRE_MATCH_OK(
+        &res, kefir_ast_downcast_init_declarator(node, declaration_ptr),
+        KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected declaration list to contain a single declaration"));
     *declaration_ptr = node->self;
     return KEFIR_OK;
 }

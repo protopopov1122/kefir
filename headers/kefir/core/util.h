@@ -88,6 +88,13 @@
             REQUIRE_OK(*(result));               \
         }                                        \
     } while (0)
+#define REQUIRE_MATCH(result, expr, no_match) \
+    do {                                      \
+        *(result) = (expr);                   \
+        if (*(result) == KEFIR_NO_MATCH) {    \
+            *(result) = (no_match);           \
+        }                                     \
+    } while (0)
 
 // Evaluates twice
 #define MIN(a, b) ((a) < (b) ? (a) : (b))

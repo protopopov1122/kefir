@@ -44,3 +44,38 @@ kefir_result_t kefir_ast_downcast_declaration(const struct kefir_ast_node_base *
     *declaration = node->self;
     return KEFIR_OK;
 }
+
+kefir_result_t kefir_ast_downcast_any_struct_member(const struct kefir_ast_node_base *node,
+                                                    struct kefir_ast_struct_member **struct_member) {
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node"));
+    REQUIRE(struct_member != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to AST struct member"));
+
+    REQUIRE(node->klass->type == KEFIR_AST_STRUCTURE_MEMBER || node->klass->type == KEFIR_AST_STRUCTURE_INDIRECT_MEMBER,
+            KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to downcast AST node to structure member"));
+    *struct_member = node->self;
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_ast_downcast_translation_unit(const struct kefir_ast_node_base *node,
+                                                   struct kefir_ast_translation_unit **unit) {
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node"));
+    REQUIRE(unit != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to AST translation unit"));
+
+    REQUIRE(node->klass->type == KEFIR_AST_TRANSLATION_UNIT,
+            KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to downcast AST node to translation unit"));
+    *unit = node->self;
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_ast_downcast_identifier(const struct kefir_ast_node_base *node,
+                                             struct kefir_ast_identifier **identifier) {
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node"));
+    REQUIRE(identifier != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to AST translation unit"));
+
+    REQUIRE(node->klass->type == KEFIR_AST_IDENTIFIER,
+            KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to downcast AST node to identifier"));
+    *identifier = node->self;
+    return KEFIR_OK;
+}

@@ -26,5 +26,10 @@
 kefir_result_t kefir_ast_downcast_init_declarator(const struct kefir_ast_node_base *,
                                                   struct kefir_ast_init_declarator **);
 kefir_result_t kefir_ast_downcast_declaration(const struct kefir_ast_node_base *, struct kefir_ast_declaration **);
+kefir_result_t kefir_ast_downcast_any_struct_member(const struct kefir_ast_node_base *,
+                                                    struct kefir_ast_struct_member **);
+kefir_result_t kefir_ast_downcast_translation_unit(const struct kefir_ast_node_base *,
+                                                   struct kefir_ast_translation_unit **);
+kefir_result_t kefir_ast_downcast_identifier(const struct kefir_ast_node_base *, struct kefir_ast_identifier **);
 
 #endif

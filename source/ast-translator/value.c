@@ -22,6 +22,7 @@
 #include "kefir/ast-translator/util.h"
 #include "kefir/ast-translator/type_resolver.h"
 #include "kefir/ast/type_conv.h"
+#include "kefir/ast/downcast.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"
@@ -154,10 +155,12 @@ kefir_result_t kefir_ast_translator_resolve_node_value(struct kefir_mem *mem,
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node base"));
 
     if (node->properties.expression_props.bitfield) {
-        REQUIRE(
-            node->klass->type == KEFIR_AST_STRUCTURE_MEMBER || node->klass->type == KEFIR_AST_STRUCTURE_INDIRECT_MEMBER,
+        struct kefir_ast_struct_member *struct_member = NULL;
+        kefir_result_t res;
+        REQUIRE_MATCH_OK(
+            &res, kefir_ast_downcast_any_struct_member(node, &struct_member),
             KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Expected bit-field node to be a direct/indirect structure member"));
-        REQUIRE_OK(resolve_bitfield(mem, context, builder, (const struct kefir_ast_struct_member *) node->self));
+        REQUIRE_OK(resolve_bitfield(mem, context, builder, struct_member));
     } else {
         REQUIRE_OK(kefir_ast_translator_load_value(node->properties.type, context->ast_context->type_traits, builder));
     }
@@ -174,10 +177,12 @@ kefir_result_t kefir_ast_translator_store_node_value(struct kefir_mem *mem,
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node base"));
 
     if (node->properties.expression_props.bitfield) {
-        REQUIRE(
-            node->klass->type == KEFIR_AST_STRUCTURE_MEMBER || node->klass->type == KEFIR_AST_STRUCTURE_INDIRECT_MEMBER,
+        struct kefir_ast_struct_member *struct_member = NULL;
+        kefir_result_t res;
+        REQUIRE_MATCH_OK(
+            &res, kefir_ast_downcast_any_struct_member(node, &struct_member),
             KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Expected bit-field node to be a direct/indirect structure member"));
-        REQUIRE_OK(store_bitfield(mem, context, builder, (const struct kefir_ast_struct_member *) node->self));
+        REQUIRE_OK(store_bitfield(mem, context, builder, struct_member));
     } else {
         REQUIRE_OK(kefir_ast_translator_store_value(mem, node->properties.type, context, builder));
     }
