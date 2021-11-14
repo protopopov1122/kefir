@@ -108,16 +108,11 @@ kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(function_definition)(struct kefir_mem
 
     REQUIRE_OK(scan_components(mem, parser, &specifiers, &declarator, &declaration_list, &compound_statement_node));
 
-    kefir_result_t res = KEFIR_OK;
+    kefir_result_t res;
     struct kefir_ast_compound_statement *compound_statement = NULL;
-    REQUIRE_CHAIN_SET(
-        &res, compound_statement_node->klass->type == KEFIR_AST_COMPOUND_STATEMENT,
+    REQUIRE_MATCH_OK(
+        &res, kefir_ast_downcast_compound_statement(compound_statement_node, &compound_statement, true),
         KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected compound statement rule to produce a compound statement"));
-    if (res == KEFIR_OK) {
-        REQUIRE_MATCH_OK(
-            &res, kefir_ast_downcast_compound_statement(compound_statement_node, &compound_statement),
-            KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected compound statement rule to produce a compound statement"));
-    }
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_AST_NODE_FREE(mem, compound_statement_node);
         kefir_list_free(mem, &declaration_list);

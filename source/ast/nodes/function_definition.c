@@ -128,8 +128,8 @@ struct kefir_ast_node_base *ast_function_definition_clone(struct kefir_mem *mem,
         return NULL;
     });
 
-    REQUIRE_MATCH(&res, kefir_ast_downcast_compound_statement(body_clone, &clone->body),
-                  KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to downcast function body to compound statement"));
+    REQUIRE_MATCH(&res, kefir_ast_downcast_compound_statement(body_clone, &clone->body, true),
+                  KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Unable to downcast function body to compound statement"));
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_AST_NODE_FREE(mem, body_clone);
         kefir_list_free(mem, &clone->declarations);

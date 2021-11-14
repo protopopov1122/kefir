@@ -111,8 +111,8 @@ struct kefir_ast_node_base *ast_generic_selection_clone(struct kefir_mem *mem, s
             return NULL;
         });
 
-        REQUIRE_MATCH(&res, kefir_ast_downcast_type_name(clone_type_name, &clone_assoc->type_name),
-                      KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to downcast type name clone"));
+        REQUIRE_MATCH(&res, kefir_ast_downcast_type_name(clone_type_name, &clone_assoc->type_name, true),
+                      KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Unable to downcast type name clone"));
         REQUIRE_ELSE(res == KEFIR_OK, {
             KEFIR_AST_NODE_FREE(mem, clone_type_name);
             KEFIR_FREE(mem, clone_assoc);

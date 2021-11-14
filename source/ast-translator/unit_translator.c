@@ -45,7 +45,7 @@ static kefir_result_t allocate_function_context(struct kefir_mem *mem, struct ke
 
     kefir_result_t res;
     struct kefir_ast_function_definition *function_definition = NULL;
-    REQUIRE_MATCH_OK(&res, kefir_ast_downcast_function_definition(external_definition, &function_definition),
+    REQUIRE_MATCH_OK(&res, kefir_ast_downcast_function_definition(external_definition, &function_definition, false),
                      KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected function definition AST node"));
 
     *function_context = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_translator_function_context));
@@ -110,7 +110,7 @@ kefir_result_t kefir_ast_translate_unit(struct kefir_mem *mem, const struct kefi
 
     kefir_result_t res;
     struct kefir_ast_translation_unit *unit = NULL;
-    REQUIRE_MATCH_OK(&res, kefir_ast_downcast_translation_unit(node, &unit),
+    REQUIRE_MATCH_OK(&res, kefir_ast_downcast_translation_unit(node, &unit, false),
                      KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator context"));
 
     struct kefir_list function_translator_contexts;

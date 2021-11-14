@@ -23,7 +23,9 @@
 #include "kefir/core/error.h"
 
 #define DEFINE_DOWNCAST(_id, _node_type, _cond, _err)                                                         \
-    kefir_result_t kefir_ast_downcast_##_id(const struct kefir_ast_node_base *node, _node_type **result) {    \
+    kefir_result_t kefir_ast_downcast_##_id(const struct kefir_ast_node_base *node, _node_type **result,      \
+                                            kefir_bool_t owning) {                                            \
+        UNUSED(owning);                                                                                       \
         REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node"));           \
         REQUIRE(result != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to " _err)); \
                                                                                                               \

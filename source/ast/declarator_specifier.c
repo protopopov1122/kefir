@@ -217,7 +217,7 @@ struct kefir_ast_structure_specifier *kefir_ast_structure_specifier_clone(
                 });
 
                 struct kefir_ast_static_assertion *static_assertion = NULL;
-                REQUIRE_MATCH(&res, kefir_ast_downcast_static_assertion(assertion_clone, &static_assertion),
+                REQUIRE_MATCH(&res, kefir_ast_downcast_static_assertion(assertion_clone, &static_assertion, true),
                               KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Failed to downcast cloned static assertion"));
                 REQUIRE_ELSE(res == KEFIR_OK, {
                     KEFIR_AST_NODE_FREE(mem, assertion_clone);

@@ -280,7 +280,7 @@ kefir_result_t kefir_compiler_parse(struct kefir_mem *mem, struct kefir_compiler
         return res;
     });
 
-    REQUIRE_MATCH(&res, kefir_ast_downcast_translation_unit(node, unit_ptr),
+    REQUIRE_MATCH(&res, kefir_ast_downcast_translation_unit(node, unit_ptr, true),
                   KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected parser to produce AST translation unit"));
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_AST_NODE_FREE(mem, node);

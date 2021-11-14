@@ -61,7 +61,7 @@ static kefir_result_t init_function_declaration(struct kefir_mem *mem, struct ke
 
                 ASSIGN_DECL_CAST(struct kefir_ast_node_base *, decl_node, iter->value);
                 struct kefir_ast_declaration *decl_list = NULL;
-                REQUIRE_MATCH(&res, kefir_ast_downcast_declaration(decl_node, &decl_list),
+                REQUIRE_MATCH(&res, kefir_ast_downcast_declaration(decl_node, &decl_list, false),
                               KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected AST declaration"));
                 ASSIGN_DECL_CAST(struct kefir_ast_node_base *, decl,
                                  kefir_list_head(&decl_list->init_declarators)->value);
@@ -288,7 +288,7 @@ kefir_result_t kefir_ast_translator_function_context_translate(
         if (param->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION) {
             struct kefir_ast_declaration *param_decl = NULL;
             REQUIRE_MATCH_OK(
-                &res, kefir_ast_downcast_declaration(param, &param_decl),
+                &res, kefir_ast_downcast_declaration(param, &param_decl, false),
                 KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected function parameter to be an AST declaration"));
             REQUIRE(kefir_list_length(&param_decl->init_declarators) == 1,
                     KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected function parameter to have exactly one declarator"));
@@ -335,7 +335,7 @@ kefir_result_t kefir_ast_translator_function_context_translate(
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, decl_node, iter->value);
         struct kefir_ast_declaration *decl_list = NULL;
         struct kefir_ast_init_declarator *decl = NULL;
-        REQUIRE_MATCH_OK(&res, kefir_ast_downcast_declaration(decl_node, &decl_list),
+        REQUIRE_MATCH_OK(&res, kefir_ast_downcast_declaration(decl_node, &decl_list, false),
                          KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected AST node to be a declaration"));
         REQUIRE_OK(kefir_ast_declaration_unpack_single(decl_list, &decl));
 

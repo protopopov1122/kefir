@@ -825,7 +825,7 @@ static kefir_result_t resolve_function_declarator(struct kefir_mem *mem, const s
         if (node->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION) {
             struct kefir_ast_declaration *decl_list = NULL;
             struct kefir_ast_init_declarator *declaration = NULL;
-            REQUIRE_MATCH(&res, kefir_ast_downcast_declaration(node, &decl_list),
+            REQUIRE_MATCH(&res, kefir_ast_downcast_declaration(node, &decl_list, false),
                           KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->source_location,
                                                  "Expected function parameter to be a declaration"));
             REQUIRE_CHAIN(&res, kefir_ast_declaration_unpack_single(decl_list, &declaration));
@@ -835,7 +835,7 @@ static kefir_result_t resolve_function_declarator(struct kefir_mem *mem, const s
         } else {
             struct kefir_ast_identifier *identifier = NULL;
             REQUIRE_MATCH(
-                &res, kefir_ast_downcast_identifier(node, &identifier),
+                &res, kefir_ast_downcast_identifier(node, &identifier, false),
                 KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->source_location,
                                        "Function declaration parameter shall be either declaration, or identifier"));
             if (res == KEFIR_OK) {

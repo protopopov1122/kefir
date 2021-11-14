@@ -146,7 +146,7 @@ kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(declaration)(struct kefir_mem *mem, s
     REQUIRE_OK(kefir_parser_ast_builder_wrap(mem, parser, result, builder_callback, NULL));
 
     struct kefir_ast_declaration *decl_list = NULL;
-    kefir_result_t res = kefir_ast_downcast_declaration(*result, &decl_list);
+    kefir_result_t res = kefir_ast_downcast_declaration(*result, &decl_list, false);
     if (res == KEFIR_OK) {
         res = update_scope(mem, parser, decl_list);
     } else if (res == KEFIR_NO_MATCH) {

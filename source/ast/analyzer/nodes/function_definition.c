@@ -46,7 +46,7 @@ static kefir_result_t analyze_function_parameters(struct kefir_mem *mem, const s
                 KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected function parameter to be declaration"));
 
         struct kefir_ast_declaration *param_decl = NULL;
-        REQUIRE_MATCH_OK(&res, kefir_ast_downcast_declaration(param, &param_decl),
+        REQUIRE_MATCH_OK(&res, kefir_ast_downcast_declaration(param, &param_decl, false),
                          KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &param->source_location,
                                                 "Expected function parameter to be a declaration"));
         REQUIRE(kefir_list_length(&param_decl->init_declarators) == 1,
@@ -83,7 +83,7 @@ static kefir_result_t analyze_function_parameter_identifiers_impl(struct kefir_m
         struct kefir_ast_declaration *decl_list = NULL;
         struct kefir_ast_init_declarator *decl = NULL;
         REQUIRE_MATCH_OK(
-            &res, kefir_ast_downcast_declaration(decl_node, &decl_list),
+            &res, kefir_ast_downcast_declaration(decl_node, &decl_list, false),
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &decl_node->source_location,
                                    "Function definition declaration list shall contain exclusively declarations"));
         REQUIRE_OK(kefir_ast_declaration_unpack_single(decl_list, &decl));
@@ -143,7 +143,7 @@ static kefir_result_t analyze_function_parameter_identifiers_impl(struct kefir_m
 
         struct kefir_ast_identifier *id_node = NULL;
         const struct kefir_ast_scoped_identifier *scoped_id = NULL;
-        REQUIRE_MATCH_OK(&res, kefir_ast_downcast_identifier(param, &id_node),
+        REQUIRE_MATCH_OK(&res, kefir_ast_downcast_identifier(param, &id_node, false),
                          KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected parameter to be AST identifier"));
         REQUIRE_OK(local_context->context.resolve_ordinary_identifier(&local_context->context, id_node->identifier,
                                                                       &scoped_id));
@@ -169,7 +169,7 @@ static kefir_result_t analyze_function_parameter_identifiers(struct kefir_mem *m
          kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, param, iter->value);
         struct kefir_ast_identifier *id_node = NULL;
-        REQUIRE_MATCH(&res, kefir_ast_downcast_identifier(param, &id_node),
+        REQUIRE_MATCH(&res, kefir_ast_downcast_identifier(param, &id_node, false),
                       KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected parameter to be AST identifier"));
         REQUIRE_CHAIN(&res, kefir_hashtree_insert(mem, &argtree, (kefir_hashtree_key_t) id_node->identifier,
                                                   (kefir_hashtree_value_t) 0));

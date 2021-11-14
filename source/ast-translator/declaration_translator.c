@@ -36,7 +36,7 @@ static kefir_result_t translate_vla_declaration(struct kefir_mem *mem, const str
 
     kefir_result_t res;
     struct kefir_ast_init_declarator *declaration = NULL;
-    REQUIRE_MATCH_OK(&res, kefir_ast_downcast_init_declarator(node, &declaration),
+    REQUIRE_MATCH_OK(&res, kefir_ast_downcast_init_declarator(node, &declaration, false),
                      KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected AST init declarator"));
     ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, identifier_data,
                      declaration->base.properties.declaration_props.scoped_id->payload.ptr);
@@ -93,7 +93,7 @@ static kefir_result_t translate_init_declarator(struct kefir_mem *mem, const str
 
         kefir_result_t res;
         struct kefir_ast_init_declarator *init_decl = NULL;
-        REQUIRE_MATCH_OK(&res, kefir_ast_downcast_init_declarator(node, &init_decl),
+        REQUIRE_MATCH_OK(&res, kefir_ast_downcast_init_declarator(node, &init_decl, false),
                          KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected node to be init declarator"));
         REQUIRE(init_decl->initializer != NULL, KEFIR_OK);
 
@@ -125,7 +125,7 @@ kefir_result_t kefir_ast_translate_declaration(struct kefir_mem *mem, const stru
     } else if (node->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION) {
         kefir_result_t res;
         struct kefir_ast_declaration *declaration = NULL;
-        REQUIRE_MATCH_OK(&res, kefir_ast_downcast_declaration(node, &declaration),
+        REQUIRE_MATCH_OK(&res, kefir_ast_downcast_declaration(node, &declaration, false),
                          KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected declaration AST node"));
         for (const struct kefir_list_entry *iter = kefir_list_head(&declaration->init_declarators); iter != NULL;
              kefir_list_next(&iter)) {

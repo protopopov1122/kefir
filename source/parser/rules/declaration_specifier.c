@@ -157,16 +157,11 @@ static kefir_result_t scan_struct_static_assert(struct kefir_mem *mem, struct ke
     struct kefir_ast_node_base *static_assertion_node = NULL;
     REQUIRE_OK(KEFIR_PARSER_RULE_APPLY(mem, parser, static_assertion, &static_assertion_node));
 
-    kefir_result_t res = KEFIR_OK;
+    kefir_result_t res;
     struct kefir_ast_static_assertion *static_assertion = NULL;
-    REQUIRE_CHAIN_SET(
-        &res, static_assertion_node->klass->type == KEFIR_AST_STATIC_ASSERTION,
+    REQUIRE_MATCH(
+        &res, kefir_ast_downcast_static_assertion(static_assertion_node, &static_assertion, true),
         KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected static assertion parser to generate a static assertion"));
-    if (res == KEFIR_OK) {
-        REQUIRE_MATCH(
-            &res, kefir_ast_downcast_static_assertion(static_assertion_node, &static_assertion),
-            KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected static assertion parser to generate a static assertion"));
-    }
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_AST_NODE_FREE(mem, static_assertion_node);
         return res;

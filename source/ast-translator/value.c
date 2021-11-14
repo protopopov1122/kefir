@@ -158,7 +158,7 @@ kefir_result_t kefir_ast_translator_resolve_node_value(struct kefir_mem *mem,
         struct kefir_ast_struct_member *struct_member = NULL;
         kefir_result_t res;
         REQUIRE_MATCH_OK(
-            &res, kefir_ast_downcast_any_struct_member(node, &struct_member),
+            &res, kefir_ast_downcast_any_struct_member(node, &struct_member, false),
             KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Expected bit-field node to be a direct/indirect structure member"));
         REQUIRE_OK(resolve_bitfield(mem, context, builder, struct_member));
     } else {
@@ -180,7 +180,7 @@ kefir_result_t kefir_ast_translator_store_node_value(struct kefir_mem *mem,
         struct kefir_ast_struct_member *struct_member = NULL;
         kefir_result_t res;
         REQUIRE_MATCH_OK(
-            &res, kefir_ast_downcast_any_struct_member(node, &struct_member),
+            &res, kefir_ast_downcast_any_struct_member(node, &struct_member, false),
             KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Expected bit-field node to be a direct/indirect structure member"));
         REQUIRE_OK(store_bitfield(mem, context, builder, struct_member));
     } else {

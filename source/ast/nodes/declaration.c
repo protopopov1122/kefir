@@ -109,7 +109,7 @@ struct kefir_ast_node_base *ast_declaration_clone(struct kefir_mem *mem, struct 
         });
 
         struct kefir_ast_init_declarator *init_decl = NULL;
-        res = kefir_ast_downcast_init_declarator(declaration_clone, &init_decl);
+        res = kefir_ast_downcast_init_declarator(declaration_clone, &init_decl, false);
         if (res == KEFIR_OK) {
             init_decl->declaration = clone;
         } else if (res == KEFIR_NO_MATCH) {
@@ -200,7 +200,7 @@ kefir_result_t kefir_ast_declaration_unpack_single(struct kefir_ast_declaration 
 
     kefir_result_t res;
     REQUIRE_MATCH_OK(
-        &res, kefir_ast_downcast_init_declarator(node, declaration_ptr),
+        &res, kefir_ast_downcast_init_declarator(node, declaration_ptr, false),
         KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected declaration list to contain a single declaration"));
     return KEFIR_OK;
 }

@@ -24,7 +24,7 @@
 #include "kefir/ast/node.h"
 
 #define DECLARE_DOWNCAST(_id, _node_type) \
-    kefir_result_t kefir_ast_downcast_##_id(const struct kefir_ast_node_base *, _node_type **)
+    kefir_result_t kefir_ast_downcast_##_id(const struct kefir_ast_node_base *, _node_type **, kefir_bool_t)
 
 DECLARE_DOWNCAST(init_declarator, struct kefir_ast_init_declarator);
 DECLARE_DOWNCAST(declaration, struct kefir_ast_declaration);

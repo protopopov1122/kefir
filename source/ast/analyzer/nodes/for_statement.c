@@ -64,7 +64,7 @@ kefir_result_t kefir_ast_analyze_for_statement_node(struct kefir_mem *mem, const
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->init));
         if (node->init->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION) {
             struct kefir_ast_declaration *declaration = NULL;
-            REQUIRE_MATCH_OK(&res, kefir_ast_downcast_declaration(node->init, &declaration),
+            REQUIRE_MATCH_OK(&res, kefir_ast_downcast_declaration(node->init, &declaration, false),
                              KEFIR_SET_SOURCE_ERROR(
                                  KEFIR_ANALYSIS_ERROR, &node->init->source_location,
                                  "Expected the first clause of for statement to be either declaration or expression"));
