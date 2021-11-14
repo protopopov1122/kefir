@@ -106,6 +106,7 @@ DECLARE_CASE(ast_nodes_static_assertions1);
 DECLARE_CASE(ast_nodes_labeled_statements1);
 DECLARE_CASE(ast_nodes_case_statements1);
 DECLARE_CASE(ast_nodes_expression_statements1);
+DECLARE_CASE(ast_nodes_extension);
 DECLARE_CASE(ast_type_compatibility1);
 DECLARE_CASE(ast_type_basic_compatibility);
 DECLARE_CASE(ast_type_enum_compatibility);
@@ -470,7 +471,7 @@ TEST_SUITE(
     &ast_nodes_conditional_operators, &ast_nodes_assignment_operators, &ast_nodes_comma_operators,
     &ast_nodes_compound_literals, &ast_nodes_init_declarators1, &ast_nodes_static_assertions1,
     &ast_nodes_labeled_statements1, &ast_nodes_case_statements1, &ast_nodes_expression_statements1,
-    &ast_type_compatibility1, &ast_type_basic_compatibility, &ast_type_enum_compatibility,
+    &ast_nodes_extension, &ast_type_compatibility1, &ast_type_basic_compatibility, &ast_type_enum_compatibility,
     &ast_type_pointer_compatibility, &ast_type_qualified_compatibility, &ast_type_struct_compatibility,
     &ast_type_union_compatibility, &ast_type_array_compatibility, &ast_type_function_compatibility,
     &ast_type_basic_composite, &ast_type_pointer_composite, &ast_type_enum_composite, &ast_type_qualified_composite,

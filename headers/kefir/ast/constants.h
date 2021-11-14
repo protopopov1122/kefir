@@ -69,7 +69,8 @@ typedef enum kefir_ast_node_type {
     KEFIR_AST_FUNCTION_DEFINITION,
     KEFIR_AST_TRANSLATION_UNIT,
 
-    KEFIR_AST_BUILTIN
+    KEFIR_AST_BUILTIN,
+    KEFIR_AST_EXTENSION_NODE
 } kefir_ast_node_type_t;
 
 typedef enum kefir_ast_node_category {

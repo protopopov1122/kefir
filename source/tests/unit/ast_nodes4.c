@@ -320,3 +320,42 @@ DEFINE_CASE(ast_nodes_declaration1, "AST nodes - declaration list #1") {
     ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
 }
 END_CASE
+
+static kefir_result_t extension_free(struct kefir_mem *mem, struct kefir_ast_extension_node *ext) {
+    KEFIR_FREE(mem, ext->payload);
+    ext->payload = NULL;
+    return KEFIR_OK;
+}
+
+static kefir_result_t extension_clone(struct kefir_mem *mem, struct kefir_ast_extension_node *dst,
+                                      const struct kefir_ast_extension_node *src) {
+    UNUSED(mem);
+    UNUSED(dst);
+    UNUSED(src);
+    return KEFIR_INTERNAL_ERROR;
+}
+
+DEFINE_CASE(ast_nodes_extension, "AST nodes - extensions") {
+    struct kefir_ast_extension_node_class ext_class = {
+        .free = extension_free, .clone = extension_clone, .payload = NULL};
+
+    void *buf1 = KEFIR_MALLOC(&kft_mem, 1024);
+    void *buf2 = KEFIR_MALLOC(&kft_mem, 2048);
+    struct kefir_ast_extension_node *ext1 = kefir_ast_new_extension_node(&kft_mem, &ext_class, buf1);
+    ASSERT(ext1 != NULL);
+    ASSERT(ext1->base.klass->type == KEFIR_AST_EXTENSION_NODE);
+    ASSERT(ext1->base.self == ext1);
+    ASSERT(ext1->klass == &ext_class);
+    ASSERT(ext1->payload == buf1);
+
+    struct kefir_ast_extension_node *ext2 = kefir_ast_new_extension_node(&kft_mem, &ext_class, buf2);
+    ASSERT(ext2 != NULL);
+    ASSERT(ext2->base.klass->type == KEFIR_AST_EXTENSION_NODE);
+    ASSERT(ext2->base.self == ext2);
+    ASSERT(ext2->klass == &ext_class);
+    ASSERT(ext2->payload == buf2);
+
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(ext1)));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(ext2)));
+}
+END_CASE
