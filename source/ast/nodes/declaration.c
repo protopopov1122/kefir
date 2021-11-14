@@ -202,6 +202,5 @@ kefir_result_t kefir_ast_declaration_unpack_single(struct kefir_ast_declaration 
     REQUIRE_MATCH_OK(
         &res, kefir_ast_downcast_init_declarator(node, declaration_ptr),
         KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected declaration list to contain a single declaration"));
-    *declaration_ptr = node->self;
     return KEFIR_OK;
 }

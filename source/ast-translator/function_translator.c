@@ -60,12 +60,15 @@ static kefir_result_t init_function_declaration(struct kefir_mem *mem, struct ke
                  res == KEFIR_OK && iter != NULL; kefir_list_next(&iter)) {
 
                 ASSIGN_DECL_CAST(struct kefir_ast_node_base *, decl_node, iter->value);
-                ASSIGN_DECL_CAST(struct kefir_ast_declaration *, decl_list, decl_node->self);
+                struct kefir_ast_declaration *decl_list = NULL;
+                REQUIRE_MATCH(&res, kefir_ast_downcast_declaration(decl_node, &decl_list),
+                              KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected AST declaration"));
                 ASSIGN_DECL_CAST(struct kefir_ast_node_base *, decl,
                                  kefir_list_head(&decl_list->init_declarators)->value);
-                res = kefir_hashtree_insert(mem, &declarations,
-                                            (kefir_hashtree_key_t) decl->properties.declaration_props.identifier,
-                                            (kefir_hashtree_value_t) decl);
+                REQUIRE_CHAIN(
+                    &res, kefir_hashtree_insert(mem, &declarations,
+                                                (kefir_hashtree_key_t) decl->properties.declaration_props.identifier,
+                                                (kefir_hashtree_value_t) decl));
             }
 
             REQUIRE_CHAIN(&res, kefir_list_init(&declaration_list));

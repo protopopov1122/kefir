@@ -20,6 +20,7 @@
 
 #include "kefir/ast/declarator.h"
 #include "kefir/ast/node.h"
+#include "kefir/ast/downcast.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -197,6 +198,7 @@ struct kefir_ast_structure_specifier *kefir_ast_structure_specifier_clone(
     REQUIRE(mem != NULL, NULL);
     REQUIRE(specifier != NULL, NULL);
 
+    kefir_result_t res;
     struct kefir_ast_structure_specifier *clone =
         kefir_ast_structure_specifier_init(mem, NULL, specifier->identifier, specifier->complete);
     REQUIRE(clone != NULL, NULL);
@@ -213,8 +215,17 @@ struct kefir_ast_structure_specifier *kefir_ast_structure_specifier_clone(
                     kefir_ast_structure_specifier_free(mem, clone);
                     return NULL;
                 });
-                entry_clone = kefir_ast_structure_declaration_entry_alloc_assert(
-                    mem, (struct kefir_ast_static_assertion *) assertion_clone->self);
+
+                struct kefir_ast_static_assertion *static_assertion = NULL;
+                REQUIRE_MATCH(&res, kefir_ast_downcast_static_assertion(assertion_clone, &static_assertion),
+                              KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Failed to downcast cloned static assertion"));
+                REQUIRE_ELSE(res == KEFIR_OK, {
+                    KEFIR_AST_NODE_FREE(mem, assertion_clone);
+                    kefir_ast_structure_specifier_free(mem, clone);
+                    return NULL;
+                });
+
+                entry_clone = kefir_ast_structure_declaration_entry_alloc_assert(mem, static_assertion);
                 REQUIRE_ELSE(entry_clone != NULL, {
                     KEFIR_AST_NODE_FREE(mem, assertion_clone);
                     kefir_ast_structure_specifier_free(mem, clone);
@@ -234,8 +245,8 @@ struct kefir_ast_structure_specifier *kefir_ast_structure_specifier_clone(
                         kefir_ast_structure_specifier_free(mem, clone);
                         return NULL;
                     });
-                    kefir_result_t res = kefir_ast_declarator_specifier_list_append(
-                        mem, &entry_clone->declaration.specifiers, entry_specifier_clone);
+                    res = kefir_ast_declarator_specifier_list_append(mem, &entry_clone->declaration.specifiers,
+                                                                     entry_specifier_clone);
                     REQUIRE_ELSE(res == KEFIR_OK, {
                         kefir_ast_declarator_specifier_free(mem, entry_specifier_clone);
                         kefir_ast_structure_declaration_entry_free(mem, entry_clone);
@@ -256,8 +267,8 @@ struct kefir_ast_structure_specifier *kefir_ast_structure_specifier_clone(
                         kefir_ast_structure_specifier_free(mem, clone);
                         return NULL;
                     });
-                    kefir_result_t res = kefir_ast_structure_declaration_entry_append(mem, entry_clone,
-                                                                                      declarator_clone, bitwidth_clone);
+                    res = kefir_ast_structure_declaration_entry_append(mem, entry_clone, declarator_clone,
+                                                                       bitwidth_clone);
                     REQUIRE_ELSE(res == KEFIR_OK, {
                         kefir_ast_declarator_free(mem, declarator_clone);
                         KEFIR_AST_NODE_FREE(mem, bitwidth_clone);
@@ -268,7 +279,7 @@ struct kefir_ast_structure_specifier *kefir_ast_structure_specifier_clone(
                 }
             }
 
-            kefir_result_t res = kefir_ast_structure_specifier_append_entry(mem, clone, entry_clone);
+            res = kefir_ast_structure_specifier_append_entry(mem, clone, entry_clone);
             REQUIRE_ELSE(res == KEFIR_OK, {
                 kefir_ast_structure_declaration_entry_free(mem, entry_clone);
                 kefir_ast_structure_specifier_free(mem, clone);

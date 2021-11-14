@@ -20,6 +20,7 @@
 
 #include "kefir/ast/node.h"
 #include "kefir/ast/node_internal.h"
+#include "kefir/ast/downcast.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -110,7 +111,17 @@ struct kefir_ast_node_base *ast_generic_selection_clone(struct kefir_mem *mem, s
             return NULL;
         });
 
-        clone_assoc->type_name = (struct kefir_ast_type_name *) clone_type_name->self;
+        REQUIRE_MATCH(&res, kefir_ast_downcast_type_name(clone_type_name, &clone_assoc->type_name),
+                      KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to downcast type name clone"));
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            KEFIR_AST_NODE_FREE(mem, clone_type_name);
+            KEFIR_FREE(mem, clone_assoc);
+            kefir_list_free(mem, &clone->associations);
+            KEFIR_AST_NODE_FREE(mem, clone->control);
+            KEFIR_FREE(mem, clone);
+            return NULL;
+        });
+
         clone_assoc->expr = KEFIR_AST_NODE_CLONE(mem, assoc->expr);
         REQUIRE_ELSE(clone_assoc->expr != NULL, {
             KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(clone_assoc->type_name));

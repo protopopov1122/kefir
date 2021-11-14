@@ -79,3 +79,50 @@ kefir_result_t kefir_ast_downcast_identifier(const struct kefir_ast_node_base *n
     *identifier = node->self;
     return KEFIR_OK;
 }
+
+kefir_result_t kefir_ast_downcast_compound_statement(const struct kefir_ast_node_base *node,
+                                                     struct kefir_ast_compound_statement **compound) {
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node"));
+    REQUIRE(compound != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to AST compound statement"));
+
+    REQUIRE(node->klass->type == KEFIR_AST_COMPOUND_STATEMENT,
+            KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to downcast AST node to compound statement"));
+    *compound = node->self;
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_ast_downcast_type_name(const struct kefir_ast_node_base *node,
+                                            struct kefir_ast_type_name **type_name) {
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node"));
+    REQUIRE(type_name != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to AST type name"));
+
+    REQUIRE(node->klass->type == KEFIR_AST_TYPE_NAME,
+            KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to downcast AST node to type name"));
+    *type_name = node->self;
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_ast_downcast_function_definition(const struct kefir_ast_node_base *node,
+                                                      struct kefir_ast_function_definition **function) {
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node"));
+    REQUIRE(function != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to AST function definition"));
+
+    REQUIRE(node->klass->type == KEFIR_AST_FUNCTION_DEFINITION,
+            KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to downcast AST node to function definition"));
+    *function = node->self;
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_ast_downcast_static_assertion(const struct kefir_ast_node_base *node,
+                                                   struct kefir_ast_static_assertion **static_assertion) {
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node"));
+    REQUIRE(static_assertion != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to AST static assertion"));
+
+    REQUIRE(node->klass->type == KEFIR_AST_STATIC_ASSERTION,
+            KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to downcast AST node to static assertion"));
+    *static_assertion = node->self;
+    return KEFIR_OK;
+}

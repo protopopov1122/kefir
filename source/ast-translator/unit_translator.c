@@ -20,6 +20,7 @@
 
 #include "kefir/ast-translator/translator.h"
 #include "kefir/ast-translator/function_definition.h"
+#include "kefir/ast/downcast.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -42,14 +43,16 @@ static kefir_result_t allocate_function_context(struct kefir_mem *mem, struct ke
     REQUIRE(external_definition->properties.category == KEFIR_AST_NODE_CATEGORY_FUNCTION_DEFINITION,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected function definition AST node"));
 
-    ASSIGN_DECL_CAST(struct kefir_ast_function_definition *, function_definition, external_definition->self);
+    kefir_result_t res;
+    struct kefir_ast_function_definition *function_definition = NULL;
+    REQUIRE_MATCH_OK(&res, kefir_ast_downcast_function_definition(external_definition, &function_definition),
+                     KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected function definition AST node"));
 
     *function_context = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_translator_function_context));
     REQUIRE(function_context != NULL,
             KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST translator function context"));
 
-    kefir_result_t res =
-        kefir_ast_translator_function_context_init(mem, context, function_definition, *function_context);
+    res = kefir_ast_translator_function_context_init(mem, context, function_definition, *function_context);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, *function_context);
         *function_context = NULL;
@@ -105,12 +108,16 @@ kefir_result_t kefir_ast_translate_unit(struct kefir_mem *mem, const struct kefi
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translation unit"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator context"));
 
-    ASSIGN_DECL_CAST(struct kefir_ast_translation_unit *, unit, node->self);
+    kefir_result_t res;
+    struct kefir_ast_translation_unit *unit = NULL;
+    REQUIRE_MATCH_OK(&res, kefir_ast_downcast_translation_unit(node, &unit),
+                     KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator context"));
+
     struct kefir_list function_translator_contexts;
     REQUIRE_OK(kefir_list_init(&function_translator_contexts));
     REQUIRE_OK(kefir_list_on_remove(&function_translator_contexts, free_function_context, NULL));
 
-    kefir_result_t res = translate_unit_impl(mem, unit, context, &function_translator_contexts);
+    res = translate_unit_impl(mem, unit, context, &function_translator_contexts);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_list_free(mem, &function_translator_contexts);
         return res;

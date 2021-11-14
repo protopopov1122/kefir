@@ -20,6 +20,7 @@
 
 #include "kefir/ast/node.h"
 #include "kefir/ast/node_internal.h"
+#include "kefir/ast/downcast.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -126,7 +127,17 @@ struct kefir_ast_node_base *ast_function_definition_clone(struct kefir_mem *mem,
         KEFIR_FREE(mem, clone);
         return NULL;
     });
-    clone->body = ((struct kefir_ast_compound_statement *) body_clone->self);
+
+    REQUIRE_MATCH(&res, kefir_ast_downcast_compound_statement(body_clone, &clone->body),
+                  KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to downcast function body to compound statement"));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, body_clone);
+        kefir_list_free(mem, &clone->declarations);
+        kefir_ast_declarator_free(mem, clone->declarator);
+        kefir_ast_declarator_specifier_list_free(mem, &clone->specifiers);
+        KEFIR_FREE(mem, clone);
+        return NULL;
+    });
 
     return KEFIR_AST_NODE_BASE(clone);
 }

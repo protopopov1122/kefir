@@ -22,6 +22,7 @@
 #include "kefir/ast/analyzer/nodes.h"
 #include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/ast/analyzer/declarator.h"
+#include "kefir/ast/downcast.h"
 #include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
@@ -58,10 +59,15 @@ kefir_result_t kefir_ast_analyze_for_statement_node(struct kefir_mem *mem, const
 
     REQUIRE_OK(context->push_block(mem, context, NULL));
 
+    kefir_result_t res;
     if (node->init != NULL) {
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->init));
         if (node->init->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION) {
-            ASSIGN_DECL_CAST(struct kefir_ast_declaration *, declaration, node->init->self);
+            struct kefir_ast_declaration *declaration = NULL;
+            REQUIRE_MATCH_OK(&res, kefir_ast_downcast_declaration(node->init, &declaration),
+                             KEFIR_SET_SOURCE_ERROR(
+                                 KEFIR_ANALYSIS_ERROR, &node->init->source_location,
+                                 "Expected the first clause of for statement to be either declaration or expression"));
             for (const struct kefir_list_entry *iter = kefir_list_head(&declaration->init_declarators); iter != NULL;
                  kefir_list_next(&iter)) {
                 ASSIGN_DECL_CAST(struct kefir_ast_node_base *, init_declarator, iter->value);
