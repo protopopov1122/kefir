@@ -23,6 +23,7 @@
 #include "kefir/core/error.h"
 #include "kefir/parser/builder.h"
 #include "kefir/core/source_error.h"
+#include "kefir/ast/downcast.h"
 
 static kefir_result_t scan_specifiers(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder) {
     struct kefir_ast_declarator_specifier_list list;
@@ -143,13 +144,24 @@ kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(declaration)(struct kefir_mem *mem, s
                                                         struct kefir_ast_node_base **result, void *payload) {
     APPLY_PROLOGUE(mem, parser, result, payload);
     REQUIRE_OK(kefir_parser_ast_builder_wrap(mem, parser, result, builder_callback, NULL));
-    if ((*result)->klass->type == KEFIR_AST_DECLARATION) {
-        ASSIGN_DECL_CAST(struct kefir_ast_declaration *, decl_list, (*result)->self);
-        REQUIRE_OK(update_scope(mem, parser, decl_list));
-    } else {
-        REQUIRE((*result)->klass->type == KEFIR_AST_STATIC_ASSERTION,
-                KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR,
-                                "Expected parser rule to produce either a declaration list, or a static assertion"));
+
+    struct kefir_ast_declaration *decl_list = NULL;
+    kefir_result_t res = kefir_ast_downcast_declaration(*result, &decl_list);
+    if (res == KEFIR_OK) {
+        res = update_scope(mem, parser, decl_list);
+    } else if (res == KEFIR_NO_MATCH) {
+        if ((*result)->klass->type == KEFIR_AST_STATIC_ASSERTION) {
+            res = KEFIR_OK;
+        } else {
+            res = KEFIR_SET_ERROR(KEFIR_INVALID_STATE,
+                                  "Expected parser rule to produce either a declaration list, or a static assertion");
+        }
     }
+
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, *result);
+        *result = NULL;
+        return res;
+    });
     return KEFIR_OK;
 }

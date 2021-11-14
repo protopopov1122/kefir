@@ -19,6 +19,7 @@
 */
 
 #include "kefir/parser/rule_helpers.h"
+#include "kefir/ast/downcast.h"
 #include "kefir/core/source_error.h"
 #include "kefir/parser/builtins.h"
 
@@ -153,11 +154,27 @@ static kefir_result_t scan_struct_static_assert(struct kefir_mem *mem, struct ke
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_structure_declaration_entry **, entry, payload);
-    struct kefir_ast_node_base *static_assertion = NULL;
-    REQUIRE_OK(KEFIR_PARSER_RULE_APPLY(mem, parser, static_assertion, &static_assertion));
-    *entry = kefir_ast_structure_declaration_entry_alloc_assert(mem, static_assertion->self);
+    struct kefir_ast_node_base *static_assertion_node = NULL;
+    REQUIRE_OK(KEFIR_PARSER_RULE_APPLY(mem, parser, static_assertion, &static_assertion_node));
+
+    kefir_result_t res = KEFIR_OK;
+    struct kefir_ast_static_assertion *static_assertion = NULL;
+    REQUIRE_CHAIN_SET(
+        &res, static_assertion_node->klass->type == KEFIR_AST_STATIC_ASSERTION,
+        KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected static assertion parser to generate a static assertion"));
+    if (res == KEFIR_OK) {
+        REQUIRE_MATCH(
+            &res, kefir_ast_downcast_static_assertion(static_assertion_node, &static_assertion),
+            KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected static assertion parser to generate a static assertion"));
+    }
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, static_assertion_node);
+        return res;
+    });
+
+    *entry = kefir_ast_structure_declaration_entry_alloc_assert(mem, static_assertion);
     REQUIRE_ELSE(*entry != NULL, {
-        KEFIR_AST_NODE_FREE(mem, static_assertion);
+        KEFIR_AST_NODE_FREE(mem, static_assertion_node);
         return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST declaration static assertion entry");
     });
     return KEFIR_OK;

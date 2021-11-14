@@ -23,20 +23,19 @@
 
 #include "kefir/ast/node.h"
 
-kefir_result_t kefir_ast_downcast_init_declarator(const struct kefir_ast_node_base *,
-                                                  struct kefir_ast_init_declarator **);
-kefir_result_t kefir_ast_downcast_declaration(const struct kefir_ast_node_base *, struct kefir_ast_declaration **);
-kefir_result_t kefir_ast_downcast_any_struct_member(const struct kefir_ast_node_base *,
-                                                    struct kefir_ast_struct_member **);
-kefir_result_t kefir_ast_downcast_translation_unit(const struct kefir_ast_node_base *,
-                                                   struct kefir_ast_translation_unit **);
-kefir_result_t kefir_ast_downcast_identifier(const struct kefir_ast_node_base *, struct kefir_ast_identifier **);
-kefir_result_t kefir_ast_downcast_compound_statement(const struct kefir_ast_node_base *,
-                                                     struct kefir_ast_compound_statement **);
-kefir_result_t kefir_ast_downcast_type_name(const struct kefir_ast_node_base *, struct kefir_ast_type_name **);
-kefir_result_t kefir_ast_downcast_function_definition(const struct kefir_ast_node_base *,
-                                                      struct kefir_ast_function_definition **);
-kefir_result_t kefir_ast_downcast_static_assertion(const struct kefir_ast_node_base *,
-                                                   struct kefir_ast_static_assertion **);
+#define DECLARE_DOWNCAST(_id, _node_type) \
+    kefir_result_t kefir_ast_downcast_##_id(const struct kefir_ast_node_base *, _node_type **)
+
+DECLARE_DOWNCAST(init_declarator, struct kefir_ast_init_declarator);
+DECLARE_DOWNCAST(declaration, struct kefir_ast_declaration);
+DECLARE_DOWNCAST(any_struct_member, struct kefir_ast_struct_member);
+DECLARE_DOWNCAST(translation_unit, struct kefir_ast_translation_unit);
+DECLARE_DOWNCAST(identifier, struct kefir_ast_identifier);
+DECLARE_DOWNCAST(compound_statement, struct kefir_ast_compound_statement);
+DECLARE_DOWNCAST(type_name, struct kefir_ast_type_name);
+DECLARE_DOWNCAST(function_definition, struct kefir_ast_function_definition);
+DECLARE_DOWNCAST(static_assertion, struct kefir_ast_static_assertion);
+
+#undef DECLARE_DOWNCAST
 
 #endif

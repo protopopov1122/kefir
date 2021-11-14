@@ -19,6 +19,7 @@
 */
 
 #include "kefir/parser/rule_helpers.h"
+#include "kefir/ast/downcast.h"
 
 static kefir_result_t scan_specifiers(struct kefir_mem *mem, struct kefir_parser *parser,
                                       struct kefir_ast_declarator_specifier_list *specifiers) {
@@ -103,20 +104,39 @@ kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(function_definition)(struct kefir_mem
     struct kefir_ast_declarator_specifier_list specifiers;
     struct kefir_ast_declarator *declarator = NULL;
     struct kefir_list declaration_list;
-    struct kefir_ast_node_base *compound_statement = NULL;
+    struct kefir_ast_node_base *compound_statement_node = NULL;
 
-    REQUIRE_OK(scan_components(mem, parser, &specifiers, &declarator, &declaration_list, &compound_statement));
+    REQUIRE_OK(scan_components(mem, parser, &specifiers, &declarator, &declaration_list, &compound_statement_node));
+
+    kefir_result_t res = KEFIR_OK;
+    struct kefir_ast_compound_statement *compound_statement = NULL;
+    REQUIRE_CHAIN_SET(
+        &res, compound_statement_node->klass->type == KEFIR_AST_COMPOUND_STATEMENT,
+        KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected compound statement rule to produce a compound statement"));
+    if (res == KEFIR_OK) {
+        REQUIRE_MATCH_OK(
+            &res, kefir_ast_downcast_compound_statement(compound_statement_node, &compound_statement),
+            KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected compound statement rule to produce a compound statement"));
+    }
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, compound_statement_node);
+        kefir_list_free(mem, &declaration_list);
+        kefir_ast_declarator_free(mem, declarator);
+        kefir_ast_declarator_specifier_list_free(mem, &specifiers);
+        return res;
+    });
+
     struct kefir_ast_function_definition *func_definition =
-        kefir_ast_new_function_definition(mem, declarator, compound_statement->self);
+        kefir_ast_new_function_definition(mem, declarator, compound_statement);
     REQUIRE_ELSE(func_definition != NULL, {
-        KEFIR_AST_NODE_FREE(mem, compound_statement);
+        KEFIR_AST_NODE_FREE(mem, compound_statement_node);
         kefir_list_free(mem, &declaration_list);
         kefir_ast_declarator_free(mem, declarator);
         kefir_ast_declarator_specifier_list_free(mem, &specifiers);
         return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST function definition");
     });
 
-    kefir_result_t res = kefir_ast_declarator_specifier_list_clone(mem, &func_definition->specifiers, &specifiers);
+    res = kefir_ast_declarator_specifier_list_clone(mem, &func_definition->specifiers, &specifiers);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(func_definition));
         kefir_list_free(mem, &declaration_list);
