@@ -30,7 +30,7 @@ DEFINE_CASE(ast_bitfield_translator1, "AST translator - bitfields #1") {
     struct kefir_ast_translator_environment env;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
     ASSERT_OK(kefir_ast_translator_environment_init(&env, kft_util_get_ir_target_platform()));
 
@@ -138,7 +138,7 @@ DEFINE_CASE(ast_bitfield_translator2, "AST translator - bitfields #2") {
     struct kefir_ast_translator_environment env;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
     ASSERT_OK(kefir_ast_translator_environment_init(&env, kft_util_get_ir_target_platform()));
 
@@ -213,7 +213,7 @@ DEFINE_CASE(ast_bitfield_translator3, "AST translator - bitfields #3") {
     struct kefir_ast_translator_environment env;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
     ASSERT_OK(kefir_ast_translator_environment_init(&env, kft_util_get_ir_target_platform()));
 
@@ -284,7 +284,7 @@ DEFINE_CASE(ast_bitfield_translator4, "AST translator - union bitfields #1") {
     struct kefir_ast_translator_environment env;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
     ASSERT_OK(kefir_ast_translator_environment_init(&env, kft_util_get_ir_target_platform()));
 
@@ -351,7 +351,7 @@ DEFINE_CASE(ast_bitfield_translator5, "AST translator - bitfields alignments #1"
     struct kefir_ast_translator_environment env;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
     ASSERT_OK(kefir_ast_translator_environment_init(&env, kft_util_get_ir_target_platform()));
 

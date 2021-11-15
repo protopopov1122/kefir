@@ -33,7 +33,7 @@ DEFINE_CASE(ast_constant_expression_unary_operations1, "AST constant expressions
     struct kefir_ast_local_context local_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
@@ -104,7 +104,7 @@ DEFINE_CASE(ast_constant_expression_unary_operations2, "AST constant expressions
     struct kefir_ast_local_context local_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
@@ -217,7 +217,7 @@ DEFINE_CASE(ast_constant_expression_unary_operations3, "AST constant expressions
     struct kefir_ast_local_context local_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
@@ -330,7 +330,7 @@ DEFINE_CASE(ast_constant_expression_unary_operations4, "AST constant expressions
     struct kefir_ast_local_context local_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
@@ -443,7 +443,7 @@ DEFINE_CASE(ast_constant_expression_unary_operations5, "AST constant expressions
     struct kefir_ast_local_context local_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
@@ -547,7 +547,7 @@ DEFINE_CASE(ast_constant_expression_unary_operations6, "AST constant expressions
     struct kefir_ast_local_context local_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
@@ -647,7 +647,7 @@ DEFINE_CASE(ast_constant_expression_unary_operations7, "AST constant expressions
     struct kefir_ast_local_context local_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 

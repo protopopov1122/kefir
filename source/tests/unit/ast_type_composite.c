@@ -346,7 +346,7 @@ DEFINE_CASE(ast_type_struct_composite, "AST types - structure composite type") {
     struct kefir_ast_local_context local_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 

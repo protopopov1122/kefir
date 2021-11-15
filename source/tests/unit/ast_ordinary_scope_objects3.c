@@ -41,7 +41,7 @@ DEFINE_CASE(ast_ordinary_scope_objects_local_init1, "AST Declaration initializer
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     const struct kefir_ast_type *type1 =
@@ -110,7 +110,7 @@ DEFINE_CASE(ast_ordinary_scope_objects_local_init2, "AST Declaration initializer
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     const struct kefir_ast_type *type1 =
@@ -184,7 +184,7 @@ DEFINE_CASE(ast_ordinary_scope_objects_local_init3, "AST Declaration initializer
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     const struct kefir_ast_type *type1 =
@@ -249,7 +249,7 @@ DEFINE_CASE(ast_ordinary_scope_objects_local_init4, "AST Declaration initializer
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     const struct kefir_ast_type *type1 =

@@ -32,7 +32,7 @@ DEFINE_CASE(ast_initializer_analysis1, "AST initializer - analysis #1") {
     struct kefir_ast_local_context local_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
@@ -91,7 +91,7 @@ DEFINE_CASE(ast_initializer_analysis2, "AST initializer - analysis #2") {
     struct kefir_ast_local_context local_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
@@ -154,7 +154,7 @@ DEFINE_CASE(ast_initializer_analysis3, "AST initializer - analysis #3") {
     struct kefir_ast_local_context local_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
@@ -278,7 +278,7 @@ DEFINE_CASE(ast_initializer_analysis4, "AST initializer - analysis #4") {
     struct kefir_ast_local_context local_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
@@ -386,7 +386,7 @@ DEFINE_CASE(ast_initializer_analysis5, "AST initializer - analysis #5") {
     struct kefir_ast_local_context local_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
@@ -482,7 +482,7 @@ DEFINE_CASE(ast_initializer_analysis_unicode8, "AST initializer - unicode8 strin
     struct kefir_ast_local_context local_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
@@ -591,7 +591,7 @@ DEFINE_CASE(ast_initializer_analysis_unicode16, "AST initializer - unicode16 str
     struct kefir_ast_local_context local_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
@@ -700,7 +700,7 @@ DEFINE_CASE(ast_initializer_analysis_unicode32, "AST initializer - unicode32 str
     struct kefir_ast_local_context local_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
@@ -809,7 +809,7 @@ DEFINE_CASE(ast_initializer_analysis_wide, "AST initializer - wide string analys
     struct kefir_ast_local_context local_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 
@@ -918,7 +918,7 @@ DEFINE_CASE(ast_initializer_analysis_mixed_strings, "AST initializer - mixed str
     struct kefir_ast_local_context local_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 

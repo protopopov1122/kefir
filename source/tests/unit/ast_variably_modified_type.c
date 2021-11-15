@@ -130,7 +130,7 @@ DEFINE_CASE(ast_type_variably_modified_analysis1, "AST types - variably modified
     struct kefir_ast_local_context local_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
 
     const struct kefir_ast_type *type1 = kefir_ast_type_vlen_array(

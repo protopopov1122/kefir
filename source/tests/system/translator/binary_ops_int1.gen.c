@@ -101,7 +101,8 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
 
     struct kefir_ast_context_manager context_manager;
     struct kefir_ast_global_context global_context;
-    REQUIRE_OK(kefir_ast_global_context_init(mem, kefir_ast_default_type_traits(), &env.target_env, &global_context));
+    REQUIRE_OK(
+        kefir_ast_global_context_init(mem, kefir_ast_default_type_traits(), &env.target_env, &global_context, NULL));
     REQUIRE_OK(kefir_ast_context_manager_init(&global_context, &context_manager));
 
     struct function sum_func, sub_func, mul_func, div_func, mod_func, shl_func, shr_func, band_func, bor_func,

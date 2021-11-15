@@ -188,7 +188,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
     REQUIRE_OK(kefir_ast_translator_environment_init(&env, kft_util_get_ir_target_platform()));
-    REQUIRE_OK(kefir_ast_global_context_init(mem, type_traits, &env.target_env, &global_context));
+    REQUIRE_OK(kefir_ast_global_context_init(mem, type_traits, &env.target_env, &global_context, NULL));
     REQUIRE_OK(kefir_ast_local_context_init(mem, &global_context, &local_context));
     struct kefir_ast_context *context = &local_context.context;
 

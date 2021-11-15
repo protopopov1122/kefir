@@ -28,7 +28,7 @@ DEFINE_CASE(ast_ordinary_function_scope1, "AST ordinary scope - functions #1") {
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     struct kefir_ast_function_type *function_type1 = NULL;
@@ -94,7 +94,7 @@ DEFINE_CASE(ast_ordinary_function_scope2, "AST ordinary scope - functions #2") {
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     struct kefir_ast_function_type *function_type1 = NULL;
@@ -188,7 +188,7 @@ DEFINE_CASE(ast_ordinary_function_scope3, "AST ordinary scope - block scope func
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
 
@@ -252,7 +252,7 @@ DEFINE_CASE(ast_ordinary_function_scope4, "AST ordinary scope - block scope func
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
 
@@ -325,7 +325,7 @@ DEFINE_CASE(ast_ordinary_function_scope5, "AST ordinary scope - block scope func
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
 

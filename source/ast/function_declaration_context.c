@@ -28,6 +28,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"
+#include "kefir/core/extensions.h"
 
 static kefir_result_t context_resolve_scoped_ordinary_identifier(
     const struct kefir_ast_function_declaration_context *context, const char *identifier,
@@ -394,6 +395,12 @@ kefir_result_t kefir_ast_function_declaration_context_init(struct kefir_mem *mem
     context->context.global_context = parent->global_context;
     context->context.function_decl_contexts = parent->function_decl_contexts;
     context->context.payload = context;
+
+    context->context.extensions = parent->extensions;
+    context->context.extensions_payload = NULL;
+    kefir_result_t res;
+    KEFIR_RUN_EXTENSION0(&res, mem, &context->context, on_init);
+    REQUIRE_OK(res);
     return KEFIR_OK;
 }
 
@@ -401,6 +408,13 @@ kefir_result_t kefir_ast_function_declaration_context_free(struct kefir_mem *mem
                                                            struct kefir_ast_function_declaration_context *context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
+
+    kefir_result_t res;
+    KEFIR_RUN_EXTENSION0(&res, mem, &context->context, on_free);
+    REQUIRE_OK(res);
+    context->context.extensions = NULL;
+    context->context.extensions_payload = NULL;
+
     REQUIRE_OK(kefir_ast_identifier_flat_scope_free(mem, &context->tag_scope));
     REQUIRE_OK(kefir_ast_identifier_flat_scope_free(mem, &context->ordinary_scope));
     return KEFIR_OK;

@@ -47,7 +47,8 @@ typedef struct kefir_ast_global_context {
 
 kefir_result_t kefir_ast_global_context_init(struct kefir_mem *, const struct kefir_ast_type_traits *,
                                              const struct kefir_ast_target_environment *,
-                                             struct kefir_ast_global_context *);
+                                             struct kefir_ast_global_context *,
+                                             const struct kefir_ast_context_extensions *);
 kefir_result_t kefir_ast_global_context_free(struct kefir_mem *, struct kefir_ast_global_context *);
 
 kefir_result_t kefir_ast_global_context_resolve_scoped_ordinary_identifier(const struct kefir_ast_global_context *,

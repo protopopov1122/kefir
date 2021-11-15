@@ -32,7 +32,7 @@ DEFINE_CASE(ast_declaration_variably_modified1, "AST declarations - variably mod
     struct kefir_ast_global_context global_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
 
     const struct kefir_ast_type *type1 = kefir_ast_type_vlen_array(
         &kft_mem, &global_context.type_bundle, kefir_ast_type_unsigned_short(),
@@ -100,7 +100,7 @@ DEFINE_CASE(ast_declaration_variably_modified2, "AST declarations - variably mod
     struct kefir_ast_local_context local_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
 
     const struct kefir_ast_type *type1 = kefir_ast_type_vlen_array(
@@ -172,7 +172,7 @@ DEFINE_CASE(ast_declaration_variably_modified3,
     struct kefir_ast_function_declaration_context func_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     ASSERT_OK(kefir_ast_function_declaration_context_init(&kft_mem, &local_context.context, &func_context));
 
@@ -245,7 +245,7 @@ DEFINE_CASE(ast_declaration_variably_modified4, "AST declarations - variably mod
     struct kefir_ast_function_declaration_context func_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
     ASSERT_OK(kefir_ast_function_declaration_context_init(&kft_mem, &local_context.context, &func_context));
 
@@ -316,7 +316,7 @@ DEFINE_CASE(ast_declaration_variably_modified_structure_field, "AST declarations
     struct kefir_ast_global_context global_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
 
     ASSERT_OK(kefir_ast_global_context_declare_external(&kft_mem, &global_context, "x", kefir_ast_type_signed_int(),
                                                         NULL, NULL, NULL));

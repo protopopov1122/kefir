@@ -1,6 +1,7 @@
 #include "kefir/preprocessor/ast_context.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/core/extensions.h"
 
 static kefir_result_t pp_resolve_ordinary_identifier(const struct kefir_ast_context *context, const char *identifier,
                                                      const struct kefir_ast_scoped_identifier **scoped_id) {
@@ -109,10 +110,13 @@ static kefir_result_t pp_pop_block(struct kefir_mem *mem, const struct kefir_ast
     return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Preprocessor AST context does not implement blocks");
 }
 
-kefir_result_t kefir_preprocessor_ast_context_init(struct kefir_preprocessor_ast_context *context,
+kefir_result_t kefir_preprocessor_ast_context_init(struct kefir_mem *mem,
+                                                   struct kefir_preprocessor_ast_context *context,
                                                    struct kefir_symbol_table *symbols,
                                                    const struct kefir_ast_type_traits *type_traits,
-                                                   const struct kefir_ast_target_environment *target_env) {
+                                                   const struct kefir_ast_target_environment *target_env,
+                                                   const struct kefir_ast_context_extensions *extensions) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to preprocessor AST context"));
     REQUIRE(type_traits != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid type traits"));
@@ -141,6 +145,12 @@ kefir_result_t kefir_preprocessor_ast_context_init(struct kefir_preprocessor_ast
     context->context.function_decl_contexts = NULL;
     context->context.surrounding_function = NULL;
     context->context.payload = NULL;
+
+    context->context.extensions = extensions;
+    context->context.extensions_payload = NULL;
+    kefir_result_t res;
+    KEFIR_RUN_EXTENSION0(&res, mem, &context->context, on_init);
+    REQUIRE_OK(res);
     return KEFIR_OK;
 }
 
@@ -148,6 +158,12 @@ kefir_result_t kefir_preprocessor_ast_context_free(struct kefir_mem *mem,
                                                    struct kefir_preprocessor_ast_context *context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor AST context"));
+
+    kefir_result_t res;
+    KEFIR_RUN_EXTENSION0(&res, mem, &context->context, on_free);
+    REQUIRE_OK(res);
+    context->context.extensions = NULL;
+    context->context.extensions_payload = NULL;
 
     REQUIRE_OK(kefir_ast_type_bundle_free(mem, &context->type_bundle));
     *context = (struct kefir_preprocessor_ast_context){0};

@@ -33,7 +33,7 @@ DEFINE_CASE(ast_type_scope1, "AST Declaration scoping - tagged type scoping") {
     ASSERT_OK(kefir_symbol_table_init(&symbols));
     ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
@@ -99,7 +99,7 @@ DEFINE_CASE(ast_type_scope2, "AST Declaration scoping - tagged type scoping #2")
     ASSERT_OK(kefir_symbol_table_init(&symbols));
     ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     struct kefir_ast_struct_type *struct_type1 = NULL;
@@ -221,7 +221,7 @@ DEFINE_CASE(ast_type_scope3, "AST Declaration scoping - tagged type scoping #3")
     ASSERT_OK(kefir_symbol_table_init(&symbols));
     ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     ASSERT_OK(kefir_ast_local_context_define_tag(
@@ -452,7 +452,7 @@ DEFINE_CASE(ast_ordinary_constant_scope1, "AST ordinary scope - constant scoping
     ASSERT_OK(kefir_symbol_table_init(&symbols));
     ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     ASSERT_OK(kefir_ast_global_context_define_constant(&kft_mem, &global_context, "c1",

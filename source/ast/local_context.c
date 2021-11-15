@@ -27,6 +27,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"
+#include "kefir/core/extensions.h"
 
 static kefir_result_t free_scoped_identifier(struct kefir_mem *mem, struct kefir_list *list,
                                              struct kefir_list_entry *entry, void *payload) {
@@ -339,12 +340,25 @@ kefir_result_t kefir_ast_local_context_init(struct kefir_mem *mem, struct kefir_
     context->context.function_decl_contexts = &global->function_decl_contexts;
     context->context.surrounding_function = NULL;
     context->context.payload = context;
+
+    context->context.extensions = global->context.extensions;
+    context->context.extensions_payload = NULL;
+    kefir_result_t res;
+    KEFIR_RUN_EXTENSION0(&res, mem, &context->context, on_init);
+    REQUIRE_OK(res);
     return KEFIR_OK;
 }
 
 kefir_result_t kefir_ast_local_context_free(struct kefir_mem *mem, struct kefir_ast_local_context *context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
+
+    kefir_result_t res;
+    KEFIR_RUN_EXTENSION0(&res, mem, &context->context, on_free);
+    REQUIRE_OK(res);
+    context->context.extensions = NULL;
+    context->context.extensions_payload = NULL;
+
     REQUIRE_OK(kefir_list_free(mem, &context->block_decriptors));
     REQUIRE_OK(kefir_ast_flow_control_tree_free(mem, &context->flow_control_tree));
     REQUIRE_OK(kefir_ast_identifier_flat_scope_free(mem, &context->label_scope));

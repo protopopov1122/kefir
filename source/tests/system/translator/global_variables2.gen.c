@@ -393,7 +393,8 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
     REQUIRE_OK(kefir_ast_translator_environment_init(&env, ir_platform));
 
     struct kefir_ast_global_context global_context;
-    REQUIRE_OK(kefir_ast_global_context_init(mem, kefir_ast_default_type_traits(), &env.target_env, &global_context));
+    REQUIRE_OK(
+        kefir_ast_global_context_init(mem, kefir_ast_default_type_traits(), &env.target_env, &global_context, NULL));
 
     struct kefir_ast_translation_unit *unit_node = kefir_ast_new_translation_unit(mem);
 

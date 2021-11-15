@@ -27,6 +27,7 @@
 #include "kefir/core/error.h"
 #include "kefir/ast/function_declaration_context.h"
 #include "kefir/core/source_error.h"
+#include "kefir/core/extensions.h"
 
 static kefir_result_t context_resolve_ordinary_identifier(const struct kefir_ast_context *context,
                                                           const char *identifier,
@@ -265,7 +266,8 @@ static kefir_result_t free_func_decl_context(struct kefir_mem *mem, struct kefir
 
 kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem, const struct kefir_ast_type_traits *type_traits,
                                              const struct kefir_ast_target_environment *target_env,
-                                             struct kefir_ast_global_context *context) {
+                                             struct kefir_ast_global_context *context,
+                                             const struct kefir_ast_context_extensions *extensions) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(type_traits != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type traits"));
     REQUIRE(target_env != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST target environment"));
@@ -316,12 +318,25 @@ kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem, const struct
     context->context.function_decl_contexts = &context->function_decl_contexts;
     context->context.surrounding_function = NULL;
     context->context.payload = context;
+
+    context->context.extensions = extensions;
+    context->context.extensions_payload = NULL;
+    kefir_result_t res;
+    KEFIR_RUN_EXTENSION0(&res, mem, &context->context, on_init);
+    REQUIRE_OK(res);
     return KEFIR_OK;
 }
 
 kefir_result_t kefir_ast_global_context_free(struct kefir_mem *mem, struct kefir_ast_global_context *context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
+
+    kefir_result_t res;
+    KEFIR_RUN_EXTENSION0(&res, mem, &context->context, on_free);
+    REQUIRE_OK(res);
+    context->context.extensions = NULL;
+    context->context.extensions_payload = NULL;
+
     REQUIRE_OK(kefir_ast_identifier_flat_scope_free(mem, &context->tag_scope));
     REQUIRE_OK(kefir_ast_identifier_flat_scope_free(mem, &context->ordinary_scope));
     REQUIRE_OK(kefir_ast_identifier_flat_scope_free(mem, &context->constant_identifiers));

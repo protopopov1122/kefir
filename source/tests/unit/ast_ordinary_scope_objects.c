@@ -39,7 +39,7 @@ DEFINE_CASE(ast_ordinary_scope_objects1, "AST Declaration scoping - global rules
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     ASSERT_OK(kefir_ast_global_context_declare_external(&kft_mem, &global_context, "ext_int1",
@@ -76,7 +76,7 @@ DEFINE_CASE(ast_ordinary_scope_objects2, "AST Declaration scoping - global rules
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     ASSERT_OK(kefir_ast_global_context_declare_external_thread_local(&kft_mem, &global_context, "ext_int1",
@@ -113,7 +113,7 @@ DEFINE_CASE(ast_ordinary_scope_objects3, "AST Declaration scoping - global rules
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     ASSERT_OK(kefir_ast_global_context_define_external(&kft_mem, &global_context, "ext_int1",
@@ -157,7 +157,7 @@ DEFINE_CASE(ast_ordinary_scope_objects4, "AST Declaration scoping - global rules
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     ASSERT_OK(kefir_ast_global_context_define_external_thread_local(
@@ -202,7 +202,7 @@ DEFINE_CASE(ast_ordinary_scope_objects5, "AST Declaration scoping - global rules
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     ASSERT_OK(kefir_ast_global_context_define_static(&kft_mem, &global_context, "static_int1",
@@ -258,7 +258,7 @@ DEFINE_CASE(ast_ordinary_scope_objects6, "AST Declaration scoping - global rules
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     ASSERT_OK(kefir_ast_global_context_define_static_thread_local(&kft_mem, &global_context, "static_int1",
@@ -314,7 +314,7 @@ DEFINE_CASE(ast_ordinary_scope_objects7, "AST Declaration scoping - local extern
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     ASSERT_OK(kefir_ast_local_context_declare_external(&kft_mem, &context, "ext_int1", kefir_ast_type_signed_int(),
@@ -383,7 +383,7 @@ DEFINE_CASE(ast_ordinary_scope_objects8, "AST Declaration scoping - local extern
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     ASSERT_OK(kefir_ast_local_context_declare_external_thread_local(&kft_mem, &context, "ext_int1",
@@ -446,7 +446,7 @@ DEFINE_CASE(ast_ordinary_scope_objects9, "AST Declaration scoping - local static
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     ASSERT_OK(kefir_ast_local_context_define_static(&kft_mem, &context, "static_int1", kefir_ast_type_signed_int(),
@@ -491,7 +491,7 @@ DEFINE_CASE(ast_ordinary_scope_objects10, "AST Declaration scoping - local stati
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     ASSERT_OK(kefir_ast_local_context_define_static_thread_local(&kft_mem, &context, "static_int1",
@@ -536,7 +536,7 @@ DEFINE_CASE(ast_ordinary_scope_objects11, "AST Declaration scoping - local auto"
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     ASSERT_OK(kefir_ast_local_context_define_auto(&kft_mem, &context, "auto_int1", kefir_ast_type_signed_int(), NULL,
@@ -587,7 +587,7 @@ DEFINE_CASE(ast_ordinary_scope_objects12, "AST Declaration scoping - local regis
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     ASSERT_OK(kefir_ast_local_context_define_register(&kft_mem, &context, "auto_int1", kefir_ast_type_signed_int(),
@@ -638,7 +638,7 @@ DEFINE_CASE(ast_ordinary_scope_objects13, "AST Declaration scoping - block scopi
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     ASSERT_OK(kefir_ast_global_context_declare_external(&kft_mem, &global_context, "variable1",
@@ -721,7 +721,7 @@ DEFINE_CASE(ast_ordinary_scope_objects14, "AST Declaration scoping - block exter
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     const struct kefir_ast_type *array_type1 =
@@ -787,7 +787,7 @@ DEFINE_CASE(ast_ordinary_scope_objects15, "AST Declaration scoping - block exter
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     const struct kefir_ast_type *array_type1 =

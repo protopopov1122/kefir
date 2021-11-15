@@ -28,7 +28,7 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_external, "AST ordinary scope -
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     const struct kefir_ast_type *array1_type1 =
@@ -68,7 +68,7 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_external_declaration,
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     const struct kefir_ast_type *array1_type1 = kefir_ast_type_unbounded_array(
@@ -111,7 +111,7 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_thread_local_external,
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     struct kefir_ast_function_type *function1 = NULL;
@@ -160,7 +160,7 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_thread_local_external_declarati
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     struct kefir_ast_function_type *function1 = NULL;
@@ -209,7 +209,7 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_static, "AST ordinary scope - c
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     struct kefir_ast_function_type *function1 = NULL;
@@ -281,7 +281,7 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_static_thread_local,
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     struct kefir_ast_function_type *function1 = NULL;
@@ -361,7 +361,7 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_local_external,
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     struct kefir_ast_function_type *function_aux = NULL;
@@ -443,7 +443,7 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_local_thread_local_external,
     struct kefir_ast_local_context context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
-                                            &global_context));
+                                            &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &context));
 
     struct kefir_ast_function_type *function_aux = NULL;
