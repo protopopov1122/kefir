@@ -22,14 +22,10 @@
 #include "kefir/ast/type_conv.h"
 #include "kefir/core/error.h"
 #include "kefir/core/util.h"
+#include "kefir/core/source_error.h"
 #include "kefir/ast/analyzer/nodes.h"
 #include "kefir/ast/constant_expression.h"
-
-struct assign_param {
-    struct kefir_mem *mem;
-    struct kefir_ast_node_base *base;
-    const struct kefir_ast_context *context;
-};
+#include "kefir/core/extensions.h"
 
 static kefir_result_t visit_non_expression(const struct kefir_ast_visitor *visitor,
                                            const struct kefir_ast_node_base *base, void *payload) {
@@ -43,7 +39,7 @@ static kefir_result_t visit_non_expression(const struct kefir_ast_visitor *visit
     static kefir_result_t visit_##id(const struct kefir_ast_visitor *visitor, const type *node, void *payload) {   \
         UNUSED(visitor);                                                                                           \
         REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST analyzer payload")); \
-        ASSIGN_DECL_CAST(struct assign_param *, param, payload);                                                   \
+        ASSIGN_DECL_CAST(struct kefir_ast_analysis_parameters *, param, payload);                                  \
         return kefir_ast_analyze_##id##_node(param->mem, param->context, node, param->base);                       \
     }
 
@@ -84,12 +80,27 @@ VISITOR(builtin, struct kefir_ast_builtin)
 
 #undef VISITOR
 
+static kefir_result_t visit_extension_node(const struct kefir_ast_visitor *visitor,
+                                           const struct kefir_ast_extension_node *node, void *payload) {
+    UNUSED(visitor);
+    UNUSED(node);
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST analyzer payload"));
+    ASSIGN_DECL_CAST(struct kefir_ast_analysis_parameters *, param, payload);
+    if (param->context->extensions != NULL && param->context->extensions->analyze_extension_node != NULL) {
+        REQUIRE_OK(param->context->extensions->analyze_extension_node(param->mem, param->context, param->base));
+    } else {
+        return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
+                                      "Extension node analysis procedure is not defined");
+    }
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_analyze_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                       struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translaction_context"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node base"));
-    struct assign_param param = {.mem = mem, .context = context, .base = base};
+    struct kefir_ast_analysis_parameters param = {.mem = mem, .context = context, .base = base};
     struct kefir_ast_visitor visitor;
     REQUIRE_OK(kefir_ast_visitor_init(&visitor, visit_non_expression));
     visitor.constant = visit_constant;
@@ -127,7 +138,15 @@ kefir_result_t kefir_ast_analyze_node(struct kefir_mem *mem, const struct kefir_
     visitor.function_definition = visit_function_definition;
     visitor.translation_unit = visit_translation_unit;
     visitor.builtin = visit_builtin;
-    return KEFIR_AST_NODE_VISIT(&visitor, base, &param);
+    visitor.extension_node = visit_extension_node;
+
+    kefir_result_t res;
+    KEFIR_RUN_EXTENSION(&res, mem, context, before_node_analysis, base, &visitor);
+    REQUIRE_OK(res);
+    REQUIRE_OK(KEFIR_AST_NODE_VISIT(&visitor, base, &param));
+    KEFIR_RUN_EXTENSION(&res, mem, context, after_node_analysis, base);
+    REQUIRE_OK(res);
+    return KEFIR_OK;
 }
 
 kefir_result_t kefir_ast_is_null_pointer_constant(struct kefir_mem *mem, const struct kefir_ast_context *context,

@@ -414,6 +414,8 @@ DECLARE_CASE(ast_context_preprocessor_extensions1);
 DECLARE_CASE(ast_context_global_extensions1);
 DECLARE_CASE(ast_context_local_extensions1);
 DECLARE_CASE(ast_context_function_decl_context_extensions1);
+DECLARE_CASE(ast_analysis_extension_node1);
+DECLARE_CASE(ast_analysis_before_after_extensions);
 
 DECLARE_CASE(parser_lexem_construction_sentinel);
 DECLARE_CASE(parser_lexem_construction_keyword);
@@ -584,7 +586,8 @@ TEST_SUITE(
     &ast_node_analysis_function_definitions2, &ast_node_analysis_function_definitions3,
     &ast_node_analysis_translation_unit1, &ast_node_analysis_translation_unit2, &ast_nodes_declaration1,
     &ast_node_analysis_declaration1, &ast_context_preprocessor_extensions1, &ast_context_global_extensions1,
-    &ast_context_local_extensions1, &ast_context_function_decl_context_extensions1,
+    &ast_context_local_extensions1, &ast_context_function_decl_context_extensions1, &ast_analysis_extension_node1,
+    &ast_analysis_before_after_extensions,
 
     &parser_lexem_construction_sentinel, &parser_lexem_construction_keyword, &parser_lexem_construction_identifier,
     &parser_lexem_construction_constants, &parser_lexem_construction_string_literals,

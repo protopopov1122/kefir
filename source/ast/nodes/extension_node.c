@@ -11,7 +11,9 @@ kefir_result_t ast_extension_node_free(struct kefir_mem *mem, struct kefir_ast_n
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node base"));
     ASSIGN_DECL_CAST(struct kefir_ast_extension_node *, node, base->self);
-    REQUIRE_OK(node->klass->free(mem, node));
+    if (node->klass->free != NULL) {
+        REQUIRE_OK(node->klass->free(mem, node));
+    }
     KEFIR_FREE(mem, node);
     return KEFIR_OK;
 }
@@ -37,11 +39,13 @@ struct kefir_ast_node_base *ast_extension_node_clone(struct kefir_mem *mem, stru
         return NULL;
     });
 
-    res = node->klass->clone(mem, clone, node);
-    REQUIRE_ELSE(res == KEFIR_OK, {
-        KEFIR_FREE(mem, clone);
-        return NULL;
-    });
+    if (node->klass->clone != NULL) {
+        res = node->klass->clone(mem, clone, node);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            KEFIR_FREE(mem, clone);
+            return NULL;
+        });
+    }
     return KEFIR_AST_NODE_BASE(clone);
 }
 
