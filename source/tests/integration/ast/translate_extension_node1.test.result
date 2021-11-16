@@ -1,0 +1,48 @@
+{
+    "globals": [
+        "func1"
+    ],
+    "externals": [],
+    "types": [],
+    "data": [],
+    "string_literals": [],
+    "function_declarations": [
+        {
+            "identifier": 0,
+            "name": "func1",
+            "parameters": [],
+            "vararg": false,
+            "returns": [
+                {
+                    "type": "int"
+                }
+            ]
+        }
+    ],
+    "functions": [
+        {
+            "identifier": 0,
+            "name": "func1",
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 2
+                },
+                {
+                    "opcode": "push",
+                    "arg": 3
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4
+                },
+                {
+                    "opcode": "imul"
+                },
+                {
+                    "opcode": "iadd"
+                }
+            ]
+        }
+    ]
+}

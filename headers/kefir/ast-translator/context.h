@@ -29,10 +29,21 @@
 #include "kefir/ir/module.h"
 
 typedef struct kefir_ast_translator_context kefir_ast_translator_context_t;
+typedef struct kefir_irbuilder_block kefir_irbuilder_block_t;
+
+typedef enum kefir_ast_translator_context_extension_tag {
+    KEFIR_AST_TRANSLATOR_CONTEXT_EXTENSION_TAG_EXPRESSION,
+    KEFIR_AST_TRANSLATOR_CONTEXT_EXTENSION_TAG_LVALUE,
+    KEFIR_AST_TRANSLATOR_CONTEXT_EXTENSION_TAG_STATEMENT,
+    KEFIR_AST_TRANSLATOR_CONTEXT_EXTENSION_TAG_DECLARATION
+} kefir_ast_translator_context_extension_tag_t;
 
 typedef struct kefir_ast_translator_context_extensions {
     kefir_result_t (*on_init)(struct kefir_mem *, struct kefir_ast_translator_context *);
     kefir_result_t (*on_free)(struct kefir_mem *, struct kefir_ast_translator_context *);
+    kefir_result_t (*translate_extension_node)(struct kefir_mem *, const struct kefir_ast_extension_node *,
+                                               struct kefir_irbuilder_block *, struct kefir_ast_translator_context *,
+                                               kefir_ast_translator_context_extension_tag_t);
     void *payload;
 } kefir_ast_translator_context_extensions_t;
 
