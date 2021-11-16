@@ -62,7 +62,7 @@ static kefir_result_t translate_function(struct kefir_mem *mem, struct function 
         &translator_context->type_cache.resolver, func->identifier, func->type, NULL, &func_declaration));
 
     struct kefir_ast_translator_context local_translator_context;
-    REQUIRE_OK(kefir_ast_translator_context_init_local(&local_translator_context, &func->local_context.context,
+    REQUIRE_OK(kefir_ast_translator_context_init_local(mem, &local_translator_context, &func->local_context.context,
                                                        translator_context));
 
     struct kefir_ast_translator_local_scope_layout local_scope;

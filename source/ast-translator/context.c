@@ -21,11 +21,14 @@
 #include "kefir/ast-translator/context.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/core/extensions.h"
 
-kefir_result_t kefir_ast_translator_context_init(struct kefir_ast_translator_context *context,
+kefir_result_t kefir_ast_translator_context_init(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
                                                  const struct kefir_ast_context *ast_context,
                                                  const struct kefir_ast_translator_environment *environment,
-                                                 struct kefir_ir_module *module) {
+                                                 struct kefir_ir_module *module,
+                                                 const struct kefir_ast_translator_context_extensions *extensions) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected a pointer to valid AST translator context"));
     REQUIRE(ast_context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
@@ -39,12 +42,20 @@ kefir_result_t kefir_ast_translator_context_init(struct kefir_ast_translator_con
     context->module = module;
     context->global_scope_layout = NULL;
     context->local_scope_layout = NULL;
+
+    context->extensions = extensions;
+    context->extensions_payload = NULL;
+    kefir_result_t res;
+    KEFIR_RUN_EXTENSION0(&res, mem, context, on_init);
+    REQUIRE_OK(res);
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_translator_context_init_local(struct kefir_ast_translator_context *context,
+kefir_result_t kefir_ast_translator_context_init_local(struct kefir_mem *mem,
+                                                       struct kefir_ast_translator_context *context,
                                                        const struct kefir_ast_context *ast_context,
                                                        struct kefir_ast_translator_context *base_context) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected a pointer to valid AST translator context"));
     REQUIRE(ast_context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
@@ -58,12 +69,23 @@ kefir_result_t kefir_ast_translator_context_init_local(struct kefir_ast_translat
     context->module = base_context->module;
     context->global_scope_layout = NULL;
     context->local_scope_layout = NULL;
+
+    context->extensions = base_context->extensions;
+    context->extensions_payload = NULL;
+    kefir_result_t res;
+    KEFIR_RUN_EXTENSION0(&res, mem, context, on_init);
+    REQUIRE_OK(res);
     return KEFIR_OK;
 }
 
 kefir_result_t kefir_ast_translator_context_free(struct kefir_mem *mem, struct kefir_ast_translator_context *context) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected a pointer to valid AST translator context"));
+
+    kefir_result_t res;
+    KEFIR_RUN_EXTENSION0(&res, mem, context, on_free);
+    REQUIRE_OK(res);
 
     REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_FREE(mem, &context->type_cache.resolver));
     context->base_context = NULL;

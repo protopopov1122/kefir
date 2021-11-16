@@ -28,6 +28,14 @@
 #include "kefir/ast-translator/scope/local_scope_layout.h"
 #include "kefir/ir/module.h"
 
+typedef struct kefir_ast_translator_context kefir_ast_translator_context_t;
+
+typedef struct kefir_ast_translator_context_extensions {
+    kefir_result_t (*on_init)(struct kefir_mem *, struct kefir_ast_translator_context *);
+    kefir_result_t (*on_free)(struct kefir_mem *, struct kefir_ast_translator_context *);
+    void *payload;
+} kefir_ast_translator_context_extensions_t;
+
 typedef struct kefir_ast_translator_context {
     struct kefir_ast_translator_context *base_context;
     const struct kefir_ast_context *ast_context;
@@ -37,14 +45,18 @@ typedef struct kefir_ast_translator_context {
 
     struct kefir_ast_translator_global_scope_layout *global_scope_layout;
     struct kefir_ast_translator_local_scope_layout *local_scope_layout;
+
+    const struct kefir_ast_translator_context_extensions *extensions;
+    void *extensions_payload;
 } kefir_ast_translator_context_t;
 
-kefir_result_t kefir_ast_translator_context_init(struct kefir_ast_translator_context *,
+kefir_result_t kefir_ast_translator_context_init(struct kefir_mem *, struct kefir_ast_translator_context *,
                                                  const struct kefir_ast_context *,
                                                  const struct kefir_ast_translator_environment *,
-                                                 struct kefir_ir_module *);
+                                                 struct kefir_ir_module *,
+                                                 const struct kefir_ast_translator_context_extensions *);
 
-kefir_result_t kefir_ast_translator_context_init_local(struct kefir_ast_translator_context *,
+kefir_result_t kefir_ast_translator_context_init_local(struct kefir_mem *, struct kefir_ast_translator_context *,
                                                        const struct kefir_ast_context *,
                                                        struct kefir_ast_translator_context *);
 

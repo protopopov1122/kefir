@@ -95,7 +95,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ast_translator_local_scope_layout_init(mem, &module, &translator_global_scope, &translator_local_scope));
 
     struct kefir_ast_translator_context translator_context;
-    REQUIRE_OK(kefir_ast_translator_context_init(&translator_context, context, &env, &module));
+    REQUIRE_OK(kefir_ast_translator_context_init(mem, &translator_context, context, &env, &module, NULL));
     REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(
         mem, &module, &global_context, &env, kefir_ast_translator_context_type_resolver(&translator_context),
         &translator_global_scope));

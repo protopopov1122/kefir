@@ -339,8 +339,8 @@ kefir_result_t kefir_compiler_translate(struct kefir_mem *mem, struct kefir_comp
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR module"));
 
     struct kefir_ast_translator_context translator_context;
-    REQUIRE_OK(kefir_ast_translator_context_init(&translator_context, &context->ast_global_context.context,
-                                                 &context->translator_env, module));
+    REQUIRE_OK(kefir_ast_translator_context_init(mem, &translator_context, &context->ast_global_context.context,
+                                                 &context->translator_env, module, NULL));
 
     struct kefir_ast_translator_global_scope_layout global_scope;
     kefir_result_t res = kefir_ast_translator_global_scope_layout_init(mem, module, &global_scope);
