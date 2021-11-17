@@ -68,10 +68,11 @@ kefir_result_t kefir_compiler_context_init(struct kefir_mem *mem, struct kefir_c
 
     REQUIRE_OK(kefir_ast_translator_environment_init(&context->translator_env, &profile->ir_target_platform));
     REQUIRE_OK(kefir_ast_global_context_init(mem, profile->type_traits, &context->translator_env.target_env,
-                                             &context->ast_global_context, NULL));
-    kefir_result_t res = kefir_preprocessor_ast_context_init(mem, &context->preprocessor_ast_context,
-                                                             &context->ast_global_context.symbols, profile->type_traits,
-                                                             &context->translator_env.target_env, NULL);
+                                             &context->ast_global_context,
+                                             extensions != NULL ? extensions->analyzer : NULL));
+    kefir_result_t res = kefir_preprocessor_ast_context_init(
+        mem, &context->preprocessor_ast_context, &context->ast_global_context.symbols, profile->type_traits,
+        &context->translator_env.target_env, extensions != NULL ? extensions->analyzer : NULL);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_ast_global_context_free(mem, &context->ast_global_context);
         return res;
@@ -340,7 +341,8 @@ kefir_result_t kefir_compiler_translate(struct kefir_mem *mem, struct kefir_comp
 
     struct kefir_ast_translator_context translator_context;
     REQUIRE_OK(kefir_ast_translator_context_init(mem, &translator_context, &context->ast_global_context.context,
-                                                 &context->translator_env, module, NULL));
+                                                 &context->translator_env, module,
+                                                 context->extensions != NULL ? context->extensions->translator : NULL));
 
     struct kefir_ast_translator_global_scope_layout global_scope;
     kefir_result_t res = kefir_ast_translator_global_scope_layout_init(mem, module, &global_scope);

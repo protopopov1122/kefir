@@ -42,6 +42,8 @@ typedef struct kefir_compiler_extensions {
     const struct kefir_preprocessor_context_extensions *preprocessor_context;
     const struct kefir_lexer_extensions *lexer;
     const struct kefir_parser_extensions *parser;
+    const struct kefir_ast_context_extensions *analyzer;
+    const struct kefir_ast_translator_context_extensions *translator;
     void *payload;
 } kefir_compiler_extensions_t;
 
