@@ -67,7 +67,7 @@ static kefir_result_t translate_extension_node(const struct kefir_ast_visitor *v
     REQUIRE(param->context->extensions != NULL && param->context->extensions->translate_extension_node != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Extension node translation procedure is not defined"));
     REQUIRE_OK(param->context->extensions->translate_extension_node(
-        param->mem, node, param->builder, param->context, KEFIR_AST_TRANSLATOR_CONTEXT_EXTENSION_TAG_STATEMENT));
+        param->mem, param->context, node, param->builder, KEFIR_AST_TRANSLATOR_CONTEXT_EXTENSION_TAG_STATEMENT));
     return KEFIR_OK;
 }
 

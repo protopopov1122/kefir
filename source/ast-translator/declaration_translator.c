@@ -135,7 +135,7 @@ kefir_result_t kefir_ast_translate_declaration(struct kefir_mem *mem, const stru
         REQUIRE(context->extensions != NULL && context->extensions->translate_extension_node != NULL,
                 KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Extension node translation procedure is not defined"));
         REQUIRE_OK(context->extensions->translate_extension_node(
-            mem, ext_node, builder, context, KEFIR_AST_TRANSLATOR_CONTEXT_EXTENSION_TAG_DECLARATION));
+            mem, context, ext_node, builder, KEFIR_AST_TRANSLATOR_CONTEXT_EXTENSION_TAG_DECLARATION));
     } else if (node->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR) {
         REQUIRE_OK(translate_init_declarator(mem, node, builder, context));
     } else if (node->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION) {

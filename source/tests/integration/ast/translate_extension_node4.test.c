@@ -40,9 +40,9 @@ static kefir_result_t analyze_extension_node(struct kefir_mem *mem, const struct
     return KEFIR_OK;
 }
 
-static kefir_result_t translate_extension_node(struct kefir_mem *mem, const struct kefir_ast_extension_node *node,
+static kefir_result_t translate_extension_node(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
+                                               const struct kefir_ast_extension_node *node,
                                                struct kefir_irbuilder_block *builder,
-                                               struct kefir_ast_translator_context *context,
                                                kefir_ast_translator_context_extension_tag_t tag) {
     UNUSED(mem);
     UNUSED(node);
