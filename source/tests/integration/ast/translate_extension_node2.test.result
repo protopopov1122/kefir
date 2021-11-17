@@ -1,0 +1,44 @@
+{
+    "globals": [
+        "func1"
+    ],
+    "externals": [],
+    "types": [],
+    "data": [],
+    "string_literals": [],
+    "function_declarations": [
+        {
+            "identifier": 0,
+            "name": "func1",
+            "parameters": [],
+            "vararg": false,
+            "returns": [
+                {
+                    "type": "int"
+                }
+            ]
+        }
+    ],
+    "functions": [
+        {
+            "identifier": 0,
+            "name": "func1",
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 100
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 1
+                }
+            ]
+        }
+    ]
+}

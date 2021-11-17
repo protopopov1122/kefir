@@ -35,6 +35,7 @@ DECLARE_DOWNCAST(compound_statement, struct kefir_ast_compound_statement);
 DECLARE_DOWNCAST(type_name, struct kefir_ast_type_name);
 DECLARE_DOWNCAST(function_definition, struct kefir_ast_function_definition);
 DECLARE_DOWNCAST(static_assertion, struct kefir_ast_static_assertion);
+DECLARE_DOWNCAST(extension_node, struct kefir_ast_extension_node);
 
 #undef DECLARE_DOWNCAST
 

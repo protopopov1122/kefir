@@ -52,5 +52,7 @@ DEFINE_DOWNCAST(function_definition, struct kefir_ast_function_definition,
                 node->klass->type == KEFIR_AST_FUNCTION_DEFINITION, "AST function definition")
 DEFINE_DOWNCAST(static_assertion, struct kefir_ast_static_assertion, node->klass->type == KEFIR_AST_STATIC_ASSERTION,
                 "AST static assertion")
+DEFINE_DOWNCAST(extension_node, struct kefir_ast_extension_node, node->klass->type == KEFIR_AST_EXTENSION_NODE,
+                "AST extension node")
 
 #undef DEFINE_DOWNCAST

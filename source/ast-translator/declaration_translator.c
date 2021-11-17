@@ -132,6 +132,16 @@ kefir_result_t kefir_ast_translate_declaration(struct kefir_mem *mem, const stru
             ASSIGN_DECL_CAST(struct kefir_ast_node_base *, decl, iter->value);
             REQUIRE_OK(translate_init_declarator(mem, decl, builder, context));
         }
+    } else if (node->klass->type == KEFIR_AST_EXTENSION_NODE) {
+        kefir_result_t res;
+        struct kefir_ast_extension_node *ext_node = NULL;
+        REQUIRE_MATCH(&res, kefir_ast_downcast_extension_node(node, &ext_node, true),
+                      KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected AST extension node"));
+
+        REQUIRE(context->extensions != NULL && context->extensions->translate_extension_node != NULL,
+                KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Extension node translation procedure is not defined"));
+        REQUIRE_OK(context->extensions->translate_extension_node(
+            mem, ext_node, builder, context, KEFIR_AST_TRANSLATOR_CONTEXT_EXTENSION_TAG_DECLARATION));
     } else {
         return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected declaration AST node");
     }
