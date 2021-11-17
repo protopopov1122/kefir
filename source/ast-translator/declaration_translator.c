@@ -25,6 +25,7 @@
 #include "kefir/ast/downcast.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/core/extensions.h"
 
 static kefir_result_t translate_vla_declaration(struct kefir_mem *mem, const struct kefir_ast_node_base *node,
                                                 struct kefir_irbuilder_block *builder,
@@ -120,7 +121,22 @@ kefir_result_t kefir_ast_translate_declaration(struct kefir_mem *mem, const stru
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR builder block"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator context"));
 
-    if (node->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR) {
+    kefir_result_t res;
+    KEFIR_RUN_EXTENSION(&res, mem, context, before_translate, node, builder,
+                        KEFIR_AST_TRANSLATOR_CONTEXT_EXTENSION_TAG_DECLARATION, NULL);
+    REQUIRE_OK(res);
+
+    if (node->klass->type == KEFIR_AST_EXTENSION_NODE) {
+        kefir_result_t res;
+        struct kefir_ast_extension_node *ext_node = NULL;
+        REQUIRE_MATCH(&res, kefir_ast_downcast_extension_node(node, &ext_node, true),
+                      KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected AST extension node"));
+
+        REQUIRE(context->extensions != NULL && context->extensions->translate_extension_node != NULL,
+                KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Extension node translation procedure is not defined"));
+        REQUIRE_OK(context->extensions->translate_extension_node(
+            mem, ext_node, builder, context, KEFIR_AST_TRANSLATOR_CONTEXT_EXTENSION_TAG_DECLARATION));
+    } else if (node->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR) {
         REQUIRE_OK(translate_init_declarator(mem, node, builder, context));
     } else if (node->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION) {
         kefir_result_t res;
@@ -132,18 +148,12 @@ kefir_result_t kefir_ast_translate_declaration(struct kefir_mem *mem, const stru
             ASSIGN_DECL_CAST(struct kefir_ast_node_base *, decl, iter->value);
             REQUIRE_OK(translate_init_declarator(mem, decl, builder, context));
         }
-    } else if (node->klass->type == KEFIR_AST_EXTENSION_NODE) {
-        kefir_result_t res;
-        struct kefir_ast_extension_node *ext_node = NULL;
-        REQUIRE_MATCH(&res, kefir_ast_downcast_extension_node(node, &ext_node, true),
-                      KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected AST extension node"));
-
-        REQUIRE(context->extensions != NULL && context->extensions->translate_extension_node != NULL,
-                KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Extension node translation procedure is not defined"));
-        REQUIRE_OK(context->extensions->translate_extension_node(
-            mem, ext_node, builder, context, KEFIR_AST_TRANSLATOR_CONTEXT_EXTENSION_TAG_DECLARATION));
     } else {
         return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected declaration AST node");
     }
+
+    KEFIR_RUN_EXTENSION(&res, mem, context, after_translate, node, builder,
+                        KEFIR_AST_TRANSLATOR_CONTEXT_EXTENSION_TAG_DECLARATION);
+    REQUIRE_OK(res);
     return KEFIR_OK;
 }

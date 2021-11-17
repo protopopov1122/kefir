@@ -35,6 +35,13 @@
                 {
                     "opcode": "iadd1",
                     "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load64"
                 }
             ]
         }

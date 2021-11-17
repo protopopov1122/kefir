@@ -27,6 +27,12 @@
 #include "kefir/ast-translator/context.h"
 #include "kefir/ir/builder.h"
 
+typedef struct kefir_ast_translator_parameters {
+    struct kefir_mem *mem;
+    struct kefir_ast_translator_context *context;
+    struct kefir_irbuilder_block *builder;
+} kefir_ast_translator_parameters_t;
+
 kefir_result_t kefir_ast_translate_object_type(struct kefir_mem *, const struct kefir_ast_type *, kefir_size_t,
                                                const struct kefir_ast_translator_environment *,
                                                struct kefir_irbuilder_type *, struct kefir_ast_type_layout **);

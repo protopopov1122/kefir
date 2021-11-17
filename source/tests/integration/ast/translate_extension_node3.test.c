@@ -34,9 +34,7 @@ static kefir_result_t analyze_extension_node(struct kefir_mem *mem, const struct
                                              struct kefir_ast_node_base *node) {
     UNUSED(mem);
     UNUSED(context);
-    node->properties.category = KEFIR_AST_NODE_CATEGORY_EXPRESSION;
-    node->properties.type = kefir_ast_type_signed_int();
-    node->properties.expression_props.lvalue = true;
+    node->properties.category = KEFIR_AST_NODE_CATEGORY_STATEMENT;
     return KEFIR_OK;
 }
 
@@ -51,6 +49,42 @@ static kefir_result_t translate_extension_node(struct kefir_mem *mem, const stru
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHI64, 100));
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 0));
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IADD1, 1));
+    return KEFIR_OK;
+}
+
+static kefir_result_t visit_conditional(const struct kefir_ast_visitor *visitor,
+                                        const struct kefir_ast_conditional_statement *node, void *payload) {
+    UNUSED(visitor);
+    UNUSED(node);
+    ASSIGN_DECL_CAST(struct kefir_ast_translator_parameters *, param, payload);
+    REQUIRE_OK(kefir_ast_translate_statement(param->mem, node->thenBranch, param->builder, param->context));
+    return KEFIR_OK;
+}
+
+static kefir_result_t before_translate(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
+                                       const struct kefir_ast_node_base *node, struct kefir_irbuilder_block *builder,
+                                       kefir_ast_translator_context_extension_tag_t tag,
+                                       struct kefir_ast_visitor *visitor) {
+    UNUSED(mem);
+    UNUSED(context);
+    UNUSED(node);
+    UNUSED(builder);
+    if (tag == KEFIR_AST_TRANSLATOR_CONTEXT_EXTENSION_TAG_STATEMENT) {
+        visitor->conditional_statement = visit_conditional;
+    }
+    return KEFIR_OK;
+}
+
+static kefir_result_t after_translate(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
+                                      const struct kefir_ast_node_base *node, struct kefir_irbuilder_block *builder,
+                                      kefir_ast_translator_context_extension_tag_t tag) {
+    UNUSED(mem);
+    UNUSED(context);
+    UNUSED(tag);
+    if (node->klass->type == KEFIR_AST_CONDITIONAL_STATEMENT) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHI64, 0));
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_LOAD64, 0));
+    }
     return KEFIR_OK;
 }
 
@@ -70,8 +104,10 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, decl_result, KEFIR_IR_TYPE_INT, 0, 0));
 
     struct kefir_ast_context_extensions analysis_ext = {.analyze_extension_node = analyze_extension_node};
-    struct kefir_ast_translator_context_extensions translator_ext = {.translate_extension_node =
-                                                                         translate_extension_node};
+    struct kefir_ast_translator_context_extensions translator_ext = {
+        .translate_extension_node = translate_extension_node,
+        .before_translate = before_translate,
+        .after_translate = after_translate};
 
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
@@ -89,7 +125,11 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     struct kefir_ast_extension_node_class ext_node_class = {0};
 
-    struct kefir_ast_extension_node *ast = kefir_ast_new_extension_node(mem, &ext_node_class, NULL);
+    struct kefir_ast_conditional_statement *ast = kefir_ast_new_conditional_statement(
+        mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 1)),
+        KEFIR_AST_NODE_BASE(kefir_ast_new_extension_node(mem, &ext_node_class, NULL)),
+        KEFIR_AST_NODE_BASE(
+            kefir_ast_new_expression_statement(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_float(mem, 3.14f)))));
     REQUIRE_OK(kefir_ast_analyze_node(mem, &local_context.context, KEFIR_AST_NODE_BASE(ast)));
     REQUIRE_OK(kefir_ast_translate_statement(mem, KEFIR_AST_NODE_BASE(ast), &builder, &translator_context));
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(ast)));

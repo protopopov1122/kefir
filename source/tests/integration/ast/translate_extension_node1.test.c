@@ -56,6 +56,40 @@ static kefir_result_t translate_extension_node(struct kefir_mem *mem, const stru
     return KEFIR_OK;
 }
 
+static kefir_result_t visit_identifier(const struct kefir_ast_visitor *visitor, const struct kefir_ast_identifier *node,
+                                       void *payload) {
+    UNUSED(visitor);
+    UNUSED(node);
+    ASSIGN_DECL_CAST(struct kefir_ast_translator_parameters *, param, payload);
+    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(param->builder, KEFIR_IROPCODE_PUSHI64, 0));
+    return KEFIR_OK;
+}
+
+static kefir_result_t before_translate(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
+                                       const struct kefir_ast_node_base *node, struct kefir_irbuilder_block *builder,
+                                       kefir_ast_translator_context_extension_tag_t tag,
+                                       struct kefir_ast_visitor *visitor) {
+    UNUSED(mem);
+    UNUSED(context);
+    UNUSED(node);
+    UNUSED(builder);
+    REQUIRE(tag == KEFIR_AST_TRANSLATOR_CONTEXT_EXTENSION_TAG_EXPRESSION, KEFIR_INTERNAL_ERROR);
+    visitor->identifier = visit_identifier;
+    return KEFIR_OK;
+}
+
+static kefir_result_t after_translate(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
+                                      const struct kefir_ast_node_base *node, struct kefir_irbuilder_block *builder,
+                                      kefir_ast_translator_context_extension_tag_t tag) {
+    UNUSED(mem);
+    UNUSED(context);
+    REQUIRE(tag == KEFIR_AST_TRANSLATOR_CONTEXT_EXTENSION_TAG_EXPRESSION, KEFIR_INTERNAL_ERROR);
+    if (node->klass->type == KEFIR_AST_FUNCTION_CALL) {
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IADD1, 1));
+    }
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
@@ -72,8 +106,10 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, decl_result, KEFIR_IR_TYPE_INT, 0, 0));
 
     struct kefir_ast_context_extensions analysis_ext = {.analyze_extension_node = analyze_extension_node};
-    struct kefir_ast_translator_context_extensions translator_ext = {.translate_extension_node =
-                                                                         translate_extension_node};
+    struct kefir_ast_translator_context_extensions translator_ext = {
+        .translate_extension_node = translate_extension_node,
+        .before_translate = before_translate,
+        .after_translate = after_translate};
 
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
@@ -81,6 +117,14 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                                              &kft_util_get_translator_environment()->target_env, &global_context,
                                              &analysis_ext));
     REQUIRE_OK(kefir_ast_local_context_init(mem, &global_context, &local_context));
+
+    struct kefir_ast_function_type *fn_type = NULL;
+    REQUIRE_OK(kefir_ast_global_context_define_external(mem, &global_context, "X", kefir_ast_type_signed_int(), NULL,
+                                                        NULL, NULL, NULL));
+    REQUIRE_OK(kefir_ast_global_context_define_external(
+        mem, &global_context, "fn",
+        kefir_ast_type_function(mem, &global_context.type_bundle, kefir_ast_type_signed_int(), &fn_type), NULL, NULL,
+        NULL, NULL));
 
     struct kefir_ast_translator_context translator_context;
     REQUIRE_OK(kefir_ast_translator_context_init(mem, &translator_context, &local_context.context,
@@ -91,7 +135,13 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     struct kefir_ast_extension_node_class ext_node_class = {0};
 
-    struct kefir_ast_extension_node *ast = kefir_ast_new_extension_node(mem, &ext_node_class, NULL);
+    struct kefir_ast_extension_node *node1 = kefir_ast_new_extension_node(mem, &ext_node_class, NULL);
+    struct kefir_ast_identifier *node2 = kefir_ast_new_identifier(mem, &global_context.symbols, "X");
+    struct kefir_ast_function_call *ast = kefir_ast_new_function_call(
+        mem, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(mem, &global_context.symbols, "fn")));
+    REQUIRE_OK(kefir_ast_function_call_append(mem, ast, KEFIR_AST_NODE_BASE(node1)));
+    REQUIRE_OK(kefir_ast_function_call_append(mem, ast, KEFIR_AST_NODE_BASE(node2)));
+
     REQUIRE_OK(kefir_ast_analyze_node(mem, &local_context.context, KEFIR_AST_NODE_BASE(ast)));
     REQUIRE_OK(kefir_ast_translate_expression(mem, KEFIR_AST_NODE_BASE(ast), &builder, &translator_context));
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(ast)));

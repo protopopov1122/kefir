@@ -44,6 +44,12 @@ typedef struct kefir_ast_translator_context_extensions {
     kefir_result_t (*translate_extension_node)(struct kefir_mem *, const struct kefir_ast_extension_node *,
                                                struct kefir_irbuilder_block *, struct kefir_ast_translator_context *,
                                                kefir_ast_translator_context_extension_tag_t);
+    kefir_result_t (*before_translate)(struct kefir_mem *, struct kefir_ast_translator_context *,
+                                       const struct kefir_ast_node_base *, struct kefir_irbuilder_block *,
+                                       kefir_ast_translator_context_extension_tag_t, struct kefir_ast_visitor *);
+    kefir_result_t (*after_translate)(struct kefir_mem *, struct kefir_ast_translator_context *,
+                                      const struct kefir_ast_node_base *, struct kefir_irbuilder_block *,
+                                      kefir_ast_translator_context_extension_tag_t);
     void *payload;
 } kefir_ast_translator_context_extensions_t;
 

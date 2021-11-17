@@ -3,7 +3,27 @@
         "func1"
     ],
     "externals": [],
-    "types": [],
+    "types": [
+        {
+            "identifier": 0,
+            "type": [
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 1,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        }
+    ],
     "data": [],
     "string_literals": [],
     "function_declarations": [
@@ -17,6 +37,24 @@
                     "type": "int"
                 }
             ]
+        },
+        {
+            "identifier": 1,
+            "name": null,
+            "parameters": [
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "int"
+                }
+            ],
+            "vararg": false,
+            "returns": [
+                {
+                    "type": "int"
+                }
+            ]
         }
     ],
     "functions": [
@@ -24,6 +62,10 @@
             "identifier": 0,
             "name": "func1",
             "body": [
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
                 {
                     "opcode": "push",
                     "arg": 2
@@ -41,6 +83,21 @@
                 },
                 {
                     "opcode": "iadd"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "invokev",
+                    "arg": {
+                        "identifier": 1,
+                        "name": null
+                    }
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 1
                 }
             ]
         }

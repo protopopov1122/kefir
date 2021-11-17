@@ -25,6 +25,24 @@
             "name": "func1",
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": 2
+                },
+                {
+                    "opcode": "push",
+                    "arg": 2
+                },
+                {
+                    "opcode": "push",
+                    "arg": 2
+                },
+                {
+                    "opcode": "imul"
+                },
+                {
+                    "opcode": "iadd"
+                },
+                {
                     "opcode": "getlocals"
                 },
                 {
@@ -37,6 +55,24 @@
                 },
                 {
                     "opcode": "store64"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 3
+                },
+                {
+                    "opcode": "push",
+                    "arg": 3
+                },
+                {
+                    "opcode": "push",
+                    "arg": 3
+                },
+                {
+                    "opcode": "imul"
+                },
+                {
+                    "opcode": "iadd"
                 }
             ]
         }

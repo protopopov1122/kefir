@@ -21,15 +21,10 @@
 #include "kefir/ast-translator/translator.h"
 #include "kefir/ast-translator/translator_impl.h"
 #include "kefir/ast-translator/typeconv.h"
+#include "kefir/core/extensions.h"
 #include "kefir/core/error.h"
 #include "kefir/core/util.h"
 #include "kefir/ir/builder.h"
-
-struct translator_param {
-    struct kefir_mem *mem;
-    struct kefir_ast_translator_context *context;
-    struct kefir_irbuilder_block *builder;
-};
 
 static kefir_result_t translate_not_impl(const struct kefir_ast_visitor *visitor,
                                          const struct kefir_ast_node_base *base, void *payload) {
@@ -44,7 +39,7 @@ static kefir_result_t translate_not_impl(const struct kefir_ast_visitor *visitor
         REQUIRE(visitor != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST visitor"));                 \
         REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST node"));                       \
         REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));                  \
-        ASSIGN_DECL_CAST(struct translator_param *, param, payload);                                                   \
+        ASSIGN_DECL_CAST(struct kefir_ast_translator_parameters *, param, payload);                                    \
         REQUIRE_OK(kefir_ast_translate_##_id##_node(param->mem, param->context, param->builder, node));                \
         return KEFIR_OK;                                                                                               \
     }
@@ -71,7 +66,7 @@ static kefir_result_t translate_extension_node(const struct kefir_ast_visitor *v
     REQUIRE(visitor != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST visitor"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST node"));
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
-    ASSIGN_DECL_CAST(struct translator_param *, param, payload);
+    ASSIGN_DECL_CAST(struct kefir_ast_translator_parameters *, param, payload);
 
     REQUIRE(param->context->extensions != NULL && param->context->extensions->translate_extension_node != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Extension node translation procedure is not defined"));
@@ -107,6 +102,14 @@ kefir_result_t kefir_ast_translate_expression(struct kefir_mem *mem, const struc
     visitor.builtin = translate_builtin;
     visitor.extension_node = translate_extension_node;
 
-    struct translator_param param = {.mem = mem, .builder = builder, .context = context};
-    return KEFIR_AST_NODE_VISIT(&visitor, base, &param);
+    kefir_result_t res;
+    KEFIR_RUN_EXTENSION(&res, mem, context, before_translate, base, builder,
+                        KEFIR_AST_TRANSLATOR_CONTEXT_EXTENSION_TAG_EXPRESSION, &visitor);
+    REQUIRE_OK(res);
+    struct kefir_ast_translator_parameters param = {.mem = mem, .builder = builder, .context = context};
+    REQUIRE_OK(KEFIR_AST_NODE_VISIT(&visitor, base, &param));
+    KEFIR_RUN_EXTENSION(&res, mem, context, after_translate, base, builder,
+                        KEFIR_AST_TRANSLATOR_CONTEXT_EXTENSION_TAG_EXPRESSION);
+    REQUIRE_OK(res);
+    return KEFIR_OK;
 }

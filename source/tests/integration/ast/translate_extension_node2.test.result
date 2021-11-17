@@ -3,7 +3,16 @@
         "func1"
     ],
     "externals": [],
-    "types": [],
+    "types": [
+        {
+            "identifier": 0,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        }
+    ],
     "data": [],
     "string_literals": [],
     "function_declarations": [
@@ -37,6 +46,24 @@
                 {
                     "opcode": "iadd1",
                     "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 8
+                },
+                {
+                    "opcode": "push",
+                    "arg": 10
+                },
+                {
+                    "opcode": "elementptr",
+                    "arg": {
+                        "type": 0,
+                        "index": 0
+                    }
+                },
+                {
+                    "opcode": "load64"
                 }
             ]
         }
