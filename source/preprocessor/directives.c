@@ -368,6 +368,8 @@ static kefir_result_t scan_define_parameters(struct kefir_mem *mem,
         } else if (token->klass == KEFIR_TOKEN_PUNCTUATOR && token->punctuator == KEFIR_PUNCTUATOR_ELLIPSIS) {
             directive->define_directive.vararg = true;
             scan_params = false;
+        } else if (token->klass == KEFIR_TOKEN_PUNCTUATOR && token->punctuator == KEFIR_PUNCTUATOR_RIGHT_PARENTHESE) {
+            scan_params = false;
         } else {
             return KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &token->source_location,
                                           "Expected either parameter or ellipsis");
