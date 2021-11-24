@@ -43,14 +43,30 @@ static kefir_result_t kefir_lexer_next_string_literal_impl(struct kefir_mem *mem
     for (kefir_char32_t chr = kefir_lexer_source_cursor_at(lexer->cursor, 0); chr != U'\"';
          chr = kefir_lexer_source_cursor_at(lexer->cursor, 0)) {
 
+        struct kefir_source_location char_location = lexer->cursor->location;
+
         REQUIRE(chr != U'\0',
                 KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &lexer->cursor->location, "Unexpected null character"));
         REQUIRE(chr != U'\n',
                 KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &lexer->cursor->location, "Unexpected newline character"));
         if (chr == U'\\') {
+            kefir_char32_t next_chr = kefir_lexer_source_cursor_at(lexer->cursor, 1);
+            kefir_bool_t hex_oct_sequence =
+                next_chr == U'x' || kefir_isoctdigit32(next_chr) || kefir_ishexdigit32(next_chr);
+
             kefir_char32_t result;
             REQUIRE_OK(kefir_lexer_cursor_next_escape_sequence(lexer->cursor, &result));
-            REQUIRE_OK(kefir_string_buffer_insert(mem, buffer, result));
+            if (hex_oct_sequence) {
+                kefir_result_t res = kefir_string_buffer_insert_raw(mem, buffer, result);
+                if (res == KEFIR_OUT_OF_BOUNDS) {
+                    kefir_clear_error();
+                    res = KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &char_location,
+                                                 "Escape sequence exceeded maximum character value");
+                }
+                REQUIRE_OK(res);
+            } else {
+                REQUIRE_OK(kefir_string_buffer_insert(mem, buffer, result));
+            }
         } else {
             REQUIRE_OK(kefir_string_buffer_insert(mem, buffer, chr));
             REQUIRE_OK(kefir_lexer_source_cursor_next(lexer->cursor, 1));

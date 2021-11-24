@@ -28,8 +28,11 @@ static kefir_result_t next_character(struct kefir_lexer_source_cursor *cursor, k
                                      kefir_bool_t *continueScan) {
     struct kefir_source_location char_location = cursor->location;
     kefir_char32_t chr = kefir_lexer_source_cursor_at(cursor, 0);
+    kefir_char32_t next_chr = kefir_lexer_source_cursor_at(cursor, 1);
+    kefir_bool_t hex_oct_escape = false;
     if (chr == U'\\') {
         *continueScan = true;
+        hex_oct_escape = next_chr == U'x' || kefir_isoctdigit32(next_chr) || kefir_ishexdigit32(next_chr);
         REQUIRE_OK(kefir_lexer_cursor_next_escape_sequence(cursor, &chr));
     } else if (chr == U'\'') {
         *continueScan = false;
@@ -40,12 +43,15 @@ static kefir_result_t next_character(struct kefir_lexer_source_cursor *cursor, k
 
     if (*continueScan) {
         char multibyte[MB_LEN_MAX];
-        mbstate_t mbstate = {0};
-        size_t sz = c32rtomb(multibyte, chr, &mbstate);
-        if (sz == (size_t) -1) {
-            REQUIRE(chr <= 0xff, KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &char_location, "Invalid character"));
-            sz = 1;
+        size_t sz = 1;
+        if (hex_oct_escape) {
+            REQUIRE(chr <= KEFIR_UCHAR_MAX, KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &char_location,
+                                                                   "Escape sequence exceeds maximum character value"));
             multibyte[0] = (char) chr;
+        } else {
+            mbstate_t mbstate = {0};
+            sz = c32rtomb(multibyte, chr, &mbstate);
+            REQUIRE(sz != (size_t) -1, KEFIR_SET_SOURCE_ERROR(KEFIR_LEXER_ERROR, &char_location, "Invalid character"));
         }
         char *iter = multibyte;
         while (sz--) {

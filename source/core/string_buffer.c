@@ -144,81 +144,62 @@ static kefir_result_t insert_buffer(struct kefir_mem *mem, struct kefir_string_b
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_string_buffer_insert(struct kefir_mem *mem, struct kefir_string_buffer *buffer,
-                                          kefir_char32_t character) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
-    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string buffer"));
-
-    switch (buffer->mode) {
-        case KEFIR_STRING_BUFFER_MULTIBYTE:
-            REQUIRE_OK(kefir_string_buffer_insert_multibyte(mem, buffer, character));
-            break;
-
-        case KEFIR_STRING_BUFFER_UNICODE8:
-            REQUIRE_OK(kefir_string_buffer_insert_unicode8_character(mem, buffer, character));
-            break;
-
-        case KEFIR_STRING_BUFFER_UNICODE16:
-            REQUIRE_OK(kefir_string_buffer_insert_unicode16_character(mem, buffer, character));
-            break;
-
-        case KEFIR_STRING_BUFFER_UNICODE32:
-            REQUIRE_OK(kefir_string_buffer_insert_unicode32_character(mem, buffer, character));
-            break;
-
-        case KEFIR_STRING_BUFFER_WIDE:
-            REQUIRE_OK(kefir_string_buffer_insert_wide_character(mem, buffer, character));
-            break;
-    }
+static kefir_result_t convert_to_multibyte(kefir_char32_t character, char *narrow_string, size_t *sz) {
+    mbstate_t mbstate = {0};
+    *sz = c32rtomb(narrow_string, character, &mbstate);
+    REQUIRE(*sz != (size_t) -1,
+            KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Failed to convert unicode32 character into multi-byte string"));
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_string_buffer_insert_multibyte(struct kefir_mem *mem, struct kefir_string_buffer *buffer,
-                                                    kefir_char32_t character) {
+static kefir_result_t kefir_string_buffer_insert_multibyte(struct kefir_mem *mem, struct kefir_string_buffer *buffer,
+                                                           kefir_char32_t character) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string buffer"));
     REQUIRE(buffer->mode == KEFIR_STRING_BUFFER_MULTIBYTE,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected mulibyte string buffer"));
 
     char narrow_string[MB_LEN_MAX];
-    mbstate_t mbstate = {0};
-    size_t sz = c32rtomb(narrow_string, character, &mbstate);
+    size_t sz;
+    REQUIRE_OK(convert_to_multibyte(character, narrow_string, &sz));
     REQUIRE(sz != (size_t) -1,
             KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Failed to convert unicode32 character into multi-byte string"));
     REQUIRE_OK(insert_buffer(mem, buffer, narrow_string, sz));
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_string_buffer_insert_unicode8_character(struct kefir_mem *mem, struct kefir_string_buffer *buffer,
-                                                             kefir_char32_t character) {
+static kefir_result_t kefir_string_buffer_insert_unicode8_character(struct kefir_mem *mem,
+                                                                    struct kefir_string_buffer *buffer,
+                                                                    kefir_char32_t character) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string buffer"));
     REQUIRE(buffer->mode == KEFIR_STRING_BUFFER_UNICODE8,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected unicode8 string buffer"));
 
     char narrow_string[MB_LEN_MAX];
-    mbstate_t mbstate = {0};
-    size_t sz = c32rtomb(narrow_string, character, &mbstate);
+    size_t sz;
+    REQUIRE_OK(convert_to_multibyte(character, narrow_string, &sz));
     REQUIRE(sz != (size_t) -1,
             KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Failed to convert unicode32 character into unicode8 string"));
     REQUIRE_OK(insert_buffer(mem, buffer, narrow_string, sz));
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_string_buffer_insert_unicode16_character(struct kefir_mem *mem, struct kefir_string_buffer *buffer,
-                                                              kefir_char32_t character) {
+static kefir_result_t kefir_string_buffer_insert_unicode16_character(struct kefir_mem *mem,
+                                                                     struct kefir_string_buffer *buffer,
+                                                                     kefir_char32_t character) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string buffer"));
     REQUIRE(buffer->mode == KEFIR_STRING_BUFFER_UNICODE16,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected unicode16 string buffer"));
 
     char narrow_string[MB_LEN_MAX];
-    mbstate_t mbstate = {0};
-    size_t sz = c32rtomb(narrow_string, character, &mbstate);
+    size_t sz;
+    REQUIRE_OK(convert_to_multibyte(character, narrow_string, &sz));
     REQUIRE(sz != (size_t) -1,
             KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Failed to convert unicode32 character into unicode16 string"));
 
-    mbstate = (mbstate_t){0};
+    mbstate_t mbstate = {0};
     const char *begin = narrow_string;
     const char *end = narrow_string + sz;
     union {
@@ -252,8 +233,9 @@ kefir_result_t kefir_string_buffer_insert_unicode16_character(struct kefir_mem *
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_string_buffer_insert_unicode32_character(struct kefir_mem *mem, struct kefir_string_buffer *buffer,
-                                                              kefir_char32_t character) {
+static kefir_result_t kefir_string_buffer_insert_unicode32_character(struct kefir_mem *mem,
+                                                                     struct kefir_string_buffer *buffer,
+                                                                     kefir_char32_t character) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string buffer"));
     REQUIRE(buffer->mode == KEFIR_STRING_BUFFER_UNICODE32,
@@ -267,16 +249,17 @@ kefir_result_t kefir_string_buffer_insert_unicode32_character(struct kefir_mem *
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_string_buffer_insert_wide_character(struct kefir_mem *mem, struct kefir_string_buffer *buffer,
-                                                         kefir_char32_t character) {
+static kefir_result_t kefir_string_buffer_insert_wide_character(struct kefir_mem *mem,
+                                                                struct kefir_string_buffer *buffer,
+                                                                kefir_char32_t character) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string buffer"));
     REQUIRE(buffer->mode == KEFIR_STRING_BUFFER_WIDE,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected wide string buffer"));
 
     char narrow_string[MB_LEN_MAX];
-    mbstate_t mbstate = {0};
-    size_t sz = c32rtomb(narrow_string, character, &mbstate);
+    size_t sz;
+    REQUIRE_OK(convert_to_multibyte(character, narrow_string, &sz));
     REQUIRE(sz != (size_t) -1, KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Failed to convert unicode32 character into wide"));
 
     const char *begin = narrow_string;
@@ -301,6 +284,82 @@ kefir_result_t kefir_string_buffer_insert_wide_character(struct kefir_mem *mem, 
                 begin += rc;
                 break;
         }
+    }
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_string_buffer_insert(struct kefir_mem *mem, struct kefir_string_buffer *buffer,
+                                          kefir_char32_t character) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string buffer"));
+
+    switch (buffer->mode) {
+        case KEFIR_STRING_BUFFER_MULTIBYTE:
+            REQUIRE_OK(kefir_string_buffer_insert_multibyte(mem, buffer, character));
+            break;
+
+        case KEFIR_STRING_BUFFER_UNICODE8:
+            REQUIRE_OK(kefir_string_buffer_insert_unicode8_character(mem, buffer, character));
+            break;
+
+        case KEFIR_STRING_BUFFER_UNICODE16:
+            REQUIRE_OK(kefir_string_buffer_insert_unicode16_character(mem, buffer, character));
+            break;
+
+        case KEFIR_STRING_BUFFER_UNICODE32:
+            REQUIRE_OK(kefir_string_buffer_insert_unicode32_character(mem, buffer, character));
+            break;
+
+        case KEFIR_STRING_BUFFER_WIDE:
+            REQUIRE_OK(kefir_string_buffer_insert_wide_character(mem, buffer, character));
+            break;
+    }
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_string_buffer_insert_raw(struct kefir_mem *mem, struct kefir_string_buffer *buffer,
+                                              kefir_int64_t raw_value) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string buffer"));
+
+    switch (buffer->mode) {
+        case KEFIR_STRING_BUFFER_MULTIBYTE:
+        case KEFIR_STRING_BUFFER_UNICODE8: {
+            REQUIRE(raw_value <= KEFIR_UCHAR_MAX,
+                    KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Maximum character value is exceeded"));
+            char value = (char) raw_value;
+            REQUIRE_OK(insert_buffer(mem, buffer, &value, 1));
+        } break;
+
+        case KEFIR_STRING_BUFFER_UNICODE16: {
+            REQUIRE(raw_value <= KEFIR_CHAR16_MAX,
+                    KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Maximum unicode16 character value is exceeded"));
+            union {
+                kefir_char16_t raw;
+                char bytes[sizeof(kefir_char16_t)];
+            } value = {.raw = (kefir_char16_t) raw_value};
+            REQUIRE_OK(insert_buffer(mem, buffer, &value.bytes, sizeof(kefir_char16_t)));
+        } break;
+
+        case KEFIR_STRING_BUFFER_UNICODE32: {
+            REQUIRE(raw_value <= KEFIR_CHAR32_MAX,
+                    KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Maximum unicode32 character value is exceeded"));
+            union {
+                kefir_char32_t raw;
+                char bytes[sizeof(kefir_char32_t)];
+            } value = {.raw = (kefir_char32_t) raw_value};
+            REQUIRE_OK(insert_buffer(mem, buffer, &value.bytes, sizeof(kefir_char32_t)));
+        } break;
+
+        case KEFIR_STRING_BUFFER_WIDE: {
+            REQUIRE(raw_value <= KEFIR_WCHAR_MAX,
+                    KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Maximum wide character value is exceeded"));
+            union {
+                kefir_wchar_t raw;
+                char bytes[sizeof(kefir_wchar_t)];
+            } value = {.raw = (kefir_wchar_t) raw_value};
+            REQUIRE_OK(insert_buffer(mem, buffer, &value.bytes, sizeof(kefir_wchar_t)));
+        } break;
     }
     return KEFIR_OK;
 }

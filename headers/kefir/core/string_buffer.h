@@ -46,15 +46,7 @@ kefir_result_t kefir_string_buffer_free(struct kefir_mem *, struct kefir_string_
 
 const void *kefir_string_buffer_value(const struct kefir_string_buffer *, kefir_size_t *);
 kefir_result_t kefir_string_buffer_insert(struct kefir_mem *, struct kefir_string_buffer *, kefir_char32_t);
-kefir_result_t kefir_string_buffer_insert_multibyte(struct kefir_mem *, struct kefir_string_buffer *, kefir_char32_t);
-kefir_result_t kefir_string_buffer_insert_unicode8_character(struct kefir_mem *, struct kefir_string_buffer *,
-                                                             kefir_char32_t);
-kefir_result_t kefir_string_buffer_insert_unicode16_character(struct kefir_mem *, struct kefir_string_buffer *,
-                                                              kefir_char32_t);
-kefir_result_t kefir_string_buffer_insert_unicode32_character(struct kefir_mem *, struct kefir_string_buffer *,
-                                                              kefir_char32_t);
-kefir_result_t kefir_string_buffer_insert_wide_character(struct kefir_mem *, struct kefir_string_buffer *,
-                                                         kefir_char32_t);
+kefir_result_t kefir_string_buffer_insert_raw(struct kefir_mem *, struct kefir_string_buffer *, kefir_int64_t);
 kefir_result_t kefir_string_buffer_convert(struct kefir_mem *, struct kefir_string_buffer *,
                                            kefir_string_buffer_mode_t);
 kefir_result_t kefir_string_buffer_merge(struct kefir_mem *, struct kefir_string_buffer *,
