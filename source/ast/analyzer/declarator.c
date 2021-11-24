@@ -27,6 +27,7 @@
 #include "kefir/core/error.h"
 #include "kefir/ast/constant_expression.h"
 #include "kefir/ast/function_declaration_context.h"
+#include "kefir/ast/named_struct_resolver.h"
 #include "kefir/core/source_error.h"
 
 enum signedness { SIGNEDNESS_DEFAULT, SIGNEDNESS_SIGNED, SIGNEDNESS_UNSIGNED };
@@ -281,7 +282,21 @@ static kefir_result_t resolve_typedef(const struct kefir_ast_context *context, c
     REQUIRE(scoped_identifier->klass == KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION,
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, source_location,
                                    "Referenced identifier is not a type definition"));
-    *base_type = scoped_identifier->type;
+    if ((scoped_identifier->type->tag == KEFIR_AST_TYPE_STRUCTURE ||
+         scoped_identifier->type->tag == KEFIR_AST_TYPE_UNION) &&
+        !scoped_identifier->type->structure_type.complete) {
+        struct kefir_ast_named_structure_resolver resolver;
+        REQUIRE_OK(kefir_ast_context_named_structure_resolver_init(context, &resolver));
+        kefir_result_t res =
+            resolver.resolve(scoped_identifier->type->structure_type.identifier, base_type, resolver.payload);
+        if (res == KEFIR_NOT_FOUND) {
+            *base_type = scoped_identifier->type;
+        } else {
+            REQUIRE_OK(res);
+        }
+    } else {
+        *base_type = scoped_identifier->type;
+    }
     return KEFIR_OK;
 }
 
