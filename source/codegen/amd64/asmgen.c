@@ -21,6 +21,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <uchar.h>
+#include <ctype.h>
 #include "kefir/codegen/amd64/asmgen.h"
 #include "kefir/core/basic-types.h"
 #include "kefir/core/util.h"
@@ -239,17 +240,13 @@ kefir_result_t amd64_string_literal(struct kefir_amd64_asmgen *asmgen, const cha
     asmgen->state.arguments++;
     fprintf(out, "\"");
 
-    mbstate_t state = {0};
     const char *end = literal + length;
-    size_t sz = 0;
-    kefir_char32_t wide_char;
-    while (literal < end && (*literal == '\0' || (sz = mbrtoc32(&wide_char, literal, end - literal, &state)) != 0)) {
-        if (*literal == '\0') {
-            fprintf(out, "\\000");
-            literal++;
-            continue;
-        }
-        switch (wide_char) {
+    for (; literal < end; ++literal) {
+        switch (*literal) {
+            case U'\0':
+                fprintf(out, "\\000");
+                break;
+
             case U'\"':
                 fprintf(out, "\\\"");
                 break;
@@ -287,10 +284,13 @@ kefir_result_t amd64_string_literal(struct kefir_amd64_asmgen *asmgen, const cha
                 break;
 
             default:
-                fwrite(literal, 1, sz, out);
+                if (isprint(*literal)) {
+                    fprintf(out, "%c", *literal);
+                } else {
+                    fprintf(out, "\\%03o", (unsigned char) *literal);
+                }
                 break;
         }
-        literal += sz;
     }
     fprintf(out, "\"");
     return KEFIR_OK;
