@@ -212,13 +212,16 @@ static kefir_result_t translate_division(struct kefir_mem *mem, struct kefir_ast
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32DIV, 0));
             break;
 
-        default:
-            if (KEFIR_INTERNAL_AST_TYPE_IS_SIGNED_INTEGER(result_normalized_type)) {
+        default: {
+            kefir_bool_t signed_integer = false;
+            REQUIRE_OK(
+                kefir_ast_type_is_signed(context->ast_context->type_traits, result_normalized_type, &signed_integer));
+            if (signed_integer) {
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IDIV, 0));
             } else {
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_UDIV, 0));
             }
-            break;
+        } break;
     }
     return KEFIR_OK;
 }
@@ -230,7 +233,9 @@ static kefir_result_t translate_modulo(struct kefir_mem *mem, struct kefir_ast_t
         kefir_ast_translator_normalize_type(node->base.properties.type);
 
     REQUIRE_OK(binary_prologue(mem, context, builder, node));
-    if (KEFIR_INTERNAL_AST_TYPE_IS_SIGNED_INTEGER(result_normalized_type)) {
+    kefir_bool_t signed_integer = false;
+    REQUIRE_OK(kefir_ast_type_is_signed(context->ast_context->type_traits, result_normalized_type, &signed_integer));
+    if (signed_integer) {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IMOD, 0));
     } else {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_UMOD, 0));

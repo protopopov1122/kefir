@@ -39,6 +39,7 @@ typedef enum kefir_ast_constant_expression_pointer_base_type {
 } kefir_ast_constant_expression_pointer_base_type_t;
 
 typedef kefir_int64_t kefir_ast_constant_expression_int_t;
+typedef kefir_uint64_t kefir_ast_constant_expression_uint_t;
 typedef kefir_long_double_t kefir_ast_constant_expression_float_t;
 
 typedef struct kefir_ast_constant_expression_pointer {
@@ -62,7 +63,10 @@ typedef struct kefir_ast_constant_expression_pointer {
 typedef struct kefir_ast_constant_expression_value {
     kefir_ast_constant_expression_class_t klass;
 
-    kefir_ast_constant_expression_int_t integer;
+    union {
+        kefir_ast_constant_expression_int_t integer;
+        kefir_ast_constant_expression_uint_t uinteger;
+    };
     kefir_ast_constant_expression_float_t floating_point;
     struct kefir_ast_constant_expression_pointer pointer;
 } kefir_ast_constant_expression_value_t;
@@ -75,6 +79,12 @@ typedef struct kefir_ast_constant_expression {
 kefir_result_t kefir_ast_constant_expression_value_evaluate(struct kefir_mem *, const struct kefir_ast_context *,
                                                             const struct kefir_ast_node_base *,
                                                             struct kefir_ast_constant_expression_value *);
+
+kefir_result_t kefir_ast_constant_expression_value_cast(struct kefir_mem *, const struct kefir_ast_context *,
+                                                        struct kefir_ast_constant_expression_value *,
+                                                        const struct kefir_ast_constant_expression_value *,
+                                                        const struct kefir_ast_node_base *,
+                                                        const struct kefir_ast_type *);
 
 struct kefir_ast_constant_expression *kefir_ast_new_constant_expression(struct kefir_mem *,
                                                                         struct kefir_ast_node_base *);

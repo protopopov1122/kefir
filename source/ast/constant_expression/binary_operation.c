@@ -22,6 +22,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"
+#include "kefir/ast/type_conv.h"
 
 #define ANY_OF(x, y, _klass) ((x)->klass == (_klass) || (y)->klass == (_klass))
 
@@ -110,6 +111,13 @@ kefir_result_t kefir_ast_evaluate_binary_operation_node(struct kefir_mem *mem, c
             KEFIR_SET_SOURCE_ERROR(KEFIR_NOT_CONSTANT, &node->base.source_location,
                                    "Expected constant expression AST node"));
 
+    const struct kefir_ast_type *common_arith_type = kefir_ast_type_common_arithmetic(
+        context->type_traits, node->arg1->properties.type, node->arg2->properties.type);
+    kefir_bool_t common_type_signed_integer = false;
+    if (common_arith_type != NULL && KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(common_arith_type)) {
+        REQUIRE_OK(kefir_ast_type_is_signed(context->type_traits, common_arith_type, &common_type_signed_integer));
+    }
+
     struct kefir_ast_constant_expression_value arg1_value, arg2_value;
     REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->arg1, &arg1_value));
     REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->arg2, &arg2_value));
@@ -166,25 +174,40 @@ kefir_result_t kefir_ast_evaluate_binary_operation_node(struct kefir_mem *mem, c
             if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT)) {
                 value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT;
                 value->floating_point = as_float(&arg1_value) / as_float(&arg2_value);
-            } else {
+            } else if (common_type_signed_integer) {
                 value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
                 value->integer = arg1_value.integer / arg2_value.integer;
+            } else {
+                value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
+                value->uinteger = arg1_value.uinteger / arg2_value.integer;
             }
             break;
 
         case KEFIR_AST_OPERATION_MODULO:
             value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
-            value->integer = arg1_value.integer % arg2_value.integer;
+            if (common_type_signed_integer) {
+                value->integer = arg1_value.integer % arg2_value.integer;
+            } else {
+                value->uinteger = arg1_value.uinteger % arg2_value.integer;
+            }
             break;
 
         case KEFIR_AST_OPERATION_SHIFT_LEFT:
             value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
-            value->integer = arg1_value.integer << arg2_value.integer;
+            if (common_type_signed_integer) {
+                value->integer = arg1_value.integer << arg2_value.integer;
+            } else {
+                value->uinteger = arg1_value.uinteger << arg2_value.integer;
+            }
             break;
 
         case KEFIR_AST_OPERATION_SHIFT_RIGHT:
             value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
-            value->integer = arg1_value.integer >> arg2_value.integer;
+            if (common_type_signed_integer) {
+                value->integer = arg1_value.integer >> arg2_value.integer;
+            } else {
+                value->uinteger = arg1_value.uinteger >> arg2_value.integer;
+            }
             break;
 
         case KEFIR_AST_OPERATION_LESS:
@@ -194,8 +217,10 @@ kefir_result_t kefir_ast_evaluate_binary_operation_node(struct kefir_mem *mem, c
                                        "Constant expressions with address comparisons are not supported");
             } else if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT)) {
                 value->integer = as_float(&arg1_value) < as_float(&arg2_value);
-            } else {
+            } else if (common_type_signed_integer) {
                 value->integer = arg1_value.integer < arg2_value.integer;
+            } else {
+                value->integer = arg1_value.uinteger < arg2_value.uinteger;
             }
             break;
 
@@ -206,8 +231,10 @@ kefir_result_t kefir_ast_evaluate_binary_operation_node(struct kefir_mem *mem, c
                                        "Constant expressions with address comparisons are not supported");
             } else if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT)) {
                 value->integer = as_float(&arg1_value) <= as_float(&arg2_value);
-            } else {
+            } else if (common_type_signed_integer) {
                 value->integer = arg1_value.integer <= arg2_value.integer;
+            } else {
+                value->integer = arg1_value.uinteger <= arg2_value.uinteger;
             }
             break;
 
@@ -218,8 +245,10 @@ kefir_result_t kefir_ast_evaluate_binary_operation_node(struct kefir_mem *mem, c
                                        "Constant expressions with address comparisons are not supported");
             } else if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT)) {
                 value->integer = as_float(&arg1_value) > as_float(&arg2_value);
-            } else {
+            } else if (common_type_signed_integer) {
                 value->integer = arg1_value.integer > arg2_value.integer;
+            } else {
+                value->integer = arg1_value.uinteger > arg2_value.uinteger;
             }
             break;
 
@@ -230,8 +259,10 @@ kefir_result_t kefir_ast_evaluate_binary_operation_node(struct kefir_mem *mem, c
                                        "Constant expressions with address comparisons are not supported");
             } else if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT)) {
                 value->integer = as_float(&arg1_value) >= as_float(&arg2_value);
-            } else {
+            } else if (common_type_signed_integer) {
                 value->integer = arg1_value.integer >= arg2_value.integer;
+            } else {
+                value->integer = arg1_value.uinteger >= arg2_value.uinteger;
             }
             break;
 

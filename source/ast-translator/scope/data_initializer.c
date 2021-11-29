@@ -146,8 +146,10 @@ static kefir_result_t visit_value(const struct kefir_ast_designator *designator,
     REQUIRE_OK(resolve_designated_slot(param->type_layout, designator, &param->ir_type_tree, param->base_slot,
                                        &resolved_layout, &slot));
 
-    struct kefir_ast_constant_expression_value value;
-    REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(param->mem, param->context, expression, &value));
+    struct kefir_ast_constant_expression_value uncasted_value, value;
+    REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(param->mem, param->context, expression, &uncasted_value));
+    REQUIRE_OK(kefir_ast_constant_expression_value_cast(param->mem, param->context, &value, &uncasted_value, expression,
+                                                        resolved_layout->type));
     struct kefir_ir_typeentry *target_typeentry = kefir_ir_type_at(param->type, resolved_layout->value);
     REQUIRE(target_typeentry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Cannot obtain target IR type entry"));
     switch (value.klass) {

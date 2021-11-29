@@ -34,6 +34,17 @@
         ASSERT_OK(KEFIR_AST_NODE_FREE((_mem), base));                                              \
     } while (0)
 
+#define ASSERT_UINTEGER_CONST_EXPR(_mem, _context, _node, _value)                                  \
+    do {                                                                                           \
+        struct kefir_ast_node_base *base = KEFIR_AST_NODE_BASE((_node));                           \
+        ASSERT_OK(kefir_ast_analyze_node((_mem), (_context), base));                               \
+        struct kefir_ast_constant_expression_value value;                                          \
+        ASSERT_OK(kefir_ast_constant_expression_value_evaluate((_mem), (_context), base, &value)); \
+        ASSERT(value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER);                        \
+        ASSERT(value.uinteger == (_value));                                                        \
+        ASSERT_OK(KEFIR_AST_NODE_FREE((_mem), base));                                              \
+    } while (0)
+
 #define ASSERT_FLOAT_CONST_EXPR(_mem, _context, _node, _value)                                     \
     do {                                                                                           \
         struct kefir_ast_node_base *base = KEFIR_AST_NODE_BASE((_node));                           \

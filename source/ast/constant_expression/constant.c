@@ -71,7 +71,7 @@ kefir_result_t kefir_ast_evaluate_scalar_node(struct kefir_mem *mem, const struc
 
         case KEFIR_AST_UINT_CONSTANT:
             value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
-            value->integer = node->value.uinteger;
+            value->uinteger = node->value.uinteger;
             break;
 
         case KEFIR_AST_LONG_CONSTANT:
@@ -81,7 +81,7 @@ kefir_result_t kefir_ast_evaluate_scalar_node(struct kefir_mem *mem, const struc
 
         case KEFIR_AST_ULONG_CONSTANT:
             value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
-            value->integer = node->value.ulong_integer;
+            value->uinteger = node->value.ulong_integer;
             break;
 
         case KEFIR_AST_LONG_LONG_CONSTANT:
@@ -91,7 +91,7 @@ kefir_result_t kefir_ast_evaluate_scalar_node(struct kefir_mem *mem, const struc
 
         case KEFIR_AST_ULONG_LONG_CONSTANT:
             value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
-            value->integer = node->value.ulong_long;
+            value->uinteger = node->value.ulong_long;
             break;
 
         case KEFIR_AST_FLOAT_CONSTANT:
