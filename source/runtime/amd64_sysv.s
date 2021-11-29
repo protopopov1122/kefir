@@ -302,7 +302,7 @@ define_opcode imod
 define_opcode udiv
     pop DATA_REG
     pop rax
-    cqo
+    xor rdx, rdx
     div DATA_REG
     push rax
     end_opcode
@@ -310,7 +310,7 @@ define_opcode udiv
 define_opcode umod
     pop DATA_REG
     pop rax
-    cqo
+    xor rdx, rdx
     div DATA_REG
     push rdx
     end_opcode

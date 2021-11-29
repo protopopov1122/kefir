@@ -18,25 +18,12 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include "kefir/core/util.h"
-#include "kefir/test/unit_test.h"
+#include "./definitions.h"
 
-unsigned long udiv(unsigned long, unsigned long);
-unsigned long umod(unsigned long, unsigned long);
+unsigned long udiv(unsigned long x, unsigned long y) {
+    return x / y;
+}
 
-int main(int argc, const char **argv) {
-    UNUSED(argc);
-    UNUSED(argv);
-    for (unsigned int i = 0; i < 1000; i++) {
-        for (unsigned int j = 1; j < 1000; j++) {
-            ASSERT(udiv(i, j) == i / j);
-            ASSERT(umod(i, j) == i % j);
-        }
-
-        ASSERT(udiv(~0ull, i + 1) == ~0ull / (i + 1));
-        ASSERT(umod(~0ull, i + 1) == ~0ull % (i + 1));
-    }
-    return EXIT_SUCCESS;
+unsigned long umod(unsigned long x, unsigned long y) {
+    return x % y;
 }

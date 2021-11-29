@@ -390,7 +390,7 @@
                     "arg": 1
                 },
                 {
-                    "opcode": "idiv"
+                    "opcode": "udiv"
                 },
                 {
                     "opcode": "push",
@@ -408,7 +408,7 @@
                     "arg": 2
                 },
                 {
-                    "opcode": "idiv"
+                    "opcode": "udiv"
                 },
                 {
                     "opcode": "push",
@@ -426,7 +426,7 @@
                     "arg": 4
                 },
                 {
-                    "opcode": "idiv"
+                    "opcode": "udiv"
                 },
                 {
                     "opcode": "push",
@@ -444,7 +444,7 @@
                     "arg": 8
                 },
                 {
-                    "opcode": "idiv"
+                    "opcode": "udiv"
                 }
             ]
         },
