@@ -18,6 +18,8 @@
 .extern __kefirrt_imul_impl
 .extern __kefirrt_idiv_impl
 .extern __kefirrt_imod_impl
+.extern __kefirrt_udiv_impl
+.extern __kefirrt_umod_impl
 .extern __kefirrt_ineg_impl
 .extern __kefirrt_inot_impl
 .extern __kefirrt_iand_impl

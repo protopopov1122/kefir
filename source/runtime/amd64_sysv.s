@@ -76,6 +76,8 @@ declare_opcode isub
 declare_opcode imul
 declare_opcode idiv
 declare_opcode imod
+declare_opcode udiv
+declare_opcode umod
 declare_opcode ineg
 declare_opcode inot
 declare_opcode iand
@@ -294,6 +296,22 @@ define_opcode imod
     pop rax
     cqo
     idiv DATA_REG
+    push rdx
+    end_opcode
+
+define_opcode udiv
+    pop DATA_REG
+    pop rax
+    cqo
+    div DATA_REG
+    push rax
+    end_opcode
+
+define_opcode umod
+    pop DATA_REG
+    pop rax
+    cqo
+    div DATA_REG
     push rdx
     end_opcode
 

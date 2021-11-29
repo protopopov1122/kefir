@@ -73,6 +73,10 @@ kefir_result_t kefir_ir_format_instr(struct kefir_json_output *json, const struc
             return kefir_ir_format_instr_none(json, module, instr);
         case KEFIR_IROPCODE_IMOD:
             return kefir_ir_format_instr_none(json, module, instr);
+        case KEFIR_IROPCODE_UDIV:
+            return kefir_ir_format_instr_none(json, module, instr);
+        case KEFIR_IROPCODE_UMOD:
+            return kefir_ir_format_instr_none(json, module, instr);
         case KEFIR_IROPCODE_INEG:
             return kefir_ir_format_instr_none(json, module, instr);
         case KEFIR_IROPCODE_INOT:

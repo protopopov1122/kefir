@@ -49,14 +49,16 @@
     <opcode id="imul"        mnemonic="imul"        code="0x23" type="none" />
     <opcode id="idiv"        mnemonic="idiv"        code="0x24" type="none" />
     <opcode id="imod"        mnemonic="imod"        code="0x25" type="none" />
-    <opcode id="ineg"        mnemonic="ineg"        code="0x26" type="none" />
-    <opcode id="inot"        mnemonic="inot"        code="0x27" type="none" />
-    <opcode id="iand"        mnemonic="iand"        code="0x28" type="none" />
-    <opcode id="ior"         mnemonic="ior"         code="0x29" type="none" />
-    <opcode id="ixor"        mnemonic="ixor"        code="0x2a" type="none" />
-    <opcode id="ilshift"     mnemonic="ishl"        code="0x2b" type="none" />
-    <opcode id="irshift"     mnemonic="ishr"        code="0x2c" type="none" />
-    <opcode id="iarshift"    mnemonic="isar"        code="0x2d" type="none" />
+    <opcode id="udiv"        mnemonic="udiv"        code="0x26" type="none" />
+    <opcode id="umod"        mnemonic="umod"        code="0x27" type="none" />
+    <opcode id="ineg"        mnemonic="ineg"        code="0x28" type="none" />
+    <opcode id="inot"        mnemonic="inot"        code="0x29" type="none" />
+    <opcode id="iand"        mnemonic="iand"        code="0x2a" type="none" />
+    <opcode id="ior"         mnemonic="ior"         code="0x2b" type="none" />
+    <opcode id="ixor"        mnemonic="ixor"        code="0x2c" type="none" />
+    <opcode id="ilshift"     mnemonic="ishl"        code="0x2d" type="none" />
+    <opcode id="irshift"     mnemonic="ishr"        code="0x2e" type="none" />
+    <opcode id="iarshift"    mnemonic="isar"        code="0x2f" type="none" />
 
     <!-- Logics & coditions -->
     <opcode id="iequals"     mnemonic="iequals"     code="0x30" type="none" />
