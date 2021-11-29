@@ -181,16 +181,19 @@ DEFINE_CASE(ast_constant_expression_cast_operator1, "AST constant expressions - 
 
         ASSERT_ICAST(0, bool);
         ASSERT_ICAST(1, char);
-        ASSERT_UCAST(2, unsigned char);
         ASSERT_ICAST(3, signed char);
-        ASSERT_UCAST(4, unsigned short);
         ASSERT_ICAST(5, signed short);
-        ASSERT_UCAST(6, unsigned int);
         ASSERT_ICAST(7, int);
-        ASSERT_UCAST(8, unsigned long);
         ASSERT_ICAST(9, long);
-        ASSERT_UCAST(10, unsigned long long);
         ASSERT_ICAST(11, long long);
+
+        if (f >= 0.0f) {
+            ASSERT_UCAST(2, unsigned char);
+            ASSERT_UCAST(4, unsigned short);
+            ASSERT_UCAST(6, unsigned int);
+            ASSERT_UCAST(8, unsigned long);
+            ASSERT_UCAST(10, unsigned long long);
+        }
 
 #undef ASSERT_ICAST
 #undef ASSERT_UCAST
