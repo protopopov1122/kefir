@@ -757,9 +757,10 @@ define_opcode f32div
 
 define_opcode f32neg
     movss xmm0, [rsp]
-    xorps xmm0, [__kefirrt_f32neg_constant]
+    xorps xmm0, XMMWORD PTR __kefirrt_f32neg_constant[rip]
     movss [rsp], xmm0
     end_opcode
+.align 16
 __kefirrt_f32neg_constant:
     .long 0x80000000
     .long 0x80000000
@@ -800,9 +801,10 @@ define_opcode f64div
 
 define_opcode f64neg
     movsd xmm0, [rsp]
-    xorps xmm0, [__kefirrt_f64neg_constant]
+    xorps xmm0, XMMWORD PTR __kefirrt_f64neg_constant[rip]
     movsd [rsp], xmm0
     end_opcode
+.align 16
 __kefirrt_f64neg_constant:
     .quad 0x8000000000000000
     .quad 0x8000000000000000
