@@ -247,6 +247,9 @@
                     "arg": 100
                 },
                 {
+                    "opcode": "extend8"
+                },
+                {
                     "opcode": "store8"
                 },
                 {

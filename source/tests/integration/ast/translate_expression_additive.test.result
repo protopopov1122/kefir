@@ -154,6 +154,13 @@
                 },
                 {
                     "opcode": "push",
+                    "arg": 4294967295
+                },
+                {
+                    "opcode": "iand"
+                },
+                {
+                    "opcode": "push",
                     "arg": 1001
                 },
                 {
@@ -341,6 +348,13 @@
                 {
                     "opcode": "push",
                     "arg": -50
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4294967295
+                },
+                {
+                    "opcode": "iand"
                 },
                 {
                     "opcode": "isub"

@@ -122,6 +122,13 @@
                     "arg": 0
                 },
                 {
+                    "opcode": "push",
+                    "arg": 4294967295
+                },
+                {
+                    "opcode": "iand"
+                },
+                {
                     "opcode": "store32"
                 },
                 {
@@ -150,6 +157,9 @@
                     "opcode": "load8i"
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "push",
                     "arg": 0
                 },
@@ -164,7 +174,7 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 24
+                    "arg": 27
                 },
                 {
                     "opcode": "getlocals"
@@ -196,7 +206,7 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 5
+                    "arg": 7
                 }
             ]
         },

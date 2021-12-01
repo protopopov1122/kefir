@@ -61,6 +61,9 @@
                     "arg": -150
                 },
                 {
+                    "opcode": "trunc1"
+                },
+                {
                     "opcode": "push",
                     "arg": -100
                 },
@@ -69,8 +72,14 @@
                     "arg": 1
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "push",
                     "arg": 100
+                },
+                {
+                    "opcode": "extend16"
                 },
                 {
                     "opcode": "pushf32",
@@ -101,7 +110,21 @@
                 },
                 {
                     "opcode": "push",
+                    "arg": 4294967295
+                },
+                {
+                    "opcode": "iand"
+                },
+                {
+                    "opcode": "push",
                     "arg": 101
+                },
+                {
+                    "opcode": "push",
+                    "arg": 65535
+                },
+                {
+                    "opcode": "iand"
                 },
                 {
                     "opcode": "pushf32",
@@ -291,6 +314,13 @@
                 },
                 {
                     "opcode": "ldcint"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4294967295
+                },
+                {
+                    "opcode": "iand"
                 },
                 {
                     "opcode": "pushld",

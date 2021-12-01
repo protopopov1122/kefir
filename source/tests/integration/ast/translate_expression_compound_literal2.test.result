@@ -320,6 +320,9 @@
                     "arg": 72
                 },
                 {
+                    "opcode": "extend8"
+                },
+                {
                     "opcode": "store8"
                 },
                 {
@@ -333,6 +336,9 @@
                 {
                     "opcode": "push",
                     "arg": 101
+                },
+                {
+                    "opcode": "extend8"
                 },
                 {
                     "opcode": "store8"
@@ -350,6 +356,9 @@
                     "arg": 108
                 },
                 {
+                    "opcode": "extend8"
+                },
+                {
                     "opcode": "store8"
                 },
                 {
@@ -365,6 +374,9 @@
                     "arg": 108
                 },
                 {
+                    "opcode": "extend8"
+                },
+                {
                     "opcode": "store8"
                 },
                 {
@@ -378,6 +390,9 @@
                 {
                     "opcode": "push",
                     "arg": 111
+                },
+                {
+                    "opcode": "extend8"
                 },
                 {
                     "opcode": "store8"

@@ -189,6 +189,9 @@
                     "arg": 1
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "ishl"
                 },
                 {
@@ -198,6 +201,9 @@
                 {
                     "opcode": "push",
                     "arg": 6
+                },
+                {
+                    "opcode": "extend32"
                 },
                 {
                     "opcode": "ishl"
@@ -229,6 +235,9 @@
                     "arg": 8
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "isar"
                 },
                 {
@@ -238,6 +247,9 @@
                 {
                     "opcode": "push",
                     "arg": 1
+                },
+                {
+                    "opcode": "extend32"
                 },
                 {
                     "opcode": "isar"

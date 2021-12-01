@@ -522,6 +522,13 @@
                     "arg": 4
                 },
                 {
+                    "opcode": "push",
+                    "arg": 4294967295
+                },
+                {
+                    "opcode": "iand"
+                },
+                {
                     "opcode": "store32"
                 },
                 {

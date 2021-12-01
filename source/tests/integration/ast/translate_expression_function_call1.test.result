@@ -467,8 +467,14 @@
                     "opcode": "f32cint"
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "push",
                     "arg": 1
+                },
+                {
+                    "opcode": "extend32"
                 },
                 {
                     "opcode": "invoke",

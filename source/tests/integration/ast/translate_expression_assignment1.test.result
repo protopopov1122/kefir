@@ -300,6 +300,13 @@
                     "arg": 131071
                 },
                 {
+                    "opcode": "push",
+                    "arg": 4294967295
+                },
+                {
+                    "opcode": "iand"
+                },
+                {
                     "opcode": "xchg",
                     "arg": 1
                 },
@@ -343,6 +350,13 @@
                 },
                 {
                     "opcode": "f64cint"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4294967295
+                },
+                {
+                    "opcode": "iand"
                 },
                 {
                     "opcode": "xchg",
@@ -397,6 +411,9 @@
                     "opcode": "f32cint"
                 },
                 {
+                    "opcode": "trunc1"
+                },
+                {
                     "opcode": "xchg",
                     "arg": 1
                 },
@@ -425,6 +442,9 @@
                     "arg": 65
                 },
                 {
+                    "opcode": "extend8"
+                },
+                {
                     "opcode": "xchg",
                     "arg": 1
                 },
@@ -446,6 +466,13 @@
                     "arg": 66
                 },
                 {
+                    "opcode": "push",
+                    "arg": 255
+                },
+                {
+                    "opcode": "iand"
+                },
+                {
                     "opcode": "xchg",
                     "arg": 1
                 },
@@ -465,6 +492,9 @@
                 {
                     "opcode": "push",
                     "arg": 67
+                },
+                {
+                    "opcode": "extend8"
                 },
                 {
                     "opcode": "xchg",
@@ -489,6 +519,9 @@
                 },
                 {
                     "opcode": "f64cint"
+                },
+                {
+                    "opcode": "extend8"
                 },
                 {
                     "opcode": "xchg",
@@ -592,6 +625,13 @@
                     "arg": 254
                 },
                 {
+                    "opcode": "push",
+                    "arg": 65535
+                },
+                {
+                    "opcode": "iand"
+                },
+                {
                     "opcode": "xchg",
                     "arg": 1
                 },
@@ -611,6 +651,9 @@
                 {
                     "opcode": "push",
                     "arg": -74
+                },
+                {
+                    "opcode": "extend16"
                 },
                 {
                     "opcode": "xchg",

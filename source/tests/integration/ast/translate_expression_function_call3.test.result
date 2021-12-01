@@ -390,6 +390,9 @@
                     "arg": 0
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "invoke",
                     "arg": {
                         "identifier": 4,

@@ -567,6 +567,9 @@
                     "opcode": "ixor"
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "xchg",
                     "arg": 1
                 },

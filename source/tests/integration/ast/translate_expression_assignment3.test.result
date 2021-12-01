@@ -159,6 +159,9 @@
                     "opcode": "f64cint"
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "xchg",
                     "arg": 1
                 },

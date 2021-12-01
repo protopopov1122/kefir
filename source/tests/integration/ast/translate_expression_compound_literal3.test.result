@@ -337,6 +337,9 @@
                     "arg": 65
                 },
                 {
+                    "opcode": "extend8"
+                },
+                {
                     "opcode": "store8"
                 },
                 {
@@ -352,6 +355,9 @@
                     "arg": 66
                 },
                 {
+                    "opcode": "extend8"
+                },
+                {
                     "opcode": "store8"
                 },
                 {
@@ -365,6 +371,9 @@
                 {
                     "opcode": "push",
                     "arg": 66
+                },
+                {
+                    "opcode": "extend8"
                 },
                 {
                     "opcode": "store8"

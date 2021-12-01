@@ -103,6 +103,9 @@
                     "arg": 0
                 },
                 {
+                    "opcode": "extend16"
+                },
+                {
                     "opcode": "store16"
                 },
                 {
@@ -143,6 +146,9 @@
                     "opcode": "load16i"
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "push",
                     "arg": 1000
                 },
@@ -154,15 +160,15 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 20
+                    "arg": 22
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 21
+                    "arg": 23
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 5
+                    "arg": 6
                 },
                 {
                     "opcode": "getlocals"
@@ -175,11 +181,17 @@
                     "opcode": "load16i"
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "push",
                     "arg": 7
                 },
                 {
                     "opcode": "imod"
+                },
+                {
+                    "opcode": "extend16"
                 },
                 {
                     "opcode": "xchg",

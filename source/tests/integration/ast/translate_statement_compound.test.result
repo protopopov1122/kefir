@@ -286,6 +286,9 @@
                     "opcode": "f32cint"
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "xchg",
                     "arg": 1
                 },
@@ -445,6 +448,9 @@
                 },
                 {
                     "opcode": "f32cint"
+                },
+                {
+                    "opcode": "extend32"
                 },
                 {
                     "opcode": "xchg",

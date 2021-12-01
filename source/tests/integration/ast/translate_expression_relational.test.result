@@ -1154,6 +1154,13 @@
                 },
                 {
                     "opcode": "push",
+                    "arg": 4294967295
+                },
+                {
+                    "opcode": "iand"
+                },
+                {
+                    "opcode": "push",
                     "arg": 67
                 },
                 {
