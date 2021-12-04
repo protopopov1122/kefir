@@ -23,15 +23,24 @@
 #include <assert.h>
 #include "./definitions.h"
 
+unsigned long VAL = 0;
+
 int main() {
     for (unsigned int i = 0; i < 1000; i++) {
         for (unsigned int j = 1; j < 1000; j++) {
             assert(udiv(i, j) == i / j);
             assert(umod(i, j) == i % j);
+            VAL = i;
+            assert(udiv_assn(j) == (i / j));
+            assert(VAL == (i / j));
         }
 
         assert(udiv(~0ull, i + 1) == ~0ull / (i + 1));
         assert(umod(~0ull, i + 1) == ~0ull % (i + 1));
+
+        VAL = ~0ull;
+        assert(udiv_assn(i + 1) == (~0ull / (i + 1)));
+        assert(VAL == (~0ull / (i + 1)));
     }
     return EXIT_SUCCESS;
 }

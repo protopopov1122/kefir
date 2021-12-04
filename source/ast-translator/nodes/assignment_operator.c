@@ -152,9 +152,15 @@ static kefir_result_t translate_divide(struct kefir_mem *mem, struct kefir_ast_t
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_F32DIV, 0));
             break;
 
-        default:
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IDIV, 0));
-            break;
+        default: {
+            kefir_bool_t signed_integer = false;
+            REQUIRE_OK(kefir_ast_type_is_signed(context->ast_context->type_traits, common_type, &signed_integer));
+            if (signed_integer) {
+                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IDIV, 0));
+            } else {
+                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_UDIV, 0));
+            }
+        } break;
     }
     REQUIRE_OK(
         kefir_ast_translate_typeconv(builder, context->ast_context->type_traits, common_type, result_normalized_type));

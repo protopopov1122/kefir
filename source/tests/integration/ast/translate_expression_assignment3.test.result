@@ -276,7 +276,7 @@
                     "arg": 1006
                 },
                 {
-                    "opcode": "idiv"
+                    "opcode": "udiv"
                 },
                 {
                     "opcode": "xchg",

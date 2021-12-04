@@ -21,7 +21,10 @@
 #ifndef DEFINITIONS_H_
 #define DEFINITIONS_H_
 
+extern unsigned long VAL;
+
 unsigned long udiv(unsigned long, unsigned long);
+unsigned long udiv_assn(unsigned long);
 unsigned long umod(unsigned long, unsigned long);
 
 #endif

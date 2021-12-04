@@ -24,6 +24,10 @@ unsigned long udiv(unsigned long x, unsigned long y) {
     return x / y;
 }
 
+unsigned long udiv_assn(unsigned long x) {
+    return VAL /= x;
+}
+
 unsigned long umod(unsigned long x, unsigned long y) {
     return x % y;
 }
