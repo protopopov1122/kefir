@@ -158,6 +158,33 @@ static kefir_result_t cast_to_integer(const struct kefir_ast_type_traits *type_t
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_ast_translate_typeconv_normalize(struct kefir_irbuilder_block *builder,
+                                                      const struct kefir_ast_type_traits *type_traits,
+                                                      const struct kefir_ast_type *origin) {
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR block builder"));
+    REQUIRE(type_traits != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid origin AST type traits"));
+    REQUIRE(origin != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid origin AST type"));
+
+    const struct kefir_ast_type *normalized_origin = kefir_ast_translator_normalize_type(origin);
+    REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(normalized_origin),
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected origin AST type to be scalar"));
+
+    switch (normalized_origin->tag) {
+        case KEFIR_AST_TYPE_SCALAR_POINTER:
+        case KEFIR_AST_TYPE_SCALAR_FLOAT:
+        case KEFIR_AST_TYPE_SCALAR_DOUBLE:
+        case KEFIR_AST_TYPE_SCALAR_LONG_DOUBLE:
+            // Intentionally left blank
+            break;
+
+        default:
+            REQUIRE_OK(cast_to_integer(type_traits, builder, normalized_origin, normalized_origin));
+            break;
+    }
+
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_translate_typeconv(struct kefir_irbuilder_block *builder,
                                             const struct kefir_ast_type_traits *type_traits,
                                             const struct kefir_ast_type *origin,

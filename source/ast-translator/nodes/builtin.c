@@ -73,6 +73,10 @@ kefir_result_t kefir_ast_translate_builtin_node(struct kefir_mem *mem, struct ke
                     KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected cached type to be an object"));
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(
                 builder, KEFIR_IROPCODE_VARARG_GET, cached_type->object.ir_type_id, cached_type->object.layout->value));
+            if (KEFIR_AST_TYPE_IS_SCALAR_TYPE(cached_type->type)) {
+                REQUIRE_OK(kefir_ast_translate_typeconv_normalize(builder, context->ast_context->type_traits,
+                                                                  cached_type->type));
+            }
         } break;
 
         case KEFIR_AST_BUILTIN_VA_COPY: {
