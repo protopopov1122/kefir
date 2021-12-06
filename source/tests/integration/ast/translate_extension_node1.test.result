@@ -96,6 +96,9 @@
                     }
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "iadd1",
                     "arg": 1
                 }

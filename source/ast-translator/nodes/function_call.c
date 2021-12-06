@@ -138,5 +138,10 @@ kefir_result_t kefir_ast_translate_function_call_node(struct kefir_mem *mem,
     } else {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_INVOKE, ir_decl->id));
     }
+
+    if (KEFIR_AST_TYPE_IS_SCALAR_TYPE(node->base.properties.type)) {
+        REQUIRE_OK(kefir_ast_translate_typeconv_normalize(builder, context->ast_context->type_traits,
+                                                          node->base.properties.type));
+    }
     return KEFIR_OK;
 }

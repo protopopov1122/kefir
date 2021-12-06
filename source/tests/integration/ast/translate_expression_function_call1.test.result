@@ -428,6 +428,9 @@
                         "identifier": 5,
                         "name": "sum"
                     }
+                },
+                {
+                    "opcode": "extend32"
                 }
             ]
         },
@@ -482,6 +485,9 @@
                         "identifier": 7,
                         "name": "sum"
                     }
+                },
+                {
+                    "opcode": "extend32"
                 }
             ]
         },
@@ -519,6 +525,9 @@
                         "identifier": 9,
                         "name": "test"
                     }
+                },
+                {
+                    "opcode": "extend32"
                 }
             ]
         },
@@ -556,6 +565,9 @@
                         "identifier": 11,
                         "name": "test2"
                     }
+                },
+                {
+                    "opcode": "extend32"
                 }
             ]
         },
@@ -597,6 +609,9 @@
                         "identifier": 13,
                         "name": "test3"
                     }
+                },
+                {
+                    "opcode": "extend32"
                 }
             ]
         },
@@ -669,6 +684,9 @@
                         "identifier": 15,
                         "name": "test3"
                     }
+                },
+                {
+                    "opcode": "extend32"
                 }
             ]
         }

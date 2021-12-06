@@ -360,6 +360,9 @@
                         "identifier": 2,
                         "name": "sum"
                     }
+                },
+                {
+                    "opcode": "extend32"
                 }
             ]
         },
@@ -412,6 +415,9 @@
                         "identifier": 4,
                         "name": "sum"
                     }
+                },
+                {
+                    "opcode": "extend32"
                 }
             ]
         },
@@ -471,6 +477,9 @@
                         "identifier": 6,
                         "name": "sum"
                     }
+                },
+                {
+                    "opcode": "extend32"
                 }
             ]
         },
@@ -558,6 +567,9 @@
                         "identifier": 8,
                         "name": "sum"
                     }
+                },
+                {
+                    "opcode": "extend32"
                 }
             ]
         }

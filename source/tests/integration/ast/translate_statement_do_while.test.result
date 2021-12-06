@@ -176,6 +176,9 @@
                     }
                 },
                 {
+                    "opcode": "trunc1"
+                },
+                {
                     "opcode": "xchg",
                     "arg": 1
                 },

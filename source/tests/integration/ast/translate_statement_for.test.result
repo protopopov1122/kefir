@@ -447,7 +447,7 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 27
+                    "arg": 28
                 },
                 {
                     "opcode": "invoke",
@@ -457,23 +457,26 @@
                     }
                 },
                 {
+                    "opcode": "trunc1"
+                },
+                {
                     "opcode": "bnot"
                 },
                 {
                     "opcode": "branch",
-                    "arg": 17
-                },
-                {
-                    "opcode": "jmp",
                     "arg": 18
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 18
+                    "arg": 19
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 27
+                    "arg": 19
+                },
+                {
+                    "opcode": "jmp",
+                    "arg": 28
                 },
                 {
                     "opcode": "getlocals"
