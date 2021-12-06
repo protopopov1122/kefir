@@ -1,0 +1,23 @@
+image: ubuntu/focal
+packages:
+  - build-essential
+  - gcc-10
+  - clang-format
+  - valgrind
+  - xsltproc
+  - musl-dev
+  - musl-tools
+sources:
+  - https://git.sr.ht/~jprotopopov/kefir
+tasks:
+  - kefircc: |
+      cd kefir
+      make ./bin/kefir OPT=-O2 -j$(nproc)
+  - lua_tests: |
+      cd kefir
+      export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/bin/libs
+      ./source/tests/misc/run-lua-tests.sh "$(pwd)/bin/kefir -I /usr/include/x86_64-linux-musl" "$(pwd)/source/runtime/amd64_sysv.s" "$(pwd)/bin/lua-test"
+triggers:
+  - action: email
+    condition: failure
+    to: jprotopopov1122@gmail.com
