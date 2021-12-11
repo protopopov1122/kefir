@@ -42,8 +42,12 @@ kefir_result_t kefir_cli_input_open(struct kefir_mem *mem, struct kefir_cli_inpu
         struct stat statbuf;
         REQUIRE(fstat(fd, &statbuf) >= 0, KEFIR_SET_OS_ERROR("Failed to fstat file"));
 
-        input->content = mmap(NULL, statbuf.st_size, PROT_READ, MAP_SHARED, fd, 0);
-        REQUIRE(input->content != MAP_FAILED, KEFIR_SET_OS_ERROR("Failed to mmap file"));
+        if (statbuf.st_size > 0) {
+            input->content = mmap(NULL, statbuf.st_size, PROT_READ, MAP_SHARED, fd, 0);
+            REQUIRE(input->content != MAP_FAILED, KEFIR_SET_OS_ERROR("Failed to mmap file"));
+        } else {
+            input->content = "";
+        }
         input->length = statbuf.st_size;
     } else {
         fd = STDIN_FILENO;
@@ -73,8 +77,10 @@ kefir_result_t kefir_cli_input_close(struct kefir_mem *mem, struct kefir_cli_inp
     REQUIRE(input != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid CLI input"));
 
     if (input->filepath != NULL) {
-        int err = munmap(input->content, input->length);
-        REQUIRE(err == 0, KEFIR_SET_OS_ERROR("Failed to unmap file"));
+        if (input->length > 0) {
+            int err = munmap(input->content, input->length);
+            REQUIRE(err == 0, KEFIR_SET_OS_ERROR("Failed to unmap file"));
+        }
     } else {
         KEFIR_FREE(mem, input->content);
     }
