@@ -21,6 +21,7 @@
 #include "kefir/ast/analyzer/nodes.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/core/source_error.h"
 
 kefir_result_t kefir_ast_analyze_identifier_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                  const struct kefir_ast_identifier *node,
@@ -30,7 +31,13 @@ kefir_result_t kefir_ast_analyze_identifier_node(struct kefir_mem *mem, const st
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST identifier"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST base node"));
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
-    REQUIRE_OK(context->resolve_ordinary_identifier(context, node->identifier, &scoped_id));
+    kefir_result_t res = context->resolve_ordinary_identifier(context, node->identifier, &scoped_id);
+    if (res == KEFIR_NOT_FOUND) {
+        return KEFIR_SET_SOURCE_ERRORF(KEFIR_ANALYSIS_ERROR, &base->source_location,
+                                       "Unable to find '%s' in current scope", node->identifier);
+    } else {
+        REQUIRE_OK(res);
+    }
     switch (scoped_id->klass) {
         case KEFIR_AST_SCOPE_IDENTIFIER_OBJECT:
             REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
