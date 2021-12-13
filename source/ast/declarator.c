@@ -334,9 +334,15 @@ kefir_result_t kefir_ast_declarator_unpack_function(struct kefir_ast_declarator 
             REQUIRE_OK(kefir_ast_declarator_unpack_function(decl->array.declarator, func_ptr));
             break;
 
-        case KEFIR_AST_DECLARATOR_FUNCTION:
-            *func_ptr = &decl->function;
-            break;
+        case KEFIR_AST_DECLARATOR_FUNCTION: {
+            const struct kefir_ast_declarator_function *ptr = NULL;
+            REQUIRE_OK(kefir_ast_declarator_unpack_function(decl->function.declarator, &ptr));
+            if (ptr == NULL) {
+                *func_ptr = &decl->function;
+            } else {
+                *func_ptr = ptr;
+            }
+        } break;
     }
     return KEFIR_OK;
 }
