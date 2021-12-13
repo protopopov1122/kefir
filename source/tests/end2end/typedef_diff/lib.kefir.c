@@ -18,13 +18,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef KEFIR_AST_NAMED_STRUCT_RESOLVER_H_
-#define KEFIR_AST_NAMED_STRUCT_RESOLVER_H_
+#include "./definitions.h"
 
-#include "kefir/ast/type.h"
-#include "kefir/ast/context.h"
-
-kefir_result_t kefir_ast_context_named_structure_resolver_init(const struct kefir_ast_context *,
-                                                               struct kefir_ast_named_structure_resolver *);
-
-#endif
+long struct1_diff(const struct Struct2 *x, const Struct1 *y) {
+    return x->ptr - y;
+}

@@ -27,7 +27,7 @@
 #include "kefir/core/error.h"
 #include "kefir/ast/constant_expression.h"
 #include "kefir/ast/function_declaration_context.h"
-#include "kefir/ast/named_struct_resolver.h"
+#include "kefir/ast/type_completion.h"
 #include "kefir/core/source_error.h"
 
 enum signedness { SIGNEDNESS_DEFAULT, SIGNEDNESS_SIGNED, SIGNEDNESS_UNSIGNED };
@@ -274,29 +274,16 @@ static kefir_result_t resolve_enum_type(struct kefir_mem *mem, const struct kefi
     return KEFIR_OK;
 }
 
-static kefir_result_t resolve_typedef(const struct kefir_ast_context *context, const char *type_name,
-                                      const struct kefir_source_location *source_location,
+static kefir_result_t resolve_typedef(struct kefir_mem *mem, const struct kefir_ast_context *context,
+                                      const char *type_name, const struct kefir_source_location *source_location,
                                       const struct kefir_ast_type **base_type) {
     const struct kefir_ast_scoped_identifier *scoped_identifier = NULL;
     REQUIRE_OK(context->resolve_ordinary_identifier(context, type_name, &scoped_identifier));
     REQUIRE(scoped_identifier->klass == KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION,
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, source_location,
                                    "Referenced identifier is not a type definition"));
-    if ((scoped_identifier->type->tag == KEFIR_AST_TYPE_STRUCTURE ||
-         scoped_identifier->type->tag == KEFIR_AST_TYPE_UNION) &&
-        !scoped_identifier->type->structure_type.complete) {
-        struct kefir_ast_named_structure_resolver resolver;
-        REQUIRE_OK(kefir_ast_context_named_structure_resolver_init(context, &resolver));
-        kefir_result_t res =
-            resolver.resolve(scoped_identifier->type->structure_type.identifier, base_type, resolver.payload);
-        if (res == KEFIR_NOT_FOUND) {
-            *base_type = scoped_identifier->type;
-        } else {
-            REQUIRE_OK(res);
-        }
-    } else {
-        *base_type = scoped_identifier->type;
-    }
+
+    REQUIRE_OK(kefir_ast_type_completion(mem, context, base_type, scoped_identifier->type));
     return KEFIR_OK;
 }
 
@@ -455,7 +442,7 @@ static kefir_result_t resolve_type(struct kefir_mem *mem, const struct kefir_ast
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &decl_specifier->source_location,
                                            "Cannot combine referenced type definition with others"));
             REQUIRE_OK(
-                resolve_typedef(context, specifier->value.type_name, &decl_specifier->source_location, base_type));
+                resolve_typedef(mem, context, specifier->value.type_name, &decl_specifier->source_location, base_type));
             *seq_state = TYPE_SPECIFIER_SEQUENCE_TYPEDEF;
             break;
 
