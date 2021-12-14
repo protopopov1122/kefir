@@ -85,12 +85,20 @@ static kefir_result_t visit_array_subscript(const struct kefir_ast_visitor *visi
     ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
 
     const struct kefir_ast_type *array_type = kefir_ast_type_lvalue_conversion(node->array->properties.type);
-    if (array_type->tag == KEFIR_AST_TYPE_ARRAY || array_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
+    const struct kefir_ast_type *subscript_type = kefir_ast_type_lvalue_conversion(node->subscript->properties.type);
+
+    if (array_type->tag == KEFIR_AST_TYPE_ARRAY) {
         REQUIRE_OK(KEFIR_AST_NODE_VISIT(visitor, node->array, payload));
         *param->constant = *param->constant && node->subscript->properties.expression_props.constant_expression;
-    } else {
+    } else if (array_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
+        *param->constant = *param->constant && node->array->properties.expression_props.constant_expression &&
+                           node->subscript->properties.expression_props.constant_expression;
+    } else if (subscript_type->tag == KEFIR_AST_TYPE_ARRAY) {
         REQUIRE_OK(KEFIR_AST_NODE_VISIT(visitor, node->subscript, payload));
         *param->constant = *param->constant && node->array->properties.expression_props.constant_expression;
+    } else {
+        *param->constant = *param->constant && node->array->properties.expression_props.constant_expression &&
+                           node->subscript->properties.expression_props.constant_expression;
     }
     return KEFIR_OK;
 }

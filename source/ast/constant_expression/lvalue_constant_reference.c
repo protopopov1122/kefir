@@ -120,11 +120,27 @@ static kefir_result_t visit_array_subscript(const struct kefir_ast_visitor *visi
     if (array_type->tag != KEFIR_AST_TYPE_ARRAY && array_type->tag != KEFIR_AST_TYPE_SCALAR_POINTER) {
         array = node->subscript;
         subscript = node->array;
+        array_type = kefir_ast_type_lvalue_conversion(node->subscript->properties.type);
     }
 
     struct kefir_ast_constant_expression_pointer base_pointer;
-    REQUIRE_OK(kefir_ast_constant_expression_value_evaluate_lvalue_reference(param->mem, param->context, array,
-                                                                             &base_pointer));
+    if (array_type->tag == KEFIR_AST_TYPE_ARRAY) {
+        REQUIRE_OK(kefir_ast_constant_expression_value_evaluate_lvalue_reference(param->mem, param->context, array,
+                                                                                 &base_pointer));
+    } else {
+        REQUIRE(
+            array_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER,
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &array->source_location, "Expected either array or pointer"));
+        struct kefir_ast_constant_expression_value base_expr;
+        REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(param->mem, param->context, array, &base_expr));
+        REQUIRE(base_expr.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &array->source_location,
+                                       "Expected constant expression to yield an address"));
+        base_pointer = base_expr.pointer;
+
+        array_type =
+            kefir_ast_type_unbounded_array(param->mem, param->context->type_bundle, array_type->referenced_type, NULL);
+    }
 
     struct kefir_ast_constant_expression_value subscript_value;
     REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(param->mem, param->context, subscript, &subscript_value));
@@ -137,8 +153,7 @@ static kefir_result_t visit_array_subscript(const struct kefir_ast_visitor *visi
 
     struct kefir_ast_target_environment_object_info object_info;
     kefir_ast_target_environment_opaque_type_t opaque_type;
-    REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_GET_TYPE(param->mem, param->context->target_env, array->properties.type,
-                                                     &opaque_type));
+    REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_GET_TYPE(param->mem, param->context->target_env, array_type, &opaque_type));
     kefir_result_t res = KEFIR_AST_TARGET_ENVIRONMENT_OBJECT_INFO(param->mem, param->context->target_env, opaque_type,
                                                                   &designator, &object_info);
     REQUIRE_ELSE(res == KEFIR_OK, {
