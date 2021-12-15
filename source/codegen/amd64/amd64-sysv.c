@@ -208,7 +208,7 @@ static kefir_result_t cg_translate_strings(struct kefir_codegen_amd64 *codegen,
         ASMGEN_LABEL(&codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_STRING_LITERAL, id);
         switch (literal_type) {
             case KEFIR_IR_STRING_LITERAL_MULTIBYTE:
-                ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_ASCIi);
+                ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_ASCII);
                 ASMGEN_STRING_LITERAL(&codegen->asmgen, content, length);
                 break;
 

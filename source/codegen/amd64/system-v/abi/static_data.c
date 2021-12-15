@@ -371,7 +371,7 @@ static kefir_result_t union_static_data(const struct kefir_ir_type *type, kefir_
 static kefir_result_t dump_binary(struct static_data_param *param, const char *raw, kefir_size_t length) {
     ASMGEN_RAW(&param->codegen->asmgen, KEFIR_AMD64_BYTE);
     for (kefir_size_t i = 0; i < length; i++) {
-        ASMGEN_ARG(&param->codegen->asmgen, "0x%02x", raw[i]);
+        ASMGEN_ARG(&param->codegen->asmgen, "0x%02x", (kefir_uint8_t) raw[i]);
     }
     param->offset += length;
     return KEFIR_OK;

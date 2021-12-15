@@ -164,7 +164,7 @@ static kefir_result_t amd64_rawdata(struct kefir_amd64_asmgen *asmgen, kefir_amd
             fprintf(out, ".quad");
             break;
 
-        case KEFIR_AMD64_ASCIi:
+        case KEFIR_AMD64_ASCII:
             fprintf(out, ".ascii");
             break;
     }
@@ -202,7 +202,7 @@ static kefir_result_t amd64_multrawdata(struct kefir_amd64_asmgen *asmgen, kefir
             fprintf(out, "8");
             break;
 
-        case KEFIR_AMD64_ASCIi:
+        case KEFIR_AMD64_ASCII:
             return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "ASCIIZ data is not supported in mulrawdata context");
     }
     fprintf(out, ",");

@@ -1,0 +1,2 @@
+END2END_TEST_ID=string_literals_multibyte1
+include source/tests/end2end/Makefile.template.mk

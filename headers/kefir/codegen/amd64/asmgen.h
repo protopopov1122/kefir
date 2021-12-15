@@ -31,7 +31,7 @@ typedef enum kefir_amd64_asmgen_datawidth {
     KEFIR_AMD64_WORD = 'w',
     KEFIR_AMD64_DOUBLE = 'd',
     KEFIR_AMD64_QUAD = 'q',
-    KEFIR_AMD64_ASCIi = 'a'
+    KEFIR_AMD64_ASCII = 'a'
 } kefir_amd64_asmgen_datawidth_t;
 
 typedef struct kefir_amd64_asmgen {

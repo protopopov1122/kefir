@@ -20,6 +20,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <locale.h>
 #include "kefir/cli/input.h"
 #include "kefir/cli/filesystem_source.h"
 #include "kefir/core/util.h"
@@ -315,6 +316,8 @@ static int kefir_report_error(kefir_result_t res, struct kefir_cli_options *opti
 int main(int argc, char *const *argv) {
     struct kefir_mem *mem = kefir_system_memalloc();
     struct kefir_cli_options options;
+
+    setlocale(LC_ALL, "");
     kefir_result_t res = kefir_cli_parse_options(mem, &options, argv, argc);
     REQUIRE_CHAIN(&res, kefir_main(mem, &options));
     REQUIRE_CHAIN(&res, kefir_cli_options_free(mem, &options));
