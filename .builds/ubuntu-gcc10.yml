@@ -10,7 +10,7 @@ sources:
 tasks:
   - test: |
       cd kefir
-      make test MEMCHECK=yes OPT=-O3 SANITIZE=undefined CC=gcc-10 -j$(nproc)
+      LC_ALL=C.UTF-8 make test MEMCHECK=yes OPT=-O3 SANITIZE=undefined CC=gcc-10 -j$(nproc)
   - build: |
       cd kefir
       make clean
