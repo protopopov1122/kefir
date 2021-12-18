@@ -99,7 +99,8 @@ static kefir_amd64_sysv_data_class_t derive_dataclass(kefir_amd64_sysv_data_clas
     return KEFIR_AMD64_SYSV_PARAM_SSE;
 }
 
-struct kefir_amd64_sysv_abi_qword *next_qword(struct kefir_amd64_sysv_abi_qwords *qwords, kefir_size_t alignment) {
+static struct kefir_amd64_sysv_abi_qword *next_qword(struct kefir_amd64_sysv_abi_qwords *qwords,
+                                                     kefir_size_t alignment) {
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_abi_qword *, qword, kefir_vector_at(&qwords->qwords, qwords->current));
     kefir_size_t unalign = qword->current_offset % alignment;
     kefir_size_t pad = unalign > 0 ? alignment - unalign : 0;
@@ -121,6 +122,7 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_next(struct kefir_amd64_sysv_abi_qwor
     struct kefir_amd64_sysv_abi_qword *first = NULL;
     while (size > 0) {
         struct kefir_amd64_sysv_abi_qword *current = next_qword(qwords, alignment);
+        REQUIRE(current != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Unable to obtain next qword"));
         if (first == NULL) {
             first = current;
             ref->qword = current;
@@ -132,6 +134,32 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_next(struct kefir_amd64_sysv_abi_qwor
         size -= chunk;
         current->klass = derive_dataclass(current->klass, dataclass);
         alignment = 1;
+    }
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_amd64_sysv_abi_qwords_next_bitfield(struct kefir_amd64_sysv_abi_qwords *qwords,
+                                                         kefir_amd64_sysv_data_class_t dataclass, kefir_size_t width,
+                                                         struct kefir_amd64_sysv_abi_qword_ref *ref) {
+    REQUIRE(qwords != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid QWord vector"));
+    REQUIRE(width > 0, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-zero bitfield width"));
+    REQUIRE(ref != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid QWord reference"));
+
+    kefir_size_t size = width / 8 + (width % 8 != 0 ? 1 : 0);
+    struct kefir_amd64_sysv_abi_qword *first = NULL;
+    while (size > 0) {
+        struct kefir_amd64_sysv_abi_qword *current = next_qword(qwords, 1);
+        REQUIRE(current != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Unable to obtain next qword"));
+        if (first == NULL) {
+            first = current;
+            ref->qword = current;
+            ref->offset = current->current_offset;
+        }
+        kefir_size_t available = KEFIR_AMD64_SYSV_ABI_QWORD - current->current_offset;
+        kefir_size_t chunk = MIN(available, size);
+        current->current_offset += chunk;
+        size -= chunk;
+        current->klass = derive_dataclass(current->klass, dataclass);
     }
     return KEFIR_OK;
 }
