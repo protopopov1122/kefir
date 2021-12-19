@@ -14,7 +14,7 @@ tasks:
   - build: |
       cd kefir
       make clean
-      make all OPT=-O3 CC=gcc-10
+      LC_ALL=C.UTF-8 make all OPT=-O3 CC=gcc-10
 triggers:
   - action: email
     condition: failure
