@@ -121,11 +121,17 @@ static kefir_result_t cg_translate_function(struct kefir_mem *mem, const struct 
 
     struct kefir_hashtree_node_iterator appendix_iter;
     for (const struct kefir_hashtree_node *node = kefir_hashtree_iter(&sysv_func.appendix, &appendix_iter);
-         node != NULL; node = kefir_hashtree_next(&appendix_iter)) {
+         res == KEFIR_OK && node != NULL; node = kefir_hashtree_next(&appendix_iter)) {
         ASSIGN_DECL_CAST(struct kefir_amd64_sysv_function_appendix_data *, appendix, node->value);
-        REQUIRE_OK(appendix->callback(codegen, sysv_module, &sysv_func, (const char *) node->key, appendix->payload));
+        REQUIRE_CHAIN(
+            &res, appendix->callback(codegen, sysv_module, &sysv_func, (const char *) node->key, appendix->payload));
     }
-    kefir_amd64_sysv_function_free(mem, &sysv_func);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_amd64_sysv_function_free(mem, &sysv_func);
+        return res;
+    });
+
+    REQUIRE_OK(kefir_amd64_sysv_function_free(mem, &sysv_func));
     ASMGEN_NEWLINE(&codegen->asmgen, 1);
     return KEFIR_OK;
 }

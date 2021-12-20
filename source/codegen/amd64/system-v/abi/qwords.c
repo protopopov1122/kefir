@@ -122,6 +122,9 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_next(struct kefir_amd64_sysv_abi_qwor
     struct kefir_amd64_sysv_abi_qword *first = NULL;
     while (size > 0) {
         struct kefir_amd64_sysv_abi_qword *current = next_qword(qwords, alignment);
+        if (current == NULL) {
+            abort();
+        }
         REQUIRE(current != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Unable to obtain next qword"));
         if (first == NULL) {
             first = current;
@@ -199,7 +202,11 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_restore_position(
             KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Position offset exceeds boundaries"));
     for (kefir_size_t i = position->index; i < length; i++) {
         ASSIGN_DECL_CAST(struct kefir_amd64_sysv_abi_qword *, qword, kefir_vector_at(&qwords->qwords, i));
-        qword->current_offset = i == position->index ? position->offset : position->index;
+        if (i == position->index) {
+            qword->current_offset = position->offset;
+        } else {
+            qword->current_offset = 0;
+        }
     }
     qwords->current = position->index;
     return KEFIR_OK;
