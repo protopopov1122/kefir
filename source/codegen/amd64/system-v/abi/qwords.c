@@ -122,9 +122,6 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_next(struct kefir_amd64_sysv_abi_qwor
     struct kefir_amd64_sysv_abi_qword *first = NULL;
     while (size > 0) {
         struct kefir_amd64_sysv_abi_qword *current = next_qword(qwords, alignment);
-        if (current == NULL) {
-            abort();
-        }
         REQUIRE(current != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Unable to obtain next qword"));
         if (first == NULL) {
             first = current;
