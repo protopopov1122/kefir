@@ -34,7 +34,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_codegen_amd64_sysv_module sysv_module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
     REQUIRE_OK(kefir_codegen_amd64_sysv_module_alloc(mem, &sysv_module, &module));
-    struct kefir_ir_type *decl_params = kefir_ir_module_new_type(mem, &module, 10, NULL),
+    kefir_id_t type_id;
+    struct kefir_ir_type *decl_params = kefir_ir_module_new_type(mem, &module, 10, &type_id),
                          *decl_result = kefir_ir_module_new_type(mem, &module, 0, NULL);
     REQUIRE(decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(decl_result != NULL, KEFIR_INTERNAL_ERROR);
@@ -58,6 +59,11 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, func->declaration->params, KEFIR_IR_TYPE_SHORT, 0, 0));
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, func->declaration->params, KEFIR_IR_TYPE_SHORT, 0, 0));
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, func->declaration->params, KEFIR_IR_TYPE_INT, 0, 0));
+
+    struct kefir_ir_data *data1 =
+        kefir_ir_module_new_named_data(mem, &module, "DataX", KEFIR_IR_DATA_GLOBAL_STORAGE, type_id);
+    REQUIRE(data1 != NULL, KEFIR_INTERNAL_ERROR);
+    REQUIRE_OK(kefir_ir_data_finalize(data1));
 
     REQUIRE_OK(codegen.iface.translate(mem, &codegen.iface, &module));
 

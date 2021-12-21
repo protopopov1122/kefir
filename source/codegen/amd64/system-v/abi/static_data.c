@@ -94,7 +94,9 @@ static kefir_result_t integral_static_data(const struct kefir_ir_type *type, kef
     }
 
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout, kefir_vector_at(&param->layout, index));
-    REQUIRE_OK(align_offset(layout, param));
+    if (typeentry->typecode != KEFIR_IR_TYPE_BITS) {
+        REQUIRE_OK(align_offset(layout, param));
+    }
     switch (typeentry->typecode) {
         case KEFIR_IR_TYPE_BOOL:
         case KEFIR_IR_TYPE_CHAR:

@@ -168,7 +168,14 @@ static kefir_result_t visit_value(const struct kefir_ast_designator *designator,
                 case KEFIR_IR_TYPE_INT:
                 case KEFIR_IR_TYPE_LONG:
                 case KEFIR_IR_TYPE_WORD:
-                    REQUIRE_OK(kefir_ir_data_set_integer(param->data, slot, value.integer));
+                case KEFIR_IR_TYPE_BITS:
+                    if (resolved_layout->bitfield) {
+                        REQUIRE_OK(kefir_ir_data_set_bitfield(param->data, slot, value.integer,
+                                                              resolved_layout->bitfield_props.offset,
+                                                              resolved_layout->bitfield_props.width));
+                    } else {
+                        REQUIRE_OK(kefir_ir_data_set_integer(param->data, slot, value.integer));
+                    }
                     break;
 
                 case KEFIR_IR_TYPE_FLOAT32:

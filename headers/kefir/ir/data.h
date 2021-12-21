@@ -87,6 +87,9 @@ kefir_result_t kefir_ir_data_free(struct kefir_mem *, struct kefir_ir_data *);
 
 kefir_result_t kefir_ir_data_set_integer(struct kefir_ir_data *, kefir_size_t, kefir_int64_t);
 
+kefir_result_t kefir_ir_data_set_bitfield(struct kefir_ir_data *, kefir_size_t, kefir_uint64_t, kefir_size_t,
+                                          kefir_size_t);
+
 kefir_result_t kefir_ir_data_set_float32(struct kefir_ir_data *, kefir_size_t, kefir_float32_t);
 
 kefir_result_t kefir_ir_data_set_float64(struct kefir_ir_data *, kefir_size_t, kefir_float64_t);

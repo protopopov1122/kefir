@@ -29,5 +29,18 @@ int main() {
 
         assert(struct1_calculate(s) == STRUCT1_CALCULATE(s));
     }
+    assert(STRUCTURE.lng1 == 1);
+    assert(STRUCTURE.lng2 == 2);
+    assert(STRUCTURE.chr1 == 3);
+    assert(STRUCTURE.int1 == 4);
+    assert(STRUCTURE.int2 == 5);
+
+    assert(STRUCTURE2.i1 == 3);
+    assert(STRUCTURE2.i2 == 1023);
+    assert(STRUCTURE2.i3 == -4);
+    assert(STRUCTURE2.i4 == -501);
+    assert(STRUCTURE2.i5 == 0);
+    assert(STRUCTURE2.i6 == -5);
+    assert(STRUCTURE2.i7 == 10);
     return EXIT_SUCCESS;
 }

@@ -137,3 +137,13 @@ mov rsp, r14
 add rsp, 16
 jmp __kefirrt_restore_state
 
+.section .data
+.align 8
+DataX:
+.quad 0x0000000000000000
+.quad 0x0000000000000000
+.byte 0x00
+.byte 0x00
+.fill 2, 1, 0
+.fill 4, 1, 0
+

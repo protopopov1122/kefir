@@ -61,6 +61,34 @@ kefir_result_t kefir_ir_data_set_integer(struct kefir_ir_data *data, kefir_size_
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_ir_data_set_bitfield(struct kefir_ir_data *data, kefir_size_t index, kefir_uint64_t value,
+                                          kefir_size_t offset, kefir_size_t width) {
+    REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data pointer"));
+    REQUIRE(!data->finalized, KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot modify finalized data"));
+    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&data->value, index));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to find specified index"));
+
+    kefir_uint64_t currentValue = 0;
+    if (entry->type == KEFIR_IR_DATA_VALUE_INTEGER) {
+        currentValue = entry->value.integer;
+    } else {
+        REQUIRE(entry->type == KEFIR_IR_DATA_VALUE_UNDEFINED,
+                KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "IR data cannot have non-integral type"));
+        entry->type = KEFIR_IR_DATA_VALUE_INTEGER;
+    }
+
+    REQUIRE(width <= 64, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "IR data bitfield cannot be wider than 64 bits"));
+    if (width == 64) {
+        currentValue = value;
+    } else {
+        const kefir_uint64_t mask = (1 << (width + 1)) - 1;
+        currentValue = currentValue & (~(mask << offset));
+        currentValue |= (value & mask) << offset;
+    }
+    entry->value.integer = currentValue;
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ir_data_set_float32(struct kefir_ir_data *data, kefir_size_t index, kefir_float32_t value) {
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data pointer"));
     REQUIRE(!data->finalized, KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot modify finalized data"));

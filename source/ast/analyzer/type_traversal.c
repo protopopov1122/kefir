@@ -293,7 +293,7 @@ static kefir_result_t navigate_member(struct kefir_mem *mem, struct kefir_ast_ty
                         }
                         return KEFIR_OK;
                     }
-                } else {
+                } else if (!KEFIR_AST_TYPE_IS_SCALAR_TYPE(field->type)) {
                     REQUIRE_OK(push_layer(mem, traversal, field->type, layer));
                     kefir_result_t res = navigate_member(mem, traversal, member, push);
                     if (res == KEFIR_NOT_FOUND) {

@@ -35,9 +35,18 @@ struct Struct1 {
     };
 };
 
+struct Struct2 {
+    long i1 : 3, i2 : 22, i3 : 5, i4 : 11, i5 : 10;
+    short i6 : 7, : 5;
+    char : 2, i7 : 5;
+};
+
 #define STRUCT1_CALCULATE(s)                                                                    \
     ((long) (((s.lng1 + s.lng2 - s.chr1) * s.int1 + s.shr1 - s.shr2) * sizeof(struct Struct1) - \
              _Alignof(struct Struct1)))
 long struct1_calculate(struct Struct1);
+
+extern struct Struct1 STRUCTURE;
+extern struct Struct2 STRUCTURE2;
 
 #endif
