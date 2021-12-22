@@ -28,20 +28,23 @@
 
 kefir_result_t kefir_ast_analyze_init_declarator_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                       const struct kefir_ast_init_declarator *node,
-                                                      struct kefir_ast_node_base *base) {
+                                                      struct kefir_ast_node_base *base,
+                                                      const struct kefir_ast_type *type,
+                                                      kefir_ast_scoped_identifier_storage_t storage,
+                                                      kefir_ast_function_specifier_t function, kefir_size_t aligment) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST init declarator"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST base node"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
 
-    const struct kefir_ast_type *type = NULL;
-    kefir_ast_scoped_identifier_storage_t storage = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN;
     REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
     base->properties.category = KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR;
     const char *identifier = NULL;
-    REQUIRE_OK(kefir_ast_analyze_declaration(mem, context, &node->declaration->specifiers, node->declarator,
-                                             &identifier, &type, &storage, &base->properties.declaration_props.function,
-                                             &base->properties.declaration_props.alignment));
+    REQUIRE_OK(kefir_ast_analyze_declaration_declarator(mem, context, node->declarator, &identifier, &type));
+    base->properties.declaration_props.function = function;
+    base->properties.declaration_props.alignment = aligment;
+
     if (identifier != NULL) {
         identifier = kefir_symbol_table_insert(mem, context->symbols, identifier, NULL);
         REQUIRE(identifier != NULL,

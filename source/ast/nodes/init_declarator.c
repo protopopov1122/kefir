@@ -73,8 +73,6 @@ struct kefir_ast_node_base *ast_init_declarator_clone(struct kefir_mem *mem, str
         clone->declarator = NULL;
     }
 
-    clone->declaration = node->declaration;
-
     if (node->initializer != NULL) {
         clone->initializer = kefir_ast_initializer_clone(mem, node->initializer);
         REQUIRE_ELSE(clone->initializer != NULL, {
@@ -89,11 +87,9 @@ struct kefir_ast_node_base *ast_init_declarator_clone(struct kefir_mem *mem, str
 }
 
 struct kefir_ast_init_declarator *kefir_ast_new_init_declarator(struct kefir_mem *mem,
-                                                                struct kefir_ast_declaration *declaration,
                                                                 struct kefir_ast_declarator *decl,
                                                                 struct kefir_ast_initializer *initializer) {
     REQUIRE(mem != NULL, NULL);
-    REQUIRE(declaration != NULL, NULL);
 
     struct kefir_ast_init_declarator *init_declarator = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_init_declarator));
     REQUIRE(init_declarator != NULL, NULL);
@@ -110,7 +106,6 @@ struct kefir_ast_init_declarator *kefir_ast_new_init_declarator(struct kefir_mem
         return NULL;
     });
 
-    init_declarator->declaration = declaration;
     init_declarator->declarator = decl;
     init_declarator->initializer = initializer;
     return init_declarator;

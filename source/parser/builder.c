@@ -677,8 +677,7 @@ kefir_result_t kefir_parser_ast_builder_init_declarator(struct kefir_mem *mem, s
     });
     ASSIGN_DECL_CAST(struct kefir_ast_declaration *, decl_list, declaration->self);
 
-    struct kefir_ast_init_declarator *init_declarator =
-        kefir_ast_new_init_declarator(mem, decl_list, declarator, initializer);
+    struct kefir_ast_init_declarator *init_declarator = kefir_ast_new_init_declarator(mem, declarator, initializer);
     REQUIRE_ELSE(init_declarator != NULL, {
         KEFIR_AST_NODE_FREE(mem, declaration);
         return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST init declarator");

@@ -108,13 +108,6 @@ struct kefir_ast_node_base *ast_declaration_clone(struct kefir_mem *mem, struct 
             return NULL;
         });
 
-        struct kefir_ast_init_declarator *init_decl = NULL;
-        res = kefir_ast_downcast_init_declarator(declaration_clone, &init_decl, false);
-        if (res == KEFIR_OK) {
-            init_decl->declaration = clone;
-        } else if (res == KEFIR_NO_MATCH) {
-            res = KEFIR_OK;
-        }
         REQUIRE_CHAIN(&res, kefir_list_insert_after(mem, &clone->init_declarators,
                                                     kefir_list_tail(&clone->init_declarators), declaration_clone));
         REQUIRE_ELSE(res == KEFIR_OK, {
@@ -170,8 +163,7 @@ struct kefir_ast_declaration *kefir_ast_new_single_declaration(struct kefir_mem 
 
     struct kefir_ast_declaration *decl_list = kefir_ast_new_declaration(mem);
     REQUIRE(decl_list != NULL, NULL);
-    struct kefir_ast_init_declarator *declaration =
-        kefir_ast_new_init_declarator(mem, decl_list, declarator, initializer);
+    struct kefir_ast_init_declarator *declaration = kefir_ast_new_init_declarator(mem, declarator, initializer);
     REQUIRE_ELSE(declaration != NULL, {
         KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(decl_list));
         return NULL;

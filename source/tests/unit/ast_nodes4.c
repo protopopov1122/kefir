@@ -273,16 +273,16 @@ DEFINE_CASE(ast_nodes_declaration1, "AST nodes - declaration list #1") {
     struct kefir_ast_declarator_specifier *specifier = NULL;
     ASSERT(kefir_ast_declarator_specifier_list_iter(&declaration->specifiers, &specifier) == NULL);
 
-    struct kefir_ast_init_declarator *decl1 = kefir_ast_new_init_declarator(
-        &kft_mem, declaration, kefir_ast_declarator_identifier(&kft_mem, &symbols, "A"), NULL);
+    struct kefir_ast_init_declarator *decl1 =
+        kefir_ast_new_init_declarator(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, &symbols, "A"), NULL);
     ASSERT_OK(kefir_list_insert_after(&kft_mem, &declaration->init_declarators,
                                       kefir_list_tail(&declaration->init_declarators), KEFIR_AST_NODE_BASE(decl1)));
-    struct kefir_ast_init_declarator *decl2 = kefir_ast_new_init_declarator(
-        &kft_mem, declaration, kefir_ast_declarator_identifier(&kft_mem, &symbols, "B"), NULL);
+    struct kefir_ast_init_declarator *decl2 =
+        kefir_ast_new_init_declarator(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, &symbols, "B"), NULL);
     ASSERT_OK(kefir_list_insert_after(&kft_mem, &declaration->init_declarators,
                                       kefir_list_tail(&declaration->init_declarators), KEFIR_AST_NODE_BASE(decl2)));
-    struct kefir_ast_init_declarator *decl3 = kefir_ast_new_init_declarator(
-        &kft_mem, declaration, kefir_ast_declarator_identifier(&kft_mem, &symbols, "B"), NULL);
+    struct kefir_ast_init_declarator *decl3 =
+        kefir_ast_new_init_declarator(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, &symbols, "B"), NULL);
     ASSERT_OK(kefir_list_insert_after(&kft_mem, &declaration->init_declarators,
                                       kefir_list_tail(&declaration->init_declarators), KEFIR_AST_NODE_BASE(decl3)));
 

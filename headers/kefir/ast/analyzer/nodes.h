@@ -36,7 +36,6 @@ ANALYZE_NODE(array_subscript, struct kefir_ast_array_subscript);
 ANALYZE_NODE(function_call, struct kefir_ast_function_call);
 ANALYZE_NODE(struct_member, struct kefir_ast_struct_member);
 ANALYZE_NODE(string_literal, struct kefir_ast_string_literal);
-ANALYZE_NODE(init_declarator, struct kefir_ast_init_declarator);
 ANALYZE_NODE(declaration, struct kefir_ast_declaration);
 ANALYZE_NODE(type_name, struct kefir_ast_type_name);
 ANALYZE_NODE(cast_operator, struct kefir_ast_cast_operator);
@@ -67,5 +66,11 @@ ANALYZE_NODE(builtin, struct kefir_ast_builtin);
 
 kefir_result_t kefir_ast_is_null_pointer_constant(struct kefir_mem *, const struct kefir_ast_context *,
                                                   const struct kefir_ast_node_base *, kefir_bool_t *);
+
+kefir_result_t kefir_ast_analyze_init_declarator_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
+                                                      const struct kefir_ast_init_declarator *node,
+                                                      struct kefir_ast_node_base *, const struct kefir_ast_type *,
+                                                      kefir_ast_scoped_identifier_storage_t,
+                                                      kefir_ast_function_specifier_t, kefir_size_t);
 
 #endif

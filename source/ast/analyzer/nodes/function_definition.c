@@ -93,9 +93,9 @@ static kefir_result_t analyze_function_parameter_identifiers_impl(struct kefir_m
         kefir_ast_scoped_identifier_storage_t storage = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN;
         kefir_ast_function_specifier_t function_specifier = KEFIR_AST_FUNCTION_SPECIFIER_NONE;
         kefir_size_t alignment = 0;
-        REQUIRE_OK(kefir_ast_analyze_declaration(mem, &local_context->context, &decl->declaration->specifiers,
-                                                 decl->declarator, &identifier, &original_type, &storage,
-                                                 &function_specifier, &alignment));
+        REQUIRE_OK(kefir_ast_analyze_declaration(mem, &local_context->context, &decl_list->specifiers, decl->declarator,
+                                                 &identifier, &original_type, &storage, &function_specifier,
+                                                 &alignment));
 
         if (identifier != NULL) {
             identifier = kefir_symbol_table_insert(mem, context->symbols, identifier, NULL);
