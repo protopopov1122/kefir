@@ -93,11 +93,18 @@ kefir_result_t kefir_ast_analyze_unary_operation_node(struct kefir_mem *mem, con
             REQUIRE(node->arg->properties.expression_props.lvalue,
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->arg->source_location,
                                            "Increment/decrement operator operand shall be a scalar lvalue"));
+
             const struct kefir_ast_type *type = node->arg->properties.type;
-            REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(type),
+            struct kefir_ast_type_qualification target_qualifications;
+            REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&target_qualifications, type));
+            REQUIRE(!target_qualifications.constant,
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->arg->source_location,
+                                           "Expected non-const lvalue as assignment target operand"));
+            const struct kefir_ast_type *target_type = kefir_ast_unqualified_type(type);
+            REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(target_type),
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->arg->source_location,
                                            "Increment/decrement operator operand shall be a scalar lvalue"));
-            base->properties.type = type;
+            base->properties.type = target_type;
         } break;
 
         case KEFIR_AST_OPERATION_ADDRESS: {
