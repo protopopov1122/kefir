@@ -239,7 +239,7 @@ static kefir_result_t translate_add(struct kefir_mem *mem, struct kefir_ast_tran
                                     struct kefir_irbuilder_block *builder,
                                     const struct kefir_ast_assignment_operator *node) {
     const struct kefir_ast_type *target_normalized_type =
-        kefir_ast_translator_normalize_type(node->target->properties.type);
+        KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, node->target->properties.type);
     const struct kefir_ast_type *value_init_normalized_type =
         kefir_ast_translator_normalize_type(node->value->properties.type);
     const struct kefir_ast_type *value_normalized_type =
@@ -308,7 +308,7 @@ static kefir_result_t translate_subtract(struct kefir_mem *mem, struct kefir_ast
                                          struct kefir_irbuilder_block *builder,
                                          const struct kefir_ast_assignment_operator *node) {
     const struct kefir_ast_type *target_normalized_type =
-        kefir_ast_translator_normalize_type(node->target->properties.type);
+        KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, node->target->properties.type);
     const struct kefir_ast_type *value_init_normalized_type =
         kefir_ast_translator_normalize_type(node->value->properties.type);
     const struct kefir_ast_type *value_normalized_type =

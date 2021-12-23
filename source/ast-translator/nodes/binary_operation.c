@@ -57,9 +57,9 @@ static kefir_result_t translate_addition(struct kefir_mem *mem, struct kefir_ast
                                          struct kefir_irbuilder_block *builder,
                                          const struct kefir_ast_binary_operation *node) {
     const struct kefir_ast_type *arg1_normalized_type =
-        kefir_ast_translator_normalize_type(node->arg1->properties.type);
+        KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, node->arg1->properties.type);
     const struct kefir_ast_type *arg2_normalized_type =
-        kefir_ast_translator_normalize_type(node->arg2->properties.type);
+        KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, node->arg2->properties.type);
     const struct kefir_ast_type *result_normalized_type =
         kefir_ast_translator_normalize_type(node->base.properties.type);
 
@@ -108,9 +108,9 @@ static kefir_result_t translate_subtraction(struct kefir_mem *mem, struct kefir_
                                             struct kefir_irbuilder_block *builder,
                                             const struct kefir_ast_binary_operation *node) {
     const struct kefir_ast_type *arg1_normalized_type =
-        kefir_ast_translator_normalize_type(node->arg1->properties.type);
+        KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, node->arg1->properties.type);
     const struct kefir_ast_type *arg2_normalized_type =
-        kefir_ast_translator_normalize_type(node->arg2->properties.type);
+        KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, node->arg2->properties.type);
     const struct kefir_ast_type *result_normalized_type =
         kefir_ast_translator_normalize_type(node->base.properties.type);
 
