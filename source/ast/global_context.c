@@ -296,6 +296,7 @@ kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem, const struct
     REQUIRE_OK(kefir_ast_identifier_flat_scope_on_removal(&context->function_identifiers,
                                                           kefir_ast_context_free_scoped_identifier, NULL));
     REQUIRE_OK(kefir_ast_identifier_flat_scope_init(&context->ordinary_scope));
+    REQUIRE_OK(kefir_ast_context_configuration_defaults(&context->configuration));
 
     context->context.resolve_ordinary_identifier = context_resolve_ordinary_identifier;
     context->context.resolve_tag_identifier = context_resolve_tag_identifier;
@@ -317,6 +318,7 @@ kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem, const struct
     context->context.global_context = context;
     context->context.function_decl_contexts = &context->function_decl_contexts;
     context->context.surrounding_function = NULL;
+    context->context.configuration = &context->configuration;
     context->context.payload = context;
 
     context->context.extensions = extensions;

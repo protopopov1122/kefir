@@ -30,7 +30,12 @@ static kefir_result_t validate_simple_assignment(struct kefir_mem *mem, const st
     const struct kefir_ast_type *target_type =
         KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->target->properties.type);
 
-    return kefir_ast_node_assignable(mem, context, node->value, target_type);
+    kefir_result_t res;
+    REQUIRE_MATCH_OK(&res, kefir_ast_node_assignable(mem, context, node->value, target_type),
+                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->value->source_location,
+                                            "Expression shall be assignable to target type"));
+    REQUIRE_OK(res);
+    return KEFIR_OK;
 }
 
 static kefir_result_t validate_compound_assignment(struct kefir_mem *mem, const struct kefir_ast_context *context,

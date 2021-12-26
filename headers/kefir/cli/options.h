@@ -55,6 +55,10 @@ typedef struct kefir_cli_options {
     struct kefir_hashtree defines;
     time_t pp_timestamp;
     kefir_bool_t default_pp_timestamp;
+
+    struct {
+        kefir_bool_t non_strict_qualifiers;
+    } analysis;
 } kefir_cli_options_t;
 
 kefir_result_t kefir_cli_parse_options(struct kefir_mem *, struct kefir_cli_options *, char *const *, kefir_size_t);

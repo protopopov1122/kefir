@@ -40,6 +40,7 @@ static kefir_result_t parse_impl(struct kefir_mem *mem, struct kefir_cli_options
                                                  {"source-id", required_argument, NULL, 0},
                                                  {"detailed-output", no_argument, NULL, 0},
                                                  {"pp-timestamp", required_argument, NULL, 0},
+                                                 {"Wnon-strict-qualifiers", no_argument, NULL, 0},
                                                  {"define", required_argument, NULL, 'D'},
                                                  {"include-dir", required_argument, NULL, 'I'},
                                                  {"help", no_argument, NULL, 'h'},
@@ -92,6 +93,10 @@ static kefir_result_t parse_impl(struct kefir_mem *mem, struct kefir_cli_options
                     case 12:
                         options->pp_timestamp = strtoull(optarg, NULL, 10);
                         options->default_pp_timestamp = false;
+                        break;
+
+                    case 13:
+                        options->analysis.non_strict_qualifiers = true;
                         break;
 
                     default:
@@ -148,7 +153,7 @@ static kefir_result_t parse_impl(struct kefir_mem *mem, struct kefir_cli_options
                 break;
 
             case '?':
-                return KEFIR_SET_ERRORF(KEFIR_UI_ERROR, "Unknown option %s", argv[optind - 1]);
+                return KEFIR_SET_ERRORF(KEFIR_UI_ERROR, "Unknown option %s", argv[optind]);
 
             case ':':
                 return KEFIR_SET_ERRORF(KEFIR_UI_ERROR, "Expected parameter for %s option", argv[optind - 1]);
@@ -187,7 +192,8 @@ kefir_result_t kefir_cli_parse_options(struct kefir_mem *mem, struct kefir_cli_o
     *options = (struct kefir_cli_options){.action = KEFIR_CLI_ACTION_DUMP_ASSEMBLY,
                                           .error_report_type = KEFIR_CLI_ERROR_REPORT_TABULAR,
                                           .skip_preprocessor = false,
-                                          .default_pp_timestamp = true};
+                                          .default_pp_timestamp = true,
+                                          .analysis = {.non_strict_qualifiers = false}};
     REQUIRE_OK(kefir_list_init(&options->include_path));
     REQUIRE_OK(kefir_hashtree_init(&options->defines, &kefir_hashtree_str_ops));
     REQUIRE_OK(kefir_hashtree_on_removal(&options->defines, free_define_identifier, NULL));

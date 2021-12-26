@@ -53,7 +53,11 @@ static kefir_result_t analyze_scalar(struct kefir_mem *mem, const struct kefir_a
                                      struct kefir_ast_initializer_properties *properties) {
     struct kefir_ast_node_base *expr = kefir_ast_initializer_head(initializer);
     if (expr != NULL) {
-        REQUIRE_OK(kefir_ast_node_assignable(mem, context, expr, type));
+        kefir_result_t res;
+        REQUIRE_MATCH_OK(&res, kefir_ast_node_assignable(mem, context, expr, type),
+                         KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &expr->source_location,
+                                                "Expression shall be assignable to scalar type"));
+        REQUIRE_OK(res);
     } else {
         return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &initializer->source_location,
                                       "Scalar initializer list cannot be empty");
@@ -120,7 +124,12 @@ static kefir_result_t traverse_aggregate_union_string_literal(struct kefir_mem *
 
     REQUIRE_OK(kefir_ast_type_traversal_next_recursive2(mem, traversal, stop_fn, stop_payload, &type, NULL));
     if (!stop_fn(type, stop_payload)) {
-        REQUIRE_OK(kefir_ast_node_assignable(mem, context, entry->value->expression, kefir_ast_unqualified_type(type)));
+        kefir_result_t res;
+        REQUIRE_MATCH_OK(
+            &res, kefir_ast_node_assignable(mem, context, entry->value->expression, kefir_ast_unqualified_type(type)),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &entry->value->expression->source_location,
+                                   "Expression value shall be assignable to field type"));
+        REQUIRE_OK(res);
     }
     return KEFIR_OK;
 }
@@ -146,8 +155,14 @@ static kefir_result_t traverse_aggregate_union(struct kefir_mem *mem, const stru
         } else if (KEFIR_AST_TYPE_IS_SCALAR_TYPE(entry->value->expression->properties.type)) {
             const struct kefir_ast_type *type = NULL;
             REQUIRE_OK(kefir_ast_type_traversal_next_recursive(mem, traversal, &type, NULL));
-            REQUIRE_OK(
-                kefir_ast_node_assignable(mem, context, entry->value->expression, kefir_ast_unqualified_type(type)));
+
+            kefir_result_t res;
+            REQUIRE_MATCH_OK(
+                &res,
+                kefir_ast_node_assignable(mem, context, entry->value->expression, kefir_ast_unqualified_type(type)),
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &entry->value->expression->source_location,
+                                       "Expression value shall be assignable to field type"));
+            REQUIRE_OK(res);
         } else {
             const struct kefir_ast_type *type = NULL;
             REQUIRE_OK(kefir_ast_type_traversal_next(mem, traversal, &type, NULL));
@@ -158,6 +173,11 @@ static kefir_result_t traverse_aggregate_union(struct kefir_mem *mem, const stru
                 REQUIRE_OK(kefir_ast_type_traversal_next(mem, traversal, &type, NULL));
                 res =
                     kefir_ast_node_assignable(mem, context, entry->value->expression, kefir_ast_unqualified_type(type));
+            }
+
+            if (res == KEFIR_NO_MATCH) {
+                res = KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &entry->value->expression->source_location,
+                                             "Expression value shall be assignable to field type");
             }
             REQUIRE_OK(res);
         }
@@ -173,7 +193,11 @@ static kefir_result_t analyze_struct_union(struct kefir_mem *mem, const struct k
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &initializer->source_location,
                                    "Cannot initialize incomplete object type"));
     if (initializer->type == KEFIR_AST_INITIALIZER_EXPRESSION) {
-        REQUIRE_OK(kefir_ast_node_assignable(mem, context, initializer->expression, type));
+        kefir_result_t res;
+        REQUIRE_MATCH_OK(&res, kefir_ast_node_assignable(mem, context, initializer->expression, type),
+                         KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &initializer->expression->source_location,
+                                                "Expression value shall be assignable to field type"));
+        REQUIRE_OK(res);
     } else {
         struct kefir_ast_type_traversal traversal;
         REQUIRE_OK(kefir_ast_type_traversal_init(mem, &traversal, type));

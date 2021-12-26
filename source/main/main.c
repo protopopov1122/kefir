@@ -90,6 +90,7 @@ static kefir_result_t dump_action_impl(struct kefir_mem *mem, struct kefir_cli_o
     }
     REQUIRE_OK(kefir_compiler_profile(&profile, options->target_profile));
     REQUIRE_OK(kefir_compiler_context_init(mem, &compiler, &profile, &source_locator.locator, NULL));
+    compiler.ast_global_context.configuration.analysis.non_strict_qualifiers = options->analysis.non_strict_qualifiers;
     REQUIRE_OK(action(mem, options, &compiler, source_id, input.content, input.length, output));
     fclose(output);
     REQUIRE_OK(kefir_compiler_context_free(mem, &compiler));

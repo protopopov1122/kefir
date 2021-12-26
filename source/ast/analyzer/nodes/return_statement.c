@@ -60,9 +60,14 @@ kefir_result_t kefir_ast_analyze_return_statement_node(struct kefir_mem *mem, co
                                        "Return statement with no expression shall appear only in void function"));
         const struct kefir_ast_type *value_type =
             KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->expression->properties.type);
-        REQUIRE_OK(kefir_ast_type_assignable(mem, context, value_type,
-                                             node->expression->properties.expression_props.constant_expression,
-                                             function_return_type));
+
+        kefir_result_t res;
+        REQUIRE_MATCH_OK(&res,
+                         kefir_ast_type_assignable(mem, context, value_type,
+                                                   node->expression->properties.expression_props.constant_expression,
+                                                   function_return_type),
+                         KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
+                                                "Returned value shall be assignable to the function return type"));
     }
     base->properties.statement_props.return_type = function_return_type;
     return KEFIR_OK;

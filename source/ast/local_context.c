@@ -339,6 +339,7 @@ kefir_result_t kefir_ast_local_context_init(struct kefir_mem *mem, struct kefir_
     context->context.global_context = global;
     context->context.function_decl_contexts = &global->function_decl_contexts;
     context->context.surrounding_function = NULL;
+    context->context.configuration = global->context.configuration;
     context->context.payload = context;
 
     context->context.extensions = global->context.extensions;

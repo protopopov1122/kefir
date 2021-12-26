@@ -43,6 +43,8 @@ typedef struct kefir_ast_global_context {
     struct kefir_ast_identifier_flat_scope ordinary_scope;
     struct kefir_ast_identifier_flat_scope tag_scope;
     struct kefir_ast_context_temporaries temporaries;
+
+    struct kefir_ast_context_configuration configuration;
 } kefir_ast_global_context_t;
 
 kefir_result_t kefir_ast_global_context_init(struct kefir_mem *, const struct kefir_ast_type_traits *,

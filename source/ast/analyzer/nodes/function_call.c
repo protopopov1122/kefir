@@ -55,8 +55,14 @@ kefir_result_t kefir_ast_analyze_function_call_node(struct kefir_mem *mem, const
              kefir_list_next(&arg_type_iter), kefir_list_next(&arg_value_iter)) {
             ASSIGN_DECL_CAST(struct kefir_ast_function_type_parameter *, parameter, arg_type_iter->value);
             ASSIGN_DECL_CAST(struct kefir_ast_node_base *, arg, arg_value_iter->value);
-            REQUIRE_OK(
-                kefir_ast_node_assignable(mem, context, arg, kefir_ast_unqualified_type(parameter->adjusted_type)));
+
+            kefir_result_t res;
+            REQUIRE_MATCH_OK(
+                &res,
+                kefir_ast_node_assignable(mem, context, arg, kefir_ast_unqualified_type(parameter->adjusted_type)),
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &arg->source_location,
+                                       "Expression value shall be assignable to function parameter type"));
+            REQUIRE_OK(res);
         }
 
         if (arg_type_iter != NULL) {

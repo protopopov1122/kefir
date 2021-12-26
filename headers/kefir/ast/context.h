@@ -29,6 +29,14 @@
 #include "kefir/ast/flow_control.h"
 #include "kefir/ast/type/struct.h"
 
+typedef struct kefir_ast_context_configuration {
+    struct {
+        kefir_bool_t non_strict_qualifiers;
+    } analysis;
+} kefir_ast_context_configuration_t;
+
+kefir_result_t kefir_ast_context_configuration_defaults(struct kefir_ast_context_configuration *);
+
 typedef struct kefir_ast_context_extensions {
     kefir_result_t (*on_init)(struct kefir_mem *, struct kefir_ast_context *);
     kefir_result_t (*on_free)(struct kefir_mem *, struct kefir_ast_context *);
@@ -84,6 +92,7 @@ typedef struct kefir_ast_context {
     struct kefir_ast_global_context *global_context;
     struct kefir_list *function_decl_contexts;
     const struct kefir_ast_scoped_identifier *surrounding_function;
+    const struct kefir_ast_context_configuration *configuration;
 
     const struct kefir_ast_context_extensions *extensions;
     void *extensions_payload;

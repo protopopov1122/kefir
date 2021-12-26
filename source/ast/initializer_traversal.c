@@ -194,8 +194,12 @@ static kefir_result_t traverse_aggregate_union(struct kefir_mem *mem, const stru
             while (res == KEFIR_NO_MATCH) {
                 REQUIRE_OK(kefir_ast_type_traversal_step(mem, traversal));
                 REQUIRE_OK(kefir_ast_type_traversal_next(mem, traversal, &type, &layer));
-                res =
-                    kefir_ast_node_assignable(mem, context, entry->value->expression, kefir_ast_unqualified_type(type));
+                REQUIRE_MATCH_OK(
+                    &res,
+                    kefir_ast_node_assignable(mem, context, entry->value->expression, kefir_ast_unqualified_type(type)),
+                    KEFIR_SET_SOURCE_ERROR(
+                        KEFIR_ANALYSIS_ERROR, &entry->value->expression->source_location,
+                        "Initializer expression shall be convertible to corresponding field/element type"));
             }
             REQUIRE_OK(res);
             REQUIRE_OK(layer_designator(mem, context->symbols, entry->designator, layer, &designator_layer));
