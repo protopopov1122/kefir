@@ -61,7 +61,8 @@ typedef struct kefir_ast_context {
     kefir_result_t (*resolve_label_identifier)(const struct kefir_ast_context *, const char *,
                                                const struct kefir_ast_scoped_identifier **);
     kefir_result_t (*allocate_temporary_value)(struct kefir_mem *, const struct kefir_ast_context *,
-                                               const struct kefir_ast_type *, const struct kefir_source_location *,
+                                               const struct kefir_ast_type *, struct kefir_ast_initializer *,
+                                               const struct kefir_source_location *,
                                                struct kefir_ast_temporary_identifier *);
 
     kefir_result_t (*define_tag)(struct kefir_mem *, const struct kefir_ast_context *, const struct kefir_ast_type *,

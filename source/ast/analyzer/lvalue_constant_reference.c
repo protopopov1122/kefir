@@ -114,6 +114,17 @@ static kefir_result_t visit_struct_indirect_member(const struct kefir_ast_visito
     return KEFIR_OK;
 }
 
+static kefir_result_t visit_compound_literal(const struct kefir_ast_visitor *visitor,
+                                             const struct kefir_ast_compound_literal *node, void *payload) {
+    UNUSED(visitor);
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST compound literal node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
+
+    *param->constant = *param->constant && node->base.properties.expression_props.constant_expression;
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_node_is_lvalue_reference_constant(const struct kefir_ast_context *context,
                                                            const struct kefir_ast_node_base *node,
                                                            kefir_bool_t *constant) {
@@ -129,6 +140,7 @@ kefir_result_t kefir_ast_node_is_lvalue_reference_constant(const struct kefir_as
     visitor.struct_member = visit_struct_member;
     visitor.array_subscript = visit_array_subscript;
     visitor.struct_indirect_member = visit_struct_indirect_member;
+    visitor.compound_literal = visit_compound_literal;
     REQUIRE_OK(KEFIR_AST_NODE_VISIT(&visitor, node, &param));
     return KEFIR_OK;
 }

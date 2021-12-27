@@ -18,16 +18,29 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef KEFIR_AST_RUNTIME_H_
-#define KEFIR_AST_RUNTIME_H_
+#include <stdlib.h>
+#include <stdio.h>
+#include <assert.h>
+#include <math.h>
+#include "./definitions.h"
 
-#include "kefir/core/basic-types.h"
+int main() {
+    assert(S1 != NULL);
+    assert(S2 != NULL);
+    assert(S3 != NULL);
+    assert(S1 != S2);
+    assert(S2 != (void *) S3);
+    assert(S1 != (void *) S3);
 
-#define KEFIR_AST_TRANSLATOR_STATIC_VARIABLES_IDENTIFIER "__kefirrt_module_static_vars"
-#define KEFIR_AST_TRANSLATOR_STATIC_THREAD_LOCAL_VARIABLES_IDENTIFIER "__kefirrt_module_static_tlocal_vars"
-#define KEFIR_AST_TRANSLATOR_TEMPORARIES_IDENTIFIER "__kefirrt_temporaries"
-#define KEFIR_AST_TRANSLATOR_TEMPORARY_VALUE_IDENTIFIER "__kefirrt_temporary_" KEFIR_ID_FMT
-#define KEFIR_AST_TRANSLATOR_TEMPORARY_MEMBER_IDENTIFIER "__kefirrt_temporary_member_" KEFIR_ID_FMT
-#define KEFIR_AST_TRANSLATOR_TEMPORARY_GLOBAL_IDENTIFIER "__kefirrt_temporary_" KEFIR_ID_FMT "_" KEFIR_ID_FMT
+    assert(S1->x == 100);
+    assert(S1->y == -649);
+    assert(fabs(S1->z - 3.14f) < 0.001f);
 
-#endif
+    assert(S2->x == -1);
+    assert(S2->y == 0);
+    assert(fabs(S2->z - 2.71f) < 0.001f);
+
+    assert(fabs(S3->a - 1.2e12) < 0.001f);
+    assert(S3->b == 'A');
+    return EXIT_SUCCESS;
+}

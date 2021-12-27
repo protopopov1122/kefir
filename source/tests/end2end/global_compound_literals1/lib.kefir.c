@@ -18,16 +18,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef KEFIR_AST_RUNTIME_H_
-#define KEFIR_AST_RUNTIME_H_
+#include "./definitions.h"
 
-#include "kefir/core/basic-types.h"
+struct Struct1 *S1 = &(struct Struct1){.x = 100, .y = -649, .z = 3.14f};
 
-#define KEFIR_AST_TRANSLATOR_STATIC_VARIABLES_IDENTIFIER "__kefirrt_module_static_vars"
-#define KEFIR_AST_TRANSLATOR_STATIC_THREAD_LOCAL_VARIABLES_IDENTIFIER "__kefirrt_module_static_tlocal_vars"
-#define KEFIR_AST_TRANSLATOR_TEMPORARIES_IDENTIFIER "__kefirrt_temporaries"
-#define KEFIR_AST_TRANSLATOR_TEMPORARY_VALUE_IDENTIFIER "__kefirrt_temporary_" KEFIR_ID_FMT
-#define KEFIR_AST_TRANSLATOR_TEMPORARY_MEMBER_IDENTIFIER "__kefirrt_temporary_member_" KEFIR_ID_FMT
-#define KEFIR_AST_TRANSLATOR_TEMPORARY_GLOBAL_IDENTIFIER "__kefirrt_temporary_" KEFIR_ID_FMT "_" KEFIR_ID_FMT
+struct Struct1 *S2 = &(struct Struct1){.x = -1, .y = 0, .z = 2.71f};
 
-#endif
+struct Struct2 *S3 = &(struct Struct2){.a = 1.2e12, .b = 'A'};

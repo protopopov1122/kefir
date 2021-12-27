@@ -19,6 +19,7 @@
 */
 
 #include <string.h>
+#include <stdio.h>
 #include "kefir/ast/global_context.h"
 #include "kefir/ast/runtime.h"
 #include "kefir/ast/context_impl.h"
@@ -54,6 +55,7 @@ static kefir_result_t context_resolve_label_identifier(const struct kefir_ast_co
 
 static kefir_result_t context_allocate_temporary_value(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                        const struct kefir_ast_type *type,
+                                                       struct kefir_ast_initializer *initializer,
                                                        const struct kefir_source_location *location,
                                                        struct kefir_ast_temporary_identifier *temp_id) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
@@ -62,13 +64,17 @@ static kefir_result_t context_allocate_temporary_value(struct kefir_mem *mem, co
     REQUIRE(temp_id != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid temporary identifier pointer"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_global_context *, global_ctx, context->payload);
-    if (kefir_ast_temporaries_init(mem, context->type_bundle, context->temporaries)) {
-        REQUIRE(context->temporaries->type != NULL,
-                KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to initialize a temporary type"));
-        REQUIRE_OK(kefir_ast_global_context_define_static(mem, global_ctx, KEFIR_AST_TRANSLATOR_TEMPORARIES_IDENTIFIER,
-                                                          context->temporaries->type, NULL, NULL, location, NULL));
-    }
+    UNUSED(kefir_ast_temporaries_init(mem, context->type_bundle, false, context->temporaries));
     REQUIRE_OK(kefir_ast_temporaries_new_temporary(mem, context, type, temp_id));
+    REQUIRE(!temp_id->nested,
+            KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected AST global context temporaries to have flat structure"));
+
+#define BUFSIZE 128
+    char buf[BUFSIZE] = {0};
+    snprintf(buf, sizeof(buf) - 1, KEFIR_AST_TRANSLATOR_TEMPORARY_GLOBAL_IDENTIFIER, temp_id->identifier,
+             temp_id->field);
+    REQUIRE_OK(kefir_ast_global_context_define_static(mem, global_ctx, buf, type, NULL, initializer, location, NULL));
+#undef BUFSIZE
     return KEFIR_OK;
 }
 

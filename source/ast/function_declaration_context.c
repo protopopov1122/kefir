@@ -224,11 +224,13 @@ static kefir_result_t context_resolve_label_identifier(const struct kefir_ast_co
 
 static kefir_result_t context_allocate_temporary_value(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                        const struct kefir_ast_type *type,
+                                                       struct kefir_ast_initializer *initializer,
                                                        const struct kefir_source_location *location,
                                                        struct kefir_ast_temporary_identifier *temp_id) {
     UNUSED(mem);
     UNUSED(context);
     UNUSED(type);
+    UNUSED(initializer);
     UNUSED(location);
     UNUSED(temp_id);
     return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "AST context does not support temporary values");

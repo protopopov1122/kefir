@@ -107,21 +107,25 @@ static kefir_result_t define_temporaries(struct kefir_mem *mem, struct kefir_ast
 
 static kefir_result_t context_allocate_temporary_value(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                        const struct kefir_ast_type *type,
+                                                       struct kefir_ast_initializer *initializer,
                                                        const struct kefir_source_location *location,
                                                        struct kefir_ast_temporary_identifier *temp_id) {
     UNUSED(location);
+    UNUSED(initializer);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
     REQUIRE(temp_id != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid temporary identifier pointer"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_local_context *, local_ctx, context->payload);
-    if (kefir_ast_temporaries_init(mem, context->type_bundle, context->temporaries)) {
+    if (kefir_ast_temporaries_init(mem, context->type_bundle, true, context->temporaries)) {
         REQUIRE(context->temporaries->type != NULL,
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to initialize a temporary type"));
         REQUIRE_OK(define_temporaries(mem, local_ctx, context->temporaries->type, location, NULL));
     }
     REQUIRE_OK(kefir_ast_temporaries_new_temporary(mem, context, type, temp_id));
+    REQUIRE(temp_id->nested,
+            KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected AST local context temporaries to have nested structure"));
     return KEFIR_OK;
 }
 

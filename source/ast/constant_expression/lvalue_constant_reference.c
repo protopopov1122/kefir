@@ -20,9 +20,11 @@
 
 #include "kefir/ast/constant_expression_impl.h"
 #include "kefir/ast/type_conv.h"
+#include "kefir/ast/runtime.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"
+#include <stdio.h>
 
 struct visitor_param {
     struct kefir_mem *mem;
@@ -204,6 +206,68 @@ static kefir_result_t visit_struct_indirect_member(const struct kefir_ast_visito
     return KEFIR_OK;
 }
 
+static kefir_result_t visit_compound_literal(const struct kefir_ast_visitor *visitor,
+                                             const struct kefir_ast_compound_literal *node, void *payload) {
+    UNUSED(visitor);
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST compound literal node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
+
+#define BUFFER_LEN 128
+    if (node->base.properties.expression_props.temporary.nested) {
+        const struct kefir_ast_scoped_identifier *scoped_id = NULL;
+        REQUIRE_OK(param->context->resolve_ordinary_identifier(
+            param->context, KEFIR_AST_TRANSLATOR_TEMPORARIES_IDENTIFIER, &scoped_id));
+
+        char TEMP_VALUE[BUFFER_LEN] = {0}, TEMP_MEMBER[BUFFER_LEN] = {0};
+
+        snprintf(TEMP_VALUE, BUFFER_LEN - 1, KEFIR_AST_TRANSLATOR_TEMPORARY_VALUE_IDENTIFIER,
+                 node->base.properties.expression_props.temporary.identifier);
+        snprintf(TEMP_MEMBER, BUFFER_LEN - 1, KEFIR_AST_TRANSLATOR_TEMPORARY_MEMBER_IDENTIFIER,
+                 node->base.properties.expression_props.temporary.field);
+
+        struct kefir_ast_designator temp_value_designator = {
+            .type = KEFIR_AST_DESIGNATOR_MEMBER, .member = TEMP_VALUE, .next = NULL};
+        struct kefir_ast_designator temp_member_designator = {
+            .type = KEFIR_AST_DESIGNATOR_MEMBER, .member = TEMP_MEMBER, .next = &temp_value_designator};
+
+        struct kefir_ast_target_environment_object_info object_info;
+        kefir_ast_target_environment_opaque_type_t opaque_type;
+        REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_GET_TYPE(param->mem, param->context->target_env, scoped_id->object.type,
+                                                         &opaque_type));
+        kefir_result_t res = KEFIR_AST_TARGET_ENVIRONMENT_OBJECT_INFO(
+            param->mem, param->context->target_env, opaque_type, &temp_member_designator, &object_info);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(param->mem, param->context->target_env, opaque_type);
+            return res;
+        });
+        REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(param->mem, param->context->target_env, opaque_type));
+
+        param->pointer->type = KEFIR_AST_CONSTANT_EXPRESSION_POINTER_IDENTIFER;
+        param->pointer->base.literal = KEFIR_AST_TRANSLATOR_TEMPORARIES_IDENTIFIER;
+        param->pointer->offset = object_info.relative_offset;
+        param->pointer->pointer_node = KEFIR_AST_NODE_BASE(node);
+        param->pointer->scoped_id = scoped_id;
+    } else {
+        char buf[BUFFER_LEN] = {0};
+        snprintf(buf, sizeof(buf) - 1, KEFIR_AST_TRANSLATOR_TEMPORARY_GLOBAL_IDENTIFIER,
+                 node->base.properties.expression_props.temporary.identifier,
+                 node->base.properties.expression_props.temporary.field);
+
+        const struct kefir_ast_scoped_identifier *scoped_id = NULL;
+        REQUIRE_OK(param->context->resolve_ordinary_identifier(param->context, buf, &scoped_id));
+
+        param->pointer->type = KEFIR_AST_CONSTANT_EXPRESSION_POINTER_IDENTIFER;
+        param->pointer->base.literal = buf;
+        param->pointer->offset = 0;
+        param->pointer->pointer_node = KEFIR_AST_NODE_BASE(node);
+        param->pointer->scoped_id = scoped_id;
+    }
+
+#undef BUFFER_LEN
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_constant_expression_value_evaluate_lvalue_reference(
     struct kefir_mem *mem, const struct kefir_ast_context *context, const struct kefir_ast_node_base *node,
     struct kefir_ast_constant_expression_pointer *pointer) {
@@ -218,6 +282,7 @@ kefir_result_t kefir_ast_constant_expression_value_evaluate_lvalue_reference(
     visitor.struct_member = visit_structure_member;
     visitor.array_subscript = visit_array_subscript;
     visitor.struct_indirect_member = visit_struct_indirect_member;
+    visitor.compound_literal = visit_compound_literal;
 
     struct visitor_param param = {.mem = mem, .context = context, .pointer = pointer};
     REQUIRE_OK(KEFIR_AST_NODE_VISIT(&visitor, node, &param));
