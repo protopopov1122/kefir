@@ -66,10 +66,6 @@ kefir_result_t kefir_ast_analyze_conditional_operator_node(struct kefir_mem *mem
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->condition->source_location,
                                    "First conditional operator operand shall have scalar type"));
 
-    kefir_bool_t is_null1, is_null2;
-    REQUIRE_OK(kefir_ast_is_null_pointer_constant(mem, context, node->expr1, &is_null1));
-    REQUIRE_OK(kefir_ast_is_null_pointer_constant(mem, context, node->expr2, &is_null2));
-
     if (KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1) && KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type2)) {
         base->properties.type = kefir_ast_type_common_arithmetic(context->type_traits, type1, type2);
     } else if ((type1->tag == KEFIR_AST_TYPE_STRUCTURE || type1->tag == KEFIR_AST_TYPE_UNION) &&
@@ -78,43 +74,50 @@ kefir_result_t kefir_ast_analyze_conditional_operator_node(struct kefir_mem *mem
         base->properties.type = type1;
     } else if (type1->tag == KEFIR_AST_TYPE_VOID && type2->tag == KEFIR_AST_TYPE_VOID) {
         base->properties.type = kefir_ast_type_void();
-    } else if (type1->tag == KEFIR_AST_TYPE_SCALAR_POINTER && is_null2) {
-        base->properties.type = type1;
-    } else if (is_null1 && type2->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
-        base->properties.type = type2;
-    } else if (is_null1 && is_null2) {
-        base->properties.type = type1;
     } else {
-        REQUIRE(type1->tag == KEFIR_AST_TYPE_SCALAR_POINTER,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->expr1->source_location,
-                                       "Both conditional expressions shall have compatible types"));
-        REQUIRE(type2->tag == KEFIR_AST_TYPE_SCALAR_POINTER,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->expr2->source_location,
-                                       "Both conditional expressions shall have compatible types"));
-
-        struct kefir_ast_type_qualification qualifications1, qualifications2, total_qualifications;
-        REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications1, type1->referenced_type));
-        REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications2, type2->referenced_type));
-        REQUIRE_OK(kefir_ast_type_merge_qualifications(&total_qualifications, &qualifications1, &qualifications2));
-        const struct kefir_ast_type *unqualified1 = kefir_ast_unqualified_type(type1->referenced_type);
-        const struct kefir_ast_type *unqualified2 = kefir_ast_unqualified_type(type2->referenced_type);
-
-        if (unqualified1->tag == KEFIR_AST_TYPE_VOID || unqualified2->tag == KEFIR_AST_TYPE_VOID) {
-            const struct kefir_ast_type *result_type = kefir_ast_type_void();
-            if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&total_qualifications)) {
-                result_type = kefir_ast_type_qualified(mem, context->type_bundle, result_type, total_qualifications);
-            }
-            base->properties.type = kefir_ast_type_pointer(mem, context->type_bundle, result_type);
+        kefir_bool_t is_null1, is_null2;
+        REQUIRE_OK(kefir_ast_is_null_pointer_constant(mem, context, node->expr1, &is_null1));
+        REQUIRE_OK(kefir_ast_is_null_pointer_constant(mem, context, node->expr2, &is_null2));
+        if (type1->tag == KEFIR_AST_TYPE_SCALAR_POINTER && is_null2) {
+            base->properties.type = type1;
+        } else if (is_null1 && type2->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
+            base->properties.type = type2;
+        } else if (is_null1 && is_null2) {
+            base->properties.type = type1;
         } else {
-            REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, unqualified1, unqualified2),
+            REQUIRE(type1->tag == KEFIR_AST_TYPE_SCALAR_POINTER,
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->expr1->source_location,
                                            "Both conditional expressions shall have compatible types"));
-            const struct kefir_ast_type *result_type =
-                KEFIR_AST_TYPE_COMPOSITE(mem, context->type_bundle, context->type_traits, unqualified1, unqualified2);
-            if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&total_qualifications)) {
-                result_type = kefir_ast_type_qualified(mem, context->type_bundle, result_type, total_qualifications);
+            REQUIRE(type2->tag == KEFIR_AST_TYPE_SCALAR_POINTER,
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->expr2->source_location,
+                                           "Both conditional expressions shall have compatible types"));
+
+            struct kefir_ast_type_qualification qualifications1, qualifications2, total_qualifications;
+            REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications1, type1->referenced_type));
+            REQUIRE_OK(kefir_ast_type_retrieve_qualifications(&qualifications2, type2->referenced_type));
+            REQUIRE_OK(kefir_ast_type_merge_qualifications(&total_qualifications, &qualifications1, &qualifications2));
+            const struct kefir_ast_type *unqualified1 = kefir_ast_unqualified_type(type1->referenced_type);
+            const struct kefir_ast_type *unqualified2 = kefir_ast_unqualified_type(type2->referenced_type);
+
+            if (unqualified1->tag == KEFIR_AST_TYPE_VOID || unqualified2->tag == KEFIR_AST_TYPE_VOID) {
+                const struct kefir_ast_type *result_type = kefir_ast_type_void();
+                if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&total_qualifications)) {
+                    result_type =
+                        kefir_ast_type_qualified(mem, context->type_bundle, result_type, total_qualifications);
+                }
+                base->properties.type = kefir_ast_type_pointer(mem, context->type_bundle, result_type);
+            } else {
+                REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, unqualified1, unqualified2),
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->expr1->source_location,
+                                               "Both conditional expressions shall have compatible types"));
+                const struct kefir_ast_type *result_type = KEFIR_AST_TYPE_COMPOSITE(
+                    mem, context->type_bundle, context->type_traits, unqualified1, unqualified2);
+                if (!KEFIR_AST_TYPE_IS_ZERO_QUALIFICATION(&total_qualifications)) {
+                    result_type =
+                        kefir_ast_type_qualified(mem, context->type_bundle, result_type, total_qualifications);
+                }
+                base->properties.type = kefir_ast_type_pointer(mem, context->type_bundle, result_type);
             }
-            base->properties.type = kefir_ast_type_pointer(mem, context->type_bundle, result_type);
         }
     }
     return KEFIR_OK;

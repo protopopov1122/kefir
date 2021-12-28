@@ -41,8 +41,6 @@ kefir_result_t kefir_ast_evaluate_conditional_operator_node(struct kefir_mem *me
 
     struct kefir_ast_constant_expression_value cond_value, arg1_value, arg2_value;
     REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->condition, &cond_value));
-    REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->expr1, &arg1_value));
-    REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->expr2, &arg2_value));
 
     kefir_bool_t condition = false;
     switch (cond_value.klass) {
@@ -72,8 +70,10 @@ kefir_result_t kefir_ast_evaluate_conditional_operator_node(struct kefir_mem *me
     }
 
     if (condition) {
+        REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->expr1, &arg1_value));
         *value = arg1_value;
     } else {
+        REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->expr2, &arg2_value));
         *value = arg2_value;
     }
     return KEFIR_OK;

@@ -120,7 +120,9 @@ kefir_result_t kefir_ast_evaluate_binary_operation_node(struct kefir_mem *mem, c
 
     struct kefir_ast_constant_expression_value arg1_value, arg2_value;
     REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->arg1, &arg1_value));
-    REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->arg2, &arg2_value));
+    if (node->type != KEFIR_AST_OPERATION_LOGICAL_AND && node->type != KEFIR_AST_OPERATION_LOGICAL_OR) {
+        REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->arg2, &arg2_value));
+    }
     switch (node->type) {
         case KEFIR_AST_OPERATION_ADD:
             if (arg1_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS) {
@@ -305,39 +307,63 @@ kefir_result_t kefir_ast_evaluate_binary_operation_node(struct kefir_mem *mem, c
             value->integer = arg1_value.integer ^ arg2_value.integer;
             break;
 
-        case KEFIR_AST_OPERATION_LOGICAL_AND:
+        case KEFIR_AST_OPERATION_LOGICAL_AND: {
             value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
-            if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS)) {
-                return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED,
-                                       "Constant logical expressions with addresses are not supported");
-            } else if (arg1_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT &&
-                       arg2_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT) {
-                value->integer = arg1_value.floating_point && arg2_value.floating_point;
-            } else if (arg1_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT) {
-                value->integer = arg1_value.floating_point && arg2_value.integer;
-            } else if (arg2_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT) {
-                value->integer = arg1_value.integer && arg2_value.floating_point;
+            REQUIRE(
+                arg1_value.klass != KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS,
+                KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Constant logical expressions with addresses are not supported"));
+            kefir_bool_t arg1_bool = false;
+            kefir_bool_t arg2_bool = false;
+            if (arg1_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT) {
+                arg1_bool = (kefir_bool_t) arg1_value.floating_point;
             } else {
-                value->integer = arg1_value.integer && arg2_value.integer;
+                arg1_bool = (kefir_bool_t) arg1_value.integer;
             }
-            break;
 
-        case KEFIR_AST_OPERATION_LOGICAL_OR:
-            value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
-            if (ANY_OF(&arg1_value, &arg2_value, KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS)) {
-                return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED,
-                                       "Constant logical expressions with addresses are not supported");
-            } else if (arg1_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT &&
-                       arg2_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT) {
-                value->integer = arg1_value.floating_point || arg2_value.floating_point;
-            } else if (arg1_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT) {
-                value->integer = arg1_value.floating_point || arg2_value.integer;
-            } else if (arg2_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT) {
-                value->integer = arg1_value.integer || arg2_value.floating_point;
-            } else {
-                value->integer = arg1_value.integer || arg2_value.integer;
+            if (arg1_bool) {
+                REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->arg2, &arg2_value));
+                REQUIRE(arg2_value.klass != KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS,
+                        KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED,
+                                        "Constant logical expressions with addresses are not supported"));
+
+                if (arg2_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT) {
+                    arg2_bool = (kefir_bool_t) arg2_value.floating_point;
+                } else {
+                    arg2_bool = (kefir_bool_t) arg2_value.integer;
+                }
             }
-            break;
+
+            value->integer = arg1_bool && arg2_bool;
+        } break;
+
+        case KEFIR_AST_OPERATION_LOGICAL_OR: {
+            value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
+            REQUIRE(
+                arg1_value.klass != KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS,
+                KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Constant logical expressions with addresses are not supported"));
+            kefir_bool_t arg1_bool = false;
+            kefir_bool_t arg2_bool = false;
+            if (arg1_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT) {
+                arg1_bool = (kefir_bool_t) arg1_value.floating_point;
+            } else {
+                arg1_bool = (kefir_bool_t) arg1_value.integer;
+            }
+
+            if (!arg1_bool) {
+                REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->arg2, &arg2_value));
+                REQUIRE(arg2_value.klass != KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS,
+                        KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED,
+                                        "Constant logical expressions with addresses are not supported"));
+
+                if (arg2_value.klass == KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT) {
+                    arg2_bool = (kefir_bool_t) arg2_value.floating_point;
+                } else {
+                    arg2_bool = (kefir_bool_t) arg2_value.integer;
+                }
+            }
+
+            value->integer = arg1_bool || arg2_bool;
+        } break;
     }
     return KEFIR_OK;
 }
