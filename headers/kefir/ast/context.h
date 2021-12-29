@@ -32,6 +32,7 @@
 typedef struct kefir_ast_context_configuration {
     struct {
         kefir_bool_t non_strict_qualifiers;
+        kefir_bool_t fixed_enum_type;
     } analysis;
 } kefir_ast_context_configuration_t;
 

@@ -42,6 +42,9 @@ typedef kefir_int64_t kefir_ast_constant_expression_int_t;
 typedef kefir_uint64_t kefir_ast_constant_expression_uint_t;
 typedef kefir_long_double_t kefir_ast_constant_expression_float_t;
 
+#define KEFIR_AST_CONSTANT_EXPRESSION_INT_MIN KEFIR_INT64_MIN
+#define KEFIR_AST_CONSTANT_EXPRESSION_INT_MAX KEFIR_INT64_MAX
+
 typedef struct kefir_ast_constant_expression_pointer {
     const struct kefir_ast_node_base *pointer_node;
 

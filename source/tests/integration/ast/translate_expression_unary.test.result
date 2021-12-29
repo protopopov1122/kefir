@@ -205,7 +205,7 @@
                     }
                 },
                 {
-                    "opcode": "load32i"
+                    "opcode": "load32u"
                 }
             ]
         },
@@ -249,7 +249,7 @@
                     }
                 },
                 {
-                    "opcode": "load32i"
+                    "opcode": "load32u"
                 },
                 {
                     "opcode": "ineg"
@@ -289,7 +289,7 @@
                     }
                 },
                 {
-                    "opcode": "load32i"
+                    "opcode": "load32u"
                 },
                 {
                     "opcode": "inot"
@@ -573,7 +573,7 @@
                     "arg": 5
                 },
                 {
-                    "opcode": "load32i"
+                    "opcode": "load32u"
                 },
                 {
                     "opcode": "push",
@@ -643,7 +643,7 @@
                     }
                 },
                 {
-                    "opcode": "load32i"
+                    "opcode": "load32u"
                 },
                 {
                     "opcode": "bnot"

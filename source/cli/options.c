@@ -40,7 +40,8 @@ static kefir_result_t parse_impl(struct kefir_mem *mem, struct kefir_cli_options
                                                  {"source-id", required_argument, NULL, 0},
                                                  {"detailed-output", no_argument, NULL, 0},
                                                  {"pp-timestamp", required_argument, NULL, 0},
-                                                 {"Wnon-strict-qualifiers", no_argument, NULL, 0},
+                                                 {"analyzer-non-strict-qualifiers", no_argument, NULL, 0},
+                                                 {"analyzer-signed-enums", no_argument, NULL, 0},
                                                  {"define", required_argument, NULL, 'D'},
                                                  {"include-dir", required_argument, NULL, 'I'},
                                                  {"help", no_argument, NULL, 'h'},
@@ -97,6 +98,10 @@ static kefir_result_t parse_impl(struct kefir_mem *mem, struct kefir_cli_options
 
                     case 13:
                         options->analysis.non_strict_qualifiers = true;
+                        break;
+
+                    case 14:
+                        options->analysis.signed_enum_type = true;
                         break;
 
                     default:

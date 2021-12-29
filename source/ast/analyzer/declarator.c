@@ -222,6 +222,8 @@ static kefir_result_t resolve_enum_type(struct kefir_mem *mem, const struct kefi
         REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Unable to allocate AST enum type"));
 
         kefir_ast_constant_expression_int_t constant_value = 0;
+        kefir_ast_constant_expression_int_t min_constant = KEFIR_AST_CONSTANT_EXPRESSION_INT_MAX;
+        kefir_ast_constant_expression_int_t max_constant = KEFIR_AST_CONSTANT_EXPRESSION_INT_MIN;
         for (const struct kefir_list_entry *iter = kefir_list_head(&specifier->entries); iter != NULL;
              kefir_list_next(&iter)) {
             ASSIGN_DECL_CAST(struct kefir_ast_enum_specifier_entry *, entry, iter->value);
@@ -240,9 +242,20 @@ static kefir_result_t resolve_enum_type(struct kefir_mem *mem, const struct kefi
             } else {
                 REQUIRE_OK(kefir_ast_enumeration_type_constant_auto(mem, context->symbols, enum_type, entry->constant));
             }
+
+            min_constant = MIN(min_constant, constant_value);
+            max_constant = MAX(max_constant, constant_value);
             REQUIRE_OK(context->define_constant(
                 mem, context, entry->constant, kefir_ast_constant_expression_integer(mem, constant_value++),
                 context->type_traits->underlying_enumeration_type, &decl_specifier->source_location));
+        }
+
+        if (!context->configuration->analysis.fixed_enum_type && kefir_list_length(&specifier->entries) > 0) {
+            if (min_constant >= 0) {
+                enum_type->underlying_type = kefir_ast_type_unsigned_int();
+            } else {
+                enum_type->underlying_type = kefir_ast_type_signed_int();
+            }
         }
     } else {
         if (specifier->identifier != NULL) {
