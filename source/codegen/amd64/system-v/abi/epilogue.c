@@ -137,6 +137,18 @@ static kefir_result_t return_register_aggregate(struct kefir_codegen_amd64 *code
                 ASMGEN_ARG0(&codegen->asmgen, "0");
                 break;
 
+            case KEFIR_AMD64_SYSV_PARAM_X87:
+                REQUIRE(i + 1 < kefir_vector_length(&alloc->container.qwords),
+                        KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected X87 qword to be directly followed by X87UP"));
+                ASSIGN_DECL_CAST(struct kefir_amd64_sysv_abi_qword *, next_qword,
+                                 kefir_vector_at(&alloc->container.qwords, ++i));
+                REQUIRE(next_qword->klass == KEFIR_AMD64_SYSV_PARAM_X87UP,
+                        KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected X87 qword to be directly followed by X87UP"));
+                ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_FLD);
+                ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_TBYTE KEFIR_AMD64_INDIRECT_OFFSET,
+                           KEFIR_AMD64_SYSV_ABI_DATA_REG, (i - 1) * KEFIR_AMD64_SYSV_ABI_QWORD);
+                break;
+
             default:
                 return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED,
                                        "Return of non-integer,sse aggregate members is not supported");

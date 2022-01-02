@@ -102,8 +102,7 @@ struct kefir_amd64_sysv_function_decl *kefir_codegen_amd64_sysv_module_function_
             KEFIR_FREE(mem, sysv_decl);
             return NULL;
         });
-        kefir_result_t res =
-            kefir_hashtree_insert(mem, tree, (kefir_hashtree_key_t) func_id, (kefir_hashtree_value_t) sysv_decl);
+        res = kefir_hashtree_insert(mem, tree, (kefir_hashtree_key_t) func_id, (kefir_hashtree_value_t) sysv_decl);
         REQUIRE_ELSE(res == KEFIR_OK, {
             kefir_amd64_sysv_function_decl_free(mem, sysv_decl);
             KEFIR_FREE(mem, sysv_decl);

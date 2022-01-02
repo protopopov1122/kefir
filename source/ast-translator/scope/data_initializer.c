@@ -186,6 +186,10 @@ static kefir_result_t visit_value(const struct kefir_ast_designator *designator,
                     REQUIRE_OK(kefir_ir_data_set_float64(param->data, slot, (kefir_float64_t) value.integer));
                     break;
 
+                case KEFIR_IR_TYPE_LONG_DOUBLE:
+                    REQUIRE_OK(kefir_ir_data_set_long_double(param->data, slot, (kefir_long_double_t) value.integer));
+                    break;
+
                 default:
                     return KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Unexpected target IR type entry code");
             }
@@ -212,6 +216,10 @@ static kefir_result_t visit_value(const struct kefir_ast_designator *designator,
 
                 case KEFIR_IR_TYPE_FLOAT64:
                     REQUIRE_OK(kefir_ir_data_set_float64(param->data, slot, value.floating_point));
+                    break;
+
+                case KEFIR_IR_TYPE_LONG_DOUBLE:
+                    REQUIRE_OK(kefir_ir_data_set_long_double(param->data, slot, value.floating_point));
                     break;
 
                 default:

@@ -187,9 +187,11 @@ static kefir_result_t assign_nested_long_double(const struct kefir_ir_type *type
     allocation->klass = KEFIR_AMD64_SYSV_PARAM_NO_CLASS;
     allocation->index = index;
     REQUIRE_OK(kefir_amd64_sysv_abi_qwords_next(&info->top_allocation->container, KEFIR_AMD64_SYSV_PARAM_X87,
-                                                layout->size, layout->alignment, &allocation->container_reference));
+                                                KEFIR_AMD64_SYSV_ABI_QWORD, layout->alignment,
+                                                &allocation->container_reference));
     REQUIRE_OK(kefir_amd64_sysv_abi_qwords_next(&info->top_allocation->container, KEFIR_AMD64_SYSV_PARAM_X87UP,
-                                                layout->size, layout->alignment, &allocation->container_reference));
+                                                KEFIR_AMD64_SYSV_ABI_QWORD, layout->alignment,
+                                                &allocation->container_reference));
     return KEFIR_OK;
 }
 
@@ -315,7 +317,7 @@ static kefir_result_t aggregate_disown(struct kefir_mem *mem, struct kefir_amd64
 
 static kefir_result_t aggregate_postmerger(struct kefir_mem *mem, struct kefir_amd64_sysv_parameter_allocation *alloc) {
     const kefir_size_t length = kefir_vector_length(&alloc->container.qwords);
-    kefir_size_t x87count = 0;
+    kefir_size_t previous_x87 = KEFIR_SIZE_MAX;
     kefir_size_t ssecount = 0;
     bool had_nonsseup = false;
     for (kefir_size_t i = 0; i < length; i++) {
@@ -324,12 +326,10 @@ static kefir_result_t aggregate_postmerger(struct kefir_mem *mem, struct kefir_a
         if (qword->klass == KEFIR_AMD64_SYSV_PARAM_MEMORY) {
             return aggregate_disown(mem, alloc);
         } else if (qword->klass == KEFIR_AMD64_SYSV_PARAM_X87) {
-            x87count++;
+            previous_x87 = i;
         } else if (qword->klass == KEFIR_AMD64_SYSV_PARAM_X87UP) {
-            if (x87count == 0) {
+            if (i == 0 || i - 1 != previous_x87) {
                 return aggregate_disown(mem, alloc);
-            } else {
-                x87count--;
             }
         } else if (qword->klass == KEFIR_AMD64_SYSV_PARAM_SSE) {
             ssecount++;
@@ -416,6 +416,20 @@ static kefir_result_t calculate_qword_requirements(struct kefir_amd64_sysv_param
                     break;
 
                 case KEFIR_AMD64_SYSV_PARAM_NO_CLASS:
+                    break;
+
+                case KEFIR_AMD64_SYSV_PARAM_X87:
+                    REQUIRE(i + 1 < kefir_vector_length(&allocation->container.qwords),
+                            KEFIR_SET_ERROR(KEFIR_INVALID_STATE,
+                                            "Expected X87 qword to be directly followed by X87UP qword"));
+                    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_abi_qword *, next_qword,
+                                     kefir_vector_at(&allocation->container.qwords, ++i));
+                    REQUIRE(next_qword->klass == KEFIR_AMD64_SYSV_PARAM_X87UP,
+                            KEFIR_SET_ERROR(KEFIR_INVALID_STATE,
+                                            "Expected X87 qword to be directly followed by X87UP qword"));
+                    allocation->requirements.memory.size += 2 * KEFIR_AMD64_SYSV_ABI_QWORD;
+                    allocation->requirements.memory.alignment =
+                        MAX(allocation->requirements.memory.alignment, 2 * KEFIR_AMD64_SYSV_ABI_QWORD);
                     break;
 
                 default:
