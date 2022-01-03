@@ -349,6 +349,20 @@ static kefir_result_t register_aggregate_return(struct invoke_info *info,
                 ASMGEN_ARG0(&info->codegen->asmgen, "0");
                 break;
 
+            case KEFIR_AMD64_SYSV_PARAM_X87:
+                REQUIRE(i + 1 < kefir_vector_length(&allocation->container.qwords),
+                        KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected X87 qword to be directly followed by X87UP"));
+                ASSIGN_DECL_CAST(struct kefir_amd64_sysv_abi_qword *, next_qword,
+                                 kefir_vector_at(&allocation->container.qwords, ++i));
+                REQUIRE(next_qword->klass == KEFIR_AMD64_SYSV_PARAM_X87UP,
+                        KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected X87 qword to be directly followed by X87UP"));
+
+                ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_FSTP);
+                ASMGEN_ARG(&info->codegen->asmgen, KEFIR_AMD64_TBYTE KEFIR_AMD64_INDIRECT_OFFSET,
+                           KEFIR_AMD64_SYSV_ABI_STACK_BASE_REG,
+                           KEFIR_AMD64_SYSV_INTERNAL_BOUND + (i - 1) * KEFIR_AMD64_SYSV_ABI_QWORD);
+                break;
+
             default:
                 return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Non-INTEGER & non-SSE arguments are not supported");
         }

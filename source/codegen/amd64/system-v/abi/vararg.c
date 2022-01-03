@@ -346,6 +346,7 @@ struct vararg_aggregate_info {
 
     struct kefir_vector layout;
     struct kefir_vector allocation;
+    struct kefir_amd64_sysv_parameter_location location;
 };
 
 static kefir_result_t vararg_load_memory_aggregate(struct kefir_codegen_amd64 *codegen,
@@ -647,10 +648,19 @@ static kefir_result_t vararg_visit_aggregate(const struct kefir_ir_type *type, k
 
     struct vararg_aggregate_info *info = KEFIR_MALLOC(param->mem, sizeof(struct vararg_aggregate_info));
     REQUIRE(info != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate memory aggregate vararg info"));
+    *info = (struct vararg_aggregate_info){0};
 
     REQUIRE_OK(kefir_amd64_sysv_type_layout(type, param->mem, &info->layout));
     kefir_result_t res = kefir_amd64_sysv_parameter_classify(param->mem, type, &info->layout, &info->allocation);
     REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_vector_free(param->mem, &info->layout);
+        KEFIR_FREE(param->mem, info);
+        return res;
+    });
+
+    res = kefir_amd64_sysv_parameter_allocate(param->mem, type, &info->layout, &info->allocation, &info->location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_vector_free(param->mem, &info->allocation);
         kefir_vector_free(param->mem, &info->layout);
         KEFIR_FREE(param->mem, info);
         return res;

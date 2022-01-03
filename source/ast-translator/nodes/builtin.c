@@ -65,17 +65,35 @@ kefir_result_t kefir_ast_translate_builtin_node(struct kefir_mem *mem, struct ke
 
             kefir_list_next(&iter);
             ASSIGN_DECL_CAST(struct kefir_ast_node_base *, type_arg, iter->value);
-            const struct kefir_ast_translator_resolved_type *cached_type = NULL;
-            REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_cache.resolver,
-                                                                       context->environment, context->module,
-                                                                       type_arg->properties.type, 0, &cached_type));
-            REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
-                    KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected cached type to be an object"));
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(
-                builder, KEFIR_IROPCODE_VARARG_GET, cached_type->object.ir_type_id, cached_type->object.layout->value));
-            if (KEFIR_AST_TYPE_IS_SCALAR_TYPE(cached_type->type)) {
-                REQUIRE_OK(kefir_ast_translate_typeconv_normalize(builder, context->ast_context->type_traits,
-                                                                  cached_type->type));
+
+            kefir_id_t va_type_id;
+            struct kefir_irbuilder_type type_builder;
+            struct kefir_ast_type_layout *type_layout;
+
+            struct kefir_ir_type *va_type = kefir_ir_module_new_type(mem, context->module, 0, &va_type_id);
+            REQUIRE_OK(kefir_irbuilder_type_init(mem, &type_builder, va_type));
+            kefir_result_t res = kefir_ast_translate_object_type(mem, type_arg->properties.type, 0,
+                                                                 context->environment, &type_builder, &type_layout);
+            REQUIRE_ELSE(res == KEFIR_OK, {
+                KEFIR_IRBUILDER_TYPE_FREE(&type_builder);
+                return res;
+            });
+
+            const struct kefir_ast_type *layout_type = type_layout->type;
+            kefir_size_t type_layout_idx = type_layout->value;
+
+            res = kefir_ast_type_layout_free(mem, type_layout);
+            REQUIRE_ELSE(res == KEFIR_OK, {
+                KEFIR_IRBUILDER_TYPE_FREE(&type_builder);
+                return res;
+            });
+            REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&type_builder));
+
+            REQUIRE_OK(
+                KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_VARARG_GET, va_type_id, type_layout_idx));
+            if (KEFIR_AST_TYPE_IS_SCALAR_TYPE(layout_type)) {
+                REQUIRE_OK(
+                    kefir_ast_translate_typeconv_normalize(builder, context->ast_context->type_traits, layout_type));
             }
         } break;
 

@@ -24,6 +24,11 @@
 #include <math.h>
 #include "./definitions.h"
 
+static long double LD;
+static struct Param1 getLD() {
+    return (struct Param1){LD};
+}
+
 int main() {
     for (long double x = -100.0; x < 100.0; x += 0.01) {
         struct Param1 p = ldneg((struct Param1){x});
@@ -35,6 +40,15 @@ int main() {
         assert(fabsl(ldvsum(1, x).value - x) < 1e-5);
         assert(fabsl(ldvsum(2, x, x).value - 2 * x) < 1e-5);
         assert(fabsl(ldvsum(3, x, x, 1.0l).value - (2 * x + 1.0)) < 1e-5);
+
+        assert(fabsl(ldvsum2(0, (struct Param1){x}).value) < 1e-5);
+        assert(fabsl(ldvsum2(1, (struct Param1){x}).value - x) < 1e-5);
+        assert(fabsl(ldvsum2(2, (struct Param1){x}, (struct Param1){x}).value - 2 * x) < 1e-5);
+        assert(fabsl(ldvsum2(3, (struct Param1){x}, (struct Param1){x}, (struct Param1){1}).value - (2 * x + 1.0)) <
+               1e-5);
+
+        LD = x;
+        assert(fabsl(ldunwrap(getLD) - x) < 1e-5);
     }
     return EXIT_SUCCESS;
 }

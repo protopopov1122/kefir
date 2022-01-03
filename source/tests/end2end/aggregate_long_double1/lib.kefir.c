@@ -44,3 +44,19 @@ struct Param1 ldvsum(int num, ...) {
     va_end(list);
     return (struct Param1){x};
 }
+
+struct Param1 ldvsum2(int num, ...) {
+    long double x = 0.0;
+    va_list list;
+    va_start(list, num);
+    while (num--) {
+        struct Param1 p = va_arg(list, struct Param1);
+        x += p.value;
+    }
+    va_end(list);
+    return (struct Param1){x};
+}
+
+long double ldunwrap(struct Param1 (*fn)()) {
+    return fn().value;
+}
