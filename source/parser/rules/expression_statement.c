@@ -25,11 +25,20 @@ kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(expression_statement)(struct kefir_me
                                                                  struct kefir_ast_node_base **result, void *payload) {
     APPLY_PROLOGUE(mem, parser, result, payload);
     struct kefir_ast_node_base *expression = NULL;
+    kefir_result_t res = KEFIR_OK;
+
+    if (PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_ATTRIBUTE)) {
+        SKIP_ATTRIBUTES(&res, mem, parser);
+        REQUIRE_OK(res);
+        REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_SEMICOLON),
+                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
+                                       "Attributes cannot be specified for non-null expression statement"));
+    }
+
     if (!PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_SEMICOLON)) {
         REQUIRE_OK(KEFIR_PARSER_NEXT_EXPRESSION(mem, parser, &expression));
     }
 
-    kefir_result_t res = KEFIR_OK;
     REQUIRE_CHAIN_SET(
         &res, PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_SEMICOLON),
         KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected semicolon"));

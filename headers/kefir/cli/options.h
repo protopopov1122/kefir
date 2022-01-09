@@ -57,6 +57,10 @@ typedef struct kefir_cli_options {
     kefir_bool_t default_pp_timestamp;
 
     struct {
+        kefir_bool_t fail_on_attributes;
+    } parser;
+
+    struct {
         kefir_bool_t non_strict_qualifiers;
         kefir_bool_t signed_enum_type;
     } analysis;

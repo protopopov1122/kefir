@@ -29,6 +29,12 @@
 
 typedef struct kefir_parser kefir_parser_t;
 
+typedef struct kefir_parser_configuration {
+    kefir_bool_t fail_on_attributes;
+} kefir_parser_configuration_t;
+
+kefir_result_t kefir_parser_configuration_default(struct kefir_parser_configuration *);
+
 typedef struct kefir_parser_extensions {
     kefir_result_t (*on_init)(struct kefir_mem *, struct kefir_parser *);
     kefir_result_t (*on_free)(struct kefir_mem *, struct kefir_parser *);
@@ -40,6 +46,7 @@ typedef struct kefir_parser {
     struct kefir_parser_token_cursor *cursor;
     struct kefir_parser_scope scope;
     struct kefir_parser_ruleset ruleset;
+    const struct kefir_parser_configuration *configuration;
 
     const struct kefir_parser_extensions *extensions;
     void *extension_payload;

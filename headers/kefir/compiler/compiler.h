@@ -27,6 +27,7 @@
 #include "kefir/preprocessor/preprocessor.h"
 #include "kefir/preprocessor/ast_context.h"
 #include "kefir/preprocessor/source_file.h"
+#include "kefir/parser/parser.h"
 #include "kefir/lexer/lexer.h"
 #include "kefir/ast/node.h"
 #include "kefir/ir/module.h"
@@ -50,6 +51,7 @@ typedef struct kefir_compiler_extensions {
 typedef struct kefir_compiler_context {
     struct kefir_compiler_profile *profile;
     const struct kefir_preprocessor_source_locator *source_locator;
+    struct kefir_parser_configuration parser_configuration;
     struct kefir_ast_translator_environment translator_env;
     struct kefir_ast_global_context ast_global_context;
     struct kefir_preprocessor_context preprocessor_context;

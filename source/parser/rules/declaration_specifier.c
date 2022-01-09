@@ -218,6 +218,9 @@ static kefir_result_t scan_struct_specifier(struct kefir_mem *mem, struct kefir_
     kefir_bool_t complete;
     kefir_result_t res = KEFIR_OK;
 
+    SKIP_ATTRIBUTES(&res, mem, parser);
+    REQUIRE_OK(res);
+
     if (PARSER_TOKEN_IS_IDENTIFIER(parser, 0)) {
         identifier = kefir_parser_token_cursor_at(parser->cursor, 0)->identifier;
         REQUIRE_OK(PARSER_SHIFT(parser));
@@ -253,6 +256,11 @@ static kefir_result_t scan_struct_specifier(struct kefir_mem *mem, struct kefir_
 
     *specifier_ptr = decl_specifier;
 
+    if (complete) {
+        SKIP_ATTRIBUTES(&res, mem, parser);
+        REQUIRE_OK(res);
+    }
+
     return KEFIR_OK;
 }
 
@@ -268,16 +276,19 @@ static kefir_result_t scan_enum_field_declaration(struct kefir_mem *mem, struct 
     const char *identifier = kefir_parser_token_cursor_at(parser->cursor, 0)->identifier;
     REQUIRE_OK(PARSER_SHIFT(parser));
 
+    kefir_result_t res = KEFIR_OK;
+    SKIP_ATTRIBUTES(&res, mem, parser);
+    REQUIRE_OK(res);
+
     struct kefir_ast_node_base *value = NULL;
     if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_ASSIGN)) {
         REQUIRE_OK(PARSER_SHIFT(parser));
-        kefir_result_t res;
         REQUIRE_MATCH_OK(&res, KEFIR_PARSER_RULE_APPLY(mem, parser, constant_expression, &value),
                          KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
                                                 "Expected constant expression"));
     }
 
-    kefir_result_t res = kefir_ast_enum_specifier_append(mem, specifier, parser->symbols, identifier, value);
+    res = kefir_ast_enum_specifier_append(mem, specifier, parser->symbols, identifier, value);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_AST_NODE_FREE(mem, value);
         return res;
@@ -320,6 +331,9 @@ static kefir_result_t scan_enum_specifier(struct kefir_mem *mem, struct kefir_pa
     kefir_bool_t complete;
     kefir_result_t res = KEFIR_OK;
 
+    SKIP_ATTRIBUTES(&res, mem, parser);
+    REQUIRE_OK(res);
+
     if (PARSER_TOKEN_IS_IDENTIFIER(parser, 0)) {
         identifier = kefir_parser_token_cursor_at(parser->cursor, 0)->identifier;
         REQUIRE_OK(PARSER_SHIFT(parser));
@@ -349,6 +363,11 @@ static kefir_result_t scan_enum_specifier(struct kefir_mem *mem, struct kefir_pa
     });
 
     *specifier_ptr = decl_specifier;
+
+    if (complete) {
+        SKIP_ATTRIBUTES(&res, mem, parser);
+        REQUIRE_OK(res);
+    }
 
     return KEFIR_OK;
 }
@@ -589,7 +608,11 @@ kefir_result_t kefir_parser_scan_declaration_specifier(struct kefir_mem *mem, st
     REQUIRE(parser != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser"));
     REQUIRE(specifiers != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid declarator specifier list"));
 
-    kefir_result_t res = kefir_parser_try_invoke(mem, parser, scan_storage_class, specifiers);
+    kefir_result_t res = KEFIR_OK;
+    SKIP_ATTRIBUTES(&res, mem, parser);
+    REQUIRE_OK(res);
+
+    res = kefir_parser_try_invoke(mem, parser, scan_storage_class, specifiers);
     REQUIRE(res == KEFIR_NO_MATCH, res);
     res = kefir_parser_try_invoke(mem, parser, scan_type_specifier, specifiers);
     REQUIRE(res == KEFIR_NO_MATCH, res);

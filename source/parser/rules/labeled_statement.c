@@ -33,6 +33,11 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
         const char *identifier = kefir_parser_token_cursor_at(parser->cursor, 0)->identifier;
         REQUIRE_OK(PARSER_SHIFT(parser));
         REQUIRE_OK(PARSER_SHIFT(parser));
+
+        kefir_result_t res = KEFIR_OK;
+        SKIP_ATTRIBUTES(&res, mem, parser);
+        REQUIRE_OK(res);
+
         REQUIRE_MATCH_OK(
             &res, kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, statement), NULL),
             KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected statement"));

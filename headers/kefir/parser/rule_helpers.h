@@ -71,4 +71,19 @@
         REQUIRE(*(_ptr) != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, (_error))); \
     } while (0)
 
+#define SKIP_ATTRIBUTES(_res, _mem, _parser)                                             \
+    do {                                                                                 \
+        while (*(_res) == KEFIR_OK) {                                                    \
+            struct kefir_ast_node_base *attribute = NULL;                                \
+            *(_res) = KEFIR_PARSER_RULE_APPLY((_mem), (_parser), attribute, &attribute); \
+            if (*(_res) == KEFIR_OK && attribute != NULL) {                              \
+                *(_res) = KEFIR_AST_NODE_FREE(mem, attribute);                           \
+                attribute = NULL;                                                        \
+            }                                                                            \
+        }                                                                                \
+        if (*(_res) == KEFIR_NO_MATCH) {                                                 \
+            *(_res) = KEFIR_OK;                                                          \
+        }                                                                                \
+    } while (0)
+
 #endif

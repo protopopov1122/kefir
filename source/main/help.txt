@@ -21,6 +21,9 @@ Options:
     --source-id identifier              Force use provided source file identifier
     --detailed-output                   Include references to source file in AST and token dumps
 
+Parsing options:
+    --parser-fail-on-attributes         Fail if __attribute__((...)) is encountered
+
 Analysis options:
     --analyzer-non-strict-qualifiers    Disable strict qualifier checks for pointers
     --analyzer-signed-enums             Force all enums to have signed integral type

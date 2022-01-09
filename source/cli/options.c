@@ -42,6 +42,7 @@ static kefir_result_t parse_impl(struct kefir_mem *mem, struct kefir_cli_options
                                                  {"pp-timestamp", required_argument, NULL, 0},
                                                  {"analyzer-non-strict-qualifiers", no_argument, NULL, 0},
                                                  {"analyzer-signed-enums", no_argument, NULL, 0},
+                                                 {"parser-fail-on-attributes", no_argument, NULL, 0},
                                                  {"define", required_argument, NULL, 'D'},
                                                  {"include-dir", required_argument, NULL, 'I'},
                                                  {"help", no_argument, NULL, 'h'},
@@ -102,6 +103,10 @@ static kefir_result_t parse_impl(struct kefir_mem *mem, struct kefir_cli_options
 
                     case 14:
                         options->analysis.signed_enum_type = true;
+                        break;
+
+                    case 15:
+                        options->parser.fail_on_attributes = true;
                         break;
 
                     default:
@@ -198,6 +203,7 @@ kefir_result_t kefir_cli_parse_options(struct kefir_mem *mem, struct kefir_cli_o
                                           .error_report_type = KEFIR_CLI_ERROR_REPORT_TABULAR,
                                           .skip_preprocessor = false,
                                           .default_pp_timestamp = true,
+                                          .parser = {.fail_on_attributes = false},
                                           .analysis = {.non_strict_qualifiers = false}};
     REQUIRE_OK(kefir_list_init(&options->include_path));
     REQUIRE_OK(kefir_hashtree_init(&options->defines, &kefir_hashtree_str_ops));

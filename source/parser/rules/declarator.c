@@ -439,6 +439,13 @@ kefir_result_t kefir_parser_scan_declarator(struct kefir_mem *mem, struct kefir_
     kefir_size_t checkpoint;
     kefir_result_t res = KEFIR_OK;
     REQUIRE_OK(kefir_parser_token_cursor_save(parser->cursor, &checkpoint));
+
+    SKIP_ATTRIBUTES(&res, mem, parser);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_parser_token_cursor_restore(parser->cursor, checkpoint);
+        return res;
+    });
+
     if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_STAR)) {
         res = scan_pointer(mem, parser, parser->ruleset.declarator, declarator_ptr);
     } else {
@@ -449,8 +456,9 @@ kefir_result_t kefir_parser_scan_declarator(struct kefir_mem *mem, struct kefir_
         REQUIRE_OK(kefir_parser_token_cursor_restore(parser->cursor, checkpoint));
     } else {
         REQUIRE_OK(res);
+        SKIP_ATTRIBUTES(&res, mem, parser);
+        REQUIRE_OK(res);
     }
-
     return res;
 }
 
@@ -530,6 +538,13 @@ kefir_result_t kefir_parser_scan_abstract_declarator(struct kefir_mem *mem, stru
     kefir_size_t checkpoint;
     kefir_result_t res = KEFIR_OK;
     REQUIRE_OK(kefir_parser_token_cursor_save(parser->cursor, &checkpoint));
+
+    SKIP_ATTRIBUTES(&res, mem, parser);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_parser_token_cursor_restore(parser->cursor, checkpoint);
+        return res;
+    });
+
     if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_STAR)) {
         res = scan_pointer(mem, parser, scan_abstract_declarator_pointer_tail, declarator_ptr);
     } else {
@@ -539,6 +554,8 @@ kefir_result_t kefir_parser_scan_abstract_declarator(struct kefir_mem *mem, stru
     if (res == KEFIR_NO_MATCH) {
         REQUIRE_OK(kefir_parser_token_cursor_restore(parser->cursor, checkpoint));
     } else {
+        REQUIRE_OK(res);
+        SKIP_ATTRIBUTES(&res, mem, parser);
         REQUIRE_OK(res);
     }
 

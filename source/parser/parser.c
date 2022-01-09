@@ -23,6 +23,15 @@
 #include "kefir/core/error.h"
 #include "kefir/core/extensions.h"
 
+static const struct kefir_parser_configuration DefaultConfiguration = {.fail_on_attributes = false};
+
+kefir_result_t kefir_parser_configuration_default(struct kefir_parser_configuration *config) {
+    REQUIRE(config != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to parser configuration"));
+
+    *config = DefaultConfiguration;
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_parser_init(struct kefir_mem *mem, struct kefir_parser *parser, struct kefir_symbol_table *symbols,
                                  struct kefir_parser_token_cursor *cursor,
                                  const struct kefir_parser_extensions *extensions) {
@@ -36,6 +45,7 @@ kefir_result_t kefir_parser_init(struct kefir_mem *mem, struct kefir_parser *par
     parser->cursor = cursor;
     parser->extensions = extensions;
     parser->extension_payload = NULL;
+    parser->configuration = &DefaultConfiguration;
 
     kefir_result_t res;
     KEFIR_RUN_EXTENSION0(&res, mem, parser, on_init);
