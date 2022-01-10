@@ -14,3 +14,4 @@ no_complex = 1
 no_threads = __STDC_NO_THREADS__
 no_vla = __STDC_NO_VLA__
 kefircc = 1
+__ILP32__ __LLP64__ 1 __ILP64__ __SILP64__

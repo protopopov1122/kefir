@@ -366,6 +366,37 @@ kefir_result_t kefir_preprocessor_predefined_macro_scope_init(struct kefir_mem *
     REQUIRE_CHAIN(&res,
                   define_predefined_macro(mem, scope, &scope->macros.kefircc, "__KEFIRCC__", macro_produce_one_apply));
 
+    switch (preprocessor->context->environment.data_model) {
+        case KEFIR_DATA_MODEL_UNKNOWN:
+            // Intentionally left blank
+            break;
+
+        case KEFIR_DATA_MODEL_ILP32:
+            REQUIRE_CHAIN(&res, define_predefined_macro(mem, scope, &scope->macros.data_model, "__ILP32__",
+                                                        macro_produce_one_apply));
+            break;
+
+        case KEFIR_DATA_MODEL_LLP64:
+            REQUIRE_CHAIN(&res, define_predefined_macro(mem, scope, &scope->macros.data_model, "__LLP64__",
+                                                        macro_produce_one_apply));
+            break;
+
+        case KEFIR_DATA_MODEL_LP64:
+            REQUIRE_CHAIN(&res, define_predefined_macro(mem, scope, &scope->macros.data_model, "__LP64__",
+                                                        macro_produce_one_apply));
+            break;
+
+        case KEFIR_DATA_MODEL_ILP64:
+            REQUIRE_CHAIN(&res, define_predefined_macro(mem, scope, &scope->macros.data_model, "__ILP64__",
+                                                        macro_produce_one_apply));
+            break;
+
+        case KEFIR_DATA_MODEL_SILP64:
+            REQUIRE_CHAIN(&res, define_predefined_macro(mem, scope, &scope->macros.data_model, "__SILP64__",
+                                                        macro_produce_one_apply));
+            break;
+    }
+
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_hashtree_free(mem, &scope->macro_tree);
         return res;

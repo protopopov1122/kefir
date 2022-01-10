@@ -103,6 +103,7 @@ static kefir_result_t amd64_sysv_free(struct kefir_mem *mem, struct kefir_ir_tar
 kefir_result_t kefir_codegen_amd64_sysv_target_platform(struct kefir_ir_target_platform *platform) {
     REQUIRE(platform != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translation platform pointer"));
+    platform->data_model = KEFIR_DATA_MODEL_LP64;
     platform->get_type = amd64_sysv_get_type;
     platform->free_type = amd64_sysv_free_type;
     platform->type_info = amd64_sysv_type_info;

@@ -54,7 +54,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                            "no_complex = __STDC_NO_COMPLEX__\n"
                            "no_threads = __STDC_NO_THREADS__\n"
                            "no_vla = __STDC_NO_VLA__\n"
-                           "kefircc = __KEFIRCC__";
+                           "kefircc = __KEFIRCC__\n"
+                           "__ILP32__ __LLP64__ __LP64__ __ILP64__ __SILP64__";
 
     struct kefir_symbol_table symbols;
     struct kefir_lexer_context parser_context;
@@ -74,6 +75,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                                                    &env.target_env, NULL));
     REQUIRE_OK(kefir_preprocessor_virtual_source_locator_init(&virtual_source));
     REQUIRE_OK(kefir_preprocessor_context_init(mem, &context, &virtual_source.locator, &ast_context.context, NULL));
+
+    context.environment.data_model = env.target_platform->data_model;
 
     const char *DATETIME = "Sep 26 2021 10:42:59 UTC";
     const char *FMT = "%b %e %Y %H:%M:%S %Z";

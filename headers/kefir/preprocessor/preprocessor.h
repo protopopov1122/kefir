@@ -29,6 +29,7 @@
 #include "kefir/preprocessor/source_file.h"
 #include "kefir/preprocessor/directives.h"
 #include "kefir/ast/context.h"
+#include "kefir/core/data_model.h"
 #include <time.h>
 
 typedef struct kefir_preprocessor_context kefir_preprocessor_context_t;
@@ -68,6 +69,7 @@ typedef struct kefir_preprocessor_environment {
     kefir_bool_t stdc_no_complex;
     kefir_bool_t stdc_no_threads;
     kefir_bool_t stdc_no_vla;
+    kefir_data_model_t data_model;
 } kefir_preprocessor_environment_t;
 
 typedef struct kefir_preprocessor_context {
