@@ -9,6 +9,7 @@ packages:
   - musl-tools
 sources:
   - https://git.sr.ht/~jprotopopov/kefir
+  - https://github.com/protopopov1122/c-testsuite.git
 tasks:
   - kefircc: |
       cd kefir
@@ -16,7 +17,18 @@ tasks:
   - lua_tests: |
       cd kefir
       export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/bin/libs
+      export LC_ALL=C.UTF-8
       ./source/tests/misc/run-lua-tests.sh "$(pwd)/bin/kefir -I /usr/include/x86_64-linux-musl" "$(pwd)/source/runtime/amd64_sysv.s" "$(pwd)/bin/lua-test"
+  - c_testsuite: |
+      as -o rt.o kefir/source/runtime/amd64_sysv.s
+      cd c-testsuite
+      export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/kefir/bin/libs
+      export KEFIRCC="$HOME/kefir/bin/kefir"
+      export KEFIRRT="$HOME/rt.o /usr/lib/x86_64-linux-musl/crt1.o /usr/lib/x86_64-linux-musl/libc.a"
+      export CFLAGS="-I /usr/include/x86_64-linux-musl --analyzer-non-strict-qualifiers"
+      export LC_ALL=C.UTF-8 
+      ./single-exec kefircc | tee ~/c-tests.log
+      [[ "x$(cat ~/c-tests.log | scripts/tapsummary | grep 'fail 0' | wc -l)" == "x1" ]] || exit 1
 triggers:
   - action: email
     condition: failure
