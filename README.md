@@ -66,6 +66,9 @@ At the moment, Kefir supports following builtins for compatibility with GCC:
 `__builtin_va_list`, `__builtin_va_start`, `__builtin_va_end`, `__builtin_va_copy`, `__builtin_va_arg`,
 `__builtin_alloca`, `__builtin_alloca_with_align`, `__builtin_alloca_with_align_and_max`
 
+Kefir supports `__attribute__(...)` syntax on parsing level, however attributes are ignored on further
+compilation stages. Presence of attribute in source code can be made a syntax error by CLI option.
+
 ### Standard library
 Kefir can be used along with [musl libc](https://musl.libc.org) standard library, with the exception for
 `<complex.h>` and `<tgmath.h>` headers which are not available due to lacking support of `_Complex` types.
@@ -116,6 +119,33 @@ LIBC_HEADERS="$MUSL/include" LIBC_LIBS="$MUSL/lib" -j$(nproc)
 ./scripts/bootstrap_compare.sh bootstrap/stage1 bootstrap/stage2
 ```
 
+## Test suite
+Kefir relies on following tests, most of which are executed as part of CI:
+* Own test suite that includes:
+    - Unit tests
+    - Integration tests -- each test is a self-contained program that executes some part of compilation process, produces
+      a text output which is then compared to the expected.
+    - System tests -- each test is a self-contained program that performs compilation process, starting from some stage
+      (e.g. compiling a program defined as AST structure or IR bytecode) and produces an assembly output, which is then
+      combined with the remaining part of test case containing asserts (compiled with system compiler) and executed.
+    - End-to-end tests -- each test consists of multiple `*.c` files which are compiled either using system compiler
+      or kefir depending on file extension. Everything is then linked together and executed.
+    The test suite is executed on Linux with gcc and clang compilers and on FreeBSD with clang.
+* Bootstrapping test -- kefir is used to compile itself using 2-stage bootstrap technique as described above.
+* Miscallenous tests:
+    - Lua test -- kefir is used to build Lua 5.4 interpreter and then Lua basic test suite is executed on
+      the resulting executable 
+    - [Test suite](https://github.com/protopopov1122/c-testsuite) which is a fork of [c-testsuite](https://github.com/c-testsuite/c-testsuite) is
+      executed. Currently, the test suite reports 4 failures that happen due to C language extensions used in the tests. Failing test cases
+      are skipped.
+
+The test suite is deterministic (that is, tests do not fail spuriously), however there might arise problems when executed in unusual environments.
+For instance, some tests contain unicode characters and require the environment to have appropriate locale set. Also, issues with local musl 
+version might cause test failures.
+
+Currently, extension of the test suite is a major goal. It helps significantly in eliminating bugs, bringing kefir closer to C11 standard support,
+improving compiler UX in general.
+
 ## Design notes
 In order to simplify translation and facilitate portability, intermediate representation
 (IR) layer was introduced. It defines architecture-agnostic 64-bit stack machine
@@ -143,7 +173,7 @@ License:
 
 ## Further developments
 Following things can be focus of further development (in order of feasibility and priority):
-* Bugfixes.
+* Bugfixes. Extension of test suite.
 * Improvements in error reporting.
 * Optimization and refactoring of compiler source.
 * Implementing missing bits from `Exceptions` section, migration to C17 as target standard.
