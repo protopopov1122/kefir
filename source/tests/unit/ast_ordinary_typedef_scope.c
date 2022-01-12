@@ -23,7 +23,7 @@
 #include "kefir/test/util.h"
 
 DEFINE_CASE(ast_ordinary_typedef_scope1, "AST ordinary scope - type definitions #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_symbol_table symbols;
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_ast_global_context global_context;

@@ -24,7 +24,7 @@
 #include "kefir/test/util.h"
 
 DEFINE_CASE(ast_type_analysis_scalars, "AST type analysis - scalars") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -67,7 +67,7 @@ DEFINE_CASE(ast_type_analysis_scalars, "AST type analysis - scalars") {
 END_CASE
 
 DEFINE_CASE(ast_type_analysis_pointers_qualifications, "AST type analysis - pointers & qualifications") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -169,7 +169,7 @@ END_CASE
     } while (0)
 
 DEFINE_CASE(ast_type_analysis_enumerations, "AST type analysis - enumerations") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -224,7 +224,7 @@ END_CASE
 #undef ASSERT_ENUM_CONSTANT
 
 DEFINE_CASE(ast_type_analysis_arrays, "AST type analysis - arrays") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -307,7 +307,7 @@ DEFINE_CASE(ast_type_analysis_arrays, "AST type analysis - arrays") {
 END_CASE
 
 DEFINE_CASE(ast_type_analysis_structs, "AST type analysis - structures/unions") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -438,7 +438,7 @@ DEFINE_CASE(ast_type_analysis_structs, "AST type analysis - structures/unions") 
 END_CASE
 
 DEFINE_CASE(ast_type_analysis_functions, "AST type analysis - functions") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -541,7 +541,7 @@ DEFINE_CASE(ast_type_analysis_functions, "AST type analysis - functions") {
 END_CASE
 
 DEFINE_CASE(ast_type_analysis_flexible_arrays, "AST type analysis - flexible array members") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 

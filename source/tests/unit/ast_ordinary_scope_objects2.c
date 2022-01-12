@@ -36,7 +36,7 @@
     } while (0)
 
 DEFINE_CASE(ast_ordinary_scope_objects_init1, "AST Declaration initializers - global externals #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
 
@@ -86,7 +86,7 @@ DEFINE_CASE(ast_ordinary_scope_objects_init1, "AST Declaration initializers - gl
 END_CASE
 
 DEFINE_CASE(ast_ordinary_scope_objects_init2, "AST Declaration initializers - global externals #2") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
 
@@ -148,7 +148,7 @@ DEFINE_CASE(ast_ordinary_scope_objects_init2, "AST Declaration initializers - gl
 END_CASE
 
 DEFINE_CASE(ast_ordinary_scope_objects_init3, "AST Declaration initializers - global static #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
 
@@ -193,7 +193,7 @@ DEFINE_CASE(ast_ordinary_scope_objects_init3, "AST Declaration initializers - gl
 END_CASE
 
 DEFINE_CASE(ast_ordinary_scope_objects_init4, "AST Declaration initializers - global static #2") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
 
@@ -236,7 +236,7 @@ DEFINE_CASE(ast_ordinary_scope_objects_init4, "AST Declaration initializers - gl
 END_CASE
 
 DEFINE_CASE(ast_ordinary_scope_objects_init5, "AST Declaration initializers - global thread local externals #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
 
@@ -286,7 +286,7 @@ DEFINE_CASE(ast_ordinary_scope_objects_init5, "AST Declaration initializers - gl
 END_CASE
 
 DEFINE_CASE(ast_ordinary_scope_objects_init6, "AST Declaration initializers - global thread local externals #2") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
 
@@ -350,7 +350,7 @@ DEFINE_CASE(ast_ordinary_scope_objects_init6, "AST Declaration initializers - gl
 END_CASE
 
 DEFINE_CASE(ast_ordinary_scope_objects_init7, "AST Declaration initializers - global thread local static #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
 
@@ -395,7 +395,7 @@ DEFINE_CASE(ast_ordinary_scope_objects_init7, "AST Declaration initializers - gl
 END_CASE
 
 DEFINE_CASE(ast_ordinary_scope_objects_init8, "AST Declaration initializers - global thread local static #2") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
 

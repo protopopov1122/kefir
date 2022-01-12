@@ -36,7 +36,7 @@ static kefir_result_t on_free(struct kefir_mem *mem, struct kefir_ast_translator
 }
 
 DEFINE_CASE(ast_translator_context_extensions1, "AST translator context - extensions #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_symbol_table symbols;
     struct kefir_ast_translator_environment env;
     struct kefir_ast_global_context context;
@@ -61,7 +61,7 @@ DEFINE_CASE(ast_translator_context_extensions1, "AST translator context - extens
 END_CASE
 
 DEFINE_CASE(ast_translator_context_local_extensions1, "AST translator context - local extensions #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_symbol_table symbols;
     struct kefir_ast_translator_environment env;
     struct kefir_ast_global_context context;

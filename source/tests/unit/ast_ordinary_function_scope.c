@@ -23,7 +23,7 @@
 #include "kefir/test/util.h"
 
 DEFINE_CASE(ast_ordinary_function_scope1, "AST ordinary scope - functions #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
 
@@ -89,7 +89,7 @@ DEFINE_CASE(ast_ordinary_function_scope1, "AST ordinary scope - functions #1") {
 END_CASE
 
 DEFINE_CASE(ast_ordinary_function_scope2, "AST ordinary scope - functions #2") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
 
@@ -183,7 +183,7 @@ DEFINE_CASE(ast_ordinary_function_scope2, "AST ordinary scope - functions #2") {
 END_CASE
 
 DEFINE_CASE(ast_ordinary_function_scope3, "AST ordinary scope - block scope functions #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
 
@@ -247,7 +247,7 @@ DEFINE_CASE(ast_ordinary_function_scope3, "AST ordinary scope - block scope func
 END_CASE
 
 DEFINE_CASE(ast_ordinary_function_scope4, "AST ordinary scope - block scope functions #2") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
 
@@ -320,7 +320,7 @@ DEFINE_CASE(ast_ordinary_function_scope4, "AST ordinary scope - block scope func
 END_CASE
 
 DEFINE_CASE(ast_ordinary_function_scope5, "AST ordinary scope - block scope functions #3") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
 

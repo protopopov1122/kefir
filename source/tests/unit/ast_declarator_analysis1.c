@@ -28,7 +28,7 @@
 #include "declarator_analysis.h"
 
 DEFINE_CASE(ast_declarator_analysis1, "AST declarator analysis - declarator type specifiers") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -138,7 +138,7 @@ DEFINE_CASE(ast_declarator_analysis1, "AST declarator analysis - declarator type
 END_CASE
 
 DEFINE_CASE(ast_declarator_analysis2, "AST declarator analysis - declarator type qualifiers") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -211,7 +211,7 @@ DEFINE_CASE(ast_declarator_analysis2, "AST declarator analysis - declarator type
 END_CASE
 
 DEFINE_CASE(ast_declarator_analysis3, "AST declarator analysis - declarator storage class") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -291,7 +291,7 @@ DEFINE_CASE(ast_declarator_analysis3, "AST declarator analysis - declarator stor
 END_CASE
 
 DEFINE_CASE(ast_declarator_analysis4, "AST declarator analysis - function declarator specifier") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -370,7 +370,7 @@ DEFINE_CASE(ast_declarator_analysis4, "AST declarator analysis - function declar
 END_CASE
 
 DEFINE_CASE(ast_declarator_analysis5, "AST declarator analysis - declarator alignment #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -431,7 +431,7 @@ DEFINE_CASE(ast_declarator_analysis5, "AST declarator analysis - declarator alig
 END_CASE
 
 DEFINE_CASE(ast_declarator_analysis6, "AST declarator analysis - declarator alignment #2") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 

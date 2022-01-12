@@ -28,7 +28,7 @@
 #include "declarator_analysis.h"
 
 DEFINE_CASE(ast_declarator_analysis16, "AST declarator analysis - struct type tags #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -114,7 +114,7 @@ DEFINE_CASE(ast_declarator_analysis16, "AST declarator analysis - struct type ta
 END_CASE
 
 DEFINE_CASE(ast_declarator_analysis17, "AST declarator analysis - union type tags #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -200,7 +200,7 @@ DEFINE_CASE(ast_declarator_analysis17, "AST declarator analysis - union type tag
 END_CASE
 
 DEFINE_CASE(ast_declarator_analysis18, "AST declarator analysis - enum type tags #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -300,7 +300,7 @@ DEFINE_CASE(ast_declarator_analysis18, "AST declarator analysis - enum type tags
 END_CASE
 
 DEFINE_CASE(ast_declarator_analysis19, "AST declarator analysis - typedefs #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -346,7 +346,7 @@ DEFINE_CASE(ast_declarator_analysis19, "AST declarator analysis - typedefs #1") 
 END_CASE
 
 DEFINE_CASE(ast_declarator_analysis20, "AST declarator analysis - typedefs #2") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 

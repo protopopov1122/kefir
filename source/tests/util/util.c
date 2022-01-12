@@ -42,3 +42,13 @@ struct kefir_ast_translator_environment *kft_util_get_translator_environment() {
     }
     return &TRANSLATOR_ENV;
 }
+
+const struct kefir_ast_type_traits *kefir_util_default_type_traits() {
+    static struct kefir_ast_type_traits DEFAULT_TYPE_TRAITS;
+    static kefir_bool_t DEFAULT_TYPE_TRAITS_INIT_DONE = false;
+    if (!DEFAULT_TYPE_TRAITS_INIT_DONE) {
+        kefir_ast_type_traits_init(KEFIR_DATA_MODEL_LP64, &DEFAULT_TYPE_TRAITS);
+        DEFAULT_TYPE_TRAITS_INIT_DONE = true;
+    }
+    return &DEFAULT_TYPE_TRAITS;
+}

@@ -23,7 +23,7 @@
 #include "kefir/test/util.h"
 
 DEFINE_CASE(ast_ordinary_scope_composite_objects_external, "AST ordinary scope - composite external objects") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
 
@@ -63,7 +63,7 @@ END_CASE
 
 DEFINE_CASE(ast_ordinary_scope_composite_objects_external_declaration,
             "AST ordinary scope - composite external object declaration") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
 
@@ -106,7 +106,7 @@ END_CASE
 
 DEFINE_CASE(ast_ordinary_scope_composite_objects_thread_local_external,
             "AST ordinary scope - composite thread local external objects") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
 
@@ -155,7 +155,7 @@ END_CASE
 
 DEFINE_CASE(ast_ordinary_scope_composite_objects_thread_local_external_declaration,
             "AST ordinary scope - composite thread local external object declaration") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
 
@@ -204,7 +204,7 @@ DEFINE_CASE(ast_ordinary_scope_composite_objects_thread_local_external_declarati
 END_CASE
 
 DEFINE_CASE(ast_ordinary_scope_composite_objects_static, "AST ordinary scope - composite static object") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
 
@@ -276,7 +276,7 @@ END_CASE
 
 DEFINE_CASE(ast_ordinary_scope_composite_objects_static_thread_local,
             "AST ordinary scope - composite static thread local object") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
 
@@ -356,7 +356,7 @@ END_CASE
 
 DEFINE_CASE(ast_ordinary_scope_composite_objects_local_external,
             "AST ordinary scope - composite local external object") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
 
@@ -438,7 +438,7 @@ END_CASE
 DEFINE_CASE(ast_ordinary_scope_composite_objects_local_thread_local_external,
             "AST ordinary scope - composite local external thread local object") {
 
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
 

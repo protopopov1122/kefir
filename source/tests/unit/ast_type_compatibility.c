@@ -102,7 +102,7 @@ DEFINE_CASE(ast_type_compatibility1, "AST Types - function paramter adjusted typ
 END_CASE
 
 DEFINE_CASE(ast_type_basic_compatibility, "AST Types - basic type compatibility") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     const struct kefir_ast_type *BASIC_TYPES[] = {kefir_ast_type_void(),
                                                   kefir_ast_type_boolean(),
                                                   kefir_ast_type_char(),
@@ -154,7 +154,7 @@ static const struct kefir_ast_type *build_enum_type(struct kefir_mem *mem, struc
 }
 
 DEFINE_CASE(ast_type_enum_compatibility, "AST Types - enumeration compatibility") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
@@ -188,7 +188,7 @@ DEFINE_CASE(ast_type_enum_compatibility, "AST Types - enumeration compatibility"
 END_CASE
 
 DEFINE_CASE(ast_type_pointer_compatibility, "AST Types - pointer type compatibility") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
@@ -260,7 +260,7 @@ DEFINE_CASE(ast_type_pointer_compatibility, "AST Types - pointer type compatibil
 END_CASE
 
 DEFINE_CASE(ast_type_qualified_compatibility, "AST Types - qualified type compatibility") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
@@ -361,7 +361,7 @@ static const struct kefir_ast_type *build_struct_type(struct kefir_mem *mem, con
 }
 
 DEFINE_CASE(ast_type_struct_compatibility, "AST Types - structure type compatibility") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -398,7 +398,7 @@ DEFINE_CASE(ast_type_struct_compatibility, "AST Types - structure type compatibi
 END_CASE
 
 DEFINE_CASE(ast_type_union_compatibility, "AST Types - union type compatibility") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
@@ -461,7 +461,7 @@ DEFINE_CASE(ast_type_union_compatibility, "AST Types - union type compatibility"
 END_CASE
 
 DEFINE_CASE(ast_type_array_compatibility, "AST Types - array type compatibility") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
@@ -551,7 +551,7 @@ static const struct kefir_ast_type *build_function_type2(struct kefir_mem *mem,
 }
 
 DEFINE_CASE(ast_type_function_compatibility, "AST Types - function type compatibility") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));

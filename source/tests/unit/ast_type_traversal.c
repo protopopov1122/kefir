@@ -61,7 +61,7 @@ static kefir_size_t layer_depth(const struct kefir_ast_type_traversal_layer *lay
     } while (0)
 
 DEFINE_CASE(ast_type_traversal1, "AST Type analysis - type traversal #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -144,7 +144,7 @@ DEFINE_CASE(ast_type_traversal1, "AST Type analysis - type traversal #1") {
 END_CASE
 
 DEFINE_CASE(ast_type_traversal2, "AST Type analysis - type traversal #2") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -265,7 +265,7 @@ DEFINE_CASE(ast_type_traversal2, "AST Type analysis - type traversal #2") {
 END_CASE
 
 DEFINE_CASE(ast_type_traversal3, "AST Type analysis - type traversal #3") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -340,7 +340,7 @@ DEFINE_CASE(ast_type_traversal3, "AST Type analysis - type traversal #3") {
 END_CASE
 
 DEFINE_CASE(ast_type_traversal4, "AST Type analysis - type traversal #4") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -463,7 +463,7 @@ DEFINE_CASE(ast_type_traversal4, "AST Type analysis - type traversal #4") {
 END_CASE
 
 DEFINE_CASE(ast_type_traversal5, "AST Type analysis - type traversal designators") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 

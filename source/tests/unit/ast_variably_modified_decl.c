@@ -28,7 +28,7 @@
 #include "kefir/test/util.h"
 
 DEFINE_CASE(ast_declaration_variably_modified1, "AST declarations - variably modified declarations in global scope") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
@@ -95,7 +95,7 @@ DEFINE_CASE(ast_declaration_variably_modified1, "AST declarations - variably mod
 END_CASE
 
 DEFINE_CASE(ast_declaration_variably_modified2, "AST declarations - variably modified declarations in local scope") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -166,7 +166,7 @@ END_CASE
 
 DEFINE_CASE(ast_declaration_variably_modified3,
             "AST declarations - variably modified declarations in function declaration scope") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
     struct kefir_ast_function_declaration_context func_context;
@@ -239,7 +239,7 @@ DEFINE_CASE(ast_declaration_variably_modified3,
 END_CASE
 
 DEFINE_CASE(ast_declaration_variably_modified4, "AST declarations - variably modified declarations initializers") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
     struct kefir_ast_function_declaration_context func_context;
@@ -312,7 +312,7 @@ DEFINE_CASE(ast_declaration_variably_modified4, "AST declarations - variably mod
 END_CASE
 
 DEFINE_CASE(ast_declaration_variably_modified_structure_field, "AST declarations - variably modified structure field") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,

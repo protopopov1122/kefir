@@ -26,7 +26,7 @@
 #include "kefir/test/util.h"
 
 DEFINE_CASE(ast_type_basic_composite, "AST types - basic composite type") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
@@ -75,7 +75,7 @@ DEFINE_CASE(ast_type_basic_composite, "AST types - basic composite type") {
 END_CASE
 
 DEFINE_CASE(ast_type_pointer_composite, "AST types - pointer composite type") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
@@ -158,7 +158,7 @@ static const struct kefir_ast_type *build_enum_type(struct kefir_mem *mem, struc
 }
 
 DEFINE_CASE(ast_type_enum_composite, "AST types - enum composite type") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
@@ -226,7 +226,7 @@ DEFINE_CASE(ast_type_enum_composite, "AST types - enum composite type") {
 END_CASE
 
 DEFINE_CASE(ast_type_qualified_composite, "AST types - qualified composite type") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
@@ -341,7 +341,7 @@ static const struct kefir_ast_type *build_struct_type(struct kefir_mem *mem, con
 }
 
 DEFINE_CASE(ast_type_struct_composite, "AST types - structure composite type") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -416,7 +416,7 @@ DEFINE_CASE(ast_type_struct_composite, "AST types - structure composite type") {
 END_CASE
 
 DEFINE_CASE(ast_type_union_composite, "AST types - union composite type") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
@@ -505,7 +505,7 @@ DEFINE_CASE(ast_type_union_composite, "AST types - union composite type") {
 END_CASE
 
 DEFINE_CASE(ast_type_array_composite, "AST types - array composite type") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));
@@ -646,7 +646,7 @@ static const struct kefir_ast_type *build_function_type2(struct kefir_mem *mem,
 }
 
 DEFINE_CASE(ast_type_function_composite, "AST types - function composite type") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_symbol_table symbols;
     ASSERT_OK(kefir_symbol_table_init(&symbols));

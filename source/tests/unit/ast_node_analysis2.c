@@ -65,7 +65,7 @@
     } while (0)
 
 DEFINE_CASE(ast_node_analysis_generic_selections, "AST node analysis - generic selections") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -120,7 +120,7 @@ END_CASE
     } while (0)
 
 DEFINE_CASE(ast_node_analysis_cast_operators, "AST node analysis - cast operators") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -241,7 +241,7 @@ END_CASE
 struct kefir_ast_constant *make_constant(struct kefir_mem *, const struct kefir_ast_type *);
 
 DEFINE_CASE(ast_node_analysis_multiplicative_operators, "AST node analysis - multiplicative operators") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -340,7 +340,7 @@ DEFINE_CASE(ast_node_analysis_multiplicative_operators, "AST node analysis - mul
 END_CASE
 
 DEFINE_CASE(ast_node_analysis_add_operator, "AST node analysis - add operator") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -412,7 +412,7 @@ DEFINE_CASE(ast_node_analysis_add_operator, "AST node analysis - add operator") 
 END_CASE
 
 DEFINE_CASE(ast_node_analysis_subtract_operator, "AST node analysis - subtraction operator") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -504,7 +504,7 @@ DEFINE_CASE(ast_node_analysis_subtract_operator, "AST node analysis - subtractio
 END_CASE
 
 DEFINE_CASE(ast_node_analysis_shift_operator, "AST node analysis - shift operators") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -598,7 +598,7 @@ DEFINE_CASE(ast_node_analysis_shift_operator, "AST node analysis - shift operato
 END_CASE
 
 DEFINE_CASE(ast_node_analysis_relational_operators, "AST node analysis - relational operators") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -760,7 +760,7 @@ DEFINE_CASE(ast_node_analysis_relational_operators, "AST node analysis - relatio
 END_CASE
 
 DEFINE_CASE(ast_node_analysis_equality_operators, "AST node analysis - equality operators") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -905,7 +905,7 @@ DEFINE_CASE(ast_node_analysis_equality_operators, "AST node analysis - equality 
 END_CASE
 
 DEFINE_CASE(ast_node_analysis_bitwise_operators, "AST node analysis - bitwise operators") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -1067,7 +1067,7 @@ DEFINE_CASE(ast_node_analysis_bitwise_operators, "AST node analysis - bitwise op
 END_CASE
 
 DEFINE_CASE(ast_node_analysis_logical_operators, "AST node analysis - logical operators") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 

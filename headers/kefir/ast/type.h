@@ -34,6 +34,7 @@
 #include "kefir/ast/type/array.h"
 #include "kefir/ast/type/pointer.h"
 #include "kefir/ast/type/function.h"
+#include "kefir/core/data_model.h"
 
 typedef kefir_uint64_t kefir_ast_type_hash_t;
 
@@ -72,7 +73,7 @@ typedef struct kefir_ast_type_traits {
     const struct kefir_ast_type *unicode32_char_type;
     kefir_bool_t character_type_signedness;
 
-    void *payload;
+    kefir_uptr_t payload;
 } kefir_ast_type_traits_t;
 
 typedef struct kefir_ast_type_bundle {
@@ -80,7 +81,7 @@ typedef struct kefir_ast_type_bundle {
     struct kefir_list types;
 } kefir_ast_type_bundle_t;
 
-const struct kefir_ast_type_traits *kefir_ast_default_type_traits();
+kefir_result_t kefir_ast_type_traits_init(kefir_data_model_t, struct kefir_ast_type_traits *);
 kefir_bool_t kefir_ast_type_is_complete(const struct kefir_ast_type *);
 kefir_result_t kefir_ast_type_list_variable_modificators(const struct kefir_ast_type *,
                                                          kefir_result_t (*)(const struct kefir_ast_node_base *, void *),

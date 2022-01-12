@@ -27,7 +27,7 @@
 
 static kefir_bool_t is_signed(const struct kefir_ast_type *type) {
     kefir_bool_t signedness;
-    ASSERT_OK(kefir_ast_type_is_signed(kefir_ast_default_type_traits(), type, &signedness));
+    ASSERT_OK(kefir_ast_type_is_signed(kefir_util_default_type_traits(), type, &signedness));
     return signedness;
 }
 
@@ -84,7 +84,7 @@ DEFINE_CASE(ast_type_construction1, "AST Types - basic types") {
     ASSERT(!KEFIR_AST_TYPE_IS_CHARACTER(kefir_ast_type_double()));
     ASSERT(!KEFIR_AST_TYPE_IS_CHARACTER(kefir_ast_type_long_double()));
 
-    ASSERT(is_signed(kefir_ast_type_char()) == kefir_ast_default_type_traits()->character_type_signedness);
+    ASSERT(is_signed(kefir_ast_type_char()) == kefir_util_default_type_traits()->character_type_signedness);
     ASSERT(!is_signed(kefir_ast_type_unsigned_char()));
     ASSERT(is_signed(kefir_ast_type_signed_char()));
     ASSERT(!is_signed(kefir_ast_type_unsigned_short()));
@@ -97,7 +97,7 @@ DEFINE_CASE(ast_type_construction1, "AST Types - basic types") {
     ASSERT(is_signed(kefir_ast_type_signed_long_long()));
     ASSERT(!is_signed(kefir_ast_type_boolean()));
 
-    ASSERT(is_unsigned(kefir_ast_type_char()) == !kefir_ast_default_type_traits()->character_type_signedness);
+    ASSERT(is_unsigned(kefir_ast_type_char()) == !kefir_util_default_type_traits()->character_type_signedness);
     ASSERT(is_unsigned(kefir_ast_type_unsigned_char()));
     ASSERT(!is_unsigned(kefir_ast_type_signed_char()));
     ASSERT(is_unsigned(kefir_ast_type_unsigned_short()));
@@ -405,7 +405,7 @@ END_CASE
     } while (0)
 
 DEFINE_CASE(ast_type_construction4, "AST Types - enum type") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 

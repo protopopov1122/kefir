@@ -27,7 +27,7 @@
 #include "kefir/test/util.h"
 
 DEFINE_CASE(ast_initializer_analysis1, "AST initializer - analysis #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -86,7 +86,7 @@ DEFINE_CASE(ast_initializer_analysis1, "AST initializer - analysis #1") {
 END_CASE
 
 DEFINE_CASE(ast_initializer_analysis2, "AST initializer - analysis #2") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -149,7 +149,7 @@ DEFINE_CASE(ast_initializer_analysis2, "AST initializer - analysis #2") {
 END_CASE
 
 DEFINE_CASE(ast_initializer_analysis3, "AST initializer - analysis #3") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -273,7 +273,7 @@ DEFINE_CASE(ast_initializer_analysis3, "AST initializer - analysis #3") {
 END_CASE
 
 DEFINE_CASE(ast_initializer_analysis4, "AST initializer - analysis #4") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -381,7 +381,7 @@ DEFINE_CASE(ast_initializer_analysis4, "AST initializer - analysis #4") {
 END_CASE
 
 DEFINE_CASE(ast_initializer_analysis5, "AST initializer - analysis #5") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -477,7 +477,7 @@ DEFINE_CASE(ast_initializer_analysis5, "AST initializer - analysis #5") {
 END_CASE
 
 DEFINE_CASE(ast_initializer_analysis_unicode8, "AST initializer - unicode8 string analysis") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -586,7 +586,7 @@ DEFINE_CASE(ast_initializer_analysis_unicode8, "AST initializer - unicode8 strin
 END_CASE
 
 DEFINE_CASE(ast_initializer_analysis_unicode16, "AST initializer - unicode16 string analysis") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -695,7 +695,7 @@ DEFINE_CASE(ast_initializer_analysis_unicode16, "AST initializer - unicode16 str
 END_CASE
 
 DEFINE_CASE(ast_initializer_analysis_unicode32, "AST initializer - unicode32 string analysis") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -804,7 +804,7 @@ DEFINE_CASE(ast_initializer_analysis_unicode32, "AST initializer - unicode32 str
 END_CASE
 
 DEFINE_CASE(ast_initializer_analysis_wide, "AST initializer - wide string analysis") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -913,7 +913,7 @@ DEFINE_CASE(ast_initializer_analysis_wide, "AST initializer - wide string analys
 END_CASE
 
 DEFINE_CASE(ast_initializer_analysis_mixed_strings, "AST initializer - mixed string analysis") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 

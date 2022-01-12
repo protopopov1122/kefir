@@ -25,7 +25,7 @@
 #include "kefir/test/util.h"
 
 DEFINE_CASE(ast_flow_control_tree1, "AST Flow control tree - global context") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
@@ -38,7 +38,7 @@ DEFINE_CASE(ast_flow_control_tree1, "AST Flow control tree - global context") {
 END_CASE
 
 DEFINE_CASE(ast_flow_control_tree2, "AST Flow control tree - function declaration context") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_function_declaration_context func_decl_context;
 
@@ -54,7 +54,7 @@ DEFINE_CASE(ast_flow_control_tree2, "AST Flow control tree - function declaratio
 END_CASE
 
 DEFINE_CASE(ast_flow_control_tree3, "AST Flow control tree - local context #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -220,7 +220,7 @@ static kefir_result_t test_free(struct kefir_mem *mem, struct kefir_ast_flow_con
 }
 
 DEFINE_CASE(ast_flow_control_tree4, "AST Flow control tree - local context #2") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -288,7 +288,7 @@ static kefir_result_t find_statement2(const struct kefir_ast_flow_control_struct
 }
 
 DEFINE_CASE(ast_flow_control_tree5, "AST Flow control tree - local context #3") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -390,7 +390,7 @@ DEFINE_CASE(ast_flow_control_tree5, "AST Flow control tree - local context #3") 
 END_CASE
 
 DEFINE_CASE(ast_flow_control_tree6, "AST Flow control tree - flow control value #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 

@@ -24,7 +24,7 @@
 #include "kefir/test/util.h"
 
 DEFINE_CASE(ast_type_scope1, "AST Declaration scoping - tagged type scoping") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_symbol_table symbols;
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_ast_global_context global_context;
@@ -90,7 +90,7 @@ DEFINE_CASE(ast_type_scope1, "AST Declaration scoping - tagged type scoping") {
 END_CASE
 
 DEFINE_CASE(ast_type_scope2, "AST Declaration scoping - tagged type scoping #2") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_symbol_table symbols;
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_ast_global_context global_context;
@@ -212,7 +212,7 @@ DEFINE_CASE(ast_type_scope2, "AST Declaration scoping - tagged type scoping #2")
 END_CASE
 
 DEFINE_CASE(ast_type_scope3, "AST Declaration scoping - tagged type scoping #3") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_symbol_table symbols;
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_ast_global_context global_context;
@@ -443,7 +443,7 @@ DEFINE_CASE(ast_type_scope3, "AST Declaration scoping - tagged type scoping #3")
 END_CASE
 
 DEFINE_CASE(ast_ordinary_constant_scope1, "AST ordinary scope - constant scoping #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_symbol_table symbols;
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_ast_global_context global_context;

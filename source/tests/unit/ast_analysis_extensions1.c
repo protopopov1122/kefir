@@ -34,7 +34,7 @@ static kefir_result_t analyze_extension_node(struct kefir_mem *mem, const struct
 }
 
 DEFINE_CASE(ast_analysis_extension_node1, "AST analysis - extension node #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_symbol_table symbols;
     struct kefir_ast_translator_environment env;
     struct kefir_ast_global_context context;
@@ -97,7 +97,7 @@ static kefir_result_t after_node_analysis(struct kefir_mem *mem, const struct ke
 }
 
 DEFINE_CASE(ast_analysis_before_after_extensions, "AST analysis - before & after extension hooks") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_symbol_table symbols;
     struct kefir_ast_translator_environment env;
     struct kefir_ast_global_context context;

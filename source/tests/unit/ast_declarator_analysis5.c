@@ -27,7 +27,7 @@
 #include "declarator_analysis.h"
 
 DEFINE_CASE(ast_declarator_analysis21, "AST declarator analysis - function declarators #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -134,7 +134,7 @@ DEFINE_CASE(ast_declarator_analysis21, "AST declarator analysis - function decla
 END_CASE
 
 DEFINE_CASE(ast_declarator_analysis22, "AST declarator analysis - function declarators #2") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -270,7 +270,7 @@ DEFINE_CASE(ast_declarator_analysis22, "AST declarator analysis - function decla
 END_CASE
 
 DEFINE_CASE(ast_declarator_analysis23, "AST declarator analysis - function declarators #3") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -357,7 +357,7 @@ DEFINE_CASE(ast_declarator_analysis23, "AST declarator analysis - function decla
 END_CASE
 
 DEFINE_CASE(ast_declarator_analysis24, "AST declarator analysis - structure static assertions #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -423,7 +423,7 @@ DEFINE_CASE(ast_declarator_analysis24, "AST declarator analysis - structure stat
 END_CASE
 
 DEFINE_CASE(ast_declarator_analysis25, "AST declarator analysis - structure static assertions #2") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 

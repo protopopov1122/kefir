@@ -24,7 +24,7 @@
 #include "kefir/test/util.h"
 
 DEFINE_CASE(ast_bitfield_translator1, "AST translator - bitfields #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
     struct kefir_ast_translator_environment env;
@@ -132,7 +132,7 @@ DEFINE_CASE(ast_bitfield_translator1, "AST translator - bitfields #1") {
 END_CASE
 
 DEFINE_CASE(ast_bitfield_translator2, "AST translator - bitfields #2") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
     struct kefir_ast_translator_environment env;
@@ -207,7 +207,7 @@ DEFINE_CASE(ast_bitfield_translator2, "AST translator - bitfields #2") {
 END_CASE
 
 DEFINE_CASE(ast_bitfield_translator3, "AST translator - bitfields #3") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
     struct kefir_ast_translator_environment env;
@@ -278,7 +278,7 @@ DEFINE_CASE(ast_bitfield_translator3, "AST translator - bitfields #3") {
 END_CASE
 
 DEFINE_CASE(ast_bitfield_translator4, "AST translator - union bitfields #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
     struct kefir_ast_translator_environment env;
@@ -345,7 +345,7 @@ DEFINE_CASE(ast_bitfield_translator4, "AST translator - union bitfields #1") {
 END_CASE
 
 DEFINE_CASE(ast_bitfield_translator5, "AST translator - bitfields alignments #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context context;
     struct kefir_ast_translator_environment env;

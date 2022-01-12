@@ -24,7 +24,7 @@
 #include "kefir/test/util.h"
 
 DEFINE_CASE(ast_label_scope1, "AST ordinary scope - label scope #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_symbol_table symbols;
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_ast_global_context global_context;
@@ -56,7 +56,7 @@ DEFINE_CASE(ast_label_scope1, "AST ordinary scope - label scope #1") {
 END_CASE
 
 DEFINE_CASE(ast_label_scope2, "AST ordinary scope - label scope #2") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_symbol_table symbols;
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_ast_global_context global_context;
@@ -93,7 +93,7 @@ DEFINE_CASE(ast_label_scope2, "AST ordinary scope - label scope #2") {
 END_CASE
 
 DEFINE_CASE(ast_label_scope3, "AST ordinary scope - label scope #3") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_symbol_table symbols;
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_ast_global_context global_context;
@@ -169,7 +169,7 @@ DEFINE_CASE(ast_label_scope3, "AST ordinary scope - label scope #3") {
 END_CASE
 
 DEFINE_CASE(ast_label_scope4, "AST ordinary scope - label scope #4") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_symbol_table symbols;
     struct kefir_ast_type_bundle type_bundle;
     struct kefir_ast_global_context global_context;

@@ -27,7 +27,7 @@
 #include "constant_expression.h"
 
 DEFINE_CASE(ast_constant_expression_constant1, "AST constant expressions - constants #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -73,7 +73,7 @@ DEFINE_CASE(ast_constant_expression_constant1, "AST constant expressions - const
 END_CASE
 
 DEFINE_CASE(ast_constant_expression_identifier1, "AST constant expressions - identifiers #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -110,7 +110,7 @@ DEFINE_CASE(ast_constant_expression_identifier1, "AST constant expressions - ide
 END_CASE
 
 DEFINE_CASE(ast_constant_expression_string_literal1, "AST constant expressions - string literals") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -135,7 +135,7 @@ DEFINE_CASE(ast_constant_expression_string_literal1, "AST constant expressions -
 END_CASE
 
 DEFINE_CASE(ast_constant_expression_generic_selection1, "AST constant expressions - generic selections") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -233,7 +233,7 @@ DEFINE_CASE(ast_constant_expression_generic_selection1, "AST constant expression
 END_CASE
 
 DEFINE_CASE(ast_constant_expression_binary_operations1, "AST constant expressions - binary operations #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -365,7 +365,7 @@ DEFINE_CASE(ast_constant_expression_binary_operations1, "AST constant expression
 END_CASE
 
 DEFINE_CASE(ast_constant_expression_binary_operations2, "AST constant expressions - binary operations #2") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -458,7 +458,7 @@ DEFINE_CASE(ast_constant_expression_binary_operations2, "AST constant expression
 END_CASE
 
 DEFINE_CASE(ast_constant_expression_binary_operations3, "AST constant expressions - binary operations #3") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -563,7 +563,7 @@ DEFINE_CASE(ast_constant_expression_binary_operations3, "AST constant expression
 END_CASE
 
 DEFINE_CASE(ast_constant_expression_binary_operations4, "AST constant expressions - binary operations #4") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 

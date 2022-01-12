@@ -23,7 +23,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-static kefir_size_t default_integral_type_fit_rank(const struct kefir_ast_type *type) {
+static kefir_size_t default_integral_type_fit_rank(const struct kefir_ast_type *type, kefir_data_model_t data_model) {
     switch (type->tag) {
         case KEFIR_AST_TYPE_SCALAR_BOOL:
         case KEFIR_AST_TYPE_SCALAR_CHAR:
@@ -33,14 +33,28 @@ static kefir_size_t default_integral_type_fit_rank(const struct kefir_ast_type *
 
         case KEFIR_AST_TYPE_SCALAR_UNSIGNED_SHORT:
         case KEFIR_AST_TYPE_SCALAR_SIGNED_SHORT:
-            return 2;
+            if (data_model == KEFIR_DATA_MODEL_SILP64) {
+                return 8;
+            } else {
+                return 2;
+            }
 
         case KEFIR_AST_TYPE_SCALAR_UNSIGNED_INT:
         case KEFIR_AST_TYPE_SCALAR_SIGNED_INT:
-            return 4;
+            if (data_model == KEFIR_DATA_MODEL_SILP64 || data_model == KEFIR_DATA_MODEL_ILP64) {
+                return 8;
+            } else {
+                return 4;
+            }
 
         case KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG:
         case KEFIR_AST_TYPE_SCALAR_SIGNED_LONG:
+            if (data_model == KEFIR_DATA_MODEL_ILP32 || data_model == KEFIR_DATA_MODEL_LLP64) {
+                return 4;
+            } else {
+                return 8;
+            }
+
         case KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG_LONG:
         case KEFIR_AST_TYPE_SCALAR_SIGNED_LONG_LONG:
             return 8;
@@ -60,8 +74,11 @@ static kefir_result_t default_integral_type_fits(const struct kefir_ast_type_tra
     REQUIRE((KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(source) || source->tag == KEFIR_AST_TYPE_SCALAR_BOOL) &&
                 (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(dest) || dest->tag == KEFIR_AST_TYPE_SCALAR_BOOL),
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected both source and destination to be basic types"));
-    kefir_size_t source_fit = default_integral_type_fit_rank(source);
-    kefir_size_t dest_fit = default_integral_type_fit_rank(dest);
+
+    ASSIGN_DECL_CAST(kefir_data_model_t, data_model, type_traits->payload);
+
+    kefir_size_t source_fit = default_integral_type_fit_rank(source, data_model);
+    kefir_size_t dest_fit = default_integral_type_fit_rank(dest, data_model);
     REQUIRE(source_fit != 0 && dest_fit != 0, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected integral type"));
 
     kefir_bool_t src_sign, dst_sign;
@@ -78,18 +95,26 @@ static kefir_result_t default_integral_type_fits(const struct kefir_ast_type_tra
     return KEFIR_OK;
 }
 
-const struct kefir_ast_type_traits *kefir_ast_default_type_traits() {
-    static struct kefir_ast_type_traits DEFAULT_TYPE_TRAITS = {.integral_type_fits = default_integral_type_fits,
-                                                               .underlying_enumeration_type = NULL,
-                                                               .ptrdiff_type = NULL,
-                                                               .character_type_signedness = true,
-                                                               .payload = NULL};
-    DEFAULT_TYPE_TRAITS.underlying_enumeration_type = kefir_ast_type_signed_int();
-    DEFAULT_TYPE_TRAITS.ptrdiff_type = kefir_ast_type_signed_long();
-    DEFAULT_TYPE_TRAITS.wide_char_type = kefir_ast_type_signed_int();
-    DEFAULT_TYPE_TRAITS.unicode16_char_type = kefir_ast_type_unsigned_short();
-    DEFAULT_TYPE_TRAITS.unicode32_char_type = kefir_ast_type_unsigned_int();
-    return &DEFAULT_TYPE_TRAITS;
+kefir_result_t kefir_ast_type_traits_init(kefir_data_model_t data_model, struct kefir_ast_type_traits *type_traits) {
+    REQUIRE(type_traits != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to AST type traits"));
+
+    *type_traits = (struct kefir_ast_type_traits){.integral_type_fits = default_integral_type_fits,
+                                                  .underlying_enumeration_type = kefir_ast_type_signed_int(),
+                                                  .character_type_signedness = true,
+                                                  .payload = (kefir_uptr_t) data_model};
+
+    switch (data_model) {
+        case KEFIR_DATA_MODEL_LP64:
+            type_traits->ptrdiff_type = kefir_ast_type_signed_long();
+            type_traits->unicode16_char_type = kefir_ast_type_unsigned_short();
+            type_traits->unicode32_char_type = kefir_ast_type_unsigned_int();
+            type_traits->wide_char_type = kefir_ast_type_signed_int();
+            break;
+
+        default:
+            return KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Data models other than LP64 are not supported at the moment");
+    }
+    return KEFIR_OK;
 }
 
 kefir_bool_t kefir_ast_type_is_complete(const struct kefir_ast_type *type) {

@@ -19,6 +19,7 @@
 */
 
 #include "kefir/test/unit_test.h"
+#include "kefir/test/util.h"
 #include "kefir/ast/type_conv.h"
 
 #define ASSERT_TYPE_TAG(type, _tag)    \
@@ -28,7 +29,7 @@
     } while (0)
 
 DEFINE_CASE(ast_type_analysis_integer_promotion1, "AST Type analysis - integer promotion") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_boolean()),
                     KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
     ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_char()), KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
@@ -60,7 +61,7 @@ DEFINE_CASE(ast_type_analysis_integer_promotion1, "AST Type analysis - integer p
 END_CASE
 
 DEFINE_CASE(ast_type_analysis_arithmetic_conversion1, "AST Type analysis - arithmetic conversion #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     const struct kefir_ast_type *TYPES[] = {kefir_ast_type_boolean(),        kefir_ast_type_char(),
                                             kefir_ast_type_unsigned_char(),  kefir_ast_type_signed_char(),
                                             kefir_ast_type_unsigned_short(), kefir_ast_type_signed_short()};
@@ -87,7 +88,7 @@ DEFINE_CASE(ast_type_analysis_arithmetic_conversion1, "AST Type analysis - arith
 END_CASE
 
 DEFINE_CASE(ast_type_analysis_arithmetic_conversion2, "AST Type analysis - arithmetic conversion #2") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     const struct kefir_ast_type *TYPES[] = {kefir_ast_type_boolean(),        kefir_ast_type_char(),
                                             kefir_ast_type_unsigned_char(),  kefir_ast_type_signed_char(),
                                             kefir_ast_type_unsigned_short(), kefir_ast_type_signed_short(),
@@ -107,7 +108,7 @@ DEFINE_CASE(ast_type_analysis_arithmetic_conversion2, "AST Type analysis - arith
 END_CASE
 
 DEFINE_CASE(ast_type_analysis_arithmetic_conversion3, "AST Type analysis - arithmetic conversion #3") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     const struct kefir_ast_type *TYPES[] = {kefir_ast_type_boolean(),
                                             kefir_ast_type_char(),
                                             kefir_ast_type_unsigned_char(),

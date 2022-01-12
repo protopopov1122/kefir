@@ -57,7 +57,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_preprocessor_ast_context ast_context;
     struct kefir_ast_translator_environment env;
     REQUIRE_OK(kefir_ast_translator_environment_init(&env, kft_util_get_ir_target_platform()));
-    REQUIRE_OK(kefir_preprocessor_ast_context_init(mem, &ast_context, &symbols, kefir_ast_default_type_traits(),
+    REQUIRE_OK(kefir_preprocessor_ast_context_init(mem, &ast_context, &symbols, kefir_util_default_type_traits(),
                                                    &env.target_env, NULL));
     REQUIRE_OK(kefir_preprocessor_virtual_source_locator_init(&virtual_source));
     REQUIRE_OK(kefir_preprocessor_context_init(mem, &context, &virtual_source.locator, &ast_context.context, NULL));

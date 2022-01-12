@@ -34,6 +34,7 @@
 #include "kefir/ast-translator/scope/translator.h"
 #include "kefir/codegen/amd64-sysv.h"
 #include "codegen.h"
+#include "kefir/test/util.h"
 
 #include "codegen.inc.c"
 
@@ -95,7 +96,7 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
     struct kefir_ast_context_manager context_manager;
     struct kefir_ast_global_context global_context;
     REQUIRE_OK(
-        kefir_ast_global_context_init(mem, kefir_ast_default_type_traits(), &env.target_env, &global_context, NULL));
+        kefir_ast_global_context_init(mem, kefir_util_default_type_traits(), &env.target_env, &global_context, NULL));
     REQUIRE_OK(kefir_ast_context_manager_init(&global_context, &context_manager));
 
     struct function sum_func, sub_func, mul_func, div_func, less_func, lesseq_func, greater_func, greatereq_func,

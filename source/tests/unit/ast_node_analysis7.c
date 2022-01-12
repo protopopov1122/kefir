@@ -27,7 +27,7 @@
 #include "kefir/test/util.h"
 
 DEFINE_CASE(ast_node_analysis_init_declarators1, "AST node analysis - declarations #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -84,7 +84,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators1, "AST node analysis - declaratio
 END_CASE
 
 DEFINE_CASE(ast_node_analysis_init_declarators2, "AST node analysis - declarations #2") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -146,7 +146,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators2, "AST node analysis - declaratio
 END_CASE
 
 DEFINE_CASE(ast_node_analysis_init_declarators3, "AST node analysis - declarations #3") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -231,7 +231,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators3, "AST node analysis - declaratio
 END_CASE
 
 DEFINE_CASE(ast_node_analysis_init_declarators4, "AST node analysis - declarations #4") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
@@ -281,7 +281,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators4, "AST node analysis - declaratio
 END_CASE
 
 DEFINE_CASE(ast_node_analysis_init_declarators5, "AST node analysis - declarations #5") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
@@ -358,7 +358,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators5, "AST node analysis - declaratio
 END_CASE
 
 DEFINE_CASE(ast_node_analysis_init_declarators6, "AST node analysis - declarations #6") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
@@ -414,7 +414,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators6, "AST node analysis - declaratio
 END_CASE
 
 DEFINE_CASE(ast_node_analysis_init_declarators7, "AST node analysis - declarations #7") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -514,7 +514,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators7, "AST node analysis - declaratio
 END_CASE
 
 DEFINE_CASE(ast_node_analysis_init_declarators8, "AST node analysis - declarations #8") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -632,7 +632,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators8, "AST node analysis - declaratio
 END_CASE
 
 DEFINE_CASE(ast_node_analysis_init_declarators9, "AST node analysis - declarations #9") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
@@ -693,7 +693,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators9, "AST node analysis - declaratio
 END_CASE
 
 DEFINE_CASE(ast_node_analysis_init_declarators10, "AST node analysis - declarations #10") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
@@ -791,7 +791,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators10, "AST node analysis - declarati
 END_CASE
 
 DEFINE_CASE(ast_node_analysis_init_declarators11, "AST node analysis - declarations #11") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -905,7 +905,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators11, "AST node analysis - declarati
 END_CASE
 
 DEFINE_CASE(ast_node_analysis_init_declarators12, "AST node analysis - declarations #12") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -973,7 +973,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators12, "AST node analysis - declarati
 END_CASE
 
 DEFINE_CASE(ast_node_analysis_init_declarators13, "AST node analysis - declarations #13") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 

@@ -26,7 +26,7 @@
 #include "kefir/test/util.h"
 
 DEFINE_CASE(ast_initializer_construction1, "AST initializer - construction #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -70,7 +70,7 @@ DEFINE_CASE(ast_initializer_construction1, "AST initializer - construction #1") 
 END_CASE
 
 DEFINE_CASE(ast_initializer_construction2, "AST initializer - construction #2") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 

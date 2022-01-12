@@ -27,7 +27,7 @@
 #include "constant_expression.h"
 
 DEFINE_CASE(ast_constant_expression_cast_operator1, "AST constant expressions - cast operator #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -226,7 +226,7 @@ DEFINE_CASE(ast_constant_expression_cast_operator1, "AST constant expressions - 
 END_CASE
 
 DEFINE_CASE(ast_constant_expression_cast_operator2, "AST constant expressions - cast operator #2") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -285,7 +285,7 @@ DEFINE_CASE(ast_constant_expression_cast_operator2, "AST constant expressions - 
 END_CASE
 
 DEFINE_CASE(ast_constant_expression_conditional_operator1, "AST constant expressions - conditional operators #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 
@@ -356,7 +356,7 @@ DEFINE_CASE(ast_constant_expression_conditional_operator1, "AST constant express
 END_CASE
 
 DEFINE_CASE(ast_constant_expression_conditional_operator2, "AST constant expressions - conditional operators #2") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 

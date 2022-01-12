@@ -182,7 +182,7 @@ static kefir_result_t format_local_scope(struct kefir_json_output *json,
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_module module;
     struct kefir_ast_translator_environment env;
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 

@@ -45,7 +45,7 @@ DEFINE_CASE(ast_context_preprocessor_extensions1, "AST context - preprocessor co
 
     ASSERT_OK(kefir_symbol_table_init(&symbols));
     ASSERT_OK(kefir_ast_translator_environment_init(&env, kft_util_get_ir_target_platform()));
-    ASSERT_OK(kefir_preprocessor_ast_context_init(&kft_mem, &ast_context, &symbols, kefir_ast_default_type_traits(),
+    ASSERT_OK(kefir_preprocessor_ast_context_init(&kft_mem, &ast_context, &symbols, kefir_util_default_type_traits(),
                                                   &env.target_env, &ext));
 
     ASSERT(ast_context.context.extensions_payload != NULL);
@@ -56,7 +56,7 @@ DEFINE_CASE(ast_context_preprocessor_extensions1, "AST context - preprocessor co
 END_CASE
 
 DEFINE_CASE(ast_context_global_extensions1, "AST context - global context #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_symbol_table symbols;
     struct kefir_ast_translator_environment env;
     struct kefir_ast_global_context context;
@@ -75,7 +75,7 @@ DEFINE_CASE(ast_context_global_extensions1, "AST context - global context #1") {
 END_CASE
 
 DEFINE_CASE(ast_context_local_extensions1, "AST context - local context #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_symbol_table symbols;
     struct kefir_ast_translator_environment env;
     struct kefir_ast_global_context global_context;
@@ -99,7 +99,7 @@ DEFINE_CASE(ast_context_local_extensions1, "AST context - local context #1") {
 END_CASE
 
 DEFINE_CASE(ast_context_function_decl_context_extensions1, "AST context - function declaration context #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_symbol_table symbols;
     struct kefir_ast_translator_environment env;
     struct kefir_ast_global_context global_context;

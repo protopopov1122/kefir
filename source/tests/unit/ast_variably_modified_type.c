@@ -125,7 +125,7 @@ DEFINE_CASE(ast_type_variably_modified2, "AST types - variably modified types #2
 END_CASE
 
 DEFINE_CASE(ast_type_variably_modified_analysis1, "AST types - variably modified types analysis #1") {
-    const struct kefir_ast_type_traits *type_traits = kefir_ast_default_type_traits();
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;
     struct kefir_ast_local_context local_context;
 

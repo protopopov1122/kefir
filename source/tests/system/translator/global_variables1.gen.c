@@ -35,6 +35,7 @@
 #include "kefir/ast-translator/scope/translator.h"
 #include "kefir/codegen/amd64-sysv.h"
 #include "codegen.h"
+#include "kefir/test/util.h"
 
 static kefir_result_t define_variables(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                        struct kefir_list *variables) {
@@ -177,7 +178,7 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
 
     struct kefir_ast_global_context global_context;
     REQUIRE_OK(
-        kefir_ast_global_context_init(mem, kefir_ast_default_type_traits(), &env.target_env, &global_context, NULL));
+        kefir_ast_global_context_init(mem, kefir_util_default_type_traits(), &env.target_env, &global_context, NULL));
 
     struct kefir_list variables;
     REQUIRE_OK(kefir_list_init(&variables));

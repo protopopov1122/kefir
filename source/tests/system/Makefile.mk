@@ -17,10 +17,11 @@ endif
 
 $(BIN_DIR)/tests/system/%.gen: $(BIN_DIR)/tests/system/%.gen.o \
 							   $(LIBKEFIR_SO) \
-							   $(BIN_DIR)/tests/int_test.o
+							   $(BIN_DIR)/tests/int_test.o \
+							   $(BIN_DIR)/tests/util/util.o
 	@mkdir -p $(@D)
 	@echo "Linking $@"
-	@$(CC) -o $@ $(BIN_DIR)/tests/int_test.o $< $(KEFIR_SYSTEM_TEST_LINKED_LIBS) -L $(LIB_DIR) -lkefir
+	@$(CC) -o $@ $(BIN_DIR)/tests/int_test.o $(BIN_DIR)/tests/util/util.o $< $(KEFIR_SYSTEM_TEST_LINKED_LIBS) -L $(LIB_DIR) -lkefir
 
 $(BIN_DIR)/tests/system/%.test.done: $(BIN_DIR)/tests/system/%.gen
 	@CC="$(CC)" AS="$(AS)" LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(LIB_DIR) SANITIZE="$(SANITIZE)" OPT="$(OPT)" DBG="$(DBG)" VALGRIND_OPTIONS="$(VALGRIND_OPTIONS)" CC_TEST_FLAGS="$(CC_TEST_FLAGS)" PLATFORM="$(PLATFORM)" "$(SOURCE_DIR)/tests/system/run.sh" $^
