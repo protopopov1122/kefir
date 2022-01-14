@@ -102,19 +102,19 @@ static kefir_result_t integral_static_data(const struct kefir_ir_type *type, kef
         case KEFIR_IR_TYPE_CHAR:
         case KEFIR_IR_TYPE_INT8:
             ASMGEN_RAW(&param->codegen->asmgen, KEFIR_AMD64_BYTE);
-            ASMGEN_ARG(&param->codegen->asmgen, "0x%02x", value);
+            ASMGEN_ARG(&param->codegen->asmgen, "0x%02x", (kefir_uint8_t) value);
             break;
 
         case KEFIR_IR_TYPE_SHORT:
         case KEFIR_IR_TYPE_INT16:
             ASMGEN_RAW(&param->codegen->asmgen, KEFIR_AMD64_WORD);
-            ASMGEN_ARG(&param->codegen->asmgen, "0x%04x", value);
+            ASMGEN_ARG(&param->codegen->asmgen, "0x%04x", (kefir_uint16_t) value);
             break;
 
         case KEFIR_IR_TYPE_INT:
         case KEFIR_IR_TYPE_INT32:
             ASMGEN_RAW(&param->codegen->asmgen, KEFIR_AMD64_DOUBLE);
-            ASMGEN_ARG(&param->codegen->asmgen, "0x%08x", value);
+            ASMGEN_ARG(&param->codegen->asmgen, "0x%08x", (kefir_uint32_t) value);
             break;
 
         case KEFIR_IR_TYPE_LONG:
