@@ -70,6 +70,70 @@
                     ]
                 }
             ]
+        },
+        {
+            "identifier": 7,
+            "type": []
+        },
+        {
+            "identifier": 8,
+            "type": []
+        },
+        {
+            "identifier": 9,
+            "type": []
+        },
+        {
+            "identifier": 10,
+            "type": []
+        },
+        {
+            "identifier": 11,
+            "type": []
+        },
+        {
+            "identifier": 12,
+            "type": []
+        },
+        {
+            "identifier": 13,
+            "type": []
+        },
+        {
+            "identifier": 14,
+            "type": []
+        },
+        {
+            "identifier": 15,
+            "type": []
+        },
+        {
+            "identifier": 16,
+            "type": []
+        },
+        {
+            "identifier": 17,
+            "type": []
+        },
+        {
+            "identifier": 18,
+            "type": []
+        },
+        {
+            "identifier": 19,
+            "type": []
+        },
+        {
+            "identifier": 20,
+            "type": []
+        },
+        {
+            "identifier": 21,
+            "type": []
+        },
+        {
+            "identifier": 22,
+            "type": []
         }
     ],
     "data": [
@@ -122,58 +186,58 @@
         {
             "identifier": 0,
             "name": "plus",
-            "parameters": [],
+            "parameters": 7,
             "vararg": false,
-            "returns": []
+            "returns": 8
         },
         {
             "identifier": 1,
             "name": "minus",
-            "parameters": [],
+            "parameters": 9,
             "vararg": false,
-            "returns": []
+            "returns": 10
         },
         {
             "identifier": 2,
             "name": "invert",
-            "parameters": [],
+            "parameters": 11,
             "vararg": false,
-            "returns": []
+            "returns": 12
         },
         {
             "identifier": 3,
             "name": "logical_negate",
-            "parameters": [],
+            "parameters": 13,
             "vararg": false,
-            "returns": []
+            "returns": 14
         },
         {
             "identifier": 4,
             "name": "sizeof1",
-            "parameters": [],
+            "parameters": 15,
             "vararg": false,
-            "returns": []
+            "returns": 16
         },
         {
             "identifier": 5,
             "name": "sizeof2",
-            "parameters": [],
+            "parameters": 17,
             "vararg": false,
-            "returns": []
+            "returns": 18
         },
         {
             "identifier": 6,
             "name": "alignof",
-            "parameters": [],
+            "parameters": 19,
             "vararg": false,
-            "returns": []
+            "returns": 20
         },
         {
             "identifier": 7,
             "name": "indirection",
-            "parameters": [],
+            "parameters": 21,
             "vararg": false,
-            "returns": []
+            "returns": 22
         }
     ],
     "functions": [

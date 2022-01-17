@@ -158,6 +158,78 @@
                     "type": "short"
                 }
             ]
+        },
+        {
+            "identifier": 19,
+            "type": []
+        },
+        {
+            "identifier": 20,
+            "type": []
+        },
+        {
+            "identifier": 21,
+            "type": []
+        },
+        {
+            "identifier": 22,
+            "type": []
+        },
+        {
+            "identifier": 23,
+            "type": []
+        },
+        {
+            "identifier": 24,
+            "type": []
+        },
+        {
+            "identifier": 25,
+            "type": []
+        },
+        {
+            "identifier": 26,
+            "type": []
+        },
+        {
+            "identifier": 27,
+            "type": []
+        },
+        {
+            "identifier": 28,
+            "type": []
+        },
+        {
+            "identifier": 29,
+            "type": []
+        },
+        {
+            "identifier": 30,
+            "type": []
+        },
+        {
+            "identifier": 31,
+            "type": []
+        },
+        {
+            "identifier": 32,
+            "type": []
+        },
+        {
+            "identifier": 33,
+            "type": []
+        },
+        {
+            "identifier": 34,
+            "type": []
+        },
+        {
+            "identifier": 35,
+            "type": []
+        },
+        {
+            "identifier": 36,
+            "type": []
         }
     ],
     "data": [],
@@ -166,65 +238,65 @@
         {
             "identifier": 0,
             "name": "assign_bool",
-            "parameters": [],
+            "parameters": 19,
             "vararg": false,
-            "returns": []
+            "returns": 20
         },
         {
             "identifier": 1,
             "name": "assign_char",
-            "parameters": [],
+            "parameters": 21,
             "vararg": false,
-            "returns": []
+            "returns": 22
         },
         {
             "identifier": 2,
             "name": "assign_short",
-            "parameters": [],
+            "parameters": 23,
             "vararg": false,
-            "returns": []
+            "returns": 24
         },
         {
             "identifier": 3,
             "name": "assign_int",
-            "parameters": [],
+            "parameters": 25,
             "vararg": false,
-            "returns": []
+            "returns": 26
         },
         {
             "identifier": 4,
             "name": "assign_long",
-            "parameters": [],
+            "parameters": 27,
             "vararg": false,
-            "returns": []
+            "returns": 28
         },
         {
             "identifier": 5,
             "name": "assign_long_long",
-            "parameters": [],
+            "parameters": 29,
             "vararg": false,
-            "returns": []
+            "returns": 30
         },
         {
             "identifier": 6,
             "name": "assign_float_double",
-            "parameters": [],
+            "parameters": 31,
             "vararg": false,
-            "returns": []
+            "returns": 32
         },
         {
             "identifier": 7,
             "name": "enum",
-            "parameters": [],
+            "parameters": 33,
             "vararg": false,
-            "returns": []
+            "returns": 34
         },
         {
             "identifier": 8,
             "name": "pointer",
-            "parameters": [],
+            "parameters": 35,
             "vararg": false,
-            "returns": []
+            "returns": 36
         }
     ],
     "functions": [

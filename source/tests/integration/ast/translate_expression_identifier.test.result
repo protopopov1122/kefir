@@ -46,6 +46,14 @@
                     "type": "char"
                 }
             ]
+        },
+        {
+            "identifier": 5,
+            "type": []
+        },
+        {
+            "identifier": 6,
+            "type": []
         }
     ],
     "data": [
@@ -75,9 +83,9 @@
         {
             "identifier": 0,
             "name": "func1",
-            "parameters": [],
+            "parameters": 5,
             "vararg": false,
-            "returns": []
+            "returns": 6
         }
     ],
     "functions": [

@@ -35,23 +35,24 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
 
-    struct kefir_ir_type *printint_decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL),
-                         *printint_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    kefir_id_t func_params, func_returns;
+    struct kefir_ir_type *printint_decl_params = kefir_ir_module_new_type(mem, &module, 1, &func_params),
+                         *printint_decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
     REQUIRE(printint_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(printint_decl_result != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function_decl *printint_decl = kefir_ir_module_new_function_declaration(
-        mem, &module, "printint", printint_decl_params, false, printint_decl_result);
+    struct kefir_ir_function_decl *printint_decl =
+        kefir_ir_module_new_function_declaration(mem, &module, "printint", func_params, false, func_returns);
     REQUIRE(printint_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *printint = kefir_ir_module_new_function(mem, &module, printint_decl, NULL, 1024);
     REQUIRE(printint != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, printint_decl->name));
 
-    struct kefir_ir_type *sprintf_decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL),
-                         *sprintf_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    struct kefir_ir_type *sprintf_decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params),
+                         *sprintf_decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
     REQUIRE(sprintf_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(sprintf_decl_result != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function_decl *sprintf_decl = kefir_ir_module_new_function_declaration(
-        mem, &module, "sprintf", sprintf_decl_params, true, sprintf_decl_result);
+    struct kefir_ir_function_decl *sprintf_decl =
+        kefir_ir_module_new_function_declaration(mem, &module, "sprintf", func_params, true, func_returns);
     REQUIRE(sprintf_decl != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_external(mem, &module, "sprintf"));
 

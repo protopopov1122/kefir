@@ -118,24 +118,16 @@
         {
             "identifier": 0,
             "name": "sum",
-            "parameters": [
-                {
-                    "type": "word"
-                }
-            ],
+            "parameters": 3,
             "vararg": false,
-            "returns": []
+            "returns": 4
         },
         {
             "identifier": 1,
             "name": "sum",
-            "parameters": [
-                {
-                    "type": "word"
-                }
-            ],
+            "parameters": 5,
             "vararg": false,
-            "returns": []
+            "returns": 6
         }
     ],
     "functions": [

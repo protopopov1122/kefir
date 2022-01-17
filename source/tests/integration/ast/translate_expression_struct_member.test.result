@@ -31,6 +31,14 @@
                     ]
                 }
             ]
+        },
+        {
+            "identifier": 4,
+            "type": []
+        },
+        {
+            "identifier": 5,
+            "type": []
         }
     ],
     "data": [],
@@ -39,9 +47,9 @@
         {
             "identifier": 0,
             "name": "func1",
-            "parameters": [],
+            "parameters": 4,
             "vararg": false,
-            "returns": []
+            "returns": 5
         }
     ],
     "functions": [

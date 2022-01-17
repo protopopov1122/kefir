@@ -120,6 +120,22 @@
                     ]
                 }
             ]
+        },
+        {
+            "identifier": 5,
+            "type": []
+        },
+        {
+            "identifier": 6,
+            "type": []
+        },
+        {
+            "identifier": 7,
+            "type": []
+        },
+        {
+            "identifier": 8,
+            "type": []
         }
     ],
     "data": [],
@@ -128,16 +144,16 @@
         {
             "identifier": 0,
             "name": "assign_struct",
-            "parameters": [],
+            "parameters": 5,
             "vararg": false,
-            "returns": []
+            "returns": 6
         },
         {
             "identifier": 1,
             "name": "assign_union",
-            "parameters": [],
+            "parameters": 7,
             "vararg": false,
-            "returns": []
+            "returns": 8
         }
     ],
     "functions": [

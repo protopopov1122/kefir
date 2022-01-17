@@ -33,12 +33,13 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
-    struct kefir_ir_type *decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL),
-                         *decl_result = kefir_ir_module_new_type(mem, &module, 0, NULL);
+    kefir_id_t func_params, func_returns;
+    struct kefir_ir_type *decl_params = kefir_ir_module_new_type(mem, &module, 1, &func_params),
+                         *decl_result = kefir_ir_module_new_type(mem, &module, 0, &func_returns);
     REQUIRE(decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "makecopy", decl_params, false, decl_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "makecopy", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);

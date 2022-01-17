@@ -121,6 +121,7 @@ typedef long double kefir_long_double_t;
 typedef kefir_uint32_t kefir_id_t;
 
 #define KEFIR_ID_FMT KEFIR_UINT32_FMT
+#define KEFIR_ID_NONE (~(kefir_id_t) 0ull)
 
 #define KEFIR_FLOAT32_FMT "%f"
 #define KEFIR_FLOAT64_FMT "%lf"

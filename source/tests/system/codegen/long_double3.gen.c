@@ -34,24 +34,25 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
 
-    struct kefir_ir_type *sum_params = kefir_ir_module_new_type(mem, &module, 2, NULL),
-                         *sum_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    kefir_id_t func_params, func_returns;
+    struct kefir_ir_type *sum_params = kefir_ir_module_new_type(mem, &module, 2, &func_params),
+                         *sum_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
     REQUIRE(sum_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(sum_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *sum_decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "ldouble_sum", sum_params, false, sum_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "ldouble_sum", func_params, false, func_returns);
     REQUIRE(sum_decl != NULL, KEFIR_INTERNAL_ERROR);
     kefir_irbuilder_type_append_v(mem, sum_decl->params, KEFIR_IR_TYPE_LONG_DOUBLE, 0, 0);
     kefir_irbuilder_type_append_v(mem, sum_decl->params, KEFIR_IR_TYPE_LONG_DOUBLE, 0, 0);
     kefir_irbuilder_type_append_v(mem, sum_decl->result, KEFIR_IR_TYPE_LONG_DOUBLE, 0, 0);
 
-    struct kefir_ir_type *decl_params = kefir_ir_module_new_type(mem, &module, 2, NULL),
-                         *decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL),
+    struct kefir_ir_type *decl_params = kefir_ir_module_new_type(mem, &module, 2, &func_params),
+                         *decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns),
                          *func_locals = kefir_ir_module_new_type(mem, &module, 0, NULL);
     REQUIRE(decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "ldouble_sum_proxy", decl_params, false, decl_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "ldouble_sum_proxy", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
 
     struct kefir_ir_function *func = kefir_ir_module_new_function(mem, &module, decl, func_locals, 1024);

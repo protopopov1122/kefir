@@ -45,11 +45,7 @@
         },
         {
             "identifier": 4,
-            "type": [
-                {
-                    "type": "char"
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 5,
@@ -57,6 +53,34 @@
         },
         {
             "identifier": 6,
+            "type": [
+                {
+                    "type": "char"
+                }
+            ]
+        },
+        {
+            "identifier": 7,
+            "type": []
+        },
+        {
+            "identifier": 8,
+            "type": []
+        },
+        {
+            "identifier": 9,
+            "type": []
+        },
+        {
+            "identifier": 10,
+            "type": []
+        },
+        {
+            "identifier": 11,
+            "type": []
+        },
+        {
+            "identifier": 12,
             "type": []
         }
     ],
@@ -66,23 +90,23 @@
         {
             "identifier": 0,
             "name": "while1",
-            "parameters": [],
+            "parameters": 4,
             "vararg": false,
-            "returns": []
+            "returns": 5
         },
         {
             "identifier": 1,
             "name": "while2",
-            "parameters": [],
+            "parameters": 8,
             "vararg": false,
-            "returns": []
+            "returns": 9
         },
         {
             "identifier": 2,
             "name": "while3",
-            "parameters": [],
+            "parameters": 11,
             "vararg": false,
-            "returns": []
+            "returns": 12
         }
     ],
     "functions": [
@@ -149,7 +173,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 4,
+                        "type": 6,
                         "index": 0
                     }
                 },

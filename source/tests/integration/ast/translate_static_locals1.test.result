@@ -96,24 +96,16 @@
         {
             "identifier": 0,
             "name": "fn",
-            "parameters": [],
+            "parameters": 2,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 3
         },
         {
             "identifier": 1,
             "name": "fn",
-            "parameters": [],
+            "parameters": 4,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 5
         }
     ],
     "functions": [

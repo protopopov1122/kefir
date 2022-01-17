@@ -40,6 +40,78 @@
         },
         {
             "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
+            "type": []
+        },
+        {
+            "identifier": 5,
+            "type": []
+        },
+        {
+            "identifier": 6,
+            "type": []
+        },
+        {
+            "identifier": 7,
+            "type": []
+        },
+        {
+            "identifier": 8,
+            "type": []
+        },
+        {
+            "identifier": 9,
+            "type": []
+        },
+        {
+            "identifier": 10,
+            "type": []
+        },
+        {
+            "identifier": 11,
+            "type": []
+        },
+        {
+            "identifier": 12,
+            "type": []
+        },
+        {
+            "identifier": 13,
+            "type": []
+        },
+        {
+            "identifier": 14,
+            "type": []
+        },
+        {
+            "identifier": 15,
+            "type": []
+        },
+        {
+            "identifier": 16,
+            "type": []
+        },
+        {
+            "identifier": 17,
+            "type": []
+        },
+        {
+            "identifier": 18,
+            "type": []
+        },
+        {
+            "identifier": 19,
+            "type": []
+        },
+        {
+            "identifier": 20,
+            "type": []
+        },
+        {
+            "identifier": 21,
             "type": [
                 {
                     "type": "bool"
@@ -47,7 +119,15 @@
             ]
         },
         {
-            "identifier": 4,
+            "identifier": 22,
+            "type": []
+        },
+        {
+            "identifier": 23,
+            "type": []
+        },
+        {
+            "identifier": 24,
             "type": [
                 {
                     "type": "array",
@@ -57,6 +137,22 @@
                     }
                 }
             ]
+        },
+        {
+            "identifier": 25,
+            "type": []
+        },
+        {
+            "identifier": 26,
+            "type": []
+        },
+        {
+            "identifier": 27,
+            "type": []
+        },
+        {
+            "identifier": 28,
+            "type": []
         }
     ],
     "data": [],
@@ -65,86 +161,86 @@
         {
             "identifier": 0,
             "name": "increment_int1",
-            "parameters": [],
+            "parameters": 3,
             "vararg": false,
-            "returns": []
+            "returns": 4
         },
         {
             "identifier": 1,
             "name": "increment_int2",
-            "parameters": [],
+            "parameters": 5,
             "vararg": false,
-            "returns": []
+            "returns": 6
         },
         {
             "identifier": 2,
             "name": "decrement_int1",
-            "parameters": [],
+            "parameters": 7,
             "vararg": false,
-            "returns": []
+            "returns": 8
         },
         {
             "identifier": 3,
             "name": "decrement_int2",
-            "parameters": [],
+            "parameters": 9,
             "vararg": false,
-            "returns": []
+            "returns": 10
         },
         {
             "identifier": 4,
             "name": "increment_float",
-            "parameters": [],
+            "parameters": 11,
             "vararg": false,
-            "returns": []
+            "returns": 12
         },
         {
             "identifier": 5,
             "name": "increment_double",
-            "parameters": [],
+            "parameters": 13,
             "vararg": false,
-            "returns": []
+            "returns": 14
         },
         {
             "identifier": 6,
             "name": "decrement_float",
-            "parameters": [],
+            "parameters": 15,
             "vararg": false,
-            "returns": []
+            "returns": 16
         },
         {
             "identifier": 7,
             "name": "decrement_double",
-            "parameters": [],
+            "parameters": 17,
             "vararg": false,
-            "returns": []
+            "returns": 18
         },
         {
             "identifier": 8,
             "name": "increment_pointer1",
-            "parameters": [],
+            "parameters": 19,
             "vararg": false,
-            "returns": []
+            "returns": 20
         },
         {
             "identifier": 9,
             "name": "increment_pointer2",
-            "parameters": [],
+            "parameters": 22,
             "vararg": false,
-            "returns": []
+            "returns": 23
         },
         {
             "identifier": 10,
             "name": "decrement_pointer1",
-            "parameters": [],
+            "parameters": 25,
             "vararg": false,
-            "returns": []
+            "returns": 26
         },
         {
             "identifier": 11,
             "name": "decrement_pointer2",
-            "parameters": [],
+            "parameters": 27,
             "vararg": false,
-            "returns": []
+            "returns": 28
         }
     ],
     "functions": [
@@ -513,7 +609,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 3,
+                        "type": 21,
                         "index": 0
                     }
                 },
@@ -583,7 +679,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 4,
+                        "type": 24,
                         "index": 0
                     }
                 },
@@ -719,7 +815,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 3,
+                        "type": 21,
                         "index": 0
                     }
                 },
@@ -789,7 +885,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 4,
+                        "type": 24,
                         "index": 0
                     }
                 },

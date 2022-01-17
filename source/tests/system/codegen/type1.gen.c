@@ -33,10 +33,13 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
-    struct kefir_ir_type *decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL),
-                         *decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    kefir_id_t func_params, func_returns;
+    struct kefir_ir_type *decl_params = kefir_ir_module_new_type(mem, &module, 1, &func_params),
+                         *decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    REQUIRE(decl_params != NULL, KEFIR_INTERNAL_ERROR);
+    REQUIRE(decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "trunc1", decl_params, false, decl_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "trunc1", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *func = kefir_ir_module_new_function(mem, &module, decl, NULL, 2);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -46,9 +49,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_TRUNCATE1, 0);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "extend8", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 1, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "extend8", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 2);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -58,9 +61,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_EXTEND8, 0);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "extend16", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 1, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "extend16", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 2);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -70,9 +73,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_EXTEND16, 0);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "extend32", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 1, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "extend32", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 2);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);

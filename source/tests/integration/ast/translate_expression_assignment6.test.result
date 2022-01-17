@@ -71,6 +71,54 @@
         },
         {
             "identifier": 9,
+            "type": []
+        },
+        {
+            "identifier": 10,
+            "type": []
+        },
+        {
+            "identifier": 11,
+            "type": []
+        },
+        {
+            "identifier": 12,
+            "type": []
+        },
+        {
+            "identifier": 13,
+            "type": []
+        },
+        {
+            "identifier": 14,
+            "type": []
+        },
+        {
+            "identifier": 15,
+            "type": []
+        },
+        {
+            "identifier": 16,
+            "type": []
+        },
+        {
+            "identifier": 17,
+            "type": []
+        },
+        {
+            "identifier": 18,
+            "type": []
+        },
+        {
+            "identifier": 19,
+            "type": []
+        },
+        {
+            "identifier": 20,
+            "type": []
+        },
+        {
+            "identifier": 21,
             "type": [
                 {
                     "type": "char"
@@ -78,7 +126,15 @@
             ]
         },
         {
-            "identifier": 10,
+            "identifier": 22,
+            "type": []
+        },
+        {
+            "identifier": 23,
+            "type": []
+        },
+        {
+            "identifier": 24,
             "type": [
                 {
                     "type": "array",
@@ -96,51 +152,51 @@
         {
             "identifier": 0,
             "name": "assign_sub_int",
-            "parameters": [],
+            "parameters": 9,
             "vararg": false,
-            "returns": []
+            "returns": 10
         },
         {
             "identifier": 1,
             "name": "assign_sub_ullong",
-            "parameters": [],
+            "parameters": 11,
             "vararg": false,
-            "returns": []
+            "returns": 12
         },
         {
             "identifier": 2,
             "name": "assign_sub_float",
-            "parameters": [],
+            "parameters": 13,
             "vararg": false,
-            "returns": []
+            "returns": 14
         },
         {
             "identifier": 3,
             "name": "assign_sub_double",
-            "parameters": [],
+            "parameters": 15,
             "vararg": false,
-            "returns": []
+            "returns": 16
         },
         {
             "identifier": 4,
             "name": "assign_sub_double_int",
-            "parameters": [],
+            "parameters": 17,
             "vararg": false,
-            "returns": []
+            "returns": 18
         },
         {
             "identifier": 5,
             "name": "assign_sub_ptr_int",
-            "parameters": [],
+            "parameters": 19,
             "vararg": false,
-            "returns": []
+            "returns": 20
         },
         {
             "identifier": 6,
             "name": "assign_sub_ptr2_int",
-            "parameters": [],
+            "parameters": 22,
             "vararg": false,
-            "returns": []
+            "returns": 23
         }
     ],
     "functions": [
@@ -336,7 +392,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 9,
+                        "type": 21,
                         "index": 0
                     }
                 },
@@ -419,7 +475,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 10,
+                        "type": 24,
                         "index": 0
                     }
                 },

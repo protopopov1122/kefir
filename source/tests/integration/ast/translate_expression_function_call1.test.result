@@ -103,22 +103,11 @@
         },
         {
             "identifier": 11,
-            "type": [
-                {
-                    "type": "int"
-                },
-                {
-                    "type": "int"
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 12,
-            "type": [
-                {
-                    "type": "int"
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 13,
@@ -145,15 +134,18 @@
         },
         {
             "identifier": 16,
+            "type": []
+        },
+        {
+            "identifier": 17,
             "type": [
+                {
+                    "type": "int"
+                },
                 {
                     "type": "int"
                 }
             ]
-        },
-        {
-            "identifier": 17,
-            "type": []
         },
         {
             "identifier": 18,
@@ -165,14 +157,18 @@
         },
         {
             "identifier": 19,
-            "type": [
-                {
-                    "type": "word"
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 20,
+            "type": []
+        },
+        {
+            "identifier": 21,
+            "type": []
+        },
+        {
+            "identifier": 22,
             "type": [
                 {
                     "type": "int"
@@ -180,7 +176,35 @@
             ]
         },
         {
-            "identifier": 21,
+            "identifier": 23,
+            "type": []
+        },
+        {
+            "identifier": 24,
+            "type": []
+        },
+        {
+            "identifier": 25,
+            "type": []
+        },
+        {
+            "identifier": 26,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 27,
+            "type": []
+        },
+        {
+            "identifier": 28,
+            "type": []
+        },
+        {
+            "identifier": 29,
             "type": [
                 {
                     "type": "word"
@@ -188,7 +212,31 @@
             ]
         },
         {
-            "identifier": 22,
+            "identifier": 30,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 31,
+            "type": []
+        },
+        {
+            "identifier": 32,
+            "type": []
+        },
+        {
+            "identifier": 33,
+            "type": [
+                {
+                    "type": "word"
+                }
+            ]
+        },
+        {
+            "identifier": 34,
             "type": [
                 {
                     "type": "int"
@@ -202,187 +250,114 @@
         {
             "identifier": 0,
             "name": "sum",
-            "parameters": [
-                {
-                    "type": "int"
-                },
-                {
-                    "type": "int"
-                }
-            ],
+            "parameters": 3,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 4
         },
         {
             "identifier": 1,
             "name": "test",
-            "parameters": [],
+            "parameters": 5,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 6
         },
         {
             "identifier": 2,
             "name": "test2",
-            "parameters": [],
+            "parameters": 7,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 8
         },
         {
             "identifier": 3,
             "name": "test3",
-            "parameters": [
-                {
-                    "type": "word"
-                }
-            ],
+            "parameters": 9,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 10
         },
         {
             "identifier": 4,
             "name": "call1",
-            "parameters": [],
+            "parameters": 11,
             "vararg": false,
-            "returns": []
+            "returns": 12
         },
         {
             "identifier": 5,
             "name": "sum",
-            "parameters": [
-                {
-                    "type": "int"
-                },
-                {
-                    "type": "int"
-                }
-            ],
+            "parameters": 13,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 14
         },
         {
             "identifier": 6,
             "name": "call2",
-            "parameters": [],
+            "parameters": 15,
             "vararg": false,
-            "returns": []
+            "returns": 16
         },
         {
             "identifier": 7,
             "name": "sum",
-            "parameters": [
-                {
-                    "type": "int"
-                },
-                {
-                    "type": "int"
-                }
-            ],
+            "parameters": 17,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 18
         },
         {
             "identifier": 8,
             "name": "call3",
-            "parameters": [],
+            "parameters": 19,
             "vararg": false,
-            "returns": []
+            "returns": 20
         },
         {
             "identifier": 9,
             "name": "test",
-            "parameters": [],
+            "parameters": 21,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 22
         },
         {
             "identifier": 10,
             "name": "call4",
-            "parameters": [],
+            "parameters": 23,
             "vararg": false,
-            "returns": []
+            "returns": 24
         },
         {
             "identifier": 11,
             "name": "test2",
-            "parameters": [],
+            "parameters": 25,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 26
         },
         {
             "identifier": 12,
             "name": "call5",
-            "parameters": [],
+            "parameters": 27,
             "vararg": false,
-            "returns": []
+            "returns": 28
         },
         {
             "identifier": 13,
             "name": "test3",
-            "parameters": [
-                {
-                    "type": "word"
-                }
-            ],
+            "parameters": 29,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 30
         },
         {
             "identifier": 14,
             "name": "call6",
-            "parameters": [],
+            "parameters": 31,
             "vararg": false,
-            "returns": []
+            "returns": 32
         },
         {
             "identifier": 15,
             "name": "test3",
-            "parameters": [
-                {
-                    "type": "word"
-                }
-            ],
+            "parameters": 33,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 34
         }
     ],
     "functions": [

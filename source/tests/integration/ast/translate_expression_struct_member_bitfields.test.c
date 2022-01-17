@@ -118,11 +118,14 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         &translator_local_scope));
     REQUIRE_OK(kefir_ast_translate_global_scope(mem, &global_context.context, &module, &translator_global_scope));
 
-    struct kefir_ir_type *func1_params = kefir_ir_module_new_type(mem, &module, 0, NULL);
-    struct kefir_ir_type *func1_returns = kefir_ir_module_new_type(mem, &module, 0, NULL);
+    kefir_id_t func_params, func_returns;
+    struct kefir_ir_type *func1_params = kefir_ir_module_new_type(mem, &module, 0, &func_params);
+    struct kefir_ir_type *func1_returns = kefir_ir_module_new_type(mem, &module, 0, &func_returns);
+    REQUIRE(func1_params != NULL, KEFIR_INTERNAL_ERROR);
+    REQUIRE(func1_returns != NULL, KEFIR_INTERNAL_ERROR);
 
     struct kefir_ir_function_decl *func1_decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "func1", func1_params, false, func1_returns);
+        kefir_ir_module_new_function_declaration(mem, &module, "func1", func_params, false, func_returns);
     REQUIRE(func1_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *func1 =
         kefir_ir_module_new_function(mem, &module, func1_decl, translator_local_scope.local_layout, 0);

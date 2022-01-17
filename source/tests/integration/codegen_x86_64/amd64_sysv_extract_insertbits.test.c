@@ -37,12 +37,13 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     codegen.asmgen.settings.enable_comments = false;
     codegen.asmgen.settings.enable_identation = false;
 
-    struct kefir_ir_type *extractu_decl_params = kefir_ir_module_new_type(mem, &module, 0, NULL),
-                         *extractu_decl_result = kefir_ir_module_new_type(mem, &module, 0, NULL);
+    kefir_id_t func_params, func_returns;
+    struct kefir_ir_type *extractu_decl_params = kefir_ir_module_new_type(mem, &module, 0, &func_params),
+                         *extractu_decl_result = kefir_ir_module_new_type(mem, &module, 0, &func_returns);
     REQUIRE(extractu_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(extractu_decl_result != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function_decl *extractu_decl = kefir_ir_module_new_function_declaration(
-        mem, &module, "extractu", extractu_decl_params, false, extractu_decl_result);
+    struct kefir_ir_function_decl *extractu_decl =
+        kefir_ir_module_new_function_declaration(mem, &module, "extractu", func_params, false, func_returns);
     REQUIRE(extractu_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *extractu_func = kefir_ir_module_new_function(mem, &module, extractu_decl, NULL, 1024);
     REQUIRE(extractu_func != NULL, KEFIR_INTERNAL_ERROR);
@@ -71,12 +72,12 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extractu_func->body, KEFIR_IROPCODE_EXTUBITS, 8, 9));
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extractu_func->body, KEFIR_IROPCODE_EXTUBITS, 16, 10));
 
-    struct kefir_ir_type *extracts_decl_params = kefir_ir_module_new_type(mem, &module, 0, NULL),
-                         *extracts_decl_result = kefir_ir_module_new_type(mem, &module, 0, NULL);
+    struct kefir_ir_type *extracts_decl_params = kefir_ir_module_new_type(mem, &module, 0, &func_params),
+                         *extracts_decl_result = kefir_ir_module_new_type(mem, &module, 0, &func_returns);
     REQUIRE(extracts_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(extracts_decl_result != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function_decl *extracts_decl = kefir_ir_module_new_function_declaration(
-        mem, &module, "extracts", extracts_decl_params, false, extracts_decl_result);
+    struct kefir_ir_function_decl *extracts_decl =
+        kefir_ir_module_new_function_declaration(mem, &module, "extracts", func_params, false, func_returns);
     REQUIRE(extracts_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *extracts_func = kefir_ir_module_new_function(mem, &module, extracts_decl, NULL, 1024);
     REQUIRE(extracts_func != NULL, KEFIR_INTERNAL_ERROR);
@@ -105,12 +106,12 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extracts_func->body, KEFIR_IROPCODE_EXTSBITS, 8, 9));
     REQUIRE_OK(kefir_irbuilder_block_appendu32(mem, &extracts_func->body, KEFIR_IROPCODE_EXTSBITS, 16, 10));
 
-    struct kefir_ir_type *insert_decl_params = kefir_ir_module_new_type(mem, &module, 0, NULL),
-                         *insert_decl_result = kefir_ir_module_new_type(mem, &module, 0, NULL);
+    struct kefir_ir_type *insert_decl_params = kefir_ir_module_new_type(mem, &module, 0, &func_params),
+                         *insert_decl_result = kefir_ir_module_new_type(mem, &module, 0, &func_returns);
     REQUIRE(insert_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(insert_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *insert_decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "insert", insert_decl_params, false, insert_decl_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "insert", func_params, false, func_returns);
     REQUIRE(insert_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *insert_func = kefir_ir_module_new_function(mem, &module, insert_decl, NULL, 1024);
     REQUIRE(insert_func != NULL, KEFIR_INTERNAL_ERROR);

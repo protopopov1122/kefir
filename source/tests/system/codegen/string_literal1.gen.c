@@ -36,12 +36,13 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
 
-    struct kefir_ir_type *decl1_params = kefir_ir_module_new_type(mem, &module, 0, NULL),
-                         *decl1_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    kefir_id_t func_params, func_returns;
+    struct kefir_ir_type *decl1_params = kefir_ir_module_new_type(mem, &module, 0, &func_params),
+                         *decl1_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
     REQUIRE(decl1_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(decl1_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *decl1 =
-        kefir_ir_module_new_function_declaration(mem, &module, "string1", decl1_params, false, decl1_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "string1", func_params, false, func_returns);
     REQUIRE(decl1 != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *func1 = kefir_ir_module_new_function(mem, &module, decl1, NULL, 1024);
     REQUIRE(func1 != NULL, KEFIR_INTERNAL_ERROR);
@@ -53,12 +54,12 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                                               strlen(literal) + 1, &literal_id));
     kefir_irbuilder_block_appendi64(mem, &func1->body, KEFIR_IROPCODE_PUSHSTRING, literal_id);
 
-    struct kefir_ir_type *decl2_params = kefir_ir_module_new_type(mem, &module, 0, NULL),
-                         *decl2_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    struct kefir_ir_type *decl2_params = kefir_ir_module_new_type(mem, &module, 0, &func_params),
+                         *decl2_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
     REQUIRE(decl2_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(decl2_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *decl2 =
-        kefir_ir_module_new_function_declaration(mem, &module, "string2", decl2_params, false, decl2_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "string2", func_params, false, func_returns);
     REQUIRE(decl2 != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *func2 = kefir_ir_module_new_function(mem, &module, decl2, NULL, 1024);
     REQUIRE(func2 != NULL, KEFIR_INTERNAL_ERROR);
@@ -70,12 +71,12 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                                               strlen(literal) + 1, &literal_id));
     kefir_irbuilder_block_appendi64(mem, &func2->body, KEFIR_IROPCODE_PUSHSTRING, literal_id);
 
-    struct kefir_ir_type *decl3_params = kefir_ir_module_new_type(mem, &module, 0, NULL),
-                         *decl3_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    struct kefir_ir_type *decl3_params = kefir_ir_module_new_type(mem, &module, 0, &func_params),
+                         *decl3_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
     REQUIRE(decl3_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(decl3_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *decl3 =
-        kefir_ir_module_new_function_declaration(mem, &module, "string3", decl3_params, false, decl3_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "string3", func_params, false, func_returns);
     REQUIRE(decl3 != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *func3 = kefir_ir_module_new_function(mem, &module, decl3, NULL, 1024);
     REQUIRE(func3 != NULL, KEFIR_INTERNAL_ERROR);

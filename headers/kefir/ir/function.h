@@ -30,9 +30,15 @@
 typedef struct kefir_ir_function_decl {
     kefir_id_t id;
     const char *name;
-    struct kefir_ir_type *params;
+    struct {
+        struct kefir_ir_type *params;
+        kefir_id_t params_type_id;
+    };
     bool vararg;
-    struct kefir_ir_type *result;
+    struct {
+        struct kefir_ir_type *result;
+        kefir_id_t result_type_id;
+    };
 } kefir_ir_function_decl_t;
 
 typedef struct kefir_ir_function {
@@ -42,8 +48,9 @@ typedef struct kefir_ir_function {
     struct kefir_irblock body;
 } kefir_ir_function_t;
 
-kefir_result_t kefir_ir_function_decl_alloc(struct kefir_mem *, kefir_id_t, const char *, struct kefir_ir_type *, bool,
-                                            struct kefir_ir_type *, struct kefir_ir_function_decl *);
+kefir_result_t kefir_ir_function_decl_alloc(struct kefir_mem *, kefir_id_t, const char *, struct kefir_ir_type *,
+                                            kefir_id_t, bool, struct kefir_ir_type *, kefir_id_t,
+                                            struct kefir_ir_function_decl *);
 kefir_result_t kefir_ir_function_decl_free(struct kefir_mem *, struct kefir_ir_function_decl *);
 
 kefir_result_t kefir_ir_function_alloc(struct kefir_mem *, struct kefir_ir_function_decl *, struct kefir_ir_type *,

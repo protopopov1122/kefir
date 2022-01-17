@@ -77,6 +77,22 @@
         },
         {
             "identifier": 6,
+            "type": []
+        },
+        {
+            "identifier": 7,
+            "type": []
+        },
+        {
+            "identifier": 8,
+            "type": []
+        },
+        {
+            "identifier": 9,
+            "type": []
+        },
+        {
+            "identifier": 10,
             "type": [
                 {
                     "type": "float"
@@ -84,7 +100,23 @@
             ]
         },
         {
-            "identifier": 7,
+            "identifier": 11,
+            "type": []
+        },
+        {
+            "identifier": 12,
+            "type": []
+        },
+        {
+            "identifier": 13,
+            "type": []
+        },
+        {
+            "identifier": 14,
+            "type": []
+        },
+        {
+            "identifier": 15,
             "type": [
                 {
                     "type": "struct",
@@ -95,6 +127,14 @@
                     ]
                 }
             ]
+        },
+        {
+            "identifier": 16,
+            "type": []
+        },
+        {
+            "identifier": 17,
+            "type": []
         }
     ],
     "data": [
@@ -125,37 +165,37 @@
         {
             "identifier": 0,
             "name": "identifier",
-            "parameters": [],
+            "parameters": 6,
             "vararg": false,
-            "returns": []
+            "returns": 7
         },
         {
             "identifier": 1,
             "name": "array_subscript",
-            "parameters": [],
+            "parameters": 8,
             "vararg": false,
-            "returns": []
+            "returns": 9
         },
         {
             "identifier": 2,
             "name": "struct_field",
-            "parameters": [],
+            "parameters": 11,
             "vararg": false,
-            "returns": []
+            "returns": 12
         },
         {
             "identifier": 3,
             "name": "struct_field_indirect",
-            "parameters": [],
+            "parameters": 13,
             "vararg": false,
-            "returns": []
+            "returns": 14
         },
         {
             "identifier": 4,
             "name": "indirection",
-            "parameters": [],
+            "parameters": 16,
             "vararg": false,
-            "returns": []
+            "returns": 17
         }
     ],
     "functions": [
@@ -363,7 +403,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 6,
+                        "type": 10,
                         "index": 0
                     }
                 }

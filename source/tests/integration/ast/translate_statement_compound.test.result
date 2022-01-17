@@ -26,6 +26,14 @@
         },
         {
             "identifier": 4,
+            "type": []
+        },
+        {
+            "identifier": 5,
+            "type": []
+        },
+        {
+            "identifier": 6,
             "type": [
                 {
                     "type": "struct",
@@ -54,7 +62,15 @@
             ]
         },
         {
-            "identifier": 5,
+            "identifier": 7,
+            "type": []
+        },
+        {
+            "identifier": 8,
+            "type": []
+        },
+        {
+            "identifier": 9,
             "type": [
                 {
                     "type": "struct",
@@ -85,6 +101,14 @@
                     ]
                 }
             ]
+        },
+        {
+            "identifier": 10,
+            "type": []
+        },
+        {
+            "identifier": 11,
+            "type": []
         }
     ],
     "data": [],
@@ -93,23 +117,23 @@
         {
             "identifier": 0,
             "name": "compound1",
-            "parameters": [],
+            "parameters": 4,
             "vararg": false,
-            "returns": []
+            "returns": 5
         },
         {
             "identifier": 1,
             "name": "compound2",
-            "parameters": [],
+            "parameters": 7,
             "vararg": false,
-            "returns": []
+            "returns": 8
         },
         {
             "identifier": 2,
             "name": "compound3",
-            "parameters": [],
+            "parameters": 10,
             "vararg": false,
-            "returns": []
+            "returns": 11
         }
     ],
     "functions": [
@@ -172,7 +196,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 4,
+                        "type": 6,
                         "index": 4
                     }
                 },
@@ -210,7 +234,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 4,
+                        "type": 6,
                         "index": 5
                     }
                 },
@@ -226,7 +250,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 4,
+                        "type": 6,
                         "index": 4
                     }
                 },
@@ -272,7 +296,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 4,
+                        "type": 6,
                         "index": 5
                     }
                 },
@@ -308,7 +332,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 4,
+                        "type": 6,
                         "index": 4
                     }
                 },
@@ -328,7 +352,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 4,
+                        "type": 6,
                         "index": 5
                     }
                 },

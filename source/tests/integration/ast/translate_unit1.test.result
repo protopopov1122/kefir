@@ -296,112 +296,72 @@
         {
             "identifier": 0,
             "name": "add_value",
-            "parameters": [],
+            "parameters": 4,
             "vararg": false,
-            "returns": []
+            "returns": 5
         },
         {
             "identifier": 1,
             "name": "get_value",
-            "parameters": [],
+            "parameters": 6,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "long"
-                }
-            ]
+            "returns": 7
         },
         {
             "identifier": 2,
             "name": "set_value",
-            "parameters": [
-                {
-                    "type": "long"
-                }
-            ],
+            "parameters": 8,
             "vararg": false,
-            "returns": []
+            "returns": 9
         },
         {
             "identifier": 3,
             "name": "value_callback",
-            "parameters": [
-                {
-                    "type": "long"
-                }
-            ],
+            "parameters": 10,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "long"
-                }
-            ]
+            "returns": 11
         },
         {
             "identifier": 4,
             "name": "invoke_callback",
-            "parameters": [],
+            "parameters": 12,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "long"
-                }
-            ]
+            "returns": 13
         },
         {
             "identifier": 5,
             "name": "set_value",
-            "parameters": [
-                {
-                    "type": "long"
-                }
-            ],
+            "parameters": 14,
             "vararg": false,
-            "returns": []
+            "returns": 15
         },
         {
             "identifier": 6,
             "name": "get_value",
-            "parameters": [],
+            "parameters": 17,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "long"
-                }
-            ]
+            "returns": 18
         },
         {
             "identifier": 7,
             "name": "add_value",
-            "parameters": [],
+            "parameters": 20,
             "vararg": false,
-            "returns": []
+            "returns": 21
         },
         {
             "identifier": 8,
             "name": "invoke_callback",
-            "parameters": [],
+            "parameters": 23,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "long"
-                }
-            ]
+            "returns": 24
         },
         {
             "identifier": 9,
             "name": "value_callback",
-            "parameters": [
-                {
-                    "type": "long"
-                }
-            ],
+            "parameters": 26,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "long"
-                }
-            ]
+            "returns": 27
         }
     ],
     "functions": [

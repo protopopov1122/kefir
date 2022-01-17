@@ -43,6 +43,14 @@
         },
         {
             "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
+            "type": []
+        },
+        {
+            "identifier": 5,
             "type": [
                 {
                     "type": "double"
@@ -56,9 +64,9 @@
         {
             "identifier": 0,
             "name": "vararg",
-            "parameters": [],
+            "parameters": 3,
             "vararg": false,
-            "returns": []
+            "returns": 4
         }
     ],
     "functions": [
@@ -143,7 +151,7 @@
                 {
                     "opcode": "getvarg",
                     "arg": {
-                        "type": 3,
+                        "type": 5,
                         "index": 0
                     }
                 },

@@ -42,6 +42,14 @@
         },
         {
             "identifier": 8,
+            "type": []
+        },
+        {
+            "identifier": 9,
+            "type": []
+        },
+        {
+            "identifier": 10,
             "type": [
                 {
                     "type": "struct",
@@ -74,14 +82,6 @@
             ]
         },
         {
-            "identifier": 9,
-            "type": []
-        },
-        {
-            "identifier": 10,
-            "type": []
-        },
-        {
             "identifier": 11,
             "type": []
         },
@@ -91,6 +91,22 @@
         },
         {
             "identifier": 13,
+            "type": []
+        },
+        {
+            "identifier": 14,
+            "type": []
+        },
+        {
+            "identifier": 15,
+            "type": []
+        },
+        {
+            "identifier": 16,
+            "type": []
+        },
+        {
+            "identifier": 17,
             "type": [
                 {
                     "type": "struct",
@@ -113,30 +129,6 @@
             ]
         },
         {
-            "identifier": 14,
-            "type": []
-        },
-        {
-            "identifier": 15,
-            "type": [
-                {
-                    "type": "bool"
-                }
-            ]
-        },
-        {
-            "identifier": 16,
-            "type": []
-        },
-        {
-            "identifier": 17,
-            "type": [
-                {
-                    "type": "bool"
-                }
-            ]
-        },
-        {
             "identifier": 18,
             "type": []
         },
@@ -150,10 +142,50 @@
         },
         {
             "identifier": 21,
-            "type": []
+            "type": [
+                {
+                    "type": "bool"
+                }
+            ]
         },
         {
             "identifier": 22,
+            "type": []
+        },
+        {
+            "identifier": 23,
+            "type": [
+                {
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "identifier": 24,
+            "type": []
+        },
+        {
+            "identifier": 25,
+            "type": []
+        },
+        {
+            "identifier": 26,
+            "type": []
+        },
+        {
+            "identifier": 27,
+            "type": []
+        },
+        {
+            "identifier": 28,
+            "type": []
+        },
+        {
+            "identifier": 29,
+            "type": []
+        },
+        {
+            "identifier": 30,
             "type": []
         }
     ],
@@ -163,94 +195,86 @@
         {
             "identifier": 0,
             "name": "for1",
-            "parameters": [],
+            "parameters": 4,
             "vararg": false,
-            "returns": []
+            "returns": 5
         },
         {
             "identifier": 1,
             "name": "body",
-            "parameters": [],
+            "parameters": 6,
             "vararg": false,
-            "returns": []
+            "returns": 7
         },
         {
             "identifier": 2,
             "name": "body",
-            "parameters": [],
+            "parameters": 8,
             "vararg": false,
-            "returns": []
+            "returns": 9
         },
         {
             "identifier": 3,
             "name": "for2",
-            "parameters": [],
+            "parameters": 11,
             "vararg": false,
-            "returns": []
+            "returns": 12
         },
         {
             "identifier": 4,
             "name": "body",
-            "parameters": [],
+            "parameters": 13,
             "vararg": false,
-            "returns": []
+            "returns": 14
         },
         {
             "identifier": 5,
             "name": "body",
-            "parameters": [],
+            "parameters": 15,
             "vararg": false,
-            "returns": []
+            "returns": 16
         },
         {
             "identifier": 6,
             "name": "for3",
-            "parameters": [],
+            "parameters": 18,
             "vararg": false,
-            "returns": []
+            "returns": 19
         },
         {
             "identifier": 7,
             "name": "body2",
-            "parameters": [],
+            "parameters": 20,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "bool"
-                }
-            ]
+            "returns": 21
         },
         {
             "identifier": 8,
             "name": "body2",
-            "parameters": [],
+            "parameters": 22,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "bool"
-                }
-            ]
+            "returns": 23
         },
         {
             "identifier": 9,
             "name": "for4",
-            "parameters": [],
+            "parameters": 25,
             "vararg": false,
-            "returns": []
+            "returns": 26
         },
         {
             "identifier": 10,
             "name": "body",
-            "parameters": [],
+            "parameters": 27,
             "vararg": false,
-            "returns": []
+            "returns": 28
         },
         {
             "identifier": 11,
             "name": "body",
-            "parameters": [],
+            "parameters": 29,
             "vararg": false,
-            "returns": []
+            "returns": 30
         }
     ],
     "functions": [

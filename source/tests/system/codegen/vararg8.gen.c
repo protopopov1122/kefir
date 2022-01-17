@@ -35,14 +35,15 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
 
     kefir_id_t locals_id, ldouble_type_id;
+    kefir_id_t func_params, func_returns;
     struct kefir_ir_type *ldouble_type = kefir_ir_module_new_type(mem, &module, 1, &ldouble_type_id),
-                         *sumldouble_decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL),
-                         *sumldouble_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL),
+                         *sumldouble_decl_params = kefir_ir_module_new_type(mem, &module, 1, &func_params),
+                         *sumldouble_decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns),
                          *sumldouble_locals = kefir_ir_module_new_type(mem, &module, 1, &locals_id);
     REQUIRE(ldouble_type != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(sumldouble_decl_result != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function_decl *sumldouble_decl = kefir_ir_module_new_function_declaration(
-        mem, &module, "sumldouble", sumldouble_decl_params, true, sumldouble_decl_result);
+    struct kefir_ir_function_decl *sumldouble_decl =
+        kefir_ir_module_new_function_declaration(mem, &module, "sumldouble", func_params, true, func_returns);
     REQUIRE(sumldouble_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *sumldouble =
         kefir_ir_module_new_function(mem, &module, sumldouble_decl, sumldouble_locals, 1024);

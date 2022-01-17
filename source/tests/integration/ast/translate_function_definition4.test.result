@@ -96,28 +96,16 @@
         {
             "identifier": 0,
             "name": "factorial",
-            "parameters": [],
+            "parameters": 2,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 3
         },
         {
             "identifier": 1,
             "name": "factorial",
-            "parameters": [
-                {
-                    "type": "int"
-                }
-            ],
+            "parameters": 4,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 5
         }
     ],
     "functions": [

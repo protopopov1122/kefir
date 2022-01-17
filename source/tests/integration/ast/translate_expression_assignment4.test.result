@@ -32,6 +32,102 @@
                     "type": "long"
                 }
             ]
+        },
+        {
+            "identifier": 5,
+            "type": []
+        },
+        {
+            "identifier": 6,
+            "type": []
+        },
+        {
+            "identifier": 7,
+            "type": []
+        },
+        {
+            "identifier": 8,
+            "type": []
+        },
+        {
+            "identifier": 9,
+            "type": []
+        },
+        {
+            "identifier": 10,
+            "type": []
+        },
+        {
+            "identifier": 11,
+            "type": []
+        },
+        {
+            "identifier": 12,
+            "type": []
+        },
+        {
+            "identifier": 13,
+            "type": []
+        },
+        {
+            "identifier": 14,
+            "type": []
+        },
+        {
+            "identifier": 15,
+            "type": []
+        },
+        {
+            "identifier": 16,
+            "type": []
+        },
+        {
+            "identifier": 17,
+            "type": []
+        },
+        {
+            "identifier": 18,
+            "type": []
+        },
+        {
+            "identifier": 19,
+            "type": []
+        },
+        {
+            "identifier": 20,
+            "type": []
+        },
+        {
+            "identifier": 21,
+            "type": []
+        },
+        {
+            "identifier": 22,
+            "type": []
+        },
+        {
+            "identifier": 23,
+            "type": []
+        },
+        {
+            "identifier": 24,
+            "type": []
+        },
+        {
+            "identifier": 25,
+            "type": []
+        },
+        {
+            "identifier": 26,
+            "type": []
+        },
+        {
+            "identifier": 27,
+            "type": []
+        },
+        {
+            "identifier": 28,
+            "type": []
         }
     ],
     "data": [],
@@ -40,86 +136,86 @@
         {
             "identifier": 0,
             "name": "assign_modulo_int",
-            "parameters": [],
+            "parameters": 5,
             "vararg": false,
-            "returns": []
+            "returns": 6
         },
         {
             "identifier": 1,
             "name": "assign_modulo_ullong",
-            "parameters": [],
+            "parameters": 7,
             "vararg": false,
-            "returns": []
+            "returns": 8
         },
         {
             "identifier": 2,
             "name": "assign_shl_int",
-            "parameters": [],
+            "parameters": 9,
             "vararg": false,
-            "returns": []
+            "returns": 10
         },
         {
             "identifier": 3,
             "name": "assign_shl_ullong",
-            "parameters": [],
+            "parameters": 11,
             "vararg": false,
-            "returns": []
+            "returns": 12
         },
         {
             "identifier": 4,
             "name": "assign_shr_int",
-            "parameters": [],
+            "parameters": 13,
             "vararg": false,
-            "returns": []
+            "returns": 14
         },
         {
             "identifier": 5,
             "name": "assign_shr_ullong",
-            "parameters": [],
+            "parameters": 15,
             "vararg": false,
-            "returns": []
+            "returns": 16
         },
         {
             "identifier": 6,
             "name": "assign_bitwise_and_int",
-            "parameters": [],
+            "parameters": 17,
             "vararg": false,
-            "returns": []
+            "returns": 18
         },
         {
             "identifier": 7,
             "name": "assign_biwise_and_ullong",
-            "parameters": [],
+            "parameters": 19,
             "vararg": false,
-            "returns": []
+            "returns": 20
         },
         {
             "identifier": 8,
             "name": "assign_bitwise_or_int",
-            "parameters": [],
+            "parameters": 21,
             "vararg": false,
-            "returns": []
+            "returns": 22
         },
         {
             "identifier": 9,
             "name": "assign_biwise_or_ullong",
-            "parameters": [],
+            "parameters": 23,
             "vararg": false,
-            "returns": []
+            "returns": 24
         },
         {
             "identifier": 10,
             "name": "assign_bitwise_xor_int",
-            "parameters": [],
+            "parameters": 25,
             "vararg": false,
-            "returns": []
+            "returns": 26
         },
         {
             "identifier": 11,
             "name": "assign_biwise_xor_ullong",
-            "parameters": [],
+            "parameters": 27,
             "vararg": false,
-            "returns": []
+            "returns": 28
         }
     ],
     "functions": [

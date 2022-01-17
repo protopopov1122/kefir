@@ -30,6 +30,14 @@
         },
         {
             "identifier": 4,
+            "type": []
+        },
+        {
+            "identifier": 5,
+            "type": []
+        },
+        {
+            "identifier": 6,
             "type": [
                 {
                     "type": "char"
@@ -43,9 +51,9 @@
         {
             "identifier": 0,
             "name": "func1",
-            "parameters": [],
+            "parameters": 4,
             "vararg": false,
-            "returns": []
+            "returns": 5
         }
     ],
     "functions": [
@@ -81,7 +89,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 4,
+                        "type": 6,
                         "index": 0
                     }
                 },
@@ -115,7 +123,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 4,
+                        "type": 6,
                         "index": 0
                     }
                 },

@@ -16,6 +16,30 @@
         },
         {
             "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
+            "type": []
+        },
+        {
+            "identifier": 5,
+            "type": []
+        },
+        {
+            "identifier": 6,
+            "type": []
+        },
+        {
+            "identifier": 7,
+            "type": []
+        },
+        {
+            "identifier": 8,
+            "type": []
+        },
+        {
+            "identifier": 9,
             "type": [
                 {
                     "type": "short"
@@ -23,7 +47,7 @@
             ]
         },
         {
-            "identifier": 4,
+            "identifier": 10,
             "type": [
                 {
                     "type": "double"
@@ -31,7 +55,7 @@
             ]
         },
         {
-            "identifier": 5,
+            "identifier": 11,
             "type": [
                 {
                     "type": "array",
@@ -43,7 +67,7 @@
             ]
         },
         {
-            "identifier": 6,
+            "identifier": 12,
             "type": [
                 {
                     "type": "word"
@@ -51,7 +75,39 @@
             ]
         },
         {
-            "identifier": 7,
+            "identifier": 13,
+            "type": []
+        },
+        {
+            "identifier": 14,
+            "type": []
+        },
+        {
+            "identifier": 15,
+            "type": []
+        },
+        {
+            "identifier": 16,
+            "type": []
+        },
+        {
+            "identifier": 17,
+            "type": []
+        },
+        {
+            "identifier": 18,
+            "type": []
+        },
+        {
+            "identifier": 19,
+            "type": []
+        },
+        {
+            "identifier": 20,
+            "type": []
+        },
+        {
+            "identifier": 21,
             "type": [
                 {
                     "type": "short"
@@ -59,7 +115,7 @@
             ]
         },
         {
-            "identifier": 8,
+            "identifier": 22,
             "type": [
                 {
                     "type": "float"
@@ -73,51 +129,51 @@
         {
             "identifier": 0,
             "name": "add_integral",
-            "parameters": [],
+            "parameters": 3,
             "vararg": false,
-            "returns": []
+            "returns": 4
         },
         {
             "identifier": 1,
             "name": "add_floating_point",
-            "parameters": [],
+            "parameters": 5,
             "vararg": false,
-            "returns": []
+            "returns": 6
         },
         {
             "identifier": 2,
             "name": "add_pointer_int",
-            "parameters": [],
+            "parameters": 7,
             "vararg": false,
-            "returns": []
+            "returns": 8
         },
         {
             "identifier": 3,
             "name": "sub_integral",
-            "parameters": [],
+            "parameters": 13,
             "vararg": false,
-            "returns": []
+            "returns": 14
         },
         {
             "identifier": 4,
             "name": "sub_floating_point",
-            "parameters": [],
+            "parameters": 15,
             "vararg": false,
-            "returns": []
+            "returns": 16
         },
         {
             "identifier": 5,
             "name": "sub_pointers",
-            "parameters": [],
+            "parameters": 17,
             "vararg": false,
-            "returns": []
+            "returns": 18
         },
         {
             "identifier": 6,
             "name": "sub_pointer_integer",
-            "parameters": [],
+            "parameters": 19,
             "vararg": false,
-            "returns": []
+            "returns": 20
         }
     ],
     "functions": [
@@ -198,7 +254,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 5,
+                        "type": 11,
                         "index": 1
                     }
                 },
@@ -216,7 +272,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 7,
+                        "type": 21,
                         "index": 0
                     }
                 },
@@ -234,7 +290,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 8,
+                        "type": 22,
                         "index": 0
                     }
                 },
@@ -252,7 +308,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 4,
+                        "type": 10,
                         "index": 0
                     }
                 }
@@ -274,7 +330,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 3,
+                        "type": 9,
                         "index": 0
                     }
                 },
@@ -289,7 +345,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 4,
+                        "type": 10,
                         "index": 0
                     }
                 },
@@ -304,7 +360,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 5,
+                        "type": 11,
                         "index": 0
                     }
                 },
@@ -319,7 +375,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 6,
+                        "type": 12,
                         "index": 0
                     }
                 }

@@ -34,12 +34,13 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
 
-    struct kefir_ir_type *udiv_decl_params = kefir_ir_module_new_type(mem, &module, 2, NULL),
-                         *udiv_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    kefir_id_t func_params, func_returns;
+    struct kefir_ir_type *udiv_decl_params = kefir_ir_module_new_type(mem, &module, 2, &func_params),
+                         *udiv_decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
     REQUIRE(udiv_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(udiv_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *udiv_decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "udiv", udiv_decl_params, false, udiv_decl_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "udiv", func_params, false, func_returns);
     REQUIRE(udiv_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *udiv_func = kefir_ir_module_new_function(mem, &module, udiv_decl, NULL, 1024);
     REQUIRE(udiv_func != NULL, KEFIR_INTERNAL_ERROR);
@@ -49,12 +50,12 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_type_append_v(mem, udiv_func->declaration->result, KEFIR_IR_TYPE_LONG, 0, 0);
     kefir_irbuilder_block_appendi64(mem, &udiv_func->body, KEFIR_IROPCODE_UDIV, 0);
 
-    struct kefir_ir_type *umod_decl_params = kefir_ir_module_new_type(mem, &module, 2, NULL),
-                         *umod_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    struct kefir_ir_type *umod_decl_params = kefir_ir_module_new_type(mem, &module, 2, &func_params),
+                         *umod_decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
     REQUIRE(umod_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(umod_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *umod_decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "umod", umod_decl_params, false, umod_decl_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "umod", func_params, false, func_returns);
     REQUIRE(umod_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *umod_func = kefir_ir_module_new_function(mem, &module, umod_decl, NULL, 1024);
     REQUIRE(umod_func != NULL, KEFIR_INTERNAL_ERROR);

@@ -48,12 +48,13 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, type1, KEFIR_IR_TYPE_LONG, 0, 0));
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, type1, KEFIR_IR_TYPE_INT64, 0, 0));
 
-    struct kefir_ir_type *arrptr_decl_params = kefir_ir_module_new_type(mem, &module, 2, NULL),
-                         *arrptr_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    kefir_id_t func_params, func_returns;
+    struct kefir_ir_type *arrptr_decl_params = kefir_ir_module_new_type(mem, &module, 2, &func_params),
+                         *arrptr_decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
     REQUIRE(arrptr_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(arrptr_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *arrptr_decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "arrptr", arrptr_decl_params, false, arrptr_decl_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "arrptr", func_params, false, func_returns);
     REQUIRE(arrptr_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *arrptr = kefir_ir_module_new_function(mem, &module, arrptr_decl, NULL, 5);
     REQUIRE(arrptr != NULL, KEFIR_INTERNAL_ERROR);

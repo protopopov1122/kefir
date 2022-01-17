@@ -49,11 +49,7 @@
         },
         {
             "identifier": 5,
-            "type": [
-                {
-                    "type": "bool"
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 6,
@@ -73,6 +69,34 @@
         },
         {
             "identifier": 9,
+            "type": [
+                {
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "identifier": 10,
+            "type": []
+        },
+        {
+            "identifier": 11,
+            "type": []
+        },
+        {
+            "identifier": 12,
+            "type": []
+        },
+        {
+            "identifier": 13,
+            "type": []
+        },
+        {
+            "identifier": 14,
+            "type": []
+        },
+        {
+            "identifier": 15,
             "type": []
         }
     ],
@@ -82,45 +106,37 @@
         {
             "identifier": 0,
             "name": "do_while1",
-            "parameters": [],
+            "parameters": 4,
             "vararg": false,
-            "returns": []
+            "returns": 5
         },
         {
             "identifier": 1,
             "name": "eval",
-            "parameters": [],
+            "parameters": 6,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "bool"
-                }
-            ]
+            "returns": 7
         },
         {
             "identifier": 2,
             "name": "eval",
-            "parameters": [],
+            "parameters": 8,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "bool"
-                }
-            ]
+            "returns": 9
         },
         {
             "identifier": 3,
             "name": "do_while2",
-            "parameters": [],
+            "parameters": 11,
             "vararg": false,
-            "returns": []
+            "returns": 12
         },
         {
             "identifier": 4,
             "name": "do_while3",
-            "parameters": [],
+            "parameters": 14,
             "vararg": false,
-            "returns": []
+            "returns": 15
         }
     ],
     "functions": [

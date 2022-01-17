@@ -473,11 +473,19 @@ static kefir_result_t kefir_ir_format_function_declaration(struct kefir_json_out
         REQUIRE_OK(kefir_json_output_null(json));
     }
     REQUIRE_OK(kefir_json_output_object_key(json, "parameters"));
-    REQUIRE_OK(kefir_ir_format_type_json(json, decl->params));
+    if (decl->params_type_id != KEFIR_ID_NONE) {
+        REQUIRE_OK(kefir_json_output_uinteger(json, decl->params_type_id));
+    } else {
+        REQUIRE_OK(kefir_ir_format_type_json(json, decl->params));
+    }
     REQUIRE_OK(kefir_json_output_object_key(json, "vararg"));
     REQUIRE_OK(kefir_json_output_boolean(json, decl->vararg));
     REQUIRE_OK(kefir_json_output_object_key(json, "returns"));
-    REQUIRE_OK(kefir_ir_format_type_json(json, decl->result));
+    if (decl->result_type_id != KEFIR_ID_NONE) {
+        REQUIRE_OK(kefir_json_output_uinteger(json, decl->result_type_id));
+    } else {
+        REQUIRE_OK(kefir_ir_format_type_json(json, decl->result));
+    }
     REQUIRE_OK(kefir_json_output_object_end(json));
     return KEFIR_OK;
 }

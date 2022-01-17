@@ -67,6 +67,38 @@
                     ]
                 }
             ]
+        },
+        {
+            "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
+            "type": []
+        },
+        {
+            "identifier": 5,
+            "type": []
+        },
+        {
+            "identifier": 6,
+            "type": []
+        },
+        {
+            "identifier": 7,
+            "type": []
+        },
+        {
+            "identifier": 8,
+            "type": []
+        },
+        {
+            "identifier": 9,
+            "type": []
+        },
+        {
+            "identifier": 10,
+            "type": []
         }
     ],
     "data": [],
@@ -90,30 +122,30 @@
         {
             "identifier": 0,
             "name": "compound_literal1",
-            "parameters": [],
+            "parameters": 3,
             "vararg": false,
-            "returns": []
+            "returns": 4
         },
         {
             "identifier": 1,
             "name": "compound_literal2",
-            "parameters": [],
+            "parameters": 5,
             "vararg": false,
-            "returns": []
+            "returns": 6
         },
         {
             "identifier": 2,
             "name": "compound_literal3",
-            "parameters": [],
+            "parameters": 7,
             "vararg": false,
-            "returns": []
+            "returns": 8
         },
         {
             "identifier": 3,
             "name": "compound_literal4",
-            "parameters": [],
+            "parameters": 9,
             "vararg": false,
-            "returns": []
+            "returns": 10
         }
     ],
     "functions": [

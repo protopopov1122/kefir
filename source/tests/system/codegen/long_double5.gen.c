@@ -34,13 +34,14 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
 
-    struct kefir_ir_type *equals_decl_params = kefir_ir_module_new_type(mem, &module, 2, NULL),
-                         *equals_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL),
+    kefir_id_t func_params, func_returns;
+    struct kefir_ir_type *equals_decl_params = kefir_ir_module_new_type(mem, &module, 2, &func_params),
+                         *equals_decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns),
                          *equals_locals = kefir_ir_module_new_type(mem, &module, 0, NULL);
     REQUIRE(equals_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(equals_decl_result != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function_decl *equals_decl = kefir_ir_module_new_function_declaration(
-        mem, &module, "ldouble_equals", equals_decl_params, false, equals_decl_result);
+    struct kefir_ir_function_decl *equals_decl =
+        kefir_ir_module_new_function_declaration(mem, &module, "ldouble_equals", func_params, false, func_returns);
     REQUIRE(equals_decl != NULL, KEFIR_INTERNAL_ERROR);
 
     struct kefir_ir_function *equals_func =
@@ -52,13 +53,13 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_type_append_v(mem, equals_func->declaration->result, KEFIR_IR_TYPE_INT, 0, 0);
     kefir_irbuilder_block_appendi64(mem, &equals_func->body, KEFIR_IROPCODE_LDEQUALS, 0);
 
-    struct kefir_ir_type *greater_decl_params = kefir_ir_module_new_type(mem, &module, 2, NULL),
-                         *greater_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL),
+    struct kefir_ir_type *greater_decl_params = kefir_ir_module_new_type(mem, &module, 2, &func_params),
+                         *greater_decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns),
                          *greater_locals = kefir_ir_module_new_type(mem, &module, 0, NULL);
     REQUIRE(greater_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(greater_decl_result != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function_decl *greater_decl = kefir_ir_module_new_function_declaration(
-        mem, &module, "ldouble_greater", greater_decl_params, false, greater_decl_result);
+    struct kefir_ir_function_decl *greater_decl =
+        kefir_ir_module_new_function_declaration(mem, &module, "ldouble_greater", func_params, false, func_returns);
     REQUIRE(greater_decl != NULL, KEFIR_INTERNAL_ERROR);
 
     struct kefir_ir_function *greater_func =
@@ -70,13 +71,13 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_type_append_v(mem, greater_func->declaration->result, KEFIR_IR_TYPE_INT, 0, 0);
     kefir_irbuilder_block_appendi64(mem, &greater_func->body, KEFIR_IROPCODE_LDGREATER, 0);
 
-    struct kefir_ir_type *lesser_decl_params = kefir_ir_module_new_type(mem, &module, 2, NULL),
-                         *lesser_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL),
+    struct kefir_ir_type *lesser_decl_params = kefir_ir_module_new_type(mem, &module, 2, &func_params),
+                         *lesser_decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns),
                          *lesser_locals = kefir_ir_module_new_type(mem, &module, 0, NULL);
     REQUIRE(lesser_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(lesser_decl_result != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function_decl *lesser_decl = kefir_ir_module_new_function_declaration(
-        mem, &module, "ldouble_lesser", lesser_decl_params, false, lesser_decl_result);
+    struct kefir_ir_function_decl *lesser_decl =
+        kefir_ir_module_new_function_declaration(mem, &module, "ldouble_lesser", func_params, false, func_returns);
     REQUIRE(lesser_decl != NULL, KEFIR_INTERNAL_ERROR);
 
     struct kefir_ir_function *lesser_func =
@@ -88,13 +89,13 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_type_append_v(mem, lesser_func->declaration->result, KEFIR_IR_TYPE_INT, 0, 0);
     kefir_irbuilder_block_appendi64(mem, &lesser_func->body, KEFIR_IROPCODE_LDLESSER, 0);
 
-    struct kefir_ir_type *trunc1_decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL),
-                         *trunc1_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL),
+    struct kefir_ir_type *trunc1_decl_params = kefir_ir_module_new_type(mem, &module, 1, &func_params),
+                         *trunc1_decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns),
                          *trunc1_locals = kefir_ir_module_new_type(mem, &module, 0, NULL);
     REQUIRE(trunc1_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(trunc1_decl_result != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function_decl *trunc1_decl = kefir_ir_module_new_function_declaration(
-        mem, &module, "ldouble_trunc1", trunc1_decl_params, false, trunc1_decl_result);
+    struct kefir_ir_function_decl *trunc1_decl =
+        kefir_ir_module_new_function_declaration(mem, &module, "ldouble_trunc1", func_params, false, func_returns);
     REQUIRE(trunc1_decl != NULL, KEFIR_INTERNAL_ERROR);
 
     struct kefir_ir_function *trunc1_func =

@@ -213,8 +213,8 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc(
     });
 
     func_decl->ir_function_decl =
-        kefir_ir_module_new_function_declaration(mem, module, identifier, func_decl->ir_argument_type,
-                                                 func_type->function_type.ellipsis, func_decl->ir_return_type);
+        kefir_ir_module_new_function_declaration(mem, module, identifier, func_decl->ir_argument_type_id,
+                                                 func_type->function_type.ellipsis, func_decl->ir_return_type_id);
     REQUIRE_ELSE(func_decl->ir_function_decl != NULL, {
         kefir_list_free(mem, &func_decl->argument_layouts);
         return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR function declaration");

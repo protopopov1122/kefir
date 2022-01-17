@@ -43,12 +43,13 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, type1, KEFIR_IR_TYPE_INT32, 0, 0));
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, type1, KEFIR_IR_TYPE_INT64, 0, 0));
 
-    struct kefir_ir_type *fill_decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL),
-                         *fill_decl_result = kefir_ir_module_new_type(mem, &module, 5, NULL);
+    kefir_id_t func_params, func_returns;
+    struct kefir_ir_type *fill_decl_params = kefir_ir_module_new_type(mem, &module, 1, &func_params),
+                         *fill_decl_result = kefir_ir_module_new_type(mem, &module, 5, &func_returns);
     REQUIRE(fill_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(fill_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *fill_decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "fill", fill_decl_params, false, fill_decl_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "fill", func_params, false, func_returns);
     REQUIRE(fill_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *fill = kefir_ir_module_new_function(mem, &module, fill_decl, type1, 1024);
     REQUIRE(fill != NULL, KEFIR_INTERNAL_ERROR);

@@ -33,12 +33,13 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
-    struct kefir_ir_type *decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL),
-                         *decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    kefir_id_t func_params, func_returns;
+    struct kefir_ir_type *decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params),
+                         *decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
     REQUIRE(decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "insert00", decl_params, false, decl_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "insert00", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -50,11 +51,11 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_INSERT, 0);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
     REQUIRE(decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(decl_result != NULL, KEFIR_INTERNAL_ERROR);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "insert01", decl_params, false, decl_result);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "insert01", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -67,9 +68,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_POP, 0);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "insert02", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "insert02", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -83,9 +84,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_POP, 0);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "insert10", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "insert10", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -97,9 +98,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_INSERT, 1);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "insert11", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "insert11", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -112,9 +113,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_POP, 0);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "insert12", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "insert12", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -128,9 +129,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_POP, 0);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "insert20", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "insert20", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -143,9 +144,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_INSERT, 2);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "insert21", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "insert21", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -159,9 +160,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_POP, 0);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "insert22", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "insert22", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -176,9 +177,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_POP, 0);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "xchg00", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "xchg00", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -190,9 +191,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_XCHG, 0);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "xchg01", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "xchg01", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -205,9 +206,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_POP, 0);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "xchg02", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "xchg02", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -221,9 +222,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_POP, 0);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "xchg10", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "xchg10", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -235,9 +236,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_XCHG, 1);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "xchg11", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "xchg11", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -250,9 +251,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_POP, 0);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "xchg12", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "xchg12", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -266,9 +267,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_POP, 0);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "xchg20", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "xchg20", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -280,9 +281,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_XCHG, 2);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "xchg21", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "xchg21", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -295,9 +296,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_POP, 0);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "xchg22", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "xchg22", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -311,9 +312,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_POP, 0);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "drop00", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "drop00", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -325,9 +326,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_DROP, 0);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "drop01", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "drop01", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -340,9 +341,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_POP, 0);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "drop10", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "drop10", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -354,9 +355,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_DROP, 1);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "drop11", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "drop11", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -369,9 +370,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_POP, 0);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "drop20", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "drop20", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);
@@ -383,9 +384,9 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_DROP, 2);
     kefir_irbuilder_block_appendi64(mem, &func->body, KEFIR_IROPCODE_RET, 0);
 
-    decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL);
-    decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
-    decl = kefir_ir_module_new_function_declaration(mem, &module, "drop21", decl_params, false, decl_result);
+    decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params);
+    decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
+    decl = kefir_ir_module_new_function_declaration(mem, &module, "drop21", func_params, false, func_returns);
     REQUIRE(decl != NULL, KEFIR_INTERNAL_ERROR);
     func = kefir_ir_module_new_function(mem, &module, decl, NULL, 1024);
     REQUIRE(func != NULL, KEFIR_INTERNAL_ERROR);

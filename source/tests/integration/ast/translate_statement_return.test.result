@@ -34,6 +34,30 @@
         },
         {
             "identifier": 6,
+            "type": []
+        },
+        {
+            "identifier": 7,
+            "type": []
+        },
+        {
+            "identifier": 8,
+            "type": []
+        },
+        {
+            "identifier": 9,
+            "type": []
+        },
+        {
+            "identifier": 10,
+            "type": []
+        },
+        {
+            "identifier": 11,
+            "type": []
+        },
+        {
+            "identifier": 12,
             "type": [
                 {
                     "type": "struct",
@@ -65,7 +89,15 @@
             ]
         },
         {
-            "identifier": 7,
+            "identifier": 13,
+            "type": []
+        },
+        {
+            "identifier": 14,
+            "type": []
+        },
+        {
+            "identifier": 15,
             "type": [
                 {
                     "type": "array",
@@ -77,7 +109,15 @@
             ]
         },
         {
-            "identifier": 8,
+            "identifier": 16,
+            "type": []
+        },
+        {
+            "identifier": 17,
+            "type": []
+        },
+        {
+            "identifier": 18,
             "type": []
         }
     ],
@@ -95,37 +135,37 @@
         {
             "identifier": 0,
             "name": "return0",
-            "parameters": [],
+            "parameters": 4,
             "vararg": false,
-            "returns": []
+            "returns": 5
         },
         {
             "identifier": 1,
             "name": "return1",
-            "parameters": [],
+            "parameters": 7,
             "vararg": false,
-            "returns": []
+            "returns": 8
         },
         {
             "identifier": 2,
             "name": "return2",
-            "parameters": [],
+            "parameters": 10,
             "vararg": false,
-            "returns": []
+            "returns": 11
         },
         {
             "identifier": 3,
             "name": "return3",
-            "parameters": [],
+            "parameters": 13,
             "vararg": false,
-            "returns": []
+            "returns": 14
         },
         {
             "identifier": 4,
             "name": "return4",
-            "parameters": [],
+            "parameters": 17,
             "vararg": false,
-            "returns": []
+            "returns": 18
         }
     ],
     "functions": [
@@ -229,21 +269,21 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 6,
+                        "type": 12,
                         "index": 1
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 6,
+                        "type": 12,
                         "index": 2
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 6,
+                        "type": 12,
                         "index": 3
                     }
                 },
@@ -254,7 +294,7 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 6,
+                        "type": 12,
                         "index": 3
                     }
                 },
@@ -269,7 +309,7 @@
                 {
                     "opcode": "bcopy",
                     "arg": {
-                        "type": 7,
+                        "type": 15,
                         "index": 0
                     }
                 },

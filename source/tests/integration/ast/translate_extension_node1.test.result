@@ -6,6 +6,18 @@
     "types": [
         {
             "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 2,
             "type": [
                 {
                     "type": "int"
@@ -16,7 +28,7 @@
             ]
         },
         {
-            "identifier": 1,
+            "identifier": 3,
             "type": [
                 {
                     "type": "int"
@@ -30,31 +42,16 @@
         {
             "identifier": 0,
             "name": "func1",
-            "parameters": [],
+            "parameters": 0,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 1
         },
         {
             "identifier": 1,
             "name": null,
-            "parameters": [
-                {
-                    "type": "int"
-                },
-                {
-                    "type": "int"
-                }
-            ],
+            "parameters": 2,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 3
         }
     ],
     "functions": [

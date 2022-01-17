@@ -35,6 +35,38 @@
         {
             "identifier": 6,
             "type": []
+        },
+        {
+            "identifier": 7,
+            "type": []
+        },
+        {
+            "identifier": 8,
+            "type": []
+        },
+        {
+            "identifier": 9,
+            "type": []
+        },
+        {
+            "identifier": 10,
+            "type": []
+        },
+        {
+            "identifier": 11,
+            "type": []
+        },
+        {
+            "identifier": 12,
+            "type": []
+        },
+        {
+            "identifier": 13,
+            "type": []
+        },
+        {
+            "identifier": 14,
+            "type": []
         }
     ],
     "data": [],
@@ -43,30 +75,30 @@
         {
             "identifier": 0,
             "name": "conditional1",
-            "parameters": [],
+            "parameters": 4,
             "vararg": false,
-            "returns": []
+            "returns": 5
         },
         {
             "identifier": 1,
             "name": "conditional2",
-            "parameters": [],
+            "parameters": 7,
             "vararg": false,
-            "returns": []
+            "returns": 8
         },
         {
             "identifier": 2,
             "name": "conditional3",
-            "parameters": [],
+            "parameters": 10,
             "vararg": false,
-            "returns": []
+            "returns": 11
         },
         {
             "identifier": 3,
             "name": "conditional4",
-            "parameters": [],
+            "parameters": 13,
             "vararg": false,
-            "returns": []
+            "returns": 14
         }
     ],
     "functions": [

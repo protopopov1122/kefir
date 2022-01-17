@@ -79,25 +79,11 @@
         },
         {
             "identifier": 9,
-            "type": [
-                {
-                    "type": "int"
-                },
-                {
-                    "type": "double"
-                },
-                {
-                    "type": "int"
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 10,
-            "type": [
-                {
-                    "type": "int"
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 11,
@@ -107,6 +93,9 @@
                 },
                 {
                     "type": "double"
+                },
+                {
+                    "type": "int"
                 }
             ]
         },
@@ -120,29 +109,22 @@
         },
         {
             "identifier": 13,
-            "type": [
-                {
-                    "type": "int"
-                },
-                {
-                    "type": "int"
-                },
-                {
-                    "type": "int"
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 14,
-            "type": [
-                {
-                    "type": "int"
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 15,
-            "type": []
+            "type": [
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "double"
+                }
+            ]
         },
         {
             "identifier": 16,
@@ -154,6 +136,64 @@
         },
         {
             "identifier": 17,
+            "type": []
+        },
+        {
+            "identifier": 18,
+            "type": []
+        },
+        {
+            "identifier": 19,
+            "type": [
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 20,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 21,
+            "type": []
+        },
+        {
+            "identifier": 22,
+            "type": []
+        },
+        {
+            "identifier": 23,
+            "type": []
+        },
+        {
+            "identifier": 24,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 25,
+            "type": []
+        },
+        {
+            "identifier": 26,
+            "type": []
+        },
+        {
+            "identifier": 27,
             "type": [
                 {
                     "type": "int"
@@ -170,7 +210,7 @@
             ]
         },
         {
-            "identifier": 18,
+            "identifier": 28,
             "type": [
                 {
                     "type": "int"
@@ -184,165 +224,93 @@
         {
             "identifier": 0,
             "name": "sum",
-            "parameters": [],
+            "parameters": 3,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 4
         },
         {
             "identifier": 1,
             "name": "sum2",
-            "parameters": [],
+            "parameters": 5,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 6
         },
         {
             "identifier": 2,
             "name": "sum3",
-            "parameters": [],
+            "parameters": 7,
             "vararg": true,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 8
         },
         {
             "identifier": 3,
             "name": "call1",
-            "parameters": [],
+            "parameters": 9,
             "vararg": false,
-            "returns": []
+            "returns": 10
         },
         {
             "identifier": 4,
             "name": "sum",
-            "parameters": [
-                {
-                    "type": "int"
-                },
-                {
-                    "type": "double"
-                },
-                {
-                    "type": "int"
-                }
-            ],
+            "parameters": 11,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 12
         },
         {
             "identifier": 5,
             "name": "call2",
-            "parameters": [],
+            "parameters": 13,
             "vararg": false,
-            "returns": []
+            "returns": 14
         },
         {
             "identifier": 6,
             "name": "sum",
-            "parameters": [
-                {
-                    "type": "int"
-                },
-                {
-                    "type": "double"
-                }
-            ],
+            "parameters": 15,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 16
         },
         {
             "identifier": 7,
             "name": "call3",
-            "parameters": [],
+            "parameters": 17,
             "vararg": false,
-            "returns": []
+            "returns": 18
         },
         {
             "identifier": 8,
             "name": "sum2",
-            "parameters": [
-                {
-                    "type": "int"
-                },
-                {
-                    "type": "int"
-                },
-                {
-                    "type": "int"
-                }
-            ],
+            "parameters": 19,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 20
         },
         {
             "identifier": 9,
             "name": "call4",
-            "parameters": [],
+            "parameters": 21,
             "vararg": false,
-            "returns": []
+            "returns": 22
         },
         {
             "identifier": 10,
             "name": "sum2",
-            "parameters": [],
+            "parameters": 23,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 24
         },
         {
             "identifier": 11,
             "name": "call5",
-            "parameters": [],
+            "parameters": 25,
             "vararg": false,
-            "returns": []
+            "returns": 26
         },
         {
             "identifier": 12,
             "name": "sum3",
-            "parameters": [
-                {
-                    "type": "int"
-                },
-                {
-                    "type": "int"
-                },
-                {
-                    "type": "double"
-                },
-                {
-                    "type": "word"
-                }
-            ],
+            "parameters": 27,
             "vararg": true,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 28
         }
     ],
     "functions": [

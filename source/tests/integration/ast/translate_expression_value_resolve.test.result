@@ -236,6 +236,14 @@
         {
             "identifier": 25,
             "type": []
+        },
+        {
+            "identifier": 26,
+            "type": []
+        },
+        {
+            "identifier": 27,
+            "type": []
         }
     ],
     "data": [
@@ -458,16 +466,16 @@
         {
             "identifier": 0,
             "name": "func1",
-            "parameters": [],
+            "parameters": 24,
             "vararg": false,
-            "returns": []
+            "returns": 25
         },
         {
             "identifier": 1,
             "name": "func1",
-            "parameters": [],
+            "parameters": 26,
             "vararg": false,
-            "returns": []
+            "returns": 27
         }
     ],
     "functions": [

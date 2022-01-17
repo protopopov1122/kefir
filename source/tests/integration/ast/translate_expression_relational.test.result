@@ -32,6 +32,78 @@
                     "type": "word"
                 }
             ]
+        },
+        {
+            "identifier": 4,
+            "type": []
+        },
+        {
+            "identifier": 5,
+            "type": []
+        },
+        {
+            "identifier": 6,
+            "type": []
+        },
+        {
+            "identifier": 7,
+            "type": []
+        },
+        {
+            "identifier": 8,
+            "type": []
+        },
+        {
+            "identifier": 9,
+            "type": []
+        },
+        {
+            "identifier": 10,
+            "type": []
+        },
+        {
+            "identifier": 11,
+            "type": []
+        },
+        {
+            "identifier": 12,
+            "type": []
+        },
+        {
+            "identifier": 13,
+            "type": []
+        },
+        {
+            "identifier": 14,
+            "type": []
+        },
+        {
+            "identifier": 15,
+            "type": []
+        },
+        {
+            "identifier": 16,
+            "type": []
+        },
+        {
+            "identifier": 17,
+            "type": []
+        },
+        {
+            "identifier": 18,
+            "type": []
+        },
+        {
+            "identifier": 19,
+            "type": []
+        },
+        {
+            "identifier": 20,
+            "type": []
+        },
+        {
+            "identifier": 21,
+            "type": []
         }
     ],
     "data": [
@@ -51,65 +123,65 @@
         {
             "identifier": 0,
             "name": "equality_arithemtical",
-            "parameters": [],
+            "parameters": 4,
             "vararg": false,
-            "returns": []
+            "returns": 5
         },
         {
             "identifier": 1,
             "name": "equality_pointer",
-            "parameters": [],
+            "parameters": 6,
             "vararg": false,
-            "returns": []
+            "returns": 7
         },
         {
             "identifier": 2,
             "name": "non_equality_arithemtical",
-            "parameters": [],
+            "parameters": 8,
             "vararg": false,
-            "returns": []
+            "returns": 9
         },
         {
             "identifier": 3,
             "name": "non_equality_pointer",
-            "parameters": [],
+            "parameters": 10,
             "vararg": false,
-            "returns": []
+            "returns": 11
         },
         {
             "identifier": 4,
             "name": "less_than",
-            "parameters": [],
+            "parameters": 12,
             "vararg": false,
-            "returns": []
+            "returns": 13
         },
         {
             "identifier": 5,
             "name": "less_equals",
-            "parameters": [],
+            "parameters": 14,
             "vararg": false,
-            "returns": []
+            "returns": 15
         },
         {
             "identifier": 6,
             "name": "greater_than",
-            "parameters": [],
+            "parameters": 16,
             "vararg": false,
-            "returns": []
+            "returns": 17
         },
         {
             "identifier": 7,
             "name": "greater_equal",
-            "parameters": [],
+            "parameters": 18,
             "vararg": false,
-            "returns": []
+            "returns": 19
         },
         {
             "identifier": 8,
             "name": "ptr_relational",
-            "parameters": [],
+            "parameters": 20,
             "vararg": false,
-            "returns": []
+            "returns": 21
         }
     ],
     "functions": [

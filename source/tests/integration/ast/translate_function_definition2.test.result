@@ -99,31 +99,16 @@
         {
             "identifier": 0,
             "name": "intat",
-            "parameters": [],
+            "parameters": 2,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 3
         },
         {
             "identifier": 1,
             "name": "intat",
-            "parameters": [
-                {
-                    "type": "word"
-                },
-                {
-                    "type": "int"
-                }
-            ],
+            "parameters": 4,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 5
         }
     ],
     "functions": [

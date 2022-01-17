@@ -116,38 +116,16 @@
         {
             "identifier": 0,
             "name": "sum",
-            "parameters": [
-                {
-                    "type": "int"
-                },
-                {
-                    "type": "int"
-                }
-            ],
+            "parameters": 3,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 4
         },
         {
             "identifier": 1,
             "name": "sum",
-            "parameters": [
-                {
-                    "type": "int"
-                },
-                {
-                    "type": "int"
-                }
-            ],
+            "parameters": 5,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 6
         }
     ],
     "functions": [

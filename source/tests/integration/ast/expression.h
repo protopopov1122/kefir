@@ -38,17 +38,18 @@
         REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));                                                \
     } while (0)
 
-#define FUNC(_id, _init)                                                                                     \
-    do {                                                                                                     \
-        struct kefir_ir_type *func_params = kefir_ir_module_new_type(mem, &module, 0, NULL);                 \
-        struct kefir_ir_type *func_returns = kefir_ir_module_new_type(mem, &module, 0, NULL);                \
-        struct kefir_ir_function_decl *func_decl =                                                           \
-            kefir_ir_module_new_function_declaration(mem, &module, (_id), func_params, false, func_returns); \
-        REQUIRE(func_decl != NULL, KEFIR_INTERNAL_ERROR);                                                    \
-        struct kefir_ir_function *func =                                                                     \
-            kefir_ir_module_new_function(mem, &module, func_decl, translator_local_scope.local_layout, 0);   \
-        REQUIRE_OK(kefir_irbuilder_block_init(mem, &builder, &func->body));                                  \
-        _init REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_FREE(&builder));                                              \
+#define FUNC(_id, _init)                                                                                           \
+    do {                                                                                                           \
+        kefir_id_t func_params_id, func_returns_id;                                                                \
+        kefir_ir_module_new_type(mem, &module, 0, &func_params_id);                                                \
+        kefir_ir_module_new_type(mem, &module, 0, &func_returns_id);                                               \
+        struct kefir_ir_function_decl *func_decl =                                                                 \
+            kefir_ir_module_new_function_declaration(mem, &module, (_id), func_params_id, false, func_returns_id); \
+        REQUIRE(func_decl != NULL, KEFIR_INTERNAL_ERROR);                                                          \
+        struct kefir_ir_function *func =                                                                           \
+            kefir_ir_module_new_function(mem, &module, func_decl, translator_local_scope.local_layout, 0);         \
+        REQUIRE_OK(kefir_irbuilder_block_init(mem, &builder, &func->body));                                        \
+        _init REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_FREE(&builder));                                                    \
     } while (0)
 
 #define FUNC2(_id, _init)                                                                                            \
@@ -62,10 +63,11 @@
                                                                 &translator_local_scope));                           \
         struct kefir_ast_translator_context local_translator_context;                                                \
         REQUIRE_OK(kefir_ast_translator_context_init(mem, &local_translator_context, context, &env, &module, NULL)); \
-        struct kefir_ir_type *func_params = kefir_ir_module_new_type(mem, &module, 0, NULL);                         \
-        struct kefir_ir_type *func_returns = kefir_ir_module_new_type(mem, &module, 0, NULL);                        \
+        kefir_id_t func_params_id, func_returns_id;                                                                  \
+        kefir_ir_module_new_type(mem, &module, 0, &func_params_id);                                                  \
+        kefir_ir_module_new_type(mem, &module, 0, &func_returns_id);                                                 \
         struct kefir_ir_function_decl *func_decl =                                                                   \
-            kefir_ir_module_new_function_declaration(mem, &module, (_id), func_params, false, func_returns);         \
+            kefir_ir_module_new_function_declaration(mem, &module, (_id), func_params_id, false, func_returns_id);   \
         REQUIRE(func_decl != NULL, KEFIR_INTERNAL_ERROR);                                                            \
         struct kefir_ir_function *func =                                                                             \
             kefir_ir_module_new_function(mem, &module, func_decl, translator_local_scope.local_layout, 0);           \

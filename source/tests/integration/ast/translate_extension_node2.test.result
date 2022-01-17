@@ -6,6 +6,18 @@
     "types": [
         {
             "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 2,
             "type": [
                 {
                     "type": "int"
@@ -19,13 +31,9 @@
         {
             "identifier": 0,
             "name": "func1",
-            "parameters": [],
+            "parameters": 0,
             "vararg": false,
-            "returns": [
-                {
-                    "type": "int"
-                }
-            ]
+            "returns": 1
         }
     ],
     "functions": [
@@ -58,7 +66,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 0,
+                        "type": 2,
                         "index": 0
                     }
                 },

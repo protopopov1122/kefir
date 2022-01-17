@@ -216,17 +216,30 @@ struct kefir_ir_type *kefir_ir_module_new_type(struct kefir_mem *mem, struct kef
 
 struct kefir_ir_function_decl *kefir_ir_module_new_function_declaration(struct kefir_mem *mem,
                                                                         struct kefir_ir_module *module,
-                                                                        const char *name,
-                                                                        struct kefir_ir_type *parameters, bool vararg,
-                                                                        struct kefir_ir_type *returns) {
+                                                                        const char *name, kefir_id_t parameters_type_id,
+                                                                        bool vararg, kefir_id_t returns_type_id) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(module != NULL, NULL);
+
+    struct kefir_ir_type *parameters = NULL;
+    struct kefir_ir_type *returns = NULL;
+
+    if (parameters_type_id != KEFIR_ID_NONE) {
+        parameters = kefir_ir_module_get_named_type(module, parameters_type_id);
+        REQUIRE(parameters != NULL, NULL);
+    }
+
+    if (returns_type_id != KEFIR_ID_NONE) {
+        returns = kefir_ir_module_get_named_type(module, returns_type_id);
+        REQUIRE(returns != NULL, NULL);
+    }
 
     const char *symbol = kefir_ir_module_symbol(mem, module, name, NULL);
     kefir_id_t func_decl_id = module->next_function_decl_id;
     struct kefir_ir_function_decl *decl = KEFIR_MALLOC(mem, sizeof(struct kefir_ir_function_decl));
     REQUIRE(decl != NULL, NULL);
-    kefir_result_t res = kefir_ir_function_decl_alloc(mem, func_decl_id, symbol, parameters, vararg, returns, decl);
+    kefir_result_t res = kefir_ir_function_decl_alloc(mem, func_decl_id, symbol, parameters, parameters_type_id, vararg,
+                                                      returns, returns_type_id, decl);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, decl);
         return NULL;

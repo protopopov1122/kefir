@@ -47,12 +47,13 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, type1, KEFIR_IR_TYPE_INT64, 0, 0));
     REQUIRE_OK(kefir_irbuilder_type_append_v(mem, type1, KEFIR_IR_TYPE_INT64, 0, 0));
 
-    struct kefir_ir_type *sum_decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL),
-                         *sum_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    kefir_id_t func_params, func_returns;
+    struct kefir_ir_type *sum_decl_params = kefir_ir_module_new_type(mem, &module, 1, &func_params),
+                         *sum_decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
     REQUIRE(sum_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(sum_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *sum_decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "sum", sum_decl_params, false, sum_decl_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "sum", func_params, false, func_returns);
     REQUIRE(sum_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *sum = kefir_ir_module_new_function(mem, &module, sum_decl, NULL, 1024);
     REQUIRE(sum != NULL, KEFIR_INTERNAL_ERROR);

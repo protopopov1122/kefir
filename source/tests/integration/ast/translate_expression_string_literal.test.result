@@ -13,6 +13,30 @@
         {
             "identifier": 2,
             "type": []
+        },
+        {
+            "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
+            "type": []
+        },
+        {
+            "identifier": 5,
+            "type": []
+        },
+        {
+            "identifier": 6,
+            "type": []
+        },
+        {
+            "identifier": 7,
+            "type": []
+        },
+        {
+            "identifier": 8,
+            "type": []
         }
     ],
     "data": [],
@@ -43,23 +67,23 @@
         {
             "identifier": 0,
             "name": "string_literal1",
-            "parameters": [],
+            "parameters": 3,
             "vararg": false,
-            "returns": []
+            "returns": 4
         },
         {
             "identifier": 1,
             "name": "string_literal2",
-            "parameters": [],
+            "parameters": 5,
             "vararg": false,
-            "returns": []
+            "returns": 6
         },
         {
             "identifier": 2,
             "name": "string_literal3",
-            "parameters": [],
+            "parameters": 7,
             "vararg": false,
-            "returns": []
+            "returns": 8
         }
     ],
     "functions": [

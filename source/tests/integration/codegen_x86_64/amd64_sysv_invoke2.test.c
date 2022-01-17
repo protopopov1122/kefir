@@ -32,32 +32,33 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_codegen_amd64 codegen;
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
-    struct kefir_ir_type *func1_decl_params = kefir_ir_module_new_type(mem, &module, 0, NULL),
-                         *func1_decl_result = kefir_ir_module_new_type(mem, &module, 0, NULL);
+    kefir_id_t func_params, func_returns;
+    struct kefir_ir_type *func1_decl_params = kefir_ir_module_new_type(mem, &module, 0, &func_params),
+                         *func1_decl_result = kefir_ir_module_new_type(mem, &module, 0, &func_returns);
     REQUIRE(func1_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(func1_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *func1_decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "func1", func1_decl_params, false, func1_decl_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "func1", func_params, false, func_returns);
     REQUIRE(func1_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *func1 = kefir_ir_module_new_function(mem, &module, func1_decl, NULL, 1024);
     REQUIRE(func1 != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, func1_decl->name));
 
-    struct kefir_ir_type *func2_decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL),
-                         *func2_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    struct kefir_ir_type *func2_decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params),
+                         *func2_decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
     REQUIRE(func2_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(func2_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *func2_decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "func2", func2_decl_params, false, func2_decl_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "func2", func_params, false, func_returns);
     REQUIRE(func2_decl != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_external(mem, &module, func2_decl->name));
 
-    struct kefir_ir_type *func3_decl_params = kefir_ir_module_new_type(mem, &module, 3, NULL),
-                         *func3_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    struct kefir_ir_type *func3_decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params),
+                         *func3_decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
     REQUIRE(func3_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(func3_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *func3_decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "func3", func3_decl_params, false, func3_decl_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "func3", func_params, false, func_returns);
     REQUIRE(func3_decl != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_external(mem, &module, func3_decl->name));
 

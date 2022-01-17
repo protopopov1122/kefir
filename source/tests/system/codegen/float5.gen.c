@@ -34,12 +34,13 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
 
-    struct kefir_ir_type *fneg_decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL),
-                         *fneg_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    kefir_id_t func_params, func_returns;
+    struct kefir_ir_type *fneg_decl_params = kefir_ir_module_new_type(mem, &module, 1, &func_params),
+                         *fneg_decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
     REQUIRE(fneg_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(fneg_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *fneg_decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "fneg", fneg_decl_params, false, fneg_decl_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "fneg", func_params, false, func_returns);
     REQUIRE(fneg_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *fneg = kefir_ir_module_new_function(mem, &module, fneg_decl, NULL, 1024);
     REQUIRE(fneg != NULL, KEFIR_INTERNAL_ERROR);
@@ -48,12 +49,12 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     kefir_irbuilder_type_append_v(mem, fneg->declaration->result, KEFIR_IR_TYPE_FLOAT32, 0, 3);
     kefir_irbuilder_block_appendi64(mem, &fneg->body, KEFIR_IROPCODE_F32NEG, 0);
 
-    struct kefir_ir_type *dneg_decl_params = kefir_ir_module_new_type(mem, &module, 1, NULL),
-                         *dneg_decl_result = kefir_ir_module_new_type(mem, &module, 1, NULL);
+    struct kefir_ir_type *dneg_decl_params = kefir_ir_module_new_type(mem, &module, 1, &func_params),
+                         *dneg_decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
     REQUIRE(dneg_decl_params != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(dneg_decl_result != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *dneg_decl =
-        kefir_ir_module_new_function_declaration(mem, &module, "dneg", dneg_decl_params, false, dneg_decl_result);
+        kefir_ir_module_new_function_declaration(mem, &module, "dneg", func_params, false, func_returns);
     REQUIRE(dneg_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *dneg = kefir_ir_module_new_function(mem, &module, dneg_decl, NULL, 1024);
     REQUIRE(dneg != NULL, KEFIR_INTERNAL_ERROR);
