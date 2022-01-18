@@ -105,7 +105,7 @@
         {
             "identifier": 0,
             "name": "conditional1",
-            "locals": [],
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -152,7 +152,7 @@
         {
             "identifier": 1,
             "name": "conditional2",
-            "locals": [],
+            "locals": 6,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -227,7 +227,7 @@
         {
             "identifier": 2,
             "name": "conditional3",
-            "locals": [],
+            "locals": 9,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -360,7 +360,7 @@
         {
             "identifier": 3,
             "name": "conditional4",
-            "locals": [],
+            "locals": 12,
             "body": [
                 {
                     "opcode": "pushld",

@@ -113,26 +113,7 @@
         {
             "identifier": 0,
             "name": "while1",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "int"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -237,7 +218,7 @@
         {
             "identifier": 1,
             "name": "while2",
-            "locals": [],
+            "locals": 7,
             "body": [
                 {
                     "opcode": "push",
@@ -286,7 +267,7 @@
         {
             "identifier": 2,
             "name": "while3",
-            "locals": [],
+            "locals": 10,
             "body": [
                 {
                     "opcode": "pushld",

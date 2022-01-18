@@ -143,26 +143,7 @@
         {
             "identifier": 0,
             "name": "do_while1",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "bool"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -226,7 +207,7 @@
         {
             "identifier": 3,
             "name": "do_while2",
-            "locals": [],
+            "locals": 10,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -268,7 +249,7 @@
         {
             "identifier": 4,
             "name": "do_while3",
-            "locals": [],
+            "locals": 13,
             "body": [
                 {
                     "opcode": "push",

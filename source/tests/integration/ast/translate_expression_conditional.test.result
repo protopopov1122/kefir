@@ -77,16 +77,7 @@
         {
             "identifier": 0,
             "name": "conditional1",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "int"
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -113,16 +104,7 @@
         {
             "identifier": 1,
             "name": "conditional2",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "int"
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "pushf32",
@@ -148,16 +130,7 @@
         {
             "identifier": 2,
             "name": "conditional3",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "int"
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getlocals"

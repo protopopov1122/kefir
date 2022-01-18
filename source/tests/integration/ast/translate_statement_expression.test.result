@@ -148,7 +148,7 @@
         {
             "identifier": 0,
             "name": "expr1",
-            "locals": [],
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",
@@ -162,7 +162,7 @@
         {
             "identifier": 1,
             "name": "expr2",
-            "locals": [],
+            "locals": 6,
             "body": [
                 {
                     "opcode": "push",
@@ -186,7 +186,7 @@
         {
             "identifier": 2,
             "name": "expr3",
-            "locals": [],
+            "locals": 9,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -217,31 +217,7 @@
         {
             "identifier": 3,
             "name": "expr4",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "struct",
-                                            "fields": [
-                                                {
-                                                    "type": "char"
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 12,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -300,7 +276,7 @@
         {
             "identifier": 4,
             "name": "expr5",
-            "locals": [],
+            "locals": 15,
             "body": []
         }
     ]

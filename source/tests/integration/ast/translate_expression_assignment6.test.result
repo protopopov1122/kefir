@@ -203,7 +203,7 @@
         {
             "identifier": 3,
             "name": "assign_sub_double",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -244,7 +244,7 @@
         {
             "identifier": 1,
             "name": "assign_sub_ullong",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -282,7 +282,7 @@
         {
             "identifier": 4,
             "name": "assign_sub_double_int",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -329,7 +329,7 @@
         {
             "identifier": 0,
             "name": "assign_sub_int",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -367,7 +367,7 @@
         {
             "identifier": 5,
             "name": "assign_sub_ptr_int",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -412,7 +412,7 @@
         {
             "identifier": 2,
             "name": "assign_sub_float",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -450,7 +450,7 @@
         {
             "identifier": 6,
             "name": "assign_sub_ptr2_int",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",

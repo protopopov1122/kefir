@@ -73,34 +73,7 @@
         {
             "identifier": 0,
             "name": "vararg",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "float"
-                                        },
-                                        {
-                                            "type": "builtin",
-                                            "class": "vararg"
-                                        },
-                                        {
-                                            "type": "builtin",
-                                            "class": "vararg"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getlocals"

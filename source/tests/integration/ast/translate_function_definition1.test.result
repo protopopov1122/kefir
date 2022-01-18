@@ -132,19 +132,7 @@
         {
             "identifier": 1,
             "name": "sum",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "int"
-                        },
-                        {
-                            "type": "int"
-                        }
-                    ]
-                }
-            ],
+            "locals": 7,
             "body": [
                 {
                     "opcode": "getlocals"

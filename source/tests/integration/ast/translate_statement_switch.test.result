@@ -67,7 +67,7 @@
         {
             "identifier": 0,
             "name": "switch1",
-            "locals": [],
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -274,7 +274,7 @@
         {
             "identifier": 1,
             "name": "switch2",
-            "locals": [],
+            "locals": 6,
             "body": [
                 {
                     "opcode": "getglobal",

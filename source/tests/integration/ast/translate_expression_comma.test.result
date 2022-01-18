@@ -113,7 +113,7 @@
         {
             "identifier": 0,
             "name": "comma1",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -124,7 +124,7 @@
         {
             "identifier": 1,
             "name": "comma2",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -156,7 +156,7 @@
         {
             "identifier": 2,
             "name": "comma3",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -181,7 +181,7 @@
         {
             "identifier": 3,
             "name": "comma4",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -217,7 +217,7 @@
         {
             "identifier": 4,
             "name": "comma5",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -242,7 +242,7 @@
         {
             "identifier": 5,
             "name": "comma6",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",

@@ -368,7 +368,7 @@
         {
             "identifier": 7,
             "name": "add_value",
-            "locals": [],
+            "locals": 22,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -414,7 +414,7 @@
         {
             "identifier": 6,
             "name": "get_value",
-            "locals": [],
+            "locals": 19,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -433,16 +433,7 @@
         {
             "identifier": 5,
             "name": "set_value",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "long"
-                        }
-                    ]
-                }
-            ],
+            "locals": 16,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -485,7 +476,7 @@
         {
             "identifier": 8,
             "name": "invoke_callback",
-            "locals": [],
+            "locals": 25,
             "body": [
                 {
                     "opcode": "getglobal",

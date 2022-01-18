@@ -180,7 +180,7 @@
         {
             "identifier": 0,
             "name": "add_integral",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -238,7 +238,7 @@
         {
             "identifier": 6,
             "name": "sub_pointer_integer",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -317,7 +317,7 @@
         {
             "identifier": 2,
             "name": "add_pointer_int",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -384,7 +384,7 @@
         {
             "identifier": 3,
             "name": "sub_integral",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -442,7 +442,7 @@
         {
             "identifier": 5,
             "name": "sub_pointers",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -521,7 +521,7 @@
         {
             "identifier": 4,
             "name": "sub_floating_point",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -620,7 +620,7 @@
         {
             "identifier": 1,
             "name": "add_floating_point",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",

@@ -120,16 +120,7 @@
         {
             "identifier": 1,
             "name": "fn",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "int"
-                        }
-                    ]
-                }
-            ],
+            "locals": 6,
             "body": [
                 {
                     "opcode": "getlocals"

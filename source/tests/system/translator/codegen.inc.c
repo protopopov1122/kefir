@@ -74,7 +74,7 @@ static kefir_result_t translate_function(struct kefir_mem *mem, struct function 
     REQUIRE_OK(kefir_ast_translator_flow_control_tree_init(mem, func->local_context.context.flow_control_tree));
 
     struct kefir_ir_function *ir_func = kefir_ir_module_new_function(
-        mem, local_translator_context.module, func_declaration->ir_function_decl, local_scope.local_layout, 0);
+        mem, local_translator_context.module, func_declaration->ir_function_decl, local_scope.local_layout_id, 0);
 
     struct kefir_irbuilder_block builder;
     REQUIRE_OK(kefir_irbuilder_block_init(mem, &builder, &ir_func->body));

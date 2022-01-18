@@ -128,7 +128,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ir_module_new_function_declaration(mem, &module, "func1", func_params, false, func_returns);
     REQUIRE(func1_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *func1 =
-        kefir_ir_module_new_function(mem, &module, func1_decl, translator_local_scope.local_layout, 0);
+        kefir_ir_module_new_function(mem, &module, func1_decl, translator_local_scope.local_layout_id, 0);
     struct kefir_irbuilder_block builder;
     REQUIRE_OK(kefir_irbuilder_block_init(mem, &builder, &func1->body));
     REQUIRE_OK(kefir_ast_translate_expression(mem, node1, &builder, &translator_context));

@@ -364,30 +364,7 @@
         {
             "identifier": 4,
             "name": "call1",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "array",
-                                            "length": 12,
-                                            "element_type": {
-                                                "type": "char"
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -412,30 +389,7 @@
         {
             "identifier": 6,
             "name": "call2",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "array",
-                                            "length": 12,
-                                            "element_type": {
-                                                "type": "char"
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "pushf32",
@@ -469,30 +423,7 @@
         {
             "identifier": 8,
             "name": "call3",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "array",
-                                            "length": 12,
-                                            "element_type": {
-                                                "type": "char"
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "invoke",
@@ -509,30 +440,7 @@
         {
             "identifier": 10,
             "name": "call4",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "array",
-                                            "length": 12,
-                                            "element_type": {
-                                                "type": "char"
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "invoke",
@@ -549,30 +457,7 @@
         {
             "identifier": 12,
             "name": "call5",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "array",
-                                            "length": 12,
-                                            "element_type": {
-                                                "type": "char"
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -593,30 +478,7 @@
         {
             "identifier": 14,
             "name": "call6",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "array",
-                                            "length": 12,
-                                            "element_type": {
-                                                "type": "char"
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getlocals"

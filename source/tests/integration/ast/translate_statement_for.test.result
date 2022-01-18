@@ -281,7 +281,7 @@
         {
             "identifier": 0,
             "name": "for1",
-            "locals": [],
+            "locals": 3,
             "body": [
                 {
                     "opcode": "invoke",
@@ -299,36 +299,7 @@
         {
             "identifier": 3,
             "name": "for2",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "union",
-                                            "fields": [
-                                                {
-                                                    "type": "struct",
-                                                    "fields": [
-                                                        {
-                                                            "type": "int"
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 10,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -411,26 +382,7 @@
         {
             "identifier": 6,
             "name": "for3",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "int"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 17,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -539,7 +491,7 @@
         {
             "identifier": 9,
             "name": "for4",
-            "locals": [],
+            "locals": 24,
             "body": [
                 {
                     "opcode": "pushld",

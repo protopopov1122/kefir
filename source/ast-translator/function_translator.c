@@ -188,7 +188,7 @@ kefir_result_t kefir_ast_translator_function_context_init(struct kefir_mem *mem,
     });
 
     ctx->ir_func = kefir_ir_module_new_function(mem, context->module, ctx->function_declaration->ir_function_decl,
-                                                ctx->local_scope_layout.local_layout, 0);
+                                                ctx->local_scope_layout.local_layout_id, 0);
     REQUIRE_ELSE(ctx->ir_func != NULL, {
         kefir_ast_translator_local_scope_layout_free(mem, &ctx->local_scope_layout);
         kefir_ast_translator_context_free(mem, &ctx->local_translator_context);

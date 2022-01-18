@@ -143,7 +143,7 @@
         {
             "identifier": 4,
             "name": "logical_or1",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -175,7 +175,7 @@
         {
             "identifier": 5,
             "name": "logical_or2",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "pushf32",
@@ -207,7 +207,7 @@
         {
             "identifier": 6,
             "name": "logical_or3",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -239,7 +239,7 @@
         {
             "identifier": 7,
             "name": "logical_or4",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "pushld",
@@ -308,7 +308,7 @@
         {
             "identifier": 0,
             "name": "logical_and1",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -343,7 +343,7 @@
         {
             "identifier": 1,
             "name": "logical_and2",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "pushf32",
@@ -378,7 +378,7 @@
         {
             "identifier": 2,
             "name": "logical_and3",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -413,7 +413,7 @@
         {
             "identifier": 3,
             "name": "logical_and4",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "pushld",

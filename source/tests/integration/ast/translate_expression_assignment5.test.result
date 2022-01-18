@@ -203,7 +203,7 @@
         {
             "identifier": 3,
             "name": "assign_add_double",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -244,7 +244,7 @@
         {
             "identifier": 1,
             "name": "assign_add_ullong",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -282,7 +282,7 @@
         {
             "identifier": 0,
             "name": "assign_add_int",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -320,7 +320,7 @@
         {
             "identifier": 4,
             "name": "assign_add_double_int",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -367,7 +367,7 @@
         {
             "identifier": 5,
             "name": "assign_add_ptr_int",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -409,7 +409,7 @@
         {
             "identifier": 2,
             "name": "assign_add_float",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -447,7 +447,7 @@
         {
             "identifier": 6,
             "name": "assign_add_ptr2_int",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",

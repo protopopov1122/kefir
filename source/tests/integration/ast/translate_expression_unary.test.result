@@ -244,7 +244,7 @@
         {
             "identifier": 0,
             "name": "plus",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -276,7 +276,7 @@
         {
             "identifier": 1,
             "name": "minus",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -323,7 +323,7 @@
         {
             "identifier": 2,
             "name": "invert",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -363,7 +363,7 @@
         {
             "identifier": 6,
             "name": "alignof",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -446,7 +446,7 @@
         {
             "identifier": 4,
             "name": "sizeof1",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -529,7 +529,7 @@
         {
             "identifier": 5,
             "name": "sizeof2",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -592,7 +592,7 @@
         {
             "identifier": 7,
             "name": "indirection",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -656,7 +656,7 @@
         {
             "identifier": 3,
             "name": "logical_negate",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",

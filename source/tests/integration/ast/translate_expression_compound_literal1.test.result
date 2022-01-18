@@ -129,68 +129,7 @@
         {
             "identifier": 0,
             "name": "compound_literal1",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "long"
-                                        },
-                                        {
-                                            "type": "struct",
-                                            "fields": [
-                                                {
-                                                    "type": "bool"
-                                                },
-                                                {
-                                                    "type": "long"
-                                                },
-                                                {
-                                                    "type": "float"
-                                                },
-                                                {
-                                                    "type": "int"
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "type": "struct",
-                                            "fields": [
-                                                {
-                                                    "type": "struct",
-                                                    "fields": [
-                                                        {
-                                                            "type": "bool"
-                                                        },
-                                                        {
-                                                            "type": "long"
-                                                        },
-                                                        {
-                                                            "type": "float"
-                                                        },
-                                                        {
-                                                            "type": "int"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "type": "int"
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -235,68 +174,7 @@
         {
             "identifier": 1,
             "name": "compound_literal2",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "long"
-                                        },
-                                        {
-                                            "type": "struct",
-                                            "fields": [
-                                                {
-                                                    "type": "bool"
-                                                },
-                                                {
-                                                    "type": "long"
-                                                },
-                                                {
-                                                    "type": "float"
-                                                },
-                                                {
-                                                    "type": "int"
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "type": "struct",
-                                            "fields": [
-                                                {
-                                                    "type": "struct",
-                                                    "fields": [
-                                                        {
-                                                            "type": "bool"
-                                                        },
-                                                        {
-                                                            "type": "long"
-                                                        },
-                                                        {
-                                                            "type": "float"
-                                                        },
-                                                        {
-                                                            "type": "int"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "type": "int"
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -394,68 +272,7 @@
         {
             "identifier": 2,
             "name": "compound_literal3",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "long"
-                                        },
-                                        {
-                                            "type": "struct",
-                                            "fields": [
-                                                {
-                                                    "type": "bool"
-                                                },
-                                                {
-                                                    "type": "long"
-                                                },
-                                                {
-                                                    "type": "float"
-                                                },
-                                                {
-                                                    "type": "int"
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "type": "struct",
-                                            "fields": [
-                                                {
-                                                    "type": "struct",
-                                                    "fields": [
-                                                        {
-                                                            "type": "bool"
-                                                        },
-                                                        {
-                                                            "type": "long"
-                                                        },
-                                                        {
-                                                            "type": "float"
-                                                        },
-                                                        {
-                                                            "type": "int"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "type": "int"
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getlocals"

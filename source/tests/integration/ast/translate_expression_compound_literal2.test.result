@@ -152,61 +152,7 @@
         {
             "identifier": 0,
             "name": "compound_literal1",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "array",
-                                            "length": 14,
-                                            "element_type": {
-                                                "type": "char"
-                                            }
-                                        }
-                                    ]
-                                },
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "array",
-                                            "length": 4,
-                                            "element_type": {
-                                                "type": "char"
-                                            }
-                                        },
-                                        {
-                                            "type": "array",
-                                            "length": 0,
-                                            "element_type": {
-                                                "type": "char"
-                                            }
-                                        }
-                                    ]
-                                },
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "array",
-                                            "length": 8,
-                                            "element_type": {
-                                                "type": "char"
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -252,61 +198,7 @@
         {
             "identifier": 1,
             "name": "compound_literal2",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "array",
-                                            "length": 14,
-                                            "element_type": {
-                                                "type": "char"
-                                            }
-                                        }
-                                    ]
-                                },
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "array",
-                                            "length": 4,
-                                            "element_type": {
-                                                "type": "char"
-                                            }
-                                        },
-                                        {
-                                            "type": "array",
-                                            "length": 0,
-                                            "element_type": {
-                                                "type": "char"
-                                            }
-                                        }
-                                    ]
-                                },
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "array",
-                                            "length": 8,
-                                            "element_type": {
-                                                "type": "char"
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -434,61 +326,7 @@
         {
             "identifier": 2,
             "name": "compound_literal3",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "array",
-                                            "length": 14,
-                                            "element_type": {
-                                                "type": "char"
-                                            }
-                                        }
-                                    ]
-                                },
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "array",
-                                            "length": 4,
-                                            "element_type": {
-                                                "type": "char"
-                                            }
-                                        },
-                                        {
-                                            "type": "array",
-                                            "length": 0,
-                                            "element_type": {
-                                                "type": "char"
-                                            }
-                                        }
-                                    ]
-                                },
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "array",
-                                            "length": 8,
-                                            "element_type": {
-                                                "type": "char"
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -530,61 +368,7 @@
         {
             "identifier": 3,
             "name": "compound_literal4",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "array",
-                                            "length": 14,
-                                            "element_type": {
-                                                "type": "char"
-                                            }
-                                        }
-                                    ]
-                                },
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "array",
-                                            "length": 4,
-                                            "element_type": {
-                                                "type": "char"
-                                            }
-                                        },
-                                        {
-                                            "type": "array",
-                                            "length": 0,
-                                            "element_type": {
-                                                "type": "char"
-                                            }
-                                        }
-                                    ]
-                                },
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "array",
-                                            "length": 8,
-                                            "element_type": {
-                                                "type": "char"
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getlocals"

@@ -40,7 +40,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_function_decl *sumseq_decl =
         kefir_ir_module_new_function_declaration(mem, &module, "sumseq", func_params, false, func_returns);
     REQUIRE(sumseq_decl != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *sumseq = kefir_ir_module_new_function(mem, &module, sumseq_decl, NULL, 1024);
+    struct kefir_ir_function *sumseq = kefir_ir_module_new_function(mem, &module, sumseq_decl, KEFIR_ID_NONE, 1024);
     REQUIRE(sumseq != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, sumseq_decl->name));
 
@@ -51,7 +51,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_function_decl *fdbl_decl =
         kefir_ir_module_new_function_declaration(mem, &module, "fdbl", func_params, false, func_returns);
     REQUIRE(fdbl_decl != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *fdbl = kefir_ir_module_new_function(mem, &module, fdbl_decl, NULL, 1024);
+    struct kefir_ir_function *fdbl = kefir_ir_module_new_function(mem, &module, fdbl_decl, KEFIR_ID_NONE, 1024);
     REQUIRE(fdbl != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, fdbl_decl->name));
 

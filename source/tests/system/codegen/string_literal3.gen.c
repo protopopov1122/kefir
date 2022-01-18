@@ -44,7 +44,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_function_decl *decl1 =
         kefir_ir_module_new_function_declaration(mem, &module, "string1", func_params, false, func_returns);
     REQUIRE(decl1 != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *func1 = kefir_ir_module_new_function(mem, &module, decl1, NULL, 1024);
+    struct kefir_ir_function *func1 = kefir_ir_module_new_function(mem, &module, decl1, KEFIR_ID_NONE, 1024);
     REQUIRE(func1 != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl1->name));
     kefir_irbuilder_type_append_v(mem, func1->declaration->result, KEFIR_IR_TYPE_WORD, 0, 0);
@@ -61,7 +61,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_function_decl *decl2 =
         kefir_ir_module_new_function_declaration(mem, &module, "string2", func_params, false, func_returns);
     REQUIRE(decl2 != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *func2 = kefir_ir_module_new_function(mem, &module, decl2, NULL, 1024);
+    struct kefir_ir_function *func2 = kefir_ir_module_new_function(mem, &module, decl2, KEFIR_ID_NONE, 1024);
     REQUIRE(func2 != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl2->name));
     kefir_irbuilder_type_append_v(mem, func2->declaration->result, KEFIR_IR_TYPE_WORD, 0, 0);
@@ -78,7 +78,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_function_decl *decl3 =
         kefir_ir_module_new_function_declaration(mem, &module, "string3", func_params, false, func_returns);
     REQUIRE(decl3 != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *func3 = kefir_ir_module_new_function(mem, &module, decl3, NULL, 1024);
+    struct kefir_ir_function *func3 = kefir_ir_module_new_function(mem, &module, decl3, KEFIR_ID_NONE, 1024);
     REQUIRE(func3 != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl3->name));
     kefir_irbuilder_type_append_v(mem, func3->declaration->result, KEFIR_IR_TYPE_WORD, 0, 0);

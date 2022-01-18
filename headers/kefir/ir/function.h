@@ -44,7 +44,10 @@ typedef struct kefir_ir_function_decl {
 typedef struct kefir_ir_function {
     const char *name;
     struct kefir_ir_function_decl *declaration;
-    struct kefir_ir_type *locals;
+    struct {
+        struct kefir_ir_type *locals;
+        kefir_id_t locals_type_id;
+    };
     struct kefir_irblock body;
 } kefir_ir_function_t;
 
@@ -54,7 +57,7 @@ kefir_result_t kefir_ir_function_decl_alloc(struct kefir_mem *, kefir_id_t, cons
 kefir_result_t kefir_ir_function_decl_free(struct kefir_mem *, struct kefir_ir_function_decl *);
 
 kefir_result_t kefir_ir_function_alloc(struct kefir_mem *, struct kefir_ir_function_decl *, struct kefir_ir_type *,
-                                       kefir_size_t, struct kefir_ir_function *);
+                                       kefir_id_t, kefir_size_t, struct kefir_ir_function *);
 kefir_result_t kefir_ir_function_free(struct kefir_mem *, struct kefir_ir_function *);
 
 #endif

@@ -77,7 +77,7 @@
         {
             "identifier": 0,
             "name": "func1",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",

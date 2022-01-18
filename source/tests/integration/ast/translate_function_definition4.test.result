@@ -112,19 +112,7 @@
         {
             "identifier": 1,
             "name": "factorial",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "int"
-                        },
-                        {
-                            "type": "int"
-                        }
-                    ]
-                }
-            ],
+            "locals": 6,
             "body": [
                 {
                     "opcode": "getlocals"

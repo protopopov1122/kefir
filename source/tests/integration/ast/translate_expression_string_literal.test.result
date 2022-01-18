@@ -90,7 +90,7 @@
         {
             "identifier": 0,
             "name": "string_literal1",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "pushstring",
@@ -101,7 +101,7 @@
         {
             "identifier": 1,
             "name": "string_literal2",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "pushstring",
@@ -112,7 +112,7 @@
         {
             "identifier": 2,
             "name": "string_literal3",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "pushstring",

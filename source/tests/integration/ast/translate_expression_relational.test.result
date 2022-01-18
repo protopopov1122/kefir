@@ -188,16 +188,7 @@
         {
             "identifier": 4,
             "name": "less_than",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "word"
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -312,16 +303,7 @@
         {
             "identifier": 5,
             "name": "less_equals",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "word"
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -598,16 +580,7 @@
         {
             "identifier": 2,
             "name": "non_equality_arithemtical",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "word"
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -704,16 +677,7 @@
         {
             "identifier": 3,
             "name": "non_equality_pointer",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "word"
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -783,16 +747,7 @@
         {
             "identifier": 1,
             "name": "equality_pointer",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "word"
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -853,16 +808,7 @@
         {
             "identifier": 6,
             "name": "greater_than",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "word"
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -977,16 +923,7 @@
         {
             "identifier": 8,
             "name": "ptr_relational",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "word"
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -1209,16 +1146,7 @@
         {
             "identifier": 0,
             "name": "equality_arithemtical",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "word"
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -1304,16 +1232,7 @@
         {
             "identifier": 7,
             "name": "greater_equal",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "word"
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",

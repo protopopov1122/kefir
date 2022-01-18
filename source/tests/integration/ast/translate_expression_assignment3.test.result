@@ -210,7 +210,7 @@
         {
             "identifier": 4,
             "name": "assign_multiply_int_double",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -257,7 +257,7 @@
         {
             "identifier": 5,
             "name": "assign_divide_int",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -295,7 +295,7 @@
         {
             "identifier": 8,
             "name": "assign_divide_double",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -336,7 +336,7 @@
         {
             "identifier": 6,
             "name": "assign_divide_ullong",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -374,7 +374,7 @@
         {
             "identifier": 2,
             "name": "assign_multiply_float",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -415,7 +415,7 @@
         {
             "identifier": 9,
             "name": "assign_divide_ullong_double",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -459,7 +459,7 @@
         {
             "identifier": 3,
             "name": "assign_multiply_double",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -500,7 +500,7 @@
         {
             "identifier": 1,
             "name": "assign_multiply_ullong",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -538,7 +538,7 @@
         {
             "identifier": 7,
             "name": "assign_divide_float",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -579,7 +579,7 @@
         {
             "identifier": 0,
             "name": "assign_multiply_int",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",

@@ -303,7 +303,7 @@
         {
             "identifier": 7,
             "name": "enum",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -331,7 +331,7 @@
         {
             "identifier": 8,
             "name": "pointer",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -359,7 +359,7 @@
         {
             "identifier": 3,
             "name": "assign_int",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -446,7 +446,7 @@
         {
             "identifier": 0,
             "name": "assign_bool",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -501,7 +501,7 @@
         {
             "identifier": 1,
             "name": "assign_char",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -611,7 +611,7 @@
         {
             "identifier": 4,
             "name": "assign_long",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -684,7 +684,7 @@
         {
             "identifier": 2,
             "name": "assign_short",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -743,7 +743,7 @@
         {
             "identifier": 5,
             "name": "assign_long_long",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -792,7 +792,7 @@
         {
             "identifier": 6,
             "name": "assign_float_double",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",

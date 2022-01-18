@@ -202,16 +202,7 @@
         {
             "identifier": 0,
             "name": "identifier",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "word"
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -258,16 +249,7 @@
         {
             "identifier": 4,
             "name": "indirection",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "word"
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -278,16 +260,7 @@
         {
             "identifier": 2,
             "name": "struct_field",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "word"
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -327,16 +300,7 @@
         {
             "identifier": 3,
             "name": "struct_field_indirect",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "word"
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -359,16 +323,7 @@
         {
             "identifier": 1,
             "name": "array_subscript",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "word"
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",

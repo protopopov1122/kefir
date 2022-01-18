@@ -160,62 +160,7 @@
         {
             "identifier": 1,
             "name": "assign_union",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "struct",
-                                            "fields": [
-                                                {
-                                                    "type": "bool"
-                                                },
-                                                {
-                                                    "type": "double"
-                                                },
-                                                {
-                                                    "type": "array",
-                                                    "length": 5,
-                                                    "element_type": {
-                                                        "type": "char"
-                                                    }
-                                                },
-                                                {
-                                                    "type": "word"
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "type": "union",
-                                            "fields": [
-                                                {
-                                                    "type": "long"
-                                                },
-                                                {
-                                                    "type": "char"
-                                                },
-                                                {
-                                                    "type": "array",
-                                                    "length": 4,
-                                                    "element_type": {
-                                                        "type": "int"
-                                                    }
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -278,62 +223,7 @@
         {
             "identifier": 0,
             "name": "assign_struct",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "struct",
-                                            "fields": [
-                                                {
-                                                    "type": "bool"
-                                                },
-                                                {
-                                                    "type": "double"
-                                                },
-                                                {
-                                                    "type": "array",
-                                                    "length": 5,
-                                                    "element_type": {
-                                                        "type": "char"
-                                                    }
-                                                },
-                                                {
-                                                    "type": "word"
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "type": "union",
-                                            "fields": [
-                                                {
-                                                    "type": "long"
-                                                },
-                                                {
-                                                    "type": "char"
-                                                },
-                                                {
-                                                    "type": "array",
-                                                    "length": 4,
-                                                    "element_type": {
-                                                        "type": "int"
-                                                    }
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",

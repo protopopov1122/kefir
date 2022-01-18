@@ -215,56 +215,7 @@
         {
             "identifier": 0,
             "name": "compound_literal1",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "struct",
-                                            "fields": [
-                                                {
-                                                    "type": "array",
-                                                    "length": 24,
-                                                    "element_type": {
-                                                        "type": "char"
-                                                    }
-                                                },
-                                                {
-                                                    "type": "array",
-                                                    "length": 24,
-                                                    "element_type": {
-                                                        "type": "short"
-                                                    }
-                                                },
-                                                {
-                                                    "type": "array",
-                                                    "length": 24,
-                                                    "element_type": {
-                                                        "type": "int"
-                                                    }
-                                                },
-                                                {
-                                                    "type": "array",
-                                                    "length": 24,
-                                                    "element_type": {
-                                                        "type": "int"
-                                                    }
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getlocals"

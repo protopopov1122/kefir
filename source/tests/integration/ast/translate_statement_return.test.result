@@ -172,7 +172,7 @@
         {
             "identifier": 0,
             "name": "return0",
-            "locals": [],
+            "locals": 3,
             "body": [
                 {
                     "opcode": "ret"
@@ -182,7 +182,7 @@
         {
             "identifier": 1,
             "name": "return1",
-            "locals": [],
+            "locals": 6,
             "body": [
                 {
                     "opcode": "push",
@@ -206,7 +206,7 @@
         {
             "identifier": 2,
             "name": "return2",
-            "locals": [],
+            "locals": 9,
             "body": [
                 {
                     "opcode": "push",
@@ -233,35 +233,7 @@
         {
             "identifier": 3,
             "name": "return3",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "struct",
-                                            "fields": [
-                                                {
-                                                    "type": "array",
-                                                    "length": 24,
-                                                    "element_type": {
-                                                        "type": "char"
-                                                    }
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 12,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -321,7 +293,7 @@
         {
             "identifier": 4,
             "name": "return4",
-            "locals": [],
+            "locals": 16,
             "body": [
                 {
                     "opcode": "push",

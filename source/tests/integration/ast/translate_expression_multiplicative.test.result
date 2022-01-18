@@ -68,7 +68,7 @@
         {
             "identifier": 1,
             "name": "divide",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -214,7 +214,7 @@
         {
             "identifier": 2,
             "name": "modulo",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -276,7 +276,7 @@
         {
             "identifier": 0,
             "name": "multiply",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",

@@ -92,16 +92,7 @@
         {
             "identifier": 0,
             "name": "func1",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "bool"
-                        }
-                    ]
-                }
-            ],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "getglobal",

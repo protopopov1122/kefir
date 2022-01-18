@@ -86,26 +86,7 @@
         {
             "identifier": 0,
             "name": "goto1",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "union",
-                            "fields": [
-                                {
-                                    "type": "struct",
-                                    "fields": [
-                                        {
-                                            "type": "short"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -228,7 +209,7 @@
         {
             "identifier": 1,
             "name": "goto2",
-            "locals": [],
+            "locals": 6,
             "body": [
                 {
                     "opcode": "jmp",

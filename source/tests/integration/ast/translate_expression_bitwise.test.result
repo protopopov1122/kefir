@@ -98,7 +98,7 @@
         {
             "identifier": 3,
             "name": "or",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -138,7 +138,7 @@
         {
             "identifier": 2,
             "name": "and",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -178,7 +178,7 @@
         {
             "identifier": 4,
             "name": "xor",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -218,7 +218,7 @@
         {
             "identifier": 0,
             "name": "left_shift",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",
@@ -264,7 +264,7 @@
         {
             "identifier": 1,
             "name": "right_shift",
-            "locals": [],
+            "locals": 2,
             "body": [
                 {
                     "opcode": "push",

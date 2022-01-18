@@ -43,10 +43,11 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                          *getint_locals = kefir_ir_module_new_type(mem, &module, 1, &locals_id);
     REQUIRE(inttype != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE(getint_decl_result != NULL, KEFIR_INTERNAL_ERROR);
+    REQUIRE(getint_locals != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function_decl *getint_decl =
         kefir_ir_module_new_function_declaration(mem, &module, "getint", func_params, false, func_returns);
     REQUIRE(getint_decl != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *getint = kefir_ir_module_new_function(mem, &module, getint_decl, getint_locals, 1024);
+    struct kefir_ir_function *getint = kefir_ir_module_new_function(mem, &module, getint_decl, locals_id, 1024);
     REQUIRE(getint != NULL, KEFIR_INTERNAL_ERROR);
 
     kefir_codegen_amd64_sysv_init(&codegen, stdout);
@@ -80,7 +81,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_function_decl *getarg_decl =
         kefir_ir_module_new_function_declaration(mem, &module, "getarg", inttype_id, true, func_returns);
     REQUIRE(getarg_decl != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *getarg = kefir_ir_module_new_function(mem, &module, getarg_decl, getarg_locals, 1024);
+    struct kefir_ir_function *getarg = kefir_ir_module_new_function(mem, &module, getarg_decl, locals_id, 1024);
     REQUIRE(getarg != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, getarg_decl->name));
 

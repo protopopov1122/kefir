@@ -45,8 +45,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_function_decl *sumldouble_decl =
         kefir_ir_module_new_function_declaration(mem, &module, "sumldouble", func_params, true, func_returns);
     REQUIRE(sumldouble_decl != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *sumldouble =
-        kefir_ir_module_new_function(mem, &module, sumldouble_decl, sumldouble_locals, 1024);
+    struct kefir_ir_function *sumldouble = kefir_ir_module_new_function(mem, &module, sumldouble_decl, locals_id, 1024);
     REQUIRE(sumldouble != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, sumldouble_decl->name));
 

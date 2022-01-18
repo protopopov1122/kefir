@@ -44,7 +44,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_function_decl *sumint_decl =
         kefir_ir_module_new_function_declaration(mem, &module, "sumint", inttype_id, true, func_returns);
     REQUIRE(sumint_decl != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *sumint = kefir_ir_module_new_function(mem, &module, sumint_decl, sumint_locals, 1024);
+    struct kefir_ir_function *sumint = kefir_ir_module_new_function(mem, &module, sumint_decl, locals_id, 1024);
     REQUIRE(sumint != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, sumint_decl->name));
 

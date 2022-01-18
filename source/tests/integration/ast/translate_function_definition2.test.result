@@ -115,19 +115,7 @@
         {
             "identifier": 1,
             "name": "intat",
-            "locals": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "word"
-                        },
-                        {
-                            "type": "int"
-                        }
-                    ]
-                }
-            ],
+            "locals": 6,
             "body": [
                 {
                     "opcode": "getlocals"

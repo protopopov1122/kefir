@@ -40,7 +40,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_function_decl *proxysum_decl =
         kefir_ir_module_new_function_declaration(mem, &module, "proxysum", func_params, false, func_returns);
     REQUIRE(proxysum_decl != NULL, KEFIR_INTERNAL_ERROR);
-    struct kefir_ir_function *proxysum = kefir_ir_module_new_function(mem, &module, proxysum_decl, NULL, 1024);
+    struct kefir_ir_function *proxysum = kefir_ir_module_new_function(mem, &module, proxysum_decl, KEFIR_ID_NONE, 1024);
     REQUIRE(proxysum != NULL, KEFIR_INTERNAL_ERROR);
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, proxysum_decl->name));
 

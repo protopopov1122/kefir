@@ -282,16 +282,22 @@ kefir_result_t kefir_ir_module_declare_external(struct kefir_mem *mem, struct ke
 }
 
 struct kefir_ir_function *kefir_ir_module_new_function(struct kefir_mem *mem, struct kefir_ir_module *module,
-                                                       struct kefir_ir_function_decl *decl,
-                                                       struct kefir_ir_type *locals, kefir_size_t length) {
+                                                       struct kefir_ir_function_decl *decl, kefir_id_t locals_type_id,
+                                                       kefir_size_t length) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(module != NULL, NULL);
     REQUIRE(decl != NULL, NULL);
     REQUIRE(decl->name != NULL && strlen(decl->name) != 0, NULL);
 
+    struct kefir_ir_type *locals = NULL;
+    if (locals_type_id != KEFIR_ID_NONE) {
+        locals = kefir_ir_module_get_named_type(module, locals_type_id);
+        REQUIRE(locals != NULL, NULL);
+    }
+
     struct kefir_ir_function *func = KEFIR_MALLOC(mem, sizeof(struct kefir_ir_function));
     REQUIRE(func != NULL, NULL);
-    kefir_result_t result = kefir_ir_function_alloc(mem, decl, locals, length, func);
+    kefir_result_t result = kefir_ir_function_alloc(mem, decl, locals, locals_type_id, length, func);
     REQUIRE_ELSE(result == KEFIR_OK, {
         KEFIR_FREE(mem, func);
         return NULL;

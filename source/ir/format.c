@@ -498,9 +498,9 @@ static kefir_result_t kefir_ir_format_function(struct kefir_json_output *json, c
     REQUIRE_OK(kefir_json_output_object_key(json, "name"));
     REQUIRE_OK(kefir_json_output_string(json, func->name));
 
-    if (func->locals != NULL) {
+    if (func->locals_type_id != KEFIR_ID_NONE) {
         REQUIRE_OK(kefir_json_output_object_key(json, "locals"));
-        REQUIRE_OK(kefir_ir_format_type_json(json, func->locals));
+        REQUIRE_OK(kefir_json_output_uinteger(json, func->locals_type_id));
     }
 
     REQUIRE_OK(kefir_json_output_object_key(json, "body"));
