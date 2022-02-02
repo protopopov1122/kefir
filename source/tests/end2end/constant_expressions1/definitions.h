@@ -28,6 +28,16 @@
 #define EXPR5 ((float) (~((unsigned long) -1826L) << 3))
 #define EXPR6 ((double) ((((~0uLL) > 0) << 3) | (-2 < ~0LL)))
 #define EXPR7 (-((~(((unsigned long) 1827.387e-1L) << 1) | (0u == (-1 + 1uLL))) << 1))
+#define EXPR8 ((unsigned long) (((char *) 100) - ((char *) 0)))
+#define EXPR9 (MEMBERSZ(struct S1, c))
+
+#define MEMBERSZ(type, member) ((unsigned long) ((char *) &(((type *) 0)->member) - (char *) 0))
+
+struct S1 {
+    void *a;
+    char b;
+    long c;
+};
 
 extern unsigned short X1;
 extern long long X2;
@@ -36,5 +46,7 @@ extern long X4;
 extern float X5;
 extern double X6;
 extern int X7;
+extern unsigned long X8;
+extern unsigned long X9;
 
 #endif

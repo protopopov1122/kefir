@@ -78,7 +78,7 @@ static kefir_result_t evaluate_pointer_diff(struct kefir_mem *mem, const struct 
             KEFIR_SET_SOURCE_ERROR(KEFIR_NOT_CONSTANT, location2, "Expected pointer to be an integral constant"));
 
     kefir_ast_target_environment_opaque_type_t opaque_type;
-    REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_GET_TYPE(mem, context->target_env, type, &opaque_type));
+    REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_GET_TYPE(mem, context->target_env, type->referenced_type, &opaque_type));
 
     struct kefir_ast_target_environment_object_info objinfo;
     kefir_result_t res =
@@ -89,7 +89,7 @@ static kefir_result_t evaluate_pointer_diff(struct kefir_mem *mem, const struct 
     });
     REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(mem, context->target_env, opaque_type));
 
-    kefir_int64_t diff = pointer1->offset - pointer2->offset;
+    kefir_int64_t diff = (pointer1->base.integral + pointer1->offset) - (pointer2->base.integral + pointer2->offset);
 
     value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
     value->integer = diff / objinfo.size;

@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <math.h>
+#include <stddef.h>
 #include "./definitions.h"
 
 int main() {
@@ -32,5 +33,7 @@ int main() {
     assert(fabs(X5 - EXPR5) < 0.001f);
     assert(fabs(X6 - EXPR6) < 0.001f);
     assert(X7 == (int) EXPR7);
+    assert(X8 == 100);
+    assert(X9 == offsetof(struct S1, c));
     return EXIT_SUCCESS;
 }

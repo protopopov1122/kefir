@@ -27,3 +27,5 @@ long X4 = EXPR4;
 float X5 = EXPR5;
 double X6 = EXPR6;
 int X7 = EXPR7;
+unsigned long X8 = EXPR8;
+unsigned long X9 = EXPR9;
