@@ -43,6 +43,7 @@ static kefir_result_t parse_impl(struct kefir_mem *mem, struct kefir_cli_options
                                                  {"analyzer-non-strict-qualifiers", no_argument, NULL, 0},
                                                  {"analyzer-signed-enums", no_argument, NULL, 0},
                                                  {"parser-fail-on-attributes", no_argument, NULL, 0},
+                                                 {"parser-implicit-function-def-int", no_argument, NULL, 0},
                                                  {"define", required_argument, NULL, 'D'},
                                                  {"include-dir", required_argument, NULL, 'I'},
                                                  {"help", no_argument, NULL, 'h'},
@@ -107,6 +108,10 @@ static kefir_result_t parse_impl(struct kefir_mem *mem, struct kefir_cli_options
 
                     case 15:
                         options->parser.fail_on_attributes = true;
+                        break;
+
+                    case 16:
+                        options->parser.implicit_function_def_int = true;
                         break;
 
                     default:

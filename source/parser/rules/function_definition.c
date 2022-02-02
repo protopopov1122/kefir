@@ -25,10 +25,23 @@ static kefir_result_t scan_specifiers(struct kefir_mem *mem, struct kefir_parser
                                       struct kefir_ast_declarator_specifier_list *specifiers) {
     REQUIRE_OK(kefir_ast_declarator_specifier_list_init(specifiers));
     kefir_result_t res = parser->ruleset.declaration_specifier_list(mem, parser, specifiers);
-    REQUIRE_ELSE(res == KEFIR_OK, {
-        kefir_ast_declarator_specifier_list_free(mem, specifiers);
-        return res;
-    });
+    if (res == KEFIR_NO_MATCH && parser->configuration->implicit_function_definition_int) {
+        res = KEFIR_OK;
+        struct kefir_ast_declarator_specifier *specifier = kefir_ast_type_specifier_int(mem);
+        REQUIRE_CHAIN_SET(&res, specifier != NULL,
+                          KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate AST int type specifier"));
+        REQUIRE_CHAIN(&res, kefir_ast_declarator_specifier_list_append(mem, specifiers, specifier));
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_ast_declarator_specifier_free(mem, specifier);
+            kefir_ast_declarator_specifier_list_free(mem, specifiers);
+            return res;
+        });
+    } else {
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_ast_declarator_specifier_list_free(mem, specifiers);
+            return res;
+        });
+    }
     return KEFIR_OK;
 }
 
