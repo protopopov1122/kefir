@@ -23,6 +23,7 @@ Options:
 
 Parsing options:
     --parser-fail-on-attributes         Fail if __attribute__((...)) is encountered
+    --parser-implicit-function-decl-int Permit function definitiong with missing return type
 
 Analysis options:
     --analyzer-non-strict-qualifiers    Disable strict qualifier checks for pointers
