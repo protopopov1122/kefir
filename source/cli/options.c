@@ -155,7 +155,7 @@ static struct CliOption Options[] = {
            analysis.non_strict_qualifiers),
     SIMPLE(0, "analyzer-signed-enums", false, CLI_ACTION_ASSIGN_CONSTANT, true, analysis.signed_enum_type),
     SIMPLE(0, "parser-fail-on-attributes", false, CLI_ACTION_ASSIGN_CONSTANT, true, parser.fail_on_attributes),
-    SIMPLE(0, "parser-implicit-function-decl-int", false, CLI_ACTION_ASSIGN_CONSTANT, true,
+    SIMPLE(0, "parser-implicit-function-def-int", false, CLI_ACTION_ASSIGN_CONSTANT, true,
            parser.implicit_function_def_int)
 
 #undef SIMPLE
@@ -213,7 +213,7 @@ static kefir_result_t parse_impl_internal(struct kefir_mem *mem, struct kefir_cl
 
         struct CliOption *cli_option = NULL;
         if (c == '?') {
-            res = KEFIR_SET_ERRORF(KEFIR_UI_ERROR, "Unknown option %s", argv[optind]);
+            res = KEFIR_SET_ERRORF(KEFIR_UI_ERROR, "Unknown option %s", argv[optind - 1]);
         } else if (c == ':') {
             res = KEFIR_SET_ERRORF(KEFIR_UI_ERROR, "Expected parameter for %s option", argv[optind - 1]);
         } else if (c != 0) {
@@ -224,12 +224,12 @@ static kefir_result_t parse_impl_internal(struct kefir_mem *mem, struct kefir_cl
             cli_option = &Options[long_option_index];
         }
 
-        if (cli_option->prehook != NULL) {
+        if (res == KEFIR_OK && cli_option->prehook != NULL) {
             REQUIRE_CHAIN(&res, cli_option->prehook(mem, cli_option, options, optarg));
         }
 
-        void *param = (void *) (((kefir_uptr_t) options) + cli_option->param_offset);
         if (res == KEFIR_OK) {
+            void *param = (void *) (((kefir_uptr_t) options) + cli_option->param_offset);
             switch (cli_option->action) {
                 case CLI_ACTION_NONE:
                     // Intentionally left blank
@@ -291,7 +291,7 @@ static kefir_result_t parse_impl_internal(struct kefir_mem *mem, struct kefir_cl
             }
         }
 
-        if (cli_option->posthook != NULL) {
+        if (res == KEFIR_OK && cli_option->posthook != NULL) {
             REQUIRE_CHAIN(&res, cli_option->posthook(mem, cli_option, options, optarg));
         }
     }
