@@ -1025,7 +1025,7 @@ kefir_result_t kefir_ast_local_context_declare_function(struct kefir_mem *mem, s
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
         struct kefir_ast_scoped_identifier *ordinary_id = kefir_ast_context_allocate_scoped_function_identifier(
-            mem, function, specifier, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN, true);
+            mem, function, specifier, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN, true, false);
         REQUIRE(ordinary_id != NULL,
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocte AST scoped identifier"));
         res = kefir_ast_identifier_flat_scope_insert(mem, &context->global->function_identifiers, identifier,

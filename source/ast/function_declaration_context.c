@@ -189,7 +189,7 @@ static kefir_result_t scoped_context_declare_function(struct kefir_mem *mem,
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
         struct kefir_ast_scoped_identifier *ordinary_id =
-            kefir_ast_context_allocate_scoped_function_identifier(mem, function, specifier, storage_class, true);
+            kefir_ast_context_allocate_scoped_function_identifier(mem, function, specifier, storage_class, true, false);
         REQUIRE(ordinary_id != NULL,
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
 

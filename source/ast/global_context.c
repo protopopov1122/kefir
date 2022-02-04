@@ -150,8 +150,8 @@ static kefir_result_t context_define_identifier(
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC:
-                REQUIRE_OK(kefir_ast_global_context_define_static_function(mem, global_ctx, function_specifier,
-                                                                           identifier, type, location, scoped_id));
+                REQUIRE_OK(kefir_ast_global_context_define_static_function(
+                    mem, global_ctx, function_specifier, identifier, declaration, type, location, scoped_id));
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL:
@@ -951,7 +951,7 @@ kefir_result_t kefir_ast_global_context_declare_function(struct kefir_mem *mem,
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
         ordinary_id = kefir_ast_context_allocate_scoped_function_identifier(
-            mem, function, specifier, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN, true);
+            mem, function, specifier, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN, true, false);
         REQUIRE(ordinary_id != NULL,
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
         const char *id = kefir_symbol_table_insert(mem, &context->symbols, identifier, NULL);
@@ -994,15 +994,19 @@ kefir_result_t kefir_ast_global_context_define_function(struct kefir_mem *mem, s
         REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, ordinary_id->function.type, function),
                 KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "All declarations of the same identifier shall have compatible types"));
+        REQUIRE(!ordinary_id->function.defined,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
+                                       "Cannot redefine function with the same identifier"));
         ordinary_id->function.type = KEFIR_AST_TYPE_COMPOSITE(mem, &context->type_bundle, context->type_traits,
                                                               ordinary_id->function.type, function);
         ordinary_id->function.specifier =
             kefir_ast_context_merge_function_specifiers(ordinary_id->function.specifier, specifier);
         ordinary_id->function.external = false;
+        ordinary_id->function.defined = true;
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
         ordinary_id = kefir_ast_context_allocate_scoped_function_identifier(
-            mem, function, specifier, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN, false);
+            mem, function, specifier, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN, false, true);
         REQUIRE(ordinary_id != NULL,
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
         const char *id = kefir_symbol_table_insert(mem, &context->symbols, identifier, NULL);
@@ -1021,8 +1025,8 @@ kefir_result_t kefir_ast_global_context_define_function(struct kefir_mem *mem, s
 
 kefir_result_t kefir_ast_global_context_define_static_function(
     struct kefir_mem *mem, struct kefir_ast_global_context *context, kefir_ast_function_specifier_t specifier,
-    const char *identifier, const struct kefir_ast_type *function, const struct kefir_source_location *location,
-    const struct kefir_ast_scoped_identifier **scoped_id) {
+    const char *identifier, kefir_bool_t declaration, const struct kefir_ast_type *function,
+    const struct kefir_source_location *location, const struct kefir_ast_scoped_identifier **scoped_id) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     REQUIRE(function != NULL && function->tag == KEFIR_AST_TYPE_FUNCTION,
@@ -1046,14 +1050,18 @@ kefir_result_t kefir_ast_global_context_define_static_function(
         REQUIRE(!ordinary_id->function.external,
                 KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                        "Function identifier with static storage cannot be external"));
+        REQUIRE(!ordinary_id->function.defined || declaration,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
+                                       "Cannot redefine function with the same identifier"));
         ordinary_id->function.type = KEFIR_AST_TYPE_COMPOSITE(mem, &context->type_bundle, context->type_traits,
                                                               ordinary_id->function.type, function);
         ordinary_id->function.specifier =
             kefir_ast_context_merge_function_specifiers(ordinary_id->function.specifier, specifier);
+        ordinary_id->function.defined = ordinary_id->function.defined || !declaration;
     } else {
         REQUIRE(res == KEFIR_NOT_FOUND, res);
         ordinary_id = kefir_ast_context_allocate_scoped_function_identifier(
-            mem, function, specifier, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC, false);
+            mem, function, specifier, KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC, false, !declaration);
         REQUIRE(ordinary_id != NULL,
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
         const char *id = kefir_symbol_table_insert(mem, &context->symbols, identifier, NULL);

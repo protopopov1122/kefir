@@ -235,7 +235,7 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
     }
 
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
-    REQUIRE_OK(context->define_identifier(mem, context, NULL, base->properties.function_definition.identifier, type,
+    REQUIRE_OK(context->define_identifier(mem, context, false, base->properties.function_definition.identifier, type,
                                           storage, base->properties.function_definition.function, NULL, NULL,
                                           &node->base.source_location, &scoped_id));
     REQUIRE(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION,
