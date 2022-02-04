@@ -154,6 +154,8 @@ static struct CliOption Options[] = {
     SIMPLE(0, "analyzer-non-strict-qualifiers", false, CLI_ACTION_ASSIGN_CONSTANT, true,
            analysis.non_strict_qualifiers),
     SIMPLE(0, "analyzer-signed-enums", false, CLI_ACTION_ASSIGN_CONSTANT, true, analysis.signed_enum_type),
+    SIMPLE(0, "analyzer-implicit-function-decl", false, CLI_ACTION_ASSIGN_CONSTANT, true,
+           analysis.implicit_function_declaration),
     SIMPLE(0, "parser-fail-on-attributes", false, CLI_ACTION_ASSIGN_CONSTANT, true, parser.fail_on_attributes),
     SIMPLE(0, "parser-implicit-function-def-int", false, CLI_ACTION_ASSIGN_CONSTANT, true,
            parser.implicit_function_def_int)

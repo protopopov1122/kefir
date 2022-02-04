@@ -21,9 +21,35 @@
 #include "kefir/ast/analyzer/nodes.h"
 #include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/ast/type_conv.h"
+#include "kefir/ast/downcast.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"
+
+static kefir_result_t implicit_function_declaration(struct kefir_mem *mem, const struct kefir_ast_context *context,
+                                                    struct kefir_ast_node_base *function) {
+    if (function->klass->type == KEFIR_AST_IDENTIFIER) {
+        struct kefir_ast_identifier *identifier = NULL;
+        const struct kefir_ast_scoped_identifier *scoped_id = NULL;
+
+        REQUIRE_OK(kefir_ast_downcast_identifier(function, &identifier, false));
+        kefir_result_t res = context->resolve_ordinary_identifier(context, identifier->identifier, &scoped_id);
+        if (res == KEFIR_NOT_FOUND) {
+            struct kefir_ast_function_type *implicit_function = NULL;
+            const struct kefir_ast_type *implicit_function_type =
+                kefir_ast_type_function(mem, context->type_bundle, kefir_ast_type_signed_int(), &implicit_function);
+            REQUIRE(implicit_function_type != NULL,
+                    KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate AST function type"));
+            REQUIRE_OK(context->define_identifier(mem, context, true, identifier->identifier, implicit_function_type,
+                                                  KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN,
+                                                  KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL,
+                                                  &function->source_location, &scoped_id));
+        } else {
+            REQUIRE_OK(res);
+        }
+    }
+    return KEFIR_OK;
+}
 
 kefir_result_t kefir_ast_analyze_function_call_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                     const struct kefir_ast_function_call *node,
@@ -32,6 +58,10 @@ kefir_result_t kefir_ast_analyze_function_call_node(struct kefir_mem *mem, const
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST function call"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST base node"));
+
+    if (context->configuration->analysis.implicit_function_declaration) {
+        REQUIRE_OK(implicit_function_declaration(mem, context, node->function));
+    }
 
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->function));
     const struct kefir_list_entry *iter;

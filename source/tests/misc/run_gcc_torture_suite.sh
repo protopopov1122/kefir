@@ -32,7 +32,7 @@ if [[ "x$TORTURE" == "x" ]]; then
     exit 1
 fi
 
-CC="$KEFIRCC --parser-implicit-function-def-int -DNO_TRAMPOLINES"
+CC="$KEFIRCC --parser-implicit-function-def-int --analyzer-implicit-function-decl -DNO_TRAMPOLINES"
 TIMEOUT=10
 FAILED_TESTS=0
 TOTAL_TESTS=0

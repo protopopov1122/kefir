@@ -95,6 +95,8 @@ static kefir_result_t dump_action_impl(struct kefir_mem *mem, struct kefir_cli_o
     compiler.parser_configuration.implicit_function_definition_int = options->parser.implicit_function_def_int;
     compiler.ast_global_context.configuration.analysis.non_strict_qualifiers = options->analysis.non_strict_qualifiers;
     compiler.ast_global_context.configuration.analysis.fixed_enum_type = options->analysis.signed_enum_type;
+    compiler.ast_global_context.configuration.analysis.implicit_function_declaration =
+        options->analysis.implicit_function_declaration;
 
     REQUIRE_OK(action(mem, options, &compiler, source_id, input.content, input.length, output));
     fclose(output);

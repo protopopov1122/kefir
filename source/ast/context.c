@@ -6,6 +6,6 @@ kefir_result_t kefir_ast_context_configuration_defaults(struct kefir_ast_context
     REQUIRE(config != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context configuration"));
 
     *config = (struct kefir_ast_context_configuration){
-        .analysis = {.non_strict_qualifiers = false, .fixed_enum_type = false}};
+        .analysis = {.non_strict_qualifiers = false, .fixed_enum_type = false, .implicit_function_declaration = false}};
     return KEFIR_OK;
 }
