@@ -82,11 +82,17 @@ static kefir_result_t open_file(struct kefir_mem *mem, const char *filepath, kef
 static kefir_result_t try_open_file(struct kefir_mem *mem, const char *root, const char *filepath, kefir_bool_t system,
                                     struct kefir_preprocessor_source_file *source_file,
                                     struct kefir_preprocessor_filesystem_source_locator *locator) {
-    char *path = KEFIR_MALLOC(mem, strlen(root) + strlen(filepath) + 2);
+    kefir_size_t path_length = root != NULL ? strlen(root) + strlen(filepath) + 2 : strlen(filepath) + 1;
+
+    char *path = KEFIR_MALLOC(mem, path_length);
     REQUIRE(path != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate filesystem path"));
-    strcpy(path, root);
-    strcat(path, "/");
-    strcat(path, filepath);
+    if (root != NULL) {
+        strcpy(path, root);
+        strcat(path, "/");
+        strcat(path, filepath);
+    } else {
+        strcpy(path, filepath);
+    }
     char *resolved_path = realpath(path, NULL);
     KEFIR_FREE(mem, path);
     if (resolved_path == NULL && errno == ENOENT) {
@@ -141,6 +147,12 @@ static kefir_result_t open_source(struct kefir_mem *mem, const struct kefir_prep
             REQUIRE_OK(res);
             return KEFIR_OK;
         }
+    }
+
+    kefir_result_t res = try_open_file(mem, NULL, filepath, system, source_file, locator);
+    if (res != KEFIR_NOT_FOUND) {
+        REQUIRE_OK(res);
+        return KEFIR_OK;
     }
 
     return KEFIR_SET_ERRORF(KEFIR_NOT_FOUND, "Unable to find requested include file %s", filepath);

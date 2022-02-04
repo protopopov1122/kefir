@@ -13,6 +13,7 @@ Options:
     -p,--preprocess                     Print result of preprocessing
     -P,--skip-preprocessor              Skip preprocessing stage. Cannot be specified along with -p
     -I,--include-path dir               Add directory to include search path
+    --include file                      Include file at the beginning
     -D,--define identifier[=macro]      Define macro
     --pp-timestamp                      Override preprocessor timestamp
     --json-errors                       Print errors in JSON format to stderr
@@ -28,6 +29,7 @@ Parsing options:
 Analysis options:
     --analyzer-non-strict-qualifiers    Disable strict qualifier checks for pointers
     --analyzer-signed-enums             Force all enums to have signed integral type
+    --analyzer-implicit-function-decl   Permit implicit funciton declarations at use-site
 
 Targets:
     amd64-sysv-gas (default)             Produce GNU As-compatible assembly adhering System-V AMD64 ABI

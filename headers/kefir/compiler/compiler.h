@@ -75,6 +75,8 @@ kefir_result_t kefir_compiler_preprocess(struct kefir_mem *, struct kefir_compil
 kefir_result_t kefir_compiler_preprocess_lex(struct kefir_mem *, struct kefir_compiler_context *,
                                              struct kefir_token_buffer *, const char *, kefir_size_t, const char *,
                                              const char *);
+kefir_result_t kefir_compiler_preprocess_include(struct kefir_mem *, struct kefir_compiler_context *,
+                                                 struct kefir_token_buffer *, const char *, const char *);
 kefir_result_t kefir_compiler_lex(struct kefir_mem *, struct kefir_compiler_context *, struct kefir_token_buffer *,
                                   const char *, kefir_size_t, const char *);
 kefir_result_t kefir_compiler_parse(struct kefir_mem *, struct kefir_compiler_context *, struct kefir_token_buffer *,

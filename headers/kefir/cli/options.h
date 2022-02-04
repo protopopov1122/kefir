@@ -52,6 +52,7 @@ typedef struct kefir_cli_options {
     kefir_bool_t detailed_output;
     kefir_bool_t skip_preprocessor;
     struct kefir_list include_path;
+    struct kefir_list include_files;
     struct kefir_hashtree defines;
     time_t pp_timestamp;
     kefir_bool_t default_pp_timestamp;

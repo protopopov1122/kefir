@@ -240,6 +240,34 @@ kefir_result_t kefir_compiler_preprocess_lex(struct kefir_mem *mem, struct kefir
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_compiler_preprocess_include(struct kefir_mem *mem, struct kefir_compiler_context *context,
+                                                 struct kefir_token_buffer *buffer, const char *source_id,
+                                                 const char *filepath) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler context"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));
+    REQUIRE(filepath != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid include file path"));
+
+    kefir_result_t res;
+    struct kefir_preprocessor_source_file source_file;
+
+    REQUIRE_OK(context->preprocessor_context.source_locator->open(mem, context->preprocessor_context.source_locator,
+                                                                  filepath, false, NULL, &source_file));
+
+    res = kefir_compiler_preprocess_lex(mem, context, buffer, source_file.cursor.content, source_file.cursor.length,
+                                        source_id, filepath);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        source_file.close(mem, &source_file);
+        return res;
+    });
+    REQUIRE_OK(source_file.close(mem, &source_file));
+
+    if (buffer->length > 0 && buffer->tokens[buffer->length - 1].klass == KEFIR_TOKEN_SENTINEL) {
+        REQUIRE_OK(kefir_token_buffer_pop(mem, buffer));
+    }
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_compiler_lex(struct kefir_mem *mem, struct kefir_compiler_context *context,
                                   struct kefir_token_buffer *buffer, const char *content, kefir_size_t length,
                                   const char *source_id) {

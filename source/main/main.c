@@ -134,6 +134,16 @@ static kefir_result_t build_predefined_macros(struct kefir_mem *mem, struct kefi
     return KEFIR_OK;
 }
 
+static kefir_result_t include_predefined(struct kefir_mem *mem, struct kefir_cli_options *options,
+                                         struct kefir_compiler_context *compiler, const char *source_id,
+                                         struct kefir_token_buffer *tokens) {
+    for (const struct kefir_list_entry *iter = kefir_list_head(&options->include_files); iter != NULL;
+         kefir_list_next(&iter)) {
+        REQUIRE_OK(kefir_compiler_preprocess_include(mem, compiler, tokens, source_id, (const char *) iter->value));
+    }
+    return KEFIR_OK;
+}
+
 static kefir_result_t lex_file(struct kefir_mem *mem, struct kefir_cli_options *options,
                                struct kefir_compiler_context *compiler, const char *source_id, const char *source,
                                kefir_size_t length, struct kefir_token_buffer *tokens) {
@@ -144,6 +154,7 @@ static kefir_result_t lex_file(struct kefir_mem *mem, struct kefir_cli_options *
         if (!options->default_pp_timestamp) {
             compiler->preprocessor_context.environment.timestamp = options->pp_timestamp;
         }
+        REQUIRE_OK(include_predefined(mem, options, compiler, source_id, tokens));
         REQUIRE_OK(
             kefir_compiler_preprocess_lex(mem, compiler, tokens, source, length, source_id, options->input_filepath));
     }
@@ -157,6 +168,7 @@ static kefir_result_t dump_preprocessed_impl(struct kefir_mem *mem, struct kefir
     struct kefir_token_buffer tokens;
     REQUIRE_OK(kefir_token_buffer_init(&tokens));
     REQUIRE_OK(build_predefined_macros(mem, options, compiler));
+    REQUIRE_OK(include_predefined(mem, options, compiler, source_id, &tokens));
     REQUIRE_OK(kefir_compiler_preprocess(mem, compiler, &tokens, source, length, source_id, options->input_filepath));
     REQUIRE_OK(open_output(options->output_filepath, &output));
     REQUIRE_OK(kefir_preprocessor_format(output, &tokens, KEFIR_PREPROCESSOR_WHITESPACE_FORMAT_ORIGINAL));

@@ -113,6 +113,17 @@ static kefir_result_t include_hook(struct kefir_mem *mem, struct CliOption *opti
     return KEFIR_OK;
 }
 
+static kefir_result_t include_file_hook(struct kefir_mem *mem, struct CliOption *option, void *raw_options,
+                                        const char *arg) {
+    UNUSED(mem);
+    UNUSED(option);
+    ASSIGN_DECL_CAST(struct kefir_cli_options *, options, raw_options);
+
+    REQUIRE_OK(
+        kefir_list_insert_after(mem, &options->include_files, kefir_list_tail(&options->include_files), (void *) arg));
+    return KEFIR_OK;
+}
+
 static struct CliOption Options[] = {
 #define SIMPLE(short, long, has_arg, action, action_param, field)                              \
     {                                                                                          \
@@ -148,6 +159,7 @@ static struct CliOption Options[] = {
 
     CUSTOM('D', "define", true, define_hook),
     CUSTOM('I', "include-dir", true, include_hook),
+    CUSTOM(0, "include", true, include_file_hook),
     SIMPLE('h', "help", false, CLI_ACTION_ASSIGN_CONSTANT, KEFIR_CLI_ACTION_HELP, action),
     SIMPLE('v', "version", false, CLI_ACTION_ASSIGN_CONSTANT, KEFIR_CLI_ACTION_VERSION, action),
 
@@ -348,10 +360,12 @@ kefir_result_t kefir_cli_parse_options(struct kefir_mem *mem, struct kefir_cli_o
                                           .parser = {.fail_on_attributes = false},
                                           .analysis = {.non_strict_qualifiers = false}};
     REQUIRE_OK(kefir_list_init(&options->include_path));
+    REQUIRE_OK(kefir_list_init(&options->include_files));
     REQUIRE_OK(kefir_hashtree_init(&options->defines, &kefir_hashtree_str_ops));
     REQUIRE_OK(kefir_hashtree_on_removal(&options->defines, free_define_identifier, NULL));
     kefir_result_t res = parse_impl(mem, options, argv, argc);
     REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_list_free(mem, &options->include_files);
         kefir_list_free(mem, &options->include_path);
         kefir_hashtree_free(mem, &options->defines);
         return res;
@@ -364,6 +378,7 @@ kefir_result_t kefir_cli_options_free(struct kefir_mem *mem, struct kefir_cli_op
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(options != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to cli options"));
 
+    REQUIRE_OK(kefir_list_free(mem, &options->include_files));
     REQUIRE_OK(kefir_list_free(mem, &options->include_path));
     REQUIRE_OK(kefir_hashtree_free(mem, &options->defines));
     return KEFIR_OK;
