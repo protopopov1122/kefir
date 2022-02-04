@@ -32,7 +32,7 @@ if [[ "x$TORTURE" == "x" ]]; then
     exit 1
 fi
 
-CC="$KEFIRCC --parser-implicit-function-def-int --analyzer-implicit-function-decl -DNO_TRAMPOLINES"
+CC="$KEFIRCC --parser-implicit-function-def-int --analyzer-implicit-function-decl -DNO_TRAMPOLINES -D __inline__=inline -D __SIZE_TYPE__=long"
 TIMEOUT=10
 FAILED_TESTS=0
 TOTAL_TESTS=0
@@ -42,7 +42,7 @@ function run_test {(
     timeout $TIMEOUT $CC -o test.s "$1"
     as -o test.o test.s
     if [[ "x$2" == "xexecute" ]]; then
-        ld -o test.bin $KEFIRRT test.o
+        ld -o test.bin test.o $KEFIRRT
         ./test.bin
     fi
     rm -rf test.s test.o test.bin
