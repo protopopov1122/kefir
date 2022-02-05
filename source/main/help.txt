@@ -25,6 +25,7 @@ Options:
 Parsing options:
     --parser-fail-on-attributes         Fail if __attribute__((...)) is encountered
     --parser-implicit-function-decl-int Permit function definitiong with missing return type
+    --parser-designated-init-colons     Permit "fieldname:" syntax in designated initializers
 
 Analysis options:
     --analyzer-non-strict-qualifiers    Disable strict qualifier checks for pointers

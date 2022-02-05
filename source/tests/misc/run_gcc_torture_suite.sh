@@ -32,7 +32,7 @@ if [[ "x$TORTURE" == "x" ]]; then
     exit 1
 fi
 
-CC="$KEFIRCC --parser-implicit-function-def-int --analyzer-implicit-function-decl --include $(dirname $0)/torture.h"
+CC="$KEFIRCC --parser-implicit-function-def-int --parser-designated-init-colons --analyzer-implicit-function-decl --include $(dirname $0)/torture.h"
 TIMEOUT=10
 FAILED_TESTS=0
 TOTAL_TESTS=0

@@ -170,7 +170,9 @@ static struct CliOption Options[] = {
            analysis.implicit_function_declaration),
     SIMPLE(0, "parser-fail-on-attributes", false, CLI_ACTION_ASSIGN_CONSTANT, true, parser.fail_on_attributes),
     SIMPLE(0, "parser-implicit-function-def-int", false, CLI_ACTION_ASSIGN_CONSTANT, true,
-           parser.implicit_function_def_int)
+           parser.implicit_function_def_int),
+    SIMPLE(0, "parser-designated-init-colons", false, CLI_ACTION_ASSIGN_CONSTANT, true,
+           parser.designated_initializer_colons)
 
 #undef SIMPLE
 #undef PREHOOK

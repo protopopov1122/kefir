@@ -60,6 +60,7 @@ typedef struct kefir_cli_options {
     struct {
         kefir_bool_t fail_on_attributes;
         kefir_bool_t implicit_function_def_int;
+        kefir_bool_t designated_initializer_colons;
     } parser;
 
     struct {
