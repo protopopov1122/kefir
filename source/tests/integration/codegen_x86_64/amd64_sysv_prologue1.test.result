@@ -1,10 +1,10 @@
 call __kefirrt_preserve_state
-sub rsp, 32
+sub %rsp, 32
 call __kefirrt_generic_prologue
-push rdi
-push rsi
-mov [r14 + 16], rdx
-pextrq r12, xmm0, 0
-mov [r14 + 24], r12
-lea r12, [r14 + 16]
-push r12
+push %rdi
+push %rsi
+mov [%r14 + 16], %rdx
+pextrq %r12, %xmm0, 0
+mov [%r14 + 24], %r12
+lea %r12, [%r14 + 16]
+push %r12

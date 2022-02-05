@@ -46,6 +46,7 @@ typedef struct kefir_amd64_asmgen {
     kefir_result_t (*rawdata)(struct kefir_amd64_asmgen *, kefir_amd64_asmgen_datawidth_t);
     kefir_result_t (*mulrawdata)(struct kefir_amd64_asmgen *, kefir_size_t, kefir_amd64_asmgen_datawidth_t);
     kefir_result_t (*argument)(struct kefir_amd64_asmgen *, const char *, ...);
+    kefir_result_t (*symbol_argument)(struct kefir_amd64_asmgen *, const char *);
     kefir_result_t (*string_literal)(struct kefir_amd64_asmgen *, const char *, kefir_size_t);
     kefir_result_t (*close)(struct kefir_amd64_asmgen *);
 
@@ -71,45 +72,47 @@ kefir_result_t kefir_amd64_gas_gen_init(struct kefir_amd64_asmgen *, FILE *);
 #define KEFIR_AMD64_ASMGEN_SECTION(asmgen, identifier) ((asmgen)->section((asmgen), (identifier)))
 #define KEFIR_AMD64_ASMGEN_INSTR(asmgen, opcode) ((asmgen)->instr((asmgen), (opcode)))
 #define KEFIR_AMD64_ASMGEN_ARG(asmgen, format, ...) ((asmgen)->argument((asmgen), (format), __VA_ARGS__))
+#define KEFIR_AMD64_ASMGEN_SYMBOL_ARG(asmgen, _symbol) ((asmgen)->symbol_argument((asmgen), (_symbol)))
 #define KEFIR_AMD64_ASMGEN_RAWDATA(asmgen, width) ((asmgen)->rawdata((asmgen), (width)))
 #define KEFIR_AMD64_ASMGEN_STRING_LITERAL(asmgen, literal, length) \
     ((asmgen)->string_literal((asmgen), (literal), (length)))
 #define KEFIR_AMD64_ASMGEN_MULRAWDATA(asmgen, times, width) ((asmgen)->mulrawdata((asmgen), (times), (width)))
 #define KEFIR_AMD64_ASMGEN_CLOSE(asmgen) ((asmgen)->close((asmgen)))
 
-#define KEFIR_AMD64_EAX "eax"
+#define KEFIR_AMD64_EAX "%eax"
 
-#define KEFIR_AMD64_RAX "rax"
-#define KEFIR_AMD64_RBX "rbx"
-#define KEFIR_AMD64_RCX "rcx"
-#define KEFIR_AMD64_RDX "rdx"
-#define KEFIR_AMD64_RSI "rsi"
-#define KEFIR_AMD64_RDI "rdi"
-#define KEFIR_AMD64_RSP "rsp"
-#define KEFIR_AMD64_RBP "rbp"
-#define KEFIR_AMD64_R8 "r8"
-#define KEFIR_AMD64_R9 "r9"
-#define KEFIR_AMD64_R10 "r10"
-#define KEFIR_AMD64_R11 "r11"
-#define KEFIR_AMD64_R12 "r12"
-#define KEFIR_AMD64_R13 "r13"
-#define KEFIR_AMD64_R14 "r14"
-#define KEFIR_AMD64_R15 "r15"
+#define KEFIR_AMD64_RAX "%rax"
+#define KEFIR_AMD64_RBX "%rbx"
+#define KEFIR_AMD64_RCX "%rcx"
+#define KEFIR_AMD64_RDX "%rdx"
+#define KEFIR_AMD64_RSI "%rsi"
+#define KEFIR_AMD64_RDI "%rdi"
+#define KEFIR_AMD64_RSP "%rsp"
+#define KEFIR_AMD64_RBP "%rbp"
+#define KEFIR_AMD64_R8 "%r8"
+#define KEFIR_AMD64_R9 "%r9"
+#define KEFIR_AMD64_R10 "%r10"
+#define KEFIR_AMD64_R11 "%r11"
+#define KEFIR_AMD64_R12 "%r12"
+#define KEFIR_AMD64_R13 "%r13"
+#define KEFIR_AMD64_R14 "%r14"
+#define KEFIR_AMD64_R15 "%r15"
 
-#define KEFIR_AMD64_XMM0 "xmm0"
-#define KEFIR_AMD64_XMM1 "xmm1"
-#define KEFIR_AMD64_XMM2 "xmm2"
-#define KEFIR_AMD64_XMM3 "xmm3"
-#define KEFIR_AMD64_XMM4 "xmm4"
-#define KEFIR_AMD64_XMM5 "xmm5"
-#define KEFIR_AMD64_XMM6 "xmm6"
-#define KEFIR_AMD64_XMM7 "xmm7"
+#define KEFIR_AMD64_XMM0 "%xmm0"
+#define KEFIR_AMD64_XMM1 "%xmm1"
+#define KEFIR_AMD64_XMM2 "%xmm2"
+#define KEFIR_AMD64_XMM3 "%xmm3"
+#define KEFIR_AMD64_XMM4 "%xmm4"
+#define KEFIR_AMD64_XMM5 "%xmm5"
+#define KEFIR_AMD64_XMM6 "%xmm6"
+#define KEFIR_AMD64_XMM7 "%xmm7"
 
-#define KEFIR_AMD64_FS "fs:"
+#define KEFIR_AMD64_FS "%fs:"
 
 #define KEFIR_AMD64_PUSH "push"
 #define KEFIR_AMD64_POP "pop"
 #define KEFIR_AMD64_MOV "mov"
+#define KEFIR_AMD64_MOVABS "movabs"
 #define KEFIR_AMD64_OR "or"
 #define KEFIR_AMD64_LEA "lea"
 #define KEFIR_AMD64_MOVQ "movq"
@@ -138,7 +141,7 @@ kefir_result_t kefir_amd64_gas_gen_init(struct kefir_amd64_asmgen *, FILE *);
 #define KEFIR_AMD64_INDIRECT_NEG_OFFSET "[%s - " KEFIR_SIZE_FMT "]"
 #define KEFIR_AMD64_ALIGN ".align"
 #define KEFIR_AMD64_THREAD_LOCAL "[%s@tpoff]"
-#define KEFIR_AMD64_THREAD_LOCAL_GOT "%s@gottpoff[rip]"
+#define KEFIR_AMD64_THREAD_LOCAL_GOT "%s@gottpoff[%rip]"
 
 #define KEFIR_AMD64_DWORD "DWORD PTR "
 #define KEFIR_AMD64_QWORD "QWORD PTR "

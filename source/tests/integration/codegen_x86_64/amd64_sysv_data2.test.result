@@ -1,4 +1,4 @@
-.intel_syntax noprefix
+.intel_syntax prefix
 
 .section .text
 
@@ -124,16 +124,16 @@
 
 func1:
     call __kefirrt_preserve_state
-    sub rsp, 32
+    sub %rsp, 32
     call __kefirrt_generic_prologue
-    push rdi
-    lea r12, [rbp + 16]
-    push r12
-    mov [r14 + 16], rsi
-    lea r12, [r14 + 16]
-    push r12
-    lea rbx, [__func1_body]
-    jmp [rbx]
+    push %rdi
+    lea %r12, [%rbp + 16]
+    push %r12
+    mov [%r14 + 16], %rsi
+    lea %r12, [%r14 + 16]
+    push %r12
+    lea %rbx, [__func1_body]
+    jmp [%rbx]
 __func1_body:
     .quad __kefirrt_offsetptr_impl, 8
     .quad __kefirrt_push_impl, 5
@@ -141,7 +141,7 @@ __func1_body:
     .quad __kefirrt_offsetptr_impl, 0
     .quad __func1_epilogue, 0
 __func1_epilogue:
-    mov rsp, r14
-    add rsp, 32
+    mov %rsp, %r14
+    add %rsp, 32
     jmp __kefirrt_restore_state
 

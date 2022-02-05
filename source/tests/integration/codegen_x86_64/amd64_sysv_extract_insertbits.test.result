@@ -1,4 +1,4 @@
-.intel_syntax noprefix
+.intel_syntax prefix
 
 .section .text
 
@@ -123,10 +123,10 @@
 
 insert:
 call __kefirrt_preserve_state
-sub rsp, 16
+sub %rsp, 16
 call __kefirrt_generic_prologue
-lea rbx, [__insert_body]
-jmp [rbx]
+lea %rbx, [__insert_body]
+jmp [%rbx]
 __insert_body:
 .quad __kefirrt_insertbits_impl
 .long 0, 0
@@ -174,16 +174,16 @@ __insert_body:
 .long 16, 10
 .quad __insert_epilogue, 0
 __insert_epilogue:
-mov rsp, r14
-add rsp, 16
+mov %rsp, %r14
+add %rsp, 16
 jmp __kefirrt_restore_state
 
 extracts:
 call __kefirrt_preserve_state
-sub rsp, 16
+sub %rsp, 16
 call __kefirrt_generic_prologue
-lea rbx, [__extracts_body]
-jmp [rbx]
+lea %rbx, [__extracts_body]
+jmp [%rbx]
 __extracts_body:
 .quad __kefirrt_extsbits_impl
 .long 0, 0
@@ -231,16 +231,16 @@ __extracts_body:
 .long 16, 10
 .quad __extracts_epilogue, 0
 __extracts_epilogue:
-mov rsp, r14
-add rsp, 16
+mov %rsp, %r14
+add %rsp, 16
 jmp __kefirrt_restore_state
 
 extractu:
 call __kefirrt_preserve_state
-sub rsp, 16
+sub %rsp, 16
 call __kefirrt_generic_prologue
-lea rbx, [__extractu_body]
-jmp [rbx]
+lea %rbx, [__extractu_body]
+jmp [%rbx]
 __extractu_body:
 .quad __kefirrt_extubits_impl
 .long 0, 0
@@ -288,7 +288,7 @@ __extractu_body:
 .long 16, 10
 .quad __extractu_epilogue, 0
 __extractu_epilogue:
-mov rsp, r14
-add rsp, 16
+mov %rsp, %r14
+add %rsp, 16
 jmp __kefirrt_restore_state
 

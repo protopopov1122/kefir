@@ -22,6 +22,7 @@
 #include <string.h>
 #include <uchar.h>
 #include <ctype.h>
+#include <strings.h>
 #include "kefir/codegen/amd64/asmgen.h"
 #include "kefir/core/basic-types.h"
 #include "kefir/core/util.h"
@@ -32,7 +33,7 @@
 static kefir_result_t amd64_prologue(struct kefir_amd64_asmgen *asmgen) {
     REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator"));
     FILE *out = (FILE *) asmgen->data;
-    fprintf(out, ".intel_syntax noprefix\n\n");
+    fprintf(out, ".intel_syntax prefix\n\n");
     return KEFIR_OK;
 }
 
@@ -227,6 +228,32 @@ static kefir_result_t amd64_argument(struct kefir_amd64_asmgen *asmgen, const ch
     return KEFIR_OK;
 }
 
+static kefir_result_t amd64_symbol_arg(struct kefir_amd64_asmgen *asmgen, const char *symbol) {
+    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator"));
+    REQUIRE(symbol != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid symbol"));
+    FILE *out = (FILE *) asmgen->data;
+    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid output file for AMD64 assembly"));
+
+    if (asmgen->state.arguments > 0) {
+        fprintf(out, ", ");
+    } else {
+        fprintf(out, " ");
+    }
+    asmgen->state.arguments++;
+
+    const char *EscapedSymbols[] = {// TODO Expand number of escaped symbols
+                                    "mod"};
+    for (kefir_size_t i = 0; i < sizeof(EscapedSymbols) / sizeof(EscapedSymbols[0]); i++) {
+        if (strcasecmp(symbol, EscapedSymbols[i]) == 0) {
+            fprintf(out, "$%s", symbol);
+            return KEFIR_OK;
+        }
+    }
+
+    fprintf(out, "%s", symbol);
+    return KEFIR_OK;
+}
+
 kefir_result_t amd64_string_literal(struct kefir_amd64_asmgen *asmgen, const char *literal, kefir_size_t length) {
     REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator"));
     REQUIRE(literal != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid string literal"));
@@ -322,6 +349,7 @@ kefir_result_t kefir_amd64_gas_gen_init(struct kefir_amd64_asmgen *asmgen, FILE 
     asmgen->string_literal = amd64_string_literal;
     asmgen->mulrawdata = amd64_multrawdata;
     asmgen->argument = amd64_argument;
+    asmgen->symbol_argument = amd64_symbol_arg;
     asmgen->data = (void *) out;
     asmgen->state.empty = true;
     asmgen->state.arguments = 0;

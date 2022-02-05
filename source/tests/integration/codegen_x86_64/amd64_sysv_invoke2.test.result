@@ -1,4 +1,4 @@
-.intel_syntax noprefix
+.intel_syntax prefix
 
 .section .text
 
@@ -126,43 +126,43 @@
 
 func1:
     call __kefirrt_preserve_state
-    sub rsp, 16
+    sub %rsp, 16
     call __kefirrt_generic_prologue
-    lea rbx, [__func1_body]
-    jmp [rbx]
+    lea %rbx, [__func1_body]
+    jmp [%rbx]
 __func1_body:
     .quad __kefirrt_sfunction_func2_gate1, 0
     .quad __kefirrt_sfunction_func3_gate2, 0
     .quad __func1_epilogue, 0
 __func1_epilogue:
-    mov rsp, r14
-    add rsp, 16
+    mov %rsp, %r14
+    add %rsp, 16
     jmp __kefirrt_restore_state
 
 __kefirrt_sfunction_func2_gate1:
-    mov r12, rsp
-    and rsp, -16
-    mov rdi, [r12 + 16]
-    pinsrq xmm0, [r12 + 8], 0
-    mov rsi, [r12 + 0]
+    mov %r12, %rsp
+    and %rsp, -16
+    mov %rdi, [%r12 + 16]
+    pinsrq %xmm0, [%r12 + 8], 0
+    mov %rsi, [%r12 + 0]
     call func2
-    mov rsp, r12
-    add rsp, 24
-    push rax
-    add rbx, 16
-    jmp [rbx]
+    mov %rsp, %r12
+    add %rsp, 24
+    push %rax
+    add %rbx, 16
+    jmp [%rbx]
 
 __kefirrt_sfunction_func3_gate2:
-    mov r12, rsp
-    and rsp, -16
-    pinsrq xmm0, [r12 + 16], 0
-    mov rdi, [r12 + 8]
-    pinsrq xmm1, [r12 + 0], 0
+    mov %r12, %rsp
+    and %rsp, -16
+    pinsrq %xmm0, [%r12 + 16], 0
+    mov %rdi, [%r12 + 8]
+    pinsrq %xmm1, [%r12 + 0], 0
     call func3
-    mov rsp, r12
-    add rsp, 24
-    pextrq r11, xmm0, 0
-    push r11
-    add rbx, 16
-    jmp [rbx]
+    mov %rsp, %r12
+    add %rsp, 24
+    pextrq %r11, %xmm0, 0
+    push %r11
+    add %rbx, 16
+    jmp [%rbx]
 

@@ -1,4 +1,4 @@
-.intel_syntax noprefix
+.intel_syntax prefix
 
 .section .text
 
@@ -124,44 +124,44 @@
 
 proxyadd:
     call __kefirrt_preserve_state
-    sub rsp, 48
+    sub %rsp, 48
     call __kefirrt_generic_prologue
-    push rdi
-    mov [r14 + 32], rsi
-    pextrq r12, xmm0, 0
-    mov [r14 + 40], r12
-    lea r12, [r14 + 32]
-    push r12
-    lea rbx, [__proxyadd_body]
-    jmp [rbx]
+    push %rdi
+    mov [%r14 + 32], %rsi
+    pextrq %r12, %xmm0, 0
+    mov [%r14 + 40], %r12
+    lea %r12, [%r14 + 32]
+    push %r12
+    lea %rbx, [__proxyadd_body]
+    jmp [%rbx]
 __proxyadd_body:
     .quad __kefirrt_push_impl, 7
     .quad __kefirrt_xchg_impl, 1
     .quad __kefirrt_sfunction_addstruct_vgate, 0
     .quad __proxyadd_epilogue, 0
 __proxyadd_epilogue:
-    pop r12
-    mov rax, [r12 + 0]
-    mov r13, [r12 + 8]
-    pinsrq xmm0, r13, 0
-    mov rsp, r14
-    add rsp, 48
+    pop %r12
+    mov %rax, [%r12 + 0]
+    mov %r13, [%r12 + 8]
+    pinsrq %xmm0, %r13, 0
+    mov %rsp, %r14
+    add %rsp, 48
     jmp __kefirrt_restore_state
 
 __kefirrt_sfunction_addstruct_vgate:
-    mov r12, rsp
-    and rsp, -16
-    mov rdi, [r12 + 8]
-    mov r11, [r12 + 0]
-    mov rsi, [r11 + 0]
-    pinsrq xmm0, [r11 + 8], 0
-    call [r12 + 16]
-    mov rsp, r12
-    add rsp, 24
-    mov [r14 + 16], rax
-    pextrq [r14 + 24], xmm0, 0
-    lea r11, [r14 + 16]
-    push r11
-    add rbx, 16
-    jmp [rbx]
+    mov %r12, %rsp
+    and %rsp, -16
+    mov %rdi, [%r12 + 8]
+    mov %r11, [%r12 + 0]
+    mov %rsi, [%r11 + 0]
+    pinsrq %xmm0, [%r11 + 8], 0
+    call [%r12 + 16]
+    mov %rsp, %r12
+    add %rsp, 24
+    mov [%r14 + 16], %rax
+    pextrq [%r14 + 24], %xmm0, 0
+    lea %r11, [%r14 + 16]
+    push %r11
+    add %rbx, 16
+    jmp [%rbx]
 

@@ -1,4 +1,4 @@
-pop rax
-mov rsp, r14
-add rsp, 16
+pop %rax
+mov %rsp, %r14
+add %rsp, 16
 jmp __kefirrt_restore_state

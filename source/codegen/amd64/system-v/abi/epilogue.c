@@ -221,10 +221,18 @@ static kefir_result_t restore_state(struct kefir_codegen_amd64 *codegen, const s
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RSP);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_STACK_BASE_REG);
-    if (func->frame.size > 0) {
+    if (func->frame.size > 0 && func->frame.size <= KEFIR_INT32_MAX) {
         ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_ADD);
         ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RSP);
         ASMGEN_ARG(&codegen->asmgen, KEFIR_SIZE_FMT, func->frame.size);
+    } else if (func->frame.size > KEFIR_INT32_MAX) {
+        ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOVABS);
+        ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
+        ASMGEN_ARG(&codegen->asmgen, KEFIR_SIZE_FMT, func->frame.size);
+
+        ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_ADD);
+        ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RSP);
+        ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
     }
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_JMP);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_RESTORE_STATE);

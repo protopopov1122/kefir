@@ -1,9 +1,9 @@
-mov rdi, [r14 + 0]
-mov rax, rdi
-pop rsi
-mov rcx, 56
+mov %rdi, [%r14 + 0]
+mov %rax, %rdi
+pop %rsi
+mov %rcx, 56
 cld
 rep movsb
-mov rsp, r14
-add rsp, 16
+mov %rsp, %r14
+add %rsp, 16
 jmp __kefirrt_restore_state

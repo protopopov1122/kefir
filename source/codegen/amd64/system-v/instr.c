@@ -185,7 +185,7 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem, struct kefir_
             REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_PUSHI64, &opcode_symbol));
             ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
             ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
-            ASMGEN_ARG0(&codegen->asmgen, symbol);
+            ASMGEN_SYMBOL_ARG(&codegen->asmgen, symbol);
         } break;
 
         case KEFIR_IROPCODE_GETTHRLOCAL: {

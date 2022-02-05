@@ -278,10 +278,18 @@ static kefir_result_t load_builtin_argument(const struct kefir_ir_type *type, ke
 
 static kefir_result_t load_arguments(struct kefir_codegen_amd64 *codegen,
                                      const struct kefir_amd64_sysv_function *sysv_func) {
-    if (sysv_func->frame.size > 0) {
+    if (sysv_func->frame.size > 0 && sysv_func->frame.size <= KEFIR_INT32_MAX) {
         ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_SUB);
         ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RSP);
         ASMGEN_ARG(&codegen->asmgen, KEFIR_SIZE_FMT, sysv_func->frame.size);
+    } else if (sysv_func->frame.size > KEFIR_INT32_MAX) {
+        ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOVABS);
+        ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
+        ASMGEN_ARG(&codegen->asmgen, KEFIR_SIZE_FMT, sysv_func->frame.size);
+
+        ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_SUB);
+        ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RSP);
+        ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
     }
     ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_CALL);
     ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_GENERIC_PROLOGUE);
