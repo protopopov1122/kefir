@@ -97,7 +97,8 @@ static kefir_result_t traverse_scalar(const struct kefir_ast_designator *designa
         REQUIRE_OK(kefir_ast_translate_typeconv(param->builder, param->context->ast_context->type_traits, expr_type,
                                                 type_layout->type));
     }
-    REQUIRE_OK(kefir_ast_translator_store_value(param->mem, type_layout->type, param->context, param->builder));
+    REQUIRE_OK(kefir_ast_translator_store_layout_value(param->mem, param->context, param->builder,
+                                                       param->cached_type->object.ir_type, type_layout));
     return KEFIR_OK;
 }
 

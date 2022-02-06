@@ -42,5 +42,15 @@ int main() {
     assert(STRUCTURE2.i5 == 0);
     assert(STRUCTURE2.i6 == -5);
     assert(STRUCTURE2.i7 == 10);
+
+    struct Struct2 s2;
+    fill(&s2);
+    assert(s2.i1 == 1);
+    assert(s2.i2 == 2);
+    assert(s2.i3 == 3);
+    assert(s2.i4 == 4);
+    assert(s2.i5 == 5);
+    assert(s2.i6 == 6);
+    assert(s2.i7 == 7);
     return EXIT_SUCCESS;
 }

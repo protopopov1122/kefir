@@ -36,6 +36,6 @@ kefir_result_t kefir_ast_translate_struct_member_node(struct kefir_mem *mem,
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST struct member node"));
 
     REQUIRE_OK(kefir_ast_translate_struct_member_lvalue(mem, context, builder, node));
-    REQUIRE_OK(kefir_ast_translator_resolve_node_value(mem, context, builder, KEFIR_AST_NODE_BASE(node)));
+    REQUIRE_OK(kefir_ast_translator_resolve_lvalue(mem, context, builder, KEFIR_AST_NODE_BASE(node)));
     return KEFIR_OK;
 }

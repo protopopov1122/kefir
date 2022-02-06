@@ -49,4 +49,6 @@ long struct1_calculate(struct Struct1);
 extern struct Struct1 STRUCTURE;
 extern struct Struct2 STRUCTURE2;
 
+void fill(struct Struct2 *);
+
 #endif

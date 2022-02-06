@@ -27,3 +27,7 @@ long struct1_calculate(struct Struct1 s) {
 struct Struct1 STRUCTURE = {.lng1 = 1, .lng2 = 2, .chr1 = 3, .int1 = 4, .int2 = 5};
 
 struct Struct2 STRUCTURE2 = {.i1 = 3, .i2 = 1023, .i3 = -4, .i4 = -501, .i5 = 0, .i6 = -5, .i7 = 10};
+
+void fill(struct Struct2 *s) {
+    *s = (struct Struct2){.i1 = 1, .i2 = 2, .i3 = 3, .i4 = 4, .i5 = 5, .i6 = 6, .i7 = 7};
+}
