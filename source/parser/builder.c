@@ -1221,3 +1221,20 @@ kefir_result_t kefir_parser_ast_builder_builtin_append(struct kefir_mem *mem,
     });
     return KEFIR_OK;
 }
+
+kefir_result_t kefir_parser_ast_builder_label_address(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder,
+                                                      const char *label) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
+    REQUIRE(label != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid label"));
+
+    struct kefir_ast_label_address *label_address = kefir_ast_new_label_address(mem, builder->parser->symbols, label);
+    REQUIRE(label_address != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST label address"));
+
+    kefir_result_t res = kefir_parser_ast_builder_push(mem, builder, KEFIR_AST_NODE_BASE(label_address));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(label_address));
+        return res;
+    });
+    return KEFIR_OK;
+}

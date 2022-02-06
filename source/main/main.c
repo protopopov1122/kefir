@@ -94,6 +94,7 @@ static kefir_result_t dump_action_impl(struct kefir_mem *mem, struct kefir_cli_o
     compiler.parser_configuration.fail_on_attributes = options->parser.fail_on_attributes;
     compiler.parser_configuration.implicit_function_definition_int = options->parser.implicit_function_def_int;
     compiler.parser_configuration.designated_initializer_colons = options->parser.designated_initializer_colons;
+    compiler.parser_configuration.label_addressing = options->parser.label_addressing;
 
     compiler.ast_global_context.configuration.analysis.non_strict_qualifiers = options->analysis.non_strict_qualifiers;
     compiler.ast_global_context.configuration.analysis.fixed_enum_type = options->analysis.signed_enum_type;

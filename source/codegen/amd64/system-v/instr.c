@@ -257,6 +257,17 @@ kefir_result_t kefir_amd64_sysv_instruction(struct kefir_mem *mem, struct kefir_
             ASMGEN_ARG(&codegen->asmgen, KEFIR_UINT64_FMT, instr_half2->arg.u64);
         } break;
 
+        case KEFIR_IROPCODE_PUSHLABEL: {
+            const char *opcode_symbol = NULL;
+            REQUIRE(instr->arg.u64 <= kefir_irblock_length(&sysv_func->func->body),
+                    KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Label offset is out of IR block bounds"));
+            REQUIRE_OK(cg_symbolic_opcode(KEFIR_IROPCODE_PUSHI64, &opcode_symbol));
+            ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
+            ASMGEN_ARG0(&codegen->asmgen, opcode_symbol);
+            ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_SYSV_PROCEDURE_BODY_LABEL " + " KEFIR_INT64_FMT,
+                       sysv_func->func->name, 2 * KEFIR_AMD64_SYSV_ABI_QWORD * instr->arg.u64);
+        } break;
+
         default: {
             const char *opcode_symbol = NULL;
             REQUIRE_OK(cg_symbolic_opcode(instr->opcode, &opcode_symbol));

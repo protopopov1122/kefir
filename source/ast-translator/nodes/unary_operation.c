@@ -25,6 +25,7 @@
 #include "kefir/ast-translator/typeconv.h"
 #include "kefir/ast-translator/util.h"
 #include "kefir/ast-translator/misc.h"
+#include "kefir/ast-translator/flow_control.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"

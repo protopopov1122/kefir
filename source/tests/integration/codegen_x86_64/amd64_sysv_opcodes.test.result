@@ -161,6 +161,7 @@ __func1_body:
     .quad __kefirrt_extend8_impl, 21
     .quad __kefirrt_extend16_impl, 22
     .quad __kefirrt_extend32_impl, 23
+    .quad __kefirrt_push_impl, __func1_body + 160
     .quad __func1_epilogue, 0
 __func1_epilogue:
     mov %rsp, %r14

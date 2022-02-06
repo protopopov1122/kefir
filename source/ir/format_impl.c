@@ -49,6 +49,8 @@ kefir_result_t kefir_ir_format_instr(struct kefir_json_output *json, const struc
             return kefir_ir_format_instr_u64(json, module, instr);
         case KEFIR_IROPCODE_PUSHSTRING:
             return kefir_ir_format_instr_string(json, module, instr);
+        case KEFIR_IROPCODE_PUSHLABEL:
+            return kefir_ir_format_instr_u64(json, module, instr);
         case KEFIR_IROPCODE_POP:
             return kefir_ir_format_instr_none(json, module, instr);
         case KEFIR_IROPCODE_PICK:

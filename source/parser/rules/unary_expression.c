@@ -47,6 +47,13 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
             &res, kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, cast_expression), NULL),
             KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected cast expression"));
         REQUIRE_OK(kefir_parser_ast_builder_unary_operation(mem, builder, KEFIR_AST_OPERATION_ADDRESS));
+    } else if (parser->configuration->label_addressing &&
+               PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_DOUBLE_AMPERSAND)) {
+        REQUIRE_OK(PARSER_SHIFT(parser));
+        REQUIRE(PARSER_TOKEN_IS_IDENTIFIER(parser, 0),
+                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected identifier"));
+        REQUIRE_OK(kefir_parser_ast_builder_label_address(mem, builder, PARSER_CURSOR(parser, 0)->identifier));
+        REQUIRE_OK(PARSER_SHIFT(parser));
     } else if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_STAR)) {
         REQUIRE_OK(PARSER_SHIFT(parser));
         REQUIRE_MATCH_OK(

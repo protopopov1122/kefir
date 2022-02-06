@@ -343,6 +343,50 @@ END_CASE
 
 #undef ASSERT_IDENTIFIER_LITERAL
 
+#define ASSERT_LABEL_ADDRESS(_mem, _context, _label, _point)                                                           \
+    do {                                                                                                               \
+        struct kefir_ast_label_address *addr = kefir_ast_new_label_address((_mem), (_context)->symbols, (_label));     \
+        ASSERT_OK(kefir_ast_analyze_node((_mem), (_context), KEFIR_AST_NODE_BASE(addr)));                              \
+        ASSERT(addr->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);                                  \
+        ASSERT(KEFIR_AST_TYPE_SAME(kefir_ast_type_lvalue_conversion(addr->base.properties.type),                       \
+                                   (kefir_ast_type_pointer((_mem), (_context)->type_bundle, kefir_ast_type_void())))); \
+        ASSERT(!addr->base.properties.expression_props.constant_expression);                                           \
+        ASSERT(!addr->base.properties.expression_props.lvalue);                                                        \
+        ASSERT(addr->base.properties.expression_props.scoped_id->label.point == (_point));                             \
+        KEFIR_AST_NODE_FREE((_mem), KEFIR_AST_NODE_BASE(addr));                                                        \
+    } while (0)
+
+DEFINE_CASE(ast_node_analysis_label_address, "AST node analysis - label address") {
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
+                                            &global_context, NULL));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    struct kefir_ast_flow_control_structure *flow_control_structure = NULL;
+    const struct kefir_ast_scoped_identifier *scoped_id_A = NULL;
+    const struct kefir_ast_scoped_identifier *scoped_id_B = NULL;
+    const struct kefir_ast_scoped_identifier *scoped_id_C = NULL;
+
+    ASSERT_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree, &flow_control_structure));
+    ASSERT_OK(context->reference_label(&kft_mem, context, "A", flow_control_structure, NULL, &scoped_id_A));
+    ASSERT_OK(context->reference_label(&kft_mem, context, "B", flow_control_structure, NULL, &scoped_id_B));
+    ASSERT_OK(context->reference_label(&kft_mem, context, "C", flow_control_structure, NULL, &scoped_id_C));
+
+    ASSERT_LABEL_ADDRESS(&kft_mem, context, "A", scoped_id_A->label.point);
+    ASSERT_LABEL_ADDRESS(&kft_mem, context, "B", scoped_id_B->label.point);
+    ASSERT_LABEL_ADDRESS(&kft_mem, context, "C", scoped_id_C->label.point);
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+}
+END_CASE
+
+#undef ASSERT_LABEL_ADDRESS
+
 #define ASSERT_ARRAY_SUBSCRIPT(_mem, _context, _identifier, _index, _type)                                     \
     do {                                                                                                       \
         struct kefir_ast_array_subscript *subscript = kefir_ast_new_array_subscript(                           \

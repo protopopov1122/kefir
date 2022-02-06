@@ -18,37 +18,31 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <string.h>
 #include "kefir/ast/analyzer/nodes.h"
-#include "kefir/ast/analyzer/analyzer.h"
-#include "kefir/ast/analyzer/declarator.h"
-#include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"
 
-kefir_result_t kefir_ast_analyze_goto_statement_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
-                                                     const struct kefir_ast_goto_statement *node,
-                                                     struct kefir_ast_node_base *base) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+kefir_result_t kefir_ast_analyze_label_address_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
+                                                    const struct kefir_ast_label_address *node,
+                                                    struct kefir_ast_node_base *base) {
+    UNUSED(mem);
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
-    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST goto statement"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST label address"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST base node"));
-
-    REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
-    base->properties.category = KEFIR_AST_NODE_CATEGORY_STATEMENT;
 
     REQUIRE(context->flow_control_tree != NULL,
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
-                                   "Goto statement is not allowed in current context"));
+                                   "Label addressing is not allowed in current context"));
 
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
-    REQUIRE_OK(context->reference_label(mem, context, node->identifier, NULL, &node->base.source_location, &scoped_id));
+    REQUIRE_OK(context->reference_label(mem, context, node->label, NULL, &base->source_location, &scoped_id));
     REQUIRE(scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_LABEL,
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
-                                   "Goto statement identifier should reference a label"));
-    REQUIRE_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree,
-                                               &base->properties.statement_props.flow_control_statement));
-    base->properties.statement_props.flow_control_point = scoped_id->label.point;
+                                   "Addressed identifier should reference a label"));
+
+    base->properties.category = KEFIR_AST_NODE_CATEGORY_EXPRESSION;
+    base->properties.type = kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_void());
+    base->properties.expression_props.scoped_id = scoped_id;
     return KEFIR_OK;
 }

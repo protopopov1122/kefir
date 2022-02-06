@@ -1,0 +1,67 @@
+{
+    "globals": [],
+    "externals": [],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": []
+        },
+        {
+            "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
+            "type": []
+        }
+    ],
+    "data": [],
+    "string_literals": [],
+    "function_declarations": [
+        {
+            "identifier": 0,
+            "name": "func1",
+            "parameters": 3,
+            "vararg": false,
+            "returns": 4
+        }
+    ],
+    "functions": [
+        {
+            "identifier": 0,
+            "name": "func1",
+            "locals": 2,
+            "body": [
+                {
+                    "opcode": "pushlabel",
+                    "arg": 4
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "pushlabel",
+                    "arg": 2
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "pushlabel",
+                    "arg": 0
+                },
+                {
+                    "opcode": "pop"
+                }
+            ]
+        }
+    ]
+}

@@ -165,6 +165,26 @@ DEFINE_CASE(ast_nodes_identifiers, "AST nodes - identifiers") {
 }
 END_CASE
 
+DEFINE_CASE(ast_nodes_label_address, "AST nodes - label address") {
+    struct kefir_symbol_table symbols;
+    ASSERT_OK(kefir_symbol_table_init(&symbols));
+    struct kefir_ast_label_address *addr1 = kefir_ast_new_label_address(&kft_mem, &symbols, "label1");
+    struct kefir_ast_label_address *addr2 =
+        kefir_ast_new_label_address(&kft_mem, &symbols, "label123_test827_testTestTEST");
+    ASSERT(addr1 != NULL);
+    ASSERT(addr2 != NULL);
+    ASSERT(addr1->base.klass->type == KEFIR_AST_LABEL_ADDRESS);
+    ASSERT(addr2->base.klass->type == KEFIR_AST_LABEL_ADDRESS);
+    ASSERT(addr1->base.self == addr1);
+    ASSERT(addr2->base.self == addr2);
+    ASSERT(strcmp(addr1->label, "label1") == 0);
+    ASSERT(strcmp(addr2->label, "label123_test827_testTestTEST") == 0);
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(addr1)));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(addr2)));
+    ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
+}
+END_CASE
+
 DEFINE_CASE(ast_nodes_string_literals_multibyte, "AST nodes - multibyte string literals") {
     struct kefir_ast_string_literal *sym1 = KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Hello, world!");
     struct kefir_ast_string_literal *sym2 = KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Goodbue, cruel world!");
