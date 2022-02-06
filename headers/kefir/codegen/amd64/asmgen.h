@@ -141,7 +141,7 @@ kefir_result_t kefir_amd64_gas_gen_init(struct kefir_amd64_asmgen *, FILE *);
 #define KEFIR_AMD64_INDIRECT_NEG_OFFSET "[%s - " KEFIR_SIZE_FMT "]"
 #define KEFIR_AMD64_ALIGN ".align"
 #define KEFIR_AMD64_THREAD_LOCAL "[%s@tpoff]"
-#define KEFIR_AMD64_THREAD_LOCAL_GOT "%s@gottpoff[%rip]"
+#define KEFIR_AMD64_THREAD_LOCAL_GOT "%s@gottpoff[%%rip]"
 
 #define KEFIR_AMD64_DWORD "DWORD PTR "
 #define KEFIR_AMD64_QWORD "QWORD PTR "
