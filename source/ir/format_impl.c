@@ -35,6 +35,8 @@ kefir_result_t kefir_ir_format_instr(struct kefir_json_output *json, const struc
             return kefir_ir_format_instr_none(json, module, instr);
         case KEFIR_IROPCODE_JMP:
             return kefir_ir_format_instr_coderef(json, module, instr);
+        case KEFIR_IROPCODE_IJMP:
+            return kefir_ir_format_instr_none(json, module, instr);
         case KEFIR_IROPCODE_BRANCH:
             return kefir_ir_format_instr_coderef(json, module, instr);
         case KEFIR_IROPCODE_RET:

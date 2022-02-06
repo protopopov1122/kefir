@@ -62,6 +62,7 @@ define_opcode \identifier
 # Opcode definitions
 declare_opcode nop
 declare_opcode jmp
+declare_opcode ijmp
 declare_opcode branch
 declare_opcode push
 declare_opcode pop
@@ -185,6 +186,10 @@ define_opcode nop
 
 define_opcode jmp
     mov PROGRAM_REG, [INSTR_ARG_PTR]
+    jmp [PROGRAM_REG]
+
+define_opcode ijmp
+    pop PROGRAM_REG
     jmp [PROGRAM_REG]
 
 define_opcode branch

@@ -4,6 +4,7 @@
 
 .extern __kefirrt_nop_impl
 .extern __kefirrt_jmp_impl
+.extern __kefirrt_ijmp_impl
 .extern __kefirrt_branch_impl
 .extern __kefirrt_push_impl
 .extern __kefirrt_pop_impl

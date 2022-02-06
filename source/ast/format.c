@@ -1237,6 +1237,26 @@ static kefir_result_t visit_label_address(const struct kefir_ast_visitor *visito
     return KEFIR_OK;
 }
 
+static kefir_result_t visit_goto_address_statement(const struct kefir_ast_visitor *visitor,
+                                                   const struct kefir_ast_goto_statement *node, void *payload) {
+    UNUSED(visitor);
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST goto address statement node"));
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct visitor_param *, param, payload);
+    struct kefir_json_output *json = param->json;
+
+    REQUIRE_OK(kefir_json_output_object_begin(json));
+    REQUIRE_OK(kefir_json_output_object_key(json, "class"));
+    REQUIRE_OK(kefir_json_output_string(json, "goto_address_statement"));
+    REQUIRE_OK(kefir_json_output_object_key(json, "target"));
+    REQUIRE_OK(kefir_ast_format(json, node->target, param->display_source_location));
+    if (param->display_source_location) {
+        REQUIRE_OK(format_source_location(json, KEFIR_AST_NODE_BASE(node)));
+    }
+    REQUIRE_OK(kefir_json_output_object_end(json));
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_format(struct kefir_json_output *json, const struct kefir_ast_node_base *node,
                                 kefir_bool_t display_source_location) {
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid JSON output"));
@@ -1282,6 +1302,7 @@ kefir_result_t kefir_ast_format(struct kefir_json_output *json, const struct kef
     visitor.translation_unit = visit_translation_unit;
     visitor.builtin = visit_builtin;
     visitor.label_address = visit_label_address;
+    visitor.goto_address_statement = visit_goto_address_statement;
     REQUIRE_OK(node->klass->visit(node, &visitor, &param));
     return KEFIR_OK;
 }

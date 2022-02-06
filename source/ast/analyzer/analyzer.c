@@ -139,6 +139,7 @@ kefir_result_t kefir_ast_analyze_node(struct kefir_mem *mem, const struct kefir_
     visitor.builtin = visit_builtin;
     visitor.extension_node = visit_extension_node;
     visitor.label_address = visit_label_address;
+    visitor.goto_address_statement = visit_goto_statement;
 
     kefir_result_t res;
     KEFIR_RUN_EXTENSION(&res, mem, context, before_node_analysis, base, &visitor);

@@ -179,7 +179,12 @@ KEFIR_AST_NODE_STRUCT(kefir_ast_for_statement, {
     struct kefir_ast_node_base *body;
 });
 
-KEFIR_AST_NODE_STRUCT(kefir_ast_goto_statement, { const char *identifier; });
+KEFIR_AST_NODE_STRUCT(kefir_ast_goto_statement, {
+    union {
+        const char *identifier;
+        struct kefir_ast_node_base *target;
+    };
+});
 
 KEFIR_AST_NODE_STRUCT(kefir_ast_continue_statement, {
     int payload;  // Dummy payload for non-empty struct
@@ -327,6 +332,8 @@ struct kefir_ast_for_statement *kefir_ast_new_for_statement(struct kefir_mem *, 
 struct kefir_ast_goto_statement *kefir_ast_new_goto_statement(struct kefir_mem *, struct kefir_symbol_table *,
                                                               const char *);
 
+struct kefir_ast_goto_statement *kefir_ast_new_goto_address_statement(struct kefir_mem *, struct kefir_ast_node_base *);
+
 struct kefir_ast_continue_statement *kefir_ast_new_continue_statement(struct kefir_mem *);
 
 struct kefir_ast_break_statement *kefir_ast_new_break_statement(struct kefir_mem *);
@@ -386,6 +393,7 @@ typedef struct kefir_ast_visitor {
     KEFIR_AST_VISITOR_METHOD(builtin, kefir_ast_builtin);
     KEFIR_AST_VISITOR_METHOD(extension_node, kefir_ast_extension_node);
     KEFIR_AST_VISITOR_METHOD(label_address, kefir_ast_label_address);
+    KEFIR_AST_VISITOR_METHOD(goto_address_statement, kefir_ast_goto_statement);
 } kefir_ast_visitor_t;
 
 #define KEFIR_AST_NODE_INTERNAL_DEF

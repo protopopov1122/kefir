@@ -108,6 +108,7 @@ DECLARE_CASE(ast_nodes_case_statements1);
 DECLARE_CASE(ast_nodes_expression_statements1);
 DECLARE_CASE(ast_nodes_extension);
 DECLARE_CASE(ast_nodes_label_address);
+DECLARE_CASE(ast_nodes_goto_address_statements1);
 DECLARE_CASE(ast_type_compatibility1);
 DECLARE_CASE(ast_type_basic_compatibility);
 DECLARE_CASE(ast_type_enum_compatibility);
@@ -356,6 +357,7 @@ DECLARE_CASE(ast_node_analysis_compound_statements4);
 DECLARE_CASE(valueast_node_analysis_conditional_statements1);
 DECLARE_CASE(ast_node_analysis_conditinal_statements2);
 DECLARE_CASE(ast_node_analysis_conditinal_statements3);
+DECLARE_CASE(ast_node_analysis_goto_address_statements1);
 DECLARE_CASE(ast_flow_control_tree1);
 DECLARE_CASE(ast_flow_control_tree2);
 DECLARE_CASE(ast_flow_control_tree3);
@@ -481,15 +483,15 @@ TEST_SUITE(
     &ast_nodes_conditional_operators, &ast_nodes_assignment_operators, &ast_nodes_comma_operators,
     &ast_nodes_compound_literals, &ast_nodes_init_declarators1, &ast_nodes_static_assertions1,
     &ast_nodes_labeled_statements1, &ast_nodes_case_statements1, &ast_nodes_expression_statements1,
-    &ast_nodes_extension, &ast_nodes_label_address, &ast_type_compatibility1, &ast_type_basic_compatibility,
-    &ast_type_enum_compatibility, &ast_type_pointer_compatibility, &ast_type_qualified_compatibility,
-    &ast_type_struct_compatibility, &ast_type_union_compatibility, &ast_type_array_compatibility,
-    &ast_type_function_compatibility, &ast_type_basic_composite, &ast_type_pointer_composite, &ast_type_enum_composite,
-    &ast_type_qualified_composite, &ast_type_struct_composite, &ast_type_union_composite, &ast_type_array_composite,
-    &ast_type_function_composite, &ast_type_scope1, &ast_type_scope2, &ast_type_scope3, &ast_type_variably_modified1,
-    &ast_type_variably_modified2, &ast_type_variably_modified_analysis1, &ast_ordinary_constant_scope1,
-    &ast_ordinary_typedef_scope1, &ast_ordinary_scope_composite_objects_external,
-    &ast_ordinary_scope_composite_objects_external_declaration,
+    &ast_nodes_extension, &ast_nodes_label_address, &ast_nodes_goto_address_statements1, &ast_type_compatibility1,
+    &ast_type_basic_compatibility, &ast_type_enum_compatibility, &ast_type_pointer_compatibility,
+    &ast_type_qualified_compatibility, &ast_type_struct_compatibility, &ast_type_union_compatibility,
+    &ast_type_array_compatibility, &ast_type_function_compatibility, &ast_type_basic_composite,
+    &ast_type_pointer_composite, &ast_type_enum_composite, &ast_type_qualified_composite, &ast_type_struct_composite,
+    &ast_type_union_composite, &ast_type_array_composite, &ast_type_function_composite, &ast_type_scope1,
+    &ast_type_scope2, &ast_type_scope3, &ast_type_variably_modified1, &ast_type_variably_modified2,
+    &ast_type_variably_modified_analysis1, &ast_ordinary_constant_scope1, &ast_ordinary_typedef_scope1,
+    &ast_ordinary_scope_composite_objects_external, &ast_ordinary_scope_composite_objects_external_declaration,
     &ast_ordinary_scope_composite_objects_thread_local_external,
     &ast_ordinary_scope_composite_objects_thread_local_external_declaration,
     &ast_ordinary_scope_composite_objects_static, &ast_ordinary_scope_composite_objects_static_thread_local,
@@ -524,12 +526,13 @@ TEST_SUITE(
     &ast_node_analysis_compound_assignment_operator1, &ast_node_analysis_compound_assignment_operator2,
     &ast_node_analysis_compound_assignment_operator3, &ast_nodes_comma_operators, &ast_node_analysis_compound_literal1,
     &ast_node_analysis_compound_literal2, &ast_node_analysis_compound_literal3, &ast_node_analysis_compound_literal4,
-    &ast_node_analysis_label_address, &ast_type_traversal1, &ast_type_traversal2, &ast_type_traversal3,
-    &ast_type_traversal4, &ast_type_traversal5, &ast_initializer_construction1, &ast_initializer_construction2,
-    &ast_initializer_analysis1, &ast_initializer_analysis2, &ast_initializer_analysis3, &ast_initializer_analysis4,
-    &ast_initializer_analysis5, &ast_initializer_analysis_unicode8, &ast_initializer_analysis_unicode16,
-    &ast_initializer_analysis_unicode32, &ast_initializer_analysis_wide, &ast_initializer_analysis_mixed_strings,
-    &ast_constant_expression_constant1, &ast_constant_expression_identifier1, &ast_constant_expression_string_literal1,
+    &ast_node_analysis_label_address, &ast_node_analysis_goto_address_statements1, &ast_type_traversal1,
+    &ast_type_traversal2, &ast_type_traversal3, &ast_type_traversal4, &ast_type_traversal5,
+    &ast_initializer_construction1, &ast_initializer_construction2, &ast_initializer_analysis1,
+    &ast_initializer_analysis2, &ast_initializer_analysis3, &ast_initializer_analysis4, &ast_initializer_analysis5,
+    &ast_initializer_analysis_unicode8, &ast_initializer_analysis_unicode16, &ast_initializer_analysis_unicode32,
+    &ast_initializer_analysis_wide, &ast_initializer_analysis_mixed_strings, &ast_constant_expression_constant1,
+    &ast_constant_expression_identifier1, &ast_constant_expression_string_literal1,
     &ast_constant_expression_generic_selection1, &ast_constant_expression_unary_operations1,
     &ast_constant_expression_unary_operations2, &ast_constant_expression_unary_operations3,
     &ast_constant_expression_unary_operations4, &ast_constant_expression_unary_operations5,

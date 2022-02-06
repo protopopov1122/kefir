@@ -1238,3 +1238,24 @@ kefir_result_t kefir_parser_ast_builder_label_address(struct kefir_mem *mem, str
     });
     return KEFIR_OK;
 }
+
+kefir_result_t kefir_parser_ast_builder_goto_address_statement(struct kefir_mem *mem,
+                                                               struct kefir_parser_ast_builder *builder) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
+
+    struct kefir_ast_node_base *target = NULL;
+    REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &target));
+
+    struct kefir_ast_goto_statement *gotoStmt = kefir_ast_new_goto_address_statement(mem, target);
+    REQUIRE_ELSE(gotoStmt != NULL, {
+        KEFIR_AST_NODE_FREE(mem, target);
+        return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST goto statement");
+    });
+    kefir_result_t res = kefir_parser_ast_builder_push(mem, builder, KEFIR_AST_NODE_BASE(gotoStmt));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(gotoStmt));
+        return res;
+    });
+    return KEFIR_OK;
+}

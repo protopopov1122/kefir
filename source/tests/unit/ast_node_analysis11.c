@@ -103,6 +103,68 @@ DEFINE_CASE(ast_node_analysis_goto_statements1, "AST node analysis - goto statem
 }
 END_CASE
 
+DEFINE_CASE(ast_node_analysis_goto_address_statements1, "AST node analysis - goto address statements #1") {
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
+                                            &global_context, NULL));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    const struct kefir_ast_scoped_identifier *scoped1 = NULL;
+    ASSERT_OK(context->define_identifier(&kft_mem, context, true, "label1",
+                                         kefir_ast_type_pointer(&kft_mem, context->type_bundle, kefir_ast_type_void()),
+                                         KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+                                         NULL, NULL, NULL, &scoped1));
+
+    struct kefir_ast_compound_statement *compound1 = kefir_ast_new_compound_statement(&kft_mem);
+
+    struct kefir_ast_type_name *type_name1 = kefir_ast_new_type_name(
+        &kft_mem, kefir_ast_declarator_pointer(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL)));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name1->type_decl.specifiers,
+                                                         kefir_ast_type_specifier_void(&kft_mem)));
+
+    struct kefir_ast_goto_statement *goto1 = kefir_ast_new_goto_address_statement(
+        &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_cast_operator(
+                      &kft_mem, type_name1, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0)))));
+    ASSERT_OK(kefir_list_insert_after(&kft_mem, &compound1->block_items, kefir_list_tail(&compound1->block_items),
+                                      KEFIR_AST_NODE_BASE(goto1)));
+
+    struct kefir_ast_goto_statement *goto2 = kefir_ast_new_goto_address_statement(
+        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "string literal")));
+    ASSERT_OK(kefir_list_insert_after(&kft_mem, &compound1->block_items, kefir_list_tail(&compound1->block_items),
+                                      KEFIR_AST_NODE_BASE(goto2)));
+
+    struct kefir_ast_goto_statement *goto3 = kefir_ast_new_goto_address_statement(
+        &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "label1")));
+    ASSERT_OK(kefir_list_insert_after(&kft_mem, &compound1->block_items, kefir_list_tail(&compound1->block_items),
+                                      KEFIR_AST_NODE_BASE(goto3)));
+
+    ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(compound1)));
+
+    ASSERT(goto1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
+    ASSERT(goto1->base.properties.statement_props.flow_control_point == NULL);
+    ASSERT(goto1->base.properties.statement_props.flow_control_statement ==
+           compound1->base.properties.statement_props.flow_control_statement);
+
+    ASSERT(goto2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
+    ASSERT(goto2->base.properties.statement_props.flow_control_point == NULL);
+    ASSERT(goto2->base.properties.statement_props.flow_control_statement ==
+           compound1->base.properties.statement_props.flow_control_statement);
+
+    ASSERT(goto3->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
+    ASSERT(goto3->base.properties.statement_props.flow_control_point == NULL);
+    ASSERT(goto3->base.properties.statement_props.flow_control_statement ==
+           compound1->base.properties.statement_props.flow_control_statement);
+
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(compound1)));
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+}
+END_CASE
+
 DEFINE_CASE(ast_node_analysis_break_statements1, "AST node analysis - break statements #1") {
     const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
     struct kefir_ast_global_context global_context;

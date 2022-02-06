@@ -90,8 +90,17 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "var1", &TOKENS[counter++]));
     REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_RIGHT_PARENTHESE, &TOKENS[counter++]));
 
+    REQUIRE_OK(kefir_token_new_keyword(KEFIR_KEYWORD_SIZEOF, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_LEFT_PARENTHESE, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_DOUBLE_AMPERSAND, &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_identifier(mem, &symbols, "somelabel", &TOKENS[counter++]));
+    REQUIRE_OK(kefir_token_new_punctuator(KEFIR_PUNCTUATOR_RIGHT_PARENTHESE, &TOKENS[counter++]));
+
     REQUIRE_OK(kefir_parser_token_cursor_init(&cursor, TOKENS, counter));
     REQUIRE_OK(kefir_parser_init(mem, &parser, &symbols, &cursor, NULL));
+
+    struct kefir_parser_configuration parser_config = {.label_addressing = true};
+    parser.configuration = &parser_config;
 
     struct kefir_json_output json;
     REQUIRE_OK(kefir_json_output_init(&json, stdout, 4));

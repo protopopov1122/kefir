@@ -24,6 +24,7 @@
 #include "kefir/core/error.h"
 
 NODE_VISIT_IMPL(ast_goto_statement_visit, kefir_ast_goto_statement, goto_statement)
+NODE_VISIT_IMPL(ast_goto_address_statement_visit, kefir_ast_goto_statement, goto_address_statement)
 
 struct kefir_ast_node_base *ast_goto_statement_clone(struct kefir_mem *, struct kefir_ast_node_base *);
 
@@ -31,7 +32,12 @@ kefir_result_t ast_goto_statement_free(struct kefir_mem *mem, struct kefir_ast_n
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node base"));
     ASSIGN_DECL_CAST(struct kefir_ast_goto_statement *, node, base->self);
-    node->identifier = NULL;
+    if (base->klass->type == KEFIR_AST_GOTO_STATEMENT) {
+        node->identifier = NULL;
+    } else {
+        REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node->target));
+        node->target = NULL;
+    }
     KEFIR_FREE(mem, node);
     return KEFIR_OK;
 }
@@ -41,13 +47,18 @@ const struct kefir_ast_node_class AST_GOTO_STATEMENT_CLASS = {.type = KEFIR_AST_
                                                               .clone = ast_goto_statement_clone,
                                                               .free = ast_goto_statement_free};
 
+const struct kefir_ast_node_class AST_GOTO_ADDRESS_STATEMENT_CLASS = {.type = KEFIR_AST_GOTO_ADDRESS_STATEMENT,
+                                                                      .visit = ast_goto_address_statement_visit,
+                                                                      .clone = ast_goto_statement_clone,
+                                                                      .free = ast_goto_statement_free};
+
 struct kefir_ast_node_base *ast_goto_statement_clone(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(base != NULL, NULL);
     ASSIGN_DECL_CAST(struct kefir_ast_goto_statement *, node, base->self);
     struct kefir_ast_goto_statement *clone = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_goto_statement));
     REQUIRE(clone != NULL, NULL);
-    clone->base.klass = &AST_GOTO_STATEMENT_CLASS;
+    clone->base.klass = node->base.klass;
     clone->base.self = clone;
     clone->base.source_location = base->source_location;
     kefir_result_t res = kefir_ast_node_properties_clone(&clone->base.properties, &node->base.properties);
@@ -56,7 +67,15 @@ struct kefir_ast_node_base *ast_goto_statement_clone(struct kefir_mem *mem, stru
         return NULL;
     });
 
-    clone->identifier = node->identifier;
+    if (node->base.klass->type == KEFIR_AST_GOTO_STATEMENT) {
+        clone->identifier = node->identifier;
+    } else {
+        clone->target = KEFIR_AST_NODE_CLONE(mem, node->target);
+        REQUIRE_ELSE(clone->target != NULL, {
+            KEFIR_FREE(mem, clone);
+            return NULL;
+        });
+    }
     return KEFIR_AST_NODE_BASE(clone);
 }
 
@@ -86,5 +105,29 @@ struct kefir_ast_goto_statement *kefir_ast_new_goto_statement(struct kefir_mem *
     });
 
     stmt->identifier = identifier;
+    return stmt;
+}
+
+struct kefir_ast_goto_statement *kefir_ast_new_goto_address_statement(struct kefir_mem *mem,
+                                                                      struct kefir_ast_node_base *target) {
+    REQUIRE(mem != NULL, NULL);
+    REQUIRE(target != NULL, NULL);
+
+    struct kefir_ast_goto_statement *stmt = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_goto_statement));
+    REQUIRE(stmt != NULL, NULL);
+    stmt->base.klass = &AST_GOTO_ADDRESS_STATEMENT_CLASS;
+    stmt->base.self = stmt;
+    kefir_result_t res = kefir_ast_node_properties_init(&stmt->base.properties);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, stmt);
+        return NULL;
+    });
+    res = kefir_source_location_empty(&stmt->base.source_location);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_FREE(mem, stmt);
+        return NULL;
+    });
+
+    stmt->target = target;
     return stmt;
 }

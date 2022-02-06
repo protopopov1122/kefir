@@ -95,6 +95,7 @@ kefir_result_t kefir_ast_translate_statement(struct kefir_mem *mem, const struct
     visitor.break_statement = translate_break_statement;
     visitor.return_statement = translate_return_statement;
     visitor.extension_node = translate_extension_node;
+    visitor.goto_address_statement = translate_goto_statement;
 
     kefir_result_t res;
     KEFIR_RUN_EXTENSION(&res, mem, context, before_translate, base, builder,

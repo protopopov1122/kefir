@@ -63,6 +63,39 @@ DEFINE_CASE(ast_nodes_goto_statements1, "AST nodes - goto statements #1") {
 }
 END_CASE
 
+DEFINE_CASE(ast_nodes_goto_address_statements1, "AST nodes - goto address statements #1") {
+    struct kefir_symbol_table symbols;
+    struct kefir_ast_type_bundle type_bundle;
+
+    ASSERT_OK(kefir_symbol_table_init(&symbols));
+    ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
+
+    struct kefir_ast_goto_statement *goto1 =
+        kefir_ast_new_goto_address_statement(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0)));
+    ASSERT(goto1 != NULL);
+    ASSERT(goto1->base.klass->type == KEFIR_AST_GOTO_ADDRESS_STATEMENT);
+    ASSERT(goto1->base.self == goto1);
+    ASSERT(goto1->target != NULL);
+    ASSERT(goto1->target->klass->type == KEFIR_AST_CONSTANT);
+
+    struct kefir_ast_goto_statement *goto2 = kefir_ast_new_goto_address_statement(
+        &kft_mem, KEFIR_AST_NODE_BASE(KEFIR_AST_MAKE_STRING_LITERAL_MULTIBYTE(&kft_mem, "Test..test..test...")));
+    ASSERT(goto2 != NULL);
+    ASSERT(goto2->base.klass->type == KEFIR_AST_GOTO_ADDRESS_STATEMENT);
+    ASSERT(goto2->base.self == goto2);
+    ASSERT(goto2->target != NULL);
+    ASSERT(goto2->target->klass->type == KEFIR_AST_STRING_LITERAL);
+
+    struct kefir_ast_goto_statement *goto3 = kefir_ast_new_goto_address_statement(&kft_mem, NULL);
+    ASSERT(goto3 == NULL);
+
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(goto1)));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(goto2)));
+    ASSERT_OK(kefir_ast_type_bundle_free(&kft_mem, &type_bundle));
+    ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
+}
+END_CASE
+
 DEFINE_CASE(ast_nodes_continue_statements, "AST nodes - continue statements") {
     struct kefir_symbol_table symbols;
     struct kefir_ast_type_bundle type_bundle;

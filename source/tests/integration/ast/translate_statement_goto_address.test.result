@@ -1,0 +1,259 @@
+{
+    "globals": [],
+    "externals": [
+        "variable"
+    ],
+    "types": [
+        {
+            "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 3,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "short"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 4,
+            "type": []
+        },
+        {
+            "identifier": 5,
+            "type": []
+        },
+        {
+            "identifier": 6,
+            "type": []
+        },
+        {
+            "identifier": 7,
+            "type": []
+        },
+        {
+            "identifier": 8,
+            "type": []
+        }
+    ],
+    "data": [],
+    "string_literals": [],
+    "function_declarations": [
+        {
+            "identifier": 0,
+            "name": "goto1",
+            "parameters": 4,
+            "vararg": false,
+            "returns": 5
+        },
+        {
+            "identifier": 1,
+            "name": "goto2",
+            "parameters": 7,
+            "vararg": false,
+            "returns": 8
+        }
+    ],
+    "functions": [
+        {
+            "identifier": 0,
+            "name": "goto1",
+            "locals": 3,
+            "body": [
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "extend16"
+                },
+                {
+                    "opcode": "store16"
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load16i"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "iadd1",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store16"
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "load16i"
+                },
+                {
+                    "opcode": "extend32"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1000
+                },
+                {
+                    "opcode": "iequals"
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "branch",
+                    "arg": 23
+                },
+                {
+                    "opcode": "pushlabel",
+                    "arg": 25
+                },
+                {
+                    "opcode": "ijmp"
+                },
+                {
+                    "opcode": "pushlabel",
+                    "arg": 6
+                },
+                {
+                    "opcode": "ijmp"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "load16i"
+                },
+                {
+                    "opcode": "extend32"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 7
+                },
+                {
+                    "opcode": "imod"
+                },
+                {
+                    "opcode": "extend16"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 1
+                },
+                {
+                    "opcode": "store16"
+                },
+                {
+                    "opcode": "pop"
+                }
+            ]
+        },
+        {
+            "identifier": 1,
+            "name": "goto2",
+            "locals": 6,
+            "body": [
+                {
+                    "opcode": "pushlabel",
+                    "arg": 5
+                },
+                {
+                    "opcode": "ijmp"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "bnot"
+                },
+                {
+                    "opcode": "branch",
+                    "arg": 8
+                },
+                {
+                    "opcode": "pushlabel",
+                    "arg": 8
+                },
+                {
+                    "opcode": "ijmp"
+                },
+                {
+                    "opcode": "jmp",
+                    "arg": 2
+                },
+                {
+                    "opcode": "pushlabel",
+                    "arg": 0
+                },
+                {
+                    "opcode": "ijmp"
+                }
+            ]
+        }
+    ]
+}

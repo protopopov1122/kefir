@@ -170,5 +170,13 @@
                 }
             ]
         }
+    },
+    {
+        "class": "unary_operation",
+        "type": "sizeof",
+        "argument": {
+            "class": "label_address",
+            "label": "somelabel"
+        }
     }
 ]

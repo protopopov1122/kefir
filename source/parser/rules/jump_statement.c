@@ -43,14 +43,33 @@ static kefir_result_t scan_return(struct kefir_mem *mem, struct kefir_parser_ast
 static kefir_result_t scan_goto(struct kefir_mem *mem, struct kefir_parser_ast_builder *builder) {
     struct kefir_parser *parser = builder->parser;
     REQUIRE_OK(PARSER_SHIFT(parser));
-    REQUIRE(PARSER_TOKEN_IS_IDENTIFIER(parser, 0),
-            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected identifier"));
-    const char *identifier = kefir_parser_token_cursor_at(parser->cursor, 0)->identifier;
-    REQUIRE_OK(PARSER_SHIFT(parser));
-    REQUIRE_OK(kefir_parser_ast_builder_goto_statement(mem, builder, identifier));
-    REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_SEMICOLON),
-            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected semicolon"));
-    REQUIRE_OK(PARSER_SHIFT(parser));
+
+    if (PARSER_TOKEN_IS_IDENTIFIER(parser, 0) || !parser->configuration->label_addressing) {
+        REQUIRE(PARSER_TOKEN_IS_IDENTIFIER(parser, 0),
+                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected identifier"));
+
+        const char *identifier = kefir_parser_token_cursor_at(parser->cursor, 0)->identifier;
+        REQUIRE_OK(PARSER_SHIFT(parser));
+        REQUIRE_OK(kefir_parser_ast_builder_goto_statement(mem, builder, identifier));
+        REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_SEMICOLON),
+                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected semicolon"));
+        REQUIRE_OK(PARSER_SHIFT(parser));
+    } else {
+        REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_STAR),
+                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
+                                       "Expected either identifier or dereferenced address"));
+        REQUIRE_OK(PARSER_SHIFT(parser));
+
+        kefir_result_t res = KEFIR_OK;
+        REQUIRE_MATCH_OK(
+            &res, kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, cast_expression), NULL),
+            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected cast expression"));
+
+        REQUIRE_OK(kefir_parser_ast_builder_goto_address_statement(mem, builder));
+        REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_SEMICOLON),
+                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected semicolon"));
+        REQUIRE_OK(PARSER_SHIFT(parser));
+    }
     return KEFIR_OK;
 }
 

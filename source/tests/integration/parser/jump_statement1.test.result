@@ -47,5 +47,12 @@
     },
     {
         "class": "break_statement"
+    },
+    {
+        "class": "goto_address_statement",
+        "target": {
+            "class": "label_address",
+            "label": "label2"
+        }
     }
 ]
