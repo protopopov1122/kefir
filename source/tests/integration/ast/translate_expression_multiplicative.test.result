@@ -82,6 +82,9 @@
                     "opcode": "idiv"
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "push",
                     "arg": 156
                 },
@@ -91,6 +94,13 @@
                 },
                 {
                     "opcode": "udiv"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4294967295
+                },
+                {
+                    "opcode": "iand"
                 },
                 {
                     "opcode": "push",
@@ -228,6 +238,9 @@
                     "opcode": "imod"
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "push",
                     "arg": 1005
                 },
@@ -237,6 +250,9 @@
                 },
                 {
                     "opcode": "imod"
+                },
+                {
+                    "opcode": "extend32"
                 },
                 {
                     "opcode": "push",
@@ -290,6 +306,9 @@
                     "opcode": "imul"
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "push",
                     "arg": 156
                 },
@@ -299,6 +318,13 @@
                 },
                 {
                     "opcode": "imul"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4294967295
+                },
+                {
+                    "opcode": "iand"
                 },
                 {
                     "opcode": "push",

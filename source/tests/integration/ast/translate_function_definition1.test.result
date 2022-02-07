@@ -184,6 +184,9 @@
                     "opcode": "iadd"
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "ret"
                 }
             ]

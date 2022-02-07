@@ -53,6 +53,17 @@ static kefir_result_t binary_prologue(struct kefir_mem *mem, struct kefir_ast_tr
     return KEFIR_OK;
 }
 
+static kefir_result_t binary_epilogue(struct kefir_ast_translator_context *context,
+                                      struct kefir_irbuilder_block *builder,
+                                      const struct kefir_ast_binary_operation *node) {
+    const struct kefir_ast_type *result_normalized_type =
+        kefir_ast_translator_normalize_type(node->base.properties.type);
+
+    REQUIRE_OK(
+        kefir_ast_translate_typeconv_normalize(builder, context->ast_context->type_traits, result_normalized_type));
+    return KEFIR_OK;
+}
+
 static kefir_result_t translate_addition(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
                                          struct kefir_irbuilder_block *builder,
                                          const struct kefir_ast_binary_operation *node) {
@@ -83,6 +94,7 @@ static kefir_result_t translate_addition(struct kefir_mem *mem, struct kefir_ast
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IADD, 0));
                 break;
         }
+        REQUIRE_OK(binary_epilogue(context, builder, node));
     } else {
         const struct kefir_ast_translator_resolved_type *cached_type = NULL;
         REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(
@@ -134,6 +146,7 @@ static kefir_result_t translate_subtraction(struct kefir_mem *mem, struct kefir_
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_ISUB, 0));
                 break;
         }
+        REQUIRE_OK(binary_epilogue(context, builder, node));
     } else if (arg2_normalized_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
         kefir_ast_target_environment_opaque_type_t opaque_type;
         struct kefir_ast_target_environment_object_info type_info;
@@ -189,6 +202,7 @@ static kefir_result_t translate_multiplication(struct kefir_mem *mem, struct kef
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IMUL, 0));
             break;
     }
+    REQUIRE_OK(binary_epilogue(context, builder, node));
     return KEFIR_OK;
 }
 
@@ -223,6 +237,7 @@ static kefir_result_t translate_division(struct kefir_mem *mem, struct kefir_ast
             }
         } break;
     }
+    REQUIRE_OK(binary_epilogue(context, builder, node));
     return KEFIR_OK;
 }
 
@@ -240,6 +255,7 @@ static kefir_result_t translate_modulo(struct kefir_mem *mem, struct kefir_ast_t
     } else {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_UMOD, 0));
     }
+    REQUIRE_OK(binary_epilogue(context, builder, node));
     return KEFIR_OK;
 }
 
@@ -281,6 +297,7 @@ static kefir_result_t translate_bitwise(struct kefir_mem *mem, struct kefir_ast_
         default:
             return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected bitwise operation");
     }
+    REQUIRE_OK(binary_epilogue(context, builder, node));
     return KEFIR_OK;
 }
 

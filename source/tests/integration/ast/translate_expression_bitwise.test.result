@@ -112,6 +112,9 @@
                     "opcode": "ior"
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "push",
                     "arg": 666
                 },
@@ -152,6 +155,9 @@
                     "opcode": "iand"
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "push",
                     "arg": 87094
                 },
@@ -190,6 +196,9 @@
                 },
                 {
                     "opcode": "ixor"
+                },
+                {
+                    "opcode": "extend32"
                 },
                 {
                     "opcode": "push",
@@ -235,6 +244,9 @@
                     "opcode": "ishl"
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "push",
                     "arg": 1000
                 },
@@ -247,6 +259,9 @@
                 },
                 {
                     "opcode": "ishl"
+                },
+                {
+                    "opcode": "extend32"
                 },
                 {
                     "opcode": "push",
@@ -281,6 +296,9 @@
                     "opcode": "isar"
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "push",
                     "arg": 870
                 },
@@ -293,6 +311,9 @@
                 },
                 {
                     "opcode": "isar"
+                },
+                {
+                    "opcode": "extend32"
                 },
                 {
                     "opcode": "push",

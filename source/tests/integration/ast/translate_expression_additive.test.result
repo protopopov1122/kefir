@@ -194,6 +194,9 @@
                     "opcode": "iadd"
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "push",
                     "arg": 100
                 },
@@ -203,6 +206,9 @@
                 },
                 {
                     "opcode": "iadd"
+                },
+                {
+                    "opcode": "extend32"
                 },
                 {
                     "opcode": "push",
@@ -221,6 +227,13 @@
                 },
                 {
                     "opcode": "iadd"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4294967295
+                },
+                {
+                    "opcode": "iand"
                 },
                 {
                     "opcode": "push",
@@ -398,6 +411,9 @@
                     "opcode": "isub"
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "push",
                     "arg": 100
                 },
@@ -414,6 +430,13 @@
                 },
                 {
                     "opcode": "isub"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4294967295
+                },
+                {
+                    "opcode": "iand"
                 },
                 {
                     "opcode": "push",
