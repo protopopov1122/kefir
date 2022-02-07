@@ -251,6 +251,9 @@
                     "arg": -100
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "push",
                     "arg": 100
                 },
@@ -270,6 +273,13 @@
                 },
                 {
                     "opcode": "load32u"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4294967295
+                },
+                {
+                    "opcode": "iand"
                 }
             ]
         },
@@ -284,6 +294,9 @@
                 },
                 {
                     "opcode": "ineg"
+                },
+                {
+                    "opcode": "extend32"
                 },
                 {
                     "opcode": "push",
@@ -317,6 +330,13 @@
                 },
                 {
                     "opcode": "ineg"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4294967295
+                },
+                {
+                    "opcode": "iand"
                 }
             ]
         },
@@ -331,6 +351,9 @@
                 },
                 {
                     "opcode": "inot"
+                },
+                {
+                    "opcode": "extend32"
                 },
                 {
                     "opcode": "push",
@@ -357,6 +380,13 @@
                 },
                 {
                     "opcode": "inot"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 4294967295
+                },
+                {
+                    "opcode": "iand"
                 }
             ]
         },

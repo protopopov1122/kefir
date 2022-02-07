@@ -30,6 +30,17 @@
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"
 
+static kefir_result_t unary_epilogue(struct kefir_ast_translator_context *context,
+                                     struct kefir_irbuilder_block *builder,
+                                     const struct kefir_ast_unary_operation *node) {
+    const struct kefir_ast_type *result_normalized_type =
+        kefir_ast_translator_normalize_type(node->base.properties.type);
+
+    REQUIRE_OK(
+        kefir_ast_translate_typeconv_normalize(builder, context->ast_context->type_traits, result_normalized_type));
+    return KEFIR_OK;
+}
+
 static kefir_result_t translate_arithmetic_unary(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
                                                  struct kefir_irbuilder_block *builder,
                                                  const struct kefir_ast_unary_operation *node) {
@@ -95,6 +106,8 @@ static kefir_result_t translate_arithmetic_unary(struct kefir_mem *mem, struct k
             }
             break;
     }
+
+    REQUIRE_OK(unary_epilogue(context, builder, node));
     return KEFIR_OK;
 }
 
@@ -103,6 +116,7 @@ static kefir_result_t translate_unary_inversion(struct kefir_mem *mem, struct ke
                                                 const struct kefir_ast_unary_operation *node) {
     REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg, builder, context));
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_INOT, 0));
+    REQUIRE_OK(unary_epilogue(context, builder, node));
     return KEFIR_OK;
 }
 
