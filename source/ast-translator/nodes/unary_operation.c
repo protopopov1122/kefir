@@ -201,20 +201,21 @@ static kefir_result_t translate_preincdec(struct kefir_mem *mem, struct kefir_as
     const struct kefir_ast_type *normalized_type = kefir_ast_translator_normalize_type(node->base.properties.type);
     REQUIRE_OK(kefir_ast_translate_lvalue(mem, context, builder, node->arg));
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 0));
-    REQUIRE_OK(kefir_ast_translator_load_value(normalized_type, context->ast_context->type_traits, builder));
+    REQUIRE_OK(kefir_ast_translator_resolve_lvalue(mem, context, builder, node->arg));
 
     REQUIRE_OK(incdec_impl(mem, context, builder, node, normalized_type));
 
     if (KEFIR_AST_TYPE_IS_LONG_DOUBLE(normalized_type)) {
-        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 2));
-        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_DROP, 3));
-        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 2));
-        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 2));
+        // [V*, V1, V2]
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_XCHG, 1));  // [V*, V2, V1]
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_XCHG, 2));  // [V1, V2, V*]
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 2));  // [V1, V2, V*, V1]
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 2));  // [V1, V2, V*, V1, V2]
     } else {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_XCHG, 1));
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 1));
     }
-    REQUIRE_OK(kefir_ast_translator_store_value(mem, normalized_type, context, builder));
+    REQUIRE_OK(kefir_ast_translator_store_lvalue(mem, context, builder, node->arg));
     return KEFIR_OK;
 }
 
@@ -224,20 +225,21 @@ static kefir_result_t translate_postincdec(struct kefir_mem *mem, struct kefir_a
     const struct kefir_ast_type *normalized_type = kefir_ast_translator_normalize_type(node->base.properties.type);
     REQUIRE_OK(kefir_ast_translate_lvalue(mem, context, builder, node->arg));
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 0));
-    REQUIRE_OK(kefir_ast_translator_load_value(normalized_type, context->ast_context->type_traits, builder));
+    REQUIRE_OK(kefir_ast_translator_resolve_lvalue(mem, context, builder, node->arg));
 
     if (KEFIR_AST_TYPE_IS_LONG_DOUBLE(normalized_type)) {
-        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 2));
-        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_DROP, 3));
-        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 2));
-        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 2));
+        // [V*, V1, V2]
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_XCHG, 1));  // [V*, V2, V1]
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_XCHG, 2));  // [V1, V2, V*]
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 2));  // [V1, V2, V*, V1]
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 2));  // [V1, V2, V*, V1, V2]
     } else {
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_XCHG, 1));
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 1));
     }
 
     REQUIRE_OK(incdec_impl(mem, context, builder, node, normalized_type));
-    REQUIRE_OK(kefir_ast_translator_store_value(mem, normalized_type, context, builder));
+    REQUIRE_OK(kefir_ast_translator_store_lvalue(mem, context, builder, node->arg));
     return KEFIR_OK;
 }
 
