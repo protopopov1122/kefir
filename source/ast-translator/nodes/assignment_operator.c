@@ -43,6 +43,17 @@ static kefir_result_t store_value(struct kefir_mem *mem, struct kefir_ast_transl
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 1));
     }
     REQUIRE_OK(kefir_ast_translator_store_lvalue(mem, context, builder, node->target));
+
+    if (node->target->properties.expression_props.bitfield && KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(result_normalized_type)) {
+        kefir_bool_t signedness;
+        REQUIRE_OK(kefir_ast_type_is_signed(context->ast_context->type_traits, result_normalized_type, &signedness));
+        const kefir_size_t bitwidth = node->target->properties.expression_props.bitfield_width;
+        if (signedness) {
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_EXTSBITS, 0, bitwidth));
+        } else {
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_EXTUBITS, 0, bitwidth));
+        }
+    }
     return KEFIR_OK;
 }
 
