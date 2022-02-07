@@ -166,7 +166,7 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 35
+                    "arg": 36
                 },
                 {
                     "opcode": "getlocals"
@@ -221,6 +221,9 @@
                 {
                     "opcode": "iadd1",
                     "arg": -1
+                },
+                {
+                    "opcode": "extend32"
                 },
                 {
                     "opcode": "xchg",

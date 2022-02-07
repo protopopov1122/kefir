@@ -336,7 +336,7 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 21
+                    "arg": 22
                 },
                 {
                     "opcode": "invoke",
@@ -366,6 +366,9 @@
                 {
                     "opcode": "iadd1",
                     "arg": 1
+                },
+                {
+                    "opcode": "extend32"
                 },
                 {
                     "opcode": "store32"
@@ -423,7 +426,7 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 28
+                    "arg": 29
                 },
                 {
                     "opcode": "invoke",
@@ -452,7 +455,7 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 28
+                    "arg": 29
                 },
                 {
                     "opcode": "getlocals"
@@ -475,6 +478,9 @@
                 {
                     "opcode": "iadd1",
                     "arg": 1
+                },
+                {
+                    "opcode": "extend32"
                 },
                 {
                     "opcode": "store32"

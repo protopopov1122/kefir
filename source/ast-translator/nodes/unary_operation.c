@@ -206,6 +206,8 @@ static kefir_result_t incdec_impl(struct kefir_mem *mem, struct kefir_ast_transl
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IADD1, diff));
             break;
     }
+
+    REQUIRE_OK(kefir_ast_translate_typeconv_normalize(builder, context->ast_context->type_traits, normalized_type));
     return KEFIR_OK;
 }
 

@@ -131,6 +131,9 @@
                     "arg": 1
                 },
                 {
+                    "opcode": "extend16"
+                },
+                {
                     "opcode": "store16"
                 },
                 {
@@ -157,11 +160,11 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 23
+                    "arg": 24
                 },
                 {
                     "opcode": "pushlabel",
-                    "arg": 25
+                    "arg": 26
                 },
                 {
                     "opcode": "ijmp"

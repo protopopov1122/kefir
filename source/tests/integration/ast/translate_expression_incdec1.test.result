@@ -272,6 +272,9 @@
                     "arg": -1
                 },
                 {
+                    "opcode": "extend32"
+                },
+                {
                     "opcode": "store32"
                 }
             ]
@@ -311,6 +314,13 @@
                     "arg": -1
                 },
                 {
+                    "opcode": "push",
+                    "arg": 65535
+                },
+                {
+                    "opcode": "iand"
+                },
+                {
                     "opcode": "store16"
                 }
             ]
@@ -341,6 +351,9 @@
                 {
                     "opcode": "iadd1",
                     "arg": 1
+                },
+                {
+                    "opcode": "extend32"
                 },
                 {
                     "opcode": "store32"
@@ -380,6 +393,13 @@
                 {
                     "opcode": "iadd1",
                     "arg": 1
+                },
+                {
+                    "opcode": "push",
+                    "arg": 65535
+                },
+                {
+                    "opcode": "iand"
                 },
                 {
                     "opcode": "store16"
