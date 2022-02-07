@@ -81,7 +81,7 @@ kefir_result_t kefir_ir_data_set_bitfield(struct kefir_ir_data *data, kefir_size
     if (width == 64) {
         currentValue = value;
     } else {
-        const kefir_uint64_t mask = (1 << (width + 1)) - 1;
+        const kefir_uint64_t mask = (1ull << (width + 1)) - 1;
         currentValue = currentValue & (~(mask << offset));
         currentValue |= (value & mask) << offset;
     }
