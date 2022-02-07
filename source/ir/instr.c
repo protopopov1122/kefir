@@ -124,24 +124,40 @@ kefir_result_t kefir_irblock_free(struct kefir_mem *mem, struct kefir_irblock *b
     return KEFIR_OK;
 }
 
+union double_halves {
+    kefir_float64_t float64;
+    uint64_t halves[2];
+};
+
+union long_double_halves {
+    kefir_long_double_t long_double;
+    uint64_t halves[2];
+};
+
 kefir_uint64_t kefir_ir_long_double_upper_half(kefir_long_double_t value) {
     // volatile qualifier is necessary to suppress memory access optimizations
     // that upset valgrind
-    volatile union {
-        kefir_long_double_t long_double;
-        uint64_t halves[2];
-    } halves = {.halves = {0, 0}};
-    halves.long_double = value;
-    return halves.halves[1];
+    if (getenv(KEFIR_DISABLE_LONG_DOUBLE_FLAG) != NULL) {
+        volatile union double_halves halves = {.halves = {0, 0}};
+        halves.float64 = value;
+        return halves.halves[1];
+    } else {
+        volatile union long_double_halves halves = {.halves = {0, 0}};
+        halves.long_double = value;
+        return halves.halves[1];
+    }
 }
 
 kefir_uint64_t kefir_ir_long_double_lower_half(kefir_long_double_t value) {
     // volatile qualifier is necessary to suppress memory access optimizations
     // that upset valgrind
-    volatile union {
-        kefir_long_double_t long_double;
-        uint64_t halves[2];
-    } halves = {.halves = {0, 0}};
-    halves.long_double = value;
-    return halves.halves[0];
+    if (getenv(KEFIR_DISABLE_LONG_DOUBLE_FLAG) != NULL) {
+        volatile union double_halves halves = {.halves = {0, 0}};
+        halves.float64 = value;
+        return halves.halves[0];
+    } else {
+        volatile union long_double_halves halves = {.halves = {0, 0}};
+        halves.long_double = value;
+        return halves.halves[0];
+    }
 }

@@ -24,8 +24,6 @@
 #include <string.h>
 #include <uchar.h>
 
-const char *KEFIR_JSON_DISABLE_LONG_DOUBLE = "KEFIR_JSON_DISABLE_LONG_DOUBLE";
-
 kefir_result_t kefir_json_output_init(struct kefir_json_output *json, FILE *file, kefir_size_t indent) {
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid json output"));
     REQUIRE(file != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid file"));
@@ -298,7 +296,7 @@ kefir_result_t kefir_json_output_long_double(struct kefir_json_output *json, kef
     REQUIRE_OK(write_separator(json));
     REQUIRE_OK(validate_value(json));
 
-    if (getenv(KEFIR_JSON_DISABLE_LONG_DOUBLE) != NULL) {
+    if (getenv(KEFIR_DISABLE_LONG_DOUBLE_FLAG) != NULL) {
         fprintf(json->file, "%lf", (double) value);
     } else {
         fprintf(json->file, KEFIR_LONG_DOUBLE_FMT, value);
@@ -320,7 +318,7 @@ kefir_result_t kefir_json_output_hex_long_double(struct kefir_json_output *json,
     REQUIRE_OK(write_separator(json));
     REQUIRE_OK(validate_value(json));
 
-    if (getenv(KEFIR_JSON_DISABLE_LONG_DOUBLE) != NULL) {
+    if (getenv(KEFIR_DISABLE_LONG_DOUBLE_FLAG) != NULL) {
         fprintf(json->file, "\"%a\"", (double) value);
     } else {
         fprintf(json->file, "\"%La\"", value);

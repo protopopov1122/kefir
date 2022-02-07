@@ -32,7 +32,7 @@
 #define __builtin_memset(p, v, n) memset(p, v, n)
 #define __builtin_memcpy(d, s, n) memcpy(d, s, n)
 #define __builtin_memcmp(d, s, n) memcmp(d, s, n)
-#define __builtin_expect(e, x) (e == x)
+#define __builtin_expect(e, x) (e)
 #define __builtin_trap() abort()
 #define __builtin_strcpy(d, s) strcpy(d, s)
 #define __builtin_strncpy(d, s, n) strncpy(d, s, n)

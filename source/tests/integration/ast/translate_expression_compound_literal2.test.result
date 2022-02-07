@@ -183,6 +183,17 @@
                     "arg": 0
                 },
                 {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "bzero",
+                    "arg": {
+                        "type": 2,
+                        "index": 3
+                    }
+                },
+                {
                     "opcode": "pushstring",
                     "arg": 0
                 },
@@ -397,6 +408,17 @@
                 {
                     "opcode": "pick",
                     "arg": 0
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "bzero",
+                    "arg": {
+                        "type": 2,
+                        "index": 11
+                    }
                 },
                 {
                     "opcode": "pushstring",

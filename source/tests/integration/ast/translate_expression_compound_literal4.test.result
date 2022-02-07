@@ -257,6 +257,17 @@
                     "arg": 0
                 },
                 {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "bzero",
+                    "arg": {
+                        "type": 2,
+                        "index": 4
+                    }
+                },
+                {
                     "opcode": "pushstring",
                     "arg": 0
                 },
@@ -274,6 +285,17 @@
                 {
                     "opcode": "iadd1",
                     "arg": 24
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "bzero",
+                    "arg": {
+                        "type": 2,
+                        "index": 6
+                    }
                 },
                 {
                     "opcode": "pushstring",
@@ -295,6 +317,17 @@
                     "arg": 72
                 },
                 {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "bzero",
+                    "arg": {
+                        "type": 2,
+                        "index": 8
+                    }
+                },
+                {
                     "opcode": "pushstring",
                     "arg": 2
                 },
@@ -312,6 +345,17 @@
                 {
                     "opcode": "iadd1",
                     "arg": 168
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "bzero",
+                    "arg": {
+                        "type": 2,
+                        "index": 10
+                    }
                 },
                 {
                     "opcode": "pushstring",

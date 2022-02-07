@@ -102,4 +102,6 @@
 
 const char *kefir_format(char *buf, kefir_size_t, const char *format, ...);
 
+#define KEFIR_DISABLE_LONG_DOUBLE_FLAG "KEFIR_DISABLE_LONG_DOUBLE"
+
 #endif

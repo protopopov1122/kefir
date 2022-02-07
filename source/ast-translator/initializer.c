@@ -121,10 +121,11 @@ static kefir_result_t traverse_string_literal(const struct kefir_ast_designator 
     }
 
     REQUIRE_OK(translate_address(param->cached_type, designator, param->builder));
-    REQUIRE_OK(kefir_ast_translate_expression(param->mem, expression, param->builder, param->context));
+    REQUIRE_OK(zero_type(param->mem, param->context, param->builder, type_layout->type));
     const struct kefir_ast_type *array_type = kefir_ast_type_array(
         param->mem, param->context->ast_context->type_bundle, type_layout->type->array_type.element_type,
         kefir_ast_constant_expression_integer(param->mem, length), NULL);
+    REQUIRE_OK(kefir_ast_translate_expression(param->mem, expression, param->builder, param->context));
 
     REQUIRE_OK(kefir_ast_translator_store_value(
         param->mem, KEFIR_AST_TYPE_SAME(type_layout->type, array_type) ? type_layout->type : array_type, param->context,

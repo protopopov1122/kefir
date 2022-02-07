@@ -275,6 +275,17 @@
                     "arg": 0
                 },
                 {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "bzero",
+                    "arg": {
+                        "type": 12,
+                        "index": 4
+                    }
+                },
+                {
                     "opcode": "pushstring",
                     "arg": 0
                 },
