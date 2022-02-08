@@ -63,4 +63,10 @@ const struct kefir_ast_type *kefir_ast_type_conv_adjust_function_parameter(struc
                                                                            struct kefir_ast_type_bundle *,
                                                                            const struct kefir_ast_type *);
 
+const struct kefir_ast_type *kefir_ast_type_conv_function_default_argument_promotions(
+    struct kefir_mem *, struct kefir_ast_type_bundle *, const struct kefir_ast_type_traits *,
+    const struct kefir_ast_type *);
+
+const struct kefir_ast_type *kefir_ast_type_conv_unwrap_enumeration(const struct kefir_ast_type *);
+
 #endif

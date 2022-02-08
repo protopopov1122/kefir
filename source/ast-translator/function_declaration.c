@@ -29,26 +29,12 @@
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"
 
-static const struct kefir_ast_type *adjust_untyped_parameter(struct kefir_mem *mem,
-                                                             struct kefir_ast_type_bundle *type_bundle,
-                                                             const struct kefir_ast_type_traits *type_traits,
-                                                             const struct kefir_ast_type *original) {
-    const struct kefir_ast_type *param_type =
-        kefir_ast_translator_normalize_type(KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, type_bundle, original));
-    if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(param_type)) {
-        return kefir_ast_type_int_promotion(type_traits, param_type);
-    } else if (param_type->tag == KEFIR_AST_TYPE_SCALAR_FLOAT) {
-        return kefir_ast_type_double();
-    } else {
-        return param_type;
-    }
-}
-
 static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(
     struct kefir_mem *mem, const struct kefir_ast_translator_environment *env,
     struct kefir_ast_type_bundle *type_bundle, const struct kefir_ast_type_traits *type_traits,
     struct kefir_ast_translator_type_resolver *type_resolver, const struct kefir_ast_type *func_type,
-    const struct kefir_list *parameters, struct kefir_ast_translator_function_declaration *func_decl) {
+    const struct kefir_list *parameters, struct kefir_ast_translator_function_declaration *func_decl,
+    kefir_bool_t *actual_parameters_exceed_declared) {
 
     struct kefir_irbuilder_type builder;
     REQUIRE_OK(kefir_irbuilder_type_init(mem, &builder, func_decl->ir_argument_type));
@@ -69,8 +55,10 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(
                     param->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR,
                 KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &param->source_location,
                                        "Function declaration parameter shall be either expression, or declaration"));
-            param_type = adjust_untyped_parameter(mem, type_bundle, type_traits, param->properties.type);
-            REQUIRE(param_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unable to adjust untyped parameter"));
+            param_type = kefir_ast_type_conv_function_default_argument_promotions(mem, type_bundle, type_traits,
+                                                                                  param->properties.type);
+            REQUIRE(param_type != NULL,
+                    KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unable to perform default function argument promotions"));
         }
 
         if (param_type != NULL) {
@@ -106,12 +94,15 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(
         }
     }
 
+    *actual_parameters_exceed_declared = param_iter != NULL;
+
     for (; param_iter != NULL; kefir_list_next(&param_iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, param, param_iter->value);
 
-        const struct kefir_ast_type *param_type =
-            adjust_untyped_parameter(mem, type_bundle, type_traits, param->properties.type);
-        REQUIRE(param_type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unable to adjust untyped parameter"));
+        const struct kefir_ast_type *param_type = kefir_ast_type_conv_function_default_argument_promotions(
+            mem, type_bundle, type_traits, param->properties.type);
+        REQUIRE(param_type != NULL,
+                KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unable to perform default function argument promotions"));
 
         struct kefir_ast_type_layout *parameter_layout = NULL;
         kefir_result_t res = kefir_ast_translate_object_type(mem, param_type, 0, env, &builder, &parameter_layout);
@@ -199,8 +190,11 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc(
     REQUIRE(func_decl->ir_argument_type != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR type"));
     func_decl->ir_return_type = kefir_ir_module_new_type(mem, module, 0, &func_decl->ir_return_type_id);
     REQUIRE(func_decl->ir_return_type != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR type"));
+
+    kefir_bool_t actual_parameters_exceed_declared = false;
     kefir_result_t res = kefir_ast_translator_function_declaration_alloc_args(
-        mem, env, type_bundle, type_traits, type_resolver, func_type, parameters, func_decl);
+        mem, env, type_bundle, type_traits, type_resolver, func_type, parameters, func_decl,
+        &actual_parameters_exceed_declared);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_list_free(mem, &func_decl->argument_layouts);
         return res;
@@ -212,9 +206,9 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc(
         return res;
     });
 
-    func_decl->ir_function_decl =
-        kefir_ir_module_new_function_declaration(mem, module, identifier, func_decl->ir_argument_type_id,
-                                                 func_type->function_type.ellipsis, func_decl->ir_return_type_id);
+    func_decl->ir_function_decl = kefir_ir_module_new_function_declaration(
+        mem, module, identifier, func_decl->ir_argument_type_id,
+        func_type->function_type.ellipsis || actual_parameters_exceed_declared, func_decl->ir_return_type_id);
     REQUIRE_ELSE(func_decl->ir_function_decl != NULL, {
         kefir_list_free(mem, &func_decl->argument_layouts);
         return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR function declaration");

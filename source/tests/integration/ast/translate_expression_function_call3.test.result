@@ -281,7 +281,7 @@
             "identifier": 8,
             "name": "sum2",
             "parameters": 19,
-            "vararg": false,
+            "vararg": true,
             "returns": 20
         },
         {

@@ -24,6 +24,8 @@
 #include "kefir/ast-translator/lvalue.h"
 #include "kefir/ast-translator/value.h"
 #include "kefir/ast-translator/scope/translator.h"
+#include "kefir/ast-translator/typeconv.h"
+#include "kefir/ast/type_conv.h"
 #include "kefir/ast/downcast.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
@@ -322,6 +324,12 @@ kefir_result_t kefir_ast_translator_function_context_translate(
             REQUIRE_OK(kefir_ast_translator_object_lvalue(mem, context, builder,
                                                           param->properties.expression_props.identifier, scoped_id));
             REQUIRE_OK(xchg_param_address(builder, scoped_id->object.type));
+
+            const struct kefir_ast_type *default_promotion = kefir_ast_type_conv_function_default_argument_promotions(
+                mem, context->ast_context->type_bundle, context->ast_context->type_traits, scoped_id->object.type);
+            REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits, default_promotion,
+                                                    scoped_id->object.type));
+
             REQUIRE_OK(kefir_ast_translator_store_value(mem, scoped_id->object.type, context, builder));
         } else {
             return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR,

@@ -204,3 +204,32 @@ const struct kefir_ast_type *kefir_ast_type_conv_adjust_function_parameter(struc
             return type;
     }
 }
+
+const struct kefir_ast_type *kefir_ast_type_conv_function_default_argument_promotions(
+    struct kefir_mem *mem, struct kefir_ast_type_bundle *type_bundle, const struct kefir_ast_type_traits *type_traits,
+    const struct kefir_ast_type *original) {
+    REQUIRE(mem != NULL, NULL);
+    REQUIRE(type_bundle != NULL, NULL);
+    REQUIRE(type_traits != NULL, NULL);
+    REQUIRE(original != NULL, NULL);
+
+    const struct kefir_ast_type *param_type = kefir_ast_type_conv_unwrap_enumeration(
+        kefir_ast_unqualified_type(KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, type_bundle, original)));
+    if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(param_type)) {
+        return kefir_ast_type_int_promotion(type_traits, param_type);
+    } else if (param_type->tag == KEFIR_AST_TYPE_SCALAR_FLOAT) {
+        return kefir_ast_type_double();
+    } else {
+        return param_type;
+    }
+}
+
+const struct kefir_ast_type *kefir_ast_type_conv_unwrap_enumeration(const struct kefir_ast_type *original) {
+    REQUIRE(original != NULL, NULL);
+
+    if (original->tag == KEFIR_AST_TYPE_ENUMERATION) {
+        return kefir_ast_unqualified_type(original->enumeration_type.underlying_type);
+    } else {
+        return original;
+    }
+}

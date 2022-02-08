@@ -50,7 +50,7 @@
             "identifier": 1,
             "name": null,
             "parameters": 2,
-            "vararg": false,
+            "vararg": true,
             "returns": 3
         }
     ],
