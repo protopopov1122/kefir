@@ -66,6 +66,8 @@ typedef struct kefir_ast_type {
 typedef struct kefir_ast_type_traits {
     kefir_result_t (*integral_type_fits)(const struct kefir_ast_type_traits *, const struct kefir_ast_type *,
                                          const struct kefir_ast_type *, kefir_bool_t *);
+    const struct kefir_ast_type *(*bitfield_promotion)(const struct kefir_ast_type_traits *,
+                                                       const struct kefir_ast_type *, kefir_size_t);
     const struct kefir_ast_type *underlying_enumeration_type;
     const struct kefir_ast_type *ptrdiff_type;
     const struct kefir_ast_type *wide_char_type;
@@ -81,7 +83,7 @@ typedef struct kefir_ast_type_bundle {
     struct kefir_list types;
 } kefir_ast_type_bundle_t;
 
-kefir_result_t kefir_ast_type_traits_init(kefir_data_model_t, struct kefir_ast_type_traits *);
+kefir_result_t kefir_ast_type_traits_init(const struct kefir_data_model_descriptor *, struct kefir_ast_type_traits *);
 kefir_bool_t kefir_ast_type_is_complete(const struct kefir_ast_type *);
 kefir_result_t kefir_ast_type_list_variable_modificators(const struct kefir_ast_type *,
                                                          kefir_result_t (*)(const struct kefir_ast_node_base *, void *),
@@ -112,5 +114,7 @@ kefir_ast_function_specifier_t kefir_ast_context_merge_function_specifiers(kefir
     ((type)->tag == KEFIR_AST_TYPE_ARRAY && ((type)->array_type.boundary == KEFIR_AST_ARRAY_VLA || \
                                              (type)->array_type.boundary == KEFIR_AST_ARRAY_VLA_STATIC))
 #define KEFIR_AST_TYPE_HASH(type) ((kefir_ast_type_hash_t) type)
+
+extern const struct kefir_ast_bitfield_properties KEFIR_AST_BITFIELD_PROPERTIES_NONE;
 
 #endif

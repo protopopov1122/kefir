@@ -24,13 +24,20 @@
 #include "kefir/ast/type.h"
 
 const struct kefir_ast_type *kefir_ast_type_int_promotion(const struct kefir_ast_type_traits *,
-                                                          const struct kefir_ast_type *);
+                                                          const struct kefir_ast_type *,
+                                                          struct kefir_ast_bitfield_properties);
 const struct kefir_ast_type *kefir_ast_type_common_arithmetic(const struct kefir_ast_type_traits *,
                                                               const struct kefir_ast_type *,
-                                                              const struct kefir_ast_type *);
+                                                              struct kefir_ast_bitfield_properties,
+                                                              const struct kefir_ast_type *,
+                                                              struct kefir_ast_bitfield_properties);
 
 const struct kefir_ast_type *kefir_ast_type_function_default_argument_promotion(const struct kefir_ast_type_traits *,
                                                                                 const struct kefir_ast_type *);
+
+const struct kefir_ast_type *kefir_ast_type_function_default_argument_convertion_promotion(
+    struct kefir_mem *, struct kefir_ast_type_bundle *, const struct kefir_ast_type_traits *,
+    const struct kefir_ast_type *);
 
 const struct kefir_ast_type *kefir_ast_type_lvalue_conversion(const struct kefir_ast_type *);
 
@@ -62,10 +69,6 @@ const struct kefir_ast_type *kefir_ast_type_conv_expression_wrapper(struct kefir
 const struct kefir_ast_type *kefir_ast_type_conv_adjust_function_parameter(struct kefir_mem *,
                                                                            struct kefir_ast_type_bundle *,
                                                                            const struct kefir_ast_type *);
-
-const struct kefir_ast_type *kefir_ast_type_conv_function_default_argument_promotions(
-    struct kefir_mem *, struct kefir_ast_type_bundle *, const struct kefir_ast_type_traits *,
-    const struct kefir_ast_type *);
 
 const struct kefir_ast_type *kefir_ast_type_conv_unwrap_enumeration(const struct kefir_ast_type *);
 

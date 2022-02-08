@@ -60,4 +60,9 @@ typedef struct kefir_ast_type_qualification {
     kefir_bool_t volatile_type;
 } kefir_ast_type_qualification_t;
 
+typedef struct kefir_ast_bitfield_properties {
+    kefir_bool_t bitfield;
+    kefir_size_t width;
+} kefir_ast_bitfield_properties_t;
+
 #endif

@@ -47,7 +47,8 @@ kefir_result_t kefir_ast_analyze_unary_operation_node(struct kefir_mem *mem, con
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->arg->source_location,
                                            "Unary operator operand shall be an arithmetic expression"));
             if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1)) {
-                base->properties.type = kefir_ast_type_int_promotion(context->type_traits, type1);
+                base->properties.type = kefir_ast_type_int_promotion(
+                    context->type_traits, type1, node->arg->properties.expression_props.bitfield_props);
             } else {
                 base->properties.type = type1;
             }
@@ -64,7 +65,8 @@ kefir_result_t kefir_ast_analyze_unary_operation_node(struct kefir_mem *mem, con
             REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1),
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->arg->source_location,
                                            "Inversion operand shall be an integral expression"));
-            base->properties.type = kefir_ast_type_int_promotion(context->type_traits, type1);
+            base->properties.type = kefir_ast_type_int_promotion(context->type_traits, type1,
+                                                                 node->arg->properties.expression_props.bitfield_props);
             base->properties.expression_props.constant_expression =
                 node->arg->properties.expression_props.constant_expression;
         } break;
@@ -143,7 +145,7 @@ kefir_result_t kefir_ast_analyze_unary_operation_node(struct kefir_mem *mem, con
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->arg->source_location,
                                            "Sizeof operator expects expression or type name"));
             const struct kefir_ast_type *type = node->arg->properties.type;
-            REQUIRE(!node->arg->properties.expression_props.bitfield,
+            REQUIRE(!node->arg->properties.expression_props.bitfield_props.bitfield,
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->arg->source_location,
                                            "Sizeof operator cannot be applied to bit-fields"));
             REQUIRE(type->tag != KEFIR_AST_TYPE_FUNCTION,

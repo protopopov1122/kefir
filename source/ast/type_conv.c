@@ -23,11 +23,18 @@
 #include "kefir/core/error.h"
 
 const struct kefir_ast_type *kefir_ast_type_int_promotion(const struct kefir_ast_type_traits *type_traits,
-                                                          const struct kefir_ast_type *type) {
+                                                          const struct kefir_ast_type *type,
+                                                          struct kefir_ast_bitfield_properties bitfield_props) {
+    UNUSED(bitfield_props);
     REQUIRE(type != NULL, NULL);
     REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type), NULL);
     if (type->tag == KEFIR_AST_TYPE_ENUMERATION) {
         type = kefir_ast_enumeration_underlying_type(&type->enumeration_type);
+    }
+
+    if (bitfield_props.bitfield) {
+        type = type_traits->bitfield_promotion(type_traits, type, bitfield_props.width);
+        REQUIRE(type != NULL, NULL);
     }
 
     const struct kefir_ast_type *SIGNED_INT = kefir_ast_type_signed_int();
@@ -38,6 +45,8 @@ const struct kefir_ast_type *kefir_ast_type_int_promotion(const struct kefir_ast
             return SIGNED_INT;
         } else if (type_traits->integral_type_fits(type_traits, type, UNSIGNED_INT, &fits) == KEFIR_OK && fits) {
             return UNSIGNED_INT;
+        } else if (bitfield_props.bitfield) {
+            return type;
         } else {
             return NULL;
         }
@@ -49,7 +58,9 @@ const struct kefir_ast_type *kefir_ast_type_int_promotion(const struct kefir_ast
 
 const struct kefir_ast_type *kefir_ast_type_common_arithmetic(const struct kefir_ast_type_traits *type_traits,
                                                               const struct kefir_ast_type *type1,
-                                                              const struct kefir_ast_type *type2) {
+                                                              struct kefir_ast_bitfield_properties bitfield1,
+                                                              const struct kefir_ast_type *type2,
+                                                              struct kefir_ast_bitfield_properties bitfield2) {
     REQUIRE(type1 != NULL, NULL);
     REQUIRE(type2 != NULL, NULL);
     REQUIRE(KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1) && KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type2), NULL);
@@ -70,8 +81,8 @@ const struct kefir_ast_type *kefir_ast_type_common_arithmetic(const struct kefir
     if (ANY_OF(type1, type2, kefir_ast_type_float())) {
         return kefir_ast_type_float();
     }
-    type1 = kefir_ast_type_int_promotion(type_traits, type1);
-    type2 = kefir_ast_type_int_promotion(type_traits, type2);
+    type1 = kefir_ast_type_int_promotion(type_traits, type1, bitfield1);
+    type2 = kefir_ast_type_int_promotion(type_traits, type2, bitfield2);
     REQUIRE(type1 != NULL, NULL);
     REQUIRE(type2 != NULL, NULL);
     if (KEFIR_AST_TYPE_SAME(type1, type2)) {
@@ -114,12 +125,25 @@ const struct kefir_ast_type *kefir_ast_type_common_arithmetic(const struct kefir
 const struct kefir_ast_type *kefir_ast_type_function_default_argument_promotion(
     const struct kefir_ast_type_traits *type_traits, const struct kefir_ast_type *type) {
     if (KEFIR_AST_TYPE_IS_NONENUM_INTEGRAL_TYPE(type)) {
-        return kefir_ast_type_int_promotion(type_traits, type);
+        return kefir_ast_type_int_promotion(type_traits, type, KEFIR_AST_BITFIELD_PROPERTIES_NONE);
     } else if (type->tag == KEFIR_AST_TYPE_SCALAR_FLOAT) {
         return kefir_ast_type_double();
     } else {
         return type;
     }
+}
+
+const struct kefir_ast_type *kefir_ast_type_function_default_argument_convertion_promotion(
+    struct kefir_mem *mem, struct kefir_ast_type_bundle *type_bundle, const struct kefir_ast_type_traits *type_traits,
+    const struct kefir_ast_type *original) {
+    REQUIRE(mem != NULL, NULL);
+    REQUIRE(type_bundle != NULL, NULL);
+    REQUIRE(type_traits != NULL, NULL);
+    REQUIRE(original != NULL, NULL);
+
+    const struct kefir_ast_type *param_type = kefir_ast_type_conv_unwrap_enumeration(
+        kefir_ast_unqualified_type(KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, type_bundle, original)));
+    return kefir_ast_type_function_default_argument_promotion(type_traits, param_type);
 }
 
 const struct kefir_ast_type *kefir_ast_type_lvalue_conversion(const struct kefir_ast_type *type) {
@@ -202,25 +226,6 @@ const struct kefir_ast_type *kefir_ast_type_conv_adjust_function_parameter(struc
 
         default:
             return type;
-    }
-}
-
-const struct kefir_ast_type *kefir_ast_type_conv_function_default_argument_promotions(
-    struct kefir_mem *mem, struct kefir_ast_type_bundle *type_bundle, const struct kefir_ast_type_traits *type_traits,
-    const struct kefir_ast_type *original) {
-    REQUIRE(mem != NULL, NULL);
-    REQUIRE(type_bundle != NULL, NULL);
-    REQUIRE(type_traits != NULL, NULL);
-    REQUIRE(original != NULL, NULL);
-
-    const struct kefir_ast_type *param_type = kefir_ast_type_conv_unwrap_enumeration(
-        kefir_ast_unqualified_type(KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, type_bundle, original)));
-    if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(param_type)) {
-        return kefir_ast_type_int_promotion(type_traits, param_type);
-    } else if (param_type->tag == KEFIR_AST_TYPE_SCALAR_FLOAT) {
-        return kefir_ast_type_double();
-    } else {
-        return param_type;
     }
 }
 

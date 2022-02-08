@@ -67,7 +67,9 @@ kefir_result_t kefir_ast_analyze_conditional_operator_node(struct kefir_mem *mem
                                    "First conditional operator operand shall have scalar type"));
 
     if (KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1) && KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type2)) {
-        base->properties.type = kefir_ast_type_common_arithmetic(context->type_traits, type1, type2);
+        base->properties.type = kefir_ast_type_common_arithmetic(
+            context->type_traits, type1, node->expr1->properties.expression_props.bitfield_props, type2,
+            node->expr2->properties.expression_props.bitfield_props);
     } else if ((type1->tag == KEFIR_AST_TYPE_STRUCTURE || type1->tag == KEFIR_AST_TYPE_UNION) &&
                (type2->tag == KEFIR_AST_TYPE_STRUCTURE || type2->tag == KEFIR_AST_TYPE_UNION) &&
                KEFIR_AST_TYPE_SAME(type1, type2)) {

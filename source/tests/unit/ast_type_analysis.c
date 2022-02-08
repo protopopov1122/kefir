@@ -30,33 +30,82 @@
 
 DEFINE_CASE(ast_type_analysis_integer_promotion1, "AST Type analysis - integer promotion") {
     const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
-    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_boolean()),
-                    KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
-    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_char()), KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
-    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_signed_char()),
-                    KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
-    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_unsigned_char()),
-                    KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
-    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_signed_short()),
-                    KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
-    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_unsigned_short()),
-                    KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
-    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_signed_int()),
-                    KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
-    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_unsigned_int()),
-                    KEFIR_AST_TYPE_SCALAR_UNSIGNED_INT);
-    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_signed_long()),
-                    KEFIR_AST_TYPE_SCALAR_SIGNED_LONG);
-    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_unsigned_long()),
-                    KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG);
-    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_signed_long_long()),
+    ASSERT_TYPE_TAG(
+        kefir_ast_type_int_promotion(type_traits, kefir_ast_type_boolean(), KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+        KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
+    ASSERT_TYPE_TAG(
+        kefir_ast_type_int_promotion(type_traits, kefir_ast_type_char(), KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+        KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
+    ASSERT_TYPE_TAG(
+        kefir_ast_type_int_promotion(type_traits, kefir_ast_type_signed_char(), KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+        KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
+    ASSERT_TYPE_TAG(
+        kefir_ast_type_int_promotion(type_traits, kefir_ast_type_unsigned_char(), KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+        KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
+    ASSERT_TYPE_TAG(
+        kefir_ast_type_int_promotion(type_traits, kefir_ast_type_signed_short(), KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+        KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
+    ASSERT_TYPE_TAG(
+        kefir_ast_type_int_promotion(type_traits, kefir_ast_type_unsigned_short(), KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+        KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
+    ASSERT_TYPE_TAG(
+        kefir_ast_type_int_promotion(type_traits, kefir_ast_type_signed_int(), KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+        KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
+    ASSERT_TYPE_TAG(
+        kefir_ast_type_int_promotion(type_traits, kefir_ast_type_unsigned_int(), KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+        KEFIR_AST_TYPE_SCALAR_UNSIGNED_INT);
+    ASSERT_TYPE_TAG(
+        kefir_ast_type_int_promotion(type_traits, kefir_ast_type_signed_long(), KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+        KEFIR_AST_TYPE_SCALAR_SIGNED_LONG);
+    ASSERT_TYPE_TAG(
+        kefir_ast_type_int_promotion(type_traits, kefir_ast_type_unsigned_long(), KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+        KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG);
+    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_signed_long_long(),
+                                                 KEFIR_AST_BITFIELD_PROPERTIES_NONE),
                     KEFIR_AST_TYPE_SCALAR_SIGNED_LONG_LONG);
-    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_unsigned_long_long()),
+    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_unsigned_long_long(),
+                                                 KEFIR_AST_BITFIELD_PROPERTIES_NONE),
                     KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG_LONG);
-    ASSERT(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_void()) == NULL);
-    ASSERT(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_float()) == NULL);
-    ASSERT(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_double()) == NULL);
-    ASSERT(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_long_double()) == NULL);
+    ASSERT(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_void(), KEFIR_AST_BITFIELD_PROPERTIES_NONE) ==
+           NULL);
+    ASSERT(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_float(), KEFIR_AST_BITFIELD_PROPERTIES_NONE) ==
+           NULL);
+    ASSERT(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_double(), KEFIR_AST_BITFIELD_PROPERTIES_NONE) ==
+           NULL);
+    ASSERT(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_long_double(),
+                                        KEFIR_AST_BITFIELD_PROPERTIES_NONE) == NULL);
+}
+END_CASE
+
+DEFINE_CASE(ast_type_analysis_bitfield_promotion1, "AST Type analysis - bit-field promotion") {
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
+    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_signed_int(),
+                                                 (struct kefir_ast_bitfield_properties){.bitfield = true, .width = 17}),
+                    KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
+    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_unsigned_short(),
+                                                 (struct kefir_ast_bitfield_properties){.bitfield = true, .width = 10}),
+                    KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
+    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_unsigned_int(),
+                                                 (struct kefir_ast_bitfield_properties){.bitfield = true, .width = 22}),
+                    KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
+    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_signed_long_long(),
+                                                 (struct kefir_ast_bitfield_properties){.bitfield = true, .width = 31}),
+                    KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
+    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_unsigned_int(),
+                                                 (struct kefir_ast_bitfield_properties){.bitfield = true, .width = 31}),
+                    KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
+    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_unsigned_int(),
+                                                 (struct kefir_ast_bitfield_properties){.bitfield = true, .width = 32}),
+                    KEFIR_AST_TYPE_SCALAR_UNSIGNED_INT);
+    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_signed_long(),
+                                                 (struct kefir_ast_bitfield_properties){.bitfield = true, .width = 32}),
+                    KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
+    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_signed_long(),
+                                                 (struct kefir_ast_bitfield_properties){.bitfield = true, .width = 33}),
+                    KEFIR_AST_TYPE_SCALAR_SIGNED_LONG);
+    ASSERT_TYPE_TAG(kefir_ast_type_int_promotion(type_traits, kefir_ast_type_unsigned_long(),
+                                                 (struct kefir_ast_bitfield_properties){.bitfield = true, .width = 40}),
+                    KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG);
 }
 END_CASE
 
@@ -68,21 +117,34 @@ DEFINE_CASE(ast_type_analysis_arithmetic_conversion1, "AST Type analysis - arith
     const kefir_size_t TYPES_LEN = sizeof(TYPES) / sizeof(TYPES[0]);
     for (kefir_size_t i = 0; i < TYPES_LEN; i++) {
         for (kefir_size_t j = 0; j < TYPES_LEN; j++) {
-            ASSERT_TYPE_TAG(kefir_ast_type_common_arithmetic(type_traits, TYPES[i], TYPES[j]),
+            ASSERT_TYPE_TAG(kefir_ast_type_common_arithmetic(type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                                             TYPES[j], KEFIR_AST_BITFIELD_PROPERTIES_NONE),
                             KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
         }
-        ASSERT_TYPE_TAG(kefir_ast_type_common_arithmetic(type_traits, TYPES[i], kefir_ast_type_signed_int()),
-                        KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
-        ASSERT_TYPE_TAG(kefir_ast_type_common_arithmetic(type_traits, TYPES[i], kefir_ast_type_unsigned_int()),
-                        KEFIR_AST_TYPE_SCALAR_UNSIGNED_INT);
-        ASSERT_TYPE_TAG(kefir_ast_type_common_arithmetic(type_traits, TYPES[i], kefir_ast_type_signed_long()),
-                        KEFIR_AST_TYPE_SCALAR_SIGNED_LONG);
-        ASSERT_TYPE_TAG(kefir_ast_type_common_arithmetic(type_traits, TYPES[i], kefir_ast_type_unsigned_long()),
-                        KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG);
-        ASSERT_TYPE_TAG(kefir_ast_type_common_arithmetic(type_traits, TYPES[i], kefir_ast_type_signed_long_long()),
-                        KEFIR_AST_TYPE_SCALAR_SIGNED_LONG_LONG);
-        ASSERT_TYPE_TAG(kefir_ast_type_common_arithmetic(type_traits, TYPES[i], kefir_ast_type_unsigned_long_long()),
-                        KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG_LONG);
+        ASSERT_TYPE_TAG(
+            kefir_ast_type_common_arithmetic(type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                             kefir_ast_type_signed_int(), KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+            KEFIR_AST_TYPE_SCALAR_SIGNED_INT);
+        ASSERT_TYPE_TAG(
+            kefir_ast_type_common_arithmetic(type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                             kefir_ast_type_unsigned_int(), KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+            KEFIR_AST_TYPE_SCALAR_UNSIGNED_INT);
+        ASSERT_TYPE_TAG(
+            kefir_ast_type_common_arithmetic(type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                             kefir_ast_type_signed_long(), KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+            KEFIR_AST_TYPE_SCALAR_SIGNED_LONG);
+        ASSERT_TYPE_TAG(
+            kefir_ast_type_common_arithmetic(type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                             kefir_ast_type_unsigned_long(), KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+            KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG);
+        ASSERT_TYPE_TAG(
+            kefir_ast_type_common_arithmetic(type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                             kefir_ast_type_signed_long_long(), KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+            KEFIR_AST_TYPE_SCALAR_SIGNED_LONG_LONG);
+        ASSERT_TYPE_TAG(
+            kefir_ast_type_common_arithmetic(type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                             kefir_ast_type_unsigned_long_long(), KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+            KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG_LONG);
     }
 }
 END_CASE
@@ -101,7 +163,9 @@ DEFINE_CASE(ast_type_analysis_arithmetic_conversion2, "AST Type analysis - arith
     const kefir_size_t TYPES2_LEN = sizeof(TYPES2) / sizeof(TYPES2[0]);
     for (kefir_size_t i = 0; i < TYPES_LEN; i++) {
         for (kefir_size_t j = 0; j < TYPES2_LEN; j++) {
-            ASSERT_TYPE_TAG(kefir_ast_type_common_arithmetic(type_traits, TYPES[i], TYPES2[j]), TYPES2[j]->tag);
+            ASSERT_TYPE_TAG(kefir_ast_type_common_arithmetic(type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                                             TYPES2[j], KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+                            TYPES2[j]->tag);
         }
     }
 }
@@ -128,7 +192,9 @@ DEFINE_CASE(ast_type_analysis_arithmetic_conversion3, "AST Type analysis - arith
     const kefir_size_t TYPES2_LEN = sizeof(TYPES2) / sizeof(TYPES2[0]);
     for (kefir_size_t i = 0; i < TYPES_LEN; i++) {
         for (kefir_size_t j = 0; j < TYPES2_LEN; j++) {
-            ASSERT_TYPE_TAG(kefir_ast_type_common_arithmetic(type_traits, TYPES[i], TYPES2[j]), TYPES2[j]->tag);
+            ASSERT_TYPE_TAG(kefir_ast_type_common_arithmetic(type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                                             TYPES2[j], KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+                            TYPES2[j]->tag);
         }
     }
 }

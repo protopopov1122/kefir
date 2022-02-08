@@ -44,10 +44,11 @@ static kefir_result_t store_value(struct kefir_mem *mem, struct kefir_ast_transl
     }
     REQUIRE_OK(kefir_ast_translator_store_lvalue(mem, context, builder, node->target));
 
-    if (node->target->properties.expression_props.bitfield && KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(result_normalized_type)) {
+    if (node->target->properties.expression_props.bitfield_props.bitfield &&
+        KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(result_normalized_type)) {
         kefir_bool_t signedness;
         REQUIRE_OK(kefir_ast_type_is_signed(context->ast_context->type_traits, result_normalized_type, &signedness));
-        const kefir_size_t bitwidth = node->target->properties.expression_props.bitfield_width;
+        const kefir_size_t bitwidth = node->target->properties.expression_props.bitfield_props.width;
         if (signedness) {
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_EXTSBITS, 0, bitwidth));
         } else {
@@ -91,7 +92,9 @@ static kefir_result_t translate_multiplication(struct kefir_mem *mem, struct kef
     REQUIRE(value_normalized_type != NULL,
             KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to perform lvalue conversions"));
     const struct kefir_ast_type *common_type = kefir_ast_type_common_arithmetic(
-        context->ast_context->type_traits, target_normalized_type, value_normalized_type);
+        context->ast_context->type_traits, target_normalized_type,
+        node->target->properties.expression_props.bitfield_props, value_normalized_type,
+        node->value->properties.expression_props.bitfield_props);
     const struct kefir_ast_type *result_normalized_type =
         kefir_ast_translator_normalize_type(node->base.properties.type);
 
@@ -138,7 +141,9 @@ static kefir_result_t translate_divide(struct kefir_mem *mem, struct kefir_ast_t
     REQUIRE(value_normalized_type != NULL,
             KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to perform lvalue conversions"));
     const struct kefir_ast_type *common_type = kefir_ast_type_common_arithmetic(
-        context->ast_context->type_traits, target_normalized_type, value_normalized_type);
+        context->ast_context->type_traits, target_normalized_type,
+        node->target->properties.expression_props.bitfield_props, value_normalized_type,
+        node->value->properties.expression_props.bitfield_props);
     const struct kefir_ast_type *result_normalized_type =
         kefir_ast_translator_normalize_type(node->base.properties.type);
 
@@ -191,7 +196,9 @@ static kefir_result_t translate_modulo_bitwise(struct kefir_mem *mem, struct kef
     REQUIRE(value_normalized_type != NULL,
             KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to perform lvalue conversions"));
     const struct kefir_ast_type *common_type = kefir_ast_type_common_arithmetic(
-        context->ast_context->type_traits, target_normalized_type, value_normalized_type);
+        context->ast_context->type_traits, target_normalized_type,
+        node->target->properties.expression_props.bitfield_props, value_normalized_type,
+        node->value->properties.expression_props.bitfield_props);
     const struct kefir_ast_type *result_normalized_type =
         kefir_ast_translator_normalize_type(node->base.properties.type);
 
@@ -267,7 +274,9 @@ static kefir_result_t translate_add(struct kefir_mem *mem, struct kefir_ast_tran
     if (KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(target_normalized_type) &&
         KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(value_normalized_type)) {
         const struct kefir_ast_type *common_type = kefir_ast_type_common_arithmetic(
-            context->ast_context->type_traits, target_normalized_type, value_normalized_type);
+            context->ast_context->type_traits, target_normalized_type,
+            node->target->properties.expression_props.bitfield_props, value_normalized_type,
+            node->value->properties.expression_props.bitfield_props);
 
         REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits, target_normalized_type,
                                                 common_type));
@@ -336,7 +345,9 @@ static kefir_result_t translate_subtract(struct kefir_mem *mem, struct kefir_ast
     if (KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(target_normalized_type) &&
         KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(value_normalized_type)) {
         const struct kefir_ast_type *common_type = kefir_ast_type_common_arithmetic(
-            context->ast_context->type_traits, target_normalized_type, value_normalized_type);
+            context->ast_context->type_traits, target_normalized_type,
+            node->target->properties.expression_props.bitfield_props, value_normalized_type,
+            node->value->properties.expression_props.bitfield_props);
 
         REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits, target_normalized_type,
                                                 common_type));

@@ -434,7 +434,9 @@ static kefir_result_t translate_relational_equality(struct kefir_mem *mem, struc
     if (KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(arg1_normalized_type) &&
         KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(arg2_normalized_type)) {
         common_type = kefir_ast_type_common_arithmetic(context->ast_context->type_traits, arg1_normalized_type,
-                                                       arg2_normalized_type);
+                                                       node->arg1->properties.expression_props.bitfield_props,
+                                                       arg2_normalized_type,
+                                                       node->arg2->properties.expression_props.bitfield_props);
         REQUIRE_OK(kefir_ast_translate_expression(mem, node->arg1, builder, context));
         REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits, arg1_normalized_type,
                                                 common_type));

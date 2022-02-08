@@ -23,7 +23,10 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-static kefir_size_t default_integral_type_fit_rank(const struct kefir_ast_type *type, kefir_data_model_t data_model) {
+const struct kefir_ast_bitfield_properties KEFIR_AST_BITFIELD_PROPERTIES_NONE = {.bitfield = false};
+
+static kefir_size_t default_integral_type_fit_rank(const struct kefir_ast_type *type,
+                                                   kefir_data_model_tag_t data_model) {
     switch (type->tag) {
         case KEFIR_AST_TYPE_SCALAR_BOOL:
         case KEFIR_AST_TYPE_SCALAR_CHAR:
@@ -67,7 +70,7 @@ static kefir_size_t default_integral_type_fit_rank(const struct kefir_ast_type *
 static kefir_result_t default_integral_type_fits(const struct kefir_ast_type_traits *type_traits,
                                                  const struct kefir_ast_type *source, const struct kefir_ast_type *dest,
                                                  kefir_bool_t *result) {
-    UNUSED(type_traits);
+    REQUIRE(type_traits != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type traits"));
     REQUIRE(source != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid source AST type"));
     REQUIRE(dest != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid destination AST type"));
     REQUIRE(result != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid result pointer"));
@@ -75,10 +78,10 @@ static kefir_result_t default_integral_type_fits(const struct kefir_ast_type_tra
                 (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(dest) || dest->tag == KEFIR_AST_TYPE_SCALAR_BOOL),
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected both source and destination to be basic types"));
 
-    ASSIGN_DECL_CAST(kefir_data_model_t, data_model, type_traits->payload);
+    ASSIGN_DECL_CAST(const struct kefir_data_model_descriptor *, data_model, type_traits->payload);
 
-    kefir_size_t source_fit = default_integral_type_fit_rank(source, data_model);
-    kefir_size_t dest_fit = default_integral_type_fit_rank(dest, data_model);
+    kefir_size_t source_fit = default_integral_type_fit_rank(source, data_model->model);
+    kefir_size_t dest_fit = default_integral_type_fit_rank(dest, data_model->model);
     REQUIRE(source_fit != 0 && dest_fit != 0, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected integral type"));
 
     kefir_bool_t src_sign, dst_sign;
@@ -95,15 +98,33 @@ static kefir_result_t default_integral_type_fits(const struct kefir_ast_type_tra
     return KEFIR_OK;
 }
 
-kefir_result_t kefir_ast_type_traits_init(kefir_data_model_t data_model, struct kefir_ast_type_traits *type_traits) {
+static const struct kefir_ast_type *default_bitfield_promotion(const struct kefir_ast_type_traits *type_traits,
+                                                               const struct kefir_ast_type *type, kefir_size_t width) {
+    REQUIRE(type_traits != NULL, NULL);
+    REQUIRE(type != NULL, NULL);
+
+    ASSIGN_DECL_CAST(const struct kefir_data_model_descriptor *, data_model, type_traits->payload);
+    if (width == data_model->signed_integer_width && KEFIR_INTERNAL_AST_TYPE_IS_SIGNED_INTEGER(type)) {
+        return kefir_ast_type_signed_int();
+    } else if (width >= data_model->signed_integer_width) {
+        return type;
+    } else {
+        return kefir_ast_type_signed_int();
+    }
+}
+
+kefir_result_t kefir_ast_type_traits_init(const struct kefir_data_model_descriptor *data_model,
+                                          struct kefir_ast_type_traits *type_traits) {
+    REQUIRE(data_model != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid data model"));
     REQUIRE(type_traits != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to AST type traits"));
 
     *type_traits = (struct kefir_ast_type_traits){.integral_type_fits = default_integral_type_fits,
+                                                  .bitfield_promotion = default_bitfield_promotion,
                                                   .underlying_enumeration_type = kefir_ast_type_signed_int(),
                                                   .character_type_signedness = true,
                                                   .payload = (kefir_uptr_t) data_model};
 
-    switch (data_model) {
+    switch (data_model->model) {
         case KEFIR_DATA_MODEL_LP64:
             type_traits->ptrdiff_type = kefir_ast_type_signed_long();
             type_traits->unicode16_char_type = kefir_ast_type_unsigned_short();

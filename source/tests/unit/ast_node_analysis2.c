@@ -115,7 +115,7 @@ END_CASE
         ASSERT(oper->base.properties.expression_props.constant_expression == (_const));                    \
         ASSERT(!oper->base.properties.expression_props.lvalue);                                            \
         ASSERT(!oper->base.properties.expression_props.addressable);                                       \
-        ASSERT(!oper->base.properties.expression_props.bitfield);                                          \
+        ASSERT(!oper->base.properties.expression_props.bitfield_props.bitfield);                           \
         ASSERT_OK(KEFIR_AST_NODE_FREE((_mem), KEFIR_AST_NODE_BASE(oper)));                                 \
     } while (0)
 
@@ -234,7 +234,7 @@ END_CASE
         ASSERT(oper->base.properties.expression_props.constant_expression == (_const));                              \
         ASSERT(!oper->base.properties.expression_props.lvalue);                                                      \
         ASSERT(!oper->base.properties.expression_props.addressable);                                                 \
-        ASSERT(!oper->base.properties.expression_props.bitfield);                                                    \
+        ASSERT(!oper->base.properties.expression_props.bitfield_props.bitfield);                                     \
         ASSERT_OK(KEFIR_AST_NODE_FREE((_mem), KEFIR_AST_NODE_BASE(oper)));                                           \
     } while (0)
 
@@ -285,19 +285,26 @@ DEFINE_CASE(ast_node_analysis_multiplicative_operators, "AST node analysis - mul
 
     for (kefir_size_t i = 0; i < TYPES_LEN; i++) {
         for (kefir_size_t j = 0; j < TYPES_LEN; j++) {
-            ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_MULTIPLY,
-                          KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                          KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])),
-                          kefir_ast_type_common_arithmetic(context->type_traits, TYPES[i], TYPES[j]), true);
-            ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_DIVIDE,
-                          KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                          KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])),
-                          kefir_ast_type_common_arithmetic(context->type_traits, TYPES[i], TYPES[j]), true);
+            ASSERT_BINARY(
+                &kft_mem, context, KEFIR_AST_OPERATION_MULTIPLY, KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
+                KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])),
+                kefir_ast_type_common_arithmetic(context->type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                                 TYPES[j], KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+                true);
+            ASSERT_BINARY(
+                &kft_mem, context, KEFIR_AST_OPERATION_DIVIDE, KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
+                KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])),
+                kefir_ast_type_common_arithmetic(context->type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                                 TYPES[j], KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+                true);
             if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(TYPES[i]) && KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(TYPES[j])) {
-                ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_MODULO,
-                              KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                              KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])),
-                              kefir_ast_type_common_arithmetic(context->type_traits, TYPES[i], TYPES[j]), true);
+                ASSERT_BINARY(
+                    &kft_mem, context, KEFIR_AST_OPERATION_MODULO,
+                    KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
+                    KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])),
+                    kefir_ast_type_common_arithmetic(context->type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                                     TYPES[j], KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+                    true);
             }
         }
     }
@@ -368,16 +375,20 @@ DEFINE_CASE(ast_node_analysis_add_operator, "AST node analysis - add operator") 
 
     for (kefir_size_t i = 0; i < TYPES_LEN; i++) {
         for (kefir_size_t j = 0; j < TYPES_LEN; j++) {
-            ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_ADD,
-                          KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                          KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])),
-                          kefir_ast_type_common_arithmetic(context->type_traits, TYPES[i], TYPES[j]), true);
+            ASSERT_BINARY(
+                &kft_mem, context, KEFIR_AST_OPERATION_ADD, KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
+                KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])),
+                kefir_ast_type_common_arithmetic(context->type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                                 TYPES[j], KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+                true);
         }
 
         ASSERT_BINARY(
             &kft_mem, context, KEFIR_AST_OPERATION_ADD, KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
             KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "X")),
-            kefir_ast_type_common_arithmetic(context->type_traits, TYPES[i], type_traits->underlying_enumeration_type),
+            kefir_ast_type_common_arithmetic(context->type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                             type_traits->underlying_enumeration_type,
+                                             KEFIR_AST_BITFIELD_PROPERTIES_NONE),
             true);
 
         if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(TYPES[i])) {
@@ -440,16 +451,20 @@ DEFINE_CASE(ast_node_analysis_subtract_operator, "AST node analysis - subtractio
 
     for (kefir_size_t i = 0; i < TYPES_LEN; i++) {
         for (kefir_size_t j = 0; j < TYPES_LEN; j++) {
-            ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_SUBTRACT,
-                          KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                          KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])),
-                          kefir_ast_type_common_arithmetic(context->type_traits, TYPES[i], TYPES[j]), true);
+            ASSERT_BINARY(
+                &kft_mem, context, KEFIR_AST_OPERATION_SUBTRACT, KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
+                KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])),
+                kefir_ast_type_common_arithmetic(context->type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                                 TYPES[j], KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+                true);
         }
 
         ASSERT_BINARY(
             &kft_mem, context, KEFIR_AST_OPERATION_SUBTRACT, KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
             KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "X")),
-            kefir_ast_type_common_arithmetic(context->type_traits, TYPES[i], type_traits->underlying_enumeration_type),
+            kefir_ast_type_common_arithmetic(context->type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                             type_traits->underlying_enumeration_type,
+                                             KEFIR_AST_BITFIELD_PROPERTIES_NONE),
             true);
 
         if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(TYPES[i])) {
@@ -528,56 +543,66 @@ DEFINE_CASE(ast_node_analysis_shift_operator, "AST node analysis - shift operato
 
     for (kefir_size_t i = 0; i < TYPES_LEN; i++) {
         for (kefir_size_t j = 0; j < TYPES_LEN; j++) {
-            ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_SHIFT_LEFT,
-                          KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                          KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])),
-                          kefir_ast_type_int_promotion(context->type_traits, TYPES[i]), true);
+            ASSERT_BINARY(
+                &kft_mem, context, KEFIR_AST_OPERATION_SHIFT_LEFT,
+                KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
+                KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])),
+                kefir_ast_type_int_promotion(context->type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE), true);
 
-            ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_SHIFT_RIGHT,
-                          KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                          KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])),
-                          kefir_ast_type_int_promotion(context->type_traits, TYPES[i]), true);
+            ASSERT_BINARY(
+                &kft_mem, context, KEFIR_AST_OPERATION_SHIFT_RIGHT,
+                KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
+                KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])),
+                kefir_ast_type_int_promotion(context->type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE), true);
         }
 
         ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_SHIFT_RIGHT,
                       KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
                       KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                      kefir_ast_type_int_promotion(context->type_traits, kefir_ast_type_signed_short()), false);
+                      kefir_ast_type_int_promotion(context->type_traits, kefir_ast_type_signed_short(),
+                                                   KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+                      false);
+
+        ASSERT_BINARY(
+            &kft_mem, context, KEFIR_AST_OPERATION_SHIFT_RIGHT, KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
+            kefir_ast_type_int_promotion(context->type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE), false);
+
+        ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_SHIFT_LEFT,
+                      KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
+                      KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
+                      kefir_ast_type_int_promotion(context->type_traits, kefir_ast_type_signed_short(),
+                                                   KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+                      false);
+
+        ASSERT_BINARY(
+            &kft_mem, context, KEFIR_AST_OPERATION_SHIFT_LEFT, KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
+            kefir_ast_type_int_promotion(context->type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE), false);
 
         ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_SHIFT_RIGHT,
-                      KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                      KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
-                      kefir_ast_type_int_promotion(context->type_traits, TYPES[i]), false);
-
-        ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_SHIFT_LEFT,
-                      KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
-                      KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                      kefir_ast_type_int_promotion(context->type_traits, kefir_ast_type_signed_short()), false);
-
-        ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_SHIFT_LEFT,
-                      KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                      KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
-                      kefir_ast_type_int_promotion(context->type_traits, TYPES[i]), false);
-
-        ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_SHIFT_RIGHT,
                       KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "X")),
                       KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                      kefir_ast_type_int_promotion(context->type_traits, kefir_ast_type_signed_short()), true);
+                      kefir_ast_type_int_promotion(context->type_traits, kefir_ast_type_signed_short(),
+                                                   KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+                      true);
 
-        ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_SHIFT_RIGHT,
-                      KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                      KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "X")),
-                      kefir_ast_type_int_promotion(context->type_traits, TYPES[i]), true);
+        ASSERT_BINARY(
+            &kft_mem, context, KEFIR_AST_OPERATION_SHIFT_RIGHT, KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "X")),
+            kefir_ast_type_int_promotion(context->type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE), true);
 
         ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_SHIFT_LEFT,
                       KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "X")),
                       KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                      kefir_ast_type_int_promotion(context->type_traits, kefir_ast_type_signed_short()), true);
+                      kefir_ast_type_int_promotion(context->type_traits, kefir_ast_type_signed_short(),
+                                                   KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+                      true);
 
-        ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_SHIFT_LEFT,
-                      KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                      KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "X")),
-                      kefir_ast_type_int_promotion(context->type_traits, TYPES[i]), true);
+        ASSERT_BINARY(
+            &kft_mem, context, KEFIR_AST_OPERATION_SHIFT_LEFT, KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
+            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "X")),
+            kefir_ast_type_int_promotion(context->type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE), true);
 
         struct kefir_ast_binary_operation *oper = kefir_ast_new_binary_operation(
             &kft_mem, KEFIR_AST_OPERATION_SHIFT_LEFT, KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
@@ -933,20 +958,29 @@ DEFINE_CASE(ast_node_analysis_bitwise_operators, "AST node analysis - bitwise op
     for (kefir_size_t i = 0; i < TYPES_LEN; i++) {
         for (kefir_size_t j = 0; j < TYPES_LEN; j++) {
             if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(TYPES[i]) && KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(TYPES[j])) {
-                ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_BITWISE_AND,
-                              KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                              KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])),
-                              kefir_ast_type_common_arithmetic(type_traits, TYPES[i], TYPES[j]), true);
+                ASSERT_BINARY(
+                    &kft_mem, context, KEFIR_AST_OPERATION_BITWISE_AND,
+                    KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
+                    KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])),
+                    kefir_ast_type_common_arithmetic(type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                                     TYPES[j], KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+                    true);
 
-                ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_BITWISE_OR,
-                              KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                              KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])),
-                              kefir_ast_type_common_arithmetic(type_traits, TYPES[i], TYPES[j]), true);
+                ASSERT_BINARY(
+                    &kft_mem, context, KEFIR_AST_OPERATION_BITWISE_OR,
+                    KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
+                    KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])),
+                    kefir_ast_type_common_arithmetic(type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                                     TYPES[j], KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+                    true);
 
-                ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_BITWISE_XOR,
-                              KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                              KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])),
-                              kefir_ast_type_common_arithmetic(type_traits, TYPES[i], TYPES[j]), true);
+                ASSERT_BINARY(
+                    &kft_mem, context, KEFIR_AST_OPERATION_BITWISE_XOR,
+                    KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
+                    KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])),
+                    kefir_ast_type_common_arithmetic(type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                                     TYPES[j], KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+                    true);
             } else {
                 struct kefir_ast_binary_operation *oper = kefir_ast_new_binary_operation(
                     &kft_mem, KEFIR_AST_OPERATION_BITWISE_AND, KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
@@ -969,41 +1003,53 @@ DEFINE_CASE(ast_node_analysis_bitwise_operators, "AST node analysis - bitwise op
         }
 
         if (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(TYPES[i])) {
-            ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_BITWISE_AND,
-                          KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                          KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
-                          kefir_ast_type_common_arithmetic(type_traits, TYPES[i], kefir_ast_type_signed_int()), false);
-
-            ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_BITWISE_OR,
-                          KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                          KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
-                          kefir_ast_type_common_arithmetic(type_traits, TYPES[i], kefir_ast_type_signed_int()), false);
-
-            ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_BITWISE_XOR,
-                          KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                          KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
-                          kefir_ast_type_common_arithmetic(type_traits, TYPES[i], kefir_ast_type_signed_int()), false);
-
             ASSERT_BINARY(
                 &kft_mem, context, KEFIR_AST_OPERATION_BITWISE_AND,
                 KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "X")),
-                kefir_ast_type_common_arithmetic(type_traits, TYPES[i], type_traits->underlying_enumeration_type),
-                true);
+                KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
+                kefir_ast_type_common_arithmetic(type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                                 kefir_ast_type_signed_int(), KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+                false);
 
             ASSERT_BINARY(
                 &kft_mem, context, KEFIR_AST_OPERATION_BITWISE_OR,
                 KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "X")),
-                kefir_ast_type_common_arithmetic(type_traits, TYPES[i], type_traits->underlying_enumeration_type),
-                true);
+                KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
+                kefir_ast_type_common_arithmetic(type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                                 kefir_ast_type_signed_int(), KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+                false);
 
             ASSERT_BINARY(
                 &kft_mem, context, KEFIR_AST_OPERATION_BITWISE_XOR,
                 KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "X")),
-                kefir_ast_type_common_arithmetic(type_traits, TYPES[i], type_traits->underlying_enumeration_type),
-                true);
+                KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")),
+                kefir_ast_type_common_arithmetic(type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                                 kefir_ast_type_signed_int(), KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+                false);
+
+            ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_BITWISE_AND,
+                          KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
+                          KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "X")),
+                          kefir_ast_type_common_arithmetic(type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                                           type_traits->underlying_enumeration_type,
+                                                           KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+                          true);
+
+            ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_BITWISE_OR,
+                          KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
+                          KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "X")),
+                          kefir_ast_type_common_arithmetic(type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                                           type_traits->underlying_enumeration_type,
+                                                           KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+                          true);
+
+            ASSERT_BINARY(&kft_mem, context, KEFIR_AST_OPERATION_BITWISE_XOR,
+                          KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
+                          KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "X")),
+                          kefir_ast_type_common_arithmetic(type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                                           type_traits->underlying_enumeration_type,
+                                                           KEFIR_AST_BITFIELD_PROPERTIES_NONE),
+                          true);
         } else {
             struct kefir_ast_binary_operation *oper = kefir_ast_new_binary_operation(
                 &kft_mem, KEFIR_AST_OPERATION_BITWISE_AND, KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),

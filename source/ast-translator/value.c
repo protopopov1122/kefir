@@ -155,7 +155,7 @@ kefir_result_t kefir_ast_translator_resolve_lvalue(struct kefir_mem *mem, struct
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR block builder"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node base"));
 
-    if (node->properties.expression_props.bitfield) {
+    if (node->properties.expression_props.bitfield_props.bitfield) {
         struct kefir_ast_struct_member *struct_member = NULL;
         kefir_result_t res;
         REQUIRE_MATCH_OK(
@@ -195,7 +195,7 @@ kefir_result_t kefir_ast_translator_store_lvalue(struct kefir_mem *mem, struct k
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR block builder"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node base"));
 
-    if (node->properties.expression_props.bitfield) {
+    if (node->properties.expression_props.bitfield_props.bitfield) {
         struct kefir_ast_struct_member *struct_member = NULL;
         const struct kefir_ast_translator_resolved_type *cached_type = NULL;
         struct kefir_ast_type_layout *member_layout = NULL;

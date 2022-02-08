@@ -53,10 +53,13 @@ static kefir_result_t amd64_sysv_free_codegen(struct kefir_mem *mem, struct kefi
 static kefir_result_t kefir_compiler_amd64_sysv_profile(struct kefir_compiler_profile *profile) {
     REQUIRE(profile != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler profile"));
 
+    static const struct kefir_data_model_descriptor DATA_MODEL_DESCRIPTOR = {.model = KEFIR_DATA_MODEL_LP64,
+                                                                             .signed_integer_width = 32};
+
     static struct kefir_ast_type_traits TYPE_TRAITS;
     static kefir_bool_t TYPE_TRAITS_INIT_DONE = false;
     if (!TYPE_TRAITS_INIT_DONE) {
-        REQUIRE_OK(kefir_ast_type_traits_init(KEFIR_DATA_MODEL_LP64, &TYPE_TRAITS));
+        REQUIRE_OK(kefir_ast_type_traits_init(&DATA_MODEL_DESCRIPTOR, &TYPE_TRAITS));
         TYPE_TRAITS_INIT_DONE = true;
     }
 

@@ -57,7 +57,8 @@ kefir_result_t kefir_ast_analyze_switch_statement_node(struct kefir_mem *mem, co
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->expression->source_location,
                                    "Expected switch controlling expression to be an integral expression"));
     const struct kefir_ast_type *controlling_expr_type =
-        kefir_ast_type_int_promotion(context->type_traits, normalized_controlling_expr_type);
+        kefir_ast_type_int_promotion(context->type_traits, normalized_controlling_expr_type,
+                                     node->expression->properties.expression_props.bitfield_props);
     REQUIRE(
         controlling_expr_type != NULL,
         KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unable to perform integral promotion on controlling expression type"));

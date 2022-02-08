@@ -22,14 +22,22 @@
 #define KEFIR_CORE_DATA_MODEL_H_
 
 #include "kefir/core/base.h"
+#include "kefir/core/basic-types.h"
 
-typedef enum kefir_data_model {
+typedef enum kefir_data_model_tag {
     KEFIR_DATA_MODEL_UNKNOWN = 0,
     KEFIR_DATA_MODEL_ILP32,
     KEFIR_DATA_MODEL_LLP64,
     KEFIR_DATA_MODEL_LP64,
     KEFIR_DATA_MODEL_ILP64,
     KEFIR_DATA_MODEL_SILP64
-} kefir_data_model_t;
+} kefir_data_model_tag_t;
+
+typedef struct kefir_data_model_descriptor {
+    kefir_data_model_tag_t model;
+    kefir_size_t signed_integer_width;
+} kefir_data_model_descriptor_t;
+
+extern const struct kefir_data_model_descriptor KEFIR_DATA_MODEL_LP64_DESCRIPTOR;
 
 #endif

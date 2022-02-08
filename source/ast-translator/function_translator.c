@@ -325,8 +325,9 @@ kefir_result_t kefir_ast_translator_function_context_translate(
                                                           param->properties.expression_props.identifier, scoped_id));
             REQUIRE_OK(xchg_param_address(builder, scoped_id->object.type));
 
-            const struct kefir_ast_type *default_promotion = kefir_ast_type_conv_function_default_argument_promotions(
-                mem, context->ast_context->type_bundle, context->ast_context->type_traits, scoped_id->object.type);
+            const struct kefir_ast_type *default_promotion =
+                kefir_ast_type_function_default_argument_convertion_promotion(
+                    mem, context->ast_context->type_bundle, context->ast_context->type_traits, scoped_id->object.type);
             REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits, default_promotion,
                                                     scoped_id->object.type));
 

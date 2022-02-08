@@ -753,7 +753,7 @@ END_CASE
         ASSERT(oper->base.properties.expression_props.constant_expression == (_constant));          \
         ASSERT(oper->base.properties.expression_props.lvalue == (_lvalue));                         \
         ASSERT(oper->base.properties.expression_props.addressable == (_addresable));                \
-        ASSERT(!oper->base.properties.expression_props.bitfield);                                   \
+        ASSERT(!oper->base.properties.expression_props.bitfield_props.bitfield);                    \
         KEFIR_AST_NODE_FREE((_mem), KEFIR_AST_NODE_BASE(oper));                                     \
     } while (0)
 

@@ -55,8 +55,8 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(
                     param->properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR,
                 KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &param->source_location,
                                        "Function declaration parameter shall be either expression, or declaration"));
-            param_type = kefir_ast_type_conv_function_default_argument_promotions(mem, type_bundle, type_traits,
-                                                                                  param->properties.type);
+            param_type = kefir_ast_type_function_default_argument_convertion_promotion(mem, type_bundle, type_traits,
+                                                                                       param->properties.type);
             REQUIRE(param_type != NULL,
                     KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unable to perform default function argument promotions"));
         }
@@ -99,7 +99,7 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(
     for (; param_iter != NULL; kefir_list_next(&param_iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, param, param_iter->value);
 
-        const struct kefir_ast_type *param_type = kefir_ast_type_conv_function_default_argument_promotions(
+        const struct kefir_ast_type *param_type = kefir_ast_type_function_default_argument_convertion_promotion(
             mem, type_bundle, type_traits, param->properties.type);
         REQUIRE(param_type != NULL,
                 KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unable to perform default function argument promotions"));

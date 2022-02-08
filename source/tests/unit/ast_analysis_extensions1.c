@@ -53,7 +53,7 @@ DEFINE_CASE(ast_analysis_extension_node1, "AST analysis - extension node #1") {
     ASSERT(KEFIR_AST_TYPE_SAME(node1->base.properties.type, kefir_ast_type_signed_int()));
     ASSERT(node1->base.properties.expression_props.constant_expression);
     ASSERT(!node1->base.properties.expression_props.addressable);
-    ASSERT(!node1->base.properties.expression_props.bitfield);
+    ASSERT(!node1->base.properties.expression_props.bitfield_props.bitfield);
     ASSERT(node1->base.properties.expression_props.identifier == NULL);
     ASSERT(!node1->base.properties.expression_props.lvalue);
     ASSERT(node1->base.properties.expression_props.scoped_id == NULL);

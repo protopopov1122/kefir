@@ -37,7 +37,7 @@ struct kefir_ast_constant *make_constant(struct kefir_mem *, const struct kefir_
         ASSERT(oper->base.properties.expression_props.constant_expression == (_const));   \
         ASSERT(!oper->base.properties.expression_props.lvalue);                           \
         ASSERT(!oper->base.properties.expression_props.addressable);                      \
-        ASSERT(!oper->base.properties.expression_props.bitfield);                         \
+        ASSERT(!oper->base.properties.expression_props.bitfield_props.bitfield);          \
         _checker;                                                                         \
         ASSERT_OK(KEFIR_AST_NODE_FREE((_mem), KEFIR_AST_NODE_BASE(oper)));                \
     } while (0)
@@ -192,13 +192,15 @@ DEFINE_CASE(ast_node_analysis_conditional_operator2, "AST node analysis - condit
 
     for (kefir_size_t i = 0; i < TYPES_LEN; i++) {
         for (kefir_size_t j = 0; j < TYPES_LEN; j++) {
-            ASSERT_CONDITIONAL(&kft_mem, context, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(&kft_mem, true)),
-                               KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-                               KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])), true, {
-                                   ASSERT(KEFIR_AST_TYPE_SAME(
-                                       oper->base.properties.type,
-                                       kefir_ast_type_common_arithmetic(context->type_traits, TYPES[i], TYPES[j])));
-                               });
+            ASSERT_CONDITIONAL(
+                &kft_mem, context, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(&kft_mem, true)),
+                KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
+                KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[j])), true, {
+                    ASSERT(KEFIR_AST_TYPE_SAME(oper->base.properties.type,
+                                               kefir_ast_type_common_arithmetic(
+                                                   context->type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                                   TYPES[j], KEFIR_AST_BITFIELD_PROPERTIES_NONE)));
+                });
         }
 
         ASSERT_CONDITIONAL(
@@ -207,17 +209,19 @@ DEFINE_CASE(ast_node_analysis_conditional_operator2, "AST node analysis - condit
             KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "x")), false, {
                 ASSERT(KEFIR_AST_TYPE_SAME(
                     oper->base.properties.type,
-                    kefir_ast_type_common_arithmetic(context->type_traits, TYPES[i], kefir_ast_type_signed_int())));
+                    kefir_ast_type_common_arithmetic(context->type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                                     kefir_ast_type_signed_int(), KEFIR_AST_BITFIELD_PROPERTIES_NONE)));
             });
 
-        ASSERT_CONDITIONAL(
-            &kft_mem, context, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(&kft_mem, true)),
-            KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
-            KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "X")), true, {
-                ASSERT(KEFIR_AST_TYPE_SAME(oper->base.properties.type,
-                                           kefir_ast_type_common_arithmetic(context->type_traits, TYPES[i],
-                                                                            type_traits->underlying_enumeration_type)));
-            });
+        ASSERT_CONDITIONAL(&kft_mem, context, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_bool(&kft_mem, true)),
+                           KEFIR_AST_NODE_BASE(make_constant(&kft_mem, TYPES[i])),
+                           KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "X")), true, {
+                               ASSERT(KEFIR_AST_TYPE_SAME(
+                                   oper->base.properties.type,
+                                   kefir_ast_type_common_arithmetic(
+                                       context->type_traits, TYPES[i], KEFIR_AST_BITFIELD_PROPERTIES_NONE,
+                                       type_traits->underlying_enumeration_type, KEFIR_AST_BITFIELD_PROPERTIES_NONE)));
+                           });
 
         struct kefir_ast_type_name *type_name1 =
             kefir_ast_new_type_name(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL));
