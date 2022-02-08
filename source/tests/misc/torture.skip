@@ -15,6 +15,15 @@ skip execute/20050316-2.c
 skip execute/20050316-3.c
 skip execute/20050604-1.c
 skip execute/pr23135.c
+skip execute/scal-to-vec1.c
+skip execute/scal-to-vec2.c
+skip execute/scal-to-vec3.c
+
+# SIMD
+skip execute/simd-1.c
+skip execute/simd-2.c
+skip execute/simd-4.c
+skip execute/simd-6.c
 
 # bit-field operation result type reduction -- TODO: unclear; divergence between GCC and Clang
 skip execute/bitfld-3.c
@@ -23,3 +32,6 @@ skip execute/pr34971.c
 
 # function instrumentation
 skip execute/eeprof-1.c
+
+# push/pop macro
+skip execute/pushpop_macro.c
