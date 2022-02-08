@@ -1,6 +1,7 @@
 # __attribute__((aligned(...)))
 skip execute/20010904-1.c
 skip execute/20010904-2.c
+skip execute/pr23467.c
 
 # __builtins
 skip execute/20021127-1.c
@@ -13,3 +14,12 @@ skip execute/20050316-1.c
 skip execute/20050316-2.c
 skip execute/20050316-3.c
 skip execute/20050604-1.c
+skip execute/pr23135.c
+
+# bit-field operation result type reduction -- TODO: unclear; divergence between GCC and Clang
+skip execute/bitfld-3.c
+skip execute/pr32244-1.c
+skip execute/pr34971.c
+
+# function instrumentation
+skip execute/eeprof-1.c

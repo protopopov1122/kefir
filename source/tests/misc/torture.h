@@ -42,7 +42,10 @@
 #define __builtin_abort() abort()
 #define __builtin_printf printf
 #define __builtin_sprintf sprintf
-#define __builtin_prefetch(addr, ...)
+#define __builtin_prefetch(addr, ...) \
+    do {                              \
+        (void) (addr);                \
+    } while (0)
 #define __builtin_longjmp(env, status) longjmp(env, status)
 #define __builtin_setjmp(env) setjmp(env, status)
 #define __builtin_exit() exit()
