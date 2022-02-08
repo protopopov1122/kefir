@@ -33,9 +33,15 @@ if [[ "x$TORTURE" == "x" ]]; then
 fi
 
 CC="$KEFIRCC --parser-implicit-function-def-int --parser-designated-init-colons --parser-label-addressing --analyzer-implicit-function-decl --include $(dirname $0)/torture.h"
+SKIP_LIST="$(dirname $0)/torture.skip"
 TIMEOUT=10
+SKIPPED_TESTS=0
 FAILED_TESTS=0
 TOTAL_TESTS=0
+
+function is_test_skipped {
+    grep "skip $1/$2" "$SKIP_LIST" >/dev/null
+}
 
 function run_test {(
     set -e
@@ -50,12 +56,17 @@ function run_test {(
 
 function run_tests {
     for test_file in "$TORTURE/$1"/*.c ; do
-      run_test "$test_file" "$1"
-      if [ "$?" == "0" ] ; then
-         result="Success"
+      if is_test_skipped "$1" "$(basename $test_file)"; then
+        result="Skip"
+        SKIPPED_TESTS=$(( SKIPPED_TESTS + 1 ))
       else
-         result="Failure"
-         FAILED_TESTS=$(( FAILED_TESTS + 1 ))
+        run_test "$test_file" "$1"
+        if [ "$?" == "0" ] ; then
+          result="Success"
+        else
+          result="Failure"
+          FAILED_TESTS=$(( FAILED_TESTS + 1 ))
+        fi
       fi
       TOTAL_TESTS=$(( TOTAL_TESTS + 1 ))
       echo "($FAILED_TESTS:$TOTAL_TESTS) $result $test_file"
@@ -64,5 +75,5 @@ function run_tests {
 
 run_tests compile
 run_tests execute
-echo "Failed tests: $FAILED_TESTS; Total tests: $TOTAL_TESTS"
+echo "Failed tests: $FAILED_TESTS; Skipped tests: $SKIPPED_TESTS; Total tests: $TOTAL_TESTS"
 

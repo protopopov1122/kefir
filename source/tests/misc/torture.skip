@@ -1,0 +1,15 @@
+# __attribute__((aligned(...)))
+skip execute/20010904-1.c
+skip execute/20010904-2.c
+
+# __builtins
+skip execute/20021127-1.c
+
+# Float-to-int with overflow
+skip execute/20031003-1.c
+
+# __attribute__((vector_size(...)))
+skip execute/20050316-1.c
+skip execute/20050316-2.c
+skip execute/20050316-3.c
+skip execute/20050604-1.c
