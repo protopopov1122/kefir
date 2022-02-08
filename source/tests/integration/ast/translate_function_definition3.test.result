@@ -153,19 +153,6 @@
                     "opcode": "load64"
                 },
                 {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 8,
-                        "index": 3
-                    }
-                },
-                {
-                    "opcode": "getlocals"
-                },
-                {
-                    "opcode": "load64"
-                },
-                {
                     "opcode": "load64"
                 },
                 {
@@ -186,6 +173,23 @@
                 },
                 {
                     "opcode": "f64add"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 8,
+                        "index": 3
+                    }
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",

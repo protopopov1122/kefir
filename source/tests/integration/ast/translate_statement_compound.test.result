@@ -207,16 +207,6 @@
                     "opcode": "getlocals"
                 },
                 {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 6,
-                        "index": 5
-                    }
-                },
-                {
-                    "opcode": "getlocals"
-                },
-                {
                     "opcode": "load32i"
                 },
                 {
@@ -239,6 +229,20 @@
                     "opcode": "intcf32"
                 },
                 {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 6,
+                        "index": 5
+                    }
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
                     "opcode": "xchg",
                     "arg": 1
                 },
@@ -256,6 +260,19 @@
                     "opcode": "getlocals"
                 },
                 {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 6,
+                        "index": 5
+                    }
+                },
+                {
+                    "opcode": "load32u"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
                     "opcode": "pick",
                     "arg": 0
                 },
@@ -266,17 +283,12 @@
                     "opcode": "intcf32"
                 },
                 {
-                    "opcode": "getlocals"
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 6,
-                        "index": 5
-                    }
-                },
-                {
-                    "opcode": "load32u"
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "f32add"
@@ -308,6 +320,19 @@
                     "opcode": "offsetptr",
                     "arg": {
                         "type": 6,
+                        "index": 5
+                    }
+                },
+                {
+                    "opcode": "load32u"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "offsetptr",
+                    "arg": {
+                        "type": 6,
                         "index": 4
                     }
                 },
@@ -322,17 +347,12 @@
                     "opcode": "intcf32"
                 },
                 {
-                    "opcode": "getlocals"
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
-                    "opcode": "offsetptr",
-                    "arg": {
-                        "type": 6,
-                        "index": 5
-                    }
-                },
-                {
-                    "opcode": "load32u"
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "f32add"
@@ -362,14 +382,18 @@
             "locals": 9,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": 10
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "something"
                     }
                 },
                 {
-                    "opcode": "push",
-                    "arg": 10
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",
@@ -384,15 +408,19 @@
                 },
                 {
                     "opcode": "pop"
-                },
-                {
-                    "opcode": "getlocals"
                 },
                 {
                     "opcode": "pushf32",
                     "arg": 10.100000
                 },
                 {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
                     "opcode": "xchg",
                     "arg": 1
                 },
@@ -405,12 +433,6 @@
                 },
                 {
                     "opcode": "pop"
-                },
-                {
-                    "opcode": "getglobal",
-                    "arg": {
-                        "data": "something"
-                    }
                 },
                 {
                     "opcode": "pushf32",
@@ -421,6 +443,16 @@
                 },
                 {
                     "opcode": "extend32"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "something"
+                    }
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",

@@ -306,13 +306,17 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "enum"
                     }
                 },
                 {
-                    "opcode": "push",
+                    "opcode": "xchg",
                     "arg": 1
                 },
                 {
@@ -334,14 +338,18 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "ptr"
                     }
                 },
                 {
-                    "opcode": "push",
-                    "arg": 0
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",
@@ -362,12 +370,6 @@
             "locals": 2,
             "body": [
                 {
-                    "opcode": "getglobal",
-                    "arg": {
-                        "data": "uint"
-                    }
-                },
-                {
                     "opcode": "push",
                     "arg": 131071
                 },
@@ -379,6 +381,16 @@
                     "opcode": "iand"
                 },
                 {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "uint"
+                    }
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
                     "opcode": "xchg",
                     "arg": 1
                 },
@@ -388,6 +400,10 @@
                 },
                 {
                     "opcode": "store32"
+                },
+                {
+                    "opcode": "push",
+                    "arg": -5588207
                 },
                 {
                     "opcode": "getglobal",
@@ -396,8 +412,8 @@
                     }
                 },
                 {
-                    "opcode": "push",
-                    "arg": -5588207
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",
@@ -409,12 +425,6 @@
                 },
                 {
                     "opcode": "store32"
-                },
-                {
-                    "opcode": "getglobal",
-                    "arg": {
-                        "data": "uint"
-                    }
                 },
                 {
                     "opcode": "pushf64",
@@ -429,6 +439,16 @@
                 },
                 {
                     "opcode": "iand"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "uint"
+                    }
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",
@@ -449,13 +469,17 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "bool"
                     }
                 },
                 {
-                    "opcode": "push",
+                    "opcode": "xchg",
                     "arg": 1
                 },
                 {
@@ -470,12 +494,6 @@
                     "opcode": "store8"
                 },
                 {
-                    "opcode": "getglobal",
-                    "arg": {
-                        "data": "bool"
-                    }
-                },
-                {
                     "opcode": "pushf32",
                     "arg": 1.000000
                 },
@@ -484,6 +502,16 @@
                 },
                 {
                     "opcode": "trunc1"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "bool"
+                    }
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",
@@ -504,17 +532,21 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": 65
+                },
+                {
+                    "opcode": "extend8"
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "char"
                     }
                 },
                 {
-                    "opcode": "push",
-                    "arg": 65
-                },
-                {
-                    "opcode": "extend8"
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",
@@ -526,12 +558,6 @@
                 },
                 {
                     "opcode": "store8"
-                },
-                {
-                    "opcode": "getglobal",
-                    "arg": {
-                        "data": "uchar"
-                    }
                 },
                 {
                     "opcode": "push",
@@ -545,6 +571,16 @@
                     "opcode": "iand"
                 },
                 {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "uchar"
+                    }
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
                     "opcode": "xchg",
                     "arg": 1
                 },
@@ -554,12 +590,6 @@
                 },
                 {
                     "opcode": "store8"
-                },
-                {
-                    "opcode": "getglobal",
-                    "arg": {
-                        "data": "schar"
-                    }
                 },
                 {
                     "opcode": "push",
@@ -569,6 +599,16 @@
                     "opcode": "extend8"
                 },
                 {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "schar"
+                    }
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
                     "opcode": "xchg",
                     "arg": 1
                 },
@@ -578,12 +618,6 @@
                 },
                 {
                     "opcode": "store8"
-                },
-                {
-                    "opcode": "getglobal",
-                    "arg": {
-                        "data": "schar"
-                    }
                 },
                 {
                     "opcode": "pushf64",
@@ -594,6 +628,16 @@
                 },
                 {
                     "opcode": "extend8"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "schar"
+                    }
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",
@@ -614,13 +658,17 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "ulong"
                     }
                 },
                 {
-                    "opcode": "push",
+                    "opcode": "xchg",
                     "arg": 1
                 },
                 {
@@ -633,18 +681,22 @@
                 },
                 {
                     "opcode": "store64"
-                },
-                {
-                    "opcode": "getglobal",
-                    "arg": {
-                        "data": "slong"
-                    }
                 },
                 {
                     "opcode": "push",
                     "arg": -1
                 },
                 {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "slong"
+                    }
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
                     "opcode": "xchg",
                     "arg": 1
                 },
@@ -654,12 +706,6 @@
                 },
                 {
                     "opcode": "store64"
-                },
-                {
-                    "opcode": "getglobal",
-                    "arg": {
-                        "data": "slong"
-                    }
                 },
                 {
                     "opcode": "pushf32",
@@ -667,6 +713,16 @@
                 },
                 {
                     "opcode": "f32cint"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "slong"
+                    }
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",
@@ -687,12 +743,6 @@
             "locals": 2,
             "body": [
                 {
-                    "opcode": "getglobal",
-                    "arg": {
-                        "data": "ushort"
-                    }
-                },
-                {
                     "opcode": "push",
                     "arg": 254
                 },
@@ -702,6 +752,16 @@
                 },
                 {
                     "opcode": "iand"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "ushort"
+                    }
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",
@@ -715,17 +775,21 @@
                     "opcode": "store16"
                 },
                 {
+                    "opcode": "push",
+                    "arg": -74
+                },
+                {
+                    "opcode": "extend16"
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "sshort"
                     }
                 },
                 {
-                    "opcode": "push",
-                    "arg": -74
-                },
-                {
-                    "opcode": "extend16"
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",
@@ -746,14 +810,18 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": 1990
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "ullong"
                     }
                 },
                 {
-                    "opcode": "push",
-                    "arg": 1990
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",
@@ -767,14 +835,18 @@
                     "opcode": "store64"
                 },
                 {
+                    "opcode": "push",
+                    "arg": -65196362
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "sllong"
                     }
                 },
                 {
-                    "opcode": "push",
-                    "arg": -65196362
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",
@@ -795,14 +867,18 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "pushf32",
+                    "arg": 0.514000
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "float"
                     }
                 },
                 {
-                    "opcode": "pushf32",
-                    "arg": 0.514000
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",
@@ -816,17 +892,21 @@
                     "opcode": "store32"
                 },
                 {
+                    "opcode": "pushf32",
+                    "arg": -10000.000000
+                },
+                {
+                    "opcode": "f32cf64"
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "double"
                     }
                 },
                 {
-                    "opcode": "pushf32",
-                    "arg": -10000.000000
-                },
-                {
-                    "opcode": "f32cf64"
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",
@@ -840,17 +920,21 @@
                     "opcode": "store64"
                 },
                 {
+                    "opcode": "push",
+                    "arg": 65
+                },
+                {
+                    "opcode": "intcf32"
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "float"
                     }
                 },
                 {
-                    "opcode": "push",
-                    "arg": 65
-                },
-                {
-                    "opcode": "intcf32"
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",
@@ -864,17 +948,21 @@
                     "opcode": "store32"
                 },
                 {
+                    "opcode": "push",
+                    "arg": -15
+                },
+                {
+                    "opcode": "intcf64"
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "double"
                     }
                 },
                 {
-                    "opcode": "push",
-                    "arg": -15
-                },
-                {
-                    "opcode": "intcf64"
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",

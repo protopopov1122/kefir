@@ -126,7 +126,7 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 31
+                    "arg": 32
                 },
                 {
                     "opcode": "pick",
@@ -151,23 +151,27 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 38
+                    "arg": 40
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 45
-                },
-                {
-                    "opcode": "getglobal",
-                    "arg": {
-                        "data": "response"
-                    }
+                    "arg": 48
                 },
                 {
                     "opcode": "push",
                     "arg": -1
                 },
                 {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "response"
+                    }
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
                     "opcode": "xchg",
                     "arg": 1
                 },
@@ -183,19 +187,23 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 52
-                },
-                {
-                    "opcode": "getglobal",
-                    "arg": {
-                        "data": "response"
-                    }
+                    "arg": 56
                 },
                 {
                     "opcode": "push",
                     "arg": -2
                 },
                 {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "response"
+                    }
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
                     "opcode": "xchg",
                     "arg": 1
                 },
@@ -211,19 +219,23 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 52
-                },
-                {
-                    "opcode": "getglobal",
-                    "arg": {
-                        "data": "response"
-                    }
+                    "arg": 56
                 },
                 {
                     "opcode": "push",
                     "arg": -3
                 },
                 {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "response"
+                    }
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
                     "opcode": "xchg",
                     "arg": 1
                 },
@@ -239,7 +251,11 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 52
+                    "arg": 56
+                },
+                {
+                    "opcode": "push",
+                    "arg": 0
                 },
                 {
                     "opcode": "getglobal",
@@ -248,8 +264,8 @@
                     }
                 },
                 {
-                    "opcode": "push",
-                    "arg": 0
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",
@@ -267,7 +283,7 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 52
+                    "arg": 56
                 }
             ]
         },
@@ -312,7 +328,11 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 17
+                    "arg": 18
+                },
+                {
+                    "opcode": "push",
+                    "arg": 10
                 },
                 {
                     "opcode": "getglobal",
@@ -321,8 +341,8 @@
                     }
                 },
                 {
-                    "opcode": "push",
-                    "arg": 10
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",
@@ -340,7 +360,7 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 49
+                    "arg": 52
                 },
                 {
                     "opcode": "getglobal",
@@ -367,14 +387,14 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 26
+                    "arg": 27
                 },
                 {
                     "opcode": "pop"
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 41
+                    "arg": 43
                 },
                 {
                     "opcode": "pick",
@@ -392,30 +412,34 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 33
+                    "arg": 34
                 },
                 {
                     "opcode": "pop"
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 34
+                    "arg": 35
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 48
-                },
-                {
-                    "opcode": "getglobal",
-                    "arg": {
-                        "data": "response"
-                    }
+                    "arg": 51
                 },
                 {
                     "opcode": "push",
                     "arg": 0
                 },
                 {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "response"
+                    }
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
                     "opcode": "xchg",
                     "arg": 1
                 },
@@ -431,7 +455,11 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 48
+                    "arg": 51
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
                 },
                 {
                     "opcode": "getglobal",
@@ -440,7 +468,7 @@
                     }
                 },
                 {
-                    "opcode": "push",
+                    "opcode": "xchg",
                     "arg": 1
                 },
                 {
@@ -459,11 +487,11 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 48
+                    "arg": 51
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 49
+                    "arg": 52
                 }
             ]
         }

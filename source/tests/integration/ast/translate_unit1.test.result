@@ -373,6 +373,15 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
+                        "data": "value_to_add"
+                    }
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
                         "data": "__kefirrt_module_static_vars"
                     }
                 },
@@ -384,13 +393,12 @@
                     "opcode": "load64"
                 },
                 {
-                    "opcode": "getglobal",
-                    "arg": {
-                        "data": "value_to_add"
-                    }
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
-                    "opcode": "load64"
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "iadd"
@@ -446,16 +454,20 @@
                     "opcode": "store64"
                 },
                 {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "load64"
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "__kefirrt_module_static_vars"
                     }
                 },
                 {
-                    "opcode": "getlocals"
-                },
-                {
-                    "opcode": "load64"
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",

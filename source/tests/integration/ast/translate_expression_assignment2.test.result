@@ -163,12 +163,6 @@
             "locals": 2,
             "body": [
                 {
-                    "opcode": "getglobal",
-                    "arg": {
-                        "data": "union1"
-                    }
-                },
-                {
                     "opcode": "getlocals"
                 },
                 {
@@ -204,6 +198,16 @@
                     }
                 },
                 {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "union1"
+                    }
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
                     "opcode": "xchg",
                     "arg": 1
                 },
@@ -225,12 +229,6 @@
             "name": "assign_struct",
             "locals": 2,
             "body": [
-                {
-                    "opcode": "getglobal",
-                    "arg": {
-                        "data": "struct1"
-                    }
-                },
                 {
                     "opcode": "getlocals"
                 },
@@ -265,6 +263,16 @@
                         "type": 2,
                         "index": 3
                     }
+                },
+                {
+                    "opcode": "getglobal",
+                    "arg": {
+                        "data": "struct1"
+                    }
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",

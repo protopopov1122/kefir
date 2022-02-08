@@ -151,7 +151,7 @@
                     "opcode": "offsetptr",
                     "arg": {
                         "type": 2,
-                        "index": 4
+                        "index": 5
                     }
                 },
                 {
@@ -161,8 +161,12 @@
                     "opcode": "offsetptr",
                     "arg": {
                         "type": 2,
-                        "index": 5
+                        "index": 4
                     }
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",

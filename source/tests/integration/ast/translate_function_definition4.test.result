@@ -166,7 +166,13 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 36
+                    "arg": 38
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "load32i"
                 },
                 {
                     "opcode": "getlocals"
@@ -186,10 +192,12 @@
                     "opcode": "load32i"
                 },
                 {
-                    "opcode": "getlocals"
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
-                    "opcode": "load32i"
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "imul"

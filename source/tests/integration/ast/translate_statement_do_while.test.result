@@ -163,9 +163,6 @@
                     "opcode": "pop"
                 },
                 {
-                    "opcode": "getlocals"
-                },
-                {
                     "opcode": "invoke",
                     "arg": {
                         "identifier": 2,
@@ -174,6 +171,13 @@
                 },
                 {
                     "opcode": "trunc1"
+                },
+                {
+                    "opcode": "getlocals"
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",

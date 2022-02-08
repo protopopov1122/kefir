@@ -225,6 +225,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": -11001100
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "ullong"
@@ -238,8 +242,12 @@
                     "opcode": "load64"
                 },
                 {
-                    "opcode": "push",
-                    "arg": -11001100
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "iand"
@@ -263,6 +271,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": 56
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "ullong"
@@ -276,8 +288,12 @@
                     "opcode": "load64"
                 },
                 {
-                    "opcode": "push",
-                    "arg": 56
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "ixor"
@@ -301,6 +317,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": 4
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "int"
@@ -314,8 +334,12 @@
                     "opcode": "load32i"
                 },
                 {
-                    "opcode": "push",
-                    "arg": 4
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "imod"
@@ -339,6 +363,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": 11223344
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "ullong"
@@ -352,8 +380,12 @@
                     "opcode": "load64"
                 },
                 {
-                    "opcode": "push",
-                    "arg": 11223344
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "ishl"
@@ -377,6 +409,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": -99000
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "ullong"
@@ -390,8 +426,12 @@
                     "opcode": "load64"
                 },
                 {
-                    "opcode": "push",
-                    "arg": -99000
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "isar"
@@ -415,6 +455,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": 104
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "int"
@@ -428,8 +472,12 @@
                     "opcode": "load32i"
                 },
                 {
-                    "opcode": "push",
-                    "arg": 104
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "ior"
@@ -453,6 +501,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": 1
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "ullong"
@@ -466,8 +518,12 @@
                     "opcode": "load64"
                 },
                 {
-                    "opcode": "push",
+                    "opcode": "xchg",
                     "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "ior"
@@ -491,6 +547,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": -1
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "int"
@@ -504,8 +564,12 @@
                     "opcode": "load32i"
                 },
                 {
-                    "opcode": "push",
-                    "arg": -1
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "ishl"
@@ -529,6 +593,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": 90
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "int"
@@ -542,8 +610,12 @@
                     "opcode": "load32i"
                 },
                 {
-                    "opcode": "push",
-                    "arg": 90
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "isar"
@@ -567,6 +639,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": -8000
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "ullong"
@@ -580,8 +656,12 @@
                     "opcode": "load64"
                 },
                 {
-                    "opcode": "push",
-                    "arg": -8000
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "imod"
@@ -605,6 +685,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": 10101
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "int"
@@ -618,8 +702,12 @@
                     "opcode": "load32i"
                 },
                 {
-                    "opcode": "push",
-                    "arg": 10101
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "iand"
@@ -643,6 +731,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": 19857
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "int"
@@ -656,8 +748,12 @@
                     "opcode": "load32i"
                 },
                 {
-                    "opcode": "push",
-                    "arg": 19857
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "ixor"

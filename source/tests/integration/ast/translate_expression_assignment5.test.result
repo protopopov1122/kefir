@@ -206,6 +206,13 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "pushf32",
+                    "arg": 0.950000
+                },
+                {
+                    "opcode": "f32cf64"
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "double"
@@ -219,11 +226,12 @@
                     "opcode": "load64"
                 },
                 {
-                    "opcode": "pushf32",
-                    "arg": 0.950000
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
-                    "opcode": "f32cf64"
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "f64add"
@@ -247,6 +255,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": 3405691582
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "ullong"
@@ -260,8 +272,12 @@
                     "opcode": "load64"
                 },
                 {
-                    "opcode": "push",
-                    "arg": 3405691582
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "iadd"
@@ -285,6 +301,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": -89
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "int"
@@ -298,8 +318,12 @@
                     "opcode": "load32i"
                 },
                 {
-                    "opcode": "push",
-                    "arg": -89
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "iadd"
@@ -323,6 +347,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "pushf64",
+                    "arg": 2.000000
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "int"
@@ -339,8 +367,12 @@
                     "opcode": "intcf64"
                 },
                 {
-                    "opcode": "pushf64",
-                    "arg": 2.000000
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "f64add"
@@ -370,6 +402,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": 7
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "ptr"
@@ -383,8 +419,12 @@
                     "opcode": "load64"
                 },
                 {
-                    "opcode": "push",
-                    "arg": 7
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "elementptr",
@@ -412,6 +452,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "pushf32",
+                    "arg": 3.710000
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "float"
@@ -425,8 +469,12 @@
                     "opcode": "load32u"
                 },
                 {
-                    "opcode": "pushf32",
-                    "arg": 3.710000
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "f32add"
@@ -450,6 +498,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": -1
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "ptr2"
@@ -463,8 +515,12 @@
                     "opcode": "load64"
                 },
                 {
-                    "opcode": "push",
-                    "arg": -1
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "elementptr",

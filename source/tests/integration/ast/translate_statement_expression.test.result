@@ -189,14 +189,18 @@
             "locals": 9,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": 2
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "variable"
                     }
                 },
                 {
-                    "opcode": "push",
-                    "arg": 2
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",

@@ -213,6 +213,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "pushf64",
+                    "arg": 0.005270
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "int"
@@ -229,8 +233,12 @@
                     "opcode": "intcf64"
                 },
                 {
-                    "opcode": "pushf64",
-                    "arg": 0.005270
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "f64mul"
@@ -260,6 +268,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": -6
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "int"
@@ -273,8 +285,12 @@
                     "opcode": "load32i"
                 },
                 {
-                    "opcode": "push",
-                    "arg": -6
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "idiv"
@@ -298,6 +314,13 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "pushf32",
+                    "arg": 7.500000
+                },
+                {
+                    "opcode": "f32cf64"
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "double"
@@ -311,11 +334,12 @@
                     "opcode": "load64"
                 },
                 {
-                    "opcode": "pushf32",
-                    "arg": 7.500000
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
-                    "opcode": "f32cf64"
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "f64div"
@@ -339,6 +363,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": 1006
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "ullong"
@@ -352,8 +380,12 @@
                     "opcode": "load64"
                 },
                 {
-                    "opcode": "push",
-                    "arg": 1006
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "udiv"
@@ -377,6 +409,13 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": -5
+                },
+                {
+                    "opcode": "intcf32"
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "float"
@@ -390,11 +429,12 @@
                     "opcode": "load32u"
                 },
                 {
-                    "opcode": "push",
-                    "arg": -5
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
-                    "opcode": "intcf32"
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "f32mul"
@@ -418,6 +458,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "pushf64",
+                    "arg": 6.660000
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "ullong"
@@ -434,8 +478,12 @@
                     "opcode": "uintcf64"
                 },
                 {
-                    "opcode": "pushf64",
-                    "arg": 6.660000
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "f64div"
@@ -462,6 +510,13 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "pushf32",
+                    "arg": 5.003000
+                },
+                {
+                    "opcode": "f32cf64"
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "double"
@@ -475,11 +530,12 @@
                     "opcode": "load64"
                 },
                 {
-                    "opcode": "pushf32",
-                    "arg": 5.003000
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
-                    "opcode": "f32cf64"
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "f64mul"
@@ -503,6 +559,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": 100
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "ullong"
@@ -516,8 +576,12 @@
                     "opcode": "load64"
                 },
                 {
-                    "opcode": "push",
-                    "arg": 100
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "imul"
@@ -541,6 +605,13 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": 42
+                },
+                {
+                    "opcode": "intcf32"
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "float"
@@ -554,11 +625,12 @@
                     "opcode": "load32u"
                 },
                 {
-                    "opcode": "push",
-                    "arg": 42
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
-                    "opcode": "intcf32"
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "f32div"
@@ -582,6 +654,10 @@
             "locals": 2,
             "body": [
                 {
+                    "opcode": "push",
+                    "arg": -1
+                },
+                {
                     "opcode": "getglobal",
                     "arg": {
                         "data": "int"
@@ -595,8 +671,12 @@
                     "opcode": "load32i"
                 },
                 {
-                    "opcode": "push",
-                    "arg": -1
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "imul"

@@ -121,7 +121,11 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 10
+                    "arg": 11
+                },
+                {
+                    "opcode": "push",
+                    "arg": -1
                 },
                 {
                     "opcode": "getglobal",
@@ -130,8 +134,8 @@
                     }
                 },
                 {
-                    "opcode": "push",
-                    "arg": -1
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",
@@ -168,7 +172,11 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 11
+                    "arg": 12
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
                 },
                 {
                     "opcode": "getglobal",
@@ -177,7 +185,7 @@
                     }
                 },
                 {
-                    "opcode": "push",
+                    "opcode": "xchg",
                     "arg": 1
                 },
                 {
@@ -196,7 +204,11 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 17
+                    "arg": 19
+                },
+                {
+                    "opcode": "push",
+                    "arg": 2
                 },
                 {
                     "opcode": "getglobal",
@@ -205,8 +217,8 @@
                     }
                 },
                 {
-                    "opcode": "push",
-                    "arg": 2
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",
@@ -250,7 +262,11 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 13
+                    "arg": 14
+                },
+                {
+                    "opcode": "push",
+                    "arg": 0
                 },
                 {
                     "opcode": "getglobal",
@@ -259,8 +275,8 @@
                     }
                 },
                 {
-                    "opcode": "push",
-                    "arg": 0
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",
@@ -278,7 +294,7 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 32
+                    "arg": 35
                 },
                 {
                     "opcode": "getglobal",
@@ -301,7 +317,11 @@
                 },
                 {
                     "opcode": "branch",
-                    "arg": 26
+                    "arg": 28
+                },
+                {
+                    "opcode": "push",
+                    "arg": 1
                 },
                 {
                     "opcode": "getglobal",
@@ -310,7 +330,7 @@
                     }
                 },
                 {
-                    "opcode": "push",
+                    "opcode": "xchg",
                     "arg": 1
                 },
                 {
@@ -329,7 +349,11 @@
                 },
                 {
                     "opcode": "jmp",
-                    "arg": 32
+                    "arg": 35
+                },
+                {
+                    "opcode": "push",
+                    "arg": 2
                 },
                 {
                     "opcode": "getglobal",
@@ -338,8 +362,8 @@
                     }
                 },
                 {
-                    "opcode": "push",
-                    "arg": 2
+                    "opcode": "xchg",
+                    "arg": 1
                 },
                 {
                     "opcode": "xchg",

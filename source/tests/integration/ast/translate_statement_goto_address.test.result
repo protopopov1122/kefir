@@ -177,6 +177,10 @@
                     "opcode": "ijmp"
                 },
                 {
+                    "opcode": "push",
+                    "arg": 7
+                },
+                {
                     "opcode": "getlocals"
                 },
                 {
@@ -190,8 +194,12 @@
                     "opcode": "extend32"
                 },
                 {
-                    "opcode": "push",
-                    "arg": 7
+                    "opcode": "xchg",
+                    "arg": 1
+                },
+                {
+                    "opcode": "xchg",
+                    "arg": 2
                 },
                 {
                     "opcode": "imod"
