@@ -289,6 +289,16 @@ static kefir_result_t action_dump_asm(struct kefir_mem *mem, struct kefir_cli_op
     return KEFIR_OK;
 }
 
+static kefir_result_t action_dump_runtime_code(struct kefir_mem *mem, struct kefir_cli_options *options) {
+    UNUSED(mem);
+    struct kefir_compiler_profile profile;
+    REQUIRE_OK(kefir_compiler_profile(&profile, options->target_profile));
+    REQUIRE(profile.runtime_code != NULL,
+            KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Runtime code is not available for specified profile"));
+    printf("%s", profile.runtime_code);
+    return KEFIR_OK;
+}
+
 static kefir_result_t action_help(struct kefir_mem *mem, struct kefir_cli_options *options) {
     UNUSED(mem);
     UNUSED(options);
@@ -310,6 +320,7 @@ static kefir_result_t (*Actions[])(struct kefir_mem *, struct kefir_cli_options 
     [KEFIR_CLI_ACTION_DUMP_AST] = action_dump_ast,
     [KEFIR_CLI_ACTION_DUMP_IR] = action_dump_ir,
     [KEFIR_CLI_ACTION_DUMP_ASSEMBLY] = action_dump_asm,
+    [KEFIR_CLI_ACTION_DUMP_RUNTIME_CODE] = action_dump_runtime_code,
     [KEFIR_CLI_ACTION_HELP] = action_help,
     [KEFIR_CLI_ACTION_VERSION] = action_version};
 

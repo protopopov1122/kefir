@@ -22,8 +22,8 @@ if [[ "x$KEFIRCC" == "x" ]]; then
     exit 1
 fi
 
-if [[ "x$KEFIRRT" == "x" ]]; then
-    echo "Define KEFIRRT environment variable"
+if [[ "x$LIBC" == "x" ]]; then
+    echo "Define LIBC environment variable"
     exit 1
 fi
 
@@ -39,6 +39,9 @@ SKIPPED_TESTS=0
 FAILED_TESTS=0
 TOTAL_TESTS=0
 
+KEFIRRT=runtime.o
+$KEFIRCC --dump-runtime-code | as -o $KEFIRRT
+
 function is_test_skipped {
     grep "skip $1/$2" "$SKIP_LIST" >/dev/null
 }
@@ -48,7 +51,7 @@ function run_test {(
     timeout $TIMEOUT $CC -o test.s "$1"
     as -o test.o test.s
     if [[ "x$2" == "xexecute" ]]; then
-        ld -o test.bin test.o $KEFIRRT
+        ld -o test.bin test.o $KEFIRRT $LIBC
         ./test.bin
     fi
     rm -rf test.s test.o test.bin

@@ -10,6 +10,7 @@ Options:
     --dump-ir                           Print intermediate representation (IR) bytecode
     --dump-ast                          Print abstract syntax tree (AST)
     --dump-tokens                       Print tokens
+    --dump-runtime-code                 Print runtime assembly code for specified target
     -p,--preprocess                     Print result of preprocessing
     -P,--skip-preprocessor              Skip preprocessing stage. Cannot be specified along with -p
     -I,--include-path dir               Add directory to include search path

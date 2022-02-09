@@ -153,6 +153,7 @@ static struct CliOption Options[] = {
     SIMPLE(0, "dump-tokens", false, CLI_ACTION_ASSIGN_CONSTANT, KEFIR_CLI_ACTION_DUMP_TOKENS, action),
     SIMPLE(0, "dump-ast", false, CLI_ACTION_ASSIGN_CONSTANT, KEFIR_CLI_ACTION_DUMP_AST, action),
     SIMPLE(0, "dump-ir", false, CLI_ACTION_ASSIGN_CONSTANT, KEFIR_CLI_ACTION_DUMP_IR, action),
+    SIMPLE(0, "dump-runtime-code", false, CLI_ACTION_ASSIGN_CONSTANT, KEFIR_CLI_ACTION_DUMP_RUNTIME_CODE, action),
     SIMPLE(0, "json-errors", false, CLI_ACTION_ASSIGN_CONSTANT, KEFIR_CLI_ERROR_REPORT_JSON, error_report_type),
     SIMPLE(0, "tabular-errors", false, CLI_ACTION_ASSIGN_CONSTANT, KEFIR_CLI_ERROR_REPORT_TABULAR, error_report_type),
     SIMPLE(0, "target-profile", true, CLI_ACTION_ASSIGN_STRARG, 0, target_profile),

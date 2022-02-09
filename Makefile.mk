@@ -44,3 +44,8 @@ $(BIN_DIR)/%.o: $(SOURCE_DIR)/%.c $(BIN_DIR)/%.d
 	@mkdir -p $(shell dirname "$@")
 	@echo "Building $@"
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+$(BIN_DIR)/%.s.o: $(SOURCE_DIR)/%.s
+	@mkdir -p $(shell dirname "$@")
+	@echo "Building $@"
+	@$(AS) -o $@ $<

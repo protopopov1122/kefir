@@ -69,6 +69,7 @@ static kefir_result_t kefir_compiler_amd64_sysv_profile(struct kefir_compiler_pr
     profile->type_traits = &TYPE_TRAITS;
     profile->new_codegen = amd64_sysv_new_codegen;
     profile->free_codegen = amd64_sysv_free_codegen;
+    profile->runtime_code = KefirAmd64SysVRuntimeCode;
     return KEFIR_OK;
 }
 

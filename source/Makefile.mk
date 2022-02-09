@@ -27,6 +27,9 @@ KEFIR_LIB_SOURCE := $(wildcard \
 
 KEFIR_LIB_DEPENDENCIES := $(KEFIR_LIB_SOURCE:$(SOURCE_DIR)/%.c=$(BIN_DIR)/%.d)
 KEFIR_LIB_OBJECT_FILES := $(KEFIR_LIB_SOURCE:$(SOURCE_DIR)/%.c=$(BIN_DIR)/%.o)
+KEFIR_LIB_OBJECT_FILES += $(BIN_DIR)/codegen/amd64/amd64-sysv-runtime-code.s.o
+
+$(BIN_DIR)/codegen/amd64/amd64-sysv-runtime-code.s.o: $(SOURCE_DIR)/runtime/amd64_sysv.s
 
 $(LIBKEFIR_SO): $(KEFIR_LIB_OBJECT_FILES)
 	@mkdir -p $(shell dirname "$@")

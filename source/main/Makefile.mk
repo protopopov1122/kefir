@@ -1,16 +1,13 @@
 KEFIR_MAIN_SOURCES := $(SOURCE_DIR)/main/main.c
 KEFIR_MAIN_DEPENDENCIES := $(BIN_DIR)/main/main.d
-KEFIR_MAIN_OBJECT_FILES := $(BIN_DIR)/main/main.o $(BIN_DIR)/main/help.o
+KEFIR_MAIN_OBJECT_FILES := $(BIN_DIR)/main/main.o $(BIN_DIR)/main/help.s.o
 
 KEFIR_MAIN_LINKED_LIBS=
 ifeq ($(SANITIZE),undefined)
 KEFIR_MAIN_LINKED_LIBS=-fsanitize=undefined
 endif
 
-$(BIN_DIR)/main/help.o: $(SOURCE_DIR)/main/help.txt $(SOURCE_DIR)/main/help.s
-	@mkdir -p $(shell dirname "$@")
-	@echo "Building $@"
-	@$(AS) -o $@ $(SOURCE_DIR)/main/help.s
+$(BIN_DIR)/main/help.s.o: $(SOURCE_DIR)/main/help.txt
 
 $(BIN_DIR)/kefir: $(KEFIR_MAIN_OBJECT_FILES) $(LIBKEFIR_SO)
 	@mkdir -p $(shell dirname "$@")

@@ -32,4 +32,6 @@ typedef struct kefir_codegen_amd64 {
 
 kefir_result_t kefir_codegen_amd64_sysv_init(struct kefir_codegen_amd64 *, FILE *);
 
+extern const char KefirAmd64SysVRuntimeCode[];
+
 #endif
