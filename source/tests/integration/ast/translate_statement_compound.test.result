@@ -73,6 +73,22 @@
             "identifier": 9,
             "type": [
                 {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 10,
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 11,
+            "type": [
+                {
                     "type": "struct",
                     "fields": [
                         {
@@ -103,11 +119,11 @@
             ]
         },
         {
-            "identifier": 10,
+            "identifier": 12,
             "type": []
         },
         {
-            "identifier": 11,
+            "identifier": 13,
             "type": []
         }
     ],
@@ -131,9 +147,9 @@
         {
             "identifier": 2,
             "name": "compound3",
-            "parameters": 10,
+            "parameters": 12,
             "vararg": false,
-            "returns": 11
+            "returns": 13
         }
     ],
     "functions": [
@@ -379,7 +395,7 @@
         {
             "identifier": 2,
             "name": "compound3",
-            "locals": 9,
+            "locals": 11,
             "body": [
                 {
                     "opcode": "push",

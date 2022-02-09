@@ -216,6 +216,18 @@
                     "type": "int"
                 }
             ]
+        },
+        {
+            "identifier": 29,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 2,
+                    "element_type": {
+                        "type": "char"
+                    }
+                }
+            ]
         }
     ],
     "data": [],
@@ -471,8 +483,8 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 2,
-                        "index": 3
+                        "type": 29,
+                        "index": 0
                     }
                 },
                 {

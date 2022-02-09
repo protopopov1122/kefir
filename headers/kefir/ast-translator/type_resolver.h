@@ -67,8 +67,6 @@ typedef struct kefir_ast_translator_type_resolver {
 
 #define KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_RESOLVE(_resolver, _type, _alignment, _resolved_type) \
     ((_resolver)->resolve((_resolver), (_type), (_alignment), (_resolved_type)))
-#define KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_REGISTER_OBJECT(_mem, _resolver, _id, _ir_type, _layout) \
-    ((_resolver)->register_object((_mem), (_resolver), (_id), (_ir_type), (_layout)))
 #define KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(_mem, _resolver, _env, _module, _type, _alignment, \
                                                         _resolved_type)                                    \
     ((_resolver)->build_object((_mem), (_resolver), (_env), (_module), (_type), (_alignment), (_resolved_type)))

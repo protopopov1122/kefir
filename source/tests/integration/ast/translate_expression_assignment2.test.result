@@ -131,11 +131,109 @@
         },
         {
             "identifier": 7,
-            "type": []
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "bool"
+                        },
+                        {
+                            "type": "double"
+                        },
+                        {
+                            "type": "array",
+                            "length": 5,
+                            "element_type": {
+                                "type": "char"
+                            }
+                        },
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ]
         },
         {
             "identifier": 8,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "bool"
+                        },
+                        {
+                            "type": "double"
+                        },
+                        {
+                            "type": "array",
+                            "length": 5,
+                            "element_type": {
+                                "type": "char"
+                            }
+                        },
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 9,
             "type": []
+        },
+        {
+            "identifier": 10,
+            "type": []
+        },
+        {
+            "identifier": 11,
+            "type": [
+                {
+                    "type": "union",
+                    "fields": [
+                        {
+                            "type": "long"
+                        },
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "array",
+                            "length": 4,
+                            "element_type": {
+                                "type": "int"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 12,
+            "type": [
+                {
+                    "type": "union",
+                    "fields": [
+                        {
+                            "type": "long"
+                        },
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "array",
+                            "length": 4,
+                            "element_type": {
+                                "type": "int"
+                            }
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "data": [],
@@ -151,9 +249,9 @@
         {
             "identifier": 1,
             "name": "assign_union",
-            "parameters": 7,
+            "parameters": 9,
             "vararg": false,
-            "returns": 8
+            "returns": 10
         }
     ],
     "functions": [
@@ -193,7 +291,7 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 3,
+                        "type": 11,
                         "index": 0
                     }
                 },
@@ -218,7 +316,7 @@
                 {
                     "opcode": "bcopy",
                     "arg": {
-                        "type": 3,
+                        "type": 12,
                         "index": 0
                     }
                 }
@@ -260,8 +358,8 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 2,
-                        "index": 3
+                        "type": 7,
+                        "index": 0
                     }
                 },
                 {
@@ -285,7 +383,7 @@
                 {
                     "opcode": "bcopy",
                     "arg": {
-                        "type": 4,
+                        "type": 8,
                         "index": 0
                     }
                 }

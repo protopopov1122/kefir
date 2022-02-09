@@ -60,6 +60,34 @@
         {
             "identifier": 6,
             "type": []
+        },
+        {
+            "identifier": 7,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "bits",
+                            "width": 19,
+                            "alignment": 4
+                        },
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "bits",
+                            "width": 4,
+                            "alignment": 8
+                        },
+                        {
+                            "type": "bits",
+                            "width": 57,
+                            "alignment": 8
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "data": [],
@@ -151,7 +179,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 7,
                         "index": 3
                     }
                 },
@@ -181,7 +209,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 7,
                         "index": 3
                     }
                 },
@@ -211,7 +239,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 7,
                         "index": 4
                     }
                 },

@@ -53,7 +53,11 @@
         },
         {
             "identifier": 6,
-            "type": []
+            "type": [
+                {
+                    "type": "short"
+                }
+            ]
         },
         {
             "identifier": 7,
@@ -61,6 +65,10 @@
         },
         {
             "identifier": 8,
+            "type": []
+        },
+        {
+            "identifier": 9,
             "type": []
         }
     ],
@@ -77,9 +85,9 @@
         {
             "identifier": 1,
             "name": "goto2",
-            "parameters": 7,
+            "parameters": 8,
             "vararg": false,
-            "returns": 8
+            "returns": 9
         }
     ],
     "functions": [
@@ -226,7 +234,7 @@
         {
             "identifier": 1,
             "name": "goto2",
-            "locals": 6,
+            "locals": 7,
             "body": [
                 {
                     "opcode": "pushlabel",

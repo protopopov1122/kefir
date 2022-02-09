@@ -66,6 +66,14 @@
                     ]
                 }
             ]
+        },
+        {
+            "identifier": 7,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
         }
     ],
     "data": [
@@ -166,7 +174,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 3,
+                        "type": 7,
                         "index": 0
                     }
                 },

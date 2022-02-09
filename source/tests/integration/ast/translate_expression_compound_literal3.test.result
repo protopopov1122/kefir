@@ -98,6 +98,67 @@
             "identifier": 5,
             "type": [
                 {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "union",
+                            "fields": [
+                                {
+                                    "type": "struct",
+                                    "fields": [
+                                        {
+                                            "type": "array",
+                                            "length": 10,
+                                            "element_type": {
+                                                "type": "char"
+                                            }
+                                        },
+                                        {
+                                            "type": "word"
+                                        },
+                                        {
+                                            "type": "long"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "array",
+                                    "length": 3,
+                                    "element_type": {
+                                        "type": "int"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "type": "float"
+                        },
+                        {
+                            "type": "struct",
+                            "fields": [
+                                {
+                                    "type": "array",
+                                    "length": 10,
+                                    "element_type": {
+                                        "type": "char"
+                                    }
+                                },
+                                {
+                                    "type": "word"
+                                },
+                                {
+                                    "type": "long"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 6,
+            "type": [
+                {
                     "type": "array",
                     "length": 5,
                     "element_type": {
@@ -163,8 +224,8 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 2,
-                        "index": 3
+                        "type": 5,
+                        "index": 0
                     }
                 },
                 {
@@ -178,8 +239,8 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 2,
-                        "index": 6
+                        "type": 5,
+                        "index": 3
                     }
                 },
                 {
@@ -189,7 +250,7 @@
                 {
                     "opcode": "bcopy",
                     "arg": {
-                        "type": 5,
+                        "type": 6,
                         "index": 0
                     }
                 },
@@ -271,8 +332,8 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 2,
-                        "index": 6
+                        "type": 5,
+                        "index": 3
                     }
                 },
                 {

@@ -99,7 +99,11 @@
         },
         {
             "identifier": 15,
-            "type": []
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
         },
         {
             "identifier": 16,
@@ -107,6 +111,10 @@
         },
         {
             "identifier": 17,
+            "type": []
+        },
+        {
+            "identifier": 18,
             "type": [
                 {
                     "type": "struct",
@@ -129,10 +137,6 @@
             ]
         },
         {
-            "identifier": 18,
-            "type": []
-        },
-        {
             "identifier": 19,
             "type": []
         },
@@ -142,18 +146,10 @@
         },
         {
             "identifier": 21,
-            "type": [
-                {
-                    "type": "bool"
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 22,
-            "type": []
-        },
-        {
-            "identifier": 23,
             "type": [
                 {
                     "type": "bool"
@@ -161,8 +157,16 @@
             ]
         },
         {
-            "identifier": 24,
+            "identifier": 23,
             "type": []
+        },
+        {
+            "identifier": 24,
+            "type": [
+                {
+                    "type": "bool"
+                }
+            ]
         },
         {
             "identifier": 25,
@@ -186,6 +190,10 @@
         },
         {
             "identifier": 30,
+            "type": []
+        },
+        {
+            "identifier": 31,
             "type": []
         }
     ],
@@ -230,51 +238,51 @@
         {
             "identifier": 5,
             "name": "body",
-            "parameters": 15,
+            "parameters": 16,
             "vararg": false,
-            "returns": 16
+            "returns": 17
         },
         {
             "identifier": 6,
             "name": "for3",
-            "parameters": 18,
+            "parameters": 19,
             "vararg": false,
-            "returns": 19
+            "returns": 20
         },
         {
             "identifier": 7,
             "name": "body2",
-            "parameters": 20,
+            "parameters": 21,
             "vararg": false,
-            "returns": 21
+            "returns": 22
         },
         {
             "identifier": 8,
             "name": "body2",
-            "parameters": 22,
+            "parameters": 23,
             "vararg": false,
-            "returns": 23
+            "returns": 24
         },
         {
             "identifier": 9,
             "name": "for4",
-            "parameters": 25,
+            "parameters": 26,
             "vararg": false,
-            "returns": 26
+            "returns": 27
         },
         {
             "identifier": 10,
             "name": "body",
-            "parameters": 27,
+            "parameters": 28,
             "vararg": false,
-            "returns": 28
+            "returns": 29
         },
         {
             "identifier": 11,
             "name": "body",
-            "parameters": 29,
+            "parameters": 30,
             "vararg": false,
-            "returns": 30
+            "returns": 31
         }
     ],
     "functions": [
@@ -385,7 +393,7 @@
         {
             "identifier": 6,
             "name": "for3",
-            "locals": 17,
+            "locals": 18,
             "body": [
                 {
                     "opcode": "push",
@@ -501,7 +509,7 @@
         {
             "identifier": 9,
             "name": "for4",
-            "locals": 24,
+            "locals": 25,
             "body": [
                 {
                     "opcode": "pushld",

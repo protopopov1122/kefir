@@ -78,7 +78,15 @@
         },
         {
             "identifier": 5,
-            "type": []
+            "type": [
+                {
+                    "type": "array",
+                    "length": 14,
+                    "element_type": {
+                        "type": "char"
+                    }
+                }
+            ]
         },
         {
             "identifier": 6,
@@ -90,7 +98,15 @@
         },
         {
             "identifier": 8,
-            "type": []
+            "type": [
+                {
+                    "type": "array",
+                    "length": 4,
+                    "element_type": {
+                        "type": "char"
+                    }
+                }
+            ]
         },
         {
             "identifier": 9,
@@ -99,6 +115,38 @@
         {
             "identifier": 10,
             "type": []
+        },
+        {
+            "identifier": 11,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 0,
+                    "element_type": {
+                        "type": "char"
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": 12,
+            "type": []
+        },
+        {
+            "identifier": 13,
+            "type": []
+        },
+        {
+            "identifier": 14,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 8,
+                    "element_type": {
+                        "type": "char"
+                    }
+                }
+            ]
         }
     ],
     "data": [],
@@ -129,23 +177,23 @@
         {
             "identifier": 1,
             "name": "compound_literal2",
-            "parameters": 5,
+            "parameters": 6,
             "vararg": false,
-            "returns": 6
+            "returns": 7
         },
         {
             "identifier": 2,
             "name": "compound_literal3",
-            "parameters": 7,
+            "parameters": 9,
             "vararg": false,
-            "returns": 8
+            "returns": 10
         },
         {
             "identifier": 3,
             "name": "compound_literal4",
-            "parameters": 9,
+            "parameters": 12,
             "vararg": false,
-            "returns": 10
+            "returns": 13
         }
     ],
     "functions": [
@@ -189,8 +237,8 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 2,
-                        "index": 3
+                        "type": 5,
+                        "index": 0
                     }
                 },
                 {
@@ -200,8 +248,8 @@
                 {
                     "opcode": "bcopy",
                     "arg": {
-                        "type": 2,
-                        "index": 3
+                        "type": 5,
+                        "index": 0
                     }
                 }
             ]
@@ -242,8 +290,8 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 2,
-                        "index": 6
+                        "type": 8,
+                        "index": 0
                     }
                 },
                 {
@@ -370,8 +418,8 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 2,
-                        "index": 8
+                        "type": 11,
+                        "index": 0
                     }
                 }
             ]
@@ -416,8 +464,8 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 2,
-                        "index": 11
+                        "type": 14,
+                        "index": 0
                     }
                 },
                 {
@@ -427,8 +475,8 @@
                 {
                     "opcode": "bcopy",
                     "arg": {
-                        "type": 2,
-                        "index": 11
+                        "type": 14,
+                        "index": 0
                     }
                 }
             ]

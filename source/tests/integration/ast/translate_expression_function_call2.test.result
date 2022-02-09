@@ -191,6 +191,29 @@
                     "type": "int"
                 }
             ]
+        },
+        {
+            "identifier": 21,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "int"
+                        },
+                        {
+                            "type": "double"
+                        },
+                        {
+                            "type": "array",
+                            "length": 16,
+                            "element_type": {
+                                "type": "char"
+                            }
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "data": [],
@@ -383,8 +406,8 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 2,
-                        "index": 3
+                        "type": 21,
+                        "index": 0
                     }
                 },
                 {

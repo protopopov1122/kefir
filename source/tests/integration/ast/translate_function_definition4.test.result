@@ -63,6 +63,14 @@
                     ]
                 }
             ]
+        },
+        {
+            "identifier": 7,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
         }
     ],
     "data": [

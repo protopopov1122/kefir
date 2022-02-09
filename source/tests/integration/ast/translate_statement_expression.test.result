@@ -94,7 +94,16 @@
         },
         {
             "identifier": 15,
-            "type": []
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "char"
+                        }
+                    ]
+                }
+            ]
         },
         {
             "identifier": 16,
@@ -102,6 +111,10 @@
         },
         {
             "identifier": 17,
+            "type": []
+        },
+        {
+            "identifier": 18,
             "type": []
         }
     ],
@@ -139,9 +152,9 @@
         {
             "identifier": 4,
             "name": "expr5",
-            "parameters": 16,
+            "parameters": 17,
             "vararg": false,
-            "returns": 17
+            "returns": 18
         }
     ],
     "functions": [
@@ -254,8 +267,8 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 12,
-                        "index": 3
+                        "type": 15,
+                        "index": 0
                     }
                 },
                 {
@@ -280,7 +293,7 @@
         {
             "identifier": 4,
             "name": "expr5",
-            "locals": 15,
+            "locals": 16,
             "body": []
         }
     ]

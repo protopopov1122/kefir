@@ -85,7 +85,11 @@
         },
         {
             "identifier": 5,
-            "type": []
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
         },
         {
             "identifier": 6,
@@ -97,7 +101,63 @@
         },
         {
             "identifier": 8,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "bool"
+                        },
+                        {
+                            "type": "long"
+                        },
+                        {
+                            "type": "float"
+                        },
+                        {
+                            "type": "int"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 9,
             "type": []
+        },
+        {
+            "identifier": 10,
+            "type": []
+        },
+        {
+            "identifier": 11,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "struct",
+                            "fields": [
+                                {
+                                    "type": "bool"
+                                },
+                                {
+                                    "type": "long"
+                                },
+                                {
+                                    "type": "float"
+                                },
+                                {
+                                    "type": "int"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "int"
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "data": [],
@@ -113,16 +173,16 @@
         {
             "identifier": 1,
             "name": "compound_literal2",
-            "parameters": 5,
+            "parameters": 6,
             "vararg": false,
-            "returns": 6
+            "returns": 7
         },
         {
             "identifier": 2,
             "name": "compound_literal3",
-            "parameters": 7,
+            "parameters": 9,
             "vararg": false,
-            "returns": 8
+            "returns": 10
         }
     ],
     "functions": [
@@ -207,8 +267,8 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 2,
-                        "index": 4
+                        "type": 8,
+                        "index": 0
                     }
                 },
                 {
@@ -305,8 +365,8 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 2,
-                        "index": 9
+                        "type": 11,
+                        "index": 0
                     }
                 },
                 {

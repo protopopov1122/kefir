@@ -95,13 +95,17 @@
             "identifier": 10,
             "type": [
                 {
-                    "type": "float"
+                    "type": "bool"
                 }
             ]
         },
         {
             "identifier": 11,
-            "type": []
+            "type": [
+                {
+                    "type": "float"
+                }
+            ]
         },
         {
             "identifier": 12,
@@ -113,10 +117,34 @@
         },
         {
             "identifier": 14,
-            "type": []
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "array",
+                            "length": 4,
+                            "element_type": {
+                                "type": "double"
+                            }
+                        }
+                    ]
+                }
+            ]
         },
         {
             "identifier": 15,
+            "type": []
+        },
+        {
+            "identifier": 16,
+            "type": []
+        },
+        {
+            "identifier": 17,
             "type": [
                 {
                     "type": "struct",
@@ -129,11 +157,11 @@
             ]
         },
         {
-            "identifier": 16,
+            "identifier": 18,
             "type": []
         },
         {
-            "identifier": 17,
+            "identifier": 19,
             "type": []
         }
     ],
@@ -179,23 +207,23 @@
         {
             "identifier": 2,
             "name": "struct_field",
-            "parameters": 11,
+            "parameters": 12,
             "vararg": false,
-            "returns": 12
+            "returns": 13
         },
         {
             "identifier": 3,
             "name": "struct_field_indirect",
-            "parameters": 13,
+            "parameters": 15,
             "vararg": false,
-            "returns": 14
+            "returns": 16
         },
         {
             "identifier": 4,
             "name": "indirection",
-            "parameters": 16,
+            "parameters": 18,
             "vararg": false,
-            "returns": 17
+            "returns": 19
         }
     ],
     "functions": [
@@ -291,8 +319,8 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 0,
-                        "index": 4
+                        "type": 14,
+                        "index": 2
                     }
                 }
             ]
@@ -314,8 +342,8 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 0,
-                        "index": 4
+                        "type": 14,
+                        "index": 2
                     }
                 }
             ]
@@ -338,8 +366,8 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 0,
-                        "index": 1
+                        "type": 10,
+                        "index": 0
                     }
                 },
                 {
@@ -358,7 +386,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 10,
+                        "type": 11,
                         "index": 0
                     }
                 }

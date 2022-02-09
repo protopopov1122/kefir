@@ -32,9 +32,8 @@
 static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(
     struct kefir_mem *mem, const struct kefir_ast_translator_environment *env,
     struct kefir_ast_type_bundle *type_bundle, const struct kefir_ast_type_traits *type_traits,
-    struct kefir_ast_translator_type_resolver *type_resolver, const struct kefir_ast_type *func_type,
-    const struct kefir_list *parameters, struct kefir_ast_translator_function_declaration *func_decl,
-    kefir_bool_t *actual_parameters_exceed_declared) {
+    const struct kefir_ast_type *func_type, const struct kefir_list *parameters,
+    struct kefir_ast_translator_function_declaration *func_decl, kefir_bool_t *actual_parameters_exceed_declared) {
 
     struct kefir_irbuilder_type builder;
     REQUIRE_OK(kefir_irbuilder_type_init(mem, &builder, func_decl->ir_argument_type));
@@ -83,15 +82,6 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(
             KEFIR_IRBUILDER_TYPE_FREE(&builder);
             return res;
         });
-
-        if (type_resolver != NULL && parameter_layout != NULL) {
-            res = KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_REGISTER_OBJECT(mem, type_resolver, func_decl->ir_argument_type_id,
-                                                                     func_decl->ir_argument_type, parameter_layout);
-            REQUIRE_ELSE(res == KEFIR_OK, {
-                KEFIR_IRBUILDER_TYPE_FREE(&builder);
-                return res;
-            });
-        }
     }
 
     *actual_parameters_exceed_declared = param_iter != NULL;
@@ -125,23 +115,13 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_args(
             KEFIR_IRBUILDER_TYPE_FREE(&builder);
             return res;
         });
-
-        if (type_resolver != NULL) {
-            res = KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_REGISTER_OBJECT(mem, type_resolver, func_decl->ir_argument_type_id,
-                                                                     func_decl->ir_argument_type, parameter_layout);
-            REQUIRE_ELSE(res == KEFIR_OK, {
-                KEFIR_IRBUILDER_TYPE_FREE(&builder);
-                return res;
-            });
-        }
     }
     REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
     return KEFIR_OK;
 }
 
 static kefir_result_t kefir_ast_translator_function_declaration_alloc_return(
-    struct kefir_mem *mem, const struct kefir_ast_translator_environment *env,
-    struct kefir_ast_translator_type_resolver *type_resolver, const struct kefir_ast_type *func_type,
+    struct kefir_mem *mem, const struct kefir_ast_translator_environment *env, const struct kefir_ast_type *func_type,
     struct kefir_ast_translator_function_declaration *func_decl) {
     struct kefir_irbuilder_type builder;
     REQUIRE_OK(kefir_irbuilder_type_init(mem, &builder, func_decl->ir_return_type));
@@ -157,10 +137,6 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc_return(
         kefir_ast_type_layout_free(mem, func_decl->return_layout);
         return res;
     });
-    if (type_resolver != NULL && func_type->function_type.return_type->tag != KEFIR_AST_TYPE_VOID) {
-        REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_REGISTER_OBJECT(
-            mem, type_resolver, func_decl->ir_return_type_id, func_decl->ir_return_type, func_decl->return_layout));
-    }
     return KEFIR_OK;
 }
 
@@ -180,9 +156,8 @@ static kefir_result_t free_argument_layout(struct kefir_mem *mem, struct kefir_l
 static kefir_result_t kefir_ast_translator_function_declaration_alloc(
     struct kefir_mem *mem, const struct kefir_ast_translator_environment *env,
     struct kefir_ast_type_bundle *type_bundle, const struct kefir_ast_type_traits *type_traits,
-    struct kefir_ir_module *module, struct kefir_ast_translator_type_resolver *type_resolver, const char *identifier,
-    const struct kefir_ast_type *func_type, const struct kefir_list *parameters,
-    struct kefir_ast_translator_function_declaration *func_decl) {
+    struct kefir_ir_module *module, const char *identifier, const struct kefir_ast_type *func_type,
+    const struct kefir_list *parameters, struct kefir_ast_translator_function_declaration *func_decl) {
     func_decl->function_type = func_type;
     REQUIRE_OK(kefir_list_init(&func_decl->argument_layouts));
     REQUIRE_OK(kefir_list_on_remove(&func_decl->argument_layouts, free_argument_layout, NULL));
@@ -193,14 +168,13 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc(
 
     kefir_bool_t actual_parameters_exceed_declared = false;
     kefir_result_t res = kefir_ast_translator_function_declaration_alloc_args(
-        mem, env, type_bundle, type_traits, type_resolver, func_type, parameters, func_decl,
-        &actual_parameters_exceed_declared);
+        mem, env, type_bundle, type_traits, func_type, parameters, func_decl, &actual_parameters_exceed_declared);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_list_free(mem, &func_decl->argument_layouts);
         return res;
     });
 
-    res = kefir_ast_translator_function_declaration_alloc_return(mem, env, type_resolver, func_type, func_decl);
+    res = kefir_ast_translator_function_declaration_alloc_return(mem, env, func_type, func_decl);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_list_free(mem, &func_decl->argument_layouts);
         return res;
@@ -222,6 +196,8 @@ kefir_result_t kefir_ast_translator_function_declaration_init(
     struct kefir_ir_module *module, struct kefir_ast_translator_type_resolver *type_resolver, const char *identifier,
     const struct kefir_ast_type *func_type, const struct kefir_list *parameters,
     struct kefir_ast_translator_function_declaration **func_decl) {
+
+    UNUSED(type_resolver);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator environment"));
     REQUIRE(type_traits != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type traits"));
@@ -236,9 +212,8 @@ kefir_result_t kefir_ast_translator_function_declaration_init(
     REQUIRE(function_declaration != NULL,
             KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST translator function declaration"));
 
-    kefir_result_t res =
-        kefir_ast_translator_function_declaration_alloc(mem, env, type_bundle, type_traits, module, type_resolver,
-                                                        identifier, func_type, parameters, function_declaration);
+    kefir_result_t res = kefir_ast_translator_function_declaration_alloc(
+        mem, env, type_bundle, type_traits, module, identifier, func_type, parameters, function_declaration);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, function_declaration);
         return res;

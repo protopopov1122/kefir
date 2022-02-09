@@ -100,6 +100,23 @@
             "identifier": 15,
             "type": [
                 {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "array",
+                            "length": 24,
+                            "element_type": {
+                                "type": "char"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 16,
+            "type": [
+                {
                     "type": "array",
                     "length": 8,
                     "element_type": {
@@ -109,15 +126,15 @@
             ]
         },
         {
-            "identifier": 16,
-            "type": []
-        },
-        {
             "identifier": 17,
             "type": []
         },
         {
             "identifier": 18,
+            "type": []
+        },
+        {
+            "identifier": 19,
             "type": []
         }
     ],
@@ -163,9 +180,9 @@
         {
             "identifier": 4,
             "name": "return4",
-            "parameters": 17,
+            "parameters": 18,
             "vararg": false,
-            "returns": 18
+            "returns": 19
         }
     ],
     "functions": [
@@ -266,8 +283,8 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 12,
-                        "index": 3
+                        "type": 15,
+                        "index": 0
                     }
                 },
                 {
@@ -281,8 +298,8 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 12,
-                        "index": 4
+                        "type": 15,
+                        "index": 1
                     }
                 },
                 {
@@ -292,7 +309,7 @@
                 {
                     "opcode": "bcopy",
                     "arg": {
-                        "type": 15,
+                        "type": 16,
                         "index": 0
                     }
                 },
@@ -304,7 +321,7 @@
         {
             "identifier": 4,
             "name": "return4",
-            "locals": 16,
+            "locals": 17,
             "body": [
                 {
                     "opcode": "push",

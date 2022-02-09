@@ -65,10 +65,6 @@
         },
         {
             "identifier": 8,
-            "type": []
-        },
-        {
-            "identifier": 9,
             "type": [
                 {
                     "type": "bool"
@@ -76,8 +72,16 @@
             ]
         },
         {
-            "identifier": 10,
+            "identifier": 9,
             "type": []
+        },
+        {
+            "identifier": 10,
+            "type": [
+                {
+                    "type": "bool"
+                }
+            ]
         },
         {
             "identifier": 11,
@@ -97,6 +101,10 @@
         },
         {
             "identifier": 15,
+            "type": []
+        },
+        {
+            "identifier": 16,
             "type": []
         }
     ],
@@ -120,23 +128,23 @@
         {
             "identifier": 2,
             "name": "eval",
-            "parameters": 8,
+            "parameters": 9,
             "vararg": false,
-            "returns": 9
+            "returns": 10
         },
         {
             "identifier": 3,
             "name": "do_while2",
-            "parameters": 11,
+            "parameters": 12,
             "vararg": false,
-            "returns": 12
+            "returns": 13
         },
         {
             "identifier": 4,
             "name": "do_while3",
-            "parameters": 14,
+            "parameters": 15,
             "vararg": false,
-            "returns": 15
+            "returns": 16
         }
     ],
     "functions": [
@@ -211,7 +219,7 @@
         {
             "identifier": 3,
             "name": "do_while2",
-            "locals": 10,
+            "locals": 11,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -253,7 +261,7 @@
         {
             "identifier": 4,
             "name": "do_while3",
-            "locals": 13,
+            "locals": 14,
             "body": [
                 {
                     "opcode": "push",
