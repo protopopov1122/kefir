@@ -20,7 +20,6 @@
 
 #include "kefir/ast-translator/value.h"
 #include "kefir/ast-translator/util.h"
-#include "kefir/ast-translator/type_resolver.h"
 #include "kefir/ast-translator/type.h"
 #include "kefir/ast/type_conv.h"
 #include "kefir/ast/downcast.h"

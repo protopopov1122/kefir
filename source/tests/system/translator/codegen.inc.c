@@ -58,8 +58,8 @@ static kefir_result_t translate_function(struct kefir_mem *mem, struct function 
     struct kefir_ast_translator_function_declaration *func_declaration = NULL;
     REQUIRE_OK(kefir_ast_translator_function_declaration_init(
         mem, translator_context->environment, translator_context->ast_context->type_bundle,
-        translator_context->ast_context->type_traits, translator_context->module,
-        &translator_context->type_cache.resolver, func->identifier, func->type, NULL, &func_declaration));
+        translator_context->ast_context->type_traits, translator_context->module, func->identifier, func->type, NULL,
+        &func_declaration));
 
     struct kefir_ast_translator_context local_translator_context;
     REQUIRE_OK(kefir_ast_translator_context_init_local(mem, &local_translator_context, &func->local_context.context,
@@ -68,9 +68,9 @@ static kefir_result_t translate_function(struct kefir_mem *mem, struct function 
     struct kefir_ast_translator_local_scope_layout local_scope;
     REQUIRE_OK(
         kefir_ast_translator_local_scope_layout_init(mem, translator_context->module, global_scope, &local_scope));
-    REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(
-        mem, &func->local_context, local_translator_context.environment, local_translator_context.module,
-        &local_translator_context.type_cache.resolver, &local_scope));
+    REQUIRE_OK(kefir_ast_translator_build_local_scope_layout(mem, &func->local_context,
+                                                             local_translator_context.environment,
+                                                             local_translator_context.module, &local_scope));
     REQUIRE_OK(kefir_ast_translator_flow_control_tree_init(mem, func->local_context.context.flow_control_tree));
 
     struct kefir_ir_function *ir_func = kefir_ir_module_new_function(

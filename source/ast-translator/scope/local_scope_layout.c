@@ -201,8 +201,8 @@ static kefir_result_t translate_local_scoped_identifier_function(
     ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_function *, scoped_identifier_func,
                      scoped_identifier->payload.ptr);
     KEFIR_AST_SCOPE_SET_CLEANUP(scoped_identifier, kefir_ast_translator_scoped_identifer_payload_free, NULL);
-    REQUIRE_OK(kefir_ast_translator_function_declaration_init(mem, env, type_bundle, type_traits, module, NULL,
-                                                              identifier, scoped_identifier->function.type, NULL,
+    REQUIRE_OK(kefir_ast_translator_function_declaration_init(mem, env, type_bundle, type_traits, module, identifier,
+                                                              scoped_identifier->function.type, NULL,
                                                               &scoped_identifier_func->declaration));
     return KEFIR_OK;
 }
@@ -345,9 +345,7 @@ kefir_result_t kefir_ast_translator_build_local_scope_layout(struct kefir_mem *m
                                                              const struct kefir_ast_local_context *context,
                                                              const struct kefir_ast_translator_environment *env,
                                                              struct kefir_ir_module *module,
-                                                             struct kefir_ast_translator_type_resolver *type_resolver,
                                                              struct kefir_ast_translator_local_scope_layout *layout) {
-    UNUSED(type_resolver);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
     REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST local scope layout"));

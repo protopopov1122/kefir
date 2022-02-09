@@ -35,7 +35,6 @@ kefir_result_t kefir_ast_translator_context_init(struct kefir_mem *mem, struct k
     REQUIRE(environment != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator environment"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR module"));
 
-    REQUIRE_OK(kefir_ast_translator_type_cache_init(&context->type_cache, NULL));
     context->base_context = NULL;
     context->ast_context = ast_context;
     context->environment = environment;
@@ -62,7 +61,6 @@ kefir_result_t kefir_ast_translator_context_init_local(struct kefir_mem *mem,
     REQUIRE(base_context != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid base AST translator context"));
 
-    REQUIRE_OK(kefir_ast_translator_type_cache_init(&context->type_cache, &base_context->type_cache.resolver));
     context->base_context = base_context;
     context->ast_context = ast_context;
     context->environment = base_context->environment;
@@ -87,7 +85,6 @@ kefir_result_t kefir_ast_translator_context_free(struct kefir_mem *mem, struct k
     KEFIR_RUN_EXTENSION0(&res, mem, context, on_free);
     REQUIRE_OK(res);
 
-    REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_FREE(mem, &context->type_cache.resolver));
     context->base_context = NULL;
     context->ast_context = NULL;
     context->environment = NULL;
@@ -95,10 +92,4 @@ kefir_result_t kefir_ast_translator_context_free(struct kefir_mem *mem, struct k
     context->global_scope_layout = NULL;
     context->local_scope_layout = NULL;
     return KEFIR_OK;
-}
-
-struct kefir_ast_translator_type_resolver *kefir_ast_translator_context_type_resolver(
-    struct kefir_ast_translator_context *context) {
-    REQUIRE(context != NULL, NULL);
-    return &context->type_cache.resolver;
 }

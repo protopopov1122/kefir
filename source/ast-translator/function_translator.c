@@ -43,14 +43,13 @@ static kefir_result_t init_function_declaration(struct kefir_mem *mem, struct ke
     REQUIRE_OK(kefir_ast_declarator_unpack_function(function->declarator, &decl_func));
     REQUIRE(decl_func != NULL,
             KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected function definition to have function declarator"));
-    args->resolved_function_type = NULL;
     switch (function->base.properties.type->function_type.mode) {
         case KEFIR_AST_FUNCTION_TYPE_PARAMETERS:
         case KEFIR_AST_FUNCTION_TYPE_PARAM_EMPTY:
             REQUIRE_OK(kefir_ast_translator_function_declaration_init(
                 mem, context->environment, context->ast_context->type_bundle, context->ast_context->type_traits,
-                context->module, &context->type_cache.resolver, identifier,
-                function->base.properties.function_definition.scoped_id->type, NULL, &args->function_declaration));
+                context->module, identifier, function->base.properties.function_definition.scoped_id->type, NULL,
+                &args->function_declaration));
             break;
 
         case KEFIR_AST_FUNCTION_TYPE_PARAM_IDENTIFIERS: {
@@ -105,7 +104,7 @@ static kefir_result_t init_function_declaration(struct kefir_mem *mem, struct ke
 
             res = kefir_ast_translator_function_declaration_init(
                 mem, context->environment, context->ast_context->type_bundle, context->ast_context->type_traits,
-                context->module, NULL, identifier, function->base.properties.type, &declaration_list,
+                context->module, identifier, function->base.properties.type, &declaration_list,
                 &args->function_declaration);
             REQUIRE_ELSE(res == KEFIR_OK, {
                 kefir_list_free(mem, &declaration_list);
@@ -133,10 +132,7 @@ static kefir_result_t init_function_declaration(struct kefir_mem *mem, struct ke
 
 static kefir_result_t free_function_declaration(struct kefir_mem *mem,
                                                 struct kefir_ast_translator_function_context *args) {
-    if (args->resolved_function_type == NULL) {
-        REQUIRE_OK(kefir_ast_translator_function_declaration_free(mem, args->function_declaration));
-    }
-    args->resolved_function_type = NULL;
+    REQUIRE_OK(kefir_ast_translator_function_declaration_free(mem, args->function_declaration));
     args->function_declaration = NULL;
     return KEFIR_OK;
 }
@@ -171,9 +167,9 @@ kefir_result_t kefir_ast_translator_function_context_init(struct kefir_mem *mem,
         return res;
     });
 
-    res = kefir_ast_translator_build_local_scope_layout(
-        mem, ctx->local_context, ctx->local_translator_context.environment, ctx->local_translator_context.module,
-        &ctx->local_translator_context.type_cache.resolver, &ctx->local_scope_layout);
+    res = kefir_ast_translator_build_local_scope_layout(mem, ctx->local_context,
+                                                        ctx->local_translator_context.environment,
+                                                        ctx->local_translator_context.module, &ctx->local_scope_layout);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_ast_translator_local_scope_layout_free(mem, &ctx->local_scope_layout);
         kefir_ast_translator_context_free(mem, &ctx->local_translator_context);

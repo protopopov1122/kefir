@@ -104,9 +104,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     REQUIRE_OK(kefir_ast_analyze_node(mem, &global_context.context, KEFIR_AST_NODE_BASE(function1)));
 
-    REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(
-        mem, &module, &global_context, &env, kefir_ast_translator_context_type_resolver(&global_translator_context),
-        &translator_global_scope));
+    REQUIRE_OK(
+        kefir_ast_translator_build_global_scope_layout(mem, &module, &global_context, &env, &translator_global_scope));
 
     struct kefir_ast_translator_function_context func_ctx;
     REQUIRE_OK(kefir_ast_translator_function_context_init(mem, &global_translator_context, function1, &func_ctx));

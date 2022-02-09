@@ -19,7 +19,6 @@
 */
 
 #include "kefir/ast-translator/function_declaration.h"
-#include "kefir/ast-translator/type_resolver.h"
 #include "kefir/ast-translator/translator.h"
 #include "kefir/ast-translator/layout.h"
 #include "kefir/ast-translator/util.h"
@@ -193,11 +192,9 @@ static kefir_result_t kefir_ast_translator_function_declaration_alloc(
 kefir_result_t kefir_ast_translator_function_declaration_init(
     struct kefir_mem *mem, const struct kefir_ast_translator_environment *env,
     struct kefir_ast_type_bundle *type_bundle, const struct kefir_ast_type_traits *type_traits,
-    struct kefir_ir_module *module, struct kefir_ast_translator_type_resolver *type_resolver, const char *identifier,
-    const struct kefir_ast_type *func_type, const struct kefir_list *parameters,
-    struct kefir_ast_translator_function_declaration **func_decl) {
+    struct kefir_ir_module *module, const char *identifier, const struct kefir_ast_type *func_type,
+    const struct kefir_list *parameters, struct kefir_ast_translator_function_declaration **func_decl) {
 
-    UNUSED(type_resolver);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator environment"));
     REQUIRE(type_traits != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type traits"));

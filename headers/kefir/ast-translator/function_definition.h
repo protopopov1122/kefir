@@ -22,7 +22,6 @@
 #define KEFIR_AST_TRANSLATOR_FUNCTION_DEFINITION_H_
 
 #include "kefir/ast-translator/scope/local_scope_layout.h"
-#include "kefir/ast-translator/type_resolver.h"
 #include "kefir/ast-translator/context.h"
 #include "kefir/ir/function.h"
 #include "kefir/ir/builder.h"
@@ -30,7 +29,6 @@
 struct kefir_ast_translator_function_context {
     struct kefir_ast_function_definition *function_definition;
     struct kefir_ir_module *module;
-    const struct kefir_ast_translator_resolved_type *resolved_function_type;
     struct kefir_ast_translator_function_declaration *function_declaration;
     struct kefir_ast_local_context *local_context;
     struct kefir_ast_translator_context local_translator_context;

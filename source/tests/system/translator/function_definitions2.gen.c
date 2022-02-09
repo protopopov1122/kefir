@@ -115,8 +115,7 @@ static kefir_result_t generate_ir(struct kefir_mem *mem, struct kefir_ir_module 
     translator_context.global_scope_layout = &global_scope;
 
     REQUIRE_OK(kefir_ast_translator_build_global_scope_layout(mem, module, &global_context,
-                                                              translator_context.environment,
-                                                              &translator_context.type_cache.resolver, &global_scope));
+                                                              translator_context.environment, &global_scope));
     struct kefir_ast_translator_function_context func_ctx;
     REQUIRE_OK(kefir_ast_translator_function_context_init(mem, &translator_context, function, &func_ctx));
     REQUIRE_OK(kefir_ast_translator_function_context_translate(mem, &func_ctx));
