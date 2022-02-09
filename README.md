@@ -4,8 +4,9 @@ infrastructure is being reused. The main priority is self-sufficiency of the pro
 C11 language standard. Some exceptions to the standard were made (see `Exceptions` section below).
 At the moment, the initial scope of work is effectively finished, and the main concern is stabilization, bugfixes and UX improvements. 
 Kefir supports modern x86-64 Linux and FreeBSD environments.
-Compiler is also able to produce JSON streams containing program representation on various stages of compilation (tokens, AST, IR).
-By default, the compiler outputs GNU As-compatible assembly (Intel syntax).
+Compiler is also able to produce JSON streams containing program representation on various stages of compilation (tokens, AST, IR),
+as well as outputting source in preprocessed form.
+By default, the compiler outputs GNU As-compatible assembly (Intel syntax with prefixes).
 At the moment, position-independent code generation is not supported.
 
 ## Motivation & goals
@@ -27,7 +28,7 @@ Following things are **NON-goals**:
 was never considered a goal, even though some improvements can be occasionally made. In fact, performance is deliberately sacrificed to facilitate
 implementation of other goals. 
 * Compatibility with other compiler extensions - C compilers are known to include different extensions that are not described by language standard.
-Implementing some of those might be necessary to re-use third-party standard library implementations, however it is not project goal per se.
+Some of those are implemented, however it is not project goal per se, thus there are no guarantees of extension compatibility.
 
 Note on the selection of C11 as language to implement: C programming language is extremely widespread. At the same time, it is relatively simple in
 terms of semantics, thus making implementation of the compiler feasible. C11 standard was picked over C17 because the latter does not bring any new
@@ -64,10 +65,23 @@ these pragmas have no value at the moment.
 ### Built-ins
 At the moment, Kefir supports following builtins for compatibility with GCC:
 `__builtin_va_list`, `__builtin_va_start`, `__builtin_va_end`, `__builtin_va_copy`, `__builtin_va_arg`,
-`__builtin_alloca`, `__builtin_alloca_with_align`, `__builtin_alloca_with_align_and_max`
+`__builtin_alloca`, `__builtin_alloca_with_align`, `__builtin_alloca_with_align_and_max`.
 
 Kefir supports `__attribute__(...)` syntax on parsing level, however attributes are ignored on further
 compilation stages. Presence of attribute in source code can be made a syntax error by CLI option.
+
+### Language extensions
+Several C language extensions are implemented for better compatibility with GCC. All of them are disabled by default and can
+be enabled via command-line options. No specific compability guarantees are provided. Among them:
+* Implicit function declarations -- if no function declaration is present at call-site, `int function_name()` is automatically
+  defined. The feature was part of previous C standards, however it's absent from C11.
+* `int` as implicit function return type -- function definition may omit return type, `int` will be used instead.
+* Designated initializers in `fieldname:` form -- old, deprecated form which is still supported by GCC.
+* Labels-as-values -- labels can be addressed with `&&` operator, gotos support arbitratry addresses in
+  `goto *`  form.
+
+Kefir also defines a few non-standard macros by default. Specifically, macros indicating data model (`__LP64__`),
+endianess (`__BYTE_ORDER__` and `__ORDER_LITTLE_ENDIAN__`), as well as `__KEFIRCC__` which can be used to identify the compiler.
 
 ### Standard library
 Kefir can be used along with [musl libc](https://musl.libc.org) standard library, with the exception for
@@ -78,7 +92,7 @@ Kefir can be used along with [musl libc](https://musl.libc.org) standard library
 
 Kefir depends on following third-party components: existing C11-compatible compiler (tested with `gcc` and `clang`), `gas`, `valgrind`,
 `xsltproc`, `clang-format`. After installing these components, Kefir can be built with a single command: `make ./bin/kefir -j$(nproc)`.
-It is also strongly advised to run test suite: `make test all -j$(nproc)`.
+It is also strongly advised to run basic test suite: `make test all -j$(nproc)`.
 
 Optionally, Kefir can be installed via: `make install DESTDIR=/opt/kefir`. Short reference on compiler options can be obtained by
 running `kefir --help`.
@@ -86,7 +100,7 @@ running `kefir --help`.
 At the moment, Kefir is automatically tested in Ubuntu 20.04 and FreeBSD 13.0 environments.
 Arch Linux is used as primary development environment.
 
-Please note, that assembly modules produced by Kefir shall be linked with `source/runtime/amd64_sysv.asm` in order to produce working
+Please note, that assembly modules produced by Kefir shall be linked with `source/runtime/amd64_sysv.s` in order to produce a working
 executable.
 
 ## Bootstrap
@@ -132,14 +146,20 @@ Kefir relies on following tests, most of which are executed as part of CI:
       or kefir depending on file extension. Everything is then linked together and executed.
     The test suite is executed on Linux with gcc and clang compilers and on FreeBSD with clang.
 * Bootstrapping test -- kefir is used to compile itself using 2-stage bootstrap technique as described above.
+* GCC Torture Suite -- `compile` & `execute` parts of GCC torture test suite are executed with kefir compiler, with some permissive options
+  enabled. At the moment, out of 3481 tests, 1059 fail and 22 are skipped due to being irrelevant (e.g. SIMD or profiling test cases; there is no
+  exhaustive skip list yet). All failures happen on compilation stage, no abortions occur at runtime.
+  The work with torture test suite will be continued in order to reduce the number of failures. The tests are executed manually, no CI is configured yet.
 * Miscallenous tests:
     - Lua test -- kefir is used to build Lua 5.4 interpreter and then Lua basic test suite is executed on
       the resulting executable 
     - [Test suite](https://github.com/protopopov1122/c-testsuite) which is a fork of [c-testsuite](https://github.com/c-testsuite/c-testsuite) is
       executed. Currently, the test suite reports 4 failures that happen due to C language extensions used in the tests. Failing test cases
       are skipped.
+    - SQLite3 -- amalgamated sqlite3 version is compiled with kefir, and a manual smoke test is performed with resulting executable. Integration
+      with `sqllogictest` is planned.
 
-The test suite is deterministic (that is, tests do not fail spuriously), however there might arise problems when executed in unusual environments.
+Own test suite is deterministic (that is, tests do not fail spuriously), however there might arise problems when executed in unusual environments.
 For instance, some tests contain unicode characters and require the environment to have appropriate locale set. Also, issues with local musl 
 version might cause test failures.
 
