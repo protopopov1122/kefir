@@ -51,6 +51,22 @@
                     "type": "word"
                 }
             ]
+        },
+        {
+            "identifier": 8,
+            "type": [
+                {
+                    "type": "char"
+                }
+            ]
+        },
+        {
+            "identifier": 9,
+            "type": [
+                {
+                    "type": "word"
+                }
+            ]
         }
     ],
     "data": [],
@@ -117,7 +133,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 7,
+                        "type": 9,
                         "index": 0
                     }
                 },
@@ -131,7 +147,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 6,
+                        "type": 8,
                         "index": 0
                     }
                 },

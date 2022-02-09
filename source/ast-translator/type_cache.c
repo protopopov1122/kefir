@@ -179,29 +179,6 @@ static kefir_result_t cache_on_remove(struct kefir_mem *mem, struct kefir_hashtr
     return KEFIR_OK;
 }
 
-static kefir_result_t resolver_resolve(const struct kefir_ast_translator_type_resolver *resolver,
-                                       const struct kefir_ast_type *type, kefir_size_t alignment,
-                                       const struct kefir_ast_translator_resolved_type **resolved_type) {
-    REQUIRE(resolver != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator type resolver"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
-    REQUIRE(resolved_type != NULL,
-            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator resolved type pointer"));
-
-    ASSIGN_DECL_CAST(struct kefir_ast_translator_type_cache *, cache, resolver->payload);
-
-    kefir_result_t res = KEFIR_NOT_FOUND;
-    if (cache->parent_resolver != NULL) {
-        res = KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_RESOLVE(cache->parent_resolver, type, alignment, resolved_type);
-    }
-
-    if (res == KEFIR_NOT_FOUND) {
-        REQUIRE_OK(kefir_ast_translator_type_cache_at(cache, type, alignment, resolved_type));
-    } else {
-        REQUIRE_OK(res);
-    }
-    return KEFIR_OK;
-}
-
 static kefir_result_t resolver_register_object(struct kefir_mem *mem,
                                                const struct kefir_ast_translator_type_resolver *resolver,
                                                kefir_id_t ir_type_id, struct kefir_ir_type *ir_type,
@@ -213,30 +190,6 @@ static kefir_result_t resolver_register_object(struct kefir_mem *mem,
 
     ASSIGN_DECL_CAST(struct kefir_ast_translator_type_cache *, cache, resolver->payload);
     REQUIRE_OK(kefir_ast_translator_type_cache_insert_unowned_object(mem, cache, ir_type_id, ir_type, layout));
-    return KEFIR_OK;
-}
-
-static kefir_result_t resolver_build_object(struct kefir_mem *mem, struct kefir_ast_translator_type_resolver *resolver,
-                                            const struct kefir_ast_translator_environment *env,
-                                            struct kefir_ir_module *module, const struct kefir_ast_type *type,
-                                            kefir_size_t alignment,
-                                            const struct kefir_ast_translator_resolved_type **resolved_type) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
-    REQUIRE(resolver != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator type resolver"));
-    REQUIRE(env != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator environment"));
-    REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR module"));
-    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
-    REQUIRE(resolved_type != NULL,
-            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translator resolved type pointer"));
-
-    ASSIGN_DECL_CAST(struct kefir_ast_translator_type_cache *, cache, resolver->payload);
-    kefir_result_t res = KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_RESOLVE(resolver, type, alignment, resolved_type);
-    if (res == KEFIR_NOT_FOUND) {
-        REQUIRE_OK(kefir_ast_translator_type_cache_generate_owned_object(mem, type, alignment, cache, env, module,
-                                                                         resolved_type));
-    } else {
-        REQUIRE_OK(res);
-    }
     return KEFIR_OK;
 }
 
@@ -256,9 +209,7 @@ kefir_result_t kefir_ast_translator_type_cache_init(struct kefir_ast_translator_
     REQUIRE_OK(kefir_hashtree_on_removal(&cache->cache, cache_on_remove, NULL));
 
     cache->parent_resolver = parent_resolver;
-    cache->resolver.resolve = resolver_resolve;
     cache->resolver.register_object = resolver_register_object;
-    cache->resolver.build_object = resolver_build_object;
     cache->resolver.free = resolver_free;
     cache->resolver.payload = cache;
     return KEFIR_OK;

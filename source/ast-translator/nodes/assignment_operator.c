@@ -24,6 +24,7 @@
 #include "kefir/ast-translator/lvalue.h"
 #include "kefir/ast-translator/util.h"
 #include "kefir/ast-translator/typeconv.h"
+#include "kefir/ast-translator/type.h"
 #include "kefir/ast/type_conv.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
@@ -349,22 +350,27 @@ static kefir_result_t translate_add(struct kefir_mem *mem, struct kefir_ast_tran
                 KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER,
                                 "Expected scalar pointer on the left side, and an integer on the right"));
 
-        const struct kefir_ast_translator_resolved_type *cached_type = NULL;
-        REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(
-            mem, &context->type_cache.resolver, context->environment, context->module,
-            target_normalized_type->referenced_type, 0, &cached_type));
-        REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
-                KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected cached type to be an object"));
+        struct kefir_ast_translator_type *translator_type = NULL;
+        REQUIRE_OK(kefir_ast_translator_type_new(mem, context->environment, context->module,
+                                                 target_normalized_type->referenced_type, 0, &translator_type));
 
-        REQUIRE_OK(kefir_ast_translate_expression(mem, node->value, builder, context));
+        kefir_result_t res = KEFIR_OK;
+        REQUIRE_CHAIN(&res, kefir_ast_translate_expression(mem, node->value, builder, context));
 
-        REQUIRE_OK(kefir_ast_translate_lvalue(mem, context, builder, node->target));
-        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 0));
-        REQUIRE_OK(kefir_ast_translator_resolve_lvalue(mem, context, builder, node->target));
+        REQUIRE_CHAIN(&res, kefir_ast_translate_lvalue(mem, context, builder, node->target));
+        REQUIRE_CHAIN(&res, KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 0));
+        REQUIRE_CHAIN(&res, kefir_ast_translator_resolve_lvalue(mem, context, builder, node->target));
 
-        REQUIRE_OK(reorder_assignment_arguments(builder, NULL));
-        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_ELEMENTPTR, cached_type->object.ir_type_id,
-                                                   cached_type->object.layout->value));
+        REQUIRE_CHAIN(&res, reorder_assignment_arguments(builder, NULL));
+        REQUIRE_CHAIN(&res, KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_ELEMENTPTR,
+                                                            translator_type->object.ir_type_id,
+                                                            translator_type->object.layout->value));
+
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_ast_translator_type_free(mem, translator_type);
+            return res;
+        });
+        REQUIRE_OK(kefir_ast_translator_type_free(mem, translator_type));
     }
 
     REQUIRE_OK(store_value(mem, context, builder, node, result_normalized_type));
@@ -428,23 +434,28 @@ static kefir_result_t translate_subtract(struct kefir_mem *mem, struct kefir_ast
                 KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER,
                                 "Expected scalar pointer on the left side, and an integer on the right"));
 
-        const struct kefir_ast_translator_resolved_type *cached_type = NULL;
-        REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(
-            mem, &context->type_cache.resolver, context->environment, context->module,
-            target_normalized_type->referenced_type, 0, &cached_type));
-        REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
-                KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected cached type to be an object"));
+        struct kefir_ast_translator_type *translator_type = NULL;
+        REQUIRE_OK(kefir_ast_translator_type_new(mem, context->environment, context->module,
+                                                 target_normalized_type->referenced_type, 0, &translator_type));
 
-        REQUIRE_OK(kefir_ast_translate_expression(mem, node->value, builder, context));
-        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_INEG, 0));
+        kefir_result_t res = KEFIR_OK;
+        REQUIRE_CHAIN(&res, kefir_ast_translate_expression(mem, node->value, builder, context));
+        REQUIRE_CHAIN(&res, KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_INEG, 0));
 
-        REQUIRE_OK(kefir_ast_translate_lvalue(mem, context, builder, node->target));
-        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 0));
-        REQUIRE_OK(kefir_ast_translator_resolve_lvalue(mem, context, builder, node->target));
+        REQUIRE_CHAIN(&res, kefir_ast_translate_lvalue(mem, context, builder, node->target));
+        REQUIRE_CHAIN(&res, KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PICK, 0));
+        REQUIRE_CHAIN(&res, kefir_ast_translator_resolve_lvalue(mem, context, builder, node->target));
 
-        REQUIRE_OK(reorder_assignment_arguments(builder, NULL));
-        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_ELEMENTPTR, cached_type->object.ir_type_id,
-                                                   cached_type->object.layout->value));
+        REQUIRE_CHAIN(&res, reorder_assignment_arguments(builder, NULL));
+        REQUIRE_CHAIN(&res, KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_ELEMENTPTR,
+                                                            translator_type->object.ir_type_id,
+                                                            translator_type->object.layout->value));
+
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_ast_translator_type_free(mem, translator_type);
+            return res;
+        });
+        REQUIRE_OK(kefir_ast_translator_type_free(mem, translator_type));
     }
 
     REQUIRE_OK(store_value(mem, context, builder, node, result_normalized_type));

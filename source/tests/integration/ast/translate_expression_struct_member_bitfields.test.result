@@ -88,6 +88,314 @@
                     ]
                 }
             ]
+        },
+        {
+            "identifier": 8,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "bits",
+                            "width": 19,
+                            "alignment": 4
+                        },
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "bits",
+                            "width": 4,
+                            "alignment": 8
+                        },
+                        {
+                            "type": "bits",
+                            "width": 57,
+                            "alignment": 8
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 9,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "bits",
+                            "width": 19,
+                            "alignment": 4
+                        },
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "bits",
+                            "width": 4,
+                            "alignment": 8
+                        },
+                        {
+                            "type": "bits",
+                            "width": 57,
+                            "alignment": 8
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 10,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "bits",
+                            "width": 19,
+                            "alignment": 4
+                        },
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "bits",
+                            "width": 4,
+                            "alignment": 8
+                        },
+                        {
+                            "type": "bits",
+                            "width": 57,
+                            "alignment": 8
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 11,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "bits",
+                            "width": 19,
+                            "alignment": 4
+                        },
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "bits",
+                            "width": 4,
+                            "alignment": 8
+                        },
+                        {
+                            "type": "bits",
+                            "width": 57,
+                            "alignment": 8
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 12,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "bits",
+                            "width": 19,
+                            "alignment": 4
+                        },
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "bits",
+                            "width": 4,
+                            "alignment": 8
+                        },
+                        {
+                            "type": "bits",
+                            "width": 57,
+                            "alignment": 8
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 13,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "bits",
+                            "width": 19,
+                            "alignment": 4
+                        },
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "bits",
+                            "width": 4,
+                            "alignment": 8
+                        },
+                        {
+                            "type": "bits",
+                            "width": 57,
+                            "alignment": 8
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 14,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "bits",
+                            "width": 19,
+                            "alignment": 4
+                        },
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "bits",
+                            "width": 4,
+                            "alignment": 8
+                        },
+                        {
+                            "type": "bits",
+                            "width": 57,
+                            "alignment": 8
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 15,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "bits",
+                            "width": 19,
+                            "alignment": 4
+                        },
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "bits",
+                            "width": 4,
+                            "alignment": 8
+                        },
+                        {
+                            "type": "bits",
+                            "width": 57,
+                            "alignment": 8
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 16,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "bits",
+                            "width": 19,
+                            "alignment": 4
+                        },
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "bits",
+                            "width": 4,
+                            "alignment": 8
+                        },
+                        {
+                            "type": "bits",
+                            "width": 57,
+                            "alignment": 8
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 17,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "bits",
+                            "width": 19,
+                            "alignment": 4
+                        },
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "bits",
+                            "width": 4,
+                            "alignment": 8
+                        },
+                        {
+                            "type": "bits",
+                            "width": 57,
+                            "alignment": 8
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 18,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "bits",
+                            "width": 19,
+                            "alignment": 4
+                        },
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "bits",
+                            "width": 4,
+                            "alignment": 8
+                        },
+                        {
+                            "type": "bits",
+                            "width": 57,
+                            "alignment": 8
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "data": [],
@@ -179,7 +487,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 7,
+                        "type": 13,
                         "index": 3
                     }
                 },
@@ -209,7 +517,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 7,
+                        "type": 15,
                         "index": 3
                     }
                 },
@@ -239,7 +547,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 7,
+                        "type": 17,
                         "index": 4
                     }
                 },

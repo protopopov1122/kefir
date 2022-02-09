@@ -24,6 +24,7 @@
 #include "kefir/ast-translator/temporaries.h"
 #include "kefir/ast-translator/initializer.h"
 #include "kefir/ast-translator/misc.h"
+#include "kefir/ast-translator/type.h"
 #include "kefir/ast/type_completion.h"
 #include "kefir/ast/runtime.h"
 #include "kefir/ast/type_conv.h"
@@ -135,24 +136,29 @@ kefir_result_t kefir_ast_translate_array_subscript_lvalue(struct kefir_mem *mem,
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR block builder"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST array subscript node"));
 
-    const struct kefir_ast_translator_resolved_type *cached_type = NULL;
-    REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_cache.resolver, context->environment,
-                                                               context->module, node->base.properties.type, 0,
-                                                               &cached_type));
-    REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
-            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected cached type to be an object"));
+    struct kefir_ast_translator_type *translator_type = NULL;
+    REQUIRE_OK(kefir_ast_translator_type_new(mem, context->environment, context->module, node->base.properties.type, 0,
+                                             &translator_type));
 
+    kefir_result_t res = KEFIR_OK;
     const struct kefir_ast_type *array_type =
         KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, node->array->properties.type);
     if (array_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
-        REQUIRE_OK(kefir_ast_translate_expression(mem, node->array, builder, context));
-        REQUIRE_OK(kefir_ast_translate_expression(mem, node->subscript, builder, context));
+        REQUIRE_CHAIN(&res, kefir_ast_translate_expression(mem, node->array, builder, context));
+        REQUIRE_CHAIN(&res, kefir_ast_translate_expression(mem, node->subscript, builder, context));
     } else {
-        REQUIRE_OK(kefir_ast_translate_expression(mem, node->subscript, builder, context));
-        REQUIRE_OK(kefir_ast_translate_expression(mem, node->array, builder, context));
+        REQUIRE_CHAIN(&res, kefir_ast_translate_expression(mem, node->subscript, builder, context));
+        REQUIRE_CHAIN(&res, kefir_ast_translate_expression(mem, node->array, builder, context));
     }
-    REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_ELEMENTPTR, cached_type->object.ir_type_id,
-                                               cached_type->object.layout->value));
+    REQUIRE_CHAIN(
+        &res, KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_ELEMENTPTR, translator_type->object.ir_type_id,
+                                              translator_type->object.layout->value));
+
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_ast_translator_type_free(mem, translator_type);
+        return res;
+    });
+    REQUIRE_OK(kefir_ast_translator_type_free(mem, translator_type));
     return KEFIR_OK;
 }
 
@@ -176,20 +182,26 @@ kefir_result_t kefir_ast_translate_struct_member_lvalue(struct kefir_mem *mem,
                 structure_type->structure_type.complete,
             KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected expression of complete structure/union type"));
 
-    const struct kefir_ast_translator_resolved_type *cached_type = NULL;
-    REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(mem, &context->type_cache.resolver, context->environment,
-                                                               context->module, structure_type, 0, &cached_type));
-    REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
-            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected cached type to be an object"));
+    struct kefir_ast_translator_type *translator_type = NULL;
+    REQUIRE_OK(
+        kefir_ast_translator_type_new(mem, context->environment, context->module, structure_type, 0, &translator_type));
 
     struct kefir_ast_type_layout *member_layout = NULL;
     struct kefir_ast_designator designator = {
         .type = KEFIR_AST_DESIGNATOR_MEMBER, .member = node->member, .next = NULL};
-    REQUIRE_OK(kefir_ast_type_layout_resolve(cached_type->object.layout, &designator, &member_layout, NULL, NULL));
+    kefir_result_t res = KEFIR_OK;
+    REQUIRE_CHAIN(
+        &res, kefir_ast_type_layout_resolve(translator_type->object.layout, &designator, &member_layout, NULL, NULL));
 
-    REQUIRE_OK(kefir_ast_translate_expression(mem, node->structure, builder, context));
-    REQUIRE_OK(kefir_ast_translator_resolve_type_layout(builder, cached_type->object.ir_type_id, member_layout,
-                                                        cached_type->object.layout));
+    REQUIRE_CHAIN(&res, kefir_ast_translate_expression(mem, node->structure, builder, context));
+    REQUIRE_CHAIN(&res, kefir_ast_translator_resolve_type_layout(builder, translator_type->object.ir_type_id,
+                                                                 member_layout, translator_type->object.layout));
+
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_ast_translator_type_free(mem, translator_type);
+        return res;
+    });
+    REQUIRE_OK(kefir_ast_translator_type_free(mem, translator_type));
     return KEFIR_OK;
 }
 

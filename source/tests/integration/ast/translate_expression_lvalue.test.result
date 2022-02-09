@@ -137,7 +137,23 @@
         },
         {
             "identifier": 15,
-            "type": []
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "array",
+                            "length": 4,
+                            "element_type": {
+                                "type": "double"
+                            }
+                        }
+                    ]
+                }
+            ]
         },
         {
             "identifier": 16,
@@ -145,6 +161,30 @@
         },
         {
             "identifier": 17,
+            "type": []
+        },
+        {
+            "identifier": 18,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "array",
+                            "length": 4,
+                            "element_type": {
+                                "type": "double"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 19,
             "type": [
                 {
                     "type": "struct",
@@ -157,11 +197,11 @@
             ]
         },
         {
-            "identifier": 18,
+            "identifier": 20,
             "type": []
         },
         {
-            "identifier": 19,
+            "identifier": 21,
             "type": []
         }
     ],
@@ -214,16 +254,16 @@
         {
             "identifier": 3,
             "name": "struct_field_indirect",
-            "parameters": 15,
+            "parameters": 16,
             "vararg": false,
-            "returns": 16
+            "returns": 17
         },
         {
             "identifier": 4,
             "name": "indirection",
-            "parameters": 18,
+            "parameters": 20,
             "vararg": false,
-            "returns": 19
+            "returns": 21
         }
     ],
     "functions": [
@@ -319,7 +359,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 14,
+                        "type": 15,
                         "index": 2
                     }
                 }
@@ -342,7 +382,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 14,
+                        "type": 18,
                         "index": 2
                     }
                 }

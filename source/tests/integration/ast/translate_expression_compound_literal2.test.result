@@ -90,7 +90,15 @@
         },
         {
             "identifier": 6,
-            "type": []
+            "type": [
+                {
+                    "type": "array",
+                    "length": 14,
+                    "element_type": {
+                        "type": "char"
+                    }
+                }
+            ]
         },
         {
             "identifier": 7,
@@ -98,6 +106,10 @@
         },
         {
             "identifier": 8,
+            "type": []
+        },
+        {
+            "identifier": 9,
             "type": [
                 {
                     "type": "array",
@@ -109,15 +121,15 @@
             ]
         },
         {
-            "identifier": 9,
-            "type": []
-        },
-        {
             "identifier": 10,
             "type": []
         },
         {
             "identifier": 11,
+            "type": []
+        },
+        {
+            "identifier": 12,
             "type": [
                 {
                     "type": "array",
@@ -129,15 +141,27 @@
             ]
         },
         {
-            "identifier": 12,
-            "type": []
-        },
-        {
             "identifier": 13,
             "type": []
         },
         {
             "identifier": 14,
+            "type": []
+        },
+        {
+            "identifier": 15,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 8,
+                    "element_type": {
+                        "type": "char"
+                    }
+                }
+            ]
+        },
+        {
+            "identifier": 16,
             "type": [
                 {
                     "type": "array",
@@ -177,23 +201,23 @@
         {
             "identifier": 1,
             "name": "compound_literal2",
-            "parameters": 6,
+            "parameters": 7,
             "vararg": false,
-            "returns": 7
+            "returns": 8
         },
         {
             "identifier": 2,
             "name": "compound_literal3",
-            "parameters": 9,
+            "parameters": 10,
             "vararg": false,
-            "returns": 10
+            "returns": 11
         },
         {
             "identifier": 3,
             "name": "compound_literal4",
-            "parameters": 12,
+            "parameters": 13,
             "vararg": false,
-            "returns": 13
+            "returns": 14
         }
     ],
     "functions": [
@@ -248,7 +272,7 @@
                 {
                     "opcode": "bcopy",
                     "arg": {
-                        "type": 5,
+                        "type": 6,
                         "index": 0
                     }
                 }
@@ -290,7 +314,7 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 8,
+                        "type": 9,
                         "index": 0
                     }
                 },
@@ -418,7 +442,7 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 11,
+                        "type": 12,
                         "index": 0
                     }
                 }
@@ -464,7 +488,7 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 14,
+                        "type": 15,
                         "index": 0
                     }
                 },
@@ -475,7 +499,7 @@
                 {
                     "opcode": "bcopy",
                     "arg": {
-                        "type": 14,
+                        "type": 16,
                         "index": 0
                     }
                 }

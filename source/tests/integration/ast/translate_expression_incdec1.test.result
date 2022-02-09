@@ -148,11 +148,31 @@
         },
         {
             "identifier": 27,
-            "type": []
+            "type": [
+                {
+                    "type": "bool"
+                }
+            ]
         },
         {
             "identifier": 28,
             "type": []
+        },
+        {
+            "identifier": 29,
+            "type": []
+        },
+        {
+            "identifier": 30,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 4,
+                    "element_type": {
+                        "type": "long"
+                    }
+                }
+            ]
         }
     ],
     "data": [],
@@ -238,9 +258,9 @@
         {
             "identifier": 11,
             "name": "decrement_pointer2",
-            "parameters": 27,
+            "parameters": 28,
             "vararg": false,
-            "returns": 28
+            "returns": 29
         }
     ],
     "functions": [
@@ -619,7 +639,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 21,
+                        "type": 27,
                         "index": 0
                     }
                 },
@@ -665,7 +685,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 24,
+                        "type": 30,
                         "index": 0
                     }
                 },

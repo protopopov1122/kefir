@@ -55,6 +55,22 @@
                     ]
                 }
             ]
+        },
+        {
+            "identifier": 7,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "int"
+                        },
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "data": [],
@@ -83,7 +99,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 6,
+                        "type": 7,
                         "index": 2
                     }
                 },

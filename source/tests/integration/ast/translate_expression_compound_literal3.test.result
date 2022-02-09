@@ -166,6 +166,18 @@
                     }
                 }
             ]
+        },
+        {
+            "identifier": 7,
+            "type": [
+                {
+                    "type": "array",
+                    "length": 10,
+                    "element_type": {
+                        "type": "char"
+                    }
+                }
+            ]
         }
     ],
     "data": [],
@@ -332,8 +344,8 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 5,
-                        "index": 3
+                        "type": 7,
+                        "index": 0
                     }
                 },
                 {

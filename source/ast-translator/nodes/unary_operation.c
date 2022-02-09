@@ -26,6 +26,7 @@
 #include "kefir/ast-translator/util.h"
 #include "kefir/ast-translator/misc.h"
 #include "kefir/ast-translator/flow_control.h"
+#include "kefir/ast-translator/type.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"
@@ -170,16 +171,21 @@ static kefir_result_t incdec_impl(struct kefir_mem *mem, struct kefir_ast_transl
                                                                                                                   : -1;
     switch (normalized_type->tag) {
         case KEFIR_AST_TYPE_SCALAR_POINTER: {
-            const struct kefir_ast_translator_resolved_type *cached_type = NULL;
-            REQUIRE_OK(KEFIR_AST_TRANSLATOR_TYPE_RESOLVER_BUILD_OBJECT(
-                mem, &context->type_cache.resolver, context->environment, context->module,
-                node->base.properties.type->referenced_type, 0, &cached_type));
-            REQUIRE(cached_type->klass == KEFIR_AST_TRANSLATOR_RESOLVED_OBJECT_TYPE,
-                    KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected cached type to be an object"));
+            struct kefir_ast_translator_type *translator_type = NULL;
+            REQUIRE_OK(kefir_ast_translator_type_new(mem, context->environment, context->module,
+                                                     node->base.properties.type->referenced_type, 0, &translator_type));
 
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHI64, diff));
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(
-                builder, KEFIR_IROPCODE_ELEMENTPTR, cached_type->object.ir_type_id, cached_type->object.layout->value));
+            kefir_result_t res = KEFIR_OK;
+            REQUIRE_CHAIN(&res, KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHI64, diff));
+            REQUIRE_CHAIN(&res, KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_ELEMENTPTR,
+                                                                translator_type->object.ir_type_id,
+                                                                translator_type->object.layout->value));
+
+            REQUIRE_ELSE(res == KEFIR_OK, {
+                kefir_ast_translator_type_free(mem, translator_type);
+                return res;
+            });
+            REQUIRE_OK(kefir_ast_translator_type_free(mem, translator_type));
         } break;
 
         case KEFIR_AST_TYPE_SCALAR_FLOAT:

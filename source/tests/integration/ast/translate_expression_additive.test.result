@@ -110,7 +110,7 @@
             "identifier": 21,
             "type": [
                 {
-                    "type": "short"
+                    "type": "char"
                 }
             ]
         },
@@ -118,7 +118,23 @@
             "identifier": 22,
             "type": [
                 {
+                    "type": "short"
+                }
+            ]
+        },
+        {
+            "identifier": 23,
+            "type": [
+                {
                     "type": "float"
+                }
+            ]
+        },
+        {
+            "identifier": 24,
+            "type": [
+                {
+                    "type": "double"
                 }
             ]
         }
@@ -267,8 +283,8 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 11,
-                        "index": 1
+                        "type": 21,
+                        "index": 0
                     }
                 },
                 {
@@ -285,7 +301,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 21,
+                        "type": 22,
                         "index": 0
                     }
                 },
@@ -303,7 +319,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 22,
+                        "type": 23,
                         "index": 0
                     }
                 },
@@ -321,7 +337,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 10,
+                        "type": 24,
                         "index": 0
                     }
                 }
