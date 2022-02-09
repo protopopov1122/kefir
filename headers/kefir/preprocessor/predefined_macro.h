@@ -54,6 +54,10 @@ typedef struct kefir_preprocessor_predefined_macro_scope {
 
         // Extension macros
         struct kefir_preprocessor_macro data_model;
+        struct kefir_preprocessor_macro byte_order;
+        struct kefir_preprocessor_macro byte_order_big_endian;
+        struct kefir_preprocessor_macro byte_order_little_endian;
+        struct kefir_preprocessor_macro byte_order_pdp_endian;
     } macros;
     struct kefir_hashtree macro_tree;
 } kefir_preprocessor_predefined_macro_scope_t;

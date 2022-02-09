@@ -257,6 +257,72 @@ static kefir_result_t macro_produce_one_apply(struct kefir_mem *mem, const struc
     return KEFIR_OK;
 }
 
+static kefir_result_t macro_big_endian_apply(struct kefir_mem *mem, const struct kefir_preprocessor_macro *macro,
+                                             struct kefir_symbol_table *symbols, const struct kefir_list *args,
+                                             struct kefir_token_buffer *buffer,
+                                             const struct kefir_source_location *source_location) {
+    UNUSED(symbols);
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(macro != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor macro"));
+    REQUIRE(args == NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected empty macro argument list"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));
+    REQUIRE(source_location != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid source location"));
+
+    struct kefir_token token;
+    REQUIRE_OK(kefir_token_new_pp_number(mem, "1234", 4, &token));
+    token.source_location = *source_location;
+    kefir_result_t res = kefir_token_buffer_emplace(mem, buffer, &token);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_token_free(mem, &token);
+        return res;
+    });
+    return KEFIR_OK;
+}
+
+static kefir_result_t macro_little_endian_apply(struct kefir_mem *mem, const struct kefir_preprocessor_macro *macro,
+                                                struct kefir_symbol_table *symbols, const struct kefir_list *args,
+                                                struct kefir_token_buffer *buffer,
+                                                const struct kefir_source_location *source_location) {
+    UNUSED(symbols);
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(macro != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor macro"));
+    REQUIRE(args == NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected empty macro argument list"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));
+    REQUIRE(source_location != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid source location"));
+
+    struct kefir_token token;
+    REQUIRE_OK(kefir_token_new_pp_number(mem, "4321", 4, &token));
+    token.source_location = *source_location;
+    kefir_result_t res = kefir_token_buffer_emplace(mem, buffer, &token);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_token_free(mem, &token);
+        return res;
+    });
+    return KEFIR_OK;
+}
+
+static kefir_result_t macro_pdp_endian_apply(struct kefir_mem *mem, const struct kefir_preprocessor_macro *macro,
+                                             struct kefir_symbol_table *symbols, const struct kefir_list *args,
+                                             struct kefir_token_buffer *buffer,
+                                             const struct kefir_source_location *source_location) {
+    UNUSED(symbols);
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(macro != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor macro"));
+    REQUIRE(args == NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected empty macro argument list"));
+    REQUIRE(buffer != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid token buffer"));
+    REQUIRE(source_location != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid source location"));
+
+    struct kefir_token token;
+    REQUIRE_OK(kefir_token_new_pp_number(mem, "3412", 4, &token));
+    token.source_location = *source_location;
+    kefir_result_t res = kefir_token_buffer_emplace(mem, buffer, &token);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_token_free(mem, &token);
+        return res;
+    });
+    return KEFIR_OK;
+}
+
 static kefir_result_t define_predefined_macro(
     struct kefir_mem *mem, struct kefir_preprocessor_predefined_macro_scope *scope,
     struct kefir_preprocessor_macro *macro, const char *identifier,
@@ -366,35 +432,61 @@ kefir_result_t kefir_preprocessor_predefined_macro_scope_init(struct kefir_mem *
     REQUIRE_CHAIN(&res,
                   define_predefined_macro(mem, scope, &scope->macros.kefircc, "__KEFIRCC__", macro_produce_one_apply));
 
-    switch (preprocessor->context->environment.data_model) {
-        case KEFIR_DATA_MODEL_UNKNOWN:
-            // Intentionally left blank
-            break;
+    if (preprocessor->context->environment.data_model != NULL) {
+        switch (preprocessor->context->environment.data_model->model) {
+            case KEFIR_DATA_MODEL_UNKNOWN:
+                // Intentionally left blank
+                break;
 
-        case KEFIR_DATA_MODEL_ILP32:
-            REQUIRE_CHAIN(&res, define_predefined_macro(mem, scope, &scope->macros.data_model, "__ILP32__",
-                                                        macro_produce_one_apply));
-            break;
+            case KEFIR_DATA_MODEL_ILP32:
+                REQUIRE_CHAIN(&res, define_predefined_macro(mem, scope, &scope->macros.data_model, "__ILP32__",
+                                                            macro_produce_one_apply));
+                break;
 
-        case KEFIR_DATA_MODEL_LLP64:
-            REQUIRE_CHAIN(&res, define_predefined_macro(mem, scope, &scope->macros.data_model, "__LLP64__",
-                                                        macro_produce_one_apply));
-            break;
+            case KEFIR_DATA_MODEL_LLP64:
+                REQUIRE_CHAIN(&res, define_predefined_macro(mem, scope, &scope->macros.data_model, "__LLP64__",
+                                                            macro_produce_one_apply));
+                break;
 
-        case KEFIR_DATA_MODEL_LP64:
-            REQUIRE_CHAIN(&res, define_predefined_macro(mem, scope, &scope->macros.data_model, "__LP64__",
-                                                        macro_produce_one_apply));
-            break;
+            case KEFIR_DATA_MODEL_LP64:
+                REQUIRE_CHAIN(&res, define_predefined_macro(mem, scope, &scope->macros.data_model, "__LP64__",
+                                                            macro_produce_one_apply));
+                break;
 
-        case KEFIR_DATA_MODEL_ILP64:
-            REQUIRE_CHAIN(&res, define_predefined_macro(mem, scope, &scope->macros.data_model, "__ILP64__",
-                                                        macro_produce_one_apply));
-            break;
+            case KEFIR_DATA_MODEL_ILP64:
+                REQUIRE_CHAIN(&res, define_predefined_macro(mem, scope, &scope->macros.data_model, "__ILP64__",
+                                                            macro_produce_one_apply));
+                break;
 
-        case KEFIR_DATA_MODEL_SILP64:
-            REQUIRE_CHAIN(&res, define_predefined_macro(mem, scope, &scope->macros.data_model, "__SILP64__",
-                                                        macro_produce_one_apply));
-            break;
+            case KEFIR_DATA_MODEL_SILP64:
+                REQUIRE_CHAIN(&res, define_predefined_macro(mem, scope, &scope->macros.data_model, "__SILP64__",
+                                                            macro_produce_one_apply));
+                break;
+        }
+
+        REQUIRE_CHAIN(&res, define_predefined_macro(mem, scope, &scope->macros.byte_order_big_endian,
+                                                    "__ORDER_BIG_ENDIAN__", macro_big_endian_apply));
+
+        REQUIRE_CHAIN(&res, define_predefined_macro(mem, scope, &scope->macros.byte_order_little_endian,
+                                                    "__ORDER_LITTLE_ENDIAN__", macro_little_endian_apply));
+
+        REQUIRE_CHAIN(&res, define_predefined_macro(mem, scope, &scope->macros.byte_order_pdp_endian,
+                                                    "__ORDER_PDP_ENDIAN__", macro_pdp_endian_apply));
+        switch (preprocessor->context->environment.data_model->byte_order) {
+            case KEFIR_BYTE_ORDER_BIG_ENDIAN:
+                REQUIRE_CHAIN(&res, define_predefined_macro(mem, scope, &scope->macros.byte_order, "__BYTE_ORDER__",
+                                                            macro_big_endian_apply));
+                break;
+
+            case KEFIR_BYTE_ORDER_LITTLE_ENDIAN:
+                REQUIRE_CHAIN(&res, define_predefined_macro(mem, scope, &scope->macros.byte_order, "__BYTE_ORDER__",
+                                                            macro_little_endian_apply));
+                break;
+
+            case KEFIR_BYTE_ORDER_UNKNOWN:
+                // Intentionally left blank
+                break;
+        }
     }
 
     REQUIRE_ELSE(res == KEFIR_OK, {

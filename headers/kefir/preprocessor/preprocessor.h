@@ -69,7 +69,7 @@ typedef struct kefir_preprocessor_environment {
     kefir_bool_t stdc_no_complex;
     kefir_bool_t stdc_no_threads;
     kefir_bool_t stdc_no_vla;
-    kefir_data_model_tag_t data_model;
+    const struct kefir_data_model_descriptor *data_model;
 } kefir_preprocessor_environment_t;
 
 typedef struct kefir_preprocessor_context {

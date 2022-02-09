@@ -24,6 +24,12 @@
 #include "kefir/core/base.h"
 #include "kefir/core/basic-types.h"
 
+typedef enum kefir_byte_order {
+    KEFIR_BYTE_ORDER_UNKNOWN = 0,
+    KEFIR_BYTE_ORDER_BIG_ENDIAN,
+    KEFIR_BYTE_ORDER_LITTLE_ENDIAN
+} kefir_byte_order_t;
+
 typedef enum kefir_data_model_tag {
     KEFIR_DATA_MODEL_UNKNOWN = 0,
     KEFIR_DATA_MODEL_ILP32,
@@ -35,9 +41,8 @@ typedef enum kefir_data_model_tag {
 
 typedef struct kefir_data_model_descriptor {
     kefir_data_model_tag_t model;
+    kefir_byte_order_t byte_order;
     kefir_size_t signed_integer_width;
 } kefir_data_model_descriptor_t;
-
-extern const struct kefir_data_model_descriptor KEFIR_DATA_MODEL_LP64_DESCRIPTOR;
 
 #endif
