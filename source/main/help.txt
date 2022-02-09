@@ -22,16 +22,18 @@ Options:
     --source-id identifier              Force use provided source file identifier
     --detailed-output                   Include references to source file in AST and token dumps
 
-Parsing options:
-    --parser-fail-on-attributes         Fail if __attribute__((...)) is encountered
-    --parser-implicit-function-decl-int Permit function definitiong with missing return type
-    --parser-designated-init-colons     Permit "fieldname:" syntax in designated initializers
-    --parser-label-addressing           Permit label-addressing with && operator
+Kefir supports disabled-by-default optional features:
+    --feature-[feature name]            Enable feature
+    --no-feature-[feature name]         Disable feature
 
-Analysis options:
-    --analyzer-non-strict-qualifiers    Disable strict qualifier checks for pointers
-    --analyzer-signed-enums             Force all enums to have signed integral type
-    --analyzer-implicit-function-decl   Permit implicit funciton declarations at use-site
+Supported features:
+    fail-on-attributes                  Fail if __attribute__((...)) is encountered
+    missing-function-return-type        Permit function definitiong with missing return type
+    designated-init-colons              Permit "fieldname:" syntax in designated initializers
+    labels-as-values                    Permit label-addressing with && operator
+    non-strict-qualifiers               Disable strict qualifier checks for pointers
+    signed-enums                        Force all enums to have signed integral type
+    implicit-function-decl              Permit implicit funciton declarations at use-site
 
 Targets:
     amd64-sysv-gas (default)             Produce GNU As-compatible assembly adhering System-V AMD64 ABI

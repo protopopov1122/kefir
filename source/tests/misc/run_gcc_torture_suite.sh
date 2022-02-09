@@ -32,7 +32,7 @@ if [[ "x$TORTURE" == "x" ]]; then
     exit 1
 fi
 
-CC="$KEFIRCC --parser-implicit-function-def-int --parser-designated-init-colons --parser-label-addressing --analyzer-implicit-function-decl --include $(dirname $0)/torture.h"
+CC="$KEFIRCC --feature-missing-function-return-type --feature-designated-init-colons --feature-labels-as-values --feature-implicit-function-decl --include $(dirname $0)/torture.h"
 SKIP_LIST="$(dirname $0)/torture.skip"
 TIMEOUT=10
 SKIPPED_TESTS=0

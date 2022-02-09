@@ -59,16 +59,13 @@ typedef struct kefir_cli_options {
 
     struct {
         kefir_bool_t fail_on_attributes;
-        kefir_bool_t implicit_function_def_int;
+        kefir_bool_t missing_function_return_type;
         kefir_bool_t designated_initializer_colons;
-        kefir_bool_t label_addressing;
-    } parser;
-
-    struct {
+        kefir_bool_t labels_as_values;
         kefir_bool_t non_strict_qualifiers;
         kefir_bool_t signed_enum_type;
         kefir_bool_t implicit_function_declaration;
-    } analysis;
+    } features;
 } kefir_cli_options_t;
 
 kefir_result_t kefir_cli_parse_options(struct kefir_mem *, struct kefir_cli_options *, char *const *, kefir_size_t);

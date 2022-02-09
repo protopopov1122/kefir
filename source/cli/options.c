@@ -142,6 +142,9 @@ static struct CliOption Options[] = {
     }
 #define CUSTOM(short, long, has_arg, hook) \
     { short, long, has_arg, CLI_ACTION_NONE, 0, 0, 0, hook, NULL }
+#define FEATURE(name, field)                                                    \
+    SIMPLE(0, "feature-" name, false, CLI_ACTION_ASSIGN_CONSTANT, true, field), \
+        SIMPLE(0, "no-feature-" name, false, CLI_ACTION_ASSIGN_CONSTANT, false, field)
 
     SIMPLE('o', "output", true, CLI_ACTION_ASSIGN_STRARG, 0, output_filepath),
     PREHOOK('p', "preprocess", false, CLI_ACTION_ASSIGN_CONSTANT, KEFIR_CLI_ACTION_PREPROCESS, action, preprocess_hook),
@@ -163,22 +166,19 @@ static struct CliOption Options[] = {
     SIMPLE('h', "help", false, CLI_ACTION_ASSIGN_CONSTANT, KEFIR_CLI_ACTION_HELP, action),
     SIMPLE('v', "version", false, CLI_ACTION_ASSIGN_CONSTANT, KEFIR_CLI_ACTION_VERSION, action),
 
-    SIMPLE(0, "analyzer-non-strict-qualifiers", false, CLI_ACTION_ASSIGN_CONSTANT, true,
-           analysis.non_strict_qualifiers),
-    SIMPLE(0, "analyzer-signed-enums", false, CLI_ACTION_ASSIGN_CONSTANT, true, analysis.signed_enum_type),
-    SIMPLE(0, "analyzer-implicit-function-decl", false, CLI_ACTION_ASSIGN_CONSTANT, true,
-           analysis.implicit_function_declaration),
-    SIMPLE(0, "parser-fail-on-attributes", false, CLI_ACTION_ASSIGN_CONSTANT, true, parser.fail_on_attributes),
-    SIMPLE(0, "parser-implicit-function-def-int", false, CLI_ACTION_ASSIGN_CONSTANT, true,
-           parser.implicit_function_def_int),
-    SIMPLE(0, "parser-designated-init-colons", false, CLI_ACTION_ASSIGN_CONSTANT, true,
-           parser.designated_initializer_colons),
-    SIMPLE(0, "parser-label-addressing", false, CLI_ACTION_ASSIGN_CONSTANT, true, parser.label_addressing)
+    FEATURE("non-strict-qualifiers", features.non_strict_qualifiers),
+    FEATURE("signed-enums", features.signed_enum_type),
+    FEATURE("implicit-function-decl", features.implicit_function_declaration),
+    FEATURE("fail-on-attributes", features.fail_on_attributes),
+    FEATURE("missing-function-return-type", features.missing_function_return_type),
+    FEATURE("designated-init-colons", features.designated_initializer_colons),
+    FEATURE("labels-as-values", features.labels_as_values)
 
 #undef SIMPLE
 #undef PREHOOK
 #undef POSTHOOK
 #undef CUSTOM
+#undef FEATURE
 };
 
 static kefir_result_t parse_impl_internal(struct kefir_mem *mem, struct kefir_cli_options *options, char *const *argv,
@@ -360,8 +360,7 @@ kefir_result_t kefir_cli_parse_options(struct kefir_mem *mem, struct kefir_cli_o
                                           .error_report_type = KEFIR_CLI_ERROR_REPORT_TABULAR,
                                           .skip_preprocessor = false,
                                           .default_pp_timestamp = true,
-                                          .parser = {.fail_on_attributes = false},
-                                          .analysis = {.non_strict_qualifiers = false}};
+                                          .features = {false}};
     REQUIRE_OK(kefir_list_init(&options->include_path));
     REQUIRE_OK(kefir_list_init(&options->include_files));
     REQUIRE_OK(kefir_hashtree_init(&options->defines, &kefir_hashtree_str_ops));
