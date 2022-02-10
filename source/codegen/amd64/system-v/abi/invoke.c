@@ -311,7 +311,7 @@ static kefir_result_t long_double_return(const struct kefir_ir_type *type, kefir
     UNUSED(index);
     UNUSED(typeentry);
     ASSIGN_DECL_CAST(struct invoke_info *, info, payload);
-    ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_ADD);
+    ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_SUB);
     ASMGEN_ARG0(&info->codegen->asmgen, KEFIR_AMD64_RSP);
     ASMGEN_ARG0(&info->codegen->asmgen, "16");
     ASMGEN_INSTR(&info->codegen->asmgen, KEFIR_AMD64_FSTP);
