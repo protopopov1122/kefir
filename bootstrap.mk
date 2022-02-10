@@ -37,7 +37,8 @@ KEFIR_SOURCE := $(wildcard \
 KEFIR_ASM_FILES := $(KEFIR_SOURCE:$(SOURCE)/%.c=$(BOOTSTRAP)/%.s)
 KEFIR_OBJECT_FILES := $(KEFIR_SOURCE:$(SOURCE)/%.c=$(BOOTSTRAP)/%.o)
 KEFIR_OBJECT_FILES += $(BOOTSTRAP)/runtime.o
-KEFIR_OBJECT_FILES += $(BOOTSTRAP)/main/help.o
+KEFIR_OBJECT_FILES += $(BOOTSTRAP)/main/help.s.o
+KEFIR_OBJECT_FILES += $(BOOTSTRAP)/codegen/amd64/amd64-sysv-runtime-code.s.o
 
 $(BOOTSTRAP)/%.s: $(SOURCE)/%.c
 	@mkdir -p $(shell dirname "$@")
@@ -48,15 +49,18 @@ $(BOOTSTRAP)/%.o: $(BOOTSTRAP)/%.s
 	@echo "Assemble $^"
 	@$(AS) -o $@ $<
 
+$(BOOTSTRAP)/%.s.o: $(SOURCE)/%.s
+	@echo "Assemble $^"
+	@$(AS) -o $@ $<
+
 $(BOOTSTRAP)/runtime.o: $(SOURCE)/runtime/amd64_sysv.s
 	@mkdir -p $(shell dirname "$@")
 	@echo "Assemble $^"
 	@$(AS) -o $@ $<
 
-$(BOOTSTRAP)/main/help.o: $(SOURCE)/main/help.txt $(SOURCE)/main/help.s
-	@mkdir -p $(shell dirname "$@")
-	@echo "Building $@"
-	@$(AS) -o $@ $(SOURCE)/main/help.s
+$(BOOTSTRAP)/main/help.s.o: $(SOURCE)/main/help.txt
+
+$(BOOTSTRAP)/codegen/amd64/amd64-sysv-runtime-code.s.o: $(SOURCE)/runtime/amd64_sysv.s
 
 $(BOOTSTRAP)/kefir: $(KEFIR_OBJECT_FILES)
 	@echo "Linking $@"

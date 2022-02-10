@@ -25,7 +25,7 @@ tasks:
       export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/kefir/bin/libs
       export KEFIRCC="$HOME/kefir/bin/kefir"
       export KEFIRRT="$HOME/rt.o /usr/lib/x86_64-linux-musl/crt1.o /usr/lib/x86_64-linux-musl/libc.a"
-      export CFLAGS="-I /usr/include/x86_64-linux-musl --analyzer-non-strict-qualifiers"
+      export CFLAGS="-I /usr/include/x86_64-linux-musl --feature-non-strict-qualifiers"
       export LC_ALL=C.UTF-8 
       ./single-exec kefircc | tee ~/c-tests.log
       [[ "x$(cat ~/c-tests.log | scripts/tapsummary | grep 'fail 0' | wc -l)" == "x1" ]] || exit 1
