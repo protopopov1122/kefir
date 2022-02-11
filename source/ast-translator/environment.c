@@ -27,6 +27,8 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
+static struct kefir_ast_translator_configuration DefaultConfiguration = {.empty_structs = false};
+
 static kefir_result_t target_env_get_type(struct kefir_mem *mem, const struct kefir_ast_target_environment *target_env,
                                           const struct kefir_ast_type *type,
                                           kefir_ast_target_environment_opaque_type_t *opaque_type) {
@@ -153,6 +155,13 @@ static kefir_result_t target_env_object_offset(struct kefir_mem *mem, const stru
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_ast_translator_configuration_default(struct kefir_ast_translator_configuration *config) {
+    REQUIRE(config != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to AST translator configuration"));
+    *config = DefaultConfiguration;
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_translator_environment_init(struct kefir_ast_translator_environment *env,
                                                      struct kefir_ir_target_platform *target_platform) {
     REQUIRE(env != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expectd valid AST translator environment"));
@@ -163,5 +172,6 @@ kefir_result_t kefir_ast_translator_environment_init(struct kefir_ast_translator
     env->target_env.object_info = target_env_object_info;
     env->target_env.object_offset = target_env_object_offset;
     env->target_env.payload = env;
+    env->configuration = &DefaultConfiguration;
     return KEFIR_OK;
 }

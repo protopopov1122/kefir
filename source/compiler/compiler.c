@@ -67,7 +67,9 @@ kefir_result_t kefir_compiler_context_init(struct kefir_mem *mem, struct kefir_c
     REQUIRE(source_locator != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid compiler source locator"));
 
     REQUIRE_OK(kefir_parser_configuration_default(&context->parser_configuration));
+    REQUIRE_OK(kefir_ast_translator_configuration_default(&context->translator_configuration));
     REQUIRE_OK(kefir_ast_translator_environment_init(&context->translator_env, &profile->ir_target_platform));
+    context->translator_env.configuration = &context->translator_configuration;
     REQUIRE_OK(kefir_ast_global_context_init(mem, profile->type_traits, &context->translator_env.target_env,
                                              &context->ast_global_context,
                                              extensions != NULL ? extensions->analyzer : NULL));

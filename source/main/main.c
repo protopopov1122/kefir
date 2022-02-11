@@ -101,6 +101,8 @@ static kefir_result_t dump_action_impl(struct kefir_mem *mem, struct kefir_cli_o
     compiler.ast_global_context.configuration.analysis.implicit_function_declaration =
         options->features.implicit_function_declaration;
 
+    compiler.translator_configuration.empty_structs = options->features.empty_structs;
+
     REQUIRE_OK(action(mem, options, &compiler, source_id, input.content, input.length, output));
     fclose(output);
     REQUIRE_OK(kefir_compiler_context_free(mem, &compiler));

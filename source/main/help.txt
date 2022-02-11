@@ -35,6 +35,7 @@ Supported features:
     non-strict-qualifiers               Disable strict qualifier checks for pointers
     signed-enums                        Force all enums to have signed integral type
     implicit-function-decl              Permit implicit funciton declarations at use-site
+    empty-structs                       Permit empty structure/union definitions
 
 Targets:
     amd64-sysv-gas (default)             Produce GNU As-compatible assembly adhering System-V AMD64 ABI

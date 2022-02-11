@@ -315,6 +315,11 @@ static kefir_result_t translate_struct_type(struct kefir_mem *mem, const struct 
         }
     }
 
+    if (res == KEFIR_OK && kefir_list_length(&type->structure_type.fields) == 0 && env->configuration->empty_structs) {
+        res = KEFIR_IRBUILDER_TYPE_APPEND_V(builder, KEFIR_IR_TYPE_CHAR, 0, 0);
+        kefir_ir_type_at(builder->type, type_index)->param++;
+    }
+
     REQUIRE_ELSE(res == KEFIR_OK, {
         if (allocated) {
             kefir_ast_type_layout_free(mem, layout);
