@@ -107,12 +107,22 @@ static kefir_result_t add_designated_slot(struct kefir_ast_type_layout *layout,
 static kefir_result_t resolve_designated_slot(struct kefir_ast_type_layout *root,
                                               const struct kefir_ast_designator *designator,
                                               struct kefir_ir_type_tree *ir_type_tree, kefir_size_t base_slot,
-                                              struct kefir_ast_type_layout **resolved_layout, kefir_size_t *slot) {
+                                              struct kefir_ast_type_layout **resolved_layout, kefir_size_t *slot,
+                                              const struct kefir_source_location *source_location) {
     *resolved_layout = root;
     *slot = base_slot;
     if (designator != NULL) {
         struct designator_resolve_param param = {.ir_type_tree = ir_type_tree, .slot = slot};
         REQUIRE_OK(kefir_ast_type_layout_resolve(root, designator, resolved_layout, add_designated_slot, &param));
+    }
+
+    for (const struct kefir_ast_type_layout *type_layout = *resolved_layout; type_layout != NULL;
+         type_layout = type_layout->parent) {
+
+        REQUIRE(type_layout->type->tag != KEFIR_AST_TYPE_ARRAY ||
+                    type_layout->type->array_type.boundary != KEFIR_AST_ARRAY_UNBOUNDED,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, source_location,
+                                       "Initialization of flexible array members is not supported"));
     }
     return KEFIR_OK;
 }
@@ -144,7 +154,7 @@ static kefir_result_t visit_value(const struct kefir_ast_designator *designator,
     struct kefir_ast_type_layout *resolved_layout = NULL;
     kefir_size_t slot = 0;
     REQUIRE_OK(resolve_designated_slot(param->type_layout, designator, &param->ir_type_tree, param->base_slot,
-                                       &resolved_layout, &slot));
+                                       &resolved_layout, &slot, &expression->source_location));
 
     struct kefir_ast_constant_expression_value uncasted_value, value;
     REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(param->mem, param->context, expression, &uncasted_value));
@@ -274,7 +284,7 @@ static kefir_result_t visit_string_literal(const struct kefir_ast_designator *de
     struct kefir_ast_type_layout *resolved_layout = NULL;
     kefir_size_t slot = 0;
     REQUIRE_OK(resolve_designated_slot(param->type_layout, designator, &param->ir_type_tree, param->base_slot,
-                                       &resolved_layout, &slot));
+                                       &resolved_layout, &slot, &expression->source_location));
     REQUIRE_OK(kefir_ir_data_set_string(param->data, slot, StringLiteralTypes[type], string_content, string_length));
     return KEFIR_OK;
 }
@@ -288,7 +298,7 @@ static kefir_result_t visit_initializer_list(const struct kefir_ast_designator *
     struct kefir_ast_type_layout *resolved_layout = NULL;
     kefir_size_t slot = 0;
     REQUIRE_OK(resolve_designated_slot(param->type_layout, designator, &param->ir_type_tree, param->base_slot,
-                                       &resolved_layout, &slot));
+                                       &resolved_layout, &slot, &initializer->source_location));
 
     REQUIRE_OK(kefir_ast_translate_data_initializer(param->mem, param->context, param->module, resolved_layout,
                                                     param->type, initializer, param->data, slot));
