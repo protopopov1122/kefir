@@ -324,8 +324,10 @@ kefir_result_t kefir_ast_translator_function_context_translate(
             const struct kefir_ast_type *default_promotion =
                 kefir_ast_type_function_default_argument_convertion_promotion(
                     mem, context->ast_context->type_bundle, context->ast_context->type_traits, scoped_id->object.type);
-            REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits, default_promotion,
-                                                    scoped_id->object.type));
+            if (KEFIR_AST_TYPE_IS_SCALAR_TYPE(default_promotion)) {
+                REQUIRE_OK(kefir_ast_translate_typeconv(builder, context->ast_context->type_traits, default_promotion,
+                                                        scoped_id->object.type));
+            }
 
             REQUIRE_OK(kefir_ast_translator_store_value(mem, scoped_id->object.type, context, builder));
         } else {
