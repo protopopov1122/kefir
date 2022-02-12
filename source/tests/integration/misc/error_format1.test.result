@@ -9,7 +9,7 @@ No.  Message                              Class          Subclass   Compiler ref
   5| Unexpected option              |     Error|       Parameters|  source/tests/integration/misc/error_format1.test.c:52
   6| Out of space issue             |     Fatal|     Out of space|  source/tests/integration/misc/error_format1.test.c:51
   7| Feature is not implemented yet |     Fatal|  Not implemented|  source/tests/integration/misc/error_format1.test.c:50
-  8| Feature is not supported       |     Fatal|    Not supported|  source/tests/integration/misc/error_format1.test.c:49
+  8| Feature is not supported       |     Error|    Not supported|  source/tests/integration/misc/error_format1.test.c:49
   9| Memory allocation failed       |     Fatal|  Mem. allocation|  source/tests/integration/misc/error_format1.test.c:48
  10| Object allocation failed       |     Fatal|  Obj. allocation|  source/tests/integration/misc/error_format1.test.c:47
  11| Out of bounds issue            |     Fatal|    Out of bounds|  source/tests/integration/misc/error_format1.test.c:46

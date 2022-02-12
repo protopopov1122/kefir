@@ -133,7 +133,7 @@ void kefir_format_error_tabular(FILE *out, const struct kefir_error *error) {
                 break;
 
             case KEFIR_NOT_SUPPORTED:
-                class = "Fatal";
+                class = "Error";
                 subclass = "Not supported";
                 break;
 
