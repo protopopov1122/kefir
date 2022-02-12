@@ -26,11 +26,7 @@
 kefir_result_t kefir_ast_context_free_scoped_identifier(struct kefir_mem *mem,
                                                         struct kefir_ast_scoped_identifier *scoped_id, void *payload) {
     UNUSED(payload);
-    if (scoped_id->cleanup.callback != NULL) {
-        REQUIRE_OK(scoped_id->cleanup.callback(mem, scoped_id, scoped_id->cleanup.payload));
-        scoped_id->cleanup.callback = NULL;
-        scoped_id->cleanup.payload = NULL;
-    }
+    REQUIRE_OK(kefir_ast_scoped_identifier_run_cleanup(mem, scoped_id));
     switch (scoped_id->klass) {
         case KEFIR_AST_SCOPE_IDENTIFIER_OBJECT:
             REQUIRE_OK(kefir_ast_alignment_free(mem, scoped_id->object.alignment));

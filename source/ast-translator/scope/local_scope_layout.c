@@ -54,7 +54,13 @@ kefir_result_t kefir_ast_translator_local_scope_layout_free(struct kefir_mem *me
                                                             struct kefir_ast_translator_local_scope_layout *layout) {
     REQUIRE(layout != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST local scope layout"));
     if (layout->local_context != NULL) {
-        REQUIRE_OK(kefir_ast_identifier_block_scope_cleanup_payload(mem, &layout->local_context->ordinary_scope));
+
+        for (const struct kefir_list_entry *iter = kefir_list_head(&layout->local_context->identifiers); iter != NULL;
+             kefir_list_next(&iter)) {
+
+            ASSIGN_DECL_CAST(struct kefir_ast_scoped_identifier *, scoped_id, iter->value);
+            REQUIRE_OK(kefir_ast_scoped_identifier_run_cleanup(mem, scoped_id));
+        }
         layout->local_context = NULL;
     }
     if (layout->local_type_layout != NULL) {
@@ -76,6 +82,8 @@ static kefir_result_t translate_static_identifier(struct kefir_mem *mem, const s
                                                   const struct kefir_ast_scoped_identifier *scoped_identifier) {
     ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, scoped_identifier_layout,
                      scoped_identifier->payload.ptr);
+    REQUIRE(scoped_identifier_layout->layout == NULL, KEFIR_OK);
+
     KEFIR_AST_SCOPE_SET_CLEANUP(scoped_identifier, kefir_ast_translator_scoped_identifer_payload_free, NULL);
     struct kefir_irbuilder_type global_builder;
     REQUIRE_OK(kefir_irbuilder_type_init(mem, &global_builder, local_layout->global->static_layout));
@@ -106,6 +114,8 @@ static kefir_result_t translate_static_thread_local_identifier(
     const struct kefir_ast_scoped_identifier *scoped_identifier) {
     ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, scoped_identifier_layout,
                      scoped_identifier->payload.ptr);
+    REQUIRE(scoped_identifier_layout->layout == NULL, KEFIR_OK);
+
     KEFIR_AST_SCOPE_SET_CLEANUP(scoped_identifier, kefir_ast_translator_scoped_identifer_payload_free, NULL);
     struct kefir_irbuilder_type global_builder;
     REQUIRE_OK(kefir_irbuilder_type_init(mem, &global_builder, local_layout->global->static_thread_local_layout));
@@ -136,6 +146,8 @@ static kefir_result_t translate_auto_register_identifier(struct kefir_mem *mem, 
                                                          struct kefir_ast_type_layout *scope_type_layout) {
     ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, scoped_identifier_layout,
                      scoped_identifier->payload.ptr);
+    REQUIRE(scoped_identifier_layout->layout == NULL, KEFIR_OK);
+
     KEFIR_AST_SCOPE_SET_CLEANUP(scoped_identifier, kefir_ast_translator_scoped_identifer_payload_free, NULL);
 
     const struct kefir_ast_type *object_type = NULL;
@@ -200,10 +212,12 @@ static kefir_result_t translate_local_scoped_identifier_function(
     const struct kefir_ast_type_traits *type_traits, struct kefir_ir_module *module) {
     ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_function *, scoped_identifier_func,
                      scoped_identifier->payload.ptr);
-    KEFIR_AST_SCOPE_SET_CLEANUP(scoped_identifier, kefir_ast_translator_scoped_identifer_payload_free, NULL);
-    REQUIRE_OK(kefir_ast_translator_function_declaration_init(mem, env, type_bundle, type_traits, module, identifier,
-                                                              scoped_identifier->function.type, NULL,
-                                                              &scoped_identifier_func->declaration));
+    if (scoped_identifier_func->declaration == NULL) {
+        KEFIR_AST_SCOPE_SET_CLEANUP(scoped_identifier, kefir_ast_translator_scoped_identifer_payload_free, NULL);
+        REQUIRE_OK(kefir_ast_translator_function_declaration_init(mem, env, type_bundle, type_traits, module,
+                                                                  identifier, scoped_identifier->function.type, NULL,
+                                                                  &scoped_identifier_func->declaration));
+    }
     return KEFIR_OK;
 }
 

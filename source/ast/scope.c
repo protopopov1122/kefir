@@ -53,6 +53,19 @@ kefir_result_t kefir_ast_identifier_flat_scope_free(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_ast_scoped_identifier_run_cleanup(struct kefir_mem *mem,
+                                                       struct kefir_ast_scoped_identifier *scoped_id) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(scoped_id != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST scoped identifier"));
+
+    if (scoped_id->payload.cleanup->callback != NULL) {
+        REQUIRE_OK(scoped_id->payload.cleanup->callback(mem, scoped_id, scoped_id->payload.cleanup->payload));
+        scoped_id->payload.cleanup->callback = NULL;
+        scoped_id->payload.cleanup->payload = NULL;
+    }
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_identifier_flat_scope_cleanup_payload(struct kefir_mem *mem,
                                                                const struct kefir_ast_identifier_flat_scope *scope) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
@@ -63,11 +76,7 @@ kefir_result_t kefir_ast_identifier_flat_scope_cleanup_payload(struct kefir_mem 
     for (res = kefir_ast_identifier_flat_scope_iter(scope, &iter); res == KEFIR_OK;
          res = kefir_ast_identifier_flat_scope_next(scope, &iter)) {
 
-        if (iter.value->cleanup.callback != NULL) {
-            REQUIRE_OK(iter.value->cleanup.callback(mem, iter.value, iter.value->cleanup.payload));
-            iter.value->cleanup.callback = NULL;
-            iter.value->cleanup.payload = NULL;
-        }
+        REQUIRE_OK(kefir_ast_scoped_identifier_run_cleanup(mem, iter.value));
     }
     REQUIRE(res == KEFIR_ITERATOR_END, res);
     return KEFIR_OK;

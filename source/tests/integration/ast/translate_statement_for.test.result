@@ -91,14 +91,6 @@
         },
         {
             "identifier": 13,
-            "type": []
-        },
-        {
-            "identifier": 14,
-            "type": []
-        },
-        {
-            "identifier": 15,
             "type": [
                 {
                     "type": "int"
@@ -106,15 +98,15 @@
             ]
         },
         {
+            "identifier": 14,
+            "type": []
+        },
+        {
+            "identifier": 15,
+            "type": []
+        },
+        {
             "identifier": 16,
-            "type": []
-        },
-        {
-            "identifier": 17,
-            "type": []
-        },
-        {
-            "identifier": 18,
             "type": [
                 {
                     "type": "struct",
@@ -137,12 +129,24 @@
             ]
         },
         {
+            "identifier": 17,
+            "type": []
+        },
+        {
+            "identifier": 18,
+            "type": []
+        },
+        {
             "identifier": 19,
             "type": []
         },
         {
             "identifier": 20,
-            "type": []
+            "type": [
+                {
+                    "type": "bool"
+                }
+            ]
         },
         {
             "identifier": 21,
@@ -162,11 +166,7 @@
         },
         {
             "identifier": 24,
-            "type": [
-                {
-                    "type": "bool"
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 25,
@@ -178,22 +178,6 @@
         },
         {
             "identifier": 27,
-            "type": []
-        },
-        {
-            "identifier": 28,
-            "type": []
-        },
-        {
-            "identifier": 29,
-            "type": []
-        },
-        {
-            "identifier": 30,
-            "type": []
-        },
-        {
-            "identifier": 31,
             "type": []
         }
     ],
@@ -231,20 +215,20 @@
         {
             "identifier": 4,
             "name": "body",
-            "parameters": 13,
+            "parameters": 14,
             "vararg": false,
-            "returns": 14
+            "returns": 15
         },
         {
             "identifier": 5,
-            "name": "body",
-            "parameters": 16,
+            "name": "for3",
+            "parameters": 17,
             "vararg": false,
-            "returns": 17
+            "returns": 18
         },
         {
             "identifier": 6,
-            "name": "for3",
+            "name": "body2",
             "parameters": 19,
             "vararg": false,
             "returns": 20
@@ -258,31 +242,17 @@
         },
         {
             "identifier": 8,
-            "name": "body2",
-            "parameters": 23,
+            "name": "for4",
+            "parameters": 24,
             "vararg": false,
-            "returns": 24
+            "returns": 25
         },
         {
             "identifier": 9,
-            "name": "for4",
+            "name": "body",
             "parameters": 26,
             "vararg": false,
             "returns": 27
-        },
-        {
-            "identifier": 10,
-            "name": "body",
-            "parameters": 28,
-            "vararg": false,
-            "returns": 29
-        },
-        {
-            "identifier": 11,
-            "name": "body",
-            "parameters": 30,
-            "vararg": false,
-            "returns": 31
         }
     ],
     "functions": [
@@ -349,7 +319,7 @@
                 {
                     "opcode": "invoke",
                     "arg": {
-                        "identifier": 5,
+                        "identifier": 4,
                         "name": "body"
                     }
                 },
@@ -391,9 +361,9 @@
             ]
         },
         {
-            "identifier": 6,
+            "identifier": 5,
             "name": "for3",
-            "locals": 18,
+            "locals": 16,
             "body": [
                 {
                     "opcode": "push",
@@ -443,7 +413,7 @@
                 {
                     "opcode": "invoke",
                     "arg": {
-                        "identifier": 8,
+                        "identifier": 7,
                         "name": "body2"
                     }
                 },
@@ -507,9 +477,9 @@
             ]
         },
         {
-            "identifier": 9,
+            "identifier": 8,
             "name": "for4",
-            "locals": 25,
+            "locals": 23,
             "body": [
                 {
                     "opcode": "pushld",
@@ -546,7 +516,7 @@
                 {
                     "opcode": "invoke",
                     "arg": {
-                        "identifier": 11,
+                        "identifier": 9,
                         "name": "body"
                     }
                 },

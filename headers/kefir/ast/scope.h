@@ -103,6 +103,8 @@ typedef struct kefir_ast_identifier_flat_scope {
         (_scope)->payload.cleanup->payload = (_payload);         \
     } while (0)
 
+kefir_result_t kefir_ast_scoped_identifier_run_cleanup(struct kefir_mem *, struct kefir_ast_scoped_identifier *);
+
 kefir_result_t kefir_ast_identifier_flat_scope_init(struct kefir_ast_identifier_flat_scope *);
 kefir_result_t kefir_ast_identifier_flat_scope_free(struct kefir_mem *, struct kefir_ast_identifier_flat_scope *);
 kefir_result_t kefir_ast_identifier_flat_scope_cleanup_payload(struct kefir_mem *,
