@@ -834,24 +834,24 @@ static kefir_result_t resolve_function_declarator(struct kefir_mem *mem, const s
     for (const struct kefir_list_entry *iter = kefir_list_head(&declarator->function.parameters);
          iter != NULL && res == KEFIR_OK; kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, node, iter->value);
-        res = kefir_ast_analyze_node(mem, &decl_context->context, node);
 
-        if (node->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION) {
-            struct kefir_ast_declaration *decl_list = NULL;
+        struct kefir_ast_declaration *decl_list = NULL;
+        res = kefir_ast_downcast_declaration(node, &decl_list, false);
+        if (res == KEFIR_OK) {
             struct kefir_ast_init_declarator *declaration = NULL;
-            REQUIRE_MATCH(&res, kefir_ast_downcast_declaration(node, &decl_list, false),
-                          KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->source_location,
-                                                 "Expected function parameter to be a declaration"));
+            REQUIRE_CHAIN(&res, kefir_ast_analyze_node(mem, &decl_context->context, node));
             REQUIRE_CHAIN(&res, kefir_ast_declaration_unpack_single(decl_list, &declaration));
             REQUIRE_CHAIN(&res, kefir_ast_type_function_parameter(
                                     mem, context->type_bundle, func_type, declaration->base.properties.type,
                                     &declaration->base.properties.declaration_props.storage));
-        } else {
+        } else if (res == KEFIR_NO_MATCH) {
             struct kefir_ast_identifier *identifier = NULL;
             REQUIRE_MATCH(
                 &res, kefir_ast_downcast_identifier(node, &identifier, false),
                 KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->source_location,
                                        "Function declaration parameter shall be either declaration, or identifier"));
+
+            REQUIRE_CHAIN(&res, kefir_ast_try_analyze_identifier(mem, context, identifier, node));
             if (res == KEFIR_OK) {
                 if (node->properties.category == KEFIR_AST_NODE_CATEGORY_TYPE) {
                     REQUIRE_CHAIN(&res, kefir_ast_type_function_parameter(mem, context->type_bundle, func_type,
@@ -862,6 +862,9 @@ static kefir_result_t resolve_function_declarator(struct kefir_mem *mem, const s
             } else if (res == KEFIR_NOT_FOUND) {
                 res = kefir_ast_type_function_parameter(mem, context->type_bundle, func_type, NULL, NULL);
             }
+        } else {
+            res = KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->source_location,
+                                         "Expected function parameter to be either a declaration or an identifier");
         }
     }
 

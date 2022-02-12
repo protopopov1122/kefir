@@ -23,21 +23,17 @@
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"
 
-kefir_result_t kefir_ast_analyze_identifier_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
-                                                 const struct kefir_ast_identifier *node,
-                                                 struct kefir_ast_node_base *base) {
-    UNUSED(mem);
+kefir_result_t kefir_ast_try_analyze_identifier(struct kefir_mem *mem, const struct kefir_ast_context *context,
+                                                const struct kefir_ast_identifier *node,
+                                                struct kefir_ast_node_base *base) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST identifier"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST base node"));
+
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
-    kefir_result_t res = context->resolve_ordinary_identifier(context, node->identifier, &scoped_id);
-    if (res == KEFIR_NOT_FOUND) {
-        return KEFIR_SET_SOURCE_ERRORF(KEFIR_ANALYSIS_ERROR, &base->source_location,
-                                       "Unable to find '%s' in current scope", node->identifier);
-    } else {
-        REQUIRE_OK(res);
-    }
+    REQUIRE_OK(context->resolve_ordinary_identifier(context, node->identifier, &scoped_id));
+
     switch (scoped_id->klass) {
         case KEFIR_AST_SCOPE_IDENTIFIER_OBJECT:
             REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
@@ -82,5 +78,23 @@ kefir_result_t kefir_ast_analyze_identifier_node(struct kefir_mem *mem, const st
     REQUIRE(base->properties.expression_props.identifier != NULL,
             KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to insert identifier into symbol table"));
     base->properties.expression_props.scoped_id = scoped_id;
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_ast_analyze_identifier_node(struct kefir_mem *mem, const struct kefir_ast_context *context,
+                                                 const struct kefir_ast_identifier *node,
+                                                 struct kefir_ast_node_base *base) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
+    REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST identifier"));
+    REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST base node"));
+
+    kefir_result_t res = kefir_ast_try_analyze_identifier(mem, context, node, base);
+    if (res == KEFIR_NOT_FOUND) {
+        return KEFIR_SET_SOURCE_ERRORF(KEFIR_ANALYSIS_ERROR, &base->source_location,
+                                       "Unable to find '%s' in current scope", node->identifier);
+    } else {
+        REQUIRE_OK(res);
+    }
     return KEFIR_OK;
 }

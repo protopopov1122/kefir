@@ -55,4 +55,7 @@ kefir_result_t kefir_ast_analyze_type(struct kefir_mem *, const struct kefir_ast
                                       kefir_ast_type_analysis_context_t, const struct kefir_ast_type *,
                                       const struct kefir_source_location *);
 
+kefir_result_t kefir_ast_try_analyze_identifier(struct kefir_mem *, const struct kefir_ast_context *,
+                                                const struct kefir_ast_identifier *, struct kefir_ast_node_base *);
+
 #endif
