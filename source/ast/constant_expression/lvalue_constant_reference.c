@@ -187,10 +187,18 @@ static kefir_result_t visit_struct_indirect_member(const struct kefir_ast_visito
     struct kefir_ast_designator designator = {
         .type = KEFIR_AST_DESIGNATOR_MEMBER, .member = node->member, .next = NULL};
 
+    const struct kefir_ast_type *pointer_to_structure_type =
+        kefir_ast_unqualified_type(node->structure->properties.type);
+    REQUIRE(pointer_to_structure_type != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Unable to obtain AST unqualified type"));
+    REQUIRE(pointer_to_structure_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER,
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->structure->source_location,
+                                   "Expected indirection left operand to be a pointer"));
+
     struct kefir_ast_target_environment_object_info object_info;
     kefir_ast_target_environment_opaque_type_t opaque_type;
     REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_GET_TYPE(param->mem, param->context->target_env,
-                                                     node->structure->properties.type->referenced_type, &opaque_type));
+                                                     pointer_to_structure_type->referenced_type, &opaque_type));
     kefir_result_t res = KEFIR_AST_TARGET_ENVIRONMENT_OBJECT_INFO(param->mem, param->context->target_env, opaque_type,
                                                                   &designator, &object_info);
     REQUIRE_ELSE(res == KEFIR_OK, {
