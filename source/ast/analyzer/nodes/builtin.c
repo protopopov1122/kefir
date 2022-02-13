@@ -88,6 +88,8 @@ kefir_result_t kefir_ast_analyze_builtin_node(struct kefir_mem *mem, const struc
             ASSIGN_DECL_CAST(struct kefir_ast_node_base *, type, iter->value);
             REQUIRE(type->properties.category == KEFIR_AST_NODE_CATEGORY_TYPE,
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &type->source_location, "Expected type name"));
+            REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type->properties.type),
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &type->source_location, "Expected complete type"));
             base->properties.type = type->properties.type;
         } break;
 
