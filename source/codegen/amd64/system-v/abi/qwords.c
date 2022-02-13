@@ -54,7 +54,7 @@ kefir_result_t kefir_amd64_sysv_abi_qwords_alloc(struct kefir_amd64_sysv_abi_qwo
                                                  kefir_size_t qword_count) {
     REQUIRE(qwords != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid QWord vector"));
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
-    REQUIRE(qword_count > 0, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected non-zero QWord count"));
+
     REQUIRE_OK(kefir_vector_alloc(mem, sizeof(struct kefir_amd64_sysv_abi_qword), qword_count, &qwords->qwords));
     kefir_vector_extend(&qwords->qwords, qword_count);
     for (kefir_size_t i = 0; i < qword_count; i++) {
