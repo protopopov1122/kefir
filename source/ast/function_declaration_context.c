@@ -281,7 +281,8 @@ static kefir_result_t context_define_identifier(
 
     ASSIGN_DECL_CAST(struct kefir_ast_function_declaration_context *, fn_ctx, context->payload);
 
-    kefir_bool_t is_function = type->tag == KEFIR_AST_TYPE_FUNCTION;
+    const struct kefir_ast_type *unqualified_type = kefir_ast_unqualified_type(type);
+    kefir_bool_t is_function = unqualified_type->tag == KEFIR_AST_TYPE_FUNCTION;
     if (is_function) {
         switch (storage_class) {
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER:
@@ -290,7 +291,7 @@ static kefir_result_t context_define_identifier(
                                                             "Function cannot be defined in local scope"));
                 if (identifier != NULL) {
                     REQUIRE_OK(scoped_context_declare_function(mem, fn_ctx, function_specifier, storage_class,
-                                                               identifier, type, location, scoped_id));
+                                                               identifier, unqualified_type, location, scoped_id));
                 }
                 break;
 

@@ -171,7 +171,8 @@ static kefir_result_t context_define_identifier(
 
     ASSIGN_DECL_CAST(struct kefir_ast_local_context *, local_ctx, context->payload);
 
-    kefir_bool_t is_function = type->tag == KEFIR_AST_TYPE_FUNCTION;
+    const struct kefir_ast_type *unqualified_type = kefir_ast_unqualified_type(type);
+    kefir_bool_t is_function = unqualified_type->tag == KEFIR_AST_TYPE_FUNCTION;
     if (is_function) {
         REQUIRE(alignment == NULL,
                 KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
@@ -186,7 +187,8 @@ static kefir_result_t context_define_identifier(
                 REQUIRE(declaration,
                         KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                                "Typedef specifier cannot be used for function definition"));
-                REQUIRE_OK(kefir_ast_local_context_define_type(mem, local_ctx, identifier, type, location, scoped_id));
+                REQUIRE_OK(kefir_ast_local_context_define_type(mem, local_ctx, identifier, unqualified_type, location,
+                                                               scoped_id));
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN:
@@ -194,7 +196,7 @@ static kefir_result_t context_define_identifier(
                 REQUIRE(declaration, KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
                                                             "Function cannot be define in local scope"));
                 REQUIRE_OK(kefir_ast_local_context_declare_function(mem, local_ctx, function_specifier, identifier,
-                                                                    type, location, scoped_id));
+                                                                    unqualified_type, location, scoped_id));
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC:

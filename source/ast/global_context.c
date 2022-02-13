@@ -119,7 +119,8 @@ static kefir_result_t context_define_identifier(
 
     ASSIGN_DECL_CAST(struct kefir_ast_global_context *, global_ctx, context->payload);
 
-    kefir_bool_t is_function = type->tag == KEFIR_AST_TYPE_FUNCTION;
+    const struct kefir_ast_type *unqualified_type = kefir_ast_unqualified_type(type);
+    kefir_bool_t is_function = unqualified_type->tag == KEFIR_AST_TYPE_FUNCTION;
     if (is_function) {
         REQUIRE(alignment == NULL,
                 KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
@@ -141,17 +142,18 @@ static kefir_result_t context_define_identifier(
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN:
                 if (declaration) {
-                    REQUIRE_OK(kefir_ast_global_context_declare_function(mem, global_ctx, function_specifier,
-                                                                         identifier, type, location, scoped_id));
+                    REQUIRE_OK(kefir_ast_global_context_declare_function(
+                        mem, global_ctx, function_specifier, identifier, unqualified_type, location, scoped_id));
                 } else {
                     REQUIRE_OK(kefir_ast_global_context_define_function(mem, global_ctx, function_specifier, identifier,
-                                                                        type, location, scoped_id));
+                                                                        unqualified_type, location, scoped_id));
                 }
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC:
-                REQUIRE_OK(kefir_ast_global_context_define_static_function(
-                    mem, global_ctx, function_specifier, identifier, declaration, type, location, scoped_id));
+                REQUIRE_OK(kefir_ast_global_context_define_static_function(mem, global_ctx, function_specifier,
+                                                                           identifier, declaration, unqualified_type,
+                                                                           location, scoped_id));
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL:
