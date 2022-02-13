@@ -121,6 +121,7 @@ kefir_result_t kefir_ast_type_traits_init(const struct kefir_data_model_descript
     *type_traits = (struct kefir_ast_type_traits){.integral_type_fits = default_integral_type_fits,
                                                   .bitfield_promotion = default_bitfield_promotion,
                                                   .underlying_enumeration_type = kefir_ast_type_signed_int(),
+                                                  .incomplete_type_substitute = kefir_ast_type_char(),
                                                   .character_type_signedness = true,
                                                   .payload = (kefir_uptr_t) data_model};
 

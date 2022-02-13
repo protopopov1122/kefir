@@ -75,6 +75,7 @@ kefir_result_t kefir_ast_translator_global_scope_layout_free(struct kefir_mem *m
 static kefir_result_t translate_scoped_identifier_type(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                                        struct kefir_ir_module *module,
                                                        const struct kefir_ast_translator_environment *env,
+                                                       const char *identifier,
                                                        const struct kefir_ast_scoped_identifier *scoped_identifier,
                                                        struct kefir_ir_type **type_ptr) {
     ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, scoped_identifier_layout,
@@ -88,6 +89,16 @@ static kefir_result_t translate_scoped_identifier_type(struct kefir_mem *mem, co
 
     const struct kefir_ast_type *object_type = NULL;
     REQUIRE_OK(kefir_ast_type_completion(mem, context, &object_type, scoped_identifier->object.type));
+
+    if (KEFIR_AST_TYPE_IS_INCOMPLETE(object_type) &&
+        (object_type->tag == KEFIR_AST_TYPE_STRUCTURE || object_type->tag == KEFIR_AST_TYPE_UNION)) {
+        REQUIRE((scoped_identifier->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN ||
+                 scoped_identifier->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL) &&
+                    scoped_identifier->object.external,
+                KEFIR_SET_ERRORF(KEFIR_ANALYSIS_ERROR, "Global identifier '%s' with incomplete type shall be external",
+                                 identifier));
+        object_type = context->type_traits->incomplete_type_substitute;
+    }
 
     REQUIRE_OK(kefir_ast_translate_object_type(mem, object_type, scoped_identifier->object.alignment->value, env,
                                                &builder, &scoped_identifier_layout->layout));
@@ -106,7 +117,7 @@ static kefir_result_t translate_extern_identifier(struct kefir_mem *mem, const s
                                                   const char *identifier,
                                                   const struct kefir_ast_scoped_identifier *scoped_identifier) {
     struct kefir_ir_type *type = NULL;
-    REQUIRE_OK(translate_scoped_identifier_type(mem, context, module, env, scoped_identifier, &type));
+    REQUIRE_OK(translate_scoped_identifier_type(mem, context, module, env, identifier, scoped_identifier, &type));
     REQUIRE_OK(
         kefir_ast_translator_scoped_identifier_insert(mem, identifier, scoped_identifier, &layout->external_objects));
     return KEFIR_OK;
@@ -117,7 +128,7 @@ static kefir_result_t translate_extern_thread_local_identifier(
     const struct kefir_ast_translator_environment *env, struct kefir_ast_translator_global_scope_layout *layout,
     const char *identifier, const struct kefir_ast_scoped_identifier *scoped_identifier) {
     struct kefir_ir_type *type = NULL;
-    REQUIRE_OK(translate_scoped_identifier_type(mem, context, module, env, scoped_identifier, &type));
+    REQUIRE_OK(translate_scoped_identifier_type(mem, context, module, env, identifier, scoped_identifier, &type));
     REQUIRE_OK(kefir_ast_translator_scoped_identifier_insert(mem, identifier, scoped_identifier,
                                                              &layout->external_thread_local_objects));
     return KEFIR_OK;
@@ -130,7 +141,7 @@ static kefir_result_t translate_thread_local_identifier(struct kefir_mem *mem, c
                                                         const char *identifier,
                                                         const struct kefir_ast_scoped_identifier *scoped_identifier) {
     struct kefir_ir_type *type = NULL;
-    REQUIRE_OK(translate_scoped_identifier_type(mem, context, module, env, scoped_identifier, &type));
+    REQUIRE_OK(translate_scoped_identifier_type(mem, context, module, env, identifier, scoped_identifier, &type));
     REQUIRE_OK(kefir_ast_translator_scoped_identifier_insert(mem, identifier, scoped_identifier,
                                                              &layout->external_thread_local_objects));
     return KEFIR_OK;
