@@ -149,7 +149,12 @@ static kefir_result_t translate_sizeof(struct kefir_mem *mem, struct kefir_ast_t
                                                    identifier_data->layout->vl_array.array_size_field));
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_LOAD64, 0));
     } else {
-        REQUIRE_OK(kefir_ast_translate_sizeof(mem, context, builder, node->arg->properties.type));
+        const struct kefir_ast_type *type = node->arg->properties.type;
+        if (context->ast_context->configuration->analysis.ext_pointer_arithmetics &&
+            (type->tag == KEFIR_AST_TYPE_FUNCTION || kefir_ast_unqualified_type(type)->tag == KEFIR_AST_TYPE_VOID)) {
+            type = context->ast_context->type_traits->incomplete_type_substitute;
+        }
+        REQUIRE_OK(kefir_ast_translate_sizeof(mem, context, builder, type));
     }
     return KEFIR_OK;
 }

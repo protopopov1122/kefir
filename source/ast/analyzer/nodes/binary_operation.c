@@ -64,12 +64,17 @@ static kefir_result_t analyze_addition(const struct kefir_ast_context *context, 
                                        struct kefir_ast_bitfield_properties bitfield2,
                                        const struct kefir_source_location *location2,
                                        struct kefir_ast_node_base *base) {
-    if (type1->tag == KEFIR_AST_TYPE_SCALAR_POINTER && !KEFIR_AST_TYPE_IS_INCOMPLETE(type1->referenced_type)) {
+    if ((type1->tag == KEFIR_AST_TYPE_SCALAR_POINTER && !KEFIR_AST_TYPE_IS_INCOMPLETE(type1->referenced_type)) ||
+        (context->configuration->analysis.ext_pointer_arithmetics && type1->tag == KEFIR_AST_TYPE_SCALAR_POINTER &&
+         kefir_ast_unqualified_type(type1->referenced_type)->tag == KEFIR_AST_TYPE_VOID)) {
         REQUIRE(
             KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type2),
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location2, "Second operand shall be have an integral type"));
         base->properties.type = type1;
-    } else if (type2->tag == KEFIR_AST_TYPE_SCALAR_POINTER && !KEFIR_AST_TYPE_IS_INCOMPLETE(type2->referenced_type)) {
+    } else if ((type2->tag == KEFIR_AST_TYPE_SCALAR_POINTER && !KEFIR_AST_TYPE_IS_INCOMPLETE(type2->referenced_type)) ||
+               (context->configuration->analysis.ext_pointer_arithmetics &&
+                type2->tag == KEFIR_AST_TYPE_SCALAR_POINTER &&
+                kefir_ast_unqualified_type(type2->referenced_type)->tag == KEFIR_AST_TYPE_VOID)) {
         REQUIRE(
             KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type1),
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location1, "First operand shall be have an integral type"));
@@ -97,14 +102,19 @@ static kefir_result_t analyze_subtraction(const struct kefir_ast_context *contex
     if (type1->tag == KEFIR_AST_TYPE_SCALAR_POINTER && type2->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
         const struct kefir_ast_type *obj_type1 = kefir_ast_unqualified_type(type1->referenced_type);
         const struct kefir_ast_type *obj_type2 = kefir_ast_unqualified_type(type2->referenced_type);
-        REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(obj_type1),
+        REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(obj_type1) ||
+                    (context->configuration->analysis.ext_pointer_arithmetics && obj_type1->tag == KEFIR_AST_TYPE_VOID),
                 KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location1, "Both operands shall have complete types"));
-        REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(obj_type2),
+        REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(obj_type2) ||
+                    (context->configuration->analysis.ext_pointer_arithmetics && obj_type2->tag == KEFIR_AST_TYPE_VOID),
                 KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location2, "Both operands shall have complete types"));
         REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, obj_type1, obj_type2),
                 KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location1, "Both operands shall have compatible types"));
         base->properties.type = context->type_traits->ptrdiff_type;
-    } else if (type1->tag == KEFIR_AST_TYPE_SCALAR_POINTER && !KEFIR_AST_TYPE_IS_INCOMPLETE(type1->referenced_type)) {
+    } else if ((type1->tag == KEFIR_AST_TYPE_SCALAR_POINTER && !KEFIR_AST_TYPE_IS_INCOMPLETE(type1->referenced_type)) ||
+               (context->configuration->analysis.ext_pointer_arithmetics &&
+                type2->tag == KEFIR_AST_TYPE_SCALAR_POINTER &&
+                kefir_ast_unqualified_type(type2->referenced_type)->tag == KEFIR_AST_TYPE_VOID)) {
         REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type2),
                 KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location2, "Right operand shal have an integral type"));
         base->properties.type = type1;

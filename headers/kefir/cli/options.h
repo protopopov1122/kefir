@@ -67,6 +67,7 @@ typedef struct kefir_cli_options {
         kefir_bool_t signed_enum_type;
         kefir_bool_t implicit_function_declaration;
         kefir_bool_t empty_structs;
+        kefir_bool_t ext_pointer_arithmetics;
     } features;
 } kefir_cli_options_t;
 

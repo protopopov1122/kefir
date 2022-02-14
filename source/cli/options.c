@@ -174,7 +174,8 @@ static struct CliOption Options[] = {
     FEATURE("missing-function-return-type", features.missing_function_return_type),
     FEATURE("designated-init-colons", features.designated_initializer_colons),
     FEATURE("labels-as-values", features.labels_as_values),
-    FEATURE("empty-structs", features.empty_structs)
+    FEATURE("empty-structs", features.empty_structs),
+    FEATURE("ext-pointer-arithmetics", features.ext_pointer_arithmetics)
 
 #undef SIMPLE
 #undef PREHOOK

@@ -139,10 +139,16 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem, co
                                           "Constant expression cannot contain indirection operator");
 
         case KEFIR_AST_OPERATION_SIZEOF: {
+            const struct kefir_ast_type *type = node->arg->properties.type;
+            if (context->configuration->analysis.ext_pointer_arithmetics &&
+                (type->tag == KEFIR_AST_TYPE_FUNCTION ||
+                 kefir_ast_unqualified_type(type)->tag == KEFIR_AST_TYPE_VOID)) {
+                type = context->type_traits->incomplete_type_substitute;
+            }
+
             kefir_ast_target_environment_opaque_type_t opaque_type;
             struct kefir_ast_target_environment_object_info type_info;
-            REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_GET_TYPE(mem, context->target_env, node->arg->properties.type,
-                                                             &opaque_type));
+            REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_GET_TYPE(mem, context->target_env, type, &opaque_type));
             kefir_result_t res =
                 KEFIR_AST_TARGET_ENVIRONMENT_OBJECT_INFO(mem, context->target_env, opaque_type, NULL, &type_info);
             REQUIRE_ELSE(res == KEFIR_OK, {

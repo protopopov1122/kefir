@@ -100,6 +100,8 @@ static kefir_result_t dump_action_impl(struct kefir_mem *mem, struct kefir_cli_o
     compiler.ast_global_context.configuration.analysis.fixed_enum_type = options->features.signed_enum_type;
     compiler.ast_global_context.configuration.analysis.implicit_function_declaration =
         options->features.implicit_function_declaration;
+    compiler.ast_global_context.configuration.analysis.ext_pointer_arithmetics =
+        options->features.ext_pointer_arithmetics;
 
     compiler.translator_configuration.empty_structs = options->features.empty_structs;
 

@@ -34,6 +34,7 @@ typedef struct kefir_ast_context_configuration {
         kefir_bool_t non_strict_qualifiers;
         kefir_bool_t fixed_enum_type;
         kefir_bool_t implicit_function_declaration;
+        kefir_bool_t ext_pointer_arithmetics;
     } analysis;
 } kefir_ast_context_configuration_t;
 
