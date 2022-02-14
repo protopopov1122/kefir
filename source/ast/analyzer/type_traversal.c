@@ -127,6 +127,18 @@ kefir_result_t kefir_ast_type_traversal_free(struct kefir_mem *mem, struct kefir
     return KEFIR_OK;
 }
 
+static struct kefir_ast_struct_field *skip_unnamed_bitfields(struct kefir_ast_type_traversal_layer *layer) {
+    REQUIRE(layer->structure.iterator != NULL, NULL);
+
+    struct kefir_ast_struct_field *field = NULL;
+    for (field = layer->structure.iterator->value;
+         layer->structure.iterator != NULL && field->identifier == NULL && field->bitfield;) {
+        kefir_list_next(&layer->structure.iterator);
+        field = layer->structure.iterator->value;
+    }
+    return field;
+}
+
 kefir_result_t kefir_ast_type_traversal_next(struct kefir_mem *mem, struct kefir_ast_type_traversal *traversal,
                                              const struct kefir_ast_type **type,
                                              const struct kefir_ast_type_traversal_layer **layer_ptr) {
@@ -147,23 +159,26 @@ kefir_result_t kefir_ast_type_traversal_next(struct kefir_mem *mem, struct kefir
             if (!layer->init) {
                 kefir_list_next(&layer->structure.iterator);
             }
+
+            struct kefir_ast_struct_field *field = skip_unnamed_bitfields(layer);
             if (layer->structure.iterator == NULL) {
                 REQUIRE_OK(pop_layer(mem, traversal));
                 return kefir_ast_type_traversal_next(mem, traversal, type, layer_ptr);
             }
+
             layer->init = false;
-            struct kefir_ast_struct_field *field = layer->structure.iterator->value;
             *type = field->type;
             ASSIGN_PTR(layer_ptr, layer);
         } break;
 
         case KEFIR_AST_TYPE_TRAVERSAL_UNION: {
+            struct kefir_ast_struct_field *field = skip_unnamed_bitfields(layer);
             if (!layer->init || layer->structure.iterator == NULL) {
                 REQUIRE_OK(pop_layer(mem, traversal));
                 return kefir_ast_type_traversal_next(mem, traversal, type, layer_ptr);
             }
+
             layer->init = false;
-            struct kefir_ast_struct_field *field = layer->structure.iterator->value;
             *type = field->type;
             ASSIGN_PTR(layer_ptr, layer);
         } break;
