@@ -64,12 +64,15 @@ static kefir_result_t init_function_declaration(struct kefir_mem *mem, struct ke
                 struct kefir_ast_declaration *decl_list = NULL;
                 REQUIRE_MATCH(&res, kefir_ast_downcast_declaration(decl_node, &decl_list, false),
                               KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected AST declaration"));
-                ASSIGN_DECL_CAST(struct kefir_ast_node_base *, decl,
-                                 kefir_list_head(&decl_list->init_declarators)->value);
-                REQUIRE_CHAIN(
-                    &res, kefir_hashtree_insert(mem, &declarations,
-                                                (kefir_hashtree_key_t) decl->properties.declaration_props.identifier,
-                                                (kefir_hashtree_value_t) decl));
+
+                for (const struct kefir_list_entry *decl_iter = kefir_list_head(&decl_list->init_declarators);
+                     decl_iter != NULL && res == KEFIR_OK; kefir_list_next(&decl_iter)) {
+                    ASSIGN_DECL_CAST(struct kefir_ast_node_base *, decl, decl_iter->value);
+                    REQUIRE_CHAIN(&res, kefir_hashtree_insert(
+                                            mem, &declarations,
+                                            (kefir_hashtree_key_t) decl->properties.declaration_props.identifier,
+                                            (kefir_hashtree_value_t) decl));
+                }
             }
 
             REQUIRE_CHAIN(&res, kefir_list_init(&declaration_list));
@@ -341,14 +344,18 @@ kefir_result_t kefir_ast_translator_function_context_translate(
 
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, decl_node, iter->value);
         struct kefir_ast_declaration *decl_list = NULL;
-        struct kefir_ast_init_declarator *decl = NULL;
         REQUIRE_MATCH_OK(&res, kefir_ast_downcast_declaration(decl_node, &decl_list, false),
                          KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected AST node to be a declaration"));
-        REQUIRE_OK(kefir_ast_declaration_unpack_single(decl_list, &decl));
 
-        REQUIRE_OK(kefir_ast_type_list_variable_modificators(
-            decl->base.properties.type, translate_variably_modified,
-            &(struct vl_modified_param){.mem = mem, .context = context, .builder = builder}));
+        for (const struct kefir_list_entry *decl_iter = kefir_list_head(&decl_list->init_declarators);
+             decl_iter != NULL; decl_list = kefir_list_next(&decl_iter)) {
+
+            ASSIGN_DECL_CAST(struct kefir_ast_init_declarator *, decl, decl_iter->value);
+
+            REQUIRE_OK(kefir_ast_type_list_variable_modificators(
+                decl->base.properties.type, translate_variably_modified,
+                &(struct vl_modified_param){.mem = mem, .context = context, .builder = builder}));
+        }
     }
 
     for (const struct kefir_list_entry *iter = kefir_list_head(&function->body->block_items); iter != NULL;

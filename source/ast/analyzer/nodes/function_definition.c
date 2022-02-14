@@ -141,20 +141,12 @@ static kefir_result_t analyze_function_parameter_identifiers_impl(struct kefir_m
     for (const struct kefir_list_entry *iter = kefir_list_head(&decl_func->parameters); iter != NULL;
          kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_node_base *, param, iter->value);
-        REQUIRE(param->properties.type == NULL,
-                KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Function definition identifiers shall not have definite types"));
 
         struct kefir_ast_identifier *id_node = NULL;
-        const struct kefir_ast_scoped_identifier *scoped_id = NULL;
         REQUIRE_MATCH_OK(&res, kefir_ast_downcast_identifier(param, &id_node, false),
                          KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected parameter to be AST identifier"));
-        REQUIRE_OK(local_context->context.resolve_ordinary_identifier(&local_context->context, id_node->identifier,
-                                                                      &scoped_id));
-        param->properties.category = KEFIR_AST_NODE_CATEGORY_EXPRESSION;
-        param->properties.expression_props.identifier =
-            kefir_symbol_table_insert(mem, context->symbols, id_node->identifier, NULL);
-        REQUIRE(param->properties.expression_props.identifier != NULL,
-                KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to insert parameter identifier into symbol table"));
+
+        REQUIRE_OK(kefir_ast_try_analyze_identifier(mem, &local_context->context, id_node, param));
     }
     return KEFIR_OK;
 }
