@@ -140,6 +140,7 @@ typedef enum kefir_result {
     KEFIR_NO_MATCH,
     KEFIR_NOT_FOUND,
     KEFIR_ALREADY_EXISTS,
+    KEFIR_OUT_OF_SPACE,
     // Generic error
     KEFIR_UNKNOWN_ERROR,
     KEFIR_INTERNAL_ERROR,
@@ -153,7 +154,6 @@ typedef enum kefir_result {
     KEFIR_MEMALLOC_FAILURE,
     KEFIR_NOT_SUPPORTED,
     KEFIR_NOT_IMPLEMENTED,
-    KEFIR_OUT_OF_SPACE,
     KEFIR_UI_ERROR,
     // Language-specific error
     KEFIR_LEXER_ERROR,

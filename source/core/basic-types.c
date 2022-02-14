@@ -10,6 +10,7 @@ kefir_result_category_t kefir_result_get_category(kefir_result_t res) {
         case KEFIR_NO_MATCH:
         case KEFIR_NOT_FOUND:
         case KEFIR_ALREADY_EXISTS:
+        case KEFIR_OUT_OF_SPACE:
             return KEFIR_RESULT_CATEGORY_WARNING;
 
         case KEFIR_UNKNOWN_ERROR:
@@ -24,7 +25,6 @@ kefir_result_category_t kefir_result_get_category(kefir_result_t res) {
         case KEFIR_MEMALLOC_FAILURE:
         case KEFIR_NOT_SUPPORTED:
         case KEFIR_NOT_IMPLEMENTED:
-        case KEFIR_OUT_OF_SPACE:
         case KEFIR_UI_ERROR:
             return KEFIR_RESULT_CATEGORY_GENERIC_ERROR;
 

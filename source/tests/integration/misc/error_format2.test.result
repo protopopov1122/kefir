@@ -63,16 +63,6 @@
     },
     {
         "overflow": false,
-        "code": "out_of_space",
-        "message": "Out of space issue",
-        "origin": {
-            "file": "source\/tests\/integration\/misc\/error_format2.test.c",
-            "line": 51
-        },
-        "source_location": null
-    },
-    {
-        "overflow": false,
         "code": "not_implemented",
         "message": "Feature is not implemented yet",
         "origin": {

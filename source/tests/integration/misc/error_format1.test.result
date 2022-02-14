@@ -7,19 +7,18 @@ No.  Message                              Class          Subclass   Compiler ref
   3| Syntax error detected          |     Error|           Parser|  source/tests/integration/misc/error_format1.test.c:54
   4| Lexing issue                   |     Error|            Lexer|  source/tests/integration/misc/error_format1.test.c:53
   5| Unexpected option              |     Error|       Parameters|  source/tests/integration/misc/error_format1.test.c:52
-  6| Out of space issue             |     Fatal|     Out of space|  source/tests/integration/misc/error_format1.test.c:51
-  7| Feature is not implemented yet |     Fatal|  Not implemented|  source/tests/integration/misc/error_format1.test.c:50
-  8| Feature is not supported       |     Error|    Not supported|  source/tests/integration/misc/error_format1.test.c:49
-  9| Memory allocation failed       |     Fatal|  Mem. allocation|  source/tests/integration/misc/error_format1.test.c:48
- 10| Object allocation failed       |     Fatal|  Obj. allocation|  source/tests/integration/misc/error_format1.test.c:47
- 11| Out of bounds issue            |     Fatal|    Out of bounds|  source/tests/integration/misc/error_format1.test.c:46
- 12| Invalid state was detected     |     Fatal|    Invalid state|  source/tests/integration/misc/error_format1.test.c:45
- 13| Invalid request was made       |     Fatal|  Invalid request|  source/tests/integration/misc/error_format1.test.c:44
- 14| Invalid change was requested   |     Fatal|   Invalid change|  source/tests/integration/misc/error_format1.test.c:43
- 15| I've got invalid parameter     |     Fatal| Invalid parameter|  source/tests/integration/misc/error_format1.test.c:42
- 16| Error from OS                  |     Fatal| Operating System|  source/tests/integration/misc/error_format1.test.c:41
- 17| Total internal failure         |     Fatal|         Internal|  source/tests/integration/misc/error_format1.test.c:40
- 18| Some unknown error here        |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:39
+  6| Feature is not implemented yet |     Fatal|  Not implemented|  source/tests/integration/misc/error_format1.test.c:50
+  7| Feature is not supported       |     Error|    Not supported|  source/tests/integration/misc/error_format1.test.c:49
+  8| Memory allocation failed       |     Fatal|  Mem. allocation|  source/tests/integration/misc/error_format1.test.c:48
+  9| Object allocation failed       |     Fatal|  Obj. allocation|  source/tests/integration/misc/error_format1.test.c:47
+ 10| Out of bounds issue            |     Fatal|    Out of bounds|  source/tests/integration/misc/error_format1.test.c:46
+ 11| Invalid state was detected     |     Fatal|    Invalid state|  source/tests/integration/misc/error_format1.test.c:45
+ 12| Invalid request was made       |     Fatal|  Invalid request|  source/tests/integration/misc/error_format1.test.c:44
+ 13| Invalid change was requested   |     Fatal|   Invalid change|  source/tests/integration/misc/error_format1.test.c:43
+ 14| I've got invalid parameter     |     Fatal| Invalid parameter|  source/tests/integration/misc/error_format1.test.c:42
+ 15| Error from OS                  |     Fatal| Operating System|  source/tests/integration/misc/error_format1.test.c:41
+ 16| Total internal failure         |     Fatal|         Internal|  source/tests/integration/misc/error_format1.test.c:40
+ 17| Some unknown error here        |     Fatal|          Unknown|  source/tests/integration/misc/error_format1.test.c:39
 
 
 No.  Message                    Class          Subclass   Compiler ref.
