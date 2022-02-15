@@ -166,25 +166,43 @@ static kefir_bool_t compatible_union_types(const struct kefir_ast_type_traits *t
     REQUIRE(type2 != NULL, false);
     REQUIRE(type1->tag == KEFIR_AST_TYPE_UNION && type2->tag == KEFIR_AST_TYPE_UNION, false);
     REQUIRE(strings_same(type1->structure_type.identifier, type2->structure_type.identifier), false);
+
     if (type1->structure_type.complete && type2->structure_type.complete) {
-        struct kefir_hashtree_node_iterator iter;
-        kefir_size_t type1_field_count = 0, type2_field_count = 0;
-        for (const struct kefir_hashtree_node *node1 = kefir_hashtree_iter(&type1->structure_type.field_index, &iter);
-             node1 != NULL; node1 = kefir_hashtree_next(&iter), type1_field_count++) {
-            struct kefir_hashtree_node *node2 = NULL;
-            kefir_result_t res = kefir_hashtree_at(&type1->structure_type.field_index, node1->key, &node2);
-            REQUIRE(res == KEFIR_OK, false);
-            ASSIGN_DECL_CAST(const struct kefir_ast_struct_field *, field1, node1->value);
-            ASSIGN_DECL_CAST(const struct kefir_ast_struct_field *, field2, node2->value);
-            REQUIRE(strings_same(field1->identifier, field2->identifier), false);
-            REQUIRE((!field1->bitfield && !field2->bitfield) ||
-                        (field1->bitwidth->value.integer == field2->bitwidth->value.integer),
-                    false);
-            REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(type_traits, field1->type, field2->type), false);
+        const struct kefir_list_entry *iter1 = kefir_list_head(&type1->structure_type.fields);
+        for (; iter1 != NULL; kefir_list_next(&iter1)) {
+            ASSIGN_DECL_CAST(const struct kefir_ast_struct_field *, field1, iter1->value);
+
+            if (field1->identifier != NULL) {
+                struct kefir_hashtree_node *node2 = NULL;
+                kefir_result_t res = kefir_hashtree_at(&type1->structure_type.field_index,
+                                                       (kefir_hashtree_key_t) field1->identifier, &node2);
+                REQUIRE(res == KEFIR_OK, false);
+                ASSIGN_DECL_CAST(const struct kefir_ast_struct_field *, field2, node2->value);
+
+                REQUIRE((!field1->bitfield && !field2->bitfield) ||
+                            (field1->bitwidth->value.integer == field2->bitwidth->value.integer),
+                        false);
+                REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(type_traits, field1->type, field2->type), false);
+            } else {
+                kefir_bool_t found_match = false;
+                const struct kefir_list_entry *iter2 = kefir_list_head(&type2->structure_type.fields);
+                for (; !found_match && iter2 != NULL; kefir_list_next(&iter2)) {
+                    ASSIGN_DECL_CAST(const struct kefir_ast_struct_field *, field2, iter2->value);
+                    if (field2->identifier != NULL) {
+                        continue;
+                    }
+
+                    found_match = ((!field1->bitfield && !field2->bitfield) ||
+                                   (field1->bitwidth->value.integer == field2->bitwidth->value.integer)) &&
+                                  KEFIR_AST_TYPE_COMPATIBLE(type_traits, field1->type, field2->type);
+                }
+
+                REQUIRE(found_match, false);
+            }
         }
-        for (const struct kefir_hashtree_node *node2 = kefir_hashtree_iter(&type2->structure_type.field_index, &iter);
-             node2 != NULL; node2 = kefir_hashtree_next(&iter), type2_field_count++) {}
-        REQUIRE(type1_field_count == type2_field_count, false);
+
+        REQUIRE(kefir_list_length(&type1->structure_type.fields) == kefir_list_length(&type2->structure_type.fields),
+                false);
     }
     return true;
 }
@@ -208,14 +226,34 @@ const struct kefir_ast_type *composite_union_types(struct kefir_mem *mem, struct
         composite_type = kefir_ast_type_union(mem, type_bundle, type1->structure_type.identifier, &composite_union);
         REQUIRE(composite_type != NULL && composite_union != NULL, NULL);
 
-        struct kefir_hashtree_node_iterator iter;
-        for (const struct kefir_hashtree_node *node1 = kefir_hashtree_iter(&type1->structure_type.field_index, &iter);
-             node1 != NULL; node1 = kefir_hashtree_next(&iter)) {
-            struct kefir_hashtree_node *node2 = NULL;
-            kefir_result_t res = kefir_hashtree_at(&type1->structure_type.field_index, node1->key, &node2);
-            REQUIRE(res == KEFIR_OK, NULL);
-            ASSIGN_DECL_CAST(const struct kefir_ast_struct_field *, field1, node1->value);
-            ASSIGN_DECL_CAST(const struct kefir_ast_struct_field *, field2, node2->value);
+        kefir_result_t res;
+        const struct kefir_list_entry *iter1 = kefir_list_head(&type1->structure_type.fields);
+        for (; iter1 != NULL; kefir_list_next(&iter1)) {
+            ASSIGN_DECL_CAST(const struct kefir_ast_struct_field *, field1, iter1->value);
+
+            const struct kefir_ast_struct_field *field2 = NULL;
+            if (field1->identifier != NULL) {
+                struct kefir_hashtree_node *node2 = NULL;
+                res = kefir_hashtree_at(&type1->structure_type.field_index, (kefir_hashtree_key_t) field1->identifier,
+                                        &node2);
+                REQUIRE(res == KEFIR_OK, NULL);
+                field2 = (const struct kefir_ast_struct_field *) node2->value;
+            } else {
+                const struct kefir_list_entry *iter2 = kefir_list_head(&type2->structure_type.fields);
+                for (; field2 == NULL && iter2 != NULL; kefir_list_next(&iter2)) {
+                    field2 = iter2->value;
+
+                    if (field2->identifier != NULL ||
+                        !(((!field1->bitfield && !field2->bitfield) ||
+                           (field1->bitwidth->value.integer == field2->bitwidth->value.integer)) &&
+                          KEFIR_AST_TYPE_COMPATIBLE(type_traits, field1->type, field2->type))) {
+                        field2 = NULL;
+                    }
+                }
+
+                REQUIRE(field2 != NULL, NULL);
+            }
+
             const struct kefir_ast_type *composite_field_type =
                 KEFIR_AST_TYPE_COMPOSITE(mem, type_bundle, type_traits, field1->type, field2->type);
             REQUIRE(composite_field_type != NULL, NULL);

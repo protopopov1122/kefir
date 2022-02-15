@@ -106,7 +106,7 @@ static kefir_result_t struct_current_offset(struct kefir_mem *mem, const struct 
     const struct kefir_ir_typeentry *struct_typeentry = kefir_ir_type_at(type, struct_index);
     REQUIRE(struct_typeentry != NULL,
             KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR structure type index"));
-    if (struct_typeentry->param > 0) {
+    if (struct_typeentry->param > 0 && struct_typeentry->typecode == KEFIR_IR_TYPE_STRUCT) {
         struct kefir_ir_type_visitor visitor;
         struct struct_layout_visitor payload = {.offset = offset};
         REQUIRE_OK(kefir_ir_type_visitor_init(&visitor, &visit_struct_layout));

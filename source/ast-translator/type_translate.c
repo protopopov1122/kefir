@@ -307,13 +307,18 @@ static kefir_result_t translate_struct_type(struct kefir_mem *mem, const struct 
          iter != NULL && res == KEFIR_OK; kefir_list_next(&iter)) {
         ASSIGN_DECL_CAST(struct kefir_ast_struct_field *, field, iter->value);
 
-        if (field->bitfield && type->tag == KEFIR_AST_TYPE_STRUCTURE) {
-            res = translate_bitfield(mem, field, layout, builder, type_index, &bitfield_mgr);
+        if (field->bitfield) {
+            if (type->tag == KEFIR_AST_TYPE_UNION) {
+                REQUIRE_CHAIN(&res, KEFIR_IR_BITFIELD_ALLOCATOR_RESET(&bitfield_mgr.allocator));
+                bitfield_mgr.last_bitfield_layout = NULL;
+                bitfield_mgr.last_bitfield_storage = 0;
+            }
+            REQUIRE_CHAIN(&res, translate_bitfield(mem, field, layout, builder, type_index, &bitfield_mgr));
         } else {
-            REQUIRE_OK(KEFIR_IR_BITFIELD_ALLOCATOR_RESET(&bitfield_mgr.allocator));
+            REQUIRE_CHAIN(&res, KEFIR_IR_BITFIELD_ALLOCATOR_RESET(&bitfield_mgr.allocator));
             bitfield_mgr.last_bitfield_layout = NULL;
             bitfield_mgr.last_bitfield_storage = 0;
-            res = translate_normal_struct_field(mem, field, env, layout, type_index, builder);
+            REQUIRE_CHAIN(&res, translate_normal_struct_field(mem, field, env, layout, type_index, builder));
         }
     }
 
