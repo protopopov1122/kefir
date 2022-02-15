@@ -83,29 +83,39 @@ static kefir_result_t scoped_context_define_identifier(struct kefir_mem *mem,
         !KEFIR_AST_TYPE_IS_INCOMPLETE(adjusted_type),
         KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location, "Identifier with no linkage shall have complete type"));
 
-    struct kefir_ast_scoped_identifier *scoped_id = NULL;
-    kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->ordinary_scope, identifier, &scoped_id);
-    if (res == KEFIR_OK) {
-        return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
-                                      "Redeclaration of the same identifier with no linkage is not permitted");
+    if (context->function_definition_context) {
+        REQUIRE_OK(context->parent->define_identifier(mem, context->parent, true, identifier, adjusted_type,
+                                                      storage_class, KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL,
+                                                      location, scoped_id_ptr));
     } else {
-        REQUIRE(res == KEFIR_NOT_FOUND, res);
-        scoped_id = kefir_ast_context_allocate_scoped_object_identifier(
-            mem, type, storage_class, NULL, KEFIR_AST_SCOPED_IDENTIFIER_NONE_LINKAGE, false, NULL);
-        REQUIRE(scoped_id != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
+        struct kefir_ast_scoped_identifier *scoped_id = NULL;
+        kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->ordinary_scope, identifier, &scoped_id);
+        if (res == KEFIR_OK) {
+            return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
+                                          "Redeclaration of the same identifier with no linkage is not permitted");
+        } else {
+            REQUIRE(res == KEFIR_NOT_FOUND, res);
+            scoped_id = kefir_ast_context_allocate_scoped_object_identifier(
+                mem, type, storage_class, NULL, KEFIR_AST_SCOPED_IDENTIFIER_NONE_LINKAGE, false, NULL);
+            REQUIRE(scoped_id != NULL,
+                    KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
 
-        const char *id = kefir_symbol_table_insert(mem, context->parent->symbols, identifier, NULL);
-        REQUIRE(id != NULL, KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to insert identifier into symbol table"));
-        REQUIRE_OK(kefir_ast_identifier_flat_scope_insert(mem, &context->ordinary_scope, id, scoped_id));
+            const char *id = kefir_symbol_table_insert(mem, context->parent->symbols, identifier, NULL);
+            REQUIRE(id != NULL,
+                    KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to insert identifier into symbol table"));
+            REQUIRE_OK(kefir_ast_identifier_flat_scope_insert(mem, &context->ordinary_scope, id, scoped_id));
+        }
+        ASSIGN_PTR(scoped_id_ptr, scoped_id);
     }
-    ASSIGN_PTR(scoped_id_ptr, scoped_id);
     return KEFIR_OK;
 }
 
-static kefir_result_t scoped_context_define_constant(
-    struct kefir_mem *mem, struct kefir_ast_function_declaration_context *context, const char *identifier,
-    struct kefir_ast_constant_expression *value, const struct kefir_ast_type *type,
-    const struct kefir_source_location *location, const struct kefir_ast_scoped_identifier **scoped_id_ptr) {
+static kefir_result_t scoped_context_define_constant(struct kefir_mem *mem,
+                                                     struct kefir_ast_function_declaration_context *context,
+                                                     const char *identifier,
+                                                     struct kefir_ast_constant_expression *value,
+                                                     const struct kefir_ast_type *type,
+                                                     const struct kefir_source_location *location) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
@@ -113,55 +123,64 @@ static kefir_result_t scoped_context_define_constant(
     REQUIRE(!kefir_ast_type_is_variably_modified(type),
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location, "Constant cannot have variably-modified type"));
 
-    struct kefir_ast_scoped_identifier *scoped_id = NULL;
-    kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->ordinary_scope, identifier, &scoped_id);
-    if (res == KEFIR_OK) {
-        return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location, "Cannot redefine constant");
+    if (context->function_definition_context) {
+        REQUIRE_OK(context->parent->define_constant(mem, context->parent, identifier, value, type, location));
     } else {
-        REQUIRE(res == KEFIR_NOT_FOUND, res);
-        scoped_id = kefir_ast_context_allocate_scoped_constant(mem, value, type);
-        REQUIRE(scoped_id != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
+        struct kefir_ast_scoped_identifier *scoped_id = NULL;
+        kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->ordinary_scope, identifier, &scoped_id);
+        if (res == KEFIR_OK) {
+            return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location, "Cannot redefine constant");
+        } else {
+            REQUIRE(res == KEFIR_NOT_FOUND, res);
+            scoped_id = kefir_ast_context_allocate_scoped_constant(mem, value, type);
+            REQUIRE(scoped_id != NULL,
+                    KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
 
-        const char *id = kefir_symbol_table_insert(mem, context->parent->symbols, identifier, NULL);
-        REQUIRE(id != NULL, KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to insert identifier into symbol table"));
-        REQUIRE_OK(kefir_ast_identifier_flat_scope_insert(mem, &context->ordinary_scope, id, scoped_id));
+            const char *id = kefir_symbol_table_insert(mem, context->parent->symbols, identifier, NULL);
+            REQUIRE(id != NULL,
+                    KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to insert identifier into symbol table"));
+            REQUIRE_OK(kefir_ast_identifier_flat_scope_insert(mem, &context->ordinary_scope, id, scoped_id));
+        }
     }
-    ASSIGN_PTR(scoped_id_ptr, scoped_id);
     return KEFIR_OK;
 }
 
 static kefir_result_t scoped_context_define_tag(struct kefir_mem *mem,
                                                 struct kefir_ast_function_declaration_context *context,
                                                 const struct kefir_ast_type *type,
-                                                const struct kefir_source_location *location,
-                                                const struct kefir_ast_scoped_identifier **scoped_id_ptr) {
+                                                const struct kefir_source_location *location) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
     REQUIRE(!kefir_ast_type_is_variably_modified(type),
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location, "Type tag cannot refer to variably-modified type"));
 
-    const char *identifier = NULL;
-    REQUIRE_OK(kefir_ast_context_type_retrieve_tag(type, &identifier));
-
-    struct kefir_ast_scoped_identifier *scoped_id = NULL;
-    kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->tag_scope, identifier,
-                                                            (struct kefir_ast_scoped_identifier **) &scoped_id);
-    if (res == KEFIR_OK) {
-        REQUIRE_OK(kefir_ast_context_update_existing_scoped_type_tag(scoped_id, type));
+    if (context->function_definition_context) {
+        REQUIRE_OK(context->parent->define_tag(mem, context->parent, type, location));
     } else {
-        REQUIRE(res == KEFIR_NOT_FOUND, res);
-        scoped_id = kefir_ast_context_allocate_scoped_type_tag(mem, type);
-        REQUIRE(scoped_id != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
-        const char *id = kefir_symbol_table_insert(mem, context->parent->symbols, identifier, NULL);
-        REQUIRE(id != NULL, KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to insert identifier into symbol table"));
-        res = kefir_ast_identifier_flat_scope_insert(mem, &context->tag_scope, id, scoped_id);
-        REQUIRE_ELSE(res == KEFIR_OK, {
-            kefir_ast_context_free_scoped_identifier(mem, scoped_id, NULL);
-            return res;
-        });
+        const char *identifier = NULL;
+        REQUIRE_OK(kefir_ast_context_type_retrieve_tag(type, &identifier));
+
+        struct kefir_ast_scoped_identifier *scoped_id = NULL;
+        kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->tag_scope, identifier,
+                                                                (struct kefir_ast_scoped_identifier **) &scoped_id);
+        if (res == KEFIR_OK) {
+            REQUIRE_OK(kefir_ast_context_update_existing_scoped_type_tag(scoped_id, type));
+        } else {
+            REQUIRE(res == KEFIR_NOT_FOUND, res);
+            scoped_id = kefir_ast_context_allocate_scoped_type_tag(mem, type);
+            REQUIRE(scoped_id != NULL,
+                    KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
+            const char *id = kefir_symbol_table_insert(mem, context->parent->symbols, identifier, NULL);
+            REQUIRE(id != NULL,
+                    KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to insert identifier into symbol table"));
+            res = kefir_ast_identifier_flat_scope_insert(mem, &context->tag_scope, id, scoped_id);
+            REQUIRE_ELSE(res == KEFIR_OK, {
+                kefir_ast_context_free_scoped_identifier(mem, scoped_id, NULL);
+                return res;
+            });
+        }
     }
-    ASSIGN_PTR(scoped_id_ptr, scoped_id);
     return KEFIR_OK;
 }
 
@@ -181,20 +200,25 @@ static kefir_result_t scoped_context_declare_function(struct kefir_mem *mem,
     REQUIRE(!kefir_ast_type_is_variably_modified(function),
             KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Function type cannot be variably-modified"));
 
-    struct kefir_ast_scoped_identifier *ordinary_id = NULL;
-
-    kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->ordinary_scope, identifier, &ordinary_id);
-    if (res == KEFIR_OK) {
-        return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location, "Cannot redefine function");
+    if (context->function_definition_context) {
+        REQUIRE_OK(context->parent->define_identifier(mem, context->parent, true, identifier, function, storage_class,
+                                                      specifier, NULL, NULL, location, scoped_id_ptr));
     } else {
-        REQUIRE(res == KEFIR_NOT_FOUND, res);
-        struct kefir_ast_scoped_identifier *ordinary_id =
-            kefir_ast_context_allocate_scoped_function_identifier(mem, function, specifier, storage_class, true, false);
-        REQUIRE(ordinary_id != NULL,
-                KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
+        struct kefir_ast_scoped_identifier *ordinary_id = NULL;
 
-        REQUIRE_OK(kefir_ast_identifier_flat_scope_insert(mem, &context->ordinary_scope, identifier, ordinary_id));
-        ASSIGN_PTR(scoped_id_ptr, ordinary_id);
+        kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->ordinary_scope, identifier, &ordinary_id);
+        if (res == KEFIR_OK) {
+            return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location, "Cannot redefine function");
+        } else {
+            REQUIRE(res == KEFIR_NOT_FOUND, res);
+            struct kefir_ast_scoped_identifier *ordinary_id = kefir_ast_context_allocate_scoped_function_identifier(
+                mem, function, specifier, storage_class, true, false);
+            REQUIRE(ordinary_id != NULL,
+                    KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
+
+            REQUIRE_OK(kefir_ast_identifier_flat_scope_insert(mem, &context->ordinary_scope, identifier, ordinary_id));
+            ASSIGN_PTR(scoped_id_ptr, ordinary_id);
+        }
     }
     return KEFIR_OK;
 }
@@ -245,7 +269,7 @@ static kefir_result_t context_define_tag(struct kefir_mem *mem, const struct kef
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_function_declaration_context *, fn_ctx, context->payload);
-    REQUIRE_OK(scoped_context_define_tag(mem, fn_ctx, type, location, NULL));
+    REQUIRE_OK(scoped_context_define_tag(mem, fn_ctx, type, location));
     return KEFIR_OK;
 }
 
@@ -259,7 +283,7 @@ static kefir_result_t context_define_constant(struct kefir_mem *mem, const struc
     REQUIRE(value != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST constant expression"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_function_declaration_context *, fn_ctx, context->payload);
-    REQUIRE_OK(scoped_context_define_constant(mem, fn_ctx, identifier, value, type, location, NULL));
+    REQUIRE_OK(scoped_context_define_constant(mem, fn_ctx, identifier, value, type, location));
     return KEFIR_OK;
 }
 
@@ -311,6 +335,9 @@ static kefir_result_t context_define_identifier(
                                        "Function specifiers cannot be used for non-function types"));
         switch (storage_class) {
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
+                storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO;
+                // Intentional fallthrough
+
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER:
                 if (identifier != NULL) {
                     REQUIRE_OK(scoped_context_define_identifier(mem, fn_ctx, identifier, type, storage_class, location,
@@ -365,11 +392,13 @@ static kefir_result_t context_pop_block(struct kefir_mem *mem, const struct kefi
 
 kefir_result_t kefir_ast_function_declaration_context_init(struct kefir_mem *mem,
                                                            const struct kefir_ast_context *parent,
+                                                           kefir_bool_t function_definition_context,
                                                            struct kefir_ast_function_declaration_context *context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(parent != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST global translation context"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
     context->parent = parent;
+    context->function_definition_context = function_definition_context;
 
     REQUIRE_OK(kefir_ast_identifier_flat_scope_init(&context->ordinary_scope));
     REQUIRE_OK(kefir_ast_identifier_flat_scope_on_removal(&context->ordinary_scope,

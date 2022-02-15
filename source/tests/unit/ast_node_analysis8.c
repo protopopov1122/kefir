@@ -515,7 +515,8 @@ DEFINE_CASE(ast_node_analysis_compound_statements2, "AST node analysis - compoun
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
                                             &global_context, NULL));
-    ASSERT_OK(kefir_ast_function_declaration_context_init(&kft_mem, &global_context.context, &func_decl_context));
+    ASSERT_OK(
+        kefir_ast_function_declaration_context_init(&kft_mem, &global_context.context, false, &func_decl_context));
 
     struct kefir_ast_compound_statement *stmt1 = kefir_ast_new_compound_statement(&kft_mem);
     ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, &global_context.context, KEFIR_AST_NODE_BASE(stmt1)));

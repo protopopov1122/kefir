@@ -112,7 +112,7 @@ DEFINE_CASE(ast_context_function_decl_context_extensions1, "AST context - functi
     ASSERT_OK(kefir_ast_translator_environment_init(&env, kft_util_get_ir_target_platform()));
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &env.target_env, &global_context, &ext));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
-    ASSERT_OK(kefir_ast_function_declaration_context_init(&kft_mem, &local_context.context, &context));
+    ASSERT_OK(kefir_ast_function_declaration_context_init(&kft_mem, &local_context.context, false, &context));
 
     ASSERT(context.context.extensions_payload != NULL);
     ASSERT(*((void **) context.context.extensions_payload) == &context.context);

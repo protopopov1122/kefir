@@ -313,9 +313,6 @@ kefir_result_t kefir_ast_translator_function_context_translate(
                 REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POP, 0));
             }
 
-            REQUIRE_OK(kefir_ast_type_list_variable_modificators(
-                init_decl->base.properties.type, translate_variably_modified,
-                &(struct vl_modified_param){.mem = mem, .context = context, .builder = builder}));
         } else if (param->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION &&
                    param->properties.expression_props.identifier != NULL) {
             REQUIRE_OK(local_context->context.resolve_ordinary_identifier(
@@ -336,6 +333,28 @@ kefir_result_t kefir_ast_translator_function_context_translate(
         } else {
             return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR,
                                    "Expected function parameter to be either AST declaration or identifier");
+        }
+    }
+
+    // Translate variably-modified types
+    for (const struct kefir_list_entry *iter = kefir_list_tail(&decl_func->parameters); iter != NULL;
+         iter = iter->prev) {
+
+        ASSIGN_DECL_CAST(struct kefir_ast_node_base *, param, iter->value);
+        if (param->properties.category == KEFIR_AST_NODE_CATEGORY_DECLARATION) {
+            struct kefir_ast_declaration *param_decl = NULL;
+            REQUIRE_MATCH_OK(
+                &res, kefir_ast_downcast_declaration(param, &param_decl, false),
+                KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected function parameter to be an AST declaration"));
+            REQUIRE(kefir_list_length(&param_decl->init_declarators) == 1,
+                    KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Expected function parameter to have exactly one declarator"));
+
+            ASSIGN_DECL_CAST(struct kefir_ast_init_declarator *, init_decl,
+                             kefir_list_head(&param_decl->init_declarators)->value);
+
+            REQUIRE_OK(kefir_ast_type_list_variable_modificators(
+                init_decl->base.properties.type, translate_variably_modified,
+                &(struct vl_modified_param){.mem = mem, .context = context, .builder = builder}));
         }
     }
 

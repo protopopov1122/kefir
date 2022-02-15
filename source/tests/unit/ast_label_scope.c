@@ -68,7 +68,8 @@ DEFINE_CASE(ast_label_scope2, "AST ordinary scope - label scope #2") {
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
                                             &global_context, NULL));
     ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
-    ASSERT_OK(kefir_ast_function_declaration_context_init(&kft_mem, &global_context.context, &func_decl_context));
+    ASSERT_OK(
+        kefir_ast_function_declaration_context_init(&kft_mem, &global_context.context, false, &func_decl_context));
 
     struct kefir_ast_flow_control_structure *parent = NULL;
     ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, &local_context.flow_control_tree,

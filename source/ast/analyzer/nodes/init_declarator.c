@@ -76,17 +76,17 @@ kefir_result_t kefir_ast_analyze_init_declarator_node(struct kefir_mem *mem, con
         REQUIRE(scoped_id != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST scoped identifier"));
         switch (scoped_id->klass) {
             case KEFIR_AST_SCOPE_IDENTIFIER_OBJECT:
-                base->properties.type = scoped_id->object.type;
+                base->properties.type = type;
                 base->properties.declaration_props.storage = scoped_id->object.storage;
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION:
-                base->properties.type = scoped_id->function.type;
+                base->properties.type = type;
                 base->properties.declaration_props.storage = scoped_id->function.storage;
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION:
-                base->properties.type = scoped_id->type;
+                base->properties.type = type;
                 base->properties.declaration_props.storage = storage;
                 break;
 

@@ -44,7 +44,8 @@ DEFINE_CASE(ast_flow_control_tree2, "AST Flow control tree - function declaratio
 
     ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
                                             &global_context, NULL));
-    ASSERT_OK(kefir_ast_function_declaration_context_init(&kft_mem, &global_context.context, &func_decl_context));
+    ASSERT_OK(
+        kefir_ast_function_declaration_context_init(&kft_mem, &global_context.context, false, &func_decl_context));
 
     ASSERT(func_decl_context.context.flow_control_tree == NULL);
 

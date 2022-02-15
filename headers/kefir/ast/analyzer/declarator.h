@@ -42,4 +42,11 @@ kefir_result_t kefir_ast_analyze_declaration(struct kefir_mem *, const struct ke
                                              const struct kefir_ast_type **, kefir_ast_scoped_identifier_storage_t *,
                                              kefir_ast_function_specifier_t *, kefir_size_t *);
 
+kefir_result_t kefir_ast_analyze_declaration_with_function_def_ctx(struct kefir_mem *, const struct kefir_ast_context *,
+                                                                   const struct kefir_ast_declarator_specifier_list *,
+                                                                   const struct kefir_ast_declarator *, const char **,
+                                                                   const struct kefir_ast_type **,
+                                                                   kefir_ast_scoped_identifier_storage_t *,
+                                                                   kefir_ast_function_specifier_t *, kefir_size_t *);
+
 #endif
