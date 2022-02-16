@@ -175,9 +175,28 @@ static kefir_result_t traverse_aggregate_union(struct kefir_mem *mem, const stru
         if (entry->value->type == KEFIR_AST_INITIALIZER_LIST) {
             const struct kefir_ast_type *type = NULL;
             REQUIRE_OK(kefir_ast_type_traversal_next(mem, traversal, &type, &layer));
-            REQUIRE_OK(layer_designator(mem, context->symbols, entry->designator, layer, &designator_layer));
 
-            INVOKE_TRAVERSAL_CHAIN(&res, initializer_traversal, visit_initializer_list, designator_layer, entry->value);
+            kefir_bool_t anonymous_nested_aggregate_field = false;
+            if (layer->type == KEFIR_AST_TYPE_TRAVERSAL_STRUCTURE || layer->type == KEFIR_AST_TYPE_TRAVERSAL_UNION) {
+                ASSIGN_DECL_CAST(struct kefir_ast_struct_field *, field, layer->structure.iterator->value);
+                if (field != NULL) {
+                    const struct kefir_ast_type *field_type = kefir_ast_unqualified_type(field->type);
+                    if (field->identifier == NULL &&
+                        (field_type->tag == KEFIR_AST_TYPE_STRUCTURE || field_type->tag == KEFIR_AST_TYPE_UNION)) {
+                        REQUIRE_OK(kefir_ast_type_traversal_step(mem, traversal));
+                        REQUIRE_OK(
+                            traverse_aggregate_union(mem, context, entry->value, traversal, initializer_traversal));
+                        anonymous_nested_aggregate_field = true;
+                    }
+                }
+            }
+
+            if (!anonymous_nested_aggregate_field) {
+                REQUIRE_OK(layer_designator(mem, context->symbols, entry->designator, layer, &designator_layer));
+
+                INVOKE_TRAVERSAL_CHAIN(&res, initializer_traversal, visit_initializer_list, designator_layer,
+                                       entry->value);
+            }
         } else if (entry->value->expression->properties.expression_props.string_literal.content != NULL) {
             REQUIRE_OK(assign_string(mem, context, entry, traversal, initializer_traversal));
         } else if (KEFIR_AST_TYPE_IS_SCALAR_TYPE(entry->value->expression->properties.type)) {

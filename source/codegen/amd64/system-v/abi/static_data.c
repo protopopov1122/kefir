@@ -340,6 +340,63 @@ static kefir_result_t struct_static_data(const struct kefir_ir_type *type, kefir
     return KEFIR_OK;
 }
 
+static kefir_result_t is_typeentry_defined(const struct kefir_ir_type *type, kefir_size_t index,
+                                           const struct kefir_ir_data *data, kefir_size_t slot, kefir_bool_t *defined) {
+    const struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(type, index);
+    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, subentry, kefir_vector_at(&data->value, slot));
+
+    switch (typeentry->typecode) {
+        case KEFIR_IR_TYPE_STRUCT:
+        case KEFIR_IR_TYPE_UNION: {
+            kefir_size_t subindex = index + 1;
+            kefir_size_t subslot = slot + 1;
+            *defined = subentry->type != KEFIR_IR_DATA_VALUE_UNDEFINED;
+            for (kefir_size_t i = 0; !*defined && i < (kefir_size_t) typeentry->param; i++) {
+                REQUIRE_OK(is_typeentry_defined(type, subindex, data, subslot, defined));
+                slot += kefir_ir_type_node_slots(type, subindex);
+                subindex += kefir_ir_type_node_total_length(type, subindex);
+            }
+        } break;
+
+        case KEFIR_IR_TYPE_ARRAY: {
+            kefir_size_t subindex = index + 1;
+            kefir_size_t subslot = slot + 1;
+            *defined = subentry->type != KEFIR_IR_DATA_VALUE_UNDEFINED;
+            for (kefir_size_t i = 0; !*defined && i < (kefir_size_t) typeentry->param; i++) {
+                REQUIRE_OK(is_typeentry_defined(type, subindex, data, subslot, defined));
+                slot += kefir_ir_type_node_slots(type, subindex);
+            }
+        } break;
+
+        case KEFIR_IR_TYPE_MEMORY:
+        case KEFIR_IR_TYPE_INT8:
+        case KEFIR_IR_TYPE_INT16:
+        case KEFIR_IR_TYPE_INT32:
+        case KEFIR_IR_TYPE_INT64:
+        case KEFIR_IR_TYPE_FLOAT32:
+        case KEFIR_IR_TYPE_FLOAT64:
+        case KEFIR_IR_TYPE_BOOL:
+        case KEFIR_IR_TYPE_CHAR:
+        case KEFIR_IR_TYPE_SHORT:
+        case KEFIR_IR_TYPE_INT:
+        case KEFIR_IR_TYPE_LONG:
+        case KEFIR_IR_TYPE_WORD:
+        case KEFIR_IR_TYPE_LONG_DOUBLE:
+        case KEFIR_IR_TYPE_BITS:
+            *defined = subentry->type != KEFIR_IR_DATA_VALUE_UNDEFINED;
+            break;
+
+        case KEFIR_IR_TYPE_PAD:
+            *defined = false;
+            break;
+
+        case KEFIR_IR_TYPE_BUILTIN:
+        case KEFIR_IR_TYPE_COUNT:
+            return KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Encountered not supported type code while traversing IR type");
+    }
+    return KEFIR_OK;
+}
+
 static kefir_result_t union_static_data(const struct kefir_ir_type *type, kefir_size_t index,
                                         const struct kefir_ir_typeentry *typeentry, void *payload) {
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid IR type"));
@@ -356,11 +413,16 @@ static kefir_result_t union_static_data(const struct kefir_ir_type *type, kefir_
     kefir_size_t subindex = index + 1;
     kefir_bool_t defined = false;
     for (kefir_size_t i = 0; i < (kefir_size_t) typeentry->param; i++) {
-        ASSIGN_DECL_CAST(struct kefir_ir_data_value *, subentry, kefir_vector_at(&param->data->value, param->slot));
-        if (subentry->type != KEFIR_IR_DATA_VALUE_UNDEFINED && !defined) {
-            REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type, param->visitor, payload, subindex, 1));
-            defined = true;
-        } else {
+        kefir_bool_t current_defined = false;
+        if (!defined) {
+            REQUIRE_OK(is_typeentry_defined(type, subindex, param->data, param->slot, &defined));
+            if (defined) {
+                REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type, param->visitor, payload, subindex, 1));
+                current_defined = true;
+            }
+        }
+
+        if (!current_defined) {
             param->slot += kefir_ir_type_node_slots(type, subindex);
         }
         subindex += kefir_ir_type_node_total_length(type, subindex);
