@@ -35,6 +35,7 @@ typedef struct kefir_ast_context_configuration {
         kefir_bool_t fixed_enum_type;
         kefir_bool_t implicit_function_declaration;
         kefir_bool_t ext_pointer_arithmetics;
+        kefir_bool_t missing_braces_subobj;
     } analysis;
 } kefir_ast_context_configuration_t;
 

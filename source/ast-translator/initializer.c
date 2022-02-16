@@ -29,6 +29,7 @@
 #include "kefir/ast/initializer_traversal.h"
 #include "kefir/ast/type_conv.h"
 #include "kefir/ast-translator/type.h"
+#include "kefir/core/source_error.h"
 
 struct traversal_param {
     struct kefir_mem *mem;
@@ -62,6 +63,41 @@ static kefir_result_t translate_address(const struct kefir_ast_translator_type *
     return KEFIR_OK;
 }
 
+static kefir_result_t initialize_aggregate_with_scalar(struct kefir_mem *mem,
+                                                       struct kefir_ast_translator_context *context,
+                                                       struct kefir_irbuilder_block *builder,
+                                                       struct kefir_ast_type_layout *type_layout,
+                                                       struct kefir_ast_node_base *expression) {
+    REQUIRE(context->ast_context->configuration->analysis.missing_braces_subobj,
+            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &expression->source_location,
+                                   "Expected braces for subobject initialization"));
+
+    struct kefir_ast_initializer virtual_initializer = {.type = KEFIR_AST_INITIALIZER_LIST,
+                                                        .source_location = expression->source_location};
+
+    struct kefir_ast_initializer virtual_expr_initializer = {.type = KEFIR_AST_INITIALIZER_EXPRESSION,
+                                                             .expression = expression,
+                                                             .source_location = expression->source_location};
+
+    struct kefir_ast_initializer_list_entry virtual_expr_initializer_entry = {
+        .designation = NULL, .designator = NULL, .value = &virtual_expr_initializer};
+
+    REQUIRE_OK(kefir_list_init(&virtual_initializer.list.initializers));
+    REQUIRE_OK(kefir_list_insert_after(mem, &virtual_initializer.list.initializers,
+                                       kefir_list_tail(&virtual_initializer.list.initializers),
+                                       &virtual_expr_initializer_entry));
+
+    kefir_result_t res =
+        kefir_ast_translate_initializer(mem, context, builder, type_layout->type, &virtual_initializer);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_list_free(mem, &virtual_initializer.list.initializers);
+        return res;
+    });
+
+    REQUIRE_OK(kefir_list_free(mem, &virtual_initializer.list.initializers));
+    return KEFIR_OK;
+}
+
 static kefir_result_t traverse_scalar(const struct kefir_ast_designator *designator,
                                       struct kefir_ast_node_base *expression, void *payload) {
     REQUIRE(expression != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST expression node"));
@@ -82,17 +118,23 @@ static kefir_result_t traverse_scalar(const struct kefir_ast_designator *designa
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(param->builder, KEFIR_IROPCODE_PICK, 0));
     }
 
-    REQUIRE_OK(kefir_ast_translate_expression(param->mem, expression, param->builder, param->context));
-
     const struct kefir_ast_type *expr_type = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(
         param->mem, param->context->ast_context->type_bundle, expression->properties.type);
     REQUIRE(expr_type != NULL, KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to perform lvalue conversions"));
-    if (KEFIR_AST_TYPE_IS_SCALAR_TYPE(expr_type)) {
-        REQUIRE_OK(kefir_ast_translate_typeconv(param->builder, param->context->ast_context->type_traits, expr_type,
-                                                type_layout->type));
+
+    if (!KEFIR_AST_TYPE_IS_SCALAR_TYPE(type_layout->type) && KEFIR_AST_TYPE_IS_SCALAR_TYPE(expr_type)) {
+        REQUIRE_OK(
+            initialize_aggregate_with_scalar(param->mem, param->context, param->builder, type_layout, expression));
+    } else {
+        REQUIRE_OK(kefir_ast_translate_expression(param->mem, expression, param->builder, param->context));
+
+        if (KEFIR_AST_TYPE_IS_SCALAR_TYPE(expr_type)) {
+            REQUIRE_OK(kefir_ast_translate_typeconv(param->builder, param->context->ast_context->type_traits, expr_type,
+                                                    type_layout->type));
+        }
+        REQUIRE_OK(kefir_ast_translator_store_layout_value(param->mem, param->context, param->builder,
+                                                           param->translator_type->object.ir_type, type_layout));
     }
-    REQUIRE_OK(kefir_ast_translator_store_layout_value(param->mem, param->context, param->builder,
-                                                       param->translator_type->object.ir_type, type_layout));
     return KEFIR_OK;
 }
 
