@@ -77,16 +77,10 @@ static kefir_result_t scoped_context_define_identifier(struct kefir_mem *mem,
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid identifier"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
 
-    const struct kefir_ast_type *adjusted_type =
-        kefir_ast_type_conv_adjust_function_parameter(mem, context->context.type_bundle, type);
-    REQUIRE(
-        !KEFIR_AST_TYPE_IS_INCOMPLETE(adjusted_type),
-        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location, "Identifier with no linkage shall have complete type"));
-
     if (context->function_definition_context) {
-        REQUIRE_OK(context->parent->define_identifier(mem, context->parent, true, identifier, adjusted_type,
-                                                      storage_class, KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL,
-                                                      location, scoped_id_ptr));
+        REQUIRE_OK(context->parent->define_identifier(mem, context->parent, true, identifier, type, storage_class,
+                                                      KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL, location,
+                                                      scoped_id_ptr));
     } else {
         struct kefir_ast_scoped_identifier *scoped_id = NULL;
         kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->ordinary_scope, identifier, &scoped_id);
@@ -184,45 +178,6 @@ static kefir_result_t scoped_context_define_tag(struct kefir_mem *mem,
     return KEFIR_OK;
 }
 
-static kefir_result_t scoped_context_declare_function(struct kefir_mem *mem,
-                                                      struct kefir_ast_function_declaration_context *context,
-                                                      kefir_ast_function_specifier_t specifier,
-                                                      kefir_ast_scoped_identifier_storage_t storage_class,
-                                                      const char *identifier, const struct kefir_ast_type *function,
-                                                      const struct kefir_source_location *location,
-                                                      const struct kefir_ast_scoped_identifier **scoped_id_ptr) {
-    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
-    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
-    REQUIRE(function != NULL && function->tag == KEFIR_AST_TYPE_FUNCTION,
-            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST function type"));
-    REQUIRE(identifier != NULL && strlen(identifier) > 0,
-            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected function with non-empty identifier"));
-    REQUIRE(!kefir_ast_type_is_variably_modified(function),
-            KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Function type cannot be variably-modified"));
-
-    if (context->function_definition_context) {
-        REQUIRE_OK(context->parent->define_identifier(mem, context->parent, true, identifier, function, storage_class,
-                                                      specifier, NULL, NULL, location, scoped_id_ptr));
-    } else {
-        struct kefir_ast_scoped_identifier *ordinary_id = NULL;
-
-        kefir_result_t res = kefir_ast_identifier_flat_scope_at(&context->ordinary_scope, identifier, &ordinary_id);
-        if (res == KEFIR_OK) {
-            return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location, "Cannot redefine function");
-        } else {
-            REQUIRE(res == KEFIR_NOT_FOUND, res);
-            struct kefir_ast_scoped_identifier *ordinary_id = kefir_ast_context_allocate_scoped_function_identifier(
-                mem, function, specifier, storage_class, true, false);
-            REQUIRE(ordinary_id != NULL,
-                    KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocted AST scoped identifier"));
-
-            REQUIRE_OK(kefir_ast_identifier_flat_scope_insert(mem, &context->ordinary_scope, identifier, ordinary_id));
-            ASSIGN_PTR(scoped_id_ptr, ordinary_id);
-        }
-    }
-    return KEFIR_OK;
-}
-
 static kefir_result_t context_resolve_ordinary_identifier(const struct kefir_ast_context *context,
                                                           const char *identifier,
                                                           const struct kefir_ast_scoped_identifier **scoped_id) {
@@ -306,55 +261,38 @@ static kefir_result_t context_define_identifier(
     ASSIGN_DECL_CAST(struct kefir_ast_function_declaration_context *, fn_ctx, context->payload);
 
     const struct kefir_ast_type *unqualified_type = kefir_ast_unqualified_type(type);
-    kefir_bool_t is_function = unqualified_type->tag == KEFIR_AST_TYPE_FUNCTION;
-    if (is_function) {
-        switch (storage_class) {
-            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER:
-            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
-                REQUIRE(declaration, KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
-                                                            "Function cannot be defined in local scope"));
-                if (identifier != NULL) {
-                    REQUIRE_OK(scoped_context_declare_function(mem, fn_ctx, function_specifier, storage_class,
-                                                               identifier, unqualified_type, location, scoped_id));
-                }
-                break;
-
-            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
-            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN:
-            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC:
-            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL:
-            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL:
-            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL:
-            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO:
-                return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
-                                              "Provided specifier is not permitted in declaration of function");
-        }
-    } else {
+    if (unqualified_type->tag != KEFIR_AST_TYPE_FUNCTION) {
         REQUIRE(function_specifier == KEFIR_AST_FUNCTION_SPECIFIER_NONE,
-                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
-                                       "Function specifiers cannot be used for non-function types"));
-        switch (storage_class) {
-            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
-                storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO;
-                // Intentional fallthrough
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location, "Unexpected function specifier"));
+    }
 
-            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER:
-                if (identifier != NULL) {
-                    REQUIRE_OK(scoped_context_define_identifier(mem, fn_ctx, identifier, type, storage_class, location,
-                                                                scoped_id));
-                }
-                break;
+    const struct kefir_ast_type *adjusted_type =
+        kefir_ast_type_conv_adjust_function_parameter(mem, context->type_bundle, unqualified_type);
+    REQUIRE(
+        !KEFIR_AST_TYPE_IS_INCOMPLETE(adjusted_type),
+        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location, "Identifier with no linkage shall have complete type"));
 
-            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
-            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN:
-            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC:
-            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL:
-            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL:
-            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL:
-            case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO:
-                return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
-                                              "Provided specifier is not permitted in declaration of function");
-        }
+    switch (storage_class) {
+        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN:
+            storage_class = KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO;
+            // Intentional fallthrough
+
+        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_REGISTER:
+            if (identifier != NULL) {
+                REQUIRE_OK(scoped_context_define_identifier(mem, fn_ctx, identifier, adjusted_type, storage_class,
+                                                            location, scoped_id));
+            }
+            break;
+
+        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_TYPEDEF:
+        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN:
+        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC:
+        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL:
+        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN_THREAD_LOCAL:
+        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC_THREAD_LOCAL:
+        case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO:
+            return KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location,
+                                          "Provided specifier is not permitted in declaration of function");
     }
 
     return KEFIR_OK;

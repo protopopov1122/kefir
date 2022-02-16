@@ -240,8 +240,9 @@ DEFINE_CASE(ast_declarator_analysis22, "AST declarator analysis - function decla
                                             &storage2, &func_specifier2, &alignment2));
 
     struct kefir_ast_function_type *func_type2 = NULL;
-    const struct kefir_ast_type *type2 =
-        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_int(), &func_type2);
+    const struct kefir_ast_type *type2 = kefir_ast_type_pointer(
+        &kft_mem, context->type_bundle,
+        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_unsigned_int(), &func_type2));
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, context->type_bundle, func_type2, kefir_ast_type_float(),
         &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO}));
