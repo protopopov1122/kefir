@@ -63,6 +63,7 @@ typedef struct kefir_ast_node_properties {
         const char *identifier;
         kefir_size_t alignment;
         kefir_bool_t static_assertion;
+        const struct kefir_ast_type *original_type;
         const struct kefir_ast_scoped_identifier *scoped_id;
     } declaration_props;
 

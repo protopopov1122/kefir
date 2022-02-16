@@ -123,7 +123,8 @@ static kefir_result_t analyze_function_parameter_identifiers_impl(struct kefir_m
             decl->base.properties.declaration_props.scoped_id = param_scoped_id;
             decl->base.properties.declaration_props.static_assertion = false;
             decl->base.properties.declaration_props.storage = storage;
-            decl->base.properties.type = original_type;
+            decl->base.properties.declaration_props.original_type = original_type;
+            decl->base.properties.type = type;
         }
 
         decl_list->base.properties.category = KEFIR_AST_NODE_CATEGORY_DECLARATION;

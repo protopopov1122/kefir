@@ -383,14 +383,21 @@ DEFINE_CASE(ast_node_analysis_init_declarators6, "AST node analysis - declaratio
                                                          kefir_ast_type_specifier_char(&kft_mem)));
     ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(decl1_list)));
 
-    const struct kefir_ast_type *type1 =
+    const struct kefir_ast_type *type1 = kefir_ast_type_unbounded_array(
+        &kft_mem, context->type_bundle,
+        kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_char(),
+                                 (struct kefir_ast_type_qualification){.constant = true}),
+        NULL);
+
+    const struct kefir_ast_type *type2 =
         kefir_ast_type_array(&kft_mem, context->type_bundle,
                              kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_char(),
                                                       (struct kefir_ast_type_qualification){.constant = true}),
                              kefir_ast_constant_expression_integer(&kft_mem, 14), NULL);
 
     ASSERT(decl1->base.properties.category == KEFIR_AST_NODE_CATEGORY_INIT_DECLARATOR);
-    ASSERT(KEFIR_AST_TYPE_SAME(decl1->base.properties.type, type1));
+    ASSERT(KEFIR_AST_TYPE_SAME(decl1->base.properties.type, type2));
+    ASSERT(KEFIR_AST_TYPE_SAME(decl1->base.properties.declaration_props.original_type, type1));
     ASSERT(decl1->base.properties.declaration_props.function == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
     ASSERT(decl1->base.properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);
     ASSERT(decl1->base.properties.declaration_props.identifier != NULL);
@@ -402,7 +409,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators6, "AST node analysis - declaratio
     ASSERT(scoped_id1->klass == KEFIR_AST_SCOPE_IDENTIFIER_OBJECT);
     ASSERT(scoped_id1->object.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);
     ASSERT(scoped_id1->object.linkage == KEFIR_AST_SCOPED_IDENTIFIER_EXTERNAL_LINKAGE);
-    ASSERT(KEFIR_AST_TYPE_SAME(scoped_id1->object.type, type1));
+    ASSERT(KEFIR_AST_TYPE_SAME(scoped_id1->object.type, type2));
     ASSERT(!scoped_id1->object.external);
     ASSERT(scoped_id1->object.alignment != NULL);
     ASSERT(scoped_id1->object.alignment->value == 0);
@@ -775,7 +782,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators10, "AST node analysis - declarati
         &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN}));
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, context->type_bundle, func_type2, kefir_ast_type_pointer(&kft_mem, context->type_bundle, type1),
-        &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN}));
+        &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO}));
 
     ASSERT(scoped_id1->function.external);
     ASSERT(scoped_id1->function.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_EXTERN);
@@ -876,12 +883,12 @@ DEFINE_CASE(ast_node_analysis_init_declarators11, "AST node analysis - declarati
         &kft_mem, context->type_bundle, func_type2,
         kefir_ast_type_qualified(&kft_mem, context->type_bundle, type1,
                                  (struct kefir_ast_type_qualification){.constant = true}),
-        &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN}));
+        &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO}));
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, context->type_bundle, func_type2,
         kefir_ast_type_array(&kft_mem, context->type_bundle, type1, kefir_ast_constant_expression_integer(&kft_mem, 2),
                              NULL),
-        &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN}));
+        &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO}));
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, context->type_bundle, func_type2,
         kefir_ast_type_pointer(&kft_mem, context->type_bundle,
@@ -959,7 +966,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators12, "AST node analysis - declarati
                                      (struct kefir_ast_type_qualification){.constant = true}),
             kefir_ast_constant_expression_integer(&kft_mem, 10),
             &(struct kefir_ast_type_qualification){.restricted = true, .volatile_type = true}),
-        &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN}));
+        &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO}));
 
     ASSERT(KEFIR_AST_TYPE_SAME(scoped_id1->function.type, type1));
     ASSERT(scoped_id1->function.external);
@@ -1028,7 +1035,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators13, "AST node analysis - declarati
         &func_type1);
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, context->type_bundle, func_type1, kefir_ast_type_signed_long(),
-        &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN}));
+        &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO}));
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, context->type_bundle, func_type1,
         kefir_ast_type_vlen_array_static(
@@ -1037,7 +1044,7 @@ DEFINE_CASE(ast_node_analysis_init_declarators13, "AST node analysis - declarati
                                      (struct kefir_ast_type_qualification){.volatile_type = true}),
             KEFIR_AST_NODE_BASE(kefir_ast_new_identifier(&kft_mem, context->symbols, "length")),
             &(struct kefir_ast_type_qualification){.constant = true}),
-        &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN}));
+        &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO}));
 
     ASSERT(KEFIR_AST_TYPE_SAME(scoped_id1->function.type, type1));
     ASSERT(scoped_id1->function.external);

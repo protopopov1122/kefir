@@ -87,7 +87,7 @@ DEFINE_CASE(ast_node_analysis_function_definitions1, "AST node analysis - functi
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, global_context.context.type_bundle, func_type,
         kefir_ast_type_pointer(&kft_mem, global_context.context.type_bundle, kefir_ast_type_signed_int()),
-        &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN}));
+        &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO}));
 
     ASSERT(func->base.properties.category == KEFIR_AST_NODE_CATEGORY_FUNCTION_DEFINITION);
     ASSERT(func->base.properties.function_definition.function == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
@@ -127,7 +127,7 @@ DEFINE_CASE(ast_node_analysis_function_definitions1, "AST node analysis - functi
     ASSERT(!param2_decl->properties.declaration_props.static_assertion);
     ASSERT(param2_decl->properties.declaration_props.function == KEFIR_AST_FUNCTION_SPECIFIER_NONE);
     ASSERT(param2_decl->properties.declaration_props.alignment == 0);
-    ASSERT(param2_decl->properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN);
+    ASSERT(param2_decl->properties.declaration_props.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO);
     ASSERT(param2_decl->properties.declaration_props.scoped_id != NULL);
     ASSERT(param2_decl->properties.declaration_props.scoped_id->klass == KEFIR_AST_SCOPE_IDENTIFIER_OBJECT);
     ASSERT(KEFIR_AST_TYPE_SAME(

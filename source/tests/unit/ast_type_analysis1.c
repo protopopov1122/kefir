@@ -513,7 +513,7 @@ DEFINE_CASE(ast_type_analysis_functions, "AST type analysis - functions") {
     ASSERT_OK(kefir_ast_type_function_parameter(
         &kft_mem, context->type_bundle, func_type9, kefir_ast_type_signed_int(),
         &(kefir_ast_scoped_identifier_storage_t){KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_AUTO}));
-    ASSERT_NOK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type9, NULL));
+    ASSERT_OK(kefir_ast_analyze_type(&kft_mem, context, KEFIR_AST_TYPE_ANALYSIS_DEFAULT, type9, NULL));
 
     struct kefir_ast_function_type *func_type10 = NULL;
     const struct kefir_ast_type *type10 =

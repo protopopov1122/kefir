@@ -50,6 +50,7 @@ kefir_result_t kefir_ast_analyze_init_declarator_node(struct kefir_mem *mem, con
         REQUIRE(identifier != NULL,
                 KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to insert declarator identifier into symbol table"));
     }
+
     base->properties.declaration_props.identifier = identifier;
     REQUIRE_OK(kefir_ast_analyze_type(mem, context, context->type_analysis_context, type, &node->base.source_location));
 
@@ -76,17 +77,17 @@ kefir_result_t kefir_ast_analyze_init_declarator_node(struct kefir_mem *mem, con
         REQUIRE(scoped_id != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid AST scoped identifier"));
         switch (scoped_id->klass) {
             case KEFIR_AST_SCOPE_IDENTIFIER_OBJECT:
-                base->properties.type = type;
+                base->properties.type = scoped_id->object.type;
                 base->properties.declaration_props.storage = scoped_id->object.storage;
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION:
-                base->properties.type = type;
+                base->properties.type = scoped_id->function.type;
                 base->properties.declaration_props.storage = scoped_id->function.storage;
                 break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_TYPE_DEFINITION:
-                base->properties.type = type;
+                base->properties.type = scoped_id->type;
                 base->properties.declaration_props.storage = storage;
                 break;
 
@@ -96,9 +97,11 @@ kefir_result_t kefir_ast_analyze_init_declarator_node(struct kefir_mem *mem, con
                 return KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Unexpected AST scoped identifier class");
         }
 
+        base->properties.declaration_props.original_type = type;
         base->properties.declaration_props.scoped_id = scoped_id;
     } else {
         base->properties.type = type;
+        base->properties.declaration_props.original_type = type;
         base->properties.declaration_props.storage = storage;
     }
     return KEFIR_OK;

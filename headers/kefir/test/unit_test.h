@@ -82,7 +82,7 @@ kefir_size_t kft_run_test_suite(const struct kft_test_case **, kefir_size_t, voi
         kefir_result_t _assert_ok_result = (assertion);                          \
         if (_assert_ok_result == KEFIR_OK) {                                     \
             printf("%s:%d: `%s` returned OK\t", __FILE__, __LINE__, #assertion); \
-            exit((int) _assert_ok_result);                                       \
+            exit(-1);                                                            \
         }                                                                        \
     } while (0)
 

@@ -353,7 +353,7 @@ kefir_result_t kefir_ast_translator_function_context_translate(
                              kefir_list_head(&param_decl->init_declarators)->value);
 
             REQUIRE_OK(kefir_ast_type_list_variable_modificators(
-                init_decl->base.properties.type, translate_variably_modified,
+                init_decl->base.properties.declaration_props.original_type, translate_variably_modified,
                 &(struct vl_modified_param){.mem = mem, .context = context, .builder = builder}));
         }
     }
@@ -372,7 +372,7 @@ kefir_result_t kefir_ast_translator_function_context_translate(
             ASSIGN_DECL_CAST(struct kefir_ast_init_declarator *, decl, decl_iter->value);
 
             REQUIRE_OK(kefir_ast_type_list_variable_modificators(
-                decl->base.properties.type, translate_variably_modified,
+                decl->base.properties.declaration_props.original_type, translate_variably_modified,
                 &(struct vl_modified_param){.mem = mem, .context = context, .builder = builder}));
         }
     }
