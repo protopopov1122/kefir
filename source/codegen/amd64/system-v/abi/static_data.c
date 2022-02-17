@@ -27,6 +27,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/core/vector.h"
+#include "kefir/ir/builtins.h"
 
 struct static_data_param {
     struct kefir_codegen_amd64 *codegen;
@@ -532,6 +533,30 @@ static kefir_result_t pad_static_data(const struct kefir_ir_type *type, kefir_si
     return KEFIR_OK;
 }
 
+static kefir_result_t builtin_static_data(const struct kefir_ir_type *type, kefir_size_t index,
+                                          const struct kefir_ir_typeentry *typeentry, void *payload) {
+    UNUSED(type);
+    UNUSED(typeentry);
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+
+    ASSIGN_DECL_CAST(struct static_data_param *, param, payload);
+    ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout, kefir_vector_at(&param->layout, index));
+    param->slot++;
+
+    switch ((kefir_ir_builtin_type_t) typeentry->param) {
+        case KEFIR_IR_TYPE_BUILTIN_VARARG:
+            REQUIRE_OK(align_offset(layout, param));
+            ASMGEN_MULRAW(&param->codegen->asmgen, layout->size, KEFIR_AMD64_BYTE);
+            ASMGEN_ARG0(&param->codegen->asmgen, "0");
+            param->offset += layout->size;
+            break;
+
+        case KEFIR_IR_TYPE_BUILTIN_COUNT:
+            return KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Unexpected built-in type");
+    }
+    return KEFIR_OK;
+}
+
 struct type_properties {
     kefir_size_t size;
     kefir_size_t alignment;
@@ -581,6 +606,7 @@ kefir_result_t kefir_amd64_sysv_static_data(struct kefir_mem *mem, struct kefir_
     visitor.visit[KEFIR_IR_TYPE_UNION] = union_static_data;
     visitor.visit[KEFIR_IR_TYPE_MEMORY] = memory_static_data;
     visitor.visit[KEFIR_IR_TYPE_PAD] = pad_static_data;
+    visitor.visit[KEFIR_IR_TYPE_BUILTIN] = builtin_static_data;
 
     struct static_data_param param = {.codegen = codegen, .data = data, .visitor = &visitor, .slot = 0, .offset = 0};
     REQUIRE_OK(kefir_amd64_sysv_type_layout(data->type, mem, &param.layout));

@@ -19,6 +19,7 @@
 */
 
 #include "kefir/ir/data.h"
+#include "kefir/ir/builtins.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -263,6 +264,28 @@ static kefir_result_t finalize_array(const struct kefir_ir_type *type, kefir_siz
     return KEFIR_OK;
 }
 
+static kefir_result_t finalize_builtin(const struct kefir_ir_type *type, kefir_size_t index,
+                                       const struct kefir_ir_typeentry *typeentry, void *payload) {
+    UNUSED(type);
+    UNUSED(index);
+    UNUSED(typeentry);
+    REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
+    ASSIGN_DECL_CAST(struct finalize_param *, param, payload);
+
+    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
+    switch ((kefir_ir_builtin_type_t) typeentry->param) {
+        case KEFIR_IR_TYPE_BUILTIN_VARARG:
+            REQUIRE(entry->type == KEFIR_IR_DATA_VALUE_UNDEFINED,
+                    KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Vararg built-in data cannot be initialized"));
+            param->slot++;
+            break;
+
+        case KEFIR_IR_TYPE_BUILTIN_COUNT:
+            return KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Unexpected built-in type");
+    }
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ir_data_finalize(struct kefir_ir_data *data) {
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data pointer"));
     struct kefir_ir_type_visitor visitor;
@@ -275,6 +298,7 @@ kefir_result_t kefir_ir_data_finalize(struct kefir_ir_data *data) {
     visitor.visit[KEFIR_IR_TYPE_STRUCT] = finalize_struct_union;
     visitor.visit[KEFIR_IR_TYPE_UNION] = finalize_struct_union;
     visitor.visit[KEFIR_IR_TYPE_ARRAY] = finalize_array;
+    visitor.visit[KEFIR_IR_TYPE_BUILTIN] = finalize_builtin;
     REQUIRE_OK(
         kefir_ir_type_visitor_list_nodes(data->type, &visitor, &param, 0, kefir_ir_type_total_length(data->type)));
     data->finalized = true;
