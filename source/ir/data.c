@@ -23,23 +23,37 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
+#define BLOCK_CAPACITY 1024
+#define BLOCK_SIZE (BLOCK_CAPACITY * sizeof(struct kefir_ir_data_value))
+
+static kefir_result_t on_block_init(struct kefir_mem *mem, struct kefir_block_tree *tree, kefir_size_t block_id,
+                                    void *block, void *payload) {
+    UNUSED(mem);
+    UNUSED(tree);
+    UNUSED(block_id);
+    UNUSED(payload);
+    REQUIRE(block != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid block"));
+
+    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, value_block, block);
+    for (kefir_size_t i = 0; i < BLOCK_CAPACITY; i++) {
+        value_block[i].type = KEFIR_IR_DATA_VALUE_UNDEFINED;
+    }
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ir_data_alloc(struct kefir_mem *mem, kefir_ir_data_storage_t storage,
                                    const struct kefir_ir_type *type, kefir_id_t type_id, struct kefir_ir_data *data) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR type pointer"));
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data pointer"));
 
+    data->mem = mem;
     data->storage = storage;
-    const kefir_size_t slots = kefir_ir_type_total_slots(type);
-    REQUIRE_OK(kefir_vector_alloc(mem, sizeof(struct kefir_ir_data_value), slots, &data->value));
-    REQUIRE_OK(kefir_vector_extend(&data->value, slots));
+    data->total_length = kefir_ir_type_total_slots(type);
+    REQUIRE_OK(kefir_block_tree_init(&data->value_tree, BLOCK_SIZE));
+    REQUIRE_OK(kefir_block_tree_on_block_init(&data->value_tree, on_block_init, NULL));
     data->type = type;
     data->type_id = type_id;
-    for (kefir_size_t i = 0; i < kefir_vector_length(&data->value); i++) {
-        ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&data->value, i));
-        REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected to have valid entry at index"));
-        entry->type = KEFIR_IR_DATA_VALUE_UNDEFINED;
-    }
     data->finalized = false;
     return KEFIR_OK;
 }
@@ -47,16 +61,30 @@ kefir_result_t kefir_ir_data_alloc(struct kefir_mem *mem, kefir_ir_data_storage_
 kefir_result_t kefir_ir_data_free(struct kefir_mem *mem, struct kefir_ir_data *data) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data pointer"));
-    REQUIRE_OK(kefir_vector_free(mem, &data->value));
+    REQUIRE_OK(kefir_block_tree_free(mem, &data->value_tree));
     data->type = NULL;
+    return KEFIR_OK;
+}
+
+static kefir_result_t value_entry_at(struct kefir_ir_data *data, kefir_size_t index,
+                                     struct kefir_ir_data_value **entry) {
+    kefir_size_t block_id, block_offset;
+    REQUIRE_OK(kefir_block_tree_get_block_offset(&data->value_tree, index * sizeof(struct kefir_ir_data_value),
+                                                 &block_id, &block_offset));
+    void *block;
+    REQUIRE_OK(kefir_block_tree_block(data->mem, &data->value_tree, block_id, &block));
+    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, value_block, block);
+    *entry = &value_block[block_offset / sizeof(struct kefir_ir_data_value)];
     return KEFIR_OK;
 }
 
 kefir_result_t kefir_ir_data_set_integer(struct kefir_ir_data *data, kefir_size_t index, kefir_int64_t value) {
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data pointer"));
     REQUIRE(!data->finalized, KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot modify finalized data"));
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&data->value, index));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to find specified index"));
+
+    struct kefir_ir_data_value *entry;
+    REQUIRE_OK(value_entry_at(data, index, &entry));
+
     entry->type = KEFIR_IR_DATA_VALUE_INTEGER;
     entry->value.integer = value;
     return KEFIR_OK;
@@ -66,8 +94,9 @@ kefir_result_t kefir_ir_data_set_bitfield(struct kefir_ir_data *data, kefir_size
                                           kefir_size_t offset, kefir_size_t width) {
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data pointer"));
     REQUIRE(!data->finalized, KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot modify finalized data"));
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&data->value, index));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to find specified index"));
+
+    struct kefir_ir_data_value *entry;
+    REQUIRE_OK(value_entry_at(data, index, &entry));
 
     kefir_uint64_t currentValue = 0;
     if (entry->type == KEFIR_IR_DATA_VALUE_INTEGER) {
@@ -93,8 +122,10 @@ kefir_result_t kefir_ir_data_set_bitfield(struct kefir_ir_data *data, kefir_size
 kefir_result_t kefir_ir_data_set_float32(struct kefir_ir_data *data, kefir_size_t index, kefir_float32_t value) {
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data pointer"));
     REQUIRE(!data->finalized, KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot modify finalized data"));
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&data->value, index));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to find specified index"));
+
+    struct kefir_ir_data_value *entry;
+    REQUIRE_OK(value_entry_at(data, index, &entry));
+
     entry->type = KEFIR_IR_DATA_VALUE_FLOAT32;
     entry->value.float32 = value;
     return KEFIR_OK;
@@ -103,8 +134,10 @@ kefir_result_t kefir_ir_data_set_float32(struct kefir_ir_data *data, kefir_size_
 kefir_result_t kefir_ir_data_set_float64(struct kefir_ir_data *data, kefir_size_t index, kefir_float64_t value) {
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data pointer"));
     REQUIRE(!data->finalized, KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot modify finalized data"));
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&data->value, index));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to find specified index"));
+
+    struct kefir_ir_data_value *entry;
+    REQUIRE_OK(value_entry_at(data, index, &entry));
+
     entry->type = KEFIR_IR_DATA_VALUE_FLOAT64;
     entry->value.float64 = value;
     return KEFIR_OK;
@@ -114,8 +147,10 @@ kefir_result_t kefir_ir_data_set_long_double(struct kefir_ir_data *data, kefir_s
                                              kefir_long_double_t value) {
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data pointer"));
     REQUIRE(!data->finalized, KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot modify finalized data"));
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&data->value, index));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to find specified index"));
+
+    struct kefir_ir_data_value *entry;
+    REQUIRE_OK(value_entry_at(data, index, &entry));
+
     entry->type = KEFIR_IR_DATA_VALUE_LONG_DOUBLE;
     entry->value.long_double = value;
     return KEFIR_OK;
@@ -125,8 +160,10 @@ kefir_result_t kefir_ir_data_set_string(struct kefir_ir_data *data, kefir_size_t
                                         kefir_ir_string_literal_type_t type, const void *value, kefir_size_t length) {
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data pointer"));
     REQUIRE(!data->finalized, KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot modify finalized data"));
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&data->value, index));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to find specified index"));
+
+    struct kefir_ir_data_value *entry;
+    REQUIRE_OK(value_entry_at(data, index, &entry));
+
     entry->type = KEFIR_IR_DATA_VALUE_STRING;
     entry->value.raw.data = value;
     switch (type) {
@@ -149,8 +186,10 @@ kefir_result_t kefir_ir_data_set_pointer(struct kefir_ir_data *data, kefir_size_
                                          kefir_size_t offset) {
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data pointer"));
     REQUIRE(!data->finalized, KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot modify finalized data"));
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&data->value, index));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to find specified index"));
+
+    struct kefir_ir_data_value *entry;
+    REQUIRE_OK(value_entry_at(data, index, &entry));
+
     entry->type = KEFIR_IR_DATA_VALUE_POINTER;
     entry->value.pointer.reference = reference;
     entry->value.pointer.offset = offset;
@@ -161,8 +200,10 @@ kefir_result_t kefir_ir_data_set_string_pointer(struct kefir_ir_data *data, kefi
                                                 kefir_int64_t offset) {
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data pointer"));
     REQUIRE(!data->finalized, KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot modify finalized data"));
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&data->value, index));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to find specified index"));
+
+    struct kefir_ir_data_value *entry;
+    REQUIRE_OK(value_entry_at(data, index, &entry));
+
     entry->type = KEFIR_IR_DATA_VALUE_STRING_POINTER;
     entry->value.string_ptr.id = id;
     entry->value.string_ptr.offset = offset;
@@ -173,8 +214,10 @@ kefir_result_t kefir_ir_data_set_raw(struct kefir_ir_data *data, kefir_size_t in
                                      kefir_size_t length) {
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data pointer"));
     REQUIRE(!data->finalized, KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot modify finalized data"));
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&data->value, index));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Unable to find specified index"));
+
+    struct kefir_ir_data_value *entry;
+    REQUIRE_OK(value_entry_at(data, index, &entry));
+
     entry->type = KEFIR_IR_DATA_VALUE_RAW;
     entry->value.raw.data = raw;
     entry->value.raw.length = length;
@@ -216,7 +259,8 @@ static kefir_result_t finalize_scalar(const struct kefir_ir_type *type, kefir_si
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct finalize_param *, param, payload);
 
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
+    struct kefir_ir_data_value *entry;
+    REQUIRE_OK(value_entry_at(param->data, param->slot++, &entry));
     param->defined = param->defined || entry->type != KEFIR_IR_DATA_VALUE_UNDEFINED;
     return KEFIR_OK;
 }
@@ -226,7 +270,8 @@ static kefir_result_t finalize_struct_union(const struct kefir_ir_type *type, ke
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct finalize_param *, param, payload);
 
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
+    struct kefir_ir_data_value *entry;
+    REQUIRE_OK(value_entry_at(param->data, param->slot++, &entry));
     REQUIRE(entry->type == KEFIR_IR_DATA_VALUE_UNDEFINED,
             KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "IR data for structure/union cannot have directly assigned value"));
 
@@ -247,7 +292,8 @@ static kefir_result_t finalize_array(const struct kefir_ir_type *type, kefir_siz
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct finalize_param *, param, payload);
 
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
+    struct kefir_ir_data_value *entry;
+    REQUIRE_OK(value_entry_at(param->data, param->slot++, &entry));
     struct finalize_param subparam = {
         .visitor = param->visitor, .data = param->data, .slot = param->slot, .defined = false};
     for (kefir_size_t i = 0; i < (kefir_size_t) typeentry->param; i++) {
@@ -272,7 +318,8 @@ static kefir_result_t finalize_builtin(const struct kefir_ir_type *type, kefir_s
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
     ASSIGN_DECL_CAST(struct finalize_param *, param, payload);
 
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
+    struct kefir_ir_data_value *entry;
+    REQUIRE_OK(value_entry_at(param->data, param->slot++, &entry));
     switch ((kefir_ir_builtin_type_t) typeentry->param) {
         case KEFIR_IR_TYPE_BUILTIN_VARARG:
             REQUIRE(entry->type == KEFIR_IR_DATA_VALUE_UNDEFINED,
@@ -302,5 +349,28 @@ kefir_result_t kefir_ir_data_finalize(struct kefir_ir_data *data) {
     REQUIRE_OK(
         kefir_ir_type_visitor_list_nodes(data->type, &visitor, &param, 0, kefir_ir_type_total_length(data->type)));
     data->finalized = true;
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_ir_data_value_at(const struct kefir_ir_data *data, kefir_size_t index,
+                                      const struct kefir_ir_data_value **value_ptr) {
+    REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data"));
+    REQUIRE(index < data->total_length, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Requested index exceeds IR data length"));
+    REQUIRE(value_ptr != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to IR data value"));
+
+    kefir_size_t block_id, block_offset;
+    REQUIRE_OK(kefir_block_tree_get_block_offset(&data->value_tree, index * sizeof(struct kefir_ir_data_value),
+                                                 &block_id, &block_offset));
+    void *block;
+    kefir_result_t res = kefir_block_tree_get_block(&data->value_tree, block_id, &block);
+    if (res == KEFIR_NOT_FOUND) {
+        static const struct kefir_ir_data_value EMPTY_VALUE = {.type = KEFIR_IR_DATA_VALUE_UNDEFINED};
+        *value_ptr = &EMPTY_VALUE;
+        return KEFIR_OK;
+    } else {
+        REQUIRE_OK(res);
+        ASSIGN_DECL_CAST(const struct kefir_ir_data_value *, value_block, block);
+        *value_ptr = &value_block[block_offset / sizeof(struct kefir_ir_data_value)];
+    }
     return KEFIR_OK;
 }

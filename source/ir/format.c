@@ -557,8 +557,9 @@ static kefir_result_t format_types(struct kefir_json_output *json, const struct 
 static kefir_result_t format_datum(struct kefir_json_output *json, const struct kefir_ir_data *data) {
     REQUIRE_OK(kefir_json_output_array_begin(json));
     kefir_size_t undefined_count = 0;
-    for (kefir_size_t i = 0; i < kefir_vector_length(&data->value); i++) {
-        ASSIGN_DECL_CAST(struct kefir_ir_data_value *, value, kefir_vector_at(&data->value, i));
+    for (kefir_size_t i = 0; i < data->total_length; i++) {
+        const struct kefir_ir_data_value *value;
+        REQUIRE_OK(kefir_ir_data_value_at(data, i, &value));
 
         if (value->type != KEFIR_IR_DATA_VALUE_UNDEFINED) {
             if (undefined_count > 0) {

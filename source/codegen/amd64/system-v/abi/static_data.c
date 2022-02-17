@@ -79,8 +79,9 @@ static kefir_result_t integral_static_data(const struct kefir_ir_type *type, kef
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
 
     ASSIGN_DECL_CAST(struct static_data_param *, param, payload);
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid entry for index"));
+    const struct kefir_ir_data_value *entry;
+    REQUIRE_OK(kefir_ir_data_value_at(param->data, param->slot++, &entry));
+
     kefir_int64_t value = 0;
     switch (entry->type) {
         case KEFIR_IR_DATA_VALUE_UNDEFINED:
@@ -151,8 +152,8 @@ static kefir_result_t word_static_data(const struct kefir_ir_type *type, kefir_s
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
 
     ASSIGN_DECL_CAST(struct static_data_param *, param, payload);
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid entry for index"));
+    const struct kefir_ir_data_value *entry;
+    REQUIRE_OK(kefir_ir_data_value_at(param->data, param->slot++, &entry));
 
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout, kefir_vector_at(&param->layout, index));
     REQUIRE_OK(align_offset(layout, param));
@@ -206,8 +207,9 @@ static kefir_result_t float32_static_data(const struct kefir_ir_type *type, kefi
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
 
     ASSIGN_DECL_CAST(struct static_data_param *, param, payload);
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid entry for index"));
+    const struct kefir_ir_data_value *entry;
+    REQUIRE_OK(kefir_ir_data_value_at(param->data, param->slot++, &entry));
+
     union {
         kefir_float32_t fp32;
         kefir_uint32_t uint32;
@@ -247,8 +249,9 @@ static kefir_result_t float64_static_data(const struct kefir_ir_type *type, kefi
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
 
     ASSIGN_DECL_CAST(struct static_data_param *, param, payload);
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid entry for index"));
+    const struct kefir_ir_data_value *entry;
+    REQUIRE_OK(kefir_ir_data_value_at(param->data, param->slot++, &entry));
+
     union {
         kefir_float64_t fp64;
         kefir_uint64_t uint64;
@@ -288,8 +291,9 @@ static kefir_result_t long_double_static_data(const struct kefir_ir_type *type, 
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
 
     ASSIGN_DECL_CAST(struct static_data_param *, param, payload);
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
-    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid entry for index"));
+    const struct kefir_ir_data_value *entry;
+    REQUIRE_OK(kefir_ir_data_value_at(param->data, param->slot++, &entry));
+
     union {
         kefir_long_double_t long_double;
         kefir_uint64_t uint64[2];
@@ -344,7 +348,8 @@ static kefir_result_t struct_static_data(const struct kefir_ir_type *type, kefir
 static kefir_result_t is_typeentry_defined(const struct kefir_ir_type *type, kefir_size_t index,
                                            const struct kefir_ir_data *data, kefir_size_t slot, kefir_bool_t *defined) {
     const struct kefir_ir_typeentry *typeentry = kefir_ir_type_at(type, index);
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, subentry, kefir_vector_at(&data->value, slot));
+    const struct kefir_ir_data_value *subentry;
+    REQUIRE_OK(kefir_ir_data_value_at(data, slot, &subentry));
 
     switch (typeentry->typecode) {
         case KEFIR_IR_TYPE_STRUCT:
@@ -449,7 +454,8 @@ static kefir_result_t array_static_data(const struct kefir_ir_type *type, kefir_
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
 
     ASSIGN_DECL_CAST(struct static_data_param *, param, payload);
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
+    const struct kefir_ir_data_value *entry;
+    REQUIRE_OK(kefir_ir_data_value_at(param->data, param->slot++, &entry));
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout, kefir_vector_at(&param->layout, index));
 
     REQUIRE_OK(align_offset(layout, param));
@@ -489,7 +495,8 @@ static kefir_result_t memory_static_data(const struct kefir_ir_type *type, kefir
     REQUIRE(payload != NULL, KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected valid payload"));
 
     ASSIGN_DECL_CAST(struct static_data_param *, param, payload);
-    ASSIGN_DECL_CAST(struct kefir_ir_data_value *, entry, kefir_vector_at(&param->data->value, param->slot++));
+    const struct kefir_ir_data_value *entry;
+    REQUIRE_OK(kefir_ir_data_value_at(param->data, param->slot++, &entry));
     ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout, kefir_vector_at(&param->layout, index));
 
     REQUIRE_OK(align_offset(layout, param));

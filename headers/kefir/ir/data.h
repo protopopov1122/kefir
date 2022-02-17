@@ -23,7 +23,7 @@
 
 #include <stdbool.h>
 #include "kefir/ir/type.h"
-#include "kefir/core/vector.h"
+#include "kefir/core/block_tree.h"
 #include "kefir/core/mem.h"
 
 typedef enum kefir_ir_data_storage {
@@ -32,10 +32,12 @@ typedef enum kefir_ir_data_storage {
 } kefir_ir_data_storage_t;
 
 typedef struct kefir_ir_data {
+    struct kefir_mem *mem;  // TODO Remove
     kefir_ir_data_storage_t storage;
     kefir_id_t type_id;
     const struct kefir_ir_type *type;
-    struct kefir_vector value;
+    kefir_size_t total_length;
+    struct kefir_block_tree value_tree;
     kefir_bool_t finalized;
 } kefir_ir_data_t;
 
@@ -106,5 +108,7 @@ kefir_result_t kefir_ir_data_set_string_pointer(struct kefir_ir_data *, kefir_si
 kefir_result_t kefir_ir_data_set_raw(struct kefir_ir_data *, kefir_size_t, const void *, kefir_size_t);
 
 kefir_result_t kefir_ir_data_finalize(struct kefir_ir_data *);
+
+kefir_result_t kefir_ir_data_value_at(const struct kefir_ir_data *, kefir_size_t, const struct kefir_ir_data_value **);
 
 #endif
