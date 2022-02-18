@@ -261,7 +261,8 @@ static kefir_result_t finalize_scalar(const struct kefir_ir_type *type, kefir_si
 
     struct kefir_ir_data_value *entry;
     REQUIRE_OK(value_entry_at(param->data, param->slot++, &entry));
-    param->defined = param->defined || entry->type != KEFIR_IR_DATA_VALUE_UNDEFINED;
+    entry->defined = entry->type != KEFIR_IR_DATA_VALUE_UNDEFINED;
+    param->defined = param->defined || entry->defined;
     return KEFIR_OK;
 }
 
@@ -280,6 +281,7 @@ static kefir_result_t finalize_struct_union(const struct kefir_ir_type *type, ke
     REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type, param->visitor, &subparam, index + 1, typeentry->param));
     param->slot = subparam.slot;
     param->defined = param->defined || subparam.defined;
+    entry->defined = subparam.defined;
     if (subparam.defined) {
         entry->type = KEFIR_IR_DATA_VALUE_AGGREGATE;
     }
@@ -300,7 +302,8 @@ static kefir_result_t finalize_array(const struct kefir_ir_type *type, kefir_siz
         REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type, param->visitor, &subparam, index + 1, 1));
     }
     param->slot = subparam.slot;
-    param->defined = param->defined || subparam.defined;
+    entry->defined = subparam.defined || entry->type != KEFIR_IR_DATA_VALUE_UNDEFINED;
+    param->defined = param->defined || entry->defined;
     if (subparam.defined) {
         REQUIRE(entry->type == KEFIR_IR_DATA_VALUE_UNDEFINED,
                 KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE,

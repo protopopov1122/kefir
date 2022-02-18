@@ -62,6 +62,7 @@ typedef enum kefir_ir_data_value_type {
 
 typedef struct kefir_ir_data_value {
     kefir_ir_data_value_type_t type;
+    kefir_bool_t defined;
     union {
         kefir_int64_t integer;
         kefir_float32_t float32;
