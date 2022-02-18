@@ -23,7 +23,7 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-#define BLOCK_CAPACITY 1024
+#define BLOCK_CAPACITY 128
 #define BLOCK_SIZE (BLOCK_CAPACITY * sizeof(struct kefir_ir_data_value))
 
 static kefir_result_t on_block_init(struct kefir_mem *mem, struct kefir_block_tree *tree, kefir_size_t block_id,
@@ -36,7 +36,7 @@ static kefir_result_t on_block_init(struct kefir_mem *mem, struct kefir_block_tr
 
     ASSIGN_DECL_CAST(struct kefir_ir_data_value *, value_block, block);
     for (kefir_size_t i = 0; i < BLOCK_CAPACITY; i++) {
-        value_block[i].type = KEFIR_IR_DATA_VALUE_UNDEFINED;
+        value_block[i] = (struct kefir_ir_data_value){.type = KEFIR_IR_DATA_VALUE_UNDEFINED};
     }
     return KEFIR_OK;
 }
@@ -334,17 +334,23 @@ static kefir_result_t finalize_array(const struct kefir_ir_type *type, kefir_siz
                                       .block_iterator = param->block_iterator};
 
     const kefir_size_t array_element_slots = kefir_ir_type_node_slots(type, index + 1);
+    const kefir_size_t array_end_slot = param->slot + array_element_slots * (kefir_size_t) typeentry->param;
     for (kefir_size_t i = 0; i < (kefir_size_t) typeentry->param; i++) {
-        REQUIRE_OK(kefir_block_tree_iter_skip_to(&param->data->value_tree, &subparam.block_iterator, subparam.slot));
+        REQUIRE_OK(kefir_block_tree_iter_skip_to(&param->data->value_tree, &subparam.block_iterator,
+                                                 subparam.slot * sizeof(struct kefir_ir_data_value)));
         if (subparam.block_iterator.block == NULL) {
             // No initialized IR data blocks available => stop traversal
             break;
         } else if (subparam.slot < subparam.block_iterator.block_id * BLOCK_CAPACITY) {
             // Some undefined slots can be skipped
-            const kefir_size_t undefined_slots = subparam.block_iterator.block_id * BLOCK_CAPACITY - subparam.slot;
+            const kefir_size_t undefined_slots =
+                MIN(array_end_slot, subparam.block_iterator.block_id * BLOCK_CAPACITY) - subparam.slot;
             const kefir_size_t undefined_elements = undefined_slots / array_element_slots;
-            subparam.slot += undefined_elements * array_element_slots;
-            i += undefined_elements;
+            if (undefined_elements > 0) {
+                subparam.slot += undefined_elements * array_element_slots;
+                i += undefined_elements - 1;
+            }
+            continue;
         }
 
         REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type, param->visitor, &subparam, index + 1, 1));
@@ -426,5 +432,39 @@ kefir_result_t kefir_ir_data_value_at(const struct kefir_ir_data *data, kefir_si
     } else {
         *value_ptr = value;
     }
+    return KEFIR_OK;
+}
+
+static kefir_result_t update_map_iter(struct kefir_ir_data_map_iterator *iter) {
+    iter->has_mapped_values = iter->value_iter.block != NULL;
+    iter->next_mapped_slot = iter->has_mapped_values ? iter->value_iter.block_id * BLOCK_CAPACITY : 0;
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_ir_data_map_iter(const struct kefir_ir_data *data, struct kefir_ir_data_map_iterator *iter) {
+    REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data"));
+    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data map iterator"));
+
+    REQUIRE_OK(kefir_block_tree_iter(&data->value_tree, &iter->value_iter));
+    REQUIRE_OK(update_map_iter(iter));
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_ir_data_map_next(struct kefir_ir_data_map_iterator *iter) {
+    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data map iterator"));
+
+    REQUIRE_OK(kefir_block_tree_next(&iter->value_iter));
+    REQUIRE_OK(update_map_iter(iter));
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_ir_data_map_skip_to(const struct kefir_ir_data *data, struct kefir_ir_data_map_iterator *iter,
+                                         kefir_size_t slot) {
+    REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data"));
+    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data map iterator"));
+
+    REQUIRE_OK(
+        kefir_block_tree_iter_skip_to(&data->value_tree, &iter->value_iter, slot * sizeof(struct kefir_ir_data_value)));
+    REQUIRE_OK(update_map_iter(iter));
     return KEFIR_OK;
 }

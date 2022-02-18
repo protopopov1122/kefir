@@ -36,6 +36,7 @@ struct static_data_param {
     struct kefir_ir_type_visitor *visitor;
     kefir_size_t slot;
     kefir_size_t offset;
+    struct kefir_ir_data_map_iterator data_map_iter;
 };
 
 static kefir_result_t visitor_not_supported(const struct kefir_ir_type *type, kefir_size_t index,
@@ -399,23 +400,48 @@ static kefir_result_t array_static_data(const struct kefir_ir_type *type, kefir_
     REQUIRE_OK(align_offset(layout, param));
     kefir_size_t start_offset = param->offset;
 
+    kefir_size_t array_element_slots = kefir_ir_type_node_slots(type, index + 1);
+    kefir_size_t array_content_slots = kefir_ir_type_node_slots(type, index) - 1;
+
     switch (entry->type) {
         case KEFIR_IR_DATA_VALUE_UNDEFINED:
-        case KEFIR_IR_DATA_VALUE_AGGREGATE:
+        case KEFIR_IR_DATA_VALUE_AGGREGATE: {
+            kefir_size_t array_end_slot = param->slot + array_content_slots;
+            ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, array_element_layout,
+                             kefir_vector_at(&param->layout, index + 1));
             for (kefir_size_t i = 0; i < (kefir_size_t) typeentry->param; i++) {
+                REQUIRE_OK(kefir_ir_data_map_skip_to(param->data, &param->data_map_iter, param->slot));
+                if (!param->data_map_iter.has_mapped_values) {
+                    param->slot = array_end_slot;
+                    break;
+                } else if (param->slot < param->data_map_iter.next_mapped_slot) {
+                    const kefir_size_t missing_slots =
+                        MIN(param->data_map_iter.next_mapped_slot, array_end_slot) - param->slot;
+                    const kefir_size_t missing_array_elements = missing_slots / array_element_slots;
+                    if (missing_array_elements > 0) {
+                        i += missing_array_elements - 1;
+                        param->slot += missing_array_elements * array_element_slots;
+                        kefir_size_t zero_count = missing_array_elements * array_element_layout->size;
+                        param->offset += zero_count;
+                        ASMGEN_MULRAW(&param->codegen->asmgen, zero_count, KEFIR_AMD64_BYTE);
+                        ASMGEN_ARG0(&param->codegen->asmgen, "0");
+                        continue;
+                    }
+                }
+
                 REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type, param->visitor, payload, index + 1, 1));
             }
-            break;
+        } break;
 
         case KEFIR_IR_DATA_VALUE_STRING:
             REQUIRE_OK(dump_binary(param, entry->value.raw.data, entry->value.raw.length));
-            param->slot += kefir_ir_type_node_slots(type, index) - 1;
+            param->slot += array_content_slots;
             break;
 
         case KEFIR_IR_DATA_VALUE_RAW: {
             ASSIGN_DECL_CAST(const char *, raw, entry->value.raw.data);
             REQUIRE_OK(dump_binary(param, raw, entry->value.raw.length));
-            param->slot += kefir_ir_type_node_slots(type, index) - 1;
+            param->slot += array_content_slots;
         } break;
 
         default:
@@ -554,6 +580,7 @@ kefir_result_t kefir_amd64_sysv_static_data(struct kefir_mem *mem, struct kefir_
     visitor.visit[KEFIR_IR_TYPE_BUILTIN] = builtin_static_data;
 
     struct static_data_param param = {.codegen = codegen, .data = data, .visitor = &visitor, .slot = 0, .offset = 0};
+    REQUIRE_OK(kefir_ir_data_map_iter(data, &param.data_map_iter));
     REQUIRE_OK(kefir_amd64_sysv_type_layout(data->type, mem, &param.layout));
 
     kefir_size_t total_size, total_alignment;

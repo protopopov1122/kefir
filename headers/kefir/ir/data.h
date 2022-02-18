@@ -112,4 +112,15 @@ kefir_result_t kefir_ir_data_finalize(struct kefir_ir_data *);
 
 kefir_result_t kefir_ir_data_value_at(const struct kefir_ir_data *, kefir_size_t, const struct kefir_ir_data_value **);
 
+typedef struct kefir_ir_data_map_iterator {
+    struct kefir_block_tree_iterator value_iter;
+    kefir_size_t has_mapped_values;
+    kefir_size_t next_mapped_slot;
+} kefir_ir_data_map_iterator_t;
+
+kefir_result_t kefir_ir_data_map_iter(const struct kefir_ir_data *, struct kefir_ir_data_map_iterator *);
+kefir_result_t kefir_ir_data_map_next(struct kefir_ir_data_map_iterator *);
+kefir_result_t kefir_ir_data_map_skip_to(const struct kefir_ir_data *, struct kefir_ir_data_map_iterator *,
+                                         kefir_size_t);
+
 #endif
