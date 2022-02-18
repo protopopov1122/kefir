@@ -48,7 +48,7 @@ kefir_result_t kefir_ast_analyze_comma_operator_node(struct kefir_mem *mem, cons
                 KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &expr->source_location,
                                        "All comma operands shall be expressions"));
 
-        base->properties.type = expr->properties.type;
+        base->properties.type = KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, expr->properties.type);
     }
 
     return KEFIR_OK;
