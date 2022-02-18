@@ -25,8 +25,6 @@
 #include "kefir/core/mem.h"
 #include "kefir/core/hashtree.h"
 
-#define KEFIR_BLOCK_TREE_BLOCK_ID_NONE (~(kefir_size_t) 0ULL)
-
 typedef struct kefir_block_tree kefir_block_tree_t;
 
 typedef kefir_result_t (*kefir_block_tree_callback_t)(struct kefir_mem *, struct kefir_block_tree *, kefir_size_t,
@@ -64,5 +62,7 @@ kefir_result_t kefir_block_tree_block(struct kefir_mem *, struct kefir_block_tre
 
 kefir_result_t kefir_block_tree_iter(const struct kefir_block_tree *, struct kefir_block_tree_iterator *);
 kefir_result_t kefir_block_tree_next(struct kefir_block_tree_iterator *);
+kefir_result_t kefir_block_tree_iter_skip_to(const struct kefir_block_tree *, struct kefir_block_tree_iterator *,
+                                             kefir_size_t);
 
 #endif

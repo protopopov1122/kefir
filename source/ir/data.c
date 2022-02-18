@@ -78,6 +78,24 @@ static kefir_result_t value_entry_at(struct kefir_ir_data *data, kefir_size_t in
     return KEFIR_OK;
 }
 
+static kefir_result_t value_get_entry(const struct kefir_ir_data *data, kefir_size_t index,
+                                      struct kefir_ir_data_value **value_ptr) {
+    kefir_size_t block_id, block_offset;
+    REQUIRE_OK(kefir_block_tree_get_block_offset(&data->value_tree, index * sizeof(struct kefir_ir_data_value),
+                                                 &block_id, &block_offset));
+    void *block;
+    kefir_result_t res = kefir_block_tree_get_block(&data->value_tree, block_id, &block);
+    if (res == KEFIR_NOT_FOUND) {
+        *value_ptr = NULL;
+        return KEFIR_OK;
+    } else {
+        REQUIRE_OK(res);
+        ASSIGN_DECL_CAST(struct kefir_ir_data_value *, value_block, block);
+        *value_ptr = &value_block[block_offset / sizeof(struct kefir_ir_data_value)];
+    }
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ir_data_set_integer(struct kefir_ir_data *data, kefir_size_t index, kefir_int64_t value) {
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data pointer"));
     REQUIRE(!data->finalized, KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Cannot modify finalized data"));
@@ -229,6 +247,7 @@ struct finalize_param {
     struct kefir_ir_data *data;
     kefir_size_t slot;
     kefir_bool_t defined;
+    struct kefir_block_tree_iterator block_iterator;
 };
 
 static kefir_result_t finalize_unsupported(const struct kefir_ir_type *type, kefir_size_t index,
@@ -260,9 +279,11 @@ static kefir_result_t finalize_scalar(const struct kefir_ir_type *type, kefir_si
     ASSIGN_DECL_CAST(struct finalize_param *, param, payload);
 
     struct kefir_ir_data_value *entry;
-    REQUIRE_OK(value_entry_at(param->data, param->slot++, &entry));
-    entry->defined = entry->type != KEFIR_IR_DATA_VALUE_UNDEFINED;
-    param->defined = param->defined || entry->defined;
+    REQUIRE_OK(value_get_entry(param->data, param->slot++, &entry));
+    if (entry != NULL) {
+        entry->defined = entry->type != KEFIR_IR_DATA_VALUE_UNDEFINED;
+        param->defined = param->defined || entry->defined;
+    }
     return KEFIR_OK;
 }
 
@@ -272,18 +293,28 @@ static kefir_result_t finalize_struct_union(const struct kefir_ir_type *type, ke
     ASSIGN_DECL_CAST(struct finalize_param *, param, payload);
 
     struct kefir_ir_data_value *entry;
-    REQUIRE_OK(value_entry_at(param->data, param->slot++, &entry));
-    REQUIRE(entry->type == KEFIR_IR_DATA_VALUE_UNDEFINED,
+    REQUIRE_OK(value_get_entry(param->data, param->slot++, &entry));
+    if (entry != NULL) {
+        REQUIRE(
+            entry->type == KEFIR_IR_DATA_VALUE_UNDEFINED,
             KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "IR data for structure/union cannot have directly assigned value"));
+    }
 
-    struct finalize_param subparam = {
-        .visitor = param->visitor, .data = param->data, .slot = param->slot, .defined = false};
+    struct finalize_param subparam = {.visitor = param->visitor,
+                                      .data = param->data,
+                                      .slot = param->slot,
+                                      .defined = false,
+                                      .block_iterator = param->block_iterator};
     REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type, param->visitor, &subparam, index + 1, typeentry->param));
     param->slot = subparam.slot;
     param->defined = param->defined || subparam.defined;
-    entry->defined = subparam.defined;
-    if (subparam.defined) {
-        entry->type = KEFIR_IR_DATA_VALUE_AGGREGATE;
+    param->block_iterator = subparam.block_iterator;
+
+    if (entry != NULL) {
+        entry->defined = subparam.defined;
+        if (subparam.defined) {
+            entry->type = KEFIR_IR_DATA_VALUE_AGGREGATE;
+        }
     }
 
     return KEFIR_OK;
@@ -295,20 +326,42 @@ static kefir_result_t finalize_array(const struct kefir_ir_type *type, kefir_siz
     ASSIGN_DECL_CAST(struct finalize_param *, param, payload);
 
     struct kefir_ir_data_value *entry;
-    REQUIRE_OK(value_entry_at(param->data, param->slot++, &entry));
-    struct finalize_param subparam = {
-        .visitor = param->visitor, .data = param->data, .slot = param->slot, .defined = false};
+    REQUIRE_OK(value_get_entry(param->data, param->slot++, &entry));
+    struct finalize_param subparam = {.visitor = param->visitor,
+                                      .data = param->data,
+                                      .slot = param->slot,
+                                      .defined = false,
+                                      .block_iterator = param->block_iterator};
+
+    const kefir_size_t array_element_slots = kefir_ir_type_node_slots(type, index + 1);
     for (kefir_size_t i = 0; i < (kefir_size_t) typeentry->param; i++) {
+        REQUIRE_OK(kefir_block_tree_iter_skip_to(&param->data->value_tree, &subparam.block_iterator, subparam.slot));
+        if (subparam.block_iterator.block == NULL) {
+            // No initialized IR data blocks available => stop traversal
+            break;
+        } else if (subparam.slot < subparam.block_iterator.block_id * BLOCK_CAPACITY) {
+            // Some undefined slots can be skipped
+            const kefir_size_t undefined_slots = subparam.block_iterator.block_id * BLOCK_CAPACITY - subparam.slot;
+            const kefir_size_t undefined_elements = undefined_slots / array_element_slots;
+            subparam.slot += undefined_elements * array_element_slots;
+            i += undefined_elements;
+        }
+
         REQUIRE_OK(kefir_ir_type_visitor_list_nodes(type, param->visitor, &subparam, index + 1, 1));
     }
+
     param->slot = subparam.slot;
-    entry->defined = subparam.defined || entry->type != KEFIR_IR_DATA_VALUE_UNDEFINED;
-    param->defined = param->defined || entry->defined;
-    if (subparam.defined) {
-        REQUIRE(entry->type == KEFIR_IR_DATA_VALUE_UNDEFINED,
-                KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE,
-                                "Array data cannot simultaneously have directly assigned and aggregate values"));
-        entry->type = KEFIR_IR_DATA_VALUE_AGGREGATE;
+    param->block_iterator = subparam.block_iterator;
+
+    if (entry != NULL) {
+        entry->defined = subparam.defined || entry->type != KEFIR_IR_DATA_VALUE_UNDEFINED;
+        param->defined = param->defined || entry->defined;
+        if (subparam.defined) {
+            REQUIRE(entry->type == KEFIR_IR_DATA_VALUE_UNDEFINED,
+                    KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE,
+                                    "Array data cannot simultaneously have directly assigned and aggregate values"));
+            entry->type = KEFIR_IR_DATA_VALUE_AGGREGATE;
+        }
     }
     return KEFIR_OK;
 }
@@ -322,11 +375,13 @@ static kefir_result_t finalize_builtin(const struct kefir_ir_type *type, kefir_s
     ASSIGN_DECL_CAST(struct finalize_param *, param, payload);
 
     struct kefir_ir_data_value *entry;
-    REQUIRE_OK(value_entry_at(param->data, param->slot++, &entry));
+    REQUIRE_OK(value_get_entry(param->data, param->slot, &entry));
     switch ((kefir_ir_builtin_type_t) typeentry->param) {
         case KEFIR_IR_TYPE_BUILTIN_VARARG:
-            REQUIRE(entry->type == KEFIR_IR_DATA_VALUE_UNDEFINED,
-                    KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Vararg built-in data cannot be initialized"));
+            if (entry != NULL) {
+                REQUIRE(entry->type == KEFIR_IR_DATA_VALUE_UNDEFINED,
+                        KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Vararg built-in data cannot be initialized"));
+            }
             param->slot++;
             break;
 
@@ -340,6 +395,8 @@ kefir_result_t kefir_ir_data_finalize(struct kefir_ir_data *data) {
     REQUIRE(data != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR data pointer"));
     struct kefir_ir_type_visitor visitor;
     struct finalize_param param = {.visitor = &visitor, .data = data, .slot = 0, .defined = false};
+
+    REQUIRE_OK(kefir_block_tree_iter(&data->value_tree, &param.block_iterator));
 
     REQUIRE_OK(kefir_ir_type_visitor_init(&visitor, finalize_unsupported));
     KEFIR_IR_TYPE_VISITOR_INIT_SCALARS(&visitor, finalize_scalar);
@@ -361,19 +418,13 @@ kefir_result_t kefir_ir_data_value_at(const struct kefir_ir_data *data, kefir_si
     REQUIRE(index < data->total_length, KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "Requested index exceeds IR data length"));
     REQUIRE(value_ptr != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to IR data value"));
 
-    kefir_size_t block_id, block_offset;
-    REQUIRE_OK(kefir_block_tree_get_block_offset(&data->value_tree, index * sizeof(struct kefir_ir_data_value),
-                                                 &block_id, &block_offset));
-    void *block;
-    kefir_result_t res = kefir_block_tree_get_block(&data->value_tree, block_id, &block);
-    if (res == KEFIR_NOT_FOUND) {
+    struct kefir_ir_data_value *value = NULL;
+    REQUIRE_OK(value_get_entry(data, index, &value));
+    if (value == NULL) {
         static const struct kefir_ir_data_value EMPTY_VALUE = {.type = KEFIR_IR_DATA_VALUE_UNDEFINED};
         *value_ptr = &EMPTY_VALUE;
-        return KEFIR_OK;
     } else {
-        REQUIRE_OK(res);
-        ASSIGN_DECL_CAST(const struct kefir_ir_data_value *, value_block, block);
-        *value_ptr = &value_block[block_offset / sizeof(struct kefir_ir_data_value)];
+        *value_ptr = value;
     }
     return KEFIR_OK;
 }

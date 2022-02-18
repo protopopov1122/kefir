@@ -141,7 +141,6 @@ kefir_result_t kefir_block_tree_iter(const struct kefir_block_tree *tree, struct
         iter->block_id = iter->tree_iter.node->key;
         iter->block = (void *) iter->tree_iter.node->value;
     } else {
-        iter->block_id = KEFIR_BLOCK_TREE_BLOCK_ID_NONE;
         iter->block = NULL;
     }
     return KEFIR_OK;
@@ -155,8 +154,18 @@ kefir_result_t kefir_block_tree_next(struct kefir_block_tree_iterator *iter) {
         iter->block_id = iter->tree_iter.node->key;
         iter->block = (void *) iter->tree_iter.node->value;
     } else {
-        iter->block_id = KEFIR_BLOCK_TREE_BLOCK_ID_NONE;
         iter->block = NULL;
+    }
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_block_tree_iter_skip_to(const struct kefir_block_tree *tree,
+                                             struct kefir_block_tree_iterator *iter, kefir_size_t position) {
+    REQUIRE(tree != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid block tree"));
+    REQUIRE(iter != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid block tree iterator"));
+
+    while (iter->block != NULL && (iter->block_id + 1) * tree->block_size <= position) {
+        REQUIRE_OK(kefir_block_tree_next(iter));
     }
     return KEFIR_OK;
 }
