@@ -415,6 +415,7 @@ kefir_result_t kefir_ir_data_finalize(struct kefir_ir_data *data) {
     REQUIRE_OK(
         kefir_ir_type_visitor_list_nodes(data->type, &visitor, &param, 0, kefir_ir_type_total_length(data->type)));
     data->finalized = true;
+    data->defined = param.defined;
     return KEFIR_OK;
 }
 

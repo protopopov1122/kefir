@@ -39,6 +39,7 @@ typedef struct kefir_ir_data {
     kefir_size_t total_length;
     struct kefir_block_tree value_tree;
     kefir_bool_t finalized;
+    kefir_bool_t defined;
 } kefir_ir_data_t;
 
 typedef enum kefir_ir_string_literal_type {

@@ -52,8 +52,7 @@ static kefir_result_t align_offset(struct kefir_amd64_sysv_data_layout *layout, 
 
     kefir_size_t new_offset = kefir_codegen_pad_aligned(param->offset, layout->alignment);
     if (new_offset > param->offset) {
-        ASMGEN_MULRAW(&param->codegen->asmgen, new_offset - param->offset, KEFIR_AMD64_BYTE);
-        ASMGEN_ARG0(&param->codegen->asmgen, "0");
+        ASMGEN_ZERODATA(&param->codegen->asmgen, new_offset - param->offset);
         param->offset = new_offset;
     }
     return KEFIR_OK;
@@ -63,8 +62,7 @@ static kefir_result_t trailing_padding(kefir_size_t start_offset, struct kefir_a
                                        struct static_data_param *param) {
     kefir_size_t end_offset = start_offset + layout->size;
     if (end_offset > param->offset) {
-        ASMGEN_MULRAW(&param->codegen->asmgen, end_offset - param->offset, KEFIR_AMD64_BYTE);
-        ASMGEN_ARG0(&param->codegen->asmgen, "0");
+        ASMGEN_ZERODATA(&param->codegen->asmgen, end_offset - param->offset);
         param->offset = end_offset;
     } else {
         REQUIRE(end_offset == param->offset,
@@ -423,8 +421,7 @@ static kefir_result_t array_static_data(const struct kefir_ir_type *type, kefir_
                         param->slot += missing_array_elements * array_element_slots;
                         kefir_size_t zero_count = missing_array_elements * array_element_layout->size;
                         param->offset += zero_count;
-                        ASMGEN_MULRAW(&param->codegen->asmgen, zero_count, KEFIR_AMD64_BYTE);
-                        ASMGEN_ARG0(&param->codegen->asmgen, "0");
+                        ASMGEN_ZERODATA(&param->codegen->asmgen, zero_count);
                         continue;
                     }
                 }
@@ -498,8 +495,7 @@ static kefir_result_t pad_static_data(const struct kefir_ir_type *type, kefir_si
     param->slot++;
 
     REQUIRE_OK(align_offset(layout, param));
-    ASMGEN_MULRAW(&param->codegen->asmgen, layout->size, KEFIR_AMD64_BYTE);
-    ASMGEN_ARG0(&param->codegen->asmgen, "0");
+    ASMGEN_ZERODATA(&param->codegen->asmgen, layout->size);
     param->offset += layout->size;
     return KEFIR_OK;
 }
@@ -517,8 +513,7 @@ static kefir_result_t builtin_static_data(const struct kefir_ir_type *type, kefi
     switch ((kefir_ir_builtin_type_t) typeentry->param) {
         case KEFIR_IR_TYPE_BUILTIN_VARARG:
             REQUIRE_OK(align_offset(layout, param));
-            ASMGEN_MULRAW(&param->codegen->asmgen, layout->size, KEFIR_AMD64_BYTE);
-            ASMGEN_ARG0(&param->codegen->asmgen, "0");
+            ASMGEN_ZERODATA(&param->codegen->asmgen, layout->size);
             param->offset += layout->size;
             break;
 
@@ -604,8 +599,7 @@ kefir_result_t kefir_amd64_sysv_static_data(struct kefir_mem *mem, struct kefir_
     });
 
     if (param.offset < total_size) {
-        ASMGEN_MULRAW(&codegen->asmgen, total_size - param.offset, KEFIR_AMD64_BYTE);
-        ASMGEN_ARG0(&codegen->asmgen, "0");
+        ASMGEN_ZERODATA(&codegen->asmgen, total_size - param.offset);
     }
 
     ASMGEN_NEWLINE(&codegen->asmgen, 1);

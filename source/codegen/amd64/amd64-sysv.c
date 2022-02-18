@@ -241,7 +241,8 @@ static kefir_result_t cg_translate_strings(struct kefir_codegen_amd64 *codegen,
 
 static kefir_result_t cg_translate_data_storage(struct kefir_mem *mem, struct kefir_codegen_amd64 *codegen,
                                                 struct kefir_codegen_amd64_sysv_module *module,
-                                                kefir_ir_data_storage_t storage, const char *section) {
+                                                kefir_ir_data_storage_t storage, kefir_bool_t defined,
+                                                const char *section) {
     bool first = true;
     struct kefir_hashtree_node_iterator iter;
     const char *identifier = NULL;
@@ -250,6 +251,10 @@ static kefir_result_t cg_translate_data_storage(struct kefir_mem *mem, struct ke
         if (data->storage != storage) {
             continue;
         }
+        if (data->defined != defined) {
+            continue;
+        }
+
         if (first) {
             ASMGEN_SECTION(&codegen->asmgen, section);
             first = false;
@@ -261,8 +266,10 @@ static kefir_result_t cg_translate_data_storage(struct kefir_mem *mem, struct ke
 
 static kefir_result_t cg_translate_data(struct kefir_mem *mem, struct kefir_codegen_amd64 *codegen,
                                         struct kefir_codegen_amd64_sysv_module *module) {
-    REQUIRE_OK(cg_translate_data_storage(mem, codegen, module, KEFIR_IR_DATA_GLOBAL_STORAGE, ".data"));
-    REQUIRE_OK(cg_translate_data_storage(mem, codegen, module, KEFIR_IR_DATA_THREAD_LOCAL_STORAGE, ".tdata"));
+    REQUIRE_OK(cg_translate_data_storage(mem, codegen, module, KEFIR_IR_DATA_GLOBAL_STORAGE, true, ".data"));
+    REQUIRE_OK(cg_translate_data_storage(mem, codegen, module, KEFIR_IR_DATA_THREAD_LOCAL_STORAGE, true, ".tdata"));
+    REQUIRE_OK(cg_translate_data_storage(mem, codegen, module, KEFIR_IR_DATA_GLOBAL_STORAGE, false, ".bss"));
+    REQUIRE_OK(cg_translate_data_storage(mem, codegen, module, KEFIR_IR_DATA_THREAD_LOCAL_STORAGE, false, ".tbss"));
     REQUIRE_OK(cg_translate_strings(codegen, module));
     return KEFIR_OK;
 }

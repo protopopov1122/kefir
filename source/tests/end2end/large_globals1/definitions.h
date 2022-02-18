@@ -28,5 +28,6 @@ struct Struct1 {
 };
 
 extern struct Struct1 Array[10000];
+extern struct Struct1 Array2[20000];
 
 #endif

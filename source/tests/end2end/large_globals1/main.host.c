@@ -38,6 +38,9 @@ int main() {
             assert(Array[i].y == 0);
             assert(Array[i].z == 0);
         }
+        assert(Array2[i].x == 0);
+        assert(Array2[i].y == 0);
+        assert(Array2[i].z == 0);
     }
     return EXIT_SUCCESS;
 }

@@ -211,6 +211,23 @@ static kefir_result_t amd64_multrawdata(struct kefir_amd64_asmgen *asmgen, kefir
     return KEFIR_OK;
 }
 
+static kefir_result_t amd64_zerodata(struct kefir_amd64_asmgen *asmgen, kefir_size_t count) {
+    REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator"));
+    FILE *out = (FILE *) asmgen->data;
+    REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid output file for AMD64 assembly"));
+    if (!asmgen->state.empty) {
+        fprintf(out, "\n");
+    }
+    asmgen->state.empty = false;
+    if (asmgen->settings.enable_identation) {
+        fprintf(out, "%s", INDENTATION);
+    }
+
+    fprintf(out, ".zero " KEFIR_SIZE_FMT, count);
+    asmgen->state.arguments = 0;
+    return KEFIR_OK;
+}
+
 static kefir_result_t amd64_argument(struct kefir_amd64_asmgen *asmgen, const char *format, ...) {
     REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator"));
     FILE *out = (FILE *) asmgen->data;
@@ -348,6 +365,7 @@ kefir_result_t kefir_amd64_gas_gen_init(struct kefir_amd64_asmgen *asmgen, FILE 
     asmgen->rawdata = amd64_rawdata;
     asmgen->string_literal = amd64_string_literal;
     asmgen->mulrawdata = amd64_multrawdata;
+    asmgen->zerodata = amd64_zerodata;
     asmgen->argument = amd64_argument;
     asmgen->symbol_argument = amd64_symbol_arg;
     asmgen->data = (void *) out;

@@ -21,3 +21,4 @@
 #include "./definitions.h"
 
 struct Struct1 Array[10000] = {[1].x = 1, [1].y = 2, [1].z = 3, [9998].x = 1000, [9998].y = 2000, [9998].z = 3000};
+struct Struct1 Array2[20000];
