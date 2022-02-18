@@ -923,11 +923,14 @@ static kefir_result_t analyze_declaration_declarator_impl(
                                                            function_definition_context, identifier, base_type));
             break;
 
-        case KEFIR_AST_DECLARATOR_FUNCTION:
-            REQUIRE_OK(resolve_function_declarator(mem, context, declarator, function_definition_context, base_type));
+        case KEFIR_AST_DECLARATOR_FUNCTION: {
+            const struct kefir_ast_declarator_function *underlying_function = NULL;
+            REQUIRE_OK(kefir_ast_declarator_unpack_function(declarator->function.declarator, &underlying_function));
+            REQUIRE_OK(resolve_function_declarator(
+                mem, context, declarator, function_definition_context && underlying_function == NULL, base_type));
             REQUIRE_OK(analyze_declaration_declarator_impl(mem, context, declarator->function.declarator,
                                                            function_definition_context, identifier, base_type));
-            break;
+        } break;
     }
     return KEFIR_OK;
 }
