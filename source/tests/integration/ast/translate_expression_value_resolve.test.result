@@ -40,6 +40,10 @@
         },
         {
             "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
             "type": [
                 {
                     "type": "char"
@@ -47,7 +51,7 @@
             ]
         },
         {
-            "identifier": 4,
+            "identifier": 5,
             "type": [
                 {
                     "type": "int"
@@ -55,7 +59,7 @@
             ]
         },
         {
-            "identifier": 5,
+            "identifier": 6,
             "type": [
                 {
                     "type": "float"
@@ -63,7 +67,7 @@
             ]
         },
         {
-            "identifier": 6,
+            "identifier": 7,
             "type": [
                 {
                     "type": "union",
@@ -76,7 +80,7 @@
             ]
         },
         {
-            "identifier": 7,
+            "identifier": 8,
             "type": [
                 {
                     "type": "array",
@@ -88,7 +92,7 @@
             ]
         },
         {
-            "identifier": 8,
+            "identifier": 9,
             "type": [
                 {
                     "type": "array",
@@ -105,7 +109,7 @@
             ]
         },
         {
-            "identifier": 9,
+            "identifier": 10,
             "type": [
                 {
                     "type": "double"
@@ -113,7 +117,7 @@
             ]
         },
         {
-            "identifier": 10,
+            "identifier": 11,
             "type": [
                 {
                     "type": "bool"
@@ -121,7 +125,7 @@
             ]
         },
         {
-            "identifier": 11,
+            "identifier": 12,
             "type": [
                 {
                     "type": "word"
@@ -129,7 +133,7 @@
             ]
         },
         {
-            "identifier": 12,
+            "identifier": 13,
             "type": [
                 {
                     "type": "short"
@@ -137,7 +141,7 @@
             ]
         },
         {
-            "identifier": 13,
+            "identifier": 14,
             "type": [
                 {
                     "type": "struct",
@@ -150,18 +154,10 @@
             ]
         },
         {
-            "identifier": 14,
-            "type": [
-                {
-                    "type": "int"
-                }
-            ]
-        },
-        {
             "identifier": 15,
             "type": [
                 {
-                    "type": "char"
+                    "type": "int"
                 }
             ]
         },
@@ -169,7 +165,7 @@
             "identifier": 16,
             "type": [
                 {
-                    "type": "long"
+                    "type": "char"
                 }
             ]
         },
@@ -177,7 +173,7 @@
             "identifier": 17,
             "type": [
                 {
-                    "type": "char"
+                    "type": "long"
                 }
             ]
         },
@@ -185,7 +181,7 @@
             "identifier": 18,
             "type": [
                 {
-                    "type": "long"
+                    "type": "char"
                 }
             ]
         },
@@ -193,7 +189,7 @@
             "identifier": 19,
             "type": [
                 {
-                    "type": "short"
+                    "type": "long"
                 }
             ]
         },
@@ -201,7 +197,7 @@
             "identifier": 20,
             "type": [
                 {
-                    "type": "int"
+                    "type": "short"
                 }
             ]
         },
@@ -209,7 +205,7 @@
             "identifier": 21,
             "type": [
                 {
-                    "type": "long"
+                    "type": "int"
                 }
             ]
         },
@@ -217,7 +213,7 @@
             "identifier": 22,
             "type": [
                 {
-                    "type": "short"
+                    "type": "long"
                 }
             ]
         },
@@ -225,13 +221,17 @@
             "identifier": 23,
             "type": [
                 {
-                    "type": "long"
+                    "type": "short"
                 }
             ]
         },
         {
             "identifier": 24,
-            "type": []
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
         },
         {
             "identifier": 25,
@@ -244,21 +244,15 @@
         {
             "identifier": 27,
             "type": []
+        },
+        {
+            "identifier": 28,
+            "type": []
         }
     ],
     "data": [
         {
             "identifier": "char",
-            "storage": "global",
-            "type": 3,
-            "value": [
-                {
-                    "class": "undefined"
-                }
-            ]
-        },
-        {
-            "identifier": "enum",
             "storage": "global",
             "type": 4,
             "value": [
@@ -268,7 +262,7 @@
             ]
         },
         {
-            "identifier": "float",
+            "identifier": "enum",
             "storage": "global",
             "type": 5,
             "value": [
@@ -278,9 +272,19 @@
             ]
         },
         {
-            "identifier": "union",
+            "identifier": "float",
             "storage": "global",
             "type": 6,
+            "value": [
+                {
+                    "class": "undefined"
+                }
+            ]
+        },
+        {
+            "identifier": "union",
+            "storage": "global",
+            "type": 7,
             "value": [
                 {
                     "class": "undefined",
@@ -291,7 +295,7 @@
         {
             "identifier": "array1",
             "storage": "global",
-            "type": 7,
+            "type": 8,
             "value": [
                 {
                     "class": "undefined",
@@ -302,7 +306,7 @@
         {
             "identifier": "array2",
             "storage": "global",
-            "type": 8,
+            "type": 9,
             "value": [
                 {
                     "class": "undefined"
@@ -312,7 +316,7 @@
         {
             "identifier": "double",
             "storage": "global",
-            "type": 9,
+            "type": 10,
             "value": [
                 {
                     "class": "undefined"
@@ -322,7 +326,7 @@
         {
             "identifier": "boolean",
             "storage": "global",
-            "type": 10,
+            "type": 11,
             "value": [
                 {
                     "class": "undefined"
@@ -332,7 +336,7 @@
         {
             "identifier": "void_ptr",
             "storage": "global",
-            "type": 11,
+            "type": 12,
             "value": [
                 {
                     "class": "undefined"
@@ -342,7 +346,7 @@
         {
             "identifier": "qualified",
             "storage": "global",
-            "type": 12,
+            "type": 13,
             "value": [
                 {
                     "class": "undefined"
@@ -352,7 +356,7 @@
         {
             "identifier": "structure",
             "storage": "global",
-            "type": 13,
+            "type": 14,
             "value": [
                 {
                     "class": "undefined",
@@ -363,7 +367,7 @@
         {
             "identifier": "signed_int",
             "storage": "global",
-            "type": 14,
+            "type": 15,
             "value": [
                 {
                     "class": "undefined"
@@ -373,7 +377,7 @@
         {
             "identifier": "signed_char",
             "storage": "global",
-            "type": 15,
+            "type": 16,
             "value": [
                 {
                     "class": "undefined"
@@ -383,7 +387,7 @@
         {
             "identifier": "signed_long",
             "storage": "global",
-            "type": 16,
+            "type": 17,
             "value": [
                 {
                     "class": "undefined"
@@ -393,7 +397,7 @@
         {
             "identifier": "unsigned_char",
             "storage": "global",
-            "type": 17,
+            "type": 18,
             "value": [
                 {
                     "class": "undefined"
@@ -403,7 +407,7 @@
         {
             "identifier": "unsigned_long",
             "storage": "global",
-            "type": 18,
+            "type": 19,
             "value": [
                 {
                     "class": "undefined"
@@ -413,7 +417,7 @@
         {
             "identifier": "signed_short",
             "storage": "global",
-            "type": 19,
+            "type": 20,
             "value": [
                 {
                     "class": "undefined"
@@ -423,7 +427,7 @@
         {
             "identifier": "unsigned_int",
             "storage": "global",
-            "type": 20,
+            "type": 21,
             "value": [
                 {
                     "class": "undefined"
@@ -433,7 +437,7 @@
         {
             "identifier": "signed_long_long",
             "storage": "global",
-            "type": 21,
+            "type": 22,
             "value": [
                 {
                     "class": "undefined"
@@ -443,7 +447,7 @@
         {
             "identifier": "unsigned_short",
             "storage": "global",
-            "type": 22,
+            "type": 23,
             "value": [
                 {
                     "class": "undefined"
@@ -453,7 +457,7 @@
         {
             "identifier": "unsigned_long_long",
             "storage": "global",
-            "type": 23,
+            "type": 24,
             "value": [
                 {
                     "class": "undefined"
@@ -466,23 +470,23 @@
         {
             "identifier": 0,
             "name": "func1",
-            "parameters": 24,
+            "parameters": 25,
             "vararg": false,
-            "returns": 25
+            "returns": 26
         },
         {
             "identifier": 1,
             "name": "func1",
-            "parameters": 26,
+            "parameters": 27,
             "vararg": false,
-            "returns": 27
+            "returns": 28
         }
     ],
     "functions": [
         {
             "identifier": 1,
             "name": "func1",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getglobal",

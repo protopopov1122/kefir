@@ -12,6 +12,10 @@
         },
         {
             "identifier": 2,
+            "type": []
+        },
+        {
+            "identifier": 3,
             "type": [
                 {
                     "type": "struct",
@@ -22,10 +26,6 @@
                     ]
                 }
             ]
-        },
-        {
-            "identifier": 3,
-            "type": []
         },
         {
             "identifier": 4,
@@ -46,6 +46,10 @@
         {
             "identifier": 8,
             "type": []
+        },
+        {
+            "identifier": 9,
+            "type": []
         }
     ],
     "data": [],
@@ -54,30 +58,30 @@
         {
             "identifier": 0,
             "name": "conditional1",
-            "parameters": 3,
+            "parameters": 4,
             "vararg": false,
-            "returns": 4
+            "returns": 5
         },
         {
             "identifier": 1,
             "name": "conditional2",
-            "parameters": 5,
+            "parameters": 6,
             "vararg": false,
-            "returns": 6
+            "returns": 7
         },
         {
             "identifier": 2,
             "name": "conditional3",
-            "parameters": 7,
+            "parameters": 8,
             "vararg": false,
-            "returns": 8
+            "returns": 9
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "conditional1",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",
@@ -104,7 +108,7 @@
         {
             "identifier": 1,
             "name": "conditional2",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "pushf32",
@@ -130,7 +134,7 @@
         {
             "identifier": 2,
             "name": "conditional3",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getlocals"

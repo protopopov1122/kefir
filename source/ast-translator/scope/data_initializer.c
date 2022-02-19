@@ -50,9 +50,15 @@ static kefir_result_t translate_pointer_to_identifier(struct kefir_mem *mem,
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC: {
                 ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, identifier_data,
                                  value->pointer.scoped_id->payload.ptr);
-                REQUIRE_OK(kefir_ir_data_set_pointer(
-                    data, base_slot, KEFIR_AST_TRANSLATOR_STATIC_VARIABLES_IDENTIFIER,
-                    resolve_identifier_offset(identifier_data->layout) + value->pointer.offset));
+                if (value->pointer.scoped_id->object.initializer != NULL) {
+                    REQUIRE_OK(kefir_ir_data_set_pointer(
+                        data, base_slot, KEFIR_AST_TRANSLATOR_STATIC_VARIABLES_IDENTIFIER,
+                        resolve_identifier_offset(identifier_data->layout) + value->pointer.offset));
+                } else {
+                    REQUIRE_OK(kefir_ir_data_set_pointer(
+                        data, base_slot, KEFIR_AST_TRANSLATOR_STATIC_UNINIT_VARIABLES_IDENTIFIER,
+                        resolve_identifier_offset(identifier_data->layout) + value->pointer.offset));
+                }
             } break;
 
             case KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_THREAD_LOCAL:

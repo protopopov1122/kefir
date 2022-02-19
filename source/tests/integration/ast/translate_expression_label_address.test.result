@@ -21,6 +21,10 @@
         {
             "identifier": 4,
             "type": []
+        },
+        {
+            "identifier": 5,
+            "type": []
         }
     ],
     "data": [],
@@ -29,16 +33,16 @@
         {
             "identifier": 0,
             "name": "func1",
-            "parameters": 3,
+            "parameters": 4,
             "vararg": false,
-            "returns": 4
+            "returns": 5
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "func1",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "pushlabel",

@@ -24,18 +24,11 @@
         },
         {
             "identifier": 2,
-            "type": [
-                {
-                    "type": "int"
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 3,
             "type": [
-                {
-                    "type": "int"
-                },
                 {
                     "type": "int"
                 }
@@ -46,15 +39,15 @@
             "type": [
                 {
                     "type": "int"
+                },
+                {
+                    "type": "int"
                 }
             ]
         },
         {
             "identifier": 5,
             "type": [
-                {
-                    "type": "int"
-                },
                 {
                     "type": "int"
                 }
@@ -65,11 +58,22 @@
             "type": [
                 {
                     "type": "int"
+                },
+                {
+                    "type": "int"
                 }
             ]
         },
         {
             "identifier": 7,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 8,
             "type": [
                 {
                     "type": "struct",
@@ -116,23 +120,23 @@
         {
             "identifier": 0,
             "name": "sum",
-            "parameters": 3,
+            "parameters": 4,
             "vararg": false,
-            "returns": 4
+            "returns": 5
         },
         {
             "identifier": 1,
             "name": "sum",
-            "parameters": 5,
+            "parameters": 6,
             "vararg": false,
-            "returns": 6
+            "returns": 7
         }
     ],
     "functions": [
         {
             "identifier": 1,
             "name": "sum",
-            "locals": 7,
+            "locals": 8,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -140,7 +144,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 7,
+                        "type": 8,
                         "index": 2
                     }
                 },
@@ -173,7 +177,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 7,
+                        "type": 8,
                         "index": 2
                     }
                 },

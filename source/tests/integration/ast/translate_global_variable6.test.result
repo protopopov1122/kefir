@@ -47,6 +47,10 @@
         },
         {
             "identifier": 2,
+            "type": []
+        },
+        {
+            "identifier": 3,
             "type": [
                 {
                     "type": "int"

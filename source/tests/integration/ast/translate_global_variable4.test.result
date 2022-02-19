@@ -31,6 +31,10 @@
         },
         {
             "identifier": 2,
+            "type": []
+        },
+        {
+            "identifier": 3,
             "type": [
                 {
                     "type": "array",
@@ -42,7 +46,7 @@
             ]
         },
         {
-            "identifier": 3,
+            "identifier": 4,
             "type": [
                 {
                     "type": "int"
@@ -54,7 +58,7 @@
         {
             "identifier": "str1",
             "storage": "global",
-            "type": 2,
+            "type": 3,
             "value": [
                 {
                     "class": "string",

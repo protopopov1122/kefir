@@ -12,6 +12,10 @@
         },
         {
             "identifier": 2,
+            "type": []
+        },
+        {
+            "identifier": 3,
             "type": [
                 {
                     "type": "struct",
@@ -42,15 +46,15 @@
             ]
         },
         {
-            "identifier": 3,
-            "type": []
-        },
-        {
             "identifier": 4,
             "type": []
         },
         {
             "identifier": 5,
+            "type": []
+        },
+        {
+            "identifier": 6,
             "type": [
                 {
                     "type": "double"
@@ -64,16 +68,16 @@
         {
             "identifier": 0,
             "name": "vararg",
-            "parameters": 3,
+            "parameters": 4,
             "vararg": false,
-            "returns": 4
+            "returns": 5
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "vararg",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -81,7 +85,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 2,
+                        "type": 3,
                         "index": 4
                     }
                 },
@@ -94,7 +98,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 2,
+                        "type": 3,
                         "index": 5
                     }
                 },
@@ -104,7 +108,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 2,
+                        "type": 3,
                         "index": 4
                     }
                 },
@@ -117,14 +121,14 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 2,
+                        "type": 3,
                         "index": 5
                     }
                 },
                 {
                     "opcode": "getvarg",
                     "arg": {
-                        "type": 5,
+                        "type": 6,
                         "index": 0
                     }
                 },
@@ -137,7 +141,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 2,
+                        "type": 3,
                         "index": 4
                     }
                 },
@@ -150,7 +154,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 2,
+                        "type": 3,
                         "index": 5
                     }
                 },
@@ -160,7 +164,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 2,
+                        "type": 3,
                         "index": 4
                     }
                 },

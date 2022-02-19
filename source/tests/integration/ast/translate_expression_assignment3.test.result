@@ -21,6 +21,10 @@
         },
         {
             "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
             "type": [
                 {
                     "type": "int"
@@ -28,7 +32,7 @@
             ]
         },
         {
-            "identifier": 4,
+            "identifier": 5,
             "type": [
                 {
                     "type": "float"
@@ -36,7 +40,7 @@
             ]
         },
         {
-            "identifier": 5,
+            "identifier": 6,
             "type": [
                 {
                     "type": "double"
@@ -44,16 +48,12 @@
             ]
         },
         {
-            "identifier": 6,
+            "identifier": 7,
             "type": [
                 {
                     "type": "long"
                 }
             ]
-        },
-        {
-            "identifier": 7,
-            "type": []
         },
         {
             "identifier": 8,
@@ -130,6 +130,10 @@
         {
             "identifier": 26,
             "type": []
+        },
+        {
+            "identifier": 27,
+            "type": []
         }
     ],
     "data": [],
@@ -138,79 +142,79 @@
         {
             "identifier": 0,
             "name": "assign_multiply_int",
-            "parameters": 7,
+            "parameters": 8,
             "vararg": false,
-            "returns": 8
+            "returns": 9
         },
         {
             "identifier": 1,
             "name": "assign_multiply_ullong",
-            "parameters": 9,
+            "parameters": 10,
             "vararg": false,
-            "returns": 10
+            "returns": 11
         },
         {
             "identifier": 2,
             "name": "assign_multiply_float",
-            "parameters": 11,
+            "parameters": 12,
             "vararg": false,
-            "returns": 12
+            "returns": 13
         },
         {
             "identifier": 3,
             "name": "assign_multiply_double",
-            "parameters": 13,
+            "parameters": 14,
             "vararg": false,
-            "returns": 14
+            "returns": 15
         },
         {
             "identifier": 4,
             "name": "assign_multiply_int_double",
-            "parameters": 15,
+            "parameters": 16,
             "vararg": false,
-            "returns": 16
+            "returns": 17
         },
         {
             "identifier": 5,
             "name": "assign_divide_int",
-            "parameters": 17,
+            "parameters": 18,
             "vararg": false,
-            "returns": 18
+            "returns": 19
         },
         {
             "identifier": 6,
             "name": "assign_divide_ullong",
-            "parameters": 19,
+            "parameters": 20,
             "vararg": false,
-            "returns": 20
+            "returns": 21
         },
         {
             "identifier": 7,
             "name": "assign_divide_float",
-            "parameters": 21,
+            "parameters": 22,
             "vararg": false,
-            "returns": 22
+            "returns": 23
         },
         {
             "identifier": 8,
             "name": "assign_divide_double",
-            "parameters": 23,
+            "parameters": 24,
             "vararg": false,
-            "returns": 24
+            "returns": 25
         },
         {
             "identifier": 9,
             "name": "assign_divide_ullong_double",
-            "parameters": 25,
+            "parameters": 26,
             "vararg": false,
-            "returns": 26
+            "returns": 27
         }
     ],
     "functions": [
         {
             "identifier": 4,
             "name": "assign_multiply_int_double",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "pushf64",
@@ -265,7 +269,7 @@
         {
             "identifier": 5,
             "name": "assign_divide_int",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",
@@ -311,7 +315,7 @@
         {
             "identifier": 8,
             "name": "assign_divide_double",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "pushf32",
@@ -360,7 +364,7 @@
         {
             "identifier": 6,
             "name": "assign_divide_ullong",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",
@@ -406,7 +410,7 @@
         {
             "identifier": 2,
             "name": "assign_multiply_float",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",
@@ -455,7 +459,7 @@
         {
             "identifier": 9,
             "name": "assign_divide_ullong_double",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "pushf64",
@@ -507,7 +511,7 @@
         {
             "identifier": 3,
             "name": "assign_multiply_double",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "pushf32",
@@ -556,7 +560,7 @@
         {
             "identifier": 1,
             "name": "assign_multiply_ullong",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",
@@ -602,7 +606,7 @@
         {
             "identifier": 7,
             "name": "assign_divide_float",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",
@@ -651,7 +655,7 @@
         {
             "identifier": 0,
             "name": "assign_multiply_int",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",

@@ -56,9 +56,15 @@ kefir_result_t kefir_ast_translator_object_lvalue(struct kefir_mem *mem, struct 
             ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, identifier_data,
                              scoped_identifier->payload.ptr);
             kefir_id_t id;
-            REQUIRE(kefir_ir_module_symbol(mem, context->module, KEFIR_AST_TRANSLATOR_STATIC_VARIABLES_IDENTIFIER,
-                                           &id) != NULL,
-                    KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR module symbol"));
+            if (scoped_identifier->object.initializer != NULL) {
+                REQUIRE(kefir_ir_module_symbol(mem, context->module, KEFIR_AST_TRANSLATOR_STATIC_VARIABLES_IDENTIFIER,
+                                               &id) != NULL,
+                        KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR module symbol"));
+            } else {
+                REQUIRE(kefir_ir_module_symbol(mem, context->module,
+                                               KEFIR_AST_TRANSLATOR_STATIC_UNINIT_VARIABLES_IDENTIFIER, &id) != NULL,
+                        KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR module symbol"));
+            }
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_GETGLOBAL, id));
             REQUIRE_OK(kefir_ast_translator_resolve_type_layout(builder, identifier_data->type_id,
                                                                 identifier_data->layout, NULL));

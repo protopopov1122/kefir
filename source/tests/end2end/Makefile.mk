@@ -5,6 +5,8 @@ ifeq ($(PLATFORM),freebsd)
 END2END_LIBS+=-lstdthreads
 endif
 
+END2END_ASMGEN_EXPECTED_FILES :=
+
 $(END2END_BIN_PATH)/runtime.o: $(SOURCE_DIR)/runtime/amd64_sysv.s
 	@mkdir -p $(shell dirname "$@")
 	@echo "Assemble $@"
@@ -25,6 +27,22 @@ $(END2END_BIN_PATH)/%.test.done: $(END2END_BIN_PATH)/%.test
 	@valgrind $(VALGRIND_OPTIONS) $<
 	@touch $@
 
+$(END2END_BIN_PATH)/%.asmgen.output: $(SOURCE_DIR)/tests/end2end/%.kefir.asmgen.c $(BIN_DIR)/kefir
+	@mkdir -p $(shell dirname "$@")
+	@echo "Kefir-Translate $@"
+	@VALGRIND_OPTIONS="$(VALGRIND_OPTIONS)" AS="$(AS)" $(SOURCE_DIR)/tests/end2end/asmgen.sh $(BIN_DIR) $< $@
+
+$(END2END_BIN_PATH)/%.test.asmgen.done: $(END2END_BIN_PATH)/%.asmgen.output
+	@echo "Asmgen-Diff $^"
+	@diff -u -B $(SOURCE_DIR)/tests/end2end/$*.asmgen.expected $<
+	@touch $@
+
+$(SOURCE_DIR)/tests/end2end/%.asmgen.expected: $(SOURCE_DIR)/tests/end2end/%.kefir.asmgen.c $(BIN_DIR)/kefir
+	@echo "Rebuilding $@"
+	@VALGRIND_OPTIONS="$(VALGRIND_OPTIONS)" AS="$(AS)" $(SOURCE_DIR)/tests/end2end/asmgen.sh $(BIN_DIR) $< $@
+
 OBJECT_FILES += $(END2END_BIN_PATH)/runtime.o
 
 include source/tests/end2end/*/Makefile.mk
+
+rebuild_end2end_asmgen_tests: $(END2END_ASMGEN_EXPECTED_FILES)

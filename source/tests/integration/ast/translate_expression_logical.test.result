@@ -77,6 +77,10 @@
         {
             "identifier": 18,
             "type": []
+        },
+        {
+            "identifier": 19,
+            "type": []
         }
     ],
     "data": [],
@@ -85,65 +89,65 @@
         {
             "identifier": 0,
             "name": "logical_and1",
-            "parameters": 3,
+            "parameters": 4,
             "vararg": false,
-            "returns": 4
+            "returns": 5
         },
         {
             "identifier": 1,
             "name": "logical_and2",
-            "parameters": 5,
+            "parameters": 6,
             "vararg": false,
-            "returns": 6
+            "returns": 7
         },
         {
             "identifier": 2,
             "name": "logical_and3",
-            "parameters": 7,
+            "parameters": 8,
             "vararg": false,
-            "returns": 8
+            "returns": 9
         },
         {
             "identifier": 3,
             "name": "logical_and4",
-            "parameters": 9,
+            "parameters": 10,
             "vararg": false,
-            "returns": 10
+            "returns": 11
         },
         {
             "identifier": 4,
             "name": "logical_or1",
-            "parameters": 11,
+            "parameters": 12,
             "vararg": false,
-            "returns": 12
+            "returns": 13
         },
         {
             "identifier": 5,
             "name": "logical_or2",
-            "parameters": 13,
+            "parameters": 14,
             "vararg": false,
-            "returns": 14
+            "returns": 15
         },
         {
             "identifier": 6,
             "name": "logical_or3",
-            "parameters": 15,
+            "parameters": 16,
             "vararg": false,
-            "returns": 16
+            "returns": 17
         },
         {
             "identifier": 7,
             "name": "logical_or4",
-            "parameters": 17,
+            "parameters": 18,
             "vararg": false,
-            "returns": 18
+            "returns": 19
         }
     ],
     "functions": [
         {
             "identifier": 4,
             "name": "logical_or1",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",
@@ -175,7 +179,7 @@
         {
             "identifier": 5,
             "name": "logical_or2",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "pushf32",
@@ -207,7 +211,7 @@
         {
             "identifier": 6,
             "name": "logical_or3",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",
@@ -239,7 +243,7 @@
         {
             "identifier": 7,
             "name": "logical_or4",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "pushld",
@@ -308,7 +312,7 @@
         {
             "identifier": 0,
             "name": "logical_and1",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",
@@ -343,7 +347,7 @@
         {
             "identifier": 1,
             "name": "logical_and2",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "pushf32",
@@ -378,7 +382,7 @@
         {
             "identifier": 2,
             "name": "logical_and3",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",
@@ -413,7 +417,7 @@
         {
             "identifier": 3,
             "name": "logical_and4",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "pushld",

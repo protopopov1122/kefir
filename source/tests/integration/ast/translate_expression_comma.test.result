@@ -61,6 +61,10 @@
         {
             "identifier": 14,
             "type": []
+        },
+        {
+            "identifier": 15,
+            "type": []
         }
     ],
     "data": [],
@@ -69,51 +73,51 @@
         {
             "identifier": 0,
             "name": "comma1",
-            "parameters": 3,
+            "parameters": 4,
             "vararg": false,
-            "returns": 4
+            "returns": 5
         },
         {
             "identifier": 1,
             "name": "comma2",
-            "parameters": 5,
+            "parameters": 6,
             "vararg": false,
-            "returns": 6
+            "returns": 7
         },
         {
             "identifier": 2,
             "name": "comma3",
-            "parameters": 7,
+            "parameters": 8,
             "vararg": false,
-            "returns": 8
+            "returns": 9
         },
         {
             "identifier": 3,
             "name": "comma4",
-            "parameters": 9,
+            "parameters": 10,
             "vararg": false,
-            "returns": 10
+            "returns": 11
         },
         {
             "identifier": 4,
             "name": "comma5",
-            "parameters": 11,
+            "parameters": 12,
             "vararg": false,
-            "returns": 12
+            "returns": 13
         },
         {
             "identifier": 5,
             "name": "comma6",
-            "parameters": 13,
+            "parameters": 14,
             "vararg": false,
-            "returns": 14
+            "returns": 15
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "comma1",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",
@@ -124,7 +128,7 @@
         {
             "identifier": 1,
             "name": "comma2",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",
@@ -156,7 +160,7 @@
         {
             "identifier": 2,
             "name": "comma3",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",
@@ -181,7 +185,7 @@
         {
             "identifier": 3,
             "name": "comma4",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",
@@ -217,7 +221,7 @@
         {
             "identifier": 4,
             "name": "comma5",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",
@@ -242,7 +246,7 @@
         {
             "identifier": 5,
             "name": "comma6",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",

@@ -67,36 +67,7 @@
         }
     ],
     "statics": {
-        "layout": [
-            {
-                "type": "word"
-            },
-            {
-                "type": "struct",
-                "fields": [
-                    {
-                        "type": "double"
-                    },
-                    {
-                        "type": "array",
-                        "length": 32,
-                        "element_type": {
-                            "type": "char"
-                        }
-                    }
-                ]
-            },
-            {
-                "type": "array",
-                "length": 128,
-                "element_type": {
-                    "type": "char"
-                }
-            },
-            {
-                "type": "long"
-            }
-        ],
+        "layout": [],
         "variables": [
             {
                 "identifier": "static_var1",

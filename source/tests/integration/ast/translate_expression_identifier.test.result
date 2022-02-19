@@ -8,6 +8,10 @@
     "types": [
         {
             "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
             "type": [
                 {
                     "type": "float"
@@ -15,11 +19,11 @@
             ]
         },
         {
-            "identifier": 1,
+            "identifier": 2,
             "type": []
         },
         {
-            "identifier": 2,
+            "identifier": 3,
             "type": [
                 {
                     "type": "struct",
@@ -32,7 +36,7 @@
             ]
         },
         {
-            "identifier": 3,
+            "identifier": 4,
             "type": [
                 {
                     "type": "int"
@@ -40,7 +44,7 @@
             ]
         },
         {
-            "identifier": 4,
+            "identifier": 5,
             "type": [
                 {
                     "type": "char"
@@ -48,11 +52,11 @@
             ]
         },
         {
-            "identifier": 5,
+            "identifier": 6,
             "type": []
         },
         {
-            "identifier": 6,
+            "identifier": 7,
             "type": []
         }
     ],
@@ -60,7 +64,7 @@
         {
             "identifier": "extern_variable2",
             "storage": "global",
-            "type": 4,
+            "type": 5,
             "value": [
                 {
                     "class": "undefined"
@@ -68,9 +72,9 @@
             ]
         },
         {
-            "identifier": "__kefirrt_module_static_vars",
+            "identifier": "__kefirrt_module_static_uninit_vars",
             "storage": "global",
-            "type": 0,
+            "type": 1,
             "value": [
                 {
                     "class": "undefined"
@@ -83,16 +87,16 @@
         {
             "identifier": 0,
             "name": "func1",
-            "parameters": 5,
+            "parameters": 6,
             "vararg": false,
-            "returns": 6
+            "returns": 7
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "func1",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -115,7 +119,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": "__kefirrt_module_static_vars"
+                        "data": "__kefirrt_module_static_uninit_vars"
                     }
                 },
                 {

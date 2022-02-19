@@ -47,6 +47,9 @@ kefir_result_t kefir_ast_translator_global_scope_layout_init(struct kefir_mem *m
 
     layout->static_layout = kefir_ir_module_new_type(mem, module, 0, &layout->static_layout_id);
     REQUIRE(layout->static_layout != NULL, KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate new IR type"));
+    layout->static_uninit_layout = kefir_ir_module_new_type(mem, module, 0, &layout->static_uninit_layout_id);
+    REQUIRE(layout->static_uninit_layout != NULL,
+            KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate new IR type"));
     layout->static_thread_local_layout =
         kefir_ir_module_new_type(mem, module, 0, &layout->static_thread_local_layout_id);
     REQUIRE(layout->static_thread_local_layout != NULL,
@@ -68,6 +71,7 @@ kefir_result_t kefir_ast_translator_global_scope_layout_free(struct kefir_mem *m
     REQUIRE_OK(kefir_list_free(mem, &layout->static_objects));
     REQUIRE_OK(kefir_list_free(mem, &layout->static_thread_local_objects));
     layout->static_layout = NULL;
+    layout->static_uninit_layout = NULL;
     layout->static_thread_local_layout = NULL;
     return KEFIR_OK;
 }
@@ -155,8 +159,17 @@ static kefir_result_t translate_static_identifier(struct kefir_mem *mem, const s
     ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, scoped_identifier_layout,
                      scoped_identifier->payload.ptr);
     KEFIR_AST_SCOPE_SET_CLEANUP(scoped_identifier, kefir_ast_translator_scoped_identifer_payload_free, NULL);
+
+    if (scoped_identifier->object.initializer != NULL) {
+        scoped_identifier_layout->type_id = layout->static_layout_id;
+        scoped_identifier_layout->type = layout->static_layout;
+    } else {
+        scoped_identifier_layout->type_id = layout->static_uninit_layout_id;
+        scoped_identifier_layout->type = layout->static_uninit_layout;
+    }
+
     struct kefir_irbuilder_type builder;
-    REQUIRE_OK(kefir_irbuilder_type_init(mem, &builder, layout->static_layout));
+    REQUIRE_OK(kefir_irbuilder_type_init(mem, &builder, scoped_identifier_layout->type));
 
     const struct kefir_ast_type *object_type = NULL;
     REQUIRE_OK(kefir_ast_type_completion(mem, context, &object_type, scoped_identifier->object.type));
@@ -164,8 +177,6 @@ static kefir_result_t translate_static_identifier(struct kefir_mem *mem, const s
     REQUIRE_OK(kefir_ast_translate_object_type(mem, object_type, scoped_identifier->object.alignment->value, env,
                                                &builder, &scoped_identifier_layout->layout));
     REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&builder));
-    scoped_identifier_layout->type_id = layout->static_layout_id;
-    scoped_identifier_layout->type = layout->static_layout;
 
     REQUIRE_OK(kefir_ast_translator_evaluate_type_layout(mem, env, scoped_identifier_layout->layout,
                                                          scoped_identifier_layout->type));

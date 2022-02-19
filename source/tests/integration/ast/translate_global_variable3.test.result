@@ -18,6 +18,10 @@
         },
         {
             "identifier": 2,
+            "type": []
+        },
+        {
+            "identifier": 3,
             "type": [
                 {
                     "type": "array",
@@ -29,7 +33,7 @@
             ]
         },
         {
-            "identifier": 3,
+            "identifier": 4,
             "type": [
                 {
                     "type": "array",
@@ -41,7 +45,7 @@
             ]
         },
         {
-            "identifier": 4,
+            "identifier": 5,
             "type": [
                 {
                     "type": "int"
@@ -49,7 +53,7 @@
             ]
         },
         {
-            "identifier": 5,
+            "identifier": 6,
             "type": [
                 {
                     "type": "struct",
@@ -82,7 +86,7 @@
         {
             "identifier": "array1",
             "storage": "global",
-            "type": 2,
+            "type": 3,
             "value": [
                 {
                     "class": "aggregate"
@@ -113,7 +117,7 @@
         {
             "identifier": "array2",
             "storage": "global",
-            "type": 3,
+            "type": 4,
             "value": [
                 {
                     "class": "aggregate"
@@ -142,7 +146,7 @@
         {
             "identifier": "structure",
             "storage": "global",
-            "type": 5,
+            "type": 6,
             "value": [
                 {
                     "class": "aggregate"

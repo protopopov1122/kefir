@@ -10,6 +10,10 @@
         },
         {
             "identifier": 1,
+            "type": []
+        },
+        {
+            "identifier": 2,
             "type": [
                 {
                     "type": "array",
@@ -41,7 +45,7 @@
             ]
         },
         {
-            "identifier": 2,
+            "identifier": 3,
             "type": [
                 {
                     "type": "int"
@@ -53,7 +57,7 @@
         {
             "identifier": "__kefirrt_module_static_tlocal_vars",
             "storage": "thread_local",
-            "type": 1,
+            "type": 2,
             "value": [
                 {
                     "class": "string",

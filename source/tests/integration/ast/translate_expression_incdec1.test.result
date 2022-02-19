@@ -12,6 +12,10 @@
         },
         {
             "identifier": 2,
+            "type": []
+        },
+        {
+            "identifier": 3,
             "type": [
                 {
                     "type": "struct",
@@ -37,10 +41,6 @@
                     ]
                 }
             ]
-        },
-        {
-            "identifier": 3,
-            "type": []
         },
         {
             "identifier": 4,
@@ -112,6 +112,10 @@
         },
         {
             "identifier": 21,
+            "type": []
+        },
+        {
+            "identifier": 22,
             "type": [
                 {
                     "type": "bool"
@@ -119,15 +123,15 @@
             ]
         },
         {
-            "identifier": 22,
-            "type": []
-        },
-        {
             "identifier": 23,
             "type": []
         },
         {
             "identifier": 24,
+            "type": []
+        },
+        {
+            "identifier": 25,
             "type": [
                 {
                     "type": "array",
@@ -139,15 +143,15 @@
             ]
         },
         {
-            "identifier": 25,
-            "type": []
-        },
-        {
             "identifier": 26,
             "type": []
         },
         {
             "identifier": 27,
+            "type": []
+        },
+        {
+            "identifier": 28,
             "type": [
                 {
                     "type": "bool"
@@ -155,15 +159,15 @@
             ]
         },
         {
-            "identifier": 28,
-            "type": []
-        },
-        {
             "identifier": 29,
             "type": []
         },
         {
             "identifier": 30,
+            "type": []
+        },
+        {
+            "identifier": 31,
             "type": [
                 {
                     "type": "array",
@@ -181,93 +185,93 @@
         {
             "identifier": 0,
             "name": "increment_int1",
-            "parameters": 3,
+            "parameters": 4,
             "vararg": false,
-            "returns": 4
+            "returns": 5
         },
         {
             "identifier": 1,
             "name": "increment_int2",
-            "parameters": 5,
+            "parameters": 6,
             "vararg": false,
-            "returns": 6
+            "returns": 7
         },
         {
             "identifier": 2,
             "name": "decrement_int1",
-            "parameters": 7,
+            "parameters": 8,
             "vararg": false,
-            "returns": 8
+            "returns": 9
         },
         {
             "identifier": 3,
             "name": "decrement_int2",
-            "parameters": 9,
+            "parameters": 10,
             "vararg": false,
-            "returns": 10
+            "returns": 11
         },
         {
             "identifier": 4,
             "name": "increment_float",
-            "parameters": 11,
+            "parameters": 12,
             "vararg": false,
-            "returns": 12
+            "returns": 13
         },
         {
             "identifier": 5,
             "name": "increment_double",
-            "parameters": 13,
+            "parameters": 14,
             "vararg": false,
-            "returns": 14
+            "returns": 15
         },
         {
             "identifier": 6,
             "name": "decrement_float",
-            "parameters": 15,
+            "parameters": 16,
             "vararg": false,
-            "returns": 16
+            "returns": 17
         },
         {
             "identifier": 7,
             "name": "decrement_double",
-            "parameters": 17,
+            "parameters": 18,
             "vararg": false,
-            "returns": 18
+            "returns": 19
         },
         {
             "identifier": 8,
             "name": "increment_pointer1",
-            "parameters": 19,
+            "parameters": 20,
             "vararg": false,
-            "returns": 20
+            "returns": 21
         },
         {
             "identifier": 9,
             "name": "increment_pointer2",
-            "parameters": 22,
+            "parameters": 23,
             "vararg": false,
-            "returns": 23
+            "returns": 24
         },
         {
             "identifier": 10,
             "name": "decrement_pointer1",
-            "parameters": 25,
+            "parameters": 26,
             "vararg": false,
-            "returns": 26
+            "returns": 27
         },
         {
             "identifier": 11,
             "name": "decrement_pointer2",
-            "parameters": 28,
+            "parameters": 29,
             "vararg": false,
-            "returns": 29
+            "returns": 30
         }
     ],
     "functions": [
         {
             "identifier": 2,
             "name": "decrement_int1",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -302,7 +306,7 @@
         {
             "identifier": 3,
             "name": "decrement_int2",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -310,7 +314,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 2,
+                        "type": 3,
                         "index": 5
                     }
                 },
@@ -348,7 +352,7 @@
         {
             "identifier": 0,
             "name": "increment_int1",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -383,7 +387,7 @@
         {
             "identifier": 1,
             "name": "increment_int2",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -391,7 +395,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 2,
+                        "type": 3,
                         "index": 5
                     }
                 },
@@ -429,7 +433,7 @@
         {
             "identifier": 5,
             "name": "increment_double",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -437,7 +441,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 2,
+                        "type": 3,
                         "index": 6
                     }
                 },
@@ -471,7 +475,7 @@
         {
             "identifier": 8,
             "name": "increment_pointer1",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -479,7 +483,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 2,
+                        "type": 3,
                         "index": 2
                     }
                 },
@@ -505,7 +509,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 21,
+                        "type": 22,
                         "index": 0
                     }
                 },
@@ -517,7 +521,7 @@
         {
             "identifier": 9,
             "name": "increment_pointer2",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -525,7 +529,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 2,
+                        "type": 3,
                         "index": 3
                     }
                 },
@@ -551,7 +555,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 24,
+                        "type": 25,
                         "index": 0
                     }
                 },
@@ -563,7 +567,7 @@
         {
             "identifier": 7,
             "name": "decrement_double",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -571,7 +575,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 2,
+                        "type": 3,
                         "index": 6
                     }
                 },
@@ -605,7 +609,7 @@
         {
             "identifier": 10,
             "name": "decrement_pointer1",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -613,7 +617,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 2,
+                        "type": 3,
                         "index": 2
                     }
                 },
@@ -639,7 +643,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 27,
+                        "type": 28,
                         "index": 0
                     }
                 },
@@ -651,7 +655,7 @@
         {
             "identifier": 11,
             "name": "decrement_pointer2",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -659,7 +663,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 2,
+                        "type": 3,
                         "index": 3
                     }
                 },
@@ -685,7 +689,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 30,
+                        "type": 31,
                         "index": 0
                     }
                 },
@@ -697,7 +701,7 @@
         {
             "identifier": 6,
             "name": "decrement_float",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -705,7 +709,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 2,
+                        "type": 3,
                         "index": 4
                     }
                 },
@@ -739,7 +743,7 @@
         {
             "identifier": 4,
             "name": "increment_float",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -747,7 +751,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 2,
+                        "type": 3,
                         "index": 4
                     }
                 },

@@ -23,11 +23,7 @@
         },
         {
             "identifier": 2,
-            "type": [
-                {
-                    "type": "word"
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 3,
@@ -41,7 +37,7 @@
             "identifier": 4,
             "type": [
                 {
-                    "type": "int"
+                    "type": "word"
                 }
             ]
         },
@@ -49,7 +45,7 @@
             "identifier": 5,
             "type": [
                 {
-                    "type": "word"
+                    "type": "int"
                 }
             ]
         },
@@ -65,7 +61,7 @@
             "identifier": 7,
             "type": [
                 {
-                    "type": "int"
+                    "type": "word"
                 }
             ]
         },
@@ -73,7 +69,7 @@
             "identifier": 8,
             "type": [
                 {
-                    "type": "char"
+                    "type": "int"
                 }
             ]
         },
@@ -81,12 +77,20 @@
             "identifier": 9,
             "type": [
                 {
-                    "type": "double"
+                    "type": "char"
                 }
             ]
         },
         {
             "identifier": 10,
+            "type": [
+                {
+                    "type": "double"
+                }
+            ]
+        },
+        {
+            "identifier": 11,
             "type": [
                 {
                     "type": "float"
@@ -98,7 +102,7 @@
         {
             "identifier": "ptr1",
             "storage": "global",
-            "type": 2,
+            "type": 3,
             "value": [
                 {
                     "class": "pointer",
@@ -110,7 +114,7 @@
         {
             "identifier": "ptr2",
             "storage": "global",
-            "type": 3,
+            "type": 4,
             "value": [
                 {
                     "class": "integer",
@@ -121,7 +125,7 @@
         {
             "identifier": "integer",
             "storage": "global",
-            "type": 4,
+            "type": 5,
             "value": [
                 {
                     "class": "integer",
@@ -132,7 +136,7 @@
         {
             "identifier": "string1",
             "storage": "global",
-            "type": 5,
+            "type": 6,
             "value": [
                 {
                     "class": "string_pointer",
@@ -144,7 +148,7 @@
         {
             "identifier": "string2",
             "storage": "global",
-            "type": 6,
+            "type": 7,
             "value": [
                 {
                     "class": "string_pointer",
@@ -156,7 +160,7 @@
         {
             "identifier": "character",
             "storage": "global",
-            "type": 8,
+            "type": 9,
             "value": [
                 {
                     "class": "integer",
@@ -167,7 +171,7 @@
         {
             "identifier": "floatingPoint2",
             "storage": "global",
-            "type": 9,
+            "type": 10,
             "value": [
                 {
                     "class": "float64",
@@ -178,7 +182,7 @@
         {
             "identifier": "floatingPoint",
             "storage": "global",
-            "type": 10,
+            "type": 11,
             "value": [
                 {
                     "class": "float32",

@@ -9,6 +9,10 @@
     "types": [
         {
             "identifier": 0,
+            "type": []
+        },
+        {
+            "identifier": 1,
             "type": [
                 {
                     "type": "array",
@@ -35,11 +39,11 @@
             ]
         },
         {
-            "identifier": 1,
+            "identifier": 2,
             "type": []
         },
         {
-            "identifier": 2,
+            "identifier": 3,
             "type": [
                 {
                     "type": "struct",
@@ -52,7 +56,7 @@
             ]
         },
         {
-            "identifier": 3,
+            "identifier": 4,
             "type": [
                 {
                     "type": "int"
@@ -60,7 +64,7 @@
             ]
         },
         {
-            "identifier": 4,
+            "identifier": 5,
             "type": [
                 {
                     "type": "char"
@@ -68,16 +72,12 @@
             ]
         },
         {
-            "identifier": 5,
+            "identifier": 6,
             "type": [
                 {
                     "type": "word"
                 }
             ]
-        },
-        {
-            "identifier": 6,
-            "type": []
         },
         {
             "identifier": 7,
@@ -93,6 +93,10 @@
         },
         {
             "identifier": 10,
+            "type": []
+        },
+        {
+            "identifier": 11,
             "type": [
                 {
                     "type": "bool"
@@ -100,7 +104,7 @@
             ]
         },
         {
-            "identifier": 11,
+            "identifier": 12,
             "type": [
                 {
                     "type": "float"
@@ -108,32 +112,12 @@
             ]
         },
         {
-            "identifier": 12,
-            "type": []
-        },
-        {
             "identifier": 13,
             "type": []
         },
         {
             "identifier": 14,
-            "type": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "char"
-                        },
-                        {
-                            "type": "array",
-                            "length": 4,
-                            "element_type": {
-                                "type": "double"
-                            }
-                        }
-                    ]
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 15,
@@ -157,14 +141,6 @@
         },
         {
             "identifier": 16,
-            "type": []
-        },
-        {
-            "identifier": 17,
-            "type": []
-        },
-        {
-            "identifier": 18,
             "type": [
                 {
                     "type": "struct",
@@ -184,7 +160,35 @@
             ]
         },
         {
+            "identifier": 17,
+            "type": []
+        },
+        {
+            "identifier": 18,
+            "type": []
+        },
+        {
             "identifier": 19,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "array",
+                            "length": 4,
+                            "element_type": {
+                                "type": "double"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 20,
             "type": [
                 {
                     "type": "struct",
@@ -197,11 +201,11 @@
             ]
         },
         {
-            "identifier": 20,
+            "identifier": 21,
             "type": []
         },
         {
-            "identifier": 21,
+            "identifier": 22,
             "type": []
         }
     ],
@@ -209,7 +213,7 @@
         {
             "identifier": "variable2",
             "storage": "global",
-            "type": 4,
+            "type": 5,
             "value": [
                 {
                     "class": "undefined"
@@ -217,9 +221,9 @@
             ]
         },
         {
-            "identifier": "__kefirrt_module_static_vars",
+            "identifier": "__kefirrt_module_static_uninit_vars",
             "storage": "global",
-            "type": 0,
+            "type": 1,
             "value": [
                 {
                     "class": "undefined",
@@ -233,44 +237,44 @@
         {
             "identifier": 0,
             "name": "identifier",
-            "parameters": 6,
+            "parameters": 7,
             "vararg": false,
-            "returns": 7
+            "returns": 8
         },
         {
             "identifier": 1,
             "name": "array_subscript",
-            "parameters": 8,
+            "parameters": 9,
             "vararg": false,
-            "returns": 9
+            "returns": 10
         },
         {
             "identifier": 2,
             "name": "struct_field",
-            "parameters": 12,
+            "parameters": 13,
             "vararg": false,
-            "returns": 13
+            "returns": 14
         },
         {
             "identifier": 3,
             "name": "struct_field_indirect",
-            "parameters": 16,
+            "parameters": 17,
             "vararg": false,
-            "returns": 17
+            "returns": 18
         },
         {
             "identifier": 4,
             "name": "indirection",
-            "parameters": 20,
+            "parameters": 21,
             "vararg": false,
-            "returns": 21
+            "returns": 22
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "identifier",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -287,7 +291,7 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": "__kefirrt_module_static_vars"
+                        "data": "__kefirrt_module_static_uninit_vars"
                     }
                 },
                 {
@@ -299,13 +303,13 @@
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": "__kefirrt_module_static_vars"
+                        "data": "__kefirrt_module_static_uninit_vars"
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 0,
+                        "type": 1,
                         "index": 2
                     }
                 },
@@ -317,7 +321,7 @@
         {
             "identifier": 4,
             "name": "indirection",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",
@@ -328,38 +332,38 @@
         {
             "identifier": 2,
             "name": "struct_field",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": "__kefirrt_module_static_vars"
+                        "data": "__kefirrt_module_static_uninit_vars"
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 0,
+                        "type": 1,
                         "index": 2
                     }
                 },
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": "__kefirrt_module_static_vars"
+                        "data": "__kefirrt_module_static_uninit_vars"
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 0,
+                        "type": 1,
                         "index": 2
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 15,
+                        "type": 16,
                         "index": 2
                     }
                 }
@@ -368,7 +372,7 @@
         {
             "identifier": 3,
             "name": "struct_field_indirect",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -382,7 +386,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 18,
+                        "type": 19,
                         "index": 2
                     }
                 }
@@ -391,12 +395,12 @@
         {
             "identifier": 1,
             "name": "array_subscript",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "getglobal",
                     "arg": {
-                        "data": "__kefirrt_module_static_vars"
+                        "data": "__kefirrt_module_static_uninit_vars"
                     }
                 },
                 {
@@ -406,7 +410,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 10,
+                        "type": 11,
                         "index": 0
                     }
                 },
@@ -426,7 +430,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 11,
+                        "type": 12,
                         "index": 0
                     }
                 }

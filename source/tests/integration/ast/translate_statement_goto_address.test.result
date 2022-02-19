@@ -14,6 +14,10 @@
         },
         {
             "identifier": 2,
+            "type": []
+        },
+        {
+            "identifier": 3,
             "type": [
                 {
                     "type": "int"
@@ -21,7 +25,7 @@
             ]
         },
         {
-            "identifier": 3,
+            "identifier": 4,
             "type": [
                 {
                     "type": "struct",
@@ -44,15 +48,15 @@
             ]
         },
         {
-            "identifier": 4,
-            "type": []
-        },
-        {
             "identifier": 5,
             "type": []
         },
         {
             "identifier": 6,
+            "type": []
+        },
+        {
+            "identifier": 7,
             "type": [
                 {
                     "type": "short"
@@ -60,15 +64,15 @@
             ]
         },
         {
-            "identifier": 7,
-            "type": []
-        },
-        {
             "identifier": 8,
             "type": []
         },
         {
             "identifier": 9,
+            "type": []
+        },
+        {
+            "identifier": 10,
             "type": []
         }
     ],
@@ -78,23 +82,23 @@
         {
             "identifier": 0,
             "name": "goto1",
-            "parameters": 4,
+            "parameters": 5,
             "vararg": false,
-            "returns": 5
+            "returns": 6
         },
         {
             "identifier": 1,
             "name": "goto2",
-            "parameters": 8,
+            "parameters": 9,
             "vararg": false,
-            "returns": 9
+            "returns": 10
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "goto1",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -234,7 +238,7 @@
         {
             "identifier": 1,
             "name": "goto2",
-            "locals": 7,
+            "locals": 8,
             "body": [
                 {
                     "opcode": "pushlabel",

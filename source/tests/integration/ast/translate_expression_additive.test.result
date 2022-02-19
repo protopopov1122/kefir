@@ -40,6 +40,10 @@
         },
         {
             "identifier": 9,
+            "type": []
+        },
+        {
+            "identifier": 10,
             "type": [
                 {
                     "type": "short"
@@ -47,7 +51,7 @@
             ]
         },
         {
-            "identifier": 10,
+            "identifier": 11,
             "type": [
                 {
                     "type": "double"
@@ -55,7 +59,7 @@
             ]
         },
         {
-            "identifier": 11,
+            "identifier": 12,
             "type": [
                 {
                     "type": "array",
@@ -67,16 +71,12 @@
             ]
         },
         {
-            "identifier": 12,
+            "identifier": 13,
             "type": [
                 {
                     "type": "word"
                 }
             ]
-        },
-        {
-            "identifier": 13,
-            "type": []
         },
         {
             "identifier": 14,
@@ -108,6 +108,10 @@
         },
         {
             "identifier": 21,
+            "type": []
+        },
+        {
+            "identifier": 22,
             "type": [
                 {
                     "type": "char"
@@ -115,7 +119,7 @@
             ]
         },
         {
-            "identifier": 22,
+            "identifier": 23,
             "type": [
                 {
                     "type": "short"
@@ -123,7 +127,7 @@
             ]
         },
         {
-            "identifier": 23,
+            "identifier": 24,
             "type": [
                 {
                     "type": "float"
@@ -131,7 +135,7 @@
             ]
         },
         {
-            "identifier": 24,
+            "identifier": 25,
             "type": [
                 {
                     "type": "double"
@@ -145,58 +149,58 @@
         {
             "identifier": 0,
             "name": "add_integral",
-            "parameters": 3,
+            "parameters": 4,
             "vararg": false,
-            "returns": 4
+            "returns": 5
         },
         {
             "identifier": 1,
             "name": "add_floating_point",
-            "parameters": 5,
+            "parameters": 6,
             "vararg": false,
-            "returns": 6
+            "returns": 7
         },
         {
             "identifier": 2,
             "name": "add_pointer_int",
-            "parameters": 7,
+            "parameters": 8,
             "vararg": false,
-            "returns": 8
+            "returns": 9
         },
         {
             "identifier": 3,
             "name": "sub_integral",
-            "parameters": 13,
+            "parameters": 14,
             "vararg": false,
-            "returns": 14
+            "returns": 15
         },
         {
             "identifier": 4,
             "name": "sub_floating_point",
-            "parameters": 15,
+            "parameters": 16,
             "vararg": false,
-            "returns": 16
+            "returns": 17
         },
         {
             "identifier": 5,
             "name": "sub_pointers",
-            "parameters": 17,
+            "parameters": 18,
             "vararg": false,
-            "returns": 18
+            "returns": 19
         },
         {
             "identifier": 6,
             "name": "sub_pointer_integer",
-            "parameters": 19,
+            "parameters": 20,
             "vararg": false,
-            "returns": 20
+            "returns": 21
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "add_integral",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",
@@ -267,7 +271,7 @@
         {
             "identifier": 6,
             "name": "sub_pointer_integer",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",
@@ -283,7 +287,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 21,
+                        "type": 22,
                         "index": 0
                     }
                 },
@@ -301,7 +305,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 22,
+                        "type": 23,
                         "index": 0
                     }
                 },
@@ -319,7 +323,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 23,
+                        "type": 24,
                         "index": 0
                     }
                 },
@@ -337,7 +341,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 24,
+                        "type": 25,
                         "index": 0
                     }
                 }
@@ -346,7 +350,7 @@
         {
             "identifier": 2,
             "name": "add_pointer_int",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",
@@ -359,7 +363,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 9,
+                        "type": 10,
                         "index": 0
                     }
                 },
@@ -374,7 +378,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 10,
+                        "type": 11,
                         "index": 0
                     }
                 },
@@ -389,7 +393,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 11,
+                        "type": 12,
                         "index": 0
                     }
                 },
@@ -404,7 +408,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 12,
+                        "type": 13,
                         "index": 0
                     }
                 }
@@ -413,7 +417,7 @@
         {
             "identifier": 3,
             "name": "sub_integral",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",
@@ -481,7 +485,7 @@
         {
             "identifier": 5,
             "name": "sub_pointers",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",
@@ -560,7 +564,7 @@
         {
             "identifier": 4,
             "name": "sub_floating_point",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",
@@ -659,7 +663,7 @@
         {
             "identifier": 1,
             "name": "add_floating_point",
-            "locals": 2,
+            "locals": 3,
             "body": [
                 {
                     "opcode": "push",

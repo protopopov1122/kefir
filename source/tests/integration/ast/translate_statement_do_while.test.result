@@ -14,6 +14,10 @@
         },
         {
             "identifier": 2,
+            "type": []
+        },
+        {
+            "identifier": 3,
             "type": [
                 {
                     "type": "int"
@@ -21,7 +25,7 @@
             ]
         },
         {
-            "identifier": 3,
+            "identifier": 4,
             "type": [
                 {
                     "type": "struct",
@@ -44,10 +48,6 @@
             ]
         },
         {
-            "identifier": 4,
-            "type": []
-        },
-        {
             "identifier": 5,
             "type": []
         },
@@ -57,11 +57,7 @@
         },
         {
             "identifier": 7,
-            "type": [
-                {
-                    "type": "bool"
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 8,
@@ -73,10 +69,6 @@
         },
         {
             "identifier": 9,
-            "type": []
-        },
-        {
-            "identifier": 10,
             "type": [
                 {
                     "type": "bool"
@@ -84,8 +76,16 @@
             ]
         },
         {
-            "identifier": 11,
+            "identifier": 10,
             "type": []
+        },
+        {
+            "identifier": 11,
+            "type": [
+                {
+                    "type": "bool"
+                }
+            ]
         },
         {
             "identifier": 12,
@@ -106,6 +106,10 @@
         {
             "identifier": 16,
             "type": []
+        },
+        {
+            "identifier": 17,
+            "type": []
         }
     ],
     "data": [],
@@ -114,44 +118,44 @@
         {
             "identifier": 0,
             "name": "do_while1",
-            "parameters": 4,
+            "parameters": 5,
             "vararg": false,
-            "returns": 5
+            "returns": 6
         },
         {
             "identifier": 1,
             "name": "eval",
-            "parameters": 6,
+            "parameters": 7,
             "vararg": false,
-            "returns": 7
+            "returns": 8
         },
         {
             "identifier": 2,
             "name": "eval",
-            "parameters": 9,
+            "parameters": 10,
             "vararg": false,
-            "returns": 10
+            "returns": 11
         },
         {
             "identifier": 3,
             "name": "do_while2",
-            "parameters": 12,
+            "parameters": 13,
             "vararg": false,
-            "returns": 13
+            "returns": 14
         },
         {
             "identifier": 4,
             "name": "do_while3",
-            "parameters": 15,
+            "parameters": 16,
             "vararg": false,
-            "returns": 16
+            "returns": 17
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "do_while1",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -219,7 +223,7 @@
         {
             "identifier": 3,
             "name": "do_while2",
-            "locals": 11,
+            "locals": 12,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -261,7 +265,7 @@
         {
             "identifier": 4,
             "name": "do_while3",
-            "locals": 14,
+            "locals": 15,
             "body": [
                 {
                     "opcode": "push",

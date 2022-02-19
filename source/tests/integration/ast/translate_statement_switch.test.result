@@ -14,15 +14,15 @@
         },
         {
             "identifier": 2,
+            "type": []
+        },
+        {
+            "identifier": 3,
             "type": [
                 {
                     "type": "int"
                 }
             ]
-        },
-        {
-            "identifier": 3,
-            "type": []
         },
         {
             "identifier": 4,
@@ -43,6 +43,10 @@
         {
             "identifier": 8,
             "type": []
+        },
+        {
+            "identifier": 9,
+            "type": []
         }
     ],
     "data": [],
@@ -51,23 +55,23 @@
         {
             "identifier": 0,
             "name": "switch1",
-            "parameters": 4,
+            "parameters": 5,
             "vararg": false,
-            "returns": 5
+            "returns": 6
         },
         {
             "identifier": 1,
             "name": "switch2",
-            "parameters": 7,
+            "parameters": 8,
             "vararg": false,
-            "returns": 8
+            "returns": 9
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "switch1",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -290,7 +294,7 @@
         {
             "identifier": 1,
             "name": "switch2",
-            "locals": 6,
+            "locals": 7,
             "body": [
                 {
                     "opcode": "getglobal",

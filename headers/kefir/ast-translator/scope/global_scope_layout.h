@@ -32,6 +32,8 @@ typedef struct kefir_ast_translator_global_scope_layout {
 
     struct kefir_ir_type *static_layout;
     kefir_id_t static_layout_id;
+    struct kefir_ir_type *static_uninit_layout;
+    kefir_id_t static_uninit_layout_id;
     struct kefir_ir_type *static_thread_local_layout;
     kefir_id_t static_thread_local_layout_id;
 } kefir_ast_translator_global_scope_layout_t;
