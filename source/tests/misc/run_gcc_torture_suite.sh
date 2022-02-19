@@ -42,6 +42,8 @@ TOTAL_TESTS=0
 KEFIRRT=runtime.o
 $KEFIRCC --dump-runtime-code | as -o $KEFIRRT
 
+ulimit -s 64000 # Stack size=64M
+
 function is_test_skipped {
     grep "skip $1/$2" "$SKIP_LIST" >/dev/null
 }
