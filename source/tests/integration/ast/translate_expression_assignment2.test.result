@@ -19,6 +19,10 @@
         },
         {
             "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
             "type": [
                 {
                     "type": "struct",
@@ -77,7 +81,7 @@
             ]
         },
         {
-            "identifier": 4,
+            "identifier": 5,
             "type": [
                 {
                     "type": "union",
@@ -100,7 +104,7 @@
             ]
         },
         {
-            "identifier": 5,
+            "identifier": 6,
             "type": [
                 {
                     "type": "struct",
@@ -124,10 +128,6 @@
                     ]
                 }
             ]
-        },
-        {
-            "identifier": 6,
-            "type": []
         },
         {
             "identifier": 7,
@@ -135,29 +135,7 @@
         },
         {
             "identifier": 8,
-            "type": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "bool"
-                        },
-                        {
-                            "type": "double"
-                        },
-                        {
-                            "type": "array",
-                            "length": 5,
-                            "element_type": {
-                                "type": "char"
-                            }
-                        },
-                        {
-                            "type": "word"
-                        }
-                    ]
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 9,
@@ -187,7 +165,29 @@
         },
         {
             "identifier": 10,
-            "type": []
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "bool"
+                        },
+                        {
+                            "type": "double"
+                        },
+                        {
+                            "type": "array",
+                            "length": 5,
+                            "element_type": {
+                                "type": "char"
+                            }
+                        },
+                        {
+                            "type": "word"
+                        }
+                    ]
+                }
+            ]
         },
         {
             "identifier": 11,
@@ -195,6 +195,10 @@
         },
         {
             "identifier": 12,
+            "type": []
+        },
+        {
+            "identifier": 13,
             "type": [
                 {
                     "type": "union",
@@ -217,7 +221,7 @@
             ]
         },
         {
-            "identifier": 13,
+            "identifier": 14,
             "type": [
                 {
                     "type": "union",
@@ -246,23 +250,23 @@
         {
             "identifier": 0,
             "name": "assign_struct",
-            "parameters": 6,
+            "parameters": 7,
             "vararg": false,
-            "returns": 7
+            "returns": 8
         },
         {
             "identifier": 1,
             "name": "assign_union",
-            "parameters": 10,
+            "parameters": 11,
             "vararg": false,
-            "returns": 11
+            "returns": 12
         }
     ],
     "functions": [
         {
             "identifier": 1,
             "name": "assign_union",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -270,21 +274,21 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 1
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 2
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 9
                     }
                 },
@@ -295,7 +299,7 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 12,
+                        "type": 13,
                         "index": 0
                     }
                 },
@@ -320,7 +324,7 @@
                 {
                     "opcode": "bcopy",
                     "arg": {
-                        "type": 13,
+                        "type": 14,
                         "index": 0
                     }
                 }
@@ -329,7 +333,7 @@
         {
             "identifier": 0,
             "name": "assign_struct",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -337,21 +341,21 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 1
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 2
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 3
                     }
                 },
@@ -362,7 +366,7 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 8,
+                        "type": 9,
                         "index": 0
                     }
                 },
@@ -387,7 +391,7 @@
                 {
                     "opcode": "bcopy",
                     "arg": {
-                        "type": 9,
+                        "type": 10,
                         "index": 0
                     }
                 }

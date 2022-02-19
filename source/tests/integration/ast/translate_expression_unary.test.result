@@ -25,6 +25,10 @@
         },
         {
             "identifier": 4,
+            "type": []
+        },
+        {
+            "identifier": 5,
             "type": [
                 {
                     "type": "union",
@@ -40,7 +44,7 @@
             ]
         },
         {
-            "identifier": 5,
+            "identifier": 6,
             "type": [
                 {
                     "type": "int"
@@ -48,7 +52,7 @@
             ]
         },
         {
-            "identifier": 6,
+            "identifier": 7,
             "type": [
                 {
                     "type": "array",
@@ -60,7 +64,7 @@
             ]
         },
         {
-            "identifier": 7,
+            "identifier": 8,
             "type": [
                 {
                     "type": "struct",
@@ -74,10 +78,6 @@
                     ]
                 }
             ]
-        },
-        {
-            "identifier": 8,
-            "type": []
         },
         {
             "identifier": 9,
@@ -138,13 +138,17 @@
         {
             "identifier": 23,
             "type": []
+        },
+        {
+            "identifier": 24,
+            "type": []
         }
     ],
     "data": [
         {
             "identifier": "W",
             "storage": "global",
-            "type": 4,
+            "type": 5,
             "value": [
                 {
                     "class": "undefined",
@@ -155,7 +159,7 @@
         {
             "identifier": "X",
             "storage": "global",
-            "type": 5,
+            "type": 6,
             "value": [
                 {
                     "class": "undefined"
@@ -165,7 +169,7 @@
         {
             "identifier": "Y",
             "storage": "global",
-            "type": 6,
+            "type": 7,
             "value": [
                 {
                     "class": "undefined",
@@ -176,7 +180,7 @@
         {
             "identifier": "Z",
             "storage": "global",
-            "type": 7,
+            "type": 8,
             "value": [
                 {
                     "class": "undefined",
@@ -190,65 +194,65 @@
         {
             "identifier": 0,
             "name": "plus",
-            "parameters": 8,
+            "parameters": 9,
             "vararg": false,
-            "returns": 9
+            "returns": 10
         },
         {
             "identifier": 1,
             "name": "minus",
-            "parameters": 10,
+            "parameters": 11,
             "vararg": false,
-            "returns": 11
+            "returns": 12
         },
         {
             "identifier": 2,
             "name": "invert",
-            "parameters": 12,
+            "parameters": 13,
             "vararg": false,
-            "returns": 13
+            "returns": 14
         },
         {
             "identifier": 3,
             "name": "logical_negate",
-            "parameters": 14,
+            "parameters": 15,
             "vararg": false,
-            "returns": 15
+            "returns": 16
         },
         {
             "identifier": 4,
             "name": "sizeof1",
-            "parameters": 16,
+            "parameters": 17,
             "vararg": false,
-            "returns": 17
+            "returns": 18
         },
         {
             "identifier": 5,
             "name": "sizeof2",
-            "parameters": 18,
+            "parameters": 19,
             "vararg": false,
-            "returns": 19
+            "returns": 20
         },
         {
             "identifier": 6,
             "name": "alignof",
-            "parameters": 20,
+            "parameters": 21,
             "vararg": false,
-            "returns": 21
+            "returns": 22
         },
         {
             "identifier": 7,
             "name": "indirection",
-            "parameters": 22,
+            "parameters": 23,
             "vararg": false,
-            "returns": 23
+            "returns": 24
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "plus",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -290,7 +294,7 @@
         {
             "identifier": 1,
             "name": "minus",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -347,7 +351,7 @@
         {
             "identifier": 2,
             "name": "invert",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -397,7 +401,7 @@
         {
             "identifier": 6,
             "name": "alignof",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -480,7 +484,7 @@
         {
             "identifier": 4,
             "name": "sizeof1",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -563,7 +567,7 @@
         {
             "identifier": 5,
             "name": "sizeof2",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -626,7 +630,7 @@
         {
             "identifier": 7,
             "name": "indirection",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -690,7 +694,7 @@
         {
             "identifier": 3,
             "name": "logical_negate",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",

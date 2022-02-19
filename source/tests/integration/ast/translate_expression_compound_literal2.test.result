@@ -16,6 +16,10 @@
         },
         {
             "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
             "type": [
                 {
                     "type": "struct",
@@ -73,24 +77,12 @@
             ]
         },
         {
-            "identifier": 4,
-            "type": []
-        },
-        {
             "identifier": 5,
             "type": []
         },
         {
             "identifier": 6,
-            "type": [
-                {
-                    "type": "array",
-                    "length": 14,
-                    "element_type": {
-                        "type": "char"
-                    }
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 7,
@@ -106,7 +98,15 @@
         },
         {
             "identifier": 8,
-            "type": []
+            "type": [
+                {
+                    "type": "array",
+                    "length": 14,
+                    "element_type": {
+                        "type": "char"
+                    }
+                }
+            ]
         },
         {
             "identifier": 9,
@@ -114,6 +114,10 @@
         },
         {
             "identifier": 10,
+            "type": []
+        },
+        {
+            "identifier": 11,
             "type": [
                 {
                     "type": "array",
@@ -125,15 +129,15 @@
             ]
         },
         {
-            "identifier": 11,
-            "type": []
-        },
-        {
             "identifier": 12,
             "type": []
         },
         {
             "identifier": 13,
+            "type": []
+        },
+        {
+            "identifier": 14,
             "type": [
                 {
                     "type": "array",
@@ -145,15 +149,15 @@
             ]
         },
         {
-            "identifier": 14,
-            "type": []
-        },
-        {
             "identifier": 15,
             "type": []
         },
         {
             "identifier": 16,
+            "type": []
+        },
+        {
+            "identifier": 17,
             "type": [
                 {
                     "type": "array",
@@ -165,7 +169,7 @@
             ]
         },
         {
-            "identifier": 17,
+            "identifier": 18,
             "type": [
                 {
                     "type": "array",
@@ -198,37 +202,37 @@
         {
             "identifier": 0,
             "name": "compound_literal1",
-            "parameters": 4,
+            "parameters": 5,
             "vararg": false,
-            "returns": 5
+            "returns": 6
         },
         {
             "identifier": 1,
             "name": "compound_literal2",
-            "parameters": 8,
+            "parameters": 9,
             "vararg": false,
-            "returns": 9
+            "returns": 10
         },
         {
             "identifier": 2,
             "name": "compound_literal3",
-            "parameters": 11,
+            "parameters": 12,
             "vararg": false,
-            "returns": 12
+            "returns": 13
         },
         {
             "identifier": 3,
             "name": "compound_literal4",
-            "parameters": 14,
+            "parameters": 15,
             "vararg": false,
-            "returns": 15
+            "returns": 16
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "compound_literal1",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -236,21 +240,21 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 1
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 2
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 3
                     }
                 },
@@ -265,7 +269,7 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 6,
+                        "type": 7,
                         "index": 0
                     }
                 },
@@ -276,7 +280,7 @@
                 {
                     "opcode": "bcopy",
                     "arg": {
-                        "type": 7,
+                        "type": 8,
                         "index": 0
                     }
                 }
@@ -285,7 +289,7 @@
         {
             "identifier": 1,
             "name": "compound_literal2",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -293,21 +297,21 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 1
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 5
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 6
                     }
                 },
@@ -318,7 +322,7 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 10,
+                        "type": 11,
                         "index": 0
                     }
                 },
@@ -413,7 +417,7 @@
         {
             "identifier": 2,
             "name": "compound_literal3",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -421,21 +425,21 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 1
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 5
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 8
                     }
                 },
@@ -446,7 +450,7 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 13,
+                        "type": 14,
                         "index": 0
                     }
                 }
@@ -455,7 +459,7 @@
         {
             "identifier": 3,
             "name": "compound_literal4",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -463,21 +467,21 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 1
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 10
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 11
                     }
                 },
@@ -492,7 +496,7 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 16,
+                        "type": 17,
                         "index": 0
                     }
                 },
@@ -503,7 +507,7 @@
                 {
                     "opcode": "bcopy",
                     "arg": {
-                        "type": 17,
+                        "type": 18,
                         "index": 0
                     }
                 }

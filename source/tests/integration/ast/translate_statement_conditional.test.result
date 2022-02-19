@@ -18,15 +18,15 @@
         },
         {
             "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
             "type": [
                 {
                     "type": "int"
                 }
             ]
-        },
-        {
-            "identifier": 4,
-            "type": []
         },
         {
             "identifier": 5,
@@ -71,6 +71,10 @@
         {
             "identifier": 15,
             "type": []
+        },
+        {
+            "identifier": 16,
+            "type": []
         }
     ],
     "data": [],
@@ -79,37 +83,37 @@
         {
             "identifier": 0,
             "name": "conditional1",
-            "parameters": 5,
+            "parameters": 6,
             "vararg": false,
-            "returns": 6
+            "returns": 7
         },
         {
             "identifier": 1,
             "name": "conditional2",
-            "parameters": 8,
+            "parameters": 9,
             "vararg": false,
-            "returns": 9
+            "returns": 10
         },
         {
             "identifier": 2,
             "name": "conditional3",
-            "parameters": 11,
+            "parameters": 12,
             "vararg": false,
-            "returns": 12
+            "returns": 13
         },
         {
             "identifier": 3,
             "name": "conditional4",
-            "parameters": 14,
+            "parameters": 15,
             "vararg": false,
-            "returns": 15
+            "returns": 16
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "conditional1",
-            "locals": 4,
+            "locals": 5,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -160,7 +164,7 @@
         {
             "identifier": 1,
             "name": "conditional2",
-            "locals": 7,
+            "locals": 8,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -243,7 +247,7 @@
         {
             "identifier": 2,
             "name": "conditional3",
-            "locals": 10,
+            "locals": 11,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -388,7 +392,7 @@
         {
             "identifier": 3,
             "name": "conditional4",
-            "locals": 13,
+            "locals": 14,
             "body": [
                 {
                     "opcode": "pushld",

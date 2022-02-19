@@ -57,6 +57,10 @@
         },
         {
             "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
             "type": [
                 {
                     "type": "int"
@@ -64,16 +68,12 @@
             ]
         },
         {
-            "identifier": 4,
+            "identifier": 5,
             "type": [
                 {
                     "type": "long"
                 }
             ]
-        },
-        {
-            "identifier": 5,
-            "type": []
         },
         {
             "identifier": 6,
@@ -85,11 +85,7 @@
         },
         {
             "identifier": 8,
-            "type": [
-                {
-                    "type": "long"
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 9,
@@ -101,15 +97,15 @@
         },
         {
             "identifier": 10,
-            "type": []
-        },
-        {
-            "identifier": 11,
             "type": [
                 {
                     "type": "long"
                 }
             ]
+        },
+        {
+            "identifier": 11,
+            "type": []
         },
         {
             "identifier": 12,
@@ -121,15 +117,15 @@
         },
         {
             "identifier": 13,
-            "type": []
-        },
-        {
-            "identifier": 14,
             "type": [
                 {
                     "type": "long"
                 }
             ]
+        },
+        {
+            "identifier": 14,
+            "type": []
         },
         {
             "identifier": 15,
@@ -141,10 +137,18 @@
         },
         {
             "identifier": 16,
-            "type": []
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
         },
         {
             "identifier": 17,
+            "type": []
+        },
+        {
+            "identifier": 18,
             "type": [
                 {
                     "type": "struct",
@@ -157,20 +161,16 @@
             ]
         },
         {
-            "identifier": 18,
+            "identifier": 19,
             "type": []
         },
         {
-            "identifier": 19,
+            "identifier": 20,
             "type": [
                 {
                     "type": "long"
                 }
             ]
-        },
-        {
-            "identifier": 20,
-            "type": []
         },
         {
             "identifier": 21,
@@ -190,18 +190,10 @@
         },
         {
             "identifier": 25,
-            "type": [
-                {
-                    "type": "long"
-                }
-            ]
-        },
-        {
-            "identifier": 26,
             "type": []
         },
         {
-            "identifier": 27,
+            "identifier": 26,
             "type": [
                 {
                     "type": "long"
@@ -209,7 +201,19 @@
             ]
         },
         {
+            "identifier": 27,
+            "type": []
+        },
+        {
             "identifier": 28,
+            "type": [
+                {
+                    "type": "long"
+                }
+            ]
+        },
+        {
+            "identifier": 29,
             "type": [
                 {
                     "type": "long"
@@ -300,79 +304,79 @@
         {
             "identifier": 0,
             "name": "add_value",
-            "parameters": 5,
+            "parameters": 6,
             "vararg": false,
-            "returns": 6
+            "returns": 7
         },
         {
             "identifier": 1,
             "name": "get_value",
-            "parameters": 7,
+            "parameters": 8,
             "vararg": false,
-            "returns": 8
+            "returns": 9
         },
         {
             "identifier": 2,
             "name": "set_value",
-            "parameters": 9,
+            "parameters": 10,
             "vararg": false,
-            "returns": 10
+            "returns": 11
         },
         {
             "identifier": 3,
             "name": "value_callback",
-            "parameters": 11,
+            "parameters": 12,
             "vararg": false,
-            "returns": 12
+            "returns": 13
         },
         {
             "identifier": 4,
             "name": "invoke_callback",
-            "parameters": 13,
+            "parameters": 14,
             "vararg": false,
-            "returns": 14
+            "returns": 15
         },
         {
             "identifier": 5,
             "name": "set_value",
-            "parameters": 15,
+            "parameters": 16,
             "vararg": false,
-            "returns": 16
+            "returns": 17
         },
         {
             "identifier": 6,
             "name": "get_value",
-            "parameters": 18,
+            "parameters": 19,
             "vararg": false,
-            "returns": 19
+            "returns": 20
         },
         {
             "identifier": 7,
             "name": "add_value",
-            "parameters": 21,
+            "parameters": 22,
             "vararg": false,
-            "returns": 22
+            "returns": 23
         },
         {
             "identifier": 8,
             "name": "invoke_callback",
-            "parameters": 24,
+            "parameters": 25,
             "vararg": false,
-            "returns": 25
+            "returns": 26
         },
         {
             "identifier": 9,
             "name": "value_callback",
-            "parameters": 27,
+            "parameters": 28,
             "vararg": false,
-            "returns": 28
+            "returns": 29
         }
     ],
     "functions": [
         {
             "identifier": 7,
             "name": "add_value",
-            "locals": 23,
+            "locals": 24,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -426,7 +430,7 @@
         {
             "identifier": 6,
             "name": "get_value",
-            "locals": 20,
+            "locals": 21,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -445,7 +449,7 @@
         {
             "identifier": 5,
             "name": "set_value",
-            "locals": 17,
+            "locals": 18,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -492,7 +496,7 @@
         {
             "identifier": 8,
             "name": "invoke_callback",
-            "locals": 26,
+            "locals": 27,
             "body": [
                 {
                     "opcode": "getglobal",

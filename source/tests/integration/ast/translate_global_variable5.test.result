@@ -20,6 +20,10 @@
         },
         {
             "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
             "type": [
                 {
                     "type": "array",
@@ -46,7 +50,7 @@
             ]
         },
         {
-            "identifier": 4,
+            "identifier": 5,
             "type": [
                 {
                     "type": "int"
@@ -58,7 +62,7 @@
         {
             "identifier": "arr1",
             "storage": "global",
-            "type": 3,
+            "type": 4,
             "value": [
                 {
                     "class": "aggregate"

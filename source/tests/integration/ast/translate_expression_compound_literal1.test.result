@@ -16,6 +16,10 @@
         },
         {
             "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
             "type": [
                 {
                     "type": "struct",
@@ -80,15 +84,15 @@
             ]
         },
         {
-            "identifier": 4,
-            "type": []
-        },
-        {
             "identifier": 5,
             "type": []
         },
         {
             "identifier": 6,
+            "type": []
+        },
+        {
+            "identifier": 7,
             "type": [
                 {
                     "type": "long"
@@ -96,15 +100,15 @@
             ]
         },
         {
-            "identifier": 7,
-            "type": []
-        },
-        {
             "identifier": 8,
             "type": []
         },
         {
             "identifier": 9,
+            "type": []
+        },
+        {
+            "identifier": 10,
             "type": [
                 {
                     "type": "struct",
@@ -126,15 +130,15 @@
             ]
         },
         {
-            "identifier": 10,
-            "type": []
-        },
-        {
             "identifier": 11,
             "type": []
         },
         {
             "identifier": 12,
+            "type": []
+        },
+        {
+            "identifier": 13,
             "type": [
                 {
                     "type": "struct",
@@ -170,30 +174,30 @@
         {
             "identifier": 0,
             "name": "compound_literal1",
-            "parameters": 4,
+            "parameters": 5,
             "vararg": false,
-            "returns": 5
+            "returns": 6
         },
         {
             "identifier": 1,
             "name": "compound_literal2",
-            "parameters": 7,
+            "parameters": 8,
             "vararg": false,
-            "returns": 8
+            "returns": 9
         },
         {
             "identifier": 2,
             "name": "compound_literal3",
-            "parameters": 10,
+            "parameters": 11,
             "vararg": false,
-            "returns": 11
+            "returns": 12
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "compound_literal1",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -201,21 +205,21 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 1
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 2
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 3
                     }
                 },
@@ -238,7 +242,7 @@
         {
             "identifier": 1,
             "name": "compound_literal2",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -246,21 +250,21 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 1
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 2
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 4
                     }
                 },
@@ -271,7 +275,7 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 9,
+                        "type": 10,
                         "index": 0
                     }
                 },
@@ -336,7 +340,7 @@
         {
             "identifier": 2,
             "name": "compound_literal3",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -344,21 +348,21 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 1
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 2
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 9
                     }
                 },
@@ -369,7 +373,7 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 12,
+                        "type": 13,
                         "index": 0
                     }
                 },

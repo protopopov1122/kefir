@@ -18,6 +18,10 @@
         },
         {
             "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
             "type": [
                 {
                     "type": "int"
@@ -25,7 +29,7 @@
             ]
         },
         {
-            "identifier": 4,
+            "identifier": 5,
             "type": [
                 {
                     "type": "struct",
@@ -48,15 +52,15 @@
             ]
         },
         {
-            "identifier": 5,
-            "type": []
-        },
-        {
             "identifier": 6,
             "type": []
         },
         {
             "identifier": 7,
+            "type": []
+        },
+        {
+            "identifier": 8,
             "type": [
                 {
                     "type": "short"
@@ -64,15 +68,15 @@
             ]
         },
         {
-            "identifier": 8,
-            "type": []
-        },
-        {
             "identifier": 9,
             "type": []
         },
         {
             "identifier": 10,
+            "type": []
+        },
+        {
+            "identifier": 11,
             "type": []
         }
     ],
@@ -82,23 +86,23 @@
         {
             "identifier": 0,
             "name": "goto1",
-            "parameters": 5,
+            "parameters": 6,
             "vararg": false,
-            "returns": 6
+            "returns": 7
         },
         {
             "identifier": 1,
             "name": "goto2",
-            "parameters": 9,
+            "parameters": 10,
             "vararg": false,
-            "returns": 10
+            "returns": 11
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "goto1",
-            "locals": 4,
+            "locals": 5,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -232,7 +236,7 @@
         {
             "identifier": 1,
             "name": "goto2",
-            "locals": 8,
+            "locals": 9,
             "body": [
                 {
                     "opcode": "jmp",

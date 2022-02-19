@@ -30,6 +30,10 @@
         },
         {
             "identifier": 4,
+            "type": []
+        },
+        {
+            "identifier": 5,
             "type": [
                 {
                     "type": "int"
@@ -37,7 +41,7 @@
             ]
         },
         {
-            "identifier": 5,
+            "identifier": 6,
             "type": [
                 {
                     "type": "word"
@@ -48,7 +52,7 @@
             ]
         },
         {
-            "identifier": 6,
+            "identifier": 7,
             "type": [
                 {
                     "type": "int"
@@ -56,7 +60,7 @@
             ]
         },
         {
-            "identifier": 7,
+            "identifier": 8,
             "type": [
                 {
                     "type": "struct",
@@ -72,7 +76,7 @@
             ]
         },
         {
-            "identifier": 8,
+            "identifier": 9,
             "type": [
                 {
                     "type": "int"
@@ -111,23 +115,23 @@
         {
             "identifier": 0,
             "name": "intat",
-            "parameters": 3,
+            "parameters": 4,
             "vararg": false,
-            "returns": 4
+            "returns": 5
         },
         {
             "identifier": 1,
             "name": "intat",
-            "parameters": 5,
+            "parameters": 6,
             "vararg": false,
-            "returns": 6
+            "returns": 7
         }
     ],
     "functions": [
         {
             "identifier": 1,
             "name": "intat",
-            "locals": 7,
+            "locals": 8,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -135,7 +139,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 7,
+                        "type": 8,
                         "index": 2
                     }
                 },
@@ -168,7 +172,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 7,
+                        "type": 8,
                         "index": 2
                     }
                 },
@@ -178,7 +182,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 8,
+                        "type": 9,
                         "index": 0
                     }
                 },

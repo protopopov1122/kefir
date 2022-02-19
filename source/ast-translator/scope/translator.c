@@ -218,6 +218,22 @@ static kefir_result_t get_static_thread_local_data(struct kefir_mem *mem, struct
     return KEFIR_OK;
 }
 
+static kefir_result_t get_static_thread_local_uninit_data(struct kefir_mem *mem, struct kefir_ir_module *module,
+                                                          kefir_id_t type_id, struct kefir_ir_data **data) {
+    *data =
+        kefir_ir_module_get_named_data(module, KEFIR_AST_TRANSLATOR_STATIC_THREAD_LOCAL_UNINIT_VARIABLES_IDENTIFIER);
+    if (*data == NULL) {
+        *data = kefir_ir_module_new_named_data(mem, module,
+                                               KEFIR_AST_TRANSLATOR_STATIC_THREAD_LOCAL_UNINIT_VARIABLES_IDENTIFIER,
+                                               KEFIR_IR_DATA_THREAD_LOCAL_STORAGE, type_id);
+        REQUIRE(*data != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate IR data"));
+    } else {
+        REQUIRE((*data)->type_id == type_id,
+                KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Provided IR type id does not match existing"));
+    }
+    return KEFIR_OK;
+}
+
 static kefir_result_t translate_static_thread_locals(
     struct kefir_mem *mem, const struct kefir_ast_context *context, struct kefir_ir_module *module,
     const struct kefir_ast_translator_global_scope_layout *global_scope) {
@@ -248,6 +264,13 @@ static kefir_result_t translate_static_thread_locals(
 
     if (static_tlocal_data != NULL) {
         REQUIRE_OK(kefir_ir_data_finalize(static_tlocal_data));
+    }
+
+    if (kefir_ir_type_total_length(global_scope->static_thread_local_uninit_layout) > 0) {
+        struct kefir_ir_data *static_thread_local_uninit_data;
+        REQUIRE_OK(get_static_thread_local_uninit_data(mem, module, global_scope->static_thread_local_uninit_layout_id,
+                                                       &static_thread_local_uninit_data));
+        REQUIRE_OK(kefir_ir_data_finalize(static_thread_local_uninit_data));
     }
     return KEFIR_OK;
 }

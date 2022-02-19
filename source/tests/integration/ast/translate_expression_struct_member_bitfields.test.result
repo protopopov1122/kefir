@@ -23,6 +23,10 @@
         },
         {
             "identifier": 4,
+            "type": []
+        },
+        {
+            "identifier": 5,
             "type": [
                 {
                     "type": "struct",
@@ -50,7 +54,7 @@
             ]
         },
         {
-            "identifier": 5,
+            "identifier": 6,
             "type": [
                 {
                     "type": "word"
@@ -58,40 +62,12 @@
             ]
         },
         {
-            "identifier": 6,
-            "type": []
-        },
-        {
             "identifier": 7,
             "type": []
         },
         {
             "identifier": 8,
-            "type": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "bits",
-                            "width": 19,
-                            "alignment": 4
-                        },
-                        {
-                            "type": "char"
-                        },
-                        {
-                            "type": "bits",
-                            "width": 4,
-                            "alignment": 8
-                        },
-                        {
-                            "type": "bits",
-                            "width": 57,
-                            "alignment": 8
-                        }
-                    ]
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 9,
@@ -400,6 +376,34 @@
                     ]
                 }
             ]
+        },
+        {
+            "identifier": 20,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "bits",
+                            "width": 19,
+                            "alignment": 4
+                        },
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "bits",
+                            "width": 4,
+                            "alignment": 8
+                        },
+                        {
+                            "type": "bits",
+                            "width": 57,
+                            "alignment": 8
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "data": [],
@@ -408,16 +412,16 @@
         {
             "identifier": 0,
             "name": "func1",
-            "parameters": 6,
+            "parameters": 7,
             "vararg": false,
-            "returns": 7
+            "returns": 8
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "func1",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -491,7 +495,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 14,
+                        "type": 15,
                         "index": 3
                     }
                 },
@@ -521,7 +525,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 16,
+                        "type": 17,
                         "index": 3
                     }
                 },
@@ -551,7 +555,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 18,
+                        "type": 19,
                         "index": 4
                     }
                 },

@@ -18,15 +18,15 @@
         },
         {
             "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
             "type": [
                 {
                     "type": "int"
                 }
             ]
-        },
-        {
-            "identifier": 4,
-            "type": []
         },
         {
             "identifier": 5,
@@ -38,6 +38,10 @@
         },
         {
             "identifier": 7,
+            "type": []
+        },
+        {
+            "identifier": 8,
             "type": [
                 {
                     "type": "struct",
@@ -66,15 +70,15 @@
             ]
         },
         {
-            "identifier": 8,
-            "type": []
-        },
-        {
             "identifier": 9,
             "type": []
         },
         {
             "identifier": 10,
+            "type": []
+        },
+        {
+            "identifier": 11,
             "type": [
                 {
                     "type": "int"
@@ -82,7 +86,7 @@
             ]
         },
         {
-            "identifier": 11,
+            "identifier": 12,
             "type": [
                 {
                     "type": "long"
@@ -90,7 +94,7 @@
             ]
         },
         {
-            "identifier": 12,
+            "identifier": 13,
             "type": [
                 {
                     "type": "struct",
@@ -123,11 +127,11 @@
             ]
         },
         {
-            "identifier": 13,
+            "identifier": 14,
             "type": []
         },
         {
-            "identifier": 14,
+            "identifier": 15,
             "type": []
         }
     ],
@@ -137,36 +141,36 @@
         {
             "identifier": 0,
             "name": "compound1",
-            "parameters": 5,
+            "parameters": 6,
             "vararg": false,
-            "returns": 6
+            "returns": 7
         },
         {
             "identifier": 1,
             "name": "compound2",
-            "parameters": 8,
+            "parameters": 9,
             "vararg": false,
-            "returns": 9
+            "returns": 10
         },
         {
             "identifier": 2,
             "name": "compound3",
-            "parameters": 13,
+            "parameters": 14,
             "vararg": false,
-            "returns": 14
+            "returns": 15
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "compound1",
-            "locals": 4,
+            "locals": 5,
             "body": []
         },
         {
             "identifier": 1,
             "name": "compound2",
-            "locals": 7,
+            "locals": 8,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -191,7 +195,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 7,
+                        "type": 8,
                         "index": 4
                     }
                 },
@@ -235,7 +239,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 7,
+                        "type": 8,
                         "index": 4
                     }
                 },
@@ -254,7 +258,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 7,
+                        "type": 8,
                         "index": 5
                     }
                 },
@@ -282,7 +286,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 7,
+                        "type": 8,
                         "index": 5
                     }
                 },
@@ -339,7 +343,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 7,
+                        "type": 8,
                         "index": 5
                     }
                 },
@@ -352,7 +356,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 7,
+                        "type": 8,
                         "index": 4
                     }
                 },
@@ -399,7 +403,7 @@
         {
             "identifier": 2,
             "name": "compound3",
-            "locals": 12,
+            "locals": 13,
             "body": [
                 {
                     "opcode": "push",

@@ -22,6 +22,10 @@
         },
         {
             "identifier": 4,
+            "type": []
+        },
+        {
+            "identifier": 5,
             "type": [
                 {
                     "type": "struct",
@@ -35,10 +39,6 @@
                     ]
                 }
             ]
-        },
-        {
-            "identifier": 5,
-            "type": []
         },
         {
             "identifier": 6,
@@ -46,6 +46,10 @@
         },
         {
             "identifier": 7,
+            "type": []
+        },
+        {
+            "identifier": 8,
             "type": [
                 {
                     "type": "struct",
@@ -61,7 +65,7 @@
             ]
         },
         {
-            "identifier": 8,
+            "identifier": 9,
             "type": [
                 {
                     "type": "struct",
@@ -83,16 +87,16 @@
         {
             "identifier": 0,
             "name": "func1",
-            "parameters": 5,
+            "parameters": 6,
             "vararg": false,
-            "returns": 6
+            "returns": 7
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "func1",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -103,7 +107,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 8,
+                        "type": 9,
                         "index": 2
                     }
                 },

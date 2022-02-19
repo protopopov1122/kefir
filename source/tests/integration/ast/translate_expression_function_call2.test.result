@@ -18,6 +18,10 @@
         },
         {
             "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
             "type": [
                 {
                     "type": "struct",
@@ -55,14 +59,6 @@
             ]
         },
         {
-            "identifier": 4,
-            "type": [
-                {
-                    "type": "int"
-                }
-            ]
-        },
-        {
             "identifier": 5,
             "type": [
                 {
@@ -72,7 +68,11 @@
         },
         {
             "identifier": 6,
-            "type": []
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
         },
         {
             "identifier": 7,
@@ -80,24 +80,20 @@
         },
         {
             "identifier": 8,
-            "type": [
-                {
-                    "type": "int"
-                },
-                {
-                    "type": "int"
-                },
-                {
-                    "type": "int"
-                },
-                {
-                    "type": "int"
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 9,
             "type": [
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "int"
+                },
+                {
+                    "type": "int"
+                },
                 {
                     "type": "int"
                 }
@@ -105,7 +101,11 @@
         },
         {
             "identifier": 10,
-            "type": []
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
         },
         {
             "identifier": 11,
@@ -113,11 +113,7 @@
         },
         {
             "identifier": 12,
-            "type": [
-                {
-                    "type": "int"
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 13,
@@ -129,7 +125,11 @@
         },
         {
             "identifier": 14,
-            "type": []
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
         },
         {
             "identifier": 15,
@@ -137,6 +137,10 @@
         },
         {
             "identifier": 16,
+            "type": []
+        },
+        {
+            "identifier": 17,
             "type": [
                 {
                     "type": "int"
@@ -147,7 +151,7 @@
             ]
         },
         {
-            "identifier": 17,
+            "identifier": 18,
             "type": [
                 {
                     "type": "int"
@@ -155,15 +159,15 @@
             ]
         },
         {
-            "identifier": 18,
-            "type": []
-        },
-        {
             "identifier": 19,
             "type": []
         },
         {
             "identifier": 20,
+            "type": []
+        },
+        {
+            "identifier": 21,
             "type": [
                 {
                     "type": "int"
@@ -189,7 +193,7 @@
             ]
         },
         {
-            "identifier": 21,
+            "identifier": 22,
             "type": [
                 {
                     "type": "int"
@@ -197,7 +201,7 @@
             ]
         },
         {
-            "identifier": 22,
+            "identifier": 23,
             "type": [
                 {
                     "type": "struct",
@@ -226,72 +230,72 @@
         {
             "identifier": 0,
             "name": "sum",
-            "parameters": 4,
+            "parameters": 5,
             "vararg": true,
-            "returns": 5
+            "returns": 6
         },
         {
             "identifier": 1,
             "name": "call1",
-            "parameters": 6,
+            "parameters": 7,
             "vararg": false,
-            "returns": 7
+            "returns": 8
         },
         {
             "identifier": 2,
             "name": "sum",
-            "parameters": 8,
+            "parameters": 9,
             "vararg": true,
-            "returns": 9
+            "returns": 10
         },
         {
             "identifier": 3,
             "name": "call2",
-            "parameters": 10,
+            "parameters": 11,
             "vararg": false,
-            "returns": 11
+            "returns": 12
         },
         {
             "identifier": 4,
             "name": "sum",
-            "parameters": 12,
+            "parameters": 13,
             "vararg": true,
-            "returns": 13
+            "returns": 14
         },
         {
             "identifier": 5,
             "name": "call3",
-            "parameters": 14,
+            "parameters": 15,
             "vararg": false,
-            "returns": 15
+            "returns": 16
         },
         {
             "identifier": 6,
             "name": "sum",
-            "parameters": 16,
+            "parameters": 17,
             "vararg": true,
-            "returns": 17
+            "returns": 18
         },
         {
             "identifier": 7,
             "name": "call4",
-            "parameters": 18,
+            "parameters": 19,
             "vararg": false,
-            "returns": 19
+            "returns": 20
         },
         {
             "identifier": 8,
             "name": "sum",
-            "parameters": 20,
+            "parameters": 21,
             "vararg": true,
-            "returns": 21
+            "returns": 22
         }
     ],
     "functions": [
         {
             "identifier": 1,
             "name": "call1",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -324,7 +328,7 @@
         {
             "identifier": 3,
             "name": "call2",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -345,7 +349,7 @@
         {
             "identifier": 5,
             "name": "call3",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -373,7 +377,7 @@
         {
             "identifier": 7,
             "name": "call4",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -385,21 +389,21 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 1
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 2
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 3
                     }
                 },
@@ -410,7 +414,7 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 22,
+                        "type": 23,
                         "index": 0
                     }
                 },

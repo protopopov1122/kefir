@@ -33,18 +33,10 @@
         },
         {
             "identifier": 4,
-            "type": [
-                {
-                    "type": "int"
-                }
-            ]
-        },
-        {
-            "identifier": 5,
             "type": []
         },
         {
-            "identifier": 6,
+            "identifier": 5,
             "type": [
                 {
                     "type": "int"
@@ -52,7 +44,19 @@
             ]
         },
         {
+            "identifier": 6,
+            "type": []
+        },
+        {
             "identifier": 7,
+            "type": [
+                {
+                    "type": "int"
+                }
+            ]
+        },
+        {
+            "identifier": 8,
             "type": [
                 {
                     "type": "struct",
@@ -65,7 +69,7 @@
             ]
         },
         {
-            "identifier": 8,
+            "identifier": 9,
             "type": [
                 {
                     "type": "int"
@@ -108,23 +112,23 @@
         {
             "identifier": 0,
             "name": "fn",
-            "parameters": 3,
+            "parameters": 4,
             "vararg": false,
-            "returns": 4
+            "returns": 5
         },
         {
             "identifier": 1,
             "name": "fn",
-            "parameters": 5,
+            "parameters": 6,
             "vararg": false,
-            "returns": 6
+            "returns": 7
         }
     ],
     "functions": [
         {
             "identifier": 1,
             "name": "fn",
-            "locals": 7,
+            "locals": 8,
             "body": [
                 {
                     "opcode": "getlocals"

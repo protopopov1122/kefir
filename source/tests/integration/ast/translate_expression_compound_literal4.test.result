@@ -16,6 +16,10 @@
         },
         {
             "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
             "type": [
                 {
                     "type": "struct",
@@ -68,15 +72,15 @@
             ]
         },
         {
-            "identifier": 4,
-            "type": []
-        },
-        {
             "identifier": 5,
             "type": []
         },
         {
             "identifier": 6,
+            "type": []
+        },
+        {
+            "identifier": 7,
             "type": [
                 {
                     "type": "struct",
@@ -114,7 +118,7 @@
             ]
         },
         {
-            "identifier": 7,
+            "identifier": 8,
             "type": [
                 {
                     "type": "array",
@@ -126,7 +130,7 @@
             ]
         },
         {
-            "identifier": 8,
+            "identifier": 9,
             "type": [
                 {
                     "type": "array",
@@ -138,7 +142,7 @@
             ]
         },
         {
-            "identifier": 9,
+            "identifier": 10,
             "type": [
                 {
                     "type": "array",
@@ -150,7 +154,7 @@
             ]
         },
         {
-            "identifier": 10,
+            "identifier": 11,
             "type": [
                 {
                     "type": "array",
@@ -248,16 +252,16 @@
         {
             "identifier": 0,
             "name": "compound_literal1",
-            "parameters": 4,
+            "parameters": 5,
             "vararg": false,
-            "returns": 5
+            "returns": 6
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "compound_literal1",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -265,21 +269,21 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 1
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 2
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 3,
+                        "type": 4,
                         "index": 3
                     }
                 },
@@ -290,7 +294,7 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 6,
+                        "type": 7,
                         "index": 0
                     }
                 },
@@ -305,7 +309,7 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 6,
+                        "type": 7,
                         "index": 1
                     }
                 },
@@ -316,7 +320,7 @@
                 {
                     "opcode": "bcopy",
                     "arg": {
-                        "type": 7,
+                        "type": 8,
                         "index": 0
                     }
                 },
@@ -335,7 +339,7 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 6,
+                        "type": 7,
                         "index": 3
                     }
                 },
@@ -346,7 +350,7 @@
                 {
                     "opcode": "bcopy",
                     "arg": {
-                        "type": 8,
+                        "type": 9,
                         "index": 0
                     }
                 },
@@ -365,7 +369,7 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 6,
+                        "type": 7,
                         "index": 5
                     }
                 },
@@ -376,7 +380,7 @@
                 {
                     "opcode": "bcopy",
                     "arg": {
-                        "type": 9,
+                        "type": 10,
                         "index": 0
                     }
                 },
@@ -395,7 +399,7 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 6,
+                        "type": 7,
                         "index": 7
                     }
                 },
@@ -406,7 +410,7 @@
                 {
                     "opcode": "bcopy",
                     "arg": {
-                        "type": 10,
+                        "type": 11,
                         "index": 0
                     }
                 }

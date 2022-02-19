@@ -22,6 +22,10 @@
         },
         {
             "identifier": 4,
+            "type": []
+        },
+        {
+            "identifier": 5,
             "type": [
                 {
                     "type": "array",
@@ -33,26 +37,18 @@
             ]
         },
         {
-            "identifier": 5,
-            "type": []
-        },
-        {
             "identifier": 6,
             "type": []
         },
         {
             "identifier": 7,
-            "type": [
-                {
-                    "type": "char"
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 8,
             "type": [
                 {
-                    "type": "word"
+                    "type": "char"
                 }
             ]
         },
@@ -60,12 +56,20 @@
             "identifier": 9,
             "type": [
                 {
-                    "type": "char"
+                    "type": "word"
                 }
             ]
         },
         {
             "identifier": 10,
+            "type": [
+                {
+                    "type": "char"
+                }
+            ]
+        },
+        {
+            "identifier": 11,
             "type": [
                 {
                     "type": "word"
@@ -79,16 +83,16 @@
         {
             "identifier": 0,
             "name": "func1",
-            "parameters": 5,
+            "parameters": 6,
             "vararg": false,
-            "returns": 6
+            "returns": 7
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "func1",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -103,7 +107,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 8,
+                        "type": 9,
                         "index": 0
                     }
                 },
@@ -117,7 +121,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 7,
+                        "type": 8,
                         "index": 0
                     }
                 },
@@ -137,7 +141,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 10,
+                        "type": 11,
                         "index": 0
                     }
                 },
@@ -151,7 +155,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 9,
+                        "type": 10,
                         "index": 0
                     }
                 },

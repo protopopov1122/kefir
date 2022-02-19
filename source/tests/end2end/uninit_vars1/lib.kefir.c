@@ -21,6 +21,7 @@
 #include "./definitions.h"
 
 static struct Structure1 STRUCT1;
+static _Thread_local struct Structure1 STRUCT2;
 
 struct Structure1 *GLOBAL_UNINIT_STATIC = &STRUCT1;
 
@@ -30,5 +31,14 @@ struct Structure1 *get_global_uninit_static() {
 
 struct Structure1 *get_local_uninit_static() {
     static struct Structure1 STRUCT2;
+    return &STRUCT2;
+}
+
+struct Structure1 *get_global_tlocal_uninit_static() {
+    return &STRUCT2;
+}
+
+struct Structure1 *get_local_tlocal_uninit_static() {
+    static _Thread_local struct Structure1 STRUCT2;
     return &STRUCT2;
 }

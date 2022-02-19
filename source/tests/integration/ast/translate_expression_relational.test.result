@@ -18,6 +18,10 @@
         },
         {
             "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
             "type": [
                 {
                     "type": "struct",
@@ -30,16 +34,12 @@
             ]
         },
         {
-            "identifier": 4,
+            "identifier": 5,
             "type": [
                 {
                     "type": "word"
                 }
             ]
-        },
-        {
-            "identifier": 5,
-            "type": []
         },
         {
             "identifier": 6,
@@ -108,13 +108,17 @@
         {
             "identifier": 22,
             "type": []
+        },
+        {
+            "identifier": 23,
+            "type": []
         }
     ],
     "data": [
         {
             "identifier": "ptr1",
             "storage": "global",
-            "type": 4,
+            "type": 5,
             "value": [
                 {
                     "class": "undefined"
@@ -127,72 +131,72 @@
         {
             "identifier": 0,
             "name": "equality_arithemtical",
-            "parameters": 5,
+            "parameters": 6,
             "vararg": false,
-            "returns": 6
+            "returns": 7
         },
         {
             "identifier": 1,
             "name": "equality_pointer",
-            "parameters": 7,
+            "parameters": 8,
             "vararg": false,
-            "returns": 8
+            "returns": 9
         },
         {
             "identifier": 2,
             "name": "non_equality_arithemtical",
-            "parameters": 9,
+            "parameters": 10,
             "vararg": false,
-            "returns": 10
+            "returns": 11
         },
         {
             "identifier": 3,
             "name": "non_equality_pointer",
-            "parameters": 11,
+            "parameters": 12,
             "vararg": false,
-            "returns": 12
+            "returns": 13
         },
         {
             "identifier": 4,
             "name": "less_than",
-            "parameters": 13,
+            "parameters": 14,
             "vararg": false,
-            "returns": 14
+            "returns": 15
         },
         {
             "identifier": 5,
             "name": "less_equals",
-            "parameters": 15,
+            "parameters": 16,
             "vararg": false,
-            "returns": 16
+            "returns": 17
         },
         {
             "identifier": 6,
             "name": "greater_than",
-            "parameters": 17,
+            "parameters": 18,
             "vararg": false,
-            "returns": 18
+            "returns": 19
         },
         {
             "identifier": 7,
             "name": "greater_equal",
-            "parameters": 19,
+            "parameters": 20,
             "vararg": false,
-            "returns": 20
+            "returns": 21
         },
         {
             "identifier": 8,
             "name": "ptr_relational",
-            "parameters": 21,
+            "parameters": 22,
             "vararg": false,
-            "returns": 22
+            "returns": 23
         }
     ],
     "functions": [
         {
             "identifier": 4,
             "name": "less_than",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -307,7 +311,7 @@
         {
             "identifier": 5,
             "name": "less_equals",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -584,7 +588,7 @@
         {
             "identifier": 2,
             "name": "non_equality_arithemtical",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -681,7 +685,7 @@
         {
             "identifier": 3,
             "name": "non_equality_pointer",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -751,7 +755,7 @@
         {
             "identifier": 1,
             "name": "equality_pointer",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -812,7 +816,7 @@
         {
             "identifier": 6,
             "name": "greater_than",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -927,7 +931,7 @@
         {
             "identifier": 8,
             "name": "ptr_relational",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -1150,7 +1154,7 @@
         {
             "identifier": 0,
             "name": "equality_arithemtical",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -1236,7 +1240,7 @@
         {
             "identifier": 7,
             "name": "greater_equal",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",

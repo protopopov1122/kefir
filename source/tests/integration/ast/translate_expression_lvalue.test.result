@@ -44,6 +44,10 @@
         },
         {
             "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
             "type": [
                 {
                     "type": "struct",
@@ -56,7 +60,7 @@
             ]
         },
         {
-            "identifier": 4,
+            "identifier": 5,
             "type": [
                 {
                     "type": "int"
@@ -64,7 +68,7 @@
             ]
         },
         {
-            "identifier": 5,
+            "identifier": 6,
             "type": [
                 {
                     "type": "char"
@@ -72,16 +76,12 @@
             ]
         },
         {
-            "identifier": 6,
+            "identifier": 7,
             "type": [
                 {
                     "type": "word"
                 }
             ]
-        },
-        {
-            "identifier": 7,
-            "type": []
         },
         {
             "identifier": 8,
@@ -97,6 +97,10 @@
         },
         {
             "identifier": 11,
+            "type": []
+        },
+        {
+            "identifier": 12,
             "type": [
                 {
                     "type": "bool"
@@ -104,7 +108,7 @@
             ]
         },
         {
-            "identifier": 12,
+            "identifier": 13,
             "type": [
                 {
                     "type": "float"
@@ -112,32 +116,12 @@
             ]
         },
         {
-            "identifier": 13,
-            "type": []
-        },
-        {
             "identifier": 14,
             "type": []
         },
         {
             "identifier": 15,
-            "type": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "char"
-                        },
-                        {
-                            "type": "array",
-                            "length": 4,
-                            "element_type": {
-                                "type": "double"
-                            }
-                        }
-                    ]
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 16,
@@ -161,14 +145,6 @@
         },
         {
             "identifier": 17,
-            "type": []
-        },
-        {
-            "identifier": 18,
-            "type": []
-        },
-        {
-            "identifier": 19,
             "type": [
                 {
                     "type": "struct",
@@ -188,7 +164,35 @@
             ]
         },
         {
+            "identifier": 18,
+            "type": []
+        },
+        {
+            "identifier": 19,
+            "type": []
+        },
+        {
             "identifier": 20,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "char"
+                        },
+                        {
+                            "type": "array",
+                            "length": 4,
+                            "element_type": {
+                                "type": "double"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 21,
             "type": [
                 {
                     "type": "struct",
@@ -201,11 +205,11 @@
             ]
         },
         {
-            "identifier": 21,
+            "identifier": 22,
             "type": []
         },
         {
-            "identifier": 22,
+            "identifier": 23,
             "type": []
         }
     ],
@@ -213,7 +217,7 @@
         {
             "identifier": "variable2",
             "storage": "global",
-            "type": 5,
+            "type": 6,
             "value": [
                 {
                     "class": "undefined"
@@ -237,44 +241,44 @@
         {
             "identifier": 0,
             "name": "identifier",
-            "parameters": 7,
+            "parameters": 8,
             "vararg": false,
-            "returns": 8
+            "returns": 9
         },
         {
             "identifier": 1,
             "name": "array_subscript",
-            "parameters": 9,
+            "parameters": 10,
             "vararg": false,
-            "returns": 10
+            "returns": 11
         },
         {
             "identifier": 2,
             "name": "struct_field",
-            "parameters": 13,
+            "parameters": 14,
             "vararg": false,
-            "returns": 14
+            "returns": 15
         },
         {
             "identifier": 3,
             "name": "struct_field_indirect",
-            "parameters": 17,
+            "parameters": 18,
             "vararg": false,
-            "returns": 18
+            "returns": 19
         },
         {
             "identifier": 4,
             "name": "indirection",
-            "parameters": 21,
+            "parameters": 22,
             "vararg": false,
-            "returns": 22
+            "returns": 23
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "identifier",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -321,7 +325,7 @@
         {
             "identifier": 4,
             "name": "indirection",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -332,7 +336,7 @@
         {
             "identifier": 2,
             "name": "struct_field",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -363,7 +367,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 16,
+                        "type": 17,
                         "index": 2
                     }
                 }
@@ -372,7 +376,7 @@
         {
             "identifier": 3,
             "name": "struct_field_indirect",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -386,7 +390,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 19,
+                        "type": 20,
                         "index": 2
                     }
                 }
@@ -395,7 +399,7 @@
         {
             "identifier": 1,
             "name": "array_subscript",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getglobal",
@@ -410,7 +414,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 11,
+                        "type": 12,
                         "index": 0
                     }
                 },
@@ -430,7 +434,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 12,
+                        "type": 13,
                         "index": 0
                     }
                 }

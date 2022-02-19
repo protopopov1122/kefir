@@ -124,8 +124,17 @@ static kefir_result_t translate_static_thread_local_identifier(
     REQUIRE(scoped_identifier_layout->layout == NULL, KEFIR_OK);
 
     KEFIR_AST_SCOPE_SET_CLEANUP(scoped_identifier, kefir_ast_translator_scoped_identifer_payload_free, NULL);
+
+    if (scoped_identifier->object.initializer != NULL) {
+        scoped_identifier_layout->type_id = local_layout->global->static_thread_local_layout_id;
+        scoped_identifier_layout->type = local_layout->global->static_thread_local_layout;
+    } else {
+        scoped_identifier_layout->type_id = local_layout->global->static_thread_local_uninit_layout_id;
+        scoped_identifier_layout->type = local_layout->global->static_thread_local_uninit_layout;
+    }
+
     struct kefir_irbuilder_type global_builder;
-    REQUIRE_OK(kefir_irbuilder_type_init(mem, &global_builder, local_layout->global->static_thread_local_layout));
+    REQUIRE_OK(kefir_irbuilder_type_init(mem, &global_builder, scoped_identifier_layout->type));
     kefir_result_t res =
         kefir_ast_translate_object_type(mem, scoped_identifier->object.type, scoped_identifier->object.alignment->value,
                                         env, &global_builder, &scoped_identifier_layout->layout);
@@ -134,8 +143,6 @@ static kefir_result_t translate_static_thread_local_identifier(
         return res;
     });
     REQUIRE_OK(KEFIR_IRBUILDER_TYPE_FREE(&global_builder));
-    scoped_identifier_layout->type_id = local_layout->global->static_thread_local_layout_id;
-    scoped_identifier_layout->type = local_layout->global->static_thread_local_layout;
 
     REQUIRE_OK(kefir_ast_translator_evaluate_type_layout(mem, env, scoped_identifier_layout->layout,
                                                          scoped_identifier_layout->type));

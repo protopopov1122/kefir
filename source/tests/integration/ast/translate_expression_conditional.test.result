@@ -16,6 +16,10 @@
         },
         {
             "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
             "type": [
                 {
                     "type": "struct",
@@ -26,10 +30,6 @@
                     ]
                 }
             ]
-        },
-        {
-            "identifier": 4,
-            "type": []
         },
         {
             "identifier": 5,
@@ -50,6 +50,10 @@
         {
             "identifier": 9,
             "type": []
+        },
+        {
+            "identifier": 10,
+            "type": []
         }
     ],
     "data": [],
@@ -58,30 +62,30 @@
         {
             "identifier": 0,
             "name": "conditional1",
-            "parameters": 4,
+            "parameters": 5,
             "vararg": false,
-            "returns": 5
+            "returns": 6
         },
         {
             "identifier": 1,
             "name": "conditional2",
-            "parameters": 6,
+            "parameters": 7,
             "vararg": false,
-            "returns": 7
+            "returns": 8
         },
         {
             "identifier": 2,
             "name": "conditional3",
-            "parameters": 8,
+            "parameters": 9,
             "vararg": false,
-            "returns": 9
+            "returns": 10
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "conditional1",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -108,7 +112,7 @@
         {
             "identifier": 1,
             "name": "conditional2",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "pushf32",
@@ -134,7 +138,7 @@
         {
             "identifier": 2,
             "name": "conditional3",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "getlocals"

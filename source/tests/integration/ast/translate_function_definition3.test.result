@@ -28,6 +28,10 @@
         },
         {
             "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
             "type": [
                 {
                     "type": "int"
@@ -35,19 +39,19 @@
             ]
         },
         {
-            "identifier": 4,
+            "identifier": 5,
             "type": [
                 {
                     "type": "word"
                 }
             ]
-        },
-        {
-            "identifier": 5,
-            "type": []
         },
         {
             "identifier": 6,
+            "type": []
+        },
+        {
+            "identifier": 7,
             "type": [
                 {
                     "type": "word"
@@ -55,21 +59,8 @@
             ]
         },
         {
-            "identifier": 7,
-            "type": []
-        },
-        {
             "identifier": 8,
-            "type": [
-                {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "word"
-                        }
-                    ]
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 9,
@@ -78,13 +69,7 @@
                     "type": "struct",
                     "fields": [
                         {
-                            "type": "double"
-                        },
-                        {
-                            "type": "double"
-                        },
-                        {
-                            "type": "double"
+                            "type": "word"
                         }
                     ]
                 }
@@ -111,6 +96,25 @@
         },
         {
             "identifier": 11,
+            "type": [
+                {
+                    "type": "struct",
+                    "fields": [
+                        {
+                            "type": "double"
+                        },
+                        {
+                            "type": "double"
+                        },
+                        {
+                            "type": "double"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "identifier": 12,
             "type": [
                 {
                     "type": "struct",
@@ -160,23 +164,23 @@
         {
             "identifier": 0,
             "name": "sum",
-            "parameters": 4,
+            "parameters": 5,
             "vararg": false,
-            "returns": 5
+            "returns": 6
         },
         {
             "identifier": 1,
             "name": "sum",
-            "parameters": 6,
+            "parameters": 7,
             "vararg": false,
-            "returns": 7
+            "returns": 8
         }
     ],
     "functions": [
         {
             "identifier": 1,
             "name": "sum",
-            "locals": 8,
+            "locals": 9,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -206,7 +210,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 10,
+                        "type": 11,
                         "index": 2
                     }
                 },
@@ -225,7 +229,7 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 11,
+                        "type": 12,
                         "index": 3
                     }
                 },

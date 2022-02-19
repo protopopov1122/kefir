@@ -18,6 +18,10 @@
         },
         {
             "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
             "type": [
                 {
                     "type": "int"
@@ -25,7 +29,7 @@
             ]
         },
         {
-            "identifier": 4,
+            "identifier": 5,
             "type": [
                 {
                     "type": "struct",
@@ -48,15 +52,15 @@
             ]
         },
         {
-            "identifier": 5,
-            "type": []
-        },
-        {
             "identifier": 6,
             "type": []
         },
         {
             "identifier": 7,
+            "type": []
+        },
+        {
+            "identifier": 8,
             "type": [
                 {
                     "type": "int"
@@ -64,16 +68,12 @@
             ]
         },
         {
-            "identifier": 8,
+            "identifier": 9,
             "type": [
                 {
                     "type": "char"
                 }
             ]
-        },
-        {
-            "identifier": 9,
-            "type": []
         },
         {
             "identifier": 10,
@@ -94,6 +94,10 @@
         {
             "identifier": 14,
             "type": []
+        },
+        {
+            "identifier": 15,
+            "type": []
         }
     ],
     "data": [],
@@ -102,30 +106,30 @@
         {
             "identifier": 0,
             "name": "while1",
-            "parameters": 5,
+            "parameters": 6,
             "vararg": false,
-            "returns": 6
+            "returns": 7
         },
         {
             "identifier": 1,
             "name": "while2",
-            "parameters": 10,
+            "parameters": 11,
             "vararg": false,
-            "returns": 11
+            "returns": 12
         },
         {
             "identifier": 2,
             "name": "while3",
-            "parameters": 13,
+            "parameters": 14,
             "vararg": false,
-            "returns": 14
+            "returns": 15
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "while1",
-            "locals": 4,
+            "locals": 5,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -166,7 +170,7 @@
                 {
                     "opcode": "elementptr",
                     "arg": {
-                        "type": 8,
+                        "type": 9,
                         "index": 0
                     }
                 },
@@ -237,7 +241,7 @@
         {
             "identifier": 1,
             "name": "while2",
-            "locals": 9,
+            "locals": 10,
             "body": [
                 {
                     "opcode": "push",
@@ -286,7 +290,7 @@
         {
             "identifier": 2,
             "name": "while3",
-            "locals": 12,
+            "locals": 13,
             "body": [
                 {
                     "opcode": "pushld",

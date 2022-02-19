@@ -18,15 +18,15 @@
         },
         {
             "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
             "type": [
                 {
                     "type": "int"
                 }
             ]
-        },
-        {
-            "identifier": 4,
-            "type": []
         },
         {
             "identifier": 5,
@@ -62,6 +62,10 @@
         },
         {
             "identifier": 13,
+            "type": []
+        },
+        {
+            "identifier": 14,
             "type": [
                 {
                     "type": "struct",
@@ -89,15 +93,15 @@
             ]
         },
         {
-            "identifier": 14,
-            "type": []
-        },
-        {
             "identifier": 15,
             "type": []
         },
         {
             "identifier": 16,
+            "type": []
+        },
+        {
+            "identifier": 17,
             "type": [
                 {
                     "type": "struct",
@@ -110,15 +114,15 @@
             ]
         },
         {
-            "identifier": 17,
-            "type": []
-        },
-        {
             "identifier": 18,
             "type": []
         },
         {
             "identifier": 19,
+            "type": []
+        },
+        {
+            "identifier": 20,
             "type": []
         }
     ],
@@ -128,44 +132,44 @@
         {
             "identifier": 0,
             "name": "expr1",
-            "parameters": 5,
+            "parameters": 6,
             "vararg": false,
-            "returns": 6
+            "returns": 7
         },
         {
             "identifier": 1,
             "name": "expr2",
-            "parameters": 8,
+            "parameters": 9,
             "vararg": false,
-            "returns": 9
+            "returns": 10
         },
         {
             "identifier": 2,
             "name": "expr3",
-            "parameters": 11,
+            "parameters": 12,
             "vararg": false,
-            "returns": 12
+            "returns": 13
         },
         {
             "identifier": 3,
             "name": "expr4",
-            "parameters": 14,
+            "parameters": 15,
             "vararg": false,
-            "returns": 15
+            "returns": 16
         },
         {
             "identifier": 4,
             "name": "expr5",
-            "parameters": 18,
+            "parameters": 19,
             "vararg": false,
-            "returns": 19
+            "returns": 20
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "expr1",
-            "locals": 4,
+            "locals": 5,
             "body": [
                 {
                     "opcode": "push",
@@ -179,7 +183,7 @@
         {
             "identifier": 1,
             "name": "expr2",
-            "locals": 7,
+            "locals": 8,
             "body": [
                 {
                     "opcode": "push",
@@ -203,7 +207,7 @@
         {
             "identifier": 2,
             "name": "expr3",
-            "locals": 10,
+            "locals": 11,
             "body": [
                 {
                     "opcode": "push",
@@ -238,7 +242,7 @@
         {
             "identifier": 3,
             "name": "expr4",
-            "locals": 13,
+            "locals": 14,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -246,21 +250,21 @@
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 13,
+                        "type": 14,
                         "index": 1
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 13,
+                        "type": 14,
                         "index": 2
                     }
                 },
                 {
                     "opcode": "offsetptr",
                     "arg": {
-                        "type": 13,
+                        "type": 14,
                         "index": 3
                     }
                 },
@@ -271,7 +275,7 @@
                 {
                     "opcode": "bzero",
                     "arg": {
-                        "type": 16,
+                        "type": 17,
                         "index": 0
                     }
                 },
@@ -297,7 +301,7 @@
         {
             "identifier": 4,
             "name": "expr5",
-            "locals": 17,
+            "locals": 18,
             "body": []
         }
     ]

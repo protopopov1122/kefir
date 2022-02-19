@@ -41,6 +41,10 @@
         {
             "identifier": 9,
             "type": []
+        },
+        {
+            "identifier": 10,
+            "type": []
         }
     ],
     "data": [],
@@ -49,30 +53,30 @@
         {
             "identifier": 0,
             "name": "multiply",
-            "parameters": 4,
+            "parameters": 5,
             "vararg": false,
-            "returns": 5
+            "returns": 6
         },
         {
             "identifier": 1,
             "name": "divide",
-            "parameters": 6,
+            "parameters": 7,
             "vararg": false,
-            "returns": 7
+            "returns": 8
         },
         {
             "identifier": 2,
             "name": "modulo",
-            "parameters": 8,
+            "parameters": 9,
             "vararg": false,
-            "returns": 9
+            "returns": 10
         }
     ],
     "functions": [
         {
             "identifier": 1,
             "name": "divide",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -228,7 +232,7 @@
         {
             "identifier": 2,
             "name": "modulo",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -296,7 +300,7 @@
         {
             "identifier": 0,
             "name": "multiply",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",

@@ -127,6 +127,8 @@
 # Globals
 .global GLOBAL_UNINIT_STATIC
 .global get_global_uninit_static
+.global get_global_tlocal_uninit_static
+.global get_local_tlocal_uninit_static
 .global get_local_uninit_static
 
 get_global_uninit_static:
@@ -150,6 +152,49 @@ __get_global_uninit_static_epilogue:
     jmp __kefirrt_restore_state
 # End of get_global_uninit_static
 
+get_global_tlocal_uninit_static:
+# Begin prologue of get_global_tlocal_uninit_static
+    call __kefirrt_preserve_state
+    sub %rsp, 16
+    call __kefirrt_generic_prologue
+# Load parameters of get_global_tlocal_uninit_static
+# End prologue of get_global_tlocal_uninit_static
+    lea %rbx, [__get_global_tlocal_uninit_static_body]
+    jmp [%rbx]
+__get_global_tlocal_uninit_static_body:
+    .quad __kefirrt_tls_entry___kefirrt_module_static_tlocal_uninit_vars, 0
+    .quad __get_global_tlocal_uninit_static_epilogue, 0
+    .quad __get_global_tlocal_uninit_static_epilogue, 0
+__get_global_tlocal_uninit_static_epilogue:
+# Begin epilogue of get_global_tlocal_uninit_static
+    pop %rax
+    mov %rsp, %r14
+    add %rsp, 16
+    jmp __kefirrt_restore_state
+# End of get_global_tlocal_uninit_static
+
+get_local_tlocal_uninit_static:
+# Begin prologue of get_local_tlocal_uninit_static
+    call __kefirrt_preserve_state
+    sub %rsp, 16
+    call __kefirrt_generic_prologue
+# Load parameters of get_local_tlocal_uninit_static
+# End prologue of get_local_tlocal_uninit_static
+    lea %rbx, [__get_local_tlocal_uninit_static_body]
+    jmp [%rbx]
+__get_local_tlocal_uninit_static_body:
+    .quad __kefirrt_tls_entry___kefirrt_module_static_tlocal_uninit_vars, 0
+    .quad __kefirrt_offsetptr_impl, 24
+    .quad __get_local_tlocal_uninit_static_epilogue, 0
+    .quad __get_local_tlocal_uninit_static_epilogue, 0
+__get_local_tlocal_uninit_static_epilogue:
+# Begin epilogue of get_local_tlocal_uninit_static
+    pop %rax
+    mov %rsp, %r14
+    add %rsp, 16
+    jmp __kefirrt_restore_state
+# End of get_local_tlocal_uninit_static
+
 get_local_uninit_static:
 # Begin prologue of get_local_uninit_static
     call __kefirrt_preserve_state
@@ -172,10 +217,19 @@ __get_local_uninit_static_epilogue:
     jmp __kefirrt_restore_state
 # End of get_local_uninit_static
 
+__kefirrt_tls_entry___kefirrt_module_static_tlocal_uninit_vars:
+    lea %r12, [__kefirrt_module_static_tlocal_uninit_vars@tpoff]
+    add %r12, %fs:0
+    push %r12
+    add %rbx, 16
+    jmp [%rbx]
+
 .section .data
 __kefirrt_module_static_vars:
     .byte 0x67, 0x65, 0x74, 0x5f, 0x67, 0x6c, 0x6f, 0x62, 0x61, 0x6c, 0x5f, 0x75, 0x6e, 0x69, 0x6e, 0x69, 0x74, 0x5f, 0x73, 0x74, 0x61, 0x74, 0x69, 0x63, 0x00
     .byte 0x67, 0x65, 0x74, 0x5f, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x5f, 0x75, 0x6e, 0x69, 0x6e, 0x69, 0x74, 0x5f, 0x73, 0x74, 0x61, 0x74, 0x69, 0x63, 0x00
+    .byte 0x67, 0x65, 0x74, 0x5f, 0x67, 0x6c, 0x6f, 0x62, 0x61, 0x6c, 0x5f, 0x74, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x5f, 0x75, 0x6e, 0x69, 0x6e, 0x69, 0x74, 0x5f, 0x73, 0x74, 0x61, 0x74, 0x69, 0x63, 0x00
+    .byte 0x67, 0x65, 0x74, 0x5f, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x5f, 0x74, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x5f, 0x75, 0x6e, 0x69, 0x6e, 0x69, 0x74, 0x5f, 0x73, 0x74, 0x61, 0x74, 0x69, 0x63, 0x00
 
     .align 8
 GLOBAL_UNINIT_STATIC:
@@ -184,6 +238,18 @@ GLOBAL_UNINIT_STATIC:
 .section .bss
     .align 8
 __kefirrt_module_static_uninit_vars:
+    .long 0x00000000
+    .zero 4
+    .quad 0x0000000000000000
+    .quad 0x0000000000000000
+    .long 0x00000000
+    .zero 4
+    .quad 0x0000000000000000
+    .quad 0x0000000000000000
+
+.section .tbss
+    .align 8
+__kefirrt_module_static_tlocal_uninit_vars:
     .long 0x00000000
     .zero 4
     .quad 0x0000000000000000

@@ -80,37 +80,7 @@
         ]
     },
     "static_thread_locals": {
-        "layout": [
-            {
-                "type": "array",
-                "length": 1,
-                "element_type": {
-                    "type": "struct",
-                    "fields": [
-                        {
-                            "type": "double"
-                        },
-                        {
-                            "type": "array",
-                            "length": 32,
-                            "element_type": {
-                                "type": "char"
-                            }
-                        }
-                    ]
-                }
-            },
-            {
-                "type": "short"
-            },
-            {
-                "type": "bool",
-                "alignment": 8
-            },
-            {
-                "type": "float"
-            }
-        ],
+        "layout": [],
         "variables": [
             {
                 "identifier": "static_var3",

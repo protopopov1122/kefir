@@ -57,6 +57,10 @@
         {
             "identifier": 13,
             "type": []
+        },
+        {
+            "identifier": 14,
+            "type": []
         }
     ],
     "data": [],
@@ -65,44 +69,44 @@
         {
             "identifier": 0,
             "name": "left_shift",
-            "parameters": 4,
+            "parameters": 5,
             "vararg": false,
-            "returns": 5
+            "returns": 6
         },
         {
             "identifier": 1,
             "name": "right_shift",
-            "parameters": 6,
+            "parameters": 7,
             "vararg": false,
-            "returns": 7
+            "returns": 8
         },
         {
             "identifier": 2,
             "name": "and",
-            "parameters": 8,
+            "parameters": 9,
             "vararg": false,
-            "returns": 9
+            "returns": 10
         },
         {
             "identifier": 3,
             "name": "or",
-            "parameters": 10,
+            "parameters": 11,
             "vararg": false,
-            "returns": 11
+            "returns": 12
         },
         {
             "identifier": 4,
             "name": "xor",
-            "parameters": 12,
+            "parameters": 13,
             "vararg": false,
-            "returns": 13
+            "returns": 14
         }
     ],
     "functions": [
         {
             "identifier": 3,
             "name": "or",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -145,7 +149,7 @@
         {
             "identifier": 2,
             "name": "and",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -188,7 +192,7 @@
         {
             "identifier": 4,
             "name": "xor",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -231,7 +235,7 @@
         {
             "identifier": 0,
             "name": "left_shift",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",
@@ -283,7 +287,7 @@
         {
             "identifier": 1,
             "name": "right_shift",
-            "locals": 3,
+            "locals": 4,
             "body": [
                 {
                     "opcode": "push",

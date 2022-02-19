@@ -18,15 +18,15 @@
         },
         {
             "identifier": 3,
+            "type": []
+        },
+        {
+            "identifier": 4,
             "type": [
                 {
                     "type": "int"
                 }
             ]
-        },
-        {
-            "identifier": 4,
-            "type": []
         },
         {
             "identifier": 5,
@@ -54,6 +54,10 @@
         },
         {
             "identifier": 11,
+            "type": []
+        },
+        {
+            "identifier": 12,
             "type": [
                 {
                     "type": "struct",
@@ -86,15 +90,15 @@
             ]
         },
         {
-            "identifier": 12,
-            "type": []
-        },
-        {
             "identifier": 13,
             "type": []
         },
         {
             "identifier": 14,
+            "type": []
+        },
+        {
+            "identifier": 15,
             "type": [
                 {
                     "type": "int"
@@ -102,15 +106,15 @@
             ]
         },
         {
-            "identifier": 15,
-            "type": []
-        },
-        {
             "identifier": 16,
             "type": []
         },
         {
             "identifier": 17,
+            "type": []
+        },
+        {
+            "identifier": 18,
             "type": [
                 {
                     "type": "struct",
@@ -133,10 +137,6 @@
             ]
         },
         {
-            "identifier": 18,
-            "type": []
-        },
-        {
             "identifier": 19,
             "type": []
         },
@@ -146,18 +146,10 @@
         },
         {
             "identifier": 21,
-            "type": [
-                {
-                    "type": "bool"
-                }
-            ]
+            "type": []
         },
         {
             "identifier": 22,
-            "type": []
-        },
-        {
-            "identifier": 23,
             "type": [
                 {
                     "type": "bool"
@@ -165,8 +157,16 @@
             ]
         },
         {
-            "identifier": 24,
+            "identifier": 23,
             "type": []
+        },
+        {
+            "identifier": 24,
+            "type": [
+                {
+                    "type": "bool"
+                }
+            ]
         },
         {
             "identifier": 25,
@@ -183,6 +183,10 @@
         {
             "identifier": 28,
             "type": []
+        },
+        {
+            "identifier": 29,
+            "type": []
         }
     ],
     "data": [],
@@ -191,79 +195,79 @@
         {
             "identifier": 0,
             "name": "for1",
-            "parameters": 5,
+            "parameters": 6,
             "vararg": false,
-            "returns": 6
+            "returns": 7
         },
         {
             "identifier": 1,
             "name": "body",
-            "parameters": 7,
+            "parameters": 8,
             "vararg": false,
-            "returns": 8
+            "returns": 9
         },
         {
             "identifier": 2,
             "name": "body",
-            "parameters": 9,
+            "parameters": 10,
             "vararg": false,
-            "returns": 10
+            "returns": 11
         },
         {
             "identifier": 3,
             "name": "for2",
-            "parameters": 12,
+            "parameters": 13,
             "vararg": false,
-            "returns": 13
+            "returns": 14
         },
         {
             "identifier": 4,
             "name": "body",
-            "parameters": 15,
+            "parameters": 16,
             "vararg": false,
-            "returns": 16
+            "returns": 17
         },
         {
             "identifier": 5,
             "name": "for3",
-            "parameters": 18,
+            "parameters": 19,
             "vararg": false,
-            "returns": 19
+            "returns": 20
         },
         {
             "identifier": 6,
             "name": "body2",
-            "parameters": 20,
+            "parameters": 21,
             "vararg": false,
-            "returns": 21
+            "returns": 22
         },
         {
             "identifier": 7,
             "name": "body2",
-            "parameters": 22,
+            "parameters": 23,
             "vararg": false,
-            "returns": 23
+            "returns": 24
         },
         {
             "identifier": 8,
             "name": "for4",
-            "parameters": 25,
+            "parameters": 26,
             "vararg": false,
-            "returns": 26
+            "returns": 27
         },
         {
             "identifier": 9,
             "name": "body",
-            "parameters": 27,
+            "parameters": 28,
             "vararg": false,
-            "returns": 28
+            "returns": 29
         }
     ],
     "functions": [
         {
             "identifier": 0,
             "name": "for1",
-            "locals": 4,
+            "locals": 5,
             "body": [
                 {
                     "opcode": "invoke",
@@ -281,7 +285,7 @@
         {
             "identifier": 3,
             "name": "for2",
-            "locals": 11,
+            "locals": 12,
             "body": [
                 {
                     "opcode": "getlocals"
@@ -367,7 +371,7 @@
         {
             "identifier": 5,
             "name": "for3",
-            "locals": 17,
+            "locals": 18,
             "body": [
                 {
                     "opcode": "push",
@@ -483,7 +487,7 @@
         {
             "identifier": 8,
             "name": "for4",
-            "locals": 24,
+            "locals": 25,
             "body": [
                 {
                     "opcode": "pushld",
