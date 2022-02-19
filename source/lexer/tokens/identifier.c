@@ -24,7 +24,7 @@
 #include "kefir/util/char32.h"
 #include "kefir/core/source_error.h"
 
-#define MAX_IDENTIFIER_LENGTH 64
+#define MAX_IDENTIFIER_LENGTH 255
 
 static kefir_result_t scan_identifier_nondigit(struct kefir_lexer_source_cursor *cursor, kefir_char32_t *target) {
     kefir_char32_t chr = kefir_lexer_source_cursor_at(cursor, 0);
