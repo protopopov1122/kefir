@@ -46,17 +46,26 @@ static kefir_result_t evaluate_pointer_offset(struct kefir_mem *mem, const struc
                                               struct kefir_ast_constant_expression_pointer *pointer,
                                               kefir_ast_constant_expression_int_t index,
                                               struct kefir_ast_constant_expression_value *value) {
-    kefir_ast_target_environment_opaque_type_t opaque_type;
-    REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_GET_TYPE(mem, context->target_env, node->properties.type->referenced_type,
-                                                     &opaque_type));
     kefir_int64_t offset = 0;
-    kefir_result_t res =
-        KEFIR_AST_TARGET_ENVIRONMENT_OBJECT_OFFSET(mem, context->target_env, opaque_type, index, &offset);
-    REQUIRE_ELSE(res == KEFIR_OK, {
-        KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(mem, context->target_env, opaque_type);
-        return res;
-    });
-    REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(mem, context->target_env, opaque_type));
+
+    const struct kefir_ast_type *unqualified_type = kefir_ast_unqualified_type(node->properties.type);
+    if (unqualified_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
+        kefir_ast_target_environment_opaque_type_t opaque_type;
+        REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_GET_TYPE(mem, context->target_env,
+                                                         node->properties.type->referenced_type, &opaque_type));
+        kefir_result_t res =
+            KEFIR_AST_TARGET_ENVIRONMENT_OBJECT_OFFSET(mem, context->target_env, opaque_type, index, &offset);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(mem, context->target_env, opaque_type);
+            return res;
+        });
+        REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(mem, context->target_env, opaque_type));
+    } else {
+        REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(unqualified_type),
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->source_location,
+                                       "Expected either pointer, or integral type"));
+        offset = index;
+    }
 
     value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_ADDRESS;
     value->pointer = *pointer;
@@ -77,22 +86,33 @@ static kefir_result_t evaluate_pointer_diff(struct kefir_mem *mem, const struct 
     REQUIRE(pointer2->type == KEFIR_AST_CONSTANT_EXPRESSION_POINTER_INTEGER,
             KEFIR_SET_SOURCE_ERROR(KEFIR_NOT_CONSTANT, location2, "Expected pointer to be an integral constant"));
 
-    kefir_ast_target_environment_opaque_type_t opaque_type;
-    REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_GET_TYPE(mem, context->target_env, type->referenced_type, &opaque_type));
+    kefir_size_t diff_factor = 1;
 
-    struct kefir_ast_target_environment_object_info objinfo;
-    kefir_result_t res =
-        KEFIR_AST_TARGET_ENVIRONMENT_OBJECT_INFO(mem, context->target_env, opaque_type, NULL, &objinfo);
-    REQUIRE_ELSE(res == KEFIR_OK, {
-        KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(mem, context->target_env, opaque_type);
-        return res;
-    });
-    REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(mem, context->target_env, opaque_type));
+    const struct kefir_ast_type *unqualified_type = kefir_ast_unqualified_type(type);
+    if (unqualified_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
+        kefir_ast_target_environment_opaque_type_t opaque_type;
+        REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_GET_TYPE(mem, context->target_env, unqualified_type->referenced_type,
+                                                         &opaque_type));
+
+        struct kefir_ast_target_environment_object_info objinfo;
+        kefir_result_t res =
+            KEFIR_AST_TARGET_ENVIRONMENT_OBJECT_INFO(mem, context->target_env, opaque_type, NULL, &objinfo);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(mem, context->target_env, opaque_type);
+            return res;
+        });
+        REQUIRE_OK(KEFIR_AST_TARGET_ENVIRONMENT_FREE_TYPE(mem, context->target_env, opaque_type));
+
+        diff_factor = objinfo.size;
+    } else {
+        REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(unqualified_type),
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location1, "Expected either pointer, or integral type"));
+    }
 
     kefir_int64_t diff = (pointer1->base.integral + pointer1->offset) - (pointer2->base.integral + pointer2->offset);
 
     value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
-    value->integer = diff / objinfo.size;
+    value->integer = diff / diff_factor;
     return KEFIR_OK;
 }
 

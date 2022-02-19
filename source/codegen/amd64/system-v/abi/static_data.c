@@ -90,6 +90,51 @@ static kefir_result_t integral_static_data(const struct kefir_ir_type *type, kef
             value = entry->value.integer;
             break;
 
+        case KEFIR_IR_DATA_VALUE_POINTER: {
+            REQUIRE(typeentry->typecode == KEFIR_IR_TYPE_LONG || typeentry->typecode == KEFIR_IR_TYPE_INT64,
+                    KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Unable to store pointer in requested location"));
+
+            ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout, kefir_vector_at(&param->layout, index));
+            REQUIRE_OK(align_offset(layout, param));
+
+            ASMGEN_RAW(&param->codegen->asmgen, KEFIR_AMD64_QUAD);
+            if (entry->value.pointer.offset > 0) {
+                ASMGEN_ARG(&param->codegen->asmgen, "%s + " KEFIR_INT64_FMT, entry->value.pointer.reference,
+                           entry->value.pointer.offset);
+            } else if (entry->value.pointer.offset < 0) {
+                ASMGEN_ARG(&param->codegen->asmgen, "%s " KEFIR_INT64_FMT, entry->value.pointer.reference,
+                           entry->value.pointer.offset);
+            } else {
+                ASMGEN_ARG(&param->codegen->asmgen, "%s", entry->value.pointer.reference);
+            }
+
+            param->offset += layout->size;
+            return KEFIR_OK;
+        }
+
+        case KEFIR_IR_DATA_VALUE_STRING_POINTER: {
+            REQUIRE(typeentry->typecode == KEFIR_IR_TYPE_LONG || typeentry->typecode == KEFIR_IR_TYPE_INT64,
+                    KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "Unable to store pointer in requested location"));
+
+            ASSIGN_DECL_CAST(struct kefir_amd64_sysv_data_layout *, layout, kefir_vector_at(&param->layout, index));
+            REQUIRE_OK(align_offset(layout, param));
+
+            ASMGEN_RAW(&param->codegen->asmgen, KEFIR_AMD64_QUAD);
+            if (entry->value.pointer.offset > 0) {
+                ASMGEN_ARG(&param->codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_STRING_LITERAL " + " KEFIR_INT64_FMT,
+                           entry->value.string_ptr.id, entry->value.string_ptr.offset);
+            } else if (entry->value.pointer.offset < 0) {
+                ASMGEN_ARG(&param->codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_STRING_LITERAL " " KEFIR_INT64_FMT,
+                           entry->value.string_ptr.id, entry->value.string_ptr.offset);
+            } else {
+                ASMGEN_ARG(&param->codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_STRING_LITERAL,
+                           entry->value.string_ptr.id);
+            }
+
+            param->offset += layout->size;
+            return KEFIR_OK;
+        }
+
         default:
             return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected value of integral field");
     }
