@@ -300,19 +300,20 @@ kefir_result_t kefir_ast_translator_function_context_translate(
             REQUIRE_OK(kefir_ast_declarator_unpack_identifier(init_decl->declarator, &param_identifier));
             REQUIRE(init_decl->base.properties.type != NULL,
                     KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Function definition parameters shall have definite types"));
-            if (init_decl->base.properties.type->tag != KEFIR_AST_TYPE_VOID && param_identifier != NULL) {
-                REQUIRE_OK(local_context->context.resolve_ordinary_identifier(&local_context->context, param_identifier,
-                                                                              &scoped_id));
-                REQUIRE_OK(kefir_ast_translator_object_lvalue(mem, context, builder, param_identifier, scoped_id));
-                REQUIRE_OK(xchg_param_address(builder, scoped_id->object.type));
-                REQUIRE_OK(kefir_ast_translator_store_value(mem, scoped_id->type, context, builder));
-            } else {
-                if (KEFIR_AST_TYPE_IS_LONG_DOUBLE(init_decl->base.properties.type)) {
+            if (init_decl->base.properties.type->tag != KEFIR_AST_TYPE_VOID) {
+                if (param_identifier != NULL) {
+                    REQUIRE_OK(local_context->context.resolve_ordinary_identifier(&local_context->context,
+                                                                                  param_identifier, &scoped_id));
+                    REQUIRE_OK(kefir_ast_translator_object_lvalue(mem, context, builder, param_identifier, scoped_id));
+                    REQUIRE_OK(xchg_param_address(builder, scoped_id->object.type));
+                    REQUIRE_OK(kefir_ast_translator_store_value(mem, scoped_id->type, context, builder));
+                } else {
+                    if (KEFIR_AST_TYPE_IS_LONG_DOUBLE(init_decl->base.properties.type)) {
+                        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POP, 0));
+                    }
                     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POP, 0));
                 }
-                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POP, 0));
             }
-
         } else if (param->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION &&
                    param->properties.expression_props.identifier != NULL) {
             REQUIRE_OK(local_context->context.resolve_ordinary_identifier(
