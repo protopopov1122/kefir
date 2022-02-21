@@ -195,7 +195,7 @@ DEFINE_CASE(ast_label_scope4, "AST ordinary scope - label scope #4") {
     ASSERT_LABEL(&kft_mem, &context.context, "label1", NULL, false);
 
     do {
-        ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context, NULL));
+        ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context));
         struct kefir_ast_flow_control_structure *parent = NULL;
         ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, &context.flow_control_tree,
                                                    KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK, &parent));
@@ -205,7 +205,7 @@ DEFINE_CASE(ast_label_scope4, "AST ordinary scope - label scope #4") {
         ASSERT_LABEL(&kft_mem, &context.context, "label2", parent, true);
 
         do {
-            ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context, NULL));
+            ASSERT_OK(kefir_ast_local_context_push_block_scope(&kft_mem, &context));
             struct kefir_ast_flow_control_structure *parent = NULL;
             ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, &context.flow_control_tree,
                                                        KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK, &parent));

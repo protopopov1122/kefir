@@ -59,7 +59,7 @@ kefir_result_t kefir_ast_analyze_conditional_statement_node(struct kefir_mem *me
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST flow control point"));
     }
 
-    REQUIRE_OK(context->push_block(mem, context, NULL));
+    REQUIRE_OK(context->push_block(mem, context));
 
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->condition));
     REQUIRE(node->condition->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,

@@ -98,11 +98,10 @@ static kefir_result_t pp_reference_label(struct kefir_mem *mem, const struct kef
     return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Preprocessor AST context does not implement labels");
 }
 
-static kefir_result_t pp_push_block(struct kefir_mem *mem, const struct kefir_ast_context *context,
-                                    struct kefir_ast_context_block_descriptor *block_descr) {
+static kefir_result_t pp_push_block(struct kefir_mem *mem, const struct kefir_ast_context *context) {
     UNUSED(mem);
     UNUSED(context);
-    UNUSED(block_descr);
+
     return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Preprocessor AST context does not implement blocks");
 }
 

@@ -53,10 +53,6 @@ typedef struct kefir_ast_context_extensions {
     void *payload;
 } kefir_ast_context_extensions_t;
 
-typedef struct kefir_ast_context_block_descriptor {
-    kefir_bool_t contains_vla;
-} kefir_ast_context_block_descriptor_t;
-
 typedef struct kefir_ast_context {
     kefir_result_t (*resolve_ordinary_identifier)(const struct kefir_ast_context *, const char *,
                                                   const struct kefir_ast_scoped_identifier **);
@@ -83,8 +79,7 @@ typedef struct kefir_ast_context {
     kefir_result_t (*reference_label)(struct kefir_mem *, const struct kefir_ast_context *, const char *,
                                       struct kefir_ast_flow_control_structure *, const struct kefir_source_location *,
                                       const struct kefir_ast_scoped_identifier **);
-    kefir_result_t (*push_block)(struct kefir_mem *, const struct kefir_ast_context *,
-                                 struct kefir_ast_context_block_descriptor *);
+    kefir_result_t (*push_block)(struct kefir_mem *, const struct kefir_ast_context *);
     kefir_result_t (*pop_block)(struct kefir_mem *, const struct kefir_ast_context *);
 
     struct kefir_symbol_table *symbols;

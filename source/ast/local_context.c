@@ -287,13 +287,12 @@ kefir_result_t context_reference_label(struct kefir_mem *mem, const struct kefir
     return KEFIR_OK;
 }
 
-static kefir_result_t context_push_block(struct kefir_mem *mem, const struct kefir_ast_context *context,
-                                         struct kefir_ast_context_block_descriptor *block_descr) {
+static kefir_result_t context_push_block(struct kefir_mem *mem, const struct kefir_ast_context *context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
 
     ASSIGN_DECL_CAST(struct kefir_ast_local_context *, local_ctx, context->payload);
-    REQUIRE_OK(kefir_ast_local_context_push_block_scope(mem, local_ctx, block_descr));
+    REQUIRE_OK(kefir_ast_local_context_push_block_scope(mem, local_ctx));
     return KEFIR_OK;
 }
 
@@ -323,7 +322,6 @@ kefir_result_t kefir_ast_local_context_init(struct kefir_mem *mem, struct kefir_
     REQUIRE_OK(kefir_ast_identifier_flat_scope_on_removal(&context->label_scope,
                                                           kefir_ast_context_free_scoped_identifier, NULL));
     REQUIRE_OK(kefir_ast_flow_control_tree_init(&context->flow_control_tree));
-    REQUIRE_OK(kefir_list_init(&context->block_decriptors));
 
     context->context.resolve_ordinary_identifier = context_resolve_ordinary_identifier;
     context->context.resolve_tag_identifier = context_resolve_tag_identifier;
@@ -366,7 +364,6 @@ kefir_result_t kefir_ast_local_context_free(struct kefir_mem *mem, struct kefir_
     context->context.extensions = NULL;
     context->context.extensions_payload = NULL;
 
-    REQUIRE_OK(kefir_list_free(mem, &context->block_decriptors));
     REQUIRE_OK(kefir_ast_flow_control_tree_free(mem, &context->flow_control_tree));
     REQUIRE_OK(kefir_ast_identifier_flat_scope_free(mem, &context->label_scope));
     REQUIRE_OK(kefir_ast_identifier_block_scope_free(mem, &context->tag_scope));
@@ -412,17 +409,13 @@ kefir_result_t kefir_ast_local_context_resolve_scoped_tag_identifier(
     return res;
 }
 
-kefir_result_t kefir_ast_local_context_push_block_scope(struct kefir_mem *mem, struct kefir_ast_local_context *context,
-                                                        struct kefir_ast_context_block_descriptor *block_descr) {
+kefir_result_t kefir_ast_local_context_push_block_scope(struct kefir_mem *mem,
+                                                        struct kefir_ast_local_context *context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST translatation context"));
-    REQUIRE_OK(kefir_list_insert_after(mem, &context->block_decriptors, kefir_list_tail(&context->block_decriptors),
-                                       block_descr));
+
     REQUIRE_OK(kefir_ast_identifier_block_scope_push(mem, &context->ordinary_scope));
     REQUIRE_OK(kefir_ast_identifier_block_scope_push(mem, &context->tag_scope));
-    if (block_descr != NULL) {
-        block_descr->contains_vla = false;
-    }
     return KEFIR_OK;
 }
 
@@ -432,7 +425,6 @@ kefir_result_t kefir_ast_local_context_pop_block_scope(struct kefir_mem *mem, st
 
     REQUIRE_OK(kefir_ast_identifier_block_scope_pop(&context->tag_scope));
     REQUIRE_OK(kefir_ast_identifier_block_scope_pop(&context->ordinary_scope));
-    REQUIRE_OK(kefir_list_pop(mem, &context->block_decriptors, kefir_list_tail(&context->block_decriptors)));
     return KEFIR_OK;
 }
 
@@ -717,6 +709,43 @@ kefir_result_t kefir_ast_local_context_define_static_thread_local(
     return KEFIR_OK;
 }
 
+static kefir_result_t find_block_structure(const struct kefir_ast_flow_control_structure *stmt, void *payload,
+                                           kefir_bool_t *result) {
+    UNUSED(payload);
+    REQUIRE(stmt != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST flow control structure"));
+    REQUIRE(result != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to result"));
+
+    *result = stmt->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK;
+    return KEFIR_OK;
+}
+
+static kefir_result_t register_vla(struct kefir_mem *mem, struct kefir_ast_local_context *context,
+                                   struct kefir_ast_scoped_identifier *scoped_id) {
+
+    struct kefir_ast_flow_control_structure *block = NULL;
+    kefir_result_t res =
+        kefir_ast_flow_control_tree_traverse(&context->flow_control_tree, find_block_structure, NULL, &block);
+
+    if (res != KEFIR_NOT_FOUND && block != NULL) {
+        REQUIRE_OK(res);
+        block->value.block.contains_vla = true;
+
+        struct kefir_ast_flow_control_data_element *data_elt = kefir_ast_flow_control_data_element_alloc(
+            mem, context->flow_control_tree.next_data_element_id++, block, KEFIR_AST_FLOW_CONTROL_DATA_ELEMENT_VLA);
+        REQUIRE(data_elt != NULL,
+                KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate AST flow control data element"));
+
+        res = kefir_ast_flow_control_block_add_data_element(mem, block, data_elt);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_ast_flow_control_data_element_free(mem, data_elt);
+            return res;
+        });
+
+        scoped_id->object.data_element = data_elt;
+    }
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_local_context_define_auto(struct kefir_mem *mem, struct kefir_ast_local_context *context,
                                                    const char *identifier, const struct kefir_ast_type *type,
                                                    struct kefir_ast_alignment *alignment,
@@ -775,12 +804,8 @@ kefir_result_t kefir_ast_local_context_define_auto(struct kefir_mem *mem, struct
         scoped_id->type = type;
     }
 
-    if (KEFIR_AST_TYPE_IS_VL_ARRAY(type) && kefir_list_length(&context->block_decriptors) > 0) {
-        ASSIGN_DECL_CAST(struct kefir_ast_context_block_descriptor *, block_descr,
-                         kefir_list_tail(&context->block_decriptors)->value);
-        if (block_descr != NULL) {
-            block_descr->contains_vla = true;
-        }
+    if (KEFIR_AST_TYPE_IS_VL_ARRAY(type)) {
+        REQUIRE_OK(register_vla(mem, context, scoped_id));
     }
 
     ASSIGN_PTR(scoped_id_ptr, scoped_id);
@@ -845,12 +870,8 @@ kefir_result_t kefir_ast_local_context_define_register(struct kefir_mem *mem, st
         scoped_id->type = type;
     }
 
-    if (KEFIR_AST_TYPE_IS_VL_ARRAY(type) && kefir_list_length(&context->block_decriptors) > 0) {
-        ASSIGN_DECL_CAST(struct kefir_ast_context_block_descriptor *, block_descr,
-                         kefir_list_tail(&context->block_decriptors)->value);
-        if (block_descr != NULL) {
-            block_descr->contains_vla = true;
-        }
+    if (KEFIR_AST_TYPE_IS_VL_ARRAY(type)) {
+        REQUIRE_OK(register_vla(mem, context, scoped_id));
     }
     ASSIGN_PTR(scoped_id_ptr, scoped_id);
     return KEFIR_OK;

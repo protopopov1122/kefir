@@ -53,6 +53,7 @@ typedef struct kefir_ast_scoped_identifier {
             kefir_ast_scoped_identifier_linkage_t linkage;
             kefir_bool_t external;
             struct kefir_ast_initializer *UNOWNED(initializer);
+            struct kefir_ast_flow_control_data_element *data_element;
         } object;
 
         struct {

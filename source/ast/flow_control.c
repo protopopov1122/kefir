@@ -51,6 +51,30 @@ kefir_result_t kefir_ast_flow_control_point_free(struct kefir_mem *mem, struct k
     return KEFIR_OK;
 }
 
+struct kefir_ast_flow_control_data_element *kefir_ast_flow_control_data_element_alloc(
+    struct kefir_mem *mem, kefir_id_t identifier, struct kefir_ast_flow_control_structure *parent,
+    kefir_ast_flow_control_data_element_type_t type) {
+    REQUIRE(mem != NULL, NULL);
+    REQUIRE(parent != NULL, NULL);
+
+    struct kefir_ast_flow_control_data_element *element =
+        KEFIR_MALLOC(mem, sizeof(struct kefir_ast_flow_control_data_element));
+    REQUIRE(element != NULL, NULL);
+    element->identifier = identifier;
+    element->parent = parent;
+    element->type = type;
+    return element;
+}
+
+kefir_result_t kefir_ast_flow_control_data_element_free(struct kefir_mem *mem,
+                                                        struct kefir_ast_flow_control_data_element *element) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(element != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST flow control data element"));
+
+    KEFIR_FREE(mem, element);
+    return KEFIR_OK;
+}
+
 static kefir_result_t flow_control_statement_free(struct kefir_mem *mem, void *node, void *payload) {
     UNUSED(payload);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
@@ -67,7 +91,7 @@ static kefir_result_t flow_control_statement_free(struct kefir_mem *mem, void *n
 
     switch (statement->type) {
         case KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK:
-            // Intentionally left blank
+            REQUIRE_OK(kefir_list_free(mem, &statement->value.block.data_elements));
             break;
 
         case KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF:
@@ -126,6 +150,7 @@ kefir_result_t kefir_ast_flow_control_tree_free(struct kefir_mem *mem, struct ke
 
     REQUIRE_OK(kefir_tree_free(mem, &tree->root));
     tree->current = NULL;
+    tree->next_data_element_id = 0;
     return KEFIR_OK;
 }
 
@@ -138,6 +163,17 @@ static kefir_result_t point_tree_free(struct kefir_mem *mem, struct kefir_hashtr
     ASSIGN_DECL_CAST(struct kefir_ast_flow_control_point *, point, value);
     REQUIRE(point != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST flow control point"));
     REQUIRE_OK(kefir_ast_flow_control_point_free(mem, point));
+    return KEFIR_OK;
+}
+
+static kefir_result_t data_element_free(struct kefir_mem *mem, struct kefir_list *list, struct kefir_list_entry *entry,
+                                        void *payload) {
+    UNUSED(list);
+    UNUSED(payload);
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid list entry"));
+
+    REQUIRE_OK(kefir_ast_flow_control_data_element_free(mem, entry->value));
     return KEFIR_OK;
 }
 
@@ -161,6 +197,8 @@ kefir_result_t kefir_ast_flow_control_tree_push(struct kefir_mem *mem, struct ke
     switch (type) {
         case KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK:
             stmt->value.block.contains_vla = false;
+            REQUIRE_OK(kefir_list_init(&stmt->value.block.data_elements));
+            REQUIRE_OK(kefir_list_on_remove(&stmt->value.block.data_elements, data_element_free, NULL));
             break;
 
         case KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF:
@@ -251,4 +289,18 @@ kefir_result_t kefir_ast_flow_control_tree_traverse(
     }
 
     return KEFIR_NOT_FOUND;
+}
+
+kefir_result_t kefir_ast_flow_control_block_add_data_element(struct kefir_mem *mem,
+                                                             struct kefir_ast_flow_control_structure *stmt,
+                                                             struct kefir_ast_flow_control_data_element *element) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(stmt != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST flow control tree statement"));
+    REQUIRE(element != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST flow control data element"));
+    REQUIRE(stmt->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected AST flow control tree statement to be block"));
+
+    REQUIRE_OK(kefir_list_insert_after(mem, &stmt->value.block.data_elements,
+                                       kefir_list_tail(&stmt->value.block.data_elements), element));
+    return KEFIR_OK;
 }
