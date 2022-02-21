@@ -365,6 +365,7 @@ DECLARE_CASE(ast_flow_control_tree3);
 DECLARE_CASE(ast_flow_control_tree4);
 DECLARE_CASE(ast_flow_control_tree5);
 DECLARE_CASE(ast_flow_control_tree6);
+DECLARE_CASE(ast_flow_control_tree_data_elements1);
 DECLARE_CASE(ast_nodes_switch_statements1);
 DECLARE_CASE(ast_node_analysis_switch_statements1);
 DECLARE_CASE(ast_node_analysis_switch_statements2);
@@ -578,25 +579,26 @@ TEST_SUITE(
     &ast_nodes_conditional_statements1, &valueast_node_analysis_conditional_statements1,
     &ast_node_analysis_conditinal_statements2, &ast_node_analysis_conditinal_statements3, &ast_flow_control_tree1,
     &ast_flow_control_tree2, &ast_flow_control_tree3, &ast_flow_control_tree4, &ast_flow_control_tree5,
-    &ast_flow_control_tree6, &ast_nodes_switch_statements1, &ast_node_analysis_switch_statements1,
-    &ast_node_analysis_switch_statements2, &ast_node_analysis_switch_statements3, &ast_node_analysis_switch_statements4,
-    &ast_node_analysis_switch_statements5, &ast_nodes_while_statements1, &ast_nodes_while_statements2,
-    &ast_nodes_do_while_statements1, &ast_nodes_do_while_statements2, &ast_nodes_for_statements1,
-    &ast_nodes_for_statements2, &ast_nodes_for_statements3, &ast_nodes_for_statements4, &ast_nodes_for_statements5,
-    &ast_node_analysis_while_statements1, &ast_node_analysis_while_statements2, &ast_node_analysis_do_while_statements1,
-    &ast_node_analysis_do_while_statements2, &ast_node_analysis_for_statements1, &ast_node_analysis_for_statements2,
-    &ast_node_analysis_for_statements3, &ast_nodes_goto_statements1, &ast_nodes_continue_statements,
-    &ast_nodes_break_statements, &ast_nodes_return_statements1, &ast_node_analysis_goto_statements1,
-    &ast_node_analysis_break_statements1, &ast_node_analysis_break_statements2, &ast_node_analysis_break_statements3,
-    &ast_node_analysis_break_statements4, &ast_node_analysis_break_statements5, &ast_node_analysis_break_statements6,
-    &ast_node_analysis_continue_statements1, &ast_node_analysis_continue_statements2,
-    &ast_node_analysis_continue_statements3, &ast_node_analysis_continue_statements4,
-    &ast_node_analysis_continue_statements5, &ast_node_analysis_return_statements1, &ast_translator_flow_control_point1,
-    &ast_nodes_function_definitions1, &ast_nodes_translation_units1, &ast_node_analysis_function_definitions1,
-    &ast_node_analysis_function_definitions2, &ast_node_analysis_function_definitions3,
-    &ast_node_analysis_translation_unit1, &ast_node_analysis_translation_unit2, &ast_nodes_declaration1,
-    &ast_node_analysis_declaration1, &ast_context_preprocessor_extensions1, &ast_context_global_extensions1,
-    &ast_context_local_extensions1, &ast_context_function_decl_context_extensions1, &ast_analysis_extension_node1,
+    &ast_flow_control_tree6, &ast_flow_control_tree_data_elements1, &ast_nodes_switch_statements1,
+    &ast_node_analysis_switch_statements1, &ast_node_analysis_switch_statements2, &ast_node_analysis_switch_statements3,
+    &ast_node_analysis_switch_statements4, &ast_node_analysis_switch_statements5, &ast_nodes_while_statements1,
+    &ast_nodes_while_statements2, &ast_nodes_do_while_statements1, &ast_nodes_do_while_statements2,
+    &ast_nodes_for_statements1, &ast_nodes_for_statements2, &ast_nodes_for_statements3, &ast_nodes_for_statements4,
+    &ast_nodes_for_statements5, &ast_node_analysis_while_statements1, &ast_node_analysis_while_statements2,
+    &ast_node_analysis_do_while_statements1, &ast_node_analysis_do_while_statements2,
+    &ast_node_analysis_for_statements1, &ast_node_analysis_for_statements2, &ast_node_analysis_for_statements3,
+    &ast_nodes_goto_statements1, &ast_nodes_continue_statements, &ast_nodes_break_statements,
+    &ast_nodes_return_statements1, &ast_node_analysis_goto_statements1, &ast_node_analysis_break_statements1,
+    &ast_node_analysis_break_statements2, &ast_node_analysis_break_statements3, &ast_node_analysis_break_statements4,
+    &ast_node_analysis_break_statements5, &ast_node_analysis_break_statements6, &ast_node_analysis_continue_statements1,
+    &ast_node_analysis_continue_statements2, &ast_node_analysis_continue_statements3,
+    &ast_node_analysis_continue_statements4, &ast_node_analysis_continue_statements5,
+    &ast_node_analysis_return_statements1, &ast_translator_flow_control_point1, &ast_nodes_function_definitions1,
+    &ast_nodes_translation_units1, &ast_node_analysis_function_definitions1, &ast_node_analysis_function_definitions2,
+    &ast_node_analysis_function_definitions3, &ast_node_analysis_translation_unit1,
+    &ast_node_analysis_translation_unit2, &ast_nodes_declaration1, &ast_node_analysis_declaration1,
+    &ast_context_preprocessor_extensions1, &ast_context_global_extensions1, &ast_context_local_extensions1,
+    &ast_context_function_decl_context_extensions1, &ast_analysis_extension_node1,
     &ast_analysis_before_after_extensions, &ast_translator_context_extensions1,
     &ast_translator_context_local_extensions1,
 

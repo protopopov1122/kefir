@@ -29,6 +29,11 @@
 typedef struct kefir_ast_flow_control_structure kefir_ast_flow_control_structure_t;
 typedef struct kefir_ast_flow_control_point kefir_ast_flow_control_point_t;
 
+typedef struct kefir_ast_flow_control_structure_data_element_range {
+    struct kefir_list_entry *head;
+    struct kefir_list_entry *tail;
+} kefir_ast_flow_control_structure_data_element_range_t;
+
 #define KEFIR_AST_FLOW_CONTROL_PAYLOAD_SIZE (sizeof(kefir_uptr_t) * 4)
 
 typedef struct kefir_ast_flow_control_point_cleanup {
@@ -38,6 +43,7 @@ typedef struct kefir_ast_flow_control_point_cleanup {
 
 typedef struct kefir_ast_flow_control_point {
     struct kefir_ast_flow_control_structure *parent;
+    struct kefir_ast_flow_control_structure_data_element_range parent_data_elts;
     unsigned char content[KEFIR_AST_FLOW_CONTROL_PAYLOAD_SIZE];
     void *ptr;
     struct kefir_ast_flow_control_point_cleanup cleanup;
@@ -63,6 +69,22 @@ struct kefir_ast_flow_control_data_element *kefir_ast_flow_control_data_element_
 kefir_result_t kefir_ast_flow_control_data_element_free(struct kefir_mem *,
                                                         struct kefir_ast_flow_control_data_element *);
 
+typedef struct kefir_ast_flow_control_structure_data_elements {
+    struct kefir_list elements;
+} kefir_ast_flow_control_structure_data_elements_t;
+
+kefir_result_t kefir_ast_flow_control_structure_data_elements_init(
+    struct kefir_ast_flow_control_structure_data_elements *);
+kefir_result_t kefir_ast_flow_control_structure_data_elements_free(
+    struct kefir_mem *, struct kefir_ast_flow_control_structure_data_elements *);
+kefir_result_t kefir_ast_flow_control_structure_data_elements_append(
+    struct kefir_mem *, struct kefir_ast_flow_control_structure_data_elements *,
+    struct kefir_ast_flow_control_data_element *);
+
+kefir_result_t kefir_ast_flow_control_structure_data_elements_current_range(
+    const struct kefir_ast_flow_control_structure_data_elements *,
+    struct kefir_ast_flow_control_structure_data_element_range *);
+
 typedef enum kefir_ast_flow_control_structure_type {
     KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK,
     KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF,
@@ -78,7 +100,7 @@ typedef struct kefir_ast_flow_control_structure_cleanup {
 } kefir_ast_flow_control_structure_cleanup_t;
 
 typedef struct kefir_ast_flow_control_structure {
-    struct kefir_ast_flow_control_structure *parent;
+    struct kefir_ast_flow_control_point *parent_point;
     kefir_ast_flow_control_structure_type_t type;
     struct kefir_ast_flow_control_structure_cleanup cleanup;
     struct {
@@ -89,7 +111,7 @@ typedef struct kefir_ast_flow_control_structure {
     union {
         struct {
             kefir_bool_t contains_vla;
-            struct kefir_list data_elements;
+            struct kefir_ast_flow_control_structure_data_elements data_elements;
         } block;
 
         struct {

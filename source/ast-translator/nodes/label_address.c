@@ -47,7 +47,7 @@ kefir_result_t kefir_ast_translate_label_address_node(struct kefir_mem *mem,
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
                                            "None of blocks enclosing the label can contain VLAs"));
         }
-        label_parent = label_parent->parent;
+        label_parent = label_parent->parent_point != NULL ? label_parent->parent_point->parent : NULL;
     }
 
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_PUSHLABEL, 0));

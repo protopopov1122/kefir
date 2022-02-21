@@ -17,11 +17,13 @@ static kefir_result_t find_common_parent(struct kefir_mem *mem,
             if (current_target_parent == current_origin_parent) {
                 *common_parent = current_target_parent;
             } else {
-                current_target_parent = current_target_parent->parent;
+                current_target_parent =
+                    current_target_parent->parent_point != NULL ? current_target_parent->parent_point->parent : NULL;
             }
         }
         if (*common_parent == NULL) {
-            current_origin_parent = current_origin_parent->parent;
+            current_origin_parent =
+                current_origin_parent->parent_point != NULL ? current_origin_parent->parent_point->parent : NULL;
         }
     }
     REQUIRE(*common_parent != NULL,
@@ -31,7 +33,8 @@ static kefir_result_t find_common_parent(struct kefir_mem *mem,
     while (current_target_parent != *common_parent) {
         REQUIRE_OK(
             kefir_list_insert_after(mem, target_parents, kefir_list_tail(target_parents), current_target_parent));
-        current_target_parent = current_target_parent->parent;
+        current_target_parent =
+            current_target_parent->parent_point != NULL ? current_target_parent->parent_point->parent : NULL;
     }
     return KEFIR_OK;
 }
@@ -59,7 +62,8 @@ static kefir_result_t perform_jump(struct kefir_mem *mem, struct kefir_irbuilder
             current_origin_parent->value.block.contains_vla) {
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POPSCOPE, 0));
         }
-        current_origin_parent = current_origin_parent->parent;
+        current_origin_parent =
+            current_origin_parent->parent_point != NULL ? current_origin_parent->parent_point->parent : NULL;
     }
 
     REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_JMP, 0));

@@ -77,7 +77,7 @@ DEFINE_CASE(ast_flow_control_tree3, "AST Flow control tree - local context #1") 
                                                KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF, &stmt));
     ASSERT(stmt != NULL);
     ASSERT(stmt->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF);
-    ASSERT(stmt->parent == NULL);
+    ASSERT(stmt->parent_point == NULL);
     ASSERT_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree, &stmt2));
     ASSERT(stmt == stmt2);
 
@@ -85,9 +85,10 @@ DEFINE_CASE(ast_flow_control_tree3, "AST Flow control tree - local context #1") 
                                                KEFIR_AST_FLOW_CONTROL_STRUCTURE_FOR, &stmt));
     ASSERT(stmt != NULL);
     ASSERT(stmt->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_FOR);
-    ASSERT(stmt->parent != NULL);
-    ASSERT(stmt->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF);
-    ASSERT(stmt->parent->parent == NULL);
+    ASSERT(stmt->parent_point != NULL);
+    ASSERT(stmt->parent_point->parent != NULL);
+    ASSERT(stmt->parent_point->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF);
+    ASSERT(stmt->parent_point->parent->parent_point == NULL);
     ASSERT_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree, &stmt2));
     ASSERT(stmt == stmt2);
 
@@ -95,11 +96,13 @@ DEFINE_CASE(ast_flow_control_tree3, "AST Flow control tree - local context #1") 
                                                KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH, &stmt));
     ASSERT(stmt != NULL);
     ASSERT(stmt->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH);
-    ASSERT(stmt->parent != NULL);
-    ASSERT(stmt->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_FOR);
-    ASSERT(stmt->parent->parent != NULL);
-    ASSERT(stmt->parent->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF);
-    ASSERT(stmt->parent->parent->parent == NULL);
+    ASSERT(stmt->parent_point != NULL);
+    ASSERT(stmt->parent_point->parent != NULL);
+    ASSERT(stmt->parent_point->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_FOR);
+    ASSERT(stmt->parent_point->parent->parent_point != NULL);
+    ASSERT(stmt->parent_point->parent->parent_point->parent != NULL);
+    ASSERT(stmt->parent_point->parent->parent_point->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF);
+    ASSERT(stmt->parent_point->parent->parent_point->parent->parent_point == NULL);
     ASSERT_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree, &stmt2));
     ASSERT(stmt == stmt2);
 
@@ -107,13 +110,17 @@ DEFINE_CASE(ast_flow_control_tree3, "AST Flow control tree - local context #1") 
                                                KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK, &stmt));
     ASSERT(stmt != NULL);
     ASSERT(stmt->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK);
-    ASSERT(stmt->parent != NULL);
-    ASSERT(stmt->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH);
-    ASSERT(stmt->parent->parent != NULL);
-    ASSERT(stmt->parent->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_FOR);
-    ASSERT(stmt->parent->parent->parent != NULL);
-    ASSERT(stmt->parent->parent->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF);
-    ASSERT(stmt->parent->parent->parent->parent == NULL);
+    ASSERT(stmt->parent_point != NULL);
+    ASSERT(stmt->parent_point->parent != NULL);
+    ASSERT(stmt->parent_point->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH);
+    ASSERT(stmt->parent_point->parent->parent_point != NULL);
+    ASSERT(stmt->parent_point->parent->parent_point->parent != NULL);
+    ASSERT(stmt->parent_point->parent->parent_point->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_FOR);
+    ASSERT(stmt->parent_point->parent->parent_point->parent->parent_point != NULL);
+    ASSERT(stmt->parent_point->parent->parent_point->parent->parent_point->parent != NULL);
+    ASSERT(stmt->parent_point->parent->parent_point->parent->parent_point->parent->type ==
+           KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF);
+    ASSERT(stmt->parent_point->parent->parent_point->parent->parent_point->parent->parent_point == NULL);
     ASSERT_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree, &stmt2));
     ASSERT(stmt == stmt2);
 
@@ -122,19 +129,22 @@ DEFINE_CASE(ast_flow_control_tree3, "AST Flow control tree - local context #1") 
     ASSERT_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree, &stmt2));
     ASSERT(stmt2 != NULL);
     ASSERT(stmt2->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_FOR);
-    ASSERT(stmt2->parent != NULL);
-    ASSERT(stmt2->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF);
-    ASSERT(stmt2->parent->parent == NULL);
+    ASSERT(stmt2->parent_point != NULL);
+    ASSERT(stmt2->parent_point->parent != NULL);
+    ASSERT(stmt2->parent_point->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF);
+    ASSERT(stmt2->parent_point->parent->parent_point == NULL);
 
     ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
                                                KEFIR_AST_FLOW_CONTROL_STRUCTURE_DO, &stmt));
     ASSERT(stmt != NULL);
     ASSERT(stmt->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_DO);
-    ASSERT(stmt->parent != NULL);
-    ASSERT(stmt->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_FOR);
-    ASSERT(stmt->parent->parent != NULL);
-    ASSERT(stmt->parent->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF);
-    ASSERT(stmt->parent->parent->parent == NULL);
+    ASSERT(stmt->parent_point != NULL);
+    ASSERT(stmt->parent_point->parent != NULL);
+    ASSERT(stmt->parent_point->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_FOR);
+    ASSERT(stmt->parent_point->parent->parent_point != NULL);
+    ASSERT(stmt->parent_point->parent->parent_point->parent != NULL);
+    ASSERT(stmt->parent_point->parent->parent_point->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF);
+    ASSERT(stmt->parent_point->parent->parent_point->parent->parent_point == NULL);
     ASSERT_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree, &stmt2));
     ASSERT(stmt == stmt2);
 
@@ -143,7 +153,7 @@ DEFINE_CASE(ast_flow_control_tree3, "AST Flow control tree - local context #1") 
     ASSERT_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree, &stmt2));
     ASSERT(stmt2 != NULL);
     ASSERT(stmt2->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF);
-    ASSERT(stmt2->parent == NULL);
+    ASSERT(stmt2->parent_point == NULL);
 
     ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
                                                KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH, &stmt));
@@ -151,11 +161,13 @@ DEFINE_CASE(ast_flow_control_tree3, "AST Flow control tree - local context #1") 
                                                KEFIR_AST_FLOW_CONTROL_STRUCTURE_WHILE, &stmt));
     ASSERT(stmt != NULL);
     ASSERT(stmt->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_WHILE);
-    ASSERT(stmt->parent != NULL);
-    ASSERT(stmt->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH);
-    ASSERT(stmt->parent->parent != NULL);
-    ASSERT(stmt->parent->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF);
-    ASSERT(stmt->parent->parent->parent == NULL);
+    ASSERT(stmt->parent_point != NULL);
+    ASSERT(stmt->parent_point->parent != NULL);
+    ASSERT(stmt->parent_point->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH);
+    ASSERT(stmt->parent_point->parent->parent_point != NULL);
+    ASSERT(stmt->parent_point->parent->parent_point->parent != NULL);
+    ASSERT(stmt->parent_point->parent->parent_point->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF);
+    ASSERT(stmt->parent_point->parent->parent_point->parent->parent_point == NULL);
     ASSERT_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree, &stmt2));
     ASSERT(stmt == stmt2);
 
@@ -177,13 +189,17 @@ DEFINE_CASE(ast_flow_control_tree3, "AST Flow control tree - local context #1") 
 
     ASSERT(stmt != NULL);
     ASSERT(stmt->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_WHILE);
-    ASSERT(stmt->parent != NULL);
-    ASSERT(stmt->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH);
-    ASSERT(stmt->parent->parent != NULL);
-    ASSERT(stmt->parent->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF);
-    ASSERT(stmt->parent->parent->parent != NULL);
-    ASSERT(stmt->parent->parent->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_DO);
-    ASSERT(stmt->parent->parent->parent->parent == NULL);
+    ASSERT(stmt->parent_point != NULL);
+    ASSERT(stmt->parent_point->parent != NULL);
+    ASSERT(stmt->parent_point->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH);
+    ASSERT(stmt->parent_point->parent->parent_point != NULL);
+    ASSERT(stmt->parent_point->parent->parent_point->parent != NULL);
+    ASSERT(stmt->parent_point->parent->parent_point->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF);
+    ASSERT(stmt->parent_point->parent->parent_point->parent->parent_point != NULL);
+    ASSERT(stmt->parent_point->parent->parent_point->parent->parent_point->parent != NULL);
+    ASSERT(stmt->parent_point->parent->parent_point->parent->parent_point->parent->type ==
+           KEFIR_AST_FLOW_CONTROL_STRUCTURE_DO);
+    ASSERT(stmt->parent_point->parent->parent_point->parent->parent_point->parent->parent_point == NULL);
     ASSERT_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree, &stmt2));
     ASSERT(stmt == stmt2);
 
@@ -201,9 +217,10 @@ DEFINE_CASE(ast_flow_control_tree3, "AST Flow control tree - local context #1") 
     ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
                                                KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH, &stmt));
     ASSERT(stmt->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH);
-    ASSERT(stmt->parent != NULL);
-    ASSERT(stmt->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK);
-    ASSERT(stmt->parent->parent == NULL);
+    ASSERT(stmt->parent_point != NULL);
+    ASSERT(stmt->parent_point->parent != NULL);
+    ASSERT(stmt->parent_point->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK);
+    ASSERT(stmt->parent_point->parent->parent_point == NULL);
     ASSERT_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree, &stmt2));
     ASSERT(stmt == stmt2);
 
@@ -313,22 +330,24 @@ DEFINE_CASE(ast_flow_control_tree5, "AST Flow control tree - local context #3") 
         context->flow_control_tree, find_statement,
         &(kefir_ast_flow_control_structure_type_t){KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF}, &stmt2));
     ASSERT(stmt2->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_IF);
-    ASSERT(stmt2->parent != NULL);
-    ASSERT(stmt2->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_WHILE);
+    ASSERT(stmt2->parent_point != NULL);
+    ASSERT(stmt2->parent_point->parent != NULL);
+    ASSERT(stmt2->parent_point->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_WHILE);
     ASSERT(stmt == stmt2);
 
     ASSERT_OK(kefir_ast_flow_control_tree_traverse(
         context->flow_control_tree, find_statement,
         &(kefir_ast_flow_control_structure_type_t){KEFIR_AST_FLOW_CONTROL_STRUCTURE_WHILE}, &stmt2));
     ASSERT(stmt2->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_WHILE);
-    ASSERT(stmt2->parent != NULL);
-    ASSERT(stmt2->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_DO);
+    ASSERT(stmt2->parent_point != NULL);
+    ASSERT(stmt2->parent_point->parent != NULL);
+    ASSERT(stmt2->parent_point->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_DO);
 
     ASSERT_OK(kefir_ast_flow_control_tree_traverse(
         context->flow_control_tree, find_statement,
         &(kefir_ast_flow_control_structure_type_t){KEFIR_AST_FLOW_CONTROL_STRUCTURE_DO}, &stmt2));
     ASSERT(stmt2->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_DO);
-    ASSERT(stmt2->parent == NULL);
+    ASSERT(stmt2->parent_point == NULL);
 
     ASSERT(kefir_ast_flow_control_tree_traverse(
                context->flow_control_tree, find_statement,
@@ -344,8 +363,9 @@ DEFINE_CASE(ast_flow_control_tree5, "AST Flow control tree - local context #3") 
         context->flow_control_tree, find_statement,
         &(kefir_ast_flow_control_structure_type_t){KEFIR_AST_FLOW_CONTROL_STRUCTURE_WHILE}, &stmt2));
     ASSERT(stmt2->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_WHILE);
-    ASSERT(stmt2->parent != NULL);
-    ASSERT(stmt2->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_DO);
+    ASSERT(stmt2->parent_point != NULL);
+    ASSERT(stmt2->parent_point->parent != NULL);
+    ASSERT(stmt2->parent_point->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_DO);
 
     ASSERT(kefir_ast_flow_control_tree_traverse(
                context->flow_control_tree, find_statement,
@@ -361,21 +381,24 @@ DEFINE_CASE(ast_flow_control_tree5, "AST Flow control tree - local context #3") 
         context->flow_control_tree, find_statement,
         &(kefir_ast_flow_control_structure_type_t){KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH}, &stmt2));
     ASSERT(stmt2->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH);
-    ASSERT(stmt2->parent != NULL);
-    ASSERT(stmt2->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH);
+    ASSERT(stmt2->parent_point != NULL);
+    ASSERT(stmt2->parent_point->parent != NULL);
+    ASSERT(stmt2->parent_point->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH);
 
     ASSERT_OK(kefir_ast_flow_control_tree_pop(context->flow_control_tree));
     ASSERT_OK(kefir_ast_flow_control_tree_traverse(
         context->flow_control_tree, find_statement,
         &(kefir_ast_flow_control_structure_type_t){KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH}, &stmt2));
     ASSERT(stmt2->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH);
-    ASSERT(stmt2->parent != NULL);
-    ASSERT(stmt2->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_WHILE);
+    ASSERT(stmt2->parent_point != NULL);
+    ASSERT(stmt2->parent_point->parent != NULL);
+    ASSERT(stmt2->parent_point->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_WHILE);
 
     ASSERT_OK(kefir_ast_flow_control_tree_traverse(context->flow_control_tree, find_statement2, NULL, &stmt2));
     ASSERT(stmt2->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH);
-    ASSERT(stmt2->parent != NULL);
-    ASSERT(stmt2->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_WHILE);
+    ASSERT(stmt2->parent_point != NULL);
+    ASSERT(stmt2->parent_point->parent != NULL);
+    ASSERT(stmt2->parent_point->parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_WHILE);
 
     ASSERT_OK(kefir_ast_flow_control_tree_pop(context->flow_control_tree));
     ASSERT_OK(kefir_ast_flow_control_tree_pop(context->flow_control_tree));
@@ -434,6 +457,100 @@ DEFINE_CASE(ast_flow_control_tree6, "AST Flow control tree - flow control value 
                                     (kefir_hashtree_value_t) kefir_ast_flow_control_point_alloc(&kft_mem, NULL)));
     stmt4->value.switchStatement.defaultCase = kefir_ast_flow_control_point_alloc(&kft_mem, NULL);
     ASSERT_OK(kefir_ast_flow_control_tree_pop(context->flow_control_tree));
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+}
+END_CASE
+
+DEFINE_CASE(ast_flow_control_tree_data_elements1, "AST Flow control tree - data elements #1") {
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
+                                            &global_context, NULL));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    ASSERT(context->flow_control_tree != NULL);
+
+    struct kefir_ast_flow_control_structure *stmt = NULL;
+    ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
+                                               KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK, &stmt));
+
+    ASSERT(stmt->parent_point == NULL);
+    ASSERT(kefir_list_length(&stmt->value.block.data_elements.elements) == 0);
+
+    ASSERT_OK(kefir_ast_flow_control_block_add_data_element(
+        &kft_mem, stmt,
+        kefir_ast_flow_control_data_element_alloc(&kft_mem, 0, stmt, KEFIR_AST_FLOW_CONTROL_DATA_ELEMENT_VLA)));
+    ASSERT_OK(kefir_ast_flow_control_block_add_data_element(
+        &kft_mem, stmt,
+        kefir_ast_flow_control_data_element_alloc(&kft_mem, 1, stmt, KEFIR_AST_FLOW_CONTROL_DATA_ELEMENT_VLA)));
+    ASSERT_OK(kefir_ast_flow_control_block_add_data_element(
+        &kft_mem, stmt,
+        kefir_ast_flow_control_data_element_alloc(&kft_mem, 2, stmt, KEFIR_AST_FLOW_CONTROL_DATA_ELEMENT_VLA)));
+
+    ASSERT(kefir_list_length(&stmt->value.block.data_elements.elements) == 3);
+
+    struct kefir_ast_flow_control_structure *stmt2 = NULL;
+    ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
+                                               KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK, &stmt2));
+
+    ASSERT(stmt2->parent_point->parent == stmt);
+    ASSERT(kefir_list_length(&stmt2->value.block.data_elements.elements) == 0);
+    ASSERT(stmt2->parent_point->parent_data_elts.head == kefir_list_head(&stmt->value.block.data_elements.elements));
+    ASSERT(stmt2->parent_point->parent_data_elts.tail ==
+           kefir_list_head(&stmt->value.block.data_elements.elements)->next->next);
+
+    ASSERT_OK(kefir_ast_flow_control_block_add_data_element(
+        &kft_mem, stmt2,
+        kefir_ast_flow_control_data_element_alloc(&kft_mem, 3, stmt2, KEFIR_AST_FLOW_CONTROL_DATA_ELEMENT_VLA)));
+    ASSERT(kefir_list_length(&stmt2->value.block.data_elements.elements) == 1);
+    ASSERT(kefir_list_length(&stmt->value.block.data_elements.elements) == 3);
+
+    ASSERT_OK(kefir_ast_flow_control_tree_pop(context->flow_control_tree));
+
+    ASSERT_OK(kefir_ast_flow_control_block_add_data_element(
+        &kft_mem, stmt,
+        kefir_ast_flow_control_data_element_alloc(&kft_mem, 4, stmt, KEFIR_AST_FLOW_CONTROL_DATA_ELEMENT_VLA)));
+    ASSERT_OK(kefir_ast_flow_control_block_add_data_element(
+        &kft_mem, stmt,
+        kefir_ast_flow_control_data_element_alloc(&kft_mem, 5, stmt, KEFIR_AST_FLOW_CONTROL_DATA_ELEMENT_VLA)));
+
+    ASSERT(kefir_list_length(&stmt2->value.block.data_elements.elements) == 1);
+    ASSERT(kefir_list_length(&stmt->value.block.data_elements.elements) == 5);
+    ASSERT(stmt2->parent_point->parent_data_elts.head == kefir_list_head(&stmt->value.block.data_elements.elements));
+    ASSERT(stmt2->parent_point->parent_data_elts.tail ==
+           kefir_list_head(&stmt->value.block.data_elements.elements)->next->next);
+
+    struct kefir_ast_flow_control_structure *stmt3 = NULL;
+    ASSERT_OK(kefir_ast_flow_control_tree_push(&kft_mem, context->flow_control_tree,
+                                               KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK, &stmt3));
+
+    ASSERT(stmt3->parent_point->parent == stmt);
+    ASSERT(kefir_list_length(&stmt3->value.block.data_elements.elements) == 0);
+    ASSERT(stmt3->parent_point->parent_data_elts.head == kefir_list_head(&stmt->value.block.data_elements.elements));
+    ASSERT(stmt3->parent_point->parent_data_elts.tail ==
+           kefir_list_head(&stmt->value.block.data_elements.elements)->next->next->next->next);
+
+    ASSERT_OK(kefir_ast_flow_control_block_add_data_element(
+        &kft_mem, stmt3,
+        kefir_ast_flow_control_data_element_alloc(&kft_mem, 6, stmt3, KEFIR_AST_FLOW_CONTROL_DATA_ELEMENT_VLA)));
+    ASSERT_OK(kefir_ast_flow_control_block_add_data_element(
+        &kft_mem, stmt3,
+        kefir_ast_flow_control_data_element_alloc(&kft_mem, 7, stmt3, KEFIR_AST_FLOW_CONTROL_DATA_ELEMENT_VLA)));
+
+    ASSERT(kefir_list_length(&stmt3->value.block.data_elements.elements) == 2);
+    ASSERT(kefir_list_length(&stmt2->value.block.data_elements.elements) == 1);
+    ASSERT(kefir_list_length(&stmt->value.block.data_elements.elements) == 5);
+    ASSERT(stmt3->parent_point->parent_data_elts.head == kefir_list_head(&stmt->value.block.data_elements.elements));
+    ASSERT(stmt3->parent_point->parent_data_elts.tail ==
+           kefir_list_head(&stmt->value.block.data_elements.elements)->next->next->next->next);
+    ASSERT(stmt2->parent_point->parent_data_elts.head == kefir_list_head(&stmt->value.block.data_elements.elements));
+    ASSERT(stmt2->parent_point->parent_data_elts.tail ==
+           kefir_list_head(&stmt->value.block.data_elements.elements)->next->next);
 
     ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
