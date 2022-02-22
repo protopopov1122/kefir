@@ -111,6 +111,15 @@ static kefir_result_t pp_pop_block(struct kefir_mem *mem, const struct kefir_ast
     return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Preprocessor AST context does not implement blocks");
 }
 
+static kefir_result_t context_current_flow_control_point(struct kefir_mem *mem, const struct kefir_ast_context *context,
+                                                         struct kefir_ast_flow_control_point **point) {
+    UNUSED(mem);
+    UNUSED(context);
+    UNUSED(point);
+
+    return KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Control flow cannot be referenced in a preprocessor AST context");
+}
+
 kefir_result_t kefir_preprocessor_ast_context_init(struct kefir_mem *mem,
                                                    struct kefir_preprocessor_ast_context *context,
                                                    struct kefir_symbol_table *symbols,
@@ -133,6 +142,7 @@ kefir_result_t kefir_preprocessor_ast_context_init(struct kefir_mem *mem,
     context->context.reference_label = pp_reference_label;
     context->context.push_block = pp_push_block;
     context->context.pop_block = pp_pop_block;
+    context->context.current_flow_control_point = context_current_flow_control_point;
 
     context->context.symbols = symbols;
     context->context.type_traits = type_traits;

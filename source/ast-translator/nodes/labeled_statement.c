@@ -35,7 +35,8 @@ kefir_result_t kefir_ast_translate_labeled_statement_node(struct kefir_mem *mem,
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST labeled statement node"));
 
     REQUIRE_OK(kefir_ast_translator_flow_control_point_resolve(
-        mem, node->base.properties.statement_props.flow_control_point, KEFIR_IRBUILDER_BLOCK_CURRENT_INDEX(builder)));
+        mem, node->base.properties.statement_props.target_flow_control_point,
+        KEFIR_IRBUILDER_BLOCK_CURRENT_INDEX(builder)));
     REQUIRE_OK(kefir_ast_translate_statement(mem, node->statement, builder, context));
     return KEFIR_OK;
 }

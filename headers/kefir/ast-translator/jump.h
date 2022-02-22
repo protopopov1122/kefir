@@ -27,7 +27,7 @@
 #include "kefir/core/source_location.h"
 
 kefir_result_t kefir_ast_translate_jump(struct kefir_mem *, struct kefir_ast_translator_context *,
-                                        struct kefir_irbuilder_block *, struct kefir_ast_flow_control_structure *,
+                                        struct kefir_irbuilder_block *, struct kefir_ast_flow_control_point *,
                                         struct kefir_ast_flow_control_point *, const struct kefir_source_location *);
 
 #endif

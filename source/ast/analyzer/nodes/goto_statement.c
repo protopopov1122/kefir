@@ -51,7 +51,7 @@ kefir_result_t kefir_ast_analyze_goto_statement_node(struct kefir_mem *mem, cons
                                        "Goto statement identifier should reference a label"));
         REQUIRE_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree,
                                                    &base->properties.statement_props.flow_control_statement));
-        base->properties.statement_props.flow_control_point = scoped_id->label.point;
+        base->properties.statement_props.target_flow_control_point = scoped_id->label.point;
     } else {
         REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->target));
         REQUIRE(node->target->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
@@ -65,7 +65,7 @@ kefir_result_t kefir_ast_analyze_goto_statement_node(struct kefir_mem *mem, cons
                                        "Goto operand shall be derefenced pointer"));
     }
 
-    REQUIRE_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree,
-                                               &base->properties.statement_props.flow_control_statement));
+    REQUIRE_OK(
+        context->current_flow_control_point(mem, context, &base->properties.statement_props.origin_flow_control_point));
     return KEFIR_OK;
 }

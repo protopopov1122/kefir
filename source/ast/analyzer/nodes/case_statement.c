@@ -85,7 +85,7 @@ kefir_result_t kefir_ast_analyze_case_statement_node(struct kefir_mem *mem, cons
             kefir_ast_flow_control_point_free(mem, point);
             return res;
         });
-        base->properties.statement_props.flow_control_point = point;
+        base->properties.statement_props.target_flow_control_point = point;
     } else {
         REQUIRE(switch_statement->value.switchStatement.defaultCase == NULL,
                 KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->base.source_location,
@@ -93,7 +93,8 @@ kefir_result_t kefir_ast_analyze_case_statement_node(struct kefir_mem *mem, cons
         switch_statement->value.switchStatement.defaultCase = kefir_ast_flow_control_point_alloc(mem, direct_parent);
         REQUIRE(switch_statement->value.switchStatement.defaultCase != NULL,
                 KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST flow control point"));
-        base->properties.statement_props.flow_control_point = switch_statement->value.switchStatement.defaultCase;
+        base->properties.statement_props.target_flow_control_point =
+            switch_statement->value.switchStatement.defaultCase;
     }
 
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->statement));

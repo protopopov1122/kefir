@@ -135,15 +135,14 @@ DEFINE_CASE(ast_node_analysis_function_definitions1, "AST node analysis - functi
         kefir_ast_type_pointer(&kft_mem, global_context.context.type_bundle, kefir_ast_type_signed_int())));
 
     ASSERT(body->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(body->base.properties.statement_props.flow_control_point == NULL);
     ASSERT(body->base.properties.statement_props.flow_control_statement != NULL);
     ASSERT(body->base.properties.statement_props.flow_control_statement->type ==
            KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK);
     ASSERT(body->base.properties.statement_props.flow_control_statement->parent_point == NULL);
 
     ASSERT(stmt1->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(stmt1->properties.statement_props.flow_control_point == NULL);
-    ASSERT(stmt1->properties.statement_props.flow_control_statement == NULL);
+    ASSERT(stmt1->properties.statement_props.target_flow_control_point == NULL);
+    ASSERT(stmt1->properties.statement_props.origin_flow_control_point == NULL);
 
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
     ASSERT_OK(global_context.context.resolve_ordinary_identifier(&global_context.context, "fn1", &scoped_id));
@@ -204,15 +203,15 @@ DEFINE_CASE(ast_node_analysis_function_definitions2, "AST node analysis - functi
     ASSERT(func->base.properties.function_definition.storage == KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC);
 
     ASSERT(body->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(body->base.properties.statement_props.flow_control_point == NULL);
+    ASSERT(body->base.properties.statement_props.target_flow_control_point == NULL);
     ASSERT(body->base.properties.statement_props.flow_control_statement != NULL);
     ASSERT(body->base.properties.statement_props.flow_control_statement->type ==
            KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK);
     ASSERT(body->base.properties.statement_props.flow_control_statement->parent_point == NULL);
 
     ASSERT(stmt1->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(stmt1->properties.statement_props.flow_control_point == NULL);
-    ASSERT(stmt1->properties.statement_props.flow_control_statement == NULL);
+    ASSERT(stmt1->properties.statement_props.target_flow_control_point == NULL);
+    ASSERT(stmt1->properties.statement_props.origin_flow_control_point == NULL);
 
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
     ASSERT_OK(global_context.context.resolve_ordinary_identifier(&global_context.context, "pi", &scoped_id));
@@ -315,15 +314,15 @@ DEFINE_CASE(ast_node_analysis_function_definitions3, "AST node analysis - functi
     ASSERT(param2->properties.expression_props.identifier != NULL);
 
     ASSERT(body->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(body->base.properties.statement_props.flow_control_point == NULL);
+    ASSERT(body->base.properties.statement_props.target_flow_control_point == NULL);
     ASSERT(body->base.properties.statement_props.flow_control_statement != NULL);
     ASSERT(body->base.properties.statement_props.flow_control_statement->type ==
            KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK);
     ASSERT(body->base.properties.statement_props.flow_control_statement->parent_point == NULL);
 
     ASSERT(stmt1->properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(stmt1->properties.statement_props.flow_control_point == NULL);
-    ASSERT(stmt1->properties.statement_props.flow_control_statement == NULL);
+    ASSERT(stmt1->properties.statement_props.target_flow_control_point == NULL);
+    ASSERT(stmt1->properties.statement_props.origin_flow_control_point == NULL);
 
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
     ASSERT_OK(global_context.context.resolve_ordinary_identifier(&global_context.context, "fn1", &scoped_id));

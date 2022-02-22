@@ -373,3 +373,47 @@ kefir_result_t kefir_ast_flow_control_block_add_data_element(struct kefir_mem *m
     REQUIRE_OK(kefir_ast_flow_control_structure_data_elements_append(mem, &stmt->value.block.data_elements, element));
     return KEFIR_OK;
 }
+
+kefir_result_t kefir_ast_flow_control_point_common_parent(struct kefir_ast_flow_control_point *point1,
+                                                          struct kefir_ast_flow_control_point *point2,
+                                                          struct kefir_ast_flow_control_structure **common_parent) {
+    REQUIRE(point1 != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST flow control point"));
+    REQUIRE(point2 != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST flow control point"));
+    REQUIRE(common_parent != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to AST flow control structure"));
+
+    *common_parent = NULL;
+    struct kefir_ast_flow_control_structure *current_parent1 = point1->parent;
+    while (current_parent1 != NULL && *common_parent == NULL) {
+        struct kefir_ast_flow_control_structure *current_parent2 = point2->parent;
+        while (current_parent2 != NULL && *common_parent == NULL) {
+            if (current_parent2 == current_parent1) {
+                *common_parent = current_parent2;
+            } else {
+                current_parent2 = current_parent2->parent_point != NULL ? current_parent2->parent_point->parent : NULL;
+            }
+        }
+        if (*common_parent == NULL) {
+            current_parent1 = current_parent1->parent_point != NULL ? current_parent1->parent_point->parent : NULL;
+        }
+    }
+    REQUIRE(*common_parent != NULL,
+            KEFIR_SET_ERROR(KEFIR_NOT_FOUND, "Unable to determine common parent for two flow control points"));
+
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_ast_flow_control_point_parents(struct kefir_mem *mem, struct kefir_ast_flow_control_point *point,
+                                                    struct kefir_list *parents,
+                                                    struct kefir_ast_flow_control_structure *top_parent) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(point != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST flow control point"));
+    REQUIRE(parents != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to AST list"));
+
+    struct kefir_ast_flow_control_structure *current_parent = point->parent;
+    while (current_parent != top_parent && current_parent != NULL) {
+        REQUIRE_OK(kefir_list_insert_after(mem, parents, kefir_list_tail(parents), current_parent));
+        current_parent = current_parent->parent_point != NULL ? current_parent->parent_point->parent : NULL;
+    }
+    return KEFIR_OK;
+}

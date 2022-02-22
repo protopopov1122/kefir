@@ -81,6 +81,8 @@ typedef struct kefir_ast_context {
                                       const struct kefir_ast_scoped_identifier **);
     kefir_result_t (*push_block)(struct kefir_mem *, const struct kefir_ast_context *);
     kefir_result_t (*pop_block)(struct kefir_mem *, const struct kefir_ast_context *);
+    kefir_result_t (*current_flow_control_point)(struct kefir_mem *, const struct kefir_ast_context *,
+                                                 struct kefir_ast_flow_control_point **);
 
     struct kefir_symbol_table *symbols;
     const struct kefir_ast_type_traits *type_traits;

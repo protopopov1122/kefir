@@ -270,6 +270,15 @@ static kefir_result_t free_func_decl_context(struct kefir_mem *mem, struct kefir
     return KEFIR_OK;
 }
 
+static kefir_result_t context_current_flow_control_point(struct kefir_mem *mem, const struct kefir_ast_context *context,
+                                                         struct kefir_ast_flow_control_point **point) {
+    UNUSED(mem);
+    UNUSED(context);
+    UNUSED(point);
+
+    return KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Control flow cannot be referenced in a global context");
+}
+
 kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem, const struct kefir_ast_type_traits *type_traits,
                                              const struct kefir_ast_target_environment *target_env,
                                              struct kefir_ast_global_context *context,
@@ -314,6 +323,7 @@ kefir_result_t kefir_ast_global_context_init(struct kefir_mem *mem, const struct
     context->context.reference_label = context_reference_label;
     context->context.push_block = context_push_block;
     context->context.pop_block = context_pop_block;
+    context->context.current_flow_control_point = context_current_flow_control_point;
     context->context.symbols = &context->symbols;
     context->context.type_bundle = &context->type_bundle;
     context->context.type_traits = context->type_traits;

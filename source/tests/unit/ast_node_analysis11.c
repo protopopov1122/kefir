@@ -67,33 +67,37 @@ DEFINE_CASE(ast_node_analysis_goto_statements1, "AST node analysis - goto statem
 
     ASSERT(goto1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(labeled4->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(goto1->base.properties.statement_props.flow_control_point ==
-           labeled4->base.properties.statement_props.flow_control_point);
-    ASSERT(goto1->base.properties.statement_props.flow_control_statement ==
+    ASSERT(goto1->base.properties.statement_props.target_flow_control_point ==
+           labeled4->base.properties.statement_props.target_flow_control_point);
+    ASSERT(goto1->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(goto1->base.properties.statement_props.origin_flow_control_point->parent ==
            compound1->base.properties.statement_props.flow_control_statement);
     ASSERT(labeled4->base.properties.statement_props.flow_control_statement == NULL);
 
     ASSERT(goto2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(labeled3->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(goto2->base.properties.statement_props.flow_control_point ==
-           labeled3->base.properties.statement_props.flow_control_point);
-    ASSERT(goto2->base.properties.statement_props.flow_control_statement ==
+    ASSERT(goto2->base.properties.statement_props.target_flow_control_point ==
+           labeled3->base.properties.statement_props.target_flow_control_point);
+    ASSERT(goto2->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(goto2->base.properties.statement_props.origin_flow_control_point->parent ==
            compound1->base.properties.statement_props.flow_control_statement);
     ASSERT(labeled3->base.properties.statement_props.flow_control_statement == NULL);
 
     ASSERT(goto3->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(labeled2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(goto3->base.properties.statement_props.flow_control_point ==
-           labeled2->base.properties.statement_props.flow_control_point);
-    ASSERT(goto3->base.properties.statement_props.flow_control_statement ==
+    ASSERT(goto3->base.properties.statement_props.target_flow_control_point ==
+           labeled2->base.properties.statement_props.target_flow_control_point);
+    ASSERT(goto3->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(goto3->base.properties.statement_props.origin_flow_control_point->parent ==
            compound1->base.properties.statement_props.flow_control_statement);
     ASSERT(labeled2->base.properties.statement_props.flow_control_statement == NULL);
 
     ASSERT(goto4->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(labeled1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(goto4->base.properties.statement_props.flow_control_point ==
-           labeled1->base.properties.statement_props.flow_control_point);
-    ASSERT(goto4->base.properties.statement_props.flow_control_statement ==
+    ASSERT(goto4->base.properties.statement_props.target_flow_control_point ==
+           labeled1->base.properties.statement_props.target_flow_control_point);
+    ASSERT(goto4->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(goto4->base.properties.statement_props.origin_flow_control_point->parent ==
            compound1->base.properties.statement_props.flow_control_statement);
     ASSERT(labeled1->base.properties.statement_props.flow_control_statement == NULL);
 
@@ -145,18 +149,21 @@ DEFINE_CASE(ast_node_analysis_goto_address_statements1, "AST node analysis - got
     ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(compound1)));
 
     ASSERT(goto1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(goto1->base.properties.statement_props.flow_control_point == NULL);
-    ASSERT(goto1->base.properties.statement_props.flow_control_statement ==
+    ASSERT(goto1->base.properties.statement_props.target_flow_control_point == NULL);
+    ASSERT(goto1->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(goto1->base.properties.statement_props.origin_flow_control_point->parent ==
            compound1->base.properties.statement_props.flow_control_statement);
 
     ASSERT(goto2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(goto2->base.properties.statement_props.flow_control_point == NULL);
-    ASSERT(goto2->base.properties.statement_props.flow_control_statement ==
+    ASSERT(goto2->base.properties.statement_props.target_flow_control_point == NULL);
+    ASSERT(goto2->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(goto2->base.properties.statement_props.origin_flow_control_point->parent ==
            compound1->base.properties.statement_props.flow_control_statement);
 
     ASSERT(goto3->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(goto3->base.properties.statement_props.flow_control_point == NULL);
-    ASSERT(goto3->base.properties.statement_props.flow_control_statement ==
+    ASSERT(goto3->base.properties.statement_props.target_flow_control_point == NULL);
+    ASSERT(goto3->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(goto3->base.properties.statement_props.origin_flow_control_point->parent ==
            compound1->base.properties.statement_props.flow_control_statement);
 
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(compound1)));
@@ -182,9 +189,10 @@ DEFINE_CASE(ast_node_analysis_break_statements1, "AST node analysis - break stat
 
     ASSERT(break1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(while1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(break1->base.properties.statement_props.flow_control_point ==
+    ASSERT(break1->base.properties.statement_props.target_flow_control_point ==
            while1->base.properties.statement_props.flow_control_statement->value.loop.end);
-    ASSERT(break1->base.properties.statement_props.flow_control_statement ==
+    ASSERT(break1->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(break1->base.properties.statement_props.origin_flow_control_point->parent ==
            while1->base.properties.statement_props.flow_control_statement);
 
     struct kefir_ast_break_statement *break2 = kefir_ast_new_break_statement(&kft_mem);
@@ -197,13 +205,15 @@ DEFINE_CASE(ast_node_analysis_break_statements1, "AST node analysis - break stat
 
     ASSERT(break2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(while2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(break2->base.properties.statement_props.flow_control_point ==
+    ASSERT(break2->base.properties.statement_props.target_flow_control_point ==
            while2->base.properties.statement_props.flow_control_statement->value.loop.end);
-    ASSERT(break2->base.properties.statement_props.flow_control_statement ==
+    ASSERT(break2->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(break2->base.properties.statement_props.origin_flow_control_point->parent ==
            while2->base.properties.statement_props.flow_control_statement);
-    ASSERT(break2->base.properties.statement_props.flow_control_point !=
+    ASSERT(break2->base.properties.statement_props.target_flow_control_point !=
            for3->base.properties.statement_props.flow_control_statement->value.loop.end);
-    ASSERT(break2->base.properties.statement_props.flow_control_statement !=
+    ASSERT(break2->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(break2->base.properties.statement_props.origin_flow_control_point->parent !=
            for3->base.properties.statement_props.flow_control_statement);
 
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(while1)));
@@ -230,9 +240,10 @@ DEFINE_CASE(ast_node_analysis_break_statements2, "AST node analysis - break stat
 
     ASSERT(break1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(do_while1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(break1->base.properties.statement_props.flow_control_point ==
+    ASSERT(break1->base.properties.statement_props.target_flow_control_point ==
            do_while1->base.properties.statement_props.flow_control_statement->value.loop.end);
-    ASSERT(break1->base.properties.statement_props.flow_control_statement ==
+    ASSERT(break1->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(break1->base.properties.statement_props.origin_flow_control_point->parent ==
            do_while1->base.properties.statement_props.flow_control_statement);
 
     struct kefir_ast_break_statement *break2 = kefir_ast_new_break_statement(&kft_mem);
@@ -244,13 +255,15 @@ DEFINE_CASE(ast_node_analysis_break_statements2, "AST node analysis - break stat
 
     ASSERT(break2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(do_while2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(break2->base.properties.statement_props.flow_control_point ==
+    ASSERT(break2->base.properties.statement_props.target_flow_control_point ==
            do_while2->base.properties.statement_props.flow_control_statement->value.loop.end);
-    ASSERT(break2->base.properties.statement_props.flow_control_statement ==
+    ASSERT(break2->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(break2->base.properties.statement_props.origin_flow_control_point->parent ==
            do_while2->base.properties.statement_props.flow_control_statement);
-    ASSERT(break2->base.properties.statement_props.flow_control_point !=
+    ASSERT(break2->base.properties.statement_props.target_flow_control_point !=
            while3->base.properties.statement_props.flow_control_statement->value.loop.end);
-    ASSERT(break2->base.properties.statement_props.flow_control_statement !=
+    ASSERT(break2->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(break2->base.properties.statement_props.origin_flow_control_point->parent !=
            while3->base.properties.statement_props.flow_control_statement);
 
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(do_while1)));
@@ -278,9 +291,10 @@ DEFINE_CASE(ast_node_analysis_break_statements3, "AST node analysis - break stat
 
     ASSERT(break1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(for1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(break1->base.properties.statement_props.flow_control_point ==
+    ASSERT(break1->base.properties.statement_props.target_flow_control_point ==
            for1->base.properties.statement_props.flow_control_statement->value.loop.end);
-    ASSERT(break1->base.properties.statement_props.flow_control_statement ==
+    ASSERT(break1->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(break1->base.properties.statement_props.origin_flow_control_point->parent ==
            for1->base.properties.statement_props.flow_control_statement);
 
     struct kefir_ast_break_statement *break2 = kefir_ast_new_break_statement(&kft_mem);
@@ -293,13 +307,15 @@ DEFINE_CASE(ast_node_analysis_break_statements3, "AST node analysis - break stat
 
     ASSERT(break2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(for2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(break2->base.properties.statement_props.flow_control_point ==
+    ASSERT(break2->base.properties.statement_props.target_flow_control_point ==
            for2->base.properties.statement_props.flow_control_statement->value.loop.end);
-    ASSERT(break2->base.properties.statement_props.flow_control_statement ==
+    ASSERT(break2->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(break2->base.properties.statement_props.origin_flow_control_point->parent ==
            for2->base.properties.statement_props.flow_control_statement);
-    ASSERT(break2->base.properties.statement_props.flow_control_point !=
+    ASSERT(break2->base.properties.statement_props.target_flow_control_point !=
            do_while3->base.properties.statement_props.flow_control_statement->value.loop.end);
-    ASSERT(break2->base.properties.statement_props.flow_control_statement !=
+    ASSERT(break2->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(break2->base.properties.statement_props.origin_flow_control_point->parent !=
            do_while3->base.properties.statement_props.flow_control_statement);
 
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(for1)));
@@ -346,23 +362,26 @@ DEFINE_CASE(ast_node_analysis_break_statements4, "AST node analysis - break stat
 
     ASSERT(break1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(switch1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(break1->base.properties.statement_props.flow_control_point ==
+    ASSERT(break1->base.properties.statement_props.target_flow_control_point ==
            switch1->base.properties.statement_props.flow_control_statement->value.switchStatement.end);
-    ASSERT(break1->base.properties.statement_props.flow_control_statement ==
+    ASSERT(break1->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(break1->base.properties.statement_props.origin_flow_control_point->parent ==
            compound1->base.properties.statement_props.flow_control_statement);
 
     ASSERT(break2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(switch1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(break2->base.properties.statement_props.flow_control_point ==
+    ASSERT(break2->base.properties.statement_props.target_flow_control_point ==
            switch1->base.properties.statement_props.flow_control_statement->value.switchStatement.end);
-    ASSERT(break2->base.properties.statement_props.flow_control_statement ==
+    ASSERT(break2->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(break2->base.properties.statement_props.origin_flow_control_point->parent ==
            compound1->base.properties.statement_props.flow_control_statement);
 
     ASSERT(break3->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(switch1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(break3->base.properties.statement_props.flow_control_point ==
+    ASSERT(break3->base.properties.statement_props.target_flow_control_point ==
            switch1->base.properties.statement_props.flow_control_statement->value.switchStatement.end);
-    ASSERT(break3->base.properties.statement_props.flow_control_statement ==
+    ASSERT(break3->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(break3->base.properties.statement_props.origin_flow_control_point->parent ==
            compound1->base.properties.statement_props.flow_control_statement);
 
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(switch1)));
@@ -412,22 +431,26 @@ DEFINE_CASE(ast_node_analysis_break_statements5, "AST node analysis - break stat
     ASSERT(switch1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(switch2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
 
-    ASSERT(break1->base.properties.statement_props.flow_control_point ==
+    ASSERT(break1->base.properties.statement_props.target_flow_control_point ==
            switch1->base.properties.statement_props.flow_control_statement->value.switchStatement.end);
-    ASSERT(break1->base.properties.statement_props.flow_control_statement ==
+    ASSERT(break1->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(break1->base.properties.statement_props.origin_flow_control_point->parent ==
            compound1->base.properties.statement_props.flow_control_statement);
-    ASSERT(break1->base.properties.statement_props.flow_control_point !=
+    ASSERT(break1->base.properties.statement_props.target_flow_control_point !=
            switch2->base.properties.statement_props.flow_control_statement->value.switchStatement.end);
-    ASSERT(break1->base.properties.statement_props.flow_control_statement !=
+    ASSERT(break1->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(break1->base.properties.statement_props.origin_flow_control_point->parent !=
            switch2->base.properties.statement_props.flow_control_statement);
 
-    ASSERT(break2->base.properties.statement_props.flow_control_point ==
+    ASSERT(break2->base.properties.statement_props.target_flow_control_point ==
            switch2->base.properties.statement_props.flow_control_statement->value.switchStatement.end);
-    ASSERT(break2->base.properties.statement_props.flow_control_statement ==
+    ASSERT(break2->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(break2->base.properties.statement_props.origin_flow_control_point->parent ==
            compound2->base.properties.statement_props.flow_control_statement);
-    ASSERT(break2->base.properties.statement_props.flow_control_point !=
+    ASSERT(break2->base.properties.statement_props.target_flow_control_point !=
            switch1->base.properties.statement_props.flow_control_statement->value.switchStatement.end);
-    ASSERT(break2->base.properties.statement_props.flow_control_statement !=
+    ASSERT(break2->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(break2->base.properties.statement_props.origin_flow_control_point->parent !=
            switch1->base.properties.statement_props.flow_control_statement);
 
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(switch2)));
@@ -475,9 +498,10 @@ DEFINE_CASE(ast_node_analysis_continue_statements1, "AST node analysis - continu
 
     ASSERT(continue1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(while1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(continue1->base.properties.statement_props.flow_control_point ==
+    ASSERT(continue1->base.properties.statement_props.target_flow_control_point ==
            while1->base.properties.statement_props.flow_control_statement->value.loop.continuation);
-    ASSERT(continue1->base.properties.statement_props.flow_control_statement ==
+    ASSERT(continue1->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(continue1->base.properties.statement_props.origin_flow_control_point->parent ==
            while1->base.properties.statement_props.flow_control_statement);
 
     struct kefir_ast_continue_statement *continue2 = kefir_ast_new_continue_statement(&kft_mem);
@@ -490,13 +514,15 @@ DEFINE_CASE(ast_node_analysis_continue_statements1, "AST node analysis - continu
 
     ASSERT(continue2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(while2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(continue2->base.properties.statement_props.flow_control_point ==
+    ASSERT(continue2->base.properties.statement_props.target_flow_control_point ==
            while2->base.properties.statement_props.flow_control_statement->value.loop.continuation);
-    ASSERT(continue2->base.properties.statement_props.flow_control_statement ==
+    ASSERT(continue2->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(continue2->base.properties.statement_props.origin_flow_control_point->parent ==
            while2->base.properties.statement_props.flow_control_statement);
-    ASSERT(continue2->base.properties.statement_props.flow_control_point !=
+    ASSERT(continue2->base.properties.statement_props.target_flow_control_point !=
            for3->base.properties.statement_props.flow_control_statement->value.loop.continuation);
-    ASSERT(continue2->base.properties.statement_props.flow_control_statement !=
+    ASSERT(continue2->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(continue2->base.properties.statement_props.origin_flow_control_point->parent !=
            for3->base.properties.statement_props.flow_control_statement);
 
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(while1)));
@@ -523,9 +549,10 @@ DEFINE_CASE(ast_node_analysis_continue_statements2, "AST node analysis - continu
 
     ASSERT(continue1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(do_while1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(continue1->base.properties.statement_props.flow_control_point ==
+    ASSERT(continue1->base.properties.statement_props.target_flow_control_point ==
            do_while1->base.properties.statement_props.flow_control_statement->value.loop.continuation);
-    ASSERT(continue1->base.properties.statement_props.flow_control_statement ==
+    ASSERT(continue1->base.properties.statement_props.origin_flow_control_point->parent != NULL);
+    ASSERT(continue1->base.properties.statement_props.origin_flow_control_point->parent ==
            do_while1->base.properties.statement_props.flow_control_statement);
 
     struct kefir_ast_continue_statement *continue2 = kefir_ast_new_continue_statement(&kft_mem);
@@ -537,13 +564,15 @@ DEFINE_CASE(ast_node_analysis_continue_statements2, "AST node analysis - continu
 
     ASSERT(continue2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(do_while2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(continue2->base.properties.statement_props.flow_control_point ==
+    ASSERT(continue2->base.properties.statement_props.target_flow_control_point ==
            do_while2->base.properties.statement_props.flow_control_statement->value.loop.continuation);
-    ASSERT(continue2->base.properties.statement_props.flow_control_statement ==
+    ASSERT(continue2->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(continue2->base.properties.statement_props.origin_flow_control_point->parent ==
            do_while2->base.properties.statement_props.flow_control_statement);
-    ASSERT(continue2->base.properties.statement_props.flow_control_point !=
+    ASSERT(continue2->base.properties.statement_props.target_flow_control_point !=
            while3->base.properties.statement_props.flow_control_statement->value.loop.continuation);
-    ASSERT(continue2->base.properties.statement_props.flow_control_statement !=
+    ASSERT(continue2->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(continue2->base.properties.statement_props.origin_flow_control_point->parent !=
            while3->base.properties.statement_props.flow_control_statement);
 
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(do_while1)));
@@ -571,9 +600,10 @@ DEFINE_CASE(ast_node_analysis_continue_statements3, "AST node analysis - continu
 
     ASSERT(continue1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(for1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(continue1->base.properties.statement_props.flow_control_point ==
+    ASSERT(continue1->base.properties.statement_props.target_flow_control_point ==
            for1->base.properties.statement_props.flow_control_statement->value.loop.continuation);
-    ASSERT(continue1->base.properties.statement_props.flow_control_statement ==
+    ASSERT(continue1->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(continue1->base.properties.statement_props.origin_flow_control_point->parent ==
            for1->base.properties.statement_props.flow_control_statement);
 
     struct kefir_ast_continue_statement *continue2 = kefir_ast_new_continue_statement(&kft_mem);
@@ -586,13 +616,15 @@ DEFINE_CASE(ast_node_analysis_continue_statements3, "AST node analysis - continu
 
     ASSERT(continue2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
     ASSERT(for2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(continue2->base.properties.statement_props.flow_control_point ==
+    ASSERT(continue2->base.properties.statement_props.target_flow_control_point ==
            for2->base.properties.statement_props.flow_control_statement->value.loop.continuation);
-    ASSERT(continue2->base.properties.statement_props.flow_control_statement ==
+    ASSERT(continue2->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(continue2->base.properties.statement_props.origin_flow_control_point->parent ==
            for2->base.properties.statement_props.flow_control_statement);
-    ASSERT(continue2->base.properties.statement_props.flow_control_point !=
+    ASSERT(continue2->base.properties.statement_props.target_flow_control_point !=
            do_while3->base.properties.statement_props.flow_control_statement->value.loop.continuation);
-    ASSERT(continue2->base.properties.statement_props.flow_control_statement !=
+    ASSERT(continue2->base.properties.statement_props.origin_flow_control_point != NULL);
+    ASSERT(continue2->base.properties.statement_props.origin_flow_control_point->parent !=
            do_while3->base.properties.statement_props.flow_control_statement);
 
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(for1)));
@@ -678,7 +710,8 @@ DEFINE_CASE(ast_node_analysis_return_statements1, "AST node analysis - return st
     struct kefir_ast_return_statement *return1 = kefir_ast_new_return_statement(&kft_mem, NULL);
     ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(return1)));
     ASSERT(return1->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(return1->base.properties.statement_props.flow_control_point == NULL);
+    ASSERT(return1->base.properties.statement_props.target_flow_control_point == NULL);
+    ASSERT(return1->base.properties.statement_props.origin_flow_control_point == NULL);
     ASSERT(return1->base.properties.statement_props.flow_control_statement == NULL);
     ASSERT(return1->expression == NULL);
     ASSERT(KEFIR_AST_TYPE_SAME(return1->base.properties.statement_props.return_type, kefir_ast_type_void()));
@@ -694,7 +727,8 @@ DEFINE_CASE(ast_node_analysis_return_statements1, "AST node analysis - return st
         kefir_ast_new_return_statement(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(&kft_mem, 1000)));
     ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(return2)));
     ASSERT(return2->base.properties.category == KEFIR_AST_NODE_CATEGORY_STATEMENT);
-    ASSERT(return2->base.properties.statement_props.flow_control_point == NULL);
+    ASSERT(return2->base.properties.statement_props.target_flow_control_point == NULL);
+    ASSERT(return2->base.properties.statement_props.origin_flow_control_point == NULL);
     ASSERT(return2->base.properties.statement_props.flow_control_statement == NULL);
     ASSERT(return2->expression != NULL);
     ASSERT(return2->expression->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);

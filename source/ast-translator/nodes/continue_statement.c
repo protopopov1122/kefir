@@ -36,7 +36,7 @@ kefir_result_t kefir_ast_translate_continue_statement_node(struct kefir_mem *mem
     REQUIRE(node != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST continue statement node"));
 
     REQUIRE_OK(kefir_ast_translate_jump(
-        mem, context, builder, node->base.properties.statement_props.flow_control_statement,
-        node->base.properties.statement_props.flow_control_point, &node->base.source_location));
+        mem, context, builder, node->base.properties.statement_props.origin_flow_control_point,
+        node->base.properties.statement_props.target_flow_control_point, &node->base.source_location));
     return KEFIR_OK;
 }

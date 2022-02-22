@@ -163,4 +163,11 @@ kefir_result_t kefir_ast_flow_control_block_add_data_element(struct kefir_mem *,
                                                              struct kefir_ast_flow_control_structure *,
                                                              struct kefir_ast_flow_control_data_element *);
 
+kefir_result_t kefir_ast_flow_control_point_common_parent(struct kefir_ast_flow_control_point *,
+                                                          struct kefir_ast_flow_control_point *,
+                                                          struct kefir_ast_flow_control_structure **);
+
+kefir_result_t kefir_ast_flow_control_point_parents(struct kefir_mem *, struct kefir_ast_flow_control_point *,
+                                                    struct kefir_list *, struct kefir_ast_flow_control_structure *);
+
 #endif

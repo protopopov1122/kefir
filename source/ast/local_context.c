@@ -305,6 +305,43 @@ static kefir_result_t context_pop_block(struct kefir_mem *mem, const struct kefi
     return KEFIR_OK;
 }
 
+static kefir_result_t context_current_flow_control_point(struct kefir_mem *mem, const struct kefir_ast_context *context,
+                                                         struct kefir_ast_flow_control_point **point) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(context != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST context"));
+    REQUIRE(point != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to AST flow control point"));
+
+    ASSIGN_DECL_CAST(struct kefir_ast_local_context *, local_ctx, context->payload);
+
+    struct kefir_ast_flow_control_structure *current_flow_control_stmt = NULL;
+    REQUIRE_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree, &current_flow_control_stmt));
+
+    *point = kefir_ast_flow_control_point_alloc(mem, current_flow_control_stmt);
+    REQUIRE(*point != NULL, KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate AST flow control point"));
+
+    kefir_result_t res = kefir_list_insert_after(mem, &local_ctx->flow_control_points,
+                                                 kefir_list_tail(&local_ctx->flow_control_points), *point);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        kefir_ast_flow_control_point_free(mem, *point);
+        *point = NULL;
+        return res;
+    });
+    return KEFIR_OK;
+}
+
+static kefir_result_t free_flow_control_point(struct kefir_mem *mem, struct kefir_list *points,
+                                              struct kefir_list_entry *entry, void *payload) {
+    UNUSED(points);
+    UNUSED(payload);
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(entry != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid list entry"));
+    ASSIGN_DECL_CAST(struct kefir_ast_flow_control_point *, point, entry->value);
+
+    REQUIRE_OK(kefir_ast_flow_control_point_free(mem, point));
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_local_context_init(struct kefir_mem *mem, struct kefir_ast_global_context *global,
                                             struct kefir_ast_local_context *context) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
@@ -322,6 +359,8 @@ kefir_result_t kefir_ast_local_context_init(struct kefir_mem *mem, struct kefir_
     REQUIRE_OK(kefir_ast_identifier_flat_scope_on_removal(&context->label_scope,
                                                           kefir_ast_context_free_scoped_identifier, NULL));
     REQUIRE_OK(kefir_ast_flow_control_tree_init(&context->flow_control_tree));
+    REQUIRE_OK(kefir_list_init(&context->flow_control_points));
+    REQUIRE_OK(kefir_list_on_remove(&context->flow_control_points, free_flow_control_point, NULL));
 
     context->context.resolve_ordinary_identifier = context_resolve_ordinary_identifier;
     context->context.resolve_tag_identifier = context_resolve_tag_identifier;
@@ -333,6 +372,7 @@ kefir_result_t kefir_ast_local_context_init(struct kefir_mem *mem, struct kefir_
     context->context.reference_label = context_reference_label;
     context->context.push_block = context_push_block;
     context->context.pop_block = context_pop_block;
+    context->context.current_flow_control_point = context_current_flow_control_point;
     context->context.symbols = &context->global->symbols;
     context->context.type_bundle = &context->global->type_bundle;
     context->context.type_traits = context->global->type_traits;
@@ -369,6 +409,7 @@ kefir_result_t kefir_ast_local_context_free(struct kefir_mem *mem, struct kefir_
     REQUIRE_OK(kefir_ast_identifier_block_scope_free(mem, &context->tag_scope));
     REQUIRE_OK(kefir_ast_identifier_block_scope_free(mem, &context->ordinary_scope));
     REQUIRE_OK(kefir_list_free(mem, &context->identifiers));
+    REQUIRE_OK(kefir_list_free(mem, &context->flow_control_points));
     return KEFIR_OK;
 }
 

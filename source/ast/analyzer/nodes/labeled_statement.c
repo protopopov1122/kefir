@@ -51,6 +51,6 @@ kefir_result_t kefir_ast_analyze_labeled_statement_node(struct kefir_mem *mem, c
     const struct kefir_ast_scoped_identifier *scoped_id = NULL;
     REQUIRE_OK(
         context->reference_label(mem, context, node->label, parent, &node->statement->source_location, &scoped_id));
-    base->properties.statement_props.flow_control_point = scoped_id->label.point;
+    base->properties.statement_props.target_flow_control_point = scoped_id->label.point;
     return KEFIR_OK;
 }

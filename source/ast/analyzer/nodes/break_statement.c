@@ -75,11 +75,12 @@ kefir_result_t kefir_ast_analyze_break_statement_node(struct kefir_mem *mem, con
         REQUIRE_OK(res);
     }
     if (flow_control_stmt->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_SWITCH) {
-        base->properties.statement_props.flow_control_point = flow_control_stmt->value.switchStatement.end;
+        base->properties.statement_props.target_flow_control_point = flow_control_stmt->value.switchStatement.end;
     } else {
-        base->properties.statement_props.flow_control_point = flow_control_stmt->value.loop.end;
+        base->properties.statement_props.target_flow_control_point = flow_control_stmt->value.loop.end;
     }
-    REQUIRE_OK(kefir_ast_flow_control_tree_top(context->flow_control_tree,
-                                               &base->properties.statement_props.flow_control_statement));
+
+    REQUIRE_OK(
+        context->current_flow_control_point(mem, context, &base->properties.statement_props.origin_flow_control_point));
     return KEFIR_OK;
 }
