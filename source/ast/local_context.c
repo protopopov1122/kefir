@@ -1160,6 +1160,7 @@ kefir_result_t kefir_ast_local_context_define_label(struct kefir_mem *mem, struc
         REQUIRE(label_id->label.point != NULL && label_id->label.point->parent == NULL,
                 KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, location, "Cannot redefine a label"));
         label_id->label.point->parent = parent;
+        REQUIRE_OK(kefir_ast_flow_control_point_bound(label_id->label.point));
     }
 
     ASSIGN_PTR(scoped_id, label_id);

@@ -52,6 +52,7 @@ typedef struct kefir_ast_flow_control_point {
 struct kefir_ast_flow_control_point *kefir_ast_flow_control_point_alloc(struct kefir_mem *,
                                                                         struct kefir_ast_flow_control_structure *);
 kefir_result_t kefir_ast_flow_control_point_free(struct kefir_mem *, struct kefir_ast_flow_control_point *);
+kefir_result_t kefir_ast_flow_control_point_bound(struct kefir_ast_flow_control_point *);
 
 typedef enum kefir_ast_flow_control_data_element_type {
     KEFIR_AST_FLOW_CONTROL_DATA_ELEMENT_VLA
