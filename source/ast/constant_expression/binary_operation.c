@@ -198,9 +198,15 @@ kefir_result_t kefir_ast_evaluate_binary_operation_node(struct kefir_mem *mem, c
                 value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_FLOAT;
                 value->floating_point = as_float(&arg1_value) / as_float(&arg2_value);
             } else if (common_type_signed_integer) {
+                REQUIRE(arg2_value.integer != 0,
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_NOT_CONSTANT, &node->arg2->source_location,
+                                               "Expected non-zero divisor in constant expression"));
                 value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
                 value->integer = arg1_value.integer / arg2_value.integer;
             } else {
+                REQUIRE(arg2_value.integer != 0,
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_NOT_CONSTANT, &node->arg2->source_location,
+                                               "Expected non-zero divisor in constant expression"));
                 value->klass = KEFIR_AST_CONSTANT_EXPRESSION_CLASS_INTEGER;
                 value->uinteger = arg1_value.uinteger / arg2_value.integer;
             }
