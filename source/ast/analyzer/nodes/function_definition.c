@@ -25,6 +25,7 @@
 #include "kefir/ast/local_context.h"
 #include "kefir/ast/type_conv.h"
 #include "kefir/ast/downcast.h"
+#include "kefir/ast/runtime.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"
@@ -302,5 +303,26 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
                                        "Compound statement items shall be either statements or declarations"));
     }
     REQUIRE_OK(kefir_ast_flow_control_tree_pop(local_context->context.flow_control_tree));
+
+    if (local_context->flow_control_tree.data_element_track.vla_id > 0) {
+        struct kefir_ast_constant_expression *array_length =
+            kefir_ast_constant_expression_integer(mem, local_context->flow_control_tree.data_element_track.vla_id);
+        REQUIRE(array_length != NULL,
+                KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate AST array length constant"));
+
+        const struct kefir_ast_type *array_type = kefir_ast_type_array(
+            mem, context->type_bundle, kefir_ast_type_pointer(mem, context->type_bundle, kefir_ast_type_void()),
+            array_length, NULL);
+        REQUIRE_ELSE(array_type != NULL, {
+            kefir_ast_constant_expression_free(mem, array_length);
+            return KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate AST array type");
+        });
+
+        const struct kefir_ast_scoped_identifier *scoped_id = NULL;
+        REQUIRE_OK(local_context->context.define_identifier(
+            mem, &local_context->context, true, KEFIR_AST_TRANSLATOR_VLA_ELEMENTS_IDENTIFIER, array_type,
+            KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_UNKNOWN, KEFIR_AST_FUNCTION_SPECIFIER_NONE, NULL, NULL, NULL,
+            &scoped_id));
+    }
     return KEFIR_OK;
 }

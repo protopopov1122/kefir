@@ -771,8 +771,9 @@ static kefir_result_t register_vla(struct kefir_mem *mem, struct kefir_ast_local
         REQUIRE_OK(res);
         block->value.block.contains_vla = true;
 
-        struct kefir_ast_flow_control_data_element *data_elt = kefir_ast_flow_control_data_element_alloc(
-            mem, context->flow_control_tree.next_data_element_id++, block, KEFIR_AST_FLOW_CONTROL_DATA_ELEMENT_VLA);
+        struct kefir_ast_flow_control_data_element *data_elt =
+            kefir_ast_flow_control_data_element_alloc(mem, context->flow_control_tree.data_element_track.vla_id++,
+                                                      block, KEFIR_AST_FLOW_CONTROL_DATA_ELEMENT_VLA);
         REQUIRE(data_elt != NULL,
                 KEFIR_SET_ERROR(KEFIR_OBJALLOC_FAILURE, "Failed to allocate AST flow control data element"));
 

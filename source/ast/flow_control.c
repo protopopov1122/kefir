@@ -131,6 +131,21 @@ kefir_result_t kefir_ast_flow_control_structure_data_elements_append(
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_ast_flow_control_structure_data_element_head(
+    const struct kefir_ast_flow_control_structure_data_elements *elts,
+    const struct kefir_ast_flow_control_data_element **element) {
+    REQUIRE(elts != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER,
+                                          "Expected valid pointer to AST flow control structure data elements"));
+    REQUIRE(element != NULL,
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to AST flow control data element"));
+
+    struct kefir_list_entry *head = kefir_list_head(&elts->elements);
+    REQUIRE(head != NULL,
+            KEFIR_SET_ERROR(KEFIR_OUT_OF_BOUNDS, "AST flow control structure data element list is empty"));
+    *element = head->value;
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_ast_flow_control_structure_data_elements_current_range(
     const struct kefir_ast_flow_control_structure_data_elements *elts,
     struct kefir_ast_flow_control_structure_data_element_range *range) {
@@ -214,6 +229,7 @@ kefir_result_t kefir_ast_flow_control_tree_init(struct kefir_ast_flow_control_tr
     REQUIRE_OK(kefir_tree_init(&tree->root, NULL));
     REQUIRE_OK(kefir_tree_on_removal(&tree->root, flow_control_statement_free, NULL));
     tree->current = &tree->root;
+    tree->data_element_track.vla_id = 0;
     return KEFIR_OK;
 }
 
@@ -223,7 +239,7 @@ kefir_result_t kefir_ast_flow_control_tree_free(struct kefir_mem *mem, struct ke
 
     REQUIRE_OK(kefir_tree_free(mem, &tree->root));
     tree->current = NULL;
-    tree->next_data_element_id = 0;
+    tree->data_element_track.vla_id = 0;
     return KEFIR_OK;
 }
 

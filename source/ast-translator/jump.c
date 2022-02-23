@@ -20,11 +20,13 @@
 
 #include "kefir/ast-translator/jump.h"
 #include "kefir/ast-translator/flow_control.h"
+#include "kefir/ast-translator/misc.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"
 
-static kefir_result_t perform_jump(struct kefir_mem *mem, struct kefir_irbuilder_block *builder,
+static kefir_result_t perform_jump(struct kefir_mem *mem, struct kefir_ast_translator_context *context,
+                                   struct kefir_irbuilder_block *builder,
                                    struct kefir_ast_flow_control_structure *original_position,
                                    struct kefir_ast_flow_control_point *target_position,
                                    struct kefir_list *target_parents,
@@ -43,6 +45,12 @@ static kefir_result_t perform_jump(struct kefir_mem *mem, struct kefir_irbuilder
     while (current_origin_parent != NULL && current_origin_parent != common_parent) {
         if (current_origin_parent->type == KEFIR_AST_FLOW_CONTROL_STRUCTURE_BLOCK &&
             current_origin_parent->value.block.contains_vla) {
+            const struct kefir_ast_flow_control_data_element *vla_element = NULL;
+            REQUIRE_OK(kefir_ast_flow_control_structure_data_element_head(
+                &current_origin_parent->value.block.data_elements, &vla_element));
+
+            REQUIRE_OK(kefir_ast_translator_resolve_vla_element(mem, context, builder, vla_element->identifier));
+            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_LOAD64, 0));
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_POPSCOPE, 0));
         }
         current_origin_parent =
@@ -77,7 +85,7 @@ kefir_result_t kefir_ast_translate_jump(struct kefir_mem *mem, struct kefir_ast_
     struct kefir_ast_flow_control_structure *common_parent = NULL;
     kefir_result_t res = kefir_ast_flow_control_point_common_parent(original_position, target_position, &common_parent);
     REQUIRE_CHAIN(&res, kefir_ast_flow_control_point_parents(mem, target_position, &target_parents, common_parent));
-    REQUIRE_CHAIN(&res, perform_jump(mem, builder, original_position->parent, target_position, &target_parents,
+    REQUIRE_CHAIN(&res, perform_jump(mem, context, builder, original_position->parent, target_position, &target_parents,
                                      common_parent, source_location));
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_list_free(mem, &target_parents);

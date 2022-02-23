@@ -80,6 +80,8 @@ kefir_result_t kefir_ast_flow_control_structure_data_elements_free(
 kefir_result_t kefir_ast_flow_control_structure_data_elements_append(
     struct kefir_mem *, struct kefir_ast_flow_control_structure_data_elements *,
     struct kefir_ast_flow_control_data_element *);
+kefir_result_t kefir_ast_flow_control_structure_data_element_head(
+    const struct kefir_ast_flow_control_structure_data_elements *, const struct kefir_ast_flow_control_data_element **);
 
 kefir_result_t kefir_ast_flow_control_structure_data_elements_current_range(
     const struct kefir_ast_flow_control_structure_data_elements *,
@@ -137,7 +139,9 @@ typedef struct kefir_ast_flow_control_tree {
     struct kefir_tree_node root;
     struct kefir_tree_node *current;
 
-    kefir_id_t next_data_element_id;
+    struct {
+        kefir_id_t vla_id;
+    } data_element_track;
 } kefir_ast_flow_control_tree_t;
 
 #define KEFIR_AST_FLOW_CONTROL_SET_CLEANUP(_flow_control, _callback, _payload) \
