@@ -78,6 +78,10 @@ kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(attribute)(struct kefir_mem *mem, str
             consume_attribute_list = false;
         } else {
             REQUIRE_OK(consume_attribute_list_entry(mem, parser));
+
+            if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COMMA)) {
+                REQUIRE_OK(PARSER_SHIFT(parser));
+            }
         }
     }
     REQUIRE_OK(PARSER_SHIFT(parser));
