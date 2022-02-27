@@ -75,8 +75,6 @@ static kefir_result_t scan_postfixes(struct kefir_mem *mem, struct kefir_parser_
     struct kefir_parser *parser = builder->parser;
     kefir_bool_t scan_postfix = true;
 
-    REQUIRE_OK(
-        kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(builder->parser, primary_expression), NULL));
     do {
         struct kefir_source_location location = *PARSER_TOKEN_LOCATION(builder->parser, 0);
         if (PARSER_TOKEN_IS_LEFT_BRACKET(parser, 0)) {
@@ -154,6 +152,7 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
         if (res != KEFIR_NOT_FOUND) {
             REQUIRE_OK(res);
             REQUIRE_OK(scan_builtin(mem, builder, builtin_op));
+            REQUIRE_OK(scan_postfixes(mem, builder));
         }
     }
 
@@ -161,7 +160,9 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
         res =
             kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(builder->parser, compound_literal), NULL);
         if (res == KEFIR_NO_MATCH) {
-            res = scan_postfixes(mem, builder);
+            res = kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(builder->parser, primary_expression),
+                                                NULL);
+            REQUIRE_CHAIN(&res, scan_postfixes(mem, builder));
         }
     }
     REQUIRE_OK(res);
