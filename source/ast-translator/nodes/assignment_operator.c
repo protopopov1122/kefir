@@ -252,9 +252,16 @@ static kefir_result_t translate_modulo_bitwise(struct kefir_mem *mem, struct kef
 
     REQUIRE_OK(reorder_assignment_arguments(builder, common_type));
     switch (node->operation) {
-        case KEFIR_AST_ASSIGNMENT_MODULO:
-            REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IMOD, 0));
-            break;
+        case KEFIR_AST_ASSIGNMENT_MODULO: {
+            kefir_bool_t signedness;
+            REQUIRE_OK(kefir_ast_type_is_signed(context->ast_context->type_traits, value_normalized_type, &signedness));
+
+            if (signedness) {
+                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_IMOD, 0));
+            } else {
+                REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_UMOD, 0));
+            }
+        } break;
 
         case KEFIR_AST_ASSIGNMENT_SHIFT_LEFT:
             REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDI64(builder, KEFIR_IROPCODE_ILSHIFT, 0));
