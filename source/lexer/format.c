@@ -204,6 +204,10 @@ static kefir_result_t format_keyword(struct kefir_json_output *json, kefir_keywo
         case KEFIR_KEYWORD_ATTRIBUTE:
             REQUIRE_OK(kefir_json_output_string(json, "__attribute__"));
             break;
+
+        case KEFIR_KEYWORD_ASM:
+            REQUIRE_OK(kefir_json_output_string(json, "asm"));
+            break;
     }
     return KEFIR_OK;
 }

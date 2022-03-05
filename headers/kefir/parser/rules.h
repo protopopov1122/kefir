@@ -65,6 +65,7 @@ DECLARE_RULE(function_definition);
 DECLARE_RULE(external_declaration);
 DECLARE_RULE(translation_unit);
 DECLARE_RULE(attribute);
+DECLARE_RULE(assembly);
 
 #undef DECLARE_RULE
 

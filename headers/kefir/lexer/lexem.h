@@ -96,7 +96,8 @@ typedef enum kefir_keyword_token {
     KEFIR_KEYWORD_THREAD_LOCAL,
 
     // Extensions
-    KEFIR_KEYWORD_ATTRIBUTE
+    KEFIR_KEYWORD_ATTRIBUTE,
+    KEFIR_KEYWORD_ASM
 } kefir_keyword_token_t;
 
 typedef enum kefir_constant_token_type {

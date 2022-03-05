@@ -34,6 +34,8 @@ kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(statement)(struct kefir_mem *mem, str
     REQUIRE(res == KEFIR_NO_MATCH, res);
     res = KEFIR_PARSER_RULE_APPLY(mem, parser, iteration_statement, result);
     REQUIRE(res == KEFIR_NO_MATCH, res);
-    REQUIRE_OK(KEFIR_PARSER_RULE_APPLY(mem, parser, jump_statement, result));
+    res = KEFIR_PARSER_RULE_APPLY(mem, parser, jump_statement, result);
+    REQUIRE(res == KEFIR_NO_MATCH, res);
+    REQUIRE_OK(KEFIR_PARSER_RULE_APPLY(mem, parser, assembly, result));
     return KEFIR_OK;
 }

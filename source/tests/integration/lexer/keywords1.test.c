@@ -68,7 +68,10 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
                            "auto "
                            "_Atomic "
                            "_Generic "
-                           "const";
+                           "const "
+                           "__attribute__ "
+                           "asm "
+                           "__asm__";
 
     struct kefir_symbol_table symbols;
     struct kefir_lexer_source_cursor cursor;

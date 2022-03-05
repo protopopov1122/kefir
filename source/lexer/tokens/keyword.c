@@ -70,7 +70,9 @@ static const struct KeywordEntry {
                 {U"_Noreturn", KEFIR_KEYWORD_NORETURN},
                 {U"_Static_assert", KEFIR_KEYWORD_STATIC_ASSERT},
                 {U"_Thread_local", KEFIR_KEYWORD_THREAD_LOCAL},
-                {U"__attribute__", KEFIR_KEYWORD_ATTRIBUTE}};
+                {U"__attribute__", KEFIR_KEYWORD_ATTRIBUTE},
+                {U"__asm__", KEFIR_KEYWORD_ASM},
+                {U"asm", KEFIR_KEYWORD_ASM}};
 static const kefir_size_t KEYWORDS_LENGTH = sizeof(KEYWORDS) / sizeof(KEYWORDS[0]);
 
 #define KEYWORD_NONE (~((kefir_trie_value_t) 0))
