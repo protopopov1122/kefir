@@ -38,7 +38,7 @@ tasks:
       export KEFIRCC="$HOME/kefir/bin/kefir -I /usr/include/x86_64-linux-musl"
       export LIBC="/usr/lib/x86_64-linux-musl/crt1.o /usr/lib/x86_64-linux-musl/libc.a" 
       ./kefir/source/tests/misc/run_gcc_torture_suite.sh 2>&1 | tee torture.log
-      grep -i "fatal\|abort\|timeout\|segm" torture.log || exit 1
+      grep -i "fatal\|abort\|timeout\|segm" torture.log && exit 1 || true
 triggers:
   - action: email
     condition: failure
