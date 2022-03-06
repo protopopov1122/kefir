@@ -74,6 +74,8 @@ const struct kefir_ast_type *kefir_ast_type_va_list();
     (KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(base) || KEFIR_AST_TYPE_IS_FLOATING_POINT(base))
 #define KEFIR_AST_TYPE_IS_SCALAR_TYPE(base) \
     (KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(base) || (base)->tag == KEFIR_AST_TYPE_SCALAR_POINTER)
+#define KEFIR_AST_TYPE_IS_AGGREGATE_TYPE(base) \
+    (!KEFIR_AST_TYPE_IS_SCALAR_TYPE(base) && (base)->tag != KEFIR_AST_TYPE_VOID)
 
 const struct kefir_ast_type *kefir_ast_type_flip_integer_singedness(const struct kefir_ast_type_traits *,
                                                                     const struct kefir_ast_type *);

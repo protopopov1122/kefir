@@ -22,6 +22,7 @@
 #include "kefir/ast-translator/translator.h"
 #include "kefir/ast-translator/typeconv.h"
 #include "kefir/ast-translator/function_declaration.h"
+#include "kefir/ast-translator/temporaries.h"
 #include "kefir/ast/type_conv.h"
 #include "kefir/ast-translator/util.h"
 #include "kefir/core/util.h"
@@ -142,6 +143,12 @@ kefir_result_t kefir_ast_translate_function_call_node(struct kefir_mem *mem,
     if (KEFIR_AST_TYPE_IS_SCALAR_TYPE(node->base.properties.type)) {
         REQUIRE_OK(kefir_ast_translate_typeconv_normalize(builder, context->ast_context->type_traits,
                                                           node->base.properties.type));
+    } else if (KEFIR_AST_TYPE_IS_AGGREGATE_TYPE(node->base.properties.type)) {
+        REQUIRE_OK(kefir_ast_translator_fetch_temporary(mem, context, builder,
+                                                        &node->base.properties.expression_props.temporary));
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_PICK, 0));
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_XCHG, 2));
+        REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU32(builder, KEFIR_IROPCODE_BCOPY, ir_decl->result_type_id, 0));
     }
     return KEFIR_OK;
 }
