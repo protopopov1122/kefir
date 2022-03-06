@@ -23,23 +23,27 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
-NODE_VISIT_IMPL(ast_compound_statement_visit, kefir_ast_compound_statement, compound_statement)
+NODE_VISIT_IMPL(ast_statement_expression_visit, kefir_ast_statement_expression, statement_expression)
 
-struct kefir_ast_node_base *ast_compound_statement_clone(struct kefir_mem *, struct kefir_ast_node_base *);
+struct kefir_ast_node_base *ast_statement_expression_clone(struct kefir_mem *, struct kefir_ast_node_base *);
 
-kefir_result_t ast_compound_statement_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
+kefir_result_t ast_statement_expression_free(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node base"));
-    ASSIGN_DECL_CAST(struct kefir_ast_compound_statement *, node, base->self);
+    ASSIGN_DECL_CAST(struct kefir_ast_statement_expression *, node, base->self);
     REQUIRE_OK(kefir_list_free(mem, &node->block_items));
+    if (node->result != NULL) {
+        REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node->result));
+        node->result = NULL;
+    }
     KEFIR_FREE(mem, node);
     return KEFIR_OK;
 }
 
-const struct kefir_ast_node_class AST_COMPOUND_STATEMENT_CLASS = {.type = KEFIR_AST_COMPOUND_STATEMENT,
-                                                                  .visit = ast_compound_statement_visit,
-                                                                  .clone = ast_compound_statement_clone,
-                                                                  .free = ast_compound_statement_free};
+const struct kefir_ast_node_class AST_STATEMENT_EXPRESSION_CLASS = {.type = KEFIR_AST_STATEMENT_EXPRESSION,
+                                                                    .visit = ast_statement_expression_visit,
+                                                                    .clone = ast_statement_expression_clone,
+                                                                    .free = ast_statement_expression_free};
 
 static kefir_result_t free_block_item(struct kefir_mem *mem, struct kefir_list *list, struct kefir_list_entry *entry,
                                       void *payload) {
@@ -53,13 +57,13 @@ static kefir_result_t free_block_item(struct kefir_mem *mem, struct kefir_list *
     return KEFIR_OK;
 }
 
-struct kefir_ast_node_base *ast_compound_statement_clone(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
+struct kefir_ast_node_base *ast_statement_expression_clone(struct kefir_mem *mem, struct kefir_ast_node_base *base) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(base != NULL, NULL);
-    ASSIGN_DECL_CAST(struct kefir_ast_compound_statement *, node, base->self);
-    struct kefir_ast_compound_statement *clone = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_compound_statement));
+    ASSIGN_DECL_CAST(struct kefir_ast_statement_expression *, node, base->self);
+    struct kefir_ast_statement_expression *clone = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_statement_expression));
     REQUIRE(clone != NULL, NULL);
-    clone->base.klass = &AST_COMPOUND_STATEMENT_CLASS;
+    clone->base.klass = &AST_STATEMENT_EXPRESSION_CLASS;
     clone->base.self = clone;
     clone->base.source_location = base->source_location;
     kefir_result_t res = kefir_ast_node_properties_clone(&clone->base.properties, &node->base.properties);
@@ -99,15 +103,26 @@ struct kefir_ast_node_base *ast_compound_statement_clone(struct kefir_mem *mem, 
             return NULL;
         });
     }
+
+    if (node->result != NULL) {
+        clone->result = KEFIR_AST_NODE_CLONE(mem, node->result);
+        REQUIRE_ELSE(clone->result != NULL, {
+            kefir_list_free(mem, &clone->block_items);
+            KEFIR_FREE(mem, clone);
+            return NULL;
+        });
+    } else {
+        clone->result = NULL;
+    }
     return KEFIR_AST_NODE_BASE(clone);
 }
 
-struct kefir_ast_compound_statement *kefir_ast_new_compound_statement(struct kefir_mem *mem) {
+struct kefir_ast_statement_expression *kefir_ast_new_statement_expression(struct kefir_mem *mem) {
     REQUIRE(mem != NULL, NULL);
 
-    struct kefir_ast_compound_statement *stmt = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_compound_statement));
+    struct kefir_ast_statement_expression *stmt = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_statement_expression));
     REQUIRE(stmt != NULL, NULL);
-    stmt->base.klass = &AST_COMPOUND_STATEMENT_CLASS;
+    stmt->base.klass = &AST_STATEMENT_EXPRESSION_CLASS;
     stmt->base.self = stmt;
     kefir_result_t res = kefir_ast_node_properties_init(&stmt->base.properties);
     REQUIRE_ELSE(res == KEFIR_OK, {
@@ -131,5 +146,6 @@ struct kefir_ast_compound_statement *kefir_ast_new_compound_statement(struct kef
         KEFIR_FREE(mem, stmt);
         return NULL;
     });
+    stmt->result = NULL;
     return stmt;
 }

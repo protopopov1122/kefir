@@ -31,6 +31,8 @@ kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(primary_expression)(struct kefir_mem 
     REQUIRE(res == KEFIR_NO_MATCH, res);
     res = KEFIR_PARSER_RULE_APPLY(mem, parser, generic_selection, result);
     REQUIRE(res == KEFIR_NO_MATCH, res);
+    res = KEFIR_PARSER_RULE_APPLY(mem, parser, statement_expression, result);
+    REQUIRE(res == KEFIR_NO_MATCH, res);
 
     REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_LEFT_PARENTHESE),
             KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Cannot match primary expression"));

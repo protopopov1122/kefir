@@ -60,6 +60,7 @@ TRANSLATE_NODE(conditional_operator, struct kefir_ast_conditional_operator)
 TRANSLATE_NODE(assignment_operator, struct kefir_ast_assignment_operator)
 TRANSLATE_NODE(builtin, struct kefir_ast_builtin)
 TRANSLATE_NODE(label_address, struct kefir_ast_label_address)
+TRANSLATE_NODE(statement_expression, struct kefir_ast_statement_expression)
 #undef TRANSLATE_NODE
 
 static kefir_result_t translate_extension_node(const struct kefir_ast_visitor *visitor,
@@ -103,6 +104,7 @@ kefir_result_t kefir_ast_translate_expression(struct kefir_mem *mem, const struc
     visitor.builtin = translate_builtin;
     visitor.extension_node = translate_extension_node;
     visitor.label_address = translate_label_address;
+    visitor.statement_expression = translate_statement_expression;
 
     kefir_result_t res;
     KEFIR_RUN_EXTENSION(&res, mem, context, before_translate, base, builder,

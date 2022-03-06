@@ -102,4 +102,8 @@ kefir_result_t kefir_parser_ast_builder_label_address(struct kefir_mem *, struct
                                                       const char *);
 kefir_result_t kefir_parser_ast_builder_goto_address_statement(struct kefir_mem *, struct kefir_parser_ast_builder *);
 
+kefir_result_t kefir_parser_ast_builder_statement_expression(struct kefir_mem *, struct kefir_parser_ast_builder *);
+kefir_result_t kefir_parser_ast_builder_statement_expression_append(struct kefir_mem *,
+                                                                    struct kefir_parser_ast_builder *);
+
 #endif

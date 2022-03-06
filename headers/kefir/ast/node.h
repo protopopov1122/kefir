@@ -210,6 +210,11 @@ KEFIR_AST_NODE_STRUCT(kefir_ast_builtin, {
     struct kefir_list arguments;
 });
 
+KEFIR_AST_NODE_STRUCT(kefir_ast_statement_expression, {
+    struct kefir_list block_items;
+    struct kefir_ast_node_base *result;
+});
+
 typedef struct kefir_ast_extension_node kefir_ast_extension_node_t;
 typedef struct kefir_ast_extension_node_class {
     kefir_result_t (*free)(struct kefir_mem *, struct kefir_ast_extension_node *);
@@ -354,6 +359,8 @@ struct kefir_ast_extension_node *kefir_ast_new_extension_node(struct kefir_mem *
 struct kefir_ast_label_address *kefir_ast_new_label_address(struct kefir_mem *, struct kefir_symbol_table *,
                                                             const char *);
 
+struct kefir_ast_statement_expression *kefir_ast_new_statement_expression(struct kefir_mem *);
+
 typedef struct kefir_ast_visitor {
     KEFIR_AST_VISITOR_METHOD(generic_handler, kefir_ast_node_base);
     KEFIR_AST_VISITOR_METHOD(constant, kefir_ast_constant);
@@ -394,6 +401,7 @@ typedef struct kefir_ast_visitor {
     KEFIR_AST_VISITOR_METHOD(extension_node, kefir_ast_extension_node);
     KEFIR_AST_VISITOR_METHOD(label_address, kefir_ast_label_address);
     KEFIR_AST_VISITOR_METHOD(goto_address_statement, kefir_ast_goto_statement);
+    KEFIR_AST_VISITOR_METHOD(statement_expression, kefir_ast_statement_expression);
 } kefir_ast_visitor_t;
 
 #define KEFIR_AST_NODE_INTERNAL_DEF

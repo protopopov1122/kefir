@@ -661,3 +661,53 @@ DEFINE_CASE(ast_node_analysis_builtins4, "AST node analysis - va_arg builtin") {
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 }
 END_CASE
+
+DEFINE_CASE(ast_node_analysis_statement_expressions1, "AST node analysis - statement expression #1") {
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
+                                            &global_context, NULL));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    struct kefir_ast_statement_expression *expr1 = kefir_ast_new_statement_expression(&kft_mem);
+    ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, &global_context.context, KEFIR_AST_NODE_BASE(expr1)));
+    ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(expr1)));
+    ASSERT(expr1->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);
+    ASSERT(KEFIR_AST_TYPE_SAME(expr1->base.properties.type, kefir_ast_type_void()));
+
+    struct kefir_ast_statement_expression *expr2 = kefir_ast_new_statement_expression(&kft_mem);
+    ASSERT_OK(kefir_list_insert_after(&kft_mem, &expr2->block_items, kefir_list_tail(&expr2->block_items),
+                                      KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(
+                                          &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 1))))));
+    ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, &global_context.context, KEFIR_AST_NODE_BASE(expr2)));
+    ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(expr2)));
+    ASSERT(expr2->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);
+    ASSERT(KEFIR_AST_TYPE_SAME(expr2->base.properties.type, kefir_ast_type_void()));
+
+    struct kefir_ast_statement_expression *expr3 = kefir_ast_new_statement_expression(&kft_mem);
+    ASSERT_OK(kefir_list_insert_after(&kft_mem, &expr3->block_items, kefir_list_tail(&expr2->block_items),
+                                      KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(
+                                          &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 1))))));
+    ASSERT_OK(kefir_list_insert_after(&kft_mem, &expr3->block_items, kefir_list_tail(&expr2->block_items),
+                                      KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(
+                                          &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 2))))));
+    ASSERT_OK(kefir_list_insert_after(&kft_mem, &expr3->block_items, kefir_list_tail(&expr2->block_items),
+                                      KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(
+                                          &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 3))))));
+    expr3->result = KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(
+        &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long_long(&kft_mem, 1000))));
+    ASSERT_NOK(kefir_ast_analyze_node(&kft_mem, &global_context.context, KEFIR_AST_NODE_BASE(expr3)));
+    ASSERT_OK(kefir_ast_analyze_node(&kft_mem, context, KEFIR_AST_NODE_BASE(expr3)));
+    ASSERT(expr3->base.properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION);
+    ASSERT(KEFIR_AST_TYPE_SAME(expr3->base.properties.type, kefir_ast_type_signed_long_long()));
+
+    KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(expr1));
+    KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(expr2));
+    KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(expr3));
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+}
+END_CASE

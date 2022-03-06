@@ -1259,3 +1259,57 @@ kefir_result_t kefir_parser_ast_builder_goto_address_statement(struct kefir_mem 
     });
     return KEFIR_OK;
 }
+
+kefir_result_t kefir_parser_ast_builder_statement_expression(struct kefir_mem *mem,
+                                                             struct kefir_parser_ast_builder *builder) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
+
+    struct kefir_ast_statement_expression *expr = kefir_ast_new_statement_expression(mem);
+    REQUIRE(expr != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST statement expression"));
+
+    kefir_result_t res = kefir_parser_ast_builder_push(mem, builder, KEFIR_AST_NODE_BASE(expr));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(expr));
+        return KEFIR_OK;
+    });
+    return KEFIR_OK;
+}
+
+kefir_result_t kefir_parser_ast_builder_statement_expression_append(struct kefir_mem *mem,
+                                                                    struct kefir_parser_ast_builder *builder) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
+
+    struct kefir_ast_node_base *stmt_expr = NULL, *stmt = NULL;
+    REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &stmt));
+    kefir_result_t res = kefir_parser_ast_builder_pop(mem, builder, &stmt_expr);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, stmt);
+        return res;
+    });
+    REQUIRE_ELSE(stmt_expr->klass->type == KEFIR_AST_STATEMENT_EXPRESSION, {
+        KEFIR_AST_NODE_FREE(mem, stmt);
+        KEFIR_AST_NODE_FREE(mem, stmt_expr);
+        return KEFIR_SET_ERROR(KEFIR_INVALID_CHANGE, "Expected AST statement expression");
+    });
+
+    ASSIGN_DECL_CAST(struct kefir_ast_statement_expression *, expr, stmt_expr->self);
+
+    if (expr->result != NULL) {
+        res = kefir_list_insert_after(mem, &expr->block_items, kefir_list_tail(&expr->block_items), expr->result);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            KEFIR_AST_NODE_FREE(mem, stmt_expr);
+            KEFIR_AST_NODE_FREE(mem, stmt);
+            return res;
+        });
+    }
+    expr->result = stmt;
+
+    res = kefir_parser_ast_builder_push(mem, builder, stmt_expr);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, stmt_expr);
+        return res;
+    });
+    return KEFIR_OK;
+}

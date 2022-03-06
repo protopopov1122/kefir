@@ -62,6 +62,7 @@ ANALYZE_NODE(function_definition, struct kefir_ast_function_definition);
 ANALYZE_NODE(translation_unit, struct kefir_ast_translation_unit);
 ANALYZE_NODE(builtin, struct kefir_ast_builtin);
 ANALYZE_NODE(label_address, struct kefir_ast_label_address);
+ANALYZE_NODE(statement_expression, struct kefir_ast_statement_expression);
 
 #undef ANALYZE_NODE
 

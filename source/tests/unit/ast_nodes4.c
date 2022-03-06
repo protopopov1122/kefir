@@ -392,3 +392,44 @@ DEFINE_CASE(ast_nodes_extension, "AST nodes - extensions") {
     ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(ext2)));
 }
 END_CASE
+
+DEFINE_CASE(ast_nodes_statement_expressions1, "AST nodes - statement expressions #1") {
+    struct kefir_symbol_table symbols;
+    struct kefir_ast_type_bundle type_bundle;
+
+    ASSERT_OK(kefir_symbol_table_init(&symbols));
+    ASSERT_OK(kefir_ast_type_bundle_init(&type_bundle, &symbols));
+
+    struct kefir_ast_statement_expression *expr1 = kefir_ast_new_statement_expression(&kft_mem);
+    ASSERT(expr1 != NULL);
+    ASSERT(expr1->base.klass->type == KEFIR_AST_STATEMENT_EXPRESSION);
+    ASSERT(expr1->base.self == expr1);
+    ASSERT(kefir_list_length(&expr1->block_items) == 0);
+    ASSERT(expr1->result == NULL);
+
+    ASSERT_OK(kefir_list_insert_after(&kft_mem, &expr1->block_items, kefir_list_tail(&expr1->block_items),
+                                      KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(
+                                          &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, '1'))))));
+    ASSERT_OK(kefir_list_insert_after(&kft_mem, &expr1->block_items, kefir_list_tail(&expr1->block_items),
+                                      KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(
+                                          &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, '2'))))));
+    ASSERT_OK(kefir_list_insert_after(&kft_mem, &expr1->block_items, kefir_list_tail(&expr1->block_items),
+                                      KEFIR_AST_NODE_BASE(kefir_ast_new_expression_statement(
+                                          &kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, '3'))))));
+    ASSERT(kefir_list_length(&expr1->block_items) == 3);
+    expr1->result = KEFIR_AST_NODE_BASE(
+        kefir_ast_new_expression_statement(&kft_mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, '4'))));
+
+    struct kefir_ast_statement_expression *expr2 = kefir_ast_new_statement_expression(&kft_mem);
+    ASSERT(expr2 != NULL);
+    ASSERT(expr2->base.klass->type == KEFIR_AST_STATEMENT_EXPRESSION);
+    ASSERT(expr2->base.self == expr2);
+    ASSERT(kefir_list_length(&expr2->block_items) == 0);
+    ASSERT(expr2->result == NULL);
+
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(expr1)));
+    ASSERT_OK(KEFIR_AST_NODE_FREE(&kft_mem, KEFIR_AST_NODE_BASE(expr2)));
+    ASSERT_OK(kefir_ast_type_bundle_free(&kft_mem, &type_bundle));
+    ASSERT_OK(kefir_symbol_table_free(&kft_mem, &symbols));
+}
+END_CASE

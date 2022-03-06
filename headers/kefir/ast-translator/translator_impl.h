@@ -58,6 +58,7 @@ NODE_TRANSLATOR(break_statement, struct kefir_ast_break_statement);
 NODE_TRANSLATOR(return_statement, struct kefir_ast_return_statement);
 NODE_TRANSLATOR(builtin, struct kefir_ast_builtin);
 NODE_TRANSLATOR(label_address, struct kefir_ast_label_address);
+NODE_TRANSLATOR(statement_expression, struct kefir_ast_statement_expression);
 #undef NODE_TRANSLATOR
 
 #endif

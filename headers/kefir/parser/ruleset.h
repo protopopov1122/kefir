@@ -73,6 +73,7 @@ typedef enum kefir_parser_ruleset_identifier {
     // Extensions,
     DECLARE_RULE(attribute),
     DECLARE_RULE(assembly),
+    DECLARE_RULE(statement_expression),
     KEFIR_PARSER_RULESET_PREDEFINED_COUNT
 #undef DECLARE_RULE
 } kefir_parser_ruleset_identifier_t;

@@ -74,7 +74,8 @@ typedef enum kefir_ast_node_type {
 
     // Extensions
     KEFIR_AST_LABEL_ADDRESS,
-    KEFIR_AST_GOTO_ADDRESS_STATEMENT
+    KEFIR_AST_GOTO_ADDRESS_STATEMENT,
+    KEFIR_AST_STATEMENT_EXPRESSION
 } kefir_ast_node_type_t;
 
 typedef enum kefir_ast_node_category {

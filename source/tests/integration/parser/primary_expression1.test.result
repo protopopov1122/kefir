@@ -23,5 +23,43 @@
         "class": "constant",
         "type": "character",
         "value": 66
+    },
+    {
+        "class": "statement_expression",
+        "items": [],
+        "result": null
+    },
+    {
+        "class": "statement_expression",
+        "items": [],
+        "result": {
+            "class": "expression_statement",
+            "expression": {
+                "class": "constant",
+                "type": "character",
+                "value": 67
+            }
+        }
+    },
+    {
+        "class": "statement_expression",
+        "items": [
+            {
+                "class": "expression_statement",
+                "expression": {
+                    "class": "constant",
+                    "type": "character",
+                    "value": 68
+                }
+            }
+        ],
+        "result": {
+            "class": "expression_statement",
+            "expression": {
+                "class": "constant",
+                "type": "character",
+                "value": 69
+            }
+        }
     }
 ]

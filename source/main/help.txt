@@ -38,6 +38,7 @@ Supported features:
     empty-structs                       Permit empty structure/union definitions
     ext-pointer-arithmetics             Permit pointer arithmetics with function and void pointers
     missing-braces-subobj               Permit missing braces for subobject initialization with scalar
+    statement-expressions               Enable statement expressions
 
 Targets:
     amd64-sysv-gas (default)             Produce GNU As-compatible assembly adhering System-V AMD64 ABI

@@ -56,6 +56,7 @@ typedef struct kefir_ast_node_properties {
         } string_literal;
         struct kefir_ast_temporary_identifier temporary;
         const struct kefir_ast_scoped_identifier *scoped_id;
+        struct kefir_ast_flow_control_structure *flow_control_statement;
     } expression_props;
     struct {
         kefir_ast_scoped_identifier_storage_t storage;

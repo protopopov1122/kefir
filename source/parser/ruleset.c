@@ -71,6 +71,7 @@ kefir_result_t kefir_parser_ruleset_init(struct kefir_parser_ruleset *ruleset) {
     DEFINE_RULE(translation_unit);
     DEFINE_RULE(attribute);
     DEFINE_RULE(assembly);
+    DEFINE_RULE(statement_expression);
 #undef DEFINE_RULE
 
     ruleset->declaration_specifier = kefir_parser_scan_declaration_specifier;
