@@ -275,7 +275,7 @@ kefir_result_t kefir_ast_analyze_function_definition_node(struct kefir_mem *mem,
     REQUIRE_OK(kefir_ast_declarator_unpack_function(node->declarator, &decl_func));
     REQUIRE(decl_func != NULL,
             KEFIR_SET_ERROR(KEFIR_INTERNAL_ERROR, "Expected function definition to have function declarator"));
-    switch (scoped_id->function.type->function_type.mode) {
+    switch (type->function_type.mode) {
         case KEFIR_AST_FUNCTION_TYPE_PARAMETERS:
             REQUIRE_OK(analyze_function_parameters(node, decl_func));
             break;
