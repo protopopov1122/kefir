@@ -27,6 +27,7 @@
 #define __UINTPTR_TYPE__ unsigned long
 #define __INTPTR_TYPE__ long
 #define __label__ void *
+#define __restrict restrict
 
 // Missing built-ins
 #define __builtin_memset(p, v, n) memset(p, v, n)
