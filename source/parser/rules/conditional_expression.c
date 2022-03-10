@@ -31,19 +31,31 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
     REQUIRE_OK(kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, logical_or_expression), NULL));
     if (PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_QUESTION_MARK)) {
         REQUIRE_OK(PARSER_SHIFT(parser));
-        kefir_result_t res;
-        REQUIRE_MATCH_OK(
-            &res, kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, expression), NULL),
-            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected expression"));
-        REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COLON),
-                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected colon"));
-        REQUIRE_OK(PARSER_SHIFT(parser));
-        REQUIRE_MATCH_OK(
-            &res,
-            kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, conditional_expression), NULL),
-            KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
-                                   "Expected conditional expression"));
-        REQUIRE_OK(kefir_parser_ast_builder_conditional_operator(mem, builder));
+        kefir_result_t res = KEFIR_OK;
+
+        if (!PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COLON) ||
+            !parser->configuration->omitted_conditional_operand) {
+            REQUIRE_MATCH_OK(
+                &res, kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, expression), NULL),
+                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected expression"));
+            REQUIRE(PARSER_TOKEN_IS_PUNCTUATOR(parser, 0, KEFIR_PUNCTUATOR_COLON),
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0), "Expected colon"));
+            REQUIRE_OK(PARSER_SHIFT(parser));
+            REQUIRE_MATCH_OK(
+                &res,
+                kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, conditional_expression), NULL),
+                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
+                                       "Expected conditional expression"));
+            REQUIRE_OK(kefir_parser_ast_builder_conditional_operator(mem, builder));
+        } else {
+            REQUIRE_OK(PARSER_SHIFT(parser));
+            REQUIRE_MATCH_OK(
+                &res,
+                kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, conditional_expression), NULL),
+                KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
+                                       "Expected conditional expression"));
+            REQUIRE_OK(kefir_parser_ast_builder_conditional_operator_ommited1(mem, builder));
+        }
     }
 
     return KEFIR_OK;

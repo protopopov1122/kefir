@@ -27,7 +27,8 @@ static const struct kefir_parser_configuration DefaultConfiguration = {.fail_on_
                                                                        .implicit_function_definition_int = false,
                                                                        .designated_initializer_colons = false,
                                                                        .label_addressing = false,
-                                                                       .statement_expressions = false};
+                                                                       .statement_expressions = false,
+                                                                       .omitted_conditional_operand = false};
 
 kefir_result_t kefir_parser_configuration_default(struct kefir_parser_configuration *config) {
     REQUIRE(config != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to parser configuration"));

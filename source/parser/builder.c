@@ -340,6 +340,35 @@ kefir_result_t kefir_parser_ast_builder_cast(struct kefir_mem *mem, struct kefir
     return KEFIR_OK;
 }
 
+kefir_result_t kefir_parser_ast_builder_conditional_operator_ommited1(struct kefir_mem *mem,
+                                                                      struct kefir_parser_ast_builder *builder) {
+    REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
+    REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST builder"));
+
+    struct kefir_ast_node_base *condition = NULL, *elseBranch = NULL;
+    REQUIRE_OK(kefir_parser_ast_builder_pop(mem, builder, &elseBranch));
+    kefir_result_t res = kefir_parser_ast_builder_pop(mem, builder, &condition);
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, elseBranch);
+        return res;
+    });
+
+    struct kefir_ast_conditional_operator *operator=
+        kefir_ast_new_conditional_operator(mem, condition, NULL, elseBranch);
+    REQUIRE_ELSE(operator!= NULL, {
+        KEFIR_AST_NODE_FREE(mem, condition);
+        KEFIR_AST_NODE_FREE(mem, elseBranch);
+        return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate AST conditional operator");
+    });
+
+    res = kefir_parser_ast_builder_push(mem, builder, KEFIR_AST_NODE_BASE(operator));
+    REQUIRE_ELSE(res == KEFIR_OK, {
+        KEFIR_AST_NODE_FREE(mem, KEFIR_AST_NODE_BASE(operator));
+        return res;
+    });
+    return KEFIR_OK;
+}
+
 kefir_result_t kefir_parser_ast_builder_conditional_operator(struct kefir_mem *mem,
                                                              struct kefir_parser_ast_builder *builder) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));

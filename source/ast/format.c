@@ -580,7 +580,11 @@ static kefir_result_t visit_conditional_operator(const struct kefir_ast_visitor 
     REQUIRE_OK(kefir_json_output_object_key(json, "condition"));
     REQUIRE_OK(kefir_ast_format(json, node->condition, param->display_source_location));
     REQUIRE_OK(kefir_json_output_object_key(json, "thenBranch"));
-    REQUIRE_OK(kefir_ast_format(json, node->expr1, param->display_source_location));
+    if (node->expr1 != NULL) {
+        REQUIRE_OK(kefir_ast_format(json, node->expr1, param->display_source_location));
+    } else {
+        REQUIRE_OK(kefir_json_output_null(json));
+    }
     REQUIRE_OK(kefir_json_output_object_key(json, "elseBranch"));
     REQUIRE_OK(kefir_ast_format(json, node->expr2, param->display_source_location));
     if (param->display_source_location) {

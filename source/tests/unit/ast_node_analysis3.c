@@ -771,3 +771,31 @@ DEFINE_CASE(ast_node_analysis_conditional_operator5, "AST node analysis - condit
     ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
 }
 END_CASE
+
+DEFINE_CASE(ast_node_analysis_conditional_operator6, "AST node analysis - conditional operator #6") {
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
+                                            &global_context, NULL));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    ASSERT_CONDITIONAL(&kft_mem, context, KEFIR_AST_NODE_BASE(make_constant(&kft_mem, kefir_ast_type_signed_int())),
+                       NULL, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 2)), true,
+                       { ASSERT(KEFIR_AST_TYPE_SAME(oper->base.properties.type, kefir_ast_type_signed_int())); });
+
+    ASSERT_CONDITIONAL(
+        &kft_mem, context, KEFIR_AST_NODE_BASE(make_constant(&kft_mem, kefir_ast_type_unsigned_long_long())), NULL,
+        KEFIR_AST_NODE_BASE(kefir_ast_new_constant_char(&kft_mem, 3)), true,
+        { ASSERT(KEFIR_AST_TYPE_SAME(oper->base.properties.type, kefir_ast_type_unsigned_long_long())); });
+
+    ASSERT_CONDITIONAL(&kft_mem, context, KEFIR_AST_NODE_BASE(make_constant(&kft_mem, kefir_ast_type_unsigned_char())),
+                       NULL, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_long(&kft_mem, 3)), true,
+                       { ASSERT(KEFIR_AST_TYPE_SAME(oper->base.properties.type, kefir_ast_type_signed_long())); });
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+}
+END_CASE

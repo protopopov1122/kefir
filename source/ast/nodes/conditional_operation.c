@@ -32,7 +32,9 @@ kefir_result_t ast_conditional_operator_free(struct kefir_mem *mem, struct kefir
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST node base"));
     ASSIGN_DECL_CAST(struct kefir_ast_conditional_operator *, node, base->self);
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node->expr2));
-    REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node->expr1));
+    if (node->expr1 != NULL) {
+        REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node->expr1));
+    }
     REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node->condition));
     KEFIR_FREE(mem, node);
     return KEFIR_OK;
@@ -62,15 +64,23 @@ struct kefir_ast_node_base *ast_conditional_operator_clone(struct kefir_mem *mem
         KEFIR_FREE(mem, clone);
         return NULL;
     });
-    clone->expr1 = KEFIR_AST_NODE_CLONE(mem, node->expr1);
-    REQUIRE_ELSE(clone->expr1 != NULL, {
-        KEFIR_AST_NODE_FREE(mem, clone->condition);
-        KEFIR_FREE(mem, clone);
-        return NULL;
-    });
+
+    if (node->expr1 != NULL) {
+        clone->expr1 = KEFIR_AST_NODE_CLONE(mem, node->expr1);
+        REQUIRE_ELSE(clone->expr1 != NULL, {
+            KEFIR_AST_NODE_FREE(mem, clone->condition);
+            KEFIR_FREE(mem, clone);
+            return NULL;
+        });
+    } else {
+        clone->expr1 = NULL;
+    }
+
     clone->expr2 = KEFIR_AST_NODE_CLONE(mem, node->expr2);
     REQUIRE_ELSE(clone->expr2 != NULL, {
-        KEFIR_AST_NODE_FREE(mem, clone->expr1);
+        if (clone->expr1 != NULL) {
+            KEFIR_AST_NODE_FREE(mem, clone->expr1);
+        }
         KEFIR_AST_NODE_FREE(mem, clone->condition);
         KEFIR_FREE(mem, clone);
         return NULL;
@@ -84,8 +94,8 @@ struct kefir_ast_conditional_operator *kefir_ast_new_conditional_operator(struct
                                                                           struct kefir_ast_node_base *expr2) {
     REQUIRE(mem != NULL, NULL);
     REQUIRE(condition != NULL, NULL);
-    REQUIRE(expr1 != NULL, NULL);
     REQUIRE(expr2 != NULL, NULL);
+
     struct kefir_ast_conditional_operator *oper = KEFIR_MALLOC(mem, sizeof(struct kefir_ast_conditional_operator));
     REQUIRE(oper != NULL, NULL);
     oper->base.klass = &AST_CONDITIONAL_OPERATION_CLASS;

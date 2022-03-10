@@ -35,6 +35,7 @@ typedef struct kefir_parser_configuration {
     kefir_bool_t designated_initializer_colons;
     kefir_bool_t label_addressing;
     kefir_bool_t statement_expressions;
+    kefir_bool_t omitted_conditional_operand;
 } kefir_parser_configuration_t;
 
 kefir_result_t kefir_parser_configuration_default(struct kefir_parser_configuration *);

@@ -110,6 +110,15 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
     });
 
+    FUNC("conditional4", {
+        struct kefir_ast_node_base *node = KEFIR_AST_NODE_BASE(
+            kefir_ast_new_conditional_operator(mem, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 0)), NULL,
+                                               KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(mem, 10))));
+        REQUIRE_OK(kefir_ast_analyze_node(mem, context, node));
+        REQUIRE_OK(kefir_ast_translate_expression(mem, node, &builder, &translator_context));
+        REQUIRE_OK(KEFIR_AST_NODE_FREE(mem, node));
+    });
+
     REQUIRE_OK(kefir_ir_format_module(stdout, &module));
 
     REQUIRE_OK(kefir_ast_translator_context_free(mem, &translator_context));

@@ -177,7 +177,8 @@ static struct CliOption Options[] = {
     FEATURE("empty-structs", features.empty_structs),
     FEATURE("ext-pointer-arithmetics", features.ext_pointer_arithmetics),
     FEATURE("missing-braces-subobj", features.missing_braces_subobject),
-    FEATURE("statement-expressions", features.statement_expressions)
+    FEATURE("statement-expressions", features.statement_expressions),
+    FEATURE("omitted-conditional-operand", features.omitted_conditional_operand)
 
 #undef SIMPLE
 #undef PREHOOK

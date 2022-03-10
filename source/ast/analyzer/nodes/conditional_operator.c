@@ -35,15 +35,22 @@ kefir_result_t kefir_ast_analyze_conditional_operator_node(struct kefir_mem *mem
     REQUIRE(base != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST base node"));
 
     REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->condition));
-    REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->expr1));
-    REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->expr2));
-
     REQUIRE(node->condition->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->condition->source_location,
                                    "All conditional operator operands shall be expressions"));
-    REQUIRE(node->expr1->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->expr1->source_location,
-                                   "All conditional operator operands shall be expressions"));
+
+    struct kefir_ast_node_base *left_expr = NULL;
+    if (node->expr1 != NULL) {
+        left_expr = node->expr1;
+        REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->expr1));
+        REQUIRE(node->expr1->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
+                KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->expr1->source_location,
+                                       "All conditional operator operands shall be expressions"));
+    } else {
+        left_expr = node->condition;
+    }
+
+    REQUIRE_OK(kefir_ast_analyze_node(mem, context, node->expr2));
     REQUIRE(node->expr2->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
             KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->expr2->source_location,
                                    "All conditional operator operands shall be expressions"));
@@ -51,7 +58,7 @@ kefir_result_t kefir_ast_analyze_conditional_operator_node(struct kefir_mem *mem
     const struct kefir_ast_type *cond_type =
         KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->condition->properties.type);
     const struct kefir_ast_type *type1 =
-        KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->expr1->properties.type);
+        KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, left_expr->properties.type);
     const struct kefir_ast_type *type2 =
         KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->type_bundle, node->expr2->properties.type);
 
@@ -59,7 +66,7 @@ kefir_result_t kefir_ast_analyze_conditional_operator_node(struct kefir_mem *mem
     base->properties.category = KEFIR_AST_NODE_CATEGORY_EXPRESSION;
     base->properties.expression_props.constant_expression =
         node->condition->properties.expression_props.constant_expression &&
-        node->expr1->properties.expression_props.constant_expression &&
+        left_expr->properties.expression_props.constant_expression &&
         node->expr2->properties.expression_props.constant_expression;
 
     REQUIRE(KEFIR_AST_TYPE_IS_SCALAR_TYPE(cond_type),
@@ -68,7 +75,7 @@ kefir_result_t kefir_ast_analyze_conditional_operator_node(struct kefir_mem *mem
 
     if (KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type1) && KEFIR_AST_TYPE_IS_ARITHMETIC_TYPE(type2)) {
         base->properties.type = kefir_ast_type_common_arithmetic(
-            context->type_traits, type1, node->expr1->properties.expression_props.bitfield_props, type2,
+            context->type_traits, type1, left_expr->properties.expression_props.bitfield_props, type2,
             node->expr2->properties.expression_props.bitfield_props);
     } else if ((type1->tag == KEFIR_AST_TYPE_STRUCTURE || type1->tag == KEFIR_AST_TYPE_UNION) &&
                (type2->tag == KEFIR_AST_TYPE_STRUCTURE || type2->tag == KEFIR_AST_TYPE_UNION) &&
@@ -78,7 +85,7 @@ kefir_result_t kefir_ast_analyze_conditional_operator_node(struct kefir_mem *mem
         base->properties.type = kefir_ast_type_void();
     } else {
         kefir_bool_t is_null1, is_null2;
-        REQUIRE_OK(kefir_ast_is_null_pointer_constant(mem, context, node->expr1, &is_null1));
+        REQUIRE_OK(kefir_ast_is_null_pointer_constant(mem, context, left_expr, &is_null1));
         REQUIRE_OK(kefir_ast_is_null_pointer_constant(mem, context, node->expr2, &is_null2));
         if (type1->tag == KEFIR_AST_TYPE_SCALAR_POINTER && is_null2) {
             base->properties.type = type1;
@@ -88,7 +95,7 @@ kefir_result_t kefir_ast_analyze_conditional_operator_node(struct kefir_mem *mem
             base->properties.type = type1;
         } else {
             REQUIRE(type1->tag == KEFIR_AST_TYPE_SCALAR_POINTER,
-                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->expr1->source_location,
+                    KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &left_expr->source_location,
                                            "Both conditional expressions shall have compatible types"));
             REQUIRE(type2->tag == KEFIR_AST_TYPE_SCALAR_POINTER,
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->expr2->source_location,
@@ -110,7 +117,7 @@ kefir_result_t kefir_ast_analyze_conditional_operator_node(struct kefir_mem *mem
                 base->properties.type = kefir_ast_type_pointer(mem, context->type_bundle, result_type);
             } else {
                 REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, unqualified1, unqualified2),
-                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->expr1->source_location,
+                        KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &left_expr->source_location,
                                                "Both conditional expressions shall have compatible types"));
                 const struct kefir_ast_type *result_type = KEFIR_AST_TYPE_COMPOSITE(
                     mem, context->type_bundle, context->type_traits, unqualified1, unqualified2);

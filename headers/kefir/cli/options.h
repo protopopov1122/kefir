@@ -70,6 +70,7 @@ typedef struct kefir_cli_options {
         kefir_bool_t ext_pointer_arithmetics;
         kefir_bool_t missing_braces_subobject;
         kefir_bool_t statement_expressions;
+        kefir_bool_t omitted_conditional_operand;
     } features;
 } kefir_cli_options_t;
 

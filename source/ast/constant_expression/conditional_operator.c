@@ -70,8 +70,12 @@ kefir_result_t kefir_ast_evaluate_conditional_operator_node(struct kefir_mem *me
     }
 
     if (condition) {
-        REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->expr1, &arg1_value));
-        *value = arg1_value;
+        if (node->expr1 != NULL) {
+            REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->expr1, &arg1_value));
+            *value = arg1_value;
+        } else {
+            *value = cond_value;
+        }
     } else {
         REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->expr2, &arg2_value));
         *value = arg2_value;

@@ -54,6 +54,14 @@
         {
             "identifier": 10,
             "type": []
+        },
+        {
+            "identifier": 11,
+            "type": []
+        },
+        {
+            "identifier": 12,
+            "type": []
         }
     ],
     "data": [],
@@ -79,6 +87,13 @@
             "parameters": 9,
             "vararg": false,
             "returns": 10
+        },
+        {
+            "identifier": 3,
+            "name": "conditional4",
+            "parameters": 11,
+            "vararg": false,
+            "returns": 12
         }
     ],
     "functions": [
@@ -174,6 +189,32 @@
                 {
                     "opcode": "pushf32",
                     "arg": 4.510000
+                }
+            ]
+        },
+        {
+            "identifier": 3,
+            "name": "conditional4",
+            "locals": 4,
+            "body": [
+                {
+                    "opcode": "push",
+                    "arg": 0
+                },
+                {
+                    "opcode": "pick",
+                    "arg": 0
+                },
+                {
+                    "opcode": "branch",
+                    "arg": 5
+                },
+                {
+                    "opcode": "pop"
+                },
+                {
+                    "opcode": "push",
+                    "arg": 10
                 }
             ]
         }
