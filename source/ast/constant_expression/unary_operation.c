@@ -19,12 +19,15 @@
 */
 
 #include "kefir/ast/constant_expression_impl.h"
+#include "kefir/ast/type_completion.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"
 
 static kefir_result_t unwrap_vla_type(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                       const struct kefir_ast_type *type, const struct kefir_ast_type **result) {
+    REQUIRE_OK(kefir_ast_type_completion(mem, context, &type, type));
+
     if (KEFIR_AST_TYPE_IS_VL_ARRAY(type)) {
         const struct kefir_ast_type *element_type = NULL;
         REQUIRE_OK(unwrap_vla_type(mem, context, type->array_type.element_type, &element_type));
@@ -145,6 +148,8 @@ kefir_result_t kefir_ast_evaluate_unary_operation_node(struct kefir_mem *mem, co
                  kefir_ast_unqualified_type(type)->tag == KEFIR_AST_TYPE_VOID)) {
                 type = context->type_traits->incomplete_type_substitute;
             }
+
+            REQUIRE_OK(kefir_ast_type_completion(mem, context, &type, type));
 
             kefir_ast_target_environment_opaque_type_t opaque_type;
             struct kefir_ast_target_environment_object_info type_info;

@@ -21,6 +21,7 @@
 #include "kefir/ast/analyzer/nodes.h"
 #include "kefir/ast/analyzer/analyzer.h"
 #include "kefir/ast/type_conv.h"
+#include "kefir/ast/type_completion.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include "kefir/core/source_error.h"
@@ -151,6 +152,8 @@ kefir_result_t kefir_ast_analyze_unary_operation_node(struct kefir_mem *mem, con
             REQUIRE(type->tag != KEFIR_AST_TYPE_FUNCTION || context->configuration->analysis.ext_pointer_arithmetics,
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->arg->source_location,
                                            "Sizeof operator cannot be applied to function types"));
+
+            REQUIRE_OK(kefir_ast_type_completion(mem, context, &type, type));
             REQUIRE(
                 !KEFIR_AST_TYPE_IS_INCOMPLETE(type) || (kefir_ast_unqualified_type(type)->tag == KEFIR_AST_TYPE_VOID &&
                                                         context->configuration->analysis.ext_pointer_arithmetics),
@@ -161,13 +164,16 @@ kefir_result_t kefir_ast_analyze_unary_operation_node(struct kefir_mem *mem, con
         } break;
 
         case KEFIR_AST_OPERATION_ALIGNOF: {
-            REQUIRE(node->arg->properties.category == KEFIR_AST_NODE_CATEGORY_TYPE,
+            REQUIRE(node->arg->properties.category == KEFIR_AST_NODE_CATEGORY_TYPE ||
+                        node->arg->properties.category == KEFIR_AST_NODE_CATEGORY_EXPRESSION,
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->arg->source_location,
-                                           "Alignof operator expects type argument"));
+                                           "Alignof operator expects either a type argument, or an expression"));
             const struct kefir_ast_type *type = node->arg->properties.type;
             REQUIRE(type->tag != KEFIR_AST_TYPE_FUNCTION,
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->arg->source_location,
                                            "Alignof operator cannot be applied to function types"));
+
+            REQUIRE_OK(kefir_ast_type_completion(mem, context, &type, type));
             REQUIRE(!KEFIR_AST_TYPE_IS_INCOMPLETE(type),
                     KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, &node->arg->source_location,
                                            "Alignof operator cannot be applied to incomplete type"));

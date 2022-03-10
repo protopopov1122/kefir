@@ -21,6 +21,7 @@
 #include "kefir/ast-translator/misc.h"
 #include "kefir/ast-translator/translator.h"
 #include "kefir/ast/runtime.h"
+#include "kefir/ast/type_completion.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
@@ -56,6 +57,7 @@ kefir_result_t kefir_ast_translate_sizeof(struct kefir_mem *mem, struct kefir_as
         REQUIRE_OK(kefir_ast_translate_expression(mem, vlen, builder, context));
         REQUIRE_OK(KEFIR_IRBUILDER_BLOCK_APPENDU64(builder, KEFIR_IROPCODE_IMUL, 0));
     } else {
+        REQUIRE_OK(kefir_ast_type_completion(mem, context->ast_context, &type, type));
         REQUIRE_OK(sizeof_nonvla_type(mem, context, builder, type));
     }
     return KEFIR_OK;
@@ -63,6 +65,8 @@ kefir_result_t kefir_ast_translate_sizeof(struct kefir_mem *mem, struct kefir_as
 
 static kefir_result_t unwrap_vla_type(struct kefir_mem *mem, const struct kefir_ast_context *context,
                                       const struct kefir_ast_type *type, const struct kefir_ast_type **result) {
+    REQUIRE_OK(kefir_ast_type_completion(mem, context, &type, type));
+
     if (KEFIR_AST_TYPE_IS_VL_ARRAY(type)) {
         const struct kefir_ast_type *element_type = NULL;
         REQUIRE_OK(unwrap_vla_type(mem, context, type->array_type.element_type, &element_type));
