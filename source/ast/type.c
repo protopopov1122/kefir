@@ -98,6 +98,48 @@ static kefir_result_t default_integral_type_fits(const struct kefir_ast_type_tra
     return KEFIR_OK;
 }
 
+static kefir_result_t default_pointer_type_fits(const struct kefir_ast_type_traits *type_traits,
+                                                const struct kefir_ast_type *type, kefir_bool_t *result) {
+    REQUIRE(type_traits != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type traits"));
+    REQUIRE(type != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AST type"));
+    REQUIRE(result != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid result pointer"));
+    REQUIRE((KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(type) || type->tag == KEFIR_AST_TYPE_SCALAR_BOOL ||
+             type->tag == KEFIR_AST_TYPE_SCALAR_POINTER),
+            KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected type to be basic or pointer type"));
+
+    ASSIGN_DECL_CAST(const struct kefir_data_model_descriptor *, data_model, type_traits->payload);
+    switch (type->tag) {
+        case KEFIR_AST_TYPE_SCALAR_BOOL:
+        case KEFIR_AST_TYPE_SCALAR_CHAR:
+        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_CHAR:
+        case KEFIR_AST_TYPE_SCALAR_SIGNED_CHAR:
+        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_SHORT:
+        case KEFIR_AST_TYPE_SCALAR_SIGNED_SHORT:
+            *result = false;
+            break;
+
+        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_INT:
+        case KEFIR_AST_TYPE_SCALAR_SIGNED_INT:
+            *result = data_model->model == KEFIR_DATA_MODEL_SILP64 || data_model->model == KEFIR_DATA_MODEL_ILP64 ||
+                      data_model->model == KEFIR_DATA_MODEL_ILP32;
+            break;
+
+        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG:
+        case KEFIR_AST_TYPE_SCALAR_SIGNED_LONG:
+            *result = data_model->model != KEFIR_DATA_MODEL_LLP64;
+            break;
+
+        case KEFIR_AST_TYPE_SCALAR_UNSIGNED_LONG_LONG:
+        case KEFIR_AST_TYPE_SCALAR_SIGNED_LONG_LONG:
+            *result = true;
+            break;
+
+        default:
+            return KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Unexpected AST type");
+    }
+    return KEFIR_OK;
+}
+
 static const struct kefir_ast_type *default_bitfield_promotion(const struct kefir_ast_type_traits *type_traits,
                                                                const struct kefir_ast_type *type, kefir_size_t width) {
     REQUIRE(type_traits != NULL, NULL);
@@ -119,6 +161,7 @@ kefir_result_t kefir_ast_type_traits_init(const struct kefir_data_model_descript
     REQUIRE(type_traits != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to AST type traits"));
 
     *type_traits = (struct kefir_ast_type_traits){.integral_type_fits = default_integral_type_fits,
+                                                  .pointer_type_fits = default_pointer_type_fits,
                                                   .bitfield_promotion = default_bitfield_promotion,
                                                   .underlying_enumeration_type = kefir_ast_type_signed_int(),
                                                   .incomplete_type_substitute = kefir_ast_type_char(),

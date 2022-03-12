@@ -64,8 +64,16 @@ kefir_result_t kefir_ast_type_assignable(struct kefir_mem *mem, const struct kef
     } else {
         REQUIRE(target_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER,
                 KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Left assignable operand shall be a pointer"));
-        REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(value_type) && constant_expression,
-                KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Right assignable operand shall be NULL pointer"));
+        REQUIRE(KEFIR_AST_TYPE_IS_INTEGRAL_TYPE(value_type),
+                KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Right assignable operand shall have an integral type"));
+
+        kefir_bool_t pointer_fits = context->configuration->analysis.int_to_pointer;
+        if (!pointer_fits) {
+            REQUIRE_OK(context->type_traits->pointer_type_fits(context->type_traits, value_type, &pointer_fits));
+        }
+        REQUIRE(constant_expression || pointer_fits,
+                KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Right assignable operand shall be either a constant or it's type "
+                                                "shall be at least as wide as pointer"));
     }
     return KEFIR_OK;
 }

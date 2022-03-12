@@ -66,6 +66,8 @@ typedef struct kefir_ast_type {
 typedef struct kefir_ast_type_traits {
     kefir_result_t (*integral_type_fits)(const struct kefir_ast_type_traits *, const struct kefir_ast_type *,
                                          const struct kefir_ast_type *, kefir_bool_t *);
+    kefir_result_t (*pointer_type_fits)(const struct kefir_ast_type_traits *, const struct kefir_ast_type *,
+                                        kefir_bool_t *);
     const struct kefir_ast_type *(*bitfield_promotion)(const struct kefir_ast_type_traits *,
                                                        const struct kefir_ast_type *, kefir_size_t);
     const struct kefir_ast_type *underlying_enumeration_type;

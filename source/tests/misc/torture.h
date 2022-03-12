@@ -55,3 +55,6 @@
 #define __builtin_ffs(n) ffs(n)
 
 #define __alignof__(arg) _Alignof(arg)
+
+// Missing declarations
+void *malloc(__SIZE_TYPE__);

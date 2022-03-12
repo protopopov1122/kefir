@@ -36,6 +36,7 @@ typedef struct kefir_ast_context_configuration {
         kefir_bool_t implicit_function_declaration;
         kefir_bool_t ext_pointer_arithmetics;
         kefir_bool_t missing_braces_subobj;
+        kefir_bool_t int_to_pointer;
     } analysis;
 } kefir_ast_context_configuration_t;
 
