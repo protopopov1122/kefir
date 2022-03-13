@@ -17,8 +17,8 @@
          float f;         \
      }){.l = 2139095039}) \
          .f)
-#define __SIZEOF_INT__ sizeof(int)
-#define __SIZEOF_LONG_LONG__ sizeof(long long)
+#define __SIZEOF_INT__ 4
+#define __SIZEOF_LONG_LONG__ 8
 #define __FUNCTION__ __func__
 
 // Missing types

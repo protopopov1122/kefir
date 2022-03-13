@@ -19,6 +19,7 @@ skip execute/scal-to-vec1.c
 skip execute/scal-to-vec2.c
 skip execute/scal-to-vec3.c
 skip compile/vector-align-1.c
+skip execute/pr92618.c
 
 # SIMD
 skip execute/simd-1.c
