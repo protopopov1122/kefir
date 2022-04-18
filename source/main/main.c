@@ -361,6 +361,7 @@ int main(int argc, char *const *argv) {
     struct kefir_cli_options options;
 
     setlocale(LC_ALL, "");
+    setlocale(LC_NUMERIC, "C");
     kefir_result_t res = kefir_cli_parse_options(mem, &options, argv, argc);
     REQUIRE_CHAIN(&res, kefir_main(mem, &options));
     REQUIRE_CHAIN(&res, kefir_cli_options_free(mem, &options));
