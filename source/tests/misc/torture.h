@@ -28,6 +28,7 @@
 #define __INTPTR_TYPE__ long
 #define __label__ void *
 #define __restrict restrict
+#define __complex__ _Complex
 
 // Missing built-ins
 #define __builtin_memset(p, v, n) memset(p, v, n)
