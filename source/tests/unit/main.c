@@ -179,6 +179,7 @@ DECLARE_CASE(ast_node_analysis_function_calls1);
 DECLARE_CASE(ast_node_analysis_function_calls2);
 DECLARE_CASE(ast_node_analysis_function_calls3);
 DECLARE_CASE(ast_node_analysis_function_calls4);
+DECLARE_CASE(ast_node_analysis_function_call_qualified_rvalues);
 DECLARE_CASE(ast_node_analysis_builtins1);
 DECLARE_CASE(ast_node_analysis_builtins2);
 DECLARE_CASE(ast_node_analysis_builtins3);
@@ -192,6 +193,7 @@ DECLARE_CASE(ast_node_analysis_unary_operation_alignof);
 DECLARE_CASE(ast_node_analysis_type_name);
 DECLARE_CASE(ast_node_analysis_generic_selections);
 DECLARE_CASE(ast_node_analysis_cast_operators);
+DECLARE_CASE(ast_node_analysis_cast_operator_qualified_rvalue);
 DECLARE_CASE(ast_node_analysis_multiplicative_operators);
 DECLARE_CASE(ast_node_analysis_add_operator);
 DECLARE_CASE(ast_node_analysis_subtract_operator);
@@ -516,14 +518,15 @@ TEST_SUITE(
     &ast_node_analysis_struct_members1, &ast_node_analysis_struct_members2, &ast_node_analysis_indirect_struct_members1,
     &ast_node_analysis_indirect_struct_members2, &ast_node_analysis_function_calls, &ast_node_analysis_function_calls1,
     &ast_node_analysis_function_calls2, &ast_node_analysis_function_calls3, &ast_node_analysis_function_calls4,
-    &ast_node_analysis_builtins1, &ast_node_analysis_builtins2, &ast_node_analysis_builtins3,
-    &ast_node_analysis_builtins4, &ast_node_analysis_unary_operation_arithmetic,
+    &ast_node_analysis_function_call_qualified_rvalues, &ast_node_analysis_builtins1, &ast_node_analysis_builtins2,
+    &ast_node_analysis_builtins3, &ast_node_analysis_builtins4, &ast_node_analysis_unary_operation_arithmetic,
     &ast_node_analysis_unary_operation_address, &ast_node_analysis_unary_operation_indirect,
     &ast_node_analysis_unary_operation_incdec, &ast_node_analysis_unary_operation_sizeof,
     &ast_node_analysis_unary_operation_alignof, &ast_node_analysis_type_name, &ast_node_analysis_generic_selections,
-    &ast_node_analysis_cast_operators, &ast_node_analysis_multiplicative_operators, &ast_node_analysis_add_operator,
-    &ast_node_analysis_subtract_operator, &ast_node_analysis_shift_operator, &ast_node_analysis_relational_operators,
-    &ast_node_analysis_equality_operators, &ast_node_analysis_bitwise_operators, &ast_node_analysis_logical_operators,
+    &ast_node_analysis_cast_operators, &ast_node_analysis_cast_operator_qualified_rvalue,
+    &ast_node_analysis_multiplicative_operators, &ast_node_analysis_add_operator, &ast_node_analysis_subtract_operator,
+    &ast_node_analysis_shift_operator, &ast_node_analysis_relational_operators, &ast_node_analysis_equality_operators,
+    &ast_node_analysis_bitwise_operators, &ast_node_analysis_logical_operators,
     &ast_node_analysis_conditional_operator1, &ast_node_analysis_conditional_operator2,
     &ast_node_analysis_conditional_operator3, &ast_node_analysis_conditional_operator4,
     &ast_node_analysis_conditional_operator5, &ast_node_analysis_conditional_operator6,

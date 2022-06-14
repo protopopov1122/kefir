@@ -60,7 +60,7 @@ kefir_result_t kefir_ast_analyze_cast_operator_node(struct kefir_mem *mem, const
 
     REQUIRE_OK(kefir_ast_node_properties_init(&base->properties));
     base->properties.category = KEFIR_AST_NODE_CATEGORY_EXPRESSION;
-    base->properties.type = cast->type_name->base.properties.type;
+    base->properties.type = cast_type;
     base->properties.expression_props.constant_expression = cast->expr->properties.expression_props.constant_expression;
     return KEFIR_OK;
 }

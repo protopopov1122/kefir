@@ -223,6 +223,64 @@ DEFINE_CASE(ast_node_analysis_cast_operators, "AST node analysis - cast operator
 }
 END_CASE
 
+DEFINE_CASE(ast_node_analysis_cast_operator_qualified_rvalue, "AST node analysis - cast to qualified rvalues") {
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
+                                            &global_context, NULL));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    struct kefir_ast_type_name *type_name1 =
+        kefir_ast_new_type_name(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name1->type_decl.specifiers,
+                                                         kefir_ast_type_specifier_int(&kft_mem)));
+    ASSERT_CAST(&kft_mem, context, kefir_ast_type_signed_int(), type_name1,
+                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0)), true);
+
+    struct kefir_ast_type_name *type_name2 =
+        kefir_ast_new_type_name(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name2->type_decl.specifiers,
+                                                         kefir_ast_type_specifier_int(&kft_mem)));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name2->type_decl.specifiers,
+                                                         kefir_ast_type_qualifier_const(&kft_mem)));
+    ASSERT_CAST(&kft_mem, context, kefir_ast_type_signed_int(), type_name2,
+                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0)), true);
+
+    struct kefir_ast_type_name *type_name3 =
+        kefir_ast_new_type_name(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name3->type_decl.specifiers,
+                                                         kefir_ast_type_specifier_int(&kft_mem)));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name3->type_decl.specifiers,
+                                                         kefir_ast_type_qualifier_const(&kft_mem)));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name3->type_decl.specifiers,
+                                                         kefir_ast_type_qualifier_volatile(&kft_mem)));
+    ASSERT_CAST(&kft_mem, context, kefir_ast_type_signed_int(), type_name3,
+                KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0)), true);
+
+    struct kefir_ast_type_name *type_name4 = kefir_ast_new_type_name(
+        &kft_mem, kefir_ast_declarator_pointer(&kft_mem, kefir_ast_declarator_identifier(&kft_mem, NULL, NULL)));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name4->type_decl.specifiers,
+                                                         kefir_ast_type_specifier_int(&kft_mem)));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name4->type_decl.specifiers,
+                                                         kefir_ast_type_qualifier_const(&kft_mem)));
+    ASSERT_OK(kefir_ast_declarator_specifier_list_append(&kft_mem, &type_name4->type_decl.specifiers,
+                                                         kefir_ast_type_qualifier_volatile(&kft_mem)));
+    ASSERT_CAST(
+        &kft_mem, context,
+        kefir_ast_type_pointer(
+            &kft_mem, context->type_bundle,
+            kefir_ast_type_qualified(&kft_mem, context->type_bundle, kefir_ast_type_signed_int(),
+                                     (struct kefir_ast_type_qualification){.constant = true, .volatile_type = true})),
+        type_name4, KEFIR_AST_NODE_BASE(kefir_ast_new_constant_int(&kft_mem, 0)), true);
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+}
+END_CASE
+
 #undef ASSERT_CAST
 
 #define ASSERT_BINARY(_mem, _context, _oper, _arg1, _arg2, _type, _const)                                            \

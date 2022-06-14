@@ -39,7 +39,7 @@ kefir_result_t kefir_ast_translate_cast_operator_node(struct kefir_mem *mem,
         KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, node->expr->properties.type);
 
     const struct kefir_ast_type *arg_init_normalized_type =
-        kefir_ast_translator_normalize_type(node->type_name->base.properties.type);
+        kefir_ast_translator_normalize_type(node->base.properties.type);
     const struct kefir_ast_type *arg_normalized_type =
         KEFIR_AST_TYPE_CONV_EXPRESSION_ALL(mem, context->ast_context->type_bundle, arg_init_normalized_type);
     REQUIRE(arg_normalized_type != NULL,

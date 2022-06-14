@@ -194,6 +194,6 @@ kefir_result_t kefir_ast_evaluate_cast_operator_node(struct kefir_mem *mem, cons
     REQUIRE_OK(kefir_ast_constant_expression_value_evaluate(mem, context, node->expr, &arg_value));
 
     REQUIRE_OK(kefir_ast_constant_expression_value_cast(mem, context, value, &arg_value, KEFIR_AST_NODE_BASE(node),
-                                                        node->type_name->base.properties.type));
+                                                        node->base.properties.type));
     return KEFIR_OK;
 }

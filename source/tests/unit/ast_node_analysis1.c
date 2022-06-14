@@ -741,6 +741,77 @@ DEFINE_CASE(ast_node_analysis_function_calls, "AST node analysis - function call
 }
 END_CASE
 
+DEFINE_CASE(ast_node_analysis_function_call_qualified_rvalues,
+            "AST node analysis - function call returning qualified rvalues") {
+    const struct kefir_ast_type_traits *type_traits = kefir_util_default_type_traits();
+    struct kefir_ast_global_context global_context;
+    struct kefir_ast_local_context local_context;
+
+    ASSERT_OK(kefir_ast_global_context_init(&kft_mem, type_traits, &kft_util_get_translator_environment()->target_env,
+                                            &global_context, NULL));
+    ASSERT_OK(kefir_ast_local_context_init(&kft_mem, &global_context, &local_context));
+    struct kefir_ast_context *context = &local_context.context;
+
+    struct kefir_ast_function_type *function1 = NULL;
+    const struct kefir_ast_type *function1_type =
+        kefir_ast_type_function(&kft_mem, context->type_bundle, kefir_ast_type_signed_long_long(), &function1);
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, function1,
+                                                kefir_ast_type_unsigned_int(), NULL));
+
+    ASSERT_OK(kefir_ast_local_context_declare_function(&kft_mem, &local_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+                                                       "func1", function1_type, NULL, NULL));
+
+    struct kefir_ast_function_type *function2 = NULL;
+    const struct kefir_ast_type *function2_type = kefir_ast_type_function(
+        &kft_mem, context->type_bundle,
+        kefir_ast_type_qualified(&kft_mem, local_context.context.type_bundle, kefir_ast_type_signed_long_long(),
+                                 (struct kefir_ast_type_qualification){.constant = true}),
+        &function2);
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, function2,
+                                                kefir_ast_type_unsigned_int(), NULL));
+
+    struct kefir_ast_function_type *function3 = NULL;
+    const struct kefir_ast_type *function3_type = kefir_ast_type_function(
+        &kft_mem, context->type_bundle,
+        kefir_ast_type_qualified(&kft_mem, local_context.context.type_bundle, kefir_ast_type_signed_long_long(),
+                                 (struct kefir_ast_type_qualification){.constant = true, .restricted = true}),
+        &function3);
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, function3,
+                                                kefir_ast_type_unsigned_int(), NULL));
+
+    const struct kefir_ast_type *fn4_type =
+        kefir_ast_type_qualified(&kft_mem, local_context.context.type_bundle, kefir_ast_type_signed_long_long(),
+                                 (struct kefir_ast_type_qualification){.constant = true, .restricted = true});
+    struct kefir_ast_function_type *function4 = NULL;
+    const struct kefir_ast_type *function4_type = kefir_ast_type_function(
+        &kft_mem, context->type_bundle,
+        kefir_ast_type_qualified(&kft_mem, local_context.context.type_bundle,
+                                 kefir_ast_type_pointer(&kft_mem, local_context.context.type_bundle, fn4_type),
+                                 (struct kefir_ast_type_qualification){.restricted = true}),
+        &function4);
+    ASSERT_OK(kefir_ast_type_function_parameter(&kft_mem, context->type_bundle, function4,
+                                                kefir_ast_type_unsigned_int(), NULL));
+
+    ASSERT_OK(kefir_ast_local_context_declare_function(&kft_mem, &local_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+                                                       "func1", function1_type, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_function(&kft_mem, &local_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+                                                       "func2", function2_type, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_function(&kft_mem, &local_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+                                                       "func3", function3_type, NULL, NULL));
+    ASSERT_OK(kefir_ast_local_context_declare_function(&kft_mem, &local_context, KEFIR_AST_FUNCTION_SPECIFIER_NONE,
+                                                       "func4", function4_type, NULL, NULL));
+
+    ASSERT_FUNCTION_CALL(&kft_mem, context, "func1", kefir_ast_type_signed_long_long());
+    ASSERT_FUNCTION_CALL(&kft_mem, context, "func2", kefir_ast_type_signed_long_long());
+    ASSERT_FUNCTION_CALL(&kft_mem, context, "func3", kefir_ast_type_signed_long_long());
+    ASSERT_FUNCTION_CALL(&kft_mem, context, "func4",
+                         kefir_ast_type_pointer(&kft_mem, local_context.context.type_bundle, fn4_type));
+
+    ASSERT_OK(kefir_ast_local_context_free(&kft_mem, &local_context));
+    ASSERT_OK(kefir_ast_global_context_free(&kft_mem, &global_context));
+}
+END_CASE
+
 #undef ASSERT_FUNCTION_CALL
 
 #define ASSERT_UNARY_OPERATION(_mem, _context, _oper, _arg, _type, _constant, _lvalue, _addresable) \
