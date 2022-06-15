@@ -18,15 +18,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <assert.h>
-#include "./definitions.h"
+#ifndef DEFINITIONS_H_
+#define DEFINITIONS_H_
 
-int main() {
-    assert(Lines[0] == 23);
-    assert(Lines[1] == 24);
-    assert(Lines[2] == 1);
-    assert(Lines[3] == 2);
-    return EXIT_SUCCESS;
-}
+extern const int Values[];
+
+#endif

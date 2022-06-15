@@ -24,9 +24,10 @@
 #include "./definitions.h"
 
 int main() {
-    assert(Lines[0] == 23);
-    assert(Lines[1] == 24);
-    assert(Lines[2] == 1);
-    assert(Lines[3] == 2);
+    assert(Values[0] == 1);
+    assert(Values[1] == 1);
+    assert(Values[2] == 3);
+    assert(Values[3] == 101);
+    assert(Values[4] == 4);
     return EXIT_SUCCESS;
 }

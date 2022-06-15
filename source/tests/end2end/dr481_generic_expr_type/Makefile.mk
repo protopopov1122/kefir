@@ -1,0 +1,2 @@
+END2END_TEST_ID=dr481_generic_expr_type
+include source/tests/end2end/Makefile.template.mk
