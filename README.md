@@ -1,7 +1,7 @@
 # Kefir C compiler
-This repository contains implementation of C11 language compiler from scratch. No existing open source compiler
+This repository contains implementation of C17 language compiler from scratch. No existing open source compiler
 infrastructure is being reused. The main priority is self-sufficiency of the project, compatibility with platform ABI and compliance with
-C11 language standard. Some exceptions to the standard were made (see `Exceptions` section below).
+C17 language standard. Some exceptions to the standard were made (see `Exceptions` section below).
 At the moment, the initial scope of work is effectively finished, and the main concern is stabilization, bugfixes and UX improvements. 
 Kefir supports modern x86-64 Linux and FreeBSD environments.
 Compiler is also able to produce JSON streams containing program representation on various stages of compilation (tokens, AST, IR),
@@ -14,11 +14,11 @@ The main motivation of the project is deeper understanding of C programming lang
 the broader scope of compiler implementation aspects. Based on this, following goals were set for the project:
 * Self-sufficiency - project shall use minimal number of external dependencies. Runtime dependencies should include only C standard library
 and operating system APIs.
-* Compliance with C11 standard - resulting product should be reasonably compliant with language standard. All intentional deviations and exceptions
+* Compliance with C17 standard - resulting product should be reasonably compliant with language standard. All intentional deviations and exceptions
 shall be described and justified. 
 * Compatibility with platform ABI - produced code should adhere ABI of target platform. It should be possible to transparently link it with
 code produced by commonly used compilers of the target platform.
-* Reduced scope of the project - full-fledged implementation of C11 compiler is demanding task. Project scope shall be reduced so that
+* Reduced scope of the project - full-fledged implementation of C17 compiler is demanding task. Project scope shall be reduced so that
 implementation as a pet-project is feasible. For instance, standard library implementation is currently out-of-scope.
 * Portability - compiler code itself should be easily portable across different environments. Currently, the development is concentrated on
 a single target platform, however it might be extended in future.
@@ -30,9 +30,9 @@ implementation of other goals.
 * Compatibility with other compiler extensions - C compilers are known to include different extensions that are not described by language standard.
 Some of those are implemented, however it is not project goal per se, thus there are no guarantees of extension compatibility.
 
-Note on the selection of C11 as language to implement: C programming language is extremely widespread. At the same time, it is relatively simple in
-terms of semantics, thus making implementation of the compiler feasible. C11 standard was picked over C17 because the latter does not bring any new
-features. Project can be relatively easily extended to comply with C17 once the original plan is finished.
+Note on the language standard support: initially the compiler development was focused on C11 language standard support. The migration to C17 happened
+when the original plan was mostly finished. During the migration applicable DRs from those included in C17 were considered and code was updated
+accordingly. The compiler itself is still written in compliance with C11 language standard.
 
 ## Progress
 Table below lists progress on various compiler components. 'Implemenataion done' in the status field means that the main body of component
@@ -51,10 +51,10 @@ is implemented, however refactoring and bug-fixes are still on-going. At the mom
 |Command-line interface     |Implementation done       |Minimal useful implementation                                                  |
 
 ### Exceptions
-Following exceptions were made in C11 implementation:
+Following exceptions were made in C17 implementation:
 * Absence of `_Complex` floating-point number support. This feature is not being used
 particularly frequently, at the same time, it complicates target code generator.
-* Absence of atomics. C11 standard defines them as optional feature, which I decided
+* Absence of atomics. C17 standard defines them as optional feature, which I decided
 to omit in initial implementation. Support of atomics would complicate both IR and
 target code generation.
 * Unicode and wide strings are supported under the assumption that source and target character sets are the same.
@@ -74,7 +74,7 @@ compilation stages. Presence of attribute in source code can be made a syntax er
 Several C language extensions are implemented for better compatibility with GCC. All of them are disabled by default and can
 be enabled via command-line options. No specific compability guarantees are provided. Among them:
 * Implicit function declarations -- if no function declaration is present at call-site, `int function_name()` is automatically
-  defined. The feature was part of previous C standards, however it's absent from C11.
+  defined. The feature was part of previous C standards, however it's absent from C11 onwards.
 * `int` as implicit function return type -- function definition may omit return type, `int` will be used instead.
 * Designated initializers in `fieldname:` form -- old, deprecated form which is still supported by GCC.
 * Labels-as-values -- labels can be addressed with `&&` operator, gotos support arbitratry addresses in
@@ -163,7 +163,7 @@ Own test suite is deterministic (that is, tests do not fail spuriously), however
 For instance, some tests contain unicode characters and require the environment to have appropriate locale set. Also, issues with local musl 
 version might cause test failures.
 
-Currently, extension of the test suite is a major goal. It helps significantly in eliminating bugs, bringing kefir closer to C11 standard support,
+Currently, extension of the test suite is a major goal. It helps significantly in eliminating bugs, bringing kefir closer to C language standard support,
 improving compiler UX in general.
 
 ## Design notes
@@ -186,6 +186,8 @@ License:
   
 ## Useful links
 * [C11 standard final working draft](http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf)
+* [C17 standard final working draft](https://files.lhmouse.com/standards/ISO%20C%20N2176.pdf)
+* [Clarification Request Summary for C11](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2244.htm) - DRs included in C17 language standard as compared to C11.
 * [System-V AMD64 ABI](https://gitlab.com/x86-psABIs/x86-64-ABI)
 * [Compiler explorer](https://godbolt.org/)
 * [C reference](https://en.cppreference.com/w/c)

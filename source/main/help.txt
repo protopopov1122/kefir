@@ -1,4 +1,4 @@
-Kefir C11 compiler
+Kefir C17 compiler
 Usage: kefir [OPTIONS] [INPUT FILE]
 
 If no input file is provided, stdin will be used.
