@@ -1,0 +1,2 @@
+END2END_TEST_ID=dr464_preprocessor_line
+include source/tests/end2end/Makefile.template.mk
