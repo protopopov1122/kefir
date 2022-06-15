@@ -46,7 +46,7 @@ kefir_result_t kefir_preprocessor_context_init(struct kefir_mem *mem, struct kef
     // Predefined macros
     context->environment.timestamp = time(NULL);
     context->environment.hosted = true;
-    context->environment.version = 201112L;
+    context->environment.version = 201710L;
 
     // Environment macros
     context->environment.stdc_iso10646 = 0;
