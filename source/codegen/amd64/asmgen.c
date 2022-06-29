@@ -20,7 +20,6 @@
 
 #include <stdarg.h>
 #include <string.h>
-#include <uchar.h>
 #include <ctype.h>
 #include <strings.h>
 #include "kefir/codegen/amd64/asmgen.h"

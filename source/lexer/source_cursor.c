@@ -22,6 +22,11 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 
+typedef __uint_least32_t char32_t;
+
+size_t c32rtomb(char *__restrict, char32_t, mbstate_t *__restrict);
+size_t mbrtoc32(char32_t *__restrict, const char *__restrict, size_t, mbstate_t *__restrict);
+
 kefir_result_t kefir_lexer_source_cursor_init(struct kefir_lexer_source_cursor *cursor, const char *content,
                                               kefir_size_t length, const char *source_id) {
     REQUIRE(cursor != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid lexer source cursor"));

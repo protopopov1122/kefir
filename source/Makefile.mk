@@ -33,8 +33,7 @@ $(BIN_DIR)/codegen/amd64/amd64-sysv-runtime-code.s.o: $(SOURCE_DIR)/runtime/amd6
 
 $(LIBKEFIR_SO): $(KEFIR_LIB_OBJECT_FILES)
 	@mkdir -p $(shell dirname "$@")
-	@echo "Linking $@"
-	@$(CC) -shared -o $@ $(KEFIR_LIB_OBJECT_FILES)
+	$(CC) -shared -o $@ $(KEFIR_LIB_OBJECT_FILES)
 
 DEPENDENCIES += $(KEFIR_LIB_DEPENDENCIES)
 OBJECT_FILES += $(KEFIR_LIB_OBJECT_FILES)

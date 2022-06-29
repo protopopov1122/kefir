@@ -24,7 +24,6 @@
 #include "kefir/lexer/base.h"
 #include "kefir/core/basic-types.h"
 #include "kefir/core/source_location.h"
-#include <uchar.h>
 
 typedef struct kefir_lexer_source_cursor {
     const char *content;

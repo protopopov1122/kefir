@@ -24,6 +24,11 @@
 #include "kefir/util/char32.h"
 #include "kefir/core/source_error.h"
 
+typedef __uint_least32_t char32_t;
+
+size_t c32rtomb(char *__restrict, char32_t, mbstate_t *__restrict);
+size_t mbrtoc32(char32_t *__restrict, const char *__restrict, size_t, mbstate_t *__restrict);
+
 static kefir_result_t next_character(struct kefir_lexer_source_cursor *cursor, kefir_int_t *value,
                                      kefir_bool_t *continueScan) {
     struct kefir_source_location char_location = cursor->location;

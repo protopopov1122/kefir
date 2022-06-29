@@ -22,7 +22,11 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include <string.h>
-#include <uchar.h>
+
+typedef __uint_least32_t char32_t;
+
+size_t c32rtomb(char *__restrict, char32_t, mbstate_t *__restrict);
+size_t mbrtoc32(char32_t *__restrict, const char *__restrict, size_t, mbstate_t *__restrict);
 
 kefir_result_t kefir_json_output_init(struct kefir_json_output *json, FILE *file, kefir_size_t indent) {
     REQUIRE(json != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid json output"));

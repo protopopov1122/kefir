@@ -11,8 +11,7 @@ $(BIN_DIR)/main/help.s.o: $(SOURCE_DIR)/main/help.txt
 
 $(BIN_DIR)/kefir: $(KEFIR_MAIN_OBJECT_FILES) $(LIBKEFIR_SO)
 	@mkdir -p $(shell dirname "$@")
-	@echo "Linking $@"
-	@$(CC) -o $@ $(KEFIR_MAIN_OBJECT_FILES) $(KEFIR_MAIN_LINKED_LIBS) -L $(LIB_DIR) -lkefir
+	$(CC) -o $@ $(KEFIR_MAIN_OBJECT_FILES) $(KEFIR_MAIN_LINKED_LIBS) -L $(LIB_DIR) -lkefir
 
 DEPENDENCIES += $(KEFIR_MAIN_DEPENDENCIES)
 OBJECT_FILES += $(KEFIR_MAIN_OBJECT_FILES)

@@ -22,7 +22,15 @@
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
 #include <string.h>
-#include <uchar.h>
+
+typedef __uint_least16_t char16_t;
+typedef __uint_least32_t char32_t;
+
+size_t c16rtomb(char *__restrict, char16_t, mbstate_t *__restrict);
+size_t mbrtoc16(char16_t *__restrict, const char *__restrict, size_t, mbstate_t *__restrict);
+
+size_t c32rtomb(char *__restrict, char32_t, mbstate_t *__restrict);
+size_t mbrtoc32(char32_t *__restrict, const char *__restrict, size_t, mbstate_t *__restrict);
 
 #define BUFFER_MIN_CAPACITY 32
 #define BUFFER_GROW 64
