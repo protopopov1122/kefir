@@ -9,6 +9,9 @@ as well as outputting source in preprocessed form.
 By default, the compiler outputs GNU As-compatible assembly (Intel syntax with prefixes).
 At the moment, position-independent code generation is not supported.
 
+### Project name
+Kefir compiler is named after [fermented milk drink](https://en.wikipedia.org/wiki/Kefir), no other connotations are meant or intended.
+
 ## Motivation & goals
 The main motivation of the project is deeper understanding of C programming language, as well as practical experience in
 the broader scope of compiler implementation aspects. Based on this, following goals were set for the project:
