@@ -21,7 +21,7 @@ TESTDIR="$(dirname $0)"
 OUTPUT_FILE="$(mktemp)"
 DIFF_FILE="$(mktemp)"
 VALGRIND_FILE="$(mktemp)"
-DIFF="diff -u -B"
+DIFF="diff -u"
 VALGRIND="valgrind $VALGRIND_OPTIONS --log-file=$VALGRIND_FILE"
 
 function cleanup {
