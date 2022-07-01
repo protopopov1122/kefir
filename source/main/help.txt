@@ -46,6 +46,13 @@ Supported features:
 Targets:
     amd64-sysv-gas (default)             Produce GNU As-compatible assembly adhering System-V AMD64 ABI
 
+Target code generation setup:
+    --codegen-[option]                   Enable option for code generator
+    --no-codegen-[option]                Disable option for code generator
+
+Target code generation options:
+    emulated-tls                         Use emulated TLS
+
 License: GNU GPLv3
 Author: Jevgenijs Protopopovs
 Website: https://github.com/protopopov1122/Kefir

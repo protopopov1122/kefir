@@ -310,5 +310,6 @@ kefir_result_t kefir_codegen_amd64_sysv_init(struct kefir_codegen_amd64 *codegen
     codegen->iface.close = cg_close;
     codegen->iface.data = codegen;
     codegen->iface.self = codegen;
+    codegen->config = &KefirCodegenDefaultConfiguration;
     return KEFIR_OK;
 }

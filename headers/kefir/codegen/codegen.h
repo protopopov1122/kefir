@@ -26,6 +26,10 @@
 #include "kefir/core/basic-types.h"
 #include "kefir/ir/module.h"
 
+typedef struct kefir_codegen_configuration {
+    kefir_bool_t emulated_tls;
+} kefir_codegen_configuration_t;
+
 typedef struct kefir_codegen {
     kefir_result_t (*translate)(struct kefir_mem *, struct kefir_codegen *, struct kefir_ir_module *);
     kefir_result_t (*close)(struct kefir_codegen *);
@@ -36,5 +40,7 @@ typedef struct kefir_codegen {
 
 #define KEFIR_CODEGEN_TRANSLATE(mem, codegen, module) ((codegen)->translate((mem), (codegen), (module)))
 #define KEFIR_CODEGEN_CLOSE(codegen) ((codegen)->close((codegen)))
+
+extern const struct kefir_codegen_configuration KefirCodegenDefaultConfiguration;
 
 #endif

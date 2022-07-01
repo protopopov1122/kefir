@@ -74,6 +74,10 @@ typedef struct kefir_cli_options {
         kefir_bool_t int_to_pointer;
         kefir_bool_t permissive_pointer_conv;
     } features;
+
+    struct {
+        kefir_bool_t emulated_tls;
+    } codegen;
 } kefir_cli_options_t;
 
 kefir_result_t kefir_cli_parse_options(struct kefir_mem *, struct kefir_cli_options *, char *const *, kefir_size_t);

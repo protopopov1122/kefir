@@ -24,7 +24,9 @@
 #include "kefir/codegen/amd64/system-v/platform.h"
 #include "kefir/codegen/amd64-sysv.h"
 
-static kefir_result_t amd64_sysv_new_codegen(struct kefir_mem *mem, FILE *output, struct kefir_codegen **codegen_ptr) {
+static kefir_result_t amd64_sysv_new_codegen(struct kefir_mem *mem, FILE *output,
+                                             const struct kefir_codegen_configuration *config,
+                                             struct kefir_codegen **codegen_ptr) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(output != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid FILE"));
     REQUIRE(codegen_ptr != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to code generator"));
@@ -37,6 +39,10 @@ static kefir_result_t amd64_sysv_new_codegen(struct kefir_mem *mem, FILE *output
         KEFIR_FREE(mem, codegen);
         return res;
     });
+    if (config != NULL) {
+        codegen->config = config;
+    }
+
     *codegen_ptr = &codegen->iface;
     return KEFIR_OK;
 }

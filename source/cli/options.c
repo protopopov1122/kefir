@@ -145,6 +145,9 @@ static struct CliOption Options[] = {
 #define FEATURE(name, field)                                                    \
     SIMPLE(0, "feature-" name, false, CLI_ACTION_ASSIGN_CONSTANT, true, field), \
         SIMPLE(0, "no-feature-" name, false, CLI_ACTION_ASSIGN_CONSTANT, false, field)
+#define CODEGEN(name, field)                                                    \
+    SIMPLE(0, "codegen-" name, false, CLI_ACTION_ASSIGN_CONSTANT, true, field), \
+        SIMPLE(0, "no-codegen-" name, false, CLI_ACTION_ASSIGN_CONSTANT, false, field)
 
     SIMPLE('o', "output", true, CLI_ACTION_ASSIGN_STRARG, 0, output_filepath),
     PREHOOK('p', "preprocess", false, CLI_ACTION_ASSIGN_CONSTANT, KEFIR_CLI_ACTION_PREPROCESS, action, preprocess_hook),
@@ -180,13 +183,16 @@ static struct CliOption Options[] = {
     FEATURE("statement-expressions", features.statement_expressions),
     FEATURE("omitted-conditional-operand", features.omitted_conditional_operand),
     FEATURE("int-to-pointer", features.int_to_pointer),
-    FEATURE("permissive-pointer-conv", features.permissive_pointer_conv)
+    FEATURE("permissive-pointer-conv", features.permissive_pointer_conv),
+
+    CODEGEN("emulated-tls", codegen.emulated_tls)
 
 #undef SIMPLE
 #undef PREHOOK
 #undef POSTHOOK
 #undef CUSTOM
 #undef FEATURE
+#undef CODEGEN
 };
 
 static kefir_result_t parse_impl_internal(struct kefir_mem *mem, struct kefir_cli_options *options, char *const *argv,
@@ -368,7 +374,8 @@ kefir_result_t kefir_cli_parse_options(struct kefir_mem *mem, struct kefir_cli_o
                                           .error_report_type = KEFIR_CLI_ERROR_REPORT_TABULAR,
                                           .skip_preprocessor = false,
                                           .default_pp_timestamp = true,
-                                          .features = {false}};
+                                          .features = {false},
+                                          .codegen = {false}};
     REQUIRE_OK(kefir_list_init(&options->include_path));
     REQUIRE_OK(kefir_list_init(&options->include_files));
     REQUIRE_OK(kefir_hashtree_init(&options->defines, &kefir_hashtree_str_ops));

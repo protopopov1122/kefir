@@ -112,6 +112,8 @@ static kefir_result_t dump_action_impl(struct kefir_mem *mem, struct kefir_cli_o
 
     compiler.translator_configuration.empty_structs = options->features.empty_structs;
 
+    compiler.codegen_configuration.emulated_tls = options->codegen.emulated_tls;
+
     REQUIRE_OK(action(mem, options, &compiler, source_id, input.content, input.length, output));
     fclose(output);
     REQUIRE_OK(kefir_compiler_context_free(mem, &compiler));

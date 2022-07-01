@@ -35,7 +35,8 @@ typedef struct kefir_compiler_profile {
     const struct kefir_data_model_descriptor *data_model;
     const char *runtime_code;
 
-    kefir_result_t (*new_codegen)(struct kefir_mem *, FILE *, struct kefir_codegen **);
+    kefir_result_t (*new_codegen)(struct kefir_mem *, FILE *, const struct kefir_codegen_configuration *,
+                                  struct kefir_codegen **);
     kefir_result_t (*free_codegen)(struct kefir_mem *, struct kefir_codegen *);
 } kefir_compiler_profile_t;
 

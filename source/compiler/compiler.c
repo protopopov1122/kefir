@@ -88,6 +88,7 @@ kefir_result_t kefir_compiler_context_init(struct kefir_mem *mem, struct kefir_c
         kefir_ast_global_context_free(mem, &context->ast_global_context);
         return res;
     });
+    context->codegen_configuration = KefirCodegenDefaultConfiguration;
     context->preprocessor_context.environment.data_model = profile->data_model;
     context->profile = profile;
     context->source_locator = source_locator;
@@ -413,7 +414,7 @@ kefir_result_t kefir_compiler_codegen(struct kefir_mem *mem, struct kefir_compil
     REQUIRE(output != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid FILE"));
 
     struct kefir_codegen *codegen = NULL;
-    REQUIRE_OK(context->profile->new_codegen(mem, output, &codegen));
+    REQUIRE_OK(context->profile->new_codegen(mem, output, &context->codegen_configuration, &codegen));
     kefir_result_t res = KEFIR_CODEGEN_TRANSLATE(mem, codegen, module);
     REQUIRE_ELSE(res == KEFIR_OK, {
         context->profile->free_codegen(mem, codegen);

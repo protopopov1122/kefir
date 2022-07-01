@@ -29,6 +29,9 @@ kefir_result_t kefir_amd64_sysv_thread_local_reference(struct kefir_codegen_amd6
     REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 codegen"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid TLS identifier"));
 
+    REQUIRE(!codegen->config->emulated_tls,
+            KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Emulated TLS is not yet supported in AMD64 System-V code generator"));
+
     if (local) {
         ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_LEA);
         ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
