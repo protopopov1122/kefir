@@ -21,15 +21,11 @@
 #include "kefir/lexer/lexer.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
+#include "kefir/util/uchar.h"
 #include "kefir/util/char32.h"
 #include "kefir/core/source_error.h"
 
 #define MAX_IDENTIFIER_LENGTH 255
-
-typedef __uint_least32_t char32_t;
-
-size_t c32rtomb(char *__restrict, char32_t, mbstate_t *__restrict);
-size_t mbrtoc32(char32_t *__restrict, const char *__restrict, size_t, mbstate_t *__restrict);
 
 static kefir_result_t scan_identifier_nondigit(struct kefir_lexer_source_cursor *cursor, kefir_char32_t *target) {
     kefir_char32_t chr = kefir_lexer_source_cursor_at(cursor, 0);

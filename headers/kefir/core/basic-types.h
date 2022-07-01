@@ -28,6 +28,7 @@
 #include <wchar.h>
 #include <limits.h>
 #include "kefir/core/base.h"
+#include "kefir/util/uchar.h"
 
 typedef bool kefir_bool_t;
 typedef char kefir_char_t;
@@ -35,11 +36,11 @@ typedef char kefir_char_t;
 #define KEFIR_CHAR_MAX CHAR_MAX
 #define KEFIR_UCHAR_MAX UCHAR_MAX
 
-typedef __uint_least32_t kefir_char32_t;
+typedef char32_t kefir_char32_t;
 #define KEFIR_CHAR32_MIN 0
 #define KEFIR_CHAR32_MAX UINT_LEAST32_MAX
 
-typedef __uint_least16_t kefir_char16_t;
+typedef char16_t kefir_char16_t;
 #define KEFIR_CHAR16_MIN 0
 #define KEFIR_CHAR16_MAX UINT_LEAST16_MAX
 

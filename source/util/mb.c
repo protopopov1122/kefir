@@ -25,9 +25,7 @@
 #ifdef __OpenBSD__
 
 #include "kefir/core/basic-types.h"
-
-typedef __uint_least16_t char16_t;
-typedef __uint_least32_t char32_t;
+#include "kefir/util/uchar.h"
 
 size_t c32rtomb(char *restrict s, char32_t c32, mbstate_t *restrict ps) {
     return wcrtomb(s, c32, ps);
