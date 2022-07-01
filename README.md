@@ -182,7 +182,10 @@ Lexer was implemented before preprocessor and can be used independently of it (p
 can be completely omitted), thus both lexer and preprocessor modules share the same lexing facilities.
 
 ## Author and license
-Author: Jevgenijs Protopopovs \
+Author:
+* Jevgenijs Protopopovs - main body of the compiler
+* Brian Robert Callahan - [initial OpenBSD port](https://briancallahan.net/blog/20220629.html)
+
 License:
 * Main body of the compiler - GNU GPLv3
 * Runtime library - BSD 3-clause
