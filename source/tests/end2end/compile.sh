@@ -42,5 +42,5 @@ if [[ -f "$SRC_FILE.profile" ]]; then
 fi
 
 valgrind $VALGRIND_OPTIONS "$KEFIRCC" -I "$(dirname $SRC_FILE)" -D KEFIR_END2END_TEST --define "KEFIR_END2END=   101   " --pp-timestamp=1633204489 \
-    --include "$INCLUDE_FILE" --feature-labels-as-values --feature-statement-expressions --feature-omitted-conditional-operand "$SRC_FILE" > "$TMPDIR/module.asm"
+    --include "$INCLUDE_FILE" --feature-labels-as-values --feature-statement-expressions --feature-omitted-conditional-operand --feature-permissive-pointer-conv "$SRC_FILE" > "$TMPDIR/module.asm"
 $AS -o "$DST_FILE" "$TMPDIR/module.asm"

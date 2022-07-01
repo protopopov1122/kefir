@@ -179,7 +179,8 @@ static struct CliOption Options[] = {
     FEATURE("missing-braces-subobj", features.missing_braces_subobject),
     FEATURE("statement-expressions", features.statement_expressions),
     FEATURE("omitted-conditional-operand", features.omitted_conditional_operand),
-    FEATURE("int-to-pointer", features.int_to_pointer)
+    FEATURE("int-to-pointer", features.int_to_pointer),
+    FEATURE("permissive-pointer-conv", features.permissive_pointer_conv)
 
 #undef SIMPLE
 #undef PREHOOK

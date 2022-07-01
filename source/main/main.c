@@ -107,6 +107,8 @@ static kefir_result_t dump_action_impl(struct kefir_mem *mem, struct kefir_cli_o
     compiler.ast_global_context.configuration.analysis.missing_braces_subobj =
         options->features.missing_braces_subobject;
     compiler.ast_global_context.configuration.analysis.int_to_pointer = options->features.int_to_pointer;
+    compiler.ast_global_context.configuration.analysis.permissive_pointer_conv =
+        options->features.permissive_pointer_conv;
 
     compiler.translator_configuration.empty_structs = options->features.empty_structs;
 

@@ -31,6 +31,7 @@
 
 typedef struct kefir_ast_context_configuration {
     struct {
+        kefir_bool_t permissive_pointer_conv;
         kefir_bool_t non_strict_qualifiers;
         kefir_bool_t fixed_enum_type;
         kefir_bool_t implicit_function_declaration;

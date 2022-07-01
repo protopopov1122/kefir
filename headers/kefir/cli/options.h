@@ -72,6 +72,7 @@ typedef struct kefir_cli_options {
         kefir_bool_t statement_expressions;
         kefir_bool_t omitted_conditional_operand;
         kefir_bool_t int_to_pointer;
+        kefir_bool_t permissive_pointer_conv;
     } features;
 } kefir_cli_options_t;
 

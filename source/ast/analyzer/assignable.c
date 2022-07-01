@@ -41,6 +41,10 @@ kefir_result_t kefir_ast_type_assignable(struct kefir_mem *mem, const struct kef
         REQUIRE(KEFIR_AST_TYPE_COMPATIBLE(context->type_traits, target_type, value_type),
                 KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Both assignable operands shall be compatible"));
     } else if (target_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER && value_type->tag == KEFIR_AST_TYPE_SCALAR_POINTER) {
+        if (context->configuration->analysis.permissive_pointer_conv) {
+            return KEFIR_OK;
+        }
+
         struct kefir_ast_type_qualification target_qualification, value_qualification;
         const struct kefir_ast_type *target_underlying = kefir_ast_unqualified_type(target_type->referenced_type);
         const struct kefir_ast_type *value_underlying = kefir_ast_unqualified_type(value_type->referenced_type);
