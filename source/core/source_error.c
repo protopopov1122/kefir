@@ -63,9 +63,8 @@ kefir_result_t kefir_set_source_errorf(kefir_result_t code, const struct kefir_s
     char *message_buf = source_error->message;
     kefir_size_t message_max_len = KEFIR_SOURCE_ERROR_MESSAGE_LENGTH;
     if (location != NULL) {
-        int diff;
-        snprintf(source_error->message, KEFIR_SOURCE_ERROR_MESSAGE_LENGTH, "%s@%u:%u %n", location->source,
-                 location->line, location->column, &diff);
+        int diff = snprintf(source_error->message, KEFIR_SOURCE_ERROR_MESSAGE_LENGTH, "%s@%u:%u ", location->source,
+                            location->line, location->column);
         message_buf += diff;
         message_max_len -= diff;
     }
