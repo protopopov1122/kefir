@@ -23,7 +23,11 @@
 
 extern struct Structure1 X;
 extern struct Structure1 Y;
+#ifndef __OpenBSD__
 extern _Thread_local struct Structure1 Z;
+#else
+extern struct Structure1 Z;
+#endif
 
 void *getx();
 void *gety();

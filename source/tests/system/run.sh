@@ -35,6 +35,10 @@ if [[ "x$SANITIZE" == "xundefined" ]]; then
     COMPILE="$COMPILE -fsanitize=undefined -fno-sanitize-recover=all"
 fi
 
+if [[ "x$MEMCHECK" != "xyes" ]]; then
+    VALGRIND=""
+fi
+
 function cleanup {
     rm -rf "$TMPDIR"
 }

@@ -43,7 +43,7 @@ function run_valgrind_test {
 
 function run_test {
     INT_TEST="$1"
-    "$INT_TEST" > "$OUTPUT_FILE" 2>&1
+    KEFIR_DISABLE_LONG_DOUBLE=1 "$INT_TEST" > "$OUTPUT_FILE" 2>&1
     if [[ "x$?" != "x0" ]]; then
         echo "Terminated"
         cat "$OUTPUT_FILE"

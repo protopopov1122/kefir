@@ -21,9 +21,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <wchar.h>
-#include <uchar.h>
 #include <assert.h>
 #include <string.h>
+#include "kefir/util/uchar.h"
 #include "./definitions.h"
 
 int main() {

@@ -21,8 +21,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <uchar.h>
 #include "kefir/core/util.h"
+#include "kefir/util/uchar.h"
 #include "kefir/test/unit_test.h"
 
 const char32_t *string1();

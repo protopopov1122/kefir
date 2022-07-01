@@ -19,6 +19,7 @@
 */
 
 #include <stdlib.h>
+#ifndef __OpenBSD__
 #include <stdio.h>
 #include <string.h>
 #include <threads.h>
@@ -127,3 +128,11 @@ int main(int argc, const char **argv) {
     ASSERT(res == sizeof(Pointers) / sizeof(Pointers[0]));
     return EXIT_SUCCESS;
 }
+
+#else
+int main(int argc, const char **argv) {
+    (void) argc;
+    (void) argv;
+    return EXIT_SUCCESS;
+}
+#endif

@@ -19,6 +19,7 @@
 */
 
 #include <stdlib.h>
+#ifndef __OpenBSD__
 #include <stdio.h>
 #include <string.h>
 #include <threads.h>
@@ -69,3 +70,13 @@ int main(int argc, const char **argv) {
     ASSERT(res == sizeof(struct type1));
     return EXIT_SUCCESS;
 }
+
+#else
+int thrlocal1;
+
+int main(int argc, const char **argv) {
+    (void) argc;
+    (void) argv;
+    return EXIT_SUCCESS;
+}
+#endif

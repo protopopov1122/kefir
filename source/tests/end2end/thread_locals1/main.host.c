@@ -19,6 +19,7 @@
 */
 
 #include <stdlib.h>
+#ifndef __OpenBSD__
 #include <stdio.h>
 #include <assert.h>
 #include <threads.h>
@@ -105,3 +106,12 @@ int main() {
     assert(external_counter == 42);
     return EXIT_SUCCESS;
 }
+#else
+long external_counter = 0;
+
+int main(int argc, const char **argv) {
+    (void) argc;
+    (void) argv;
+    return EXIT_SUCCESS;
+}
+#endif

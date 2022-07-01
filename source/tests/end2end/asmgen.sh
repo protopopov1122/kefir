@@ -31,5 +31,10 @@ export LD_LIBRARY_PATH="$BIN_DIR/libs"
 
 set -e
 
-valgrind $VALGRIND_OPTIONS "$KEFIRCC" -I "$(dirname $SRC_FILE)" -D KEFIR_END2END_TEST --define "KEFIR_END2END=   101   " --pp-timestamp=1633204489 \
-    --include "$INCLUDE_FILE" --feature-labels-as-values --feature-statement-expressions --feature-omitted-conditional-operand --feature-permissive-pointer-conv "$SRC_FILE" > "$DST_FILE"
+if [[ "x$MEMCHECK" == "xyes" ]]; then
+    valgrind $VALGRIND_OPTIONS "$KEFIRCC" -I "$(dirname $SRC_FILE)" -D KEFIR_END2END_TEST --define "KEFIR_END2END=   101   " --pp-timestamp=1633204489 \
+        --include "$INCLUDE_FILE" --feature-labels-as-values --feature-statement-expressions --feature-omitted-conditional-operand --feature-permissive-pointer-conv "$SRC_FILE" > "$DST_FILE"
+else
+    "$KEFIRCC" -I "$(dirname $SRC_FILE)" -D KEFIR_END2END_TEST --define "KEFIR_END2END=   101   " --pp-timestamp=1633204489 \
+        --include "$INCLUDE_FILE" --feature-labels-as-values --feature-statement-expressions --feature-omitted-conditional-operand --feature-permissive-pointer-conv "$SRC_FILE" > "$DST_FILE"
+fi
