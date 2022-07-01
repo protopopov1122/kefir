@@ -21,7 +21,7 @@
 #ifndef KEFIR_UTIL_UCHAR_H_
 #define KEFIR_UTIL_UCHAR_H_
 
-#ifndef __OpenBSD__
+#ifndef KEFIR_OPENBSD_HOST_PLATFORM
 #include <uchar.h>
 #else
 typedef __uint_least16_t char16_t;

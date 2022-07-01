@@ -22,10 +22,8 @@
  */
 
 #include <errno.h>
-#ifdef __OpenBSD__
-
-#include "kefir/core/basic-types.h"
 #include "kefir/util/uchar.h"
+#ifdef KEFIR_OPENBSD_HOST_PLATFORM
 
 size_t c32rtomb(char *restrict s, char32_t c32, mbstate_t *restrict ps) {
     return wcrtomb(s, c32, ps);
