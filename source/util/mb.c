@@ -22,6 +22,7 @@
  */
 
 #include <errno.h>
+#include "kefir/core/basic-types.h"
 #include "kefir/util/uchar.h"
 #ifdef KEFIR_OPENBSD_HOST_PLATFORM
 
