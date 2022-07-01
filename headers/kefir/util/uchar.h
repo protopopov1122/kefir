@@ -21,6 +21,8 @@
 #ifndef KEFIR_UTIL_UCHAR_H_
 #define KEFIR_UTIL_UCHAR_H_
 
+#include "kefir/core/platform.h"
+
 #ifndef KEFIR_OPENBSD_HOST_PLATFORM
 #include <uchar.h>
 #else
