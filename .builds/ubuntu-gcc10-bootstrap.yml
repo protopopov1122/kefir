@@ -12,7 +12,7 @@ tasks:
   - bootstrap: |
       cd kefir
       make clean clean_bootstrap
-      make bootstrap LIBC_HEADERS=/usr/include/x86_64-linux-musl LIBC_LIBS=/usr/lib/x86_64-linux-musl -j$(nproc)
+      LC_ALL=C.UTF-8 make bootstrap LIBC_HEADERS=/usr/include/x86_64-linux-musl LIBC_LIBS=/usr/lib/x86_64-linux-musl -j$(nproc)
 triggers:
   - action: email
     condition: failure
