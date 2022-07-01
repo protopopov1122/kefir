@@ -1,0 +1,18 @@
+image: openbsd/7.0
+packages:
+  - gmake
+  - llvm
+  - binutils
+  - libxslt
+  - gas
+  - bash
+sources:
+  - https://git.sr.ht/~jprotopopov/kefir
+tasks:
+  - test: |
+      cd kefir
+      gmake test all CC=clang AS=gas PLATFORM=openbsd OPT=-O3
+triggers:
+  - action: email
+    condition: failure
+    to: jprotopopov1122@gmail.com
