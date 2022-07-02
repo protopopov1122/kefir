@@ -40,7 +40,7 @@ typedef struct kefir_amd64_asmgen {
     kefir_result_t (*comment)(struct kefir_amd64_asmgen *, const char *, ...);
     kefir_result_t (*label)(struct kefir_amd64_asmgen *, const char *, ...);
     kefir_result_t (*global)(struct kefir_amd64_asmgen *, const char *, ...);
-    kefir_result_t (*external)(struct kefir_amd64_asmgen *, const char *);
+    kefir_result_t (*external)(struct kefir_amd64_asmgen *, const char *, ...);
     kefir_result_t (*section)(struct kefir_amd64_asmgen *, const char *);
     kefir_result_t (*instr)(struct kefir_amd64_asmgen *, const char *);
     kefir_result_t (*rawdata)(struct kefir_amd64_asmgen *, kefir_amd64_asmgen_datawidth_t);
@@ -69,7 +69,7 @@ kefir_result_t kefir_amd64_gas_gen_init(struct kefir_amd64_asmgen *, FILE *);
 #define KEFIR_AMD64_ASMGEN_COMMENT(asmgen, format, ...) ((asmgen)->comment((asmgen), (format), __VA_ARGS__))
 #define KEFIR_AMD64_ASMGEN_LABEL(asmgen, format, ...) ((asmgen)->label((asmgen), (format), __VA_ARGS__))
 #define KEFIR_AMD64_ASMGEN_GLOBAL(asmgen, format, ...) ((asmgen)->global((asmgen), (format), __VA_ARGS__))
-#define KEFIR_AMD64_ASMGEN_EXTERNAL(asmgen, identifier) ((asmgen)->external((asmgen), (identifier)))
+#define KEFIR_AMD64_ASMGEN_EXTERNAL(asmgen, format, ...) ((asmgen)->external((asmgen), (format), __VA_ARGS__))
 #define KEFIR_AMD64_ASMGEN_SECTION(asmgen, identifier) ((asmgen)->section((asmgen), (identifier)))
 #define KEFIR_AMD64_ASMGEN_INSTR(asmgen, opcode) ((asmgen)->instr((asmgen), (opcode)))
 #define KEFIR_AMD64_ASMGEN_ARG(asmgen, format, ...) ((asmgen)->argument((asmgen), (format), __VA_ARGS__))
@@ -144,6 +144,10 @@ kefir_result_t kefir_amd64_gas_gen_init(struct kefir_amd64_asmgen *, FILE *);
 #define KEFIR_AMD64_ALIGN ".align"
 #define KEFIR_AMD64_THREAD_LOCAL "[%s@tpoff]"
 #define KEFIR_AMD64_THREAD_LOCAL_GOT "%s@gottpoff[%%rip]"
+#define KEFIR_AMD64_EMUTLS_V "__emutls_v.%s"
+#define KEFIR_AMD64_THREAD_LOCAL_EMUTLS "[__emutls_v.%s]"
+#define KEFIR_AMD64_THREAD_LOCAL_EMUTLS_GOT "__emutls_v.%s@GOTPCREL[%%rip]"
+#define KEFIR_AMD64_EMUTLS_GET_ADDR "__emutls_get_address@PLT"
 
 #define KEFIR_AMD64_DWORD "DWORD PTR "
 #define KEFIR_AMD64_QWORD "QWORD PTR "

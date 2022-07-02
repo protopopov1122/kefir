@@ -96,7 +96,7 @@ static kefir_result_t amd64_global(struct kefir_amd64_asmgen *asmgen, const char
     return KEFIR_OK;
 }
 
-static kefir_result_t amd64_external(struct kefir_amd64_asmgen *asmgen, const char *identifier) {
+static kefir_result_t amd64_external(struct kefir_amd64_asmgen *asmgen, const char *format, ...) {
     REQUIRE(asmgen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 assembly generator"));
     FILE *out = (FILE *) asmgen->data;
     REQUIRE(out != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid output file for AMD64 assembly"));
@@ -104,7 +104,11 @@ static kefir_result_t amd64_external(struct kefir_amd64_asmgen *asmgen, const ch
         fprintf(out, "\n");
     }
     asmgen->state.empty = false;
-    fprintf(out, ".extern %s", identifier);
+    fprintf(out, ".extern ");
+    va_list args;
+    va_start(args, format);
+    vfprintf(out, format, args);
+    va_end(args);
     return KEFIR_OK;
 }
 

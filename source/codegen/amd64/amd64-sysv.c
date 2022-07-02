@@ -35,7 +35,23 @@
 static kefir_result_t cg_declare_opcode_handler(kefir_iropcode_t opcode, const char *handler, void *payload) {
     UNUSED(opcode);
     struct kefir_amd64_asmgen *asmgen = (struct kefir_amd64_asmgen *) payload;
-    ASMGEN_EXTERNAL(asmgen, handler);
+    ASMGEN_EXTERNAL(asmgen, "%s", handler);
+    return KEFIR_OK;
+}
+
+static kefir_result_t cg_module_externals(struct kefir_codegen_amd64_sysv_module *module,
+                                          struct kefir_codegen_amd64 *codegen) {
+    struct kefir_hashtree_node_iterator externals_iter;
+    kefir_ir_external_type_t external_type;
+    for (const char *external = kefir_ir_module_externals_iter(module->module, &externals_iter, &external_type);
+         external != NULL; external = kefir_ir_module_externals_iter_next(&externals_iter, &external_type)) {
+
+        if (!codegen->config->emulated_tls || external_type != KEFIR_IR_EXTERNAL_THREAD_LOCAL) {
+            ASMGEN_EXTERNAL(&codegen->asmgen, "%s", external);
+        } else {
+            ASMGEN_EXTERNAL(&codegen->asmgen, KEFIR_AMD64_EMUTLS_V, external);
+        }
+    }
     return KEFIR_OK;
 }
 
@@ -48,18 +64,12 @@ static kefir_result_t cg_module_prologue(struct kefir_codegen_amd64_sysv_module 
     REQUIRE_OK(kefir_amd64_iropcode_handler_list(cg_declare_opcode_handler, &codegen->asmgen));
     ASMGEN_COMMENT0(&codegen->asmgen, "Runtime functions");
     for (kefir_size_t i = 0; i < KEFIR_AMD64_SYSTEM_V_RUNTIME_SYMBOL_COUNT; i++) {
-        ASMGEN_EXTERNAL(&codegen->asmgen, KEFIR_AMD64_SYSTEM_V_RUNTIME_SYMBOLS[i]);
+        ASMGEN_EXTERNAL(&codegen->asmgen, "%s", KEFIR_AMD64_SYSTEM_V_RUNTIME_SYMBOLS[i]);
     }
     ASMGEN_NEWLINE(&codegen->asmgen, 1);
-    struct kefir_hashtree_node_iterator externals_iter;
     const struct kefir_list_entry *iter = NULL;
     ASMGEN_COMMENT0(&codegen->asmgen, "Externals");
-
-    kefir_ir_external_type_t external_type;
-    for (const char *external = kefir_ir_module_externals_iter(module->module, &externals_iter, &external_type);
-         external != NULL; external = kefir_ir_module_externals_iter_next(&externals_iter, &external_type)) {
-        ASMGEN_EXTERNAL(&codegen->asmgen, external);
-    }
+    REQUIRE_OK(cg_module_externals(module, codegen));
     ASMGEN_NEWLINE(&codegen->asmgen, 1);
     ASMGEN_COMMENT0(&codegen->asmgen, "Globals");
     for (const char *global = kefir_ir_module_globals_iter(module->module, &iter); global != NULL;

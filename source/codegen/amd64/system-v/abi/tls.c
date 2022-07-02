@@ -29,29 +29,42 @@ kefir_result_t kefir_amd64_sysv_thread_local_reference(struct kefir_codegen_amd6
     REQUIRE(codegen != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid AMD64 codegen"));
     REQUIRE(identifier != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid TLS identifier"));
 
-    REQUIRE(!codegen->config->emulated_tls,
-            KEFIR_SET_ERROR(KEFIR_NOT_SUPPORTED, "Emulated TLS is not yet supported in AMD64 System-V code generator"));
-
-    if (local) {
-        ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_LEA);
+    if (!codegen->config->emulated_tls) {
+        if (local) {
+            ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_LEA);
+            ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
+            ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_THREAD_LOCAL, identifier);
+            ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_ADD);
+            ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
+            ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_FS "0");
+        } else {
+            ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
+            ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
+            ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_QWORD KEFIR_AMD64_FS "0");
+            ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
+            ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA2_REG);
+            ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_QWORD KEFIR_AMD64_THREAD_LOCAL_GOT, identifier);
+            ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_ADD);
+            ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
+            ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA2_REG);
+        }
+        ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_PUSH);
         ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
-        ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_THREAD_LOCAL, identifier);
-        ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_ADD);
-        ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
-        ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_FS "0");
     } else {
-        ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
-        ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
-        ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_QWORD KEFIR_AMD64_FS "0");
-        ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
-        ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA2_REG);
-        ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_QWORD KEFIR_AMD64_THREAD_LOCAL_GOT, identifier);
-        ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_ADD);
-        ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
-        ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA2_REG);
+        if (local) {
+            ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_LEA);
+            ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RDI);
+            ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_THREAD_LOCAL_EMUTLS, identifier);
+        } else {
+            ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_MOV);
+            ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RDI);
+            ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_QWORD KEFIR_AMD64_THREAD_LOCAL_EMUTLS_GOT, identifier);
+        }
+        ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_CALL);
+        ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_EMUTLS_GET_ADDR);
+        ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_PUSH);
+        ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_RAX);
     }
-    ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_PUSH);
-    ASMGEN_ARG0(&codegen->asmgen, KEFIR_AMD64_SYSV_ABI_DATA_REG);
 
     return KEFIR_OK;
 }

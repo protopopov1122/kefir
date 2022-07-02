@@ -26,9 +26,14 @@ if [[ "x$DST_FILE" == "x" ]]; then
 fi
 
 KEFIRCC="$BIN_DIR/kefir"
+KEFIRFLAGS="--feature-labels-as-values --feature-statement-expressions --feature-omitted-conditional-operand --feature-permissive-pointer-conv"
 TMPDIR="$(mktemp -d)"
 INCLUDE_FILE="$(dirname $0)/include.h"
 export LD_LIBRARY_PATH="$BIN_DIR/libs"
+
+if [[ "x$PLATFORM" == "xopenbsd" ]]; then
+    KEFIRFLAGS="$KEFIRFLAGS --codegen-emulated-tls -D__OpenBSD__"
+fi
 
 function cleanup {
     rm -rf "$TMPDIR"
@@ -43,9 +48,9 @@ fi
 
 if [[ "x$MEMCHECK" == "xyes" ]]; then
     valgrind $VALGRIND_OPTIONS "$KEFIRCC" -I "$(dirname $SRC_FILE)" -D KEFIR_END2END_TEST --define "KEFIR_END2END=   101   " --pp-timestamp=1633204489 \
-        --include "$INCLUDE_FILE" --feature-labels-as-values --feature-statement-expressions --feature-omitted-conditional-operand --feature-permissive-pointer-conv "$SRC_FILE" > "$TMPDIR/module.asm"
+        --include "$INCLUDE_FILE" $KEFIRFLAGS "$SRC_FILE" > "$TMPDIR/module.asm"
 else
     "$KEFIRCC" -I "$(dirname $SRC_FILE)" -D KEFIR_END2END_TEST --define "KEFIR_END2END=   101   " --pp-timestamp=1633204489 \
-        --include "$INCLUDE_FILE" --feature-labels-as-values --feature-statement-expressions --feature-omitted-conditional-operand --feature-permissive-pointer-conv "$SRC_FILE" > "$TMPDIR/module.asm"
+        --include "$INCLUDE_FILE" $KEFIRFLAGS "$SRC_FILE" > "$TMPDIR/module.asm"
 fi
 $AS -o "$DST_FILE" "$TMPDIR/module.asm"

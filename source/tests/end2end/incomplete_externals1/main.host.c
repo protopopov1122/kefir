@@ -31,17 +31,11 @@ struct Structure1 {
 
 struct Structure1 X = {0};
 struct Structure1 Y = {0};
-#ifndef __OpenBSD__
 _Thread_local struct Structure1 Z = {0};
-#else
-struct Structure1 Z = {0};
-#endif
 
 int main() {
     assert(getx() == &X);
     assert(gety() == &Y);
-#ifndef __OpenBSD__
     assert(getz() == &Z);
-#endif
     return EXIT_SUCCESS;
 }

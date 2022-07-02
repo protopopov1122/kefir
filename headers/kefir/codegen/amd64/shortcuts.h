@@ -30,7 +30,7 @@
 #define ASMGEN_COMMENT0(asmgen, comment) REQUIRE_OK(KEFIR_AMD64_ASMGEN_COMMENT((asmgen), "%s", (comment)))
 #define ASMGEN_LABEL(asmgen, format, ...) REQUIRE_OK(KEFIR_AMD64_ASMGEN_LABEL((asmgen), (format), __VA_ARGS__))
 #define ASMGEN_GLOBAL(asmgen, format, ...) REQUIRE_OK(KEFIR_AMD64_ASMGEN_GLOBAL((asmgen), (format), __VA_ARGS__))
-#define ASMGEN_EXTERNAL(asmgen, identifier) REQUIRE_OK(KEFIR_AMD64_ASMGEN_EXTERNAL((asmgen), (identifier)))
+#define ASMGEN_EXTERNAL(asmgen, format, ...) REQUIRE_OK(KEFIR_AMD64_ASMGEN_EXTERNAL((asmgen), (format), __VA_ARGS__))
 #define ASMGEN_SECTION(asmgen, identifier) REQUIRE_OK(KEFIR_AMD64_ASMGEN_SECTION((asmgen), (identifier)))
 #define ASMGEN_INSTR(asmgen, opcode) REQUIRE_OK(KEFIR_AMD64_ASMGEN_INSTR((asmgen), (opcode)))
 #define ASMGEN_ARG(asmgen, format, ...) REQUIRE_OK(KEFIR_AMD64_ASMGEN_ARG((asmgen), (format), __VA_ARGS__))
