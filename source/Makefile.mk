@@ -37,9 +37,16 @@ $(LIBKEFIR_SO).$(LIBKEFIR_SO_VERSION): $(KEFIR_LIB_OBJECT_FILES)
 	@$(CC) -shared -o $@ $(KEFIR_LIB_OBJECT_FILES)
 
 $(LIBKEFIR_SO): $(LIBKEFIR_SO).$(LIBKEFIR_SO_VERSION)
-	@echo "Symlink $@"
+	@echo "Symlinking $@"
 	@ln -sf $(shell basename $<) $@
+
+$(LIBKEFIRRT_A): $(BIN_DIR)/runtime/amd64_sysv.s.o
+	@mkdir -p $(shell dirname "$@")
+	@echo "Archiving $@"
+	@$(AR) cr $@ $<
+	@ranlib $@
 
 DEPENDENCIES += $(KEFIR_LIB_DEPENDENCIES)
 OBJECT_FILES += $(KEFIR_LIB_OBJECT_FILES)
 BINARIES += $(LIBKEFIR_SO)
+BINARIES += $(LIBKEFIRRT_A)
