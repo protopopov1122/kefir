@@ -28,6 +28,11 @@
 #include "kefir/ir/function.h"
 #include "kefir/ir/data.h"
 
+typedef enum kefir_ir_external_type {
+    KEFIR_IR_EXTERNAL_GLOBAL,
+    KEFIR_IR_EXTERNAL_THREAD_LOCAL
+} kefir_ir_external_type_t;
+
 typedef struct kefir_ir_module {
     struct kefir_symbol_table symbols;
     struct kefir_list types;
@@ -62,7 +67,8 @@ struct kefir_ir_function_decl *kefir_ir_module_new_function_declaration(struct k
 
 kefir_result_t kefir_ir_module_declare_global(struct kefir_mem *, struct kefir_ir_module *, const char *);
 
-kefir_result_t kefir_ir_module_declare_external(struct kefir_mem *, struct kefir_ir_module *, const char *);
+kefir_result_t kefir_ir_module_declare_external(struct kefir_mem *, struct kefir_ir_module *, const char *,
+                                                kefir_ir_external_type_t);
 
 struct kefir_ir_function *kefir_ir_module_new_function(struct kefir_mem *, struct kefir_ir_module *,
                                                        struct kefir_ir_function_decl *, kefir_id_t, kefir_size_t);
@@ -83,9 +89,10 @@ const struct kefir_ir_function *kefir_ir_module_function_iter(const struct kefir
 const struct kefir_ir_function *kefir_ir_module_function_next(struct kefir_hashtree_node_iterator *);
 
 const char *kefir_ir_module_globals_iter(const struct kefir_ir_module *, const struct kefir_list_entry **);
-const char *kefir_ir_module_externals_iter(const struct kefir_ir_module *, struct kefir_hashtree_node_iterator *);
+const char *kefir_ir_module_externals_iter(const struct kefir_ir_module *, struct kefir_hashtree_node_iterator *,
+                                           kefir_ir_external_type_t *);
 const char *kefir_ir_module_globals_iter_next(const struct kefir_list_entry **);
-const char *kefir_ir_module_externals_iter_next(struct kefir_hashtree_node_iterator *);
+const char *kefir_ir_module_externals_iter_next(struct kefir_hashtree_node_iterator *, kefir_ir_external_type_t *);
 kefir_bool_t kefir_ir_module_has_external(const struct kefir_ir_module *, const char *);
 
 kefir_result_t kefir_ir_module_get_string_literal(const struct kefir_ir_module *, kefir_id_t,

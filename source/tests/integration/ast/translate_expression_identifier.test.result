@@ -3,7 +3,10 @@
         "extern_variable2"
     ],
     "externals": [
-        "extern_variable1"
+        {
+            "identifier": "extern_variable1",
+            "type": "global"
+        }
     ],
     "types": [
         {

@@ -1,8 +1,14 @@
 {
     "globals": [],
     "externals": [
-        "int",
-        "ullong"
+        {
+            "identifier": "int",
+            "type": "global"
+        },
+        {
+            "identifier": "ullong",
+            "type": "global"
+        }
     ],
     "types": [
         {

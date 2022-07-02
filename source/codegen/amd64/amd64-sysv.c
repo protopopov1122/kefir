@@ -54,8 +54,10 @@ static kefir_result_t cg_module_prologue(struct kefir_codegen_amd64_sysv_module 
     struct kefir_hashtree_node_iterator externals_iter;
     const struct kefir_list_entry *iter = NULL;
     ASMGEN_COMMENT0(&codegen->asmgen, "Externals");
-    for (const char *external = kefir_ir_module_externals_iter(module->module, &externals_iter); external != NULL;
-         external = kefir_ir_module_externals_iter_next(&externals_iter)) {
+
+    kefir_ir_external_type_t external_type;
+    for (const char *external = kefir_ir_module_externals_iter(module->module, &externals_iter, &external_type);
+         external != NULL; external = kefir_ir_module_externals_iter_next(&externals_iter, &external_type)) {
         ASMGEN_EXTERNAL(&codegen->asmgen, external);
     }
     ASMGEN_NEWLINE(&codegen->asmgen, 1);

@@ -3,8 +3,14 @@
         "variable2"
     ],
     "externals": [
-        "variable1",
-        "variable4"
+        {
+            "identifier": "variable1",
+            "type": "global"
+        },
+        {
+            "identifier": "variable4",
+            "type": "global"
+        }
     ],
     "types": [
         {

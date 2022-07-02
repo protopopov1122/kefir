@@ -6,9 +6,18 @@
         "invoke_callback"
     ],
     "externals": [
-        "variable",
-        "value_to_add",
-        "value_callback"
+        {
+            "identifier": "variable",
+            "type": "global"
+        },
+        {
+            "identifier": "value_to_add",
+            "type": "global"
+        },
+        {
+            "identifier": "value_callback",
+            "type": "global"
+        }
     ],
     "types": [
         {

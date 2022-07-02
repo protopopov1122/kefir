@@ -1,12 +1,30 @@
 {
     "globals": [],
     "externals": [
-        "int",
-        "ptr",
-        "ptr2",
-        "float",
-        "double",
-        "ullong"
+        {
+            "identifier": "int",
+            "type": "global"
+        },
+        {
+            "identifier": "ptr",
+            "type": "global"
+        },
+        {
+            "identifier": "ptr2",
+            "type": "global"
+        },
+        {
+            "identifier": "float",
+            "type": "global"
+        },
+        {
+            "identifier": "double",
+            "type": "global"
+        },
+        {
+            "identifier": "ullong",
+            "type": "global"
+        }
     ],
     "types": [
         {

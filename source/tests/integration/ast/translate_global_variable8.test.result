@@ -6,7 +6,10 @@
         "string4"
     ],
     "externals": [
-        "variable"
+        {
+            "identifier": "variable",
+            "type": "global"
+        }
     ],
     "types": [
         {

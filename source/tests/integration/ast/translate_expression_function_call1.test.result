@@ -1,10 +1,22 @@
 {
     "globals": [],
     "externals": [
-        "sum",
-        "test",
-        "test2",
-        "test3"
+        {
+            "identifier": "sum",
+            "type": "global"
+        },
+        {
+            "identifier": "test",
+            "type": "global"
+        },
+        {
+            "identifier": "test2",
+            "type": "global"
+        },
+        {
+            "identifier": "test3",
+            "type": "global"
+        }
     ],
     "types": [
         {

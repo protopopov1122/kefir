@@ -45,7 +45,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
 
     kefir_id_t thrlocal1;
     REQUIRE(kefir_ir_module_symbol(mem, &module, "thrlocal1", &thrlocal1) != NULL, KEFIR_INTERNAL_ERROR);
-    REQUIRE_OK(kefir_ir_module_declare_external(mem, &module, "thrlocal1"));
+    REQUIRE_OK(kefir_ir_module_declare_external(mem, &module, "thrlocal1", KEFIR_IR_EXTERNAL_THREAD_LOCAL));
 
     kefir_id_t func_params, func_returns;
     struct kefir_ir_type *fill_decl_params = kefir_ir_module_new_type(mem, &module, 1, &func_params),

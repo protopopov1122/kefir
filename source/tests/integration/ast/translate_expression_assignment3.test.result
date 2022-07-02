@@ -1,10 +1,22 @@
 {
     "globals": [],
     "externals": [
-        "int",
-        "float",
-        "double",
-        "ullong"
+        {
+            "identifier": "int",
+            "type": "global"
+        },
+        {
+            "identifier": "float",
+            "type": "global"
+        },
+        {
+            "identifier": "double",
+            "type": "global"
+        },
+        {
+            "identifier": "ullong",
+            "type": "global"
+        }
     ],
     "types": [
         {

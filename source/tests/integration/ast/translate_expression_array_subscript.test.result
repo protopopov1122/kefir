@@ -1,7 +1,10 @@
 {
     "globals": [],
     "externals": [
-        "array1"
+        {
+            "identifier": "array1",
+            "type": "global"
+        }
     ],
     "types": [
         {

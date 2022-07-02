@@ -67,7 +67,8 @@ static kefir_result_t translate_externals(struct kefir_mem *mem, const struct ke
                 ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, identifier_data,
                                  scoped_identifier->value->payload.ptr);
                 if (scoped_identifier->value->object.external) {
-                    REQUIRE_OK(kefir_ir_module_declare_external(mem, module, scoped_identifier->identifier));
+                    REQUIRE_OK(kefir_ir_module_declare_external(mem, module, scoped_identifier->identifier,
+                                                                KEFIR_IR_EXTERNAL_GLOBAL));
                 } else {
                     struct kefir_ir_data *data =
                         kefir_ir_module_new_named_data(mem, module, scoped_identifier->identifier,
@@ -85,7 +86,8 @@ static kefir_result_t translate_externals(struct kefir_mem *mem, const struct ke
 
             case KEFIR_AST_SCOPE_IDENTIFIER_FUNCTION: {
                 if (scoped_identifier->value->function.external) {
-                    REQUIRE_OK(kefir_ir_module_declare_external(mem, module, scoped_identifier->identifier));
+                    REQUIRE_OK(kefir_ir_module_declare_external(mem, module, scoped_identifier->identifier,
+                                                                KEFIR_IR_EXTERNAL_GLOBAL));
                 } else if (scoped_identifier->value->function.storage != KEFIR_AST_SCOPE_IDENTIFIER_STORAGE_STATIC) {
                     REQUIRE_OK(kefir_ir_module_declare_global(mem, module, scoped_identifier->identifier));
                 }
@@ -180,7 +182,8 @@ static kefir_result_t translate_external_thread_locals(
                 ASSIGN_DECL_CAST(struct kefir_ast_translator_scoped_identifier_object *, identifier_data,
                                  scoped_identifier->value->payload.ptr);
                 if (scoped_identifier->value->object.external) {
-                    REQUIRE_OK(kefir_ir_module_declare_external(mem, module, scoped_identifier->identifier));
+                    REQUIRE_OK(kefir_ir_module_declare_external(mem, module, scoped_identifier->identifier,
+                                                                KEFIR_IR_EXTERNAL_THREAD_LOCAL));
                 } else {
                     struct kefir_ir_data *data =
                         kefir_ir_module_new_named_data(mem, module, scoped_identifier->identifier,

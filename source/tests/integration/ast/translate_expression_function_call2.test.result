@@ -1,7 +1,10 @@
 {
     "globals": [],
     "externals": [
-        "sum"
+        {
+            "identifier": "sum",
+            "type": "global"
+        }
     ],
     "types": [
         {

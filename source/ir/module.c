@@ -267,14 +267,14 @@ kefir_result_t kefir_ir_module_declare_global(struct kefir_mem *mem, struct kefi
 }
 
 kefir_result_t kefir_ir_module_declare_external(struct kefir_mem *mem, struct kefir_ir_module *module,
-                                                const char *original) {
+                                                const char *original, kefir_ir_external_type_t type) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR module pointer"));
     const char *symbol = kefir_ir_module_symbol(mem, module, original, NULL);
     REQUIRE(symbol != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate a symbol"));
 
     kefir_result_t res =
-        kefir_hashtree_insert(mem, &module->externals, (kefir_hashtree_key_t) symbol, (kefir_hashtree_value_t) 0);
+        kefir_hashtree_insert(mem, &module->externals, (kefir_hashtree_key_t) symbol, (kefir_hashtree_value_t) type);
     if (res != KEFIR_ALREADY_EXISTS) {
         REQUIRE_OK(res);
     }
@@ -342,12 +342,13 @@ const char *kefir_ir_module_globals_iter(const struct kefir_ir_module *module, c
 }
 
 const char *kefir_ir_module_externals_iter(const struct kefir_ir_module *module,
-                                           struct kefir_hashtree_node_iterator *iter) {
+                                           struct kefir_hashtree_node_iterator *iter, kefir_ir_external_type_t *type) {
     REQUIRE(module != NULL, NULL);
     REQUIRE(iter != NULL, NULL);
 
     const struct kefir_hashtree_node *node = kefir_hashtree_iter(&module->externals, iter);
     REQUIRE(node != NULL, NULL);
+    ASSIGN_PTR(type, (kefir_ir_external_type_t) node->value);
     return (const char *) node->key;
 }
 
@@ -355,11 +356,13 @@ const char *kefir_ir_module_globals_iter_next(const struct kefir_list_entry **it
     return kefir_list_next(iter);
 }
 
-const char *kefir_ir_module_externals_iter_next(struct kefir_hashtree_node_iterator *iter) {
+const char *kefir_ir_module_externals_iter_next(struct kefir_hashtree_node_iterator *iter,
+                                                kefir_ir_external_type_t *type) {
     REQUIRE(iter != NULL, NULL);
 
     const struct kefir_hashtree_node *node = kefir_hashtree_next(iter);
     REQUIRE(node != NULL, NULL);
+    ASSIGN_PTR(type, (kefir_ir_external_type_t) node->value);
     return (const char *) node->key;
 }
 

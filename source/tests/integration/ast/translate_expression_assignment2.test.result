@@ -1,8 +1,14 @@
 {
     "globals": [],
     "externals": [
-        "union1",
-        "struct1"
+        {
+            "identifier": "union1",
+            "type": "global"
+        },
+        {
+            "identifier": "struct1",
+            "type": "global"
+        }
     ],
     "types": [
         {

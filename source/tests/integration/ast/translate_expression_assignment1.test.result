@@ -1,22 +1,70 @@
 {
     "globals": [],
     "externals": [
-        "ptr",
-        "bool",
-        "char",
-        "enum",
-        "sint",
-        "uint",
-        "float",
-        "schar",
-        "slong",
-        "uchar",
-        "ulong",
-        "double",
-        "sllong",
-        "sshort",
-        "ullong",
-        "ushort"
+        {
+            "identifier": "ptr",
+            "type": "global"
+        },
+        {
+            "identifier": "bool",
+            "type": "global"
+        },
+        {
+            "identifier": "char",
+            "type": "global"
+        },
+        {
+            "identifier": "enum",
+            "type": "global"
+        },
+        {
+            "identifier": "sint",
+            "type": "global"
+        },
+        {
+            "identifier": "uint",
+            "type": "global"
+        },
+        {
+            "identifier": "float",
+            "type": "global"
+        },
+        {
+            "identifier": "schar",
+            "type": "global"
+        },
+        {
+            "identifier": "slong",
+            "type": "global"
+        },
+        {
+            "identifier": "uchar",
+            "type": "global"
+        },
+        {
+            "identifier": "ulong",
+            "type": "global"
+        },
+        {
+            "identifier": "double",
+            "type": "global"
+        },
+        {
+            "identifier": "sllong",
+            "type": "global"
+        },
+        {
+            "identifier": "sshort",
+            "type": "global"
+        },
+        {
+            "identifier": "ullong",
+            "type": "global"
+        },
+        {
+            "identifier": "ushort",
+            "type": "global"
+        }
     ],
     "types": [
         {

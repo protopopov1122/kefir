@@ -1,8 +1,14 @@
 {
     "globals": [],
     "externals": [
-        "structure1",
-        "structure2"
+        {
+            "identifier": "structure1",
+            "type": "global"
+        },
+        {
+            "identifier": "structure2",
+            "type": "global"
+        }
     ],
     "types": [
         {

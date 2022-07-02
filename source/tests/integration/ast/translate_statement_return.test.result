@@ -1,7 +1,10 @@
 {
     "globals": [],
     "externals": [
-        "variable"
+        {
+            "identifier": "variable",
+            "type": "global"
+        }
     ],
     "types": [
         {

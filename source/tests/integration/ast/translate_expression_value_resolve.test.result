@@ -23,7 +23,10 @@
         "unsigned_long_long"
     ],
     "externals": [
-        "func1"
+        {
+            "identifier": "func1",
+            "type": "global"
+        }
     ],
     "types": [
         {
