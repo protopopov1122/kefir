@@ -29,7 +29,7 @@ Kefir supports disabled-by-default optional features:
 
 Supported features:
     fail-on-attributes                  Fail if __attribute__((...)) is encountered
-    missing-function-return-type        Permit function definitiong with missing return type
+    missing-function-return-type        Permit function definitions with missing return type
     designated-init-colons              Permit "fieldname:" syntax in designated initializers
     labels-as-values                    Permit label-addressing with && operator
     non-strict-qualifiers               Disable strict qualifier checks for pointers

@@ -12,6 +12,14 @@ At the moment, position-independent code generation is not supported.
 ### Project name
 Kefir compiler is named after [fermented milk drink](https://en.wikipedia.org/wiki/Kefir), no other connotations are meant or intended.
 
+## Supported environments
+Kefir targets x86-64 ISA and System-V ABI. The main focus is on modern Linux environments (where full range of automated tests is executed there),
+however Kefir also has support for modern FreeBSD and OpenBSD (base test suite is executed successfully in both environments). It's recommended to use [musl libc](https://musl.libc.org) instead of system `libc` if possible,
+because system standard library headers might contain unsupported
+compiler-specific extensions and
+thus require patching. Furthermore, as Kefir currently does not implement driver, it might be necessary to pass additional target-specific options to
+the compiler (see section `Recommended CLI options`).
+
 ## Motivation & goals
 The main motivation of the project is deeper understanding of C programming language, as well as practical experience in
 the broader scope of compiler implementation aspects. Based on this, following goals were set for the project:
@@ -95,16 +103,30 @@ Kefir can be used along with [musl libc](https://musl.libc.org) standard library
 
 Kefir depends on following third-party components: existing C11-compatible compiler (tested with `gcc` and `clang`), `gas`, `valgrind`,
 `xsltproc`, `clang-format`. After installing these components, Kefir can be built with a single command: `make ./bin/kefir -j$(nproc)`.
-It is also strongly advised to run basic test suite: `make test all -j$(nproc)`.
+It is also strongly advised to run basic test suite:
+```bash
+LC_ALL=C.UTF-8 make test all OPT=-O3 -j$(nproc)         # Linux
+gmake all PLATFORM=freebsd OPT=-O3 CC=clang             # FreeBSD
+gmake test all CC=clang AS=gas PLATFORM=openbsd OPT=-O3 # OpenBSD
+```
 
 Optionally, Kefir can be installed via: `make install DESTDIR=/opt/kefir`. Short reference on compiler options can be obtained by
 running `kefir --help`.
 
-At the moment, Kefir is automatically tested in Ubuntu 20.04 and FreeBSD 13.0 environments.
+At the moment, Kefir is automatically tested in Ubuntu 20.04 (full range of tests), FreeBSD 13.0 and OpenBSD 7.0 (base test suite) environments.
 Arch Linux is used as primary development environment.
 
 Please note, that assembly modules produced by Kefir shall be linked with `source/runtime/amd64_sysv.s` in order to produce a working
 executable.
+
+## Recommended CLI options
+Kefir compiler does not feature driver with standard `cc` CLI interface yet, and the defaults of the compiler might be too restrictive regarding
+permitted C language constructs, thus following CLI options are recommended to switch compiler into more permissive mode (following list also enables
+support for some non-standard language extensions):
+`--feature-missing-function-return-type --feature-designated-init-colons --feature-labels-as-values --feature-non-strict-qualifiers --feature-implicit-function-decl --feature-empty-structs --feature-ext-pointer-arithmetics --feature-missing-braces-subobj --feature-statement-expressions --feature-omitted-conditional-operand --feature-int-to-pointer --feature-permissive-pointer-conv`.
+
+Furthermore, on OpenBSD environment it's recommended to add `--codegen-emulated-tls` to generate emulated TLS compatible with code generated
+by system clang compiler.
 
 ## Bootstrap
 Kefir is capable of bootstraping itself (that is, compiling it's own source code). At the moment, the feature is under testing, however
@@ -138,7 +160,7 @@ LIBC_HEADERS="$MUSL/include" LIBC_LIBS="$MUSL/lib" -j$(nproc)
 
 ## Test suite
 Kefir relies on following tests, most of which are executed as part of CI:
-* Own test suite that includes:
+* Own (base) test suite that includes:
     - Unit tests
     - Integration tests -- each test is a self-contained program that executes some part of compilation process, produces
       a text output which is then compared to the expected.
@@ -147,12 +169,15 @@ Kefir relies on following tests, most of which are executed as part of CI:
       combined with the remaining part of test case containing asserts (compiled with system compiler) and executed.
     - End-to-end tests -- each test consists of multiple `*.c` files which are compiled either using system compiler
       or kefir depending on file extension. Everything is then linked together and executed.
-    The test suite is executed on Linux with gcc and clang compilers and on FreeBSD with clang.
+    The test suite is executed on Linux with gcc and clang compilers, on FreeBSD with clang and on OpenBSD with clang. In Linux and FreeBSD
+    environments `valgrind` is used to control test suite correctness
+    at runtime.
 * Bootstrapping test -- kefir is used to compile itself using 2-stage bootstrap technique as described above.
 * GCC Torture Suite -- `compile` & `execute` parts of GCC torture test suite are executed with kefir compiler, with some permissive options
-  enabled. At the moment, out of 3481 tests, 1059 fail and 22 are skipped due to being irrelevant (e.g. SIMD or profiling test cases; there is no
+  enabled. At the moment, out of 3481 tests, 702 fail and 25 are skipped due to being irrelevant (e.g. SIMD or profiling test cases; there is no
   exhaustive skip list yet). All failures happen on compilation stage, no abortions occur at runtime.
-  The work with torture test suite will be continued in order to reduce the number of failures. The tests are executed manually, no CI is configured yet.
+  The work with torture test suite will be continued in order to reduce the number of failures. The torture tests are included into CI pipeline
+  with some basic test result checks.
 * Miscallenous tests:
     - Lua test -- kefir is used to build Lua 5.4 interpreter and then Lua basic test suite is executed on
       the resulting executable 
@@ -182,8 +207,9 @@ Lexer was implemented before preprocessor and can be used independently of it (p
 can be completely omitted), thus both lexer and preprocessor modules share the same lexing facilities.
 
 ## Author and license
-Author:
-* Jevgenijs Protopopovs - main body of the compiler
+Author: Jevgenijs Protopopovs
+
+The code base also includes patches from:
 * Brian Robert Callahan - [initial OpenBSD port](https://briancallahan.net/blog/20220629.html)
 
 License:
