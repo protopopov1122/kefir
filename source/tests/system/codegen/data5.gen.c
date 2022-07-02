@@ -31,6 +31,11 @@
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_codegen_amd64 codegen;
     kefir_codegen_amd64_sysv_init(&codegen, stdout);
+    struct kefir_codegen_configuration codegen_config = KefirCodegenDefaultConfiguration;
+#ifdef __OpenBSD__
+    codegen_config.emulated_tls = true;
+#endif
+    codegen.config = &codegen_config;
 
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));
@@ -208,8 +213,8 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "pointer1_1", KEFIR_IR_IDENTIFIER_THREAD_LOCAL));
 
     kefir_id_t str_id;
-    REQUIRE_OK(kefir_ir_module_string_literal(mem, &module, KEFIR_IR_STRING_LITERAL_MULTIBYTE, true, MSG, strlen(MSG),
-                                              &str_id));
+    REQUIRE_OK(kefir_ir_module_string_literal(mem, &module, KEFIR_IR_STRING_LITERAL_MULTIBYTE, true, MSG,
+                                              strlen(MSG) + 1, &str_id));
 
     kefir_id_t strpointer1_type_id;
     struct kefir_ir_type *strpointer1_type = kefir_ir_module_new_type(mem, &module, 1, &strpointer1_type_id);

@@ -19,15 +19,16 @@
 */
 
 #include <stdlib.h>
-#ifndef __OpenBSD__
 #include <stdio.h>
 #include <assert.h>
-#include <threads.h>
+#include <pthread.h>
 #include "./definitions.h"
 
 _Thread_local long external_counter = 0;
 
-static int thread2(void *payload) {
+static int thread2_res = 0;
+
+static void *thread2(void *payload) {
     (void) payload;
 
     assert(external_counter == 0);
@@ -56,7 +57,8 @@ static int thread2(void *payload) {
     advance_counter();
     advance_counter();
     advance_counter();
-    return (int) get_counter();
+    thread2_res = (int) get_counter();
+    return NULL;
 }
 
 int main() {
@@ -97,21 +99,11 @@ int main() {
     advance_counter();
     assert(get_counter() == 43);
 
-    thrd_t thread;
-    assert(thrd_create(&thread, thread2, NULL) == thrd_success);
-    int res = 0;
-    assert(thrd_join(thread, &res) == thrd_success);
-    assert(res == 123);
+    pthread_t thread;
+    assert(pthread_create(&thread, NULL, thread2, NULL) == 0);
+    assert(pthread_join(thread, NULL) == 0);
+    assert(thread2_res == 123);
     assert(get_counter() == 43);
     assert(external_counter == 42);
     return EXIT_SUCCESS;
 }
-#else
-long external_counter = 0;
-
-int main(int argc, const char **argv) {
-    (void) argc;
-    (void) argv;
-    return EXIT_SUCCESS;
-}
-#endif

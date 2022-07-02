@@ -587,8 +587,8 @@ static kefir_result_t calculate_type_properties_visitor(const struct kefir_ir_ty
     return KEFIR_OK;
 }
 
-static kefir_result_t calculate_type_properties(const struct kefir_ir_type *type, struct kefir_vector *layout,
-                                                kefir_size_t *size, kefir_size_t *alignment) {
+kefir_result_t kefir_amd64_sysv_calculate_type_properties(const struct kefir_ir_type *type, struct kefir_vector *layout,
+                                                          kefir_size_t *size, kefir_size_t *alignment) {
     struct type_properties props = {.size = 0, .alignment = 0, .layout = layout};
     struct kefir_ir_type_visitor visitor;
     REQUIRE_OK(kefir_ir_type_visitor_init(&visitor, calculate_type_properties_visitor));
@@ -624,7 +624,8 @@ kefir_result_t kefir_amd64_sysv_static_data(struct kefir_mem *mem, struct kefir_
     REQUIRE_OK(kefir_amd64_sysv_type_layout(data->type, mem, &param.layout));
 
     kefir_size_t total_size, total_alignment;
-    kefir_result_t res = calculate_type_properties(data->type, &param.layout, &total_size, &total_alignment);
+    kefir_result_t res =
+        kefir_amd64_sysv_calculate_type_properties(data->type, &param.layout, &total_size, &total_alignment);
     REQUIRE_ELSE(res == KEFIR_OK, {
         kefir_vector_free(mem, &param.layout);
         return res;

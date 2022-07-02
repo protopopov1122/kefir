@@ -19,10 +19,9 @@
 */
 
 #include <stdlib.h>
-#ifndef __OpenBSD__
 #include <stdio.h>
 #include <string.h>
-#include <threads.h>
+#include <pthread.h>
 #include "kefir/core/util.h"
 #include "kefir/test/unit_test.h"
 
@@ -47,13 +46,16 @@ static void test_struct(struct type1 *value) {
     }
 }
 
-static int thread2(void *payload) {
+static int thread2_res = 0;
+
+static void *thread2(void *payload) {
     struct type1 *Original = payload;
     ASSERT(&thrlocal1 != Original);
     ASSERT(memcmp(&thrlocal1, ZEROS, sizeof(struct type1)) == 0);
     test_struct(&thrlocal1);
     ASSERT(memcmp(&thrlocal1, ZEROS, sizeof(struct type1)) != 0);
-    return sizeof(struct type1);
+    thread2_res = sizeof(struct type1);
+    return NULL;
 }
 
 int main(int argc, const char **argv) {
@@ -63,20 +65,9 @@ int main(int argc, const char **argv) {
     test_struct(&thrlocal1);
     ASSERT(memcmp(&thrlocal1, ZEROS, sizeof(struct type1)) != 0);
 
-    thrd_t thread;
-    ASSERT(thrd_create(&thread, thread2, &thrlocal1) == thrd_success);
-    int res = 0;
-    ASSERT(thrd_join(thread, &res) == thrd_success);
-    ASSERT(res == sizeof(struct type1));
+    pthread_t thread;
+    ASSERT(pthread_create(&thread, NULL, thread2, &thrlocal1) == 0);
+    ASSERT(pthread_join(thread, NULL) == 0);
+    ASSERT(thread2_res == sizeof(struct type1));
     return EXIT_SUCCESS;
 }
-
-#else
-int thrlocal1;
-
-int main(int argc, const char **argv) {
-    (void) argc;
-    (void) argv;
-    return EXIT_SUCCESS;
-}
-#endif

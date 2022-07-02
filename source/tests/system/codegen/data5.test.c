@@ -19,10 +19,9 @@
 */
 
 #include <stdlib.h>
-#ifndef __OpenBSD__
 #include <stdio.h>
 #include <string.h>
-#include <threads.h>
+#include <pthread.h>
 #include "kefir/core/util.h"
 #include "kefir/test/unit_test.h"
 
@@ -65,14 +64,17 @@ extern _Thread_local const char *strpointer1_1;
             &pad1_1, &pointer1_1, &strpointer1_1                                                                  \
     }
 
-static int cmp_pointers(void *payload) {
+static int cmp_pointers_res = 0;
+
+static void *cmp_pointers(void *payload) {
     const void **Original = payload;
     const void *New[] = PTRLIST;
     kefir_size_t length = sizeof(New) / sizeof(New[0]);
     for (kefir_size_t i = 0; i < length; i++) {
         ASSERT(Original[i] != New[i]);
     }
-    return length;
+    cmp_pointers_res = length;
+    return NULL;
 }
 
 int main(int argc, const char **argv) {
@@ -121,18 +123,9 @@ int main(int argc, const char **argv) {
     ASSERT(strcmp(strpointer1_1, ", cruel world!") == 0);
 
     const void *Pointers[] = PTRLIST;
-    thrd_t thread;
-    ASSERT(thrd_create(&thread, cmp_pointers, Pointers) == thrd_success);
-    int res = 0;
-    ASSERT(thrd_join(thread, &res) == thrd_success);
-    ASSERT(res == sizeof(Pointers) / sizeof(Pointers[0]));
+    pthread_t thread;
+    ASSERT(pthread_create(&thread, NULL, cmp_pointers, Pointers) == 0);
+    ASSERT(pthread_join(thread, NULL) == 0);
+    ASSERT(cmp_pointers_res == sizeof(Pointers) / sizeof(Pointers[0]));
     return EXIT_SUCCESS;
 }
-
-#else
-int main(int argc, const char **argv) {
-    (void) argc;
-    (void) argv;
-    return EXIT_SUCCESS;
-}
-#endif

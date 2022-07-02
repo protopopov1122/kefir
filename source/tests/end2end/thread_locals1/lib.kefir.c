@@ -20,8 +20,6 @@
 
 #include "./definitions.h"
 
-#ifndef __OpenBSD__
-
 _Thread_local long counter = 0;
 extern _Thread_local long external_counter;
 static _Thread_local long saved_counter;
@@ -51,5 +49,3 @@ int reset_counter() {
     counter = 0;
     return ++resets;
 }
-
-#endif

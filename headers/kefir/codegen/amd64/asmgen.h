@@ -145,6 +145,7 @@ kefir_result_t kefir_amd64_gas_gen_init(struct kefir_amd64_asmgen *, FILE *);
 #define KEFIR_AMD64_THREAD_LOCAL "[%s@tpoff]"
 #define KEFIR_AMD64_THREAD_LOCAL_GOT "%s@gottpoff[%%rip]"
 #define KEFIR_AMD64_EMUTLS_V "__emutls_v.%s"
+#define KEFIR_AMD64_EMUTLS_T "__emutls_t.%s"
 #define KEFIR_AMD64_THREAD_LOCAL_EMUTLS "[__emutls_v.%s]"
 #define KEFIR_AMD64_THREAD_LOCAL_EMUTLS_GOT "__emutls_v.%s@GOTPCREL[%%rip]"
 #define KEFIR_AMD64_EMUTLS_GET_ADDR "__emutls_get_address@PLT"

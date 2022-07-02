@@ -29,6 +29,9 @@
 #include "kefir/codegen/amd64/asmgen.h"
 #include "kefir/ir/data.h"
 
+kefir_result_t kefir_amd64_sysv_calculate_type_properties(const struct kefir_ir_type *, struct kefir_vector *,
+                                                          kefir_size_t *, kefir_size_t *);
+
 kefir_result_t kefir_amd64_sysv_static_data(struct kefir_mem *, struct kefir_codegen_amd64 *,
                                             const struct kefir_ir_data *, const char *);
 

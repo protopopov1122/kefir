@@ -30,6 +30,11 @@
 kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_codegen_amd64 codegen;
     kefir_codegen_amd64_sysv_init(&codegen, stdout);
+    struct kefir_codegen_configuration codegen_config = KefirCodegenDefaultConfiguration;
+#ifdef __OpenBSD__
+    codegen_config.emulated_tls = true;
+#endif
+    codegen.config = &codegen_config;
 
     struct kefir_ir_module module;
     REQUIRE_OK(kefir_ir_module_alloc(mem, &module));

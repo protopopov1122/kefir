@@ -39,6 +39,23 @@ static kefir_result_t cg_declare_opcode_handler(kefir_iropcode_t opcode, const c
     return KEFIR_OK;
 }
 
+static kefir_result_t cg_module_globals(struct kefir_codegen_amd64_sysv_module *module,
+                                        struct kefir_codegen_amd64 *codegen) {
+    struct kefir_hashtree_node_iterator globals_iter;
+    kefir_ir_identifier_type_t global_type;
+    for (const char *global = kefir_ir_module_globals_iter(module->module, &globals_iter, &global_type); global != NULL;
+         global = kefir_ir_module_globals_iter_next(&globals_iter, &global_type)) {
+
+        if (!codegen->config->emulated_tls || global_type != KEFIR_IR_IDENTIFIER_THREAD_LOCAL) {
+            ASMGEN_GLOBAL(&codegen->asmgen, "%s", global);
+        } else {
+            ASMGEN_GLOBAL(&codegen->asmgen, KEFIR_AMD64_EMUTLS_V, global);
+            ASMGEN_GLOBAL(&codegen->asmgen, KEFIR_AMD64_EMUTLS_T, global);
+        }
+    }
+    return KEFIR_OK;
+}
+
 static kefir_result_t cg_module_externals(struct kefir_codegen_amd64_sysv_module *module,
                                           struct kefir_codegen_amd64 *codegen) {
     struct kefir_hashtree_node_iterator externals_iter;
@@ -70,14 +87,8 @@ static kefir_result_t cg_module_prologue(struct kefir_codegen_amd64_sysv_module 
     ASMGEN_COMMENT0(&codegen->asmgen, "Externals");
     REQUIRE_OK(cg_module_externals(module, codegen));
     ASMGEN_NEWLINE(&codegen->asmgen, 1);
-
     ASMGEN_COMMENT0(&codegen->asmgen, "Globals");
-    struct kefir_hashtree_node_iterator globals_iter;
-    kefir_ir_identifier_type_t global_type;
-    for (const char *global = kefir_ir_module_globals_iter(module->module, &globals_iter, &global_type); global != NULL;
-         global = kefir_ir_module_globals_iter_next(&globals_iter, &global_type)) {
-        ASMGEN_GLOBAL(&codegen->asmgen, "%s", global);
-    }
+    REQUIRE_OK(cg_module_globals(module, codegen));
     ASMGEN_NEWLINE(&codegen->asmgen, 1);
     return KEFIR_OK;
 }
@@ -278,12 +289,86 @@ static kefir_result_t cg_translate_data_storage(struct kefir_mem *mem, struct ke
     return KEFIR_OK;
 }
 
+static kefir_result_t cg_translate_emulated_tls(struct kefir_mem *mem, struct kefir_codegen_amd64 *codegen,
+                                                struct kefir_codegen_amd64_sysv_module *module) {
+    bool first = true;
+    struct kefir_hashtree_node_iterator iter;
+    const char *identifier = NULL;
+    char emutls_identifier[1024] = {0};
+    for (const struct kefir_ir_data *data = kefir_ir_module_named_data_iter(module->module, &iter, &identifier);
+         data != NULL; data = kefir_ir_module_named_data_next(&iter, &identifier)) {
+        if (data->storage != KEFIR_IR_DATA_THREAD_LOCAL_STORAGE) {
+            continue;
+        }
+
+        if (!data->defined) {
+            continue;
+        }
+
+        if (first) {
+            ASMGEN_SECTION(&codegen->asmgen, ".rodata");
+            first = false;
+        }
+
+        snprintf(emutls_identifier, sizeof(emutls_identifier) - 1, KEFIR_AMD64_EMUTLS_T, identifier);
+        REQUIRE_OK(kefir_amd64_sysv_static_data(mem, codegen, data, emutls_identifier));
+    }
+
+    first = true;
+    for (const struct kefir_ir_data *data = kefir_ir_module_named_data_iter(module->module, &iter, &identifier);
+         data != NULL; data = kefir_ir_module_named_data_next(&iter, &identifier)) {
+        if (data->storage != KEFIR_IR_DATA_THREAD_LOCAL_STORAGE) {
+            continue;
+        }
+
+        if (first) {
+            ASMGEN_SECTION(&codegen->asmgen, ".data");
+            first = false;
+        }
+
+        char emutls_identifier[1024] = {0};
+        snprintf(emutls_identifier, sizeof(emutls_identifier) - 1, KEFIR_AMD64_EMUTLS_V, identifier);
+
+        struct kefir_vector type_layout;
+        REQUIRE_OK(kefir_amd64_sysv_type_layout(data->type, mem, &type_layout));
+        kefir_size_t total_size, total_alignment;
+        kefir_result_t res =
+            kefir_amd64_sysv_calculate_type_properties(data->type, &type_layout, &total_size, &total_alignment);
+        REQUIRE_ELSE(res == KEFIR_OK, {
+            kefir_vector_free(mem, &type_layout);
+            return res;
+        });
+        REQUIRE_OK(kefir_vector_free(mem, &type_layout));
+
+        ASMGEN_INSTR(&codegen->asmgen, KEFIR_AMD64_ALIGN);
+        ASMGEN_ARG(&codegen->asmgen, KEFIR_SIZE_FMT, 8);
+        ASMGEN_LABEL(&codegen->asmgen, "%s", emutls_identifier);
+        ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
+        ASMGEN_ARG(&codegen->asmgen, KEFIR_SIZE_FMT, total_size);
+        ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
+        ASMGEN_ARG(&codegen->asmgen, KEFIR_SIZE_FMT, total_alignment);
+        ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
+        ASMGEN_ARG(&codegen->asmgen, KEFIR_INT64_FMT, 0);
+        ASMGEN_RAW(&codegen->asmgen, KEFIR_AMD64_QUAD);
+        if (data->defined) {
+            ASMGEN_ARG(&codegen->asmgen, KEFIR_AMD64_EMUTLS_T, identifier);
+        } else {
+            ASMGEN_ARG(&codegen->asmgen, KEFIR_INT64_FMT, 0);
+        }
+    }
+    return KEFIR_OK;
+}
+
 static kefir_result_t cg_translate_data(struct kefir_mem *mem, struct kefir_codegen_amd64 *codegen,
                                         struct kefir_codegen_amd64_sysv_module *module) {
     REQUIRE_OK(cg_translate_data_storage(mem, codegen, module, KEFIR_IR_DATA_GLOBAL_STORAGE, true, ".data"));
-    REQUIRE_OK(cg_translate_data_storage(mem, codegen, module, KEFIR_IR_DATA_THREAD_LOCAL_STORAGE, true, ".tdata"));
     REQUIRE_OK(cg_translate_data_storage(mem, codegen, module, KEFIR_IR_DATA_GLOBAL_STORAGE, false, ".bss"));
-    REQUIRE_OK(cg_translate_data_storage(mem, codegen, module, KEFIR_IR_DATA_THREAD_LOCAL_STORAGE, false, ".tbss"));
+    if (!codegen->config->emulated_tls) {
+        REQUIRE_OK(cg_translate_data_storage(mem, codegen, module, KEFIR_IR_DATA_THREAD_LOCAL_STORAGE, true, ".tdata"));
+        REQUIRE_OK(cg_translate_data_storage(mem, codegen, module, KEFIR_IR_DATA_THREAD_LOCAL_STORAGE, false, ".tbss"));
+    } else {
+        REQUIRE_OK(cg_translate_emulated_tls(mem, codegen, module));
+    }
     REQUIRE_OK(cg_translate_strings(codegen, module));
     return KEFIR_OK;
 }
