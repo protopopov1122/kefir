@@ -1,9 +1,21 @@
 {
     "globals": [
-        "add_value",
-        "get_value",
-        "set_value",
-        "invoke_callback"
+        {
+            "identifier": "add_value",
+            "type": "global"
+        },
+        {
+            "identifier": "get_value",
+            "type": "global"
+        },
+        {
+            "identifier": "set_value",
+            "type": "global"
+        },
+        {
+            "identifier": "invoke_callback",
+            "type": "global"
+        }
     ],
     "externals": [
         {

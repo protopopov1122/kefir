@@ -57,7 +57,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(sum_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *sum = kefir_ir_module_new_function(mem, &module, sum_decl, KEFIR_ID_NONE, 1024);
     REQUIRE(sum != NULL, KEFIR_INTERNAL_ERROR);
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, sum_decl->name));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, sum_decl->name, KEFIR_IR_IDENTIFIER_GLOBAL));
     kefir_irbuilder_type_append_v(mem, sum->declaration->params, KEFIR_IR_TYPE_WORD, 0, 0);
     kefir_irbuilder_type_append_v(mem, sum->declaration->result, KEFIR_IR_TYPE_LONG, 0, 0);
 

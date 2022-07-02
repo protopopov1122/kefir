@@ -1,6 +1,9 @@
 {
     "globals": [
-        "arr1"
+        {
+            "identifier": "arr1",
+            "type": "global"
+        }
     ],
     "externals": [
         {

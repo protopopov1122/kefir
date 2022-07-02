@@ -1,10 +1,25 @@
 {
     "globals": [
-        "chars",
-        "string",
-        "integer",
-        "struct1",
-        "floatingPoint"
+        {
+            "identifier": "chars",
+            "type": "thread_local"
+        },
+        {
+            "identifier": "string",
+            "type": "thread_local"
+        },
+        {
+            "identifier": "integer",
+            "type": "thread_local"
+        },
+        {
+            "identifier": "struct1",
+            "type": "thread_local"
+        },
+        {
+            "identifier": "floatingPoint",
+            "type": "thread_local"
+        }
     ],
     "externals": [
         {

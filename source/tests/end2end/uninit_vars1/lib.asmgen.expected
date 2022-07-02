@@ -125,11 +125,11 @@
 # Externals
 
 # Globals
-.global GLOBAL_UNINIT_STATIC
 .global get_global_uninit_static
 .global get_global_tlocal_uninit_static
 .global get_local_tlocal_uninit_static
 .global get_local_uninit_static
+.global GLOBAL_UNINIT_STATIC
 
 get_global_uninit_static:
 # Begin prologue of get_global_uninit_static

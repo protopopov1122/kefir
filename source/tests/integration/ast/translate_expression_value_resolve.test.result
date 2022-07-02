@@ -1,26 +1,89 @@
 {
     "globals": [
-        "char",
-        "enum",
-        "float",
-        "union",
-        "array1",
-        "array2",
-        "double",
-        "boolean",
-        "void_ptr",
-        "qualified",
-        "structure",
-        "signed_int",
-        "signed_char",
-        "signed_long",
-        "unsigned_char",
-        "unsigned_long",
-        "signed_short",
-        "unsigned_int",
-        "signed_long_long",
-        "unsigned_short",
-        "unsigned_long_long"
+        {
+            "identifier": "char",
+            "type": "global"
+        },
+        {
+            "identifier": "enum",
+            "type": "global"
+        },
+        {
+            "identifier": "float",
+            "type": "global"
+        },
+        {
+            "identifier": "union",
+            "type": "global"
+        },
+        {
+            "identifier": "array1",
+            "type": "global"
+        },
+        {
+            "identifier": "array2",
+            "type": "global"
+        },
+        {
+            "identifier": "double",
+            "type": "global"
+        },
+        {
+            "identifier": "boolean",
+            "type": "global"
+        },
+        {
+            "identifier": "void_ptr",
+            "type": "global"
+        },
+        {
+            "identifier": "qualified",
+            "type": "global"
+        },
+        {
+            "identifier": "structure",
+            "type": "global"
+        },
+        {
+            "identifier": "signed_int",
+            "type": "global"
+        },
+        {
+            "identifier": "signed_char",
+            "type": "global"
+        },
+        {
+            "identifier": "signed_long",
+            "type": "global"
+        },
+        {
+            "identifier": "unsigned_char",
+            "type": "global"
+        },
+        {
+            "identifier": "unsigned_long",
+            "type": "global"
+        },
+        {
+            "identifier": "signed_short",
+            "type": "global"
+        },
+        {
+            "identifier": "unsigned_int",
+            "type": "global"
+        },
+        {
+            "identifier": "signed_long_long",
+            "type": "global"
+        },
+        {
+            "identifier": "unsigned_short",
+            "type": "global"
+        },
+        {
+            "identifier": "unsigned_long_long",
+            "type": "global"
+        }
     ],
     "externals": [
         {

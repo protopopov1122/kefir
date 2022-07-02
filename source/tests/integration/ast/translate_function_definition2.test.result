@@ -1,6 +1,9 @@
 {
     "globals": [
-        "intat"
+        {
+            "identifier": "intat",
+            "type": "global"
+        }
     ],
     "externals": [],
     "types": [

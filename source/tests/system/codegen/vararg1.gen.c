@@ -45,7 +45,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(printint_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *printint = kefir_ir_module_new_function(mem, &module, printint_decl, KEFIR_ID_NONE, 1024);
     REQUIRE(printint != NULL, KEFIR_INTERNAL_ERROR);
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, printint_decl->name));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, printint_decl->name, KEFIR_IR_IDENTIFIER_GLOBAL));
 
     struct kefir_ir_type *sprintf_decl_params = kefir_ir_module_new_type(mem, &module, 3, &func_params),
                          *sprintf_decl_result = kefir_ir_module_new_type(mem, &module, 1, &func_returns);
@@ -54,7 +54,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     struct kefir_ir_function_decl *sprintf_decl =
         kefir_ir_module_new_function_declaration(mem, &module, "sprintf", func_params, true, func_returns);
     REQUIRE(sprintf_decl != NULL, KEFIR_INTERNAL_ERROR);
-    REQUIRE_OK(kefir_ir_module_declare_external(mem, &module, "sprintf", KEFIR_IR_EXTERNAL_GLOBAL));
+    REQUIRE_OK(kefir_ir_module_declare_external(mem, &module, "sprintf", KEFIR_IR_IDENTIFIER_GLOBAL));
 
     kefir_id_t fmt_id, fmt_type_id;
     struct kefir_ir_type *string_type = kefir_ir_module_new_type(mem, &module, 2, &fmt_type_id);

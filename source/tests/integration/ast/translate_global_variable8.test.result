@@ -1,9 +1,21 @@
 {
     "globals": [
-        "string1",
-        "string2",
-        "string3",
-        "string4"
+        {
+            "identifier": "string1",
+            "type": "global"
+        },
+        {
+            "identifier": "string2",
+            "type": "global"
+        },
+        {
+            "identifier": "string3",
+            "type": "global"
+        },
+        {
+            "identifier": "string4",
+            "type": "global"
+        }
     ],
     "externals": [
         {

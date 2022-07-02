@@ -1,6 +1,9 @@
 {
     "globals": [
-        "extern_variable2"
+        {
+            "identifier": "extern_variable2",
+            "type": "global"
+        }
     ],
     "externals": [
         {

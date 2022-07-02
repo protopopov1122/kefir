@@ -1,6 +1,9 @@
 {
     "globals": [
-        "factorial"
+        {
+            "identifier": "factorial",
+            "type": "global"
+        }
     ],
     "externals": [],
     "types": [

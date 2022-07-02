@@ -47,7 +47,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(getarg_decl != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *getarg = kefir_ir_module_new_function(mem, &module, getarg_decl, locals_id, 1024);
     REQUIRE(getarg != NULL, KEFIR_INTERNAL_ERROR);
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, getarg_decl->name));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, getarg_decl->name, KEFIR_IR_IDENTIFIER_GLOBAL));
 
     kefir_codegen_amd64_sysv_init(&codegen, stdout);
     codegen.asmgen.settings.enable_comments = false;

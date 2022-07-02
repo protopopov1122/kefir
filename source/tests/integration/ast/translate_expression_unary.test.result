@@ -1,9 +1,21 @@
 {
     "globals": [
-        "W",
-        "X",
-        "Y",
-        "Z"
+        {
+            "identifier": "W",
+            "type": "global"
+        },
+        {
+            "identifier": "X",
+            "type": "global"
+        },
+        {
+            "identifier": "Y",
+            "type": "global"
+        },
+        {
+            "identifier": "Z",
+            "type": "global"
+        }
     ],
     "externals": [],
     "types": [

@@ -1,6 +1,9 @@
 {
     "globals": [
-        "str1"
+        {
+            "identifier": "str1",
+            "type": "global"
+        }
     ],
     "externals": [
         {

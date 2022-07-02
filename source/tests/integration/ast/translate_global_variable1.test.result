@@ -1,13 +1,37 @@
 {
     "globals": [
-        "ptr1",
-        "ptr2",
-        "integer",
-        "string1",
-        "string2",
-        "character",
-        "floatingPoint2",
-        "floatingPoint"
+        {
+            "identifier": "ptr1",
+            "type": "global"
+        },
+        {
+            "identifier": "ptr2",
+            "type": "global"
+        },
+        {
+            "identifier": "integer",
+            "type": "global"
+        },
+        {
+            "identifier": "string1",
+            "type": "global"
+        },
+        {
+            "identifier": "string2",
+            "type": "global"
+        },
+        {
+            "identifier": "character",
+            "type": "global"
+        },
+        {
+            "identifier": "floatingPoint2",
+            "type": "global"
+        },
+        {
+            "identifier": "floatingPoint",
+            "type": "global"
+        }
     ],
     "externals": [
         {

@@ -46,7 +46,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(decl1 != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *func1 = kefir_ir_module_new_function(mem, &module, decl1, KEFIR_ID_NONE, 1024);
     REQUIRE(func1 != NULL, KEFIR_INTERNAL_ERROR);
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl1->name));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl1->name, KEFIR_IR_IDENTIFIER_GLOBAL));
     kefir_irbuilder_type_append_v(mem, func1->declaration->result, KEFIR_IR_TYPE_WORD, 0, 0);
 
     const kefir_char16_t literal[] = u"Hello, world!";
@@ -63,7 +63,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(decl2 != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *func2 = kefir_ir_module_new_function(mem, &module, decl2, KEFIR_ID_NONE, 1024);
     REQUIRE(func2 != NULL, KEFIR_INTERNAL_ERROR);
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl2->name));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl2->name, KEFIR_IR_IDENTIFIER_GLOBAL));
     kefir_irbuilder_type_append_v(mem, func2->declaration->result, KEFIR_IR_TYPE_WORD, 0, 0);
 
     const kefir_char16_t literal2[] = u"\n\n\t\tHey there\'\"!\v\n";
@@ -80,7 +80,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE(decl3 != NULL, KEFIR_INTERNAL_ERROR);
     struct kefir_ir_function *func3 = kefir_ir_module_new_function(mem, &module, decl3, KEFIR_ID_NONE, 1024);
     REQUIRE(func3 != NULL, KEFIR_INTERNAL_ERROR);
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl3->name));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, decl3->name, KEFIR_IR_IDENTIFIER_GLOBAL));
     kefir_irbuilder_type_append_v(mem, func3->declaration->result, KEFIR_IR_TYPE_WORD, 0, 0);
 
     const kefir_char16_t literal3[] = u"\0\0\0\0";

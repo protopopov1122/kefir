@@ -96,7 +96,7 @@ kefir_result_t kefir_ir_module_alloc(struct kefir_mem *mem, struct kefir_ir_modu
     REQUIRE_OK(kefir_list_on_remove(&module->types, destroy_type, NULL));
     REQUIRE_OK(kefir_hashtree_init(&module->function_declarations, &kefir_hashtree_uint_ops));
     REQUIRE_OK(kefir_hashtree_on_removal(&module->function_declarations, destroy_function_decl, NULL));
-    REQUIRE_OK(kefir_list_init(&module->global_symbols));
+    REQUIRE_OK(kefir_hashtree_init(&module->global_symbols, &kefir_hashtree_str_ops));
     REQUIRE_OK(kefir_hashtree_init(&module->externals, &kefir_hashtree_str_ops));
     REQUIRE_OK(kefir_hashtree_init(&module->functions, &kefir_hashtree_str_ops));
     REQUIRE_OK(kefir_hashtree_on_removal(&module->functions, destroy_function, NULL));
@@ -119,7 +119,7 @@ kefir_result_t kefir_ir_module_free(struct kefir_mem *mem, struct kefir_ir_modul
     REQUIRE_OK(kefir_hashtree_free(mem, &module->named_types));
     REQUIRE_OK(kefir_hashtree_free(mem, &module->functions));
     REQUIRE_OK(kefir_hashtree_free(mem, &module->externals));
-    REQUIRE_OK(kefir_list_free(mem, &module->global_symbols));
+    REQUIRE_OK(kefir_hashtree_free(mem, &module->global_symbols));
     REQUIRE_OK(kefir_hashtree_free(mem, &module->function_declarations));
     REQUIRE_OK(kefir_list_free(mem, &module->types));
     REQUIRE_OK(kefir_symbol_table_free(mem, &module->symbols));
@@ -257,17 +257,22 @@ struct kefir_ir_function_decl *kefir_ir_module_new_function_declaration(struct k
 }
 
 kefir_result_t kefir_ir_module_declare_global(struct kefir_mem *mem, struct kefir_ir_module *module,
-                                              const char *original) {
+                                              const char *original, kefir_ir_identifier_type_t type) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR module pointer"));
     const char *symbol = kefir_ir_module_symbol(mem, module, original, NULL);
     REQUIRE(symbol != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate a symbol"));
-    return kefir_list_insert_after(mem, &module->global_symbols, kefir_list_tail(&module->global_symbols),
-                                   (void *) symbol);
+
+    kefir_result_t res = kefir_hashtree_insert(mem, &module->global_symbols, (kefir_hashtree_key_t) symbol,
+                                               (kefir_hashtree_value_t) type);
+    if (res != KEFIR_ALREADY_EXISTS) {
+        REQUIRE_OK(res);
+    }
+    return KEFIR_OK;
 }
 
 kefir_result_t kefir_ir_module_declare_external(struct kefir_mem *mem, struct kefir_ir_module *module,
-                                                const char *original, kefir_ir_external_type_t type) {
+                                                const char *original, kefir_ir_identifier_type_t type) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(module != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid IR module pointer"));
     const char *symbol = kefir_ir_module_symbol(mem, module, original, NULL);
@@ -333,36 +338,46 @@ const struct kefir_ir_function *kefir_ir_module_function_next(struct kefir_hasht
     }
 }
 
-const char *kefir_ir_module_globals_iter(const struct kefir_ir_module *module, const struct kefir_list_entry **iter) {
+const char *kefir_ir_module_globals_iter(const struct kefir_ir_module *module,
+                                         struct kefir_hashtree_node_iterator *iter, kefir_ir_identifier_type_t *type) {
     REQUIRE(module != NULL, NULL);
     REQUIRE(iter != NULL, NULL);
-    *iter = kefir_list_head(&module->global_symbols);
-    REQUIRE(*iter != NULL, NULL);
-    return kefir_list_next(iter);
+
+    const struct kefir_hashtree_node *node = kefir_hashtree_iter(&module->global_symbols, iter);
+    REQUIRE(node != NULL, NULL);
+    ASSIGN_PTR(type, (kefir_ir_identifier_type_t) node->value);
+    return (const char *) node->key;
 }
 
 const char *kefir_ir_module_externals_iter(const struct kefir_ir_module *module,
-                                           struct kefir_hashtree_node_iterator *iter, kefir_ir_external_type_t *type) {
+                                           struct kefir_hashtree_node_iterator *iter,
+                                           kefir_ir_identifier_type_t *type) {
     REQUIRE(module != NULL, NULL);
     REQUIRE(iter != NULL, NULL);
 
     const struct kefir_hashtree_node *node = kefir_hashtree_iter(&module->externals, iter);
     REQUIRE(node != NULL, NULL);
-    ASSIGN_PTR(type, (kefir_ir_external_type_t) node->value);
+    ASSIGN_PTR(type, (kefir_ir_identifier_type_t) node->value);
     return (const char *) node->key;
 }
 
-const char *kefir_ir_module_globals_iter_next(const struct kefir_list_entry **iter) {
-    return kefir_list_next(iter);
-}
-
-const char *kefir_ir_module_externals_iter_next(struct kefir_hashtree_node_iterator *iter,
-                                                kefir_ir_external_type_t *type) {
+const char *kefir_ir_module_globals_iter_next(struct kefir_hashtree_node_iterator *iter,
+                                              kefir_ir_identifier_type_t *type) {
     REQUIRE(iter != NULL, NULL);
 
     const struct kefir_hashtree_node *node = kefir_hashtree_next(iter);
     REQUIRE(node != NULL, NULL);
-    ASSIGN_PTR(type, (kefir_ir_external_type_t) node->value);
+    ASSIGN_PTR(type, (kefir_ir_identifier_type_t) node->value);
+    return (const char *) node->key;
+}
+
+const char *kefir_ir_module_externals_iter_next(struct kefir_hashtree_node_iterator *iter,
+                                                kefir_ir_identifier_type_t *type) {
+    REQUIRE(iter != NULL, NULL);
+
+    const struct kefir_hashtree_node *node = kefir_hashtree_next(iter);
+    REQUIRE(node != NULL, NULL);
+    ASSIGN_PTR(type, (kefir_ir_identifier_type_t) node->value);
     return (const char *) node->key;
 }
 

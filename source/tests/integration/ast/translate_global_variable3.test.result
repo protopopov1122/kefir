@@ -1,8 +1,17 @@
 {
     "globals": [
-        "array1",
-        "array2",
-        "structure"
+        {
+            "identifier": "array1",
+            "type": "global"
+        },
+        {
+            "identifier": "array2",
+            "type": "global"
+        },
+        {
+            "identifier": "structure",
+            "type": "global"
+        }
     ],
     "externals": [
         {

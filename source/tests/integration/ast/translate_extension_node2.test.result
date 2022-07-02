@@ -1,6 +1,9 @@
 {
     "globals": [
-        "func1"
+        {
+            "identifier": "func1",
+            "type": "global"
+        }
     ],
     "externals": [],
     "types": [

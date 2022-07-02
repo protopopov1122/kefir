@@ -1,6 +1,9 @@
 {
     "globals": [
-        "ptr1"
+        {
+            "identifier": "ptr1",
+            "type": "global"
+        }
     ],
     "externals": [],
     "types": [

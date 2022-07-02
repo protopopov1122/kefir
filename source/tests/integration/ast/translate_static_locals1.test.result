@@ -1,6 +1,9 @@
 {
     "globals": [
-        "fn"
+        {
+            "identifier": "fn",
+            "type": "global"
+        }
     ],
     "externals": [],
     "types": [

@@ -84,10 +84,10 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ir_module_new_named_data(mem, &module, "float32_1", KEFIR_IR_DATA_THREAD_LOCAL_STORAGE, float32type_id);
     REQUIRE_OK(kefir_ir_data_set_float32(float32data1, 0, 3.14159));
     REQUIRE_OK(kefir_ir_data_finalize(float32data1));
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "float32_1"));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "float32_1", KEFIR_IR_IDENTIFIER_THREAD_LOCAL));
     REQUIRE_OK(kefir_ir_data_finalize(
         kefir_ir_module_new_named_data(mem, &module, "float32_2", KEFIR_IR_DATA_THREAD_LOCAL_STORAGE, float32type_id)));
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "float32_2"));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "float32_2", KEFIR_IR_IDENTIFIER_THREAD_LOCAL));
 
     kefir_id_t float64type_id;
     struct kefir_ir_type *float64type = kefir_ir_module_new_type(mem, &module, 1, &float64type_id);
@@ -96,10 +96,10 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ir_module_new_named_data(mem, &module, "float64_1", KEFIR_IR_DATA_THREAD_LOCAL_STORAGE, float64type_id);
     REQUIRE_OK(kefir_ir_data_set_float64(float64data1, 0, 2.718281828));
     REQUIRE_OK(kefir_ir_data_finalize(float64data1));
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "float64_1"));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "float64_1", KEFIR_IR_IDENTIFIER_THREAD_LOCAL));
     REQUIRE_OK(kefir_ir_data_finalize(
         kefir_ir_module_new_named_data(mem, &module, "float64_2", KEFIR_IR_DATA_THREAD_LOCAL_STORAGE, float64type_id)));
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "float64_2"));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "float64_2", KEFIR_IR_IDENTIFIER_THREAD_LOCAL));
 
     kefir_id_t struct1_type_id;
     struct kefir_ir_type *struct1_type = kefir_ir_module_new_type(mem, &module, 5, &struct1_type_id);
@@ -115,7 +115,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_data_set_integer(struct1_data1, 3, 4096));
     REQUIRE_OK(kefir_ir_data_set_float32(struct1_data1, 4, 106.9994));
     REQUIRE_OK(kefir_ir_data_finalize(struct1_data1));
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "struct1_1"));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "struct1_1", KEFIR_IR_IDENTIFIER_THREAD_LOCAL));
 
     kefir_id_t array1_type_id;
     struct kefir_ir_type *array1_type = kefir_ir_module_new_type(mem, &module, 6, &array1_type_id);
@@ -136,7 +136,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_data_set_float32(array1_data, 20, 40.56));
     REQUIRE_OK(kefir_ir_data_set_float32(array1_data, 21, 56.74));
     REQUIRE_OK(kefir_ir_data_finalize(array1_data));
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "array1_1"));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "array1_1", KEFIR_IR_IDENTIFIER_THREAD_LOCAL));
 
     kefir_id_t union1_type_id;
     struct kefir_ir_type *union1_type = kefir_ir_module_new_type(mem, &module, 6, &union1_type_id);
@@ -151,7 +151,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_data_set_float32(union1_data, 2, 3.14));
     REQUIRE_OK(kefir_ir_data_set_integer(union1_data, 3, 100500));
     REQUIRE_OK(kefir_ir_data_finalize(union1_data));
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "union1_1"));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "union1_1", KEFIR_IR_IDENTIFIER_THREAD_LOCAL));
 
     const char *MSG = "Hello, cruel world!";
     kefir_id_t memory1_type_id;
@@ -161,7 +161,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         kefir_ir_module_new_named_data(mem, &module, "memory1_1", KEFIR_IR_DATA_THREAD_LOCAL_STORAGE, memory1_type_id);
     REQUIRE_OK(kefir_ir_data_set_string(memory1_data, 0, KEFIR_IR_STRING_LITERAL_MULTIBYTE, MSG, strlen(MSG)));
     REQUIRE_OK(kefir_ir_data_finalize(memory1_data));
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "memory1_1"));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "memory1_1", KEFIR_IR_IDENTIFIER_THREAD_LOCAL));
 
     const kefir_char16_t MSG2[] = u"Two-byte encoded message\0";
     kefir_id_t memory2_type_id;
@@ -172,7 +172,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_data_set_string(memory2_data, 0, KEFIR_IR_STRING_LITERAL_UNICODE16, MSG2,
                                         sizeof(MSG2) / sizeof(MSG2[0])));
     REQUIRE_OK(kefir_ir_data_finalize(memory2_data));
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "memory1_2"));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "memory1_2", KEFIR_IR_IDENTIFIER_THREAD_LOCAL));
 
     const kefir_char32_t MSG3[] = U"\0\0Another string literal\"";
     kefir_id_t memory3_type_id;
@@ -183,7 +183,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
     REQUIRE_OK(kefir_ir_data_set_string(memory3_data, 0, KEFIR_IR_STRING_LITERAL_UNICODE32, MSG3,
                                         sizeof(MSG3) / sizeof(MSG3[0])));
     REQUIRE_OK(kefir_ir_data_finalize(memory3_data));
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "memory1_3"));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "memory1_3", KEFIR_IR_IDENTIFIER_THREAD_LOCAL));
 
     kefir_id_t pointer1_type_id;
     struct kefir_ir_type *pointer1_type = kefir_ir_module_new_type(mem, &module, 1, &pointer1_type_id);
@@ -192,7 +192,7 @@ kefir_result_t kefir_int_test(struct kefir_mem *mem) {
         mem, &module, "pointer1_1", KEFIR_IR_DATA_THREAD_LOCAL_STORAGE, pointer1_type_id);
     REQUIRE_OK(kefir_ir_data_set_pointer(pointer1_data, 0, "memory1_1", 2));
     REQUIRE_OK(kefir_ir_data_finalize(pointer1_data));
-    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "pointer1_1"));
+    REQUIRE_OK(kefir_ir_module_declare_global(mem, &module, "pointer1_1", KEFIR_IR_IDENTIFIER_THREAD_LOCAL));
 
     REQUIRE_OK(KEFIR_CODEGEN_TRANSLATE(mem, &codegen.iface, &module));
     REQUIRE_OK(KEFIR_CODEGEN_CLOSE(&codegen.iface));

@@ -121,16 +121,16 @@
 .extern __kefirrt_copy_vararg
 
 
+.global array1_1
+.global union1_1
 .global float32_1
 .global float32_2
 .global float64_1
 .global float64_2
-.global struct1_1
-.global array1_1
-.global union1_1
 .global memory1_1
 .global memory1_2
 .global memory1_3
+.global struct1_1
 .global pointer1_1
 
 .section .tdata
