@@ -347,18 +347,19 @@ kefir_result_t kefir_run_compiler(struct kefir_mem *mem, struct kefir_compiler_r
     return KEFIR_OK;
 }
 
-kefir_bool_t kefir_report_error(kefir_result_t res, struct kefir_compiler_runner_configuration *options) {
+kefir_bool_t kefir_report_error(FILE *output, kefir_result_t res,
+                                const struct kefir_compiler_runner_configuration *options) {
     if (res == KEFIR_OK) {
         return true;
     } else {
         switch (options->error_report_type) {
             case KEFIR_COMPILER_RUNNER_ERROR_REPORT_TABULAR:
-                fprintf(stderr, "Failed to compile! Error stack:\n");
-                kefir_format_error_tabular(stderr, kefir_current_error());
+                fprintf(output, "Failed to compile! Error stack:\n");
+                kefir_format_error_tabular(output, kefir_current_error());
                 break;
 
             case KEFIR_COMPILER_RUNNER_ERROR_REPORT_JSON:
-                kefir_format_error_json(stderr, kefir_current_error());
+                kefir_format_error_json(output, kefir_current_error());
                 break;
         }
         return false;

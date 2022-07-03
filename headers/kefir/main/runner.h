@@ -24,8 +24,9 @@
 #include "kefir/core/basic-types.h"
 #include "kefir/core/mem.h"
 #include "kefir/cli/options.h"
+#include <stdio.h>
 
 kefir_result_t kefir_run_compiler(struct kefir_mem *, struct kefir_compiler_runner_configuration *);
-kefir_bool_t kefir_report_error(kefir_result_t, struct kefir_compiler_runner_configuration *);
+kefir_bool_t kefir_report_error(FILE *, kefir_result_t, const struct kefir_compiler_runner_configuration *);
 
 #endif

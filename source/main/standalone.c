@@ -36,5 +36,5 @@ int main(int argc, char *const *argv) {
     REQUIRE_CHAIN(&res, kefir_cli_parse_runner_configuration(mem, &options, argv, argc));
     REQUIRE_CHAIN(&res, kefir_run_compiler(mem, &options));
     REQUIRE_CHAIN(&res, kefir_compiler_runner_configuration_free(mem, &options));
-    return kefir_report_error(res, &options) ? EXIT_SUCCESS : EXIT_FAILURE;
+    return kefir_report_error(stderr, res, &options) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
