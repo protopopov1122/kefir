@@ -23,6 +23,7 @@
 
 #include "kefir/core/basic-types.h"
 #include "kefir/core/mem.h"
+#include <stdio.h>
 
 typedef struct kefir_cli_input {
     const char *filepath;
@@ -31,7 +32,7 @@ typedef struct kefir_cli_input {
     void *content;
 } kefir_cli_input_t;
 
-kefir_result_t kefir_cli_input_open(struct kefir_mem *, struct kefir_cli_input *, const char *);
+kefir_result_t kefir_cli_input_open(struct kefir_mem *, struct kefir_cli_input *, const char *, FILE *);
 kefir_result_t kefir_cli_input_close(struct kefir_mem *, struct kefir_cli_input *);
 kefir_result_t kefir_cli_input_get(const struct kefir_cli_input *, const char **, kefir_size_t *);
 

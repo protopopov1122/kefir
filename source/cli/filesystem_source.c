@@ -56,7 +56,7 @@ static kefir_result_t open_file(struct kefir_mem *mem, const char *filepath, kef
 
     struct kefir_cli_input *input = KEFIR_MALLOC(mem, sizeof(struct kefir_cli_input));
     REQUIRE(input != NULL, KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate file reader"));
-    kefir_result_t res = kefir_cli_input_open(mem, input, filepath);
+    kefir_result_t res = kefir_cli_input_open(mem, input, filepath, NULL);
     REQUIRE_ELSE(res == KEFIR_OK, {
         KEFIR_FREE(mem, input);
         return res;

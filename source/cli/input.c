@@ -18,6 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#define _POSIX_SOURCE
 #include "kefir/cli/input.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
@@ -29,9 +30,13 @@
 #include <sys/mman.h>
 #include <sys/stat.h>
 
-kefir_result_t kefir_cli_input_open(struct kefir_mem *mem, struct kefir_cli_input *input, const char *filepath) {
+kefir_result_t kefir_cli_input_open(struct kefir_mem *mem, struct kefir_cli_input *input, const char *filepath,
+                                    FILE *fallback_input) {
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(input != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid CLI input"));
+    REQUIRE(
+        filepath != NULL || fallback_input != NULL,
+        KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected either file path or fallback file descriptor to be valid"));
 
     input->filepath = filepath;
     int fd;
@@ -50,7 +55,7 @@ kefir_result_t kefir_cli_input_open(struct kefir_mem *mem, struct kefir_cli_inpu
         }
         input->length = statbuf.st_size;
     } else {
-        fd = STDIN_FILENO;
+        fd = fileno(fallback_input);
         input->content = NULL;
         input->length = 0;
 

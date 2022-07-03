@@ -82,7 +82,7 @@ static kefir_result_t dump_action_impl(struct kefir_mem *mem, struct kefir_compi
     }
 
     REQUIRE_OK(open_output(options->output_filepath, &output));
-    REQUIRE_OK(kefir_cli_input_open(mem, &input, options->input_filepath));
+    REQUIRE_OK(kefir_cli_input_open(mem, &input, options->input_filepath, stdin));
     REQUIRE_OK(
         kefir_preprocessor_filesystem_source_locator_init(&source_locator, &compiler.ast_global_context.symbols));
     for (const struct kefir_list_entry *iter = kefir_list_head(&options->include_path); iter != NULL;
