@@ -32,7 +32,8 @@ int main(int argc, char *const *argv) {
 
     setlocale(LC_ALL, "");
     setlocale(LC_NUMERIC, "C");
-    kefir_result_t res = kefir_cli_parse_runner_configuration(mem, &options, argv, argc);
+    kefir_result_t res = kefir_compiler_runner_configuration_init(&options);
+    REQUIRE_CHAIN(&res, kefir_cli_parse_runner_configuration(mem, &options, argv, argc));
     REQUIRE_CHAIN(&res, kefir_run_compiler(mem, &options));
     REQUIRE_CHAIN(&res, kefir_compiler_runner_configuration_free(mem, &options));
     return kefir_report_error(res, &options) ? EXIT_SUCCESS : EXIT_FAILURE;

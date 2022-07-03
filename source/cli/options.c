@@ -19,34 +19,14 @@
 */
 
 #include "kefir/cli/options.h"
+#include "kefir/cli/parser.h"
 #include "kefir/core/util.h"
 #include "kefir/core/error.h"
-#include "kefir/core/string_buffer.h"
-#include <getopt.h>
 #include <string.h>
-
-enum CliOptionAction {
-    CLI_ACTION_NONE,
-    CLI_ACTION_ASSIGN_STRARG,
-    CLI_ACTION_ASSIGN_UINTARG,
-    CLI_ACTION_ASSIGN_CONSTANT
-};
-
-struct CliOption {
-    char short_option;
-    const char *long_option;
-    kefir_bool_t has_argument;
-    enum CliOptionAction action;
-    kefir_uint64_t action_param;
-    kefir_size_t param_offset;
-    kefir_size_t param_size;
-    kefir_result_t (*prehook)(struct kefir_mem *, struct CliOption *, void *, const char *);
-    kefir_result_t (*posthook)(struct kefir_mem *, struct CliOption *, void *, const char *);
-};
 
 #define MEMBERSZ(structure, field) (sizeof(((structure *) NULL)->field))
 
-static kefir_result_t preprocess_hook(struct kefir_mem *mem, struct CliOption *option, void *raw_options,
+static kefir_result_t preprocess_hook(struct kefir_mem *mem, const struct kefir_cli_option *option, void *raw_options,
                                       const char *arg) {
     UNUSED(mem);
     UNUSED(option);
@@ -58,8 +38,8 @@ static kefir_result_t preprocess_hook(struct kefir_mem *mem, struct CliOption *o
     return KEFIR_OK;
 }
 
-static kefir_result_t skip_preprocessor_hook(struct kefir_mem *mem, struct CliOption *option, void *raw_options,
-                                             const char *arg) {
+static kefir_result_t skip_preprocessor_hook(struct kefir_mem *mem, const struct kefir_cli_option *option,
+                                             void *raw_options, const char *arg) {
     UNUSED(mem);
     UNUSED(option);
     UNUSED(arg);
@@ -70,7 +50,7 @@ static kefir_result_t skip_preprocessor_hook(struct kefir_mem *mem, struct CliOp
     return KEFIR_OK;
 }
 
-static kefir_result_t pp_timestamp_hook(struct kefir_mem *mem, struct CliOption *option, void *raw_options,
+static kefir_result_t pp_timestamp_hook(struct kefir_mem *mem, const struct kefir_cli_option *option, void *raw_options,
                                         const char *arg) {
     UNUSED(mem);
     UNUSED(option);
@@ -81,7 +61,8 @@ static kefir_result_t pp_timestamp_hook(struct kefir_mem *mem, struct CliOption 
     return KEFIR_OK;
 }
 
-static kefir_result_t define_hook(struct kefir_mem *mem, struct CliOption *option, void *raw_options, const char *arg) {
+static kefir_result_t define_hook(struct kefir_mem *mem, const struct kefir_cli_option *option, void *raw_options,
+                                  const char *arg) {
     UNUSED(mem);
     UNUSED(option);
     ASSIGN_DECL_CAST(struct kefir_compiler_runner_configuration *, options, raw_options);
@@ -102,7 +83,7 @@ static kefir_result_t define_hook(struct kefir_mem *mem, struct CliOption *optio
     return KEFIR_OK;
 }
 
-static kefir_result_t include_hook(struct kefir_mem *mem, struct CliOption *option, void *raw_options,
+static kefir_result_t include_hook(struct kefir_mem *mem, const struct kefir_cli_option *option, void *raw_options,
                                    const char *arg) {
     UNUSED(mem);
     UNUSED(option);
@@ -113,7 +94,7 @@ static kefir_result_t include_hook(struct kefir_mem *mem, struct CliOption *opti
     return KEFIR_OK;
 }
 
-static kefir_result_t include_file_hook(struct kefir_mem *mem, struct CliOption *option, void *raw_options,
+static kefir_result_t include_file_hook(struct kefir_mem *mem, const struct kefir_cli_option *option, void *raw_options,
                                         const char *arg) {
     UNUSED(mem);
     UNUSED(option);
@@ -124,55 +105,58 @@ static kefir_result_t include_file_hook(struct kefir_mem *mem, struct CliOption 
     return KEFIR_OK;
 }
 
-static struct CliOption Options[] = {
+static struct kefir_cli_option Options[] = {
 #define SIMPLE(short, long, has_arg, action, action_param, field)                                                \
     {                                                                                                            \
         short, long, has_arg, action, action_param, offsetof(struct kefir_compiler_runner_configuration, field), \
-            MEMBERSZ(struct kefir_compiler_runner_configuration, field), NULL, NULL                              \
+            MEMBERSZ(struct kefir_compiler_runner_configuration, field), NULL, NULL, NULL                        \
     }
 #define PREHOOK(short, long, has_arg, action, action_param, field, hook)                                         \
     {                                                                                                            \
         short, long, has_arg, action, action_param, offsetof(struct kefir_compiler_runner_configuration, field), \
-            MEMBERSZ(struct kefir_compiler_runner_configuration, field), hook, NULL                              \
+            MEMBERSZ(struct kefir_compiler_runner_configuration, field), hook, NULL, NULL                        \
     }
 #define POSTHOOK(short, long, has_arg, action, action_param, field, hook)                                        \
     {                                                                                                            \
         short, long, has_arg, action, action_param, offsetof(struct kefir_compiler_runner_configuration, field), \
-            MEMBERSZ(struct kefir_compiler_runner_configuration, field), NULL, hook                              \
+            MEMBERSZ(struct kefir_compiler_runner_configuration, field), NULL, hook, NULL                        \
     }
 #define CUSTOM(short, long, has_arg, hook) \
-    { short, long, has_arg, CLI_ACTION_NONE, 0, 0, 0, hook, NULL }
-#define FEATURE(name, field)                                                    \
-    SIMPLE(0, "feature-" name, false, CLI_ACTION_ASSIGN_CONSTANT, true, field), \
-        SIMPLE(0, "no-feature-" name, false, CLI_ACTION_ASSIGN_CONSTANT, false, field)
-#define CODEGEN(name, field)                                                    \
-    SIMPLE(0, "codegen-" name, false, CLI_ACTION_ASSIGN_CONSTANT, true, field), \
-        SIMPLE(0, "no-codegen-" name, false, CLI_ACTION_ASSIGN_CONSTANT, false, field)
+    { short, long, has_arg, KEFIR_CLI_OPTION_ACTION_NONE, 0, 0, 0, hook, NULL, NULL }
+#define FEATURE(name, field)                                                                 \
+    SIMPLE(0, "feature-" name, false, KEFIR_CLI_OPTION_ACTION_ASSIGN_CONSTANT, true, field), \
+        SIMPLE(0, "no-feature-" name, false, KEFIR_CLI_OPTION_ACTION_ASSIGN_CONSTANT, false, field)
+#define CODEGEN(name, field)                                                                 \
+    SIMPLE(0, "codegen-" name, false, KEFIR_CLI_OPTION_ACTION_ASSIGN_CONSTANT, true, field), \
+        SIMPLE(0, "no-codegen-" name, false, KEFIR_CLI_OPTION_ACTION_ASSIGN_CONSTANT, false, field)
 
-    SIMPLE('o', "output", true, CLI_ACTION_ASSIGN_STRARG, 0, output_filepath),
-    PREHOOK('p', "preprocess", false, CLI_ACTION_ASSIGN_CONSTANT, KEFIR_COMPILER_RUNNER_ACTION_PREPROCESS, action,
-            preprocess_hook),
-    PREHOOK('P', "skip-preprocessor", false, CLI_ACTION_ASSIGN_CONSTANT, true, skip_preprocessor,
+    SIMPLE('o', "output", true, KEFIR_CLI_OPTION_ACTION_ASSIGN_STRARG, 0, output_filepath),
+    PREHOOK('p', "preprocess", false, KEFIR_CLI_OPTION_ACTION_ASSIGN_CONSTANT, KEFIR_COMPILER_RUNNER_ACTION_PREPROCESS,
+            action, preprocess_hook),
+    PREHOOK('P', "skip-preprocessor", false, KEFIR_CLI_OPTION_ACTION_ASSIGN_CONSTANT, true, skip_preprocessor,
             skip_preprocessor_hook),
-    SIMPLE(0, "dump-tokens", false, CLI_ACTION_ASSIGN_CONSTANT, KEFIR_COMPILER_RUNNER_ACTION_DUMP_TOKENS, action),
-    SIMPLE(0, "dump-ast", false, CLI_ACTION_ASSIGN_CONSTANT, KEFIR_COMPILER_RUNNER_ACTION_DUMP_AST, action),
-    SIMPLE(0, "dump-ir", false, CLI_ACTION_ASSIGN_CONSTANT, KEFIR_COMPILER_RUNNER_ACTION_DUMP_IR, action),
-    SIMPLE(0, "dump-runtime-code", false, CLI_ACTION_ASSIGN_CONSTANT, KEFIR_COMPILER_RUNNER_ACTION_DUMP_RUNTIME_CODE,
+    SIMPLE(0, "dump-tokens", false, KEFIR_CLI_OPTION_ACTION_ASSIGN_CONSTANT, KEFIR_COMPILER_RUNNER_ACTION_DUMP_TOKENS,
            action),
-    SIMPLE(0, "json-errors", false, CLI_ACTION_ASSIGN_CONSTANT, KEFIR_COMPILER_RUNNER_ERROR_REPORT_JSON,
+    SIMPLE(0, "dump-ast", false, KEFIR_CLI_OPTION_ACTION_ASSIGN_CONSTANT, KEFIR_COMPILER_RUNNER_ACTION_DUMP_AST,
+           action),
+    SIMPLE(0, "dump-ir", false, KEFIR_CLI_OPTION_ACTION_ASSIGN_CONSTANT, KEFIR_COMPILER_RUNNER_ACTION_DUMP_IR, action),
+    SIMPLE(0, "dump-runtime-code", false, KEFIR_CLI_OPTION_ACTION_ASSIGN_CONSTANT,
+           KEFIR_COMPILER_RUNNER_ACTION_DUMP_RUNTIME_CODE, action),
+    SIMPLE(0, "json-errors", false, KEFIR_CLI_OPTION_ACTION_ASSIGN_CONSTANT, KEFIR_COMPILER_RUNNER_ERROR_REPORT_JSON,
            error_report_type),
-    SIMPLE(0, "tabular-errors", false, CLI_ACTION_ASSIGN_CONSTANT, KEFIR_COMPILER_RUNNER_ERROR_REPORT_TABULAR,
-           error_report_type),
-    SIMPLE(0, "target-profile", true, CLI_ACTION_ASSIGN_STRARG, 0, target_profile),
-    SIMPLE(0, "source-id", true, CLI_ACTION_ASSIGN_STRARG, 0, source_id),
-    SIMPLE(0, "detailed-output", false, CLI_ACTION_ASSIGN_CONSTANT, true, detailed_output),
-    POSTHOOK(0, "pp-timestamp", true, CLI_ACTION_ASSIGN_UINTARG, 0, pp_timestamp, pp_timestamp_hook),
+    SIMPLE(0, "tabular-errors", false, KEFIR_CLI_OPTION_ACTION_ASSIGN_CONSTANT,
+           KEFIR_COMPILER_RUNNER_ERROR_REPORT_TABULAR, error_report_type),
+    SIMPLE(0, "target-profile", true, KEFIR_CLI_OPTION_ACTION_ASSIGN_STRARG, 0, target_profile),
+    SIMPLE(0, "source-id", true, KEFIR_CLI_OPTION_ACTION_ASSIGN_STRARG, 0, source_id),
+    SIMPLE(0, "detailed-output", false, KEFIR_CLI_OPTION_ACTION_ASSIGN_CONSTANT, true, detailed_output),
+    POSTHOOK(0, "pp-timestamp", true, KEFIR_CLI_OPTION_ACTION_ASSIGN_UINTARG, 0, pp_timestamp, pp_timestamp_hook),
 
     CUSTOM('D', "define", true, define_hook),
     CUSTOM('I', "include-dir", true, include_hook),
     CUSTOM(0, "include", true, include_file_hook),
-    SIMPLE('h', "help", false, CLI_ACTION_ASSIGN_CONSTANT, KEFIR_COMPILER_RUNNER_ACTION_HELP, action),
-    SIMPLE('v', "version", false, CLI_ACTION_ASSIGN_CONSTANT, KEFIR_COMPILER_RUNNER_ACTION_VERSION, action),
+    SIMPLE('h', "help", false, KEFIR_CLI_OPTION_ACTION_ASSIGN_CONSTANT, KEFIR_COMPILER_RUNNER_ACTION_HELP, action),
+    SIMPLE('v', "version", false, KEFIR_CLI_OPTION_ACTION_ASSIGN_CONSTANT, KEFIR_COMPILER_RUNNER_ACTION_VERSION,
+           action),
 
     FEATURE("non-strict-qualifiers", features.non_strict_qualifiers),
     FEATURE("signed-enums", features.signed_enum_type),
@@ -198,160 +182,6 @@ static struct CliOption Options[] = {
 #undef FEATURE
 #undef CODEGEN
 };
-
-static kefir_result_t parse_impl_internal(struct kefir_mem *mem, struct kefir_compiler_runner_configuration *options,
-                                          char *const *argv, kefir_size_t argc) {
-    const kefir_size_t Option_Count = sizeof(Options) / sizeof(Options[0]);
-
-    struct CliOption *short_option_map[1 << CHAR_BIT] = {0};
-    struct kefir_string_buffer options_buf;
-    REQUIRE_OK(kefir_string_buffer_init(mem, &options_buf, KEFIR_STRING_BUFFER_MULTIBYTE));
-    struct option *long_options = KEFIR_MALLOC(mem, sizeof(struct option) * (Option_Count + 1));
-    REQUIRE_ELSE(long_options != NULL, {
-        kefir_string_buffer_free(mem, &options_buf);
-        return KEFIR_SET_ERROR(KEFIR_MEMALLOC_FAILURE, "Failed to allocate buffer for CLI options");
-    });
-
-    kefir_result_t res = KEFIR_OK;
-    for (kefir_size_t i = 0; res == KEFIR_OK && i < Option_Count; i++) {
-        if (Options[i].short_option != '\0') {
-            if (options_buf.length == 0) {
-                REQUIRE_CHAIN(&res, kefir_string_buffer_insert_raw(mem, &options_buf, '+'));
-                REQUIRE_CHAIN(&res, kefir_string_buffer_insert_raw(mem, &options_buf, ':'));
-            }
-
-            REQUIRE_CHAIN(&res, kefir_string_buffer_insert_raw(mem, &options_buf, Options[i].short_option));
-            if (Options[i].has_argument) {
-                REQUIRE_CHAIN(&res, kefir_string_buffer_insert_raw(mem, &options_buf, ':'));
-            }
-
-            short_option_map[(kefir_size_t) Options[i].short_option] = &Options[i];
-        }
-    }
-    REQUIRE_ELSE(res == KEFIR_OK, {
-        KEFIR_FREE(mem, long_options);
-        kefir_string_buffer_free(mem, &options_buf);
-        return res;
-    });
-    const char *short_options = kefir_string_buffer_value(&options_buf, NULL);
-
-    for (kefir_size_t i = 0; res == KEFIR_OK && i < Option_Count; i++) {
-        long_options[i] =
-            (struct option){Options[i].long_option, Options[i].has_argument ? required_argument : no_argument, NULL,
-                            Options[i].short_option};
-    }
-    long_options[Option_Count] = (struct option){0};
-
-    int long_option_index = 0;
-    for (int c = getopt_long(argc, argv, short_options, long_options, &long_option_index); res == KEFIR_OK && c != -1;
-         c = getopt_long(argc, argv, short_options, long_options, &long_option_index)) {
-
-        struct CliOption *cli_option = NULL;
-        if (c == '?') {
-            res = KEFIR_SET_ERRORF(KEFIR_UI_ERROR, "Unknown option %s", argv[optind - 1]);
-        } else if (c == ':') {
-            res = KEFIR_SET_ERRORF(KEFIR_UI_ERROR, "Expected parameter for %s option", argv[optind - 1]);
-        } else if (c != 0) {
-            cli_option = short_option_map[c];
-            REQUIRE_CHAIN_SET(&res, cli_option != NULL,
-                              KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "CLI option is ill-defined"));
-        } else {
-            cli_option = &Options[long_option_index];
-        }
-
-        if (res == KEFIR_OK && cli_option->prehook != NULL) {
-            REQUIRE_CHAIN(&res, cli_option->prehook(mem, cli_option, options, optarg));
-        }
-
-        if (res == KEFIR_OK) {
-            void *param = (void *) (((kefir_uptr_t) options) + cli_option->param_offset);
-            switch (cli_option->action) {
-                case CLI_ACTION_NONE:
-                    // Intentionally left blank
-                    break;
-
-                case CLI_ACTION_ASSIGN_STRARG:
-                    REQUIRE_CHAIN_SET(&res, cli_option->param_size == sizeof(const char *),
-                                      KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "CLI option is ill-defined"));
-                    *(const char **) param = optarg;
-                    break;
-
-                case CLI_ACTION_ASSIGN_UINTARG:
-                    switch (cli_option->param_size) {
-                        case sizeof(kefir_uint8_t):
-                            *(kefir_uint8_t *) param = strtoull(optarg, NULL, 10);
-                            break;
-
-                        case sizeof(kefir_uint16_t):
-                            *(kefir_uint16_t *) param = strtoull(optarg, NULL, 10);
-                            break;
-
-                        case sizeof(kefir_uint32_t):
-                            *(kefir_uint32_t *) param = strtoull(optarg, NULL, 10);
-                            break;
-
-                        case sizeof(kefir_uint64_t):
-                            *(kefir_uint64_t *) param = strtoull(optarg, NULL, 10);
-                            break;
-
-                        default:
-                            res = KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "CLI option is ill-defined");
-                            break;
-                    }
-                    break;
-
-                case CLI_ACTION_ASSIGN_CONSTANT:
-                    switch (cli_option->param_size) {
-                        case sizeof(kefir_uint8_t):
-                            *(kefir_uint8_t *) param = cli_option->action_param;
-                            break;
-
-                        case sizeof(kefir_uint16_t):
-                            *(kefir_uint16_t *) param = cli_option->action_param;
-                            break;
-
-                        case sizeof(kefir_uint32_t):
-                            *(kefir_uint32_t *) param = cli_option->action_param;
-                            break;
-
-                        case sizeof(kefir_uint64_t):
-                            *(kefir_uint64_t *) param = cli_option->action_param;
-                            break;
-
-                        default:
-                            res = KEFIR_SET_ERROR(KEFIR_INVALID_STATE, "CLI option is ill-defined");
-                            break;
-                    }
-                    break;
-            }
-        }
-
-        if (res == KEFIR_OK && cli_option->posthook != NULL) {
-            REQUIRE_CHAIN(&res, cli_option->posthook(mem, cli_option, options, optarg));
-        }
-    }
-    REQUIRE_ELSE(res == KEFIR_OK, {
-        KEFIR_FREE(mem, long_options);
-        kefir_string_buffer_free(mem, &options_buf);
-        return res;
-    });
-
-    KEFIR_FREE(mem, long_options);
-    REQUIRE_OK(kefir_string_buffer_free(mem, &options_buf));
-    return KEFIR_OK;
-}
-
-static kefir_result_t parse_impl(struct kefir_mem *mem, struct kefir_compiler_runner_configuration *options,
-                                 char *const *argv, kefir_size_t argc) {
-    REQUIRE_OK(parse_impl_internal(mem, options, argv, argc));
-
-    for (kefir_size_t i = (kefir_size_t) optind; i < argc; i++) {
-        REQUIRE(options->input_filepath == NULL,
-                KEFIR_SET_ERROR(KEFIR_UI_ERROR, "Cannot specify more than one input file"));
-        options->input_filepath = argv[optind];
-    }
-    return KEFIR_OK;
-}
 
 static kefir_result_t free_define_identifier(struct kefir_mem *mem, struct kefir_hashtree *tree,
                                              kefir_hashtree_key_t key, kefir_hashtree_value_t value, void *payload) {
@@ -390,17 +220,14 @@ kefir_result_t kefir_cli_parse_runner_configuration(struct kefir_mem *mem,
     REQUIRE(options != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid pointer to cli options"));
     REQUIRE(argv != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid argument list"));
 
-    optind = 0;
-    opterr = 0;
-    REQUIRE_OK(kefir_compiler_runner_configuration_init(options));
-    kefir_result_t res = parse_impl(mem, options, argv, argc);
-    REQUIRE_ELSE(res == KEFIR_OK, {
-        kefir_list_free(mem, &options->include_files);
-        kefir_list_free(mem, &options->include_path);
-        kefir_hashtree_free(mem, &options->defines);
-        return res;
-    });
-
+    kefir_size_t positional_args = argc;
+    REQUIRE_OK(kefir_parse_cli_options(mem, options, &positional_args, Options, sizeof(Options) / sizeof(Options[0]),
+                                       argv, argc));
+    if (positional_args < argc) {
+        REQUIRE(positional_args + 1 == argc,
+                KEFIR_SET_ERROR(KEFIR_UI_ERROR, "Cannot specify more than one input file"));
+        options->input_filepath = argv[positional_args];
+    }
     return KEFIR_OK;
 }
 

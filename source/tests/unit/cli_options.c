@@ -25,6 +25,7 @@
 DEFINE_CASE(cli_options1, "CLI - options #1") {
     char *const argv[] = {"", "-o", "file.out", "--detailed-output", "--dump-ast", "test.c"};
     struct kefir_compiler_runner_configuration opts;
+    ASSERT_OK(kefir_compiler_runner_configuration_init(&opts));
     ASSERT_OK(kefir_cli_parse_runner_configuration(&kft_mem, &opts, argv, sizeof(argv) / sizeof(argv[0])));
 
     ASSERT(opts.action == KEFIR_COMPILER_RUNNER_ACTION_DUMP_AST);
@@ -44,6 +45,7 @@ DEFINE_CASE(cli_options2, "CLI - options #2") {
     char *const argv[] = {"",   "--detailed-output", "--dump-tokens", "--dump-ir",
                           "-P", "--output",          "somefile",      "--pp-timestamp=10"};
     struct kefir_compiler_runner_configuration opts;
+    ASSERT_OK(kefir_compiler_runner_configuration_init(&opts));
     ASSERT_OK(kefir_cli_parse_runner_configuration(&kft_mem, &opts, argv, sizeof(argv) / sizeof(argv[0])));
 
     ASSERT(opts.action == KEFIR_COMPILER_RUNNER_ACTION_DUMP_IR);
@@ -67,6 +69,7 @@ DEFINE_CASE(cli_options3, "CLI - options #3") {
                           "--define", "TEST=   test123=test3,,,   ===",
                           "input.c"};
     struct kefir_compiler_runner_configuration opts;
+    ASSERT_OK(kefir_compiler_runner_configuration_init(&opts));
     ASSERT_OK(kefir_cli_parse_runner_configuration(&kft_mem, &opts, argv, sizeof(argv) / sizeof(argv[0])));
 
     ASSERT(opts.action == KEFIR_COMPILER_RUNNER_ACTION_DUMP_ASSEMBLY);
@@ -97,6 +100,7 @@ END_CASE
 DEFINE_CASE(cli_options4, "CLI - options #4") {
     char *const argv[] = {"", "--help"};
     struct kefir_compiler_runner_configuration opts;
+    ASSERT_OK(kefir_compiler_runner_configuration_init(&opts));
     ASSERT_OK(kefir_cli_parse_runner_configuration(&kft_mem, &opts, argv, sizeof(argv) / sizeof(argv[0])));
 
     ASSERT(opts.action == KEFIR_COMPILER_RUNNER_ACTION_HELP);
