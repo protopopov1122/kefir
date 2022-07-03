@@ -27,29 +27,29 @@
 #include "kefir/core/hashtree.h"
 #include <time.h>
 
-typedef enum kefir_cli_action {
-    KEFIR_CLI_ACTION_PREPROCESS,
-    KEFIR_CLI_ACTION_DUMP_TOKENS,
-    KEFIR_CLI_ACTION_DUMP_AST,
-    KEFIR_CLI_ACTION_DUMP_IR,
-    KEFIR_CLI_ACTION_DUMP_ASSEMBLY,
-    KEFIR_CLI_ACTION_DUMP_RUNTIME_CODE,
-    KEFIR_CLI_ACTION_HELP,
-    KEFIR_CLI_ACTION_VERSION
-} kefir_cli_action_t;
+typedef enum kefir_compiler_runner_action {
+    KEFIR_COMPILER_RUNNER_ACTION_PREPROCESS,
+    KEFIR_COMPILER_RUNNER_ACTION_DUMP_TOKENS,
+    KEFIR_COMPILER_RUNNER_ACTION_DUMP_AST,
+    KEFIR_COMPILER_RUNNER_ACTION_DUMP_IR,
+    KEFIR_COMPILER_RUNNER_ACTION_DUMP_ASSEMBLY,
+    KEFIR_COMPILER_RUNNER_ACTION_DUMP_RUNTIME_CODE,
+    KEFIR_COMPILER_RUNNER_ACTION_HELP,
+    KEFIR_COMPILER_RUNNER_ACTION_VERSION
+} kefir_compiler_runner_action_t;
 
-typedef enum kefir_cli_error_report_type {
-    KEFIR_CLI_ERROR_REPORT_TABULAR,
-    KEFIR_CLI_ERROR_REPORT_JSON
-} kefir_cli_error_report_type_t;
+typedef enum kefir_compiler_runner_error_report_type {
+    KEFIR_COMPILER_RUNNER_ERROR_REPORT_TABULAR,
+    KEFIR_COMPILER_RUNNER_ERROR_REPORT_JSON
+} kefir_compiler_runner_error_report_type_t;
 
-typedef struct kefir_cli_options {
-    kefir_cli_action_t action;
+typedef struct kefir_compiler_runner_configuration {
+    kefir_compiler_runner_action_t action;
     const char *input_filepath;
     const char *output_filepath;
     const char *target_profile;
     const char *source_id;
-    kefir_cli_error_report_type_t error_report_type;
+    kefir_compiler_runner_error_report_type_t error_report_type;
     kefir_bool_t detailed_output;
     kefir_bool_t skip_preprocessor;
     struct kefir_list include_path;
@@ -78,9 +78,12 @@ typedef struct kefir_cli_options {
     struct {
         kefir_bool_t emulated_tls;
     } codegen;
-} kefir_cli_options_t;
+} kefir_compiler_runner_configuration_t;
 
-kefir_result_t kefir_cli_parse_options(struct kefir_mem *, struct kefir_cli_options *, char *const *, kefir_size_t);
-kefir_result_t kefir_cli_options_free(struct kefir_mem *, struct kefir_cli_options *);
+kefir_result_t kefir_compiler_runner_configuration_init(struct kefir_compiler_runner_configuration *);
+kefir_result_t kefir_cli_parse_runner_configuration(struct kefir_mem *, struct kefir_compiler_runner_configuration *,
+                                                    char *const *, kefir_size_t);
+kefir_result_t kefir_compiler_runner_configuration_free(struct kefir_mem *,
+                                                        struct kefir_compiler_runner_configuration *);
 
 #endif
