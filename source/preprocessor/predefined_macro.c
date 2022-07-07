@@ -31,11 +31,12 @@ static kefir_result_t predefined_macro_argc(const struct kefir_preprocessor_macr
     return KEFIR_SET_ERROR(KEFIR_INVALID_REQUEST, "Unable to retrieve argument count of predefined object macro");
 }
 
-static kefir_result_t macro_file_apply(struct kefir_mem *mem, const struct kefir_preprocessor_macro *macro,
-                                       struct kefir_symbol_table *symbols, const struct kefir_list *args,
-                                       struct kefir_token_buffer *buffer,
+static kefir_result_t macro_file_apply(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                       const struct kefir_preprocessor_macro *macro, struct kefir_symbol_table *symbols,
+                                       const struct kefir_list *args, struct kefir_token_buffer *buffer,
                                        const struct kefir_source_location *source_location) {
     UNUSED(symbols);
+    UNUSED(preprocessor);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(macro != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor macro"));
     REQUIRE(args == NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected empty macro argument list"));
@@ -54,11 +55,12 @@ static kefir_result_t macro_file_apply(struct kefir_mem *mem, const struct kefir
     return KEFIR_OK;
 }
 
-static kefir_result_t macro_line_apply(struct kefir_mem *mem, const struct kefir_preprocessor_macro *macro,
-                                       struct kefir_symbol_table *symbols, const struct kefir_list *args,
-                                       struct kefir_token_buffer *buffer,
+static kefir_result_t macro_line_apply(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                       const struct kefir_preprocessor_macro *macro, struct kefir_symbol_table *symbols,
+                                       const struct kefir_list *args, struct kefir_token_buffer *buffer,
                                        const struct kefir_source_location *source_location) {
     UNUSED(symbols);
+    UNUSED(preprocessor);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(macro != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor macro"));
     REQUIRE(args == NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected empty macro argument list"));
@@ -79,11 +81,12 @@ static kefir_result_t macro_line_apply(struct kefir_mem *mem, const struct kefir
     return KEFIR_OK;
 }
 
-static kefir_result_t macro_date_apply(struct kefir_mem *mem, const struct kefir_preprocessor_macro *macro,
-                                       struct kefir_symbol_table *symbols, const struct kefir_list *args,
-                                       struct kefir_token_buffer *buffer,
+static kefir_result_t macro_date_apply(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                       const struct kefir_preprocessor_macro *macro, struct kefir_symbol_table *symbols,
+                                       const struct kefir_list *args, struct kefir_token_buffer *buffer,
                                        const struct kefir_source_location *source_location) {
     UNUSED(symbols);
+    UNUSED(preprocessor);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(macro != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor macro"));
     REQUIRE(args == NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected empty macro argument list"));
@@ -107,11 +110,12 @@ static kefir_result_t macro_date_apply(struct kefir_mem *mem, const struct kefir
     return KEFIR_OK;
 }
 
-static kefir_result_t macro_time_apply(struct kefir_mem *mem, const struct kefir_preprocessor_macro *macro,
-                                       struct kefir_symbol_table *symbols, const struct kefir_list *args,
-                                       struct kefir_token_buffer *buffer,
+static kefir_result_t macro_time_apply(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                       const struct kefir_preprocessor_macro *macro, struct kefir_symbol_table *symbols,
+                                       const struct kefir_list *args, struct kefir_token_buffer *buffer,
                                        const struct kefir_source_location *source_location) {
     UNUSED(symbols);
+    UNUSED(preprocessor);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(macro != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor macro"));
     REQUIRE(args == NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected empty macro argument list"));
@@ -135,11 +139,13 @@ static kefir_result_t macro_time_apply(struct kefir_mem *mem, const struct kefir
     return KEFIR_OK;
 }
 
-static kefir_result_t macro_stdc_hosted_apply(struct kefir_mem *mem, const struct kefir_preprocessor_macro *macro,
+static kefir_result_t macro_stdc_hosted_apply(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                              const struct kefir_preprocessor_macro *macro,
                                               struct kefir_symbol_table *symbols, const struct kefir_list *args,
                                               struct kefir_token_buffer *buffer,
                                               const struct kefir_source_location *source_location) {
     UNUSED(symbols);
+    UNUSED(preprocessor);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(macro != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor macro"));
     REQUIRE(args == NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected empty macro argument list"));
@@ -159,11 +165,13 @@ static kefir_result_t macro_stdc_hosted_apply(struct kefir_mem *mem, const struc
     return KEFIR_OK;
 }
 
-static kefir_result_t macro_stdc_version_apply(struct kefir_mem *mem, const struct kefir_preprocessor_macro *macro,
+static kefir_result_t macro_stdc_version_apply(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                               const struct kefir_preprocessor_macro *macro,
                                                struct kefir_symbol_table *symbols, const struct kefir_list *args,
                                                struct kefir_token_buffer *buffer,
                                                const struct kefir_source_location *source_location) {
     UNUSED(symbols);
+    UNUSED(preprocessor);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(macro != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor macro"));
     REQUIRE(args == NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected empty macro argument list"));
@@ -184,11 +192,13 @@ static kefir_result_t macro_stdc_version_apply(struct kefir_mem *mem, const stru
     return KEFIR_OK;
 }
 
-static kefir_result_t macro_stdc_iso_10646_apply(struct kefir_mem *mem, const struct kefir_preprocessor_macro *macro,
+static kefir_result_t macro_stdc_iso_10646_apply(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                                 const struct kefir_preprocessor_macro *macro,
                                                  struct kefir_symbol_table *symbols, const struct kefir_list *args,
                                                  struct kefir_token_buffer *buffer,
                                                  const struct kefir_source_location *source_location) {
     UNUSED(symbols);
+    UNUSED(preprocessor);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(macro != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor macro"));
     REQUIRE(args == NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected empty macro argument list"));
@@ -209,11 +219,13 @@ static kefir_result_t macro_stdc_iso_10646_apply(struct kefir_mem *mem, const st
     return KEFIR_OK;
 }
 
-static kefir_result_t macro_stdc_lib_ext1_apply(struct kefir_mem *mem, const struct kefir_preprocessor_macro *macro,
+static kefir_result_t macro_stdc_lib_ext1_apply(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                                const struct kefir_preprocessor_macro *macro,
                                                 struct kefir_symbol_table *symbols, const struct kefir_list *args,
                                                 struct kefir_token_buffer *buffer,
                                                 const struct kefir_source_location *source_location) {
     UNUSED(symbols);
+    UNUSED(preprocessor);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(macro != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor macro"));
     REQUIRE(args == NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected empty macro argument list"));
@@ -235,11 +247,13 @@ static kefir_result_t macro_stdc_lib_ext1_apply(struct kefir_mem *mem, const str
     return KEFIR_OK;
 }
 
-static kefir_result_t macro_produce_one_apply(struct kefir_mem *mem, const struct kefir_preprocessor_macro *macro,
+static kefir_result_t macro_produce_one_apply(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                              const struct kefir_preprocessor_macro *macro,
                                               struct kefir_symbol_table *symbols, const struct kefir_list *args,
                                               struct kefir_token_buffer *buffer,
                                               const struct kefir_source_location *source_location) {
     UNUSED(symbols);
+    UNUSED(preprocessor);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(macro != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor macro"));
     REQUIRE(args == NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected empty macro argument list"));
@@ -257,11 +271,13 @@ static kefir_result_t macro_produce_one_apply(struct kefir_mem *mem, const struc
     return KEFIR_OK;
 }
 
-static kefir_result_t macro_big_endian_apply(struct kefir_mem *mem, const struct kefir_preprocessor_macro *macro,
+static kefir_result_t macro_big_endian_apply(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                             const struct kefir_preprocessor_macro *macro,
                                              struct kefir_symbol_table *symbols, const struct kefir_list *args,
                                              struct kefir_token_buffer *buffer,
                                              const struct kefir_source_location *source_location) {
     UNUSED(symbols);
+    UNUSED(preprocessor);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(macro != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor macro"));
     REQUIRE(args == NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected empty macro argument list"));
@@ -279,11 +295,13 @@ static kefir_result_t macro_big_endian_apply(struct kefir_mem *mem, const struct
     return KEFIR_OK;
 }
 
-static kefir_result_t macro_little_endian_apply(struct kefir_mem *mem, const struct kefir_preprocessor_macro *macro,
+static kefir_result_t macro_little_endian_apply(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                                const struct kefir_preprocessor_macro *macro,
                                                 struct kefir_symbol_table *symbols, const struct kefir_list *args,
                                                 struct kefir_token_buffer *buffer,
                                                 const struct kefir_source_location *source_location) {
     UNUSED(symbols);
+    UNUSED(preprocessor);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(macro != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor macro"));
     REQUIRE(args == NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected empty macro argument list"));
@@ -301,11 +319,13 @@ static kefir_result_t macro_little_endian_apply(struct kefir_mem *mem, const str
     return KEFIR_OK;
 }
 
-static kefir_result_t macro_pdp_endian_apply(struct kefir_mem *mem, const struct kefir_preprocessor_macro *macro,
+static kefir_result_t macro_pdp_endian_apply(struct kefir_mem *mem, struct kefir_preprocessor *preprocessor,
+                                             const struct kefir_preprocessor_macro *macro,
                                              struct kefir_symbol_table *symbols, const struct kefir_list *args,
                                              struct kefir_token_buffer *buffer,
                                              const struct kefir_source_location *source_location) {
     UNUSED(symbols);
+    UNUSED(preprocessor);
     REQUIRE(mem != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid memory allocator"));
     REQUIRE(macro != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid preprocessor macro"));
     REQUIRE(args == NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected empty macro argument list"));
@@ -326,8 +346,8 @@ static kefir_result_t macro_pdp_endian_apply(struct kefir_mem *mem, const struct
 static kefir_result_t define_predefined_macro(
     struct kefir_mem *mem, struct kefir_preprocessor_predefined_macro_scope *scope,
     struct kefir_preprocessor_macro *macro, const char *identifier,
-    kefir_result_t (*apply)(struct kefir_mem *, const struct kefir_preprocessor_macro *, struct kefir_symbol_table *,
-                            const struct kefir_list *, struct kefir_token_buffer *,
+    kefir_result_t (*apply)(struct kefir_mem *, struct kefir_preprocessor *, const struct kefir_preprocessor_macro *,
+                            struct kefir_symbol_table *, const struct kefir_list *, struct kefir_token_buffer *,
                             const struct kefir_source_location *)) {
     macro->identifier = identifier;
     macro->type = KEFIR_PREPROCESSOR_MACRO_OBJECT;
