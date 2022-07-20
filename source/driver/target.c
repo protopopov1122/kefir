@@ -43,6 +43,8 @@ static kefir_result_t select_host_platform(struct kefir_driver_target *target) {
     target->platform = KEFIR_DRIVER_TARGET_PLATFORM_FREEBSD;
 #elif defined(KEFIR_OPENBSD_HOST_PLATFORM)
     target->platform = KEFIR_DRIVER_TARGET_PLATFORM_OPENBSD;
+#elif defined(KEFIR_NETBSD_HOST_PLATFORM)
+    target->platform = KEFIR_DRIVER_TARGET_PLATFORM_NETBSD;
 #endif
     return KEFIR_OK;
 }
@@ -56,6 +58,8 @@ static kefir_result_t match_platform(const char *spec, struct kefir_driver_targe
         target->platform = KEFIR_DRIVER_TARGET_PLATFORM_FREEBSD;
     } else if (strncmp("openbsd", spec, delim - spec) == 0) {
         target->platform = KEFIR_DRIVER_TARGET_PLATFORM_OPENBSD;
+    } else if (strncmp("netbsd", spec, delim - spec) == 0) {
+        target->platform = KEFIR_DRIVER_TARGET_PLATFORM_NETBSD;
     } else if (strncmp("host", spec, delim - spec) == 0) {
         REQUIRE_OK(select_host_platform(target));
     } else {
@@ -74,6 +78,9 @@ static kefir_result_t select_default_variant(struct kefir_driver_target *target)
         target->variant = KEFIR_DRIVER_TARGET_VARIANT_SYSTEM;
     } else if (target->arch == KEFIR_DRIVER_TARGET_ARCH_X86_64 &&
                target->platform == KEFIR_DRIVER_TARGET_PLATFORM_OPENBSD) {
+        target->variant = KEFIR_DRIVER_TARGET_VARIANT_SYSTEM;
+    } else if (target->arch == KEFIR_DRIVER_TARGET_ARCH_X86_64 &&
+               target->platform == KEFIR_DRIVER_TARGET_PLATFORM_NETBSD) {
         target->variant = KEFIR_DRIVER_TARGET_VARIANT_SYSTEM;
     }
     return KEFIR_OK;

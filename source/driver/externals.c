@@ -61,6 +61,9 @@ kefir_result_t kefir_driver_external_resources_init_from_env(struct kefir_mem *m
     externals->openbsd.include_path = getenv("KEFIR_OPENBSD_INCLUDE");
     externals->openbsd.library_path = getenv("KEFIR_OPENBSD_LIB");
     externals->openbsd.dynamic_linker = getenv("KEFIR_OPENBSD_DYNAMIC_LINKER");
+    externals->netbsd.include_path = getenv("KEFIR_NETBSD_INCLUDE");
+    externals->netbsd.library_path = getenv("KEFIR_NETBSD_LIB");
+    externals->netbsd.dynamic_linker = getenv("KEFIR_NETBSD_DYNAMIC_LINKER");
 
     externals->work_dir = getenv("KEFIR_WORKDIR");
     if (externals->work_dir == NULL) {
