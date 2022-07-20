@@ -101,4 +101,15 @@
         }                                                                                      \
     } while (0)
 
+#define SKIP_ASSEMBLY(_res, _mem, _parser, _scanned)                             \
+    do {                                                                         \
+        struct kefir_ast_node_base *result = NULL;                               \
+        *(_res) = KEFIR_PARSER_RULE_APPLY((_mem), (_parser), assembly, &result); \
+        if (*(_res) == KEFIR_OK) {                                               \
+            *(_scanned) = true;                                                  \
+        } else if (res == KEFIR_NO_MATCH) {                                      \
+            res = KEFIR_OK;                                                      \
+        }                                                                        \
+    } while (0)
+
 #endif

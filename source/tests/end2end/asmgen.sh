@@ -32,9 +32,9 @@ export LD_LIBRARY_PATH="$BIN_DIR/libs"
 set -e
 
 if [[ "x$MEMCHECK" == "xyes" ]]; then
-    valgrind $VALGRIND_OPTIONS "$KEFIRCC" --target x86_64-linux-none -I "$(dirname $SRC_FILE)" -D KEFIR_END2END_TEST -U __STDC__ -D "KEFIR_END2END=   101   " -W --pp-timestamp=1633204489 \
+    valgrind $VALGRIND_OPTIONS "$KEFIRCC" --target x86_64-linux-none -I "$(dirname $SRC_FILE)" -D KEFIR_END2END_TEST -U __STDC__ -D "KEFIR_END2END=   101   " -W --feature-skip-assembly -W --pp-timestamp=1633204489 \
         -include "$INCLUDE_FILE" "$SRC_FILE" -S -o "$DST_FILE"
 else
-    "$KEFIRCC" -I "$(dirname $SRC_FILE)"  --target x86_64-linux-none -D KEFIR_END2END_TEST -U __STDC__ -D "KEFIR_END2END=   101   " -W --pp-timestamp=1633204489 \
+    "$KEFIRCC" -I "$(dirname $SRC_FILE)"  --target x86_64-linux-none -D KEFIR_END2END_TEST -U __STDC__ -D "KEFIR_END2END=   101   " -W --feature-skip-assembly -W --pp-timestamp=1633204489 \
         -include "$INCLUDE_FILE" "$SRC_FILE" -S -o "$DST_FILE"
 fi

@@ -28,10 +28,6 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
     REQUIRE(builder != NULL, KEFIR_SET_ERROR(KEFIR_INVALID_PARAMETER, "Expected valid parser AST builder"));
     struct kefir_parser *parser = builder->parser;
 
-    REQUIRE(!PARSER_TOKEN_IS_KEYWORD(parser, 0, KEFIR_KEYWORD_ASM),
-            KEFIR_SET_SOURCE_ERROR(KEFIR_ANALYSIS_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
-                                   "Assembly directive is not supported"));
-
     REQUIRE(PARSER_TOKEN_IS_LEFT_BRACE(parser, 0),
             KEFIR_SET_ERROR(KEFIR_NO_MATCH, "Unable to match compound statement"));
     REQUIRE_OK(PARSER_SHIFT(parser));
@@ -43,6 +39,17 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
             kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, declaration), NULL);
         if (res == KEFIR_NO_MATCH) {
             res = kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, statement), NULL);
+        }
+
+        if (res == KEFIR_NO_MATCH) {
+            kefir_bool_t scanned_assembly = false;
+            SKIP_ASSEMBLY(&res, mem, builder->parser, &scanned_assembly);
+            if (res != KEFIR_NO_MATCH) {
+                REQUIRE_OK(res);
+                if (scanned_assembly) {
+                    continue;
+                }
+            }
         }
 
         if (res == KEFIR_NO_MATCH) {

@@ -74,6 +74,7 @@ typedef struct kefir_compiler_runner_configuration {
         kefir_bool_t permissive_pointer_conv;
         kefir_bool_t named_macro_vararg;
         kefir_bool_t include_next;
+        kefir_bool_t skip_assembly;
     } features;
 
     struct {

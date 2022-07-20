@@ -17,8 +17,8 @@ Kefir targets x86-64 ISA and System-V ABI. The main focus is on modern Linux env
 however Kefir also has support for modern FreeBSD and OpenBSD (base test suite and bootstrap are executed successfully in both environments).
 A platform is considered supported if base test suite and 2-stage compiler bootstrap can be executed there -- no other guarantees and claims are made.
 On Linux, `glibc` and `musl` standard libraries are supported (`musl` is recommended because it's header files are more compilant with standard C language without extensions),
-on BSDs system `libc` can be used with some restrictions (compiler will fail on inline assembly directives in include files, which can be ignored by manually
-defining suppressing macro prior to any includes, e.g. `#define asm(...)` at the beginning of file). Kefir supports selection of target platform via `--target` command line
+on BSDs system `libc` can be used with some restrictions (compiler will fail on inline assembly directives in include files, which can be ignored by using
+`-Wc --feature-skip-assembly` command line option). Kefir supports selection of target platform via `--target` command line
 option.
 
 For each respective target, a set of environment variables (e.g. `KEFIR_GNU_INCLUDE`, `KEFIR_GNU_LIB`, `KEFIR_GNU_DYNAMIC_LINKER`) needs to be
@@ -110,11 +110,11 @@ due to presence of non-standard C language extensions in header files which migh
 **Usage is strongly discouraged. This is experimental project which is not meant for production purposes.**
 
 Kefir depends on following third-party components: existing C11-compatible compiler (tested with `gcc` and `clang`), `gas`, `valgrind`,
-`xsltproc`, `clang-format`. After installing these components, Kefir can be built with a single command: `make ./bin/kefir -j$(nproc)`.
-It is also strongly advised to run basic test suite:
+`xsltproc`, `clang-format`. After installing these components, Kefir can be built with a single command: `make all -j$(nproc)`.
+It is also advised to run basic test suite:
 ```bash
 LC_ALL=C.UTF-8 make test all OPT=-O3 -j$(nproc)         # Linux
-gmake all PLATFORM=freebsd OPT=-O3 CC=clang             # FreeBSD
+gmake test all PLATFORM=freebsd OPT=-O3 CC=clang        # FreeBSD
 gmake test all CC=clang AS=gas PLATFORM=openbsd OPT=-O3 # OpenBSD
 ```
 

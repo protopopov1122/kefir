@@ -31,9 +31,18 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
 
     kefir_result_t res;
     while (!PARSER_TOKEN_IS_SENTINEL(builder->parser, 0)) {
-        while (PARSER_TOKEN_IS_PUNCTUATOR(builder->parser, 0, KEFIR_PUNCTUATOR_SEMICOLON)) {
+        if (PARSER_TOKEN_IS_PUNCTUATOR(builder->parser, 0, KEFIR_PUNCTUATOR_SEMICOLON)) {
             PARSER_SHIFT(builder->parser);
+            continue;
         }
+
+        kefir_bool_t scanned_assembly = false;
+        SKIP_ASSEMBLY(&res, mem, builder->parser, &scanned_assembly);
+        REQUIRE_OK(res);
+        if (scanned_assembly) {
+            continue;
+        }
+
         REQUIRE_MATCH_OK(&res,
                          kefir_parser_ast_builder_scan(
                              mem, builder, KEFIR_PARSER_RULE_FN(builder->parser, external_declaration), NULL),

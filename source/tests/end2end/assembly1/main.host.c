@@ -18,13 +18,15 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "kefir/parser/rule_helpers.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <assert.h>
+#include "./definitions.h"
 
-kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(external_declaration)(struct kefir_mem *mem, struct kefir_parser *parser,
-                                                                 struct kefir_ast_node_base **result, void *payload) {
-    APPLY_PROLOGUE(mem, parser, result, payload);
-    kefir_result_t res = KEFIR_PARSER_RULE_APPLY(mem, parser, function_definition, result);
-    REQUIRE(res == KEFIR_NO_MATCH, res);
-    REQUIRE_OK(KEFIR_PARSER_RULE_APPLY(mem, parser, declaration, result));
-    return KEFIR_OK;
+int main() {
+    assert(Value1 == 10203010);
+    for (int i = -100; i < 100; i++) {
+        assert(function1(i) == ((~i) + 1));
+    }
+    return EXIT_SUCCESS;
 }

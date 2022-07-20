@@ -18,13 +18,28 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "kefir/parser/rule_helpers.h"
+#include "./definitions.h"
 
-kefir_result_t KEFIR_PARSER_RULE_FN_PREFIX(external_declaration)(struct kefir_mem *mem, struct kefir_parser *parser,
-                                                                 struct kefir_ast_node_base **result, void *payload) {
-    APPLY_PROLOGUE(mem, parser, result, payload);
-    kefir_result_t res = KEFIR_PARSER_RULE_APPLY(mem, parser, function_definition, result);
-    REQUIRE(res == KEFIR_NO_MATCH, res);
-    REQUIRE_OK(KEFIR_PARSER_RULE_APPLY(mem, parser, declaration, result));
-    return KEFIR_OK;
+// Assembly directives do not exist beyond parsing stage,
+// thus semantically contain garbage
+
+asm volatile goto("Test...Testt...\n"
+                  " test...\n"
+                  : [output] "r"(*temp), "r"(*temp[2])
+                  : "w"(some_input + 1), [test] "w+"(some_other_input())
+                  : "clobber1", "clobber2"
+                  : label1, label2, label3);
+
+const int Value1 = 10203010;
+
+asm("Some other assembly");
+
+int function1(int x) {
+    asm inline("Another assembly"
+               "directive"
+               : "w"(x)
+               : "r"(x));
+    int y = ~x;
+    asm("And once more assembly" : [variable] "r"(y));
+    return y + 1;
 }

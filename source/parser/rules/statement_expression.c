@@ -44,6 +44,13 @@ static kefir_result_t builder_callback(struct kefir_mem *mem, struct kefir_parse
             res = kefir_parser_ast_builder_scan(mem, builder, KEFIR_PARSER_RULE_FN(parser, statement), NULL);
         }
 
+        kefir_bool_t scanned_assembly = false;
+        SKIP_ASSEMBLY(&res, mem, builder->parser, &scanned_assembly);
+        REQUIRE_OK(res);
+        if (scanned_assembly) {
+            continue;
+        }
+
         if (res == KEFIR_NO_MATCH) {
             return KEFIR_SET_SOURCE_ERROR(KEFIR_SYNTAX_ERROR, PARSER_TOKEN_LOCATION(parser, 0),
                                           "Expected either declaration or statement");
