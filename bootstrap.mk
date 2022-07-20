@@ -11,6 +11,8 @@ ifeq ($(PLATFORM),freebsd)
 KEFIR_FLAGS += --target x86_64-freebsd-system
 else ifeq ($(PLATFORM),openbsd)
 KEFIR_FLAGS += --target x86_64-openbsd-system -include $(HEADERS)/bootstrap/openbsd.h
+else ifeq ($(PLATFORM),netbsd)
+KEFIR_FLAGS += --target x86_64-netbsd-system -W --feature-skip-assembly -include $(HEADERS)/bootstrap/netbsd.h
 else
 KEFIR_FLAGS += --target x86_64-linux-gnu
 endif
