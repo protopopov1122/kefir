@@ -29,6 +29,8 @@
 #define KEFIR_FREEBSD_HOST_PLATFORM
 #elif defined(__OpenBSD__)
 #define KEFIR_OPENBSD_HOST_PLATFORM
+#elif defined(__NetBSD__)
+#define KEFIR_NETBSD_HOST_PLATFORM
 #elif defined(__unix__)
 #define KEFIR_UNIX_HOST_PLATFORM
 #endif
